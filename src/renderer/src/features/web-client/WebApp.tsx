@@ -41,6 +41,7 @@ import { StaticI18nProvider } from "../../i18n-context";
 import { AnalyticsConsentRow, ConsentNotice } from "../onboarding/AnalyticsConsent";
 import { createOnboardingTeam, onboardingSessionSeed } from "../onboarding/onboarding-avatars";
 import { deleteRemoteWorkspaceFrames } from "../servers/remote-workspace-frame-keys";
+import { startConnectionLog } from "./connection-log";
 import { WebLanguageStep } from "./WebLanguageStep";
 import { WebServiceWorkerUpdates } from "./WebServiceWorkerUpdates";
 import type { WebWorkspace } from "./WebWorkspace";
@@ -210,6 +211,8 @@ function takeStartLink(): WebAppStart | null {
 }
 
 export function WebApp(props: { createRuntime?: WebRuntimeFactory } = {}) {
+  // Settings can copy the log of each step of opening, for a phone that opens slowly.
+  startConnectionLog();
   // This component renders the text provider, so it reads the text of the last provider that rendered.
   const text = currentText();
   const [state, setState] = createStore<{
