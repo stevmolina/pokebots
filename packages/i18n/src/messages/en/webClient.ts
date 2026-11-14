@@ -46,6 +46,10 @@ export const messages = defineMessages("webClient", {
   "webClient.error.desktopOnly": "This action is available in the desktop app.",
   "webClient.settings.preferences.title": "Preferences",
   "webClient.settings.preferences.description": "Choose the language and sounds of OpenBot in this browser.",
+  "webClient.settings.connectionLog.title": "Opening log",
+  "webClient.settings.connectionLog.description":
+    "Times each step of opening OpenBot on this device. If it opens slowly, copy the log and send it to us.",
+  "webClient.settings.connectionLog.copyFailed": "Copying failed. Select the text below and copy it.",
   "webClient.error.checkConversation": "Check the conversation before sending again.",
   "webClient.error.hostReported": "The server reported an error. Check the conversation and server status.",
   "webClient.error.requestFailed": "The request failed.",
