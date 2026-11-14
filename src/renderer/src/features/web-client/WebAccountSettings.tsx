@@ -15,6 +15,7 @@ import {
   SlidersHorizontal,
   SwitchField,
   Tabs,
+  Textarea,
   toast,
   UserRound,
 } from "@openbot/ui";
@@ -38,6 +39,7 @@ import { playSoundChoice, readTaskSound, setTaskSound } from "../../completion-s
 import { webReportsEnabled } from "../../error-reports";
 import { useLayout } from "../../layout";
 import { currentDevicePlatform, setSendShortcutMode, useSendShortcutMode } from "../../send-shortcut-preference";
+import { connectionLogText } from "./connection-log";
 import type { WebAccountCalls } from "./web-account";
 import { sendWebAnalyticsChoice, setWebAnalyticsEnabled } from "./web-analytics";
 import { setWebLiveVoice, useWebLiveVoice } from "./web-live-voice";
@@ -98,6 +100,20 @@ export default function WebAccountSettings(props: WebAccountSettingsProps) {
       .setChatColor(color)
       .catch((error: unknown) => toast.error(errorMessage(error, t("settings.preferences.saveFailed")), { error }));
   const [activeTab, setActiveTab] = createSignal<WebAccountSettingsTab>("profile");
+  const [copiedLog, setCopiedLog] = createSignal(false);
+  // Shown when the browser refuses the copy, so the user can still select the text by hand.
+  const [logFallback, setLogFallback] = createSignal<string | null>(null);
+  const copyConnectionLog = async () => {
+    const text = connectionLogText();
+    try {
+      await navigator.clipboard.writeText(text);
+      setLogFallback(null);
+      setCopiedLog(true);
+      setTimeout(() => setCopiedLog(false), 2_000);
+    } catch {
+      setLogFallback(text);
+    }
+  };
   const [taskSound, setTaskSoundChoice] = createSignal(readTaskSound());
   const sendShortcutMode = useSendShortcutMode();
   const layout = useLayout();
@@ -396,6 +412,37 @@ export default function WebAccountSettings(props: WebAccountSettingsProps) {
                   />
                 </ItemActions>
               </Item>
+            </ItemGroup>
+          </SettingsSection>
+          <SettingsSection title={t("webClient.settings.connectionLog.title")}>
+            <ItemGroup class="settings-modal-card">
+              <Item class="settings-modal-row">
+                <ItemContent>
+                  <ItemTitle>{t("webClient.settings.connectionLog.title")}</ItemTitle>
+                  <ItemDescription>{t("webClient.settings.connectionLog.description")}</ItemDescription>
+                </ItemContent>
+                <ItemActions>
+                  <Button variant="outline" type="button" onClick={() => void copyConnectionLog()}>
+                    {copiedLog() ? t("common.copied") : t("common.copy")}
+                  </Button>
+                </ItemActions>
+              </Item>
+              <Show when={logFallback()}>
+                {(text) => (
+                  <Item class="settings-modal-row">
+                    <ItemContent>
+                      <ItemDescription>{t("webClient.settings.connectionLog.copyFailed")}</ItemDescription>
+                      <Textarea
+                        readonly
+                        rows={8}
+                        value={text()}
+                        aria-label={t("webClient.settings.connectionLog.title")}
+                        onFocus={(event) => event.currentTarget.select()}
+                      />
+                    </ItemContent>
+                  </Item>
+                )}
+              </Show>
             </ItemGroup>
           </SettingsSection>
         </Tabs.Content>
