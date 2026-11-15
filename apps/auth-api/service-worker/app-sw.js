@@ -5,7 +5,7 @@
 // - /assets/* files have a content hash in their name, so a cached copy is always the right one.
 //   They are cache-first. Their cache stays across deploys: a new worker removes only the files that
 //   its build does not use, so a deploy downloads only the files that changed.
-// - The /app page is network-first. The cached copy answers only when the network fails.
+// - The /app page is network-first. The cached copy answers on network errors and server errors.
 // It never keeps chats, host data or any API answer. Only the two kinds of request above get an
 // answer from this file, so every other request, including /v1, /v2, /api and other origins,
 // goes straight to the network.
@@ -43,11 +43,15 @@ self.addEventListener("activate", (event) => {
   event.waitUntil(
     (async () => {
       await keepUsedAssets();
-      const keep = new Set([SHELL_CACHE, ASSET_CACHE]);
-      const names = await caches.keys();
-      await Promise.all(
-        names.filter((name) => name.startsWith(CACHE_PREFIX) && !keep.has(name)).map((name) => caches.delete(name)),
-      );
+      try {
+        const keep = new Set([SHELL_CACHE, ASSET_CACHE]);
+        const names = await caches.keys();
+        await Promise.all(
+          names.filter((name) => name.startsWith(CACHE_PREFIX) && !keep.has(name)).map((name) => caches.delete(name)),
+        );
+      } catch {
+        // Cleanup can wait until a later activation.
+      }
       await self.clients.claim();
     })(),
   );
@@ -97,33 +101,60 @@ self.addEventListener("fetch", (event) => {
   if (url.pathname.startsWith("/assets/")) event.respondWith(assetResponse(request));
 });
 
-async function navigationResponse(event) {
+// A deployment can return a new shell before its worker activates. Only reuse a shell whose
+// asset paths belong to this worker's build. Old workers may also have cached such a shell.
+async function compatibleShell(response) {
+  if (!response?.ok || response.redirected || !response.headers.get("content-type")?.includes("text/html")) {
+    return false;
+  }
+  const html = await response.clone().text();
+  const paths = html.match(/\/assets\/[a-zA-Z0-9_.-]+/g) ?? [];
+  return paths.length > 0 && paths.every((path) => ASSET_PATHS.has(path));
+}
+
+async function cachedShell() {
   try {
-    const response = await fetch(event.request);
-    if (response.ok && !response.redirected) {
-      const copy = response.clone();
-      event.waitUntil(
-        caches
-          .open(SHELL_CACHE)
-          .then((cache) => cache.put(SHELL_KEY, copy))
-          .catch(() => undefined),
-      );
-    }
-    return response;
-  } catch (error) {
-    // Offline: the shell of the last visit. Without one, the browser shows its own offline page.
-    const cached = await (await caches.open(SHELL_CACHE)).match(SHELL_KEY, { ignoreVary: true });
-    if (cached) return cached;
-    throw error;
+    const response = await (await caches.open(SHELL_CACHE)).match(SHELL_KEY, { ignoreVary: true });
+    return (await compatibleShell(response)) ? response : undefined;
+  } catch {
+    return undefined;
   }
 }
 
+async function navigationResponse(event) {
+  let response;
+  try {
+    response = await fetch(event.request);
+  } catch (error) {
+    const cached = await cachedShell();
+    if (cached) return cached;
+    throw error;
+  }
+  if (response.status >= 500 && response.status <= 599 && !response.redirected) {
+    return (await cachedShell()) ?? response;
+  }
+  if (response.ok && !response.redirected) {
+    const copy = response.clone();
+    event.waitUntil(
+      (async () => {
+        if (await compatibleShell(copy)) await (await caches.open(SHELL_CACHE)).put(SHELL_KEY, copy);
+      })().catch(() => undefined),
+    );
+  }
+  return response;
+}
+
 async function assetResponse(request) {
-  const cache = await caches.open(ASSET_CACHE);
-  const cached = await cache.match(request);
-  if (cached) return cached;
+  let cache;
+  try {
+    cache = await caches.open(ASSET_CACHE);
+    const cached = await cache.match(request);
+    if (cached) return cached;
+  } catch {
+    // Storage can be unavailable even when the network works.
+  }
   const response = await fetch(request);
-  if (response.ok) await cache.put(request, response.clone()).catch(() => undefined);
+  if (response.ok && cache) await cache.put(request, response.clone()).catch(() => undefined);
   return response;
 }
 
