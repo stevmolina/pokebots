@@ -8,6 +8,10 @@ service stores the minimum central data needed for email sign-in, account avatar
 configuration, memberships, invitations, logical sessions, and the account's product analytics
 answer.
 
+A self-hosted account service can store the same central account data in SQLite and avatar,
+skill, and published-site objects on the configured server disk instead of Cloudflare D1 and R2.
+Pokebots uses Contabo for this service. Chats, files, and commands stay on their existing hosts.
+
 A self-hosted account service can use WorkOS for account sign-in. The configured WorkOS provider
 receives the sign-in email and authenticates the person. The account service checks the signed ID
 token and stores the provider issuer, subject and linked account. It does not store provider tokens

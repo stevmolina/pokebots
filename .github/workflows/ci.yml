@@ -1219,6 +1219,11 @@ jobs:
       - name: Check API
         run: bun run check:api
 
+      - name: Check self-hosted account storage and restart
+        run: |
+          bun scripts/auth-api-storage-e2e.ts
+          WORKOS_E2E_SELF_HOSTED=1 bun scripts/workos-account-signin-e2e.ts
+
       - name: Upload preview build
         if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
