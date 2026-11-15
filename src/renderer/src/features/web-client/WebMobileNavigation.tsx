@@ -1,30 +1,15 @@
-import type { AppTextKey } from "@openbot/i18n";
-import { Button, ChevronLeft, ListChecks, MessageCircle, Settings, Waypoints } from "@openbot/ui";
+import { Button, ChevronLeft, Search, SlidersHorizontal } from "@openbot/ui";
 import { useText } from "@openbot/ui/text";
-import { Dynamic } from "@solidjs/web";
-import { createMemo, For } from "solid-js";
+import { For, Show } from "solid-js";
 
 /** The pane that a phone shows: the chat list at the root, or the conversation pushed over it. */
 export type WebMobilePane = "conversation" | "workspace";
 
 /**
- * The places of the phone tab bar: the chat list, the tasks and the workflows of the server, and the
- * settings. The server list opens from the title of the chat list, and search from its search field.
+ * The places of the phone navigation: the chat list, the tasks and the workflows of the server, and the
+ * settings. The server list opens from the centered workspace pill, and search from the floating bottom pill.
  */
 export type WebPhoneTab = "chats" | "tasks" | "workflows" | "settings";
-
-interface PhoneTab {
-  id: WebPhoneTab;
-  label: AppTextKey;
-  Icon: typeof MessageCircle;
-}
-
-const TABS: ReadonlyArray<PhoneTab> = [
-  { id: "chats", label: "webClient.tab.chats", Icon: MessageCircle },
-  { id: "tasks", label: "app.rail.tasks", Icon: ListChecks },
-  { id: "workflows", label: "app.rail.workflows", Icon: Waypoints },
-  { id: "settings", label: "webClient.tab.settings", Icon: Settings },
-];
 
 interface WebMobileNavigationProps {
   /** The tab that shows, or none while another page is open. */
@@ -32,34 +17,73 @@ interface WebMobileNavigationProps {
   /** The tabs that this server has. Chats and Settings are always there. */
   available: (tab: WebPhoneTab) => boolean;
   onSelect: (tab: WebPhoneTab) => void;
+  /** The connected server name shown in the centered top pill. */
+  serverName?: string | undefined;
+  /** Opens or closes the server drawer from the top workspace pill. */
+  onOpenServers?: (() => void) | undefined;
+  /** Opens global search from the floating bottom pill. */
+  onOpenSearch?: (() => void) | undefined;
 }
 
 /**
- * The tab bar of a phone: a floating bar over the bottom of the list, an icon over a label, the active
- * tab in the accent colour. It sits under the conversation pane, so a chat that opens covers it, and a
- * swipe back shows it again.
+ * The phone chrome: a top bar with settings and the centered workspace switcher,
+ * paired with a floating bottom Search pill over the chat list. Both sit under the conversation pane, so a
+ * chat that opens covers them, and a swipe back shows them again.
  */
 export function WebMobileNavigation(props: WebMobileNavigationProps) {
   const { t } = useText();
-  const tabs = createMemo(() => TABS.filter((tab) => props.available(tab.id)));
   return (
-    <nav class="web-phone-tab-bar" aria-label={t("webClient.pane.navigation")}>
-      <For each={tabs()} keyed={(tab) => tab.id}>
-        {(tab) => (
-          <Button
-            variant="ghost"
-            type="button"
-            class="web-phone-tab"
-            data-active={props.active === tab().id ? "true" : undefined}
-            aria-current={props.active === tab().id ? "page" : undefined}
-            onClick={() => props.onSelect(tab().id)}
-          >
-            <Dynamic component={tab().Icon} aria-hidden="true" />
-            <span class="web-phone-tab-label">{t(tab().label)}</span>
-          </Button>
-        )}
-      </For>
-    </nav>
+    <>
+      <header class="web-phone-header">
+        <Button
+          variant="ghost"
+          type="button"
+          class="web-phone-header-button"
+          data-active={props.active === "settings" ? "true" : undefined}
+          aria-label={t("webClient.tab.settings")}
+          onClick={() => props.onSelect("settings")}
+        >
+          <SlidersHorizontal aria-hidden="true" />
+        </Button>
+        <Button
+          variant="ghost"
+          type="button"
+          class="web-phone-server-pill"
+          aria-label={props.serverName || t("app.page.serverFallback")}
+          onClick={() => props.onOpenServers?.()}
+        >
+          <span class="web-phone-server-name">{props.serverName}</span>
+          <span class="web-phone-server-dot" aria-hidden="true" />
+        </Button>
+      </header>
+      <nav class="web-phone-tab-bar" aria-label={t("webClient.pane.navigation")}>
+        <For each={["chats", "tasks", "workflows"] as const}>
+          {(tab) => (
+            <Show when={props.available(tab)}>
+              <Button
+                variant="ghost"
+                type="button"
+                class="web-phone-tab"
+                aria-current={props.active === tab ? "page" : undefined}
+                onClick={() => props.onSelect(tab)}
+              >
+                {t(tab === "chats" ? "webClient.tab.chats" : tab === "tasks" ? "app.rail.tasks" : "app.rail.workflows")}
+              </Button>
+            </Show>
+          )}
+        </For>
+        <Button
+          variant="ghost"
+          type="button"
+          class="web-phone-search-pill"
+          aria-label={t("sidebar.chat.search")}
+          onClick={() => props.onOpenSearch?.()}
+        >
+          <Search aria-hidden="true" />
+          <span class="web-phone-tab-label">{t("sidebar.chat.search")}</span>
+        </Button>
+      </nav>
+    </>
   );
 }
 

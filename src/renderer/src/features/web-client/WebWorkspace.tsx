@@ -2968,19 +2968,20 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
     showAgents();
     setMobilePane("workspace");
   }
-  /** The server drawer, from the title of the chat list. */
+  /** The server drawer, from the centered workspace pill of the chat list. */
   function openPhoneServers() {
     showAgents();
     setMobilePane("workspace");
-    setServersOpen(true);
+    setServersOpen((open) => !open);
   }
   /** The drawer closes when a server is chosen in it, as the iOS drawer does. */
   function selectDrawerServer(id: string) {
     setServersOpen(false);
     selectServer(id);
   }
-  /** Back from a pushed chat to the list. A swipe applies it at once, so the list slides from the finger. */
+  /** Back from a pushed chat or page to the list. A swipe applies it at once, so the list slides from the finger. */
   function phoneBack() {
+    showAgents();
     setMobilePane("workspace");
   }
   function startPhoneSwipe(event: PointerEvent) {
@@ -3531,7 +3532,14 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                         onClick={() => setServersOpen(false)}
                       />
                     </Show>
-                    <WebMobileNavigation active={phoneTab()} available={phoneTabAvailable} onSelect={selectPhoneTab} />
+                    <WebMobileNavigation
+                      active={phoneTab()}
+                      available={phoneTabAvailable}
+                      onSelect={selectPhoneTab}
+                      serverName={workspace.state.host?.name ?? "OpenBot"}
+                      onOpenServers={openPhoneServers}
+                      onOpenSearch={() => setSearchOpen(true)}
+                    />
                   </Show>
                 </>
               }
