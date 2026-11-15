@@ -49,7 +49,7 @@ export function WebMobileNavigation(props: WebMobileNavigationProps) {
           variant="ghost"
           type="button"
           class="web-phone-server-pill"
-          aria-label={t("app.page.serverFallback")}
+          aria-label={props.serverName || t("app.page.serverFallback")}
           onClick={() => props.onOpenServers?.()}
         >
           <span class="web-phone-server-name">{props.serverName}</span>
