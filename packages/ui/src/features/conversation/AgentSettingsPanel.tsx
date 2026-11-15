@@ -60,6 +60,7 @@ import {
   SlidingTabs,
   Switch,
   Text,
+  X,
 } from "@openbot/ui";
 import { normalizeAvatarFile } from "@openbot/ui/avatar-image";
 import {
@@ -320,6 +321,8 @@ export default function AgentSettingsPanel(props: AgentSettingsPanelProps) {
   const agentDefaults = () => props.agentDefaults ?? DEFAULT_AGENT_DEFAULTS;
   const [newChatOpen, setNewChatOpen] = createSignal(false);
   const [deleteHistoryOpen, setDeleteHistoryOpen] = createSignal(false);
+  /** The name, title, description and chat color show only while the user edits the profile. */
+  const [editing, setEditing] = createSignal(false);
   const [draft, setDraft] = createStore<AgentSettingsDraft>({
     avatar: {
       hue: null,
@@ -1048,14 +1051,19 @@ export default function AgentSettingsPanel(props: AgentSettingsPanelProps) {
         <Show
           when={page()}
           fallback={
-            <SettingsPanelHeader
-              title={t("agentSettings.title")}
-              paneRoot
-              onBack={props.onClose}
-              backLabel={t("agentSettings.backToDetails")}
-              onClose={props.onClose}
-              closeLabel={t("agentSettings.closeDetails")}
-            />
+            // The root is a focus view: only × at the top right, the face and name below it.
+            <div class="agent-settings-focus-top">
+              <h2 class="sr-only">{t("agentSettings.title")}</h2>
+              <IconButton
+                variant="ghost"
+                size="icon-sm"
+                class="agent-settings-focus-close"
+                label={t("agentSettings.closeDetails")}
+                onClick={() => props.onClose()}
+              >
+                <X aria-hidden="true" />
+              </IconButton>
+            </div>
           }
         >
           {(current) => (
@@ -1073,319 +1081,387 @@ export default function AgentSettingsPanel(props: AgentSettingsPanelProps) {
         <SettingsPanelContent>
           <div ref={(element) => (pageRoot = element)} class="agent-settings-page">
             <Show when={page() === null}>
-              <div ref={(element) => (avatarPickerRoot = element)} class="agent-settings-avatar-picker">
-                <Popover.Root
-                  open={draft.avatar.pickerOpen}
-                  placement="bottom"
-                  gutter={11}
-                  onOpenChange={(open) =>
-                    setDraft((state) => {
-                      state.avatar.pickerOpen = open;
-                    })
-                  }
-                >
-                  <Popover.Trigger class="agent-settings-avatar" aria-label={t("agentSettings.avatar.edit")}>
-                    <AgentAvatar
-                      seed={draft.avatar.seed}
-                      hue={draft.avatar.hue}
-                      color={draft.avatar.color}
-                      url={avatarUrl()}
-                      motion="always"
-                    />
-                    <span class="agent-settings-avatar-badge" aria-hidden="true">
-                      <Pencil class="agent-settings-avatar-badge-icon" />
-                    </span>
-                  </Popover.Trigger>
-                  <Popover.Content class="avatar-editor" aria-hidden={draft.avatar.pickerOpen ? undefined : "true"}>
-                    <Popover.Title class="sr-only">{t("agentSettings.avatar.editor")}</Popover.Title>
-                    <Input
-                      ref={(element) => (avatarFileInput = element)}
-                      class="sr-only"
-                      type="file"
-                      aria-label={t("agentSettings.avatar.attachFiles")}
-                      accept="image/png,image/jpeg,image/gif,image/webp"
-                      onChange={(event) => void uploadAgentAvatar(event.currentTarget.files?.[0])}
-                    />
-                    <div class="avatar-editor-heading">
-                      <span>{t("agentSettings.avatar.image")}</span>
-                      <div class="avatar-editor-actions">
-                        <Show when={avatarUrl()}>
-                          <Button
-                            variant="outline"
-                            type="button"
-                            disabled={draft.avatar.uploadBusy}
-                            onClick={() => void setCustomAvatar(null)}
-                          >
-                            {t("common.remove")}
-                          </Button>
-                        </Show>
-                      </div>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      type="button"
-                      class={["avatar-image-upload", { "avatar-image-upload-active": Boolean(avatarUrl()) }]}
-                      disabled={draft.avatar.uploadBusy}
-                      onClick={() => avatarFileInput?.click()}
-                    >
-                      <span class="avatar-image-upload-preview">
-                        <Show
-                          when={avatarUrl()}
-                          fallback={
-                            <svg aria-hidden="true" viewBox="0 0 24 24">
-                              <path d="M12 5v14M5 12h14" />
-                            </svg>
-                          }
-                        >
-                          <AgentAvatar
-                            seed={draft.avatar.seed}
-                            hue={draft.avatar.hue}
-                            color={draft.avatar.color}
-                            url={avatarUrl()}
-                          />
-                        </Show>
+              <div class="agent-settings-hero">
+                <div ref={(element) => (avatarPickerRoot = element)} class="agent-settings-avatar-picker">
+                  <Popover.Root
+                    open={draft.avatar.pickerOpen}
+                    placement="bottom"
+                    gutter={11}
+                    onOpenChange={(open) =>
+                      setDraft((state) => {
+                        state.avatar.pickerOpen = open;
+                      })
+                    }
+                  >
+                    <Popover.Trigger class="agent-settings-avatar" aria-label={t("agentSettings.avatar.edit")}>
+                      <AgentAvatar
+                        seed={draft.avatar.seed}
+                        hue={draft.avatar.hue}
+                        color={draft.avatar.color}
+                        url={avatarUrl()}
+                        motion="always"
+                      />
+                      <span class="agent-settings-avatar-badge" aria-hidden="true">
+                        <Pencil class="agent-settings-avatar-badge-icon" />
                       </span>
-                      <span>
-                        <strong>
-                          {avatarUrl() ? t("agentSettings.avatar.replaceImage") : t("agentSettings.avatar.uploadImage")}
-                        </strong>
-                        <small>{t("agentSettings.avatar.imageHint")}</small>
-                      </span>
-                    </Button>
-                    <div class="avatar-editor-heading">
-                      <span>{t("agentSettings.avatar.mascots")}</span>
-                    </div>
-                    <fieldset class="avatar-face-grid" aria-label={t("agentSettings.avatar.mascots")}>
-                      <For each={[...POKEBOTS_MASCOTS]}>
-                        {(mascot, index) => (
-                          <Button
-                            variant="ghost"
-                            type="button"
-                            class="avatar-face-choice"
-                            disabled={draft.avatar.uploadBusy}
-                            aria-label={t("agentSettings.avatar.mascotOption", { number: index() + 1 })}
-                            onClick={() => void selectMascot(mascot)}
-                          >
-                            <img
-                              src={mascot}
-                              alt=""
-                              draggable={false}
-                              style={{
-                                width: "100%",
-                                height: "100%",
-                                "object-fit": "cover",
-                                "border-radius": "var(--openbot-radius-md)",
-                              }}
-                            />
-                          </Button>
-                        )}
-                      </For>
-                    </fieldset>
-                    <div class="avatar-editor-divider" />
-                    <div class="avatar-editor-heading">
-                      <span>{t("agentSettings.avatar.shape")}</span>
-                      <div class="avatar-editor-heading-end">
-                        <SlidingTabs.Root
-                          value={avatarStyle()}
-                          onChange={(value) => {
-                            const style = AVATAR_STYLES.find((option) => option === value);
-                            if (style && style !== avatarStyle()) void selectAvatarFace({ style });
-                          }}
-                        >
-                          <SlidingTabs.List class="avatar-style-tabs" aria-label={t("agentSettings.avatar.style")}>
-                            <SlidingTabs.Trigger value="plush">
-                              {t("agentSettings.avatar.stylePlush")}
-                            </SlidingTabs.Trigger>
-                            <SlidingTabs.Trigger value="flat">
-                              {t("agentSettings.avatar.styleFlat")}
-                            </SlidingTabs.Trigger>
-                          </SlidingTabs.List>
-                        </SlidingTabs.Root>
+                    </Popover.Trigger>
+                    <Popover.Content class="avatar-editor" aria-hidden={draft.avatar.pickerOpen ? undefined : "true"}>
+                      <Popover.Title class="sr-only">{t("agentSettings.avatar.editor")}</Popover.Title>
+                      <Input
+                        ref={(element) => (avatarFileInput = element)}
+                        class="sr-only"
+                        type="file"
+                        aria-label={t("agentSettings.avatar.attachFiles")}
+                        accept="image/png,image/jpeg,image/gif,image/webp"
+                        onChange={(event) => void uploadAgentAvatar(event.currentTarget.files?.[0])}
+                      />
+                      <div class="avatar-editor-heading">
+                        <span>{t("agentSettings.avatar.image")}</span>
                         <div class="avatar-editor-actions">
-                          <Show when={draft.avatar.seed !== avatarResetSeed()}>
-                            <IconButton
+                          <Show when={avatarUrl()}>
+                            <Button
                               variant="outline"
                               type="button"
-                              label={t("agentSettings.avatar.resetToId")}
-                              onClick={() =>
-                                void selectGeneratedAvatar(
-                                  avatarResetSeed(),
-                                  bloubAvatarProfile(props.agent.id, null).color,
-                                )
-                              }
+                              disabled={draft.avatar.uploadBusy}
+                              onClick={() => void setCustomAvatar(null)}
                             >
-                              <RotateCcw aria-hidden="true" />
-                            </IconButton>
+                              {t("common.remove")}
+                            </Button>
                           </Show>
-                          <IconButton
-                            variant="outline"
-                            type="button"
-                            label={t("agentSettings.avatar.shuffle")}
-                            onClick={() => void selectAvatarFace(randomAvatarFace(avatarFace()))}
-                          >
-                            <Shuffle aria-hidden="true" />
-                          </IconButton>
                         </div>
                       </div>
-                    </div>
-                    <fieldset class="avatar-face-grid avatar-shape-grid" aria-label={t("agentSettings.avatar.shapes")}>
-                      <For each={SUPPORTED_AVATAR_SILHOUETTES}>
-                        {(shape, index) => (
-                          <Button
-                            variant="ghost"
-                            type="button"
-                            class={[
-                              "avatar-face-choice",
-                              { "avatar-choice-selected": !avatarUrl() && avatarFace().shape === shape },
-                            ]}
-                            aria-label={t("agentSettings.avatar.shapeOption", { number: index() + 1 })}
-                            aria-pressed={!avatarUrl() && avatarFace().shape === shape ? "true" : "false"}
-                            data-cuelume-tap="select"
-                            onClick={() => void selectAvatarFace({ shape })}
-                          >
-                            <AgentAvatar
-                              seed={draft.avatar.seed}
-                              hue={draft.avatar.hue}
-                              color={draft.avatar.color}
-                              shape={shape}
-                              transition="cut"
-                            />
-                          </Button>
-                        )}
-                      </For>
-                    </fieldset>
-                    <div class="avatar-editor-divider" />
-                    <div class="avatar-editor-heading">
-                      <span>{t("agentSettings.avatar.eyes")}</span>
-                    </div>
-                    <fieldset
-                      class="avatar-face-grid avatar-eyes-grid"
-                      aria-label={t("agentSettings.avatar.eyesLabel")}
-                    >
-                      <For each={AVATAR_EXPRESSIONS}>
-                        {(expression, index) => (
-                          <Button
-                            variant="ghost"
-                            type="button"
-                            class={[
-                              "avatar-face-choice",
-                              { "avatar-choice-selected": !avatarUrl() && avatarFace().expression === expression },
-                            ]}
-                            aria-label={t("agentSettings.avatar.eyesOption", { number: index() + 1 })}
-                            aria-pressed={!avatarUrl() && avatarFace().expression === expression ? "true" : "false"}
-                            data-cuelume-tap="select"
-                            onClick={() => void selectAvatarFace({ expression })}
-                          >
-                            <AgentAvatar
-                              seed={draft.avatar.seed}
-                              hue={draft.avatar.hue}
-                              color={draft.avatar.color}
-                              expression={expression}
-                              transition="cut"
-                            />
-                          </Button>
-                        )}
-                      </For>
-                    </fieldset>
-                    <div class="avatar-editor-divider" />
-                    <div class="avatar-editor-heading">
-                      <span>{t("agentSettings.avatar.color")}</span>
-                    </div>
-                    <fieldset class="avatar-color-grid" aria-label={t("agentSettings.avatar.colorLabel")}>
                       <Button
                         variant="ghost"
                         type="button"
-                        class={["avatar-color-choice", { "avatar-choice-selected": automaticColorSelected() }]}
-                        aria-label={t("agentSettings.avatar.autoColor")}
-                        aria-pressed={automaticColorSelected() ? "true" : "false"}
-                        data-cuelume-tap="select"
-                        onClick={() => {
-                          setDraft((state) => {
-                            state.avatar.hue = null;
-                            state.avatar.color = null;
-                          });
-                          void saveAgentPatch({ avatarHue: null, avatarColor: null });
-                        }}
+                        class={["avatar-image-upload", { "avatar-image-upload-active": Boolean(avatarUrl()) }]}
+                        disabled={draft.avatar.uploadBusy}
+                        onClick={() => avatarFileInput?.click()}
                       >
-                        <span class="avatar-color-swatch avatar-color-swatch-auto">
-                          {t("agentSettings.avatar.autoInitial")}
+                        <span class="avatar-image-upload-preview">
+                          <Show
+                            when={avatarUrl()}
+                            fallback={
+                              <svg aria-hidden="true" viewBox="0 0 24 24">
+                                <path d="M12 5v14M5 12h14" />
+                              </svg>
+                            }
+                          >
+                            <AgentAvatar
+                              seed={draft.avatar.seed}
+                              hue={draft.avatar.hue}
+                              color={draft.avatar.color}
+                              url={avatarUrl()}
+                            />
+                          </Show>
+                        </span>
+                        <span>
+                          <strong>
+                            {avatarUrl()
+                              ? t("agentSettings.avatar.replaceImage")
+                              : t("agentSettings.avatar.uploadImage")}
+                          </strong>
+                          <small>{t("agentSettings.avatar.imageHint")}</small>
                         </span>
                       </Button>
-                      <For each={avatarColorChoices(draft.avatar.seed)}>
-                        {(option) => (
-                          <Button
-                            variant="ghost"
-                            type="button"
-                            class={["avatar-color-choice", { "avatar-choice-selected": avatarColorSelected(option) }]}
-                            aria-label={t("agentSettings.avatar.hueColor", { hue: t(avatarColorChoiceLabel(option)) })}
-                            aria-pressed={avatarColorSelected(option) ? "true" : "false"}
-                            data-cuelume-tap="select"
-                            onClick={() => {
-                              setDraft((state) => {
-                                state.avatar.hue = option.hue;
-                                state.avatar.color = option.color;
-                              });
-                              void saveAgentPatch({ avatarHue: option.hue, avatarColor: option.color });
+                      <div class="avatar-editor-heading">
+                        <span>{t("agentSettings.avatar.mascots")}</span>
+                      </div>
+                      <fieldset class="avatar-face-grid" aria-label={t("agentSettings.avatar.mascots")}>
+                        <For each={[...POKEBOTS_MASCOTS]}>
+                          {(mascot, index) => (
+                            <Button
+                              variant="ghost"
+                              type="button"
+                              class="avatar-face-choice"
+                              disabled={draft.avatar.uploadBusy}
+                              aria-label={t("agentSettings.avatar.mascotOption", { number: index() + 1 })}
+                              onClick={() => void selectMascot(mascot)}
+                            >
+                              <img
+                                src={mascot}
+                                alt=""
+                                draggable={false}
+                                style={{
+                                  width: "100%",
+                                  height: "100%",
+                                  "object-fit": "cover",
+                                  "border-radius": "var(--openbot-radius-md)",
+                                }}
+                              />
+                            </Button>
+                          )}
+                        </For>
+                      </fieldset>
+                      <div class="avatar-editor-divider" />
+                      <div class="avatar-editor-heading">
+                        <span>{t("agentSettings.avatar.shape")}</span>
+                        <div class="avatar-editor-heading-end">
+                          <SlidingTabs.Root
+                            value={avatarStyle()}
+                            onChange={(value) => {
+                              const style = AVATAR_STYLES.find((option) => option === value);
+                              if (style && style !== avatarStyle()) void selectAvatarFace({ style });
                             }}
                           >
-                            <span class="avatar-color-swatch" style={{ background: option.swatch }} />
-                          </Button>
-                        )}
-                      </For>
-                    </fieldset>
-                  </Popover.Content>
-                </Popover.Root>
+                            <SlidingTabs.List class="avatar-style-tabs" aria-label={t("agentSettings.avatar.style")}>
+                              <SlidingTabs.Trigger value="plush">
+                                {t("agentSettings.avatar.stylePlush")}
+                              </SlidingTabs.Trigger>
+                              <SlidingTabs.Trigger value="flat">
+                                {t("agentSettings.avatar.styleFlat")}
+                              </SlidingTabs.Trigger>
+                            </SlidingTabs.List>
+                          </SlidingTabs.Root>
+                          <div class="avatar-editor-actions">
+                            <Show when={draft.avatar.seed !== avatarResetSeed()}>
+                              <IconButton
+                                variant="outline"
+                                type="button"
+                                label={t("agentSettings.avatar.resetToId")}
+                                onClick={() =>
+                                  void selectGeneratedAvatar(
+                                    avatarResetSeed(),
+                                    bloubAvatarProfile(props.agent.id, null).color,
+                                  )
+                                }
+                              >
+                                <RotateCcw aria-hidden="true" />
+                              </IconButton>
+                            </Show>
+                            <IconButton
+                              variant="outline"
+                              type="button"
+                              label={t("agentSettings.avatar.shuffle")}
+                              onClick={() => void selectAvatarFace(randomAvatarFace(avatarFace()))}
+                            >
+                              <Shuffle aria-hidden="true" />
+                            </IconButton>
+                          </div>
+                        </div>
+                      </div>
+                      <fieldset
+                        class="avatar-face-grid avatar-shape-grid"
+                        aria-label={t("agentSettings.avatar.shapes")}
+                      >
+                        <For each={SUPPORTED_AVATAR_SILHOUETTES}>
+                          {(shape, index) => (
+                            <Button
+                              variant="ghost"
+                              type="button"
+                              class={[
+                                "avatar-face-choice",
+                                { "avatar-choice-selected": !avatarUrl() && avatarFace().shape === shape },
+                              ]}
+                              aria-label={t("agentSettings.avatar.shapeOption", { number: index() + 1 })}
+                              aria-pressed={!avatarUrl() && avatarFace().shape === shape ? "true" : "false"}
+                              data-cuelume-tap="select"
+                              onClick={() => void selectAvatarFace({ shape })}
+                            >
+                              <AgentAvatar
+                                seed={draft.avatar.seed}
+                                hue={draft.avatar.hue}
+                                color={draft.avatar.color}
+                                shape={shape}
+                                transition="cut"
+                              />
+                            </Button>
+                          )}
+                        </For>
+                      </fieldset>
+                      <div class="avatar-editor-divider" />
+                      <div class="avatar-editor-heading">
+                        <span>{t("agentSettings.avatar.eyes")}</span>
+                      </div>
+                      <fieldset
+                        class="avatar-face-grid avatar-eyes-grid"
+                        aria-label={t("agentSettings.avatar.eyesLabel")}
+                      >
+                        <For each={AVATAR_EXPRESSIONS}>
+                          {(expression, index) => (
+                            <Button
+                              variant="ghost"
+                              type="button"
+                              class={[
+                                "avatar-face-choice",
+                                { "avatar-choice-selected": !avatarUrl() && avatarFace().expression === expression },
+                              ]}
+                              aria-label={t("agentSettings.avatar.eyesOption", { number: index() + 1 })}
+                              aria-pressed={!avatarUrl() && avatarFace().expression === expression ? "true" : "false"}
+                              data-cuelume-tap="select"
+                              onClick={() => void selectAvatarFace({ expression })}
+                            >
+                              <AgentAvatar
+                                seed={draft.avatar.seed}
+                                hue={draft.avatar.hue}
+                                color={draft.avatar.color}
+                                expression={expression}
+                                transition="cut"
+                              />
+                            </Button>
+                          )}
+                        </For>
+                      </fieldset>
+                      <div class="avatar-editor-divider" />
+                      <div class="avatar-editor-heading">
+                        <span>{t("agentSettings.avatar.color")}</span>
+                      </div>
+                      <fieldset class="avatar-color-grid" aria-label={t("agentSettings.avatar.colorLabel")}>
+                        <Button
+                          variant="ghost"
+                          type="button"
+                          class={["avatar-color-choice", { "avatar-choice-selected": automaticColorSelected() }]}
+                          aria-label={t("agentSettings.avatar.autoColor")}
+                          aria-pressed={automaticColorSelected() ? "true" : "false"}
+                          data-cuelume-tap="select"
+                          onClick={() => {
+                            setDraft((state) => {
+                              state.avatar.hue = null;
+                              state.avatar.color = null;
+                            });
+                            void saveAgentPatch({ avatarHue: null, avatarColor: null });
+                          }}
+                        >
+                          <span class="avatar-color-swatch avatar-color-swatch-auto">
+                            {t("agentSettings.avatar.autoInitial")}
+                          </span>
+                        </Button>
+                        <For each={avatarColorChoices(draft.avatar.seed)}>
+                          {(option) => (
+                            <Button
+                              variant="ghost"
+                              type="button"
+                              class={["avatar-color-choice", { "avatar-choice-selected": avatarColorSelected(option) }]}
+                              aria-label={t("agentSettings.avatar.hueColor", {
+                                hue: t(avatarColorChoiceLabel(option)),
+                              })}
+                              aria-pressed={avatarColorSelected(option) ? "true" : "false"}
+                              data-cuelume-tap="select"
+                              onClick={() => {
+                                setDraft((state) => {
+                                  state.avatar.hue = option.hue;
+                                  state.avatar.color = option.color;
+                                });
+                                void saveAgentPatch({ avatarHue: option.hue, avatarColor: option.color });
+                              }}
+                            >
+                              <span class="avatar-color-swatch" style={{ background: option.swatch }} />
+                            </Button>
+                          )}
+                        </For>
+                      </fieldset>
+                    </Popover.Content>
+                  </Popover.Root>
+                </div>
+                <h3 class="agent-settings-hero-name">{draft.fields.name || props.agent.name}</h3>
+                <Show when={draft.fields.title || props.agent.title}>
+                  {(title) => <p class="agent-settings-hero-title">{title()}</p>}
+                </Show>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  type="button"
+                  class="agent-settings-edit-toggle"
+                  aria-expanded={editing() ? "true" : "false"}
+                  aria-controls="agent-settings-edit-fields"
+                  onClick={() => setEditing((open) => !open)}
+                >
+                  <Pencil aria-hidden="true" />
+                  <span>{editing() ? t("common.done") : t("common.edit")}</span>
+                </Button>
               </div>
-              <SettingsField label={t("agentSettings.name")}>
-                <Input
-                  value={draft.fields.name}
-                  aria-label={t("agentSettings.nameLabel")}
-                  maxlength={INPUT_LIMITS.agentName}
-                  onValueChange={(value) =>
-                    setDraft((state) => {
-                      state.fields.name = value;
-                      state.dirty.name = true;
-                    })
-                  }
-                  onBlur={saveName}
+              <Show when={editing()}>
+                <div id="agent-settings-edit-fields" class="agent-settings-edit-fields">
+                  <SettingsField label={t("agentSettings.name")}>
+                    <Input
+                      value={draft.fields.name}
+                      aria-label={t("agentSettings.nameLabel")}
+                      maxlength={INPUT_LIMITS.agentName}
+                      onValueChange={(value) =>
+                        setDraft((state) => {
+                          state.fields.name = value;
+                          state.dirty.name = true;
+                        })
+                      }
+                      onBlur={saveName}
+                    />
+                  </SettingsField>
+                  <SettingsField label={t("agentSettings.agentTitle")}>
+                    <Input
+                      value={draft.fields.title}
+                      aria-label={t("agentSettings.agentTitleLabel")}
+                      placeholder={t("agentSettings.agentTitlePlaceholder")}
+                      maxlength={INPUT_LIMITS.agentTitle}
+                      onValueChange={(value) =>
+                        setDraft((state) => {
+                          state.fields.title = value;
+                          state.dirty.title = true;
+                        })
+                      }
+                      onBlur={saveTitle}
+                    />
+                  </SettingsField>
+                  <SettingsField label={t("agentSettings.description")}>
+                    <ResizableTextarea
+                      class="settings-instructions-input settings-description-input"
+                      rows="3"
+                      value={draft.fields.description}
+                      aria-label={t("agentSettings.descriptionLabel")}
+                      resizeLabel={t("agentSettings.descriptionResize")}
+                      placeholder={t("agentSettings.descriptionPlaceholder")}
+                      invalid={instructionsTooLong(draft.fields.description)}
+                      onValueChange={(value) => {
+                        setDraft((state) => {
+                          state.fields.description = value;
+                          state.dirty.description = true;
+                        });
+                        scheduleInstructionsSave(value);
+                      }}
+                      onBlur={saveDescription}
+                    />
+                    <InstructionsLimit text={draft.fields.description} tooLong="agent.description.tooLong" />
+                  </SettingsField>
+                  {/* Keyed, so a popup that is open when the agent changes saves to the agent it opened for. */}
+                  <Show when={props.agent.id} keyed>
+                    {(agentId) => (
+                      <AgentChatColorRow
+                        agentName={props.agent.name}
+                        value={props.agent.chatColor ?? null}
+                        onChange={(chatColor) => void saveAgentPatch({ chatColor }, agentId)}
+                      />
+                    )}
+                  </Show>
+                </div>
+              </Show>
+              {/* One scroll of rows: what it knows, what it does, its rules, then its computer and voice. */}
+              {props.links}
+              <SettingsLinkGroup inset title={t("agentSettings.groups.rules")}>
+                <SettingsLinkRow
+                  ref={pageRowRef("permissions")}
+                  icon={<ShieldCheck aria-hidden="true" />}
+                  label={t("agentSettings.permissions.title")}
+                  value={t(ACCESS_LABEL[draft.permission])}
+                  onClick={() => openPage("permissions")}
                 />
-              </SettingsField>
-              <SettingsField label={t("agentSettings.agentTitle")}>
-                <Input
-                  value={draft.fields.title}
-                  aria-label={t("agentSettings.agentTitleLabel")}
-                  placeholder={t("agentSettings.agentTitlePlaceholder")}
-                  maxlength={INPUT_LIMITS.agentTitle}
-                  onValueChange={(value) =>
-                    setDraft((state) => {
-                      state.fields.title = value;
-                      state.dirty.title = true;
-                    })
-                  }
-                  onBlur={saveTitle}
+                <Show when={props.folders}>
+                  <AgentFoldersRow
+                    ref={pageRowRef("folders")}
+                    folders={agentFolders}
+                    wideAccess={wideAccess()}
+                    onOpen={() => openPage("folders")}
+                  />
+                </Show>
+                <SettingsLinkRow
+                  ref={pageRowRef("advanced")}
+                  icon={<SlidersHorizontal aria-hidden="true" />}
+                  label={t("agentSettings.advanced.title")}
+                  onClick={() => openPage("advanced")}
                 />
-              </SettingsField>
-              <SettingsField label={t("agentSettings.description")}>
-                <ResizableTextarea
-                  class="settings-instructions-input settings-description-input"
-                  rows="3"
-                  value={draft.fields.description}
-                  aria-label={t("agentSettings.descriptionLabel")}
-                  resizeLabel={t("agentSettings.descriptionResize")}
-                  placeholder={t("agentSettings.descriptionPlaceholder")}
-                  invalid={instructionsTooLong(draft.fields.description)}
-                  onValueChange={(value) => {
-                    setDraft((state) => {
-                      state.fields.description = value;
-                      state.dirty.description = true;
-                    });
-                    scheduleInstructionsSave(value);
-                  }}
-                  onBlur={saveDescription}
-                />
-                <InstructionsLimit text={draft.fields.description} tooLong="agent.description.tooLong" />
-              </SettingsField>
-              <SettingsLinkGroup inset class="agent-settings-runtime-rows" title={t("agentSettings.groups.brain")}>
+              </SettingsLinkGroup>
+              <SettingsLinkGroup
+                inset
+                class="agent-settings-runtime-rows agent-settings-computer-card"
+                title={t("agentSettings.groups.computer")}
+              >
                 <ProviderModelPicker
                   variant="field"
                   icon={
@@ -1433,56 +1509,24 @@ export default function AgentSettingsPanel(props: AgentSettingsPanelProps) {
                   />
                 </SettingsLinkGroup>
               </Show>
-              {/* Keyed, so a popup that is open when the agent changes saves to the agent it opened for. */}
-              <Show when={props.agent.id} keyed>
-                {(agentId) => (
-                  <AgentChatColorRow
-                    agentName={props.agent.name}
-                    value={props.agent.chatColor ?? null}
-                    onChange={(chatColor) => void saveAgentPatch({ chatColor }, agentId)}
-                  />
-                )}
-              </Show>
-              {props.links}
-              <SettingsLinkGroup inset title={t("agentSettings.groups.rules")}>
-                <SettingsLinkRow
-                  ref={pageRowRef("permissions")}
-                  icon={<ShieldCheck aria-hidden="true" />}
-                  label={t("agentSettings.permissions.title")}
-                  value={t(ACCESS_LABEL[draft.permission])}
-                  onClick={() => openPage("permissions")}
-                />
-                <Show when={props.folders}>
-                  <AgentFoldersRow
-                    ref={pageRowRef("folders")}
-                    folders={agentFolders}
-                    wideAccess={wideAccess()}
-                    onOpen={() => openPage("folders")}
-                  />
-                </Show>
-                <SettingsLinkRow
-                  ref={pageRowRef("advanced")}
-                  icon={<SlidersHorizontal aria-hidden="true" />}
-                  label={t("agentSettings.advanced.title")}
-                  onClick={() => openPage("advanced")}
-                />
-              </SettingsLinkGroup>
               <Show when={props.notificationLevel}>
-                {(options) => (
-                  <>
-                    <SettingsLinkGroup inset class="agent-settings-runtime-rows">
+                <SettingsLinkGroup inset class="agent-settings-runtime-rows" title={t("agentSettings.groups.alerts")}>
+                  <Show when={props.notificationLevel}>
+                    {(options) => (
                       <SettingsLinkRow
                         icon={<Bell aria-hidden="true" />}
                         label={t("agentSettings.notificationLevel.title")}
                         value={notificationLevelLabel(options())}
                         onClick={(trigger) => options().onOpen(trigger)}
                       />
-                    </SettingsLinkGroup>
-                    <Text as="p" class="agent-settings-runtime-note" variant="caption" tone="muted">
-                      {t("agentSettings.notificationLevel.note")}
-                    </Text>
-                  </>
-                )}
+                    )}
+                  </Show>
+                </SettingsLinkGroup>
+                <Show when={props.notificationLevel}>
+                  <Text as="p" class="agent-settings-runtime-note" variant="caption" tone="muted">
+                    {t("agentSettings.notificationLevel.note")}
+                  </Text>
+                </Show>
               </Show>
             </Show>
             <Show when={page() === "permissions"}>
