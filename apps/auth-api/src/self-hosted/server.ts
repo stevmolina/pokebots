@@ -177,7 +177,7 @@ async function main(): Promise<void> {
   const r2Dir = resolve(process.env.SELF_HOSTED_R2_DIR?.trim() || join(dataDir, "r2"));
   const migrationsDir = resolve(apiRoot, "migrations");
   const clientDir = resolve(apiRoot, "dist/client");
-  const serverEntryPath = resolve(apiRoot, "dist/server/server.js");
+  const serverEntryPath = resolve(apiRoot, "dist/server/worker-entry.js");
   const appRedirectHost = process.env.SELF_HOSTED_APP_HOST?.trim() || "app.pokebots.xyz";
   const port = Number(process.env.PORT?.trim() || "3000");
   const host = process.env.HOST?.trim() || "0.0.0.0";

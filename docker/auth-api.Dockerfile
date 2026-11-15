@@ -12,8 +12,9 @@ RUN node -e 'const fs=require("node:fs"); let sha=process.env.SOURCE_COMMIT; if(
   && bun run --cwd apps/auth-api build
 
 RUN mkdir /runtime \
-  && bun build apps/auth-api/dist/server/server.js --target=bun --outfile=/runtime/worker.js \
+  && bun build apps/auth-api/dist/server/worker-entry.js --target=bun --outfile=/runtime/worker.js \
   && bun -e 'const m=await import("/runtime/worker.js"); if(typeof m.default.fetch!=="function" || typeof m.default.scheduled!=="function") throw new Error("Account worker handlers missing");' \
+  && bun apps/auth-api/scripts/self-hosted-image-e2e.ts /runtime/worker.js \
   && bun build apps/auth-api/src/self-hosted/server.ts --target=bun --outfile=/runtime/server.js \
   && bun build apps/auth-api/scripts/self-hosted-import.ts --target=bun --outfile=/runtime/import.js
 
@@ -22,8 +23,9 @@ WORKDIR /app
 ARG SOURCE_COMMIT=development
 ENV NODE_ENV=production PORT=3000 SELF_HOSTED_DATA_DIR=/data SOURCE_COMMIT=$SOURCE_COMMIT
 COPY --from=build /app/.source-commit ./.source-commit
+COPY --from=build /runtime/scheduled-e2e.json ./verification/scheduled-e2e.json
 COPY --from=build /app/apps/auth-api/dist/client ./apps/auth-api/dist/client
-COPY --from=build /runtime/worker.js ./apps/auth-api/dist/server/server.js
+COPY --from=build /runtime/worker.js ./apps/auth-api/dist/server/worker-entry.js
 COPY --from=build /runtime/server.js ./apps/auth-api/src/self-hosted/server.js
 COPY --from=build /runtime/import.js ./apps/auth-api/scripts/self-hosted-import.js
 COPY --from=build /app/apps/auth-api/migrations ./apps/auth-api/migrations
