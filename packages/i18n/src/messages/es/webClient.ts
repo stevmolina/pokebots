@@ -45,7 +45,6 @@ export const messages = {
     "El resultado no está confirmado. Cierra este formulario y comprueba el servidor antes de intentarlo de nuevo.",
   "webClient.error.usageOffline": "Conéctate a tu servidor para ver el uso.",
   "webClient.error.desktopOnly": "Esta acción está disponible en la aplicación de escritorio.",
-  "webClient.settings.preferences.title": "Preferencias",
   "webClient.settings.preferences.description": "Elige el idioma y los sonidos de OpenBot en este navegador.",
   "webClient.error.checkConversation": "Comprueba la conversación antes de volver a enviar.",
   "webClient.error.hostReported": "El servidor notificó un error. Comprueba la conversación y el estado del servidor.",

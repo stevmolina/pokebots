@@ -45,7 +45,6 @@ export const messages = {
     "結果が確認できません。再試行する前に、このフォームを閉じてサーバーを確認してください。",
   "webClient.error.usageOffline": "使用量を表示するには、サーバーに接続してください。",
   "webClient.error.desktopOnly": "この操作はデスクトップアプリで使えます。",
-  "webClient.settings.preferences.title": "環境設定",
   "webClient.settings.preferences.description": "このブラウザーでの OpenBot の言語とサウンドを選びます。",
   "webClient.error.checkConversation": "もう一度送信する前に会話を確認してください。",
   "webClient.error.hostReported": "サーバーがエラーを報告しました。会話とサーバーの状態を確認してください。",

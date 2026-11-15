@@ -44,7 +44,6 @@ export const messages = {
   "webClient.agent.unconfirmed": "Sonuç doğrulanmadı. Bu formu kapatın ve tekrar denemeden önce sunucuyu kontrol edin.",
   "webClient.error.usageOffline": "Kullanımı görüntülemek için sunucunuza bağlanın.",
   "webClient.error.desktopOnly": "Bu eylem masaüstü uygulamasında kullanılabilir.",
-  "webClient.settings.preferences.title": "Tercihler",
   "webClient.settings.preferences.description": "Bu tarayıcıda OpenBot'un dilini ve seslerini seçin.",
   "webClient.error.checkConversation": "Tekrar göndermeden önce konuşmayı kontrol edin.",
   "webClient.error.hostReported": "Sunucu bir hata bildirdi. Konuşmayı ve sunucu durumunu kontrol edin.",

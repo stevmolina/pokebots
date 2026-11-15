@@ -1069,3 +1069,244 @@
     animation: none;
   }
 }
+
+/* ---------------------------------------------------------------- the standalone settings page
+ * Settings fills the window: the chat sidebar, its resizer, the server rail and the bot panel step
+ * away, and the × at the top right is the way back. */
+.app-frame[data-window-page-kind="settings"] > :is(.sidebar, .left-panel-resizer, .server-rail) {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+@media (min-width: 721px) {
+  .app-window > .app-frame.app-frame[data-window-page-kind="settings"] > .window-page.conversation-panel {
+    position: absolute;
+    z-index: 2;
+    grid-row: 1 / -1;
+    grid-column: 1 / -1;
+    inset: 0;
+  }
+
+  .app-window > .app-frame.app-frame-edge.app-frame[data-window-page-kind="settings"]:has(> .sidebar)::before {
+    left: var(--window-edge);
+  }
+
+  .app-window > .app-frame.app-frame-edge.app-frame[data-window-page-kind="settings"]:has(> .sidebar) > .window-page {
+    left: var(--window-edge);
+  }
+
+  .settings-page.settings-page-unified {
+    grid-template-columns: 264px minmax(0, 1fr);
+  }
+}
+
+.settings-page-drawer-toggle,
+.settings-page-drawer-scrim.ui-button {
+  display: none;
+}
+
+/* The two groups of the unified list. */
+.settings-page-tiers {
+  display: flex;
+  min-height: 0;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--openbot-space-0-5);
+  overflow-y: auto;
+  padding-bottom: var(--openbot-space-3);
+}
+
+.settings-page-tiers > .settings-page-sections {
+  flex: none;
+  overflow: visible;
+  padding-bottom: 0;
+  mask-image: none;
+  animation: none;
+}
+
+.settings-page-tier-label {
+  padding: var(--openbot-space-3) var(--openbot-space-2) var(--openbot-space-1);
+  color: var(--openbot-text-muted);
+  font-size: var(--openbot-text-xs);
+  font-weight: var(--openbot-weight-medium);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.settings-page-tier-label:first-child {
+  padding-top: 0;
+}
+
+.settings-page-tier-row.settings-modal-nav-item {
+  display: flex;
+  width: 100%;
+  min-height: var(--openbot-control-lg);
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--openbot-space-2);
+  padding-inline: var(--openbot-space-2);
+  font-size: var(--openbot-text-md);
+  font-weight: inherit;
+}
+
+.settings-page-tier-row .server-menu-mark {
+  width: var(--openbot-icon-md);
+  height: var(--openbot-icon-md);
+  flex: none;
+}
+
+.settings-page-tier-row[data-selected] {
+  color: var(--openbot-text-primary);
+  font-weight: var(--openbot-weight-medium);
+}
+
+.settings-page-tier-row > .settings-page-switch-label {
+  flex: 1;
+  text-align: start;
+}
+
+.settings-page-machine-dot {
+  width: 7px;
+  height: 7px;
+  flex: none;
+  border-radius: var(--openbot-radius-pill);
+  background: var(--openbot-text-muted);
+}
+
+.settings-page-machine-dot[data-online] {
+  background: var(--openbot-success);
+}
+
+/* The sections of the open machine sit under its row, indented one step. */
+.settings-page-tier-children {
+  padding-inline-start: var(--openbot-space-4);
+}
+
+.settings-page-tier-children > .settings-page-sections {
+  overflow: visible;
+  padding-bottom: 0;
+  mask-image: none;
+  animation: none;
+}
+
+.settings-page-unified .settings-page-nav {
+  border-inline-end: 0;
+}
+
+.settings-page-unified .settings-page-content {
+  border-inline-start: 1px solid var(--openbot-border);
+}
+
+/* At 720px and below, the list is a drawer from the leading edge, opened from the top row. */
+@media (max-width: 720px) {
+  .settings-page.settings-page-unified {
+    position: relative;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+
+  .settings-page-unified .settings-page-drawer-toggle {
+    z-index: 2;
+    display: inline-grid;
+    grid-column: 1;
+    grid-row: 1;
+    align-self: center;
+    justify-self: start;
+    margin: var(--openbot-space-2) var(--openbot-space-3);
+    border-radius: var(--openbot-radius-pill);
+  }
+
+  .settings-page-unified .settings-page-close {
+    grid-column: 1;
+    grid-row: 1;
+    align-self: center;
+    margin: var(--openbot-space-2) var(--openbot-space-3);
+  }
+
+  .settings-page-unified > .settings-page-path-row {
+    display: flex;
+    min-height: calc(var(--openbot-control-lg) + var(--openbot-space-4));
+    grid-column: 1;
+    grid-row: 1;
+    align-items: center;
+    padding: 0 calc(var(--openbot-control-lg) + var(--openbot-space-4));
+  }
+
+  .settings-page-unified > .settings-page-path-row > .settings-page-path {
+    padding-inline: var(--openbot-space-2);
+  }
+
+  .settings-page-unified .settings-page-content {
+    grid-column: 1;
+    grid-row: 2;
+    border-inline-start: 0;
+  }
+
+  .settings-page-unified .settings-page-nav {
+    position: absolute;
+    z-index: 4;
+    inset-block: 0;
+    inset-inline-start: 0;
+    width: min(300px, 86%);
+    max-height: none;
+    border: 0;
+    border-inline-end: 1px solid var(--openbot-border);
+    padding: var(--openbot-space-4) var(--openbot-space-3) var(--web-phone-bottom-inset, var(--openbot-space-3));
+    background: var(--openbot-bg-sheet, var(--openbot-bg-canvas));
+    box-shadow: var(--openbot-shadow-dialog);
+    transform: translateX(calc(-100% - 24px));
+    transition: transform var(--openbot-duration-normal) var(--openbot-ease-out);
+  }
+
+  .settings-page-unified .settings-page-nav:dir(rtl) {
+    transform: translateX(calc(100% + 24px));
+  }
+
+  .settings-page-unified[data-drawer-open] .settings-page-nav {
+    transform: none;
+  }
+
+  .settings-page-unified .settings-page-title {
+    padding-inline-end: 0;
+  }
+
+  .settings-page-unified[data-drawer-open] > .settings-page-drawer-scrim.ui-button {
+    position: absolute;
+    z-index: 3;
+    inset: 0;
+    display: block;
+    width: auto;
+    height: auto;
+    border-radius: 0;
+    border: 0;
+    padding: 0;
+    background: var(--openbot-dialog-overlay);
+  }
+
+  .settings-page-unified .settings-page-tiers,
+  .settings-page-unified .settings-page-sections {
+    max-height: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .settings-page-unified .settings-page-nav {
+    transition: none;
+  }
+}
+
+/* In the drawer the sections stay one column, not the scrolling row of a narrow modal. */
+@media (max-width: 720px) {
+  .settings-page-unified .settings-page-nav .settings-modal-nav {
+    display: grid;
+    overflow-x: visible;
+  }
+
+  .settings-page-unified .settings-page-nav .settings-modal-nav-item {
+    width: 100%;
+  }
+
+  .settings-page-unified .settings-page-sections {
+    max-height: none;
+  }
+}

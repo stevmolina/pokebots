@@ -15,14 +15,7 @@ import { useServerSettings } from "../servers/server-settings";
 import { useServers } from "../servers/servers-context";
 import { useSettings } from "../settings/settings-context";
 import { navItem, navItems, type SettingsTab, settingsRowShown, settingsTabShown } from "../settings/settings-tabs";
-import {
-  openFirstSettingsSection,
-  PersonalSettingsLink,
-  ServerSettingsLink,
-  ServerSettingsPageTitle,
-  SettingsPageFrame,
-  SettingsSearchField,
-} from "./SettingsPageFrame";
+import { openFirstSettingsSection, SettingsPageFrame, SettingsSearchField } from "./SettingsPageFrame";
 import { type SettingsKind, useWindowPage } from "./window-page-context";
 
 /** A personal search entry: a tab, or a row of a tab. A row has an anchor; a tab has none and opens at the top. */
@@ -109,7 +102,7 @@ export function SettingsPage(props: { kind: SettingsKind }) {
   const settings = useSettings();
   const serverSettings = useServerSettings();
   const platform = usePlatform();
-  const { activeServer } = useServers();
+  const { activeServer, servers } = useServers();
   const { signedInAccount } = useAuth();
   const [personalQuery, setPersonalQuery] = createSignal("");
   /** The search of this page. The server settings read the server search to filter their section list. */
@@ -185,41 +178,20 @@ export function SettingsPage(props: { kind: SettingsKind }) {
   return (
     <SettingsPageFrame
       heading={
-        <Show
-          when={props.kind === "personal"}
-          fallback={
-            <Show when={serverSettings.serverSettingsTarget()}>
-              {(server) => <ServerSettingsPageTitle server={server()} />}
-            </Show>
-          }
-        >
-          <h1 class="settings-page-title" tabindex={-1}>
-            {i18n.t("app.settingsPage.title")}
-          </h1>
-        </Show>
+        <h1 class="settings-page-title" tabindex={-1}>
+          {i18n.t("app.settingsPage.unifiedTitle")}
+        </h1>
       }
       sectionsHidden={results() !== null}
-      footer={
-        <Show
-          when={props.kind === "personal"}
-          fallback={
-            <PersonalSettingsLink
-              account={signedInAccount()}
-              // The footer row closes with this page, so the focus goes back to what opened the first page.
-              onOpen={() => settings.openAppSettings(serverSettings.serverSettingsRestoreTarget())}
-            />
-          }
-        >
-          <Show when={activeServer()}>
-            {(server) => (
-              <ServerSettingsLink
-                server={server()}
-                onOpen={() => serverSettings.openServerSettings(server().id, settings.appSettingsRestoreTarget())}
-              />
-            )}
-          </Show>
-        </Show>
-      }
+      tiers={{
+        kind: props.kind,
+        // The Overall row closes this page, so the focus goes back to what opened the first page.
+        onOpenPersonal: () => settings.openAppSettings(serverSettings.serverSettingsRestoreTarget()),
+        account: signedInAccount(),
+        machines: servers(),
+        activeMachineId: props.kind === "server" ? (serverSettings.serverSettingsTarget()?.id ?? null) : null,
+        onOpenMachine: (serverId) => serverSettings.openServerSettings(serverId, settings.appSettingsRestoreTarget()),
+      }}
       onMounts={(mounts) => {
         content = mounts?.content;
         nav = mounts?.nav;

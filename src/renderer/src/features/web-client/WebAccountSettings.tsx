@@ -46,17 +46,17 @@ import { setWebLiveVoice, useWebLiveVoice } from "./web-live-voice";
 import type { WebNotificationSettings } from "./web-notification-settings";
 import type { WebPush } from "./web-push";
 
-const TABS = ["profile", "preferences"] as const;
+const TABS = ["preferences", "profile"] as const;
 type WebAccountSettingsTab = (typeof TABS)[number];
 
 const TAB_ITEMS = {
   profile: {
-    titleKey: "settings.tab.profile.title",
+    titleKey: "webClient.settings.account.title",
     descriptionKey: "settings.tab.profile.description",
     icon: UserRound,
   },
   preferences: {
-    titleKey: "webClient.settings.preferences.title",
+    titleKey: "webClient.settings.general.title",
     descriptionKey: "webClient.settings.preferences.description",
     icon: SlidersHorizontal,
   },
