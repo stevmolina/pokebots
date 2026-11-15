@@ -1,18 +1,10 @@
 /*
- * The phone layout of the web client. It follows the iOS app: a chat list at the root with a large
- * title and a tab bar, a chat that slides in over the list from the trailing edge with a Back button
- * and an edge swipe back, a server drawer from the leading edge, and dialogs as bottom sheets.
- *
- * The frame says what shows:
- * - `data-web-mobile-pane`: "workspace" is the list at the root; "conversation" is a chat pushed over it.
- * - `data-web-phone-servers`: the server drawer is open over the list.
- * - `data-web-phone-swiping` and `--web-phone-swipe` (0 to 1): a finger drags the chat back to the list.
- * - `data-web-phone-tab-page`: a page of the tab bar (Tasks, Workflows, Settings) shows. It is a root, so
- *   the tab bar stays over it and the page has no Back button.
- *
- * Layers, from the back: the list, the drawer scrim, the server drawer, a page, the fade under the tab
- * bar, the tab bar, the chat. The chat covers the tab bar, as a pushed screen on iOS does. The tab bar
- * floats over the bottom of the list, which scrolls under it.
+ * The phone layout of the web client (Grokbot Minimalist):
+ * - At the root ("workspace"): a minimalist top header with Settings, a centered workspace switcher pill,
+ *   over the chat list with a floating bottom Search pill.
+ * - A conversation ("conversation") slides in over the list from the trailing edge with a Back button,
+ *   edge swipe back, centered title, and quiet timeline markers.
+ * - The server drawer slides in from the leading edge, and dialogs open as bottom sheets.
  */
 
 .web-phone-tab-bar,
@@ -46,10 +38,10 @@
 
   .web-app-frame {
     --server-rail-width: 64px;
-    --web-phone-tab-bar-height: 62px;
+    --web-phone-tab-bar-height: 44px;
     --web-phone-tab-bar-gap: var(--openbot-space-3);
     --web-phone-bottom-inset: env(safe-area-inset-bottom, 0px);
-    /* The room under the floating tab bar: the bar, its gap above and below, and the home indicator. */
+    /* The room under the floating search pill: the pill, its gap above and below, and the home indicator. */
     --web-phone-tab-bar-space: calc(
       var(--web-phone-tab-bar-height) +
       var(--web-phone-tab-bar-gap) *
@@ -96,12 +88,12 @@
     border-radius: var(--openbot-radius-pill);
     background: transparent;
     padding: 0;
-    color: var(--openbot-accent-text);
+    color: var(--openbot-text-primary);
   }
 
   .web-phone-back.ui-button > svg {
-    width: 28px;
-    height: 28px;
+    width: var(--openbot-icon-lg);
+    height: var(--openbot-icon-lg);
     stroke-width: var(--openbot-icon-stroke-lg);
   }
 
@@ -109,71 +101,80 @@
     transform: scaleX(-1);
   }
 
-  /* ---------------------------------------------------------------- the tab bar */
+  /* ---------------------------------------------------------------- the floating bottom Search pill */
 
-  /* A rounded bar that floats over the list, clear of the screen edges. */
   .web-phone-tab-bar {
     position: absolute;
     z-index: 5;
-    inset-inline: calc(var(--openbot-space-4) + env(safe-area-inset-left, 0px));
+    inset-inline: 0;
     bottom: calc(var(--web-phone-tab-bar-gap) + var(--web-phone-bottom-inset));
-    display: grid;
-    height: var(--web-phone-tab-bar-height);
-    grid-auto-columns: minmax(0, 1fr);
-    grid-auto-flow: column;
+    display: flex;
     align-items: center;
-    border: 0.5px solid var(--openbot-border-strong);
-    border-radius: var(--openbot-radius-pill);
-    background: var(--openbot-bg-surface-raised);
-    padding: var(--openbot-space-1);
-    box-shadow: 0 10px 30px var(--openbot-shadow-dialog);
+    gap: var(--openbot-space-3);
+    padding-inline: calc(var(--openbot-space-5) + env(safe-area-inset-left, 0px))
+      calc(var(--openbot-space-5) + env(safe-area-inset-right, 0px));
   }
 
-  /* The list fades out under the bar, so no row shows in the gap at the screen edge. It stays under the
-   * server drawer, its scrim and the pages. */
+  .web-phone-tab-bar .web-phone-apps-button.ui-button {
+    display: grid;
+    width: var(--web-phone-tab-bar-height);
+    height: var(--web-phone-tab-bar-height);
+    flex: none;
+    place-items: center;
+    border: 1px solid var(--openbot-border);
+    border-radius: var(--openbot-radius-pill);
+    background: var(--openbot-bg-surface-raised);
+    padding: 0;
+    color: var(--openbot-text-primary);
+    box-shadow: var(--openbot-shadow-raised);
+  }
+
+  .web-phone-tab-bar .web-phone-apps-button.ui-button > svg {
+    width: var(--openbot-icon-md);
+    height: var(--openbot-icon-md);
+  }
+
+  /* The list fades out under the floating search pill. */
   .web-app-frame::before {
     position: absolute;
     z-index: 1;
     inset-inline: 0;
     bottom: 0;
-    height: calc(var(--web-phone-tab-bar-space) + var(--openbot-space-6));
-    background: linear-gradient(to bottom, var(--openbot-bg-canvas-clear), var(--openbot-bg-canvas) 60%);
+    height: calc(var(--web-phone-tab-bar-space) + var(--openbot-space-4));
+    background: linear-gradient(to bottom, var(--openbot-bg-canvas-clear), var(--openbot-bg-canvas) 65%);
     content: "";
     pointer-events: none;
   }
 
-  .web-phone-tab-bar .web-phone-tab.ui-button {
-    display: flex;
-    height: 100%;
+  /* A wide search field, not a button: the icon and a muted placeholder at its start. */
+  .web-phone-tab-bar .web-phone-search-pill.ui-button {
+    pointer-events: auto;
+    display: inline-flex;
     min-width: 0;
-    flex-direction: column;
+    height: var(--web-phone-tab-bar-height);
+    flex: 1 1 auto;
     align-items: center;
-    justify-content: center;
-    gap: var(--openbot-space-0-5);
-    border: 0;
+    justify-content: flex-start;
+    gap: var(--openbot-space-2);
+    border: 1px solid var(--openbot-border);
     border-radius: var(--openbot-radius-pill);
-    background: transparent;
-    padding: 0;
+    background: var(--openbot-bg-surface-raised);
+    padding: 0 var(--openbot-space-4);
     color: var(--openbot-text-muted);
-    font-size: var(--openbot-text-sm);
-    font-weight: var(--openbot-weight-medium);
-    box-shadow: none;
+    font-size: var(--openbot-text-lg);
+    font-weight: var(--openbot-weight-regular);
+    box-shadow: var(--openbot-shadow-raised);
   }
 
-  .web-phone-tab-bar .web-phone-tab.ui-button:active {
+  .web-phone-tab-bar .web-phone-search-pill.ui-button:active {
     transform: none;
-    opacity: 0.6;
+    opacity: 0.7;
   }
 
-  .web-phone-tab-bar .web-phone-tab.ui-button > svg {
-    width: var(--openbot-icon-lg);
-    height: var(--openbot-icon-lg);
+  .web-phone-tab-bar .web-phone-search-pill.ui-button > svg {
+    width: var(--openbot-icon-md);
+    height: var(--openbot-icon-md);
     stroke-width: var(--openbot-icon-stroke);
-  }
-
-  .web-phone-tab-bar .web-phone-tab.ui-button[data-active="true"] {
-    background: var(--openbot-hover);
-    color: var(--openbot-accent-text);
   }
 
   .web-phone-tab-label {
@@ -185,12 +186,12 @@
 
   /* ---------------------------------------------------------------- the list at the root */
 
-  /* The list runs to the bottom of the screen, under the floating tab bar. */
   .web-app-frame > .sidebar {
     z-index: 0;
     display: flex;
     width: auto;
     grid-area: 1 / 1;
+    padding-top: env(safe-area-inset-top, 0px);
     padding-bottom: 0;
   }
 
@@ -217,24 +218,20 @@
     visibility: hidden;
   }
 
-  /* The phone shows the list as a full screen, so it has no dock to collapse to. */
-  .web-app-frame > .sidebar-chat .sidebar-chat-toggle {
+  /* The phone header and search pill replace the large title, search field, and bottom usage bar. */
+  .web-app-frame > .sidebar-chat .sidebar-chat-large-title,
+  .web-app-frame > .sidebar-chat .sidebar-chat-search-field.ui-button,
+  .web-app-frame > .sidebar-chat .sidebar-chat-bottom {
     display: none;
   }
 
-  /* Search is the field under the title. */
+  .web-app-frame > .sidebar-chat .sidebar-chat-toggle,
+  .web-app-frame > .sidebar-chat .sidebar-chat-bar-title,
   .web-app-frame > .sidebar-chat .sidebar-chat-top .sidebar-chat-round:has(> .lucide-search) {
     display: none;
   }
 
-  .web-app-frame > .sidebar-chat .sidebar-chat-top {
-    padding-inline: var(--openbot-space-3);
-  }
-
-  /*
-   * One list: the title, the search field and every folder scroll together, so an open folder shows
-   * all of its chats. The whole list scrolls here, not only its scroll zone, so the large title can go.
-   */
+  /* One scrollable list across all folders. */
   .web-app-frame > .sidebar-chat .sidebar-chat-list {
     overflow-y: auto;
     scrollbar-width: none;
@@ -245,13 +242,13 @@
     overflow: visible;
   }
 
-  /* The unread button stays over the tab bar while the list scrolls under it. */
+  /* The unread button stays over the search pill while the list scrolls under it. */
   .web-app-frame > .sidebar-chat .sidebar-unread-jump-wrap {
     position: fixed;
     bottom: calc(var(--web-phone-tab-bar-space) + var(--openbot-space-2));
   }
 
-  /* The end of the list leaves room for the tab bar, whatever group comes last. */
+  /* The end of the list leaves room for the floating search pill. */
   .web-app-frame > .sidebar-chat .sidebar-chat-list::after {
     display: block;
     height: var(--web-phone-tab-bar-space);
@@ -259,148 +256,128 @@
     content: "";
   }
 
-  /* The tab bar, the title and the More menu of the top row take the places of the pill and the usage. */
-  .web-app-frame > .sidebar-chat .sidebar-chat-bottom {
-    display: none;
-  }
-
-  /* An alert card stays, over the tab bar. */
+  /* An alert card stays over the floating search pill. */
   .web-app-frame > .sidebar-chat .sidebar-chat-footer:not(:empty) {
     padding-bottom: var(--web-phone-tab-bar-space);
   }
 
-  /* The More menu of the pill sits in the top row, as a round button beside New. */
-  .web-app-frame > .sidebar-chat .sidebar-chat-top .sidebar-pill-button {
-    display: grid;
-    width: var(--sidebar-chat-control);
-    height: var(--sidebar-chat-control);
-    flex: none;
-    place-items: center;
-    border: 1px solid var(--openbot-border);
-    border-radius: var(--openbot-radius-pill);
-    background: var(--openbot-bg-surface);
-    box-shadow: var(--openbot-shadow-card);
-    padding: 0;
-    color: var(--openbot-text-primary);
-  }
-
-  /* Folder headings read as the sections of the list. */
+  /* Collapsible folders as quiet muted rows: "Name 9 ›", and "Name ⌄" while open. */
   .web-app-frame > .sidebar-chat .sidebar-dock-head.ui-button {
-    min-height: 52px;
-    gap: var(--openbot-space-3);
-    padding: var(--openbot-space-3) var(--openbot-space-2);
-    color: var(--openbot-text-primary);
-    font-size: var(--openbot-text-xl);
-    font-weight: var(--openbot-weight-semibold);
-  }
-
-  .web-app-frame > .sidebar-chat .sidebar-dock-head .sidebar-dock-chevron {
-    color: var(--openbot-text-muted);
-  }
-
-  .web-app-frame > .sidebar-chat .sidebar-dock-head .sidebar-dock-chevron {
-    width: 16px;
-    height: 16px;
-  }
-
-  .web-app-frame > .sidebar-chat .sidebar-dock-head .sidebar-dock-count {
-    font-size: var(--openbot-text-lg);
-    font-weight: var(--openbot-weight-medium);
-  }
-
-  .web-app-frame > .sidebar-chat .sidebar-dock-group + .sidebar-dock-group {
-    margin-top: var(--openbot-space-2);
-  }
-
-  /* The title: the server name over the list. It scrolls away, and a tap opens the server drawer. */
-  .sidebar-chat-large-title {
-    margin: 0;
-    padding: var(--openbot-space-1) var(--openbot-space-4) var(--openbot-space-3);
-    overflow: hidden;
-    color: var(--openbot-text-primary);
-    font-size: var(--openbot-text-3xl);
-    font-weight: var(--openbot-weight-bold);
-    line-height: var(--openbot-leading-display);
-    letter-spacing: var(--openbot-tracking-tight);
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .sidebar-chat-large-title .sidebar-chat-large-title-button.ui-button {
-    display: inline-flex;
-    max-width: 100%;
-    height: auto;
-    align-items: center;
-    gap: var(--openbot-space-1-5);
-    border: 0;
-    background: transparent;
-    padding: 0;
-    color: inherit;
-    font: inherit;
-    letter-spacing: inherit;
-  }
-
-  .sidebar-chat-large-title-name {
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .sidebar-chat-large-title-chevron {
-    width: 20px;
-    height: 20px;
-    flex: none;
-    color: var(--openbot-text-muted);
-  }
-
-  /* The search field under the title. */
-  .sidebar-chat .sidebar-chat-search-field.ui-button {
     display: flex;
-    width: calc(100% - var(--openbot-space-2));
-    height: 40px;
+    width: auto;
+    min-height: var(--openbot-control-xl);
+    align-items: center;
     justify-content: flex-start;
-    gap: var(--openbot-space-2);
-    margin: 0 var(--openbot-space-1) var(--openbot-space-2);
-    border: 0;
-    border-radius: var(--openbot-radius-lg);
-    background: var(--openbot-bg-surface);
-    padding: 0 var(--openbot-space-3);
+    gap: var(--openbot-space-1-5);
+    padding: var(--openbot-space-2) var(--openbot-space-5);
     color: var(--openbot-text-muted);
     font-size: var(--openbot-text-lg);
     font-weight: var(--openbot-weight-regular);
   }
 
-  .sidebar-chat .sidebar-chat-search-field.ui-button > svg {
+  .web-app-frame > .sidebar-chat .sidebar-dock-head .sidebar-dock-name {
+    min-width: 0;
+    flex: 0 1 auto;
+    overflow: hidden;
+    color: var(--openbot-text-secondary);
+    font-size: var(--openbot-text-lg);
+    font-weight: var(--openbot-weight-regular);
+    letter-spacing: var(--openbot-tracking-normal);
+    text-align: start;
+    text-overflow: ellipsis;
+    text-transform: none;
+    white-space: nowrap;
+  }
+
+  .web-app-frame > .sidebar-chat .sidebar-dock-head .sidebar-dock-count {
+    flex: none;
+    color: var(--openbot-text-muted);
+    font-size: var(--openbot-text-md);
+    font-weight: var(--openbot-weight-regular);
+  }
+
+  .web-app-frame > .sidebar-chat .sidebar-dock-head .sidebar-dock-chevron {
     width: var(--openbot-icon-md);
     height: var(--openbot-icon-md);
+    flex: none;
+    color: var(--openbot-text-muted);
   }
 
-  /* The small title of the bar fades in when the large title has scrolled under the bar. */
-  .sidebar-chat-bar-title {
-    overflow: hidden;
-    color: var(--openbot-text-primary);
-    font-size: var(--openbot-text-xl);
+  .web-app-frame > .sidebar-chat .sidebar-dock-group + .sidebar-dock-group {
+    margin-top: var(--openbot-space-1);
+  }
+
+  /* A chat row: the face with its presence dot, the bold name, one muted line, and the time at the end. */
+  .web-app-frame > .sidebar-chat .sidebar-chat-row {
+    position: relative;
+    align-items: flex-start;
+    gap: var(--openbot-space-3);
+    border-radius: var(--openbot-radius-card);
+    padding: var(--openbot-space-2-5, 10px) var(--openbot-space-5);
+  }
+
+  .web-app-frame > .sidebar-chat .sidebar-chat-row .sidebar-chat-avatar {
+    align-self: center;
+  }
+
+  /* The name and the preview end before the time, so a long preview truncates short of it. */
+  .web-app-frame > .sidebar-chat .sidebar-chat-row .sidebar-chat-copy {
+    padding-inline-end: 64px;
+  }
+
+  .web-app-frame > .sidebar-chat .sidebar-chat-row .sidebar-chat-name {
+    padding-inline-end: 0;
+    font-size: var(--openbot-text-lg);
     font-weight: var(--openbot-weight-semibold);
-    text-align: center;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    opacity: 0;
-    transform: translateY(4px);
-    transition:
-      opacity var(--openbot-duration-slow) var(--openbot-ease-out),
-      transform var(--openbot-duration-slow) var(--openbot-ease-out);
   }
 
-  .sidebar-chat-bar-title[data-shown] {
-    opacity: 1;
-    transform: none;
+  .web-app-frame > .sidebar-chat .sidebar-chat-row .sidebar-chat-preview {
+    color: var(--openbot-text-muted);
+  }
+
+  .web-app-frame > .sidebar-chat .sidebar-chat-row {
+    position: relative;
+  }
+
+  .web-app-frame > .sidebar-chat .sidebar-chat-row > .sidebar-chat-time {
+    position: absolute;
+    /* On the name line: the name starts at the top of the row, 20px tall. */
+    top: 2px;
+    right: var(--openbot-space-4);
+    left: auto;
+    grid-area: auto;
+    display: block;
+    color: var(--openbot-text-muted);
+    font-size: var(--openbot-text-sm);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  /* The unread dot sits under the time. */
+  .web-app-frame > .sidebar-chat .sidebar-chat-row > .sidebar-chat-unread {
+    position: absolute;
+    top: 50%;
+    inset-inline-end: var(--openbot-space-5);
+    margin: 0;
+  }
+
+  .web-app-frame > .sidebar-chat .sidebar-chat-presence {
+    position: absolute;
+    display: block;
+    inset-inline-end: -1px;
+    bottom: -1px;
+    width: 12px;
+    height: 12px;
+    border-radius: var(--openbot-radius-pill);
+    background: var(--openbot-success);
+    box-shadow: 0 0 0 2px var(--openbot-bg-canvas);
   }
 
   /* ---------------------------------------------------------------- the server drawer */
 
   .web-app-frame > .server-rail {
     position: absolute;
-    z-index: 3;
+    z-index: 6;
     inset-block: 0;
     inset-inline-start: 0;
     display: flex;
@@ -428,7 +405,7 @@
 
   .web-phone-drawer-scrim.ui-button {
     position: absolute;
-    z-index: 2;
+    z-index: 5;
     inset: 0;
     display: block;
     width: auto;
@@ -441,7 +418,6 @@
 
   /* ---------------------------------------------------------------- pages */
 
-  /* A page (settings, usage, the marketplace) covers the list, and the tab bar stays over it. */
   .web-app-frame > .window-page {
     z-index: 4;
     grid-area: 1 / 1;
@@ -473,7 +449,7 @@
     }
   }
 
-  /* Without a server the pane holds the connect screen. It is the root then, under the tab bar. */
+  /* Without a server the pane holds the connect screen. It is the root then, under the search pill. */
   .web-app-frame[data-web-phone-connect] > .server-connection-workspace {
     z-index: 1;
     display: flex;
@@ -502,8 +478,8 @@
   }
 
   /*
-   * A phone chat keeps Back, the title, and the thread menu. New thread, the pin, and the side
-   * panel leave the bar. The menu opens them. The pin button stays as the anchor of its list.
+   * A phone chat keeps Back on the left, the centered title, and the thread/actions menu on the right.
+   * New thread, the pin, and the side panel leave the bar; the menu opens them.
    */
   .conversation-header[data-phone-menu]
     .agent-threads-header
@@ -519,9 +495,9 @@
   .conversation-header[data-phone-menu] .pinned-messages-button {
     position: absolute;
     top: 50%;
-    inset-inline-end: 12px;
-    width: 32px;
-    height: 32px;
+    inset-inline-end: var(--openbot-space-3);
+    width: var(--openbot-control-md);
+    height: var(--openbot-control-md);
     margin: 0;
     padding: 0;
     transform: translateY(-50%);
@@ -529,7 +505,7 @@
     pointer-events: none;
   }
 
-  /* The header rows of a pushed chat start after the Back button. */
+  /* The header rows of a pushed chat start after the Back button, with the title centered. */
   .web-app-frame[data-web-mobile-pane="conversation"]
   :is(
     .conversation-header,
@@ -539,6 +515,25 @@
     .remote-desktop-header
   ) {
     padding-inline-start: calc(44px + var(--openbot-space-2));
+  }
+
+  .web-app-frame[data-web-mobile-pane="conversation"] .conversation-header {
+    justify-content: center;
+    border-bottom: 0;
+    padding-inline-end: calc(44px + var(--openbot-space-2));
+  }
+
+  .web-app-frame .conversation-header .conversation-heading-group {
+    margin-inline: auto;
+  }
+
+  .web-app-frame .conversation-header .conversation-title .agent-avatar {
+    display: none;
+  }
+
+  .web-app-frame .conversation-header .conversation-title {
+    font-size: var(--openbot-text-xl);
+    font-weight: var(--openbot-weight-semibold);
   }
 
   /* A finger drags the chat: everything follows it, with no transition. */
@@ -555,13 +550,33 @@
     transform: translateX(calc(var(--web-phone-dir) * (var(--web-phone-swipe, 0) - 1) * 30%));
   }
 
-  /* The icons under each message go: a long press on the message opens the same actions. The time
-   * and the steps stay. */
+  /* The icons under each message go: a long press on the message opens the same actions. */
   .web-app-frame > .server-connection-workspace .message-action-row > .message-actions {
     display: none;
   }
 
-  /* The message box floats, as the tab bar of the list does. */
+  /* Quiet centered timeline markers (`• Messaged 2 agents · 6:44 AM`) and compact message stream. */
+  .web-app-frame .virtual-chat-list .chat-action-marker {
+    display: flex;
+    justify-content: center;
+    margin: var(--openbot-space-2) auto;
+    border: 0;
+    background: transparent;
+    padding: var(--openbot-space-0-5) var(--openbot-space-2);
+    box-shadow: none;
+  }
+
+  .web-app-frame .virtual-chat-list .chat-action-marker-summary {
+    justify-content: center;
+    color: var(--openbot-text-muted);
+    font-size: var(--openbot-text-md);
+  }
+
+  .web-app-frame .virtual-chat-list .chat-action-marker-label::before {
+    content: "• ";
+    color: var(--openbot-text-muted);
+  }
+
   .web-app-frame > .server-connection-workspace .composer-wrap > .composer {
     box-shadow: 0 10px 30px var(--openbot-shadow-dialog);
   }
@@ -590,6 +605,138 @@
       .remote-desktop-header
     ) {
     padding-inline-start: var(--openbot-space-3);
+  }
+
+  /* ---------------------------------------------------------------- the home: corners, featured agent */
+
+  /* No title bar: the profile photo at the start, New at the end, on the canvas. */
+  .web-app-frame > .sidebar-chat .sidebar-chat-top {
+    display: flex;
+    min-height: 60px;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--openbot-space-2) var(--openbot-space-4) 0;
+    background: transparent;
+  }
+
+  .web-app-frame > .sidebar-chat .sidebar-chat-top > .sidebar-chat-spacer {
+    flex: 1;
+  }
+
+  .web-app-frame > .sidebar-chat .sidebar-footer-profile.sidebar-footer-profile-compact {
+    width: 44px;
+    height: 44px;
+    flex: none;
+    justify-content: center;
+    padding: 0;
+  }
+
+  .web-app-frame > .sidebar-chat .sidebar-footer-profile-compact .sidebar-footer-avatar {
+    width: 40px;
+    height: 40px;
+    box-shadow: 0 0 0 1px var(--openbot-border);
+  }
+
+  .web-app-frame > .sidebar-chat .sidebar-footer-profile-compact .sidebar-footer-status {
+    width: 11px;
+    height: 11px;
+    box-shadow: 0 0 0 2px var(--openbot-bg-canvas);
+  }
+
+  .web-app-frame > .sidebar-chat .sidebar-chat-top .sidebar-chat-round {
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--openbot-border);
+    background: var(--openbot-bg-surface-raised);
+    box-shadow: var(--openbot-shadow-raised);
+  }
+
+  .web-app-frame > .sidebar-chat .sidebar-chat-top .sidebar-chat-round > svg {
+    width: var(--openbot-icon-lg);
+    height: var(--openbot-icon-lg);
+  }
+
+  .sidebar-featured {
+    display: flex;
+    justify-content: center;
+    padding: var(--openbot-space-2) 0 var(--openbot-space-6);
+  }
+
+  .sidebar-featured-button.ui-button {
+    display: flex;
+    height: auto;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--openbot-space-2);
+    border-radius: var(--openbot-radius-card);
+    background: transparent;
+    padding: var(--openbot-space-2) var(--openbot-space-4);
+    color: var(--openbot-text-primary);
+  }
+
+  .sidebar-featured-button.ui-button:hover,
+  .sidebar-featured-button.ui-button[aria-current="page"] {
+    background: transparent;
+  }
+
+  .sidebar-featured-avatar {
+    position: relative;
+    display: block;
+    width: 104px;
+    height: 104px;
+  }
+
+  .sidebar-featured-avatar > .agent-avatar {
+    width: 100%;
+    height: 100%;
+  }
+
+  .sidebar-featured-badge {
+    position: absolute;
+    inset-inline-end: 2px;
+    bottom: 2px;
+    display: grid;
+    width: 26px;
+    height: 26px;
+    place-items: center;
+    border-radius: var(--openbot-radius-pill);
+    background: var(--openbot-warning);
+    color: var(--openbot-text-on-accent);
+    box-shadow: 0 0 0 3px var(--openbot-bg-canvas);
+  }
+
+  .sidebar-featured-badge > svg {
+    width: 14px;
+    height: 14px;
+    fill: currentcolor;
+  }
+
+  .sidebar-featured-name {
+    font-size: var(--openbot-text-lg);
+    font-weight: var(--openbot-weight-medium);
+  }
+
+  /* ---------------------------------------------------------------- the standalone settings page */
+
+  /* Settings covers the home: no bottom bar, no header, its own × and section drawer. */
+  .web-app-frame[data-web-phone-settings] > .web-phone-tab-bar {
+    visibility: hidden;
+  }
+
+  .web-app-frame[data-web-phone-settings] > .window-page {
+    z-index: 8;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: 0;
+    background: var(--openbot-bg-canvas);
+  }
+
+  .web-app-frame[data-web-phone-settings]::before {
+    visibility: hidden;
+  }
+
+  /* The panel ends above the home indicator, so its last row is never under a bar. */
+  .web-app-frame[data-web-phone-settings] .settings-page-content .settings-modal-content {
+    padding-bottom: calc(var(--openbot-space-8) + var(--web-phone-bottom-inset));
   }
 
   /* ---------------------------------------------------------------- dialogs as bottom sheets */
@@ -669,8 +816,7 @@
 
 /* Reduced motion: screens and sheets change at once; a drag still follows the finger. */
 @media (max-width: 720px) and (prefers-reduced-motion: reduce) {
-  .web-app-frame > :is(.sidebar, .server-rail, .server-connection-workspace, .web-phone-tab-bar),
-  .sidebar-chat-bar-title {
+  .web-app-frame > :is(.sidebar, .server-rail, .server-connection-workspace, .web-phone-tab-bar) {
     transition-duration: 0.01ms;
   }
 
@@ -681,5 +827,28 @@
 
   :root .ui-dialog-content:is([data-web-phone-sheet-leaving], [data-closing]) {
     animation-duration: 0.01ms;
+  }
+}
+
+/* A short phone keeps the room above the composer for the chat: the worker rows are one line. */
+@media (max-width: 720px) and (max-height: 760px) {
+  .web-app-frame .background-workers {
+    margin-bottom: var(--openbot-space-2);
+  }
+
+  .web-app-frame .background-worker-row.ui-button {
+    min-height: var(--openbot-control-lg, 40px);
+    padding-block: var(--openbot-space-1);
+  }
+
+  .web-app-frame .background-worker-avatar {
+    width: var(--openbot-space-6);
+    height: var(--openbot-space-6);
+  }
+
+  .web-app-frame .background-worker-copy {
+    flex-direction: row;
+    align-items: baseline;
+    gap: var(--openbot-space-2);
   }
 }

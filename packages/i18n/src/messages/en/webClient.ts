@@ -17,7 +17,6 @@ export const messages = defineMessages("webClient", {
   "webClient.login.accountInvalid": "The account response is invalid.",
   "webClient.login.responseInvalid": "The sign-in response is invalid.",
   "webClient.pane.navigation": "Workspace navigation",
-  "webClient.tab.chats": "Chats",
   "webClient.tab.settings": "Settings",
   "webClient.notice.connecting": "Connecting to your server",
   "webClient.notice.findingHosts": "Finding your servers",
@@ -44,7 +43,8 @@ export const messages = defineMessages("webClient", {
     "The result is not confirmed. Close this form and check the server before trying again.",
   "webClient.error.usageOffline": "Connect to your server to view usage.",
   "webClient.error.desktopOnly": "This action is available in the desktop app.",
-  "webClient.settings.preferences.title": "Preferences",
+  "webClient.settings.general.title": "General",
+  "webClient.settings.account.title": "Account",
   "webClient.settings.preferences.description": "Choose the language and sounds of OpenBot in this browser.",
   "webClient.settings.connectionLog.title": "Opening log",
   "webClient.settings.connectionLog.description":

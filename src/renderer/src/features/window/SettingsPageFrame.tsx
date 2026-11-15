@@ -1,10 +1,26 @@
 import type { CentralAuthUser, ServerSummary } from "@openbot/contracts/ipc";
-import { Button, ChevronRight, IconButton, Input, Search, UserAvatar, UserRound, X } from "@openbot/ui";
+import { Button, ChevronRight, IconButton, Input, PanelLeft, Search, UserAvatar, UserRound, X } from "@openbot/ui";
 import { ServerMark } from "@openbot/ui/features/servers/ServerRail";
 import type { SettingsPagePlacement } from "@openbot/ui/features/settings/SettingsDialogShell";
 import { useText } from "@openbot/ui/text";
 import type { JSX } from "@solidjs/web";
-import { flush, onSettled, Show } from "solid-js";
+import { createSignal, For, flush, onSettled, Show } from "solid-js";
+
+/**
+ * The two-tier section list of the standalone settings page: "Overall" holds the settings of the user,
+ * and "Machines" lists each server, with the sections of the open one under its row. Only one panel
+ * is on screen at a time, so the section mount moves to the group of the open page.
+ */
+export interface SettingsPageTiers {
+  kind: "personal" | "server";
+  /** Opens the settings of the user from the Overall group while a machine is open. */
+  onOpenPersonal: () => void;
+  account: Pick<CentralAuthUser, "name" | "email" | "avatarUrl"> | null;
+  machines: readonly ServerSummary[];
+  /** The machine whose settings are open, when `kind` is "server". */
+  activeMachineId: string | null;
+  onOpenMachine: (serverId: string) => void;
+}
 
 /**
  * The frame of a settings page, on desktop and on the web: the heading and the section list at the
@@ -24,8 +40,12 @@ export function SettingsPageFrame(props: {
   onEscape: () => void;
   /** The Close button. It closes the page, also while a search has text. */
   onClose: () => void;
+  /** The unified two-tier list. Without it, the page shows one flat section list. */
+  tiers?: SettingsPageTiers | undefined;
 }) {
   const { t } = useText();
+  /** At 720px and below, the section list is a drawer that the top row opens. */
+  const [drawerOpen, setDrawerOpen] = createSignal(false);
   let nav!: HTMLDivElement;
   let content!: HTMLDivElement;
   let path!: HTMLDivElement;
@@ -55,12 +75,114 @@ export function SettingsPageFrame(props: {
     };
   });
 
+  // One element for the section list: the panel shows its nav in it, so it moves between the groups
+  // and is never made again while the page is open.
+  const sectionsElement = <div class="settings-page-sections" ref={nav} hidden={props.sectionsHidden} />;
+  const sections = () => sectionsElement;
+  // A tap on a section in the drawer opens it and closes the drawer.
+  const closeDrawerOnSection = (event: MouseEvent) => {
+    if (event.target instanceof Element && event.target.closest(".settings-modal-nav-item, .settings-page-tier-row"))
+      setDrawerOpen(false);
+  };
   return (
-    <div class="settings-page" ref={root}>
-      <div class="settings-page-nav">
+    <div
+      class={["settings-page", { "settings-page-unified": Boolean(props.tiers) }]}
+      ref={root}
+      data-drawer-open={drawerOpen() ? "" : undefined}
+    >
+      <IconButton
+        variant="ghost"
+        size="icon-sm"
+        class="settings-page-drawer-toggle"
+        label={t("app.settingsPage.sections")}
+        aria-expanded={drawerOpen() ? "true" : "false"}
+        onClick={() => setDrawerOpen((open) => !open)}
+      >
+        <PanelLeft aria-hidden="true" />
+      </IconButton>
+      <Button
+        variant="ghost"
+        type="button"
+        class="settings-page-drawer-scrim"
+        tabindex={-1}
+        aria-label={t("common.close")}
+        onClick={() => setDrawerOpen(false)}
+      />
+      <div class="settings-page-nav" ref={(element) => element.addEventListener("click", closeDrawerOnSection)}>
         {props.heading}
         {props.children}
-        <div class="settings-page-sections" ref={nav} hidden={props.sectionsHidden} />
+        <Show when={props.tiers} fallback={sections()}>
+          {(tiers) => (
+            <div class="settings-page-tiers">
+              <div class="settings-page-tier-label">{t("app.settingsPage.overall")}</div>
+              <Show
+                when={tiers().kind === "personal"}
+                fallback={
+                  <Button
+                    variant="ghost"
+                    type="button"
+                    class="settings-modal-nav-item settings-page-tier-row"
+                    onClick={() => tiers().onOpenPersonal()}
+                  >
+                    <Show
+                      when={tiers().account?.avatarUrl ? tiers().account : null}
+                      fallback={<UserRound aria-hidden="true" />}
+                    >
+                      {(account) => <UserAvatar user={account()} class="settings-page-switch-avatar" decorative />}
+                    </Show>
+                    <span class="settings-page-switch-label">{t("app.settingsPage.title")}</span>
+                  </Button>
+                }
+              >
+                {sections()}
+              </Show>
+              <Show when={tiers().machines.length > 0}>
+                <div class="settings-page-tier-label">{t("app.settingsPage.machines")}</div>
+                <For each={tiers().machines} keyed={(machine) => machine.id}>
+                  {(item) => {
+                    const open = () => tiers().kind === "server" && tiers().activeMachineId === item().id;
+                    return (
+                      <>
+                        <Button
+                          variant="ghost"
+                          type="button"
+                          class="settings-modal-nav-item settings-page-tier-row settings-unified-machine"
+                          aria-current={open() ? "page" : undefined}
+                          data-selected={open() ? "" : undefined}
+                          onClick={() => {
+                            if (!open()) tiers().onOpenMachine(item().id);
+                          }}
+                        >
+                          <span class="server-menu-mark" aria-hidden="true">
+                            <ServerMark server={item()} />
+                          </span>
+                          <span class="settings-page-switch-label">{item().name}</span>
+                          <span
+                            class="settings-page-machine-dot"
+                            data-online={item().state === "online" ? "" : undefined}
+                            aria-hidden="true"
+                          />
+                        </Button>
+                        <Show when={open()}>
+                          <div class="settings-page-tier-children">{sections()}</div>
+                        </Show>
+                      </>
+                    );
+                  }}
+                </For>
+              </Show>
+              {/* A server page whose machine is not in the list keeps its sections at the end. */}
+              <Show
+                when={
+                  tiers().kind === "server" &&
+                  !tiers().machines.some((machine) => machine.id === tiers().activeMachineId)
+                }
+              >
+                {sections()}
+              </Show>
+            </div>
+          )}
+        </Show>
         <div class="settings-page-footer">{props.footer}</div>
       </div>
       <div class="settings-page-path-row" ref={path} />

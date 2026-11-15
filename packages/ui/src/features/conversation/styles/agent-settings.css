@@ -1564,3 +1564,68 @@
   font-size: var(--openbot-text-sm);
   line-height: 15px;
 }
+
+/* The focus view of the root page: × at the top right, then the face, name and an Edit toggle. */
+.agent-settings-focus-top {
+  display: flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: flex-end;
+  padding: var(--openbot-space-2) var(--openbot-space-2) 0;
+}
+
+.agent-settings-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--openbot-space-1);
+  padding-bottom: var(--openbot-space-4);
+  text-align: center;
+}
+
+.agent-settings-hero .agent-settings-avatar-picker {
+  width: 84px;
+  height: 84px;
+  margin: 0 auto var(--openbot-space-2);
+}
+
+.agent-settings-hero .agent-settings-avatar,
+.agent-settings-hero .agent-settings-avatar .agent-avatar {
+  --agent-avatar-optical-offset: calc(84px * -0.14);
+  width: 84px;
+  height: 84px;
+}
+
+.agent-settings-hero-name {
+  overflow: hidden;
+  max-width: 100%;
+  margin: 0;
+  color: var(--openbot-text);
+  font-size: var(--openbot-text-xl, 20px);
+  font-weight: var(--openbot-weight-semibold);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.agent-settings-hero-title {
+  margin: 0;
+  color: var(--openbot-text-muted);
+  font-size: var(--openbot-text-sm);
+}
+
+.agent-settings-edit-toggle.ui-button {
+  margin-top: var(--openbot-space-2);
+  gap: var(--openbot-space-1-5);
+  border-radius: var(--openbot-radius-pill);
+}
+
+.agent-settings-edit-toggle svg {
+  width: 14px;
+  height: 14px;
+}
+
+.agent-settings-edit-fields {
+  display: grid;
+  gap: var(--openbot-space-3);
+  padding-bottom: var(--openbot-space-4);
+}

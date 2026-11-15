@@ -98,6 +98,8 @@ export const messages = defineMessages("agentSettings", {
   "agentSettings.groups.knows": "Knows",
   "agentSettings.groups.does": "Does",
   "agentSettings.groups.rules": "Rules",
+  "agentSettings.groups.computer": "Computer",
+  "agentSettings.groups.alerts": "Alerts",
   "agentSettings.saveFailed": "Could not save agent settings.",
 
   "agentSettings.name": "Name",

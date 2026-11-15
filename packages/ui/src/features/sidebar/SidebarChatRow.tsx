@@ -48,6 +48,18 @@ function doneText(done: SidebarChatDone, t: AppTranslate, format: AppFormat): st
   return t("sidebar.dock.doneHours", { value: format.number(Math.floor(minutes / 60)) });
 }
 
+/** When the last message came: the time today, the weekday this week, else the date. Empty without one. */
+export function sidebarChatTime(at: string | null | undefined, format: AppFormat, now = Date.now()): string {
+  if (!at) return "";
+  const date = new Date(at);
+  const time = date.getTime();
+  if (Number.isNaN(time)) return "";
+  const today = new Date(now);
+  if (date.toDateString() === today.toDateString()) return format.date(date, { hour: "numeric", minute: "2-digit" });
+  if (now - time < 6 * 24 * 60 * 60_000 && time <= now) return format.date(date, { weekday: "short" });
+  return format.date(date, { month: "short", day: "numeric" });
+}
+
 /** What one chat shows, the same for its row and its face. */
 interface ChatView {
   /** The chat's id, unique across agents and channels. */
@@ -61,6 +73,10 @@ interface ChatView {
   active: boolean;
   /** The words a screen reader reads after the name and the preview, such as the state. */
   extraLabel: string;
+  /** When the last message came, as the phone list shows it at the end of the row. */
+  time: string;
+  /** The agent works now: the phone list marks its face with a dot. */
+  present: boolean;
   avatar: () => JSX.Element;
   /** A mark on the face for a state that the mood does not show, such as a routine. */
   mark: () => JSX.Element;
@@ -149,6 +165,12 @@ function useAgentView(
     get extraLabel() {
       return wait() ? "" : stateLabel();
     },
+    get time() {
+      return sidebarChatTime(agent().updatedAt, format);
+    },
+    get present() {
+      return state()?.kind === "working";
+    },
     get server() {
       return props.allMachines ? marks.agent(agent().id) : props.chatServer;
     },
@@ -175,7 +197,7 @@ function useAgentView(
 
 function useChannelView(channel: () => ChannelSummary, pinned: () => boolean): ChatView {
   const { props } = useSidebarScope();
-  const { t } = useText();
+  const { t, format } = useText();
   const waitText = useWaitText();
   const chatsOnScreen = useChatsOnScreen();
   const wait = () => props.channelWaits?.[channel().id];
@@ -206,6 +228,12 @@ function useChannelView(channel: () => ChannelSummary, pinned: () => boolean): C
     },
     get extraLabel() {
       return channel().unreadCount > 0 ? t("sidebar.channel.unread", { count: channel().unreadCount }) : "";
+    },
+    get time() {
+      return sidebarChatTime(channel().lastMessage?.at, format);
+    },
+    get present() {
+      return channel().activeTasks > 0;
     },
     get server() {
       return props.chatServer;
@@ -277,6 +305,9 @@ function SidebarChatView(viewProps: { view: ChatView; look: SidebarChatLook }) {
         <span class="sidebar-chat-avatar">
           {view.avatar()}
           {view.mark()}
+          <Show when={view.present}>
+            <span class="sidebar-chat-presence" aria-hidden="true" />
+          </Show>
         </span>
         <Show when={viewProps.look === "row"}>
           <span class="sidebar-chat-copy" aria-hidden="true">
@@ -287,6 +318,11 @@ function SidebarChatView(viewProps: { view: ChatView; look: SidebarChatLook }) {
               </Show>
               {view.preview}
             </span>
+          </span>
+        </Show>
+        <Show when={viewProps.look === "row" && view.time}>
+          <span class="sidebar-chat-time" aria-hidden="true">
+            {view.time}
           </span>
         </Show>
         <Show when={view.unread}>
