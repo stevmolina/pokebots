@@ -1,0 +1,1076 @@
+/* Scoped prototype styles for Left Sidebar Bottom (3 buttons), Unified Standalone Settings,
+ * Minimalist Bot Sidebar comparison, and Laptop / iPad / iPhone responsive layouts.
+ * Strictly uses --openbot-* design tokens so both light and dark modes work cleanly. */
+
+.ws-proto-root {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+.ws-proto-root .ws-proto-app-host {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+/* Hide legacy multi-button sidebar pill when testing the simplified 3-button bottom bar. */
+.ws-proto-replace-pill .sidebar-chat .sidebar-pill {
+  display: none;
+}
+
+/* When standalone settings is active, hide the left chat sidebar and resizer completely so
+ * Settings owns the full window, matching Grok Bot's focused full-page layout. */
+.ws-proto-settings-active .sidebar.sidebar-chat,
+.ws-proto-settings-active .left-panel-resizer,
+.ws-proto-settings-active .server-rail {
+  display: none;
+}
+
+.ws-proto-settings-active .app-frame {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+
+/* Hide legacy side panel contents when showing the minimalist Grok/Hybrid bot sidebar variant. */
+.ws-proto-replace-bot-panel .side-panel-docked > #settings-side-panel {
+  top: 0;
+}
+
+.ws-proto-replace-bot-panel #settings-side-panel > :not(.right-panel-resizer):not(.ws-proto-bot-drawer),
+.ws-proto-replace-bot-panel .side-panel-header,
+.ws-proto-replace-bot-panel .side-panel-tabs {
+  display: none;
+}
+
+/* ============================================================================
+ * 1. LEFT SIDEBAR BOTTOM — 3 BUTTONS (Profile/Machines+Settings, Providers, Connect Apps)
+ * ============================================================================ */
+
+.ws-proto-bottom-wrap {
+  padding: 0 var(--openbot-space-3) var(--openbot-space-3);
+  flex: none;
+}
+
+.sidebar-compact .ws-proto-bottom-wrap {
+  padding: var(--openbot-space-2) var(--openbot-space-1-5) var(--openbot-space-3);
+}
+
+/* Variant 1A: Compact Pill Trio */
+.ws-proto-pill-trio {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--openbot-space-1-5);
+  border: 1px solid var(--openbot-border);
+  border-radius: var(--openbot-radius-pill);
+  background: color-mix(in srgb, var(--openbot-text-primary) 4%, var(--openbot-bg-sidebar));
+  padding: var(--openbot-space-1);
+}
+
+.sidebar-compact .ws-proto-pill-trio {
+  flex-direction: column;
+  padding: var(--openbot-space-1);
+}
+
+.ws-proto-pill-trio-end {
+  display: flex;
+  align-items: center;
+  gap: var(--openbot-space-1);
+}
+
+.sidebar-compact .ws-proto-pill-trio-end {
+  flex-direction: column;
+}
+
+/* Variant 1B: Grok Split Footer (no outer pill border; roomy profile chip + 2 quiet buttons) */
+.ws-proto-split-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--openbot-space-2);
+  padding: var(--openbot-space-1-5) var(--openbot-space-1) 0;
+  border-top: 1px solid var(--openbot-border);
+}
+
+.sidebar-compact .ws-proto-split-footer {
+  flex-direction: column;
+  padding-inline: 0;
+}
+
+.ws-proto-split-profile.ui-button {
+  display: flex;
+  min-width: 0;
+  flex: 1 1 auto;
+  height: var(--openbot-control-xl);
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--openbot-space-2);
+  border-radius: var(--openbot-radius-pill);
+  padding: var(--openbot-space-1) var(--openbot-space-2) var(--openbot-space-1) var(--openbot-space-1);
+  color: var(--openbot-text-primary);
+  text-align: start;
+}
+
+.ws-proto-split-profile.ui-button:hover {
+  background: var(--openbot-hover);
+}
+
+.ws-proto-split-meta {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.ws-proto-split-name {
+  overflow: hidden;
+  color: var(--openbot-text-primary);
+  font-size: var(--openbot-text-md);
+  font-weight: var(--openbot-weight-medium);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ws-proto-split-sub {
+  overflow: hidden;
+  color: var(--openbot-text-muted);
+  font-size: var(--openbot-text-sm);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sidebar-compact .ws-proto-split-meta {
+  display: none;
+}
+
+.ws-proto-split-actions {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--openbot-space-1);
+}
+
+.sidebar-compact .ws-proto-split-actions {
+  flex-direction: column;
+}
+
+/* Variant 1C: Equal 3-Button Segment Dock */
+.ws-proto-dock-trio {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--openbot-space-1);
+  border: 1px solid var(--openbot-border);
+  border-radius: var(--openbot-radius-card);
+  background: var(--openbot-bg-surface);
+  padding: var(--openbot-space-1);
+}
+
+.sidebar-compact .ws-proto-dock-trio {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.ws-proto-dock-btn.ui-button {
+  display: flex;
+  height: var(--openbot-control-lg);
+  min-width: 0;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: var(--openbot-space-1-5);
+  border-radius: var(--openbot-radius-md);
+  padding: 0 var(--openbot-space-2);
+  color: var(--openbot-text-secondary);
+  font-size: var(--openbot-text-sm);
+  font-weight: var(--openbot-weight-medium);
+}
+
+.ws-proto-dock-btn.ui-button:hover {
+  background: var(--openbot-hover);
+  color: var(--openbot-text-primary);
+}
+
+.ws-proto-dock-btn.ui-button[aria-expanded="true"] {
+  background: var(--openbot-bg-control-active);
+  color: var(--openbot-text-primary);
+}
+
+.ws-proto-dock-btn svg {
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+
+/* Shared avatar badge for the Profile/Machines trigger */
+.ws-proto-profile-btn.ui-button {
+  position: relative;
+  display: inline-flex;
+  height: var(--openbot-control-xl);
+  min-width: var(--openbot-control-xl);
+  align-items: center;
+  gap: var(--openbot-space-2);
+  border-radius: var(--openbot-radius-pill);
+  padding: 2px var(--openbot-space-2) 2px 2px;
+  color: var(--openbot-text-primary);
+}
+
+.sidebar-compact .ws-proto-profile-btn.ui-button {
+  padding: 2px;
+  justify-content: center;
+}
+
+.ws-proto-profile-btn.ui-button:hover {
+  background: var(--openbot-hover);
+}
+
+.ws-proto-avatar-ring {
+  position: relative;
+  display: grid;
+  width: 34px;
+  height: 34px;
+  flex: none;
+  place-items: center;
+  border-radius: var(--openbot-radius-pill);
+  background: var(--openbot-bg-surface-raised);
+  border: 1px solid var(--openbot-border-strong);
+  color: var(--openbot-text-primary);
+  font-size: var(--openbot-text-sm);
+  font-weight: var(--openbot-weight-semibold);
+}
+
+.ws-proto-machine-pip {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  width: 15px;
+  height: 15px;
+  overflow: hidden;
+  border-radius: var(--openbot-radius-pill);
+  background: var(--openbot-bg-sidebar);
+  box-shadow: 0 0 0 2px var(--openbot-bg-sidebar);
+}
+
+.ws-proto-machine-pip > * {
+  width: 100%;
+  height: 100%;
+}
+
+.ws-proto-profile-name {
+  max-width: 112px;
+  overflow: hidden;
+  font-size: var(--openbot-text-md);
+  font-weight: var(--openbot-weight-medium);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sidebar-compact .ws-proto-profile-name {
+  display: none;
+}
+
+.ws-proto-icon-circle.ui-button {
+  display: grid;
+  width: var(--openbot-control-lg);
+  height: var(--openbot-control-lg);
+  flex: none;
+  place-items: center;
+  border-radius: var(--openbot-radius-pill);
+  border: 1px solid var(--openbot-border);
+  background: var(--openbot-bg-surface);
+  color: var(--openbot-text-primary);
+  padding: 0;
+}
+
+.ws-proto-icon-circle.ui-button:hover {
+  background: var(--openbot-bg-control-hover);
+}
+
+.ws-proto-icon-circle.ui-button svg {
+  width: 17px;
+  height: 17px;
+}
+
+/* Profile / Machines / Settings Popover Modal (Grok Bot Image 1 + OpenBot Machines) */
+.ws-proto-account-popover {
+  width: 272px;
+  max-width: calc(100vw - 24px);
+  border: 1px solid var(--openbot-border-strong);
+  border-radius: var(--openbot-radius-xl);
+  background: var(--openbot-bg-sheet);
+  box-shadow: var(--openbot-shadow-raised);
+  padding: var(--openbot-space-1-5);
+  color: var(--openbot-text-primary);
+}
+
+.ws-proto-pop-section {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--openbot-space-1) 0;
+}
+
+.ws-proto-pop-divider {
+  height: 1px;
+  margin: var(--openbot-space-1) var(--openbot-space-2);
+  background: var(--openbot-border);
+}
+
+.ws-proto-pop-row.ui-button {
+  display: flex;
+  width: 100%;
+  height: auto;
+  min-height: var(--openbot-control-lg);
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--openbot-space-2);
+  border-radius: var(--openbot-radius-md);
+  padding: var(--openbot-space-1-5) var(--openbot-space-2);
+  color: var(--openbot-text-primary);
+  font-size: var(--openbot-text-md);
+  font-weight: var(--openbot-weight-regular);
+  text-align: start;
+}
+
+.ws-proto-pop-row.ui-button:hover {
+  background: var(--openbot-bg-control-hover);
+}
+
+.ws-proto-pop-row-left {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: var(--openbot-space-2);
+}
+
+.ws-proto-pop-row-left svg {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  color: var(--openbot-text-secondary);
+}
+
+.ws-proto-pop-muted {
+  color: var(--openbot-text-muted);
+  font-size: var(--openbot-text-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.ws-proto-pop-label {
+  padding: var(--openbot-space-1) var(--openbot-space-2) var(--openbot-space-0-5);
+  color: var(--openbot-text-muted);
+  font-size: var(--openbot-text-sm);
+  font-weight: var(--openbot-weight-medium);
+}
+
+.ws-proto-machine-dot {
+  width: 7px;
+  height: 7px;
+  flex: none;
+  border-radius: var(--openbot-radius-pill);
+  background: var(--openbot-success);
+}
+
+.ws-proto-apps-popover {
+  width: 300px;
+  max-width: calc(100vw - 24px);
+  border: 1px solid var(--openbot-border-strong);
+  border-radius: var(--openbot-radius-xl);
+  background: var(--openbot-bg-sheet);
+  box-shadow: var(--openbot-shadow-raised);
+  padding: var(--openbot-space-3);
+  color: var(--openbot-text-primary);
+}
+
+.ws-proto-apps-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--openbot-space-2);
+}
+
+.ws-proto-apps-title {
+  margin: 0;
+  font-size: var(--openbot-text-lg);
+  font-weight: var(--openbot-weight-semibold);
+}
+
+.ws-proto-apps-grid {
+  display: grid;
+  gap: var(--openbot-space-1-5);
+}
+
+.ws-proto-app-tile {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--openbot-space-2);
+  border: 1px solid var(--openbot-border);
+  border-radius: var(--openbot-radius-lg);
+  background: var(--openbot-bg-surface);
+  padding: var(--openbot-space-2);
+}
+
+.ws-proto-app-tile-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.ws-proto-app-tile-name {
+  font-size: var(--openbot-text-md);
+  font-weight: var(--openbot-weight-medium);
+}
+
+.ws-proto-app-tile-sub {
+  color: var(--openbot-text-muted);
+  font-size: var(--openbot-text-sm);
+}
+
+/* ============================================================================
+ * 2. UNIFIED STANDALONE SETTINGS PAGE (Full window, No bot sidebar, Minimalist)
+ * ============================================================================ */
+
+.ws-proto-settings-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  grid-template-columns: 228px minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+  background: var(--openbot-bg-canvas);
+  color: var(--openbot-text-primary);
+}
+
+.ws-proto-settings-nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--openbot-space-1);
+  border-inline-end: 1px solid var(--openbot-border);
+  background: var(--openbot-bg-sidebar);
+  padding: var(--openbot-space-4) var(--openbot-space-3);
+  overflow-y: auto;
+}
+
+.ws-proto-settings-brand {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--openbot-space-2) var(--openbot-space-2);
+}
+
+.ws-proto-settings-h1 {
+  margin: 0;
+  font-size: var(--openbot-text-lg);
+  font-weight: var(--openbot-weight-semibold);
+  color: var(--openbot-text-primary);
+}
+
+.ws-proto-settings-group-title {
+  margin: var(--openbot-space-3) 0 var(--openbot-space-1);
+  padding-inline: var(--openbot-space-2);
+  color: var(--openbot-text-muted);
+  font-size: var(--openbot-text-sm);
+  font-weight: var(--openbot-weight-medium);
+}
+
+.ws-proto-nav-btn.ui-button {
+  display: flex;
+  width: 100%;
+  height: var(--openbot-control-lg);
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--openbot-space-2);
+  border-radius: var(--openbot-radius-md);
+  padding: 0 var(--openbot-space-2);
+  color: var(--openbot-text-secondary);
+  font-size: var(--openbot-text-md);
+  font-weight: var(--openbot-weight-regular);
+}
+
+.ws-proto-nav-btn.ui-button:hover {
+  background: var(--openbot-bg-control-hover);
+  color: var(--openbot-text-primary);
+}
+
+.ws-proto-nav-btn.ui-button[aria-current="page"] {
+  background: var(--openbot-bg-control-active);
+  color: var(--openbot-text-primary);
+  font-weight: var(--openbot-weight-medium);
+}
+
+.ws-proto-nav-btn svg {
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+
+.ws-proto-nav-status {
+  margin-inline-start: auto;
+  width: 7px;
+  height: 7px;
+  border-radius: var(--openbot-radius-pill);
+  background: var(--openbot-success);
+}
+
+.ws-proto-settings-main {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  background: var(--openbot-bg-sheet);
+}
+
+.ws-proto-settings-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--openbot-space-3);
+  padding: var(--openbot-space-4) var(--openbot-space-6) var(--openbot-space-2);
+}
+
+.ws-proto-settings-page-title {
+  margin: 0;
+  font-size: var(--openbot-text-2xl);
+  font-weight: var(--openbot-weight-semibold);
+}
+
+.ws-proto-settings-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--openbot-space-3) var(--openbot-space-6) var(--openbot-space-8);
+}
+
+.ws-proto-settings-container {
+  max-width: 680px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--openbot-space-6);
+}
+
+.ws-proto-section-label {
+  margin: 0 0 var(--openbot-space-2);
+  color: var(--openbot-text-muted);
+  font-size: var(--openbot-text-sm);
+  font-weight: var(--openbot-weight-medium);
+}
+
+.ws-proto-card {
+  border: 1px solid var(--openbot-border-grouped);
+  border-radius: var(--openbot-radius-card);
+  background: var(--openbot-bg-grouped);
+  overflow: hidden;
+}
+
+.ws-proto-card-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--openbot-space-4);
+  padding: var(--openbot-space-3) var(--openbot-space-4);
+}
+
+.ws-proto-card-row + .ws-proto-card-row {
+  border-top: 1px solid var(--openbot-border);
+}
+
+.ws-proto-card-row-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.ws-proto-card-row-title {
+  font-size: var(--openbot-text-md);
+  font-weight: var(--openbot-weight-medium);
+  color: var(--openbot-text-primary);
+}
+
+.ws-proto-card-row-desc {
+  font-size: var(--openbot-text-sm);
+  color: var(--openbot-text-muted);
+}
+
+.ws-proto-machine-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--openbot-space-2);
+}
+
+.ws-proto-machine-pills {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: var(--openbot-space-1);
+  margin: 0;
+  padding: 3px;
+  border-radius: var(--openbot-radius-pill);
+  border: 1px solid var(--openbot-border);
+  background: var(--openbot-bg-sidebar);
+}
+
+.ws-proto-machine-pill.ui-button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--openbot-space-1-5);
+  height: var(--openbot-control-sm);
+  border-radius: var(--openbot-radius-pill);
+  padding: 0 var(--openbot-space-3);
+  font-size: var(--openbot-text-sm);
+  font-weight: var(--openbot-weight-medium);
+  color: var(--openbot-text-secondary);
+}
+
+.ws-proto-machine-pill.ui-button[aria-pressed="true"] {
+  background: var(--openbot-bg-surface);
+  color: var(--openbot-text-primary);
+  box-shadow: var(--openbot-shadow-card);
+}
+
+.ws-proto-machine-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--openbot-space-3);
+}
+
+.ws-proto-machine-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--openbot-space-3);
+  border: 1px solid var(--openbot-border-grouped);
+  border-radius: var(--openbot-radius-card);
+  background: var(--openbot-bg-grouped);
+  padding: var(--openbot-space-4);
+}
+
+.ws-proto-machine-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--openbot-space-2);
+}
+
+.ws-proto-machine-card-id {
+  display: flex;
+  align-items: center;
+  gap: var(--openbot-space-2);
+}
+
+.ws-proto-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 22px;
+  padding: 0 var(--openbot-space-2);
+  border-radius: var(--openbot-radius-pill);
+  background: var(--openbot-success-soft);
+  color: var(--openbot-success-text);
+  font-size: var(--openbot-text-sm);
+  font-weight: var(--openbot-weight-medium);
+}
+
+.ws-proto-badge-neutral {
+  background: var(--openbot-bg-control-hover);
+  color: var(--openbot-text-secondary);
+}
+
+/* ============================================================================
+ * 3. BOT SIDEBAR COMPARISON (Grok Minimalist vs Hybrid Focus vs Current OpenBot)
+ * ============================================================================ */
+
+.ws-proto-compare-bar {
+  position: fixed;
+  top: var(--openbot-space-2);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 60;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--openbot-space-1);
+  margin: 0;
+  border: 1px solid var(--openbot-border-strong);
+  border-radius: var(--openbot-radius-pill);
+  background: var(--openbot-bg-sheet);
+  box-shadow: var(--openbot-shadow-raised);
+  padding: 3px;
+}
+
+.ws-proto-compare-pill.ui-button {
+  height: 28px;
+  border-radius: var(--openbot-radius-pill);
+  padding: 0 var(--openbot-space-3);
+  font-size: var(--openbot-text-sm);
+  font-weight: var(--openbot-weight-medium);
+  color: var(--openbot-text-secondary);
+}
+
+.ws-proto-compare-pill.ui-button[aria-pressed="true"] {
+  background: var(--openbot-surface-light);
+  color: var(--openbot-text-on-light);
+}
+
+.ws-proto-bot-drawer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  background: var(--openbot-bg-canvas);
+  color: var(--openbot-text-primary);
+}
+
+.ws-proto-bot-top {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: var(--openbot-space-3) var(--openbot-space-3) 0;
+  flex: none;
+}
+
+.ws-proto-bot-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--openbot-space-2) var(--openbot-space-4) var(--openbot-space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--openbot-space-4);
+}
+
+.ws-proto-bot-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--openbot-space-1-5);
+  text-align: center;
+  padding-bottom: var(--openbot-space-1);
+}
+
+.ws-proto-bot-avatar {
+  position: relative;
+  width: 68px;
+  height: 68px;
+}
+
+.ws-proto-bot-avatar > :first-child {
+  width: 100%;
+  height: 100%;
+}
+
+.ws-proto-bot-name {
+  margin: 0;
+  font-size: var(--openbot-text-2xl);
+  font-weight: var(--openbot-weight-semibold);
+}
+
+.ws-proto-bot-subtitle {
+  margin: 0;
+  font-size: var(--openbot-text-sm);
+  color: var(--openbot-text-muted);
+}
+
+.ws-proto-segmented {
+  display: inline-flex;
+  align-self: center;
+  gap: 2px;
+  margin: 0;
+  border: 0;
+  border-radius: var(--openbot-radius-pill);
+  background: var(--openbot-tabs-bar-bg);
+  padding: 3px;
+}
+
+.ws-proto-segmented-btn.ui-button {
+  height: 28px;
+  border-radius: var(--openbot-radius-pill);
+  padding: 0 var(--openbot-space-3);
+  font-size: var(--openbot-text-sm);
+  font-weight: var(--openbot-weight-medium);
+  color: var(--openbot-text-secondary);
+}
+
+.ws-proto-segmented-btn.ui-button[aria-selected="true"],
+.ws-proto-segmented-btn.ui-button[aria-pressed="true"] {
+  background: var(--openbot-tabs-pill-bg);
+  color: var(--openbot-text-primary);
+  box-shadow: var(--openbot-shadow-card);
+}
+
+.ws-proto-bot-group-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--openbot-space-1-5);
+  color: var(--openbot-text-muted);
+  font-size: var(--openbot-text-sm);
+  font-weight: var(--openbot-weight-medium);
+}
+
+.ws-proto-computer-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--openbot-space-3);
+  border: 1px solid var(--openbot-border-grouped);
+  border-radius: var(--openbot-radius-card);
+  background: var(--openbot-bg-grouped);
+  padding: var(--openbot-space-3);
+}
+
+.ws-proto-computer-thumb {
+  display: grid;
+  width: 68px;
+  height: 44px;
+  flex: none;
+  place-items: center;
+  border-radius: var(--openbot-radius-md);
+  border: 1px solid var(--openbot-border);
+  background: linear-gradient(135deg, var(--openbot-bg-sidebar), var(--openbot-bg-control-active));
+  color: var(--openbot-text-muted);
+}
+
+.ws-proto-bot-row-btn.ui-button {
+  display: flex;
+  width: 100%;
+  height: auto;
+  min-height: 44px;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--openbot-space-2);
+  padding: var(--openbot-space-2-5, 10px) var(--openbot-space-3);
+  border-radius: 0;
+  color: var(--openbot-text-primary);
+  font-size: var(--openbot-text-md);
+  font-weight: var(--openbot-weight-medium);
+}
+
+.ws-proto-bot-row-btn.ui-button:hover {
+  background: var(--openbot-bg-control-hover);
+}
+
+.ws-proto-bot-row-btn + .ws-proto-bot-row-btn {
+  border-top: 1px solid var(--openbot-border);
+}
+
+.ws-proto-bot-row-left {
+  display: flex;
+  align-items: center;
+  gap: var(--openbot-space-2);
+  min-width: 0;
+}
+
+.ws-proto-bot-row-left svg {
+  width: 16px;
+  height: 16px;
+  color: var(--openbot-text-secondary);
+  flex: none;
+}
+
+.ws-proto-bot-row-val {
+  display: flex;
+  align-items: center;
+  gap: var(--openbot-space-1);
+  color: var(--openbot-text-muted);
+  font-size: var(--openbot-text-sm);
+  font-weight: var(--openbot-weight-regular);
+}
+
+/* ============================================================================
+ * 4. RESPONSIVE (Laptop 1440 · iPad 820 · iPhone 390)
+ * ============================================================================ */
+
+.ws-proto-responsive-stage {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh;
+  background: var(--openbot-bg-frame);
+  overflow: hidden;
+}
+
+.ws-proto-responsive-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--openbot-space-3);
+  padding: var(--openbot-space-2) var(--openbot-space-4);
+  border-bottom: 1px solid var(--openbot-border);
+  background: var(--openbot-bg-sidebar);
+  flex: none;
+}
+
+.ws-proto-responsive-canvas {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: grid;
+  place-items: center;
+  padding: var(--openbot-space-4);
+  overflow: auto;
+}
+
+.ws-proto-device-frame {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--openbot-border-strong);
+  border-radius: var(--openbot-radius-xl);
+  background: var(--openbot-bg-canvas);
+  box-shadow: var(--openbot-shadow-dialog);
+  transition:
+    width 220ms ease,
+    height 220ms ease;
+}
+
+.ws-proto-device-laptop {
+  width: min(100%, 1280px);
+  height: min(100%, 780px);
+}
+
+.ws-proto-device-ipad {
+  width: 820px;
+  max-width: 100%;
+  height: min(100%, 920px);
+}
+
+.ws-proto-device-iphone {
+  width: 390px;
+  max-width: 100%;
+  height: min(100%, 820px);
+  border-radius: 34px;
+}
+
+/* Mobile-first settings layout (shared by real viewport <=720px AND .ws-proto-device-iphone) */
+@media (max-width: 720px) {
+  .ws-proto-settings-overlay {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+
+  .ws-proto-settings-nav {
+    display: none;
+  }
+
+  .ws-proto-settings-nav[data-mobile-open="true"] {
+    display: flex;
+    grid-row: 1 / -1;
+    z-index: 2;
+    border-inline-end: 0;
+  }
+
+  .ws-proto-settings-topbar,
+  .ws-proto-settings-scroll {
+    padding-inline: var(--openbot-space-4);
+  }
+}
+
+.ws-proto-device-iphone .ws-proto-settings-overlay,
+.ws-proto-device-ipad .ws-proto-settings-overlay {
+  position: absolute;
+}
+
+.ws-proto-device-iphone .ws-proto-settings-overlay {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.ws-proto-device-iphone .ws-proto-settings-nav {
+  border-inline-end: 0;
+}
+
+.ws-proto-device-iphone .ws-proto-settings-topbar,
+.ws-proto-device-iphone .ws-proto-settings-scroll {
+  padding-inline: var(--openbot-space-4);
+}
+
+/* iPad responsive adjustments (both real <= 1024px and simulated iPad container) */
+@media (max-width: 1024px) {
+  .ws-proto-settings-overlay {
+    grid-template-columns: 200px minmax(0, 1fr);
+  }
+}
+
+.ws-proto-device-ipad .ws-proto-settings-overlay {
+  grid-template-columns: 200px minmax(0, 1fr);
+}
+
+/* Phone preview shell inside iPhone frame */
+.ws-proto-phone-shell {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background: var(--openbot-bg-canvas);
+  color: var(--openbot-text-primary);
+}
+
+.ws-proto-phone-header {
+  display: flex;
+  height: 52px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--openbot-space-3);
+  border-bottom: 1px solid var(--openbot-border);
+  flex: none;
+}
+
+.ws-proto-phone-list {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: var(--openbot-space-2) var(--openbot-space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--openbot-space-2);
+}
+
+.ws-proto-phone-chat-row {
+  display: flex;
+  align-items: center;
+  gap: var(--openbot-space-3);
+  padding: var(--openbot-space-2) var(--openbot-space-3);
+  border-radius: var(--openbot-radius-card);
+  background: var(--openbot-bg-surface);
+  border: 1px solid var(--openbot-border);
+  text-align: start;
+}
+
+.ws-proto-phone-bottom-dock {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--openbot-space-2);
+  margin: 0 var(--openbot-space-3) var(--openbot-space-3);
+  padding: var(--openbot-space-1-5) var(--openbot-space-2);
+  border: 1px solid var(--openbot-border-strong);
+  border-radius: var(--openbot-radius-pill);
+  background: var(--openbot-bg-sheet);
+  box-shadow: var(--openbot-shadow-raised);
+  flex: none;
+}
+
+.ws-proto-ipad-shell {
+  display: grid;
+  grid-template-columns: 248px minmax(0, 1fr);
+  width: 100%;
+  height: 100%;
+  background: var(--openbot-bg-canvas);
+  color: var(--openbot-text-primary);
+}
+
+.ws-proto-ipad-sidebar {
+  display: flex;
+  flex-direction: column;
+  border-inline-end: 1px solid var(--openbot-border);
+  background: var(--openbot-bg-sidebar);
+  min-height: 0;
+}
+
+.ws-proto-ipad-main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 280px;
+  min-width: 0;
+  min-height: 0;
+}
