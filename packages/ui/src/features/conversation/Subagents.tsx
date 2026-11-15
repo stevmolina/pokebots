@@ -65,12 +65,16 @@ function elapsedMs(subagent: ConversationSubagent, now: number): number {
   return timeOf(subagent.endedAt, now) - timeOf(subagent.startedAt, now);
 }
 
-/** "12s" or "1m 05s": the time of a subagent, or of a turn in its steps row. */
+/** "12s", "1m 05s", "2h 5m" or "88d": the time of a subagent, or of a turn in its steps row. */
 export function useDuration() {
   const { t } = useText();
   return (ms: number) => {
     const total = Math.max(0, Math.floor(ms / 1_000));
     if (total < 60) return t("chat.subagents.seconds", { seconds: total });
+    if (total >= 86_400) return t("chat.subagents.days", { days: Math.floor(total / 86_400) });
+    if (total >= 3_600) {
+      return t("chat.subagents.hours", { hours: Math.floor(total / 3_600), minutes: Math.floor((total % 3_600) / 60) });
+    }
     return t("chat.subagents.minutes", {
       minutes: Math.floor(total / 60),
       seconds: String(total % 60).padStart(2, "0"),

@@ -7,7 +7,6 @@
  * - The server drawer slides in from the leading edge, and dialogs open as bottom sheets.
  */
 
-.web-phone-header,
 .web-phone-tab-bar,
 .web-phone-back,
 .web-phone-swipe-edge,
@@ -39,7 +38,6 @@
 
   .web-app-frame {
     --server-rail-width: 64px;
-    --web-phone-header-height: 50px;
     --web-phone-tab-bar-height: 44px;
     --web-phone-tab-bar-gap: var(--openbot-space-3);
     --web-phone-bottom-inset: env(safe-area-inset-bottom, 0px);
@@ -103,79 +101,6 @@
     transform: scaleX(-1);
   }
 
-  /* ---------------------------------------------------------------- the top workspace header */
-
-  .web-phone-header {
-    position: absolute;
-    z-index: 5;
-    top: 0;
-    inset-inline: 0;
-    display: grid;
-    height: var(--web-phone-header-height);
-    grid-template-columns: var(--openbot-control-xl) minmax(0, 1fr) var(--openbot-control-xl);
-    align-items: center;
-    padding-inline: var(--openbot-space-3);
-    background: var(--openbot-bg-canvas);
-  }
-
-  .web-phone-header .web-phone-header-button.ui-button {
-    display: inline-flex;
-    width: var(--openbot-control-lg);
-    height: var(--openbot-control-lg);
-    align-items: center;
-    justify-content: center;
-    border: 0;
-    border-radius: var(--openbot-radius-pill);
-    background: transparent;
-    padding: 0;
-    color: var(--openbot-text-primary);
-    box-shadow: none;
-  }
-
-  .web-phone-header .web-phone-header-button.ui-button > svg {
-    width: var(--openbot-icon-lg);
-    height: var(--openbot-icon-lg);
-    stroke-width: var(--openbot-icon-stroke);
-  }
-
-  .web-phone-header .web-phone-header-button.ui-button[data-active="true"] {
-    background: var(--openbot-hover);
-    color: var(--openbot-accent-text);
-  }
-
-  .web-phone-header .web-phone-server-pill.ui-button {
-    justify-self: center;
-    display: inline-flex;
-    max-width: 100%;
-    height: var(--openbot-control-lg);
-    align-items: center;
-    gap: var(--openbot-space-1-5);
-    border: 0;
-    border-radius: var(--openbot-radius-pill);
-    background: transparent;
-    padding: 0 var(--openbot-space-3);
-    color: var(--openbot-text-primary);
-    font-size: var(--openbot-text-xl);
-    font-weight: var(--openbot-weight-semibold);
-    letter-spacing: var(--openbot-tracking-tight);
-    box-shadow: none;
-  }
-
-  .web-phone-server-name {
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .web-phone-server-dot {
-    width: var(--openbot-space-1-5);
-    height: var(--openbot-space-1-5);
-    flex: none;
-    border-radius: var(--openbot-radius-pill);
-    background: var(--openbot-text-primary);
-  }
-
   /* ---------------------------------------------------------------- the floating bottom Search pill */
 
   .web-phone-tab-bar {
@@ -184,8 +109,29 @@
     inset-inline: 0;
     bottom: calc(var(--web-phone-tab-bar-gap) + var(--web-phone-bottom-inset));
     display: flex;
-    justify-content: center;
-    padding-inline: calc(var(--openbot-space-4) + env(safe-area-inset-left, 0px));
+    align-items: center;
+    gap: var(--openbot-space-3);
+    padding-inline: calc(var(--openbot-space-5) + env(safe-area-inset-left, 0px))
+      calc(var(--openbot-space-5) + env(safe-area-inset-right, 0px));
+  }
+
+  .web-phone-tab-bar .web-phone-apps-button.ui-button {
+    display: grid;
+    width: var(--web-phone-tab-bar-height);
+    height: var(--web-phone-tab-bar-height);
+    flex: none;
+    place-items: center;
+    border: 1px solid var(--openbot-border);
+    border-radius: var(--openbot-radius-pill);
+    background: var(--openbot-bg-surface-raised);
+    padding: 0;
+    color: var(--openbot-text-primary);
+    box-shadow: var(--openbot-shadow-raised);
+  }
+
+  .web-phone-tab-bar .web-phone-apps-button.ui-button > svg {
+    width: var(--openbot-icon-md);
+    height: var(--openbot-icon-md);
   }
 
   /* The list fades out under the floating search pill. */
@@ -200,26 +146,23 @@
     pointer-events: none;
   }
 
-  .web-phone-tab-bar .web-phone-tab.ui-button {
-    min-width: 0;
-    padding-inline: var(--openbot-space-2);
-  }
-
+  /* A wide search field, not a button: the icon and a muted placeholder at its start. */
   .web-phone-tab-bar .web-phone-search-pill.ui-button {
     pointer-events: auto;
     display: inline-flex;
     min-width: 0;
     height: var(--web-phone-tab-bar-height);
+    flex: 1 1 auto;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     gap: var(--openbot-space-2);
-    border: 1px solid var(--openbot-border-strong);
+    border: 1px solid var(--openbot-border);
     border-radius: var(--openbot-radius-pill);
     background: var(--openbot-bg-surface-raised);
-    padding: 0 var(--openbot-space-6);
-    color: var(--openbot-text-primary);
+    padding: 0 var(--openbot-space-4);
+    color: var(--openbot-text-muted);
     font-size: var(--openbot-text-lg);
-    font-weight: var(--openbot-weight-medium);
+    font-weight: var(--openbot-weight-regular);
     box-shadow: var(--openbot-shadow-raised);
   }
 
@@ -248,18 +191,17 @@
     display: flex;
     width: auto;
     grid-area: 1 / 1;
-    padding-top: var(--web-phone-header-height);
+    padding-top: env(safe-area-inset-top, 0px);
     padding-bottom: 0;
   }
 
-  .web-app-frame > :is(.sidebar, .web-phone-header, .web-phone-tab-bar) {
+  .web-app-frame > :is(.sidebar, .web-phone-tab-bar) {
     transition:
       transform var(--web-phone-push-duration) var(--web-phone-push-ease),
       visibility 0s linear var(--web-phone-push-duration);
   }
 
   .web-app-frame[data-web-mobile-pane="workspace"] > .sidebar,
-  .web-app-frame[data-web-mobile-pane="workspace"] > .web-phone-header,
   .web-app-frame[data-web-mobile-pane="workspace"] > .web-phone-tab-bar {
     transition:
       transform var(--web-phone-push-duration) var(--web-phone-push-ease),
@@ -267,7 +209,7 @@
   }
 
   /* Under a pushed chat the list moves a third of its width back, as on iOS, and then hides. */
-  .web-app-frame[data-web-mobile-pane="conversation"] > :is(.sidebar, .web-phone-header, .web-phone-tab-bar) {
+  .web-app-frame[data-web-mobile-pane="conversation"] > :is(.sidebar, .web-phone-tab-bar) {
     transform: translateX(calc(var(--web-phone-dir) * -30%));
     visibility: hidden;
   }
@@ -319,43 +261,45 @@
     padding-bottom: var(--web-phone-tab-bar-space);
   }
 
-  /* Grokbot-style collapsible folder headers (`Attention 2 ›`, `Settled 1 ›`). */
+  /* Collapsible folders as quiet muted rows: "Name 9 ›", and "Name ⌄" while open. */
   .web-app-frame > .sidebar-chat .sidebar-dock-head.ui-button {
     display: flex;
-    width: 100%;
+    width: auto;
     min-height: var(--openbot-control-xl);
     align-items: center;
-    justify-content: space-between;
-    gap: var(--openbot-space-2);
-    padding: var(--openbot-space-2) var(--openbot-space-4);
-    color: var(--openbot-text-primary);
+    justify-content: flex-start;
+    gap: var(--openbot-space-1-5);
+    padding: var(--openbot-space-2) var(--openbot-space-5);
+    color: var(--openbot-text-muted);
     font-size: var(--openbot-text-lg);
-    font-weight: var(--openbot-weight-medium);
+    font-weight: var(--openbot-weight-regular);
   }
 
   .web-app-frame > .sidebar-chat .sidebar-dock-head .sidebar-dock-name {
-    order: 1;
-    flex: 1 1 auto;
-    color: var(--openbot-text-primary);
+    min-width: 0;
+    flex: 0 1 auto;
+    overflow: hidden;
+    color: var(--openbot-text-secondary);
     font-size: var(--openbot-text-lg);
-    font-weight: var(--openbot-weight-medium);
+    font-weight: var(--openbot-weight-regular);
     letter-spacing: var(--openbot-tracking-normal);
     text-align: start;
+    text-overflow: ellipsis;
     text-transform: none;
+    white-space: nowrap;
   }
 
   .web-app-frame > .sidebar-chat .sidebar-dock-head .sidebar-dock-count {
-    order: 2;
-    margin-inline-end: var(--openbot-space-1);
+    flex: none;
     color: var(--openbot-text-muted);
     font-size: var(--openbot-text-md);
     font-weight: var(--openbot-weight-regular);
   }
 
   .web-app-frame > .sidebar-chat .sidebar-dock-head .sidebar-dock-chevron {
-    order: 3;
     width: var(--openbot-icon-md);
     height: var(--openbot-icon-md);
+    flex: none;
     color: var(--openbot-text-muted);
   }
 
@@ -363,9 +307,70 @@
     margin-top: var(--openbot-space-1);
   }
 
+  /* A chat row: the face with its presence dot, the bold name, one muted line, and the time at the end. */
   .web-app-frame > .sidebar-chat .sidebar-chat-row {
+    position: relative;
+    align-items: flex-start;
+    gap: var(--openbot-space-3);
     border-radius: var(--openbot-radius-card);
-    padding: var(--openbot-space-2) var(--openbot-space-4);
+    padding: var(--openbot-space-2-5, 10px) var(--openbot-space-5);
+  }
+
+  .web-app-frame > .sidebar-chat .sidebar-chat-row .sidebar-chat-avatar {
+    align-self: center;
+  }
+
+  /* The name and the preview end before the time, so a long preview truncates short of it. */
+  .web-app-frame > .sidebar-chat .sidebar-chat-row .sidebar-chat-copy {
+    padding-inline-end: 64px;
+  }
+
+  .web-app-frame > .sidebar-chat .sidebar-chat-row .sidebar-chat-name {
+    padding-inline-end: 0;
+    font-size: var(--openbot-text-lg);
+    font-weight: var(--openbot-weight-semibold);
+  }
+
+  .web-app-frame > .sidebar-chat .sidebar-chat-row .sidebar-chat-preview {
+    color: var(--openbot-text-muted);
+  }
+
+  .web-app-frame > .sidebar-chat .sidebar-chat-row {
+    position: relative;
+  }
+
+  .web-app-frame > .sidebar-chat .sidebar-chat-row > .sidebar-chat-time {
+    position: absolute;
+    /* On the name line: the name starts at the top of the row, 20px tall. */
+    top: 2px;
+    right: var(--openbot-space-4);
+    left: auto;
+    grid-area: auto;
+    display: block;
+    color: var(--openbot-text-muted);
+    font-size: var(--openbot-text-sm);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  /* The unread dot sits under the time. */
+  .web-app-frame > .sidebar-chat .sidebar-chat-row > .sidebar-chat-unread {
+    position: absolute;
+    top: 50%;
+    inset-inline-end: var(--openbot-space-5);
+    margin: 0;
+  }
+
+  .web-app-frame > .sidebar-chat .sidebar-chat-presence {
+    position: absolute;
+    display: block;
+    inset-inline-end: -1px;
+    bottom: -1px;
+    width: 12px;
+    height: 12px;
+    border-radius: var(--openbot-radius-pill);
+    background: var(--openbot-success);
+    box-shadow: 0 0 0 2px var(--openbot-bg-canvas);
   }
 
   /* ---------------------------------------------------------------- the server drawer */
@@ -394,7 +399,7 @@
       visibility 0s;
   }
 
-  .web-app-frame[data-web-phone-servers] > :is(.sidebar, .web-phone-header) {
+  .web-app-frame[data-web-phone-servers] > .sidebar {
     transform: translateX(calc(var(--web-phone-dir) * var(--server-rail-width)));
   }
 
@@ -453,7 +458,7 @@
     box-shadow: none;
   }
 
-  .web-app-frame[data-web-phone-connect] > :is(.sidebar, .web-phone-header, .web-phone-tab-bar) {
+  .web-app-frame[data-web-phone-connect] > :is(.sidebar, .web-phone-tab-bar) {
     transform: none;
   }
 
@@ -532,8 +537,7 @@
   }
 
   /* A finger drags the chat: everything follows it, with no transition. */
-  .web-app-frame[data-web-phone-swiping]
-  > :is(.server-connection-workspace, .sidebar, .web-phone-header, .web-phone-tab-bar) {
+  .web-app-frame[data-web-phone-swiping] > :is(.server-connection-workspace, .sidebar, .web-phone-tab-bar) {
     transition: none;
   }
 
@@ -541,7 +545,7 @@
     transform: translateX(calc(var(--web-phone-dir) * var(--web-phone-swipe, 0) * 100%));
   }
 
-  .web-app-frame[data-web-phone-swiping] > :is(.sidebar, .web-phone-header, .web-phone-tab-bar) {
+  .web-app-frame[data-web-phone-swiping] > :is(.sidebar, .web-phone-tab-bar) {
     visibility: visible;
     transform: translateX(calc(var(--web-phone-dir) * (var(--web-phone-swipe, 0) - 1) * 30%));
   }
@@ -577,10 +581,6 @@
     box-shadow: 0 10px 30px var(--openbot-shadow-dialog);
   }
 
-  .web-app-frame[data-web-phone-tab-page] > .web-phone-header {
-    visibility: hidden;
-  }
-
   /* A page of the tab bar is a root: the tab bar stays over it, and it has no Back button or swipe. */
   .web-app-frame[data-web-phone-tab-page] > .web-phone-tab-bar {
     z-index: 7;
@@ -605,6 +605,138 @@
       .remote-desktop-header
     ) {
     padding-inline-start: var(--openbot-space-3);
+  }
+
+  /* ---------------------------------------------------------------- the home: corners, featured agent */
+
+  /* No title bar: the profile photo at the start, New at the end, on the canvas. */
+  .web-app-frame > .sidebar-chat .sidebar-chat-top {
+    display: flex;
+    min-height: 60px;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--openbot-space-2) var(--openbot-space-4) 0;
+    background: transparent;
+  }
+
+  .web-app-frame > .sidebar-chat .sidebar-chat-top > .sidebar-chat-spacer {
+    flex: 1;
+  }
+
+  .web-app-frame > .sidebar-chat .sidebar-footer-profile.sidebar-footer-profile-compact {
+    width: 44px;
+    height: 44px;
+    flex: none;
+    justify-content: center;
+    padding: 0;
+  }
+
+  .web-app-frame > .sidebar-chat .sidebar-footer-profile-compact .sidebar-footer-avatar {
+    width: 40px;
+    height: 40px;
+    box-shadow: 0 0 0 1px var(--openbot-border);
+  }
+
+  .web-app-frame > .sidebar-chat .sidebar-footer-profile-compact .sidebar-footer-status {
+    width: 11px;
+    height: 11px;
+    box-shadow: 0 0 0 2px var(--openbot-bg-canvas);
+  }
+
+  .web-app-frame > .sidebar-chat .sidebar-chat-top .sidebar-chat-round {
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--openbot-border);
+    background: var(--openbot-bg-surface-raised);
+    box-shadow: var(--openbot-shadow-raised);
+  }
+
+  .web-app-frame > .sidebar-chat .sidebar-chat-top .sidebar-chat-round > svg {
+    width: var(--openbot-icon-lg);
+    height: var(--openbot-icon-lg);
+  }
+
+  .sidebar-featured {
+    display: flex;
+    justify-content: center;
+    padding: var(--openbot-space-2) 0 var(--openbot-space-6);
+  }
+
+  .sidebar-featured-button.ui-button {
+    display: flex;
+    height: auto;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--openbot-space-2);
+    border-radius: var(--openbot-radius-card);
+    background: transparent;
+    padding: var(--openbot-space-2) var(--openbot-space-4);
+    color: var(--openbot-text-primary);
+  }
+
+  .sidebar-featured-button.ui-button:hover,
+  .sidebar-featured-button.ui-button[aria-current="page"] {
+    background: transparent;
+  }
+
+  .sidebar-featured-avatar {
+    position: relative;
+    display: block;
+    width: 104px;
+    height: 104px;
+  }
+
+  .sidebar-featured-avatar > .agent-avatar {
+    width: 100%;
+    height: 100%;
+  }
+
+  .sidebar-featured-badge {
+    position: absolute;
+    inset-inline-end: 2px;
+    bottom: 2px;
+    display: grid;
+    width: 26px;
+    height: 26px;
+    place-items: center;
+    border-radius: var(--openbot-radius-pill);
+    background: var(--openbot-warning);
+    color: var(--openbot-text-on-accent);
+    box-shadow: 0 0 0 3px var(--openbot-bg-canvas);
+  }
+
+  .sidebar-featured-badge > svg {
+    width: 14px;
+    height: 14px;
+    fill: currentcolor;
+  }
+
+  .sidebar-featured-name {
+    font-size: var(--openbot-text-lg);
+    font-weight: var(--openbot-weight-medium);
+  }
+
+  /* ---------------------------------------------------------------- the standalone settings page */
+
+  /* Settings covers the home: no bottom bar, no header, its own × and section drawer. */
+  .web-app-frame[data-web-phone-settings] > .web-phone-tab-bar {
+    visibility: hidden;
+  }
+
+  .web-app-frame[data-web-phone-settings] > .window-page {
+    z-index: 8;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: 0;
+    background: var(--openbot-bg-canvas);
+  }
+
+  .web-app-frame[data-web-phone-settings]::before {
+    visibility: hidden;
+  }
+
+  /* The panel ends above the home indicator, so its last row is never under a bar. */
+  .web-app-frame[data-web-phone-settings] .settings-page-content .settings-modal-content {
+    padding-bottom: calc(var(--openbot-space-8) + var(--web-phone-bottom-inset));
   }
 
   /* ---------------------------------------------------------------- dialogs as bottom sheets */
@@ -684,7 +816,7 @@
 
 /* Reduced motion: screens and sheets change at once; a drag still follows the finger. */
 @media (max-width: 720px) and (prefers-reduced-motion: reduce) {
-  .web-app-frame > :is(.sidebar, .server-rail, .server-connection-workspace, .web-phone-header, .web-phone-tab-bar) {
+  .web-app-frame > :is(.sidebar, .server-rail, .server-connection-workspace, .web-phone-tab-bar) {
     transition-duration: 0.01ms;
   }
 
@@ -695,5 +827,28 @@
 
   :root .ui-dialog-content:is([data-web-phone-sheet-leaving], [data-closing]) {
     animation-duration: 0.01ms;
+  }
+}
+
+/* A short phone keeps the room above the composer for the chat: the worker rows are one line. */
+@media (max-width: 720px) and (max-height: 760px) {
+  .web-app-frame .background-workers {
+    margin-bottom: var(--openbot-space-2);
+  }
+
+  .web-app-frame .background-worker-row.ui-button {
+    min-height: var(--openbot-control-lg, 40px);
+    padding-block: var(--openbot-space-1);
+  }
+
+  .web-app-frame .background-worker-avatar {
+    width: var(--openbot-space-6);
+    height: var(--openbot-space-6);
+  }
+
+  .web-app-frame .background-worker-copy {
+    flex-direction: row;
+    align-items: baseline;
+    gap: var(--openbot-space-2);
   }
 }

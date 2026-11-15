@@ -42,8 +42,10 @@ import {
 } from "./SidebarChatDock";
 import { SidebarChatRow } from "./SidebarChatRow";
 import { SidebarEmptyState } from "./SidebarEmptyState";
+import { SidebarFeaturedAgent } from "./SidebarFeaturedAgent";
+import { SidebarFooter, SidebarProfileMenu } from "./SidebarFooter";
 import { SidebarMachineChips, SidebarMachineNotices } from "./SidebarMachineFilter";
-import { SidebarPill, SidebarPillMore } from "./SidebarPill";
+import { SidebarPill } from "./SidebarPill";
 import { SidebarPinnedGroup } from "./SidebarPinnedGroup";
 import { SidebarUsage } from "./SidebarUsage";
 import type { SidebarPages } from "./sidebar-pages";
@@ -202,6 +204,10 @@ function SidebarChatTopbar(topProps: {
   const platform = () => topProps.pages.shortcutPlatform;
   return (
     <div class="window-drag sidebar-chat-top">
+      {/* A phone has no footer: the profile photo sits in the top corner, as the iOS app has it. */}
+      <Show when={topProps.title}>
+        <SidebarProfileMenu pages={topProps.pages} compact placement="bottom-start" />
+      </Show>
       <MotionTooltip content={buttonTip(label(), "toggleSidebar", platform())}>
         <Button
           variant="ghost"
@@ -228,10 +234,6 @@ function SidebarChatTopbar(topProps: {
         )}
       </Show>
       <UpdateButton />
-      {/* A phone has no pill, so its More menu moves here. */}
-      <Show when={topProps.title}>
-        <SidebarPillMore pages={topProps.pages} />
-      </Show>
       <RoundButton
         label={t("sidebar.chat.search")}
         onClick={props.onOpenSearch}
@@ -432,6 +434,7 @@ function SidebarChatList(listProps: { onTitleHiddenChange: (hidden: boolean) => 
               onOpenServers={props.onOpenServers}
             />
             <SidebarSearchField onOpen={props.onOpenSearch} />
+            <SidebarFeaturedAgent />
           </Show>
           <Show
             when={props.allMachines}
@@ -518,8 +521,8 @@ export function SidebarChat(chatProps: { pages: SidebarPages }) {
       <SidebarChatList onTitleHiddenChange={setTitleHidden} />
       <div class="sidebar-chat-footer">{props.footer}</div>
       <div class="sidebar-chat-bottom">
-        {/* The open sidebar shows the providers as a small stack inside the pill. */}
-        <SidebarPill pages={chatProps.pages} vertical={false} />
+        {/* Three quiet buttons: profile and machines, providers, and apps. */}
+        <SidebarFooter pages={chatProps.pages} />
       </div>
     </Show>
   );

@@ -169,7 +169,7 @@ function AccountSwitch(props: { vertical: boolean; onOpenAppSettings: (trigger: 
 }
 
 /** The pages that this server has, in pill order. */
-function usePillPages(pages: () => SidebarPages) {
+export function usePillPages(pages: () => SidebarPages) {
   const { t } = useText();
   return createMemo((): PillPage[] => {
     const list: PillPage[] = [];
@@ -187,15 +187,6 @@ function usePillPages(pages: () => SidebarPages) {
     if (onMachines) list.push({ id: "machines", label: t("app.rail.machines"), icon: Server, open: onMachines });
     return list;
   });
-}
-
-/**
- * The More menu alone, for the top row of a phone: the phone has no pill, so the pages that its tab
- * bar does not hold open from here.
- */
-export function SidebarPillMore(props: { pages: SidebarPages }) {
-  const list = usePillPages(() => props.pages);
-  return <PillMore pages={props.pages} list={list()} vertical={false} placement="bottom-end" customize={false} />;
 }
 
 export function SidebarPill(props: { pages: SidebarPages; vertical: boolean }) {
