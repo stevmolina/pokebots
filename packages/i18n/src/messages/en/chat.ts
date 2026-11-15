@@ -61,6 +61,8 @@ export const messages = defineMessages("chat", {
   "chat.subagents.stepCount": { one: "{count} step", other: "{count} steps" },
   "chat.subagents.seconds": "{seconds}s",
   "chat.subagents.minutes": "{minutes}m {seconds}s",
+  "chat.subagents.hours": "{hours}h {minutes}m",
+  "chat.subagents.days": "{days}d",
   "chat.subagents.open": "{title}, {state}. Open on the side.",
   "chat.trace.title": "Trace",
   "chat.trace.search": "Search steps",

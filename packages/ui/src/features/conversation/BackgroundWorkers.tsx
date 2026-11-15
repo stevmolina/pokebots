@@ -34,8 +34,13 @@ export function BackgroundWorkers(props: { items: readonly BackgroundWorker[] })
   function elapsed(since: string) {
     const start = Date.parse(since);
     const seconds = Number.isFinite(start) ? Math.max(0, Math.floor((now() - start) / 1_000)) : 0;
-    const minutes = format.number(Math.floor(seconds / 60), { style: "unit", unit: "minute", unitDisplay: "narrow" });
-    return `${minutes} ${format.number(seconds % 60, { style: "unit", unit: "second", unitDisplay: "narrow" })}`;
+    const unit = (value: number, name: "day" | "hour" | "minute" | "second") =>
+      format.number(value, { style: "unit", unit: name, unitDisplay: "narrow" });
+    // A long run reads "2h 5m" or "88d", not thousands of minutes.
+    if (seconds >= 86_400) return unit(Math.floor(seconds / 86_400), "day");
+    if (seconds >= 3_600)
+      return `${unit(Math.floor(seconds / 3_600), "hour")} ${unit(Math.floor((seconds % 3_600) / 60), "minute")}`;
+    return `${unit(Math.floor(seconds / 60), "minute")} ${unit(seconds % 60, "second")}`;
   }
   return (
     <Show when={props.items.length > 0}>
