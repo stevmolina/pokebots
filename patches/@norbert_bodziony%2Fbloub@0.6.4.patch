@@ -33,3 +33,20 @@ index fbd2a5b0df7e5fc8a6283bb4cad189b927374db4..233757dd3d4553f881ae289e655ac313
  	}
  	let [Ie, Le] = h(!0), [Re, ze] = h(!0), [Be, Ve] = h(!1);
  	p(() => Be() && b.frozenAt === void 0 && (!b.paused || b.follow || xe()) && (!b.autoPause || Ie() && Re()), (e) => {
+diff --git a/dist/package/plush.js b/dist/package/plush.js
+--- a/dist/package/plush.js
++++ b/dist/package/plush.js
+@@ -953,9 +953,11 @@ function Gt(e, t) {
+ 	let n = `${t.toLowerCase()} ${e}`, r = $.get(n);
+ 	return r || (r = Wt(e).then((e) => {
+ 		let n = document.createElement("canvas");
+-		n.width = e.naturalWidth, n.height = e.naturalHeight;
++		// Avatars are displayed small. Bound the pixel readback before tinting.
++		let __scale = Math.min(1, 256 / Math.max(e.naturalWidth, e.naturalHeight));
++		n.width = Math.max(1, Math.round(e.naturalWidth * __scale)), n.height = Math.max(1, Math.round(e.naturalHeight * __scale));
+ 		let r = n.getContext("2d", { willReadFrequently: !0 });
+-		r.drawImage(e, 0, 0);
++		r.drawImage(e, 0, 0, n.width, n.height);
+ 		let i = r.getImageData(0, 0, n.width, n.height), a = Ht(t), o = i.data;
+ 		for (let e = 0; e < o.length; e += 4) {
+ 			let t = o[e] * 3;
