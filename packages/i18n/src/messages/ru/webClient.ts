@@ -18,7 +18,6 @@ export const messages = {
   "webClient.login.accountInvalid": "Ответ с данными аккаунта некорректен.",
   "webClient.login.responseInvalid": "Некорректный ответ при входе.",
   "webClient.pane.navigation": "Навигация по рабочему пространству",
-  "webClient.tab.chats": "Чаты",
   "webClient.tab.settings": "Настройки",
   "webClient.notice.connecting": "Подключение к вашему серверу",
   "webClient.notice.findingHosts": "Поиск ваших серверов",

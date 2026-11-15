@@ -17,7 +17,6 @@ export const messages = defineMessages("webClient", {
   "webClient.login.accountInvalid": "The account response is invalid.",
   "webClient.login.responseInvalid": "The sign-in response is invalid.",
   "webClient.pane.navigation": "Workspace navigation",
-  "webClient.tab.chats": "Chats",
   "webClient.tab.settings": "Settings",
   "webClient.notice.connecting": "Connecting to your server",
   "webClient.notice.findingHosts": "Finding your servers",

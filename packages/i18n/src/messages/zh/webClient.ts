@@ -18,7 +18,6 @@ export const messages = {
   "webClient.login.accountInvalid": "账号响应无效。",
   "webClient.login.responseInvalid": "登录响应无效。",
   "webClient.pane.navigation": "工作区导航",
-  "webClient.tab.chats": "对话",
   "webClient.tab.settings": "设置",
   "webClient.notice.connecting": "正在连接你的服务器",
   "webClient.notice.findingHosts": "正在查找你的服务器",

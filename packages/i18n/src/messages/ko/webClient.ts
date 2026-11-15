@@ -18,7 +18,6 @@ export const messages = {
   "webClient.login.accountInvalid": "계정 응답이 올바르지 않아요.",
   "webClient.login.responseInvalid": "로그인 응답이 올바르지 않아요.",
   "webClient.pane.navigation": "워크스페이스 탐색",
-  "webClient.tab.chats": "채팅",
   "webClient.tab.settings": "설정",
   "webClient.notice.connecting": "서버에 연결하는 중",
   "webClient.notice.findingHosts": "서버를 찾는 중",

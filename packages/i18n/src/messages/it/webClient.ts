@@ -18,7 +18,6 @@ export const messages = {
   "webClient.login.accountInvalid": "La risposta dell'account non è valida.",
   "webClient.login.responseInvalid": "La risposta di accesso non è valida.",
   "webClient.pane.navigation": "Navigazione del workspace",
-  "webClient.tab.chats": "Chat",
   "webClient.tab.settings": "Impostazioni",
   "webClient.notice.connecting": "Connessione al tuo server",
   "webClient.notice.findingHosts": "Ricerca dei tuoi server",

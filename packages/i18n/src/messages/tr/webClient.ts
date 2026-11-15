@@ -18,7 +18,6 @@ export const messages = {
   "webClient.login.accountInvalid": "Hesap yanıtı geçersiz.",
   "webClient.login.responseInvalid": "Oturum açma yanıtı geçersiz.",
   "webClient.pane.navigation": "Çalışma alanı gezintisi",
-  "webClient.tab.chats": "Sohbetler",
   "webClient.tab.settings": "Ayarlar",
   "webClient.notice.connecting": "Sunucunuza bağlanılıyor",
   "webClient.notice.findingHosts": "Sunucularınız aranıyor",

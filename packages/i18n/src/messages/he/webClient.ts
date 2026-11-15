@@ -18,7 +18,6 @@ export const messages = {
   "webClient.login.accountInvalid": "תשובת החשבון אינה תקינה.",
   "webClient.login.responseInvalid": "תשובת ההתחברות אינה תקינה.",
   "webClient.pane.navigation": "ניווט בסביבת העבודה",
-  "webClient.tab.chats": "צ'אטים",
   "webClient.tab.settings": "הגדרות",
   "webClient.notice.connecting": "מתחבר לשרת שלך",
   "webClient.notice.findingHosts": "מחפש את השרתים שלך",
