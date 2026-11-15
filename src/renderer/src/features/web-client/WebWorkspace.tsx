@@ -2334,12 +2334,9 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
         ? (workspace.conversation()?.page?.messages.at(-1)?.id ?? null)
         : null,
     (unread) => {
-      if (unread)
-        void workspace.markRead().catch(() =>
-          toast.error(t("chat.unread.markReadFailed"), {
-            report: { operation: "other", source: "system", cause_code: "unknown" },
-          }),
-        );
+      // A failed read mark is background work the user did not ask for, and focus marks the chat again,
+      // so it shows no toast.
+      if (unread) void workspace.markRead().catch(() => undefined);
     },
   );
   const sidebarActivity = createMemo(() => {

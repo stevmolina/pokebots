@@ -41,6 +41,7 @@
     --web-phone-tab-bar-height: 44px;
     --web-phone-tab-bar-gap: var(--openbot-space-3);
     --web-phone-bottom-inset: env(safe-area-inset-bottom, 0px);
+    --web-phone-top-inset: env(safe-area-inset-top, 0px);
     /* The room under the floating search pill: the pill, its gap above and below, and the home indicator. */
     --web-phone-tab-bar-space: calc(
       var(--web-phone-tab-bar-height) +
@@ -67,6 +68,12 @@
     --web-phone-bottom-inset: 0px;
   }
 
+  /* The phone frame draws under the status bar of the installed app: each screen pads its own content
+     by the inset, so drawers, scrims and sheets cover the status bar instead of leaving a band above it. */
+  .web-app:has(> .web-app-window) {
+    padding-top: 0;
+  }
+
   /* One screen at a time leaves nothing to resize. */
   .web-app-frame > .left-panel-resizer {
     display: none;
@@ -77,7 +84,7 @@
   .web-phone-back.ui-button {
     position: absolute;
     z-index: 3;
-    top: 0;
+    top: var(--web-phone-top-inset);
     inset-inline-start: var(--openbot-space-1);
     display: flex;
     width: 44px;
@@ -242,10 +249,19 @@
     overflow: visible;
   }
 
-  /* The unread button stays over the search pill while the list scrolls under it. */
+  /* The unread button sits in the empty middle of the top row, between the profile photo and New, so it
+     never covers a chat row. */
   .web-app-frame > .sidebar-chat .sidebar-unread-jump-wrap {
     position: fixed;
-    bottom: calc(var(--web-phone-tab-bar-space) + var(--openbot-space-2));
+    z-index: 4;
+    top: calc(var(--web-phone-top-inset) + var(--openbot-space-2) + 30px);
+    bottom: auto;
+    transform: translate(-50%, -50%);
+  }
+
+  .web-app-frame > .sidebar-chat .sidebar-unread-jump.ui-button {
+    padding: var(--openbot-space-1-5) var(--openbot-space-3);
+    font-size: var(--openbot-text-sm);
   }
 
   /* The end of the list leaves room for the floating search pill. */
@@ -382,7 +398,7 @@
     inset-inline-start: 0;
     display: flex;
     width: var(--server-rail-width);
-    padding-top: var(--openbot-space-3);
+    padding-top: calc(var(--openbot-space-3) + var(--web-phone-top-inset));
     padding-bottom: var(--web-phone-tab-bar-space);
     transform: translateX(calc(var(--web-phone-dir) * -100%));
     visibility: hidden;
@@ -421,6 +437,7 @@
   .web-app-frame > .window-page {
     z-index: 4;
     grid-area: 1 / 1;
+    padding-top: var(--web-phone-top-inset);
     padding-bottom: var(--web-phone-tab-bar-space);
   }
 
@@ -430,6 +447,7 @@
     z-index: 6;
     grid-area: 1 / 1;
     min-width: 0;
+    padding-top: var(--web-phone-top-inset);
     padding-bottom: var(--web-phone-bottom-inset);
     background: var(--openbot-bg-canvas);
     box-shadow: 0 0 var(--openbot-space-6) var(--openbot-shadow-dialog);
@@ -684,6 +702,7 @@
     display: block;
     width: 104px;
     height: 104px;
+    flex: none;
   }
 
   .sidebar-featured-avatar > .agent-avatar {
@@ -711,9 +730,20 @@
     fill: currentcolor;
   }
 
+  /* The plush is drawn larger than its box and paints over what follows it, so the name sits on top of it,
+     a little lower, and ends in an ellipsis rather than running under the corners. */
   .sidebar-featured-name {
+    position: relative;
+    z-index: 1;
+    display: block;
+    max-width: min(280px, 80vw);
+    margin-top: var(--openbot-space-2);
+    overflow: hidden;
     font-size: var(--openbot-text-lg);
-    font-weight: var(--openbot-weight-medium);
+    font-weight: var(--openbot-weight-semibold);
+    line-height: 22px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   /* ---------------------------------------------------------------- the standalone settings page */
@@ -723,11 +753,21 @@
     visibility: hidden;
   }
 
+  /* The page itself starts at the top of the screen, so the section drawer and its scrim cover the status
+     bar; the page rows and the drawer list start below it. */
   .web-app-frame[data-web-phone-settings] > .window-page {
     z-index: 8;
-    padding-top: env(safe-area-inset-top, 0px);
+    padding-top: 0;
     padding-bottom: 0;
     background: var(--openbot-bg-canvas);
+  }
+
+  .web-app-frame[data-web-phone-settings] .settings-page-unified {
+    padding-top: var(--web-phone-top-inset);
+  }
+
+  .web-app-frame[data-web-phone-settings] .settings-page-unified .settings-page-nav {
+    padding-top: calc(var(--openbot-space-4) + var(--web-phone-top-inset));
   }
 
   .web-app-frame[data-web-phone-settings]::before {

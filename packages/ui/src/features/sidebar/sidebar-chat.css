@@ -309,6 +309,10 @@
 }
 
 .sidebar-chat-avatar {
+  /* A channel cluster and picture size themselves from the row avatar size; without it they keep 36px
+     and sit small in the corner of the 46px slot. */
+  --agent-row-avatar-size: var(--sidebar-chat-face);
+
   position: relative;
   display: grid;
   width: var(--sidebar-chat-face);
@@ -319,7 +323,23 @@
 
 .sidebar-chat-avatar > :is(.agent-avatar, .channel-avatar) {
   width: 100%;
+  min-width: 0;
   height: 100%;
+}
+
+/* A channel with no members shows a bare icon: centered in the slot on a quiet disc, at the size of a face. */
+.sidebar-chat-avatar > .channel-avatar {
+  justify-content: center;
+}
+
+.sidebar-chat-avatar > .channel-avatar > svg {
+  box-sizing: border-box;
+  width: var(--sidebar-chat-face);
+  height: var(--sidebar-chat-face);
+  border-radius: var(--openbot-radius-pill);
+  background: var(--openbot-bg-control);
+  padding: 25%;
+  color: var(--openbot-text-secondary);
 }
 
 .sidebar-chat-copy {
