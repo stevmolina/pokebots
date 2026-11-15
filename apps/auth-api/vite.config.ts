@@ -104,7 +104,7 @@ export default defineConfig(({ command }) => {
       // The Worker keeps every language in its bundle.
       lazyLanguageCatalogs({ applyToEnvironment: (environment) => environment.name === "client" }),
       bloubServerBuild(),
-      tanstackStart(selfHosted ? { server: { entry: "./src/worker-entry.ts" } } : undefined),
+      tanstackStart(selfHosted ? { server: { entry: "./worker-entry.ts" } } : undefined),
       solidPlugin({ ssr: true }),
       // Lightning CSS currently reports valid named highlight selectors as
       // unsupported. Let Vite handle the final CSS bundle until that upstream

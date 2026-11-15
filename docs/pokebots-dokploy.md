@@ -40,7 +40,7 @@ AUTH_API_SMOKE_ORIGIN=http://127.0.0.1:3000 bun scripts/auth-api-self-hosted-smo
 
 The storage check writes `.openbot-build/auth-api-storage-e2e.json`. It starts a real storage
 process, kills it, restarts it, and checks retained rows, object content, batch rollback,
-conditional reads, deletion, and failed-migration rollback. CI runs this script in the API job.
+conditional reads, deletion, failed-migration rollback, and framework-log redaction. CI runs this script in the API job.
 The HTTP check writes `.openbot-build/auth-api-self-hosted-smoke.json`.
 Build and validate the image on the VPS with its resource-limited buildx builder.
 
@@ -58,6 +58,7 @@ Build and validate the image on the VPS with its resource-limited buildx builder
 
    ```sh
    bun apps/auth-api/scripts/self-hosted-import.ts export.sql /data/pokebots.sqlite
+   # In the image, use /app/apps/auth-api/scripts/self-hosted-import.js.
    ```
 
    The command refuses an existing destination. It checks SQLite integrity, foreign keys,

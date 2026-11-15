@@ -13,6 +13,7 @@ RUN node -e 'const fs=require("node:fs"); let sha=process.env.SOURCE_COMMIT; if(
 
 RUN mkdir /runtime \
   && bun build apps/auth-api/dist/server/server.js --target=bun --outfile=/runtime/worker.js \
+  && bun -e 'const m=await import("/runtime/worker.js"); if(typeof m.default.fetch!=="function" || typeof m.default.scheduled!=="function") throw new Error("Account worker handlers missing");' \
   && bun build apps/auth-api/src/self-hosted/server.ts --target=bun --outfile=/runtime/server.js \
   && bun build apps/auth-api/scripts/self-hosted-import.ts --target=bun --outfile=/runtime/import.js
 

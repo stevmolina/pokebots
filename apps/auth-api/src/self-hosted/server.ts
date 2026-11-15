@@ -1,10 +1,11 @@
 import { existsSync, readFileSync, statSync } from "node:fs";
 import { dirname, join, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
-import { createOpenBotLogger, isSecretName, registerSecretValue } from "@openbot/logging";
+import { createOpenBotLogger } from "@openbot/logging";
 import type { WorkerBindings } from "../server/types";
 import { drainWaitUntil, setSelfHostedEnv, waitUntil } from "./cloudflare-workers";
 import { openSelfHostedD1 } from "./d1-sqlite";
+import { installSelfHostedLogging } from "./logging";
 import { openSelfHostedR2 } from "./r2-fs";
 import { createMemoryRateLimiter } from "./rate-limit";
 
@@ -156,9 +157,7 @@ function staticResponse(clientDir: string, pathname: string): Response | null {
 const logger = createOpenBotLogger("self-hosted-auth-api");
 
 async function main(): Promise<void> {
-  for (const [name, value] of Object.entries(process.env)) {
-    if (value && isSecretName(name)) registerSecretValue(value);
-  }
+  installSelfHostedLogging();
   if (process.env.NODE_ENV === "production") {
     for (const name of [
       "WORKOS_OIDC_ISSUER",
@@ -199,6 +198,9 @@ async function main(): Promise<void> {
 
   const workerModule: WorkerModule = await import(serverEntryPath);
   const worker = workerModule.default;
+  if (typeof worker.fetch !== "function" || typeof worker.scheduled !== "function") {
+    throw new Error("Built entry must contain the account fetch and scheduled handlers.");
+  }
 
   const server = Bun.serve({
     hostname: host,
@@ -256,8 +258,8 @@ async function main(): Promise<void> {
     if (minute % 5 !== 0 && !bindings.SIGNAL_ENTRY_ZONE_ID?.trim()) return;
     scheduledRunning = true;
     // Use the minute boundary so the existing midnight retention job still runs.
-    const run = worker
-      .scheduled({ scheduledTime: minute * 60_000, cron }, bindings)
+    const run = Promise.resolve()
+      .then(() => worker.scheduled({ scheduledTime: minute * 60_000, cron }, bindings))
       .then(async () => {
         if (minute % 5 === 0 && bindings.SIGNAL_ENTRY_ZONE_ID?.trim()) {
           await worker.scheduled({ scheduledTime: minute * 60_000, cron: "*/1 * * * *" }, bindings);

@@ -1,4 +1,5 @@
 import { strict as assert } from "node:assert";
+import { randomUUID } from "node:crypto";
 import { mkdir, mkdtemp, readFile, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
@@ -122,6 +123,24 @@ if (process.argv[2] === "serve") {
     assert.equal(await db.d1.prepare("SELECT name FROM d1_migrations WHERE name = '0002_failure.sql'").first(), null);
     db.database.close();
     checks.push("failed startup migration rolls back data and migration record");
+    const secret = randomUUID();
+    const logging = resolve(import.meta.dirname, "../src/self-hosted/logging.ts");
+    const logProcess = Bun.spawn(
+      [
+        process.execPath,
+        "-e",
+        `import { installSelfHostedLogging } from ${JSON.stringify(logging)}; installSelfHostedLogging(); console.log(process.env.SELF_HOSTED_TEST_SECRET);`,
+      ],
+      {
+        env: { ...process.env, SELF_HOSTED_TEST_SECRET: secret },
+        stdout: "pipe",
+        stderr: "inherit",
+      },
+    );
+    const output = await new Response(logProcess.stdout).text();
+    assert.equal(await logProcess.exited, 0);
+    assert.ok(!output.includes(secret) && output.includes("[redacted]"));
+    checks.push("framework console output redacts registered runtime secrets");
     const artifact = resolve(".openbot-build/auth-api-storage-e2e.json");
     await mkdir(resolve(".openbot-build"), { recursive: true });
     await writeFile(artifact, `${JSON.stringify({ checks, fixture: root }, null, 2)}\n`);

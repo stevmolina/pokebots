@@ -48,6 +48,26 @@ if (viaProxy) {
     "legacy service worker removal script is served",
   );
 }
+const signIn = await request("/api/browser/workos/start");
+assert.equal(signIn.status, 200);
+assert.deepEqual(await signIn.json(), { enabled: true });
+const begin = await request("/api/browser/workos/start", "api.pokebots.xyz", {
+  method: "POST",
+  headers: { Origin: "https://api.pokebots.xyz", "X-OpenBot-Browser": "1", "Content-Type": "application/json" },
+  body: "{}",
+});
+assert.equal(begin.status, 200);
+const grant = await begin.json();
+assert.equal(new URL(grant.authorizationUrl).hostname, "powerful-comfort-82-staging.authkit.app");
+const cookie = begin.headers.get("set-cookie") || "";
+assert.ok(cookie.includes("Secure") && cookie.includes("HttpOnly") && cookie.includes("SameSite=Lax"));
+checks.push("live WorkOS discovery starts sign-in with a secure flow cookie");
+const jwks = await request("/.well-known/jwks.json");
+assert.equal(jwks.status, 200);
+const publicKeys = await jwks.json();
+assert.ok(publicKeys.keys.some((key: { kid: string }) => key.kid === "pokebots-contabo-20261115"));
+assert.ok(publicKeys.keys.every((key: { d?: string }) => key.d === undefined));
+checks.push("JWKS publishes the new key without private material");
 const head = await request("/app-sw.js", "api.pokebots.xyz", { method: "HEAD" });
 assert.equal((await head.arrayBuffer()).byteLength, 0);
 checks.push("HEAD asset response has no body");
