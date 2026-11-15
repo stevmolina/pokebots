@@ -76,6 +76,18 @@ export interface SidebarPages {
   onCollapse: () => void;
   /** The keyboard of the device, so the buttons name their shortcut keys. Absent until it is known. */
   shortcutPlatform?: ShortcutPlatform | undefined;
+  /** The signed-in account, for the profile button of the sidebar footer. Absent where the app has none. */
+  account?: { name: string | null; email: string; avatarUrl: string | null } | undefined;
+  /** Opens the plans. Absent where the plan cannot change here. */
+  onUpgrade?: (() => void) | undefined;
+  /** Shows how to get the mobile app. */
+  onMobileApp?: (() => void) | undefined;
+  /** Signs in with another account. */
+  onAddAccount?: (() => void) | undefined;
+  /** Signs out of the account. */
+  onSignOut?: (() => void) | undefined;
+  /** Opens the MCP servers of the machine in view, from the Connect apps menu. */
+  onConnectServers?: (() => void) | undefined;
   /** Whether ⌘, opens Settings here, so the Settings item names the key. The web client has no such key. */
   settingsShortcut?: boolean | undefined;
 }

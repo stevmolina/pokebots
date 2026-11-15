@@ -1162,3 +1162,165 @@
   overflow-wrap: anywhere;
   grid-column: 2 / -1;
 }
+
+/* The footer of the open sidebar: profile on the start, providers and apps on the end. No border, no pill. */
+.sidebar-footer {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: var(--openbot-space-1);
+}
+
+.sidebar-chat .sidebar-footer-profile {
+  display: flex;
+  min-width: 0;
+  height: var(--sidebar-pill-button);
+  flex: 1 1 auto;
+  align-items: center;
+  gap: var(--openbot-space-2);
+  border: 0;
+  border-radius: var(--openbot-radius-pill);
+  background: transparent;
+  padding: 0 var(--openbot-space-2) 0 var(--openbot-space-1);
+  color: var(--openbot-text-primary);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+  transition: background-color var(--openbot-duration-hover) ease;
+}
+
+.sidebar-chat .sidebar-footer-profile:hover,
+.sidebar-chat .sidebar-footer-profile[data-expanded] {
+  background: var(--openbot-hover);
+}
+
+.sidebar-chat .sidebar-footer-profile:focus-visible,
+.sidebar-footer-round:focus-visible {
+  outline: 2px solid var(--openbot-focus-ring, var(--openbot-accent));
+  outline-offset: 1px;
+}
+
+.sidebar-footer-avatar {
+  position: relative;
+  display: grid;
+  width: 30px;
+  height: 30px;
+  flex: none;
+  place-items: center;
+  border-radius: var(--openbot-radius-pill);
+}
+
+.sidebar-footer-avatar > :not(.sidebar-footer-status) {
+  display: grid;
+  width: 100%;
+  place-items: center;
+  height: 100%;
+  overflow: hidden;
+  border-radius: var(--openbot-radius-pill);
+}
+
+.sidebar-footer-avatar img {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  object-fit: cover;
+}
+
+/* The status of the active machine: the success colour when it answers. */
+.sidebar-footer-status {
+  position: absolute;
+  inset-inline-end: -1px;
+  bottom: -1px;
+  width: 10px;
+  height: 10px;
+  border-radius: var(--openbot-radius-pill);
+  background: var(--openbot-text-muted);
+  box-shadow: 0 0 0 2px var(--openbot-bg-sidebar);
+}
+
+.sidebar-footer-status[data-online] {
+  background: var(--openbot-success);
+}
+
+.sidebar-footer-meta {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.sidebar-footer-name,
+.sidebar-footer-sub {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sidebar-footer-name {
+  font-size: var(--openbot-text-md);
+  font-weight: var(--openbot-weight-medium);
+}
+
+.sidebar-footer-sub {
+  color: var(--openbot-text-muted);
+  font-size: var(--openbot-text-sm);
+}
+
+.sidebar-footer-actions {
+  display: flex;
+  min-width: 0;
+  flex: none;
+  align-items: center;
+  gap: 2px;
+}
+
+.sidebar-footer-actions > .ui-motion-tooltip-trigger {
+  display: flex;
+  min-width: 0;
+}
+
+.sidebar-footer-round {
+  display: grid;
+  width: var(--sidebar-pill-button);
+  height: var(--sidebar-pill-button);
+  flex: none;
+  place-items: center;
+  border: 0;
+  border-radius: var(--openbot-radius-pill);
+  background: transparent;
+  padding: 0;
+  color: var(--openbot-text-secondary);
+  cursor: pointer;
+  transition:
+    background-color var(--openbot-duration-hover) ease,
+    color var(--openbot-duration-hover) ease;
+}
+
+.sidebar-footer-round:hover,
+.sidebar-footer-round[data-expanded] {
+  background: var(--openbot-hover);
+  color: var(--openbot-text-primary);
+}
+
+.sidebar-footer-round > svg {
+  width: var(--openbot-icon-md);
+  height: var(--openbot-icon-md);
+}
+
+.sidebar-footer-menu {
+  min-width: 248px;
+}
+
+.sidebar-footer-menu-label {
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The time and the presence dot of a row show in the phone list only (web-phone.css). */
+.sidebar-chat-time,
+.sidebar-chat-presence {
+  display: none;
+}

@@ -320,14 +320,7 @@ import { isReaderAuthor } from "../team/reader-identity";
 import type { ServerVaultOptions } from "../vault/ServerVaultPanel";
 import { createVaultStore } from "../vault/stores/vault-store";
 import { createHelpMenu } from "../window/help-menu";
-import {
-  openFirstSettingsSection,
-  PersonalSettingsLink,
-  ServerSettingsLink,
-  ServerSettingsPageTitle,
-  SettingsPageFrame,
-  SettingsSearchField,
-} from "../window/SettingsPageFrame";
+import { openFirstSettingsSection, SettingsPageFrame, SettingsSearchField } from "../window/SettingsPageFrame";
 import type { SettingsKind, WindowPage } from "../window/window-page-context";
 import { WebConnectComputer } from "./WebConnectComputer";
 import { WebMobileNavigation, type WebMobilePane, WebPhoneBack, type WebPhoneTab } from "./WebMobileNavigation";
@@ -2941,33 +2934,15 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
     showAgents();
     setCreating(true);
   }
-  /** The tab of the phone tab bar that shows. A page that no tab holds, such as Usage, shows none. */
+  /**
+   * The root page of the phone that keeps the bottom bar over it. A page that no tab holds, such as Usage,
+   * shows none. Settings is a standalone page with its own close, so it has no bottom bar either.
+   */
   const phoneTab = (): WebPhoneTab | null => {
     const current = page();
-    if (current === "settings" || current === "tasks" || current === "workflows") return current;
+    if (current === "tasks" || current === "workflows") return current;
     return current === "agents" ? "chats" : null;
   };
-  /** Tasks and Workflows show only when the server has them, as in the pill of a larger screen. */
-  const phoneTabAvailable = (tab: WebPhoneTab) =>
-    tab === "tasks" ? tasksSupported() : tab === "workflows" ? workflowsSupported() : true;
-  /**
-   * A tab of the phone tab bar. Chats shows the list, also from a pushed chat or a page, as a second
-   * tap on an iOS tab goes back to its root.
-   */
-  function selectPhoneTab(tab: WebPhoneTab) {
-    setServersOpen(false);
-    if (tab === "settings") {
-      openAccountSettings();
-      return;
-    }
-    if (tab === "tasks" || tab === "workflows") {
-      const id = server()?.id;
-      if (id) void openHostPage(id, tab, null);
-      return;
-    }
-    showAgents();
-    setMobilePane("workspace");
-  }
   /** The server drawer, from the centered workspace pill of the chat list. */
   function openPhoneServers() {
     showAgents();
@@ -3031,6 +3006,15 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
     },
     onMarketplace: workspace.state.status === "online" ? openMarketplace : undefined,
     onSettings: openAccountSettings,
+    account: account(),
+    onUpgrade: () => setBillingOpen(true),
+    onSignOut: () => void signOut(),
+    onConnectServers: server()
+      ? () => {
+          const id = server()?.id;
+          if (id) void openServerSettings(id, null, "mcp");
+        }
+      : undefined,
     help,
     onCollapse: () => layout.setSidebarCollapsed(true),
     shortcutPlatform: shortcutPlatform(),
@@ -3145,6 +3129,7 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
               data-web-phone-servers={phone() && serversOpen() ? "" : undefined}
               data-web-phone-connect={phone() && noHost() ? "" : undefined}
               data-web-phone-tab-page={phone() && phoneTab() !== null && phoneTab() !== "chats" ? "" : undefined}
+              data-web-phone-settings={phone() && settingsKind() ? "" : undefined}
               compact={compact()}
               blockedServer={blockedServer()}
               initialLoading={hostOffline()}
@@ -3239,28 +3224,18 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                       {(kind) => (
                         <SettingsPageFrame
                           heading={
-                            kind === "personal" ? (
-                              <h1 class="settings-page-title" tabindex={-1}>
-                                {t("app.settingsPage.title")}
-                              </h1>
-                            ) : (
-                              <Show when={server()}>{(target) => <ServerSettingsPageTitle server={target()} />}</Show>
-                            )
+                            <h1 class="settings-page-title" tabindex={-1}>
+                              {t("app.settingsPage.unifiedTitle")}
+                            </h1>
                           }
-                          footer={
-                            kind === "personal" ? (
-                              <Show when={server()}>
-                                {(target) => (
-                                  <ServerSettingsLink
-                                    server={target()}
-                                    onOpen={() => void openServerSettings(target().id, null)}
-                                  />
-                                )}
-                              </Show>
-                            ) : (
-                              <PersonalSettingsLink account={account()} onOpen={openAccountSettings} />
-                            )
-                          }
+                          tiers={{
+                            kind,
+                            onOpenPersonal: openAccountSettings,
+                            account: account(),
+                            machines: servers(),
+                            activeMachineId: server()?.id ?? null,
+                            onOpenMachine: (serverId) => void openServerSettings(serverId, null),
+                          }}
                           onMounts={(mounts) => {
                             setSettingsMounts(mounts);
                             if (!mounts) setServerSettingsQuery("");
@@ -3533,11 +3508,7 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                       />
                     </Show>
                     <WebMobileNavigation
-                      active={phoneTab()}
-                      available={phoneTabAvailable}
-                      onSelect={selectPhoneTab}
-                      serverName={workspace.state.host?.name ?? "OpenBot"}
-                      onOpenServers={openPhoneServers}
+                      onOpenApps={workspace.state.status === "online" ? openMarketplace : undefined}
                       onOpenSearch={() => setSearchOpen(true)}
                     />
                   </Show>

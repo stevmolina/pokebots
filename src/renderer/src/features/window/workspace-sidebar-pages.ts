@@ -6,6 +6,7 @@ import { useText } from "@openbot/ui/text";
 import { appPort } from "../../app-port";
 import { useLayout } from "../../layout";
 import { usePlatform } from "../../platform";
+import { useAuth } from "../account/account-context";
 import { useChannels } from "../channels/channels-context";
 import { useCustomAgents } from "../custom-agents/custom-agents-context";
 import { serverHasStorage } from "../files/storage-usage";
@@ -39,6 +40,7 @@ export function useWorkspaceSidebarPages(): () => SidebarPages {
   const channels = useChannels();
   const whatsNew = useWhatsNew();
   const { activeServer } = useServers();
+  const auth = useAuth();
   /** Chats and Routines show the same page; they set the middle pane. */
   function showSidebarView(view: SidebarView) {
     windowPage.showAgents();
@@ -94,6 +96,8 @@ export function useWorkspaceSidebarPages(): () => SidebarPages {
     },
     onSettings: (button) => (updateNotice() ? openAppSettings(button, "updates") : windowPage.openSettings(button)),
     settingsNotice: updateNotice(),
+    account: auth.signedInAccount() ?? undefined,
+    onSignOut: auth.signedInAccount() ? () => void auth.logoutCentralAccount() : undefined,
     help,
     onCollapse: () => layout.setSidebarCollapsed(true),
     shortcutPlatform: shortcutPlatform(),
