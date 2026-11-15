@@ -36,7 +36,7 @@ index fbd2a5b0df7e5fc8a6283bb4cad189b927374db4..233757dd3d4553f881ae289e655ac313
 diff --git a/dist/package/plush.js b/dist/package/plush.js
 --- a/dist/package/plush.js
 +++ b/dist/package/plush.js
-@@ -953,9 +953,11 @@ function Gt(e, t) {
+@@ -954,9 +954,11 @@ function Gt(e, t) {
  	let n = `${t.toLowerCase()} ${e}`, r = $.get(n);
  	return r || (r = Wt(e).then((e) => {
  		let n = document.createElement("canvas");

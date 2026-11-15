@@ -1,6 +1,6 @@
 // Run against this worktree's Storybook: bun scripts/plush-avatar-readback-e2e.ts --storybook=http://localhost:6007
 import assert from "node:assert/strict";
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { webkit } from "playwright-core";
 
 declare global {
@@ -8,6 +8,13 @@ declare global {
     avatarReadAreas: number[];
   }
 }
+
+const plushSource = await readFile("node_modules/@norbert_bodziony/bloub/dist/package/plush.js", "utf8");
+assert.match(
+  plushSource,
+  /function Gt\(e, t\) \{[\s\S]*?document\.createElement\("canvas"\)[\s\S]*?getContext\("2d", \{ willReadFrequently: !0 \}\)/u,
+  "Patched plush.js must keep the canvas and 2D context setup inside Gt.",
+);
 
 const base = process.argv.find((arg) => arg.startsWith("--storybook="))?.slice("--storybook=".length);
 assert.ok(base, "Pass --storybook=<url> for this worktree's Storybook.");
