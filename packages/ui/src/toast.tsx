@@ -53,12 +53,33 @@ type ToastContent = Parameters<typeof sonnerToast>[0];
 function timedToast(show: (message: ToastContent, data?: SonnerExternalToast) => string | number) {
   return (message: ToastContent, data?: SonnerExternalToast) => show(message, timed(data));
 }
+/**
+ * The same failure again within this time does not show a second toast: a background request that
+ * fails on every retry, or a click repeated on a broken action, says it once.
+ */
+export const TOAST_REPEAT_WINDOW = 15_000;
+const recentOutcomes = new Map<string, { id: string | number; at: number }>();
+/** The words a reader sees, for a toast whose words are plain text; else no key, and it always shows. */
+function repeatKey(kind: string, message: ToastContent, data: SonnerExternalToast, error: unknown): string | undefined {
+  if (typeof message !== "string" || data.id !== undefined || data.action || data.cancel) return undefined;
+  const description = typeof data.description === "string" ? data.description : "";
+  const cause = error instanceof Error ? error.message : typeof error === "string" ? error : "";
+  return `${kind}\u0000${message}\u0000${description}\u0000${cause}`;
+}
 function outcomeToast(kind: "error" | "warning") {
   return (message: Parameters<typeof sonnerToast>[0], options?: ExternalToast) => {
     const { report, error, fallback, ...data } = options ?? {};
+    const key = repeatKey(kind, message, data, error);
+    const now = Date.now();
+    const recent = key === undefined ? undefined : recentOutcomes.get(key);
+    if (recent && now - recent.at < TOAST_REPEAT_WINDOW) return recent.id;
     if (error !== undefined) data.description = withReference(error, data.description, fallback);
     const id = sonnerToast[kind](message, timed(data));
     if (report) rememberReport(id, report);
+    if (key !== undefined) {
+      recentOutcomes.set(key, { id, at: now });
+      for (const [old, entry] of recentOutcomes) if (now - entry.at >= TOAST_REPEAT_WINDOW) recentOutcomes.delete(old);
+    }
     return id;
   };
 }
@@ -119,11 +140,38 @@ export const TOAST_MAX_DURATION = 3_000;
 
 const [hasVisibleToasts, setHasVisibleToasts] = createSignal(false);
 
+/** At the phone width the toasts leave the top, where the header is, for the bottom, above the search
+ * pill or the message box and the home indicator. */
+const NARROW_QUERY = "(max-width: 720px)";
+const NARROW_BOTTOM = "calc(env(safe-area-inset-bottom, 0px) + 84px)";
+/** A phone shows few toasts at a time, so they never fill the screen. */
+const NARROW_VISIBLE_TOASTS = 2;
+type ToastOffset = ToasterProps["offset"];
+function narrowOffset(offset: ToastOffset): ToastOffset {
+  if (offset === undefined) return { bottom: NARROW_BOTTOM };
+  if (typeof offset === "object") return { bottom: NARROW_BOTTOM, ...offset };
+  return offset;
+}
+function createNarrow() {
+  const query = typeof window === "undefined" ? undefined : window.matchMedia?.(NARROW_QUERY);
+  const [narrow, setNarrow] = createSignal(query?.matches ?? false);
+  onSettled(() => {
+    if (!query) return;
+    const update = (event: MediaQueryListEvent) => setNarrow(event.matches);
+    query.addEventListener("change", update);
+    return () => query.removeEventListener("change", update);
+  });
+  return narrow;
+}
+
 export function Toaster(props: ToasterProps): JSX.Element {
   // The desktop app mounts the Toaster outside its text provider, so it follows the active locale.
   const { t } = currentText();
   const notifications = useSonner();
   const sonnerProps = omit(props, "onToastShown");
+  const narrow = createNarrow();
+  const position = () => props.position ?? (narrow() ? "bottom-center" : "top-right");
+  const visibleToasts = () => props.visibleToasts ?? (narrow() ? NARROW_VISIBLE_TOASTS : 6);
   createEffect(
     () => notifications.toasts(),
     (toasts) => {
@@ -137,10 +185,10 @@ export function Toaster(props: ToasterProps): JSX.Element {
       const visibleCounts = new Map<string, number>();
       for (const item of toasts) {
         if (item.toasterId !== props.id) continue;
-        const position = item.position ?? props.position ?? "top-right";
-        const count = visibleCounts.get(position) ?? 0;
-        visibleCounts.set(position, count + 1);
-        if (count >= (props.visibleToasts ?? 6)) continue;
+        const itemPosition = item.position ?? position();
+        const count = visibleCounts.get(itemPosition) ?? 0;
+        visibleCounts.set(itemPosition, count + 1);
+        if (count >= visibleToasts()) continue;
         if (item.delete || (item.type !== "error" && item.type !== "warning") || shown.has(item.id)) continue;
         shown.add(item.id);
         props.onToastShown?.({
@@ -177,10 +225,12 @@ export function Toaster(props: ToasterProps): JSX.Element {
         {...sonnerProps}
         class={cx("ui-toaster", (props.closeButton ?? true) && "ui-toaster-closeable", props.class)}
         theme={props.theme ?? documentColorScheme()}
-        position={props.position ?? "top-right"}
+        position={position()}
+        offset={narrow() ? narrowOffset(props.offset) : props.offset}
+        mobileOffset={narrow() ? narrowOffset(props.mobileOffset) : props.mobileOffset}
         // A toast past the visible count stays hidden even when hover expands the stack, so an update
-        // offer would wait behind another. Six providers can offer an update at once.
-        visibleToasts={props.visibleToasts ?? 6}
+        // offer would wait behind another. Six providers can offer an update at once on a computer.
+        visibleToasts={visibleToasts()}
         duration={Math.min(props.duration ?? TOAST_DURATION, TOAST_MAX_DURATION)}
         gap={props.gap ?? 8}
         richColors={props.richColors ?? false}
