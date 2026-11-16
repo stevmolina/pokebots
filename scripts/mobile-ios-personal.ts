@@ -79,16 +79,17 @@ function teamId(): string {
 interface ListedDevice {
   readonly identifier?: string;
   readonly deviceProperties?: { readonly name?: string };
-  readonly hardwareProperties?: { readonly platform?: string; readonly udid?: string };
+  readonly hardwareProperties?: { readonly platform?: string; readonly udid?: string; readonly deviceType?: string };
 }
 
 interface Device {
   readonly identifier: string;
   readonly udid: string;
   readonly name: string;
+  readonly isPhone: boolean;
 }
 
-/** The connected iPhone or iPad: the one named by --device, or the only one. */
+/** The connected device: the one named by --device, the only one, or the only iPhone among several. */
 function device(): Device {
   const directory = mkdtempSync(join(tmpdir(), "openbot-devices-"));
   const output = join(directory, "devices.json");
@@ -100,11 +101,13 @@ function device(): Device {
     const devices: Device[] = listed.flatMap((entry) => {
       const udid = entry.hardwareProperties?.udid;
       if (entry.hardwareProperties?.platform !== "iOS" || !udid || !entry.identifier) return [];
-      return [{ identifier: entry.identifier, udid, name: entry.deviceProperties?.name ?? udid }];
+      const name = entry.deviceProperties?.name ?? udid;
+      return [{ identifier: entry.identifier, udid, name, isPhone: entry.hardwareProperties?.deviceType === "iPhone" }];
     });
     const wanted = option("--device");
     const matches = wanted ? devices.filter((d) => [d.name, d.udid, d.identifier].includes(wanted)) : devices;
-    const [only, ...others] = matches;
+    const phones = matches.filter((d) => d.isPhone);
+    const [only, ...others] = matches.length > 1 && phones.length === 1 ? phones : matches;
     if (only && others.length === 0) return only;
     if (!only) throw new Error("No iPhone found. Plug it in, unlock it, and tap Trust.");
     throw new Error(`Several devices found: ${matches.map((d) => d.name).join(", ")}. Pass --device <name>.`);
