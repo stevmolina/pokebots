@@ -12,6 +12,20 @@ mobile, or a service outside the edited project. Lint uses
 20 even though the reported total includes them. `bun run format` adds `--write` to the full scan;
 this is why routine fixes target paths or use the staged-file hook.
 
+Five rules make Biome read the whole repository before it checks a single file: the type-aware
+`nursery` rules (`noFloatingPromises`, `noMisleadingReturnType`, `noUnsafeTypeAssertion`,
+`useReduceTypeParameter`) and `suspicious/noImportCycles`. With them, `biome check` on one file
+takes about 2 GB and 3 seconds, the same as the whole repository; without them it takes about 35 MB
+and under 0.1 seconds (M4 Pro, 2026-11-16). On a small server, two agents checking files at once
+exceeded the memory budget for development jobs, stalled, and froze the machine.
+`biome check --skip=...` does not avoid the scan; only a configuration without the rules does.
+
+`bun run check:paths <paths>` therefore uses `biome.agent.json`: the root configuration, which it
+extends, with those five rules off. Formatting, import sorting, the other rules, the overrides and
+the GritQL plugins still run. The pre-commit hook (`check:staged`) and CI (`lint`) keep all five
+rules, so a finding still stops the commit. The file sits at the root because Biome resolves the
+plugin paths it inherits relative to the extending file.
+
 The aggregate typecheck selects `typecheck:*`. Mobile was previously named only `mobile:typecheck`
 and was omitted. It now has `typecheck:mobile`; the old name remains an alias for CI. Mobile uses
 `@openbot/brand`, `@openbot/contracts`, and `@openbot/team-client`. Its Expo and Uniwind generation

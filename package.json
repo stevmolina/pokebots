@@ -213,6 +213,7 @@
     "types:ratchet": "bun scripts/type-ratchet.ts",
     "format": "biome check --write --max-diagnostics=none .",
     "knip:check": "knip",
+    "check:paths": "biome check --config-path=biome.agent.json --write --max-diagnostics=none --files-ignore-unknown=true --no-errors-on-unmatched",
     "check:staged": "biome check --write --staged --files-ignore-unknown=true --no-errors-on-unmatched",
     "test": "bun run test:desktop && bun run test:api",
     "test:desktop": "vitest run",
