@@ -137,7 +137,7 @@ export function ConversationThread() {
     const key = threadComposer.openDraftKey();
     return key ? threadComposer.rowImages(key) : [];
   };
-  // The preload imports the picked files, and the view routes them to the open thread.
+  // The preload imports the picked files, or the web runtime does. Either way the view routes them to the open thread.
   const openPicker = () => {
     const input = picker();
     if (!input) return;
@@ -255,7 +255,18 @@ export function ConversationThread() {
       {(current) => (
         <>
           <Show when={current().threads.acceptsFiles}>
-            <Input ref={setPicker} type="file" multiple hidden tabindex={-1} data-openbot-attachment-picker="true" />
+            <Input
+              ref={setPicker}
+              type="file"
+              multiple
+              hidden
+              tabindex={-1}
+              data-openbot-attachment-picker={props.runtime ? undefined : "true"}
+              onChange={(event) => {
+                if (props.runtime?.importFiles)
+                  void props.runtime.importFiles(Array.from(event.currentTarget.files ?? []));
+              }}
+            />
           </Show>
           <Show when={threadSearchOpen()}>
             <ChatSearch
