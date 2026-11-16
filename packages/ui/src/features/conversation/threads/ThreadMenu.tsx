@@ -4,6 +4,7 @@ import {
   ChevronDown,
   ChevronRight,
   DropdownMenu,
+  Ellipsis,
   MessageCirclePlus,
   PanelRight,
   Pin,
@@ -53,9 +54,10 @@ function ThreadMenuList(props: ThreadHeaderProps) {
 
 /**
  * The menu button: a chevron after the tabs, or in a narrow header the open thread with a chevron. In
- * a header too narrow for a title, only the chevron shows, and the menu marks the open thread.
+ * a header too narrow for a title, only the chevron shows, and the menu marks the open thread. A phone
+ * has its own button (`ThreadMenuTrigger`).
  */
-function ThreadMenuTrigger(props: ThreadHeaderProps & { mode: ThreadRowMode }) {
+function ThreadTabsTrigger(props: ThreadHeaderProps & { mode: ThreadRowMode }) {
   const { t } = useText();
   const active = () => props.tabs.find((thread) => thread.id === props.activeId);
   const switcher = () => (props.mode === "compact" ? active() : undefined);
@@ -92,6 +94,29 @@ function ThreadMenuTrigger(props: ThreadHeaderProps & { mode: ThreadRowMode }) {
           <ChevronDown class="agent-threads-switcher-chevron" aria-hidden="true" />
         </DropdownMenu.Trigger>
       )}
+    </Show>
+  );
+}
+
+/**
+ * The menu button. A phone has the pin and the side panel in the menu, so its button is one round
+ * "More" button with dots; the title of the open thread is in the menu. Other windows keep the tabs button.
+ */
+function ThreadMenuTrigger(props: ThreadHeaderProps & { mode: ThreadRowMode }) {
+  const { t } = useText();
+  return (
+    <Show when={props.phoneActions} fallback={<ThreadTabsTrigger {...props} />}>
+      <DropdownMenu.Trigger
+        class={buttonVariants({
+          variant: "ghost",
+          size: "icon-sm",
+          class: "agent-threads-icon-button agent-threads-menu-button agent-threads-phone-more no-drag",
+        })}
+        aria-label={t("agent.dock.more")}
+        title={t("agent.dock.more")}
+      >
+        <Ellipsis aria-hidden="true" />
+      </DropdownMenu.Trigger>
     </Show>
   );
 }
