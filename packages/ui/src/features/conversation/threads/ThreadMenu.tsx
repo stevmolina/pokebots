@@ -10,6 +10,7 @@ import {
 } from "@openbot/ui";
 import { createScrollFades } from "@openbot/ui/components/createScrollFades";
 import { RemoteDesktopIcon } from "@openbot/ui/features/conversation/ConversationIcons";
+import { SidePanelToggle } from "@openbot/ui/features/conversation/SidePanel";
 import { sidebarMessageTime } from "@openbot/ui/features/sidebar/sidebar-filtering";
 import { useText } from "@openbot/ui/text";
 import { createMemo, For, onSettled, Show } from "solid-js";
@@ -52,10 +53,11 @@ function ThreadMenuList(props: ThreadHeaderProps) {
   );
 }
 
-/** The "More" button at the end of the header. A dot shows while a remote desktop session or browser control runs. */
+/** The "More" button at the end of the header. A dot shows while a remote desktop session runs. */
 function ThreadMenuTrigger(props: ThreadHeaderProps & { ref: (element: HTMLElement) => void }) {
   const { t } = useText();
-  const busy = () => props.phoneActions?.remoteActive === true || props.phoneActions?.browserActing === true;
+  /** A remote desktop session runs, and its button is in the menu. */
+  const busy = () => props.phoneActions?.remoteActive === true;
   return (
     <DropdownMenu.Trigger
       class={buttonVariants({
@@ -208,6 +210,7 @@ export function ThreadMenu(props: ThreadHeaderProps) {
           </DropdownMenu.Content>
         </DropdownMenu.Portal>
       </DropdownMenu.Root>
+      <Show when={props.phoneActions?.sidePanel}>{(sidePanel) => <SidePanelToggle {...sidePanel()} />}</Show>
     </div>
   );
 }

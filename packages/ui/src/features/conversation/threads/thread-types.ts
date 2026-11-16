@@ -1,3 +1,4 @@
+import type { SidePanelToggleProps } from "@openbot/ui/features/conversation/SidePanel";
 import type { SidebarWaitReason } from "@openbot/ui/features/sidebar/sidebar-types";
 
 /** What the agent does in a thread, as a sidebar row shows it for the agent. */
@@ -53,8 +54,8 @@ export interface ThreadPhoneActions {
   remoteEnabled?: boolean | undefined;
   /** A remote desktop session runs. The item resumes it, and the menu button has a dot. */
   remoteActive?: boolean | undefined;
-  /** An agent controls the browser of the side panel. The menu button has a dot. */
-  browserActing?: boolean | undefined;
+  /** A desktop header shows the side panel button next to the "More" button, so the menu does not list it. */
+  sidePanel?: SidePanelToggleProps | undefined;
   /** A desktop header: a dropdown with the actions only. Without it, a phone sheet that also lists the sessions. */
   desktop?: boolean | undefined;
 }

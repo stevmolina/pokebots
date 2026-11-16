@@ -158,19 +158,18 @@ export function ConversationHeader() {
   /** The header actions in the thread menu: a phone has the pins and the side panel there, a desktop all three. */
   const menuActions = (): ThreadPhoneActions | undefined => {
     if (!phoneMenu() && !actionsMenu()) return undefined;
-    const shared = {
-      onOpenPins: messagePins.available() ? () => setPinsRequest((value) => value + 1) : undefined,
-      onToggleSidePanel: channel?.readOnly() ? undefined : toggleSidePanel,
-      sidePanelOpen: sidePanelOpen(),
-    };
-    if (phoneMenu()) return shared;
+    const onOpenPins = messagePins.available() ? () => setPinsRequest((value) => value + 1) : undefined;
+    const onToggleSidePanel = channel?.readOnly() ? undefined : toggleSidePanel;
+    if (phoneMenu()) return { onOpenPins, onToggleSidePanel, sidePanelOpen: sidePanelOpen() };
     const remote = remoteControl();
     return {
-      ...shared,
+      onOpenPins,
+      sidePanel: onToggleSidePanel
+        ? { open: sidePanelOpen(), actingAgentName: actingAgentName(), onToggle: onToggleSidePanel }
+        : undefined,
       onOpenRemote: remote?.onOpen,
       remoteEnabled: remote?.enabled,
       remoteActive: remote?.active,
-      browserActing: actingAgentName() !== undefined,
       desktop: true,
     };
   };

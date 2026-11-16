@@ -325,7 +325,7 @@ Otherwise, continue:
    migration always needs its tests. Delete temporary tests from Step 3
    that do not meet this bar.
 4. Run the narrowest checks, one at a time: `bun run test:changed` or the
-   one test file, `biome check --write --max-diagnostics=none <changed paths>`,
+   one test file, `bun run check:paths <changed paths>`,
    and the one `typecheck:*` project for the changed code. Do not run
    broad checks.
 5. Show that the symptom is gone with the same proof as in Step 3. When
