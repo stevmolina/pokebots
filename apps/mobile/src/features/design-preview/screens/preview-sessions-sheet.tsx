@@ -1,5 +1,6 @@
 import { router } from "expo-router";
 import { Typography } from "heroui-native";
+import Check from "lucide-react-native/icons/check";
 import MessageSquare from "lucide-react-native/icons/message-square";
 import Pin from "lucide-react-native/icons/pin";
 import Plus from "lucide-react-native/icons/plus";
@@ -34,8 +35,9 @@ export function PreviewSessionsSheet() {
           <SettingsRow
             key={session.id}
             leading={<MessageSquare size={size} color={icon} strokeWidth={1.7} />}
-            value={time.row(session.minutesAgo)}
+            value={session.current ? undefined : time.row(session.minutesAgo)}
             checked={session.current}
+            trailing={session.current ? <Check size={20} color={colors.accent} strokeWidth={2.2} /> : undefined}
             disclosure={false}
             onPress={close}
           >

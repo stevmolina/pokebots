@@ -367,16 +367,17 @@ function ChatRow({
       {/* A touch and hold shows the last message over a blurred list, with the row's native menu. */}
       <Link href={{ pathname: "/design-preview/chat/[agentId]", params: { agentId: key } }} asChild>
         <Link.Trigger>
+          {/* The native trigger takes a plain style object; a style function is dropped. iOS lifts the
+              row while it is held, so the row needs no pressed color of its own. */}
           <Pressable
             accessibilityRole="button"
-            style={({ pressed }) => ({
+            style={{
               height: size.rowHeight,
               flexDirection: "row",
               alignItems: "center",
               paddingLeft: size.rowAvatarInset,
               paddingRight: size.rowTrailingInset,
-              backgroundColor: pressed ? colors.agentBubble : "transparent",
-            })}
+            }}
           >
             <PreviewFace agent={chat.agent} size={size.rowAvatar} />
             <View style={{ flex: 1, marginLeft: size.rowTextGap }}>

@@ -14,10 +14,11 @@ import { Pressable, ScrollView, type ScrollViewInstance, TextInput, View } from 
 import { KeyboardStickyView } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useUniwind } from "uniwind";
-import { MenuView } from "@/shared/components/menu-view";
+import { type MenuAction, MenuView } from "@/shared/components/menu-view";
 import { SheetScrollEdgeEffect } from "@/shared/components/sheet-scroll-edge-effect";
 import { APP_FONT } from "@/shared/lib/app-font";
 import { haptics } from "@/shared/lib/haptics";
+import { isIOS } from "@/shared/lib/platform";
 import { useText } from "@/shared/lib/text";
 import { PreviewCircleButton, PreviewFace, PreviewGlass, usePreviewColors } from "../components/preview-parts";
 import { usePreviewTime } from "../components/preview-time";
@@ -54,6 +55,7 @@ export function PreviewChatScreen() {
     setDraft("");
   };
 
+  const composerMenu = useComposerMenu();
   const openSessions = () => router.push("/design-preview/sessions");
   const openMessageActions = () => {
     void haptics.longPress();
@@ -155,32 +157,7 @@ export function PreviewChatScreen() {
             >
               <MenuView
                 colorScheme={theme === "dark" ? "dark" : "light"}
-                actions={[
-                  {
-                    id: "media",
-                    title: "",
-                    displayInline: true,
-                    subactions: [
-                      { id: "photo", title: t("mobile.workspace.preview.photoOrVideo"), image: "photo.on.rectangle" },
-                      { id: "camera", title: t("mobile.workspace.preview.takePhoto"), image: "camera" },
-                      { id: "scan", title: t("mobile.workspace.preview.scanDocument"), image: "doc.text.viewfinder" },
-                      { id: "file", title: t("mobile.workspace.preview.chooseFile"), image: "folder" },
-                    ],
-                  },
-                  {
-                    id: "agent",
-                    title: "",
-                    displayInline: true,
-                    subactions: [
-                      { id: "skill", title: t("mobile.chat.attachment.useSkill"), image: "sparkles" },
-                      {
-                        id: "side",
-                        title: t("mobile.workspace.preview.sideQuestion"),
-                        image: "bubble.left.and.text.bubble.right",
-                      },
-                    ],
-                  },
-                ]}
+                actions={composerMenu}
                 onPressAction={() => void haptics.selection()}
               >
                 <View
@@ -226,6 +203,39 @@ export function PreviewChatScreen() {
       </KeyboardStickyView>
     </View>
   );
+}
+
+/**
+ * The composer + menu: media first, then the agent actions. iOS puts the first item next to the
+ * button, and this menu always opens upward from the bottom bar, so iOS gets the list reversed to show
+ * "Photo or video" on top, as the reference does. Android lists items in the given order.
+ */
+function useComposerMenu(): MenuAction[] {
+  const { t } = useText();
+  const sections: MenuAction[] = [
+    {
+      id: "media",
+      title: "",
+      displayInline: true,
+      subactions: [
+        { id: "photo", title: t("mobile.workspace.preview.photoOrVideo"), image: "photo.on.rectangle" },
+        { id: "camera", title: t("mobile.workspace.preview.takePhoto"), image: "camera" },
+        { id: "scan", title: t("mobile.workspace.preview.scanDocument"), image: "doc.text.viewfinder" },
+        { id: "file", title: t("mobile.workspace.preview.chooseFile"), image: "folder" },
+      ],
+    },
+    {
+      id: "agent",
+      title: "",
+      displayInline: true,
+      subactions: [
+        { id: "skill", title: t("mobile.chat.attachment.useSkill"), image: "sparkles" },
+        { id: "side", title: t("mobile.workspace.preview.sideQuestion"), image: "bubble.left.and.text.bubble.right" },
+      ],
+    },
+  ];
+  if (!isIOS) return sections;
+  return sections.map((section) => ({ ...section, subactions: [...(section.subactions ?? [])].reverse() })).reverse();
 }
 
 function TitlePill({ agent, colors }: { agent: PreviewAgent; colors: PreviewColors }) {
