@@ -28,6 +28,7 @@ import { AGENT_QUEUE_TASK_CAPABILITY } from "./agent-queue-task-v1";
 import { AGENT_SESSION_SETTINGS_CAPABILITY } from "./agent-session-settings-v1";
 import { AGENT_SPEED_CAPABILITY } from "./agent-speed-v1";
 import { AGENT_TASK_LIMIT_CAPABILITY } from "./agent-task-limit-v1";
+import { AGENT_TASK_SUBAGENTS_CAPABILITY } from "./agent-task-subagents-v1";
 import { AGENT_TASK_UI_BLOCKS_CAPABILITY } from "./agent-task-ui-blocks-v1";
 import { AGENT_TASKS_CAPABILITY } from "./agent-tasks-v1";
 import { AGENT_THREAD_BRANCHES_CAPABILITY } from "./agent-thread-branches-v1";
@@ -294,6 +295,7 @@ export {
   AGENT_SESSION_SETTINGS_CAPABILITY,
   AGENT_SPEED_CAPABILITY,
   AGENT_TASK_LIMIT_CAPABILITY,
+  AGENT_TASK_SUBAGENTS_CAPABILITY,
   AGENT_TASK_UI_BLOCKS_CAPABILITY,
   AGENT_TASKS_CAPABILITY,
   AGENT_THREAD_BRANCHES_CAPABILITY,
@@ -678,6 +680,7 @@ export const TEAM_CURRENT_CAPABILITIES = [
   BROWSER_SIGN_IN_STORAGE_CAPABILITY,
   HOST_APPEARANCE_CAPABILITY,
   SIGN_IN_RELAY_DEEP_LINK_CAPABILITY,
+  AGENT_TASK_SUBAGENTS_CAPABILITY,
 ] as const;
 
 export type TeamCurrentCapability = (typeof TEAM_CURRENT_CAPABILITIES)[number];
@@ -921,7 +924,8 @@ export const TEAM_BOOTSTRAP_CAPABILITIES = TEAM_CURRENT_CAPABILITIES.filter(
     capability !== AGENT_PENDING_RUNTIME_CAPABILITY &&
     capability !== BROWSER_SIGN_IN_STORAGE_CAPABILITY &&
     capability !== HOST_APPEARANCE_CAPABILITY &&
-    capability !== SIGN_IN_RELAY_DEEP_LINK_CAPABILITY,
+    capability !== SIGN_IN_RELAY_DEEP_LINK_CAPABILITY &&
+    capability !== AGENT_TASK_SUBAGENTS_CAPABILITY,
 );
 /**
  * The capabilities that only a protocol 9 peer sends and gets. Protocols 7 and 8 read at most 128
@@ -1041,6 +1045,7 @@ export const TEAM_PROTOCOL_V9_ONLY_CAPABILITIES: ReadonlySet<string> = new Set<T
   BROWSER_SIGN_IN_STORAGE_CAPABILITY,
   HOST_APPEARANCE_CAPABILITY,
   SIGN_IN_RELAY_DEEP_LINK_CAPABILITY,
+  AGENT_TASK_SUBAGENTS_CAPABILITY,
 ]);
 // A v8 host reads at most 128 capabilities, so a client sends the protocol 9 ones only after it
 // negotiates protocol 9.
@@ -1243,6 +1248,7 @@ export function legacyTeamCapabilities(capabilities: readonly string[]): string[
       capability !== AGENT_PENDING_RUNTIME_CAPABILITY &&
       capability !== BROWSER_SIGN_IN_STORAGE_CAPABILITY &&
       capability !== HOST_APPEARANCE_CAPABILITY &&
-      capability !== SIGN_IN_RELAY_DEEP_LINK_CAPABILITY,
+      capability !== SIGN_IN_RELAY_DEEP_LINK_CAPABILITY &&
+      capability !== AGENT_TASK_SUBAGENTS_CAPABILITY,
   );
 }

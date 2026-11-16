@@ -1806,6 +1806,7 @@ export function createRemoteTeamPeer(
                 historyExtent: true,
                 channelAttention: true,
                 agentTaskUiBlocks: true,
+                agentTaskSubagents: true,
                 channelIsolation: true,
                 channelPicture: true,
                 channelBrowser: true,
@@ -1928,7 +1929,9 @@ export function createRemoteTeamPeer(
         diagnose(state, "event-gap", `expected ${state.lastEventSequence + 1}, got ${frame.sequence}`);
         return yield* new RemotePeerError({ message: sourceText("error.remote.eventStreamGap") });
       }
-      const channel = yield* peerDecode(() => optionalTeamEvent(frame.payload, { agentTaskUiBlocks: true }));
+      const channel = yield* peerDecode(() =>
+        optionalTeamEvent(frame.payload, { agentTaskUiBlocks: true, agentTaskSubagents: true }),
+      );
       const decoded = channel
         ? { status: "known" as const, event: optionalTeamEventToCurrent(channel) }
         : yield* peerDecode(() => decodeTeamProtocolV8CurrentEvent(frame));

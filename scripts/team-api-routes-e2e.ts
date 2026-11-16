@@ -141,6 +141,8 @@ import {
   AGENT_TASK_LIMIT_CAPABILITY,
   AGENT_TASK_LIMIT_ROUTES,
 } from "@openbot/contracts/team-protocol/agent-task-limit-v1";
+import { AGENT_TASK_SUBAGENTS_CAPABILITY } from "@openbot/contracts/team-protocol/agent-task-subagents-v1";
+import { AGENT_TASKS_CAPABILITY, AGENT_TASKS_ROUTES } from "@openbot/contracts/team-protocol/agent-tasks-v1";
 import {
   AGENT_THREAD_PAGES_CAPABILITY,
   AGENT_THREAD_PAGES_ROUTES,
@@ -298,6 +300,7 @@ import {
 import { MEMORY_REVIEW_CAPABILITY, MEMORY_REVIEW_ROUTES } from "@openbot/contracts/team-protocol/memory-review-v1";
 import { MESSAGE_DELETE_CAPABILITY, MESSAGE_DELETE_ROUTES } from "@openbot/contracts/team-protocol/message-delete-v1";
 import { MESSAGE_PINS_CAPABILITY, MESSAGE_PINS_ROUTES } from "@openbot/contracts/team-protocol/message-pins-v1";
+import { optionalTeamEvent } from "@openbot/contracts/team-protocol/optional-events";
 import {
   PASSWORD_MANAGERS_CAPABILITY,
   PASSWORD_MANAGERS_CODECS,
@@ -1502,9 +1505,47 @@ const fakeAgents: TeamApiAgents = {
 // (`agent-thread-pages-v1`) reach the side threads in this run. The thread holds one message before
 // `message-7`, and no other message.
 // The thread list has one thread with a waiting message (`agent-thread-queue-v1`) and one without.
+// A read of a side thread, and its page before `message-subagents`, hold a background subagent that
+// works (`agent-task-subagents-v1`).
 // With `longThreadQueue`, the waiting thread holds 20 messages of 100,000 characters: more than one
 // WebRTC frame.
 let longThreadQueue = false;
+/** A turn of a side thread whose background subagent still works, after the turn ended. */
+function sideThreadSubagentMessages(): ConversationMessage[] {
+  return [
+    {
+      id: "message-subagents",
+      turnId: "turn-side",
+      author: "assistant",
+      text: "- Fix bot header buttons",
+      createdAt: "2026-11-16T13:19:00.000Z",
+      status: "completed",
+      itemType: "subagents",
+      subagents: [
+        {
+          id: "subagent-1",
+          title: "Fix bot header buttons",
+          agentType: "general-purpose",
+          prompt: "Fix the header buttons.",
+          status: "running",
+          startedAt: "2026-11-16T13:19:00.000Z",
+          endedAt: null,
+          steps: [{ id: "step-1", kind: "edit", text: "Header.tsx" }],
+          error: null,
+          background: true,
+        },
+      ],
+    },
+    {
+      id: "message-answer",
+      turnId: "turn-side",
+      author: "assistant",
+      text: "A subagent fixes the buttons in the background.",
+      createdAt: "2026-11-16T13:19:05.000Z",
+      status: "completed",
+    },
+  ];
+}
 const fakeAgentTasks: TeamApiAgentTasks = {
   listAgents: () => agents,
   listTasks: (agentId) => {
@@ -1565,7 +1606,16 @@ const fakeAgentTasks: TeamApiAgentTasks = {
       : [waiting];
     return { agentId, tasks: [task("task-queued", queue), task("task-idle", [])], limit: 10 };
   },
-  readTask: unused("readTask"),
+  readTask: (agentId, taskId) => {
+    record("readTask", agentId, taskId);
+    return {
+      agentId,
+      threadId: `thread-${taskId}`,
+      activeTurnId: null,
+      revision: 5,
+      messages: sideThreadSubagentMessages(),
+    };
+  },
   readTaskPage: (input) => {
     record("readTaskPage", input);
     return {
@@ -1575,17 +1625,19 @@ const fakeAgentTasks: TeamApiAgentTasks = {
         activeTurnId: null,
         revision: 3,
         messages:
-          input.beforeMessageId === "message-7"
-            ? [
-                {
-                  id: "message-older",
-                  author: "assistant",
-                  text: "Older reply",
-                  createdAt: "2026-11-05T07:00:00.000Z",
-                  status: "completed",
-                },
-              ]
-            : [],
+          input.beforeMessageId === "message-later"
+            ? sideThreadSubagentMessages()
+            : input.beforeMessageId === "message-7"
+              ? [
+                  {
+                    id: "message-older",
+                    author: "assistant",
+                    text: "Older reply",
+                    createdAt: "2026-11-05T07:00:00.000Z",
+                    status: "completed",
+                  },
+                ]
+              : [],
       },
       hasOlder: false,
     };
@@ -6380,6 +6432,111 @@ try {
         errorIs(missing, 404, sourceText("error.team.agentNotFound")) &&
         callsOf("readTaskPage").length === 1,
       [summary(hidden), summary(missing)],
+    );
+  }
+
+  // ---- Subagents of a side thread (agent-task-subagents-v1) ----
+  {
+    const compatibility = await call("GET", TEAM_API_ROUTES.compatibility, { protocol: TEAM_PROTOCOL_V9 });
+    const older = await call("GET", TEAM_API_ROUTES.compatibility, { protocol: 8 });
+    check(
+      "the host advertises agent-task-subagents-v1 to a protocol 9 peer and not to a protocol 8 peer",
+      list(field(compatibility.body, "capabilities")).includes(AGENT_TASK_SUBAGENTS_CAPABILITY) &&
+        !list(field(older.body, "capabilities")).includes(AGENT_TASK_SUBAGENTS_CAPABILITY),
+      [summary(compatibility), summary(older)],
+    );
+    const request = { agentId: "agent-ada", taskId: "task-subagents" };
+    const subagentsOf = (body: Json | undefined) => {
+      const message = list(field(body, "messages")).find((item) => field(item, "id") === "message-subagents");
+      return {
+        itemType: field(message, "itemType"),
+        text: field(message, "text"),
+        subagents: field(message, "subagents"),
+      };
+    };
+    const without = await call("POST", AGENT_TASKS_ROUTES.read, {
+      token: bobToken,
+      json: request,
+      capabilities: [AGENT_TASKS_CAPABILITY],
+    });
+    const plain = subagentsOf(without.body);
+    check(
+      "a side-thread read without agent-task-subagents-v1 keeps the released shape: the fallback text and no subagents",
+      without.status === 200 &&
+        plain.itemType === "subagents" &&
+        plain.text === "- Fix bot header buttons" &&
+        plain.subagents === undefined,
+      [summary(without), plain],
+    );
+    const withSubagents = await call("POST", AGENT_TASKS_ROUTES.read, {
+      token: bobToken,
+      json: request,
+      capabilities: [AGENT_TASKS_CAPABILITY, AGENT_TASK_SUBAGENTS_CAPABILITY],
+    });
+    const carried = subagentsOf(withSubagents.body);
+    const worker = list(carried.subagents)[0];
+    const decodedRead = teamSideRouteCodec(AGENT_TASKS_ROUTES.read)?.response(
+      AGENT_TASKS_ROUTES.read,
+      withSubagents.status,
+      withSubagents.body,
+      { agentTaskSubagents: true },
+    );
+    const droppedRead = teamSideRouteCodec(AGENT_TASKS_ROUTES.read)?.response(
+      AGENT_TASKS_ROUTES.read,
+      withSubagents.status,
+      withSubagents.body,
+    );
+    check(
+      "a side-thread read with agent-task-subagents-v1 carries the running background subagent, which the client keeps",
+      withSubagents.status === 200 &&
+        list(carried.subagents).length === 1 &&
+        field(worker, "id") === "subagent-1" &&
+        field(worker, "status") === "running" &&
+        field(worker, "background") === true &&
+        isDeepStrictEqual(subagentsOf(decodedRead ?? null).subagents, carried.subagents) &&
+        subagentsOf(droppedRead ?? null).subagents === undefined,
+      [summary(withSubagents), carried],
+    );
+    const pageRequest = { agentId: "agent-ada", taskId: "task-1", beforeMessageId: "message-later", limit: 50 };
+    const pageWithout = await call("POST", AGENT_THREAD_PAGES_ROUTES.readOlder, {
+      token: bobToken,
+      json: pageRequest,
+      capabilities: [AGENT_THREAD_PAGES_CAPABILITY],
+    });
+    const pageWith = await call("POST", AGENT_THREAD_PAGES_ROUTES.readOlder, {
+      token: bobToken,
+      json: pageRequest,
+      capabilities: [AGENT_THREAD_PAGES_CAPABILITY, AGENT_TASK_SUBAGENTS_CAPABILITY],
+    });
+    check(
+      "an older page of a side thread carries the subagents only with agent-task-subagents-v1",
+      pageWithout.status === 200 &&
+        pageWith.status === 200 &&
+        subagentsOf(field(pageWithout.body, "conversation")).subagents === undefined &&
+        isDeepStrictEqual(subagentsOf(field(pageWith.body, "conversation")).subagents, carried.subagents),
+      [summary(pageWithout), summary(pageWith)],
+    );
+    const event = {
+      type: "agent-task-conversation",
+      taskId: "task-subagents",
+      snapshot: {
+        agentId: "agent-ada",
+        threadId: "thread-task-subagents",
+        activeTurnId: null,
+        revision: 5,
+        messages: sideThreadSubagentMessages(),
+      },
+    };
+    const eventSubagents = (options: { agentTaskSubagents?: boolean }) => {
+      const decoded = optionalTeamEvent(event, options);
+      return decoded?.type === "agent-task-conversation"
+        ? decoded.snapshot.messages.find((message) => message.id === "message-subagents")?.subagents
+        : null;
+    };
+    check(
+      "an agent-task-conversation event keeps the subagents only with agent-task-subagents-v1",
+      eventSubagents({}) === undefined && eventSubagents({ agentTaskSubagents: true })?.[0]?.status === "running",
+      { without: eventSubagents({}), with: eventSubagents({ agentTaskSubagents: true }) },
     );
   }
 

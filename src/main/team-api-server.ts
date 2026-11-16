@@ -49,6 +49,7 @@ import { AGENT_QUEUE_TASK_CAPABILITY } from "@openbot/contracts/team-protocol/ag
 import { AGENT_SESSION_SETTINGS_CAPABILITY } from "@openbot/contracts/team-protocol/agent-session-settings-v1";
 import { AGENT_SPEED_CAPABILITY } from "@openbot/contracts/team-protocol/agent-speed-v1";
 import { AGENT_TASK_LIMIT_CAPABILITY } from "@openbot/contracts/team-protocol/agent-task-limit-v1";
+import { AGENT_TASK_SUBAGENTS_CAPABILITY } from "@openbot/contracts/team-protocol/agent-task-subagents-v1";
 import { AGENT_TASK_UI_BLOCKS_CAPABILITY } from "@openbot/contracts/team-protocol/agent-task-ui-blocks-v1";
 import { AGENT_TASKS_CAPABILITY } from "@openbot/contracts/team-protocol/agent-tasks-v1";
 import { AGENT_THREAD_BRANCHES_CAPABILITY } from "@openbot/contracts/team-protocol/agent-thread-branches-v1";
@@ -1826,7 +1827,10 @@ export class TeamApiServer {
                     : event.type === "agent-tasks-changed"
                       ? { ...event, snapshot: agentTasksWireSnapshot(event.snapshot) }
                       : event,
-                  { agentTaskUiBlocks: connection.capabilities.has(AGENT_TASK_UI_BLOCKS_CAPABILITY) },
+                  {
+                    agentTaskUiBlocks: connection.capabilities.has(AGENT_TASK_UI_BLOCKS_CAPABILITY),
+                    agentTaskSubagents: connection.capabilities.has(AGENT_TASK_SUBAGENTS_CAPABILITY),
+                  },
                 );
       } catch (error) {
         // As for `encodeEvent`: a malformed optional event is skipped for this client only.
@@ -2413,6 +2417,7 @@ export class TeamApiServer {
       channelTaskWaits: route.capabilities.has(CHANNEL_TASK_WAITS_CAPABILITY),
       mcpManyServers: route.capabilities.has(MCP_MANY_SERVERS_CAPABILITY),
       agentTaskUiBlocks: route.capabilities.has(AGENT_TASK_UI_BLOCKS_CAPABILITY),
+      agentTaskSubagents: route.capabilities.has(AGENT_TASK_SUBAGENTS_CAPABILITY),
       uiBlocks: route.capabilities.has(TEAM_UI_BLOCKS_CAPABILITY),
       subagents: route.capabilities.has(TEAM_SUBAGENTS_CAPABILITY),
       promptMultiSelect: route.capabilities.has(TEAM_PROMPT_MULTI_SELECT_CAPABILITY),
@@ -2708,6 +2713,7 @@ export class TeamApiServer {
           if (capability === AGENT_THREAD_QUEUE_CAPABILITY) return this.#options.agentTasks !== undefined;
           if (capability === AGENT_THREADS_CAPABILITY) return this.#options.agentTasks !== undefined;
           if (capability === AGENT_TASK_UI_BLOCKS_CAPABILITY) return this.#options.agentTasks !== undefined;
+          if (capability === AGENT_TASK_SUBAGENTS_CAPABILITY) return this.#options.agentTasks !== undefined;
           if (capability === AGENT_THREAD_READS_CAPABILITY) return this.#options.agentTasks !== undefined;
           if (capability === AGENT_THREAD_FILES_CAPABILITY) return this.#options.agentTasks !== undefined;
           if (capability === ARTIFACT_REQUEST_CAPABILITY) return this.#options.agentTasks !== undefined;

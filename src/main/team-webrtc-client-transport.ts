@@ -611,6 +611,7 @@ export class TeamWebRtcClientTransport extends EventEmitter<TeamWebRtcClientTran
                     historyExtent: true,
                     channelAttention: true,
                     agentTaskUiBlocks: true,
+                    agentTaskSubagents: true,
                     channelIsolation: true,
                     channelPicture: true,
                     channelBrowser: true,
@@ -1514,7 +1515,10 @@ export class TeamWebRtcClientTransport extends EventEmitter<TeamWebRtcClientTran
         this.#failProtocol(hostId, sourceText("error.remote.eventGap"));
         return;
       }
-      const optional = frame.type === "event" ? optionalTeamEvent(frame.payload, { agentTaskUiBlocks: true }) : null;
+      const optional =
+        frame.type === "event"
+          ? optionalTeamEvent(frame.payload, { agentTaskUiBlocks: true, agentTaskSubagents: true })
+          : null;
       const decoded = optional
         ? { status: "known" as const, event: optionalTeamEventToCurrent(optional) }
         : decodeTeamProtocolV8CurrentEvent(frame);

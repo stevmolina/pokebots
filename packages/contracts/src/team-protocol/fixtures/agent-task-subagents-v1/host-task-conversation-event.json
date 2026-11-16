@@ -1,0 +1,62 @@
+{
+  "type": "agent-task-conversation",
+  "taskId": "task-2",
+  "snapshot": {
+    "agentId": "agent-1",
+    "threadId": "thread-2",
+    "activeTurnId": null,
+    "revision": 6,
+    "messages": [
+      {
+        "id": "message-1",
+        "turnId": "turn-1",
+        "author": "user",
+        "text": "Fix the bot header buttons in the background.",
+        "createdAt": "2026-11-16T13:18:50.000Z",
+        "status": "completed"
+      },
+      {
+        "id": "message-2",
+        "turnId": "turn-1",
+        "author": "assistant",
+        "text": "- Fix bot header buttons",
+        "createdAt": "2026-11-16T13:19:00.000Z",
+        "status": "completed",
+        "itemType": "subagents",
+        "subagents": [
+          {
+            "id": "toolu_01",
+            "title": "Fix bot header buttons",
+            "agentType": "general-purpose",
+            "prompt": "Fix the header buttons of the bot page.",
+            "status": "running",
+            "startedAt": "2026-11-16T13:19:00.000Z",
+            "endedAt": null,
+            "steps": [
+              {
+                "id": "step-1",
+                "kind": "read",
+                "text": "src/renderer/src/features/bots/BotHeader.tsx"
+              },
+              {
+                "id": "step-2",
+                "kind": "edit",
+                "text": "BotHeader.tsx"
+              }
+            ],
+            "error": null,
+            "background": true
+          }
+        ]
+      },
+      {
+        "id": "message-3",
+        "turnId": "turn-1",
+        "author": "assistant",
+        "text": "A subagent fixes the buttons in the background.",
+        "createdAt": "2026-11-16T13:19:05.000Z",
+        "status": "completed"
+      }
+    ]
+  }
+}

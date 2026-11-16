@@ -133,7 +133,8 @@
   margin-inline: auto;
 }
 
-.subagents-dock .subagents-dock-bar {
+.subagents-dock .subagents-dock-bar,
+.subagents-live-bar .subagents-dock-bar {
   position: absolute;
   top: var(--openbot-space-1);
   inset-inline-start: 0;
@@ -153,7 +154,8 @@
   text-align: start;
 }
 
-.subagents-dock .subagents-dock-bar:hover {
+.subagents-dock .subagents-dock-bar:hover,
+.subagents-live-bar .subagents-dock-bar:hover {
   border-color: var(--openbot-border-strong);
   background: var(--openbot-bg-canvas);
 }
@@ -170,6 +172,48 @@
   flex: 0 0 auto;
   color: var(--openbot-text-muted);
   rotate: 90deg;
+}
+
+/*
+ * The live bar of a side thread: the dock bar in the flow under the thread title, while a background
+ * subagent of the thread works after its turn. A click shows the newest steps under it.
+ */
+.subagents-live-bar {
+  display: flex;
+  min-width: 0;
+  flex: 0 0 auto;
+  flex-direction: column;
+  gap: var(--openbot-space-1);
+  padding: var(--openbot-space-2) var(--openbot-space-4) 0;
+}
+
+.subagents-live-bar .subagents-dock-bar {
+  position: static;
+  width: 100%;
+}
+
+.subagents-live-bar .subagents-dock-chevron {
+  transition: rotate var(--openbot-duration-fast) var(--openbot-ease-out);
+}
+
+.subagents-live-bar-toggle[aria-expanded="true"] .subagents-dock-chevron {
+  rotate: -90deg;
+}
+
+.subagents-live-bar-steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--openbot-space-2);
+  border: 1px solid var(--openbot-border);
+  border-radius: var(--openbot-radius-card);
+  background: var(--openbot-bg-canvas);
+  padding: var(--openbot-space-2) var(--openbot-space-3);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .subagents-live-bar .subagents-dock-chevron {
+    transition: none;
+  }
 }
 
 /* The list: one quiet card, as wide as the agent's message bubble. */

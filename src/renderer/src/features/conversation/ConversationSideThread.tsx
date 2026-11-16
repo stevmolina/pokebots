@@ -239,6 +239,7 @@ export function ConversationSideThread(props: { threadId: string }) {
             attention={answerCard()}
             messageCard={(message, quote) => visualReplyCard(message, quote) ?? mcpSignInCard(message)}
             aboveComposer={extras.aboveComposer()}
+            belowTitle={extras.belowTitle()}
             olderMessages={current().thread.olderMessages}
             newerMessages={current().thread.newerMessages}
             focusMessage={current().thread.focusMessage}

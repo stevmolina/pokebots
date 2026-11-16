@@ -126,6 +126,7 @@ export const requestJson = Effect.fn("RemoteHttp.requestJson")(function* <T>(
               historyExtent: true,
               channelAttention: true,
               agentTaskUiBlocks: true,
+              agentTaskSubagents: true,
               channelIsolation: true,
               channelPicture: true,
               channelBrowser: true,

@@ -360,6 +360,7 @@ export function ConversationThread() {
             attention={attention()}
             messageCard={(message, quote) => visualReplyCard(message, quote) ?? mcpSignInCard(message)}
             aboveComposer={extras.aboveComposer()}
+            belowTitle={extras.belowTitle()}
             olderMessages={current().threads.olderMessages}
             newerMessages={current().threads.newerMessages}
             stepsAbove={turnSteps.stepsAbove}

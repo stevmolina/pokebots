@@ -551,6 +551,15 @@ through `clampConversationSubagents`, so only known keys go out, and the lists o
 wire budget, newest first. The task conversations of `agent-tasks-v1` do not carry it. The WebRTC
 host peer encodes the local response and the events again with the same option.
 
+`agent-task-subagents-v1` (`team-protocol/agent-task-subagents-v1.ts`, protocol 9 only) adds the same
+`subagents`, with the same clamp and wire budget, to the task conversations of `agent-tasks-v1`: the
+response of `POST /v1/agent-tasks/read`, the `conversation` of `POST /v1/agent-threads/read-older`,
+and the `snapshot` of the `agent-task-conversation` event. A client then shows a background subagent
+of a side thread while it works. The host adds it only for a connection that advertises the
+capability; the frozen decoders drop it for every other client, which reads the fallback text. The
+HTTP and WebRTC clients accept it whenever it is present, and the WebRTC host peer encodes the local
+response and the events again with the same option.
+
 ### Video generation
 
 `video-generation-v1` (protocol 9 only) carries the request of a video that an agent made with a

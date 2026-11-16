@@ -1,16 +1,17 @@
 import type { MessageReaction } from "@openbot/contracts/ipc";
 import type { AgentMessage } from "@openbot/ui/data";
 import { BackgroundWorkers } from "@openbot/ui/features/conversation/BackgroundWorkers";
+import { SubagentLiveBar } from "@openbot/ui/features/conversation/Subagents";
 import type { JSX } from "@solidjs/web";
 import { createMemo } from "solid-js";
 import { agentAwaitingReplies } from "../../awaiting-replies";
-import { backgroundWorkerItems } from "./background-worker-items";
+import { backgroundWorkerItems, runningSubagents } from "./background-worker-items";
 import { useConversationViewScope } from "./conversation-scope";
 import { threadReadAloud } from "./thread-read-aloud";
 
 /**
- * The OpenBot Custom additions to a thread view: background worker rows above the message box,
- * reactions and read aloud. They live here, so the upstream thread hosts each keep only one hook call
+ * The OpenBot Custom additions to a thread view: background worker rows above the message box, the
+ * live bar of its background subagents under the title, reactions and read aloud. They live here, so the upstream thread hosts each keep only one hook call
  * and a few props. Upstream's `ChatVisualReply` draws HTML visual replies.
  */
 export function useCustomThreadExtras(input: {
@@ -41,8 +42,11 @@ export function useCustomThreadExtras(input: {
       onOpenAgent: props.onSelectAgent,
     });
   });
+  /** The background subagents of the thread that still work, as the worker rows count them. */
+  const liveSubagents = createMemo(() => runningSubagents(input.messages));
   return {
     aboveComposer: (): JSX.Element => <BackgroundWorkers items={workers()} />,
+    belowTitle: (): JSX.Element => <SubagentLiveBar subagents={liveSubagents()} />,
     onReact: (message: AgentMessage, emoji: MessageReaction | null) => void reactToMessage(message, emoji),
     readAloud: (message: AgentMessage) =>
       threadReadAloud(props.runtime !== undefined, props.server?.id ?? "local", props.agent?.id, message),
