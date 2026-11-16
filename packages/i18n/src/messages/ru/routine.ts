@@ -286,6 +286,10 @@ export const messages = {
   "routine.settings.create": "Создать регулярную задачу",
   "routine.settings.loading": "Загрузка регулярных задач…",
   "routine.settings.empty": "Регулярных задач пока нет.",
+  "routine.heartbeat.add": "Добавить пульс",
+  "routine.heartbeat.name": "Пульс",
+  "routine.heartbeat.description":
+    "Проверяет список каждые 2 часа и пишет, только когда что-то требует вашего внимания.",
   "routine.settings.paused": "Приостановлена",
   "routine.settings.completed": "Завершена · {schedule}",
   "routine.settings.active": "Активна",

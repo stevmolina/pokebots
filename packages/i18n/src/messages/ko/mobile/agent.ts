@@ -142,6 +142,8 @@ export const messages = {
   "mobile.agent.info.routinePaused": "일시 정지됨",
   "mobile.agent.info.noRoutines": "아직 루틴이 없어요.",
   "mobile.agent.info.addRoutine": "루틴 추가",
+  "mobile.agent.info.addHeartbeat": "하트비트 추가",
+  "mobile.agent.heartbeat.name": "하트비트",
   "mobile.agent.info.skillsUnsupported": "이 호스트는 스킬을 지원하지 않아요. 호스트의 OpenBot을 업데이트해 주세요.",
   "mobile.agent.info.noSkills": "아직 스킬이 없어요.",
   "mobile.agent.info.skillsManaged": "이 에이전트의 스킬은 호스트에서 관리해요.",

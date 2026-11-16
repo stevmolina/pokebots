@@ -18,6 +18,7 @@ import {
 import type { EventRoutineOwner } from "@openbot/contracts/ipc-events";
 import type { MobileTextKey } from "@openbot/i18n/mobile";
 import {
+  ROUTINE_HEARTBEAT_SCHEDULE,
   type RoutineScheduleDraft,
   routineDraftProblemCode,
   routineScheduleFromDraft,
@@ -336,10 +337,13 @@ export function RoutineEditor({
   routine,
   available,
   port,
+  preset,
 }: {
   agent: Pick<MobileAgent, "id" | "serverId">;
   routine?: RoutineRecord;
   available: boolean;
+  /** A new heartbeat starts filled in: a quiet check every 2 hours with a checklist to edit, as on desktop. */
+  preset?: "heartbeat" | undefined;
   port?: {
     create(input: Omit<CreateRoutineInput, "agentId">): Promise<void>;
     update(input: Omit<UpdateRoutineInput, "agentId">): Promise<void>;
@@ -392,7 +396,15 @@ export function RoutineEditor({
     eventType?: string;
     filters?: FilterDraft[];
     missedPolicy?: RoutineMissedPolicy;
-  }>({});
+  }>(() =>
+    preset === "heartbeat" && !routine
+      ? {
+          name: t("mobile.agent.heartbeat.name"),
+          instruction: t("mobile.agent.heartbeat.instruction"),
+          schedule: ROUTINE_HEARTBEAT_SCHEDULE,
+        }
+      : {},
+  );
   const name = edits.name ?? routine?.name ?? "";
   const instruction = edits.instruction ?? routine?.instruction ?? "";
   const savedSchedule = routine && "schedule" in routine.trigger ? routine.trigger.schedule : DEFAULT_SCHEDULE;

@@ -160,6 +160,8 @@ export const messages = {
   "mobile.agent.info.routinePaused": "Приостановлена",
   "mobile.agent.info.noRoutines": "Регулярных задач пока нет.",
   "mobile.agent.info.addRoutine": "Добавить регулярную задачу",
+  "mobile.agent.info.addHeartbeat": "Добавить пульс",
+  "mobile.agent.heartbeat.name": "Пульс",
   "mobile.agent.info.skillsUnsupported": "Этот хост не поддерживает навыки. Обновите OpenBot на хосте.",
   "mobile.agent.info.noSkills": "Навыков пока нет.",
   "mobile.agent.info.skillsManaged": "Навыками этого агента управляют на хосте.",

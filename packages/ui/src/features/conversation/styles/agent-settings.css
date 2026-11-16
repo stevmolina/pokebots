@@ -1689,3 +1689,14 @@
   gap: var(--openbot-space-3);
   padding-bottom: var(--openbot-space-4);
 }
+
+/* The heartbeat starter sits next to the new-routine button, so this header has two buttons on the end. */
+.agent-routines-header:has(.agent-routines-header-actions .settings-panel-nav-button + .settings-panel-nav-button) {
+  grid-template-columns: 64px minmax(0, 1fr) 64px;
+}
+
+.agent-routines-header-actions {
+  display: flex;
+  gap: var(--openbot-space-1);
+  justify-content: flex-end;
+}
