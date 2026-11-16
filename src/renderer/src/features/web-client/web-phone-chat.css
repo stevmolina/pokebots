@@ -36,6 +36,7 @@
 
   .web-app-frame[data-web-mobile-pane="conversation"] .web-phone-back.ui-button {
     top: 10px;
+    z-index: 5;
     inset-inline-start: var(--openbot-space-3);
     width: var(--phone-chat-button);
   }
@@ -80,6 +81,41 @@
     justify-content: center;
     border-radius: var(--openbot-radius-pill);
     padding-inline: var(--openbot-space-1);
+  }
+
+  /*
+   * With threads, the round control on the trailing edge is the menu button: dots that open the thread
+   * menu, which also holds the pin and the side panel. The empty glass circle of the header actions goes.
+   */
+  .web-app-frame[data-web-mobile-pane="conversation"]
+    .conversation-header[data-phone-menu]
+    .conversation-header-actions:not(:has(.remote-desktop-button, .conversation-model-pending)) {
+    display: none;
+  }
+
+  .web-app-frame[data-web-mobile-pane="conversation"]
+    .conversation-header[data-phone-menu]
+    .agent-threads-phone-more.ui-button {
+    position: absolute;
+    z-index: 5;
+    top: 10px;
+    inset-inline-end: var(--openbot-space-3);
+    width: var(--phone-chat-button);
+    height: var(--phone-chat-button);
+    border: 1px solid var(--phone-chat-glass-border);
+    border-radius: var(--openbot-radius-pill);
+    background: var(--phone-chat-glass);
+    -webkit-backdrop-filter: blur(20px) saturate(1.6);
+    backdrop-filter: blur(20px) saturate(1.6);
+    box-shadow: var(--phone-chat-glass-shadow);
+  }
+
+  .web-app-frame[data-web-mobile-pane="conversation"]
+    .conversation-header[data-phone-menu]
+    .agent-threads-phone-more
+    > svg {
+    width: var(--openbot-icon-lg);
+    height: var(--openbot-icon-lg);
   }
 
   /* ---------------------------------------------------------------- bubbles */
