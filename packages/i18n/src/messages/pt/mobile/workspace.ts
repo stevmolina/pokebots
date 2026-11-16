@@ -59,4 +59,10 @@ export const messages = {
   "mobile.workspace.preview.voice": "Falar com {name}",
   "mobile.workspace.preview.send": "Enviar",
   "mobile.workspace.preview.leave": "Sair da prévia do design",
+  "mobile.workspace.preview.searchInChat": "Buscar no chat",
+  "mobile.workspace.preview.photoOrVideo": "Foto ou vídeo",
+  "mobile.workspace.preview.takePhoto": "Tirar foto",
+  "mobile.workspace.preview.scanDocument": "Digitalizar documento",
+  "mobile.workspace.preview.chooseFile": "Escolher arquivo",
+  "mobile.workspace.preview.sideQuestion": "Pergunta à parte",
 } as const satisfies PartialTranslation<typeof source>;

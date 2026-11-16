@@ -1,4 +1,4 @@
-import { useRouter } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { Typography } from "heroui-native";
 import ChevronDown from "lucide-react-native/icons/chevron-down";
 import ChevronRight from "lucide-react-native/icons/chevron-right";
@@ -43,7 +43,7 @@ import {
   type PreviewChat,
 } from "../model/preview-data";
 import { setDesignPreview } from "../model/preview-switch";
-import { previewSize as size, previewType as type } from "../model/preview-tokens";
+import { previewSheet, previewSize as size, previewType as type } from "../model/preview-tokens";
 
 const LOOSE = "loose";
 
@@ -131,9 +131,7 @@ export function PreviewChatListScreen() {
               onPress={() => toggle(section.id)}
             />
             {open.has(section.id)
-              ? section.chats.map((chat) => (
-                  <ChatRow key={chat.agent.id} chat={chat} onPress={openChat} onUnreadLayout={onUnreadLayout} />
-                ))
+              ? section.chats.map((chat) => <ChatRow key={chat.agent.id} chat={chat} onUnreadLayout={onUnreadLayout} />)
               : null}
           </Fragment>
         ))}
@@ -144,7 +142,7 @@ export function PreviewChatListScreen() {
         />
         {open.has(LOOSE)
           ? PREVIEW_LOOSE_CHATS.map((chat) => (
-              <ChatRow key={chat.agent.id} chat={chat} onPress={openChat} onUnreadLayout={onUnreadLayout} />
+              <ChatRow key={chat.agent.id} chat={chat} onUnreadLayout={onUnreadLayout} />
             ))
           : null}
         <SectionLabel
@@ -343,59 +341,128 @@ function SectionLabel({
 
 function ChatRow({
   chat,
-  onPress,
   onUnreadLayout,
 }: {
   chat: PreviewChat;
-  onPress: (id: string) => void;
   onUnreadLayout: (key: string, top: number | null) => void;
 }) {
+  const { t } = useText();
   const colors = usePreviewColors();
   const time = usePreviewTime();
+  const width = useColumnWidth();
   const key = chat.agent.id;
   // A row of a closed section is gone from the list, so it stops counting as unread below or above.
   useEffect(() => (chat.unread ? () => onUnreadLayout(key, null) : undefined), [chat.unread, key, onUnreadLayout]);
   const onLayout = chat.unread
     ? (event: LayoutChangeEvent) => {
-        // Rows are direct children of the scroll content, so `y` is their place in the list.
+        // The row's wrapper is a direct child of the scroll content, so `y` is its place in the list.
         onUnreadLayout(key, event.nativeEvent.layout.y);
       }
     : undefined;
   let icon: ReactNode = null;
   if (chat.task) icon = <ListChecks size={15} color={colors.preview} strokeWidth={1.8} />;
+  const done = () => void haptics.selection();
   return (
-    <Pressable
-      accessibilityRole="button"
-      onPress={() => onPress(key)}
-      onLayout={onLayout}
-      style={({ pressed }) => ({
-        height: size.rowHeight,
-        flexDirection: "row",
-        alignItems: "center",
-        paddingLeft: size.rowAvatarInset,
-        paddingRight: size.rowTrailingInset,
-        backgroundColor: pressed ? colors.agentBubble : "transparent",
-      })}
-    >
-      <PreviewFace agent={chat.agent} size={size.rowAvatar} />
-      <View style={{ flex: 1, marginLeft: size.rowTextGap }}>
-        {/* The time's capitals line up with the title's, as in the reference, so the two align at the top. */}
-        <View style={{ flexDirection: "row", alignItems: "flex-start", gap: size.rowTrailingGap }}>
-          <Typography numberOfLines={1} style={[type.rowTitle, { flex: 1, color: colors.title }]}>
-            {chat.agent.name}
-          </Typography>
-          <Typography style={[type.rowTime, { color: colors.time }]}>{time.row(chat.minutesAgo)}</Typography>
-        </View>
-        <View style={{ flexDirection: "row", alignItems: "center", gap: size.rowTrailingGap }}>
-          <View style={{ flex: 1, flexDirection: "row", alignItems: "center", gap: 5 }}>
-            {icon}
-            <Typography numberOfLines={1} style={[type.rowPreview, { flex: 1, color: colors.preview }]}>
-              {chat.preview}
-            </Typography>
+    <View onLayout={onLayout}>
+      {/* A touch and hold shows the last message over a blurred list, with the row's native menu. */}
+      <Link href={{ pathname: "/design-preview/chat/[agentId]", params: { agentId: key } }} asChild>
+        <Link.Trigger>
+          <Pressable
+            accessibilityRole="button"
+            style={({ pressed }) => ({
+              height: size.rowHeight,
+              flexDirection: "row",
+              alignItems: "center",
+              paddingLeft: size.rowAvatarInset,
+              paddingRight: size.rowTrailingInset,
+              backgroundColor: pressed ? colors.agentBubble : "transparent",
+            })}
+          >
+            <PreviewFace agent={chat.agent} size={size.rowAvatar} />
+            <View style={{ flex: 1, marginLeft: size.rowTextGap }}>
+              {/* The time's capitals line up with the title's, as in the reference, so the two align at the top. */}
+              <View style={{ flexDirection: "row", alignItems: "flex-start", gap: size.rowTrailingGap }}>
+                <Typography numberOfLines={1} style={[type.rowTitle, { flex: 1, color: colors.title }]}>
+                  {chat.agent.name}
+                </Typography>
+                <Typography style={[type.rowTime, { color: colors.time }]}>{time.row(chat.minutesAgo)}</Typography>
+              </View>
+              <View style={{ flexDirection: "row", alignItems: "center", gap: size.rowTrailingGap }}>
+                <View style={{ flex: 1, flexDirection: "row", alignItems: "center", gap: 5 }}>
+                  {icon}
+                  <Typography numberOfLines={1} style={[type.rowPreview, { flex: 1, color: colors.preview }]}>
+                    {chat.preview}
+                  </Typography>
+                </View>
+                <UnreadDot shown={chat.unread} />
+              </View>
+            </View>
+          </Pressable>
+        </Link.Trigger>
+        <Link.Preview style={{ width: width - 32, height: previewSheet.rowPreviewHeight }}>
+          <View style={{ flex: 1, backgroundColor: colors.background }}>
+            <View
+              style={{
+                height: previewSheet.rowPreviewHeaderHeight,
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 10,
+                paddingHorizontal: 16,
+              }}
+            >
+              <PreviewFace agent={chat.agent} size={32} />
+              <Typography
+                numberOfLines={1}
+                style={[type.chatTitle, { flex: 1, color: colors.title, fontWeight: "600" }]}
+              >
+                {chat.agent.name}
+              </Typography>
+            </View>
+            <View style={{ height: 1, backgroundColor: colors.agentBubble }} />
+            <View
+              style={{
+                margin: 16,
+                alignSelf: "flex-start",
+                borderRadius: size.bubbleRadius,
+                borderCurve: "continuous",
+                paddingHorizontal: size.bubblePaddingX,
+                paddingVertical: size.bubblePaddingY,
+                backgroundColor: colors.agentBubble,
+              }}
+            >
+              <Typography numberOfLines={2} style={[type.message, { color: colors.agentText }]}>
+                {chat.preview}
+              </Typography>
+            </View>
           </View>
-          <UnreadDot shown={chat.unread} />
-        </View>
-      </View>
-    </Pressable>
+        </Link.Preview>
+        <Link.Menu>
+          <Link.MenuAction icon="envelope.badge" onPress={done}>
+            {t("mobile.agent.menu.markUnread")}
+          </Link.MenuAction>
+          <Link.MenuAction icon="pin" onPress={done}>
+            {t("mobile.agent.pin.pin")}
+          </Link.MenuAction>
+          <Link.Menu icon="folder" title={t("mobile.agent.section.moveTo")}>
+            {PREVIEW_SECTIONS.map((section) => (
+              <Link.MenuAction key={section.id} onPress={done}>
+                {section.name}
+              </Link.MenuAction>
+            ))}
+          </Link.Menu>
+          <Link.MenuAction destructive icon="eye.slash" onPress={done}>
+            {t("mobile.agent.menu.hide")}
+          </Link.MenuAction>
+          <Link.Menu icon="ellipsis" title={t("mobile.agent.menu.more")}>
+            <Link.MenuAction icon="doc.on.doc" onPress={done}>
+              {t("mobile.agent.menu.copyId")}
+            </Link.MenuAction>
+            <Link.MenuAction destructive icon="trash" onPress={done}>
+              {t("common.delete")}
+            </Link.MenuAction>
+          </Link.Menu>
+        </Link.Menu>
+      </Link>
+    </View>
   );
 }

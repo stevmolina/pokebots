@@ -28,10 +28,14 @@ export function setDesignPreview(on: boolean): void {
   SecureStore.setItemAsync(key, String(on)).catch(() => undefined);
 }
 
-const PREVIEW_LINK = /^(?:[a-z][\w+.-]*:\/\/)?\/?(design-preview(?:\/chat\/[\w-]+)?)\/?$/i;
+const PREVIEW_LINK =
+  /^(?:[a-z][\w+.-]*:\/\/)?\/?(design-preview(?:\/chat\/[\w-]+)?)\/?(\?sheet=(?:sessions|message))?$/i;
 
-/** The route of a link to the preview, such as `openbot://design-preview`, or null for another link. */
+/**
+ * The route of a link to the preview, such as `openbot://design-preview` or
+ * `openbot://design-preview/chat/flights?sheet=message`, or null for another link.
+ */
 export function designPreviewRoute(path: string): string | null {
   const match = PREVIEW_LINK.exec(path);
-  return match ? `/${match[1]}` : null;
+  return match ? `/${match[1]}${match[2] ?? ""}` : null;
 }

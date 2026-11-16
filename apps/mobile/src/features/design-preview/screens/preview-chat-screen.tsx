@@ -9,10 +9,12 @@ import ListChecks from "lucide-react-native/icons/list-checks";
 import Mic from "lucide-react-native/icons/mic";
 import Plus from "lucide-react-native/icons/plus";
 import Repeat from "lucide-react-native/icons/repeat";
-import { type ReactNode, useRef, useState } from "react";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 import { Pressable, ScrollView, type ScrollViewInstance, TextInput, View } from "react-native";
 import { KeyboardStickyView } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useUniwind } from "uniwind";
+import { MenuView } from "@/shared/components/menu-view";
 import { SheetScrollEdgeEffect } from "@/shared/components/sheet-scroll-edge-effect";
 import { APP_FONT } from "@/shared/lib/app-font";
 import { haptics } from "@/shared/lib/haptics";
@@ -36,7 +38,8 @@ export function PreviewChatScreen() {
   const router = useRouter();
   const colors = usePreviewColors();
   const insets = useSafeAreaInsets();
-  const { agentId } = useLocalSearchParams<{ agentId: string }>();
+  const { agentId, sheet } = useLocalSearchParams<{ agentId: string; sheet?: string }>();
+  const { theme } = useUniwind();
   const agent = previewAgent(agentId ?? "");
   const userBubble = PREVIEW_USER_BUBBLE[agent.hue] ?? colors.accent;
   const scrollRef = useRef<ScrollViewInstance>(null);
@@ -50,6 +53,24 @@ export function PreviewChatScreen() {
     setSent((current) => [...current, { kind: "user", text, id: `sent${current.length}` }]);
     setDraft("");
   };
+
+  const openSessions = () => router.push("/design-preview/sessions");
+  const openMessageActions = () => {
+    void haptics.longPress();
+    router.push("/design-preview/message-actions");
+  };
+  // A link such as `openbot://design-preview/chat/flights?sheet=message` opens a sheet over the chat,
+  // so each sheet can be shown and captured without a touch.
+  const sheetOpened = useRef(false);
+  useEffect(() => {
+    if (sheetOpened.current || (sheet !== "sessions" && sheet !== "message")) return;
+    sheetOpened.current = true;
+    const timer = setTimeout(
+      () => router.push(sheet === "sessions" ? "/design-preview/sessions" : "/design-preview/message-actions"),
+      600,
+    );
+    return () => clearTimeout(timer);
+  }, [router, sheet]);
 
   const messages = [...PREVIEW_MESSAGES, ...sent];
   const composerBottom = Math.max(size.composerBottom, insets.bottom - 3);
@@ -75,6 +96,7 @@ export function PreviewChatScreen() {
             previous={messages[index - 1]}
             colors={colors}
             userBubble={userBubble}
+            onLongPress={openMessageActions}
           />
         ))}
       </ScrollView>
@@ -111,7 +133,7 @@ export function PreviewChatScreen() {
           <ChevronLeft size={24} color={colors.icon} strokeWidth={1.8} />
         </PreviewCircleButton>
         <TitlePill agent={agent} colors={colors} />
-        <PreviewCircleButton label={t("mobile.workspace.preview.more")}>
+        <PreviewCircleButton label={t("mobile.workspace.preview.more")} onPress={openSessions}>
           <Ellipsis size={22} color={colors.icon} strokeWidth={2} />
         </PreviewCircleButton>
       </View>
@@ -131,9 +153,52 @@ export function PreviewChatScreen() {
                 gap: 8,
               }}
             >
-              <ComposerCircle label={t("mobile.workspace.preview.attach")} fill={colors.composerButton}>
-                <Plus size={20} color={colors.icon} strokeWidth={1.7} />
-              </ComposerCircle>
+              <MenuView
+                colorScheme={theme === "dark" ? "dark" : "light"}
+                actions={[
+                  {
+                    id: "media",
+                    title: "",
+                    displayInline: true,
+                    subactions: [
+                      { id: "photo", title: t("mobile.workspace.preview.photoOrVideo"), image: "photo.on.rectangle" },
+                      { id: "camera", title: t("mobile.workspace.preview.takePhoto"), image: "camera" },
+                      { id: "scan", title: t("mobile.workspace.preview.scanDocument"), image: "doc.text.viewfinder" },
+                      { id: "file", title: t("mobile.workspace.preview.chooseFile"), image: "folder" },
+                    ],
+                  },
+                  {
+                    id: "agent",
+                    title: "",
+                    displayInline: true,
+                    subactions: [
+                      { id: "skill", title: t("mobile.chat.attachment.useSkill"), image: "sparkles" },
+                      {
+                        id: "side",
+                        title: t("mobile.workspace.preview.sideQuestion"),
+                        image: "bubble.left.and.text.bubble.right",
+                      },
+                    ],
+                  },
+                ]}
+                onPressAction={() => void haptics.selection()}
+              >
+                <View
+                  accessible
+                  accessibilityRole="button"
+                  accessibilityLabel={t("mobile.workspace.preview.attach")}
+                  style={{
+                    width: size.composerButton,
+                    height: size.composerButton,
+                    borderRadius: size.composerButton / 2,
+                    backgroundColor: colors.composerButton,
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Plus size={20} color={colors.icon} strokeWidth={1.7} />
+                </View>
+              </MenuView>
               <TextInput
                 value={draft}
                 onChangeText={setDraft}
@@ -220,6 +285,9 @@ function ComposerCircle({
   );
 }
 
+/** How long a touch on a bubble lasts before the message sheet opens. */
+const LONG_PRESS_MS = 350;
+
 /** The space above a message: wide after a time stamp or a change of speaker, narrow inside a group. */
 function gapBefore(message: PreviewMessage, previous: PreviewMessage | undefined) {
   if (!previous) return 0;
@@ -233,11 +301,14 @@ function MessageView({
   previous,
   colors,
   userBubble,
+  onLongPress,
 }: {
   message: PreviewMessage;
   previous: PreviewMessage | undefined;
   colors: PreviewColors;
   userBubble: string;
+  /** A touch and hold on a bubble opens the message sheet. */
+  onLongPress: () => void;
 }) {
   const { t } = useText();
   const time = usePreviewTime();
@@ -257,8 +328,10 @@ function MessageView({
       );
     case "user":
       return (
-        <View
-          style={[
+        <Pressable
+          onLongPress={onLongPress}
+          delayLongPress={LONG_PRESS_MS}
+          style={({ pressed }) => [
             bubble,
             {
               marginTop,
@@ -266,17 +339,20 @@ function MessageView({
               marginLeft: size.userBubbleLeftGap,
               marginRight: size.bubbleInset,
               backgroundColor: userBubble,
+              transform: [{ scale: pressed ? 0.98 : 1 }],
             },
           ]}
         >
           <Typography style={[type.message, { color: "#ffffff" }]}>{message.text}</Typography>
-        </View>
+        </Pressable>
       );
     case "agent":
     case "list":
       return (
-        <View
-          style={[
+        <Pressable
+          onLongPress={onLongPress}
+          delayLongPress={LONG_PRESS_MS}
+          style={({ pressed }) => [
             bubble,
             {
               marginTop,
@@ -284,6 +360,7 @@ function MessageView({
               marginLeft: size.bubbleInset,
               marginRight: size.agentBubbleRightGap,
               backgroundColor: colors.agentBubble,
+              transform: [{ scale: pressed ? 0.98 : 1 }],
             },
           ]}
         >
@@ -295,7 +372,7 @@ function MessageView({
               {[message.intro, ...message.items.map((item) => `•  ${item}`)].join("\n")}
             </Typography>
           )}
-        </View>
+        </Pressable>
       );
     case "tasks":
       return (

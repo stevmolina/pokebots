@@ -255,3 +255,12 @@ const MESSAGES: PreviewMessageBody[] = [
 ];
 
 export const PREVIEW_MESSAGES: PreviewMessage[] = MESSAGES.map((message, index) => ({ ...message, id: `m${index}` }));
+
+/** The sessions of a chat in the ••• sheet: the main chat first, then side sessions. */
+export const PREVIEW_SESSIONS: { id: string; name: string | null; minutesAgo: number; current: boolean }[] = [
+  { id: "main", name: null, minutesAgo: 6, current: true },
+  { id: "lima-plan", name: "Lima trip plan", minutesAgo: DAY + 2 * HOUR, current: false },
+  { id: "hotels", name: "Hotel options", minutesAgo: 4 * DAY, current: false },
+];
+
+export const PREVIEW_PINNED_COUNT = 2;

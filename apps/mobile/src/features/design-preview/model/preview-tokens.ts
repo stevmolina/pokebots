@@ -129,6 +129,16 @@ export const previewSize = {
   composerButtonInset: 7,
 } as const;
 
+/** Sheets and menus: the app's grouped sheet, with the reference's emoji circles. */
+export const previewSheet = {
+  emojiCircle: 44,
+  emojiRowGap: 12,
+  iconSize: 21,
+  /** The long-press card of a chat row. */
+  rowPreviewHeaderHeight: 60,
+  rowPreviewHeight: 150,
+} as const;
+
 /** Type sizes. The preview keeps the app font (Inter); the reference uses the system font. */
 export const previewType = {
   heroLabel: { fontSize: 14, lineHeight: 18 },
