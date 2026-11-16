@@ -163,7 +163,8 @@ as a routine completion or PR step.
    mobile typecheck, or parallel checks. Leave broad type validation to CI and state what remains
    unverified.
 4. Do not run `bun run format`: it rewrites the whole repository. Use
-   `biome check --write --max-diagnostics=none <paths>` for changed files.
+   `bun run check:paths <paths>` for changed files, in one call. Do not run a bare
+   `biome check` on paths: it loads the whole repository first and takes about 2 GB per run.
 5. The pre-commit hook (`.githooks/pre-commit`) runs `check:staged`, `check:ui`, and
    `scripts/staged-typecheck.ts` when the commit stages code. The script runs, one at a time, only
    the `typecheck:*` projects that can see a staged file; a root `package.json`, `tsconfig*.json` or

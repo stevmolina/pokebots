@@ -199,7 +199,7 @@ Rules:
 
 Run these checks one at a time:
 
-1. `bunx biome check --write --max-diagnostics=none <new files>`
+1. `bun run check:paths <new files>`
 2. The one typecheck project for the surface:
    `bun run typecheck:renderer` for `src/renderer/stories/`, or
    `bun run typecheck:api` for public web.
