@@ -426,7 +426,7 @@ export const messages = {
   "chat.selection.describe": "Describir cambios",
   "chat.selection.explain": "Explicar",
   "chat.selection.improve": "Mejorar",
-  "chat.selection.quote": "Citar",
+  "chat.selection.quote": "Añadir al chat",
   "chat.selection.quoteShortcutMac": "⌘⇧.",
   "chat.selection.quoteShortcutOther": "Ctrl+Mayús+.",
   "chat.selection.shorten": "Acortar",

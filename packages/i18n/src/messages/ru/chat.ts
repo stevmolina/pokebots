@@ -508,7 +508,7 @@ export const messages = {
   "chat.selection.describe": "Опишите правки",
   "chat.selection.explain": "Объяснить",
   "chat.selection.improve": "Улучшить",
-  "chat.selection.quote": "Цитировать",
+  "chat.selection.quote": "Добавить в чат",
   "chat.selection.quoteShortcutMac": "⌘⇧.",
   "chat.selection.quoteShortcutOther": "Ctrl+Shift+.",
   "chat.selection.shorten": "Сократить",

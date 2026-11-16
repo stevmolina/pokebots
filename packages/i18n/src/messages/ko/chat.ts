@@ -404,7 +404,7 @@ export const messages = {
   "chat.selection.describe": "수정 내용 설명",
   "chat.selection.explain": "설명",
   "chat.selection.improve": "개선",
-  "chat.selection.quote": "인용",
+  "chat.selection.quote": "채팅에 추가",
   "chat.selection.quoteShortcutMac": "⌘⇧.",
   "chat.selection.quoteShortcutOther": "Ctrl+Shift+.",
   "chat.selection.shorten": "줄이기",

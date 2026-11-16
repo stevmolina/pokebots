@@ -408,7 +408,7 @@ export const messages = defineMessages("chat", {
   "chat.selection.describe": "Describe edits",
   "chat.selection.explain": "Explain",
   "chat.selection.improve": "Improve",
-  "chat.selection.quote": "Quote",
+  "chat.selection.quote": "Add to chat",
   "chat.selection.quoteShortcutMac": "⌘⇧.",
   "chat.selection.quoteShortcutOther": "Ctrl+Shift+.",
   "chat.selection.shorten": "Shorten",
