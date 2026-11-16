@@ -124,6 +124,12 @@ interface LiteralRule {
  */
 export const LITERAL_RULES: readonly LiteralRule[] = [
   {
+    file: "apps/auth-api/src/lib/site-metadata.ts",
+    find: 'export const OPENBOT_SITE_URL = "https://openbot.run/";',
+    replace: (name) =>
+      `export const OPENBOT_SITE_URL = ${JSON.stringify(name === "Pokebots" ? "https://pokebots.xyz/" : "https://openbot.run/")};`,
+  },
+  {
     file: "packages/brand/src/pokebots-avatar.ts",
     find: "export const POKEBOTS_LANDING_ARTWORK = false;",
     replace: (name) => `export const POKEBOTS_LANDING_ARTWORK = ${name === "Pokebots"};`,

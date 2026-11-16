@@ -91,6 +91,8 @@ SolidJS, provider, Cloudflare, and application code; and the account server to d
   Muse and Devin XDG folders are provider-owned login and resume state. They are not OpenBot
   conversation storage.
 - D1 is the source of truth for central accounts, remote membership, invitations, and logical sessions.
+  The optional `apps/auth-api/src/self-hosted` adapter uses SQLite and filesystem object storage
+  for the same service. See [Pokebots on Dokploy](../pokebots-dokploy.md).
 - Stripe is the source of truth for paid plans. D1 `billing_subscriptions` is a copy that the Stripe
   webhook keeps current; see [Billing](servers.md#billing).
 - A local team host owns conversations, files, agents, and the local member projection used by Team API.
