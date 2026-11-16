@@ -130,6 +130,17 @@ const PREFLIGHT_SELECTORS = ["*", "::after", "::before", "::backdrop", "::file-s
 const KEEP_IN_PREFLIGHT = "*,\n::backdrop,\n::file-selector-button";
 const LAYER_ORDER = "@layer theme, base, components, utilities;";
 
+/** The index of the quote that closes the string opening at `start`, past escaped characters, or -1. */
+function stringEnd(text: string, start: number): number {
+  const quote = text.charAt(start);
+  for (let index = start + 1; index < text.length; index++) {
+    const char = text.charAt(index);
+    if (char === "\\") index++;
+    else if (char === quote) return index;
+  }
+  return -1;
+}
+
 /** The parts of `list` between commas that are outside parentheses, brackets and strings. */
 export function splitSelectors(list: string): string[] {
   const parts: string[] = [];
@@ -138,7 +149,7 @@ export function splitSelectors(list: string): string[] {
   for (let index = 0; index < list.length; index++) {
     const char = list.charAt(index);
     if (char === '"' || char === "'") {
-      const end = list.indexOf(char, index + 1);
+      const end = stringEnd(list, index);
       index = end < 0 ? list.length : end;
     } else if (char === "(" || char === "[") depth++;
     else if (char === ")" || char === "]") depth--;
@@ -158,7 +169,7 @@ function topLevel(selector: string): string {
   for (let index = 0; index < selector.length; index++) {
     const char = selector.charAt(index);
     if (char === '"' || char === "'") {
-      const end = selector.indexOf(char, index + 1);
+      const end = stringEnd(selector, index);
       index = end < 0 ? selector.length : end;
     } else if (char === "(" || char === "[") depth++;
     else if (char === ")" || char === "]") depth--;
@@ -273,7 +284,7 @@ export function scopePseudoElementReset(css: string): string | undefined {
   for (let index = 0; index < css.length; index++) {
     const char = css.charAt(index);
     if (char === '"' || char === "'") {
-      const end = css.indexOf(char, index + 1);
+      const end = stringEnd(css, index);
       if (end < 0) return undefined;
       prelude += css.slice(index, end + 1);
       index = end;
