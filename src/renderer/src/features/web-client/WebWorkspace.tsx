@@ -999,6 +999,24 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
     });
     blurPhoneSearchField();
   }
+  /**
+   * Opens the phone search over the chat list. From a pushed chat or page, such as Tasks, the list
+   * comes back first: the results take its place.
+   */
+  function openPhoneSearch(): void {
+    if (untrack(mobilePane) !== "workspace") phoneBack();
+    setPhoneSearch((state) => {
+      state.open = true;
+    });
+  }
+  // A chat or page that opens by another path, or a window wider than a phone, ends the search, so it
+  // does not wait hidden under the chat with its old query.
+  createEffect(
+    () => phone() && mobilePane() === "workspace",
+    (shown) => {
+      if (!shown && untrack(() => phoneSearch.open)) closePhoneSearch();
+    },
+  );
   /** Takes the keyboard down and leaves the results open. */
   function blurPhoneSearchField(): void {
     const focused = document.activeElement;
@@ -3164,7 +3182,6 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
               data-web-phone-connect={phone() && noHost() ? "" : undefined}
               data-web-phone-tab-page={phone() && phoneTab() !== null && phoneTab() !== "chats" ? "" : undefined}
               data-web-phone-settings={phone() && settingsKind() ? "" : undefined}
-              data-web-phone-search={phoneSearching() ? "" : undefined}
               compact={compact()}
               blockedServer={blockedServer()}
               initialLoading={hostOffline()}
@@ -3580,11 +3597,7 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                       onOpenApps={workspace.state.status === "online" ? openMarketplace : undefined}
                       searching={phoneSearching()}
                       searchQuery={phoneSearch.query}
-                      onOpenSearch={() =>
-                        setPhoneSearch((state) => {
-                          state.open = true;
-                        })
-                      }
+                      onOpenSearch={openPhoneSearch}
                       onSearchQuery={(query) =>
                         setPhoneSearch((state) => {
                           state.query = query;

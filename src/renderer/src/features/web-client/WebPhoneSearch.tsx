@@ -210,15 +210,28 @@ export function WebPhoneSearch(props: WebPhoneSearchProps) {
     }
   }
 
-  let scrolling = false;
-  function onScroll(): void {
-    if (!list) return;
-    // Only a scroll that the finger starts takes the keyboard down, not the jump to the top.
-    if (scrolling) props.onScrollStart();
-    if (list.scrollHeight - list.scrollTop - list.clientHeight > LOAD_MORE_MARGIN) return;
-    const current = filter();
+  /** Loads the next page of messages or files when the end of the list is near or already shows. */
+  function loadMoreNearEnd(): void {
+    if (!list || list.scrollHeight - list.scrollTop - list.clientHeight > LOAD_MORE_MARGIN) return;
+    const current = untrack(filter);
     if (current === "all" || current === "messages") messageSearch.loadMore();
     if (current === "all" || current === "files") fileSearch.loadMore();
+  }
+  // A page that the text match mostly drops can leave a list too short to scroll, so each new list
+  // checks the end too.
+  createEffect(
+    () => results().length,
+    () => {
+      const frame = requestAnimationFrame(loadMoreNearEnd);
+      return () => cancelAnimationFrame(frame);
+    },
+  );
+
+  let scrolling = false;
+  function onScroll(): void {
+    // Only a scroll that the finger starts takes the keyboard down, not the jump to the top.
+    if (scrolling) props.onScrollStart();
+    loadMoreNearEnd();
   }
 
   return (
@@ -246,6 +259,9 @@ export function WebPhoneSearch(props: WebPhoneSearchProps) {
           scrolling = true;
         }}
         onTouchEnd={() => {
+          scrolling = false;
+        }}
+        onTouchCancel={() => {
           scrolling = false;
         }}
       >
@@ -283,9 +299,8 @@ function PhoneSearchRow(props: {
   onOpen: (result: PhoneSearchResult) => void;
 }) {
   const { t } = useText();
-  // The row is keyed by its result, so its kind does not change.
-  const result = untrack(() => props.result);
   const row = () => {
+    const result = props.result;
     switch (result.kind) {
       case "agent":
         return { name: result.agent.name, detail: undefined, end: t("conversation.globalSearch.kind.agent") };
@@ -316,7 +331,7 @@ function PhoneSearchRow(props: {
   };
   return (
     <Button variant="ghost" type="button" class="web-phone-search-row" onClick={() => props.onOpen(props.result)}>
-      <PhoneSearchAvatar result={result} />
+      <PhoneSearchAvatar result={props.result} />
       <span class="web-phone-search-text">
         <span class="web-phone-search-name" dir="auto">
           {row().name}
