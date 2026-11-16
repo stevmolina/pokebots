@@ -53,12 +53,43 @@ try {
     maxAllowedPixels: 256 * 256,
   };
   await mkdir(".openbot-build", { recursive: true });
-  await writeFile(".openbot-build/plush-avatar-readback.json", `${JSON.stringify(report, null, 2)}\n`);
   assert.ok(
     report.largestReadPixels <= report.maxAllowedPixels,
     `Canvas readback too large: ${report.largestReadPixels}`,
   );
-  process.stdout.write(`${JSON.stringify(report)}\n`);
+
+  // A tint that fails once (a failed image load or pixel read) must not leave a plush without its body.
+  // Before the retry in the bloub patch, the body and eyes stayed hidden and only the accessory showed.
+  const failing = await browser.newPage({ viewport: { width: 390, height: 844 } });
+  await failing.addInitScript(() => {
+    const original = CanvasRenderingContext2D.prototype.getImageData;
+    let failures = 0;
+    CanvasRenderingContext2D.prototype.getImageData = function (...args) {
+      failures += 1;
+      if (failures <= 12) throw new DOMException("Simulated failed tint", "SecurityError");
+      return original.apply(this, args);
+    };
+  });
+  await failing.goto(`${base}/iframe.html?id=identity-agentavatar--independent-motion&viewMode=story`);
+  await failing.waitForFunction(
+    () => {
+      const avatars = document.querySelectorAll('[data-avatar="generated"]');
+      return avatars.length === 12 && [...avatars].every((avatar) => avatar.querySelector('image[href^="data:"]'));
+    },
+    undefined,
+    { timeout: 15_000 },
+  );
+  const hiddenBodies = await failing
+    .locator('[data-avatar="generated"] .bloub-avatar-svg [visibility="hidden"]')
+    .count();
+  assert.equal(hiddenBodies, 0, "Every plush body must show after a failed tint.");
+  await failing.screenshot({ path: ".openbot-build/plush-avatar-failed-tint.png" });
+  const failedTint = { avatars: 12, simulatedFailures: 12, hiddenBodies };
+  await writeFile(
+    ".openbot-build/plush-avatar-readback.json",
+    `${JSON.stringify({ ...report, failedTint }, null, 2)}\n`,
+  );
+  process.stdout.write(`${JSON.stringify({ ...report, failedTint })}\n`);
 } finally {
   await browser.close();
 }
