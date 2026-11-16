@@ -1,6 +1,7 @@
 import { toast } from "@openbot/ui";
 import { currentText } from "@openbot/ui/text";
 import { createEffect, onCleanup } from "solid-js";
+import { statusAlertsShown } from "../updates/status-alerts";
 
 /**
  * A short drop is not an outage. A phone pauses an installed web app each time the user leaves it,
@@ -13,6 +14,7 @@ const RECONNECT_NOTICE_DELAY_MS = 8_000;
 export function createServerConnectionToast(
   read: () => { id: string; name: string; ready: boolean; quiet: boolean } | null,
 ) {
+  if (!statusAlertsShown()) return;
   let serverId: string | null = null;
   let serverName = "";
   let wasReady = false;
