@@ -1,6 +1,16 @@
 import type { HostedServerSleep, ServerConnectionState, ServerSummary } from "@openbot/contracts/ipc";
 import type { AppTextKey, AppTranslate } from "@openbot/i18n";
-import { BellOff, buttonVariants, ContextMenu, DropdownMenu, Eye, Plus, Server, Tooltip } from "@openbot/ui";
+import {
+  BellOff,
+  buttonVariants,
+  ContextMenu,
+  DropdownMenu,
+  Eye,
+  Plus,
+  Server,
+  ServerPlushLogo,
+  Tooltip,
+} from "@openbot/ui";
 import { createEffect, createSignal, createStore, For, onCleanup, Show } from "solid-js";
 import { createScrollFades } from "../../components/createScrollFades";
 import { createVerticalDragPreview } from "../../components/createVerticalDragPreview";
@@ -610,9 +620,12 @@ function ServerRailButton(
 
 /** What a server mark needs: the logo, or else the id that picks its plush machine and its place. */
 export type ServerMarkServer = Pick<ServerSummary, "id" | "logoUrl"> &
-  Partial<Pick<ServerSummary, "name" | "kind">> & { thisComputer?: boolean | undefined };
+  Partial<Pick<ServerSummary, "name" | "kind" | "appearance">> & { thisComputer?: boolean | undefined };
 
-/** The server logo, this computer's Pokebots plush, or a plush machine when there is no logo. */
+/**
+ * The server logo, this computer's Pokebots plush, the plush look that an admin chose for the server,
+ * or a plush machine.
+ */
 export function ServerMark(props: { server: ServerMarkServer }) {
   const [failed, setFailed] = createSignal(false);
   createEffect(
@@ -626,7 +639,14 @@ export function ServerMark(props: { server: ServerMarkServer }) {
     <Show
       when={!failed() ? props.server.logoUrl : null}
       fallback={
-        <Show when={thisComputer()} fallback={<ServerMascot serverId={props.server.id} />}>
+        <Show
+          when={thisComputer()}
+          fallback={
+            <Show when={props.server.appearance} fallback={<ServerMascot serverId={props.server.id} />}>
+              {(appearance) => <ServerPlushLogo seed={props.server.id} appearance={appearance()} />}
+            </Show>
+          }
+        >
           <img class="server-rail-logo" src={pokebotsIcon} alt="" draggable={false} />
         </Show>
       }

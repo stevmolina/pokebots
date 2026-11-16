@@ -19,6 +19,12 @@ export const messages = {
   "webClient.login.responseInvalid": "サインインの応答が無効です。",
   "webClient.pane.navigation": "ワークスペースのナビゲーション",
   "webClient.tab.settings": "設定",
+  "webClient.phoneApp.title": "OpenBot アプリを使う",
+  "webClient.phoneApp.description":
+    "スマートフォンでは、OpenBot はアプリで最も快適に使えます。同じメールアドレスでサインインしてください。",
+  "webClient.phoneApp.ios": "iPhone 版をダウンロード",
+  "webClient.phoneApp.android": "Android 版をダウンロード",
+  "webClient.phoneApp.continue": "ブラウザで続ける",
   "webClient.notice.connecting": "サーバーに接続しています",
   "webClient.notice.findingHosts": "サーバーを探しています",
   "webClient.notice.hostsFailed": "サーバーを読み込めませんでした",

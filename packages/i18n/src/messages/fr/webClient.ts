@@ -19,6 +19,12 @@ export const messages = {
   "webClient.login.responseInvalid": "La réponse de connexion n’est pas valide.",
   "webClient.pane.navigation": "Navigation de l’espace de travail",
   "webClient.tab.settings": "Réglages",
+  "webClient.phoneApp.title": "Utilisez l’app OpenBot",
+  "webClient.phoneApp.description":
+    "Sur un téléphone, OpenBot fonctionne mieux dans l’app. Connectez-vous avec le même e-mail.",
+  "webClient.phoneApp.ios": "Télécharger pour iPhone",
+  "webClient.phoneApp.android": "Télécharger pour Android",
+  "webClient.phoneApp.continue": "Continuer dans le navigateur",
   "webClient.notice.connecting": "Connexion à votre serveur",
   "webClient.notice.findingHosts": "Recherche de vos serveurs",
   "webClient.notice.hostsFailed": "Impossible de charger vos serveurs",

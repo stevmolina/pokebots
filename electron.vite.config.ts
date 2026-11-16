@@ -5,6 +5,7 @@ import tailwindcss from "@tailwindcss/vite";
 import { defineConfig, externalizeDepsPlugin } from "electron-vite";
 import { lazyLanguageCatalogs } from "./packages/i18n/src/vite-plugin";
 import { brandPlugins } from "./scripts/brand-layer";
+import { devWorktree } from "./scripts/dev-worktree-vite-plugin";
 import { tailwindPropertyFallbackRemoval } from "./scripts/tailwind-property-fallback";
 
 const rendererPort = readRendererPort(process.env.OPENBOT_DEV_RENDERER_PORT);
@@ -75,6 +76,8 @@ export default defineConfig({
       tailwindcss({ optimize: false }),
       tailwindPropertyFallbackRemoval(),
       lazyLanguageCatalogs(),
+      // The branch and color of this worktree in a dev renderer (`src/renderer/src/dev-worktree.ts`).
+      devWorktree(resolve(".")),
     ],
     optimizeDeps: {
       // bloub finds its plush images with `new URL(..., import.meta.url)`. A pre-bundle moves the
@@ -93,6 +96,8 @@ export default defineConfig({
           browserPip: resolve("src/renderer/browser-pip.html"),
           browserPipControls: resolve("src/renderer/browser-pip-controls.html"),
           teamWebrtc: resolve("src/renderer/team-webrtc.html"),
+          // The setup page of a server in a container. src/main/server-setup-page.ts serves it.
+          serverSetup: resolve("src/renderer/server-setup.html"),
         },
       },
     },

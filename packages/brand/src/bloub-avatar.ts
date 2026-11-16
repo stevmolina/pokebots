@@ -1,4 +1,11 @@
-import { EXPRESSIONS, type ExpressionId, SHAPES, type ShapeId } from "@norbert_bodziony/bloub";
+import {
+  COLOR_BY_ID,
+  type ColorId,
+  EXPRESSIONS,
+  type ExpressionId,
+  SHAPES,
+  type ShapeId,
+} from "@norbert_bodziony/bloub";
 import { type AvatarColor, type AvatarHue, nearestAvatarHue } from "@openbot/contracts/ipc-agent-identity";
 import {
   POKEBOTS_HUE_COLORS,
@@ -178,6 +185,20 @@ export type ServerPlushColor = (typeof AUTOMATIC_COLORS)[number];
 
 export function serverPlushColor(serverId: string): ServerPlushColor {
   return automaticColor(serverId);
+}
+
+/**
+ * The `#rrggbb` body colour of a server plush: the colour an owner or admin chose, or the automatic
+ * colour of the server ID.
+ */
+export function serverPlushHex(serverId: string, color: string | null | undefined): string {
+  return (color ?? colorHex(automaticColor(serverId))).toLowerCase();
+}
+
+function colorHex(color: ColorId): string {
+  const value = COLOR_BY_ID.get(color)?.hex;
+  if (!value) throw new Error(`Bloub did not return a color for ${color}.`);
+  return value;
 }
 
 function automaticColor(seed: string): ServerPlushColor {

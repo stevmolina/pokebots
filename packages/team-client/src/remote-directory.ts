@@ -16,6 +16,10 @@ import {
   decodeRemoteSessionWithTicket,
 } from "@openbot/contracts/remote-control-plane";
 import { isBoolean, isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
+import {
+  optionalServerAppearanceField,
+  type ServerAppearance,
+} from "@openbot/contracts/team-protocol/host-appearance-v1";
 import { sourceText } from "@openbot/i18n/source";
 import { referenceFrom, safeReference } from "@openbot/user-errors/reference";
 import { Deferred, Effect, Schema, Semaphore } from "effect";
@@ -32,6 +36,11 @@ export interface RemoteTeamHost {
   hostId: string;
   name: string;
   logoKey: string | null;
+  /**
+   * The shape and colour that the server shows with no logo; null for the automatic look. An older
+   * account server sends none, and a bad value is dropped.
+   */
+  appearance?: ServerAppearance | null;
   devicePublicKey: string;
   membershipId: string;
   role: "owner" | "admin" | "member";
@@ -230,6 +239,7 @@ export class RemoteTeamDirectoryClient {
                 hostId: candidate.hostId,
                 name: candidate.name,
                 logoKey: candidate.logoKey,
+                ...optionalServerAppearanceField(candidate.appearance),
                 devicePublicKey,
                 membershipId: candidate.membershipId,
                 role: candidate.role,
