@@ -118,6 +118,7 @@ export const messages = {
   "sidebar.waiting.hint.takeover": "选择即可接管",
   "sidebar.lanes.working": "进行中",
   "sidebar.dock.settled": "已完成",
+  "sidebar.dock.recent": "最近",
   "sidebar.dock.doneNow": "刚刚完成",
   "sidebar.dock.doneMinutes": "{value} 分钟前完成",
   "sidebar.dock.doneHours": "{value} 小时前完成",

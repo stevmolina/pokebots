@@ -118,6 +118,7 @@ export const messages = {
   "sidebar.waiting.hint.takeover": "선택하여 직접 처리",
   "sidebar.lanes.working": "작업 중",
   "sidebar.dock.settled": "완료",
+  "sidebar.dock.recent": "최근",
   "sidebar.dock.doneNow": "방금 완료",
   "sidebar.dock.doneMinutes": "{value}분 전 완료",
   "sidebar.dock.doneHours": "{value}시간 전 완료",

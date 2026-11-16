@@ -287,7 +287,7 @@
     align-items: center;
     justify-content: flex-start;
     gap: var(--openbot-space-1-5);
-    padding: var(--openbot-space-2) var(--openbot-space-5);
+    padding: var(--openbot-space-2) var(--web-phone-row-inset);
     color: var(--openbot-text-muted);
     font-size: var(--openbot-text-lg);
     font-weight: var(--openbot-weight-regular);
@@ -325,17 +325,27 @@
     margin-top: var(--openbot-space-1);
   }
 
-  /* A chat row: the face with its presence dot, the bold name, one muted line, and the time at the end. */
-  .web-app-frame > .sidebar-chat .sidebar-chat-row {
-    position: relative;
-    align-items: flex-start;
-    gap: var(--openbot-space-3);
-    border-radius: var(--openbot-radius-card);
-    padding: var(--openbot-space-2-5, 10px) var(--openbot-space-5);
+  /*
+   * A chat row: the face with its presence dot, the bold name, one muted line, and the time at the end.
+   * The row sits 8px in from the screen edge, so its highlight has a margin, and keeps 12px inside, so
+   * the face and the text have room. The face and the text start at the same 20px as the group headings.
+   * The text block is centered against the face. The unread dot sits in the left gutter of the row.
+   */
+  .web-app-frame > .sidebar-chat {
+    --web-phone-row-margin: var(--openbot-space-2);
+    --web-phone-row-pad: var(--openbot-space-3);
+    --web-phone-row-inset: calc(var(--web-phone-row-margin) + var(--web-phone-row-pad));
   }
 
-  .web-app-frame > .sidebar-chat .sidebar-chat-row .sidebar-chat-avatar {
-    align-self: center;
+  .web-app-frame > .sidebar-chat .sidebar-chat-row {
+    position: relative;
+    width: calc(100% - 2 * var(--web-phone-row-margin));
+    min-height: 0;
+    align-items: center;
+    gap: var(--openbot-space-3);
+    margin-inline: var(--web-phone-row-margin);
+    border-radius: var(--openbot-radius-card);
+    padding: var(--openbot-space-2) var(--web-phone-row-pad);
   }
 
   /* The name and the preview end before the time, so a long preview truncates short of it. */
@@ -353,30 +363,27 @@
     color: var(--openbot-text-muted);
   }
 
-  .web-app-frame > .sidebar-chat .sidebar-chat-row {
-    position: relative;
-  }
-
   .web-app-frame > .sidebar-chat .sidebar-chat-row > .sidebar-chat-time {
     position: absolute;
-    /* On the name line: the name starts at the top of the row, 20px tall. */
-    top: 2px;
-    right: var(--openbot-space-4);
-    left: auto;
+    /* On the name line: the text block is 40px tall (20px name, 2px gap, 18px preview) and centered. */
+    top: calc(50% - 20px);
+    inset-inline-end: var(--web-phone-row-pad);
     grid-area: auto;
     display: block;
     color: var(--openbot-text-muted);
     font-size: var(--openbot-text-sm);
     font-variant-numeric: tabular-nums;
+    line-height: 20px;
     white-space: nowrap;
   }
 
-  /* The unread dot sits under the time. */
+  /* The unread dot sits in the left gutter of the row, beside the face and not over it. */
   .web-app-frame > .sidebar-chat .sidebar-chat-row > .sidebar-chat-unread {
     position: absolute;
     top: 50%;
-    inset-inline-end: var(--openbot-space-5);
+    inset-inline-start: var(--openbot-space-0-5);
     margin: 0;
+    transform: translateY(-50%);
   }
 
   .web-app-frame > .sidebar-chat .sidebar-chat-presence {

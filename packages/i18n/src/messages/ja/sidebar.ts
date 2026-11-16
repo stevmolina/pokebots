@@ -118,6 +118,7 @@ export const messages = {
   "sidebar.waiting.hint.takeover": "選択して操作します",
   "sidebar.lanes.working": "作業中",
   "sidebar.dock.settled": "完了",
+  "sidebar.dock.recent": "最近",
   "sidebar.dock.doneNow": "たった今完了",
   "sidebar.dock.doneMinutes": "{value}分前に完了",
   "sidebar.dock.doneHours": "{value}時間前に完了",

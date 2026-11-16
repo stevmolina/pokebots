@@ -148,6 +148,7 @@ export const messages = {
   "sidebar.waiting.hint.takeover": "Выберите, чтобы взять управление",
   "sidebar.lanes.working": "В работе",
   "sidebar.dock.settled": "Завершённые",
+  "sidebar.dock.recent": "Недавние",
   "sidebar.dock.doneNow": "готово только что",
   "sidebar.dock.doneMinutes": "готово {value} мин назад",
   "sidebar.dock.doneHours": "готово {value} ч назад",

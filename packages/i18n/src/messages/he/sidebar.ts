@@ -121,6 +121,7 @@ export const messages = {
   "sidebar.waiting.hint.approval": "יש לבחור כדי לסקור",
   "sidebar.waiting.hint.takeover": "יש לבחור כדי להשתלט",
   "sidebar.dock.settled": "הושלמו",
+  "sidebar.dock.recent": "אחרונים",
   "sidebar.dock.doneNow": "הסתיים עכשיו",
   "sidebar.dock.doneMinutes": "הסתיים לפני {value} דק׳",
   "sidebar.dock.doneHours": "הסתיים לפני {value} שע׳",

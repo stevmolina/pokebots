@@ -148,6 +148,7 @@ export const messages = {
   "sidebar.waiting.hint.takeover": "Wybierz, aby przejąć",
   "sidebar.lanes.working": "Pracują",
   "sidebar.dock.settled": "Załatwione",
+  "sidebar.dock.recent": "Ostatnie",
   "sidebar.dock.doneNow": "ukończono przed chwilą",
   "sidebar.dock.doneMinutes": "ukończono {value} min temu",
   "sidebar.dock.doneHours": "ukończono {value} godz. temu",
