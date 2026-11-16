@@ -2907,15 +2907,15 @@ export async function createApplicationServices({
         !providerUse.off().includes(provider.id)
       ) {
         startedServerDefaultClis.add(provider.id);
-        const download = providerRuntimes
-          .download(provider.id)
-          .pipe(
-            Effect.catch((error) =>
-              Effect.sync(() =>
-                logger.warn(`The ${provider.id} CLI did not download on this server.`, toLogValue(error.cause)),
-              ),
-            ),
-          );
+        const id = provider.id;
+        // Checked again when it starts: the user can turn the provider off during a disk restore.
+        const download = Effect.suspend(() =>
+          providerUse.off().includes(id) ? Effect.void : providerRuntimes.download(id).pipe(Effect.asVoid),
+        ).pipe(
+          Effect.catch((error) =>
+            Effect.sync(() => logger.warn(`The ${id} CLI did not download on this server.`, toLogValue(error.cause))),
+          ),
+        );
         Effect.runFork(diskRestoring() ? diskRestoreEnded.pipe(Effect.andThen(download)) : download);
       }
     }
