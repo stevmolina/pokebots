@@ -41,6 +41,7 @@ import { useWindowPage } from "../window/window-page-context";
 import { useWorkspaceSidebarPages } from "../window/workspace-sidebar-pages";
 import { createCommunityCardVisibility } from "./community-card";
 import { useCustomSidebarThreadLanes } from "./custom-sidebar-thread-lanes";
+import { DevWorktreeLabel } from "./DevWorktreeLabel";
 import { createSidebarAlertCards, SidebarAlertCards } from "./SidebarAlertCards";
 import { ServerUpgradeOffer } from "./server-upgrade-offer";
 import { useSidebar } from "./sidebar-context";
@@ -336,6 +337,7 @@ export function WorkspaceSidebar(props: { peopleEnabled: boolean }) {
           const badge = server ? serverUpdateBadge(server.id) : null;
           return server && badge ? { ...badge, onOpen: () => void showServerUpdate(server.id) } : undefined;
         })()}
+        topbarDetail={<DevWorktreeLabel />}
         serverMenu={
           platform.appInfo()
             ? {

@@ -19,6 +19,12 @@ export const messages = {
   "webClient.login.responseInvalid": "Odpowiedź logowania jest nieprawidłowa.",
   "webClient.pane.navigation": "Nawigacja obszaru roboczego",
   "webClient.tab.settings": "Ustawienia",
+  "webClient.phoneApp.title": "Użyj aplikacji OpenBot",
+  "webClient.phoneApp.description":
+    "Na telefonie OpenBot działa najlepiej w aplikacji. Zaloguj się tym samym adresem e-mail.",
+  "webClient.phoneApp.ios": "Pobierz na iPhone’a",
+  "webClient.phoneApp.android": "Pobierz na Androida",
+  "webClient.phoneApp.continue": "Kontynuuj w przeglądarce",
   "webClient.notice.connecting": "Łączenie z twoim serwerem",
   "webClient.notice.findingHosts": "Szukanie twoich serwerów",
   "webClient.notice.hostsFailed": "Nie udało się wczytać twoich serwerów",

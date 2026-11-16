@@ -336,3 +336,27 @@ html:has(.web-app-frame) body {
     -webkit-user-modify: read-write-plaintext-only;
   }
 }
+
+/* The phone app screen: the store links under the sign-in title, and the browser choice as a quiet link. */
+.web-phone-app-stores {
+  width: 100%;
+  display: grid;
+  gap: var(--openbot-space-3);
+  margin-top: 30px;
+}
+
+.web-phone-app-store {
+  width: 100%;
+  height: 44px;
+}
+
+.web-phone-app-store-logo {
+  width: 18px;
+  height: 18px;
+  flex: none;
+}
+
+.web-phone-app-continue {
+  margin-top: var(--openbot-space-4);
+  color: var(--openbot-text-muted);
+}

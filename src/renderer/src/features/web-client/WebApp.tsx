@@ -43,6 +43,7 @@ import { createOnboardingTeam, onboardingSessionSeed } from "../onboarding/onboa
 import { deleteRemoteWorkspaceFrames } from "../servers/remote-workspace-frame-keys";
 import { startConnectionLog } from "./connection-log";
 import { WebLanguageStep } from "./WebLanguageStep";
+import { WebPhoneAppScreen } from "./WebPhoneAppScreen";
 import { WebServiceWorkerUpdates } from "./WebServiceWorkerUpdates";
 import type { WebWorkspace } from "./WebWorkspace";
 import { createWebAccountCalls } from "./web-account";
@@ -621,6 +622,9 @@ export function WebApp(props: { createRuntime?: WebRuntimeFactory } = {}) {
   const appearancePreference = createWebAppearancePreference();
   // The sign-in starts in the browser language; its language button opens the wheel to change it.
   const [languageWheelOpen, setLanguageWheelOpen] = createSignal(false);
+  // On a phone the web client first points to the phone app, unless the address opened a link.
+  // Pokebots: the store apps sign in to OpenBot accounts, not to Pokebots, so a phone stays in the browser.
+  const [phoneAppShown, setPhoneAppShown] = createSignal(false);
   return (
     <StaticI18nProvider
       locale={resolveLocale(languagePreference.language(), navigator.language)}
@@ -635,7 +639,10 @@ export function WebApp(props: { createRuntime?: WebRuntimeFactory } = {}) {
             mobileOffset={{ top: "calc(env(safe-area-inset-top, 0px) + 16px)" }}
           />
           <WebServiceWorkerUpdates />
-          <Show when={state.loaded}>
+          <Show when={state.loaded && phoneAppShown()}>
+            <WebPhoneAppScreen variant={variant} onContinue={() => setPhoneAppShown(false)} />
+          </Show>
+          <Show when={state.loaded && !phoneAppShown()}>
             <Show
               keyed
               when={state.account?.id}

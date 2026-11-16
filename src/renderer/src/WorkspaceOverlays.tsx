@@ -668,6 +668,7 @@ function ServerSettings() {
     serverSettingsError,
     refreshServerSettings,
     saveServerIdentity,
+    saveServerAppearance,
     recheckScreenRecording,
     rotateHostKey,
     setServerPublished,
@@ -998,6 +999,7 @@ function ServerSettings() {
           loadError={serverSettingsError()}
           onRetry={() => refreshServerSettings(server().id)}
           onSaveIdentity={saveServerIdentity}
+          onSaveAppearance={saveServerAppearance}
           onSetPublished={setServerPublished}
           onRotateHostKey={serverRotatesHostKey(server()) ? rotateHostKey : undefined}
           onCreateInvite={createServerInvite}
