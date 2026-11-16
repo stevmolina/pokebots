@@ -229,6 +229,10 @@ export const messages = {
   "routine.settings.create": "Routine maken",
   "routine.settings.loading": "Routines laden…",
   "routine.settings.empty": "Nog geen routines.",
+  "routine.heartbeat.add": "Heartbeat toevoegen",
+  "routine.heartbeat.name": "Heartbeat",
+  "routine.heartbeat.description":
+    "Controleert elke 2 uur een lijst en meldt zich alleen als iets je aandacht nodig heeft.",
   "routine.settings.paused": "Gepauzeerd",
   "routine.settings.completed": "Klaar · {schedule}",
   "routine.settings.active": "Actief",

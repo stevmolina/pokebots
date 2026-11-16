@@ -241,6 +241,11 @@ export const messages = defineMessages("routine", {
   "routine.settings.create": "Create Routine",
   "routine.settings.loading": "Loading routines…",
   "routine.settings.empty": "No routines yet.",
+  "routine.heartbeat.add": "Add heartbeat",
+  "routine.heartbeat.name": "Heartbeat",
+  "routine.heartbeat.description": "Checks a list every 2 hours and posts only when something needs you.",
+  "routine.heartbeat.instruction":
+    "Heartbeat check. Go through this checklist:\n- New messages or mail that wait for my reply\n- Failing CI runs or pull requests that wait for me\n- Reminders or deadlines due today\n\nReport only what needs my attention, in a few short lines: what it is and what to do next.\nWhen nothing needs my attention, call the routine_no_update tool and write nothing else.",
   "routine.settings.paused": "Paused",
   "routine.settings.completed": "Done · {schedule}",
   "routine.settings.active": "Active",

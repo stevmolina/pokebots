@@ -102,6 +102,16 @@ export function AgentRoutines({
         >
           <Typography.Paragraph>{t("mobile.agent.info.addRoutine")}</Typography.Paragraph>
         </SettingsRow>
+        <SettingsRow
+          onPress={() =>
+            router.push({
+              pathname: "/agent-info/[agentId]/routine",
+              params: { agentId: agent.id, serverId: agent.serverId, preset: "heartbeat" },
+            })
+          }
+        >
+          <Typography.Paragraph>{t("mobile.agent.info.addHeartbeat")}</Typography.Paragraph>
+        </SettingsRow>
       </SettingsSection>
     </>
   );

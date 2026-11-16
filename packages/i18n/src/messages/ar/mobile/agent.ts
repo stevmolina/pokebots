@@ -162,6 +162,8 @@ export const messages = {
   "mobile.agent.info.routinePaused": "متوقفة مؤقتًا",
   "mobile.agent.info.noRoutines": "لا مهام دورية بعد.",
   "mobile.agent.info.addRoutine": "إضافة مهمة دورية",
+  "mobile.agent.info.addHeartbeat": "إضافة نبض",
+  "mobile.agent.heartbeat.name": "نبض",
   "mobile.agent.info.skillsUnsupported": "لا يدعم هذا المضيف المهارات. حدّث OpenBot على المضيف.",
   "mobile.agent.info.noSkills": "لا مهارات بعد.",
   "mobile.agent.info.skillsManaged": "تُدار مهارات هذا الوكيل على المضيف.",

@@ -102,8 +102,9 @@ export function AgentInformation({
   }, [section]);
   const { t, format } = useText();
   // The server Usage screen passes its range, so the agent's report opens on the same days.
-  const { recordId, startDate, endDate, timeZone } = useLocalSearchParams<{
+  const { recordId, preset, startDate, endDate, timeZone } = useLocalSearchParams<{
     recordId?: string;
+    preset?: string;
     startDate?: string;
     endDate?: string;
     timeZone?: string;
@@ -363,7 +364,11 @@ export function AgentInformation({
       ) : null}
       {section === "routine" ? (
         !recordId ? (
-          <RoutineEditor agent={agent} available={available} />
+          <RoutineEditor
+            agent={agent}
+            available={available}
+            preset={preset === "heartbeat" ? "heartbeat" : undefined}
+          />
         ) : (
           <RecordSection
             kind="routine"

@@ -58,6 +58,14 @@ export const ROUTINE_WORKDAYS = [1, 2, 3, 4, 5];
 /** The steps an hourly run can repeat at. */
 export const ROUTINE_EVERY_HOURS = [1, 2, 3, 4, 6, 8, 12];
 
+/** The schedule of a new heartbeat routine: every 2 hours, all day, every day. */
+export const ROUTINE_HEARTBEAT_SCHEDULE: RoutineScheduleDraft = {
+  kind: "hourly",
+  everyHours: 2,
+  days: ROUTINE_EVERY_DAY,
+  window: null,
+};
+
 const DEFAULT_TIME = "09:00";
 const DEFAULT_WINDOW = { start: "09:00", end: "18:00" };
 const ALL_MONTHS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];

@@ -140,6 +140,8 @@ export const messages = {
   "mobile.agent.info.routinePaused": "已暂停",
   "mobile.agent.info.noRoutines": "还没有自动化任务。",
   "mobile.agent.info.addRoutine": "添加自动化任务",
+  "mobile.agent.info.addHeartbeat": "添加心跳",
+  "mobile.agent.heartbeat.name": "心跳",
   "mobile.agent.info.skillsUnsupported": "这台主机不支持技能。请更新主机上的 OpenBot。",
   "mobile.agent.info.noSkills": "还没有技能。",
   "mobile.agent.info.skillsManaged": "该助手的技能在主机上管理。",

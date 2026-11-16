@@ -143,6 +143,8 @@ export const messages = {
   "mobile.agent.info.routinePaused": "En pausa",
   "mobile.agent.info.noRoutines": "Aún no hay rutinas.",
   "mobile.agent.info.addRoutine": "Añadir rutina",
+  "mobile.agent.info.addHeartbeat": "Añadir heartbeat",
+  "mobile.agent.heartbeat.name": "Heartbeat",
   "mobile.agent.info.skillsUnsupported": "Este host no admite habilidades. Actualiza OpenBot en el host.",
   "mobile.agent.info.noSkills": "Aún no hay habilidades.",
   "mobile.agent.info.skillsManaged": "Las habilidades de este agente se gestionan en el host.",
