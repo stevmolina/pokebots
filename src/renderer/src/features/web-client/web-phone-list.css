@@ -118,18 +118,15 @@
 
   /* ---------------------------------------------------------------- floating controls */
 
-  /* The grid button and the search pill are soft glass, over the fade that is already there. */
+  /* The grid button, the search pill and its X button are soft glass, over the fade that is already there. */
   .web-app-frame > .web-phone-tab-bar .web-phone-apps-button.ui-button,
-  .web-app-frame > .web-phone-tab-bar .web-phone-search-pill.ui-button {
+  .web-app-frame > .web-phone-tab-bar .web-phone-search-close.ui-button,
+  .web-app-frame > .web-phone-tab-bar .web-phone-search-pill {
     border-color: color-mix(in srgb, var(--openbot-text-primary) 8%, transparent);
     background: color-mix(in srgb, var(--openbot-bg-surface-raised) 74%, transparent);
     -webkit-backdrop-filter: blur(20px) saturate(1.6);
     backdrop-filter: blur(20px) saturate(1.6);
     box-shadow: 0 2px 14px color-mix(in srgb, var(--openbot-text-primary) 10%, transparent);
-  }
-
-  .web-app-frame > .web-phone-tab-bar .web-phone-search-pill.ui-button {
-    font-size: var(--openbot-text-xl);
   }
 
   /*

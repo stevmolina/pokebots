@@ -147,42 +147,237 @@
     pointer-events: none;
   }
 
-  /* A wide search field, not a button: the icon and a muted placeholder at its start. */
-  .web-phone-tab-bar .web-phone-search-pill.ui-button {
-    pointer-events: auto;
-    display: inline-flex;
+  /*
+   * A wide search field: the icon and a muted placeholder at its start. It is a real text field, so the
+   * tap that focuses it opens the keyboard, and the results show in place of the list.
+   */
+  .web-phone-tab-bar .web-phone-search-pill {
+    position: relative;
+    display: flex;
     min-width: 0;
     height: var(--web-phone-tab-bar-height);
     flex: 1 1 auto;
     align-items: center;
-    justify-content: flex-start;
-    gap: var(--openbot-space-2);
     border: 1px solid var(--openbot-border);
     border-radius: var(--openbot-radius-pill);
     background: var(--openbot-bg-surface-raised);
-    padding: 0 var(--openbot-space-4);
     color: var(--openbot-text-muted);
-    font-size: var(--openbot-text-lg);
-    font-weight: var(--openbot-weight-regular);
     box-shadow: var(--openbot-shadow-raised);
   }
 
-  .web-phone-tab-bar .web-phone-search-pill.ui-button:active {
+  .web-app-frame > .web-phone-tab-bar .web-phone-search-pill > svg {
+    position: absolute;
+    inset-inline-start: var(--openbot-space-4);
+    width: var(--openbot-icon-md);
+    height: var(--openbot-icon-md);
+    stroke-width: var(--openbot-icon-stroke);
+    pointer-events: none;
+  }
+
+  .web-phone-tab-bar .web-phone-search-pill > .web-phone-search-input {
+    width: 100%;
+    height: 100%;
+    min-width: 0;
+    border: 0;
+    border-radius: inherit;
+    background: transparent;
+    padding-block: 0;
+    padding-inline: calc(var(--openbot-space-4) + var(--openbot-icon-md) + var(--openbot-space-2))
+      var(--openbot-space-4);
+    color: var(--openbot-text-primary);
+    box-shadow: none;
+    outline: none;
+    appearance: none;
+  }
+
+  .web-phone-tab-bar .web-phone-search-pill > .web-phone-search-input::placeholder {
+    color: var(--openbot-text-muted);
+  }
+
+  /* The pill draws the focus ring, not the field inside it. */
+  .web-phone-tab-bar .web-phone-search-pill:focus-within {
+    border-color: var(--openbot-border-strong);
+  }
+
+  /* Safari draws its own clear button and search decoration; the round X button closes the search. */
+  .web-phone-search-input::-webkit-search-cancel-button,
+  .web-phone-search-input::-webkit-search-decoration {
+    appearance: none;
+  }
+
+  .web-phone-tab-bar .web-phone-search-close.ui-button {
+    display: grid;
+    width: var(--web-phone-tab-bar-height);
+    height: var(--web-phone-tab-bar-height);
+    flex: none;
+    place-items: center;
+    border: 1px solid var(--openbot-border);
+    border-radius: var(--openbot-radius-pill);
+    background: var(--openbot-bg-surface-raised);
+    padding: 0;
+    color: var(--openbot-text-primary);
+    box-shadow: var(--openbot-shadow-raised);
+  }
+
+  .web-phone-tab-bar .web-phone-search-close.ui-button > svg {
+    width: var(--openbot-icon-lg);
+    height: var(--openbot-icon-lg);
+    stroke-width: var(--openbot-icon-stroke);
+  }
+
+  /* ---------------------------------------------------------------- the search results */
+
+  /* The results cover the chat list, under the bottom bar: chips at the top, one list of rows below. */
+  .web-app-frame > .web-phone-search {
+    position: absolute;
+    z-index: 2;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    background: var(--openbot-bg-canvas);
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+
+  /* The list fades out under the bottom bar, as the chat list does. */
+  .web-app-frame > .web-phone-search::after {
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    height: calc(var(--web-phone-tab-bar-space) + var(--openbot-space-4));
+    background: linear-gradient(to bottom, var(--openbot-bg-canvas-clear), var(--openbot-bg-canvas) 65%);
+    content: "";
+    pointer-events: none;
+  }
+
+  .web-phone-search-chips {
+    display: flex;
+    flex: none;
+    gap: var(--openbot-space-2);
+    overflow-x: auto;
+    padding: var(--openbot-space-3) var(--openbot-space-4);
+    scrollbar-width: none;
+  }
+
+  .web-phone-search-chips::-webkit-scrollbar {
+    display: none;
+  }
+
+  .web-phone-search-chips .web-phone-search-chip.ui-button {
+    height: var(--openbot-control-xl);
+    flex: none;
+    border: 0;
+    border-radius: var(--openbot-radius-pill);
+    background: var(--openbot-bg-control-active);
+    padding: 0 var(--openbot-space-4);
+    color: var(--openbot-text-primary);
+    font-size: var(--openbot-text-lg);
+    font-weight: var(--openbot-weight-regular);
+  }
+
+  /* The chosen filter is filled with the text colour: dark on a light screen, light on a dark one. */
+  .web-phone-search-chips .web-phone-search-chip.ui-button[aria-pressed="true"] {
+    background: var(--openbot-text-primary);
+    color: var(--openbot-bg-canvas);
+  }
+
+  .web-phone-search-chips .web-phone-search-chip.ui-button:active {
     transform: none;
     opacity: 0.7;
   }
 
-  .web-phone-tab-bar .web-phone-search-pill.ui-button > svg {
-    width: var(--openbot-icon-md);
-    height: var(--openbot-icon-md);
-    stroke-width: var(--openbot-icon-stroke);
+  .web-phone-search-list {
+    min-height: 0;
+    flex: 1 1 auto;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-bottom: calc(var(--web-phone-tab-bar-space) + var(--openbot-space-4));
   }
 
-  .web-phone-tab-label {
-    max-width: 100%;
+  .web-phone-search-list .web-phone-search-row.ui-button {
+    display: flex;
+    width: 100%;
+    min-height: calc(var(--openbot-control-xl) * 1.75);
+    align-items: center;
+    justify-content: flex-start;
+    gap: var(--openbot-space-4);
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    padding: var(--openbot-space-2) var(--openbot-space-4);
+    color: var(--openbot-text-primary);
+    text-align: start;
+    content-visibility: auto;
+    contain-intrinsic-size: auto calc(var(--openbot-control-xl) * 1.75);
+  }
+
+  .web-phone-search-list .web-phone-search-row.ui-button:active {
+    transform: none;
+    background: var(--openbot-bg-control-hover);
+  }
+
+  .web-phone-search-row .web-phone-search-avatar,
+  .web-phone-search-row .web-phone-search-icon {
+    --agent-avatar-outline: var(--openbot-bg-canvas);
+    width: calc(var(--openbot-control-xl) * 1.2);
+    height: calc(var(--openbot-control-xl) * 1.2);
+    flex: none;
+  }
+
+  .web-phone-search-row .web-phone-search-icon {
+    display: grid;
+    place-items: center;
+    border-radius: var(--openbot-radius-pill);
+    background: var(--openbot-bg-control-active);
+    color: var(--openbot-text-secondary);
+  }
+
+  .web-phone-search-list .web-phone-search-row .web-phone-search-icon > svg {
+    width: var(--openbot-icon-lg);
+    height: var(--openbot-icon-lg);
+  }
+
+  .web-phone-search-text {
+    display: flex;
+    min-width: 0;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: var(--openbot-space-0-5);
+  }
+
+  .web-phone-search-name,
+  .web-phone-search-detail {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+
+  .web-phone-search-name {
+    font-size: var(--openbot-text-2xl);
+    font-weight: var(--openbot-weight-regular);
+  }
+
+  .web-phone-search-detail {
+    color: var(--openbot-text-muted);
+    font-size: var(--openbot-text-md);
+  }
+
+  /* The light type label at the end of a row: Agent, Channel, Message, File or Routine. */
+  .web-phone-search-kind {
+    flex: none;
+    color: var(--openbot-text-dim);
+    font-size: var(--openbot-text-lg);
+  }
+
+  .web-phone-search-note {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--openbot-space-2);
+    margin: 0;
+    padding: var(--openbot-space-6) var(--openbot-space-4);
+    color: var(--openbot-text-muted);
+    font-size: var(--openbot-text-lg);
+    text-align: center;
   }
 
   /* ---------------------------------------------------------------- the list at the root */
@@ -196,21 +391,20 @@
     padding-bottom: 0;
   }
 
-  .web-app-frame > :is(.sidebar, .web-phone-tab-bar) {
+  .web-app-frame > :is(.sidebar, .web-phone-tab-bar, .web-phone-search) {
     transition:
       transform var(--web-phone-push-duration) var(--web-phone-push-ease),
       visibility 0s linear var(--web-phone-push-duration);
   }
 
-  .web-app-frame[data-web-mobile-pane="workspace"] > .sidebar,
-  .web-app-frame[data-web-mobile-pane="workspace"] > .web-phone-tab-bar {
+  .web-app-frame[data-web-mobile-pane="workspace"] > :is(.sidebar, .web-phone-tab-bar, .web-phone-search) {
     transition:
       transform var(--web-phone-push-duration) var(--web-phone-push-ease),
       visibility 0s;
   }
 
   /* Under a pushed chat the list moves a third of its width back, as on iOS, and then hides. */
-  .web-app-frame[data-web-mobile-pane="conversation"] > :is(.sidebar, .web-phone-tab-bar) {
+  .web-app-frame[data-web-mobile-pane="conversation"] > :is(.sidebar, .web-phone-tab-bar, .web-phone-search) {
     transform: translateX(calc(var(--web-phone-dir) * -30%));
     visibility: hidden;
   }
