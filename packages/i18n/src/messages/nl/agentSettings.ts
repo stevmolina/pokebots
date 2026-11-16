@@ -102,6 +102,8 @@ export const messages = {
   "agentSettings.groups.knows": "Weet",
   "agentSettings.groups.does": "Doet",
   "agentSettings.groups.rules": "Regels",
+  "agentSettings.groups.model": "Model",
+  "agentSettings.groups.alerts": "Meldingen",
   "agentSettings.saveFailed": "Kan de agentinstellingen niet opslaan.",
   "agentSettings.name": "Naam",
   "agentSettings.nameLabel": "Naam van agent",
@@ -206,6 +208,7 @@ export const messages = {
   "agentSettings.links.files": "Bestanden",
   "agentSettings.links.routines": "Routines",
   "agentSettings.links.routinesCount": { one: "{count} ingesteld", other: "{count} ingesteld" },
+  "agentSettings.links.routinesNone": "Geen",
   "agentSettings.runtime.workspaceNote":
     "Alleen werkruimte beperkt schrijven tot de werkruimte van deze agent, de gedeelde map en de tijdelijke mappen. Lezen en netwerk blijven beschikbaar.",
   "agentSettings.runtime.workspaceEnforcedCommand": "Een opdracht die buiten moet schrijven, vraagt het je eerst.",

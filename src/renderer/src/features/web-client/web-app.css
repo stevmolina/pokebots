@@ -145,6 +145,81 @@ html:has(.web-app-frame) body {
     top: calc(2 * var(--left-header-height, 38px));
   }
 
+  /*
+   * The agent settings cover the phone screen, and their own header (the title and one close button)
+   * replaces the chat header and the tab row. The panel fills the width and height, under the status
+   * bar and above the home indicator, with no line at its edge.
+   */
+  .web-app-frame[data-web-mobile-pane="conversation"]
+    .side-panel-docked:has(> .settings-panel)
+    > :is(.conversation-header, .side-panel-header) {
+    visibility: hidden;
+  }
+
+  .web-app-frame[data-web-mobile-pane="conversation"] .side-panel-docked:has(> .settings-panel) > .settings-panel {
+    inset-block: 0;
+    width: 100%;
+    border-inline-start: 0;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    background: var(--openbot-bg-canvas);
+  }
+
+  .web-app-frame[data-web-mobile-pane="conversation"]
+    .side-panel-docked:has(> .settings-panel)
+    > .settings-panel::before {
+    content: none;
+  }
+
+  /* The root page and the pages under it have one header row: the title, and Back or Close. */
+  .web-app-frame[data-web-mobile-pane="conversation"]
+    .settings-panel
+    :is(.agent-settings-focus-top, .settings-panel-header) {
+    display: grid;
+    height: 48px;
+    min-height: 0;
+    flex: 0 0 auto;
+    grid-template-columns: 40px minmax(0, 1fr) 40px;
+    align-items: center;
+    border-bottom: 1px solid var(--openbot-border);
+    padding: 0 var(--openbot-space-2);
+    background: var(--openbot-bg-canvas);
+  }
+
+  /* The title sits in the middle, and the close button in the last column. */
+  .web-app-frame[data-web-mobile-pane="conversation"] .settings-panel .agent-settings-focus-title {
+    display: block;
+    overflow: hidden;
+    grid-column: 2;
+    color: var(--openbot-text-primary);
+    font-size: var(--openbot-text-md);
+    font-weight: var(--openbot-weight-semibold);
+    line-height: var(--openbot-leading-md);
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .web-app-frame[data-web-mobile-pane="conversation"] .settings-panel .agent-settings-focus-close {
+    grid-column: 3;
+    grid-row: 1;
+    justify-self: end;
+  }
+
+  /* No tab names and closes the pane here, so a page under the root keeps its Close button. */
+  .web-app-frame[data-web-mobile-pane="conversation"]
+    .side-panel-docked
+    .settings-panel-header
+    > .side-panel-pane-close {
+    visibility: visible;
+  }
+
+  /* The panel content scrolls under the header row, with a plain edge and not a fade. */
+  .web-app-frame[data-web-mobile-pane="conversation"] .settings-panel .settings-panel-content {
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+
   /* The pane list has no tabs, so it starts under the chat header. */
   .web-app-frame[data-web-mobile-pane="conversation"] .side-panel-docked:has(> .side-panel-empty) > .side-panel-header {
     display: none;

@@ -132,6 +132,8 @@ export const messages = {
   "agentSettings.groups.knows": "المعرفة",
   "agentSettings.groups.does": "القدرات",
   "agentSettings.groups.rules": "القواعد",
+  "agentSettings.groups.model": "النموذج",
+  "agentSettings.groups.alerts": "التنبيهات",
   "agentSettings.saveFailed": "تعذّر حفظ إعدادات الوكيل.",
 
   "agentSettings.name": "الاسم",
@@ -268,6 +270,7 @@ export const messages = {
     many: "{count} مهمةً دورية مضبوطة",
     other: "{count} مهمة دورية مضبوطة",
   },
+  "agentSettings.links.routinesNone": "لا شيء",
   "agentSettings.runtime.workspaceNote":
     "يحصر خيار «مساحة العمل فقط» الكتابة في مساحة عمل هذا الوكيل والمجلد المشترك والمجلدات المؤقتة. وتبقى القراءة والشبكة متاحتين.",
   "agentSettings.runtime.workspaceEnforcedCommand": "الأمر الذي يجب أن يكتب خارجها يسألك أولًا.",

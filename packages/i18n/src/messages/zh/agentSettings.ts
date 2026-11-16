@@ -93,6 +93,8 @@ export const messages = {
   "agentSettings.groups.knows": "已知",
   "agentSettings.groups.does": "行为",
   "agentSettings.groups.rules": "规则",
+  "agentSettings.groups.model": "模型",
+  "agentSettings.groups.alerts": "提醒",
   "agentSettings.saveFailed": "无法保存助手设置。",
 
   "agentSettings.name": "名称",
@@ -199,6 +201,7 @@ export const messages = {
   "agentSettings.links.files": "文件",
   "agentSettings.links.routines": "自动化任务",
   "agentSettings.links.routinesCount": { one: "已配置 {count} 个", other: "已配置 {count} 个" },
+  "agentSettings.links.routinesNone": "无",
   "agentSettings.runtime.workspaceNote":
     "“仅工作区”只限制写入该助手的工作区、共享文件夹和临时文件夹，读取与网络仍可用。",
   "agentSettings.runtime.workspaceEnforcedCommand": "需要在外部写入的命令会先询问你。",

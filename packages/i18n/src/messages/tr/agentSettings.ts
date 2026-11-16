@@ -102,6 +102,8 @@ export const messages = {
   "agentSettings.groups.knows": "Bilgi",
   "agentSettings.groups.does": "Görevler",
   "agentSettings.groups.rules": "Kurallar",
+  "agentSettings.groups.model": "Model",
+  "agentSettings.groups.alerts": "Uyarılar",
   "agentSettings.saveFailed": "Ajan ayarları kaydedilemedi.",
   "agentSettings.name": "Ad",
   "agentSettings.nameLabel": "Ajan adı",
@@ -205,6 +207,7 @@ export const messages = {
   "agentSettings.links.files": "Dosyalar",
   "agentSettings.links.routines": "Rutinler",
   "agentSettings.links.routinesCount": { one: "{count} yapılandırılmış", other: "{count} yapılandırılmış" },
+  "agentSettings.links.routinesNone": "Yok",
   "agentSettings.runtime.workspaceNote":
     "Yalnızca çalışma alanı, yazma işlemlerini bu ajanın çalışma alanı, paylaşılan klasör ve geçici klasörlerle sınırlar. Okuma ve ağ erişimi kullanılabilir kalır.",
   "agentSettings.runtime.workspaceEnforcedCommand": "Dışarıya yazması gereken bir komut önce size sorar.",

@@ -96,6 +96,8 @@ export const messages = {
   "agentSettings.groups.knows": "아는 것",
   "agentSettings.groups.does": "하는 일",
   "agentSettings.groups.rules": "규칙",
+  "agentSettings.groups.model": "모델",
+  "agentSettings.groups.alerts": "알림",
   "agentSettings.saveFailed": "에이전트 설정을 저장할 수 없어요.",
   "agentSettings.name": "이름",
   "agentSettings.nameLabel": "에이전트 이름",
@@ -198,6 +200,7 @@ export const messages = {
   "agentSettings.links.files": "파일",
   "agentSettings.links.routines": "루틴",
   "agentSettings.links.routinesCount": { other: "{count}개 설정됨" },
+  "agentSettings.links.routinesNone": "없음",
   "agentSettings.runtime.workspaceNote":
     "워크스페이스만 선택하면 쓰기가 이 에이전트의 워크스페이스, 공유 폴더, 임시 폴더로 제한돼요. 읽기와 네트워크는 계속 사용할 수 있어요.",
   "agentSettings.runtime.workspaceEnforcedCommand": "밖에 써야 하는 명령은 먼저 물어봐요.",

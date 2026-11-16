@@ -123,6 +123,8 @@ export const messages = {
   "agentSettings.groups.knows": "Знает",
   "agentSettings.groups.does": "Делает",
   "agentSettings.groups.rules": "Правила",
+  "agentSettings.groups.model": "Модель",
+  "agentSettings.groups.alerts": "Уведомления",
   "agentSettings.saveFailed": "Не удалось сохранить настройки агента.",
 
   "agentSettings.name": "Имя",
@@ -255,6 +257,7 @@ export const messages = {
     many: "Настроено: {count}",
     other: "Настроено: {count}",
   },
+  "agentSettings.links.routinesNone": "Нет",
   "agentSettings.runtime.workspaceNote":
     "Режим «Только рабочее пространство» ограничивает запись рабочим пространством агента, общей папкой и временными папками. Чтение и сеть остаются доступными.",
   "agentSettings.runtime.workspaceEnforcedCommand":

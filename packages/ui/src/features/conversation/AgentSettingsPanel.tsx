@@ -1057,6 +1057,10 @@ export default function AgentSettingsPanel(props: AgentSettingsPanelProps) {
             // The root is a focus view: only × at the top right, the face and name below it.
             <div class="agent-settings-focus-top">
               <h2 class="sr-only">{t("agentSettings.title")}</h2>
+              {/* Shown on a phone only, where the panel covers the screen and has no tab to name it. */}
+              <span class="agent-settings-focus-title" aria-hidden="true">
+                {t("agentSettings.label")}
+              </span>
               <IconButton
                 variant="ghost"
                 size="icon-sm"
@@ -1463,7 +1467,7 @@ export default function AgentSettingsPanel(props: AgentSettingsPanelProps) {
               <SettingsLinkGroup
                 inset
                 class="agent-settings-runtime-rows agent-settings-computer-card"
-                title={t("agentSettings.groups.computer")}
+                title={t("agentSettings.groups.model")}
               >
                 <ProviderModelPicker
                   variant="field"
@@ -1500,9 +1504,7 @@ export default function AgentSettingsPanel(props: AgentSettingsPanelProps) {
                   ultrafast={props.ultrafast}
                   onFastModeChange={props.onFastModeChange}
                 />
-              </SettingsLinkGroup>
-              <Show when={props.backupModelsEditable}>
-                <SettingsLinkGroup inset>
+                <Show when={props.backupModelsEditable}>
                   <SettingsLinkRow
                     ref={pageRowRef("backup-models")}
                     icon={<ArrowLeftRight aria-hidden="true" />}
@@ -1510,8 +1512,8 @@ export default function AgentSettingsPanel(props: AgentSettingsPanelProps) {
                     value={backupModelsSummary()}
                     onClick={() => openPage("backup-models")}
                   />
-                </SettingsLinkGroup>
-              </Show>
+                </Show>
+              </SettingsLinkGroup>
               <Show when={props.notificationLevel}>
                 <SettingsLinkGroup inset class="agent-settings-runtime-rows" title={t("agentSettings.groups.alerts")}>
                   <Show when={props.notificationLevel}>
@@ -1520,6 +1522,7 @@ export default function AgentSettingsPanel(props: AgentSettingsPanelProps) {
                         icon={<Bell aria-hidden="true" />}
                         label={t("agentSettings.notificationLevel.title")}
                         value={notificationLevelLabel(options())}
+                        wrapValue
                         onClick={(trigger) => options().onOpen(trigger)}
                       />
                     )}

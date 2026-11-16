@@ -604,7 +604,11 @@ export default function AgentSettingsPanel(props: AgentSettingsPanelProps) {
                 <SettingsLinkRow
                   icon={<CalendarClock aria-hidden="true" />}
                   label={t("agentSettings.links.routines")}
-                  value={t("agentSettings.links.routinesCount", { count: draft.routines.count })}
+                  value={
+                    draft.routines.count === 0
+                      ? t("agentSettings.links.routinesNone")
+                      : t("agentSettings.links.routinesCount", { count: draft.routines.count })
+                  }
                   onClick={() =>
                     setDraft((state) => {
                       state.routines.open = true;
