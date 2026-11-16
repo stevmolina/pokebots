@@ -14,7 +14,7 @@
 //   `web-visual-viewport.ts`. Storybook runs development code, so compare these times only with each
 //   other.
 // - look: the main screens (chat list, an open chat with Markdown, code and tool cards, tasks, settings,
-//   marketplace, routines, usage and the server menu from the story, and the signed-out sign-in screen
+//   marketplace, routines, usage and the profile menu from the story, and the signed-out sign-in screen
 //   from `vite preview` of the after build) in the iPhone and iPad layouts, dark and light. Each screen
 //   is captured with the before stylesheets, again with the before stylesheets (the noise of the
 //   screen), and with the after stylesheets. The report counts the pixels that differ. A screen whose
@@ -455,7 +455,8 @@ interface Screen {
   steps: { role: "button" | "menuitem"; name: RegExp }[];
 }
 
-const MORE = { role: "button", name: /^More$/ } as const;
+// The profile button opens the menu with the machines, Settings, Marketplace, Routines and Usage.
+const PROFILE_MENU = { role: "button", name: /profile, machines and settings$/ } as const;
 const SCREENS: readonly Screen[] = [
   { name: "chat-list", story: "web-workspace--connected", steps: [] },
   {
@@ -476,15 +477,23 @@ const SCREENS: readonly Screen[] = [
       { role: "button", name: /^Tasks / },
     ],
   },
-  { name: "settings", story: "web-workspace--connected", steps: [MORE, { role: "menuitem", name: /^Settings$/ }] },
+  {
+    name: "settings",
+    story: "web-workspace--connected",
+    steps: [PROFILE_MENU, { role: "menuitem", name: /^Settings$/ }],
+  },
   {
     name: "marketplace",
     story: "web-workspace--connected",
-    steps: [MORE, { role: "menuitem", name: /^Marketplace$/ }],
+    steps: [PROFILE_MENU, { role: "menuitem", name: /^Marketplace$/ }],
   },
-  { name: "routines", story: "web-workspace--connected", steps: [MORE, { role: "menuitem", name: /^Routines$/ }] },
-  { name: "usage", story: "web-workspace--connected", steps: [MORE, { role: "menuitem", name: /^Usage$/ }] },
-  { name: "server-menu", story: "web-workspace--connected", steps: [{ role: "button", name: /Preview computer/ }] },
+  {
+    name: "routines",
+    story: "web-workspace--connected",
+    steps: [PROFILE_MENU, { role: "menuitem", name: /^Routines$/ }],
+  },
+  { name: "usage", story: "web-workspace--connected", steps: [PROFILE_MENU, { role: "menuitem", name: /^Usage$/ }] },
+  { name: "profile-menu", story: "web-workspace--connected", steps: [PROFILE_MENU] },
 ];
 
 // In a blank page: the pixels that differ between two PNG captures, and an image that marks them.
@@ -627,16 +636,17 @@ async function measureLook(browser: Browser): Promise<LookResult[]> {
     "chat-markdown-code",
     "routines",
     "usage",
-    "server-menu",
+    "profile-menu",
   ]);
+  // A build that splits the deferred styles loads them with their screen; a build without them has
+  // an empty list. Both sides get the same stylesheets for a screen.
+  const sheetsFor = (build: BuildName, name: string) =>
+    firstScreen.has(name)
+      ? [...styles[build].entry, styles[build].webClient, ...styles[build].screens]
+      : [...styles[build].entry, styles[build].webClient, ...styles[build].screens, ...styles[build].deferred];
   const textsFor = (name: string) => ({
-    before: cssText("before", [...styles.before.entry, styles.before.webClient, ...styles.before.screens]),
-    after: cssText(
-      "after",
-      firstScreen.has(name)
-        ? [...styles.after.entry, styles.after.webClient, ...styles.after.screens]
-        : [...styles.after.entry, styles.after.webClient, ...styles.after.screens, ...styles.after.deferred],
-    ),
+    before: cssText("before", sheetsFor("before", name)),
+    after: cssText("after", sheetsFor("after", name)),
   });
   const signIn = {
     before: cssText("before", [...styles.before.entry, ...styles.before.signIn]),
