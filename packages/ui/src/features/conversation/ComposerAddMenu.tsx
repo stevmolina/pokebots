@@ -38,10 +38,17 @@ export interface ComposerAddMenuProps {
 export function ComposerAddMenu(props: ComposerAddMenuProps) {
   const { t } = useText();
   let skillPickerChosen = false;
-  // The browser opens a file picker only in the event of the click or the key.
+  // The browser opens a file picker only in an event of user activation. A mouse press is one, so the
+  // picker opens on pointerdown, before the focus change closes the menu. A touch or pen press is not:
+  // the activation comes with the release, so those open the picker on pointerup.
   const attach = () => {
+    if (props.attachDisabled) return;
     props.onOpenChange(false);
     props.onAttach?.();
+  };
+  const attachFromPointer = (event: PointerEvent, phase: "down" | "up") => {
+    if (event.button !== 0) return;
+    if ((event.pointerType === "mouse") === (phase === "down")) attach();
   };
   const attachFromKey = (event: KeyboardEvent) => {
     if (event.key === "Enter" || event.key === " ") attach();
@@ -69,9 +76,8 @@ export function ComposerAddMenu(props: ComposerAddMenuProps) {
           <Show when={props.onAttach}>
             <DropdownMenu.Item
               disabled={props.attachDisabled ?? false}
-              onPointerDown={(event) => {
-                if (event.button === 0) attach();
-              }}
+              onPointerDown={(event) => attachFromPointer(event, "down")}
+              onPointerUp={(event) => attachFromPointer(event, "up")}
               onKeyDown={attachFromKey}
             >
               <File aria-hidden="true" />
