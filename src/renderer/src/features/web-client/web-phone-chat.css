@@ -47,10 +47,10 @@
    */
   .web-app-frame[data-web-mobile-pane="conversation"] .conversation-heading-group > .conversation-session-pill {
     position: absolute;
-    top: 10px;
-    left: 50%;
+    inset: 10px 0 auto;
+    width: fit-content;
     max-width: calc(100% - 2 * (var(--phone-chat-button) + var(--openbot-space-4)));
-    transform: translateX(-50%);
+    margin: 0 auto;
   }
 
   /* The workspace-only lock sat after the name. With the name centered it would float alone at the start. */
