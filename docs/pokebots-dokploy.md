@@ -1,6 +1,7 @@
 # Pokebots on Dokploy
 
-The Pokebots account API, browser app, and landing page run as one Bun service on Contabo.
+The Pokebots account API and browser app run as one Bun service on Contabo.
+The public landing page runs as a separate static Nginx service on the same Dokploy server.
 The Cloudflare Worker build remains available for other deployments. No desktop data moves.
 
 ## Deployment
@@ -11,11 +12,29 @@ The Cloudflare Worker build remains available for other deployments. No desktop 
 - Runtime: one replica, port 3000, 1 GiB memory, one CPU.
 - Mount: `/srv/pokebots-auth/data` to `/data`. Keep it on the same node.
 - Update and rollback: `stop-first`, one task at a time. Never use `start-first` with SQLite.
-- Domains: `api.pokebots.xyz`, `app.pokebots.xyz`, `pokebots.xyz`, HTTPS through Traefik.
+- Account service domains: `api.pokebots.xyz` and `app.pokebots.xyz`, HTTPS through Traefik.
 - A GitHub push webhook calls Dokploy directly. Only `main` and matching watch paths deploy.
   There is no GitHub Actions deployment job. Keep the webhook URL private.
 - Credentials belong to Doppler `pokebots/prd` and Dokploy runtime settings. They are not build args.
   Do not enable Dokploy's environment-file creation for this image.
+
+### Landing page
+
+- Application: `Pokebots landing`, service `pokebots-landing-hale0u`.
+- Source: `stevmolina/pokebots-landing`, branch `main`, generic Git source.
+- Build: Dokploy static build, publish directory `.`, no SPA rewrite, port 80.
+- Runtime: one replica, 128 MiB memory, 0.25 CPU, `stop-first` updates.
+- Domain: `pokebots.xyz`, HTTPS through Traefik with Let's Encrypt.
+- A separate GitHub push webhook deploys main changes to the page, service worker, and images.
+  The landing has no account database, runtime secret, or persistent volume.
+
+The source HTML, service worker, and all 17 referenced images match the previous OVH deployment.
+The OVH copy at `/srv/stacks/pokebots/site` remains for rollback. To roll back only the landing,
+restore the apex DNS A record to `192.99.212.2`. Leave the account service domains on Contabo.
+The landing's current DNS A record is DNS-only `77.237.245.18`. Do not remove the old copy until
+its rollback role ends.
+
+### Account proxy boundary
 
 `SELF_HOSTED_TRUST_PROXY=true` is permitted only behind Traefik on its private Docker network.
 Do not publish container port 3000. Traefik must overwrite `X-Real-IP` and `X-Forwarded-Proto`.
