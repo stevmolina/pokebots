@@ -378,6 +378,24 @@ bunx eas-cli@latest build --profile development --platform android
 
 Cloud builds require the final `ios.bundleIdentifier` and `android.package` values in `app.json`. Store submission also requires Apple Developer and Google Play Console credentials.
 
+### Personal build with a free Apple Account
+
+A free Apple Account (Personal Team) can install the app on your own iPhone without the
+Apple Developer Program. Apple signs such a build for 7 days, so install it again each week.
+
+1. Install Xcode, open it once, and sign in at Xcode > Settings > Apple Accounts.
+2. Connect the iPhone, tap Trust, and turn on Settings > Privacy & Security > Developer Mode.
+3. Run `bun run ios:personal` from `apps/mobile`. It builds a Release app and installs it.
+   Pass `--device <name or UDID>` when several devices are connected; with an iPhone and an
+   iPad, it picks the iPhone.
+4. The first time, trust the developer on the iPhone: Settings > General >
+   VPN & Device Management.
+5. Sign in with the QR code of the desktop app. The code names its account service.
+
+A free account cannot sign push notifications, App Groups or associated domains. So this
+build (`OPENBOT_IOS_PERSONAL=1` in `app.config.js`) has no push notifications, widgets, share
+extension, shortcuts or universal links, and it has no over-the-air updates.
+
 ### Local TestFlight build
 
 On a Mac with Xcode 27.1 or newer (see the iPhone Duo note below), CocoaPods, Fastlane, and this
