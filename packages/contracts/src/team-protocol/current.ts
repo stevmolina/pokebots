@@ -21,6 +21,7 @@ import { AGENT_MEMORIES_CAPABILITY } from "./agent-memories-v1";
 import { AGENT_MEMORY_LIMIT_CAPABILITY } from "./agent-memory-limit-v1";
 import { AGENT_NEW_CHAT_CAPABILITY } from "./agent-new-chat-v1";
 import { AGENT_NOTIFICATION_LEVELS_CAPABILITY } from "./agent-notification-levels-v1";
+import { AGENT_PENDING_RUNTIME_CAPABILITY } from "./agent-pending-runtime-v1";
 import { AGENT_PLAN_CARD_CAPABILITY } from "./agent-plan-card-v1";
 import { AGENT_PUBLISH_CAPABILITY } from "./agent-publish-v1";
 import { AGENT_QUEUE_TASK_CAPABILITY } from "./agent-queue-task-v1";
@@ -51,6 +52,7 @@ import { BROWSER_PROFILES_EVENTS_CAPABILITY } from "./browser-profiles-events-v1
 import { BROWSER_PROFILES_CAPABILITY } from "./browser-profiles-v1";
 import { BROWSER_PROXIES_CAPABILITY } from "./browser-proxies-v1";
 import { BROWSER_SECRET_VAULT_CAPABILITY } from "./browser-secret-vault-v1";
+import { BROWSER_SIGN_IN_STORAGE_CAPABILITY } from "./browser-sign-in-storage-v1";
 import { BROWSER_SIGN_IN_CAPABILITY } from "./browser-sign-in-v1";
 import { BROWSER_TEACH_CAPABILITY } from "./browser-teach-v1";
 import { BROWSER_USER_CONTROL_CAPABILITY } from "./browser-user-control-v1";
@@ -68,6 +70,7 @@ import { CHANNEL_BROWSER_CAPABILITY } from "./channel-browser-v1";
 import { CHANNEL_ISOLATION_CAPABILITY } from "./channel-isolation-v1";
 import { CHANNEL_PICTURE_CAPABILITY } from "./channel-picture-v1";
 import { CHANNEL_SEEN_SUBTASKS_CAPABILITY } from "./channel-seen-subtasks-v1";
+import { CHANNEL_TASK_WAITS_CAPABILITY } from "./channel-task-waits-v1";
 import { CHAT_COLORS_CAPABILITY } from "./chat-colors-v1";
 import { CHAT_HISTORY_CAPABILITY } from "./chat-history-v1";
 import { CLAUDE_AI_TOOLS_CAPABILITY } from "./claude-ai-tools-v1";
@@ -94,6 +97,7 @@ import { GITHUB_SKILLS_CAPABILITY } from "./github-skills-v1";
 import { HERMES_IMPORT_CAPABILITY } from "./hermes-import-v1";
 import { TEAM_HISTORY_EXTENT_CAPABILITY } from "./history-extent-v1";
 import { HOST_ADMIN_CAPABILITY } from "./host-admin-v1";
+import { HOST_APPEARANCE_CAPABILITY } from "./host-appearance-v1";
 import { HOST_KEY_ROTATION_CAPABILITY } from "./host-key-rotation-v1";
 import { HOST_MEMBER_UPDATE_CAPABILITY } from "./host-member-update-v1";
 import { HOST_PERSONALITY_CAPABILITY } from "./host-personality-v1";
@@ -123,8 +127,10 @@ import { MESSAGE_PINS_CAPABILITY } from "./message-pins-v1";
 import { MODEL_VISIBILITY_CAPABILITY } from "./model-visibility-v1";
 import { ONEPASSWORD_CONNECTOR_CAPABILITY } from "./onepassword-connector-v1";
 import { PASSWORD_MANAGERS_CAPABILITY } from "./password-managers-v1";
+import { PENDING_APPROVAL_CAPABILITY } from "./pending-approval-v1";
 import { PROMPT_CACHE_TTL_CAPABILITY } from "./prompt-cache-ttl-v1";
 import { TEAM_PROMPT_MULTI_SELECT_CAPABILITY } from "./prompt-multi-select-v1";
+import { PROVIDER_ACCOUNT_KEYS_CAPABILITY } from "./provider-account-keys-v1";
 import { PROVIDER_ACCOUNT_MODELS_CAPABILITY } from "./provider-account-models-v1";
 import { PROVIDER_ACCOUNT_POOL_CAPABILITY } from "./provider-account-pool-v1";
 import { PROVIDER_ACCOUNT_RELAY_CAPABILITY } from "./provider-account-relay-v1";
@@ -150,6 +156,7 @@ import { TEAM_QUEUE_EDIT_CAPABILITY } from "./queue-edit-v1";
 import { QUIET_TURN_CAPABILITY } from "./quiet-turn-v1";
 import { TEAM_REASONING_EFFORTS_CAPABILITY } from "./reasoning-efforts-v1";
 import { REMOTE_COMPUTER_USE_CAPABILITY } from "./remote-computer-use-v1";
+import { ROUTINE_FLOW_STOP_CAPABILITY } from "./routine-flow-stop-v1";
 import { ROUTINE_FLOWS_CAPABILITY } from "./routine-flows-v1";
 import { ROUTINE_RECOVERY_CAPABILITY } from "./routine-recovery-v1";
 import { ROUTINE_RESULTS_CAPABILITY } from "./routine-results-v1";
@@ -161,6 +168,7 @@ import { SHARED_TABLES_CAPABILITY } from "./shared-tables-v1";
 import { SIDE_QUESTION_CAPABILITY } from "./side-question-v1";
 import { SIDEBAR_FOLDERS_CAPABILITY } from "./sidebar-folders-v1";
 import { SIDEBAR_PINS_CAPABILITY } from "./sidebar-pins-v1";
+import { SIGN_IN_RELAY_DEEP_LINK_CAPABILITY } from "./sign-in-relay-deep-link-v1";
 import { SIGN_IN_RELAY_CAPABILITY } from "./sign-in-relay-v1";
 import { SKILL_LEARNING_CAPABILITY } from "./skill-learning-v1";
 import { SKILLS_ADMIN_CAPABILITY } from "./skills-admin-v1";
@@ -173,6 +181,7 @@ import { THREAD_MESSAGE_SEARCH_CAPABILITY } from "./thread-message-search-v1";
 import { TEAM_UI_BLOCK_AUTO_ANSWER_CAPABILITY } from "./ui-block-auto-answer-v1";
 import { TEAM_UI_BLOCK_VAULT_CAPABILITY } from "./ui-block-vault-v1";
 import { TEAM_UI_BLOCKS_CAPABILITY } from "./ui-blocks-v1";
+import { USAGE_CREDITS_CAPABILITY } from "./usage-credits-v1";
 import { TEAM_USAGE_TERTIARY_CAPABILITY } from "./usage-tertiary-v1";
 import { TEAM_OPEN_PROVIDERS_CAPABILITY } from "./v8";
 import { TEAM_LONG_CAPABILITY_LISTS_CAPABILITY, TEAM_PROTOCOL_V9_CAPABILITIES } from "./v9";
@@ -278,6 +287,7 @@ export {
   AGENT_MEMORY_LIMIT_CAPABILITY,
   AGENT_NEW_CHAT_CAPABILITY,
   AGENT_NOTIFICATION_LEVELS_CAPABILITY,
+  AGENT_PENDING_RUNTIME_CAPABILITY,
   AGENT_PLAN_CARD_CAPABILITY,
   AGENT_PUBLISH_CAPABILITY,
   AGENT_QUEUE_TASK_CAPABILITY,
@@ -306,6 +316,7 @@ export {
   BROWSER_PROXIES_CAPABILITY,
   BROWSER_SECRET_VAULT_CAPABILITY,
   BROWSER_SIGN_IN_CAPABILITY,
+  BROWSER_SIGN_IN_STORAGE_CAPABILITY,
   BROWSER_TEACH_CAPABILITY,
   BROWSER_USER_CONTROL_CAPABILITY,
   BROWSING_MEMORY_CAPABILITY,
@@ -315,6 +326,7 @@ export {
   CHANNEL_PICTURE_CAPABILITY,
   CHANNEL_SEEN_SUBTASKS_CAPABILITY,
   CHANNEL_TASK_CANCEL_CAPABILITY,
+  CHANNEL_TASK_WAITS_CAPABILITY,
   CHAT_COLORS_CAPABILITY,
   CHAT_HISTORY_CAPABILITY,
   COMPUTER_ACTIVITY_CAPABILITY,
@@ -330,6 +342,7 @@ export {
   EVENTS_CAPABILITY,
   FOCUS_USE_CAPABILITY,
   HOST_ADMIN_CAPABILITY,
+  HOST_APPEARANCE_CAPABILITY,
   HOST_KEY_ROTATION_CAPABILITY,
   HOST_MEMBER_UPDATE_CAPABILITY,
   HOST_RELEASE_CAPABILITY,
@@ -357,6 +370,7 @@ export {
   MODEL_VISIBILITY_CAPABILITY,
   ONEPASSWORD_CONNECTOR_CAPABILITY,
   PASSWORD_MANAGERS_CAPABILITY,
+  PENDING_APPROVAL_CAPABILITY,
   PROMPT_CACHE_TTL_CAPABILITY,
   PROVIDER_ACCOUNT_RELAY_CAPABILITY,
   PROVIDER_ACCOUNT_RELAY_V2_CAPABILITY,
@@ -376,6 +390,7 @@ export {
   PUSH_NOTIFICATIONS_CAPABILITY,
   QUIET_TURN_CAPABILITY,
   REMOTE_COMPUTER_USE_CAPABILITY,
+  ROUTINE_FLOW_STOP_CAPABILITY,
   ROUTINE_FLOWS_CAPABILITY,
   ROUTINE_RECOVERY_CAPABILITY,
   ROUTINE_RESULTS_CAPABILITY,
@@ -387,6 +402,7 @@ export {
   SIDEBAR_FOLDERS_CAPABILITY,
   SIDEBAR_PINS_CAPABILITY,
   SIGN_IN_RELAY_CAPABILITY,
+  SIGN_IN_RELAY_DEEP_LINK_CAPABILITY,
   SKILL_LEARNING_CAPABILITY,
   SKILLS_ADMIN_CAPABILITY,
   SKILLS_EVENTS_CAPABILITY,
@@ -414,6 +430,7 @@ export {
   TEAM_USAGE_TERTIARY_CAPABILITY,
   TEAM_VIDEO_GENERATION_CAPABILITY,
   THREAD_MESSAGE_SEARCH_CAPABILITY,
+  USAGE_CREDITS_CAPABILITY,
   VAULT_CAPABILITY,
   VAULT_IMPORT_CAPABILITY,
   VAULT_V2_CAPABILITY,
@@ -652,6 +669,15 @@ export const TEAM_CURRENT_CAPABILITIES = [
   WEB_PUSH_NOTIFICATIONS_CAPABILITY,
   BROWSER_COLOR_SCHEME_CAPABILITY,
   COMPACT_RPC_CAPABILITY,
+  PENDING_APPROVAL_CAPABILITY,
+  PROVIDER_ACCOUNT_KEYS_CAPABILITY,
+  USAGE_CREDITS_CAPABILITY,
+  CHANNEL_TASK_WAITS_CAPABILITY,
+  ROUTINE_FLOW_STOP_CAPABILITY,
+  AGENT_PENDING_RUNTIME_CAPABILITY,
+  BROWSER_SIGN_IN_STORAGE_CAPABILITY,
+  HOST_APPEARANCE_CAPABILITY,
+  SIGN_IN_RELAY_DEEP_LINK_CAPABILITY,
 ] as const;
 
 export type TeamCurrentCapability = (typeof TEAM_CURRENT_CAPABILITIES)[number];
@@ -886,7 +912,16 @@ export const TEAM_BOOTSTRAP_CAPABILITIES = TEAM_CURRENT_CAPABILITIES.filter(
     capability !== AGENT_COMPUTER_CAPABILITY &&
     capability !== WEB_PUSH_NOTIFICATIONS_CAPABILITY &&
     capability !== BROWSER_COLOR_SCHEME_CAPABILITY &&
-    capability !== COMPACT_RPC_CAPABILITY,
+    capability !== COMPACT_RPC_CAPABILITY &&
+    capability !== PENDING_APPROVAL_CAPABILITY &&
+    capability !== PROVIDER_ACCOUNT_KEYS_CAPABILITY &&
+    capability !== USAGE_CREDITS_CAPABILITY &&
+    capability !== CHANNEL_TASK_WAITS_CAPABILITY &&
+    capability !== ROUTINE_FLOW_STOP_CAPABILITY &&
+    capability !== AGENT_PENDING_RUNTIME_CAPABILITY &&
+    capability !== BROWSER_SIGN_IN_STORAGE_CAPABILITY &&
+    capability !== HOST_APPEARANCE_CAPABILITY &&
+    capability !== SIGN_IN_RELAY_DEEP_LINK_CAPABILITY,
 );
 /**
  * The capabilities that only a protocol 9 peer sends and gets. Protocols 7 and 8 read at most 128
@@ -997,6 +1032,15 @@ export const TEAM_PROTOCOL_V9_ONLY_CAPABILITIES: ReadonlySet<string> = new Set<T
   WEB_PUSH_NOTIFICATIONS_CAPABILITY,
   BROWSER_COLOR_SCHEME_CAPABILITY,
   COMPACT_RPC_CAPABILITY,
+  PENDING_APPROVAL_CAPABILITY,
+  PROVIDER_ACCOUNT_KEYS_CAPABILITY,
+  USAGE_CREDITS_CAPABILITY,
+  CHANNEL_TASK_WAITS_CAPABILITY,
+  ROUTINE_FLOW_STOP_CAPABILITY,
+  AGENT_PENDING_RUNTIME_CAPABILITY,
+  BROWSER_SIGN_IN_STORAGE_CAPABILITY,
+  HOST_APPEARANCE_CAPABILITY,
+  SIGN_IN_RELAY_DEEP_LINK_CAPABILITY,
 ]);
 // A v8 host reads at most 128 capabilities, so a client sends the protocol 9 ones only after it
 // negotiates protocol 9.
@@ -1190,6 +1234,15 @@ export function legacyTeamCapabilities(capabilities: readonly string[]): string[
       capability !== AGENT_COMPUTER_CAPABILITY &&
       capability !== WEB_PUSH_NOTIFICATIONS_CAPABILITY &&
       capability !== BROWSER_COLOR_SCHEME_CAPABILITY &&
-      capability !== COMPACT_RPC_CAPABILITY,
+      capability !== COMPACT_RPC_CAPABILITY &&
+      capability !== PENDING_APPROVAL_CAPABILITY &&
+      capability !== PROVIDER_ACCOUNT_KEYS_CAPABILITY &&
+      capability !== USAGE_CREDITS_CAPABILITY &&
+      capability !== CHANNEL_TASK_WAITS_CAPABILITY &&
+      capability !== ROUTINE_FLOW_STOP_CAPABILITY &&
+      capability !== AGENT_PENDING_RUNTIME_CAPABILITY &&
+      capability !== BROWSER_SIGN_IN_STORAGE_CAPABILITY &&
+      capability !== HOST_APPEARANCE_CAPABILITY &&
+      capability !== SIGN_IN_RELAY_DEEP_LINK_CAPABILITY,
   );
 }
