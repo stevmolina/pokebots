@@ -1,8 +1,22 @@
 import { createHash, randomUUID } from "node:crypto";
-import { existsSync, mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
+import {
+  closeSync,
+  existsSync,
+  fsyncSync,
+  mkdirSync,
+  openSync,
+  readdirSync,
+  readFileSync,
+  renameSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import { join } from "node:path";
 import { DatabaseSync } from "node:sqlite";
+import { createOpenBotLogger } from "@openbot/logging";
 import { Schema } from "effect";
+
+const logger = createOpenBotLogger("self-hosted-objects");
 
 const StoredObject = Schema.Struct({
   key: Schema.String,
@@ -115,6 +129,7 @@ export function openSelfHostedR2(rootDir: string, bucketName: string): { bucket:
   mkdirSync(objectsDir, { recursive: true });
   const database = new DatabaseSync(join(bucketDir, "index.sqlite"));
   database.exec("PRAGMA journal_mode = WAL;");
+  database.exec("PRAGMA synchronous = FULL;");
   database.exec("PRAGMA busy_timeout = 5000;");
   database.exec(`
     CREATE TABLE IF NOT EXISTS r2_objects (
@@ -127,6 +142,16 @@ export function openSelfHostedR2(rootDir: string, bucketName: string): { bucket:
       uploaded_ms INTEGER NOT NULL
     );
   `);
+
+  const referenced = new Set(
+    database
+      .prepare("SELECT blob_name FROM r2_objects")
+      .all()
+      .map((row) => row.blob_name),
+  );
+  for (const file of readdirSync(objectsDir)) {
+    if (/^[a-f0-9-]{36}(?:\.pending)?$/.test(file) && !referenced.has(file)) rmSync(join(objectsDir, file));
+  }
 
   const selectRow = database.prepare("SELECT * FROM r2_objects WHERE key = ?");
   const deleteRow = database.prepare("DELETE FROM r2_objects WHERE key = ?");
@@ -176,13 +201,27 @@ export function openSelfHostedR2(rootDir: string, bucketName: string): { bucket:
       const pending = join(objectsDir, `${blobName}.pending`);
       writeFileSync(pending, bytes, { flag: "wx", flush: true });
       renameSync(pending, join(objectsDir, blobName));
+      const directory = openSync(objectsDir, "r");
+      try {
+        fsyncSync(directory);
+      } finally {
+        closeSync(directory);
+      }
       const httpMetadata =
         options?.httpMetadata && !(options.httpMetadata instanceof Headers)
           ? JSON.stringify(options.httpMetadata)
           : null;
       const customMetadata = options?.customMetadata ? JSON.stringify(options.customMetadata) : null;
       const uploadedMs = Date.now();
+      const previous = selectRow.get(key);
       upsertRow.run(key, blobName, bytes.byteLength, etag, httpMetadata, customMetadata, uploadedMs);
+      if (previous) {
+        try {
+          rmSync(join(objectsDir, decodeRow(previous).blob_name), { force: true });
+        } catch {
+          logger.warn("Old object body remains for startup cleanup.");
+        }
+      }
       return makeR2Object({
         key,
         blob_name: blobName,

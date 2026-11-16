@@ -1,6 +1,6 @@
 import { strict as assert } from "node:assert";
 import { randomUUID } from "node:crypto";
-import { mkdir, mkdtemp, readFile, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readdir, readFile, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { openSelfHostedD1 } from "../src/self-hosted/d1-sqlite";
@@ -21,6 +21,17 @@ if (process.argv[2] === "serve") {
         await d1.prepare("INSERT INTO fixture VALUES (?, ?)").bind("kept", "before restart").run();
         await r2.bucket.put("../object", "object before restart", { httpMetadata: { contentType: "text/plain" } });
         return Response.json({ ok: true });
+      }
+      if (path === "/replace") {
+        await r2.bucket.put("../object", "replacement");
+        await r2.bucket.put("../object", "object before restart", { httpMetadata: { contentType: "text/plain" } });
+        const changed = await d1.prepare("UPDATE fixture SET value=value RETURNING id").run();
+        const read = await d1.prepare("SELECT id FROM fixture").run();
+        return Response.json({
+          writeChanges: changed.meta.changes,
+          readChanges: read.meta.changes,
+          files: (await readdir(join(root, "objects", "objects"))).length,
+        });
       }
       if (path === "/rollback") {
         try {
@@ -88,6 +99,8 @@ if (process.argv[2] === "serve") {
   };
   try {
     assert.deepEqual(await call("/write"), { ok: true });
+    assert.deepEqual(await call("/replace"), { writeChanges: 1, readChanges: 0, files: 1 });
+    checks.push("RETURNING reports write metadata; repeated object replacement reclaims old files");
     assert.deepEqual(await call("/rollback"), { rolledBack: true });
     checks.push("real D1 batch rolls back all writes on error");
     active.child.kill("SIGKILL");
@@ -124,22 +137,23 @@ if (process.argv[2] === "serve") {
     db.database.close();
     checks.push("failed startup migration rolls back data and migration record");
     const secret = randomUUID();
+    const privateJwk = JSON.stringify({ kty: "EC", d: randomUUID() });
     const logging = resolve(import.meta.dirname, "../src/self-hosted/logging.ts");
     const logProcess = Bun.spawn(
       [
         process.execPath,
         "-e",
-        `import { installSelfHostedLogging } from ${JSON.stringify(logging)}; installSelfHostedLogging(); console.log(process.env.SELF_HOSTED_TEST_SECRET);`,
+        `import { installSelfHostedLogging } from ${JSON.stringify(logging)}; installSelfHostedLogging(); console.log(process.env.SELF_HOSTED_TEST_SECRET, process.env.REMOTE_TICKET_PRIVATE_JWK);`,
       ],
       {
-        env: { ...process.env, SELF_HOSTED_TEST_SECRET: secret },
+        env: { ...process.env, SELF_HOSTED_TEST_SECRET: secret, REMOTE_TICKET_PRIVATE_JWK: privateJwk },
         stdout: "pipe",
         stderr: "inherit",
       },
     );
     const output = await new Response(logProcess.stdout).text();
     assert.equal(await logProcess.exited, 0);
-    assert.ok(!output.includes(secret) && output.includes("[redacted]"));
+    assert.ok(!output.includes(secret) && !output.includes(privateJwk) && output.includes("[redacted]"));
     checks.push("framework console output redacts registered runtime secrets");
     const artifact = resolve(".openbot-build/auth-api-storage-e2e.json");
     await mkdir(resolve(".openbot-build"), { recursive: true });

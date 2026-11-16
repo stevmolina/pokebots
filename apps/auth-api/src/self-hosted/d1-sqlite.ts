@@ -16,10 +16,6 @@ function cloneJson<T>(value: object | SQLOutputValue): T {
   return JSON.parse(JSON.stringify(value));
 }
 
-function returnsRows(query: string): boolean {
-  return /^\s*(select|with|pragma|explain)\b/i.test(query) || /\breturning\b/i.test(query);
-}
-
 function makeMeta(changes: number, lastRowId: number, duration: number, rowsRead: number) {
   return {
     changes,
@@ -57,36 +53,11 @@ class SqlitePreparedStatement implements D1PreparedStatement {
   }
 
   async run<T = Record<string, SQLOutputValue>>(): Promise<D1Result<T>> {
-    const start = performance.now();
-    if (returnsRows(this.query)) {
-      const rows = this.database.prepare(this.query).all(...this.values);
-      const duration = performance.now() - start;
-      return {
-        success: true,
-        results: cloneJson<T[]>(rows),
-        meta: makeMeta(0, 0, duration, rows.length),
-      };
-    }
-    const info = this.database.prepare(this.query).run(...this.values);
-    const duration = performance.now() - start;
-    const changes = Number(info.changes ?? 0);
-    const lastRowId = Number(info.lastInsertRowid ?? 0);
-    return {
-      success: true,
-      results: [],
-      meta: makeMeta(changes, lastRowId, duration, 0),
-    };
+    return this.executeInBatch<T>();
   }
 
   async all<T = Record<string, SQLOutputValue>>(): Promise<D1Result<T>> {
-    const start = performance.now();
-    const rows = this.database.prepare(this.query).all(...this.values);
-    const duration = performance.now() - start;
-    return {
-      success: true,
-      results: cloneJson<T[]>(rows),
-      meta: makeMeta(0, 0, duration, rows.length),
-    };
+    return this.executeInBatch<T>();
   }
 
   raw<T = unknown[]>(options: { columnNames: true }): Promise<[string[], ...T[]]>;
@@ -104,23 +75,23 @@ class SqlitePreparedStatement implements D1PreparedStatement {
 
   executeInBatch<T = Record<string, SQLOutputValue>>(): D1Result<T> {
     const start = performance.now();
-    if (returnsRows(this.query)) {
-      const rows = this.database.prepare(this.query).all(...this.values);
-      const duration = performance.now() - start;
-      return {
-        success: true,
-        results: cloneJson<T[]>(rows),
-        meta: makeMeta(0, 0, duration, rows.length),
-      };
-    }
-    const info = this.database.prepare(this.query).run(...this.values);
-    const duration = performance.now() - start;
-    const changes = Number(info.changes ?? 0);
-    const lastRowId = Number(info.lastInsertRowid ?? 0);
+    const before = this.database.prepare("SELECT total_changes() AS total").get()?.total;
+    const statement = this.database.prepare(this.query);
+    const rows = statement.columns().length ? statement.all(...this.values) : [];
+    if (!statement.columns().length) statement.run(...this.values);
+    const after = this.database
+      .prepare("SELECT total_changes() AS total, changes() AS changes, last_insert_rowid() AS id")
+      .get();
+    const changed = after?.total !== before;
     return {
       success: true,
-      results: [],
-      meta: makeMeta(changes, lastRowId, duration, 0),
+      results: cloneJson<T[]>(rows),
+      meta: makeMeta(
+        changed ? Number(after?.changes || 0) : 0,
+        changed ? Number(after?.id || 0) : 0,
+        performance.now() - start,
+        rows.length,
+      ),
     };
   }
 }
@@ -167,7 +138,7 @@ export function openSelfHostedD1(
   mkdirSync(dirname(dbPath), { recursive: true });
   const database = new DatabaseSync(dbPath);
   database.exec("PRAGMA journal_mode = WAL;");
-  database.exec("PRAGMA synchronous = NORMAL;");
+  database.exec("PRAGMA synchronous = FULL;");
   database.exec("PRAGMA busy_timeout = 5000;");
   database.exec("PRAGMA foreign_keys = ON;");
   const appliedMigrations = migrationsDir ? applySelfHostedMigrations(database, migrationsDir) : [];

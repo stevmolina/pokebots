@@ -53,7 +53,9 @@ Build and validate the image on the VPS with its resource-limited buildx builder
 3. Use an imported copy to verify the new service first. Add a second WorkOS client secret
    instead of deleting the old one. Keep both signing public keys accepted by Signal.
 4. At cutover, stop writes to the old Worker with a maintenance response. Stop its cron too.
-   Export D1 again after the write freeze. Keep the SQL export private and record its SHA-256.
+   Export D1 again after the write freeze. Take a final R2 listing, even when the first was empty.
+   Copy and verify each new or changed object before the new service starts.
+   Keep the SQL export private and record its SHA-256.
 5. Stop the new service. Import into a new filename with:
 
    ```sh
@@ -78,7 +80,7 @@ data only if its schema is compatible. Otherwise fix forward, or export and veri
 SQLite data into D1 before restoring Worker traffic. A DNS-only rollback loses new accounts
 and session changes. Do not do it.
 
-For daily backups, stop the service or use SQLite's online backup API. Copy the database together
+For daily backups, stop the service. Copy the database together
 with all R2 directories. Copying only `pokebots.sqlite` while WAL writes run is not a backup.
 Object bodies use immutable filenames and metadata in SQLite. An interrupted write can leave
-an unreferenced file; retain it until a backup and a reference check permit removal.
+an unreferenced file. Startup removes only unreferenced UUID files from the object directory.

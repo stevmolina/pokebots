@@ -39,7 +39,7 @@ try {
   assert.deepEqual(
     await sqlite.d1.prepare("SELECT key_hash FROM auth_rate_limits WHERE key_hash = 'current'").first(),
     {
-      key: "current",
+      key_hash: "current",
     },
   );
   const artifact = "/runtime/scheduled-e2e.json";

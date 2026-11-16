@@ -248,7 +248,7 @@ async function main(): Promise<void> {
 
   logger.info("Self-hosted auth-api listening.", { port: server.port });
 
-  let scheduledMinute = Math.floor(Date.now() / 60_000);
+  let scheduledMinute = Math.floor(Date.now() / 60_000) - 1;
   let scheduledRunning = false;
   const timer = setInterval(() => {
     const minute = Math.floor(Date.now() / 60_000);

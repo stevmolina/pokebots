@@ -8,7 +8,7 @@ ENV SELF_HOSTED=1 OPENBOT_BRAND_NAME=Pokebots
 ENV OPENBOT_BRAND_AUTH_API_URL=https://api.pokebots.xyz
 ENV OPENBOT_BRAND_SIGNAL_URL=wss://signal.pokebots.xyz/v1/signal
 # This is the account/web image only. Electron is never built here.
-RUN node -e 'const fs=require("node:fs"); let sha=process.env.SOURCE_COMMIT; if(fs.existsSync(".git/HEAD")){const head=fs.readFileSync(".git/HEAD","utf8").trim(); sha=head.startsWith("ref: ")?fs.readFileSync(".git/"+head.slice(5),"utf8").trim():head;} fs.writeFileSync(".source-commit",sha||"development");' \
+RUN node -e 'const fs=require("node:fs"); let sha=process.env.SOURCE_COMMIT; if(fs.existsSync(".git/HEAD")){const head=fs.readFileSync(".git/HEAD","utf8").trim(); if(head.startsWith("ref: ")){const ref=head.slice(5);if(fs.existsSync(".git/"+ref))sha=fs.readFileSync(".git/"+ref,"utf8").trim();else if(fs.existsSync(".git/packed-refs"))sha=fs.readFileSync(".git/packed-refs","utf8").split("\n").find(line=>line.endsWith(" "+ref))?.split(" ")[0]||sha;}else sha=head;} fs.writeFileSync(".source-commit",sha||"development");' \
   && bun run --cwd apps/auth-api build
 
 RUN mkdir /runtime \

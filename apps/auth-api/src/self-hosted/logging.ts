@@ -5,7 +5,7 @@ import { createOpenBotLogger, isSecretName, registerSecretValue } from "@openbot
 /** Frameworks also write to console. Send those lines through the same redacting logger. */
 export function installSelfHostedLogging(): void {
   for (const [name, value] of Object.entries(process.env)) {
-    if (value && isSecretName(name)) registerSecretValue(value);
+    if (value && (isSecretName(name) || name.endsWith("PRIVATE_JWK"))) registerSecretValue(value);
   }
   const logger = createOpenBotLogger("self-hosted-framework");
   const stream = (write: (line: string) => void) =>

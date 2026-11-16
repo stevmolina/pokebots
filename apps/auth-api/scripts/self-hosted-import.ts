@@ -1,5 +1,5 @@
 import { createHash, randomUUID } from "node:crypto";
-import { existsSync, readFileSync, renameSync, rmSync } from "node:fs";
+import { existsSync, linkSync, readFileSync, rmSync, unlinkSync } from "node:fs";
 import { resolve } from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import { openSelfHostedD1 } from "../src/self-hosted/d1-sqlite";
@@ -38,7 +38,8 @@ try {
     throw new Error("The export is behind the source schema. Review migrations before cutover.");
   migrated.database.close();
   // SQLite is closed before the atomic rename. There is no live writer during import.
-  renameSync(pending, destination);
+  linkSync(pending, destination);
+  unlinkSync(pending);
   // Machine-readable: row counts and hashes contain no account values or secrets.
   process.stdout.write(`${JSON.stringify({ destination, integrity: "ok", tables: evidence }, null, 2)}\n`);
 } finally {
