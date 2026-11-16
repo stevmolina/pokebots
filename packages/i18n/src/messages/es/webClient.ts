@@ -19,6 +19,12 @@ export const messages = {
   "webClient.login.responseInvalid": "La respuesta de inicio de sesión no es válida.",
   "webClient.pane.navigation": "Navegación del espacio de trabajo",
   "webClient.tab.settings": "Ajustes",
+  "webClient.phoneApp.title": "Usa la app de OpenBot",
+  "webClient.phoneApp.description":
+    "En el teléfono, OpenBot funciona mejor en la app. Inicia sesión con el mismo correo.",
+  "webClient.phoneApp.ios": "Descargar para iPhone",
+  "webClient.phoneApp.android": "Descargar para Android",
+  "webClient.phoneApp.continue": "Seguir en el navegador",
   "webClient.notice.connecting": "Conectando con tu servidor",
   "webClient.notice.findingHosts": "Buscando tus servidores",
   "webClient.notice.hostsFailed": "No se pudieron cargar tus servidores",

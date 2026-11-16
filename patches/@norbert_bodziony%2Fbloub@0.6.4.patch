@@ -36,7 +36,20 @@ index fbd2a5b0df7e5fc8a6283bb4cad189b927374db4..233757dd3d4553f881ae289e655ac313
 diff --git a/dist/package/plush.js b/dist/package/plush.js
 --- a/dist/package/plush.js
 +++ b/dist/package/plush.js
-@@ -954,16 +954,21 @@
+@@ -942,6 +942,11 @@ function Ut(e) {
+ 	return new Promise((t, n) => {
+ 		let r = new FileReader();
+-		r.onload = () => typeof r.result == "string" ? t(r.result) : n(/* @__PURE__ */ Error("plush: teinture illisible")), r.onerror = () => n(r.error ?? /* @__PURE__ */ Error("plush: teinture illisible")), r.readAsDataURL(e);
++		r.onload = () => {
++			if (typeof r.result != "string") return n(/* @__PURE__ */ Error("plush: teinture illisible"));
++			let e = r.result, i = new Image();
++			// A paused, filtered SVG must receive a decoded body, not only encoded bytes.
++			i.src = e, i.decode().then(() => t(e), n);
++		}, r.onerror = () => n(r.error ?? /* @__PURE__ */ Error("plush: teinture illisible")), r.readAsDataURL(e);
+ 	});
+ }
+ function Wt(e) {
+@@ -954,16 +959,21 @@ function Gt(e, t) {
  	let n = `${t.toLowerCase()} ${e}`, r = $.get(n);
  	return r || (r = Wt(e).then((e) => {
  		let n = document.createElement("canvas");
@@ -61,7 +74,7 @@ diff --git a/dist/package/plush.js b/dist/package/plush.js
  }
  //#endregion
  //#region src/plush/PlushBot.tsx
-@@ -1072,7 +1077,12 @@
+@@ -1072,7 +1082,12 @@
  		}, (e) => {
  			let [r, i] = e.split("|"), a = ++n;
  			if (!r) return void t(i);

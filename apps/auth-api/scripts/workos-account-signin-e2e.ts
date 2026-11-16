@@ -1,10 +1,13 @@
 /** Drives the account service with real local D1 and a local OIDC provider. No live credentials. */
 import { strict as assert } from "node:assert";
-import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readdir, readFile, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { Effect, Schema } from "effect";
 import { exportJWK, generateKeyPair, SignJWT } from "jose";
 import { getPlatformProxy, unstable_splitSqlQuery } from "wrangler";
+import { openSelfHostedD1 } from "../src/self-hosted/d1-sqlite";
+import { openSelfHostedR2 } from "../src/self-hosted/r2-fs";
+import { createMemoryRateLimiter } from "../src/self-hosted/rate-limit";
 import { AuthService, AuthServiceError } from "../src/server/auth-service";
 import { type BrowserApiServices, handleBrowserApi } from "../src/server/browser-api";
 import { CompanySignInError, CompanySignInService } from "../src/server/company-sign-in";
@@ -39,12 +42,40 @@ await writeFile(
     ].map((name, index) => ({ name, namespace_id: String(9000 + index), simple: { limit: 100, period: 60 } })),
   }),
 );
-const platform = await getPlatformProxy<WorkerBindings>({
-  configPath,
-  persist: false,
-  remoteBindings: false,
-  envFiles: [],
-});
+async function selfHostedPlatform() {
+  const directory = await mkdtemp(join(artifactRoot, "sqlite-"));
+  const sqlite = openSelfHostedD1(join(directory, "auth.sqlite"));
+  const avatars = openSelfHostedR2(directory, "avatars");
+  const skills = openSelfHostedR2(directory, "skills");
+  const sites = openSelfHostedR2(directory, "sites");
+  const limiter = () => createMemoryRateLimiter({ limit: 100, periodSeconds: 60 });
+  const env: WorkerBindings = {
+    DB: sqlite.d1,
+    AVATARS: avatars.bucket,
+    SKILLS: skills.bucket,
+    SITES: sites.bucket,
+    MARKETPLACE_INGRESS_RATE_LIMITER: limiter(),
+    MARKETPLACE_MUTATION_RATE_LIMITER: limiter(),
+    MARKETPLACE_UPLOAD_RATE_LIMITER: limiter(),
+    SITE_REPORT_RATE_LIMITER: limiter(),
+    GITHUB_TOKEN_RATE_LIMITER: limiter(),
+  };
+  return {
+    env,
+    async dispose() {
+      for (const db of [sqlite.database, avatars.database, skills.database, sites.database]) db.close();
+    },
+  };
+}
+const selfHosted = process.env.WORKOS_E2E_SELF_HOSTED === "1";
+const platform = selfHosted
+  ? await selfHostedPlatform()
+  : await getPlatformProxy<WorkerBindings>({
+      configPath,
+      persist: false,
+      remoteBindings: false,
+      envFiles: [],
+    });
 const database = platform.env.DB;
 const keys = await generateKeyPair("RS256");
 const jwk = { ...(await exportJWK(keys.publicKey)), kid: "local-provider", alg: "RS256", use: "sig" };
@@ -546,12 +577,17 @@ try {
   checks.push("prior company start and exchange also defer to the configured WorkOS provider");
 
   await writeFile(
-    join(root, ".openbot-build/workos-account-signin-e2e.json"),
+    join(
+      root,
+      selfHosted
+        ? ".openbot-build/workos-account-signin-sqlite-e2e.json"
+        : ".openbot-build/workos-account-signin-e2e.json",
+    ),
     `${JSON.stringify({ checks, result: "pass" }, null, 2)}\n`,
   );
   // Machine-readable: the artifact records behavior without credentials, tokens or codes.
   process.stdout.write(
-    `Passed ${checks.length} scenario groups. Artifact: .openbot-build/workos-account-signin-e2e.json\n`,
+    `Passed ${checks.length} scenario groups. Artifact: .openbot-build/workos-account-signin${selfHosted ? "-sqlite" : ""}-e2e.json\n`,
   );
 } finally {
   app.stop(true);

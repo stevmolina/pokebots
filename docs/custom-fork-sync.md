@@ -22,7 +22,7 @@ Keep fork code in these files, and keep the hook in each upstream file to one ca
 
 | Feature | Fork file | Hook in the upstream file |
 | --- | --- | --- |
-| Thread worker rows, HTML visual replies, reactions, read aloud | `src/renderer/src/features/conversation/custom-thread-extras.tsx` | `useCustomThreadExtras` in `ConversationThread.tsx` and `ConversationSideThread.tsx` |
+| Thread worker rows, reactions, read aloud | `src/renderer/src/features/conversation/custom-thread-extras.tsx` | `useCustomThreadExtras` in `ConversationThread.tsx` and `ConversationSideThread.tsx` |
 | Sidebar thread lanes | `src/renderer/src/features/sidebar/custom-sidebar-thread-lanes.ts` | `useCustomSidebarThreadLanes` and `threadLanes` in `WorkspaceSidebar.tsx` |
 | Remote coding jobs | `src/backend/agent-tasks/coding-*.ts`, `remote-coding-task.ts` | `codingJobs` in `agent-tasks.ts` and `agent-service.ts` |
 | Per-agent screens | `src/backend/agent/agent-screens.ts`, `scripts/hosting/openbot-agent-screen` | `DISPLAY` in `claude-client.ts`, reaper in `application-services.ts` |
