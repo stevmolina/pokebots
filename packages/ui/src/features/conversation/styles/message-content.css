@@ -118,6 +118,21 @@
   font-family: var(--openbot-font-mono);
   font-size: var(--openbot-text-md);
   white-space: break-spaces;
+  /* A chip that wraps gives each line its own closed box, instead of one box cut open at the line
+     breaks. A long path or name breaks inside the chip, so it never runs past the message. */
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  overflow-wrap: anywhere;
+}
+
+/* On a phone the chip is a little smaller than the sentence, with tighter padding, so it reads as part
+   of the line and a short paragraph does not grow tall. The desktop size stays. */
+@media (max-width: 480px) {
+  .message-markdown :not(pre) > code {
+    padding-block: 0;
+    padding-inline: var(--openbot-space-0-5) var(--openbot-space-1);
+    font-size: var(--openbot-text-sm);
+  }
 }
 
 .message-markdown hr {
