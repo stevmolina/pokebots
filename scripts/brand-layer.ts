@@ -31,7 +31,7 @@
 // item "OpenBot Safe Storage" or the local signing certificate: a new name there loses the data or
 // the macOS privacy grants.
 
-import { copyFileSync, existsSync, readFileSync, writeFileSync } from "node:fs";
+import { copyFileSync, existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 
 /** The build-time setting that turns the brand layer on, and the product name it shows. */
@@ -364,8 +364,13 @@ export const BRANDED_MODULES: readonly string[] = [
   "src/renderer/src/features/settings/marketplace-plugin-catalog.ts",
 ];
 
-/** The release notes of the What's New dialog. Their string values are branded as catalog values are. */
-export const BRANDED_JSON: readonly string[] = ["src/renderer/src/features/updates/whats-new-releases.json"];
+/**
+ * The release notes of the What's New dialog: the English file and one file per language. The app
+ * loads them by URL (`?url&no-inline`), so the bundler copies them without a transform, and
+ * `brandReleaseNotesOutput` brands the copies after the build writes them.
+ */
+export const RELEASE_NOTES_FILES =
+  /^src\/renderer\/src\/features\/updates\/(whats-new-releases|whats-new\/[a-z]{2})\.json$/;
 
 const CATALOG_DIRECTORY = "packages/i18n/src/messages/";
 
@@ -384,7 +389,7 @@ export interface BrandTransformResult {
 
 /** The branded source of one module, or null when the brand layer does not change it. */
 export function brandModule(path: string, code: string, settings: BrandSettings): BrandTransformResult | null {
-  if ((path.startsWith(CATALOG_DIRECTORY) && path.endsWith(".ts")) || BRANDED_JSON.includes(path)) {
+  if (path.startsWith(CATALOG_DIRECTORY) && path.endsWith(".ts")) {
     const result = brandStringValues(code, (text) => brandText(text, settings.name));
     return result.changed === 0 ? null : { code: result.code, missing: [] };
   }
@@ -471,6 +476,37 @@ export function brandWebOutput(outDir: string, root: string, settings: BrandSett
   return changed;
 }
 
+/** The release notes with the product name in each string value. Keys and kept phrases stay. */
+export function brandReleaseNotes(json: string, settings: BrandSettings): string {
+  return brandStringValues(json, (text) => brandText(text, settings.name)).code;
+}
+
+/** A What's New file: a list of releases, each with its version, notices and groups. */
+function isReleaseNotes(json: string): boolean {
+  return /^\s*\[\s*\{\s*"version"/.test(json) && json.includes('"notices"') && json.includes('"groups"');
+}
+
+/**
+ * Brands the What's New files in the `assets` folder of a build output. They are found by their
+ * shape, because the bundler names them after the language and a hash. Returns the files that changed.
+ */
+export function brandReleaseNotesOutput(outDir: string, settings: BrandSettings): string[] {
+  const assets = join(outDir, "assets");
+  if (!existsSync(assets)) return [];
+  const changed: string[] = [];
+  for (const file of readdirSync(assets)) {
+    if (!file.endsWith(".json")) continue;
+    const path = join(assets, file);
+    const json = readFileSync(path, "utf8");
+    if (!isReleaseNotes(json)) continue;
+    const branded = brandReleaseNotes(json, settings);
+    if (branded === json) continue;
+    writeFileSync(path, branded);
+    changed.push(file);
+  }
+  return changed;
+}
+
 /** The part of a Vite plugin that this layer uses, so that this file needs no Vite dependency. */
 interface BrandPlugin {
   readonly name: string;
@@ -508,6 +544,7 @@ export function brandPlugins(
       writeBundle(options) {
         if (!options.dir) return;
         const iconFolder = env[BRAND_WEB_ICONS_ENV]?.trim() || DEFAULT_WEB_ICONS;
+        brandReleaseNotesOutput(options.dir, settings);
         const changed = brandWebOutput(options.dir, root, settings, iconFolder);
         if (changed.length === 1) this.warn(`The brand layer found no web icons in ${iconFolder}.`);
       },
