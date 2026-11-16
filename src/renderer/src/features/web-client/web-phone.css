@@ -368,7 +368,6 @@
     /* On the name line: the text block is 40px tall (20px name, 2px gap, 18px preview) and centered. */
     top: calc(50% - 20px);
     inset-inline-end: var(--web-phone-row-pad);
-    left: auto;
     grid-area: auto;
     display: block;
     color: var(--openbot-text-muted);
