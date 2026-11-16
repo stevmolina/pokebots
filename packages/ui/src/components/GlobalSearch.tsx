@@ -1,6 +1,3 @@
-import { agentMentionRank } from "@openbot/contracts/agent-mention-rank";
-import { expandAttachmentReferences } from "@openbot/contracts/attachment-references";
-import { expandChatTagReferences } from "@openbot/contracts/chat-tag-references";
 import type { AppTextKey } from "@openbot/i18n";
 import {
   ArrowDown,
@@ -21,23 +18,34 @@ import {
   Spinner,
   Tabs,
 } from "@openbot/ui";
-import type { AgentMessage, AgentProfile } from "@openbot/ui/data";
+import type { AgentProfile } from "@openbot/ui/data";
 import { AgentAvatar } from "@openbot/ui/features/agents/AgentAvatar";
 import { useText } from "@openbot/ui/text";
 import { Dynamic, type JSX } from "@solidjs/web";
-import {
-  type Accessor,
-  createEffect,
-  createMemo,
-  createSignal,
-  For,
-  onCleanup,
-  onSettled,
-  Show,
-  untrack,
-} from "solid-js";
+import { createEffect, createMemo, createSignal, For, onCleanup, onSettled, Show, untrack } from "solid-js";
 import { createScrollFades } from "./createScrollFades";
 import { GlobalSearchPlush } from "./GlobalSearchPlush";
+import {
+  type ActionResult,
+  type AgentResult,
+  type ChannelResult,
+  createRemoteSearch,
+  type FileResult,
+  type GlobalSearchAction,
+  type GlobalSearchChannel,
+  type GlobalSearchFile,
+  type GlobalSearchResult,
+  type GlobalSearchRoutine,
+  indexed,
+  type MessageHit,
+  type MessageResult,
+  matching,
+  matchingAgents,
+  messagePreview,
+  type PagedSearch,
+  type RemoteSearch,
+  type RoutineResult,
+} from "./global-search-model";
 import { playDialogExit, trackResultHighlight, trackResultsHeight } from "./global-search-motion";
 import { matchParts, normalizedSearchText, snippetAround } from "./global-search-text";
 import { VirtualListbox, type VirtualRowProps } from "./VirtualListbox";
@@ -45,55 +53,13 @@ import { VirtualListbox, type VirtualRowProps } from "./VirtualListbox";
 const SEARCH_TABS = ["all", "agents", "channels", "messages", "files", "routines"] as const;
 type SearchTab = (typeof SEARCH_TABS)[number];
 
-export interface GlobalSearchChannel {
-  id: string;
-  name: string;
-  /** The last message, as one line. */
-  detail?: string | undefined;
-}
-
-export interface GlobalSearchFile {
-  id: string;
-  name: string;
-  agentId: string;
-  messageId: string;
-  time: string;
-}
-
-export interface GlobalSearchRoutine {
-  id: string;
-  name: string;
-  /** The agent that runs the routine. A channel routine has none and shows an icon. */
-  agentId?: string;
-  /** The owner and the schedule, as one line. */
-  detail: string;
-}
-
-export interface GlobalSearchAction {
-  id: string;
-  label: string;
-  /** Actions do things; settings open a settings page. The two show as separate groups. */
-  group: "actions" | "settings";
-  icon: typeof Settings;
-  detail?: string | undefined;
-  /** More words that find the action, such as the English name in another language. */
-  keywords?: string;
-  run: () => void;
-}
-
-type AgentResult = { kind: "agent"; agent: AgentProfile };
-type ChannelResult = { kind: "channel"; channel: GlobalSearchChannel };
-type MessageResult = { kind: "message"; agent: AgentProfile; message: AgentMessage };
-type FileResult = { kind: "file"; agent: AgentProfile; file: GlobalSearchFile };
-type RoutineResult = { kind: "routine"; routine: GlobalSearchRoutine; agent: AgentProfile | undefined };
-type ActionResult = { kind: "action"; action: GlobalSearchAction };
-type ResultData = AgentResult | ChannelResult | MessageResult | FileResult | RoutineResult | ActionResult;
-/**
- * The option key, label and search text are set when the result is made. Kobalte reads them in its
- * effects, where a read of the agent or the message would be an untracked read of the store.
- */
-type Option = { key: string; label: string; text: string };
-type GlobalSearchResult = ResultData & Option;
+export type {
+  GlobalSearchAction,
+  GlobalSearchChannel,
+  GlobalSearchFile,
+  GlobalSearchPage,
+  GlobalSearchRoutine,
+} from "./global-search-model";
 
 type SectionKey = "agents" | "channels" | "messages" | "files" | "routines" | "actions" | "settings";
 
@@ -104,18 +70,6 @@ interface GlobalSearchSection {
   more: boolean;
   items: GlobalSearchResult[];
 }
-
-/** One page of a search that another process answers. */
-export interface GlobalSearchPage<T> {
-  results: T[];
-  /** All results, when the source counts them. */
-  total?: number | undefined;
-  /** Gives the next page; null on the last page. */
-  nextCursor: string | null;
-}
-
-type PagedSearch<T> = (query: string, cursor?: string) => Promise<GlobalSearchPage<T>>;
-type MessageHit = { agentId: string; message: AgentMessage };
 
 interface GlobalSearchProps {
   open: boolean;
@@ -141,7 +95,6 @@ interface GlobalSearchProps {
 
 // All shows a preview of each kind; a filter shows the full list.
 const ALL_SECTION_LIMIT = 5;
-const SEARCH_DEBOUNCE_MS = 150;
 // First guesses for the virtual list, from the CSS: a row is control-lg high, and a section header
 // is control-sm high, with space-1-5 above it when a row comes before it.
 const RESULT_HEIGHT = 36;
@@ -171,97 +124,6 @@ function isSearchTab(value: string): value is SearchTab {
   return SEARCH_TABS.some((tab) => tab === value);
 }
 
-function messagePreview(message: AgentMessage): string {
-  return expandAttachmentReferences(
-    expandChatTagReferences(message.body, (reference) =>
-      reference.kind === "quote" ? `“${reference.name}”` : undefined,
-    ),
-  )
-    .trim()
-    .replace(/\s+/g, " ");
-}
-
-function resultKey(result: ResultData): string {
-  switch (result.kind) {
-    case "agent":
-      return `agent:${result.agent.id}`;
-    case "channel":
-      return `channel:${result.channel.id}`;
-    case "message":
-      return `message:${result.agent.id}:${result.message.id}`;
-    case "file":
-      return `file:${result.file.agentId}:${result.file.messageId}:${result.file.id}`;
-    case "routine":
-      return `routine:${result.routine.id}`;
-    case "action":
-      return `action:${result.action.id}`;
-  }
-}
-
-function resultLabel(result: ResultData): string {
-  switch (result.kind) {
-    case "agent":
-      return result.agent.name;
-    case "channel":
-      return result.channel.name;
-    case "message":
-      return messagePreview(result.message);
-    case "file":
-      return result.file.name;
-    case "routine":
-      return result.routine.name;
-    case "action":
-      return result.action.label;
-  }
-}
-
-function resultSearchText(result: ResultData): string {
-  switch (result.kind) {
-    case "agent":
-      return normalizedSearchText(
-        `${result.agent.name} ${result.agent.title} ${result.agent.description} ${result.agent.preview}`,
-      );
-    case "channel":
-      return normalizedSearchText(result.channel.name);
-    case "message":
-      return normalizedSearchText(
-        `${messagePreview(result.message)} ${result.agent.name} ${result.agent.title} ${result.agent.description}`,
-      );
-    case "file":
-      return normalizedSearchText(`${result.file.name} ${result.agent.name}`);
-    case "routine":
-      return normalizedSearchText(`${result.routine.name} ${result.routine.detail}`);
-    case "action":
-      return normalizedSearchText(
-        `${result.action.label} ${result.action.detail ?? ""} ${result.action.keywords ?? ""}`,
-      );
-  }
-}
-
-function indexed<T extends ResultData>(results: T[]): Array<T & Option> {
-  return results.map((result) => ({
-    ...result,
-    key: resultKey(result),
-    label: resultLabel(result),
-    text: resultSearchText(result),
-  }));
-}
-
-function matching<T extends GlobalSearchResult>(items: T[], query: string): T[] {
-  return query ? items.filter((item) => item.text.includes(query)) : items;
-}
-
-/** A name match first, as in an `@` mention. A match only in the last message goes last. */
-function matchingAgents(items: Array<AgentResult & Option>, query: string): Array<AgentResult & Option> {
-  const ranked = matching(items, query).map((item) => ({
-    item,
-    rank: agentMentionRank(item.agent, query) ?? Number.MAX_VALUE,
-  }));
-  // Array sort is stable, so agents of one rank keep the sidebar order.
-  ranked.sort((left, right) => left.rank - right.rank);
-  return ranked.map(({ item }) => item);
-}
-
 function section(
   key: SectionKey,
   results: GlobalSearchResult[],
@@ -282,145 +144,6 @@ function sectionOf(value: GlobalSearchResult | GlobalSearchSection): GlobalSearc
 
 function resultOf(value: GlobalSearchResult | GlobalSearchSection): GlobalSearchResult | undefined {
   return "kind" in value ? value : undefined;
-}
-
-interface RemoteSearch<T> {
-  items: Accessor<T[]>;
-  total: Accessor<number | undefined>;
-  hasMore: Accessor<boolean>;
-  pending: Accessor<boolean>;
-  /** A page failed. The list holds only the pages before it. */
-  failed: Accessor<boolean>;
-  /** Loads the page that failed again. */
-  retry: () => void;
-  /** Loads the next page. It does nothing while a page loads or when no page follows. */
-  loadMore: () => void;
-}
-
-/**
- * A search that another process answers, debounced and in pages. `request` returns null when the
- * current tab or query does not need it; a stale answer is dropped. `key` drops a result that a
- * later page gives again, as offset pages do when new results arrive between two pages.
- */
-function createRemoteSearch<T>(
-  request: () => { search: PagedSearch<T>; query: string } | null,
-  key: (item: T) => string,
-): RemoteSearch<T> {
-  type Request = ReturnType<typeof request>;
-  type Loaded = { items: T[]; total?: number | undefined; cursor: string | null };
-  const empty: Loaded = { items: [], cursor: null };
-  const requested = createMemo(request);
-  // The request that the first page answered. The search is pending until it is the current request,
-  // in the same update as the query: an effect would report it one update late.
-  const [answered, setAnswered] = createSignal<Request>(null);
-  const pending = () => {
-    const current = requested();
-    return current !== null && answered() !== current;
-  };
-  const [loaded, setLoaded] = createSignal<Loaded>(empty);
-  const [failed, setFailed] = createSignal(false);
-  let timer: ReturnType<typeof setTimeout> | undefined;
-  let latest = 0;
-  // loadMore runs in an effect, so it reads plain copies, not the signals.
-  let active: { search: PagedSearch<T>; query: string } | null = null;
-  let cursor: string | null = null;
-  // The cursor of the page that failed; null when the first page failed.
-  let failedCursor: string | null = null;
-  let loading = false;
-  const show = (next: Loaded) => {
-    cursor = next.cursor;
-    loading = false;
-    setLoaded(next);
-  };
-  function loadFirst(next: { search: PagedSearch<T>; query: string }): void {
-    const current = latest;
-    loading = true;
-    next.search(next.query).then(
-      (page) => {
-        if (current !== latest) return;
-        show({ items: page.results, total: page.total, cursor: page.nextCursor });
-        setAnswered(next);
-      },
-      () => {
-        if (current !== latest) return;
-        show(empty);
-        setAnswered(next);
-        failedCursor = null;
-        setFailed(true);
-      },
-    );
-  }
-  createEffect(requested, (next) => {
-    if (timer) clearTimeout(timer);
-    ++latest;
-    active = next;
-    cursor = null;
-    setFailed(false);
-    if (!next) {
-      show(empty);
-      return;
-    }
-    loading = true;
-    timer = setTimeout(() => loadFirst(next), SEARCH_DEBOUNCE_MS);
-  });
-  onCleanup(() => {
-    if (timer) clearTimeout(timer);
-  });
-
-  function loadMore(): void {
-    if (!active || !cursor || loading) return;
-    const current = latest;
-    const requested = cursor;
-    loading = true;
-    active.search(active.query, cursor).then(
-      (page) => {
-        if (current !== latest) return;
-        cursor = page.nextCursor;
-        loading = false;
-        setLoaded((previous) => {
-          const seen = new Set(previous.items.map(key));
-          return {
-            items: [...previous.items, ...page.results.filter((item) => !seen.has(key(item)))],
-            total: page.total ?? previous.total,
-            cursor: page.nextCursor,
-          };
-        });
-      },
-      () => {
-        if (current !== latest) return;
-        // A page that fails is not asked for again, so a scroll does not repeat the error.
-        cursor = null;
-        loading = false;
-        failedCursor = requested;
-        setLoaded((previous) => ({ ...previous, cursor: null }));
-        setFailed(true);
-      },
-    );
-  }
-
-  function retry(): void {
-    if (!active || loading || !failed()) return;
-    setFailed(false);
-    if (failedCursor === null) {
-      ++latest;
-      setAnswered(null);
-      loadFirst(active);
-      return;
-    }
-    cursor = failedCursor;
-    setLoaded((previous) => ({ ...previous, cursor: failedCursor }));
-    loadMore();
-  }
-
-  return {
-    items: () => loaded().items,
-    total: () => loaded().total,
-    hasMore: () => loaded().cursor !== null,
-    pending,
-    failed,
-    retry,
-    loadMore,
-  };
 }
 
 function Highlighted(props: { text: string; query: string }) {

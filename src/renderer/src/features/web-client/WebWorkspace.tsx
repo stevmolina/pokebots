@@ -195,6 +195,7 @@ import {
   createMemo,
   createRoot,
   createSignal,
+  createStore,
   flush,
   Loading,
   lazy,
@@ -325,6 +326,7 @@ import { openFirstSettingsSection, SettingsPageFrame, SettingsSearchField } from
 import type { SettingsKind, WindowPage } from "../window/window-page-context";
 import { WebConnectComputer } from "./WebConnectComputer";
 import { WebMobileNavigation, type WebMobilePane, WebPhoneBack, type WebPhoneTab } from "./WebMobileNavigation";
+import { WebPhoneSearch } from "./WebPhoneSearch";
 import { WebServerOtherTab } from "./WebServerOtherTab";
 import { createWebAccountCalls } from "./web-account";
 import { createWebAccountUsage } from "./web-account-usage";
@@ -982,6 +984,26 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
     openAccountSettings();
   }
   const [searchOpen, setSearchOpen] = createSignal(false);
+  /**
+   * The phone search: its field is the pill of the bottom bar and its results replace the chat list.
+   * `routines` is set when the Routines filter is chosen, so the routines load only then.
+   */
+  const [phoneSearch, setPhoneSearch] = createStore({ open: false, query: "", routines: false });
+  const phoneSearching = () => phone() && phoneSearch.open;
+  /** Closes the phone search, and the keyboard with it. */
+  function closePhoneSearch(): void {
+    setPhoneSearch((state) => {
+      state.open = false;
+      state.query = "";
+      state.routines = false;
+    });
+    blurPhoneSearchField();
+  }
+  /** Takes the keyboard down and leaves the results open. */
+  function blurPhoneSearchField(): void {
+    const focused = document.activeElement;
+    if (focused instanceof HTMLElement && focused.closest(".web-phone-tab-bar")) focused.blur();
+  }
   /** The hidden agents that the host stops: they get no mention and no channel work. */
   const pausedAgentIds = createMemo(() => (hiddenAgentsWork() ? noAgentIds : hiddenAgentIds()));
   // In sidebar order, so that ⌘1-9 opens the agents the user put at the top.
@@ -1186,7 +1208,10 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
   const [searchRoutinesLoading, setSearchRoutinesLoading] = createSignal(false);
   let searchRoutinesRequest = 0;
   createEffect(
-    () => searchOpen() && workspace.state.status === "online" && runtime.routines !== undefined,
+    () =>
+      (searchOpen() || (phoneSearching() && phoneSearch.routines)) &&
+      workspace.state.status === "online" &&
+      runtime.routines !== undefined,
     (load) => {
       const request = ++searchRoutinesRequest;
       const api = runtime.routines;
@@ -3139,6 +3164,7 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
               data-web-phone-connect={phone() && noHost() ? "" : undefined}
               data-web-phone-tab-page={phone() && phoneTab() !== null && phoneTab() !== "chats" ? "" : undefined}
               data-web-phone-settings={phone() && settingsKind() ? "" : undefined}
+              data-web-phone-search={phoneSearching() ? "" : undefined}
               compact={compact()}
               blockedServer={blockedServer()}
               initialLoading={hostOffline()}
@@ -3516,9 +3542,55 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                         onClick={() => setServersOpen(false)}
                       />
                     </Show>
+                    <Show when={phoneSearching()}>
+                      <WebPhoneSearch
+                        query={phoneSearch.query}
+                        agents={searchAgents()}
+                        channels={channels.supported() ? globalSearchChannels(channels.state.channels) : undefined}
+                        routines={searchRoutines()}
+                        routinesLoading={searchRoutinesLoading()}
+                        onShowRoutines={() =>
+                          setPhoneSearch((state) => {
+                            state.routines = true;
+                          })
+                        }
+                        onSearchMessages={searchAllMessages}
+                        onSearchFiles={fileSearch()}
+                        onSelectAgent={(id) => {
+                          closePhoneSearch();
+                          setMobilePane("conversation");
+                          void select(id);
+                        }}
+                        onSelectChannel={(id) => {
+                          closePhoneSearch();
+                          openChannel(id);
+                        }}
+                        onSelectMessage={(agentId, messageId) => {
+                          closePhoneSearch();
+                          openSearchHit(agentId, messageId);
+                        }}
+                        onSelectRoutine={(routine) => {
+                          closePhoneSearch();
+                          selectSearchRoutine(routine);
+                        }}
+                        onScrollStart={blurPhoneSearchField}
+                      />
+                    </Show>
                     <WebMobileNavigation
                       onOpenApps={workspace.state.status === "online" ? openMarketplace : undefined}
-                      onOpenSearch={() => setSearchOpen(true)}
+                      searching={phoneSearching()}
+                      searchQuery={phoneSearch.query}
+                      onOpenSearch={() =>
+                        setPhoneSearch((state) => {
+                          state.open = true;
+                        })
+                      }
+                      onSearchQuery={(query) =>
+                        setPhoneSearch((state) => {
+                          state.query = query;
+                        })
+                      }
+                      onCloseSearch={closePhoneSearch}
                     />
                   </Show>
                 </>
