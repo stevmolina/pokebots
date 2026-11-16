@@ -180,8 +180,7 @@ function ThreadHeaderStory(props: HeaderFixture) {
               props.actionsMenu
                 ? {
                     onOpenPins: fn(),
-                    onToggleSidePanel: fn(),
-                    sidePanelOpen: false,
+                    sidePanel: { open: false, onToggle: fn() },
                     onOpenRemote: fn(),
                     remoteEnabled: true,
                     remoteActive: props.actionsMenu === "remote",
