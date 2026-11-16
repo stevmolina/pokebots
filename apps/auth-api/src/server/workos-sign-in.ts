@@ -268,6 +268,7 @@ export class WorkosSignInService {
       .pipe(Effect.mapError(providerError));
     const userId = yield* this.#accountFor(configuration.issuer, identity);
     if (identity.pictureUrl) yield* this.#importPicture(userId, identity.pictureUrl);
+    else console.info("workos picture: the provider sent none");
     const exchangeCode = randomToken(32);
     const codeHash = yield* hash(exchangeCode);
     const configurationHash = yield* hash(`${configuration.issuer}\n${configuration.clientId}`);
@@ -368,20 +369,22 @@ export class WorkosSignInService {
   readonly #importPicture = (userId: string, pictureUrl: string) =>
     Effect.promise(async () => {
       const bucket = this.#bindings.AVATARS;
-      if (!bucket) return;
+      if (!bucket) return console.info("workos picture: no avatar storage");
       try {
         const current = await this.#database
           .prepare("SELECT avatar_url FROM users WHERE id = ?")
           .bind(userId)
           .first<{ avatar_url: string | null }>();
-        if (!current || current.avatar_url) return;
+        if (!current || current.avatar_url) return console.info("workos picture: account already has one");
         const response = await fetch(pictureUrl, { redirect: "manual", signal: AbortSignal.timeout(8_000) });
         const mimeType = response.headers.get("Content-Type")?.split(";", 1)[0]?.trim() ?? "";
-        if (!response.ok || !isAvatarMimeType(mimeType)) return;
+        if (!response.ok || !isAvatarMimeType(mimeType))
+          return console.info(`workos picture: refused status ${response.status} type ${mimeType}`);
         const declared = Number(response.headers.get("Content-Length") ?? 0);
-        if (declared > AVATAR_IMAGE_LIMITS.storedBytes) return;
+        if (declared > AVATAR_IMAGE_LIMITS.storedBytes) return console.info("workos picture: too large");
         const bytes = new Uint8Array(await response.arrayBuffer());
-        if (bytes.byteLength > AVATAR_IMAGE_LIMITS.storedBytes || !isValidAvatarImage(mimeType, bytes)) return;
+        if (bytes.byteLength > AVATAR_IMAGE_LIMITS.storedBytes || !isValidAvatarImage(mimeType, bytes))
+          return console.info("workos picture: not a valid image");
         const version = crypto.randomUUID();
         const key = avatarObjectKey(userId, version);
         await bucket.put(key, bytes, {
@@ -392,8 +395,10 @@ export class WorkosSignInService {
           .bind(`/v1/avatars/${encodeURIComponent(userId)}?v=${version}`, this.#now(), userId)
           .run();
         if (updated.meta.changes !== 1) await bucket.delete(key);
-      } catch {
+        else console.info("workos picture: saved");
+      } catch (error) {
         // No picture is an acceptable result.
+        console.info("workos picture: failed", error instanceof Error ? error.name : "unknown");
       }
     });
 
