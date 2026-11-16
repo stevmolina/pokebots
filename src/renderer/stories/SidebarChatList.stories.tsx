@@ -228,27 +228,17 @@ type Story = StoryObj<typeof meta>;
 /** "Needs you" on top; "Working", the folders and "Settled" in the dock, with "Working" open. */
 export const Open: Story = {};
 
-/** Minutes since each agent's last activity in `WorkingAndDone`. Beyond 6 hours an agent is back in its folder. */
-const DONE_MINUTES: Record<string, number> = {
-  "halo-pm": 4,
-  rebates: 25,
-  empiq: 90,
-  writer: 300,
-  designer: 420,
-  scout: 600,
-};
-
 /**
- * "Working" with the agents that work on top, then the agents that finished in the last 6 hours as
- * quiet "done" rows, newest first. "Designer" finished 7 hours ago, so it is back in "Settled".
+ * "Working" with the agent that works, then "Done" with the agents that finished and have a reply that
+ * the user did not read. Opening one of them reads the reply and moves it back to "Settled".
  */
 export const WorkingAndDone: Story = {
   args: {
-    agents: agents.map((agent) => ({
-      ...agent,
-      updatedAt: minutesAgo(DONE_MINUTES[agent.id] ?? (agent.id === "builder" ? 1 : 900)),
-    })),
-    agentStates: { builder: { kind: "working" }, rebates: { kind: "unread", count: 1 } },
+    agentStates: {
+      builder: { kind: "working" },
+      rebates: { kind: "unread", count: 1 },
+      empiq: { kind: "unread", count: 3 },
+    },
     agentMoods: { builder: "working" },
     channels: [],
   },

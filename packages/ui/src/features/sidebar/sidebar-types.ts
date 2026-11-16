@@ -60,6 +60,12 @@ export const SIDEBAR_DOCK_OPEN_PREFIX = "dock:open:";
 export const SIDEBAR_DOCK_NONE_ID = "dock:none";
 /** The "Working" group of the dock. */
 export const SIDEBAR_DOCK_WORKING_ID = "dock:working";
+/**
+ * The "Done" group of the dock: the agents that finished and have a reply that the user did not read.
+ * It is open by default, so it is saved as a plain collapsed id in `collapsedSectionIds` when the user
+ * closes it, not as a `dock:open:` marker.
+ */
+export const SIDEBAR_DOCK_DONE_ID = "dock:done";
 
 /**
  * How the list orders the chats in the sections. Pins and "Needs you" come first in each order, and
