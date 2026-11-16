@@ -207,3 +207,11 @@
     transition: none;
   }
 }
+
+/* A finger cannot hit ticks this small and has no pointer to bring in the card, so on a phone the
+   rail is only a stray mark on the edge of the screen. Hide it there. */
+@media (hover: none) and (max-width: 480px) {
+  .chat-scroll-rail-nav {
+    display: none;
+  }
+}

@@ -605,6 +605,44 @@ const markdownMessages: RendererAgentMessage[] = [
   },
 ];
 
+const inlineCodeMessages: RendererAgentMessage[] = [
+  {
+    id: "inline-code-user",
+    author: "you",
+    body: "Did the merge go through, and what blocks the deploy?",
+    time: "10:02",
+    kind: "text",
+  },
+  {
+    id: "inline-code-agent",
+    author: "agent",
+    body: [
+      "PR #143 is merged into `main` in `stevmolina/pokebots`, and the checkout is pulled to `d5a041b96`, but **deploy is blocked** on missing credentials on the VPS.",
+      "",
+      "- **Merged:** `stevmolina/pokebots#143` (`Workspace simplification: sidebar footer, standalone Settings, bot focus drawer, phone home`) merged cleanly into `main`.",
+      "- **Deploy blocker:** `apps/auth-api` deploys via `dotenvx run -f .env.production -fk ../../.env.keys`, and `.env.keys` is not on the VPS (Doppler `pokebots/prd` only has `CLOUDFLARE_DNS_API_TOKEN`, not a Workers `CLOUDFLARE_API_TOKEN`).",
+      "",
+      "To finish the deploy, either run `bun run deploy` in `apps/auth-api` from your machine (where `.env.keys` is), or share `CLOUDFLARE_API_TOKEN`.",
+    ].join("\n"),
+    time: "10:03",
+    kind: "text",
+  },
+  {
+    id: "inline-code-user-2",
+    author: "you",
+    body: "I will run it from my machine.",
+    time: "10:04",
+    kind: "text",
+  },
+  {
+    id: "inline-code-agent-2",
+    author: "agent",
+    body: "Good. Run `bun run deploy` and tell me when it finishes.",
+    time: "10:05",
+    kind: "text",
+  },
+];
+
 const streamingMarkdownChunks = [
   "## Live response\n\nI am checking the",
   "## Live response\n\nI am checking the **Markdown renderer**.",
@@ -1568,6 +1606,22 @@ export const ImageGenerationCompletedInChat: Story = {
     activeTurnId: "turn-image-generation",
     presence: completedImageGenerationPresence,
   },
+};
+
+export const InlineCodeInChat: Story = {
+  name: "Inline code in chat",
+  args: {
+    messages: inlineCodeMessages,
+  },
+};
+
+export const InlineCodeInNarrowChat: Story = {
+  name: "Inline code in narrow chat",
+  render: (storyArgs) => (
+    <section style={{ width: "390px", height: "844px", overflow: "hidden" }}>
+      <MockedConversation args={storyArgs} messages={inlineCodeMessages} />
+    </section>
+  ),
 };
 
 export const DataTableInChat: Story = {
