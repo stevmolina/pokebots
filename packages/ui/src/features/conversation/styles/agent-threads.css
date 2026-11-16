@@ -18,6 +18,8 @@
 /*
  * The agent as a pill at the top centre of the chat: its face, its name, and the open session. "+"
  * after it starts a new session. The pill keeps clear of the actions at both ends of the header.
+ * Centre it with `inset` and `margin: auto`, not `transform`: Electron sets the no-drag area of the
+ * window from layout boxes and ignores transforms, so a moved pill stays under the drag area.
  */
 .conversation-session-pill {
   display: flex;
@@ -32,13 +34,14 @@
 
 .conversation-header[data-session-pill] .conversation-session-pill {
   position: absolute;
-  top: 50%;
-  left: 50%;
+  inset: 0;
   display: flex;
+  width: fit-content;
   max-width: calc(100% - 10 * var(--openbot-space-4));
+  height: fit-content;
   align-items: center;
   gap: var(--openbot-space-1);
-  transform: translate(-50%, -50%);
+  margin: auto;
 }
 
 .conversation-header[data-session-pill] .conversation-title.ui-button {
