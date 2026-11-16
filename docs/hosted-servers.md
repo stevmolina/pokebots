@@ -1129,8 +1129,10 @@ server got the machine in that moment.
 
 A machine of the pool is not the boat image:
 
-- It has no agent CLI for all users (`claude`, `codex`, `pi`) and no `node`. A provider shows that
-  its CLI is not downloaded, and the user downloads it in OpenBot.
+- It has no agent CLI for all users (`claude`, `codex`, `pi`) and no `node`. At its start, OpenBot
+  downloads its own copy of the Claude, Codex, Cursor and Grok CLIs when they are on and missing, so
+  they show ready for sign-in. A failed download shows its error and a Retry. Another provider
+  shows that its CLI is not downloaded, and the user downloads it in OpenBot.
 - It has no Docker and no boat desktop. OpenBot uses its own virtual displays.
 - It shows the storage of a moved server (25, 75 and 150 GB), which is more than the plan table of
   the pricing page.
@@ -1397,8 +1399,9 @@ The VPS is not the same machine as the sandbox:
 
 - The boat image has commands that npm installed for all users (`claude`, `codex` and `pnpm` on
   2026-11-11). The VPS has none. The move copies the agent CLIs that the customer signed in to, and
-  `import` names each other one that is missing. A provider that used a missing command shows that
-  its CLI is not downloaded, and the user downloads it in OpenBot.
+  `import` names each other one that is missing. OpenBot downloads its own copy of the Claude, Codex,
+  Cursor and Grok CLIs at its start when they are missing. Another provider that used a missing
+  command shows that its CLI is not downloaded, and the user downloads it in OpenBot.
 - `prepare` makes only the primary group of `user`, and the VPS has no Docker. `import` names each
   group that `user` had in the sandbox (`docker` and `ascii-streaming-audio` on 2026-11-11). An
   agent of the customer that used Docker does not have it after the move.

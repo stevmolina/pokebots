@@ -499,6 +499,8 @@ const NOTIFICATION_PREFERENCE_FILE = "openbot-notification-preference-v1.json";
 const PUSH_NOTIFICATION_FILE = "openbot-push-notifications-v1.json";
 const BUSY_MESSAGE_MODE_PREFERENCE_FILE = "openbot-busy-message-mode-v1.json";
 const PROVIDER_CLI_APP_VERSION_FILE = "openbot-provider-cli-app-version-v1.json";
+/** The provider CLIs that a server downloads at start when it has none of them. */
+const SERVER_DEFAULT_PROVIDER_CLIS: readonly ManagedProviderId[] = ["claude", "codex", "cursor", "grok"];
 const AGENT_DEFAULTS_PREFERENCE_FILE = "openbot-agent-defaults-v1.json";
 const AGENT_MEMORY_LIMIT_PREFERENCE_FILE = "openbot-agent-memory-limit-v1.json";
 const MEMORY_REVIEW_PREFERENCE_FILE = "openbot-memory-review-v1.json";
@@ -2871,7 +2873,16 @@ export async function createApplicationServices({
    * old, which the user read as uninstalled (#4995). A too-old row has no `cliSource`, as the
    * resolution failed; the download does nothing when the copy in the store is already the newest.
    * A failed download shows its error, and the user can retry it.
+   *
+   * A server (hosted, or self-hosted with `OPENBOT_SERVER=1`, the Docker image included) also
+   * downloads the managed copy of the main provider CLIs that it does not have, so a new server
+   * shows them ready for sign-in and not "Not downloaded". Only a provider that is on and that has
+   * no CLI at all (`not-installed`), once per start: a CLI the user installed resolves and is kept.
+   * The download waits for a disk restore, and a failed download shows its error for a retry.
+   * A desktop and its local server child download nothing here.
    */
+  const downloadsServerDefaultClis = hostedServer !== null || serverModeEnvironment !== null;
+  const startedServerDefaultClis = new Set<ManagedProviderId>();
   const replacedOutdatedSystemClis = new Set<ManagedProviderId>();
   const trackSystemCliVersions = (status: AgentStatus): void => {
     let copyInUse = false;
@@ -2887,6 +2898,25 @@ export async function createApplicationServices({
       ) {
         replacedOutdatedSystemClis.add(provider.id);
         Effect.runFork(providerRuntimes.download(provider.id).pipe(Effect.ignore));
+      }
+      if (
+        downloadsServerDefaultClis &&
+        provider.state === "not-installed" &&
+        SERVER_DEFAULT_PROVIDER_CLIS.includes(provider.id) &&
+        !startedServerDefaultClis.has(provider.id) &&
+        !providerUse.off().includes(provider.id)
+      ) {
+        startedServerDefaultClis.add(provider.id);
+        const download = providerRuntimes
+          .download(provider.id)
+          .pipe(
+            Effect.catch((error) =>
+              Effect.sync(() =>
+                logger.warn(`The ${provider.id} CLI did not download on this server.`, toLogValue(error.cause)),
+              ),
+            ),
+          );
+        Effect.runFork(diskRestoring() ? diskRestoreEnded.pipe(Effect.andThen(download)) : download);
       }
     }
     if (copyInUse) Effect.runFork(providerRuntimes.providerUseChanged());
