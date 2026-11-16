@@ -231,10 +231,141 @@ export const LITERAL_RULES: readonly LiteralRule[] = [
     find: "`From: OpenBot <",
     replace: (name) => `\`From: ${name} <`,
   },
+  // The included models in the provider lists, and the version names in Settings > Updates.
+  {
+    file: "packages/contracts/src/agent-providers.ts",
+    find: '"Included with OpenBot"',
+    replace: (name) => JSON.stringify(`Included with ${name}`),
+  },
+  {
+    file: "src/renderer/src/features/onboarding/SetupProviderPicker.tsx",
+    find: 'const INCLUDED_DESCRIPTION = "Included with OpenBot";',
+    replace: (name) => `const INCLUDED_DESCRIPTION = ${JSON.stringify(`Included with ${name}`)};`,
+  },
+  {
+    file: "packages/ui/src/features/settings/stores/updates-store.ts",
+    find: "`OpenBot v${",
+    replace: (name) => `\`${name} v\${`,
+  },
+  // The agent share card: its button and its site.
+  {
+    file: "src/renderer/src/features/agent-templates/agent-template-card.tsx",
+    find: 'const label = "Add to OpenBot";',
+    replace: (name) => `const label = ${JSON.stringify(`Add to ${name}`)};`,
+  },
+  {
+    file: "src/renderer/src/features/agent-templates/agent-template-card.tsx",
+    find: 'context.fillText("openbot.run",',
+    replace: (name) => `context.fillText(${JSON.stringify(name === "Pokebots" ? "pokebots.xyz" : "openbot.run")},`,
+  },
+  // Server names: the name a new server takes, and the name of a server that has none.
+  {
+    file: "src/renderer/src/features/server-setup/ServerSetupScreen.tsx",
+    find: 'const PRODUCT_NAME = "OpenBot";',
+    replace: (name) => `const PRODUCT_NAME = ${JSON.stringify(name)};`,
+  },
+  {
+    file: "src/renderer/src/features/server-setup/ServerSetupScreen.tsx",
+    find: 'const DEFAULT_SERVER_NAME = "OpenBot";',
+    replace: (name) => `const DEFAULT_SERVER_NAME = ${JSON.stringify(name)};`,
+  },
+  {
+    file: "src/renderer/src/features/servers/server-settings.tsx",
+    find: 'const FALLBACK_SERVER_NAME = "OpenBot";',
+    replace: (name) => `const FALLBACK_SERVER_NAME = ${JSON.stringify(name)};`,
+  },
+  {
+    file: "src/main/server-mode.ts",
+    find: 'const DEFAULT_SERVER_NAME = "OpenBot";',
+    replace: (name) => `const DEFAULT_SERVER_NAME = ${JSON.stringify(name)};`,
+  },
+  {
+    file: "src/main/host-service.ts",
+    find: '{ serverName: "OpenBot" }',
+    replace: (name) => `{ serverName: ${JSON.stringify(name)} }`,
+  },
+  {
+    file: "src/main/mobile-connect-host.ts",
+    find: '{ serverName: "OpenBot" }',
+    replace: (name) => `{ serverName: ${JSON.stringify(name)} }`,
+  },
+  // Other names in the desktop and web views.
+  {
+    file: "src/renderer/src/features/web-client/WebPhoneAppScreen.tsx",
+    find: 'const PRODUCT_NAME = "OpenBot";',
+    replace: (name) => `const PRODUCT_NAME = ${JSON.stringify(name)};`,
+  },
+  {
+    file: "src/renderer/src/platform.tsx",
+    find: 'name: "OpenBot",',
+    replace: (name) => `name: ${JSON.stringify(name)},`,
+  },
+  {
+    file: "src/renderer/src/features/servers/ServerDesktopPanel.tsx",
+    find: 'const REMOTE_HOST_GATEWAY_NAME = "OpenBot Remote Host Gateway";',
+    replace: (name) => `const REMOTE_HOST_GATEWAY_NAME = ${JSON.stringify(`${name} Remote Host Gateway`)};`,
+  },
+  {
+    file: "packages/ui/src/user-avatar.tsx",
+    find: '|| "OpenBot";',
+    replace: (name) => `|| ${JSON.stringify(name)};`,
+  },
+  {
+    file: "src/renderer/src/features/web-client/connection-log.ts",
+    find: '"OpenBot web connection log"',
+    replace: (name) => JSON.stringify(`${name} web connection log`),
+  },
+  {
+    file: "packages/contracts/src/ipc-mcp-servers.ts",
+    find: "`OpenBot already uses the name ",
+    replace: (name) => `\`${name} already uses the name `,
+  },
+  {
+    file: "src/renderer/src/features/provider-updates/provider-runtime-store.ts",
+    find: `"OpenBot does not manage this provider's CLI."`,
+    replace: (name) => JSON.stringify(`${name} does not manage this provider's CLI.`),
+  },
+  {
+    file: "src/main/ipc/provider-handlers.ts",
+    find: `"OpenBot does not manage this provider's CLI."`,
+    replace: (name) => JSON.stringify(`${name} does not manage this provider's CLI.`),
+  },
+  // The names of the backup and diagnostics files that Settings saves.
+  {
+    file: "src/main/maintenance-service.ts",
+    find: "`OpenBot-",
+    replace: (name) => `\`${name}-`,
+  },
+  // The toasts that ask the user to follow OpenBot on social networks and to star it on GitHub: a
+  // branded build never shows them.
+  {
+    file: "src/renderer/src/features/conversation/social-follow-prompt.tsx",
+    find: "const MAX_SHOWS = RETRY_DAYS.length + 1;",
+    replace: () => "const MAX_SHOWS = 0;",
+  },
+  {
+    file: "src/renderer/src/features/conversation/github-star-prompt.tsx",
+    find: "export function noteAgentMessageSent(): void {",
+    replace: () => "export function noteAgentMessageSent(): void {\n  return;",
+  },
 ];
 
-/** Modules outside the catalogs whose string values are all branded: the email that the Worker sends. */
-export const BRANDED_MODULES: readonly string[] = ["apps/auth-api/src/server/email-templates.ts"];
+/**
+ * Modules outside the catalogs whose string values are all branded: the email that the Worker sends,
+ * the errors of shared links, and plugin descriptions. Their only "OpenBot" strings are text that a
+ * reader sees, never a path, a header or an identifier.
+ */
+export const BRANDED_MODULES: readonly string[] = [
+  "apps/auth-api/src/server/email-templates.ts",
+  "packages/contracts/src/invite-links.ts",
+  "packages/contracts/src/marketplace-links.ts",
+  "packages/contracts/src/plugin-links.ts",
+  "packages/contracts/src/agent-template-links.ts",
+  "src/renderer/src/features/settings/marketplace-plugin-catalog.ts",
+];
+
+/** The release notes of the What's New dialog. Their string values are branded as catalog values are. */
+export const BRANDED_JSON: readonly string[] = ["src/renderer/src/features/updates/whats-new-releases.json"];
 
 const CATALOG_DIRECTORY = "packages/i18n/src/messages/";
 
@@ -253,7 +384,7 @@ export interface BrandTransformResult {
 
 /** The branded source of one module, or null when the brand layer does not change it. */
 export function brandModule(path: string, code: string, settings: BrandSettings): BrandTransformResult | null {
-  if (path.startsWith(CATALOG_DIRECTORY) && path.endsWith(".ts")) {
+  if ((path.startsWith(CATALOG_DIRECTORY) && path.endsWith(".ts")) || BRANDED_JSON.includes(path)) {
     const result = brandStringValues(code, (text) => brandText(text, settings.name));
     return result.changed === 0 ? null : { code: result.code, missing: [] };
   }
