@@ -6,6 +6,7 @@ import type { Meta, StoryObj } from "storybook-solidjs-vite";
 function SelectionActionsDemo(props: {
   onSend?: (messageId: string, body: string) => Promise<boolean>;
   width?: string;
+  withQuote?: boolean;
 }) {
   const [selection, setSelection] = createSignal<MessageTextSelection | null>(null);
   let text: HTMLSpanElement | undefined;
@@ -42,6 +43,8 @@ function SelectionActionsDemo(props: {
             fallbackHighlight
             onDismiss={fn()}
             onSend={props.onSend ?? fn().mockResolvedValue(true)}
+            onQuote={props.withQuote ? fn() : undefined}
+            quoteShortcut="meta"
           />
         )}
       </Show>
@@ -65,4 +68,8 @@ export const Narrow: Story = {
   parameters: {
     viewport: { defaultViewport: "mobile2" },
   },
+};
+
+export const WithAddToChat: Story = {
+  args: { withQuote: true },
 };

@@ -403,7 +403,7 @@ export const messages = {
   "chat.selection.describe": "说明改动",
   "chat.selection.explain": "解释",
   "chat.selection.improve": "优化",
-  "chat.selection.quote": "引用",
+  "chat.selection.quote": "添加到聊天",
   "chat.selection.quoteShortcutMac": "⌘⇧.",
   "chat.selection.quoteShortcutOther": "Ctrl+Shift+.",
   "chat.selection.shorten": "精简",

@@ -398,7 +398,7 @@ export const messages = {
   "chat.selection.describe": "編集内容を説明してください",
   "chat.selection.explain": "説明",
   "chat.selection.improve": "改善",
-  "chat.selection.quote": "引用",
+  "chat.selection.quote": "チャットに追加",
   "chat.selection.quoteShortcutMac": "⌘⇧.",
   "chat.selection.quoteShortcutOther": "Ctrl+Shift+.",
   "chat.selection.shorten": "短縮",

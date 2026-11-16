@@ -421,7 +421,7 @@ export const messages = {
   "chat.selection.describe": "Düzenlemeleri açıkla",
   "chat.selection.explain": "Açıkla",
   "chat.selection.improve": "İyileştir",
-  "chat.selection.quote": "Alıntıla",
+  "chat.selection.quote": "Sohbete ekle",
   "chat.selection.quoteShortcutMac": "⌘⇧.",
   "chat.selection.quoteShortcutOther": "Ctrl+Shift+.",
   "chat.selection.shorten": "Kısalt",

@@ -420,7 +420,7 @@ export const messages = {
   "chat.selection.describe": "תיאור עריכות",
   "chat.selection.explain": "הסבר",
   "chat.selection.improve": "שיפור",
-  "chat.selection.quote": "ציטוט",
+  "chat.selection.quote": "הוספה לצ'אט",
   "chat.selection.quoteShortcutMac": "⌘⇧.",
   "chat.selection.quoteShortcutOther": "Ctrl+Shift+.",
   "chat.selection.shorten": "קיצור",

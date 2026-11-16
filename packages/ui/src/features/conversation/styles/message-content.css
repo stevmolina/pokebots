@@ -453,6 +453,14 @@
   width: 28px;
 }
 
+.selection-actions-shortcut {
+  height: 18px;
+  margin-inline-start: 4px;
+  border-color: transparent;
+  background: var(--openbot-bg-control-hover);
+  font-family: var(--openbot-font-sans);
+}
+
 .selection-actions-icon-button {
   background: transparent;
   color: var(--openbot-text-secondary);
@@ -574,6 +582,10 @@
   .selection-actions-control {
     width: 28px;
     padding: 0;
+  }
+
+  .selection-actions-shortcut {
+    display: none;
   }
 
   .selection-actions-label {
