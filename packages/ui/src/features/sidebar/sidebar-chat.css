@@ -308,12 +308,15 @@
   background: var(--openbot-bg-control-active);
 }
 
+/* One cell the size of the box. A cell sized to its content grows with the face, which draws past
+   the box, and the face then hangs down to the edge of the row. */
 .sidebar-chat-avatar {
   position: relative;
   display: grid;
   width: var(--sidebar-chat-face);
   height: var(--sidebar-chat-face);
   flex: none;
+  grid-template: 100% / 100%;
   place-items: center;
 }
 
