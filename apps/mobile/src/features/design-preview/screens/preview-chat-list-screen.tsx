@@ -202,7 +202,11 @@ export function PreviewChatListScreen() {
             position: "absolute",
             left: 0,
             right: 0,
-            bottom: size.bottomBarBottom + size.searchHeight + size.unreadPillGap,
+            // The pill points the way to the next unread chat: over the bottom bar when it is below,
+            // under the header when it is above, as in the reference.
+            ...(unread.down
+              ? { bottom: size.bottomBarBottom + size.searchHeight + size.unreadPillGap }
+              : { top: insets.top + size.unreadPillTopGap }),
             alignItems: "center",
           }}
         >

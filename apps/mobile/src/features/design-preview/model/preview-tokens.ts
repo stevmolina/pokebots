@@ -97,6 +97,8 @@ export const previewSize = {
   /** The floating unread pill: 38 pt high, its bottom 49 pt over the bottom bar. */
   unreadPillHeight: 38,
   unreadPillGap: 49,
+  /** When the next unread chat is above, the pill sits 74 pt under the safe-area top instead. */
+  unreadPillTopGap: 74,
   /** Bottom bar: 47 pt grid circle and 48 pt search capsule, 28 pt from the sides, 12 pt apart. */
   bottomBarInset: 28,
   bottomBarGap: 12,
