@@ -12,7 +12,7 @@ import {
 import { createScrollFades } from "@openbot/ui/components/createScrollFades";
 import { sidebarMessageTime } from "@openbot/ui/features/sidebar/sidebar-filtering";
 import { useText } from "@openbot/ui/text";
-import { For, onSettled, Show } from "solid-js";
+import { createMemo, For, onSettled, Show } from "solid-js";
 import { ThreadStatusMark, ThreadStatusText, ThreadTabIcon, threadAttention } from "./ThreadStatusMark";
 import { ThreadTitle } from "./ThreadTitle";
 import type { ThreadHeaderProps, ThreadRowMode } from "./thread-types";
@@ -121,65 +121,120 @@ function ThreadMenuTrigger(props: ThreadHeaderProps & { mode: ThreadRowMode }) {
   );
 }
 
-/** Every side thread of the agent. A thread without a tab opens in a new tab. */
-export function ThreadMenu(props: ThreadHeaderProps & { mode: ThreadRowMode }) {
+/** The actions of the menu: a new thread, and on a phone also the pins and the side panel. */
+function ThreadMenuActions(props: ThreadHeaderProps) {
+  const { t } = useText();
+  return (
+    <>
+      <DropdownMenu.Item disabled={!props.canStartNew} onSelectAfterClose={props.onNew}>
+        <MessageCirclePlus aria-hidden="true" />
+        {t("conversation.threads.new")}
+      </DropdownMenu.Item>
+      <Show when={props.phoneActions?.onOpenPins}>
+        {(openPins) => (
+          <DropdownMenu.Item onSelectAfterClose={openPins()}>
+            <Pin aria-hidden="true" />
+            {t("chat.pins.title")}
+          </DropdownMenu.Item>
+        )}
+      </Show>
+      <Show when={props.phoneActions?.onToggleSidePanel}>
+        {(togglePanel) => (
+          <DropdownMenu.Item onSelectAfterClose={togglePanel()}>
+            <PanelRight aria-hidden="true" />
+            {t(props.phoneActions?.sidePanelOpen ? "conversation.sidePanel.close" : "conversation.sidePanel.open")}
+          </DropdownMenu.Item>
+        )}
+      </Show>
+    </>
+  );
+}
+
+/** The archived threads, in a submenu. Opening an archived thread restores it. */
+function ThreadMenuArchived(props: ThreadHeaderProps) {
   const { t, format } = useText();
   return (
-    <DropdownMenu.Root placement="bottom-start" gutter={4}>
+    <DropdownMenu.Sub>
+      <DropdownMenu.SubTrigger>
+        <Archive class="agent-context-icon size-4" aria-hidden="true" />
+        <span>{t("conversation.threads.archived")}</span>
+        <ChevronRight class="agent-context-submenu-chevron size-4" aria-hidden="true" />
+      </DropdownMenu.SubTrigger>
+      <DropdownMenu.Portal>
+        <DropdownMenu.SubContent class="ui-action-menu agent-context-menu agent-context-submenu agent-threads-archived">
+          <For each={props.archived}>
+            {(thread) => (
+              <DropdownMenu.Item class="agent-threads-menu-item" onSelectAfterClose={() => props.onRestore(thread.id)}>
+                <ThreadTitle class="agent-threads-menu-title" title={thread.title} />
+                <span class="agent-threads-menu-time ui-menu-trailing">
+                  {sidebarMessageTime(thread.updatedAt, format)}
+                </span>
+              </DropdownMenu.Item>
+            )}
+          </For>
+        </DropdownMenu.SubContent>
+      </DropdownMenu.Portal>
+    </DropdownMenu.Sub>
+  );
+}
+
+/** The bottom edge of the screen, full width: the sheet stands on it. */
+function screenBottomEdge() {
+  const root = document.documentElement;
+  return { x: 0, y: root.clientHeight, width: root.clientWidth, height: 0 };
+}
+
+/**
+ * Every side thread of the agent. A thread without a tab opens in a new tab. On a phone the menu is a
+ * sheet at the bottom of the screen: the threads come first, in reach of the thumb, and the actions
+ * follow in one group.
+ */
+export function ThreadMenu(props: ThreadHeaderProps & { mode: ThreadRowMode }) {
+  const { t } = useText();
+  // A memo: the menu reads it inside its own effects, where reading the header props is not allowed.
+  const sheet = createMemo(() => props.phoneActions !== undefined);
+  return (
+    <DropdownMenu.Root
+      placement={sheet() ? "top" : "bottom-start"}
+      gutter={sheet() ? 0 : 4}
+      sameWidth={sheet()}
+      flip={!sheet()}
+      overflowPadding={sheet() ? 0 : 8}
+      getAnchorRect={(anchor) => (sheet() ? screenBottomEdge() : anchor?.getBoundingClientRect())}
+    >
       <ThreadMenuTrigger {...props} />
       <DropdownMenu.Portal>
-        <DropdownMenu.Content class="agent-threads-menu">
-          <DropdownMenu.Item disabled={!props.canStartNew} onSelectAfterClose={props.onNew}>
-            <MessageCirclePlus aria-hidden="true" />
-            {t("conversation.threads.new")}
-          </DropdownMenu.Item>
-          <Show when={props.phoneActions?.onOpenPins}>
-            {(openPins) => (
-              <DropdownMenu.Item onSelectAfterClose={openPins()}>
-                <Pin aria-hidden="true" />
-                {t("chat.pins.title")}
-              </DropdownMenu.Item>
-            )}
-          </Show>
-          <Show when={props.phoneActions?.onToggleSidePanel}>
-            {(togglePanel) => (
-              <DropdownMenu.Item onSelectAfterClose={togglePanel()}>
-                <PanelRight aria-hidden="true" />
-                {t(props.phoneActions?.sidePanelOpen ? "conversation.sidePanel.close" : "conversation.sidePanel.open")}
-              </DropdownMenu.Item>
-            )}
-          </Show>
-          <Show when={props.threads.length > 0}>
-            <DropdownMenu.Separator />
-            <ThreadMenuList {...props} />
-          </Show>
-          <Show when={props.archived.length > 0}>
-            <DropdownMenu.Separator />
-            <DropdownMenu.Sub>
-              <DropdownMenu.SubTrigger>
-                <Archive class="agent-context-icon size-4" aria-hidden="true" />
-                <span>{t("conversation.threads.archived")}</span>
-                <ChevronRight class="agent-context-submenu-chevron size-4" aria-hidden="true" />
-              </DropdownMenu.SubTrigger>
-              <DropdownMenu.Portal>
-                <DropdownMenu.SubContent class="ui-action-menu agent-context-menu agent-context-submenu agent-threads-archived">
-                  {/* Opening an archived thread restores it. */}
-                  <For each={props.archived}>
-                    {(thread) => (
-                      <DropdownMenu.Item
-                        class="agent-threads-menu-item"
-                        onSelectAfterClose={() => props.onRestore(thread.id)}
-                      >
-                        <ThreadTitle class="agent-threads-menu-title" title={thread.title} />
-                        <span class="agent-threads-menu-time ui-menu-trailing">
-                          {sidebarMessageTime(thread.updatedAt, format)}
-                        </span>
-                      </DropdownMenu.Item>
-                    )}
-                  </For>
-                </DropdownMenu.SubContent>
-              </DropdownMenu.Portal>
-            </DropdownMenu.Sub>
+        <DropdownMenu.Content class={sheet() ? "agent-threads-menu agent-threads-sheet" : "agent-threads-menu"}>
+          <Show
+            when={sheet()}
+            fallback={
+              <>
+                <ThreadMenuActions {...props} />
+                <Show when={props.threads.length > 0}>
+                  <DropdownMenu.Separator />
+                  <ThreadMenuList {...props} />
+                </Show>
+                <Show when={props.archived.length > 0}>
+                  <DropdownMenu.Separator />
+                  <ThreadMenuArchived {...props} />
+                </Show>
+              </>
+            }
+          >
+            <span class="agent-threads-sheet-handle" aria-hidden="true" />
+            <Show when={props.threads.length > 0}>
+              {/* A heading for the eye; the menu items already name each thread. */}
+              <div class="agent-threads-sheet-title" aria-hidden="true">
+                {t("conversation.threads.all")}
+              </div>
+              <ThreadMenuList {...props} />
+            </Show>
+            <div class="agent-threads-sheet-group">
+              <ThreadMenuActions {...props} />
+              <Show when={props.archived.length > 0}>
+                <ThreadMenuArchived {...props} />
+              </Show>
+            </div>
           </Show>
         </DropdownMenu.Content>
       </DropdownMenu.Portal>
