@@ -9,6 +9,7 @@ import { createEffect, createMemo, createSignal, flush, onSettled, untrack } fro
 import { actionToast } from "../../action-toast";
 import { FALLBACK_HOST_STATUS } from "../../app-defaults";
 import { createSimpleContext } from "../../simple-context";
+import { statusAlertsShown } from "../updates/status-alerts";
 import {
   olderAppSide,
   remoteUpdateServer,
@@ -199,6 +200,7 @@ const Servers = createSimpleContext({
         const compatibility = server.compatibility;
         const canUpdate = remoteUpdateServer(server);
         if (
+          statusAlertsShown() &&
           server.kind === "remote" &&
           sequence > previousSequence &&
           compatibility?.hostAppVersion &&

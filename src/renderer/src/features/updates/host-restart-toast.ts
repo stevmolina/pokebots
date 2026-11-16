@@ -1,6 +1,7 @@
 import { toast } from "@openbot/ui";
 import { currentText } from "@openbot/ui/text";
 import { type Accessor, createEffect, createSignal, onCleanup } from "solid-js";
+import { statusAlertsShown } from "./status-alerts";
 
 export interface HostRestartView {
   id: string;
@@ -67,6 +68,7 @@ export function holdHostRestartNotice(serverId: string): () => void {
  * connection notice reports that drop.
  */
 export function createHostRestartToasts(hosts: Accessor<readonly HostRestartView[]>): void {
+  if (!statusAlertsShown()) return;
   const phases = new Map<string, Phase>();
   const expiries = new Map<string, ReturnType<typeof setTimeout>>();
   const stopExpiry = (id: string) => {

@@ -275,9 +275,10 @@ write_status() {
     "$status" "$commit" "${message//\"/\'}" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" >"$state/status.json"
 }
 
+# Steven asked for no update alerts, so a result goes only to the log and the status file.
+# `custom-auto-update-setup.sh --status` shows it.
 notify() {
-  local text="${1//\"/\'}"
-  osascript -e "display notification \"$text\" with title \"Pokebots\"" >/dev/null 2>&1 || true
+  say "$1"
 }
 
 main "$@"

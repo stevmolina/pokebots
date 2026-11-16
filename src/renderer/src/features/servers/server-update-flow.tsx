@@ -12,6 +12,7 @@ import { restartReasonKey } from "@openbot/ui/features/updates/restart-reasons";
 import { currentText } from "@openbot/ui/text";
 import { createEffect, createRoot, createSignal, createStore, onSettled, untrack } from "solid-js";
 import type { HostRestartView } from "../updates/host-restart-toast";
+import { statusAlertsShown } from "../updates/status-alerts";
 import type { HostUpdateCalls } from "./ServerUpdatePanel";
 
 /**
@@ -153,7 +154,7 @@ export async function checkServerUpdate(target: ServerUpdateTarget): Promise<voi
  */
 export async function offerServerUpdate(target: ServerUpdateTarget | null): Promise<void> {
   entered = target?.serverId ?? null;
-  if (!target) return;
+  if (!target || !statusAlertsShown()) return;
   const id = target.serverId;
   // A running update keeps its notice and the header button.
   if (runtimes.has(id)) return;
