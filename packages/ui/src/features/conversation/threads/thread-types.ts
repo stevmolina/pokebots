@@ -1,4 +1,5 @@
 import type { AgentProfile } from "@openbot/ui/data";
+import type { SidePanelToggleProps } from "@openbot/ui/features/conversation/SidePanel";
 import type { SidebarWaitReason } from "@openbot/ui/features/sidebar/sidebar-types";
 
 /** What the agent does in a thread, as a sidebar row shows it for the agent. */
@@ -54,14 +55,28 @@ export interface ThreadStem {
 export type ThreadRowMode = "tabs" | "compact" | "minimal";
 
 /**
- * The header actions a phone keeps in the thread menu. Each one is missing when that action does
- * not apply, such as pins on a host that has none, or the side panel of a read-only channel.
+ * The header actions that the thread menu keeps, on a phone and in a desktop header. Each one is
+ * missing when that action does not apply, such as pins on a host that has none, or the side panel
+ * of a read-only channel.
  */
 export interface ThreadPhoneActions {
   onOpenPins?: (() => void) | undefined;
   onToggleSidePanel?: (() => void) | undefined;
   /** The side panel is open, so the menu item closes it. */
   sidePanelOpen?: boolean | undefined;
+  /** Opens the remote desktop of a joined server. The menu button is the element the window opens from. */
+  onOpenRemote?: ((trigger: HTMLElement) => void) | undefined;
+  /** The remote desktop can open: the server is online, or a session runs. */
+  remoteEnabled?: boolean | undefined;
+  /** A remote desktop session runs. The item resumes it, and the menu button has a dot. */
+  remoteActive?: boolean | undefined;
+  /** A desktop header shows the side panel button next to the "More" button, so the menu does not list it. */
+  sidePanel?: SidePanelToggleProps | undefined;
+  /**
+   * A desktop header. The menu button is at the end of the header, and a narrow header keeps the open
+   * thread as the menu button, as it does without these actions.
+   */
+  desktop?: boolean | undefined;
 }
 
 /** A turn runs in the thread. The user stops it before an archive or a delete. */
@@ -101,8 +116,9 @@ export interface ThreadHeaderProps {
   /** Opens a side thread in the side panel. Missing when the chat has no side panel. */
   onMoveToSide?: ((id: string) => void) | undefined;
   /**
-   * Set on a phone. The header then keeps this menu and hides New thread, the pin, and the side
-   * panel button. The menu opens those actions. Missing on a wide window, which keeps the buttons.
+   * The header actions in this menu. A phone header then hides New thread, the pin, and the side panel
+   * button. A desktop header keeps "+" after the tabs and has no other button: the menu opens the pins,
+   * the side panel, and the remote desktop.
    */
   phoneActions?: ThreadPhoneActions | undefined;
   /**

@@ -53,6 +53,8 @@ interface HeaderFixture {
   /** A host with `agent-tasks-v1` only cannot rename or delete a thread. */
   editable?: boolean;
   narrow?: boolean;
+  /** The desktop header with its actions in the thread menu, and the model picker in the message box. */
+  actionsMenu?: "idle" | "remote";
 }
 
 /** The chat header with a thread row whose actions change a local copy of the threads. */
@@ -111,16 +113,21 @@ function ThreadHeaderStory(props: HeaderFixture) {
         onSettingsIntent={fn()}
         onOpenSettings={fn()}
         onOpenChat={state.active === MAIN_THREAD_ID ? undefined : () => open(MAIN_THREAD_ID)}
-        modelPicker={{
-          provider: storyRuntimeSettings(STORY_AGENT).provider,
-          value: STORY_AGENT.model,
-          reasoningEffort: STORY_AGENT.reasoningEffort,
-          modelOptions: STORY_MODELS,
-          agentStatus: STORY_AGENT_STATUS,
-          onChange: fn(),
-          onReasoningEffortChange: fn(),
-        }}
-        sidePanel={{ open: false, onToggle: fn() }}
+        actionsMenu={props.actionsMenu !== undefined}
+        modelPicker={
+          props.actionsMenu
+            ? undefined
+            : {
+                provider: storyRuntimeSettings(STORY_AGENT).provider,
+                value: STORY_AGENT.model,
+                reasoningEffort: STORY_AGENT.reasoningEffort,
+                modelOptions: STORY_MODELS,
+                agentStatus: STORY_AGENT_STATUS,
+                onChange: fn(),
+                onReasoningEffortChange: fn(),
+              }
+        }
+        sidePanel={props.actionsMenu ? undefined : { open: false, onToggle: fn() }}
         threads={
           <ThreadHeader
             threads={state.threads}
@@ -169,6 +176,18 @@ function ThreadHeaderStory(props: HeaderFixture) {
             }}
             onRename={rename}
             onDelete={remove}
+            phoneActions={
+              props.actionsMenu
+                ? {
+                    onOpenPins: fn(),
+                    sidePanel: { open: false, onToggle: fn() },
+                    onOpenRemote: fn(),
+                    remoteEnabled: true,
+                    remoteActive: props.actionsMenu === "remote",
+                    desktop: true,
+                  }
+                : undefined
+            }
           />
         }
       />
@@ -215,4 +234,18 @@ export const AtLimit: Story = {
 /** A narrow window: the tabs become one button with the open thread. */
 export const Narrow: Story = {
   render: () => <ThreadHeaderStory threads={STATES} open={["pricing", "competitors"]} active="pricing" narrow />,
+};
+
+/** The desktop header: the tabs, "+" after them, and one "More" menu with the pins, the side panel and the remote desktop. */
+export const ActionsMenu: Story = {
+  render: () => (
+    <ThreadHeaderStory threads={STATES} open={["pricing", "competitors"]} active="pricing" actionsMenu="idle" />
+  ),
+};
+
+/** A remote desktop session runs: the "More" button has a dot. */
+export const ActionsMenuRemoteActive: Story = {
+  render: () => (
+    <ThreadHeaderStory threads={STATES} open={["pricing", "competitors"]} active="pricing" actionsMenu="remote" />
+  ),
 };

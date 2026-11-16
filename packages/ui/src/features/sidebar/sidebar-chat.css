@@ -308,12 +308,15 @@
   background: var(--openbot-bg-control-active);
 }
 
+/* One cell the size of the box. A cell sized to its content grows with the face, which draws past
+   the box, and the face then hangs down to the edge of the row. */
 .sidebar-chat-avatar {
   position: relative;
   display: grid;
   width: var(--sidebar-chat-face);
   height: var(--sidebar-chat-face);
   flex: none;
+  grid-template: 100% / 100%;
   place-items: center;
 }
 
@@ -355,21 +358,6 @@
 .sidebar-chat-tip .sidebar-chat-preview-wait {
   color: var(--openbot-warning-text);
   font-weight: var(--openbot-weight-medium);
-}
-
-/* A finished agent in "Working": a quieter name, and a check mark before "done 4 min ago". The preview
-   keeps the secondary color, as the muted one fails contrast here. */
-.sidebar-chat-done .sidebar-chat-name {
-  color: var(--openbot-text-secondary);
-  font-weight: var(--openbot-weight-medium);
-}
-
-.sidebar-chat-done-check {
-  display: inline-block;
-  width: var(--openbot-icon-xs);
-  height: var(--openbot-icon-xs);
-  margin-inline-end: 4px;
-  vertical-align: -2px;
 }
 
 .sidebar-chat-unread {

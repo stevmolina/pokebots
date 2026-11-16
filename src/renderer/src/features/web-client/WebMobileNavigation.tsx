@@ -1,4 +1,4 @@
-import { Button, ChevronLeft, LayoutGrid, Search } from "@openbot/ui";
+import { Button, ChevronLeft, Input, LayoutGrid, Search, X } from "@openbot/ui";
 import { useText } from "@openbot/ui/text";
 import { Show } from "solid-js";
 
@@ -14,20 +14,30 @@ export type WebPhoneTab = "chats" | "tasks" | "workflows" | "settings";
 interface WebMobileNavigationProps {
   /** Opens the app catalog from the round grid button. Absent while it cannot open. */
   onOpenApps?: (() => void) | undefined;
-  /** Opens global search from the wide search field. */
-  onOpenSearch?: (() => void) | undefined;
+  /** The search field shows its results in place of the chat list. */
+  searching: boolean;
+  searchQuery: string;
+  /** The search field took focus: the results show. */
+  onOpenSearch: () => void;
+  onSearchQuery: (query: string) => void;
+  /** The round X button or Escape: the results go and the chat list shows again. */
+  onCloseSearch: () => void;
 }
 
 /**
  * The bottom bar of the phone home: a round apps button and a wide search field, floating over the
  * chat list. The profile photo and New sit in the top corners of the list itself. The bar sits under
  * the conversation pane, so a chat that opens covers it, and a swipe back shows it again.
+ *
+ * The search pill is a real text field, not a button that opens a sheet: the tap that focuses it also
+ * opens the keyboard, and the results show in place of the list. While it searches, the apps button
+ * goes and a round X button at the end closes the search.
  */
 export function WebMobileNavigation(props: WebMobileNavigationProps) {
   const { t } = useText();
   return (
     <nav class="web-phone-tab-bar" aria-label={t("webClient.pane.navigation")}>
-      <Show when={props.onOpenApps}>
+      <Show when={!props.searching && props.onOpenApps}>
         {(open) => (
           <Button
             variant="ghost"
@@ -40,16 +50,42 @@ export function WebMobileNavigation(props: WebMobileNavigationProps) {
           </Button>
         )}
       </Show>
-      <Button
-        variant="ghost"
-        type="button"
-        class="web-phone-search-pill"
-        aria-label={t("sidebar.chat.search")}
-        onClick={() => props.onOpenSearch?.()}
-      >
+      <div class="web-phone-search-pill" data-searching={props.searching ? "" : undefined}>
         <Search aria-hidden="true" />
-        <span class="web-phone-tab-label">{t("sidebar.chat.search")}</span>
-      </Button>
+        <Input
+          type="search"
+          class="web-phone-search-input"
+          aria-label={t("sidebar.chat.search")}
+          placeholder={t("sidebar.chat.search")}
+          autocomplete="off"
+          autocapitalize="off"
+          spellcheck={false}
+          enterkeyhint="search"
+          value={props.searchQuery}
+          onValueChange={props.onSearchQuery}
+          onFocus={() => props.onOpenSearch()}
+          onKeyDown={(event) => {
+            if (event.key === "Escape") {
+              event.preventDefault();
+              props.onCloseSearch();
+            } else if (event.key === "Enter") {
+              // The keyboard goes down, so the whole list of results shows.
+              event.currentTarget.blur();
+            }
+          }}
+        />
+      </div>
+      <Show when={props.searching}>
+        <Button
+          variant="ghost"
+          type="button"
+          class="web-phone-search-close"
+          aria-label={t("common.close")}
+          onClick={() => props.onCloseSearch()}
+        >
+          <X aria-hidden="true" />
+        </Button>
+      </Show>
     </nav>
   );
 }

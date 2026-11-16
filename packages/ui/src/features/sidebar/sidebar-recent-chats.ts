@@ -38,38 +38,6 @@ export function sidebarRecentChats(
   return timed.sort((left, right) => right.at - left.at || left.index - right.index).map((entry) => entry.item);
 }
 
-/** A finished agent stays in "Working" for 6 hours after its last activity. */
-export const SIDEBAR_DONE_KEEP_MS = 6 * 60 * 60_000;
-/** "Working" shows at most 5 finished agents. */
-export const SIDEBAR_DONE_MAX = 5;
-
-/** An agent that finished recently, and the time of its last activity in milliseconds. */
-export interface SidebarDoneChat {
-  chat: SidebarChatItem;
-  doneAt: number;
-}
-
-/**
- * The agents that finished recently, newest first: those of `candidates` (the agents that neither
- * work nor wait) whose last activity is less than 6 hours before `now`, at most 5. It reads only the
- * last activity of the agent and its threads, so it is the same after a restart and on a joined server.
- */
-export function sidebarRecentlyDone(
-  candidates: readonly SidebarChatItem[],
-  threads: readonly SidebarThreadEntry[],
-  now: number,
-): SidebarDoneChat[] {
-  const threadTimes = threadTimesOf(threads);
-  return candidates
-    .flatMap((chat) => {
-      if (chat.kind !== "agent") return [];
-      const doneAt = chatTime(chat, threadTimes);
-      return doneAt > 0 && now - doneAt < SIDEBAR_DONE_KEEP_MS ? [{ chat, doneAt }] : [];
-    })
-    .sort((left, right) => right.doneAt - left.doneAt)
-    .slice(0, SIDEBAR_DONE_MAX);
-}
-
 /** What an agent waits for, and the thread that the user answers it in. */
 export interface SidebarAgentWait {
   state: Extract<SidebarAgentState, { kind: "waiting" }>;
