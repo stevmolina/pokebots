@@ -62,6 +62,10 @@ export const messages = {
   "mobile.agent.menu.unmute": "ביטול השתקה",
   "mobile.agent.menu.hide": "הסתרה",
   "mobile.agent.menu.info": "מידע",
+  "mobile.agent.profile.edit": "עריכה",
+  "mobile.agent.profile.library": "ספרייה",
+  "mobile.agent.profile.computer": "מחשב",
+  "mobile.agent.profile.notificationsFooter": "קבלו התראה כשהסוכן מסיים או מחכה לכם. רק עבורכם, בכל המכשירים שלכם.",
   "mobile.agent.menu.more": "עוד",
   "mobile.agent.menu.copyId": "העתקת ID",
   "mobile.agent.menu.duplicate": "שכפול",
@@ -396,7 +400,6 @@ export const messages = {
   "mobile.agent.notificationLevel.title": "לשלוח לי התראות על",
   "mobile.agent.notificationLevel.server": "הגדרת השרת",
   "mobile.agent.notificationLevel.serverValue": "הגדרת השרת ({level})",
-  "mobile.agent.notificationLevel.footer": "ההגדרה ״לשלוח לי התראות על״ היא רק עבורך וחלה בכל ההתקנים שלך.",
   "mobile.agent.notificationLevel.unsupported":
     "השרת הזה לא יכול לשמור רמת התראות אישית שלך עבור סוכן. יש לעדכן את OpenBot במחשב שמריץ אותו.",
   "mobile.agent.newChat.title": "צ'אט חדש",

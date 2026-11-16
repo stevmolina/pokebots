@@ -1,0 +1,18 @@
+{
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "root": true,
+  "extends": ["./biome.json"],
+  "linter": {
+    "rules": {
+      "nursery": {
+        "noFloatingPromises": "off",
+        "noMisleadingReturnType": "off",
+        "noUnsafeTypeAssertion": "off",
+        "useReduceTypeParameter": "off"
+      },
+      "suspicious": {
+        "noImportCycles": "off"
+      }
+    }
+  }
+}

@@ -9,13 +9,8 @@ import {
 import { reasoningLabel } from "@openbot/ui/components/ProviderModelPicker";
 import { findModelOption, providerAccountName } from "@openbot/ui/components/provider-accounts";
 import { ConversationHeader as SharedConversationHeader } from "@openbot/ui/features/conversation/ConversationHeader";
-import { ThreadHeader } from "@openbot/ui/features/conversation/threads/ThreadHeader";
-import {
-  DRAFT_THREAD_ID,
-  MAIN_THREAD_ID,
-  parseThreadTabKey,
-  type ThreadPhoneActions,
-} from "@openbot/ui/features/conversation/threads/thread-types";
+import { ThreadMenu } from "@openbot/ui/features/conversation/threads/ThreadMenu";
+import { DRAFT_THREAD_ID, type ThreadPhoneActions } from "@openbot/ui/features/conversation/threads/thread-types";
 import { createSignal, Show } from "solid-js";
 import { actionToast } from "../../action-toast";
 import { useConversationViewScope } from "./conversation-scope";
@@ -52,7 +47,6 @@ export function ConversationHeader() {
     messagePins,
     replyJump,
     toggleSidePanel,
-    moveThreadToPanel,
   } = useConversationViewScope();
   // The web client on a phone. A desktop window, including a narrow one, keeps the header buttons.
   const phoneWeb = createPhoneWeb();
@@ -61,20 +55,11 @@ export function ConversationHeader() {
   /** A desktop chat with threads keeps the pins, the side panel and the remote desktop in the thread menu. */
   const actionsMenu = () => !phoneWeb() && props.threads !== undefined;
   const runningThreads = () => props.threads?.running ?? 0;
-  /** While a side thread is open, the agent's name goes back to the agent's own chat. */
-  const openMainChat = () => {
+  /** The title of the open session in the header pill. The agent's own chat shows only the agent. */
+  const sessionTitle = () => {
     const header = props.threads?.header;
-    return header && sideThreadOpen() ? () => header.onOpen(MAIN_THREAD_ID) : undefined;
-  };
-  /** With thread tabs, the agent's name is the tab of the agent's own chat. */
-  const titleSelected = () => (props.threads ? !sideThreadOpen() : undefined);
-  /** The tabs of all agents name each agent, so the agent's name does not show before them. */
-  const allAgentTabs = () => props.threads?.header.allAgents === true;
-  /** A tab of the tabs of all agents goes to the side panel only from the agent on screen. */
-  const moveTabToPanel = (id: string) => {
-    const tab = parseThreadTabKey(id);
-    if (!tab) moveThreadToPanel(id);
-    else if (tab.agentId === props.agent?.id) moveThreadToPanel(tab.threadId);
+    if (!header || !sideThreadOpen()) return undefined;
+    return header.sessions.find((session) => session.id === header.activeId)?.title;
   };
   /** The chat in the main view: the open side thread, a new thread, or undefined for the agent's own chat. */
   const viewTaskId = () => (sideThreadOpen() ? (props.threads?.open?.id ?? DRAFT_THREAD_ID) : undefined);
@@ -195,9 +180,15 @@ export function ConversationHeader() {
       title={channel ? <channel.HeaderTitle onOpenSettings={() => setActiveRightPanel("settings")} /> : undefined}
       onSettingsIntent={() => void loadAgentSettingsPanel()}
       onOpenSettings={() => setActiveRightPanel("settings")}
-      onOpenChat={openMainChat()}
-      titleSelected={titleSelected()}
-      tabbed={allAgentTabs()}
+      session={
+        props.threads
+          ? {
+              title: sessionTitle(),
+              canStartNew: props.threads.header.canStartNew,
+              onNew: props.threads.header.onNew,
+            }
+          : undefined
+      }
       pendingModel={pendingModel()}
       remoteControl={actionsMenu() ? undefined : remoteControl()}
       actionsMenu={actionsMenu()}
@@ -205,7 +196,9 @@ export function ConversationHeader() {
       threads={
         <Show when={props.threads}>
           {(threads) => (
-            <ThreadHeader {...threads().header} onMoveToSide={moveTabToPanel} phoneActions={menuActions()} />
+            <Show when={menuActions()}>
+              {(actions) => <ThreadMenu {...threads().header} phoneActions={actions()} />}
+            </Show>
           )}
         </Show>
       }

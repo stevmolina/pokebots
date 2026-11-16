@@ -3,11 +3,17 @@
   height: 100vh;
 }
 
-/* The chat header alone, at the width of a wide window or a narrow one. */
-.thread-header-story {
+/* The chat header with the session pill, over the agent panel at its usual width. */
+.agent-sessions-story {
+  display: grid;
   height: 100vh;
+  grid-template-rows: auto 1fr;
+  background: var(--openbot-bg-canvas);
 }
 
-.thread-header-story[data-narrow] {
-  width: 560px;
+.agent-sessions-story-panel {
+  width: 380px;
+  justify-self: end;
+  padding: var(--openbot-space-4);
+  border-inline-start: 1px solid var(--openbot-border);
 }

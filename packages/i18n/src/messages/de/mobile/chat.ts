@@ -551,10 +551,12 @@ export const messages = {
     other: "{name}, Threads. {count} Threads warten auf dich",
   },
   "mobile.chat.threads.main": "Haupt-Chat",
+  "mobile.chat.sessions.title": "Sitzungen",
+  "mobile.chat.sessions.new": "Neue Sitzung",
+  "mobile.chat.sessions.all": "Alle Sitzungen",
   "mobile.chat.threads.branchedFrom": "Abgezweigt von {title}",
   "mobile.chat.threads.branchedFromDeleted": "Abgezweigt von einem gelöschten Thread",
   "mobile.chat.threads.new": "Neuer Thread",
-  "mobile.chat.threads.all": "Alle Threads",
   "mobile.chat.threads.agentInfo": "Agent-Info",
   "mobile.chat.threads.draftNote":
     "Deine erste Nachricht startet einen neuen Thread. Der Haupt-Chat mit {name} bleibt, wie er ist.",

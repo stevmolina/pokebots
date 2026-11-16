@@ -103,7 +103,6 @@ export const messages = {
   "agentSettings.groups.does": "Doet",
   "agentSettings.groups.rules": "Regels",
   "agentSettings.groups.model": "Model",
-  "agentSettings.groups.alerts": "Meldingen",
   "agentSettings.saveFailed": "Kan de agentinstellingen niet opslaan.",
   "agentSettings.name": "Naam",
   "agentSettings.nameLabel": "Naam van agent",
@@ -170,9 +169,8 @@ export const messages = {
   "agentSettings.busyMessage.steerUnsupported":
     "{provider} kan een lopende beurt niet bijsturen. Berichten die je stuurt terwijl hij werkt, wachten in de wachtrij.",
   "agentSettings.notificationLevel.title": "Meld mij",
+  "agentSettings.notificationLevel.footer": "Krijg een melding als deze agent klaar is of op je wacht.",
   "agentSettings.notificationLevel.server": "Serverstandaard ({level})",
-  "agentSettings.notificationLevel.note":
-    "Deze keuze geldt alleen voor jou, op al je apparaten. Is de server gedempt of op ‘Niets’ gezet, dan blijft ook deze agent stil.",
   "agentSettings.newChat.title": "Nieuwe chat",
   "agentSettings.newChat.description": "De agent vergeet deze chat. De instellingen blijven.",
   "agentSettings.newChat.button": "Starten",
@@ -207,6 +205,10 @@ export const messages = {
   "agentSettings.links.tablesCount": { one: "{count} tabel", other: "{count} tabellen" },
   "agentSettings.links.files": "Bestanden",
   "agentSettings.links.routines": "Routines",
+  "agentSettings.links.library": "Bibliotheek",
+  "agentSettings.links.computer": "Computer",
+  "agentSettings.links.computerActive": "In gebruik",
+  "agentSettings.links.computerOffline": "Offline",
   "agentSettings.links.routinesCount": { one: "{count} ingesteld", other: "{count} ingesteld" },
   "agentSettings.links.routinesNone": "Geen",
   "agentSettings.runtime.workspaceNote":

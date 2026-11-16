@@ -97,7 +97,6 @@ export const messages = {
   "agentSettings.groups.does": "実行",
   "agentSettings.groups.rules": "ルール",
   "agentSettings.groups.model": "モデル",
-  "agentSettings.groups.alerts": "通知",
   "agentSettings.saveFailed": "エージェントの設定を保存できませんでした。",
 
   "agentSettings.name": "名前",
@@ -169,10 +168,8 @@ export const messages = {
     "{provider} は実行中のターンの方向を修正できません。作業中に送ったメッセージはキューで待ちます。",
 
   "agentSettings.notificationLevel.title": "自分への通知",
+  "agentSettings.notificationLevel.footer": "このエージェントが終わったときや、あなたを待っているときに通知します。",
   "agentSettings.notificationLevel.server": "サーバーの既定 ({level})",
-  "agentSettings.notificationLevel.note":
-    "この設定はあなただけに適用され、すべてのデバイスで有効です。サーバーがミュート中か「なし」の場合、このエージェントも通知しません。",
-
   "agentSettings.newChat.title": "新しいチャット",
   "agentSettings.newChat.description": "エージェントはこのチャットを忘れます。設定はそのままです。",
   "agentSettings.newChat.button": "開始",
@@ -209,6 +206,10 @@ export const messages = {
   "agentSettings.links.tablesCount": { other: "{count} 個のテーブル" },
   "agentSettings.links.files": "ファイル",
   "agentSettings.links.routines": "ルーティン",
+  "agentSettings.links.library": "ライブラリ",
+  "agentSettings.links.computer": "コンピューター",
+  "agentSettings.links.computerActive": "使用中",
+  "agentSettings.links.computerOffline": "オフライン",
   "agentSettings.links.routinesCount": { other: "{count} 件設定済み" },
   "agentSettings.links.routinesNone": "なし",
   "agentSettings.runtime.workspaceNote":

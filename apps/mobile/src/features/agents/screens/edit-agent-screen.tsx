@@ -11,17 +11,13 @@ import { router, Stack, useLocalSearchParams } from "expo-router";
 import { usePreventRemove } from "expo-router/react-navigation";
 import { Typography } from "heroui-native";
 import { useThemeColor } from "heroui-native/hooks";
-import BookBookmark from "lucide-react-native/icons/book-bookmark";
-import CalendarClock from "lucide-react-native/icons/calendar-clock";
 import Cpu from "lucide-react-native/icons/cpu";
 import FileText from "lucide-react-native/icons/file-text";
-import Folder from "lucide-react-native/icons/folder";
 import Gauge from "lucide-react-native/icons/gauge";
 import Pencil from "lucide-react-native/icons/pencil";
 import Puzzle from "lucide-react-native/icons/puzzle";
 import ShieldCheck from "lucide-react-native/icons/shield-check";
 import SlidersHorizontal from "lucide-react-native/icons/sliders-horizontal";
-import Table2 from "lucide-react-native/icons/table-2";
 import Upload from "lucide-react-native/icons/upload";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { Alert, Pressable, View } from "react-native";
@@ -37,11 +33,7 @@ import {
   AgentBackupModelsRow,
 } from "@/features/agents/components/agent-backup-models";
 import { AgentBrowserProfileRow } from "@/features/agents/components/agent-browser-profile";
-import {
-  AgentCompactSection,
-  AgentNewChatSection,
-  AgentNotificationLevelRow,
-} from "@/features/agents/components/agent-chat-settings";
+import { AgentCompactSection, AgentNewChatSection } from "@/features/agents/components/agent-chat-settings";
 import { AgentDeleteSection } from "@/features/agents/components/agent-delete-section";
 import { AgentFolderBrowser, AgentFolders, AgentFoldersRow } from "@/features/agents/components/agent-folders";
 import {
@@ -58,7 +50,6 @@ import { AgentPublish } from "@/features/agents/components/agent-publish";
 import { AgentRuntimeFields, useProviderAccounts } from "@/features/agents/components/agent-runtime-fields";
 import { AgentSessionSettingsSection } from "@/features/agents/components/agent-session-settings";
 import { AgentSharedTables } from "@/features/agents/components/agent-shared-tables";
-import { AgentTasksRow } from "@/features/agents/components/agent-tasks-row";
 import { BloubAvatarPreview } from "@/features/agents/components/bloub-avatar";
 import { InstructionsLimit, instructionsTooLong } from "@/features/agents/components/instructions-limit";
 import { SettingsRow, SettingsSection } from "@/features/settings/components/settings-content";
@@ -147,7 +138,6 @@ function AgentForm({
   const {
     updateAgent,
     setAgentAvatar,
-    canManageSharedTables,
     canPublishAgent,
     canStartNewChat,
     canCompactContext,
@@ -159,7 +149,6 @@ function AgentForm({
     canManageAgentPlanCard,
     canManageBrowserProfiles,
     canManageAgentFolders,
-    canSetAgentNotificationLevel,
     setAgentProviderAccount,
   } = useMobileWorkspace();
   const queryClient = useQueryClient();
@@ -167,9 +156,6 @@ function AgentForm({
   const { settings: adminSettings } = useAgentAdminSettings(agent, host, available && page === "info");
   const showPermissions = canManageAgentAccess(agent.serverId) || canManageAgentHostSettings(agent.serverId);
   const showFolders = canManageAgentFolders(agent.serverId);
-  // The user's own level of the agent, on a host that keeps it for each member. Settings > Notifications
-  // is the one place that changes notifications, so the agent has no switch of its own here.
-  const showNotificationLevel = agent.notifications !== undefined && canSetAgentNotificationLevel(agent.serverId);
   const showAdvanced =
     Boolean(agent.workspacePath) ||
     canStartNewChat(agent.serverId) ||
@@ -516,7 +502,10 @@ function AgentForm({
           onSave={() => void submit()}
         />
       ) : null}
-      {/* The groups and their order follow the desktop agent settings. */}
+      {/*
+        The full settings, behind "Edit" on the agent's profile. The groups and their order follow the
+        desktop agent settings; the library, routines, sessions and notifications are on the profile.
+      */}
       {page === "info" ? (
         <>
           <SettingsSection title={t("mobile.agent.groups.brain")}>
@@ -550,17 +539,6 @@ function AgentForm({
               </SettingsRow>
             ) : null}
             <SettingsRow
-              leading={<RowIcon icon={BookBookmark} />}
-              onPress={() =>
-                router.push({
-                  pathname: "/agent-info/[agentId]/memories",
-                  params: { agentId: agent.id, serverId: agent.serverId },
-                })
-              }
-            >
-              <Typography.Paragraph>{t("mobile.agent.info.memories.title")}</Typography.Paragraph>
-            </SettingsRow>
-            <SettingsRow
               leading={<RowIcon icon={Puzzle} />}
               onPress={() =>
                 router.push({
@@ -571,44 +549,8 @@ function AgentForm({
             >
               <Typography.Paragraph>{t("mobile.agent.info.skills.title")}</Typography.Paragraph>
             </SettingsRow>
-            <SettingsRow
-              leading={<RowIcon icon={Folder} />}
-              onPress={() =>
-                router.push({
-                  pathname: "/agent-info/[agentId]/files",
-                  params: { agentId: agent.id, serverId: agent.serverId },
-                })
-              }
-            >
-              <Typography.Paragraph>{t("mobile.agent.info.files.title")}</Typography.Paragraph>
-            </SettingsRow>
-            {canManageSharedTables(agent.serverId) ? (
-              <SettingsRow
-                leading={<RowIcon icon={Table2} />}
-                onPress={() =>
-                  router.push({
-                    pathname: "/agent-info/[agentId]/tables",
-                    params: { agentId: agent.id, serverId: agent.serverId },
-                  })
-                }
-              >
-                <Typography.Paragraph>{t("mobile.agent.tables.title")}</Typography.Paragraph>
-              </SettingsRow>
-            ) : null}
           </SettingsSection>
           <SettingsSection title={t("mobile.agent.groups.does")}>
-            <AgentTasksRow agent={agent} />
-            <SettingsRow
-              leading={<RowIcon icon={CalendarClock} />}
-              onPress={() =>
-                router.push({
-                  pathname: "/agent-info/[agentId]/routines",
-                  params: { agentId: agent.id, serverId: agent.serverId },
-                })
-              }
-            >
-              <Typography.Paragraph>{t("mobile.agent.info.routines.title")}</Typography.Paragraph>
-            </SettingsRow>
             <SettingsRow
               leading={<RowIcon icon={Gauge} />}
               onPress={() =>
@@ -637,11 +579,8 @@ function AgentForm({
           {host && canAdministerServer(host.role) ? (
             <AgentSessionSettingsSection key={`${agent.serverId}:${agent.id}`} agent={agent} available={available} />
           ) : null}
-          {showPermissions || showFolders || showNotificationLevel || showAdvanced ? (
-            <SettingsSection
-              title={t("mobile.agent.groups.rules")}
-              footer={showNotificationLevel ? t("mobile.agent.notificationLevel.footer") : undefined}
-            >
+          {showPermissions || showFolders || showAdvanced ? (
+            <SettingsSection title={t("mobile.agent.groups.rules")}>
               {showPermissions ? (
                 <SettingsRow
                   leading={<RowIcon icon={ShieldCheck} />}
@@ -657,7 +596,6 @@ function AgentForm({
                 </SettingsRow>
               ) : null}
               {showFolders ? <AgentFoldersRow agent={agent} host={host} available={available} /> : null}
-              {showNotificationLevel ? <AgentNotificationLevelRow agent={agent} /> : null}
               {showAdvanced ? (
                 <SettingsRow
                   leading={<RowIcon icon={SlidersHorizontal} />}

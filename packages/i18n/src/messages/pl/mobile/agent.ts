@@ -63,6 +63,11 @@ export const messages = {
   "mobile.agent.menu.unmute": "Wyłącz wyciszenie",
   "mobile.agent.menu.hide": "Ukryj",
   "mobile.agent.menu.info": "Informacje",
+  "mobile.agent.profile.edit": "Edytuj",
+  "mobile.agent.profile.library": "Biblioteka",
+  "mobile.agent.profile.computer": "Komputer",
+  "mobile.agent.profile.notificationsFooter":
+    "Otrzymaj powiadomienie, gdy ten agent skończy lub będzie na Ciebie czekać. Tylko dla Ciebie, na wszystkich Twoich urządzeniach.",
   "mobile.agent.menu.more": "Więcej",
   "mobile.agent.menu.copyId": "Kopiuj ID",
   "mobile.agent.menu.duplicate": "Duplikuj",
@@ -428,8 +433,6 @@ export const messages = {
   "mobile.agent.notificationLevel.title": "Powiadamiaj mnie o",
   "mobile.agent.notificationLevel.server": "Ustawienie serwera",
   "mobile.agent.notificationLevel.serverValue": "Ustawienie serwera ({level})",
-  "mobile.agent.notificationLevel.footer":
-    "„Powiadamiaj mnie o” dotyczy tylko ciebie, na wszystkich twoich urządzeniach.",
   "mobile.agent.notificationLevel.unsupported":
     "Ten serwer nie może zapisać twojego poziomu powiadomień dla agenta. Zaktualizuj OpenBot na komputerze, na którym działa.",
   "mobile.agent.newChat.title": "Nowy czat",

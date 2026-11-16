@@ -258,30 +258,6 @@
       );
   }
 
-  /* While the shape shows, it is the fill of the selected tab. A selected thread that waits or failed
-   * keeps its state icon, but not its tinted fill. A tab that the pointer drags keeps its fill. */
-  :root:not([data-openbot-window-glass])
-    .app-window
-    > .app-frame-edge
-    .conversation-panel
-    > .conversation-header:has(> .tab-shape:not([data-hidden]))
-    :is(
-      .conversation-title.ui-button[data-tab][data-selected],
-      .agent-threads-tab.ui-sliding-tabs-trigger[aria-selected="true"]:not([data-renaming], [data-dragged=""]),
-      .agent-threads-switcher.ui-button:not(:hover, [aria-expanded="true"])
-    ) {
-    background: transparent;
-  }
-
-  :root:not([data-openbot-window-glass])
-    .app-window
-    > .app-frame-edge
-    .conversation-panel
-    > .conversation-header:has(> .tab-shape:not([data-hidden]))
-    .agent-threads-fill {
-    display: none;
-  }
-
   :root:not([data-openbot-window-glass])
     .app-window
     > .app-frame-edge

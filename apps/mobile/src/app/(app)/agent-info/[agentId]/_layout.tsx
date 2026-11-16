@@ -29,7 +29,10 @@ export default function AgentInfoLayout() {
         contentStyle: { backgroundColor: background },
       })}
     >
-      <Stack.Screen name="index" options={{ title: t("mobile.agent.menu.info") }} />
+      {/* The profile has the agent's face and name, so its bar names nothing. */}
+      <Stack.Screen name="index" options={{ title: "" }} />
+      <Stack.Screen name="edit" options={{ title: t("mobile.agent.menu.info") }} />
+      <Stack.Screen name="library" options={{ title: t("mobile.agent.profile.library") }} />
       <Stack.Screen name="appearance" options={{ title: t("mobile.agent.route.appearance") }} />
       <Stack.Screen name="usage" options={{ title: t("mobile.agent.info.usage.title") }} />
       <Stack.Screen name="memories" options={{ title: t("mobile.agent.info.memories.title") }} />

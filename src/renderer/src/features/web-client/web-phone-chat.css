@@ -42,27 +42,31 @@
   }
 
   /*
-   * The name pill sits in the middle of the screen. The heading row puts it at the start of the space
-   * between the round buttons, so the pill leaves the row and centers itself in the header, between
-   * the buttons. The thread controls then measure the full row, whatever the name length.
+   * The name pill sits in the middle of the screen, between the round buttons, with "+" for a new
+   * session after it.
    */
-  .web-app-frame[data-web-mobile-pane="conversation"] .conversation-heading-group > .conversation-title.ui-button {
+  .web-app-frame[data-web-mobile-pane="conversation"] .conversation-heading-group > .conversation-session-pill {
     position: absolute;
     top: 10px;
-    inset-inline: calc(var(--phone-chat-button) * 2 + var(--openbot-space-4));
-    width: fit-content;
-    max-width: calc(100% - 2 * (var(--phone-chat-button) * 2 + var(--openbot-space-4)));
-    margin-inline: auto;
+    left: 50%;
+    max-width: calc(100% - 2 * (var(--phone-chat-button) + var(--openbot-space-4)));
+    transform: translateX(-50%);
   }
 
   /* The workspace-only lock sat after the name. With the name centered it would float alone at the start. */
-  .web-app-frame[data-web-mobile-pane="conversation"] .conversation-heading-group > .conversation-access-lock {
+  .web-app-frame[data-web-mobile-pane="conversation"] .conversation-session-pill > .conversation-access-lock {
     display: none;
   }
 
-  /* A phone lists the open threads in the menu, so the tab strip never shows next to the pill. */
-  .web-app-frame[data-web-mobile-pane="conversation"] .conversation-header[data-phone-menu] .agent-threads-tabs-area {
-    display: none;
+  /* "+" as a round glass button, the height of the pill. */
+  .web-app-frame[data-web-mobile-pane="conversation"] .conversation-new-session.ui-button {
+    width: var(--phone-chat-button);
+    height: var(--phone-chat-button);
+    border: 1px solid var(--phone-chat-glass-border);
+    background: var(--phone-chat-glass);
+    -webkit-backdrop-filter: blur(20px) saturate(1.6);
+    backdrop-filter: blur(20px) saturate(1.6);
+    box-shadow: var(--phone-chat-glass-shadow);
   }
 
   /* The name and its picture sit in one pill, centered. The role line stays out of the pill. */

@@ -11,13 +11,13 @@ export function agentTaskThreadStatus(task: AgentTask, waitsFor: SidebarWaitReas
 }
 
 export interface ThreadListsInput {
-  /** When the agent's own chat changed last. The new thread tab shows this time. */
-  mainUpdatedAt: string;
+  /** The agent's own chat, as its session row shows it. */
+  main: { title: string; updatedAt: string; status?: ThreadStatus | undefined };
   /** The side threads of the agent: open ones and archived (`closed`) ones. */
   tasks: readonly AgentTask[];
-  /** The side threads that have a tab on this device, in tab order. */
-  open: readonly string[];
-  /** Whether the new thread tab shows. */
+  /** The main session: the session on screen. */
+  activeId: string;
+  /** Whether a new session shows. */
   draft: boolean;
   draftTitle: string;
   /** Side threads that wait to be deleted: they show nowhere. */
@@ -29,35 +29,44 @@ export interface ThreadListsInput {
 }
 
 export interface ThreadLists {
-  threads: ThreadItem[];
-  tabs: ThreadItem[];
+  /** The open sessions: the main session first, then the others that changed last first. */
+  sessions: ThreadItem[];
   archived: ThreadItem[];
 }
 
+function sideItem(task: AgentTask, input: Pick<ThreadListsInput, "waitsFor" | "unread">): ThreadItem {
+  const item: ThreadItem = {
+    id: task.id,
+    kind: "side",
+    title: task.title,
+    updatedAt: task.updatedAt,
+    status: agentTaskThreadStatus(task, input.waitsFor(task)),
+  };
+  if (input.unread) item.unread = input.unread(task);
+  return item;
+}
+
 /**
- * The thread lists of the header. The agent's own chat is in neither list: the agent's name in the
- * header opens it. The menu lists the side threads that changed last first. A tab of a thread that is
- * archived or deleted, also on another device, does not show.
+ * The session lists of an agent. The main session comes first; the agent's own chat and the side
+ * threads follow, the one that changed last first, with each branch under its source. A thread that
+ * is archived or deleted, also on another device, is not in the open list.
  */
 export function threadLists(input: ThreadListsInput): ThreadLists {
-  const items = new Map<string, ThreadItem>();
   const archived: ThreadItem[] = [];
-  const open: ThreadItem[] = [];
+  const open: ThreadItem[] = [
+    {
+      id: MAIN_THREAD_ID,
+      kind: "main",
+      title: input.main.title,
+      updatedAt: input.main.updatedAt,
+      status: input.main.status ?? { kind: "idle" },
+    },
+  ];
   for (const task of input.tasks) {
     if (input.hidden.has(task.id)) continue;
-    const item: ThreadItem = {
-      id: task.id,
-      kind: "side",
-      title: task.title,
-      updatedAt: task.updatedAt,
-      status: agentTaskThreadStatus(task, input.waitsFor(task)),
-    };
-    if (input.unread) item.unread = input.unread(task);
+    const item = sideItem(task, input);
     if (task.state === "closed") archived.push(item);
-    else {
-      items.set(task.id, item);
-      open.push(item);
-    }
+    else open.push(item);
   }
   open.sort((left, right) => right.updatedAt.localeCompare(left.updatedAt));
   archived.sort((left, right) => right.updatedAt.localeCompare(left.updatedAt));
@@ -66,20 +75,32 @@ export function threadLists(input: ThreadListsInput): ThreadLists {
     const sourceId = task.branch?.sourceTaskId;
     if (sourceId) sources.set(task.id, sourceId);
   }
-  const tabs: ThreadItem[] = [];
-  for (const id of input.open) {
-    const item = items.get(id);
-    if (item) tabs.push(item);
-  }
-  if (input.draft)
-    tabs.push({
-      id: DRAFT_THREAD_ID,
-      kind: "draft",
-      title: input.draftTitle,
-      updatedAt: input.mainUpdatedAt,
-      status: { kind: "idle" },
-    });
-  return { threads: nestedBranches(open, (id) => sources.get(id)), tabs, archived };
+  const main =
+    input.activeId === DRAFT_THREAD_ID && input.draft
+      ? {
+          id: DRAFT_THREAD_ID,
+          kind: "draft" as const,
+          title: input.draftTitle,
+          updatedAt: input.main.updatedAt,
+          status: { kind: "idle" as const },
+        }
+      : open.find((item) => item.id === input.activeId);
+  const rest = nestedBranches(
+    open.filter((item) => item.id !== main?.id),
+    (id) => sources.get(id),
+  );
+  return { sessions: main ? [main, ...rest] : rest, archived };
+}
+
+/** The side threads with a tab in the side panel, in tab order. A thread that does not show has no tab. */
+export function sideThreadTabs(
+  input: Pick<ThreadListsInput, "tasks" | "hidden" | "waitsFor" | "unread">,
+  ids: readonly string[],
+): ThreadItem[] {
+  return ids.flatMap((id) => {
+    const task = input.tasks.find((entry) => entry.id === id);
+    return task && task.state !== "closed" && !input.hidden.has(id) ? [sideItem(task, input)] : [];
+  });
 }
 
 /**
@@ -91,7 +112,7 @@ const BRANCH_LEVELS = 4;
 /**
  * Puts each branch under the open thread that it came from, with tree lines before its title. A
  * branch whose source is archived or deleted, or of the agent's own chat, stays at the top. Each
- * level keeps the order of `items`. The items of the tabs do not change.
+ * level keeps the order of `items`.
  */
 function nestedBranches(items: readonly ThreadItem[], sourceOf: (id: string) => string | undefined): ThreadItem[] {
   const ids = new Set(items.map((item) => item.id));
@@ -130,9 +151,4 @@ function nestedBranches(items: readonly ThreadItem[], sourceOf: (id: string) => 
   );
   // A loop of sources has no top. Its threads still show, at the top.
   return [...nested, ...items.filter((item) => !placed.has(item.id))];
-}
-
-/** The open tab, or the agent's own chat when it is open or the open tab no longer shows. */
-export function activeThreadId(tabs: readonly ThreadItem[], active: string | null): string {
-  return active !== null && tabs.some((tab) => tab.id === active) ? active : MAIN_THREAD_ID;
 }

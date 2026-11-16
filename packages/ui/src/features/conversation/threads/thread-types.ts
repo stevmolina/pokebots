@@ -1,4 +1,3 @@
-import type { AgentProfile } from "@openbot/ui/data";
 import type { SidebarWaitReason } from "@openbot/ui/features/sidebar/sidebar-types";
 
 /** What the agent does in a thread, as a sidebar row shows it for the agent. */
@@ -11,12 +10,11 @@ export type ThreadStatus =
   | { kind: "failed" };
 
 /**
- * One side thread of an agent. `draft` is a new thread that has no message yet: its first message
- * starts it. The agent's own chat is not a thread item: the agent's name in the header opens it.
+ * One session of an agent: a side thread, the agent's own chat (`main`), or a new session that has no
+ * message yet (`draft`): its first message starts it.
  */
 export interface ThreadItem {
   id: string;
-  /** `main` is the agent's own chat. It is a tab only in the tabs of all agents. */
   kind: "main" | "side" | "draft";
   title: string;
   updatedAt: string;
@@ -24,21 +22,10 @@ export interface ThreadItem {
   /** The agent messages in the thread that the user has not read. Absent when the host keeps no read mark. */
   unread?: number | undefined;
   /**
-   * The tree lines before the title in the thread menu, for a branch under its source thread. Absent
-   * at the top level and in the tabs.
+   * The tree lines before the title in a session list, for a branch under its source thread. Absent
+   * at the top level and in the side panel tabs.
    */
   stem?: ThreadStem | undefined;
-  /** The agent of the thread, in the tabs of all agents. Absent in the tabs of one agent. */
-  agent?: ThreadItemAgent | undefined;
-}
-
-/** The face and the copy word of the agent of a tab. */
-export interface ThreadItemAgent {
-  profile: AgentProfile;
-  /** The role title of a copy of an agent: two or more agents have its name and face. Null otherwise. */
-  copy: string | null;
-  /** The agent's chat is on screen, so its side panel can take the thread. */
-  onScreen: boolean;
 }
 
 /**
@@ -50,11 +37,8 @@ export interface ThreadStem {
   last: boolean;
 }
 
-/** The thread row as tabs, as one button with the open thread, or as a chevron only. */
-export type ThreadRowMode = "tabs" | "compact" | "minimal";
-
 /**
- * The header actions that the thread menu keeps, on a phone and in a desktop header. Each one is
+ * The header actions that the "More" menu keeps, on a phone and in a desktop header. Each one is
  * missing when that action does not apply, such as pins on a host that has none, or the side panel
  * of a read-only channel.
  */
@@ -71,10 +55,7 @@ export interface ThreadPhoneActions {
   remoteActive?: boolean | undefined;
   /** An agent controls the browser of the side panel. The menu button has a dot. */
   browserActing?: boolean | undefined;
-  /**
-   * A desktop header. The menu button is at the end of the header, and a narrow header keeps the open
-   * thread as the menu button, as it does without these actions.
-   */
+  /** A desktop header: a dropdown with the actions only. Without it, a phone sheet that also lists the sessions. */
   desktop?: boolean | undefined;
 }
 
@@ -84,24 +65,26 @@ export function threadBusy(status: ThreadStatus): boolean {
 }
 
 /**
- * The threads of one agent and what the user can do with them. `onRename` and `onDelete` are missing
- * when the host cannot rename or delete threads; the actions then do not show.
+ * The sessions of one agent and what the user can do with them. The agent shows one session at a
+ * time: the main session, which is the session that the user created or opened last. The others keep
+ * running. `onRename` and `onDelete` are missing when the host cannot rename or delete threads; the
+ * actions then do not show.
  */
 export interface ThreadHeaderProps {
-  /** Every side thread that is not archived. The agent's name in the header opens the agent's own chat. */
-  threads: readonly ThreadItem[];
-  /** The side threads that have a tab, and the new thread, in tab order. */
-  tabs: readonly ThreadItem[];
+  /**
+   * Every session that is not archived: the main session first, then the agent's own chat and the side
+   * threads that changed last. A new session that has no message shows while it is the main session.
+   */
+  sessions: readonly ThreadItem[];
   archived: readonly ThreadItem[];
+  /** The main session: the one on screen. */
   activeId: string;
   /** False at the limit of threads. */
   canStartNew: boolean;
+  /** Opens a session and makes it the main session. */
   onOpen: (id: string) => void;
+  /** Starts a new session and makes it the main session. */
   onNew: () => void;
-  onClose: (id: string) => void;
-  onCloseOthers: (id: string) => void;
-  onCloseToTheRight: (id: string) => void;
-  onMove: (id: string, index: number) => void;
   onArchive: (id: string) => void;
   /**
    * Stops the running turn of a side thread and cancels its queued messages. The thread stays open.
@@ -114,34 +97,19 @@ export interface ThreadHeaderProps {
   onDelete?: ((id: string) => void) | undefined;
   /** Opens a side thread in the side panel. Missing when the chat has no side panel. */
   onMoveToSide?: ((id: string) => void) | undefined;
-  /**
-   * The header actions in this menu. A phone header then hides New thread, the pin, and the side panel
-   * button. A desktop header keeps "+" after the tabs and has no other button: the menu opens the pins,
-   * the side panel, and the remote desktop.
-   */
+  /** The header actions of the "More" menu: on a phone with the sessions, on a desktop alone. */
   phoneActions?: ThreadPhoneActions | undefined;
-  /**
-   * The tabs are the tabs of all agents: each one names its agent, the agent's own chat has a tab, and
-   * the agent's name does not show before them.
-   */
-  allAgents?: boolean | undefined;
 }
 
 /** The id of the agent's own chat in the thread lists. A side thread has the id of its task. */
 export const MAIN_THREAD_ID = "main";
-/** The id of the new thread tab, before its first message starts the thread. */
+/** The id of a new session, before its first message starts the thread. */
 export const DRAFT_THREAD_ID = "draft";
 
 /**
- * The id of a tab in the tabs of all agents: the agent and its thread. Agent ids have no slash: they
- * name folders.
+ * The key of one thread of one agent, as the sidebar thread lanes name a row. Agent ids have no slash:
+ * they name folders.
  */
 export function threadTabKey(agentId: string, threadId: string): string {
   return `${agentId}/${threadId}`;
-}
-
-/** The agent and thread of a key from `threadTabKey`. */
-export function parseThreadTabKey(key: string): { agentId: string; threadId: string } | null {
-  const at = key.indexOf("/");
-  return at <= 0 || at === key.length - 1 ? null : { agentId: key.slice(0, at), threadId: key.slice(at + 1) };
 }

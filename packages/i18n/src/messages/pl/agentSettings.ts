@@ -123,7 +123,6 @@ export const messages = {
   "agentSettings.groups.does": "Robi",
   "agentSettings.groups.rules": "Zasady",
   "agentSettings.groups.model": "Model",
-  "agentSettings.groups.alerts": "Powiadomienia",
   "agentSettings.saveFailed": "Nie udało się zapisać ustawień agenta.",
   "agentSettings.name": "Nazwa",
   "agentSettings.nameLabel": "Nazwa agenta",
@@ -190,9 +189,9 @@ export const messages = {
   "agentSettings.busyMessage.steerUnsupported":
     "{provider} nie może kierować trwającą turą. Wiadomości wysłane w trakcie pracy czekają w kolejce.",
   "agentSettings.notificationLevel.title": "Powiadamiaj mnie",
+  "agentSettings.notificationLevel.footer":
+    "Otrzymaj powiadomienie, gdy ten agent skończy lub będzie na Ciebie czekać.",
   "agentSettings.notificationLevel.server": "Domyślne serwera ({level})",
-  "agentSettings.notificationLevel.note":
-    "Ten wybór dotyczy tylko ciebie, na wszystkich twoich urządzeniach. Gdy serwer jest wyciszony lub ustawiony na „Nic”, ten agent też milczy.",
   "agentSettings.newChat.title": "Nowy czat",
   "agentSettings.newChat.description": "Agent zapomni ten czat. Jego konfiguracja zostanie.",
   "agentSettings.newChat.button": "Rozpocznij",
@@ -242,6 +241,10 @@ export const messages = {
   },
   "agentSettings.links.files": "Pliki",
   "agentSettings.links.routines": "Rutyny",
+  "agentSettings.links.library": "Biblioteka",
+  "agentSettings.links.computer": "Komputer",
+  "agentSettings.links.computerActive": "W użyciu",
+  "agentSettings.links.computerOffline": "Offline",
   "agentSettings.links.routinesCount": {
     one: "Skonfigurowane: {count}",
     few: "Skonfigurowane: {count}",

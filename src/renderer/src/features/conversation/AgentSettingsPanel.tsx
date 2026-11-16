@@ -11,8 +11,24 @@ import {
   type ServerNotificationLevel,
   type TestRoutineInput,
 } from "@openbot/contracts/ipc";
-import { BookMarked, CalendarClock, FileText, Folder, Gauge, Puzzle, Table2, Upload } from "@openbot/ui";
-import { SettingsLinkGroup, SettingsLinkRow } from "@openbot/ui/components/SettingsPanel";
+import {
+  BookMarked,
+  CalendarClock,
+  FileText,
+  Folder,
+  Gauge,
+  LibraryBig,
+  Monitor,
+  Puzzle,
+  Table2,
+  Upload,
+} from "@openbot/ui";
+import {
+  SettingsLinkGroup,
+  SettingsLinkRow,
+  SettingsPanelContent,
+  SettingsPanelHeader,
+} from "@openbot/ui/components/SettingsPanel";
 import type { AgentProfile } from "@openbot/ui/data";
 import type { BrowserProfileSelectProfile } from "@openbot/ui/features/browser/BrowserProfileSelect";
 import { browserProfileProxyNames } from "@openbot/ui/features/browser/BrowserProxies";
@@ -29,6 +45,7 @@ import SharedAgentSettingsPanel, {
   type AgentNotificationLevelOptions,
   type AgentSettingsPanelProps as SharedAgentSettingsPanelProps,
 } from "@openbot/ui/features/conversation/AgentSettingsPanel";
+import { AgentSessions, type AgentSessionsProps } from "@openbot/ui/features/conversation/threads/AgentSessions";
 import { agentFilesLinkValue } from "@openbot/ui/features/files/AgentFilesView";
 import { useText } from "@openbot/ui/text";
 import { createEffect, createMemo, createSignal, createStore, Show, untrack } from "solid-js";
@@ -78,6 +95,10 @@ interface AgentSettingsPanelProps
   onPublish?: (() => void) | undefined;
   onOpenUsage?: ((trigger: HTMLButtonElement) => void) | undefined;
   onWidthChange: (width: number) => void;
+  /** The agent's sessions, at the top of the panel. Missing on a host without side threads. */
+  sessions?: AgentSessionsProps | undefined;
+  /** The agent's computer: the remote desktop of a joined server. Missing where the agent has none. */
+  computer?: AgentComputerRow | undefined;
   skillSelectionRequest?: { skillId: string } | null | undefined;
   /**
    * The instruction file in the agent's workspace: on this computer, or on a joined server through
@@ -143,6 +164,15 @@ interface AgentSettingsPanelProps
 
 export type { AgentSkillsMode };
 
+/** The Computer row of the panel. */
+export interface AgentComputerRow {
+  /** A remote desktop session runs. */
+  active: boolean;
+  /** The remote desktop can open: the server is online, or a session runs. */
+  enabled: boolean;
+  onOpen: (trigger: HTMLElement) => void;
+}
+
 /** Each named profile with the name of its proxy, as the server settings show it. */
 function profilesWithProxies(
   state: {
@@ -184,6 +214,7 @@ export default function AgentSettingsPanel(props: AgentSettingsPanelProps) {
     memories: { count: 0, open: false },
     routines: { count: 0, open: false },
     files: { open: false },
+    library: { open: false },
     instructions: { open: false },
     skills: { count: 0, open: false, reopenAfterMarketplace: false },
   });
@@ -250,6 +281,8 @@ export default function AgentSettingsPanel(props: AgentSettingsPanelProps) {
   /** The web client shows memories and routines only when its runtime has their calls. */
   const memoriesShown = () => !props.remoteClient || props.memoriesApi !== undefined;
   const routinesShown = () => !props.remoteClient || props.routines !== undefined;
+  /** The library holds the files, memories and tables. It shows when it has one of them. */
+  const libraryShown = () => Boolean(props.files) || memoriesShown() || props.tablesVisible !== false;
   const legacyRoutinesPort = createMemo(() =>
     agentRoutinesPort(
       props.agent.id,
@@ -515,7 +548,61 @@ export default function AgentSettingsPanel(props: AgentSettingsPanelProps) {
           report: { operation: "settings", source: "action", cause_code: "unknown" },
         })
       }
-      detailOpen={draft.routines.open || draft.files.open || draft.memories.open || draft.instructions.open}
+      detailOpen={
+        draft.library.open || draft.routines.open || draft.files.open || draft.memories.open || draft.instructions.open
+      }
+      overview={
+        <>
+          <Show when={props.sessions}>{(sessions) => <AgentSessions {...sessions()} />}</Show>
+          <SettingsLinkGroup inset class="agent-settings-overview-card">
+            <Show when={libraryShown()}>
+              <SettingsLinkRow
+                icon={<LibraryBig aria-hidden="true" />}
+                label={t("agentSettings.links.library")}
+                onClick={() =>
+                  setDraft((state) => {
+                    state.library.open = true;
+                  })
+                }
+              />
+            </Show>
+            <Show when={props.computer}>
+              {(computer) => (
+                <SettingsLinkRow
+                  icon={<Monitor aria-hidden="true" />}
+                  label={t("agentSettings.links.computer")}
+                  value={
+                    computer().active
+                      ? t("agentSettings.links.computerActive")
+                      : computer().enabled
+                        ? undefined
+                        : t("agentSettings.links.computerOffline")
+                  }
+                  onClick={(trigger) => {
+                    if (computer().enabled) computer().onOpen(trigger);
+                  }}
+                />
+              )}
+            </Show>
+            <Show when={routinesShown()}>
+              <SettingsLinkRow
+                icon={<CalendarClock aria-hidden="true" />}
+                label={t("agentSettings.links.routines")}
+                value={
+                  draft.routines.count === 0
+                    ? t("agentSettings.links.routinesNone")
+                    : t("agentSettings.links.routinesCount", { count: draft.routines.count })
+                }
+                onClick={() =>
+                  setDraft((state) => {
+                    state.routines.open = true;
+                  })
+                }
+              />
+            </Show>
+          </SettingsLinkGroup>
+        </>
+      }
       links={
         <>
           <Show when={sessionSettings()}>
@@ -527,15 +614,7 @@ export default function AgentSettingsPanel(props: AgentSettingsPanelProps) {
               />
             )}
           </Show>
-          <Show
-            when={
-              memoriesShown() ||
-              skillsMode() !== "hidden" ||
-              props.tablesVisible !== false ||
-              props.files ||
-              props.instructionsFile
-            }
-          >
+          <Show when={skillsMode() !== "hidden" || props.instructionsFile}>
             <SettingsLinkGroup inset title={t("agentSettings.groups.knows")}>
               <Show when={props.instructionsFile}>
                 <SettingsLinkRow
@@ -544,18 +623,6 @@ export default function AgentSettingsPanel(props: AgentSettingsPanelProps) {
                   onClick={() =>
                     setDraft((state) => {
                       state.instructions.open = true;
-                    })
-                  }
-                />
-              </Show>
-              <Show when={memoriesShown()}>
-                <SettingsLinkRow
-                  icon={<BookMarked aria-hidden="true" />}
-                  label={t("agentSettings.links.memories")}
-                  value={t("agentSettings.links.memoriesCount", { count: draft.memories.count })}
-                  onClick={() =>
-                    setDraft((state) => {
-                      state.memories.open = true;
                     })
                   }
                 />
@@ -572,50 +639,10 @@ export default function AgentSettingsPanel(props: AgentSettingsPanelProps) {
                   }
                 />
               </Show>
-              <Show when={props.files}>
-                <SettingsLinkRow
-                  icon={<Folder aria-hidden="true" />}
-                  label={t("agentSettings.links.files")}
-                  value={storage.state.usage ? agentFilesLinkValue(storage.state.usage.breakdown) : undefined}
-                  onClick={() =>
-                    setDraft((state) => {
-                      state.files.open = true;
-                    })
-                  }
-                />
-              </Show>
-              <Show when={props.tablesVisible !== false}>
-                <SettingsLinkRow
-                  icon={<Table2 aria-hidden="true" />}
-                  label={t("agentSettings.links.tables")}
-                  value={t("agentSettings.links.tablesCount", { count: draft.tables.count })}
-                  onClick={() =>
-                    setDraft((state) => {
-                      state.tables.open = true;
-                    })
-                  }
-                />
-              </Show>
             </SettingsLinkGroup>
           </Show>
-          <Show when={routinesShown() || props.onOpenUsage || props.onPublish}>
+          <Show when={props.onOpenUsage || props.onPublish}>
             <SettingsLinkGroup inset title={t("agentSettings.groups.does")}>
-              <Show when={routinesShown()}>
-                <SettingsLinkRow
-                  icon={<CalendarClock aria-hidden="true" />}
-                  label={t("agentSettings.links.routines")}
-                  value={
-                    draft.routines.count === 0
-                      ? t("agentSettings.links.routinesNone")
-                      : t("agentSettings.links.routinesCount", { count: draft.routines.count })
-                  }
-                  onClick={() =>
-                    setDraft((state) => {
-                      state.routines.open = true;
-                    })
-                  }
-                />
-              </Show>
               <Show when={props.onOpenUsage}>
                 <SettingsLinkRow
                   icon={<Gauge aria-hidden="true" />}
@@ -635,6 +662,60 @@ export default function AgentSettingsPanel(props: AgentSettingsPanelProps) {
         </>
       }
     >
+      {/* The library page: what the agent keeps. Its rows open their own pages, which come back here. */}
+      <Show when={draft.library.open && !draft.files.open && !draft.memories.open}>
+        <SettingsPanelHeader
+          title={t("agentSettings.links.library")}
+          onBack={() =>
+            setDraft((state) => {
+              state.library.open = false;
+            })
+          }
+          backLabel={t("agentSettings.backToSettings")}
+          onClose={props.onClose}
+          closeLabel={t("agentSettings.closeDetails")}
+        />
+        <SettingsPanelContent>
+          <SettingsLinkGroup inset>
+            <Show when={props.files}>
+              <SettingsLinkRow
+                icon={<Folder aria-hidden="true" />}
+                label={t("agentSettings.links.files")}
+                value={storage.state.usage ? agentFilesLinkValue(storage.state.usage.breakdown) : undefined}
+                onClick={() =>
+                  setDraft((state) => {
+                    state.files.open = true;
+                  })
+                }
+              />
+            </Show>
+            <Show when={memoriesShown()}>
+              <SettingsLinkRow
+                icon={<BookMarked aria-hidden="true" />}
+                label={t("agentSettings.links.memories")}
+                value={t("agentSettings.links.memoriesCount", { count: draft.memories.count })}
+                onClick={() =>
+                  setDraft((state) => {
+                    state.memories.open = true;
+                  })
+                }
+              />
+            </Show>
+            <Show when={props.tablesVisible !== false}>
+              <SettingsLinkRow
+                icon={<Table2 aria-hidden="true" />}
+                label={t("agentSettings.links.tables")}
+                value={t("agentSettings.links.tablesCount", { count: draft.tables.count })}
+                onClick={() =>
+                  setDraft((state) => {
+                    state.tables.open = true;
+                  })
+                }
+              />
+            </Show>
+          </SettingsLinkGroup>
+        </SettingsPanelContent>
+      </Show>
       <Show when={draft.instructions.open && props.instructionsFile}>
         {(calls) => (
           <AgentInstructionsView

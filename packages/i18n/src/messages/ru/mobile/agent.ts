@@ -63,6 +63,11 @@ export const messages = {
   "mobile.agent.menu.unmute": "Включить уведомления",
   "mobile.agent.menu.hide": "Скрыть",
   "mobile.agent.menu.info": "Информация",
+  "mobile.agent.profile.edit": "Изменить",
+  "mobile.agent.profile.library": "Библиотека",
+  "mobile.agent.profile.computer": "Компьютер",
+  "mobile.agent.profile.notificationsFooter":
+    "Получайте уведомление, когда агент закончит или будет ждать вас. Только для вас, на всех ваших устройствах.",
   "mobile.agent.menu.more": "Ещё",
   "mobile.agent.menu.copyId": "Копировать ID",
   "mobile.agent.menu.duplicate": "Дублировать",
@@ -430,7 +435,6 @@ export const messages = {
   "mobile.agent.notificationLevel.title": "Уведомлять о",
   "mobile.agent.notificationLevel.server": "Настройка сервера",
   "mobile.agent.notificationLevel.serverValue": "Настройка сервера ({level})",
-  "mobile.agent.notificationLevel.footer": "«Уведомлять о» действует только для вас, на всех ваших устройствах.",
   "mobile.agent.notificationLevel.unsupported":
     "Этот сервер не может хранить ваш уровень уведомлений для агента. Обновите OpenBot на компьютере, где он работает.",
   "mobile.agent.newChat.title": "Новый чат",

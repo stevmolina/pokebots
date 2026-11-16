@@ -222,6 +222,7 @@ export function ConversationPanels(panelProps: { onOpenUsage?: ((trigger: HTMLBu
     openPanelThread,
     closePanelThread,
     movePanelThreadToChat,
+    moveThreadToPanel,
     channel,
     replyJump,
   } = useConversationViewScope();
@@ -766,6 +767,18 @@ export function ConversationPanels(panelProps: { onOpenUsage?: ((trigger: HTMLBu
         {(agent) => (
           <Loading>
             <AgentSettingsPanel
+              sessions={props.threads ? { ...props.threads.header, onMoveToSide: moveThreadToPanel } : undefined}
+              computer={
+                props.remoteDesktopEnabled !== false && props.server?.kind === "remote"
+                  ? {
+                      active: Boolean(props.remoteDesktopSessionActive),
+                      enabled: Boolean(props.remoteDesktopSessionActive || props.server.state === "online"),
+                      onOpen: (trigger) => {
+                        if (props.server) void props.onOpenRemoteDesktop(props.server.id, trigger);
+                      },
+                    }
+                  : undefined
+              }
               remoteClient={Boolean(props.runtime)}
               localHost={props.server?.kind === "local"}
               routineRunPlace={

@@ -124,7 +124,6 @@ export const messages = {
   "agentSettings.groups.does": "Делает",
   "agentSettings.groups.rules": "Правила",
   "agentSettings.groups.model": "Модель",
-  "agentSettings.groups.alerts": "Уведомления",
   "agentSettings.saveFailed": "Не удалось сохранить настройки агента.",
 
   "agentSettings.name": "Имя",
@@ -196,10 +195,8 @@ export const messages = {
     "{provider} не умеет направлять выполняемый ход. Сообщения, отправленные во время работы, ждут в очереди.",
 
   "agentSettings.notificationLevel.title": "Уведомлять меня",
+  "agentSettings.notificationLevel.footer": "Получайте уведомление, когда агент закончит или будет ждать вас.",
   "agentSettings.notificationLevel.server": "{level} (по умолчанию на сервере)",
-  "agentSettings.notificationLevel.note":
-    "Этот выбор действует только для вас, на всех ваших устройствах. Если у сервера отключены уведомления или выбрано «Ничего», этот агент тоже молчит.",
-
   "agentSettings.newChat.title": "Новый чат",
   "agentSettings.newChat.description": "Агент забудет этот чат. Настройки сохранятся.",
   "agentSettings.newChat.button": "Начать",
@@ -251,6 +248,10 @@ export const messages = {
   },
   "agentSettings.links.files": "Файлы",
   "agentSettings.links.routines": "Автозадачи",
+  "agentSettings.links.library": "Библиотека",
+  "agentSettings.links.computer": "Компьютер",
+  "agentSettings.links.computerActive": "Используется",
+  "agentSettings.links.computerOffline": "Не в сети",
   "agentSettings.links.routinesCount": {
     one: "Настроено: {count}",
     few: "Настроено: {count}",

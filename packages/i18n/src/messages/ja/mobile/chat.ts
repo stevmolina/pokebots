@@ -528,10 +528,12 @@ export const messages = {
   "mobile.chat.threads.menu": "{name}、スレッド",
   "mobile.chat.threads.menuAttention": { other: "{name}、スレッド。{count} 件が対応待ち" },
   "mobile.chat.threads.main": "メインチャット",
+  "mobile.chat.sessions.title": "セッション",
+  "mobile.chat.sessions.new": "新しいセッション",
+  "mobile.chat.sessions.all": "すべてのセッション",
   "mobile.chat.threads.branchedFrom": "{title} から分岐",
   "mobile.chat.threads.branchedFromDeleted": "削除されたスレッドから分岐",
   "mobile.chat.threads.new": "新しいスレッド",
-  "mobile.chat.threads.all": "すべてのスレッド",
   "mobile.chat.threads.agentInfo": "エージェント情報",
   "mobile.chat.threads.draftNote":
     "最初のメッセージで新しいスレッドが始まります。{name} とのメインチャットは変わりません。",

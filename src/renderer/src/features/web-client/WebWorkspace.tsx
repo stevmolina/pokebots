@@ -2750,7 +2750,8 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
       approvals: workspace.state.approvals,
       prompts: workspace.state.prompts,
       takeovers: workspace.state.takeovers,
-      newThreadTitle: t("conversation.threads.new"),
+      newThreadTitle: t("conversation.sessions.new"),
+      mainTitle: t("conversation.sessions.main"),
       onRespondApproval: (item, decision, options) =>
         reportedFailure(() => workspace.approve({ requestId: item.requestId, decision }), options),
       contextStates: () => workspace.state.threadContextStates,

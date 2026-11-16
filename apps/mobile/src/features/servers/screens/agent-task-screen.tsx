@@ -47,6 +47,7 @@ import {
   withQuestionContext,
 } from "@/features/chat/model/chat-messages";
 import type { AgentChatTarget } from "@/features/chat/model/chat-target";
+import { setMainSession } from "@/features/chat/model/main-session";
 import { finishedTurnSummaries, type TurnStepsSummary } from "@/features/chat/model/turn-thinking";
 import { uploadChatAttachments } from "@/features/chat/model/upload-chat-attachments";
 import { useAgentMentionReferences } from "@/features/chat/model/use-agent-mention-references";
@@ -164,6 +165,11 @@ function AgentTaskChat({
   const queryClient = useQueryClient();
   const isDraft = taskId === DRAFT_THREAD_ID;
   const threadMenu = useChatThreadMenu(target, taskId);
+  // The session on the screen is the agent's main session: the agent shows it when it opens next. A new
+  // session becomes main with its first message, when the screen gets its task id.
+  useEffect(() => {
+    if (!isDraft) setMainSession(serverId, agentId, taskId);
+  }, [serverId, agentId, taskId, isDraft]);
   const mentionReferences = useAgentMentionReferences(serverId, agentId, taskId);
   // A deleted thread has no screen: the agent's chat takes its place.
   const threadActions = useThreadActions(target.serverId, onThreadDeleted);
