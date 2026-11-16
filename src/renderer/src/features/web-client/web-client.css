@@ -6,6 +6,7 @@
 @import "../../styles.css";
 @import "./web-phone.css";
 @import "./web-phone-chat.css";
+@import "./web-phone-list.css";
 @import "./web-app.css";
 @source "../../";
 
