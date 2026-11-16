@@ -16,6 +16,7 @@ import { webServiceWorker } from "./service-worker-plugin";
 import { readLocalRuntimeVars } from "./src/server/runtime-env";
 
 export default defineConfig(({ command }) => {
+  const selfHosted = process.env.SELF_HOSTED === "1";
   const port = readApiPort(process.env.OPENBOT_API_PORT);
   const localRuntimeVars = command === "serve" ? readLocalRuntimeVars(process.env) : {};
   // The local Worker cannot reach Apple over HTTP/2, so it sends Live Activity updates to this server.
@@ -31,6 +32,12 @@ export default defineConfig(({ command }) => {
       alias: {
         "@openbot/renderer-preview": rendererPreviewAlias,
         "@openbot/renderer-web": rendererWebAlias,
+        ...(selfHosted
+          ? {
+              "cloudflare:workers": fileURLToPath(new URL("./src/self-hosted/cloudflare-workers.ts", import.meta.url)),
+              "cloudflare:sockets": fileURLToPath(new URL("./src/self-hosted/cloudflare-sockets.ts", import.meta.url)),
+            }
+          : {}),
       },
     },
     optimizeDeps: {
@@ -79,21 +86,25 @@ export default defineConfig(({ command }) => {
       ...brandPlugins(fileURLToPath(new URL("../..", import.meta.url))),
       developmentLanGuard(),
       developmentApnsProxy(),
-      cloudflare({
-        viteEnvironment: { name: "ssr" },
-        config(config) {
-          // `vite dev` runs no relay Worker, so local email leaves from the local socket. The plugin
-          // merges arrays from the return value, so the binding must leave the config it passes.
-          if (command === "serve") {
-            config.services = config.services?.filter((service) => service.binding !== "EMAIL_RELAY");
-          }
-          return { vars: { ...config.vars, ...localRuntimeVars } };
-        },
-      }),
+      ...(selfHosted
+        ? []
+        : [
+            cloudflare({
+              viteEnvironment: { name: "ssr" },
+              config(config) {
+                // `vite dev` runs no relay Worker, so local email leaves from the local socket. The plugin
+                // merges arrays from the return value, so the binding must leave the config it passes.
+                if (command === "serve") {
+                  config.services = config.services?.filter((service) => service.binding !== "EMAIL_RELAY");
+                }
+                return { vars: { ...config.vars, ...localRuntimeVars } };
+              },
+            }),
+          ]),
       // The Worker keeps every language in its bundle.
       lazyLanguageCatalogs({ applyToEnvironment: (environment) => environment.name === "client" }),
       bloubServerBuild(),
-      tanstackStart(),
+      tanstackStart(selfHosted ? { server: { entry: "./worker-entry.ts" } } : undefined),
       solidPlugin({ ssr: true }),
       // Lightning CSS currently reports valid named highlight selectors as
       // unsupported. Let Vite handle the final CSS bundle until that upstream
