@@ -109,8 +109,8 @@ function ThreadTabsTrigger(props: ThreadHeaderProps & { mode: ThreadRowMode; ref
 function ThreadMenuTrigger(props: ThreadHeaderProps & { mode: ThreadRowMode; ref: (element: HTMLElement) => void }) {
   const { t } = useText();
   const more = () => props.phoneActions !== undefined && !(props.phoneActions.desktop && props.mode === "compact");
-  /** A remote desktop session or browser control runs, and its button is in the menu. */
-  const busy = () => props.phoneActions?.remoteActive === true || props.phoneActions?.browserActing === true;
+  /** A remote desktop session runs, and its button is in the menu. */
+  const busy = () => props.phoneActions?.remoteActive === true;
   return (
     <Show when={more()} fallback={<ThreadTabsTrigger {...props} />}>
       <DropdownMenu.Trigger

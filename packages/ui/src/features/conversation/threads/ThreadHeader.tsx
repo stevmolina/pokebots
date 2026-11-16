@@ -1,4 +1,5 @@
 import { Button, Plus } from "@openbot/ui";
+import { SidePanelToggle } from "@openbot/ui/features/conversation/SidePanel";
 import { useText } from "@openbot/ui/text";
 import { createSignal, onSettled, Show } from "solid-js";
 import { ThreadMenu } from "./ThreadMenu";
@@ -163,6 +164,7 @@ function ThreadRow(props: ThreadHeaderProps) {
       <Show when={mode() !== "tabs" && (foldMark() === undefined || foldMark() === "name")}>
         <NewThreadButton disabled={!props.canStartNew} onNew={props.onNew} />
       </Show>
+      <Show when={props.phoneActions?.sidePanel}>{(sidePanel) => <SidePanelToggle {...sidePanel()} />}</Show>
     </div>
   );
 }
