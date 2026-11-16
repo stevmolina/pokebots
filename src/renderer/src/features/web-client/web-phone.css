@@ -111,8 +111,9 @@
     display: flex;
     align-items: center;
     gap: var(--openbot-space-3);
-    padding-inline: calc(var(--openbot-space-5) + env(safe-area-inset-left, 0px))
-      calc(var(--openbot-space-5) + env(safe-area-inset-right, 0px));
+    /* 16px gutters on both sides. The bar and its two controls fit the width between them. */
+    padding-inline: calc(var(--openbot-space-4) + env(safe-area-inset-left, 0px))
+      calc(var(--openbot-space-4) + env(safe-area-inset-right, 0px));
   }
 
   .web-phone-tab-bar .web-phone-apps-button.ui-button {
@@ -242,10 +243,27 @@
     overflow: visible;
   }
 
-  /* The unread button stays over the search pill while the list scrolls under it. */
+  /* The unread button sits above the search pill. */
   .web-app-frame > .sidebar-chat .sidebar-unread-jump-wrap {
     position: fixed;
     bottom: calc(var(--web-phone-tab-bar-space) + var(--openbot-space-2));
+  }
+
+  /*
+   * While the button shows, the list ends above it, so the button never covers a row or a folder name.
+   * The room under the list that the search pill needs is the room the button takes then.
+   */
+  .web-app-frame > .sidebar-chat .sidebar-chat-list:has(> .sidebar-unread-jump-wrap) {
+    margin-bottom: calc(
+      var(--web-phone-tab-bar-space) +
+      var(--openbot-space-2) +
+      var(--openbot-control-xl) +
+      var(--openbot-space-3)
+    );
+  }
+
+  .web-app-frame > .sidebar-chat .sidebar-chat-list:has(> .sidebar-unread-jump-wrap)::after {
+    display: none;
   }
 
   /* The end of the list leaves room for the floating search pill. */
@@ -679,11 +697,16 @@
     background: transparent;
   }
 
+  /*
+   * The plush is drawn larger than its box, and its feet reach about 24px below it. The margin keeps
+   * the name under the feet.
+   */
   .sidebar-featured-avatar {
     position: relative;
     display: block;
     width: 104px;
     height: 104px;
+    margin-bottom: var(--openbot-space-6);
   }
 
   .sidebar-featured-avatar > .agent-avatar {
@@ -691,10 +714,11 @@
     height: 100%;
   }
 
+  /* The star sits on the top corner of the picture, clear of the plush's belly. */
   .sidebar-featured-badge {
     position: absolute;
-    inset-inline-end: 2px;
-    bottom: 2px;
+    top: 0;
+    inset-inline-end: calc(-1 * var(--openbot-space-2));
     display: grid;
     width: 26px;
     height: 26px;
