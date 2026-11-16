@@ -55,6 +55,7 @@ import type {
   SidePanelPane,
 } from "./conversation-types";
 import { lastAgentReply, lastCodeBlock } from "./last-reply";
+import { isPhoneWeb } from "./phone-web";
 import {
   clearQuotedTextHighlight,
   highlightQuotedText,
@@ -628,6 +629,14 @@ export function createConversationViewScope(props: ConversationProps) {
     else setActiveRightPanel(pane);
   }
   const sideThreadIds = () => props.threads?.side.tabs.map((thread) => thread.id) ?? [];
+  /**
+   * The side panel after its last tab closed: it lists the panes. On a phone the list covers the chat,
+   * so the chat shows again.
+   */
+  function showEmptySidePanel() {
+    if (isPhoneWeb()) hideBrowserPanel();
+    else setActiveRightPanel("side-panel");
+  }
   /** The side thread that the side panel shows, or null when its tab is gone. */
   const shownPanelThreadId = () => {
     const id = panelThreadId();
@@ -673,7 +682,7 @@ export function createConversationViewScope(props: ConversationProps) {
     else if (file) {
       setActiveRightPanel("side-panel");
       openSidePanelFile(file.key);
-    } else setActiveRightPanel("side-panel");
+    } else showEmptySidePanel();
   }
   /** Closes the tab of a side thread in the side panel. The thread stays in the thread list. */
   function closePanelThread(id: string) {
@@ -744,7 +753,7 @@ export function createConversationViewScope(props: ConversationProps) {
       // The closed pane must not stay on screen while the file reads, or after a failed read.
       setActiveRightPanel("side-panel");
       openSidePanelFile(file.key);
-    } else setActiveRightPanel("side-panel");
+    } else showEmptySidePanel();
   }
   /**
    * Closes the tab of a file. When the file showed, the file next to it shows, else the last pane or
@@ -765,7 +774,7 @@ export function createConversationViewScope(props: ConversationProps) {
     const thread = sideThreadIds()[0];
     if (pane) openSidePanelPane(pane);
     else if (thread) openPanelThread(thread);
-    else setActiveRightPanel("side-panel");
+    else showEmptySidePanel();
   }
   /** Closes the tab of the file that shows. */
   function closeShownSidePanelFile() {

@@ -39,6 +39,7 @@ import { useConversationController } from "./conversation-controller-context";
 import { type AgentNotificationLevelCalls, conversationRuntime } from "./conversation-runtime";
 import { useConversationViewScope } from "./conversation-scope";
 import { agentSkillsMode } from "./installed-skills-source";
+import { createPhoneWeb } from "./phone-web";
 import { desktopChatEventRoutinesApi } from "./routine-webhooks-api";
 import type { RoutineResultsCalls } from "./routines-port";
 import { type CodexLivePort, createCodexLiveConversation } from "./stores/codex-live-conversation-store";
@@ -146,6 +147,7 @@ function VoiceConversation(paneProps: VoicePillPresence & { kind: VoiceConversat
 export function ConversationPanels(panelProps: { onOpenUsage?: ((trigger: HTMLButtonElement) => void) | undefined }) {
   const controller = useConversationController();
   const bubbleStyle = useChatBubbleStyle();
+  const phoneWeb = createPhoneWeb();
   const {
     agentReady,
     activateBrowserTab,
@@ -597,6 +599,8 @@ export function ConversationPanels(panelProps: { onOpenUsage?: ((trigger: HTMLBu
             available={sidePanelPanes()}
             settingsLabel={channel ? t("channel.settings.title") : undefined}
             onOpen={openSidePanelPane}
+            // On a phone the list covers the chat, and the chat header has no panel button.
+            onClose={phoneWeb() ? toggleSidePanel : undefined}
           />
         </aside>
       </Show>

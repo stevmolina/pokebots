@@ -658,6 +658,11 @@ export function SidePanelLauncher(props: {
   /** As in `SidePanelHeader`. */
   settingsLabel?: string | undefined;
   onOpen: (pane: SidePanelPane) => void;
+  /**
+   * Closes the panel. Set it where the list covers the chat and no other button closes it, as on a
+   * phone. Without it, the list has no Close button.
+   */
+  onClose?: (() => void) | undefined;
 }) {
   const { t } = useText();
   let launcher: HTMLElement | undefined;
@@ -675,6 +680,14 @@ export function SidePanelLauncher(props: {
           </Button>
         )}
       </For>
+      <Show when={props.onClose}>
+        {(close) => (
+          <Button variant="ghost" class="side-panel-launch" onClick={() => close()()}>
+            <X aria-hidden="true" />
+            {t("conversation.sidePanel.close")}
+          </Button>
+        )}
+      </Show>
     </nav>
   );
 }
