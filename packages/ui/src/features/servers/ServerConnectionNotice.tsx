@@ -42,6 +42,15 @@ export function serverWorkspacePhase(state: ServerWorkspaceState): ServerWorkspa
   return state.hasContent ? "reconnecting" : "connecting";
 }
 
+/**
+ * The phases of a connection that mends itself. The pane shows no notice for them: the composer
+ * already says "Connecting...", and the chat stays as it is. A server that sleeps, updates, has an
+ * issue, or needs the user (blocked) still shows its notice with Retry.
+ */
+export function isQuietServerPhase(phase: ServerWorkspacePhase): boolean {
+  return phase === "connecting" || phase === "loading" || phase === "reconnecting";
+}
+
 export interface ServerConnectionNoticeProps {
   name: string;
   phase: ServerWorkspacePhase;
@@ -300,15 +309,17 @@ export function ServerConnectionNotice(props: ServerConnectionNoticeProps) {
       <Show
         when={props.initial}
         fallback={
-          <section class="server-connection-notice" role="status" aria-live="polite">
-            <div>
-              <p>{title()}</p>
-              <p class="server-connection-detail">{detail()}</p>
-              <ErrorReference reference={reference()} />
-              {upsell()}
-            </div>
-            <div class="server-connection-actions">{actions()}</div>
-          </section>
+          <Show when={!isQuietServerPhase(props.phase) || props.issue}>
+            <section class="server-connection-notice" role="status" aria-live="polite">
+              <div>
+                <p>{title()}</p>
+                <p class="server-connection-detail">{detail()}</p>
+                <ErrorReference reference={reference()} />
+                {upsell()}
+              </div>
+              <div class="server-connection-actions">{actions()}</div>
+            </section>
+          </Show>
         }
       >
         <Show when={props.screen !== false}>

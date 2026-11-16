@@ -91,3 +91,13 @@ export const Reconnecting: Story = {
     <ServerConnectionNotice name="My server" phase="waiting" remainingSeconds={12} initial={false} onRetry={() => {}} />
   ),
 };
+/** The server needs the user, such as a plan problem: the notice stays, with Retry and Open settings. */
+export const NeedsAttention: Story = {
+  render: () => (
+    <ServerConnectionNotice name="My server" phase="blocked" initial={false} onRetry={() => {}} onManage={() => {}} />
+  ),
+};
+/** A connect or reconnect that mends itself shows no notice: this story is empty on purpose. The composer says "Connecting...". */
+export const ReconnectingQuiet: Story = {
+  render: () => <ServerConnectionNotice name="My server" phase="reconnecting" initial={false} onRetry={() => {}} />,
+};
