@@ -1,0 +1,139 @@
+/*
+ * The phone chat, in the Grok Bot look: glass round buttons and a name pill floating over the
+ * messages, soft bubbles, and a floating composer. It only changes how a pushed chat looks on a
+ * phone. The structure, the swipe back and the menus stay as they were.
+ */
+
+@media (max-width: 720px) {
+  .web-app-frame[data-web-mobile-pane="conversation"] {
+    --phone-chat-glass: color-mix(in srgb, var(--openbot-bg-surface-raised) 74%, transparent);
+    --phone-chat-glass-border: color-mix(in srgb, var(--openbot-text-primary) 8%, transparent);
+    --phone-chat-glass-shadow: 0 2px 14px color-mix(in srgb, var(--openbot-text-primary) 10%, transparent);
+    --phone-chat-bubble: color-mix(in srgb, var(--openbot-text-primary) 6.5%, transparent);
+    --phone-chat-button: 44px;
+  }
+
+  /* ---------------------------------------------------------------- floating header */
+
+  .web-app-frame[data-web-mobile-pane="conversation"] header.conversation-header {
+    position: relative;
+    z-index: 4;
+    height: 64px;
+    padding-block: 10px 0;
+    padding-inline: calc(var(--phone-chat-button) * 2 + var(--openbot-space-4));
+    background: transparent;
+  }
+
+  .web-app-frame[data-web-mobile-pane="conversation"] .web-phone-back.ui-button,
+  .web-app-frame[data-web-mobile-pane="conversation"] .conversation-header-actions {
+    height: var(--phone-chat-button);
+    border: 1px solid var(--phone-chat-glass-border);
+    background: var(--phone-chat-glass);
+    -webkit-backdrop-filter: blur(20px) saturate(1.6);
+    backdrop-filter: blur(20px) saturate(1.6);
+    box-shadow: var(--phone-chat-glass-shadow);
+  }
+
+  .web-app-frame[data-web-mobile-pane="conversation"] .web-phone-back.ui-button {
+    top: 10px;
+    inset-inline-start: var(--openbot-space-3);
+    width: var(--phone-chat-button);
+  }
+
+  /* The name and its picture sit in one pill, centered. The role line stays out of the pill. */
+  .web-app-frame[data-web-mobile-pane="conversation"] .conversation-header .conversation-title.ui-button {
+    height: var(--phone-chat-button);
+    gap: var(--openbot-space-2);
+    border: 1px solid var(--phone-chat-glass-border);
+    border-radius: var(--openbot-radius-pill);
+    background: var(--phone-chat-glass);
+    -webkit-backdrop-filter: blur(20px) saturate(1.6);
+    backdrop-filter: blur(20px) saturate(1.6);
+    padding-inline: var(--openbot-space-3) var(--openbot-space-4);
+    box-shadow: var(--phone-chat-glass-shadow);
+  }
+
+  .web-app-frame[data-web-mobile-pane="conversation"] .conversation-header .conversation-title .agent-avatar {
+    display: inline-flex;
+    width: 28px;
+    height: 28px;
+    flex: none;
+  }
+
+  .web-app-frame[data-web-mobile-pane="conversation"] .conversation-header .conversation-title h1 > :not(:first-child) {
+    display: none;
+  }
+
+  .web-app-frame[data-web-mobile-pane="conversation"] .conversation-header .conversation-title h1 {
+    font-size: var(--openbot-text-xl);
+    font-weight: var(--openbot-weight-semibold);
+  }
+
+  /* The pin and the side panel share one round glass control on the trailing edge. */
+  .web-app-frame[data-web-mobile-pane="conversation"] .conversation-header-actions {
+    position: absolute;
+    top: 10px;
+    inset-inline-end: var(--openbot-space-3);
+    display: flex;
+    min-width: var(--phone-chat-button);
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--openbot-radius-pill);
+    padding-inline: var(--openbot-space-1);
+  }
+
+  /* ---------------------------------------------------------------- bubbles */
+
+  /* A reply is a soft, rounded bubble, not a full-width card. */
+  .web-app-frame[data-web-mobile-pane="conversation"] .message-entry-agent .ui-bubble-content {
+    max-width: 88%;
+    border-radius: var(--openbot-radius-xl);
+    background: var(--phone-chat-bubble);
+    padding: var(--openbot-space-3) var(--openbot-space-4);
+    font-size: var(--openbot-text-xl);
+    line-height: 1.45;
+  }
+
+  .web-app-frame[data-web-mobile-pane="conversation"] .message-entry-agent .message-shell {
+    justify-content: flex-start;
+  }
+
+  /* The person's message is a solid pill of the accent color, on the trailing edge. */
+  .web-app-frame[data-web-mobile-pane="conversation"] .message-entry-user .ui-bubble-content {
+    max-width: 86%;
+    border-radius: var(--openbot-radius-xl);
+    padding: var(--openbot-space-2-5, 10px) var(--openbot-space-4);
+    font-size: var(--openbot-text-xl);
+    line-height: 1.4;
+  }
+
+  /* ---------------------------------------------------------------- floating composer */
+
+  .web-app-frame[data-web-mobile-pane="conversation"] .composer-wrap > .composer {
+    min-height: 56px;
+    border: 1px solid var(--phone-chat-glass-border);
+    border-radius: var(--openbot-radius-pill);
+    background: var(--openbot-bg-surface-raised);
+    padding: var(--openbot-space-1-5, 6px) var(--openbot-space-2);
+    box-shadow: 0 8px 28px color-mix(in srgb, var(--openbot-text-primary) 12%, transparent);
+  }
+
+  .web-app-frame[data-web-mobile-pane="conversation"] .composer-wrap > .composer[data-compact] {
+    grid-template-columns: 40px minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: var(--openbot-space-2);
+  }
+
+  .web-app-frame[data-web-mobile-pane="conversation"] .composer-wrap > .composer .composer-button {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--openbot-radius-pill);
+    background: var(--phone-chat-bubble);
+  }
+
+  .web-app-frame[data-web-mobile-pane="conversation"] .composer-wrap > .composer .voice-button {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--openbot-radius-pill);
+  }
+}

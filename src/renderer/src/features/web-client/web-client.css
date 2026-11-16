@@ -5,6 +5,7 @@
    (`DESKTOP_ONLY_STYLES` and `DEFERRED_WEB_STYLES` in `scripts/web-stylesheet.ts`). */
 @import "../../styles.css";
 @import "./web-phone.css";
+@import "./web-phone-chat.css";
 @import "./web-app.css";
 @source "../../";
 
