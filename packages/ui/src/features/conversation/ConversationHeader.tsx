@@ -42,6 +42,11 @@ export interface ConversationHeaderProps {
    * panel button. Those actions are in the menu.
    */
   phoneMenu?: boolean | undefined;
+  /**
+   * A desktop chat with threads. The thread menu at the end of the header opens the pins, the side
+   * panel and the remote desktop, so the header shows no button for them.
+   */
+  actionsMenu?: boolean | undefined;
 }
 
 export interface ConversationHeaderPendingModel {
@@ -129,7 +134,11 @@ export function ConversationHeader(props: ConversationHeaderProps) {
   const titleTab = () => (props.titleSelected === undefined ? undefined : "");
   const titleSelected = () => (props.titleSelected ? "" : undefined);
   return (
-    <header class="window-drag conversation-header" data-phone-menu={props.phoneMenu ? "" : undefined}>
+    <header
+      class="window-drag conversation-header"
+      data-phone-menu={props.phoneMenu ? "" : undefined}
+      data-actions-menu={props.actionsMenu ? "" : undefined}
+    >
       <div class="conversation-heading-group">
         <Show when={!props.tabbed && props.agent} fallback={props.tabbed ? undefined : props.title}>
           {(agent) => (

@@ -1440,3 +1440,24 @@
   transform: scale(0.92);
   transition-duration: var(--openbot-duration-fast);
 }
+
+/*
+ * A desktop header with its actions in the thread menu. The pin button stays for its popover, which the
+ * menu opens, but it does not show: it sits under the "More" button at the end of the header.
+ */
+.conversation-header[data-actions-menu] {
+  position: relative;
+}
+
+.conversation-header[data-actions-menu] .pinned-messages-button {
+  position: absolute;
+  top: 50%;
+  inset-inline-end: var(--openbot-space-2);
+  width: var(--openbot-control-sm);
+  height: var(--openbot-control-sm);
+  margin: 0;
+  padding: 0;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-50%);
+}

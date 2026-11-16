@@ -357,6 +357,31 @@
   margin-left: auto;
 }
 
+/*
+ * A desktop header keeps its actions in the thread menu. "+" stays after the last tab, and the "More"
+ * button sits at the end of the header, where the pin and side panel buttons were.
+ */
+.agent-threads-header[data-actions-menu] {
+  flex: 1 1 auto;
+}
+
+.agent-threads-header[data-actions-menu] > .agent-threads-phone-more.ui-button {
+  position: relative;
+  margin-inline-start: auto;
+}
+
+/* A remote desktop session or browser control runs. Its button is in the menu, so the menu button shows it. */
+.agent-threads-more-dot {
+  position: absolute;
+  inset-inline-end: 4px;
+  bottom: 4px;
+  width: 5px;
+  height: 5px;
+  border: 1px solid var(--openbot-bg-sidebar);
+  border-radius: var(--openbot-radius-pill);
+  background: var(--openbot-success);
+}
+
 /* As tall as a tab and with its corners, so a hover fill on "+" matches the tab fill. */
 .agent-threads-icon-button.ui-button {
   width: var(--openbot-control-sm);

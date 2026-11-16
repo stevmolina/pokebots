@@ -151,6 +151,7 @@ function ThreadRow(props: ThreadHeaderProps) {
       data-mode={mode()}
       data-fold={foldMark()}
       data-drop-target={dropTarget()}
+      data-actions-menu={props.phoneActions?.desktop ? "" : undefined}
     >
       <Show when={mode() === "tabs"}>
         <Show when={props.tabs.length > 0}>
