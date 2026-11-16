@@ -66,6 +66,26 @@ export function setToastErrorAction(resolver: ToastErrorAction): () => void {
     if (errorAction === resolver) errorAction = undefined;
   };
 }
+/** Says whether an error toast with these words shows nothing. */
+export type ToastErrorMute = (words: string) => boolean;
+let errorMute: ToastErrorMute | undefined;
+/**
+ * An app sets one predicate, for error words that it does not show, such as connection noise that
+ * its own status already shows. It runs for the title and the description. Returns the way to remove it.
+ */
+export function setToastErrorMute(predicate: ToastErrorMute): () => void {
+  errorMute = predicate;
+  return () => {
+    if (errorMute === predicate) errorMute = undefined;
+  };
+}
+function mutedError(
+  message: Parameters<typeof sonnerToast>[0],
+  description: SonnerExternalToast["description"],
+): boolean {
+  if (!errorMute) return false;
+  return [message, description].some((words) => typeof words === "string" && errorMute?.(words) === true);
+}
 function actionForError(
   message: Parameters<typeof sonnerToast>[0],
   description: SonnerExternalToast["description"],
@@ -82,6 +102,7 @@ function outcomeToast(kind: "error" | "warning") {
   return (message: Parameters<typeof sonnerToast>[0], options?: ExternalToast) => {
     const { report, error, fallback, ...data } = options ?? {};
     const given = data.description;
+    if (kind === "error" && mutedError(message, given)) return data.id ?? "muted-error";
     if (error !== undefined) data.description = withReference(error, data.description, fallback);
     if (kind === "error" && data.action === undefined) {
       const action = actionForError(message, given);
