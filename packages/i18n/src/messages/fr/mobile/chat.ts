@@ -548,10 +548,12 @@ export const messages = {
     other: "{name}, fils. {count} fils vous attendent",
   },
   "mobile.chat.threads.main": "Chat principal",
+  "mobile.chat.sessions.title": "Sessions",
+  "mobile.chat.sessions.new": "Nouvelle session",
+  "mobile.chat.sessions.all": "Toutes les sessions",
   "mobile.chat.threads.branchedFrom": "Dérivé de {title}",
   "mobile.chat.threads.branchedFromDeleted": "Dérivé d’un fil supprimé",
   "mobile.chat.threads.new": "Nouveau fil",
-  "mobile.chat.threads.all": "Tous les fils",
   "mobile.chat.threads.agentInfo": "Infos de l’agent",
   "mobile.chat.threads.draftNote":
     "Votre premier message démarre un nouveau fil. Le chat principal avec {name} ne change pas.",

@@ -94,7 +94,6 @@ export const messages = {
   "agentSettings.groups.does": "行为",
   "agentSettings.groups.rules": "规则",
   "agentSettings.groups.model": "模型",
-  "agentSettings.groups.alerts": "提醒",
   "agentSettings.saveFailed": "无法保存助手设置。",
 
   "agentSettings.name": "名称",
@@ -162,10 +161,8 @@ export const messages = {
   "agentSettings.busyMessage.steerUnsupported": "{provider} 无法在运行中引导。助手工作期间发送的消息会进入队列等待。",
 
   "agentSettings.notificationLevel.title": "通知我",
+  "agentSettings.notificationLevel.footer": "当此智能体完成或等待你时收到通知。",
   "agentSettings.notificationLevel.server": "服务器默认（{level}）",
-  "agentSettings.notificationLevel.note":
-    "此选择仅对你生效，并应用于你的所有设备。服务器已静音或设为“不提醒”时，此助手也不会提醒。",
-
   "agentSettings.newChat.title": "新对话",
   "agentSettings.newChat.description": "助手会忘记当前对话，但保留已有设置。",
   "agentSettings.newChat.button": "开始",
@@ -200,6 +197,10 @@ export const messages = {
   "agentSettings.links.tablesCount": { one: "{count} 个表", other: "{count} 个表" },
   "agentSettings.links.files": "文件",
   "agentSettings.links.routines": "自动化任务",
+  "agentSettings.links.library": "资料库",
+  "agentSettings.links.computer": "电脑",
+  "agentSettings.links.computerActive": "使用中",
+  "agentSettings.links.computerOffline": "离线",
   "agentSettings.links.routinesCount": { one: "已配置 {count} 个", other: "已配置 {count} 个" },
   "agentSettings.links.routinesNone": "无",
   "agentSettings.runtime.workspaceNote":

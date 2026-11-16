@@ -62,6 +62,10 @@ export const messages = {
   "mobile.agent.menu.unmute": "取消静音",
   "mobile.agent.menu.hide": "隐藏",
   "mobile.agent.menu.info": "信息",
+  "mobile.agent.profile.edit": "编辑",
+  "mobile.agent.profile.library": "资料库",
+  "mobile.agent.profile.computer": "电脑",
+  "mobile.agent.profile.notificationsFooter": "当此智能体完成或等待你时收到通知。仅对你生效，适用于你的所有设备。",
   "mobile.agent.menu.more": "更多",
   "mobile.agent.menu.copyId": "复制 ID",
   "mobile.agent.menu.duplicate": "复制一份",
@@ -382,7 +386,6 @@ export const messages = {
   "mobile.agent.notificationLevel.title": "通知我",
   "mobile.agent.notificationLevel.server": "跟随服务器",
   "mobile.agent.notificationLevel.serverValue": "跟随服务器（{level}）",
-  "mobile.agent.notificationLevel.footer": "“通知我”只对你生效，并应用到你的所有设备。",
   "mobile.agent.notificationLevel.unsupported":
     "此服务器无法为助手保存你自己的通知级别。请在运行它的电脑上更新 OpenBot。",
   "mobile.agent.newChat.title": "新对话",

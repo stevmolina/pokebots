@@ -99,7 +99,6 @@ export const messages = defineMessages("agentSettings", {
   "agentSettings.groups.does": "Does",
   "agentSettings.groups.rules": "Rules",
   "agentSettings.groups.model": "Model",
-  "agentSettings.groups.alerts": "Alerts",
   "agentSettings.saveFailed": "Could not save agent settings.",
 
   "agentSettings.name": "Name",
@@ -173,9 +172,8 @@ export const messages = defineMessages("agentSettings", {
     "{provider} cannot steer a running turn. Messages sent while it works wait in the queue.",
 
   "agentSettings.notificationLevel.title": "Notify me",
+  "agentSettings.notificationLevel.footer": "Get a notice when this agent finishes or waits for you.",
   "agentSettings.notificationLevel.server": "Server default ({level})",
-  "agentSettings.notificationLevel.note":
-    "This choice is only for you and applies on all your devices. When the server is muted or set to Nothing, this agent stays silent too.",
 
   "agentSettings.newChat.title": "New chat",
   "agentSettings.newChat.description": "The agent forgets this chat. Its setup stays.",
@@ -213,6 +211,10 @@ export const messages = defineMessages("agentSettings", {
   "agentSettings.links.tablesCount": { one: "{count} table", other: "{count} tables" },
   "agentSettings.links.files": "Files",
   "agentSettings.links.routines": "Routines",
+  "agentSettings.links.library": "Library",
+  "agentSettings.links.computer": "Computer",
+  "agentSettings.links.computerActive": "In use",
+  "agentSettings.links.computerOffline": "Offline",
   "agentSettings.links.routinesCount": { one: "{count} configured", other: "{count} configured" },
   "agentSettings.links.routinesNone": "None",
   "agentSettings.runtime.workspaceNote":

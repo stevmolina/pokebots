@@ -267,35 +267,27 @@ export const ChatHeader = memo(function ChatHeader({
       }}
     >
       {threadMenu ? (
-        <MenuView
-          colorScheme={theme === "dark" ? "dark" : "light"}
-          actions={threadMenu.actions}
-          onPressAction={({ nativeEvent }) => threadMenu.onPressAction(nativeEvent.event)}
-          style={{ alignSelf: "stretch" }}
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={
+            threadMenu.attention > 0
+              ? t("mobile.chat.threads.menuAttention", { name: target.name, count: threadMenu.attention })
+              : t("mobile.chat.threads.menu", { name: target.name })
+          }
+          className="min-w-0 flex-row items-center gap-2 pr-3 pl-2.5"
+          hitSlop={8}
+          style={{ height: pillHeight, maxWidth: kicker ? width - insets.left - insets.right - titleReserve : 220 }}
+          onPress={threadMenu.open}
         >
-          {/* The native menu sizes its trigger to the content, so the title gets the width it can use. A
-            wider trigger goes under the pill's edge and cuts the chevron. */}
-          <View
-            accessible
-            accessibilityRole="button"
-            accessibilityLabel={
-              threadMenu.attention > 0
-                ? t("mobile.chat.threads.menuAttention", { name: target.name, count: threadMenu.attention })
-                : t("mobile.chat.threads.menu", { name: target.name })
-            }
-            className="min-w-0 flex-row items-center gap-2 pr-3 pl-2.5"
-            style={{ height: pillHeight, maxWidth: kicker ? width - insets.left - insets.right - titleReserve : 220 }}
-          >
-            {identity}
-            <ChevronDown color={iconColor} size={16} strokeWidth={2.5} />
-            {threadMenu.attention > 0 ? (
-              <View
-                className="absolute top-1.5 right-2 size-2.5 rounded-full"
-                style={{ backgroundColor: threadMenu.color }}
-              />
-            ) : null}
-          </View>
-        </MenuView>
+          {identity}
+          <ChevronDown color={iconColor} size={16} strokeWidth={2.5} />
+          {threadMenu.attention > 0 ? (
+            <View
+              className="absolute top-1.5 right-2 size-2.5 rounded-full"
+              style={{ backgroundColor: threadMenu.color }}
+            />
+          ) : null}
+        </Pressable>
       ) : (
         <Pressable
           className="min-w-0 shrink flex-row items-center gap-2 self-stretch pr-4 pl-2.5"

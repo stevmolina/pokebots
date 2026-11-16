@@ -309,7 +309,10 @@ const threadsRuntime: WebRuntimeFactory = (_accountId, events) => {
   };
 };
 
-/** Side threads in the browser: Chief has two open thread tabs. Open Chief to see them. */
+/**
+ * Side threads in the browser: Chief's main session is "Pricing page copy". Open Chief, then its pill,
+ * to see the Sessions card.
+ */
 export const Threads: Story = {
   args: { createRuntime: threadsRuntime },
   render: (args) => {

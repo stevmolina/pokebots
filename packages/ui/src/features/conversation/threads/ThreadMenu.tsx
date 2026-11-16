@@ -1,7 +1,6 @@
 import {
   Archive,
   buttonVariants,
-  ChevronDown,
   ChevronRight,
   DropdownMenu,
   Ellipsis,
@@ -11,14 +10,15 @@ import {
 } from "@openbot/ui";
 import { createScrollFades } from "@openbot/ui/components/createScrollFades";
 import { RemoteDesktopIcon } from "@openbot/ui/features/conversation/ConversationIcons";
+import { SidePanelToggle } from "@openbot/ui/features/conversation/SidePanel";
 import { sidebarMessageTime } from "@openbot/ui/features/sidebar/sidebar-filtering";
 import { useText } from "@openbot/ui/text";
 import { createMemo, For, onSettled, Show } from "solid-js";
-import { ThreadStatusMark, ThreadStatusText, ThreadTabIcon, threadAttention } from "./ThreadStatusMark";
+import { ThreadStatusMark } from "./ThreadStatusMark";
 import { ThreadTitle } from "./ThreadTitle";
-import type { ThreadHeaderProps, ThreadRowMode } from "./thread-types";
+import type { ThreadHeaderProps } from "./thread-types";
 
-/** The threads in the menu. The list scrolls without a scrollbar, and fades at an edge with more threads. */
+/** The sessions in the phone sheet. The list scrolls without a scrollbar, and fades at an edge with more threads. */
 function ThreadMenuList(props: ThreadHeaderProps) {
   const { format } = useText();
   const fades = createScrollFades();
@@ -26,7 +26,7 @@ function ThreadMenuList(props: ThreadHeaderProps) {
   const current = (id: string) => (id === props.activeId ? "true" : undefined);
   return (
     <div class={["agent-threads-menu-list", fades.classes()]} ref={fades.bind} onScroll={fades.measure}>
-      <For each={props.threads}>
+      <For each={props.sessions}>
         {(thread) => (
           <DropdownMenu.Item
             class="agent-threads-menu-item"
@@ -53,88 +53,33 @@ function ThreadMenuList(props: ThreadHeaderProps) {
   );
 }
 
-/**
- * The menu button: a chevron after the tabs, or in a narrow header the open thread with a chevron. In
- * a header too narrow for a title, only the chevron shows, and the menu marks the open thread. A phone
- * has its own button (`ThreadMenuTrigger`).
- */
-function ThreadTabsTrigger(props: ThreadHeaderProps & { mode: ThreadRowMode; ref: (element: HTMLElement) => void }) {
+/** The "More" button at the end of the header. A dot shows while a remote desktop session runs. */
+function ThreadMenuTrigger(props: ThreadHeaderProps & { ref: (element: HTMLElement) => void }) {
   const { t } = useText();
-  const active = () => props.tabs.find((thread) => thread.id === props.activeId);
-  const switcher = () => (props.mode === "compact" ? active() : undefined);
-  return (
-    <Show
-      when={switcher()}
-      fallback={
-        <DropdownMenu.Trigger
-          class={buttonVariants({
-            variant: "ghost",
-            size: "icon-sm",
-            class: "agent-threads-icon-button agent-threads-menu-button no-drag",
-          })}
-          aria-label={t("conversation.threads.all")}
-          title={t("conversation.threads.all")}
-          ref={props.ref}
-        >
-          <ChevronDown aria-hidden="true" />
-        </DropdownMenu.Trigger>
-      }
-    >
-      {(thread) => (
-        <DropdownMenu.Trigger
-          class={buttonVariants({ variant: "ghost", size: "sm", class: "agent-threads-switcher no-drag" })}
-          ref={props.ref}
-          data-attention={threadAttention(thread().status)}
-          title={thread().title}
-          aria-label={t("conversation.threads.current", { title: thread().title })}
-        >
-          {/* The open thread as its selected tab shows it: the icon slot, the title, then the chevron. */}
-          <span class="agent-threads-switcher-icon" aria-hidden="true">
-            <ThreadTabIcon status={thread().status} />
-          </span>
-          <ThreadTitle class="agent-threads-tab-title" title={thread().title} />
-          <ThreadStatusText status={thread().status} />
-          <ChevronDown class="agent-threads-switcher-chevron" aria-hidden="true" />
-        </DropdownMenu.Trigger>
-      )}
-    </Show>
-  );
-}
-
-/**
- * The menu button. With the header actions in the menu, it is one "More" button with dots; the title
- * of the open thread is in the menu. A narrow desktop header keeps the open thread as the button, so
- * the thread stays named. Other windows keep the tabs button.
- */
-function ThreadMenuTrigger(props: ThreadHeaderProps & { mode: ThreadRowMode; ref: (element: HTMLElement) => void }) {
-  const { t } = useText();
-  const more = () => props.phoneActions !== undefined && !(props.phoneActions.desktop && props.mode === "compact");
   /** A remote desktop session runs, and its button is in the menu. */
   const busy = () => props.phoneActions?.remoteActive === true;
   return (
-    <Show when={more()} fallback={<ThreadTabsTrigger {...props} />}>
-      <DropdownMenu.Trigger
-        class={buttonVariants({
-          variant: "ghost",
-          size: "icon-sm",
-          class: "agent-threads-icon-button agent-threads-menu-button agent-threads-phone-more no-drag",
-        })}
-        aria-label={t("agent.dock.more")}
-        title={t("agent.dock.more")}
-        ref={props.ref}
-      >
-        <Ellipsis aria-hidden="true" />
-        <Show when={busy()}>
-          <span class="agent-threads-more-dot" aria-hidden="true" />
-        </Show>
-      </DropdownMenu.Trigger>
-    </Show>
+    <DropdownMenu.Trigger
+      class={buttonVariants({
+        variant: "ghost",
+        size: "icon-sm",
+        class: "agent-threads-icon-button agent-threads-menu-button agent-threads-phone-more no-drag",
+      })}
+      aria-label={t("agent.dock.more")}
+      title={t("agent.dock.more")}
+      ref={props.ref}
+    >
+      <Ellipsis aria-hidden="true" />
+      <Show when={busy()}>
+        <span class="agent-threads-more-dot" aria-hidden="true" />
+      </Show>
+    </DropdownMenu.Trigger>
   );
 }
 
 /**
- * The actions of the menu: a new thread, and with the header actions also the pins, the side panel
- * and, on a desktop, the remote desktop.
+ * The actions of the menu: the pins, the side panel and, on a desktop, the remote desktop. A phone also
+ * starts a new session here, because its header has no "+".
  */
 function ThreadMenuActions(
   props: ThreadHeaderProps & { onOpenRemote: (open: (trigger: HTMLElement) => void) => void },
@@ -142,10 +87,12 @@ function ThreadMenuActions(
   const { t } = useText();
   return (
     <>
-      <DropdownMenu.Item disabled={!props.canStartNew} onSelectAfterClose={props.onNew}>
-        <MessageCirclePlus aria-hidden="true" />
-        {t("conversation.threads.new")}
-      </DropdownMenu.Item>
+      <Show when={props.phoneActions?.desktop !== true}>
+        <DropdownMenu.Item disabled={!props.canStartNew} onSelectAfterClose={props.onNew}>
+          <MessageCirclePlus aria-hidden="true" />
+          {t("conversation.sessions.new")}
+        </DropdownMenu.Item>
+      </Show>
       <Show when={props.phoneActions?.onOpenPins}>
         {(openPins) => (
           <DropdownMenu.Item onSelectAfterClose={openPins()}>
@@ -214,70 +161,56 @@ function screenBottomEdge() {
 }
 
 /**
- * Every side thread of the agent. A thread without a tab opens in a new tab. On a phone the menu is a
- * sheet at the bottom of the screen: the threads come first, in reach of the thumb, and the actions
- * follow in one group.
+ * The "More" menu of the chat header. A desktop header shows a dropdown with the header actions; the
+ * sessions are in the agent panel. On a phone the menu is a sheet at the bottom of the screen: the
+ * sessions come first, in reach of the thumb, and the actions follow in one group.
  */
-export function ThreadMenu(props: ThreadHeaderProps & { mode: ThreadRowMode }) {
+export function ThreadMenu(props: ThreadHeaderProps) {
   const { t } = useText();
   // A memo: the menu reads it inside its own effects, where reading the header props is not allowed.
-  // A desktop header keeps a dropdown under its "More" button at the end of the header.
-  const sheet = createMemo(() => props.phoneActions !== undefined && props.phoneActions.desktop !== true);
-  const desktopMore = createMemo(() => props.phoneActions?.desktop === true);
+  const sheet = createMemo(() => props.phoneActions?.desktop !== true);
   let trigger: HTMLElement | undefined;
   const openRemote = (open: (trigger: HTMLElement) => void) => {
     if (trigger) open(trigger);
   };
   return (
-    <DropdownMenu.Root
-      placement={sheet() ? "top" : desktopMore() ? "bottom-end" : "bottom-start"}
-      gutter={sheet() ? 0 : 4}
-      sameWidth={sheet()}
-      flip={!sheet()}
-      overflowPadding={sheet() ? 0 : 8}
-      getAnchorRect={(anchor) => (sheet() ? screenBottomEdge() : anchor?.getBoundingClientRect())}
-    >
-      <ThreadMenuTrigger
-        {...props}
-        ref={(element) => {
-          trigger = element;
-        }}
-      />
-      <DropdownMenu.Portal>
-        <DropdownMenu.Content class={sheet() ? "agent-threads-menu agent-threads-sheet" : "agent-threads-menu"}>
-          <Show
-            when={sheet()}
-            fallback={
-              <>
+    <div class="agent-threads-header" data-actions-menu={sheet() ? undefined : ""}>
+      <DropdownMenu.Root
+        placement={sheet() ? "top" : "bottom-end"}
+        gutter={sheet() ? 0 : 4}
+        sameWidth={sheet()}
+        flip={!sheet()}
+        overflowPadding={sheet() ? 0 : 8}
+        getAnchorRect={(anchor) => (sheet() ? screenBottomEdge() : anchor?.getBoundingClientRect())}
+      >
+        <ThreadMenuTrigger
+          {...props}
+          ref={(element) => {
+            trigger = element;
+          }}
+        />
+        <DropdownMenu.Portal>
+          <DropdownMenu.Content class={sheet() ? "agent-threads-menu agent-threads-sheet" : "agent-threads-menu"}>
+            <Show when={sheet()} fallback={<ThreadMenuActions {...props} onOpenRemote={openRemote} />}>
+              <span class="agent-threads-sheet-handle" aria-hidden="true" />
+              <Show when={props.sessions.length > 0}>
+                {/* A heading for the eye; the menu items already name each session. */}
+                <div class="agent-threads-sheet-title" aria-hidden="true">
+                  {t("conversation.sessions.title")}
+                </div>
+                <ThreadMenuList {...props} />
+              </Show>
+              <div class="agent-threads-sheet-group">
                 <ThreadMenuActions {...props} onOpenRemote={openRemote} />
-                <Show when={props.threads.length > 0}>
-                  <DropdownMenu.Separator />
-                  <ThreadMenuList {...props} />
-                </Show>
                 <Show when={props.archived.length > 0}>
-                  <DropdownMenu.Separator />
                   <ThreadMenuArchived {...props} />
                 </Show>
-              </>
-            }
-          >
-            <span class="agent-threads-sheet-handle" aria-hidden="true" />
-            <Show when={props.threads.length > 0}>
-              {/* A heading for the eye; the menu items already name each thread. */}
-              <div class="agent-threads-sheet-title" aria-hidden="true">
-                {t("conversation.threads.all")}
               </div>
-              <ThreadMenuList {...props} />
             </Show>
-            <div class="agent-threads-sheet-group">
-              <ThreadMenuActions {...props} onOpenRemote={openRemote} />
-              <Show when={props.archived.length > 0}>
-                <ThreadMenuArchived {...props} />
-              </Show>
-            </div>
-          </Show>
-        </DropdownMenu.Content>
-      </DropdownMenu.Portal>
-    </DropdownMenu.Root>
+          </DropdownMenu.Content>
+        </DropdownMenu.Portal>
+      </DropdownMenu.Root>
+      <Show when={props.phoneActions?.sidePanel}>{(sidePanel) => <SidePanelToggle {...sidePanel()} />}</Show>
+    </div>
   );
 }

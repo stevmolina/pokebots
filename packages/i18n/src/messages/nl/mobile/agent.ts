@@ -63,6 +63,11 @@ export const messages = {
   "mobile.agent.menu.unmute": "Niet meer dempen",
   "mobile.agent.menu.hide": "Verbergen",
   "mobile.agent.menu.info": "Info",
+  "mobile.agent.profile.edit": "Bewerken",
+  "mobile.agent.profile.library": "Bibliotheek",
+  "mobile.agent.profile.computer": "Computer",
+  "mobile.agent.profile.notificationsFooter":
+    "Krijg een melding als deze agent klaar is of op je wacht. Alleen voor jou, op al je apparaten.",
   "mobile.agent.menu.more": "Meer",
   "mobile.agent.menu.copyId": "Kopieer ID",
   "mobile.agent.menu.duplicate": "Dupliceren",
@@ -403,7 +408,6 @@ export const messages = {
   "mobile.agent.notificationLevel.title": "Meld mij over",
   "mobile.agent.notificationLevel.server": "Serverinstelling",
   "mobile.agent.notificationLevel.serverValue": "Serverinstelling ({level})",
-  "mobile.agent.notificationLevel.footer": "“Meld mij over” geldt alleen voor jou, op al je apparaten.",
   "mobile.agent.notificationLevel.unsupported":
     "Deze server kan geen eigen meldingsniveau voor een agent bewaren. Werk OpenBot bij op de computer waarop hij draait.",
   "mobile.agent.newChat.title": "Nieuwe chat",

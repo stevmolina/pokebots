@@ -63,6 +63,11 @@ export const messages = {
   "mobile.agent.menu.unmute": "Réactiver le son",
   "mobile.agent.menu.hide": "Masquer",
   "mobile.agent.menu.info": "Infos",
+  "mobile.agent.profile.edit": "Modifier",
+  "mobile.agent.profile.library": "Bibliothèque",
+  "mobile.agent.profile.computer": "Ordinateur",
+  "mobile.agent.profile.notificationsFooter":
+    "Recevez une notification quand cet agent termine ou vous attend. Pour vous seul, sur tous vos appareils.",
   "mobile.agent.menu.more": "Plus",
   "mobile.agent.menu.copyId": "Copier l’ID",
   "mobile.agent.menu.duplicate": "Dupliquer",
@@ -412,8 +417,6 @@ export const messages = {
   "mobile.agent.notificationLevel.title": "Me notifier pour",
   "mobile.agent.notificationLevel.server": "Réglage du serveur",
   "mobile.agent.notificationLevel.serverValue": "Réglage du serveur ({level})",
-  "mobile.agent.notificationLevel.footer":
-    "« Me notifier pour » ne concerne que vous et s’applique sur tous vos appareils.",
   "mobile.agent.notificationLevel.unsupported":
     "Ce serveur ne peut pas garder votre propre niveau de notifications pour un agent. Mettez à jour OpenBot sur l’ordinateur qui l’exécute.",
   "mobile.agent.newChat.title": "Nouvelle discussion",

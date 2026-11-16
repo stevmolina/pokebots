@@ -63,6 +63,11 @@ export const messages = {
   "mobile.agent.menu.unmute": "ミュートを解除",
   "mobile.agent.menu.hide": "非表示",
   "mobile.agent.menu.info": "情報",
+  "mobile.agent.profile.edit": "編集",
+  "mobile.agent.profile.library": "ライブラリ",
+  "mobile.agent.profile.computer": "コンピューター",
+  "mobile.agent.profile.notificationsFooter":
+    "このエージェントが終わったときや、あなたを待っているときに通知します。あなただけの設定で、すべてのデバイスに適用されます。",
   "mobile.agent.menu.more": "その他",
   "mobile.agent.menu.copyId": "ID をコピー",
   "mobile.agent.menu.duplicate": "複製",
@@ -404,8 +409,6 @@ export const messages = {
   "mobile.agent.notificationLevel.title": "通知する内容",
   "mobile.agent.notificationLevel.server": "サーバーの設定",
   "mobile.agent.notificationLevel.serverValue": "サーバーの設定（{level}）",
-  "mobile.agent.notificationLevel.footer":
-    "「通知する内容」はあなただけの設定で、あなたのすべてのデバイスに適用されます。",
   "mobile.agent.notificationLevel.unsupported":
     "このサーバーはエージェントごとの通知レベルを保存できません。サーバーを実行しているコンピューターで OpenBot をアップデートしてください。",
   "mobile.agent.newChat.title": "新しいチャット",

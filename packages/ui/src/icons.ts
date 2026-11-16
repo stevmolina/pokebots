@@ -91,6 +91,7 @@ export { default as Keyboard } from "lucide-solid/icons/keyboard";
 export { default as Layers } from "lucide-solid/icons/layers";
 export { default as LayoutDashboard } from "lucide-solid/icons/layout-dashboard";
 export { default as LayoutGrid } from "lucide-solid/icons/layout-grid";
+export { default as LibraryBig } from "lucide-solid/icons/library-big";
 export { default as LifeBuoy } from "lucide-solid/icons/life-buoy";
 export { default as Link } from "lucide-solid/icons/link";
 export { default as Link2 } from "lucide-solid/icons/link-2";

@@ -62,6 +62,11 @@ export const messages = {
   "mobile.agent.menu.unmute": "음소거 해제",
   "mobile.agent.menu.hide": "숨기기",
   "mobile.agent.menu.info": "정보",
+  "mobile.agent.profile.edit": "편집",
+  "mobile.agent.profile.library": "라이브러리",
+  "mobile.agent.profile.computer": "컴퓨터",
+  "mobile.agent.profile.notificationsFooter":
+    "이 에이전트가 끝나거나 응답을 기다릴 때 알림을 받습니다. 나에게만 적용되며 모든 기기에 적용됩니다.",
   "mobile.agent.menu.more": "더 보기",
   "mobile.agent.menu.copyId": "ID 복사",
   "mobile.agent.menu.duplicate": "복제",
@@ -397,7 +402,6 @@ export const messages = {
   "mobile.agent.notificationLevel.title": "알림 받을 항목",
   "mobile.agent.notificationLevel.server": "서버 설정",
   "mobile.agent.notificationLevel.serverValue": "서버 설정({level})",
-  "mobile.agent.notificationLevel.footer": "“알림 받을 항목”은 나에게만 적용되고 내 모든 기기에 적용돼요.",
   "mobile.agent.notificationLevel.unsupported":
     "이 서버는 에이전트별 내 알림 수준을 저장할 수 없어요. 서버를 실행하는 컴퓨터에서 OpenBot을 업데이트하세요.",
   "mobile.agent.newChat.title": "새 채팅",

@@ -18,6 +18,7 @@ import type { AgentMessage } from "@openbot/ui/data";
 import { isConnectorId } from "@openbot/ui/features/connectors/connectors";
 import type { UsageLimitAskCardProps } from "@openbot/ui/features/conversation/BackupModels";
 import { unloadedHistory } from "@openbot/ui/features/conversation/ChatScrollRail";
+import { MAIN_THREAD_ID } from "@openbot/ui/features/conversation/threads/thread-types";
 import { sidebarAgentWaits } from "@openbot/ui/features/sidebar/sidebar-agent-states";
 import { useText } from "@openbot/ui/text";
 import { createMemo } from "solid-js";
@@ -455,20 +456,16 @@ export function WorkspaceConversation(props: { account: () => CentralAuthUser })
       takeovers: Object.values(pendingPrompts()).flatMap((event) =>
         event?.type === "browser-takeover-requested" ? [event.request] : [],
       ),
-      newThreadTitle: t("conversation.threads.new"),
+      newThreadTitle: t("conversation.sessions.new"),
+      mainTitle: t("conversation.sessions.main"),
+      mainStatus: () => threadActivity.threadStatus(agent.id, MAIN_THREAD_ID),
       onRespondApproval: (approval, decision, options) =>
         respondToApprovalRequest(approval.agentId, approval.requestId, decision, options),
       contextStates: threadContextStates,
       onCompactContext: compactTaskContext(),
       onOpenMainMessage: (messageId) => openAgentMessage(agent.id, messageId),
-      // A chat window shows one agent, so it keeps the tabs of that agent.
-      allTabs: platform.chatWindow
-        ? undefined
-        : {
-            agents: agentList(),
-            status: threadActivity.threadStatus,
-            open: openAgentThread,
-          },
+      // A chat window shows one agent, so its new session does not move to another agent.
+      draftAgents: platform.chatWindow ? undefined : { agents: agentList(), open: openAgentThread },
     });
   });
   /** The thread that the conversation shows: the open side thread, or the agent's own chat. */

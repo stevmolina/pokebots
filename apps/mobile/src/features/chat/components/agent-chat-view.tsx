@@ -25,6 +25,7 @@ import {
   withQuestionContext,
 } from "../model/chat-messages";
 import { requestComposerFocus, requestComposerText } from "../model/composer-requests";
+import { setMainSession, useMainSession } from "../model/main-session";
 import { messageActionsOpen } from "../model/message-actions-sheet";
 import { useAgentMentionReferences } from "../model/use-agent-mention-references";
 import { useAgentMentionSkills } from "../model/use-agent-mention-skills";
@@ -109,6 +110,26 @@ export function MobileChatView({
   );
   const tasks = useOpenAgentTasks(agent.serverId, agent.id);
   const threadMenu = useChatThreadMenu(agent, MAIN_THREAD_ID);
+  // Opening the agent shows its main session. A main side thread opens over the agent's own chat, so
+  // Back still reaches the chat, and it opens once per visit, so Back does not open it again. A main
+  // session that is no longer open falls back to the agent's own chat.
+  const mainId = useMainSession(agent.serverId, agent.id);
+  const mainOpened = useRef<string | null>(null);
+  useEffect(() => {
+    if (focusMessageId || mainOpened.current === agent.id) return;
+    if (!mainId) {
+      mainOpened.current = agent.id;
+      return;
+    }
+    if (!isFocused || tasks.length === 0) return;
+    mainOpened.current = agent.id;
+    if (tasks.some((task) => task.id === mainId))
+      router.push({
+        pathname: "/task/[taskId]",
+        params: { serverId: agent.serverId, agentId: agent.id, taskId: mainId },
+      });
+    else setMainSession(agent.serverId, agent.id, null);
+  }, [agent.id, agent.serverId, focusMessageId, isFocused, mainId, tasks]);
   // The pins of the agent's own chat, on a host with `message-pins-v1`.
   const pins = useMessagePins(agent.serverId, agent.id);
   const pinnedMessageIds = useMemo(

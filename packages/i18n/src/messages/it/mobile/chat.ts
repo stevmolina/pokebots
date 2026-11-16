@@ -540,10 +540,12 @@ export const messages = {
     other: "{name}, thread. {count} thread hanno bisogno di te",
   },
   "mobile.chat.threads.main": "Chat principale",
+  "mobile.chat.sessions.title": "Sessioni",
+  "mobile.chat.sessions.new": "Nuova sessione",
+  "mobile.chat.sessions.all": "Tutte le sessioni",
   "mobile.chat.threads.branchedFrom": "Ramificato da {title}",
   "mobile.chat.threads.branchedFromDeleted": "Ramificato da un thread eliminato",
   "mobile.chat.threads.new": "Nuovo thread",
-  "mobile.chat.threads.all": "Tutti i thread",
   "mobile.chat.threads.agentInfo": "Info agente",
   "mobile.chat.threads.draftNote":
     "Il tuo primo messaggio avvia un nuovo thread. La chat principale con {name} non cambia.",

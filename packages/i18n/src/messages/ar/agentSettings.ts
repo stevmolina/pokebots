@@ -133,7 +133,6 @@ export const messages = {
   "agentSettings.groups.does": "القدرات",
   "agentSettings.groups.rules": "القواعد",
   "agentSettings.groups.model": "النموذج",
-  "agentSettings.groups.alerts": "التنبيهات",
   "agentSettings.saveFailed": "تعذّر حفظ إعدادات الوكيل.",
 
   "agentSettings.name": "الاسم",
@@ -202,10 +201,8 @@ export const messages = {
     "لا يستطيع {provider} توجيه دور قيد التشغيل. تنتظر الرسائل المرسلة أثناء عمله في قائمة الانتظار.",
 
   "agentSettings.notificationLevel.title": "إشعاري",
+  "agentSettings.notificationLevel.footer": "احصل على إشعار عندما ينتهي هذا الوكيل أو ينتظرك.",
   "agentSettings.notificationLevel.server": "افتراضي الخادم ({level})",
-  "agentSettings.notificationLevel.note":
-    "هذا الاختيار لك وحدك ويُطبَّق على كل أجهزتك. عندما يكون الخادم مكتومًا أو مضبوطًا على «لا شيء»، يبقى هذا الوكيل صامتًا أيضًا.",
-
   "agentSettings.newChat.title": "دردشة جديدة",
   "agentSettings.newChat.description": "ينسى الوكيل هذه الدردشة. ويبقى إعداده.",
   "agentSettings.newChat.button": "بدء",
@@ -262,6 +259,10 @@ export const messages = {
   },
   "agentSettings.links.files": "الملفات",
   "agentSettings.links.routines": "المهام الدورية",
+  "agentSettings.links.library": "المكتبة",
+  "agentSettings.links.computer": "الكمبيوتر",
+  "agentSettings.links.computerActive": "قيد الاستخدام",
+  "agentSettings.links.computerOffline": "غير متصل",
   "agentSettings.links.routinesCount": {
     zero: "لا مهام دورية مضبوطة",
     one: "مهمة دورية واحدة مضبوطة",

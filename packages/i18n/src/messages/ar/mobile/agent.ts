@@ -62,6 +62,11 @@ export const messages = {
   "mobile.agent.menu.unmute": "إلغاء الكتم",
   "mobile.agent.menu.hide": "إخفاء",
   "mobile.agent.menu.info": "معلومات",
+  "mobile.agent.profile.edit": "تعديل",
+  "mobile.agent.profile.library": "المكتبة",
+  "mobile.agent.profile.computer": "الكمبيوتر",
+  "mobile.agent.profile.notificationsFooter":
+    "احصل على إشعار عندما ينتهي هذا الوكيل أو ينتظرك. لك وحدك، على كل أجهزتك.",
   "mobile.agent.menu.more": "المزيد",
   "mobile.agent.menu.copyId": "نسخ المعرّف",
   "mobile.agent.menu.duplicate": "تكرار",
@@ -432,7 +437,6 @@ export const messages = {
   "mobile.agent.notificationLevel.title": "أعلمني بشأن",
   "mobile.agent.notificationLevel.server": "إعداد الخادم",
   "mobile.agent.notificationLevel.serverValue": "إعداد الخادم ({level})",
-  "mobile.agent.notificationLevel.footer": "«أعلمني بشأن» خاص بك فقط ويُطبّق على كل أجهزتك.",
   "mobile.agent.notificationLevel.unsupported":
     "لا يستطيع هذا الخادم حفظ مستوى إشعاراتك الخاص لوكيل. حدّث OpenBot على الحاسوب الذي يشغّله.",
   "mobile.agent.newChat.title": "دردشة جديدة",

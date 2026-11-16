@@ -62,6 +62,11 @@ export const messages = {
   "mobile.agent.menu.unmute": "Sesi aç",
   "mobile.agent.menu.hide": "Gizle",
   "mobile.agent.menu.info": "Bilgi",
+  "mobile.agent.profile.edit": "Düzenle",
+  "mobile.agent.profile.library": "Kitaplık",
+  "mobile.agent.profile.computer": "Bilgisayar",
+  "mobile.agent.profile.notificationsFooter":
+    "Bu ajan bitirdiğinde veya sizi beklediğinde bildirim alın. Yalnızca sizin için, tüm cihazlarınızda.",
   "mobile.agent.menu.more": "Daha fazla",
   "mobile.agent.menu.copyId": "Kimliği kopyala",
   "mobile.agent.menu.duplicate": "Çoğalt",
@@ -413,8 +418,6 @@ export const messages = {
   "mobile.agent.notificationLevel.title": "Şunun hakkında bildir",
   "mobile.agent.notificationLevel.server": "Sunucu ayarı",
   "mobile.agent.notificationLevel.serverValue": "Sunucu ayarı ({level})",
-  "mobile.agent.notificationLevel.footer":
-    "“Şunun hakkında bildir” yalnızca senin içindir ve tüm cihazlarında geçerlidir.",
   "mobile.agent.notificationLevel.unsupported":
     "Bu sunucu bir ajan için kendi bildirim düzeyini saklayamıyor. OpenBot’u onu çalıştıran bilgisayarda güncelle.",
   "mobile.agent.newChat.title": "Yeni sohbet",

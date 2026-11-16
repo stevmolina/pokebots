@@ -1,11 +1,6 @@
 import type { AgentTask } from "@openbot/contracts/ipc";
 import { TOAST_DURATION, toast } from "@openbot/ui";
-import {
-  DRAFT_THREAD_ID,
-  MAIN_THREAD_ID,
-  parseThreadTabKey,
-  threadTabKey,
-} from "@openbot/ui/features/conversation/threads/thread-types";
+import { DRAFT_THREAD_ID, MAIN_THREAD_ID } from "@openbot/ui/features/conversation/threads/thread-types";
 import { currentText } from "@openbot/ui/text";
 import { createEffect, createSignal, onCleanup, untrack } from "solid-js";
 import { createScopeGuard } from "../../scope-lifetime";
@@ -14,19 +9,15 @@ import {
   type AgentThreadTabs,
   addPendingThreadDelete,
   forgetPendingThreadDeletes,
-  type OpenTabsByServer,
-  type OpenThreadTab,
   type PendingThreadDelete,
-  readOpenTabs,
   readPendingThreadDeletes,
   readThreadTabs,
   type ThreadTabsByServer,
   takePendingThreadDelete,
-  writeOpenTabs,
   writeThreadTabs,
 } from "./thread-tabs-storage";
 
-const NO_TABS: AgentThreadTabs = { open: [], active: null, side: [] };
+const NO_TABS: AgentThreadTabs = { active: null, side: [] };
 /** The window that shows the Undo toast finishes the delete. Another window waits this much longer. */
 const OTHER_WINDOW_DELAY_MS = 5_000;
 
@@ -34,37 +25,28 @@ export interface AgentThreadTabsOptions {
   serverId: () => string;
   activeAgentId: () => string | undefined;
   tasks: AgentTasks;
-  /**
-   * Keeps one list of tabs for all agents, as the desktop chat header shows them. The list follows
-   * the tabs of each agent; the browser client, which shows the tabs of one agent, leaves it off.
-   */
-  allAgents?: boolean | undefined;
 }
 
 /**
- * The thread tabs of each agent on this device: which side threads have a tab, in which order, and
- * which tab is open. The threads themselves, and whether they are archived, come from the host.
- * A tab of a thread that is archived or deleted, also on another device, does not show, and the open
- * tab then falls back to the agent's own chat. Make it in the owner of the server: when that owner
- * ends, each delete that waits for its Undo time runs at once.
+ * The sessions of each agent on this device: which session is the main session, and which side
+ * threads have a tab in the side panel. The main session is the one that the user created or opened
+ * last; the agent shows it when it opens. The threads themselves, and whether they are archived, come
+ * from the host. A main session that is archived or deleted, also on another device, falls back to the
+ * agent's own chat. Make it in the owner of the server: when that owner ends, each delete that waits
+ * for its Undo time runs at once.
  */
 export function createAgentThreadTabs(options: AgentThreadTabsOptions) {
   const { serverId, activeAgentId, tasks } = options;
-  const allAgents = options.allAgents === true;
   const scopeIsCurrent = createScopeGuard();
   /** The server of this state. On desktop the server scope makes the state again for each server. */
   const ownServerId = untrack(serverId);
   const [tabsByServer, setTabsByServer] = createFreshSignal<ThreadTabsByServer>(readThreadTabs());
-  const [openTabsByServer, setOpenTabsByServer] = createFreshSignal<OpenTabsByServer>(allAgents ? readOpenTabs() : {});
-  /** Agents with a new thread tab. A new thread that has no message is not kept after a restart. */
+  /** Agents with a new session. A new session that has no message is not kept after a restart. */
   const [drafts, setDrafts] = createFreshSignal<ReadonlySet<string>>(new Set());
   /** Threads that wait for the end of their Undo time before the delete. */
   const [hidden, setHidden] = createFreshSignal<ReadonlySet<string>>(new Set());
-  /** Agent-started threads that already had their tab added, so a closed tab stays closed. */
-  const seen = new Set<string>();
   /** The message that a side thread scrolls to when it shows, after a click on "Branched from". */
   const [messageFocus, setMessageFocus] = createSignal<ThreadMessageFocus | null>(null);
-  const sessionStart = new Date().toISOString();
 
   const storedTabs = (agentId: string): AgentThreadTabs => tabsByServer()[serverId()]?.[agentId] ?? NO_TABS;
   const task = (agentId: string, id: string): AgentTask | undefined =>
@@ -73,139 +55,39 @@ export function createAgentThreadTabs(options: AgentThreadTabsOptions) {
     const entry = task(agentId, id);
     return entry !== undefined && entry.state !== "closed" && !hidden().has(id);
   };
-  /** The side threads with a tab that shows. */
-  const openIds = (agentId: string): string[] => storedTabs(agentId).open.filter((id) => shown(agentId, id));
   /** The side threads with a tab in the side panel that shows. */
   const sideIds = (agentId: string): string[] => storedTabs(agentId).side.filter((id) => shown(agentId, id));
-  /** The side threads whose tabs a write keeps. Before the thread list loads, no stored tab is dropped. */
-  const keptIds = (agentId: string): string[] =>
-    tasks.snapshot(agentId) ? openIds(agentId) : storedTabs(agentId).open.filter((id) => !hidden().has(id));
-  /** The same for the side panel tabs. */
+  /** The side panel tabs that a write keeps. Before the thread list loads, no stored tab is dropped. */
   const keptSideIds = (agentId: string): string[] =>
     tasks.snapshot(agentId) ? sideIds(agentId) : storedTabs(agentId).side.filter((id) => !hidden().has(id));
   const hasDraft = (agentId: string) => drafts().has(agentId);
-  const tabOrder = (agentId: string): string[] => [
-    MAIN_THREAD_ID,
-    ...openIds(agentId),
-    ...(hasDraft(agentId) ? [DRAFT_THREAD_ID] : []),
-  ];
-
+  /** The main session of an agent: a side thread, a new session, or the agent's own chat. */
   function activeId(agentId: string): string {
     const active = storedTabs(agentId).active;
     if (active === DRAFT_THREAD_ID) return hasDraft(agentId) ? DRAFT_THREAD_ID : MAIN_THREAD_ID;
-    return active !== null && shown(agentId, active) && openIds(agentId).includes(active) ? active : MAIN_THREAD_ID;
+    return active !== null && shown(agentId, active) ? active : MAIN_THREAD_ID;
   }
 
   /**
-   * Writes the tabs of one agent. Another window can write other agents, so the stored value is read
-   * first. Without `side`, the side panel keeps its tabs, less a thread that now has a chat tab.
+   * Writes the main session and the side panel tabs of one agent. Another window can write other
+   * agents, so the stored value is read first. Without `side`, the side panel keeps its tabs, less the
+   * thread that becomes the main session.
    */
-  function writeTabs(agentId: string, tabs: (Omit<AgentThreadTabs, "side"> & { side?: string[] }) | null): void {
+  function writeTabs(agentId: string, tabs: { active: string | null; side?: string[] } | null): void {
     const server = serverId();
     const stored = readThreadTabs();
     const agents = { ...stored[server] };
-    const side = tabs?.side ?? keptSideIds(agentId).filter((id) => !tabs?.open.includes(id));
-    if (tabs && (tabs.open.length > 0 || side.length > 0 || tabs.active !== null))
-      agents[agentId] = { open: tabs.open, active: tabs.active, side };
+    const side = tabs?.side ?? keptSideIds(agentId).filter((id) => id !== tabs?.active);
+    if (tabs && (side.length > 0 || tabs.active !== null)) agents[agentId] = { active: tabs.active, side };
     else delete agents[agentId];
     const next = { ...stored, [server]: agents };
     if (Object.keys(agents).length === 0) delete next[server];
     setTabsByServer(() => next);
     writeThreadTabs(next);
-    syncOpenTabs(agentId, tabs?.open ?? []);
-    // The scroll to a message belongs to the tab that opened at it. Another tab ends it, so the thread
-    // does not scroll there again when its view shows again.
+    // The scroll to a message belongs to the session that opened at it. Another session ends it, so the
+    // thread does not scroll there again when its view shows again.
     const focus = untrack(messageFocus);
     if (focus && focus.taskId !== tabs?.active) setMessageFocus(null);
-  }
-
-  /** The tabs of all agents on this server, as stored. A tab can name a thread that does not show. */
-  const storedOpenTabs = (): OpenThreadTab[] => openTabsByServer()[serverId()] ?? [];
-
-  /** Writes the tabs of all agents. Another window can write other servers, so the stored value is read first. */
-  function writeAllTabs(tabs: readonly OpenThreadTab[]): void {
-    if (!allAgents) return;
-    const server = serverId();
-    const next = { ...readOpenTabs(), [server]: [...tabs] };
-    if (tabs.length === 0) delete next[server];
-    setOpenTabsByServer(() => next);
-    writeOpenTabs(next);
-  }
-
-  /**
-   * Keeps the tabs of all agents in step with the tabs of one agent: a side thread or new thread that
-   * lost its tab leaves, and one that got a tab goes to the end. The agent's own chat stays.
-   */
-  function syncOpenTabs(agentId: string, open: readonly string[]): void {
-    if (!allAgents) return;
-    const current = untrack(storedOpenTabs);
-    const draft = untrack(() => hasDraft(agentId));
-    const kept = current.filter(
-      (tab) =>
-        tab.agentId !== agentId ||
-        tab.threadId === MAIN_THREAD_ID ||
-        (tab.threadId === DRAFT_THREAD_ID ? draft : open.includes(tab.threadId)),
-    );
-    const present = new Set(kept.flatMap((tab) => (tab.agentId === agentId ? [tab.threadId] : [])));
-    const added = [...open, ...(draft ? [DRAFT_THREAD_ID] : [])]
-      .filter((threadId) => !present.has(threadId))
-      .map((threadId) => ({ agentId, threadId }));
-    if (added.length === 0 && kept.length === current.length) return;
-    writeAllTabs([...kept, ...added]);
-  }
-
-  /** Adds a tab at the end of the tabs of all agents, unless it has one. */
-  function addOpenTab(agentId: string, threadId: string): void {
-    const current = untrack(storedOpenTabs);
-    if (current.some((tab) => tab.agentId === agentId && tab.threadId === threadId)) return;
-    writeAllTabs([...current, { agentId, threadId }]);
-  }
-
-  /** Closes a tab of the tabs of all agents. A side thread stays in its agent's thread list. */
-  function closeOpenTab(agentId: string, threadId: string): void {
-    if (threadId !== MAIN_THREAD_ID) {
-      close(agentId, threadId);
-      return;
-    }
-    writeAllTabs(untrack(storedOpenTabs).filter((tab) => tab.agentId !== agentId || tab.threadId !== MAIN_THREAD_ID));
-  }
-
-  /** Keeps only these tabs of the tabs of all agents, by `threadTabKey`. */
-  function retainOpenTabs(keys: ReadonlySet<string>): void {
-    const current = untrack(storedOpenTabs);
-    writeAllTabs(current.filter((tab) => keys.has(threadTabKey(tab.agentId, tab.threadId))));
-    const agentIds = new Set([
-      ...current.map((tab) => tab.agentId),
-      ...Object.keys(untrack(tabsByServer)[serverId()] ?? {}),
-      ...untrack(drafts),
-    ]);
-    for (const agentId of agentIds) {
-      const kept = (threadId: string) => keys.has(threadTabKey(agentId, threadId));
-      const open = keptIds(agentId).filter(kept);
-      const draft = hasDraft(agentId) && kept(DRAFT_THREAD_ID);
-      const active = activeId(agentId);
-      setOrder(
-        agentId,
-        [MAIN_THREAD_ID, ...open, ...(draft ? [DRAFT_THREAD_ID] : [])],
-        kept(active) ? active : MAIN_THREAD_ID,
-      );
-    }
-  }
-
-  /**
-   * Moves a tab to an index among the tabs that show, which `shownKeys` lists in order. A stored tab that
-   * does not show, such as one of a thread list that has not loaded, goes after them.
-   */
-  function moveOpenTab(shownKeys: readonly string[], key: string, index: number): void {
-    const order = shownKeys.filter((entry) => entry !== key);
-    order.splice(index, 0, key);
-    const shown = new Set(order);
-    const tabs = order.flatMap((entry) => {
-      const tab = parseThreadTabKey(entry);
-      return tab ? [tab] : [];
-    });
-    const rest = untrack(storedOpenTabs).filter((tab) => !shown.has(threadTabKey(tab.agentId, tab.threadId)));
-    writeAllTabs([...tabs, ...rest]);
   }
 
   function setDraft(agentId: string, shownDraft: boolean): void {
@@ -218,27 +100,22 @@ export function createAgentThreadTabs(options: AgentThreadTabsOptions) {
     });
   }
 
-  /** Sets the open tabs from a tab order. The agent's own chat and the new thread keep their places. */
-  function setOrder(agentId: string, order: readonly string[], active: string): void {
-    const open = order.filter((id) => id !== MAIN_THREAD_ID && id !== DRAFT_THREAD_ID);
-    setDraft(agentId, order.includes(DRAFT_THREAD_ID));
-    writeTabs(agentId, { open, active: active === MAIN_THREAD_ID ? null : active });
-  }
+  /** The side panel tabs to keep: all of them, less `id`. */
+  const sideWithout = (agentId: string, id: string) => keptSideIds(agentId).filter((entry) => entry !== id);
 
-  /** Opens a thread. A thread without a tab gets one at the end. */
+  /**
+   * Opens a session and makes it the main session. A new session that the user leaves without a
+   * message closes.
+   */
   function open(agentId: string, id: string): void {
-    if (id === MAIN_THREAD_ID || id === DRAFT_THREAD_ID) {
-      writeTabs(agentId, { open: keptIds(agentId), active: id === MAIN_THREAD_ID ? null : id });
-      return;
-    }
-    const ids = keptIds(agentId);
-    writeTabs(agentId, { open: ids.includes(id) ? ids : [...ids, id], active: id });
+    if (id !== DRAFT_THREAD_ID) setDraft(agentId, false);
+    writeTabs(agentId, { active: id === MAIN_THREAD_ID ? null : id, side: sideWithout(agentId, id) });
   }
 
   /**
-   * Opens the tab of a conversation thread from outside the header, for example a notification: a
-   * side thread's tab, or the agent's own chat for a thread that is no side thread. An archived side
-   * thread does not open, and the tabs stay as they are.
+   * Opens the session of a conversation thread from outside the header, for example a notification:
+   * a side thread, or the agent's own chat for a thread that is no side thread. An archived side
+   * thread does not open, and the main session stays.
    */
   async function openConversation(agentId: string, threadId: string): Promise<void> {
     const find = () => tasks.snapshot(agentId)?.tasks.find((entry) => entry.threadId === threadId);
@@ -249,88 +126,59 @@ export function createAgentThreadTabs(options: AgentThreadTabsOptions) {
     else if (entry.state !== "closed") open(agentId, entry.id);
   }
 
-  /** Opens the new thread tab. Its first message starts the thread. */
+  /** Starts a new session and makes it the main session. Its first message starts the thread. */
   function startNew(agentId: string): void {
     setDraft(agentId, true);
-    writeTabs(agentId, { open: keptIds(agentId), active: DRAFT_THREAD_ID });
+    writeTabs(agentId, { active: DRAFT_THREAD_ID });
   }
 
-  /** Closes a tab only. The thread stays in the thread list. The tab to its left opens. */
-  function close(agentId: string, id: string): void {
-    if (id === MAIN_THREAD_ID) return;
-    const order = tabOrder(agentId);
-    const index = order.indexOf(id);
-    const next = order.filter((entry) => entry !== id);
-    const current = activeId(agentId);
-    setOrder(agentId, next, current === id ? (next[Math.max(0, index - 1)] ?? MAIN_THREAD_ID) : current);
-  }
-
-  function closeOthers(agentId: string, id: string): void {
-    setOrder(agentId, id === MAIN_THREAD_ID ? [MAIN_THREAD_ID] : [MAIN_THREAD_ID, id], id);
-  }
-
-  function closeToTheRight(agentId: string, id: string): void {
-    const order = tabOrder(agentId);
-    const next = order.slice(0, order.indexOf(id) + 1);
-    const current = activeId(agentId);
-    setOrder(agentId, next, next.includes(current) ? current : id);
-  }
-
-  /** Moves a tab to an index among the shown tabs, which do not include the agent's own chat. */
-  function move(agentId: string, id: string, index: number): void {
-    const order = tabOrder(agentId).filter((entry) => entry !== id && entry !== MAIN_THREAD_ID);
-    order.splice(index, 0, id);
-    // The agent's own chat stays first, and the new thread stays last.
-    const sides = order.filter((entry) => entry !== DRAFT_THREAD_ID);
-    setOrder(agentId, [MAIN_THREAD_ID, ...sides, ...(hasDraft(agentId) ? [DRAFT_THREAD_ID] : [])], activeId(agentId));
+  /** Closes the new session of an agent. The agent's own chat becomes the main session. */
+  function closeDraft(agentId: string): void {
+    if (!hasDraft(agentId)) return;
+    setDraft(agentId, false);
+    if (activeId(agentId) === DRAFT_THREAD_ID) writeTabs(agentId, { active: null });
   }
 
   /**
-   * Moves a chat tab to the side panel, where its thread shows beside the agent's own chat. When the
-   * thread was open in the chat, the agent's own chat opens.
+   * Moves a session to the side panel, where its thread shows beside the main session. When the
+   * thread was the main session, the agent's own chat becomes the main session.
    */
   function toSide(agentId: string, id: string): void {
     if (id === MAIN_THREAD_ID || id === DRAFT_THREAD_ID) return;
-    const active = activeId(agentId);
-    writeTabs(agentId, {
-      open: keptIds(agentId).filter((entry) => entry !== id),
-      active: active === id || active === MAIN_THREAD_ID ? null : active,
-      side: [...keptSideIds(agentId).filter((entry) => entry !== id), id],
-    });
+    const active = storedTabs(agentId).active;
+    writeTabs(agentId, { active: active === id ? null : active, side: [...sideWithout(agentId, id), id] });
   }
 
-  /** Moves a side panel tab back to the end of the chat tabs, and opens its thread in the chat. */
+  /** Moves a side panel tab back to the chat, where its thread becomes the main session. */
   function toChat(agentId: string, id: string): void {
-    writeTabs(agentId, {
-      open: [...keptIds(agentId).filter((entry) => entry !== id), id],
-      active: id,
-      side: keptSideIds(agentId).filter((entry) => entry !== id),
-    });
+    open(agentId, id);
   }
 
   /** Closes a side panel tab. The thread stays in the thread list. */
   function closeSide(agentId: string, id: string): void {
-    const active = activeId(agentId);
-    writeTabs(agentId, {
-      open: keptIds(agentId),
-      active: active === MAIN_THREAD_ID ? null : active,
-      side: keptSideIds(agentId).filter((entry) => entry !== id),
-    });
+    writeTabs(agentId, { active: storedTabs(agentId).active, side: sideWithout(agentId, id) });
   }
 
   /** Moves a side panel tab to an index among the side panel tabs. */
   function moveSide(agentId: string, id: string, index: number): void {
     const side = keptSideIds(agentId).filter((entry) => entry !== id);
     side.splice(index, 0, id);
-    const active = activeId(agentId);
-    writeTabs(agentId, { open: keptIds(agentId), active: active === MAIN_THREAD_ID ? null : active, side });
+    writeTabs(agentId, { active: storedTabs(agentId).active, side });
   }
 
-  /** Archives a thread. Its tab closes when the host archived it; the thread then shows in the archived list. */
+  /**
+   * Archives a thread. When the host archived it, it leaves the side panel, and as the main session it
+   * gives way to the agent's own chat. The thread then shows in the archived list.
+   */
   async function archive(agentId: string, id: string): Promise<void> {
     if (!(await tasks.closeTask(agentId, id)) || !scopeIsCurrent()) return;
-    if (storedTabs(agentId).side.includes(id)) closeSide(agentId, id);
-    else close(agentId, id);
+    release(agentId, id);
+  }
+
+  /** Takes a thread out of the side panel, and gives the main session to the agent's own chat if it had it. */
+  function release(agentId: string, id: string): void {
+    const active = storedTabs(agentId).active;
+    writeTabs(agentId, { active: active === id ? null : active, side: sideWithout(agentId, id) });
   }
 
   /** Restores an archived thread and opens it. */
@@ -374,22 +222,20 @@ export function createAgentThreadTabs(options: AgentThreadTabsOptions) {
     const entry = task(agentId, id);
     if (!entry || hidden().has(id)) return;
     const server = serverId();
-    const before = storedTabs(agentId);
     const wasActive = activeId(agentId) === id;
-    const index = tabOrder(agentId).indexOf(id);
+    const wasSide = storedTabs(agentId).side.includes(id);
     const restore = entry.state !== "closed";
-    close(agentId, id);
+    release(agentId, id);
     setHiddenThread(id, true);
 
+    /** Undo: the thread shows again where it was, as the main session or in the side panel. */
     function showTab(): void {
       setHiddenThread(id, false);
-      if (index < 0) return;
-      const open = openIds(agentId).filter((other) => other !== id);
-      open.splice(Math.max(0, index - 1), 0, id);
-      writeTabs(agentId, { open, active: wasActive ? id : (before.active ?? null) });
+      if (wasActive) open(agentId, id);
+      else if (wasSide) toSide(agentId, id);
     }
 
-    // The archive shows its own error. The thread then stays, with its tab.
+    // The archive shows its own error. The thread then stays where it was.
     if (restore && !(await tasks.closeTask(agentId, id, server))) {
       if (scopeIsCurrent()) showTab();
       return;
@@ -492,34 +338,21 @@ export function createAgentThreadTabs(options: AgentThreadTabsOptions) {
     return tasks.sendToTask(agentId, id, text, attachmentDraftIds, replyToMessageId, createArtifact);
   }
 
-  /** The first message of the new thread tab starts the thread, which then takes the place of the tab. */
+  /** The first message of a new session starts the thread, which takes its place as the main session. */
   async function sendDraft(agentId: string, text: string, attachmentDraftIds: string[]): Promise<boolean> {
     const started = await tasks.startTask(agentId, text, attachmentDraftIds);
     if (!started) return false;
     if (!scopeIsCurrent()) {
-      // The user left the server while its files loaded. The thread started there, and its tab waits there (#9123).
+      // The user left the server while its files loaded. The thread started there, and is its main session (#9123).
       const stored = readThreadTabs();
       const tabs = stored[ownServerId]?.[agentId] ?? NO_TABS;
-      const open = [...tabs.open.filter((entry) => entry !== started.id), started.id];
       const active = tabs.active === DRAFT_THREAD_ID ? started.id : tabs.active;
-      writeThreadTabs({ ...stored, [ownServerId]: { ...stored[ownServerId], [agentId]: { ...tabs, open, active } } });
+      writeThreadTabs({ ...stored, [ownServerId]: { ...stored[ownServerId], [agentId]: { ...tabs, active } } });
       return true;
     }
-    seen.add(started.id);
     const stillOpen = activeId(agentId) === DRAFT_THREAD_ID;
-    // The thread takes the place of the new thread tab in the tabs of all agents.
-    writeAllTabs(
-      untrack(storedOpenTabs)
-        .filter((tab) => tab.agentId !== agentId || tab.threadId !== started.id)
-        .map((tab) =>
-          tab.agentId === agentId && tab.threadId === DRAFT_THREAD_ID ? { agentId, threadId: started.id } : tab,
-        ),
-    );
     setDraft(agentId, false);
-    writeTabs(agentId, {
-      open: [...keptIds(agentId).filter((entry) => entry !== started.id), started.id],
-      active: stillOpen ? started.id : storedTabs(agentId).active,
-    });
+    writeTabs(agentId, { active: stillOpen ? started.id : storedTabs(agentId).active });
     return true;
   }
 
@@ -527,23 +360,17 @@ export function createAgentThreadTabs(options: AgentThreadTabsOptions) {
   async function runQueuedMessage(agentId: string, deliveryId: string): Promise<void> {
     const started = await tasks.runQueuedMessageAsTask(agentId, deliveryId);
     if (!started || !scopeIsCurrent()) return;
-    seen.add(started.id);
     open(agentId, started.id);
   }
 
   /**
-   * Copies a conversation through an agent answer into a new thread. The branch gets a tab after the
-   * tab of its source, or at the end, and opens, as a queued message that runs in a new thread does.
-   * Resolves true when the branch opened.
+   * Copies a conversation through an agent answer into a new thread, which becomes the main session,
+   * as a queued message that runs in a new thread does. Resolves true when the branch opened.
    */
   async function branch(agentId: string, sourceTaskId: string | null, messageId: string): Promise<boolean> {
     const started = await tasks.branchTask(agentId, sourceTaskId, messageId);
     if (!started || !scopeIsCurrent()) return false;
-    seen.add(started.id);
-    const ids = keptIds(agentId).filter((id) => id !== started.id);
-    const at = sourceTaskId === null ? -1 : ids.indexOf(sourceTaskId);
-    ids.splice(at < 0 ? ids.length : at + 1, 0, started.id);
-    writeTabs(agentId, { open: ids, active: started.id });
+    open(agentId, started.id);
     return true;
   }
 
@@ -559,12 +386,11 @@ export function createAgentThreadTabs(options: AgentThreadTabsOptions) {
     await restore(agentId, id);
   }
 
-  /** Removes the tabs of a deleted agent. */
+  /** Removes the sessions state of a deleted agent. */
   function forgetAgent(agentId: string): void {
     forgetPendingThreadDeletes(serverId(), agentId);
     setDraft(agentId, false);
     writeTabs(agentId, null);
-    writeAllTabs(untrack(storedOpenTabs).filter((tab) => tab.agentId !== agentId));
   }
 
   // The open thread and the threads in the side panel keep their conversations. The conversations of
@@ -597,72 +423,7 @@ export function createAgentThreadTabs(options: AgentThreadTabsOptions) {
     },
   );
 
-  // A thread that the agent starts in this session gets a tab, but does not open.
-  createEffect(
-    () => {
-      const agentId = activeAgentId();
-      if (!agentId) return null;
-      const added = (tasks.snapshot(agentId)?.tasks ?? [])
-        .filter(
-          (entry) =>
-            entry.origin === "agent" &&
-            entry.state !== "closed" &&
-            entry.createdAt >= sessionStart &&
-            !seen.has(entry.id),
-        )
-        .map((entry) => entry.id);
-      return added.length === 0 ? null : [agentId, ...added].join("\n");
-    },
-    (key) => {
-      if (!key) return;
-      const [agentId = "", ...added] = key.split("\n");
-      for (const id of added) seen.add(id);
-      untrack(() => {
-        const ids = openIds(agentId);
-        const open = [...ids, ...added.filter((id) => !ids.includes(id))];
-        writeTabs(agentId, { open, active: storedTabs(agentId).active });
-      });
-    },
-  );
-
-  // The thread on screen always has a tab. Before the agent's thread list loads, the open side thread
-  // is not known yet, so the agent's own chat would get a tab it does not need.
-  createEffect(
-    () => {
-      const agentId = activeAgentId();
-      if (!allAgents || !agentId || (tasks.available() && !tasks.snapshot(agentId))) return null;
-      return threadTabKey(agentId, activeId(agentId));
-    },
-    (key) => {
-      const tab = key ? parseThreadTabKey(key) : null;
-      if (tab) addOpenTab(tab.agentId, tab.threadId);
-    },
-  );
-
-  // A tab of another agent shows its thread's title and state, so its thread list loads once.
-  const requestedLists = new Set<string>();
-  createEffect(
-    () =>
-      allAgents && tasks.available()
-        ? [...new Set(storedOpenTabs().map((tab) => tab.agentId))].filter(
-            (agentId) => !tasks.snapshot(agentId) && !requestedLists.has(`${serverId()}/${agentId}`),
-          )
-        : [],
-    (agentIds) => {
-      for (const agentId of agentIds) {
-        requestedLists.add(`${serverId()}/${agentId}`);
-        void tasks.loadTasks(agentId);
-      }
-    },
-  );
-
   return {
-    /** The tabs of all agents, as stored. The header shows the ones whose thread it knows. */
-    openTabs: storedOpenTabs,
-    closeOpenTab,
-    retainOpenTabs,
-    moveOpenTab,
-    openIds,
     sideIds,
     hasDraft,
     activeId,
@@ -670,10 +431,7 @@ export function createAgentThreadTabs(options: AgentThreadTabsOptions) {
     open,
     openConversation,
     startNew,
-    close,
-    closeOthers,
-    closeToTheRight,
-    move,
+    closeDraft,
     toSide,
     toChat,
     closeSide,
