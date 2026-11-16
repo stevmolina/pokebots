@@ -1497,6 +1497,66 @@
   }
 }
 
+/* The model row opens its list in place, but it sits among rows that open a page, so its chevron
+   points the same way as theirs. It turns down while the list is open. */
+.agent-settings-runtime-rows .provider-model-trigger-field .provider-model-chevron {
+  width: var(--openbot-icon-sm);
+  height: var(--openbot-icon-sm);
+  flex-basis: var(--openbot-icon-sm);
+  /* The path is drawn in a 16 unit box, and the row chevrons in a 24 unit one, so the line is thinner. */
+  stroke-width: calc(var(--openbot-icon-stroke) * 16 / 24);
+  transform: rotate(-90deg);
+}
+
+.agent-settings-runtime-rows .provider-model-trigger-field .provider-model-chevron:dir(rtl) {
+  transform: rotate(90deg);
+}
+
+.agent-settings-runtime-rows .provider-model-trigger-field[aria-expanded="true"] .provider-model-chevron {
+  transform: none;
+}
+
+/* The phone title of the root page is drawn by the phone rules in web-app.css. */
+.agent-settings-focus-title {
+  display: none;
+}
+
+/* On a narrow screen a long value goes under its label and wraps, so it reads in full. */
+@media (max-width: 720px) {
+  .settings-link.settings-link-wrap-value {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "label chevron"
+      "value chevron";
+    justify-content: normal;
+    height: auto;
+    row-gap: var(--openbot-space-0-5);
+    padding-block: var(--openbot-space-2);
+  }
+
+  .settings-link-wrap-value > .settings-link-label {
+    grid-area: label;
+  }
+
+  /* The value box gives up its own box, so its text and chevron are cells of the row. */
+  .settings-link-wrap-value > .settings-link-value {
+    display: contents;
+  }
+
+  .settings-link-wrap-value > .settings-link-value > svg {
+    grid-area: chevron;
+  }
+
+  /* The text starts under the label text, not under the icon. */
+  .settings-link-wrap-value > .settings-link-value > .settings-link-text {
+    grid-area: value;
+    overflow: visible;
+    padding-inline-start: calc(var(--openbot-icon-sm) + var(--openbot-space-2));
+    white-space: normal;
+    text-overflow: clip;
+  }
+}
+
 .agent-settings-runtime-rows .provider-model-popover {
   width: var(--kb-popper-anchor-width);
   min-width: 0;

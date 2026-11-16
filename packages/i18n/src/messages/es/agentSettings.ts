@@ -101,6 +101,8 @@ export const messages = {
   "agentSettings.groups.knows": "Sabe",
   "agentSettings.groups.does": "Hace",
   "agentSettings.groups.rules": "Reglas",
+  "agentSettings.groups.model": "Modelo",
+  "agentSettings.groups.alerts": "Avisos",
   "agentSettings.saveFailed": "No se pudieron guardar los ajustes del agente.",
   "agentSettings.name": "Nombre",
   "agentSettings.nameLabel": "Nombre del agente",
@@ -217,6 +219,7 @@ export const messages = {
     one: "{count} configurada",
     other: "{count} configuradas",
   },
+  "agentSettings.links.routinesNone": "Ninguna",
   "agentSettings.runtime.workspaceNote":
     "Solo espacio de trabajo limita la escritura al espacio de trabajo de este agente, la carpeta compartida y las carpetas temporales. La lectura y la red siguen disponibles.",
   "agentSettings.runtime.workspaceEnforcedCommand": "Un comando que necesite escribir fuera te pedirá permiso primero.",

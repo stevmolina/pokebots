@@ -102,6 +102,8 @@ export const messages = {
   "agentSettings.groups.knows": "Wissen",
   "agentSettings.groups.does": "Aufgaben",
   "agentSettings.groups.rules": "Regeln",
+  "agentSettings.groups.model": "Modell",
+  "agentSettings.groups.alerts": "Benachrichtigungen",
   "agentSettings.saveFailed": "Die Agenteneinstellungen konnten nicht gespeichert werden.",
   "agentSettings.name": "Name",
   "agentSettings.nameLabel": "Agentenname",
@@ -218,6 +220,7 @@ export const messages = {
     one: "{count} eingerichtet",
     other: "{count} eingerichtet",
   },
+  "agentSettings.links.routinesNone": "Keine",
   "agentSettings.runtime.workspaceNote":
     "„Nur Arbeitsbereich“ beschränkt Schreibzugriffe auf den Arbeitsbereich dieses Agenten, den gemeinsamen Ordner und temporäre Ordner. Lesen und Netzwerkzugriff bleiben verfügbar.",
   "agentSettings.runtime.workspaceEnforcedCommand": "Ein Befehl, der außerhalb schreiben muss, fragt dich zuerst.",

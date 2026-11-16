@@ -194,6 +194,8 @@ export interface SettingsLinkRowProps {
   label: JSX.Element;
   /** The state on the right of the row, such as `3 saved`. A row with none shows only the chevron. */
   value?: JSX.Element;
+  /** On a narrow screen, the value goes under the label and wraps, so a long value reads in full. */
+  wrapValue?: boolean;
   onClick: (trigger: HTMLButtonElement) => void;
   ref?: (element: HTMLButtonElement) => void;
 }
@@ -208,7 +210,7 @@ export function SettingsLinkRow(props: SettingsLinkRowProps): JSX.Element {
       ref={(element) => props.ref?.(element)}
       variant="ghost"
       type="button"
-      class="settings-link"
+      class={["settings-link", { "settings-link-wrap-value": props.wrapValue === true }]}
       data-cuelume-tap="navigate"
       onClick={(event) => props.onClick(event.currentTarget)}
     >

@@ -122,6 +122,8 @@ export const messages = {
   "agentSettings.groups.knows": "Wie",
   "agentSettings.groups.does": "Robi",
   "agentSettings.groups.rules": "Zasady",
+  "agentSettings.groups.model": "Model",
+  "agentSettings.groups.alerts": "Powiadomienia",
   "agentSettings.saveFailed": "Nie udało się zapisać ustawień agenta.",
   "agentSettings.name": "Nazwa",
   "agentSettings.nameLabel": "Nazwa agenta",
@@ -246,6 +248,7 @@ export const messages = {
     many: "Skonfigurowane: {count}",
     other: "Skonfigurowane: {count}",
   },
+  "agentSettings.links.routinesNone": "Brak",
   "agentSettings.runtime.workspaceNote":
     "Tryb „Tylko obszar roboczy” ogranicza zapis do obszaru roboczego tego agenta, folderu współdzielonego i folderów tymczasowych. Odczyt i sieć pozostają dostępne.",
   "agentSettings.runtime.workspaceEnforcedCommand":

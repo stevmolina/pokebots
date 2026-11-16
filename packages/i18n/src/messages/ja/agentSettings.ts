@@ -96,6 +96,8 @@ export const messages = {
   "agentSettings.groups.knows": "知識",
   "agentSettings.groups.does": "実行",
   "agentSettings.groups.rules": "ルール",
+  "agentSettings.groups.model": "モデル",
+  "agentSettings.groups.alerts": "通知",
   "agentSettings.saveFailed": "エージェントの設定を保存できませんでした。",
 
   "agentSettings.name": "名前",
@@ -208,6 +210,7 @@ export const messages = {
   "agentSettings.links.files": "ファイル",
   "agentSettings.links.routines": "ルーティン",
   "agentSettings.links.routinesCount": { other: "{count} 件設定済み" },
+  "agentSettings.links.routinesNone": "なし",
   "agentSettings.runtime.workspaceNote":
     "「ワークスペースのみ」は、書き込みをこのエージェントのワークスペース、共有フォルダー、一時フォルダーに制限します。読み取りとネットワークは引き続き使用できます。",
   "agentSettings.runtime.workspaceEnforcedCommand": "外部に書き込む必要があるコマンドは、先に確認します。",

@@ -98,7 +98,7 @@ export const messages = defineMessages("agentSettings", {
   "agentSettings.groups.knows": "Knows",
   "agentSettings.groups.does": "Does",
   "agentSettings.groups.rules": "Rules",
-  "agentSettings.groups.computer": "Computer",
+  "agentSettings.groups.model": "Model",
   "agentSettings.groups.alerts": "Alerts",
   "agentSettings.saveFailed": "Could not save agent settings.",
 
@@ -214,6 +214,7 @@ export const messages = defineMessages("agentSettings", {
   "agentSettings.links.files": "Files",
   "agentSettings.links.routines": "Routines",
   "agentSettings.links.routinesCount": { one: "{count} configured", other: "{count} configured" },
+  "agentSettings.links.routinesNone": "None",
   "agentSettings.runtime.workspaceNote":
     "Workspace only limits writes to this agent's workspace, the shared folder and the temporary folders. Reads and network stay available.",
   "agentSettings.runtime.workspaceEnforcedCommand": "A command that must write outside asks you first.",

@@ -102,6 +102,8 @@ export const messages = {
   "agentSettings.groups.knows": "Connaissances",
   "agentSettings.groups.does": "Actions",
   "agentSettings.groups.rules": "Règles",
+  "agentSettings.groups.model": "Modèle",
+  "agentSettings.groups.alerts": "Alertes",
   "agentSettings.saveFailed": "Impossible d’enregistrer les réglages de l’agent.",
 
   "agentSettings.name": "Nom",
@@ -214,6 +216,7 @@ export const messages = {
   "agentSettings.links.files": "Fichiers",
   "agentSettings.links.routines": "Routines",
   "agentSettings.links.routinesCount": { one: "{count} configurée", other: "{count} configurées" },
+  "agentSettings.links.routinesNone": "Aucune",
   "agentSettings.runtime.workspaceNote":
     "« Espace de travail uniquement » limite les écritures à l’espace de travail de cet agent, au dossier partagé et aux dossiers temporaires. La lecture et le réseau restent disponibles.",
   "agentSettings.runtime.workspaceEnforcedCommand": "Une commande qui doit écrire à l’extérieur vous demande d’abord.",

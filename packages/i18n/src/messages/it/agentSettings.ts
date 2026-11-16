@@ -100,6 +100,8 @@ export const messages = {
   "agentSettings.groups.knows": "Cosa sa",
   "agentSettings.groups.does": "Cosa fa",
   "agentSettings.groups.rules": "Regole",
+  "agentSettings.groups.model": "Modello",
+  "agentSettings.groups.alerts": "Avvisi",
   "agentSettings.saveFailed": "Impossibile salvare le impostazioni dell'agente.",
 
   "agentSettings.name": "Nome",
@@ -212,6 +214,7 @@ export const messages = {
   "agentSettings.links.files": "File",
   "agentSettings.links.routines": "Routine",
   "agentSettings.links.routinesCount": { one: "{count} configurata", other: "{count} configurate" },
+  "agentSettings.links.routinesNone": "Nessuna",
   "agentSettings.runtime.workspaceNote":
     "«Solo workspace» limita le scritture al workspace di questo agente, alla cartella condivisa e alle cartelle temporanee. Lettura e rete restano disponibili.",
   "agentSettings.runtime.workspaceEnforcedCommand": "Un comando che deve scrivere all'esterno te lo chiede prima.",

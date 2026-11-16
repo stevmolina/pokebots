@@ -101,6 +101,8 @@ export const messages = {
   "agentSettings.groups.knows": "Sabe",
   "agentSettings.groups.does": "Faz",
   "agentSettings.groups.rules": "Regras",
+  "agentSettings.groups.model": "Modelo",
+  "agentSettings.groups.alerts": "Alertas",
   "agentSettings.saveFailed": "Não foi possível salvar as configurações do agente.",
   "agentSettings.name": "Nome",
   "agentSettings.nameLabel": "Nome do agente",
@@ -205,6 +207,7 @@ export const messages = {
   "agentSettings.links.files": "Arquivos",
   "agentSettings.links.routines": "Rotinas",
   "agentSettings.links.routinesCount": { one: "{count} configurada", other: "{count} configuradas" },
+  "agentSettings.links.routinesNone": "Nenhuma",
   "agentSettings.runtime.workspaceNote":
     "Somente o espaço de trabalho limita a gravação ao espaço de trabalho deste agente, à pasta compartilhada e às pastas temporárias. A leitura e a rede continuam disponíveis.",
   "agentSettings.runtime.workspaceEnforcedCommand":

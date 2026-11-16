@@ -65,7 +65,7 @@ export const FastMode: Story = {
 };
 /** The user's own level of the agent. The row opens the notification settings, the one place that changes it. */
 export const NotificationLevel: Story = {
-  args: { notificationLevel: { current: null, serverLevel: "needs-me", onOpen: fn() } },
+  args: { backupModelsEditable: true, notificationLevel: { current: null, serverLevel: "needs-me", onOpen: fn() } },
 };
 export const WorkspaceOnly: Story = { args: { agent: { ...STORY_AGENT, access: "workspace" } } };
 

@@ -106,6 +106,8 @@ export const messages = {
   "agentSettings.groups.knows": "יודע",
   "agentSettings.groups.does": "עושה",
   "agentSettings.groups.rules": "כללים",
+  "agentSettings.groups.model": "מודל",
+  "agentSettings.groups.alerts": "התראות",
   "agentSettings.saveFailed": "לא ניתן לשמור את הגדרות הסוכן.",
 
   "agentSettings.name": "שם",
@@ -216,6 +218,7 @@ export const messages = {
   "agentSettings.links.files": "קבצים",
   "agentSettings.links.routines": "שגרות",
   "agentSettings.links.routinesCount": { one: "אחת הוגדרה", two: "שתיים הוגדרו", other: "{count} הוגדרו" },
+  "agentSettings.links.routinesNone": "אין",
   "agentSettings.runtime.workspaceNote":
     "סביבת עבודה בלבד מגבילה כתיבה לסביבת העבודה של הסוכן הזה, לתיקייה המשותפת ולתיקיות הזמניות. קריאה ורשת נשארות זמינות.",
   "agentSettings.runtime.workspaceEnforcedCommand": "פקודה שחייבת לכתוב בחוץ שואלת אותך קודם.",
