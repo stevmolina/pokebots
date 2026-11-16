@@ -2007,6 +2007,25 @@ html.ui-textarea-resizing {
   transform: translate(-50%, -50%);
 }
 
+/* On a phone the card is as wide as the screen, so a close control that is half outside the card
+   leaves the screen edge. It sits inside the top end corner instead, and the words keep clear of it.
+   600px is the width at which Sonner switches to its phone layout. */
+@media (max-width: 600px) {
+  .ui-toaster [data-sonner-toast][data-styled="true"] [data-close-button] {
+    top: var(--openbot-space-2);
+    inset-inline-end: var(--openbot-space-2);
+  }
+
+  .ui-toaster [data-sonner-toast][data-styled="true"]:has([data-close-button]) [data-content] {
+    padding-inline-end: calc(
+      var(--openbot-control-sm) +
+      var(--openbot-space-2) -
+      var(--openbot-space-4) +
+      var(--openbot-space-1)
+    );
+  }
+}
+
 @media (hover: hover) and (pointer: fine) {
   .ui-toaster [data-sonner-toast][data-styled="true"] [data-action]:hover {
     background: color-mix(in srgb, var(--openbot-surface-light) 82%, transparent);

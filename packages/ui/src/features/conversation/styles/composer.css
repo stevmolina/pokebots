@@ -750,10 +750,13 @@
 .composer-editor-placeholder {
   position: absolute;
   top: 2px;
-  inset-inline-start: 4px;
+  inset-inline: 4px;
+  overflow: hidden;
   color: var(--openbot-text-muted);
   font-size: var(--openbot-text-lg);
   line-height: 20px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   pointer-events: none;
   user-select: none;
 }
