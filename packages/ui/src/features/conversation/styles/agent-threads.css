@@ -44,6 +44,16 @@
   margin: auto;
 }
 
+/*
+ * The header moves the window. On macOS a click on the face or the name inside the pill moved the
+ * window, and only the edge of the pill took the click. The pill and each part in it keep their own
+ * `no-drag`, so no part of the pill is a drag area.
+ */
+.conversation-header[data-session-pill] .conversation-session-pill,
+.conversation-header[data-session-pill] .conversation-session-pill * {
+  -webkit-app-region: no-drag;
+}
+
 .conversation-header[data-session-pill] .conversation-title.ui-button {
   min-width: 0;
   height: var(--openbot-control-md);
