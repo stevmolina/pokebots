@@ -4799,5 +4799,23 @@
     "ru",
     "tr",
     "zh"
-  ]
+  ],
+  "mobile.workspace.preview.unread": ["ar", "de", "es", "fr", "he", "it", "ja", "ko", "nl", "pl", "ru", "tr", "zh"],
+  "mobile.workspace.preview.search": ["ar", "de", "es", "fr", "he", "it", "ja", "ko", "nl", "pl", "ru", "tr", "zh"],
+  "mobile.workspace.preview.noSection": ["ar", "de", "es", "fr", "he", "it", "ja", "ko", "nl", "pl", "ru", "tr", "zh"],
+  "mobile.workspace.preview.done": ["ar", "de", "es", "fr", "he", "it", "ja", "ko", "nl", "pl", "ru", "tr", "zh"],
+  "mobile.workspace.preview.yesterday": ["ar", "de", "es", "fr", "he", "it", "ja", "ko", "nl", "pl", "ru", "tr", "zh"],
+  "mobile.workspace.preview.ask": ["ar", "de", "es", "fr", "he", "it", "ja", "ko", "nl", "pl", "ru", "tr", "zh"],
+  "mobile.workspace.preview.tasks": ["ar", "de", "es", "fr", "he", "it", "ja", "ko", "nl", "pl", "ru", "tr", "zh"],
+  "mobile.workspace.preview.routineRun": ["ar", "de", "es", "fr", "he", "it", "ja", "ko", "nl", "pl", "ru", "tr", "zh"],
+  "mobile.workspace.preview.profile": ["ar", "de", "es", "fr", "he", "it", "ja", "ko", "nl", "pl", "ru", "tr", "zh"],
+  "mobile.workspace.preview.newChat": ["ar", "de", "es", "fr", "he", "it", "ja", "ko", "nl", "pl", "ru", "tr", "zh"],
+  "mobile.workspace.preview.apps": ["ar", "de", "es", "fr", "he", "it", "ja", "ko", "nl", "pl", "ru", "tr", "zh"],
+  "mobile.workspace.preview.back": ["ar", "de", "es", "fr", "he", "it", "ja", "ko", "nl", "pl", "ru", "tr", "zh"],
+  "mobile.workspace.preview.more": ["ar", "de", "es", "fr", "he", "it", "ja", "ko", "nl", "pl", "ru", "tr", "zh"],
+  "mobile.workspace.preview.attach": ["ar", "de", "es", "fr", "he", "it", "ja", "ko", "nl", "pl", "ru", "tr", "zh"],
+  "mobile.workspace.preview.dictate": ["ar", "de", "es", "fr", "he", "it", "ja", "ko", "nl", "pl", "ru", "tr", "zh"],
+  "mobile.workspace.preview.voice": ["ar", "de", "es", "fr", "he", "it", "ja", "ko", "nl", "pl", "ru", "tr", "zh"],
+  "mobile.workspace.preview.send": ["ar", "de", "es", "fr", "he", "it", "ja", "ko", "nl", "pl", "ru", "tr", "zh"],
+  "mobile.workspace.preview.leave": ["ar", "de", "es", "fr", "he", "it", "ja", "ko", "nl", "pl", "ru", "tr", "zh"]
 }
