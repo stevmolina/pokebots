@@ -41,6 +41,30 @@
     width: var(--phone-chat-button);
   }
 
+  /*
+   * The name pill sits in the middle of the screen. The heading row puts it at the start of the space
+   * between the round buttons, so the pill leaves the row and centers itself in the header, between
+   * the buttons. The thread controls then measure the full row, whatever the name length.
+   */
+  .web-app-frame[data-web-mobile-pane="conversation"] .conversation-heading-group > .conversation-title.ui-button {
+    position: absolute;
+    top: 10px;
+    inset-inline: calc(var(--phone-chat-button) * 2 + var(--openbot-space-4));
+    width: fit-content;
+    max-width: calc(100% - 2 * (var(--phone-chat-button) * 2 + var(--openbot-space-4)));
+    margin-inline: auto;
+  }
+
+  /* The workspace-only lock sat after the name. With the name centered it would float alone at the start. */
+  .web-app-frame[data-web-mobile-pane="conversation"] .conversation-heading-group > .conversation-access-lock {
+    display: none;
+  }
+
+  /* A phone lists the open threads in the menu, so the tab strip never shows next to the pill. */
+  .web-app-frame[data-web-mobile-pane="conversation"] .conversation-header[data-phone-menu] .agent-threads-tabs-area {
+    display: none;
+  }
+
   /* The name and its picture sit in one pill, centered. The role line stays out of the pill. */
   .web-app-frame[data-web-mobile-pane="conversation"] .conversation-header .conversation-title.ui-button {
     height: var(--phone-chat-button);
