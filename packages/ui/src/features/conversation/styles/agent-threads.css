@@ -176,6 +176,16 @@
   color: var(--openbot-text-muted);
 }
 
+/*
+ * A row without a menu, such as "Main chat", keeps the room of the menu, so its date lines up with the
+ * dates of the rows that have one. The hidden menu still takes its room in those rows.
+ */
+.agent-sessions-list:has(.agent-sessions-row-menu)
+  > .agent-sessions-row:not(:has(.agent-sessions-row-menu))
+  > .agent-sessions-open.ui-button {
+  padding-inline-end: calc(var(--openbot-space-3) + var(--openbot-control-md) + var(--openbot-space-1-5));
+}
+
 @media (hover: hover) and (pointer: fine) {
   .agent-sessions-row:not(:hover, :focus-within) .agent-sessions-row-menu:not([aria-expanded="true"]) {
     opacity: 0;
