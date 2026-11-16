@@ -13,6 +13,7 @@ import { join, relative, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import type { MessageCatalog } from "../packages/i18n/src/message";
 import {
+  BRANDED_JSON,
   BRANDED_MODULES,
   brandHtml,
   brandModule,
@@ -165,6 +166,16 @@ for (const file of files) {
   check(result !== null && result.code !== code, `${file}: the brand layer changed nothing.`);
 }
 for (const literal of literalResults) check(literal.found, `${literal.file}: ${literal.find} is not in the file.`);
+// The release notes of What's New keep "OpenBot" only in the kept phrases, and stay valid JSON.
+const releaseNotes: Record<string, { before: number; after: number }> = {};
+for (const file of BRANDED_JSON) {
+  const code = await readFile(join(ROOT, file), "utf8");
+  const branded = plugin.transform.call(pluginContext, code, join(ROOT, file))?.code ?? code;
+  const words = (text: string) => count(text, "OpenBot") - KEPT.reduce((sum, phrase) => sum + count(text, phrase), 0);
+  releaseNotes[file] = { before: words(code), after: words(branded) };
+  check(words(code) > 0 && words(branded) === 0, `${file}: "OpenBot" is left outside the kept phrases.`);
+  check(JSON.stringify(JSON.parse(branded)).length > 0, `${file}: the branded file is not JSON.`);
+}
 check(warnings.length === 0, `The plugin warned: ${warnings.join(" | ")}`);
 const mainIndex = await readFile(join(ROOT, "src/main/index.ts"), "utf8");
 const mainBranded = brandModule("src/main/index.ts", mainIndex, settings)?.code ?? "";
@@ -238,6 +249,7 @@ const report = {
   },
   literals: literalResults,
   outsideCatalogs,
+  releaseNotes,
   accountDefaults,
   html,
   web,

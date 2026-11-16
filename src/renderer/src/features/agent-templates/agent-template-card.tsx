@@ -183,7 +183,14 @@ export async function drawLogo(
   const dispose = render(() => <AppLogo variant="production" />, host);
   flush();
   const svg = host.querySelector("svg")?.cloneNode(true);
+  // A Pokebots build draws its mark as a picture, which needs no colours.
+  const picture = host.querySelector("img");
   dispose();
+  if (picture) {
+    await picture.decode();
+    context.drawImage(picture, x, y, size, size);
+    return;
+  }
   if (!(svg instanceof SVGSVGElement)) return;
   svg.querySelector(".app-logo-background")?.setAttribute("fill", colors.logo);
   for (const eye of svg.querySelectorAll(".app-logo-eye")) {
