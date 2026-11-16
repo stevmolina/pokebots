@@ -987,3 +987,148 @@
     transition: none;
   }
 }
+
+/*
+ * The thread menu on a phone is a sheet at the bottom of the screen. The threads come first, in reach
+ * of the thumb, and the actions follow in one grouped card. The chat behind it dims.
+ */
+body:has(.agent-threads-sheet[data-expanded])::after {
+  position: fixed;
+  z-index: calc(var(--openbot-layer-popover) - 1);
+  inset: 0;
+  background: var(--openbot-dialog-overlay);
+  content: "";
+  pointer-events: none;
+}
+
+.ui-action-menu.agent-threads-sheet {
+  display: flex;
+  width: 100%;
+  max-width: none;
+  flex-direction: column;
+  border-radius: var(--openbot-radius-modal) var(--openbot-radius-modal) 0 0;
+  background: var(--openbot-bg-surface-raised);
+  padding: var(--openbot-space-2) var(--openbot-space-3) calc(env(safe-area-inset-bottom, 0px) + var(--openbot-space-6));
+  box-shadow: 0 -12px 40px var(--openbot-shadow-menu);
+  animation: agent-threads-sheet-in var(--openbot-duration-slow) var(--ui-submenu-ease) both;
+}
+
+.ui-action-menu.agent-threads-sheet:not([data-expanded]) {
+  animation: agent-threads-sheet-out var(--ui-menu-duration) var(--ui-menu-ease) both;
+}
+
+@keyframes agent-threads-sheet-in {
+  from {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes agent-threads-sheet-out {
+  to {
+    transform: translateY(100%);
+  }
+}
+
+.agent-threads-sheet-handle {
+  width: 36px;
+  height: 5px;
+  flex: none;
+  margin: 0 auto var(--openbot-space-3);
+  border-radius: var(--openbot-radius-pill);
+  background: color-mix(in srgb, var(--openbot-text-primary) 18%, transparent);
+}
+
+.agent-threads-sheet-title {
+  padding: 0 var(--openbot-space-2) var(--openbot-space-2);
+  font-size: var(--openbot-text-xl);
+  font-weight: var(--openbot-weight-semibold);
+}
+
+.agent-threads-sheet .agent-threads-menu-list {
+  max-height: 46dvh;
+}
+
+.ui-action-menu.agent-threads-sheet .agent-threads-menu-item {
+  height: 52px;
+  min-height: 52px;
+  border-radius: var(--openbot-radius-lg);
+  padding-inline: var(--openbot-space-3);
+}
+
+/* The open thread: an accent tint and a bolder title, so "you are here" reads at a glance. */
+.agent-threads-sheet .agent-threads-menu-list .agent-threads-menu-item[aria-current] {
+  background: color-mix(in srgb, var(--openbot-accent) 14%, transparent);
+  font-weight: var(--openbot-weight-semibold);
+}
+
+/* A state is a small dot here, so the working dots do not look like a second More button. */
+.agent-threads-sheet .agent-threads-tab-mark {
+  width: 10px;
+}
+
+.agent-threads-sheet .agent-threads-state {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--openbot-radius-pill);
+  background: var(--openbot-text-muted);
+  padding: 0;
+}
+
+.agent-threads-sheet .agent-threads-state > * {
+  display: none;
+}
+
+.agent-threads-sheet [data-kind="working"] .agent-threads-state {
+  background: var(--openbot-accent);
+  animation: agent-threads-sheet-pulse 1.4s ease-in-out infinite;
+}
+
+.agent-threads-sheet [data-kind="failed"] .agent-threads-state {
+  background: var(--openbot-danger);
+}
+
+.agent-threads-sheet [data-kind="waiting"] .agent-threads-state {
+  background: var(--openbot-warning);
+}
+
+.agent-threads-sheet [data-kind="unread"] .agent-threads-state {
+  background: var(--openbot-accent);
+}
+
+.agent-threads-sheet [data-kind="queued"] .agent-threads-state {
+  box-shadow: inset 0 0 0 1.5px var(--openbot-text-muted);
+  background: transparent;
+}
+
+@keyframes agent-threads-sheet-pulse {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+/* The actions sit in one grouped card under the threads. */
+.agent-threads-sheet-group {
+  overflow: hidden;
+  margin-top: var(--openbot-space-3);
+  border-radius: var(--openbot-radius-grouped);
+  background: color-mix(in srgb, var(--openbot-text-primary) 5%, transparent);
+}
+
+.ui-action-menu.agent-threads-sheet .agent-threads-sheet-group > [role="menuitem"] {
+  height: 48px;
+  min-height: 48px;
+  border-radius: 0;
+  padding-inline: var(--openbot-space-4);
+}
+
+.ui-action-menu.agent-threads-sheet .agent-threads-sheet-group > [role="menuitem"] + [role="menuitem"] {
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--openbot-text-primary) 8%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-action-menu.agent-threads-sheet,
+  .ui-action-menu.agent-threads-sheet:not([data-expanded]),
+  .agent-threads-sheet [data-kind="working"] .agent-threads-state {
+    animation: none;
+  }
+}
