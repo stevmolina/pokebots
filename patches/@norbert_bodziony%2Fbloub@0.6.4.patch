@@ -36,7 +36,7 @@ index fbd2a5b0df7e5fc8a6283bb4cad189b927374db4..233757dd3d4553f881ae289e655ac313
 diff --git a/dist/package/plush.js b/dist/package/plush.js
 --- a/dist/package/plush.js
 +++ b/dist/package/plush.js
-@@ -954,9 +954,11 @@ function Gt(e, t) {
+@@ -954,16 +954,21 @@
  	let n = `${t.toLowerCase()} ${e}`, r = $.get(n);
  	return r || (r = Wt(e).then((e) => {
  		let n = document.createElement("canvas");
@@ -50,3 +50,28 @@ diff --git a/dist/package/plush.js b/dist/package/plush.js
  		let i = r.getImageData(0, 0, n.width, n.height), a = Ht(t), o = i.data;
  		for (let e = 0; e < o.length; e += 4) {
  			let t = o[e] * 3;
+ 			o[e] = a[t], o[e + 1] = a[t + 1], o[e + 2] = a[t + 2];
+ 		}
+ 		return r.putImageData(i, 0, 0), new Promise((e) => n.toBlob(e, "image/webp", .92)).then((e) => e ? Ut(e) : n.toDataURL());
+-	}), r.catch(() => $.delete(n)), $.set(n, r)), r;
++	}), r = Promise.race([r, new Promise((e, t) => {
++		// A tint that never settles would stay cached and keep every avatar of this colour without a body.
++		setTimeout(() => t(/* @__PURE__ */ Error("plush: teinture trop lente")), 1e4);
++	})]), r.catch(() => $.delete(n)), $.set(n, r)), r;
+ }
+ //#endregion
+ //#region src/plush/PlushBot.tsx
+@@ -1072,7 +1077,12 @@
+ 		}, (e) => {
+ 			let [r, i] = e.split("|"), a = ++n;
+ 			if (!r) return void t(i);
+-			typeof document > "u" || Gt(i, r).then((e) => z && a === n && t(e), () => z && a === n && t(null));
++			// A failed tint is not cached (Gt deletes it), so try again: one failed image load or readback
++			// would otherwise hide this body and its eyes until the avatar is rebuilt.
++			let __tint = (__try) => Gt(i, r).then((e) => z && a === n && t(e), () => {
++				z && a === n && setTimeout(() => z && a === n && __tint(__try + 1), Math.min(3e4, 250 * 2 ** __try));
++			});
++			typeof document > "u" || __tint(0);
+ 		});
+ 	}
+ 	B(() => f().source, (e) => {
