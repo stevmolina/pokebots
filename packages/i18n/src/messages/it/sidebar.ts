@@ -121,6 +121,7 @@ export const messages = {
   "sidebar.waiting.hint.takeover": "Seleziona per intervenire",
   "sidebar.lanes.working": "Al lavoro",
   "sidebar.dock.settled": "Sistemati",
+  "sidebar.dock.recent": "Recenti",
   "sidebar.dock.doneNow": "finito ora",
   "sidebar.dock.doneMinutes": "finito {value} min fa",
   "sidebar.dock.doneHours": "finito {value} h fa",

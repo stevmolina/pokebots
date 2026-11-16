@@ -121,6 +121,7 @@ export const messages = {
   "sidebar.waiting.hint.takeover": "Selecteer om over te nemen",
   "sidebar.lanes.working": "Bezig",
   "sidebar.dock.settled": "Afgehandeld",
+  "sidebar.dock.recent": "Recent",
   "sidebar.dock.doneNow": "net klaar",
   "sidebar.dock.doneMinutes": "{value} min geleden klaar",
   "sidebar.dock.doneHours": "{value} u geleden klaar",

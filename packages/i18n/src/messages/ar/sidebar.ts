@@ -160,6 +160,7 @@ export const messages = {
   "sidebar.waiting.hint.takeover": "اختر لتولّي التحكم",
   "sidebar.lanes.working": "قيد العمل",
   "sidebar.dock.settled": "مستقرة",
+  "sidebar.dock.recent": "الأحدث",
   "sidebar.dock.doneNow": "انتهى للتو",
   "sidebar.dock.doneMinutes": "انتهى قبل {value} د",
   "sidebar.dock.doneHours": "انتهى قبل {value} س",

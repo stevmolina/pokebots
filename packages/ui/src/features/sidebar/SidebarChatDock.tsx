@@ -9,7 +9,7 @@
  * agents and the deleted channels follow the chats of "Settled".
  *
  * An agent that finished stays in "Working" under the agents that work, as a quiet "done" row, so the
- * user finds it where it was. It goes back to its folder 6 hours after its last activity, or when 5
+ * user finds it where it was. While no agent works, the group is titled "Recent", not "Working". It goes back to its folder 6 hours after its last activity, or when 5
  * newer agents finished. Opening it does not move it.
  *
  * Each group opens and closes by itself. The open groups are saved with the collapsed sections
@@ -425,6 +425,9 @@ export function SidebarChatDock(dockProps: { groups: SidebarChatDockGroups; open
   const open = () => dockProps.open;
   /** "Working" shows while an agent works or finished recently. */
   const workingShown = () => dockProps.groups.working.length > 0 || dockProps.groups.done.length > 0;
+  /** Only finished agents in the group: "Recent", as "Working" would say that something runs. */
+  const workingName = () =>
+    dockProps.groups.working.length > 0 ? t("sidebar.lanes.working") : t("sidebar.dock.recent");
   const draftShown = () => {
     const target = pending.sectionEditor?.target;
     return target?.kind === "create" && (target.parentId ?? null) === null;
@@ -435,7 +438,7 @@ export function SidebarChatDock(dockProps: { groups: SidebarChatDockGroups; open
         <Show when={workingShown()}>
           <SidebarDockGroup
             id={SIDEBAR_DOCK_WORKING_ID}
-            name={t("sidebar.lanes.working")}
+            name={workingName()}
             chats={dockProps.groups.working}
             done={{ chats: dockProps.groups.done, now: dockProps.groups.now }}
             open={open().isOpen(SIDEBAR_DOCK_WORKING_ID)}
