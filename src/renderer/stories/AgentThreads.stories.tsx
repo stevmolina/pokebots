@@ -5,6 +5,8 @@ import type { MockOpenBotOptions } from "../src/preview/mock-openbot";
 import {
   AGENT_ID,
   SERVER_BUSY_OPTIONS,
+  SUBAGENT_THREAD_FALLBACK_OPTIONS,
+  SUBAGENT_THREAD_OPTIONS,
   TABS_KEY,
   THREAD_OPTIONS,
   THREAD_QUEUE_OPTIONS,
@@ -97,6 +99,25 @@ export const QueuedThread: Story = {
 /** A thread held while the server is low on memory: the reason, and the messages that wait. */
 export const ServerBusyThread: Story = {
   render: () => <AgentThreadsApp open={["hackathon-bot"]} active="hackathon-bot" options={SERVER_BUSY_OPTIONS} />,
+};
+
+/**
+ * A side thread whose turn ended while its background subagent works. The bar under the title shows
+ * what the subagent does now; click it for its newest steps. The worker row above the message box
+ * shows it too. Both go away when the subagent ends.
+ */
+export const BackgroundSubagent: Story = {
+  render: () => <AgentThreadsApp open={["fix-buttons"]} active="fix-buttons" options={SUBAGENT_THREAD_OPTIONS} />,
+};
+
+/**
+ * The same thread from a server without agent-task-subagents-v1. The subagents message arrives as its
+ * text only, so the thread shows no bar and no worker row.
+ */
+export const BackgroundSubagentOlderServer: Story = {
+  render: () => (
+    <AgentThreadsApp open={["fix-buttons"]} active="fix-buttons" options={SUBAGENT_THREAD_FALLBACK_OPTIONS} />
+  ),
 };
 
 /**

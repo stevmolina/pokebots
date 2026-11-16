@@ -1,6 +1,7 @@
 import type {
   ConversationSubagent,
   ConversationSubagentStatus,
+  ConversationSubagentStep,
   ConversationSubagentStepKind,
 } from "@openbot/contracts/ipc";
 import type { AppTextKey } from "@openbot/i18n";
@@ -283,6 +284,97 @@ export function SubagentGroup(props: SubagentGroupProps) {
   );
 }
 
+/** The line of a bar of working subagents: how far they are, what one does now, and their time. */
+function RunningBarContent(props: { subagents: readonly ConversationSubagent[] }) {
+  const { t } = useText();
+  const progress = createGroupProgress(() => props.subagents);
+  /** The newest step of a subagent that works: what the team of the agent does now. */
+  const current = () => props.subagents.find((subagent) => subagent.status === "running");
+  return (
+    <>
+      <span class="subagents-group-title">{t("chat.subagents.running", { count: progress.total() })}</span>
+      <RunningProgress finished={progress.finished()} total={progress.total()} />
+      <span class="subagents-dock-live">
+        <Show when={current()}>{(subagent) => <LiveLine subagent={subagent()} />}</Show>
+      </span>
+      <span class="subagents-elapsed">{progress.elapsed()}</span>
+      <ChevronRight class="subagents-dock-chevron" aria-hidden="true" />
+    </>
+  );
+}
+
+/** One step of a subagent, with the icon of its kind. The newest step of a working subagent shines. */
+function SubagentStepRow(props: { step: ConversationSubagentStep; live: boolean }) {
+  return (
+    <li class="subagents-step" data-kind={props.step.kind}>
+      <StepGlyph kind={props.step.kind} class="subagents-step-glyph" />
+      {/* A command reads left to right; other steps take their direction from their text. */}
+      <span
+        class={["subagents-step-text", { "agent-activity-label": props.live }]}
+        dir={props.step.kind === "command" ? "ltr" : "auto"}
+      >
+        {props.step.text}
+        <Show when={props.live}>
+          <ActivityShine text={props.step.text} />
+        </Show>
+      </span>
+    </li>
+  );
+}
+
+/** The newest steps that the live bar of a side thread shows for each working subagent. */
+const LIVE_BAR_STEPS = 4;
+
+export interface SubagentLiveBarProps {
+  /** The background subagents that still work for the thread. The bar shows nothing for an empty list. */
+  subagents: readonly ConversationSubagent[];
+}
+
+/**
+ * The bar under the title of a side thread while a background subagent of the thread works, after
+ * its turn ended: the dock bar of the agent's chat, in the flow of the thread. A click shows the
+ * newest steps of each working subagent under it, and a second click hides them.
+ */
+export function SubagentLiveBar(props: SubagentLiveBarProps) {
+  const { t } = useText();
+  const stepsId = createUniqueId();
+  const [open, setOpen] = createSignal(false);
+  return (
+    <Show when={props.subagents.length > 0}>
+      <section class="subagents-live-bar" aria-label={t("chat.subagents.label")}>
+        <Button
+          type="button"
+          variant="ghost"
+          class="subagents-dock-bar subagents-live-bar-toggle no-drag"
+          aria-expanded={open() ? "true" : "false"}
+          aria-controls={open() ? stepsId : undefined}
+          onClick={() => setOpen(!open())}
+        >
+          <RunningBarContent subagents={props.subagents} />
+        </Button>
+        <Show when={open()}>
+          <div id={stepsId} class="subagents-live-bar-steps">
+            <For each={props.subagents} keyed={(subagent) => subagent.id}>
+              {(subagent) => (
+                <ol class="subagents-step-list" aria-label={t("chat.subagents.steps", { title: subagent().title })}>
+                  <For each={subagent().steps.slice(-LIVE_BAR_STEPS)} keyed={(step) => step.id}>
+                    {(step) => (
+                      <SubagentStepRow
+                        step={step()}
+                        live={subagent().status === "running" && step().id === subagent().steps.at(-1)?.id}
+                      />
+                    )}
+                  </For>
+                </ol>
+              )}
+            </For>
+          </div>
+        </Show>
+      </section>
+    </Show>
+  );
+}
+
 /** The morph between the card header in the chat and the bar under the chat header. */
 const DOCK_IN: KeyframeAnimationOptions = { duration: 340, easing: "cubic-bezier(0.2, 0.8, 0.2, 1)" };
 const DOCK_OUT: KeyframeAnimationOptions = { ...DOCK_IN, duration: 260 };
@@ -307,7 +399,6 @@ export interface SubagentDockProps {
  * the card shows again. A click scrolls back to the card.
  */
 export function SubagentDock(props: SubagentDockProps) {
-  const { t } = useText();
   // The bar keeps its last subagents while it morphs back to the card.
   const [shown, setShown] = createSignal<readonly ConversationSubagent[]>();
   let bar: HTMLElement | undefined;
@@ -361,28 +452,17 @@ export function SubagentDock(props: SubagentDockProps) {
   return (
     <div class="subagents-dock">
       <Show when={shown()}>
-        {(subagents) => {
-          const progress = createGroupProgress(subagents);
-          /** The newest step of a subagent that works: what the team of the agent does now. */
-          const current = () => subagents().find((subagent) => subagent.status === "running");
-          return (
-            <Button
-              ref={morphIn}
-              type="button"
-              variant="ghost"
-              class="subagents-dock-bar no-drag"
-              onClick={() => props.onReveal()}
-            >
-              <span class="subagents-group-title">{t("chat.subagents.running", { count: progress.total() })}</span>
-              <RunningProgress finished={progress.finished()} total={progress.total()} />
-              <span class="subagents-dock-live">
-                <Show when={current()}>{(subagent) => <LiveLine subagent={subagent()} />}</Show>
-              </span>
-              <span class="subagents-elapsed">{progress.elapsed()}</span>
-              <ChevronRight class="subagents-dock-chevron" aria-hidden="true" />
-            </Button>
-          );
-        }}
+        {(subagents) => (
+          <Button
+            ref={morphIn}
+            type="button"
+            variant="ghost"
+            class="subagents-dock-bar no-drag"
+            onClick={() => props.onReveal()}
+          >
+            <RunningBarContent subagents={subagents()} />
+          </Button>
+        )}
       </Show>
     </div>
   );
@@ -445,24 +525,12 @@ export function SubagentPanel(props: SubagentPanelProps) {
               </Show>
               <ol class="subagents-step-list" aria-label={t("chat.subagents.steps", { title: subagent().title })}>
                 <For each={subagent().steps} keyed={(step) => step.id}>
-                  {(step, index) => {
-                    const live = () => subagent().status === "running" && index() === subagent().steps.length - 1;
-                    return (
-                      <li class="subagents-step" data-kind={step().kind}>
-                        <StepGlyph kind={step().kind} class="subagents-step-glyph" />
-                        {/* A command reads left to right; other steps take their direction from their text. */}
-                        <span
-                          class={["subagents-step-text", { "agent-activity-label": live() }]}
-                          dir={step().kind === "command" ? "ltr" : "auto"}
-                        >
-                          {step().text}
-                          <Show when={live()}>
-                            <ActivityShine text={step().text} />
-                          </Show>
-                        </span>
-                      </li>
-                    );
-                  }}
+                  {(step, index) => (
+                    <SubagentStepRow
+                      step={step()}
+                      live={subagent().status === "running" && index() === subagent().steps.length - 1}
+                    />
+                  )}
                 </For>
               </ol>
               <Show when={subagent().error}>

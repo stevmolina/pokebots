@@ -6,6 +6,7 @@
 //
 // The route sets compare `url.pathname` for equality and share no path, so the order of the checks
 // below does not change which codec a route gets.
+import { withAgentTaskSubagents } from "./agent-task-subagents-v1";
 import { withAgentTaskUiBlocks } from "./agent-task-ui-blocks-v1";
 import { isChannelAttentionRoute, withChannelAttention } from "./channel-attention-v1";
 import { withChannelBrowser, withChannelDraftBrowser } from "./channel-browser-v1";
@@ -39,6 +40,8 @@ export interface TeamSideRouteOptions {
   channelAttention?: boolean;
   /** agent-task-ui-blocks-v1: a task conversation keeps its UI blocks. Passed as `channelAttention` is. */
   agentTaskUiBlocks?: boolean;
+  /** agent-task-subagents-v1: a task conversation keeps its subagents. Passed as `channelAttention` is. */
+  agentTaskSubagents?: boolean;
   /**
    * channel-isolation-v1: a channel keeps `isolated`, in a response and in the draft of a save. Passed
    * as `channelAttention` is, for a request as for a response.
@@ -125,7 +128,9 @@ export function teamSideRouteCodec(path: string): TeamSideRouteCodec | null {
             options?.mcpManyServers && status < 400 && isMcpSignInListRoute(path)
               ? mcpManySignInsResponse(value)
               : admin.response(status, value);
-          return options?.agentTaskUiBlocks && status < 400 ? withAgentTaskUiBlocks(path, projected, value) : projected;
+          const blocks =
+            options?.agentTaskUiBlocks && status < 400 ? withAgentTaskUiBlocks(path, projected, value) : projected;
+          return options?.agentTaskSubagents && status < 400 ? withAgentTaskSubagents(path, blocks, value) : blocks;
         },
       }
     : null;

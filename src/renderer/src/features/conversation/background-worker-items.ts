@@ -58,10 +58,10 @@ export function backgroundWorkerItems(input: {
  * recovery). A foreground subagent already shows in the turn's own activity; listing it here made
  * the composer jump on each turn that used one.
  */
-function runningSubagents(
-  messages: readonly { turnId?: string | undefined; subagents?: readonly Subagent[] | undefined }[],
-): Subagent[] {
-  const latest = new Map<string, Subagent>();
+export function runningSubagents<T extends Subagent>(
+  messages: readonly { subagents?: readonly T[] | undefined }[],
+): T[] {
+  const latest = new Map<string, T>();
   for (const message of messages)
     for (const worker of message.subagents ?? []) {
       latest.delete(worker.id);

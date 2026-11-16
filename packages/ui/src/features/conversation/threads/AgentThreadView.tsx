@@ -214,6 +214,8 @@ export interface AgentThreadViewProps {
   draftAttachments?: DraftAttachment[] | undefined;
   /** Custom: rows that the app shows above the message box, such as background workers. */
   aboveComposer?: JSX.Element;
+  /** Custom: a row that the app shows under the thread title, such as the live bar of its subagents. */
+  belowTitle?: JSX.Element;
   /** Controls at the start of the toolbar's end group, such as the model chip of the agent. */
   composerControls?: JSX.Element | undefined;
   /** The images of the draft that show in the thumbnail row. A send takes them with the text. */
@@ -842,6 +844,7 @@ export function AgentThreadView(props: AgentThreadViewProps) {
           <MessageSquareText aria-hidden="true" />
           <span>{title()}</span>
         </div>
+        {props.belowTitle}
       </Show>
       <Show when={props.selectionActions}>
         {(actions) => (

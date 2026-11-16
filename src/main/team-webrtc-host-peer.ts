@@ -7,6 +7,7 @@ import { BROWSER_SECRET_RESPONSE_PATH } from "@openbot/contracts/ipc";
 import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
 import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
 import { AGENT_PENDING_RUNTIME_CAPABILITY } from "@openbot/contracts/team-protocol/agent-pending-runtime-v1";
+import { AGENT_TASK_SUBAGENTS_CAPABILITY } from "@openbot/contracts/team-protocol/agent-task-subagents-v1";
 import { AGENT_TASK_UI_BLOCKS_CAPABILITY } from "@openbot/contracts/team-protocol/agent-task-ui-blocks-v1";
 import { browserViewStreamSessionId } from "@openbot/contracts/team-protocol/browser-view-v1";
 import {
@@ -868,6 +869,7 @@ export class TeamWebRtcHostPeer {
             channelTaskWaits: peerCapabilities.has(CHANNEL_TASK_WAITS_CAPABILITY),
             mcpManyServers: peerCapabilities.has(MCP_MANY_SERVERS_CAPABILITY),
             agentTaskUiBlocks: peerCapabilities.has(AGENT_TASK_UI_BLOCKS_CAPABILITY),
+            agentTaskSubagents: peerCapabilities.has(AGENT_TASK_SUBAGENTS_CAPABILITY),
             uiBlocks: peerCapabilities.has(TEAM_UI_BLOCKS_CAPABILITY),
             subagents: peerCapabilities.has(TEAM_SUBAGENTS_CAPABILITY),
             promptMultiSelect: peerCapabilities.has(TEAM_PROMPT_MULTI_SELECT_CAPABILITY),
@@ -939,6 +941,7 @@ export class TeamWebRtcHostPeer {
         const event = JSON.parse(data.toString());
         const channel = optionalTeamEvent(event, {
           agentTaskUiBlocks: this.#peerCapabilities.has(AGENT_TASK_UI_BLOCKS_CAPABILITY),
+          agentTaskSubagents: this.#peerCapabilities.has(AGENT_TASK_SUBAGENTS_CAPABILITY),
         });
         frame = encodeTeamProtocolV2Frame(
           channel

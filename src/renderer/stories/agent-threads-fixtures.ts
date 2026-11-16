@@ -1,4 +1,12 @@
-import type { AgentTask, ConversationMessage, ConversationSnapshot, QueueDelivery } from "@openbot/contracts/ipc";
+import {
+  type AgentTask,
+  CONVERSATION_SUBAGENTS_ITEM_TYPE,
+  type ConversationMessage,
+  type ConversationSnapshot,
+  type ConversationSubagent,
+  conversationSubagentsText,
+  type QueueDelivery,
+} from "@openbot/contracts/ipc";
 import type { MockOpenBotOptions } from "../src/preview/mock-openbot";
 
 /** Side threads of Chief for the desktop and web thread stories. */
@@ -311,3 +319,79 @@ export const SERVER_BUSY_OPTIONS: MockOpenBotOptions = {
   tasks: { [AGENT_ID]: [SERVER_BUSY, PRICING] },
   taskConversations: { ...THREAD_OPTIONS.taskConversations, "hackathon-bot": snapshot(SERVER_BUSY, []) },
 };
+
+/** A time some minutes before the story opens, so the clocks of a working subagent read as in the app. */
+const minutesAgo = (minutes: number) => new Date(Date.now() - minutes * 60_000).toISOString();
+
+/**
+ * A background subagent that works on after the turn of "The button to go back on a bot is not
+ * working" ended, as on the Personal VPS on 2026-11-16.
+ */
+const BACKGROUND_SUBAGENT: ConversationSubagent = {
+  id: "toolu_fix_header_buttons",
+  title: "Fix bot header buttons",
+  agentType: "general-purpose",
+  prompt: "Fix the Back and More buttons of the phone chat header. Push, open a PR and merge when the checks pass.",
+  status: "running",
+  startedAt: minutesAgo(21),
+  endedAt: null,
+  background: true,
+  error: null,
+  steps: [
+    { id: "fix-step-1", kind: "text", text: "Back sits under the transparent header. Raising it." },
+    { id: "fix-step-2", kind: "edit", text: "web-phone-chat.css" },
+    { id: "fix-step-3", kind: "text", text: "Desktop unchanged. Now the no-threads phone." },
+    { id: "fix-step-4", kind: "command", text: "bunx biome check --write ThreadMenu.tsx web-phone-chat.css" },
+    { id: "fix-step-5", kind: "text", text: "Format failure fixed. Running the tests again." },
+    {
+      id: "fix-step-6",
+      kind: "command",
+      text: "bun run test:desktop packages/ui src/renderer/src/features/web-client",
+    },
+  ],
+};
+
+const FIX_BUTTONS = thread("fix-buttons", "The button to go back on a bot is not working", minutesAgo(9));
+
+/**
+ * The thread's messages. With `subagents: false`, the subagents message is what a server without
+ * agent-task-subagents-v1 sends: its fallback text, with no list.
+ */
+function fixButtonsMessages(subagents: boolean): ConversationMessage[] {
+  return [
+    { ...message("fix-1", "user", "Send a sonnet sub agent to do the fix", minutesAgo(21)), turnId: "turn-fix" },
+    {
+      ...message("fix-2", "assistant", conversationSubagentsText([BACKGROUND_SUBAGENT]), minutesAgo(21)),
+      turnId: "turn-fix",
+      itemType: CONVERSATION_SUBAGENTS_ITEM_TYPE,
+      ...(subagents ? { subagents: [BACKGROUND_SUBAGENT] } : {}),
+    },
+    {
+      ...message(
+        "fix-3",
+        "assistant",
+        "A Sonnet sub agent is making the fix now. I'll report back when it's done.",
+        minutesAgo(21),
+      ),
+      turnId: "turn-fix",
+    },
+  ];
+}
+
+function fixButtonsOptions(subagents: boolean): MockOpenBotOptions {
+  return {
+    ...THREAD_OPTIONS,
+    // Only threads that do not work, so the worker row above the message box shows only the subagent.
+    tasks: { [AGENT_ID]: [FIX_BUTTONS, PRICING] },
+    taskConversations: {
+      ...THREAD_OPTIONS.taskConversations,
+      [FIX_BUTTONS.id]: snapshot(FIX_BUTTONS, fixButtonsMessages(subagents)),
+    },
+  };
+}
+
+/** A side thread whose turn ended while its background subagent works. */
+export const SUBAGENT_THREAD_OPTIONS = fixButtonsOptions(true);
+
+/** The same thread from a server without agent-task-subagents-v1: no subagent list arrives. */
+export const SUBAGENT_THREAD_FALLBACK_OPTIONS = fixButtonsOptions(false);
