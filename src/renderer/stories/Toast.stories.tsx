@@ -1,6 +1,8 @@
 import { Button, Heading, Text, Toaster, toast } from "@openbot/ui";
+import { currentText } from "@openbot/ui/text";
 import { createSignal, onCleanup, type ParentProps } from "solid-js";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
+import { WebServiceWorkerUpdates } from "../src/features/web-client/WebServiceWorkerUpdates";
 
 const meta = {
   title: "Foundations/Toast",
@@ -125,6 +127,27 @@ export const Gallery: Story = {
       </div>
     </ToastStory>
   ),
+};
+
+/** The web client offers Reload on this error; the real component registers that offer. */
+export const RequestIncomplete: Story = {
+  render: () => {
+    const text = currentText();
+    return (
+      <ToastStory>
+        <WebServiceWorkerUpdates />
+        <Heading as="h1" size="lg">
+          Request incomplete
+        </Heading>
+        <Text tone="secondary">The server answered a request with no readable reason.</Text>
+        <div class="foundation-story-row">
+          <Button variant="outline" onClick={() => toast.error(text.t("webClient.error.requestIncomplete"))}>
+            Show the error
+          </Button>
+        </div>
+      </ToastStory>
+    );
+  },
 };
 
 export const WithAction: Story = {

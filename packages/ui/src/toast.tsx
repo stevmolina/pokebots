@@ -53,10 +53,40 @@ type ToastContent = Parameters<typeof sonnerToast>[0];
 function timedToast(show: (message: ToastContent, data?: SonnerExternalToast) => string | number) {
   return (message: ToastContent, data?: SonnerExternalToast) => show(message, timed(data));
 }
+/** The action an error toast offers for its words, such as "Reload". Undefined offers none. */
+export type ToastErrorAction = (words: string) => SonnerExternalToast["action"] | undefined;
+let errorAction: ToastErrorAction | undefined;
+/**
+ * An app sets one resolver, for errors whose words say to reload. It runs for the title and the
+ * description of an error toast that has no action of its own. Returns the way to remove it.
+ */
+export function setToastErrorAction(resolver: ToastErrorAction): () => void {
+  errorAction = resolver;
+  return () => {
+    if (errorAction === resolver) errorAction = undefined;
+  };
+}
+function actionForError(
+  message: Parameters<typeof sonnerToast>[0],
+  description: SonnerExternalToast["description"],
+): SonnerExternalToast["action"] | undefined {
+  if (!errorAction) return undefined;
+  for (const words of [message, description]) {
+    if (typeof words !== "string") continue;
+    const action = errorAction(words);
+    if (action) return action;
+  }
+  return undefined;
+}
 function outcomeToast(kind: "error" | "warning") {
   return (message: Parameters<typeof sonnerToast>[0], options?: ExternalToast) => {
     const { report, error, fallback, ...data } = options ?? {};
+    const given = data.description;
     if (error !== undefined) data.description = withReference(error, data.description, fallback);
+    if (kind === "error" && data.action === undefined) {
+      const action = actionForError(message, given);
+      if (action) data.action = action;
+    }
     const id = sonnerToast[kind](message, timed(data));
     if (report) rememberReport(id, report);
     return id;

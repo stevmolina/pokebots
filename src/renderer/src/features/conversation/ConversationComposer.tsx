@@ -220,11 +220,11 @@ export function ConversationComposer() {
     empty: () => currentDraft().text.length === 0,
     conversationKey: () => currentChatConversationKey() ?? "",
   });
+  /** The agent has no final status yet: the host is starting it, or its first status has not arrived. */
+  const agentStarting = () => props.agentStatus.phase === "starting" || props.agentStatus.phase === "restarting";
   // A provider start, restart or server reconnect is short. Keys typed in it must not drop, so only a
   // lasting stop locks the text. Sending still waits for the agent. Without an agent, no draft keeps the text.
-  const editorLocked = () =>
-    !agentReady() &&
-    !((props.agent || channel) && (props.agentStatus.phase === "starting" || props.agentStatus.phase === "restarting"));
+  const editorLocked = () => !agentReady() && !((props.agent || channel) && agentStarting());
   // Each chat gets its own queue panel. One shared panel animated the rows and the height of the
   // previous chat's queue into this one, and the chat jumped while it resized (#3770). The keyed
   // <Show> builds its child again only when the child function takes the key as a parameter.
@@ -784,7 +784,11 @@ export function ConversationComposer() {
                     ? t("common.connecting")
                     : props.runtime
                       ? props.server?.state === "online"
-                        ? t("composer.placeholder.hostSetup")
+                        ? // The web client reports "starting" until the host's own status arrives. That is not
+                          // news about the provider, so the composer keeps saying it connects.
+                          agentStarting()
+                          ? t("common.connecting")
+                          : t("composer.placeholder.hostSetup")
                         : props.server?.hostedSleep === "sleeping"
                           ? t("composer.placeholder.hostSleeping")
                           : props.server?.hostedSleep === "waking"
