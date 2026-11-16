@@ -1700,3 +1700,12 @@
   gap: var(--openbot-space-1);
   justify-content: flex-end;
 }
+
+/* The starter explains what it adds, so its line wraps instead of ending in an ellipsis. */
+.agent-routine-starter .agent-routine-row {
+  padding-block: var(--openbot-space-2);
+}
+
+.agent-routine-starter .agent-routine-row small {
+  white-space: normal;
+}

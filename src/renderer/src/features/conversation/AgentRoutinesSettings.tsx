@@ -887,7 +887,7 @@ export function AgentRoutinesSettings(props: AgentRoutinesSettingsProps) {
                     <>
                       <p class="agent-routines-empty">{t("routine.settings.empty")}</p>
                       <Show when={heartbeatOffered()}>
-                        <ItemGroup class="agent-routine-card">
+                        <ItemGroup class="agent-routine-card agent-routine-starter">
                           <div class="agent-routine-list-item">
                             <Button
                               variant="ghost"
