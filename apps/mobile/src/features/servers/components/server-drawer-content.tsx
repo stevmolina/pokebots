@@ -2,6 +2,7 @@ import type { MobileTranslate } from "@openbot/i18n/mobile";
 import type { Href } from "expo-router";
 import { Typography } from "heroui-native";
 import type { LucideIcon } from "lucide-react-native";
+import Brain from "lucide-react-native/icons/brain";
 import CalendarClock from "lucide-react-native/icons/calendar-clock";
 import ChartArea from "lucide-react-native/icons/chart-area";
 import Check from "lucide-react-native/icons/check";
@@ -687,7 +688,7 @@ function DrawerServerTools({
       : workflowsRow === "disabled"
         ? { icon: Waypoints, label: t("mobile.app.route.workflows"), disabled: true }
         : null,
-    brain: brain ? { icon: GalleryVerticalEnd, label: t("mobile.brain.title") } : null,
+    brain: brain ? { icon: Brain, label: t("mobile.brain.title") } : null,
     marketplace: { icon: Store, label: t("mobile.app.route.marketplace") },
     usage: { icon: ChartArea, label: t("mobile.app.route.usage"), value: values.usage },
     library:

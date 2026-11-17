@@ -3070,9 +3070,9 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
     },
     onWorkflows: workflowsRailAction(),
     onBrain: workspace.state.capabilities.includes(BRAIN_CAPABILITY)
-      ? (button) => {
+      ? () => {
           const id = server()?.id;
-          if (id) void openHostPage(id, "brain", button);
+          if (id) void openHostPage(id, "brain", null);
         }
       : undefined,
     onLibrary: libraryRailAction(),

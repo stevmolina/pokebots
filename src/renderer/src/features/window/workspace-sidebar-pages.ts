@@ -94,10 +94,6 @@ export function useWorkspaceSidebarPages(): () => SidebarPages {
     onUsage: windowPage.openUsage,
     // An older joined server has no storage routes, so it has no Library.
     onLibrary: serverHasStorage(activeServer()) ? windowPage.openLibrary : undefined,
-    onBrain:
-      !activeServer() || activeServer()?.kind === "local" || serverSupportsCapability(activeServer(), BRAIN_CAPABILITY)
-        ? windowPage.openBrain
-        : undefined,
     onMachines: windowPage.openMachines,
     onComputers: serverCanAdminister(activeServer(), AGENT_COMPUTER_CAPABILITY)
       ? () => {
@@ -106,6 +102,10 @@ export function useWorkspaceSidebarPages(): () => SidebarPages {
         }
       : undefined,
     onRooms: serverCanAdminister(activeServer(), ROOMS_CAPABILITY) ? () => windowPage.openRooms(null) : undefined,
+    onBrain:
+      !activeServer() || activeServer()?.kind === "local" || serverSupportsCapability(activeServer(), BRAIN_CAPABILITY)
+        ? () => windowPage.openBrain(null)
+        : undefined,
     onMarketplace: () => {
       windowPage.leavePricing();
       setSkillsMarketplaceOpen(true);

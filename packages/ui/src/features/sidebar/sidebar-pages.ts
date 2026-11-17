@@ -28,7 +28,6 @@ export const SIDEBAR_PINNABLE_PAGES = [
   "schedule",
   "usage",
   "library",
-  "brain",
   "machines",
 ] as const satisfies readonly SidebarPage[];
 export type SidebarPinnablePage = (typeof SIDEBAR_PINNABLE_PAGES)[number];
@@ -66,13 +65,13 @@ export interface SidebarPages {
   onUsage: (button: HTMLElement) => void;
   /** Absent where the server keeps no files, such as the web client. */
   onLibrary?: ((button: HTMLElement) => void) | undefined;
-  /** Absent where the host has no Brain route. */
-  onBrain?: ((button: HTMLElement) => void) | undefined;
   /** Every connected server with its agents. Absent where the app knows one server only, such as the web client. */
   onComputers?: (() => void) | undefined;
   onMachines?: ((button: HTMLElement) => void) | undefined;
   /** Absent where the server has no Rooms page: a joined server that is older or that the user cannot administer. */
   onRooms?: (() => void) | undefined;
+  /** Absent where the host has no Brain route, or where this computer cannot open one. */
+  onBrain?: (() => void) | undefined;
   /** Absent while Marketplace cannot open. */
   onMarketplace?: (() => void) | undefined;
   onSettings: (button: HTMLElement) => void;
