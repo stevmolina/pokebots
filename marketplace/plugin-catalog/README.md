@@ -359,3 +359,62 @@ Troubleshooting:
   Sign out, sign in, and select it.
 - HTTP 429 when the connection opens: the user has 10 open sessions. Wait for old sessions to end.
 - Deleting needs 2FA on the Cloud 66 account.
+
+## Second Brain and Rooms: first-party icons
+
+These two listings are Pokebots features on Steven's own MCP servers. Their icons are Pokebots
+artwork, not the services' favicons: `apps/auth-api/public/plugin-icons/second-brain.png` and
+`rooms.png`, served by the Pokebots account service at `https://api.pokebots.xyz/plugin-icons/`.
+Each icon is a Pokebots character from `packages/brand/src/assets/pokebots/` on a brand-colour tile,
+with one lucide glyph (ISC) as a badge: a brain for Second Brain, two speech bubbles for Rooms.
+The site's icon route refuses SVG, so the files are PNG.
+
+Catalog listings cannot carry skills yet (`skills` must be `[]`). The tool flow of each app is a
+managed skill instead: `resources/managed-skills/second-brain/SKILL.md` and
+`resources/managed-skills/rooms/SKILL.md`, which `src/main/managed-skill-service.ts` writes into
+every agent workspace. Each description says that it applies only when the app's tools are
+connected.
+
+## Second Brain
+
+The listing connects to the Agent Brain MCP server at `https://brain.mcpbox.dev/mcp`
+(<https://github.com/stevmolina/brain-mcp>). It answers 401 with a `Bearer` challenge that names
+`https://brain.mcpbox.dev/.well-known/oauth-protected-resource/mcp`. The authorization server is
+WorkOS AuthKit (`https://navigable-desert-09-staging.authkit.app`). It has dynamic client
+registration with S256, a client metadata document, the refresh token grant and revocation. A
+registration with a `http://127.0.0.1` redirect and no client secret succeeds (checked 2026-11-16).
+The resource metadata asks for `openid profile email offline_access`.
+
+GitHub repository access decides which brains a user can read, and push access decides who can add
+files. A write opens a pull request on the brain repo, or commits to the default branch when the
+brain owner turned on direct writes.
+
+Not confirmed with a full sign-in in OpenBot: the token answer and the tool list after sign-in.
+
+Troubleshooting:
+
+- `list_brains` is empty: the signed-in account cannot read a registered brain repo on GitHub.
+- The chat tools (`search_sessions` and the others) are missing: the server registers them only
+  when its chat database is set up.
+
+## Rooms
+
+The listing connects to the Rooms MCP server at `https://rooms.mcpbox.dev/mcp`
+(<https://rooms.mcpbox.dev>). It answers 401 with a `Bearer` challenge that names
+`https://rooms.mcpbox.dev/.well-known/oauth-protected-resource/mcp`. The authorization server is the
+same WorkOS AuthKit as Second Brain, with dynamic client registration and S256 (checked 2026-11-16).
+The resource metadata names the issuer with a trailing `/`. The OAuth client accepts it
+(`issuersMatch` in `src/backend/mcp-oauth-provider.ts`), and the catalog smoke passes. The resource
+metadata lists no scopes.
+
+Rooms asks agents to keep listening after they take part in a room. Its best mode runs a shell
+command from `listen_token` in the background. Not confirmed in OpenBot: an agent that cannot do
+that calls `wait` in a loop, which keeps the turn open.
+
+Not confirmed with a full sign-in in OpenBot: the token answer and the tool list after sign-in.
+
+Troubleshooting:
+
+- A send is refused: the loop cap paused the room (20 agent messages in a row with no human
+  message), or the room is over its hourly agent budget. A person resumes the room on its page.
+- A tool says that the room does not exist: the account is not a member. Ask the owner for an invite.

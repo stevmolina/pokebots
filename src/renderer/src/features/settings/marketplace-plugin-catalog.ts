@@ -577,6 +577,88 @@ const HINDSIGHT: MarketplacePluginDetail = {
   shareUrl: "https://openbot.run/plugins/hindsight",
 };
 
+const SECOND_BRAIN: MarketplacePluginDetail = {
+  id: "plugin-second-brain",
+  slug: "second-brain",
+  name: "Second Brain",
+  tagline: "Your Pokebots remember each project",
+  description:
+    "Second Brain gives your Pokebots one memory per project or client. The memory is markdown notes in your own git repo, called a brain. Before your Pokebots answer, they search the brain and cite the page and date of each fact. They read and add the brain's private files, such as spreadsheets and PDFs. When you settle a decision, they record it as a pull request on the brain repo, or as a commit when you turned on direct writes. They can also search your own past agent chats. You sign in once in the browser, and your GitHub access decides which brains your Pokebots can read.",
+  category: "productivity",
+  creatorName: "Pokebots",
+  iconUrl: "https://api.pokebots.xyz/plugin-icons/second-brain.png",
+  version: "1.0.0",
+  prompts: [
+    { id: "prompt-search-decision", text: "Search my brain for what we decided about pricing, and cite the pages." },
+    { id: "prompt-list-files", text: "Which files does this project's brain hold? Open the newest report." },
+    { id: "prompt-remember", text: "Record in my brain that we deploy on Fridays only." },
+    { id: "prompt-search-chats", text: "Search my past agent chats for how we fixed the sign-in bug." },
+  ],
+  apps: [
+    {
+      id: "app-second-brain-mcp",
+      name: "Second Brain",
+      description:
+        "Search, read and write the facts and files of your brains, and search your own agent chats, with browser sign-in.",
+      iconUrl: "https://api.pokebots.xyz/plugin-icons/second-brain.png",
+      server: {
+        name: "second-brain",
+        transport: "http",
+        url: "https://brain.mcpbox.dev/mcp",
+        auth: [{ id: "second-brain-oauth", kind: "link", label: "Sign in" }],
+      },
+    },
+  ],
+  websiteUrl: "https://brain.mcpbox.dev",
+  privacyPolicyUrl: null,
+  termsUrl: null,
+  skills: [],
+  installs: 0,
+  featured: false,
+  updatedAt: "2026-11-10T00:00:00.000Z",
+  shareUrl: "https://openbot.run/plugins/second-brain",
+};
+
+const ROOMS: MarketplacePluginDetail = {
+  id: "plugin-rooms",
+  slug: "rooms",
+  name: "Rooms",
+  tagline: "Your Pokebots meet other agents",
+  description:
+    'Rooms lets your Pokebots chat with your friends and their AI agents in shared rooms. Each message shows who wrote it, such as "Claude · Steven". Your Pokebots read and send messages, wait for new ones, and keep a short room memory of what the room is about, what was decided and what is still open. Each room also has a task board, so a Pokebot claims a task before it starts and no two agents do the same work. You see only the rooms that you created or were invited to. You sign in once in the browser.',
+  category: "productivity",
+  creatorName: "Pokebots",
+  iconUrl: "https://api.pokebots.xyz/plugin-icons/rooms.png",
+  version: "1.0.0",
+  prompts: [
+    { id: "prompt-catch-up", text: "Which of my rooms have unread messages? Catch me up." },
+    { id: "prompt-create-room", text: "Create a room called Offsite plan and make an invite link for a friend." },
+    { id: "prompt-claim-task", text: "Read the memory of my project room, then claim the next pending task." },
+  ],
+  apps: [
+    {
+      id: "app-rooms-mcp",
+      name: "Rooms",
+      description: "Rooms, messages, room memory and task boards, with browser sign-in.",
+      iconUrl: "https://api.pokebots.xyz/plugin-icons/rooms.png",
+      server: {
+        name: "rooms",
+        transport: "http",
+        url: "https://rooms.mcpbox.dev/mcp",
+        auth: [{ id: "rooms-oauth", kind: "link", label: "Sign in" }],
+      },
+    },
+  ],
+  websiteUrl: "https://rooms.mcpbox.dev",
+  privacyPolicyUrl: null,
+  termsUrl: null,
+  skills: [],
+  installs: 0,
+  featured: false,
+  updatedAt: "2026-11-10T00:00:00.000Z",
+  shareUrl: "https://openbot.run/plugins/rooms",
+};
+
 const FIGMA: MarketplacePluginDetail = {
   id: "plugin-figma",
   slug: "figma",
@@ -10533,6 +10615,8 @@ export const MARKETPLACE_PLUGINS: MarketplacePluginDetail[] = [
   COBRAIN,
   HONCHO,
   HINDSIGHT,
+  SECOND_BRAIN,
+  ROOMS,
   FIGMA,
   PAPER,
   HIGGSFIELD,

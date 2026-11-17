@@ -347,7 +347,13 @@ import {
   sendComputerUseHighlightPlacement,
   showMainWindow,
 } from "./main-window";
-import { DATA_SKILL_SLUG, ManagedSkillService, SKILL_CREATOR_SKILL_SLUG } from "./managed-skill-service";
+import {
+  DATA_SKILL_SLUG,
+  ManagedSkillService,
+  ROOMS_SKILL_SLUG,
+  SECOND_BRAIN_SKILL_SLUG,
+  SKILL_CREATOR_SKILL_SLUG,
+} from "./managed-skill-service";
 import { MCP_ACCESS_FILE, type McpAccessControl, McpAccessStore, sameMcpAgents } from "./mcp-access-store";
 import { McpHostSignIns } from "./mcp-host-sign-ins";
 import { McpOAuthProxySettingsFile } from "./mcp-oauth-proxy-store";
@@ -1380,10 +1386,22 @@ export async function createApplicationServices({
     undefined,
     DATA_SKILL_SLUG,
   );
+  // How to use two Apps marketplace listings. Each skill says it applies only when its app is connected.
+  const appSkills = [SECOND_BRAIN_SKILL_SLUG, ROOMS_SKILL_SLUG].map(
+    (slug) =>
+      new ManagedSkillService(
+        app.isPackaged
+          ? join(process.resourcesPath, "managed-skills", slug, "SKILL.md")
+          : resolve(__dirname, `../../resources/managed-skills/${slug}/SKILL.md`),
+        undefined,
+        undefined,
+        slug,
+      ),
+  );
   // Together: each skill has its own folder in an agent's workspace, and a failed copy is only reported.
   await Effect.runPromise(
     Effect.all(
-      [managedSkills, skillCreator, dataSkill].map((skill) => skill.syncAll(store.list())),
+      [managedSkills, skillCreator, dataSkill, ...appSkills].map((skill) => skill.syncAll(store.list())),
       {
         concurrency: "unbounded",
         discard: true,
@@ -2396,6 +2414,7 @@ export async function createApplicationServices({
         yield* managedSkills.syncAgent(agent);
         yield* skillCreator.syncAgent(agent);
         yield* dataSkill.syncAgent(agent);
+        for (const skill of appSkills) yield* skill.syncAgent(agent);
       }),
     hostedSites: {
       list: () => hostedSites.list().pipe(toHostedSiteOperationFailed),
