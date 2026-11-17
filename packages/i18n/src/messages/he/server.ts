@@ -23,7 +23,6 @@ export const messages = {
   "server.connection.panelsFailed": "חלק מהחלוניות של סביבת העבודה לא נטענו. אפשר לנסות שוב.",
   "server.connection.retry": "ניסיון חוזר",
   "server.connection.manage": "פתיחת ההגדרות",
-  "server.connection.restored": "החיבור אל {name} שוחזר",
   "server.connection.details": "פרטים",
   "server.status.steps": "שלבי החיבור",
   "server.status.updateCause": "{name} מופעל מחדש כדי להתקין את OpenBot {version}.",

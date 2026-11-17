@@ -24,7 +24,6 @@ export const messages = {
   "server.connection.panelsFailed": "تعذّر تحميل بعض لوحات مساحة العمل. أعد المحاولة.",
   "server.connection.retry": "إعادة المحاولة",
   "server.connection.manage": "فتح الإعدادات",
-  "server.connection.restored": "تمت استعادة الاتصال بـ {name}",
   "server.connection.details": "التفاصيل",
 
   "server.status.steps": "خطوات الاتصال",

@@ -1,10 +1,8 @@
 import type { HostedServerIssue, HostedServerSleep, HostedServerStart } from "@openbot/contracts/ipc";
-import { createEffect, createMemo, createSignal, onCleanup, Show, untrack } from "solid-js";
-import { Button, IconButton } from "../../button";
+import { createEffect, createMemo, createSignal, Show, untrack } from "solid-js";
+import { Button } from "../../button";
 import { ErrorReference } from "../../error-reference";
-import { X } from "../../icons";
 import { useText } from "../../text";
-import { toast } from "../../toast";
 import { AppLoadingScreen } from "../account/AppLoadingScreen";
 import { ServerStatusDialog } from "./ServerStatusDialog";
 
@@ -72,7 +70,7 @@ export interface ServerConnectionNoticeProps {
   onExited?: (() => void) | undefined;
   /** The full-window screen still covers the window, and heavy views can mount before its crew hop out. */
   onMountViews?: (() => void) | undefined;
-  /** False when another loading screen already covers the window: the first load then shows only its toast. */
+  /** False when another loading screen already covers the window: the first load then shows only its inline notice. */
   screen?: boolean;
   /** Removes Details, for a notice that is not about the server connection. */
   hideDetails?: boolean;
@@ -82,46 +80,39 @@ export interface ServerConnectionNoticeProps {
   upsell?: { onSeePlans: () => void } | null | undefined;
 }
 
-/** A first load that takes longer than this shows its actions in a toast. */
-const FIRST_LOAD_TOAST_DELAY_MS = 10_000;
-let firstLoadToasts = 0;
+/** A first load that takes longer than this shows its message and actions on the loading screen. */
+const FIRST_LOAD_NOTICE_DELAY_MS = 10_000;
 
 /**
  * Connection feedback stays visible until the workspace can answer the user's actions. A first load
- * shows only the crew. Its actions open in a toast after a long wait, or at once when
- * the server fails, sleeps or needs the user.
+ * shows the loading screen. Its message and actions (Retry, Details, Manage) show on that screen after
+ * a long wait, or at once when the server fails, sleeps or needs the user. It never opens a toast.
  */
 export function ServerConnectionNotice(props: ServerConnectionNoticeProps) {
   const { t } = useText();
   const since = Date.now();
   const [detailsOpen, setDetailsOpen] = createSignal(false);
-  const toastId = `server-connection-first-load:${++firstLoadToasts}`;
   // A wait is long after the delay, or at once when the server does not only load. A retry starts a new wait.
   const [round, setRound] = createSignal(0);
   const [waitedLong, setWaitedLong] = createSignal(false);
-  const [toastClosed, setToastClosed] = createSignal(false);
   /**
    * A hosted server that starts and has no issue does what it must: it is not a failure, so it has no
-   * error code, and its toast waits as a long load does. When the start fails, the issue makes the
-   * toast urgent again, with its code, Details and Retry.
+   * error code, and its notice waits as a long load does. When the start fails, the issue makes the
+   * notice urgent again, with its code, Details and Retry.
    */
   const starting = () => props.phase === "waking" && !props.issue;
   const urgent = () =>
     Boolean(props.issue) || (props.phase !== "loading" && props.phase !== "connecting" && !starting());
   const reference = () => (starting() ? null : props.reference);
   createEffect(round, () => {
-    const timer = setTimeout(() => setWaitedLong(true), FIRST_LOAD_TOAST_DELAY_MS);
+    const timer = setTimeout(() => setWaitedLong(true), FIRST_LOAD_NOTICE_DELAY_MS);
     return () => clearTimeout(timer);
   });
-  // A server that failed once keeps its toast while it connects again.
+  // A server that failed once keeps its notice while it connects again.
   createEffect(urgent, (now) => {
-    if (!now) return;
-    setWaitedLong(true);
-    // The pane screen has no controls, so a server that needs the user shows its toast again.
-    setToastClosed(false);
+    if (now) setWaitedLong(true);
   });
   const retry = () => {
-    setToastClosed(false);
     if (props.initial && !urgent()) setWaitedLong(false);
     setRound((current) => current + 1);
     props.onRetry();
@@ -202,7 +193,8 @@ export function ServerConnectionNotice(props: ServerConnectionNoticeProps) {
   );
   const actions = () => (
     <>
-      <Button variant="outline" disabled={props.busy} onClick={retry}>
+      {/* A first load can wait long while it connects, so its Retry also starts the connection again. */}
+      <Button variant="outline" disabled={props.busy && !props.initial} onClick={retry}>
         {t("server.connection.retry")}
       </Button>
       {manageButton("default")}
@@ -237,73 +229,19 @@ export function ServerConnectionNotice(props: ServerConnectionNoticeProps) {
       )}
     </Show>
   );
-  // The toast reads the notice's state, so its detail, time and buttons stay current while it shows.
-  // It opens after a long wait, so its Retry also starts the connection again while one is in progress.
-  const toastCard = () => (
-    <section class="server-connection-toast" aria-label={title()}>
-      <Show when={!urgent()}>
-        <IconButton
-          class="ui-toast-card-close"
-          size="icon-xs"
-          variant="ghost"
-          label={t("common.close")}
-          onClick={() => setToastClosed(true)}
-        >
-          <X aria-hidden="true" />
-        </IconButton>
-      </Show>
-      <strong class="server-connection-toast-title">{title()}</strong>
-      <Show when={detail()}>{(text) => <p class="server-connection-toast-body">{text()}</p>}</Show>
+  /** The message and actions of a first load that fails, sleeps, needs the user or takes long. */
+  const firstLoadControls = () => props.initial && !props.ready && (urgent() || waitedLong());
+  const firstLoadNotice = () => (
+    <div class="server-connection-first-load">
+      <Show when={detail()}>{(text) => <p class="server-connection-detail">{text()}</p>}</Show>
       <ErrorReference reference={reference()} />
       {upsell()}
       {/* A server that starts shows its progress only: the user has nothing to retry or read yet. */}
       <Show when={!starting()}>
-        <div class="server-connection-toast-actions ui-toast-card-actions">
-          {detailsButton("sm")}
-          {manageButton("sm")}
-          <Button variant="default" size="sm" onClick={retry}>
-            {t("server.connection.retry")}
-          </Button>
-        </div>
+        <div class="server-connection-actions">{actions()}</div>
       </Show>
-    </section>
+    </div>
   );
-  let toastShown = false;
-  createEffect(
-    // The card reads the title itself, so a new title or lock only raises the same toast again.
-    () =>
-      props.initial && !props.ready && waitedLong() && !toastClosed() && !detailsOpen()
-        ? { title: title(), locked: urgent() }
-        : null,
-    (message) => {
-      toastShown = message !== null;
-      if (message === null) {
-        // A toast that shows again before the microtask stays.
-        queueMicrotask(() => {
-          if (!toastShown) toast.dismiss(toastId);
-        });
-        return;
-      }
-      toast(toastCard, {
-        id: toastId,
-        duration: Number.POSITIVE_INFINITY,
-        unstyled: true,
-        closeButton: false,
-        class: "server-connection-toast-host",
-        // The controls of a server that needs the user are only in this toast, so it cannot be swiped away.
-        dismissible: !message.locked,
-        // A `toast.dismiss` call also calls this. Only a toast that is still wanted was closed by the user.
-        onDismiss: () => {
-          if (toastShown) setToastClosed(true);
-        },
-      });
-    },
-  );
-  // A write to the Toaster from a scope cleanup stops the reactive system, so it waits for a microtask.
-  onCleanup(() => {
-    toastShown = false;
-    queueMicrotask(() => toast.dismiss(toastId));
-  });
   return (
     <>
       <Show
@@ -322,13 +260,29 @@ export function ServerConnectionNotice(props: ServerConnectionNoticeProps) {
           </Show>
         }
       >
-        <Show when={props.screen !== false}>
+        <Show
+          when={props.screen !== false}
+          fallback={
+            // Another loading screen covers the window, so the notice sits in the pane as a banner.
+            <Show when={firstLoadControls()}>
+              <section class="server-connection-notice" role="status" aria-live="polite">
+                <div>
+                  <p>{title()}</p>
+                  {firstLoadNotice()}
+                </div>
+              </section>
+            </Show>
+          }
+        >
           <AppLoadingScreen
             label={title()}
+            title={firstLoadControls() ? title() : undefined}
             ready={props.ready}
             onExited={props.onExited}
             onMountViews={props.onMountViews}
-          />
+          >
+            <Show when={firstLoadControls()}>{firstLoadNotice()}</Show>
+          </AppLoadingScreen>
         </Show>
       </Show>
       {statusDialog()}

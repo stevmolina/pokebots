@@ -25,7 +25,6 @@ export const messages = {
     "Einige Bereiche des Arbeitsbereichs konnten nicht geladen werden. Versuche es erneut.",
   "server.connection.retry": "Wiederholen",
   "server.connection.manage": "Einstellungen öffnen",
-  "server.connection.restored": "Verbindung mit {name} wiederhergestellt",
   "server.connection.details": "Details",
 
   "server.status.steps": "Verbindungsschritte",

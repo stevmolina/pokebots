@@ -86,6 +86,19 @@ export const StartFailed: Story = {
     <ServerConnectionNotice name="My server" phase="blocked" issue="start_timeout" initial onRetry={() => {}} />
   ),
 };
+/** The first load fails: the loading screen shows the cause, its code, Retry and Details, and no toast. */
+export const FirstLoadFailed: Story = {
+  render: () => (
+    <ServerConnectionNotice
+      name="My server"
+      phase="waiting"
+      detail="The Team API operation is not supported."
+      reference="http/400/unsupported_operation"
+      initial
+      onRetry={() => {}}
+    />
+  ),
+};
 export const Reconnecting: Story = {
   render: () => (
     <ServerConnectionNotice name="My server" phase="waiting" remainingSeconds={12} initial={false} onRetry={() => {}} />

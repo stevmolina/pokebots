@@ -28,7 +28,6 @@ import { WorkspaceRoutineFlows } from "./features/routine-flows/WorkspaceRoutine
 import { createRoutineTimezonePrompt, desktopRoutineZoneTargets } from "./features/schedule/routine-timezone-prompt";
 import { createHostedUpsellOffline } from "./features/servers/hosted-server-upsell-controller";
 import { createRemoteSyncMarks } from "./features/servers/remote-sync-marks";
-import { createServerConnectionToast } from "./features/servers/server-connection-toast";
 import { useServerScope } from "./features/servers/server-scope";
 import { followsServerUpdate, ServerUpdateDialogHost } from "./features/servers/server-update-flow";
 import { useServers } from "./features/servers/servers-context";
@@ -217,20 +216,6 @@ export function WorkspaceShell(props: {
       scope.retry();
     } else void retryServerConnection(server.id);
   };
-  // The main window shows the toasts and prompts of the servers once.
-  if (!chatWindow)
-    createServerConnectionToast(() => {
-      const server = activeServer();
-      return server?.kind === "remote"
-        ? {
-            id: server.id,
-            name: server.name,
-            ready: scope.loaded(),
-            quiet: Boolean(server.hostedSleep || server.hostRestart?.state === "restarting" || blockedRemoteServer()),
-          }
-        : null;
-    });
-
   const connectionShown = () =>
     (!serversLoaded() || !scope.connection.synced || (remote() && !scope.loaded())) && !blockedRemoteServer();
   const connectionPhase = () =>

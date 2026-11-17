@@ -412,7 +412,7 @@ export const OpenInAnotherTabWithServers: Story = {
  * The link to the server drops, as it does each time a phone pauses the installed web app. A
  * `preview-connection-drop` window event with `{ ms, done }` drops it for `ms` milliseconds: connect
  * attempts wait until then, and `done` runs when the link is back. `bun scripts/web-reconnect-notice-e2e.ts`
- * uses it to check that a short drop shows no notice.
+ * uses it to check that a drop shows no toast.
  */
 const connectionDropRuntime: WebRuntimeFactory = (accountId, events, fetch) => {
   const base = createMockWebRuntime(accountId, events, fetch);

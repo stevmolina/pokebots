@@ -26,7 +26,6 @@ export const messages = {
   "server.connection.panelsFailed": "Не удалось загрузить некоторые панели рабочего пространства. Повторите попытку.",
   "server.connection.retry": "Повторить",
   "server.connection.manage": "Открыть настройки",
-  "server.connection.restored": "Подключение к {name} восстановлено",
   "server.connection.details": "Подробности",
 
   "server.status.steps": "Этапы подключения",

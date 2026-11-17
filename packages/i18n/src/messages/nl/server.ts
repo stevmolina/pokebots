@@ -25,7 +25,6 @@ export const messages = {
   "server.connection.panelsFailed": "Sommige panelen van de werkruimte konden niet laden. Probeer het opnieuw.",
   "server.connection.retry": "Opnieuw",
   "server.connection.manage": "Open instellingen",
-  "server.connection.restored": "Verbinding met {name} hersteld",
   "server.connection.details": "Details",
 
   "server.status.steps": "Verbindingsstappen",
