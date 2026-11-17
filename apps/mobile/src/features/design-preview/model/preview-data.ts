@@ -266,34 +266,61 @@ export const PREVIEW_SESSIONS: { id: string; name: string | null; minutesAgo: nu
 export const PREVIEW_PINNED_COUNT = 2;
 
 /** Made-up models, grouped by provider, for the model picker of the preview. */
-/** `mark` is the provider whose logo the composer's model button shows. */
+/**
+ * The model picker's list: real provider ids and model ids that the repo already knows, newest first,
+ * with the desktop picker's names and descriptions. Providers follow `pickerOrder` and `displayName`
+ * in `packages/contracts/src/agent-providers.ts`: Claude, ChatGPT, Grok, then Gemini. Model names and
+ * descriptions come from the desktop catalog (`src/backend/agent/provider-models.ts`) and the host
+ * models fixtures; a model the catalog does not describe has no second line.
+ *
+ * In the real-data step this list comes live from the host's models response, so the phone always
+ * shows what its server has. `mark` is the provider whose logo the buttons show.
+ */
 export const PREVIEW_MODEL_GROUPS: {
   provider: string;
   mark: AgentProviderId;
-  models: { id: string; name: string; note: string }[];
+  models: { id: string; name: string; note?: string }[];
 }[] = [
   {
-    provider: "OpenAI",
-    mark: "codex",
-    models: [
-      { id: "gpt-6.1", name: "GPT-6.1", note: "Best for most work" },
-      { id: "gpt-6.1-mini", name: "GPT-6.1 mini", note: "Quick and cheap" },
-    ],
-  },
-  {
-    provider: "Anthropic",
+    provider: "Claude",
     mark: "claude",
     models: [
-      { id: "claude-opus", name: "Claude Opus", note: "Deep reasoning and code" },
-      { id: "claude-sonnet", name: "Claude Sonnet", note: "Fast, strong writing" },
+      { id: "claude-fable-5-2", name: "Claude Fable 5.2", note: "Fast Claude model for everyday agent work." },
+      { id: "claude-opus-5-5", name: "Claude Opus 5.5", note: "Most capable Claude model for complex work." },
+      { id: "claude-sonnet-5-5", name: "Claude Sonnet 5.5", note: "Balanced Claude model for general agent work." },
+      { id: "claude-haiku-5-5", name: "Claude Haiku 5.5" },
     ],
   },
   {
-    provider: "Google",
+    provider: "ChatGPT",
+    mark: "codex",
+    models: [
+      { id: "gpt-6.1-sol", name: "GPT-6.1 Sol", note: "Most capable for complex, long-running work." },
+      { id: "gpt-6.1-terra", name: "GPT-6.1 Terra", note: "Balanced speed and capability for involved tasks." },
+      { id: "gpt-6-luna", name: "GPT-6 Luna", note: "Fast and efficient for everyday agent work." },
+    ],
+  },
+  {
+    provider: "Grok",
+    mark: "grok",
+    models: [
+      { id: "grok-4.7", name: "Grok 4.7" },
+      { id: "grok-4.6", name: "Grok 4.6" },
+    ],
+  },
+  {
+    provider: "Gemini",
     mark: "antigravity",
-    models: [{ id: "gemini-pro", name: "Gemini Pro", note: "Long files and video" }],
+    models: [
+      { id: "gemini-4-argon", name: "Gemini 4 Argon" },
+      { id: "gemini-3.8-flash", name: "Gemini 3.8 Flash" },
+      { id: "gemini-3.1-pro", name: "Gemini 3.1 Pro" },
+    ],
   },
 ];
+
+/** The current model of the preview agents: the app's default for a new agent (`DEFAULT_AGENT_MODEL`). */
+export const PREVIEW_DEFAULT_MODEL = "gpt-6-luna";
 
 /** The one routine of the profile's Routines page. */
 export const PREVIEW_ROUTINE = {

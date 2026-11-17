@@ -1,6 +1,6 @@
 import type { AgentProviderId } from "@openbot/contracts/ipc";
 import { create } from "zustand";
-import { PREVIEW_MODEL_GROUPS } from "./preview-data";
+import { PREVIEW_DEFAULT_MODEL, PREVIEW_MODEL_GROUPS } from "./preview-data";
 
 export type PreviewReasoning = "low" | "medium" | "high";
 export type PreviewSpeed = "standard" | "fast";
@@ -10,7 +10,7 @@ export type PreviewSpeed = "standard" | "fast";
  * the picker read the same value, so a choice shows everywhere at once. Nothing is saved.
  */
 export const usePreviewModelChoice = create<{ modelId: string; reasoning: PreviewReasoning; speed: PreviewSpeed }>(
-  () => ({ modelId: "gpt-6.1", reasoning: "medium", speed: "standard" }),
+  () => ({ modelId: PREVIEW_DEFAULT_MODEL, reasoning: "medium", speed: "standard" }),
 );
 
 export function previewModelName(id: string): string {
