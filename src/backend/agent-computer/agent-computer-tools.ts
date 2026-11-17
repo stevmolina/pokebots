@@ -13,6 +13,7 @@ import type { DynamicToolResult } from "../protocol";
 import {
   AGENT_COMPUTER_BASH_TIMEOUT_MAX,
   AGENT_COMPUTER_CONTEXT_PATTERN,
+  AGENT_COMPUTER_SIZES,
   type AgentComputerApi,
   type AgentComputerFailed,
 } from "./agent-computer-api";
@@ -32,6 +33,12 @@ const startSchema = z.strictObject({
     .regex(AGENT_COMPUTER_CONTEXT_PATTERN)
     .describe(
       "A label for the machine: lowercase letters, digits and -, up to 32. The same label resumes the same machine, with its files and logins. Reuse a label from other_contexts or computer_list; a new label creates a new machine.",
+    ),
+  size: z
+    .enum(AGENT_COMPUTER_SIZES)
+    .optional()
+    .describe(
+      'Used only when the context gets a new machine. "standard" (default): 2 vCPU. "large": 8 vCPU, for Blender renders, video encodes and screen recordings; it uses 2.5 runtime minutes per minute. An existing machine keeps its size: use a new context for another size.',
     ),
 });
 const bashSchema = z.strictObject({
@@ -73,7 +80,7 @@ export const AGENT_COMPUTER_TOOL_DEFINITIONS = [
   {
     name: "computer_list",
     description:
-      "List the cloud computers of this OpenBot server's Agent Computer account: id, context, status (running or paused), deadline_at and updated_at. Read-only; it wakes nothing.",
+      "List the cloud computers of this OpenBot server's Agent Computer account: id, context, size, status (running or paused), deadline_at and updated_at. Read-only; it wakes nothing.",
     shape: {},
   },
   {
@@ -152,9 +159,10 @@ export const handleAgentComputerTool = Effect.fn("AgentComputerTools.handle")(fu
       case "computer_list": {
         const machines = yield* api.list();
         return textResult({
-          machines: machines.map(({ id, context, status, deadline_at, updated_at }) => ({
+          machines: machines.map(({ id, context, size, status, deadline_at, updated_at }) => ({
             id,
             context,
+            size,
             status,
             deadline_at,
             updated_at,
@@ -163,10 +171,12 @@ export const handleAgentComputerTool = Effect.fn("AgentComputerTools.handle")(fu
       }
       case "computer_start": {
         const input = yield* parse(startSchema, request.arguments);
-        const started = yield* api.start(input.context);
+        const started = yield* api.start(input.context, input.size);
         return textResult({
           id: started.id,
           context: started.context,
+          size: started.size,
+          size_note: started.size_note,
           existing: started.existing,
           resumed: started.resumed,
           other_contexts: started.other_contexts,
@@ -174,6 +184,7 @@ export const handleAgentComputerTool = Effect.fn("AgentComputerTools.handle")(fu
           billing: started.billing && {
             plan: started.billing.plan,
             minutes_remaining: started.billing.minutes_remaining,
+            rate: started.billing.rate,
           },
           briefing: started.briefing?.filter((line) => !/live_view_url|billing\.(?:upgrade|manage)_url/u.test(line)),
         });
