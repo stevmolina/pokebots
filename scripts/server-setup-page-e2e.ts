@@ -88,6 +88,7 @@ const centralAuth: ServerModeOptions["centralAuth"] = {
   cancelCompanySignIn: () => Effect.sync(() => structuredClone(account)),
   canPersistSession: () => true,
   redeemServerClaim: () => Effect.succeed(null),
+  removeOwnedRemoteHost: () => Effect.void,
   logout: () =>
     Effect.sync(() => {
       account = { status: "signed_out" };
