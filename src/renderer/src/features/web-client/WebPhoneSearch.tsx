@@ -236,21 +236,24 @@ export function WebPhoneSearch(props: WebPhoneSearchProps) {
 
   return (
     <section class="web-phone-search" aria-label={t("conversation.globalSearch.results")}>
-      <div class="web-phone-search-chips" role="toolbar" aria-label={t("conversation.globalSearch.filter")}>
-        <For each={filters()}>
-          {(candidate) => (
-            <Button
-              variant="ghost"
-              type="button"
-              class="web-phone-search-chip"
-              aria-pressed={filter() === candidate ? "true" : "false"}
-              onClick={() => choose(candidate)}
-            >
-              {t(FILTER_LABEL[candidate])}
-            </Button>
-          )}
-        </For>
-      </div>
+      {/* Filters show once the user types, or while a filter other than All is chosen. */}
+      <Show when={props.query.trim() !== "" || filter() !== "all"}>
+        <div class="web-phone-search-chips" role="toolbar" aria-label={t("conversation.globalSearch.filter")}>
+          <For each={filters()}>
+            {(candidate) => (
+              <Button
+                variant="ghost"
+                type="button"
+                class="web-phone-search-chip"
+                aria-pressed={filter() === candidate ? "true" : "false"}
+                onClick={() => choose(candidate)}
+              >
+                {t(FILTER_LABEL[candidate])}
+              </Button>
+            )}
+          </For>
+        </div>
+      </Show>
       <div
         ref={list}
         class="web-phone-search-list"
@@ -303,7 +306,11 @@ function PhoneSearchRow(props: {
     const result = props.result;
     switch (result.kind) {
       case "agent":
-        return { name: result.agent.name, detail: undefined, end: t("conversation.globalSearch.kind.agent") };
+        return {
+          name: result.agent.name,
+          detail: result.agent.preview || result.agent.title || undefined,
+          end: t("conversation.globalSearch.kind.agent"),
+        };
       case "channel":
         return { name: result.channel.name, detail: undefined, end: t("conversation.globalSearch.kind.channel") };
       case "message": {
