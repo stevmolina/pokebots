@@ -194,41 +194,25 @@
   gap: var(--openbot-space-2);
   -webkit-app-region: no-drag;
 }
-/* The toast of a long first load, like the GitHub star toast: a raised card with the 1px ring only.
-   The buttons sit 8px from the bottom edge. */
-.server-connection-toast-host {
-  width: var(--width);
-}
-.server-connection-toast {
-  position: relative;
+/* The first-load controls must receive clicks, including the error-code copy button, while the
+   rest of the loading screen can drag the window. */
+.server-connection-first-load {
+  -webkit-app-region: no-drag;
   display: grid;
+  justify-items: center;
   gap: var(--openbot-space-2);
-  padding: var(--openbot-space-4) var(--openbot-space-4) var(--openbot-space-2);
-  border-radius: var(--openbot-radius-card);
-  background: var(--openbot-bg-surface-raised);
-  box-shadow: 0 0 0 1px var(--openbot-border);
-  color: var(--openbot-text-primary);
-  font-family: var(--openbot-font-sans);
-  font-size: var(--openbot-text-md);
-  line-height: var(--openbot-leading-md);
-}
-/* The close control sits on the corner, mostly outside the card, so the title keeps a small space. */
-.server-connection-toast-title {
-  padding-right: var(--openbot-space-1);
-  font-weight: var(--openbot-weight-semibold);
-  text-wrap: balance;
-}
-.server-connection-toast-body {
-  margin: 0;
+  max-width: min(28rem, 100%);
+  padding-inline: var(--openbot-space-4);
   color: var(--openbot-text-secondary);
   font-size: var(--openbot-text-sm);
   line-height: var(--openbot-leading-sm);
-  font-variant-numeric: tabular-nums;
-  text-wrap: pretty;
+  text-align: center;
 }
-/* Retry is last, in the corner. With the grid gap, the button row is 12px below the words. */
-.server-connection-toast-actions {
-  margin-top: var(--openbot-space-1);
+.server-connection-first-load > p {
+  margin: 0;
+}
+.server-connection-first-load .server-connection-actions {
+  justify-content: center;
 }
 .server-connection-content {
   position: relative;

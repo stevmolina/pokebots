@@ -23,7 +23,6 @@ export const messages = {
   "server.connection.panelsFailed": "部分工作区面板加载失败，请重试。",
   "server.connection.retry": "重试",
   "server.connection.manage": "打开设置",
-  "server.connection.restored": "已恢复与 {name} 的连接",
   "server.connection.details": "详情",
 
   "server.status.steps": "连接步骤",

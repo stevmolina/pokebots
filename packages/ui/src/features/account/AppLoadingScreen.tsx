@@ -1,5 +1,6 @@
 import mascotBlue from "@openbot/brand/assets/pokebots/blue.webp";
 import type { AppTextKey } from "@openbot/i18n";
+import type { JSX } from "@solidjs/web";
 import { createEffect, createSignal, For, onCleanup, onSettled, untrack } from "solid-js";
 import { useText } from "../../text";
 import { prefersReducedMotion } from "../../utils";
@@ -165,6 +166,8 @@ export interface AppLoadingScreenProps {
    * for a screen that is sure to stay, such as one that takes the place of another screen.
    */
   immediate?: boolean;
+  /** Controls under the status line, such as the Retry button of a server that fails to load. */
+  children?: JSX.Element;
 }
 
 export function AppLoadingScreen(props: AppLoadingScreenProps) {
@@ -310,6 +313,7 @@ export function AppLoadingScreen(props: AppLoadingScreenProps) {
             {props.title ?? <For each={[status()]}>{(line) => <span class="app-loading-line">{t(line)}</span>}</For>}
           </p>
         )}
+        {props.children}
       </div>
     </main>
   );

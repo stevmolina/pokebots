@@ -25,7 +25,6 @@ export const messages = {
   "server.connection.panelsFailed": "一部のワークスペースパネルを読み込めませんでした。もう一度お試しください。",
   "server.connection.retry": "再試行",
   "server.connection.manage": "設定を開く",
-  "server.connection.restored": "{name} への接続が回復しました",
   "server.connection.details": "詳細",
 
   "server.status.steps": "接続の手順",

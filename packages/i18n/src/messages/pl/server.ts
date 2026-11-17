@@ -25,7 +25,6 @@ export const messages = {
   "server.connection.panelsFailed": "Nie udało się wczytać niektórych paneli obszaru roboczego. Spróbuj ponownie.",
   "server.connection.retry": "Ponów",
   "server.connection.manage": "Otwórz ustawienia",
-  "server.connection.restored": "Przywrócono połączenie z: {name}",
   "server.connection.details": "Szczegóły",
 
   "server.status.steps": "Kroki połączenia",

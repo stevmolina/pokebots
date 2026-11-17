@@ -26,7 +26,6 @@ export const messages = {
   "server.connection.panelsFailed": "Certains panneaux de l’espace de travail n’ont pas pu se charger. Réessayez.",
   "server.connection.retry": "Réessayer",
   "server.connection.manage": "Ouvrir les réglages",
-  "server.connection.restored": "Connexion à {name} rétablie",
   "server.connection.details": "Détails",
 
   "server.status.steps": "Étapes de connexion",

@@ -25,7 +25,6 @@ export const messages = {
   "server.connection.panelsFailed": "Algunos paneles del espacio de trabajo no se pudieron cargar. Inténtalo de nuevo.",
   "server.connection.retry": "Reintentar",
   "server.connection.manage": "Abrir ajustes",
-  "server.connection.restored": "Conexión con {name} restablecida",
   "server.connection.details": "Detalles",
 
   "server.status.steps": "Pasos de conexión",

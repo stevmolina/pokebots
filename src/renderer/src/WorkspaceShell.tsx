@@ -8,6 +8,7 @@ import {
   serverWorkspacePhase,
 } from "@openbot/ui/features/servers/ServerConnectionNotice";
 import { useText } from "@openbot/ui/text";
+import type { JSX } from "@solidjs/web";
 import { createEffect, createMemo, createSignal, Show } from "solid-js";
 import { useAccountUsagePolling } from "./features/account/account-usage-polling";
 import { AgentDockHost, useAgentDockPlacement } from "./features/agent-dock/AgentDockHost";
@@ -30,7 +31,6 @@ import { createRoutineTimezonePrompt, desktopRoutineZoneTargets } from "./featur
 import { createHostedUpsellOffline } from "./features/servers/hosted-server-upsell-controller";
 import { createRemoteSyncMarks } from "./features/servers/remote-sync-marks";
 import { serverCanAdminister } from "./features/servers/server-capabilities";
-import { createServerConnectionToast } from "./features/servers/server-connection-toast";
 import { useServerScope } from "./features/servers/server-scope";
 import { followsServerUpdate, ServerUpdateDialogHost } from "./features/servers/server-update-flow";
 import { useServers } from "./features/servers/servers-context";
@@ -76,11 +76,13 @@ export function WorkspaceShell(props: {
   account: () => CentralAuthUser;
   /**
    * The startup splash covers the window and does not let heavy views mount yet. The first load then
-   * shows no screen of its own, only its toast, and the chat waits to mount.
+   * puts its recovery controls in that splash, and the chat waits to mount.
    */
   behindSplash?: () => boolean;
   /** The first load does not cover the window any more, so the startup splash can go. */
   onStartupReady?: () => void;
+  /** Recovery controls for the startup splash while it covers this workspace. */
+  onStartupNotice?: (notice: JSX.Element) => void;
 }) {
   const platform = usePlatform();
   /** A window that main opened for one chat shows that chat alone, with no sidebar. */
@@ -236,20 +238,6 @@ export function WorkspaceShell(props: {
       scope.retry();
     } else void retryServerConnection(server.id);
   };
-  // The main window shows the toasts and prompts of the servers once.
-  if (!chatWindow)
-    createServerConnectionToast(() => {
-      const server = activeServer();
-      return server?.kind === "remote"
-        ? {
-            id: server.id,
-            name: server.name,
-            ready: scope.loaded(),
-            quiet: Boolean(server.hostedSleep || server.hostRestart?.state === "restarting" || blockedRemoteServer()),
-          }
-        : null;
-    });
-
   const connectionShown = () =>
     (!serversLoaded() || !scope.connection.synced || (remote() && !scope.loaded())) && !blockedRemoteServer();
   const connectionPhase = () =>
@@ -304,6 +292,7 @@ export function WorkspaceShell(props: {
   const connectionNotice = (cover = false, screen = true) => (
     <ServerConnectionNotice
       screen={screen}
+      onLoadingNotice={cover && !screen ? props.onStartupNotice : undefined}
       name={activeServer()?.name ?? ""}
       initial={cover || !scope.connection.synced}
       ready={cover ? !fullWindowLoading() : undefined}

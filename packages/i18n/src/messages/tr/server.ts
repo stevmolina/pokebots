@@ -25,7 +25,6 @@ export const messages = {
   "server.connection.panelsFailed": "Bazı çalışma alanı panelleri yüklenemedi. Tekrar deneyin.",
   "server.connection.retry": "Tekrar dene",
   "server.connection.manage": "Ayarları aç",
-  "server.connection.restored": "{name} ile bağlantı yeniden kuruldu",
   "server.connection.details": "Ayrıntılar",
 
   "server.status.steps": "Bağlantı adımları",

@@ -1,5 +1,6 @@
 import { AppLoadingScreen } from "@openbot/ui/features/account/AppLoadingScreen";
 import { useText } from "@openbot/ui/text";
+import type { JSX } from "@solidjs/web";
 import { createEffect, createMemo, createSignal, Loading, Show } from "solid-js";
 import { useAuth } from "./features/account/account-context";
 import { useProviderDetection } from "./features/custom-providers/provider-detection-context";
@@ -81,6 +82,7 @@ export function AppAccessGate() {
   // The splash also covers the first load of the workspace, which then shows no screen of its own.
   // On a start or a reload, the crew rain in once and hop out when the workspace is ready.
   const [workspaceReady, setWorkspaceReady] = createSignal(false);
+  const [startupNotice, setStartupNotice] = createSignal<JSX.Element>();
   const workspaceShown = () =>
     !!auth.visibleSignedInAccount() && (setup.setupState()?.completed === true || !scope.connection.hasContent);
   // While main loads the account, the splash cannot know if the workspace follows. It holds: a splash
@@ -151,6 +153,7 @@ export function AppAccessGate() {
                       account={account}
                       behindSplash={splashMoving}
                       onStartupReady={() => setWorkspaceReady(true)}
+                      onStartupNotice={(notice) => setStartupNotice(() => notice)}
                     />
                   }
                 >
@@ -202,6 +205,7 @@ export function AppAccessGate() {
                 account={account}
                 behindSplash={splashMoving}
                 onStartupReady={() => setWorkspaceReady(true)}
+                onStartupNotice={(notice) => setStartupNotice(() => notice)}
               />
             </Show>
           )}
@@ -230,7 +234,9 @@ export function AppAccessGate() {
             startupSplashPlayed = true;
             setSplashShown(false);
           }}
-        />
+        >
+          {startupNotice()}
+        </AppLoadingScreen>
       </Show>
     </>
   );

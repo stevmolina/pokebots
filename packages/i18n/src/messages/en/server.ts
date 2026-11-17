@@ -37,7 +37,6 @@ export const messages = defineMessages("server", {
   "server.connection.panelsFailed": "Some workspace panels could not load. Try again.",
   "server.connection.retry": "Retry",
   "server.connection.manage": "Open settings",
-  "server.connection.restored": "Connection to {name} restored",
   "server.connection.details": "Details",
 
   "server.status.steps": "Connection steps",

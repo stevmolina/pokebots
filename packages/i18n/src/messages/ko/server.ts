@@ -23,7 +23,6 @@ export const messages = {
   "server.connection.panelsFailed": "일부 워크스페이스 패널을 불러올 수 없었어요. 다시 시도해 주세요.",
   "server.connection.retry": "다시 시도",
   "server.connection.manage": "설정 열기",
-  "server.connection.restored": "{name}과(와)의 연결이 복구되었어요",
   "server.connection.details": "자세히",
 
   "server.status.steps": "연결 단계",

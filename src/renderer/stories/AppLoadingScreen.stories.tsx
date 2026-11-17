@@ -1,5 +1,7 @@
 import { AppLoadingScreen } from "@openbot/ui/features/account/AppLoadingScreen";
 import { ConversationLoadNotice, ServerConnectionNotice } from "@openbot/ui/features/servers/ServerConnectionNotice";
+import type { JSX } from "@solidjs/web";
+import { createSignal, Show } from "solid-js";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { SplashPlayground } from "./splash-story-support";
 
@@ -86,6 +88,19 @@ export const StartFailed: Story = {
     <ServerConnectionNotice name="My server" phase="blocked" issue="start_timeout" initial onRetry={() => {}} />
   ),
 };
+/** The first load fails: the loading screen shows the cause, its code, Retry and Details, and no toast. */
+export const FirstLoadFailed: Story = {
+  render: () => (
+    <ServerConnectionNotice
+      name="My server"
+      phase="waiting"
+      detail="The Team API operation is not supported."
+      reference="http/400/unsupported_operation"
+      initial
+      onRetry={() => {}}
+    />
+  ),
+};
 export const Reconnecting: Story = {
   render: () => (
     <ServerConnectionNotice name="My server" phase="waiting" remainingSeconds={12} initial={false} onRetry={() => {}} />
@@ -100,4 +115,41 @@ export const NeedsAttention: Story = {
 /** A connect or reconnect that mends itself shows no notice: this story is empty on purpose. The composer says "Connecting...". */
 export const ReconnectingQuiet: Story = {
   render: () => <ServerConnectionNotice name="My server" phase="reconnecting" initial={false} onRetry={() => {}} />,
+};
+
+/** The first load gives its controls to the screen that already covers the workspace. */
+function CoveredFirstLoad(props: { conversation?: boolean }) {
+  const [notice, setNotice] = createSignal<JSX.Element>();
+  const [attempts, setAttempts] = createSignal(0);
+  const content = () => (
+    <>
+      {notice()}
+      <output aria-label="Retry attempts">{attempts()}</output>
+    </>
+  );
+  return (
+    <>
+      <ServerConnectionNotice
+        name="My server"
+        phase={props.conversation ? "waiting" : "loading"}
+        detail="The Team API operation is not supported."
+        reference="http/400/unsupported_operation"
+        initial
+        screen={false}
+        onLoadingNotice={(value) => setNotice(() => value)}
+        onRetry={() => setAttempts((count) => count + 1)}
+      />
+      <Show when={props.conversation} fallback={<AppLoadingScreen immediate>{content()}</AppLoadingScreen>}>
+        <ConversationLoadNotice name="Chief" loading immediate error={null} onRetry={() => {}}>
+          {content()}
+        </ConversationLoadNotice>
+      </Show>
+    </>
+  );
+}
+export const SlowFirstLoadBehindSplash: Story = {
+  render: () => <CoveredFirstLoad />,
+};
+export const FirstLoadBehindConversation: Story = {
+  render: () => <CoveredFirstLoad conversation />,
 };

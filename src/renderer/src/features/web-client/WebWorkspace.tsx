@@ -312,7 +312,6 @@ import {
   serverRoleCanAdminister,
   serverRotatesHostKey,
 } from "../servers/server-capabilities";
-import { createServerConnectionToast } from "../servers/server-connection-toast";
 import { type HostPersonalityCalls, loadServerPersonality, serverResponseStyle } from "../servers/server-personality";
 import {
   offerServerUpdate,
@@ -656,23 +655,6 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
         !workspace.conversation()?.error));
   // A host that restarts into an update drops the connection on purpose. That error is not news.
   const hostUpdating = () => workspace.state.hostRestart?.state === "restarting";
-  createServerConnectionToast(() => {
-    const host = workspace.state.host;
-    return host
-      ? {
-          id: host.hostId,
-          name: host.name,
-          ready: workspace.state.status === "online",
-          quiet: Boolean(
-            !workspace.state.workspaceLoaded ||
-              workspace.state.otherTab ||
-              workspace.state.hostedSleep ||
-              workspace.state.hostRestart?.state === "restarting" ||
-              workspace.state.incompatibility,
-          ),
-        }
-      : null;
-  });
   let resetRevocation = workspace.state.revocationRevision;
   createEffect(
     () => ({ host: workspace.state.host?.hostId, revocation: workspace.state.revocationRevision }),
@@ -3286,6 +3268,7 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
     workspace.state.status === "online" ? (workspace.conversation()?.error ?? null) : null;
   /** While the page load waits for the sidebar, the host answered: the cover still loads, it does not reconnect. */
   const coverPhase = () => (workspace.state.status === "online" ? "loading" : connectionPhase());
+  const [frameNotice, setFrameNotice] = createSignal<JSX.Element>();
   const connectionNotice = (cover = false) => {
     const phase = cover ? coverPhase : connectionPhase;
     return (
@@ -3296,6 +3279,7 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
         onExited={cover ? () => setLoadingCover(false) : undefined}
         fullWindow={fullWindowLoading()}
         screen={!frameConnecting()}
+        onLoadingNotice={frameConnecting() ? (notice) => setFrameNotice(() => notice) : undefined}
         issue={workspace.state.hostedIssue}
         start={workspace.state.hostedStart}
         updateVersion={workspace.state.hostRestart?.version ?? null}
@@ -3352,7 +3336,7 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                   <Show when={phone() && !noHost()}>
                     <WebPhoneBack onBack={phoneBack} onEdgePointerDown={startPhoneSwipe} />
                   </Show>
-                  {/* While the chat loader covers the first load, the notice shows only its delayed toast. */}
+                  {/* While the chat loader covers the first load, the notice shows a banner when the server fails or waits long. */}
                   <Show when={connectionShown() && !fullWindowLoading()}>{connectionNotice()}</Show>
                   <Show when={workspace.state.status === "online" && workspace.state.panelsFailed}>
                     <ServerPanelLoadNotice
@@ -3373,7 +3357,9 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                         const id = workspace.state.selectedId;
                         if (id) void workspace.select(id);
                       }}
-                    />
+                    >
+                      {frameNotice()}
+                    </ConversationLoadNotice>
                   </Show>
                 </>
               }
