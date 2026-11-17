@@ -174,9 +174,9 @@ export const previewBatch4 = {
   /** A row with a gray line under its label. */
   detailRowHeight: 62,
   groupGap: 26,
-  /** The account row: a 36 pt photo, the row 76 pt high. */
+  /** The account row: a 36 pt photo, the row 71 pt high. */
   accountAvatar: 36,
-  accountRowHeight: 76,
+  accountRowHeight: 71,
   /** The footer: a 54 pt logo, the name and the version, centered. */
   footerTop: 60,
   footerLogo: 54,
@@ -187,14 +187,14 @@ export const previewBatch4 = {
   searchFirstRowTop: 8,
   searchRowHeight: 80,
   searchAvatar: 44,
-  /** The close circle beside the field: 47 pt like the grid button, 21 pt after the field. */
+  /** The close circle beside the field: 47 pt like the grid button, 12 pt after the field. */
   searchCloseButton: 47,
-  searchFieldGap: 21,
+  searchFieldGap: 12,
   /** Grid sheet: the title row centered on the close circle, chips 34 pt high 34 pt under it, rows 68 pt with a 30 pt icon. */
   gridChipsTop: 33,
   gridChipHeight: 34,
   gridCaptionTop: 19,
-  gridFirstRowGap: 12,
+  gridFirstRowGap: 16,
   gridRowHeight: 68,
   gridIcon: 30,
   gridIconRadius: 7,
