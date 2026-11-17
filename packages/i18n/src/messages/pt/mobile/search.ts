@@ -47,4 +47,10 @@ export const messages = {
   "mobile.search.authorText": "{author}: {text}",
   "mobile.search.fileDetail": "{name} · {size}",
   "mobile.search.routinePaused": "Pausada",
+  "mobile.search.kind.agent": "Agente",
+  "mobile.search.kind.channel": "Canal",
+  "mobile.search.kind.message": "Mensagem",
+  "mobile.search.kind.file": "Arquivo",
+  "mobile.search.kind.routine": "Rotina",
+  "mobile.search.kind.setting": "Configuração",
 } as const satisfies PartialTranslation<typeof source>;

@@ -1286,14 +1286,15 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
           <>
             <Stack.Toolbar placement="left">
               {/* The search takes the screen, so the bar buttons go while it is open. */}
-              {/* The calm look shows the profile here: the drawer holds the servers, the profile and Settings. */}
+              {/* The calm look shows the profile here and opens Settings, which lists the servers and
+                  opens the drawer with the server tools. The drawer also opens with a swipe from the edge. */}
               {calm ? (
                 <Stack.Toolbar.View key="calm-profile" hidden={search.open}>
                   <Pressable
                     accessibilityRole="button"
                     accessibilityLabel={t("mobile.agent.home.openProfile")}
                     hitSlop={6}
-                    onPress={openDrawer}
+                    onPress={() => router.push("/settings")}
                     style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
                   >
                     <ProfileAvatar neutral name={profileName} imageUrl={profilePhoto} size={34} />

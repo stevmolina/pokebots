@@ -46,4 +46,10 @@ export const messages = defineMessages("mobile.search", {
   "mobile.search.authorText": "{author}: {text}",
   "mobile.search.fileDetail": "{name} · {size}",
   "mobile.search.routinePaused": "Paused",
+  "mobile.search.kind.agent": "Agent",
+  "mobile.search.kind.channel": "Channel",
+  "mobile.search.kind.message": "Message",
+  "mobile.search.kind.file": "File",
+  "mobile.search.kind.routine": "Routine",
+  "mobile.search.kind.setting": "Setting",
 });
