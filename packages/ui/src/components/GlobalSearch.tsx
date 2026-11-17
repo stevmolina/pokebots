@@ -97,7 +97,7 @@ interface GlobalSearchProps {
 const ALL_SECTION_LIMIT = 5;
 // First guesses for the virtual list, from the CSS: a row is control-lg high, and a section header
 // is control-sm high, with space-1-5 above it when a row comes before it.
-const RESULT_HEIGHT = 36;
+const RESULT_HEIGHT = 56;
 const SECTION_HEIGHT = 28;
 const SPACED_SECTION_HEIGHT = 34;
 
@@ -255,12 +255,14 @@ function MessageResultRow(props: { result: MessageResult; query: string }) {
   const { t } = useText();
   return (
     <>
-      <span class="global-search-result-title" dir="auto">
-        {props.result.agent.name}
+      <span class="global-search-result-head">
+        <span class="global-search-result-title" dir="auto">
+          {props.result.agent.name}
+        </span>
+        <Show when={props.result.message.author === "you"}>
+          <span class="global-search-result-author">{t("conversation.globalSearch.you")}</span>
+        </Show>
       </span>
-      <Show when={props.result.message.author === "you"}>
-        <span class="global-search-result-author">{t("conversation.globalSearch.you")}</span>
-      </Show>
       <Combobox.ItemLabel class="global-search-result-detail" dir="auto">
         <Highlighted text={snippetAround(messagePreview(props.result.message), props.query)} query={props.query} />
       </Combobox.ItemLabel>
@@ -277,7 +279,7 @@ function ResultRow(props: { result: GlobalSearchResult; query: string }) {
       return (
         <>
           <AgentAvatar agent={result.agent} motion="hover" class="global-search-avatar" />
-          <NamedRow name={result.agent.name} detail={result.agent.title || result.agent.preview} query={props.query} />
+          <NamedRow name={result.agent.name} detail={result.agent.preview || result.agent.title} query={props.query} />
         </>
       );
     case "channel":
@@ -620,20 +622,23 @@ export function GlobalSearch(props: GlobalSearchProps) {
                 spellcheck={false}
                 onKeyDown={onInputKeyDown}
               />
-              <Tabs.Root
-                value={tab()}
-                onChange={(value) => {
-                  if (isSearchTab(value)) setTab(value);
-                }}
-                class="global-search-filters"
-              >
-                <Tabs.List aria-label={t("conversation.globalSearch.filter")}>
-                  <FilterPill />
-                  <For each={visibleTabs()}>
-                    {(value) => <Tabs.Trigger value={value}>{t(TAB_LABEL[value])}</Tabs.Trigger>}
-                  </For>
-                </Tabs.List>
-              </Tabs.Root>
+              {/* Filters show once the user types, or while a filter other than All is chosen. */}
+              <Show when={normalizedQuery() !== "" || tab() !== "all"}>
+                <Tabs.Root
+                  value={tab()}
+                  onChange={(value) => {
+                    if (isSearchTab(value)) setTab(value);
+                  }}
+                  class="global-search-filters"
+                >
+                  <Tabs.List aria-label={t("conversation.globalSearch.filter")}>
+                    <FilterPill />
+                    <For each={visibleTabs()}>
+                      {(value) => <Tabs.Trigger value={value}>{t(TAB_LABEL[value])}</Tabs.Trigger>}
+                    </For>
+                  </Tabs.List>
+                </Tabs.Root>
+              </Show>
             </Combobox.Control>
 
             {/* The always-open results are the top Kobalte layer, so they get outside presses, not the dialog.

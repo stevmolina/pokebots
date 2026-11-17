@@ -327,6 +327,7 @@
   --openbot-text-xl: 16px;
   --openbot-text-2xl: 18px;
   --openbot-text-3xl: 24px;
+  --openbot-text-search: 22px;
   --openbot-leading-sm: 18px;
   --openbot-leading-md: 20px;
   --openbot-leading-lg: 22px;
@@ -370,6 +371,7 @@
   --openbot-radius-md: 8px;
   --openbot-radius-lg: 12px;
   --openbot-radius-card: 14px;
+  --openbot-radius-palette: 16px;
   --openbot-radius-xl: 20px;
   --openbot-radius-bubble: 18px;
   --openbot-radius-bubble-inset: calc(var(--openbot-radius-bubble) - var(--openbot-space-3) - 1px);
