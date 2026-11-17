@@ -162,7 +162,7 @@ export const handleAgentComputerTool = Effect.fn("AgentComputerTools.handle")(fu
           machines: machines.map(({ id, context, size, status, deadline_at, updated_at }) => ({
             id,
             context,
-            size,
+            size: size ?? "standard",
             status,
             deadline_at,
             updated_at,
@@ -175,7 +175,7 @@ export const handleAgentComputerTool = Effect.fn("AgentComputerTools.handle")(fu
         return textResult({
           id: started.id,
           context: started.context,
-          size: started.size,
+          size: started.size ?? "standard",
           size_note: started.size_note,
           existing: started.existing,
           resumed: started.resumed,
