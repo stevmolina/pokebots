@@ -579,4 +579,64 @@ export const messages = {
     "OpenBot이 {host}의 액세스 키를 삭제합니다. 보관함과 그 안의 로그인 정보는 Proton 계정에 남습니다.",
   "connector.protonPass.disconnect": "연결 해제",
   "connector.protonPass.actionFailed": "OpenBot이 Proton Pass 연결을 변경하지 못했습니다.",
+  "connector.keeper.title": "Keeper",
+  "connector.keeper.description": "에이전트가 공유 Keeper 폴더의 로그인 정보로 사이트에 로그인합니다.",
+  "connector.keeper.descriptionHost": "{host}의 에이전트가 공유 Keeper 폴더의 로그인 정보로 사이트에 로그인합니다.",
+  "connector.keeper.connect": "연결",
+  "connector.keeper.setupTitle": "로그인",
+  "connector.keeper.setupDescription":
+    "Keeper 이메일과 마스터 비밀번호를 입력하세요. OpenBot은 이를 Keeper Commander에 한 번만 전달하고 보관하지 않습니다. Keeper Commander는 Keeper의 명령줄 도구입니다.",
+  "connector.keeper.setupDescriptionHost":
+    "Keeper 이메일과 마스터 비밀번호를 입력하세요. {host}이(가) 이를 Keeper Commander에 한 번만 전달하고 보관하지 않습니다. Keeper Commander는 Keeper의 명령줄 도구입니다.",
+  "connector.keeper.emailLabel": "이메일",
+  "connector.keeper.passwordLabel": "마스터 비밀번호",
+  "connector.keeper.folderName": "Shared with OpenBot",
+  "connector.keeper.folderSetup":
+    "연결하면 OpenBot이 보관함에 이 폴더를 만듭니다. 공유할 로그인 정보를 여기로 옮기세요.",
+  "connector.keeper.showSteps": "단계 보기",
+  "connector.keeper.stepsLabel": "연결 단계",
+  "connector.keeper.stepSignIn": "로그인",
+  "connector.keeper.stepVerify": "인증",
+  "connector.keeper.stepDone": "완료",
+  "connector.keeper.signInTitle": "Keeper에 로그인하는 중",
+  "connector.keeper.signInDescription": "Keeper Commander가 계정으로 로그인하고 있습니다.",
+  "connector.keeper.signInDescriptionHost": "{host}이(가) 계정으로 Keeper에 로그인하고 있습니다.",
+  "connector.keeper.twoFactorTitle": "코드 입력",
+  "connector.keeper.twoFactorDescription":
+    "Keeper가 2단계 인증 코드를 요청합니다. 인증 앱이나 문자 메시지의 코드를 입력하세요.",
+  "connector.keeper.deviceTitle": "이 기기 승인",
+  "connector.keeper.deviceDescription":
+    "Keeper가 승인 이메일을 보내고 다른 기기에도 알림을 보냈습니다. 이메일의 링크나 다른 기기에서 이 기기를 승인한 다음 계속을 누르세요. 또는 이메일의 코드를 입력하세요.",
+  "connector.keeper.codeLabel": "코드",
+  "connector.keeper.codeWrong": "코드가 올바르지 않습니다. 다시 입력하세요.",
+  "connector.keeper.continue": "계속",
+  "connector.keeper.setupStepTitle": "공유 폴더 만드는 중",
+  "connector.keeper.setupStepDescription": "OpenBot이 보관함에 “{folder}” 폴더를 만들고 이 기기의 로그인을 켭니다.",
+  "connector.keeper.doneTitle": "Keeper가 연결되었습니다",
+  "connector.keeper.doneDescription":
+    "로그인 정보를 “{folder}”(으)로 옮기면 에이전트가 그 정보로 로그인할 수 있습니다.",
+  "connector.keeper.failedTitle": "Keeper를 연결하지 못했습니다",
+  "connector.keeper.done": "완료",
+  "connector.keeper.close": "닫기",
+  "connector.keeper.statusConnecting": "연결 중",
+  "connector.keeper.statusConnected": "연결됨",
+  "connector.keeper.statusExpired": "세션 종료됨",
+  "connector.keeper.expiredTitle": "Keeper 세션이 종료되었습니다",
+  "connector.keeper.expiredDescription":
+    "다시 연결할 때까지 에이전트가 공유 로그인 정보로 로그인할 수 없습니다. 아래에 마스터 비밀번호를 입력하세요.",
+  "connector.keeper.planTitle": "Keeper Commander가 차단되었습니다",
+  "connector.keeper.planDescription":
+    "Keeper 관리자가 이 계정에서 Keeper Commander를 허용하지 않습니다. 관리자에게 허용을 요청한 다음 다시 연결하세요.",
+  "connector.keeper.folderTitle": "공유 폴더",
+  "connector.keeper.folderDescription":
+    "에이전트가 로그인 정보를 사용하게 하려면 Keeper에서 이 폴더로 옮기세요. 사용을 멈추려면 폴더에서 제거하세요.",
+  "connector.keeper.loginCount": { other: "로그인 {count}개" },
+  "connector.keeper.loginsLoading": "로그인 정보를 세는 중…",
+  "connector.keeper.disconnectTitle": "Keeper 연결 해제",
+  "connector.keeper.disconnectSummary":
+    "OpenBot이 이 컴퓨터에서 Keeper 세션을 종료합니다. 폴더와 그 안의 로그인 정보는 Keeper 보관함에 남습니다.",
+  "connector.keeper.disconnectSummaryHost":
+    "OpenBot이 {host}에서 Keeper 세션을 종료합니다. 폴더와 그 안의 로그인 정보는 Keeper 보관함에 남습니다.",
+  "connector.keeper.disconnect": "연결 해제",
+  "connector.keeper.actionFailed": "OpenBot이 Keeper 연결을 변경하지 못했습니다.",
 } as const satisfies PartialTranslation<typeof source>;

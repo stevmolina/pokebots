@@ -54,4 +54,24 @@ export const messages = {
   "error.connector.protonPassSignInTimeout": "L’accesso a Proton ha richiesto troppo tempo. Connetti di nuovo.",
   "error.connector.protonPassSetupFailed":
     "Impossibile creare la cassaforte Shared with OpenBot o la sua chiave di accesso in Proton Pass. Connetti di nuovo.",
+  "error.connector.keeperFailed": "Impossibile connettere Keeper. Connetti di nuovo.",
+  "error.connector.keeperCliInstallFailed":
+    "Impossibile installare Keeper Commander. Controlla la connessione di rete, poi connetti di nuovo.",
+  "error.connector.keeperPassword": "L’email o la password principale non è corretta.",
+  "error.connector.keeperCode": "Il codice non è corretto. Inseriscilo di nuovo.",
+  "error.connector.keeperCodeNotAsked": "Keeper non ha chiesto un codice.",
+  "error.connector.keeperNotApproved":
+    "Keeper non ha ancora approvato questo dispositivo. Approvalo, poi seleziona Continua.",
+  "error.connector.keeperExpired": "La sessione Keeper su questo computer è terminata. Connetti di nuovo.",
+  "error.connector.keeperPlan":
+    "Il tuo amministratore di Keeper non consente Keeper Commander per questo account. Chiedigli di consentirlo, poi connetti di nuovo.",
+  "error.connector.keeperSso": "Gli account Keeper che accedono con SSO non possono ancora connettersi.",
+  "error.connector.keeperTwoFactorUnsupported":
+    "Il metodo in due passaggi di questo account non accetta un codice digitato. Aggiungi un’app di autenticazione o i messaggi di testo in Keeper, poi connetti di nuovo.",
+  "error.connector.keeperLocked":
+    "Keeper ha bloccato questo account o questo dispositivo. Apri Keeper per sbloccarlo, poi connetti di nuovo.",
+  "error.connector.keeperThrottled":
+    "Keeper chiede di attendere qualche minuto prima del prossimo accesso. Riconnetti più tardi.",
+  "error.connector.keeperSignInTimeout": "L’accesso a Keeper ha richiesto troppo tempo. Connetti di nuovo.",
+  "error.connector.keeperFileUnreadable": "Il file di connessione di Keeper non è leggibile.",
 } as const satisfies PartialTranslation<typeof source>;

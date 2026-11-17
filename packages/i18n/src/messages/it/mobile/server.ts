@@ -710,6 +710,31 @@ export const messages = {
   "mobile.server.connectors.protonPass.keyHelp":
     "In Proton Pass, crea una chiave di accesso che può leggere solo il vault che condividi con OpenBot, poi incollala qui. {host} conserva la chiave; questo telefono no.",
   "mobile.server.connectors.protonPass.keyPlaceholder": "pst_…",
+  "mobile.server.connectors.keeper.title": "Keeper",
+  "mobile.server.connectors.keeper.description":
+    "Condividi una cartella di Keeper con OpenBot su {host}, così gli agenti su {host} possono accedere ai siti nel suo browser.",
+  "mobile.server.connectors.keeper.accountHelp":
+    "Inserisci l'email e la password principale di Keeper. Vanno a {host} una sola volta e {host} le passa a Keeper Commander. Questo telefono non le conserva.",
+  "mobile.server.connectors.keeper.email": "Email",
+  "mobile.server.connectors.keeper.masterPassword": "Password principale",
+  "mobile.server.connectors.keeper.signingIn": "{host} sta accedendo a Keeper…",
+  "mobile.server.connectors.keeper.makingFolder": "{host} sta creando la cartella condivisa…",
+  "mobile.server.connectors.keeper.code": "Codice",
+  "mobile.server.connectors.keeper.twoFactorHint":
+    "Keeper chiede un codice in due passaggi. Inserisci il codice della tua app di autenticazione o del messaggio di testo. Va a {host} una sola volta; questo telefono non lo conserva.",
+  "mobile.server.connectors.keeper.deviceHint":
+    "Keeper ha inviato un'email di approvazione e una notifica agli altri tuoi dispositivi. Approva lì questo dispositivo, poi premi Continua. Oppure digita il codice dell'email.",
+  "mobile.server.connectors.keeper.codeWrong": "Il codice non è corretto. Riprova.",
+  "mobile.server.connectors.keeper.folderTitle": "Cartella condivisa",
+  "mobile.server.connectors.keeper.folderFooter":
+    "Sposta una credenziale in questa cartella in Keeper per permettere agli agenti di accedere con essa. Rimuovila per smettere.",
+  "mobile.server.connectors.keeper.plan":
+    "Il tuo amministratore di Keeper non consente Keeper Commander per questo account. Chiedigli di consentirlo, poi connetti di nuovo.",
+  "mobile.server.connectors.keeper.expiredTitle": "La sessione di Keeper è terminata",
+  "mobile.server.connectors.keeper.expiredBody":
+    "Gli agenti su {host} non possono accedere con le tue credenziali condivise finché non connetti di nuovo.",
+  "mobile.server.connectors.keeper.disconnectBody":
+    "{host} termina la sua sessione Keeper. La cartella e le sue credenziali restano nel tuo vault Keeper.",
   "mobile.server.connectors.passwordManager.unavailable": "{name} non è disponibile su questo server.",
   "mobile.server.connectors.passwordManager.howItWorks":
     "Accedi a {name} su questo telefono. Poi {host} crea un vault condiviso e una chiave di accesso in sola lettura per il vault, e conserva solo quella chiave. Gli agenti non vedono mai una password.",

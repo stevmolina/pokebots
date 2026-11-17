@@ -54,4 +54,24 @@ export const messages = {
   "error.connector.protonPassSignInTimeout": "Het aanmelden bij Proton duurde te lang. Verbind opnieuw.",
   "error.connector.protonPassSetupFailed":
     "Kan de kluis Shared with OpenBot of de toegangssleutel ervan niet maken in Proton Pass. Verbind opnieuw.",
+  "error.connector.keeperFailed": "Kan Keeper niet verbinden. Verbind opnieuw.",
+  "error.connector.keeperCliInstallFailed":
+    "Kan Keeper Commander niet installeren. Controleer de netwerkverbinding en verbind daarna opnieuw.",
+  "error.connector.keeperPassword": "Het e-mailadres of het hoofdwachtwoord is onjuist.",
+  "error.connector.keeperCode": "De code is onjuist. Voer hem opnieuw in.",
+  "error.connector.keeperCodeNotAsked": "Keeper heeft niet om een code gevraagd.",
+  "error.connector.keeperNotApproved":
+    "Keeper heeft dit apparaat nog niet goedgekeurd. Keur het goed en kies dan Doorgaan.",
+  "error.connector.keeperExpired": "De Keeper-sessie op deze computer is beëindigd. Verbind opnieuw.",
+  "error.connector.keeperPlan":
+    "Je Keeper-beheerder staat Keeper Commander niet toe voor dit account. Vraag of het toegestaan kan worden en verbind daarna opnieuw.",
+  "error.connector.keeperSso": "Keeper-accounts die zich met SSO aanmelden, kunnen nog niet verbinden.",
+  "error.connector.keeperTwoFactorUnsupported":
+    "De tweestapsmethode van dit account kan geen getypte code gebruiken. Voeg in Keeper een authenticator-app of sms toe en verbind daarna opnieuw.",
+  "error.connector.keeperLocked":
+    "Keeper heeft dit account of dit apparaat vergrendeld. Open Keeper om het te ontgrendelen en verbind daarna opnieuw.",
+  "error.connector.keeperThrottled":
+    "Keeper vraagt een paar minuten te wachten voor de volgende aanmelding. Maak later opnieuw verbinding.",
+  "error.connector.keeperSignInTimeout": "Het aanmelden bij Keeper duurde te lang. Verbind opnieuw.",
+  "error.connector.keeperFileUnreadable": "Het Keeper-verbindingsbestand is onleesbaar.",
 } as const satisfies PartialTranslation<typeof source>;

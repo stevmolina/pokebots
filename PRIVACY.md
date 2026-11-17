@@ -943,6 +943,23 @@ no review reads are deleted after 30 days. Turning the setting off deletes all r
   connection, to the server. No answer from the server carries it. Disconnect deletes the file and
   the session; the agent access key stays on your Proton account until it ends after one year or
   you remove it in Proton Pass.
+- The Keeper connection (Marketplace › Apps › Keeper) runs Keeper Commander, Keeper's official CLI.
+  OpenBot installs it into `provider-state/keeper-cli` in its application data folder: it downloads
+  `uv` from Astral's GitHub releases (checked against a pinned SHA-256), which downloads a Python
+  build and the pinned Commander packages from PyPI. The computer or server then talks to Keeper
+  directly. Your email and master password go to Commander once, through a pipe, and the master
+  password is not saved. Keeper can send an approval email or a push to your other devices, and ask
+  for a two-step code. OpenBot keeps only Commander's device config (its device key and session
+  code), in `openbot-keeper-connector-v1.json`, encrypted by the operating system's secret storage;
+  during each call Commander reads a private temporary copy that is then deleted. OpenBot reads only
+  the logins in the Keeper folder `Shared with OpenBot`, and keeps their titles, user names and web
+  addresses in memory, never on disk. A password or a one-time code goes only to the browser page
+  that it fills, never to an agent, a provider, a log or a team member. The master password, the
+  codes, the device config and each filled value are redacted from logs, exports and diagnostics.
+  An owner or admin of a joined server connects that server's Keeper from their own computer or
+  phone; the email, the master password and the codes go once, over the encrypted connection, to the
+  server, and no answer carries them. Disconnect signs Commander out of Keeper and deletes the file
+  and Commander's files. The device stays in Keeper's device list until you remove it there.
 - The Vault (Server settings › Vault) is kept in
   `~/Library/Application Support/OpenBot/openbot-vault-v1.json`, encrypted by the operating system's
   secret storage. It holds the logins, payment cards (number, expiry, security code, name), contact

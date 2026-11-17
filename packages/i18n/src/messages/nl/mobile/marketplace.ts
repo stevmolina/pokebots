@@ -24,6 +24,7 @@ export const messages = {
   "mobile.marketplace.app.onePasswordTagline": "Log in op sites met logins die je deelt",
   "mobile.marketplace.app.bitwardenTagline": "Log in op sites met logins uit een gedeelde map",
   "mobile.marketplace.app.protonPassTagline": "Log in op sites met logins uit een gedeelde kluis",
+  "mobile.marketplace.app.keeperTagline": "Log in op sites met logins uit een gedeelde map",
   "mobile.marketplace.search.placeholder": "Zoek in de marktplaats",
   "mobile.marketplace.search.clear": "Wis zoekopdracht",
   "mobile.marketplace.search.close": "Sluit zoeken",

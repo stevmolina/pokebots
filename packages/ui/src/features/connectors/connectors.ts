@@ -26,6 +26,7 @@ export const CONNECTORS: Readonly<Record<ConnectorId, ConnectorDefinition>> = {
   onepassword: { server: ONEPASSWORD_CONNECTOR_CAPABILITY },
   bitwarden: { server: BITWARDEN_CONNECTOR_CAPABILITY },
   protonpass: { server: PASSWORD_MANAGERS_CAPABILITY },
+  keeper: { server: PASSWORD_MANAGERS_CAPABILITY },
 };
 
 const CONNECTOR_ID_SET = new Set<string>(CONNECTOR_IDS);

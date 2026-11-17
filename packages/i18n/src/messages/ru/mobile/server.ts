@@ -799,6 +799,31 @@ export const messages = {
   "mobile.server.connectors.protonPass.keyHelp":
     "Создайте в Proton Pass ключ доступа, который может читать только хранилище, открытое для OpenBot, и вставьте его сюда. {host} хранит ключ; этот телефон — нет.",
   "mobile.server.connectors.protonPass.keyPlaceholder": "pst_…",
+  "mobile.server.connectors.keeper.title": "Keeper",
+  "mobile.server.connectors.keeper.description":
+    "Откройте OpenBot на {host} доступ к одной папке Keeper, чтобы агенты на {host} могли входить на сайты в его браузере.",
+  "mobile.server.connectors.keeper.accountHelp":
+    "Введите адрес электронной почты Keeper и мастер-пароль. Они один раз передаются на {host}, а {host} передаёт их Keeper Commander. Этот телефон их не хранит.",
+  "mobile.server.connectors.keeper.email": "Электронная почта",
+  "mobile.server.connectors.keeper.masterPassword": "Мастер-пароль",
+  "mobile.server.connectors.keeper.signingIn": "{host} входит в Keeper…",
+  "mobile.server.connectors.keeper.makingFolder": "{host} создаёт общую папку…",
+  "mobile.server.connectors.keeper.code": "Код",
+  "mobile.server.connectors.keeper.twoFactorHint":
+    "Keeper запрашивает код двухэтапной проверки. Введите код из приложения-аутентификатора или SMS. Он один раз передаётся на {host}; этот телефон его не хранит.",
+  "mobile.server.connectors.keeper.deviceHint":
+    "Keeper отправил письмо с подтверждением и уведомление на другие ваши устройства. Подтвердите там это устройство и нажмите «Продолжить». Или введите код из письма.",
+  "mobile.server.connectors.keeper.codeWrong": "Код неверен. Попробуйте ещё раз.",
+  "mobile.server.connectors.keeper.folderTitle": "Общая папка",
+  "mobile.server.connectors.keeper.folderFooter":
+    "Переместите логин в эту папку в Keeper, чтобы агенты могли входить с его помощью. Уберите его оттуда, чтобы прекратить доступ.",
+  "mobile.server.connectors.keeper.plan":
+    "Администратор Keeper не разрешает Keeper Commander для этой учётной записи. Попросите его разрешить и подключитесь снова.",
+  "mobile.server.connectors.keeper.expiredTitle": "Сеанс Keeper завершён",
+  "mobile.server.connectors.keeper.expiredBody":
+    "Агенты на {host} не могут входить с общими учётными данными, пока вы не подключитесь снова.",
+  "mobile.server.connectors.keeper.disconnectBody":
+    "{host} завершает свой сеанс Keeper. Папка и её учётные данные остаются в вашем хранилище Keeper.",
   "mobile.server.connectors.passwordManager.unavailable": "{name} недоступен на этом сервере.",
   "mobile.server.connectors.passwordManager.howItWorks":
     "Войдите в {name} на этом телефоне. Затем {host} создаст общее хранилище и ключ доступа только для чтения к нему и будет хранить только этот ключ. Агенты никогда не видят пароль.",

@@ -719,6 +719,31 @@ export const messages = {
   "mobile.server.connectors.protonPass.keyHelp":
     "Dans Proton Pass, créez une clé d’accès qui peut lire uniquement le coffre partagé avec OpenBot, puis collez-la ici. {host} garde la clé ; ce téléphone non.",
   "mobile.server.connectors.protonPass.keyPlaceholder": "pst_…",
+  "mobile.server.connectors.keeper.title": "Keeper",
+  "mobile.server.connectors.keeper.description":
+    "Partagez un dossier Keeper avec OpenBot sur {host}, pour que les agents de {host} puissent se connecter à des sites dans son navigateur.",
+  "mobile.server.connectors.keeper.accountHelp":
+    "Saisissez votre e-mail et votre mot de passe principal Keeper. Ils vont à {host} une seule fois, puis {host} les transmet à Keeper Commander. Ce téléphone ne les garde pas.",
+  "mobile.server.connectors.keeper.email": "E-mail",
+  "mobile.server.connectors.keeper.masterPassword": "Mot de passe principal",
+  "mobile.server.connectors.keeper.signingIn": "{host} se connecte à Keeper…",
+  "mobile.server.connectors.keeper.makingFolder": "{host} crée le dossier partagé…",
+  "mobile.server.connectors.keeper.code": "Code",
+  "mobile.server.connectors.keeper.twoFactorHint":
+    "Keeper demande un code en deux étapes. Saisissez le code de votre application d’authentification ou du SMS. Il va à {host} une seule fois ; ce téléphone ne le garde pas.",
+  "mobile.server.connectors.keeper.deviceHint":
+    "Keeper a envoyé un e-mail d’approbation et une notification à vos autres appareils. Approuvez cet appareil là-bas, puis appuyez sur Continuer. Ou saisissez le code de l’e-mail.",
+  "mobile.server.connectors.keeper.codeWrong": "Le code est incorrect. Réessayez.",
+  "mobile.server.connectors.keeper.folderTitle": "Dossier partagé",
+  "mobile.server.connectors.keeper.folderFooter":
+    "Déplacez un identifiant dans ce dossier dans Keeper pour que les agents s’en servent. Retirez-le pour arrêter.",
+  "mobile.server.connectors.keeper.plan":
+    "Votre administrateur Keeper n’autorise pas Keeper Commander pour ce compte. Demandez-lui de l’autoriser, puis connectez à nouveau.",
+  "mobile.server.connectors.keeper.expiredTitle": "La session Keeper est terminée",
+  "mobile.server.connectors.keeper.expiredBody":
+    "Les agents de {host} ne peuvent plus utiliser vos identifiants partagés tant que vous ne vous reconnectez pas.",
+  "mobile.server.connectors.keeper.disconnectBody":
+    "{host} met fin à sa session Keeper. Le dossier et ses identifiants restent dans votre coffre Keeper.",
   "mobile.server.connectors.passwordManager.unavailable": "{name} n’est pas disponible sur ce serveur.",
   "mobile.server.connectors.passwordManager.howItWorks":
     "Connectez-vous à {name} sur ce téléphone. Ensuite, {host} crée un coffre partagé et une clé d’accès en lecture seule pour ce coffre, et ne garde que cette clé. Les agents ne voient jamais de mot de passe.",

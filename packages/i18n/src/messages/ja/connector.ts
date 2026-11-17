@@ -640,4 +640,67 @@ export const messages = {
     "OpenBot は {host} 上のアクセスキーを削除します。保管庫とそのログイン情報は Proton アカウントに残ります。",
   "connector.protonPass.disconnect": "切断",
   "connector.protonPass.actionFailed": "OpenBot は Proton Pass の接続を変更できませんでした。",
+  "connector.keeper.title": "Keeper",
+  "connector.keeper.description":
+    "共有の Keeper フォルダー内のログイン情報で、エージェントがサイトにサインインします。",
+  "connector.keeper.descriptionHost":
+    "{host} のエージェントが、共有の Keeper フォルダー内のログイン情報でサイトにサインインします。",
+  "connector.keeper.connect": "接続",
+  "connector.keeper.setupTitle": "サインイン",
+  "connector.keeper.setupDescription":
+    "Keeper のメールアドレスとマスターパスワードを入力してください。OpenBot はそれらを Keeper Commander に一度だけ渡し、保存しません。Keeper Commander は Keeper のコマンドラインツールです。",
+  "connector.keeper.setupDescriptionHost":
+    "Keeper のメールアドレスとマスターパスワードを入力してください。{host} はそれらを Keeper Commander に一度だけ渡し、保存しません。Keeper Commander は Keeper のコマンドラインツールです。",
+  "connector.keeper.emailLabel": "メールアドレス",
+  "connector.keeper.passwordLabel": "マスターパスワード",
+  "connector.keeper.folderName": "Shared with OpenBot",
+  "connector.keeper.folderSetup":
+    "接続すると、OpenBot が保管庫にこのフォルダーを作成します。共有したいログイン情報をこのフォルダーに移動してください。",
+  "connector.keeper.showSteps": "手順を表示",
+  "connector.keeper.stepsLabel": "接続の手順",
+  "connector.keeper.stepSignIn": "サインイン",
+  "connector.keeper.stepVerify": "確認",
+  "connector.keeper.stepDone": "完了",
+  "connector.keeper.signInTitle": "Keeper にサインイン中",
+  "connector.keeper.signInDescription": "Keeper Commander があなたのアカウントでサインインしています。",
+  "connector.keeper.signInDescriptionHost": "{host} があなたのアカウントで Keeper にサインインしています。",
+  "connector.keeper.twoFactorTitle": "コードを入力",
+  "connector.keeper.twoFactorDescription":
+    "Keeper が 2 段階認証コードを求めています。認証アプリまたはテキストメッセージのコードを入力してください。",
+  "connector.keeper.deviceTitle": "このデバイスを承認",
+  "connector.keeper.deviceDescription":
+    "Keeper が承認メールを送信し、他のデバイスにも通知しました。メールのリンクか他のデバイスでこのデバイスを承認してから、「続ける」を押してください。メールのコードを入力することもできます。",
+  "connector.keeper.codeLabel": "コード",
+  "connector.keeper.codeWrong": "コードが正しくありません。もう一度入力してください。",
+  "connector.keeper.continue": "続ける",
+  "connector.keeper.setupStepTitle": "共有フォルダーを作成中",
+  "connector.keeper.setupStepDescription":
+    "OpenBot が保管庫にフォルダー「{folder}」を作成し、このデバイスでのサインインを有効にします。",
+  "connector.keeper.doneTitle": "Keeper に接続しました",
+  "connector.keeper.doneDescription":
+    "ログイン情報を「{folder}」に移動すると、エージェントがそれでサインインできます。",
+  "connector.keeper.failedTitle": "Keeper に接続できませんでした",
+  "connector.keeper.done": "完了",
+  "connector.keeper.close": "閉じる",
+  "connector.keeper.statusConnecting": "接続中",
+  "connector.keeper.statusConnected": "接続済み",
+  "connector.keeper.statusExpired": "セッション終了",
+  "connector.keeper.expiredTitle": "Keeper のセッションが終了しました",
+  "connector.keeper.expiredDescription":
+    "もう一度接続するまで、エージェントは共有ログイン情報でサインインできません。下にマスターパスワードを入力してください。",
+  "connector.keeper.planTitle": "Keeper Commander がブロックされています",
+  "connector.keeper.planDescription":
+    "Keeper の管理者が、このアカウントでの Keeper Commander を許可していません。許可を依頼してから、もう一度接続してください。",
+  "connector.keeper.folderTitle": "共有フォルダ",
+  "connector.keeper.folderDescription":
+    "エージェントにログイン情報でサインインさせるには、Keeper でそのログイン情報をこのフォルダに移動してください。やめるには削除してください。",
+  "connector.keeper.loginCount": { other: "ログイン情報 {count} 件" },
+  "connector.keeper.loginsLoading": "ログイン情報を数えています…",
+  "connector.keeper.disconnectTitle": "Keeper を切断",
+  "connector.keeper.disconnectSummary":
+    "OpenBot はこのコンピューター上の Keeper セッションを終了します。フォルダーとそのログイン情報は Keeper の保管庫に残ります。",
+  "connector.keeper.disconnectSummaryHost":
+    "OpenBot は {host} 上の Keeper セッションを終了します。フォルダーとそのログイン情報は Keeper の保管庫に残ります。",
+  "connector.keeper.disconnect": "切断",
+  "connector.keeper.actionFailed": "OpenBot は Keeper の接続を変更できませんでした。",
 } as const satisfies PartialTranslation<typeof source>;

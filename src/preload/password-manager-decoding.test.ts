@@ -46,6 +46,19 @@ describe("password manager decoding", () => {
     expect(decodePasswordManagerResponse({ ...connected, signInUrl: "https://account.proton.me/" })).toEqual(connected);
   });
 
+  it("keeps a Keeper account sign-in that waits for a code", () => {
+    const keeper = {
+      ...signingIn,
+      manager: "keeper",
+      step: "device-approval",
+      methods: ["account"],
+      signInUrl: null,
+      errorCode: "code",
+    };
+    expect(decodePasswordManagerResponse(keeper)).toEqual(keeper);
+    expect(decodePasswordManagerChange(keeper)).toEqual(keeper);
+  });
+
   it("leaves out a step, a method and an error code that it does not know", () => {
     expect(
       decodePasswordManagerResponse({ ...signingIn, step: "scan", methods: ["browser", "qr"], errorCode: "quota" }),
@@ -61,9 +74,11 @@ describe("password manager decoding", () => {
   });
 
   it("refuses a manager that it does not know, and drops its event", () => {
-    expect(decodePasswordManagerChange({ ...connected, manager: "keeper" })).toBeNull();
-    expect(() => decodePasswordManagerResponses([{ ...connected, manager: "keeper" }, connected])).toThrow(/^Invalid /);
-    expect(() => decodePasswordManagerResponse({ ...connected, manager: "keeper" })).toThrow(/^Invalid /);
+    expect(decodePasswordManagerChange({ ...connected, manager: "lastpass" })).toBeNull();
+    expect(() => decodePasswordManagerResponses([{ ...connected, manager: "lastpass" }, connected])).toThrow(
+      /^Invalid /,
+    );
+    expect(() => decodePasswordManagerResponse({ ...connected, manager: "lastpass" })).toThrow(/^Invalid /);
   });
 
   it.each([

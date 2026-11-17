@@ -640,4 +640,66 @@ export const messages = {
     "OpenBot elimina la sua chiave di accesso su {host}. La cassaforte e le sue credenziali restano nel tuo account Proton.",
   "connector.protonPass.disconnect": "Disconnetti",
   "connector.protonPass.actionFailed": "OpenBot non è riuscito a modificare la connessione a Proton Pass.",
+  "connector.keeper.title": "Keeper",
+  "connector.keeper.description": "Gli agenti accedono ai siti con le credenziali di una cartella Keeper condivisa.",
+  "connector.keeper.descriptionHost":
+    "Gli agenti su {host} accedono ai siti con le credenziali di una cartella Keeper condivisa.",
+  "connector.keeper.connect": "Connetti",
+  "connector.keeper.setupTitle": "Accedi",
+  "connector.keeper.setupDescription":
+    "Inserisci l’email e la password principale di Keeper. OpenBot le passa a Keeper Commander una sola volta e non le conserva. Keeper Commander è lo strumento da riga di comando di Keeper.",
+  "connector.keeper.setupDescriptionHost":
+    "Inserisci l’email e la password principale di Keeper. {host} le passa a Keeper Commander una sola volta e non le conserva. Keeper Commander è lo strumento da riga di comando di Keeper.",
+  "connector.keeper.emailLabel": "Email",
+  "connector.keeper.passwordLabel": "Password principale",
+  "connector.keeper.folderName": "Shared with OpenBot",
+  "connector.keeper.folderSetup":
+    "OpenBot crea questa cartella nella tua cassaforte quando connetti. Spostaci le credenziali per condividerle.",
+  "connector.keeper.showSteps": "Mostra passaggi",
+  "connector.keeper.stepsLabel": "Passaggi di connessione",
+  "connector.keeper.stepSignIn": "Accedi",
+  "connector.keeper.stepVerify": "Verifica",
+  "connector.keeper.stepDone": "Fatto",
+  "connector.keeper.signInTitle": "Accesso a Keeper in corso",
+  "connector.keeper.signInDescription": "Keeper Commander sta accedendo con il tuo account.",
+  "connector.keeper.signInDescriptionHost": "{host} sta accedendo a Keeper con il tuo account.",
+  "connector.keeper.twoFactorTitle": "Inserisci il codice",
+  "connector.keeper.twoFactorDescription":
+    "Keeper chiede un codice in due passaggi. Inserisci il codice della tua app di autenticazione o del messaggio di testo.",
+  "connector.keeper.deviceTitle": "Approva questo dispositivo",
+  "connector.keeper.deviceDescription":
+    "Keeper ha inviato un’email di approvazione e una notifica agli altri tuoi dispositivi. Approva questo dispositivo con il link nell’email o su un altro dispositivo, poi premi Continua. Oppure digita il codice dell’email.",
+  "connector.keeper.codeLabel": "Codice",
+  "connector.keeper.codeWrong": "Il codice non è corretto. Inseriscilo di nuovo.",
+  "connector.keeper.continue": "Continua",
+  "connector.keeper.setupStepTitle": "Creazione della cartella condivisa",
+  "connector.keeper.setupStepDescription":
+    "OpenBot crea la cartella «{folder}» nella tua cassaforte e attiva l’accesso per questo dispositivo.",
+  "connector.keeper.doneTitle": "Keeper è connesso",
+  "connector.keeper.doneDescription":
+    "Sposta le credenziali in «{folder}» per permettere agli agenti di accedere con esse.",
+  "connector.keeper.failedTitle": "Keeper non si è connesso",
+  "connector.keeper.done": "Fatto",
+  "connector.keeper.close": "Chiudi",
+  "connector.keeper.statusConnecting": "Connessione",
+  "connector.keeper.statusConnected": "Connesso",
+  "connector.keeper.statusExpired": "Sessione terminata",
+  "connector.keeper.expiredTitle": "La sessione di Keeper è terminata",
+  "connector.keeper.expiredDescription":
+    "Gli agenti non possono accedere con le tue credenziali condivise finché non connetti di nuovo. Inserisci qui sotto la tua password principale.",
+  "connector.keeper.planTitle": "Keeper Commander è bloccato",
+  "connector.keeper.planDescription":
+    "Il tuo amministratore di Keeper non consente Keeper Commander per questo account. Chiedigli di consentirlo, poi connetti di nuovo.",
+  "connector.keeper.folderTitle": "Cartella condivisa",
+  "connector.keeper.folderDescription":
+    "Sposta una credenziale in questa cartella in Keeper per permettere agli agenti di accedere con essa. Rimuovila per smettere.",
+  "connector.keeper.loginCount": { one: "{count} accesso", other: "{count} accessi" },
+  "connector.keeper.loginsLoading": "Conteggio delle credenziali…",
+  "connector.keeper.disconnectTitle": "Disconnetti Keeper",
+  "connector.keeper.disconnectSummary":
+    "OpenBot termina la sua sessione Keeper su questo computer. La cartella e le sue credenziali restano nella tua cassaforte Keeper.",
+  "connector.keeper.disconnectSummaryHost":
+    "OpenBot termina la sua sessione Keeper su {host}. La cartella e le sue credenziali restano nella tua cassaforte Keeper.",
+  "connector.keeper.disconnect": "Disconnetti",
+  "connector.keeper.actionFailed": "OpenBot non è riuscito a modificare la connessione a Keeper.",
 } as const satisfies PartialTranslation<typeof source>;

@@ -62,4 +62,21 @@ export const messages = {
   "error.connector.protonPassSignInTimeout": "ההתחברות ל-Proton נמשכה זמן רב מדי. יש להתחבר שוב.",
   "error.connector.protonPassSetupFailed":
     "לא ניתן ליצור ב-Proton Pass את הכספת Shared with OpenBot או את מפתח הגישה שלה. יש להתחבר שוב.",
+  "error.connector.keeperFailed": "לא ניתן לחבר את Keeper. יש להתחבר שוב.",
+  "error.connector.keeperCliInstallFailed": "לא ניתן להתקין את Keeper Commander. יש לבדוק את חיבור הרשת ולהתחבר שוב.",
+  "error.connector.keeperPassword": "האימייל או הסיסמה הראשית שגויים.",
+  "error.connector.keeperCode": "הקוד שגוי. יש להזין אותו שוב.",
+  "error.connector.keeperCodeNotAsked": "Keeper לא ביקש קוד.",
+  "error.connector.keeperNotApproved": "המכשיר הזה עדיין לא אושר ב-Keeper. יש לאשר אותו ואז ללחוץ על ״המשך״.",
+  "error.connector.keeperExpired": "הסשן של Keeper במחשב הזה הסתיים. יש להתחבר שוב.",
+  "error.connector.keeperPlan":
+    "מנהל Keeper שלך לא מאפשר את Keeper Commander לחשבון הזה. יש לבקש ממנו לאפשר אותו ואז להתחבר שוב.",
+  "error.connector.keeperSso": "עדיין לא ניתן לחבר חשבונות Keeper שמתחברים באמצעות SSO.",
+  "error.connector.keeperTwoFactorUnsupported":
+    "שיטת האימות הדו־שלבי של החשבון הזה לא מקבלת קוד מוקלד. יש להוסיף ב-Keeper אפליקציית אימות או הודעות טקסט, ואז להתחבר שוב.",
+  "error.connector.keeperLocked":
+    "Keeper נעל את החשבון או את המכשיר הזה. יש לפתוח את Keeper כדי לבטל את הנעילה, ואז להתחבר שוב.",
+  "error.connector.keeperThrottled": "Keeper מבקש להמתין כמה דקות לפני הכניסה הבאה. התחבר שוב מאוחר יותר.",
+  "error.connector.keeperSignInTimeout": "ההתחברות ל-Keeper נמשכה זמן רב מדי. יש להתחבר שוב.",
+  "error.connector.keeperFileUnreadable": "קובץ החיבור ל-Keeper אינו קריא.",
 } as const satisfies PartialTranslation<typeof source>;

@@ -5,27 +5,38 @@ import { isDynamicRecord, isOneOf, isString } from "./runtime-values";
  * (`CONNECTOR_IDS`). 1Password and Bitwarden keep their own panels and contracts as well; the engine
  * gives every manager the same status, so a new manager needs a driver and a descriptor only.
  */
-export const PASSWORD_MANAGER_IDS = ["onepassword", "bitwarden", "protonpass"] as const;
+export const PASSWORD_MANAGER_IDS = ["onepassword", "bitwarden", "protonpass", "keeper"] as const;
 export type PasswordManagerId = (typeof PASSWORD_MANAGER_IDS)[number];
 
 export const PASSWORD_MANAGER_STATES = ["disconnected", "signing-in", "connected", "failed"] as const;
 export type PasswordManagerState = (typeof PASSWORD_MANAGER_STATES)[number];
 
-/** The step of a `browser` connection while the state is `signing-in`. */
-export const PASSWORD_MANAGER_STEPS = ["browser", "extra-password", "setup"] as const;
+/**
+ * The step of a connection while the state is `signing-in`. `browser` and `extra-password` belong to a
+ * `browser` connection. `two-factor` and `device-approval` belong to an `account` connection: the host
+ * waits for a code, which `code` answers. In `device-approval`, the host has also sent an approval
+ * request by email and to the user's other devices, so `code` can also be empty: the host then checks
+ * the approval again.
+ */
+export const PASSWORD_MANAGER_STEPS = ["browser", "extra-password", "setup", "two-factor", "device-approval"] as const;
 export type PasswordManagerStep = (typeof PASSWORD_MANAGER_STEPS)[number];
 
-/** How the user can connect a manager: a sign-in that the host runs, or an access key that the user made. */
-export const PASSWORD_MANAGER_METHODS = ["browser", "key"] as const;
+/**
+ * How the user can connect a manager: a sign-in that the host runs in the user's browser (`browser`),
+ * an access key that the user made (`key`), or the account's email and master password, which the
+ * host gives to the manager's CLI once (`account`).
+ */
+export const PASSWORD_MANAGER_METHODS = ["browser", "key", "account"] as const;
 export type PasswordManagerMethod = (typeof PASSWORD_MANAGER_METHODS)[number];
 
 /**
  * Why the last connection failed, when the panel shows more than the sentence in `error`:
  * `plan` — the account's plan does not allow the manager's CLI;
  * `expired` — the host's access key expired, so the user connects again;
- * `extra-password` — the extra password was not correct, and the host asks again.
+ * `extra-password` — the extra password was not correct, and the host asks again;
+ * `code` — the two-factor or approval code was not correct, and the host asks again.
  */
-export const PASSWORD_MANAGER_ERROR_CODES = ["plan", "expired", "extra-password"] as const;
+export const PASSWORD_MANAGER_ERROR_CODES = ["plan", "expired", "extra-password", "code"] as const;
 export type PasswordManagerErrorCode = (typeof PASSWORD_MANAGER_ERROR_CODES)[number];
 
 /** Only connection state crosses back to the renderer. Access keys and passwords are never returned. */
@@ -36,7 +47,7 @@ export interface PasswordManagerStatus {
   methods: PasswordManagerMethod[];
   /** The page that the user opens to sign in, while the step is `browser`. */
   signInUrl: string | null;
-  /** The vaults that the connection reads. */
+  /** The vaults that the connection reads. For Keeper, the folder that the host reads. */
   vaultNames: string[];
   /** The logins that the browser can fill, or null until the host has read them. */
   loginCount: number | null;
@@ -50,7 +61,10 @@ export interface PasswordManagerStatus {
 export type PasswordManagerConnectMethod =
   | { kind: "browser" }
   | { kind: "key"; key: string }
-  | { kind: "extra-password"; password: string };
+  | { kind: "extra-password"; password: string }
+  | { kind: "account"; email: string; password: string }
+  /** Answers the `two-factor` or `device-approval` step of an `account` connection. */
+  | { kind: "code"; code: string };
 
 export interface PasswordManagerConnectInput {
   manager: PasswordManagerId;

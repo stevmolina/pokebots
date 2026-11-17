@@ -800,6 +800,31 @@ export const messages = {
   "mobile.server.connectors.protonPass.keyHelp":
     "W Proton Pass utwórz klucz dostępu, który może czytać tylko sejf udostępniony OpenBotowi, i wklej go tutaj. {host} przechowuje klucz; ten telefon nie.",
   "mobile.server.connectors.protonPass.keyPlaceholder": "pst_…",
+  "mobile.server.connectors.keeper.title": "Keeper",
+  "mobile.server.connectors.keeper.description":
+    "Udostępnij jeden folder Keeper OpenBotowi na {host}, aby agenci na {host} mogli logować się do stron w jego przeglądarce.",
+  "mobile.server.connectors.keeper.accountHelp":
+    "Wpisz e-mail i hasło główne do Keeper. Trafiają one do {host} jeden raz, a {host} przekazuje je Keeper Commander. Ten telefon ich nie przechowuje.",
+  "mobile.server.connectors.keeper.email": "E-mail",
+  "mobile.server.connectors.keeper.masterPassword": "Hasło główne",
+  "mobile.server.connectors.keeper.signingIn": "{host} loguje się do Keeper…",
+  "mobile.server.connectors.keeper.makingFolder": "{host} tworzy udostępniony folder…",
+  "mobile.server.connectors.keeper.code": "Kod",
+  "mobile.server.connectors.keeper.twoFactorHint":
+    "Keeper prosi o kod weryfikacji dwuetapowej. Wpisz kod z aplikacji uwierzytelniającej lub z SMS-a. Trafia on do {host} jeden raz; ten telefon go nie przechowuje.",
+  "mobile.server.connectors.keeper.deviceHint":
+    "Keeper wysłał e-mail z prośbą o zatwierdzenie i powiadomienie na Twoje inne urządzenia. Zatwierdź tam to urządzenie, a potem naciśnij Dalej. Możesz też wpisać kod z e-maila.",
+  "mobile.server.connectors.keeper.codeWrong": "Kod jest nieprawidłowy. Spróbuj ponownie.",
+  "mobile.server.connectors.keeper.folderTitle": "Udostępniony folder",
+  "mobile.server.connectors.keeper.folderFooter":
+    "Przenieś login do tego folderu w Keeper, aby agenci mogli się nim logować. Usuń go z folderu, aby cofnąć dostęp.",
+  "mobile.server.connectors.keeper.plan":
+    "Administrator Keeper nie zezwala na Keeper Commander dla tego konta. Poproś go o zezwolenie, a potem połącz ponownie.",
+  "mobile.server.connectors.keeper.expiredTitle": "Sesja Keeper wygasła",
+  "mobile.server.connectors.keeper.expiredBody":
+    "Agenci na {host} nie mogą logować się udostępnionymi danymi, dopóki nie połączysz się ponownie.",
+  "mobile.server.connectors.keeper.disconnectBody":
+    "{host} kończy swoją sesję Keeper. Folder i jego dane logowania zostają w Twoim sejfie Keeper.",
   "mobile.server.connectors.passwordManager.unavailable": "{name} nie jest dostępny na tym serwerze.",
   "mobile.server.connectors.passwordManager.howItWorks":
     "Zaloguj się do {name} na tym telefonie. Potem {host} tworzy udostępniony sejf i klucz dostępu tylko do odczytu dla niego, i przechowuje tylko ten klucz. Agenci nigdy nie widzą hasła.",

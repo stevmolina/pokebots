@@ -55,4 +55,24 @@ export const messages = {
     "Proton へのサインインに時間がかかりすぎました。もう一度接続してください。",
   "error.connector.protonPassSetupFailed":
     "Proton Pass で保管庫 Shared with OpenBot またはそのアクセスキーを作成できませんでした。もう一度接続してください。",
+  "error.connector.keeperFailed": "Keeper に接続できませんでした。もう一度接続してください。",
+  "error.connector.keeperCliInstallFailed":
+    "Keeper Commander をインストールできませんでした。ネットワーク接続を確認してから、もう一度接続してください。",
+  "error.connector.keeperPassword": "メールアドレスまたはマスターパスワードが正しくありません。",
+  "error.connector.keeperCode": "コードが正しくありません。もう一度入力してください。",
+  "error.connector.keeperCodeNotAsked": "Keeper はコードを求めていません。",
+  "error.connector.keeperNotApproved":
+    "Keeper はまだこのデバイスを承認していません。承認してから「続ける」を選んでください。",
+  "error.connector.keeperExpired": "このコンピューター上の Keeper セッションが終了しました。もう一度接続してください。",
+  "error.connector.keeperPlan":
+    "Keeper の管理者が、このアカウントでの Keeper Commander を許可していません。許可を依頼してから、もう一度接続してください。",
+  "error.connector.keeperSso": "SSO でサインインする Keeper アカウントは、まだ接続できません。",
+  "error.connector.keeperTwoFactorUnsupported":
+    "このアカウントの 2 段階認証の方法では、入力したコードを使えません。Keeper で認証アプリまたはテキストメッセージを追加してから、もう一度接続してください。",
+  "error.connector.keeperLocked":
+    "Keeper がこのアカウントまたはこのデバイスをロックしました。Keeper を開いてロックを解除してから、もう一度接続してください。",
+  "error.connector.keeperThrottled":
+    "Keeper から次のサインインまで数分待つよう求められました。後でもう一度接続してください。",
+  "error.connector.keeperSignInTimeout": "Keeper へのサインインに時間がかかりすぎました。もう一度接続してください。",
+  "error.connector.keeperFileUnreadable": "Keeper の接続ファイルを読み取れません。",
 } as const satisfies PartialTranslation<typeof source>;

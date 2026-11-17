@@ -54,4 +54,23 @@ export const messages = {
   "error.connector.protonPassSignInTimeout": "O login no Proton demorou demais. Conecte novamente.",
   "error.connector.protonPassSetupFailed":
     "Não foi possível criar o cofre Shared with OpenBot ou a chave de acesso dele no Proton Pass. Conecte novamente.",
+  "error.connector.keeperFailed": "Não foi possível conectar o Keeper. Conecte novamente.",
+  "error.connector.keeperCliInstallFailed":
+    "Não foi possível instalar o Keeper Commander. Verifique a conexão de rede e conecte novamente.",
+  "error.connector.keeperPassword": "O e-mail ou a senha mestra não está correto.",
+  "error.connector.keeperCode": "O código não está correto. Digite-o novamente.",
+  "error.connector.keeperCodeNotAsked": "O Keeper não pediu um código.",
+  "error.connector.keeperNotApproved": "O Keeper ainda não aprovou este dispositivo. Aprove-o e selecione Continuar.",
+  "error.connector.keeperExpired": "A sessão do Keeper neste computador terminou. Conecte novamente.",
+  "error.connector.keeperPlan":
+    "Seu administrador do Keeper não permite o Keeper Commander nesta conta. Peça que ele permita e conecte novamente.",
+  "error.connector.keeperSso": "Contas do Keeper que entram com SSO ainda não podem ser conectadas.",
+  "error.connector.keeperTwoFactorUnsupported":
+    "O método de duas etapas desta conta não aceita um código digitado. Adicione um app autenticador ou mensagens de texto no Keeper e conecte novamente.",
+  "error.connector.keeperLocked":
+    "O Keeper bloqueou esta conta ou este dispositivo. Abra o Keeper para desbloqueá-lo e conecte novamente.",
+  "error.connector.keeperThrottled":
+    "O Keeper pede para esperar alguns minutos antes do próximo login. Conecte de novo mais tarde.",
+  "error.connector.keeperSignInTimeout": "O login no Keeper demorou demais. Conecte novamente.",
+  "error.connector.keeperFileUnreadable": "O arquivo de conexão do Keeper não pode ser lido.",
 } as const satisfies PartialTranslation<typeof source>;

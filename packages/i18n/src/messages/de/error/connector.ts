@@ -54,4 +54,24 @@ export const messages = {
   "error.connector.protonPassSignInTimeout": "Die Proton-Anmeldung hat zu lange gedauert. Verbinde erneut.",
   "error.connector.protonPassSetupFailed":
     "Der Tresor Shared with OpenBot oder sein Zugriffsschlüssel konnte in Proton Pass nicht erstellt werden. Verbinde erneut.",
+  "error.connector.keeperFailed": "Keeper konnte nicht verbunden werden. Verbinde erneut.",
+  "error.connector.keeperCliInstallFailed":
+    "Keeper Commander konnte nicht installiert werden. Prüfe die Netzwerkverbindung und verbinde dann erneut.",
+  "error.connector.keeperPassword": "Die E-Mail-Adresse oder das Master-Passwort ist nicht korrekt.",
+  "error.connector.keeperCode": "Der Code ist nicht korrekt. Gib ihn erneut ein.",
+  "error.connector.keeperCodeNotAsked": "Keeper hat nicht nach einem Code gefragt.",
+  "error.connector.keeperNotApproved":
+    "Keeper hat dieses Gerät noch nicht genehmigt. Genehmige es und wähle dann Weiter.",
+  "error.connector.keeperExpired": "Die Keeper-Sitzung auf diesem Computer wurde beendet. Verbinde erneut.",
+  "error.connector.keeperPlan":
+    "Dein Keeper-Administrator erlaubt Keeper Commander für dieses Konto nicht. Bitte ihn, es zu erlauben, und verbinde dann erneut.",
+  "error.connector.keeperSso": "Keeper-Konten, die sich per SSO anmelden, können noch nicht verbunden werden.",
+  "error.connector.keeperTwoFactorUnsupported":
+    "Die Zwei-Faktor-Methode dieses Kontos akzeptiert keinen eingegebenen Code. Füge in Keeper eine Authenticator-App oder SMS hinzu und verbinde dann erneut.",
+  "error.connector.keeperLocked":
+    "Keeper hat dieses Konto oder dieses Gerät gesperrt. Öffne Keeper, um es zu entsperren, und verbinde dann erneut.",
+  "error.connector.keeperThrottled":
+    "Keeper bittet, vor der nächsten Anmeldung ein paar Minuten zu warten. Verbinde dich später erneut.",
+  "error.connector.keeperSignInTimeout": "Die Keeper-Anmeldung hat zu lange gedauert. Verbinde erneut.",
+  "error.connector.keeperFileUnreadable": "Die Keeper-Verbindungsdatei ist nicht lesbar.",
 } as const satisfies PartialTranslation<typeof source>;

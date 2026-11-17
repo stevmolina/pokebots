@@ -716,6 +716,31 @@ export const messages = {
   "mobile.server.connectors.protonPass.keyHelp":
     "Proton Pass'te yalnızca OpenBot ile paylaştığınız kasayı okuyabilen bir erişim anahtarı oluşturun ve buraya yapıştırın. Anahtarı {host} saklar; bu telefon saklamaz.",
   "mobile.server.connectors.protonPass.keyPlaceholder": "pst_…",
+  "mobile.server.connectors.keeper.title": "Keeper",
+  "mobile.server.connectors.keeper.description":
+    "{host} üzerindeki OpenBot ile bir Keeper klasörü paylaşın; böylece {host} üzerindeki ajanlar onun tarayıcısında sitelere giriş yapabilir.",
+  "mobile.server.connectors.keeper.accountHelp":
+    "Keeper e-posta adresinizi ve ana parolanızı girin. Bunlar {host} cihazına bir kez gönderilir ve {host} bunları Keeper Commander'a verir. Bu telefon saklamaz.",
+  "mobile.server.connectors.keeper.email": "E-posta",
+  "mobile.server.connectors.keeper.masterPassword": "Ana parola",
+  "mobile.server.connectors.keeper.signingIn": "{host}, Keeper'da oturum açıyor…",
+  "mobile.server.connectors.keeper.makingFolder": "{host} paylaşılan klasörü oluşturuyor…",
+  "mobile.server.connectors.keeper.code": "Kod",
+  "mobile.server.connectors.keeper.twoFactorHint":
+    "Keeper iki adımlı doğrulama kodu istiyor. Kimlik doğrulama uygulamanızdaki veya kısa mesajınızdaki kodu girin. Kod {host} cihazına bir kez gönderilir; bu telefon saklamaz.",
+  "mobile.server.connectors.keeper.deviceHint":
+    "Keeper, diğer cihazlarınıza bir onay e-postası ve bildirim gönderdi. Bu cihazı orada onaylayın, sonra Devam'a basın. Ya da e-postadaki kodu yazın.",
+  "mobile.server.connectors.keeper.codeWrong": "Kod doğru değil. Yeniden deneyin.",
+  "mobile.server.connectors.keeper.folderTitle": "Paylaşılan klasör",
+  "mobile.server.connectors.keeper.folderFooter":
+    "Ajanların bir girişle oturum açmasına izin vermek için girişi Keeper'da bu klasöre taşıyın. Durdurmak için kaldırın.",
+  "mobile.server.connectors.keeper.plan":
+    "Keeper yöneticiniz bu hesap için Keeper Commander'a izin vermiyor. İzin vermesini isteyin, sonra yeniden bağlanın.",
+  "mobile.server.connectors.keeper.expiredTitle": "Keeper oturumu sona erdi",
+  "mobile.server.connectors.keeper.expiredBody":
+    "Siz yeniden bağlanana kadar {host} üzerindeki ajanlar paylaşılan oturum bilgilerinizle oturum açamaz.",
+  "mobile.server.connectors.keeper.disconnectBody":
+    "{host}, Keeper oturumunu sonlandırır. Klasör ve içindeki oturum bilgileri Keeper kasanızda kalır.",
   "mobile.server.connectors.passwordManager.unavailable": "{name} bu sunucuda kullanılamıyor.",
   "mobile.server.connectors.passwordManager.howItWorks":
     "Bu telefonda {name} hesabınıza giriş yapın. Ardından {host} paylaşılan bir kasa ve onun için salt okunur bir erişim anahtarı oluşturur ve yalnızca bu anahtarı saklar. Ajanlar hiçbir zaman parola görmez.",

@@ -61,4 +61,20 @@ export const messages = {
   "error.connector.protonPassSignInTimeout": "استغرق تسجيل الدخول إلى Proton وقتًا طويلاً. اتصل مرة أخرى.",
   "error.connector.protonPassSetupFailed":
     "تعذّر إنشاء الخزنة Shared with OpenBot أو مفتاح الوصول الخاص بها في Proton Pass. اتصل مرة أخرى.",
+  "error.connector.keeperFailed": "تعذّر توصيل Keeper. اتصل مرة أخرى.",
+  "error.connector.keeperCliInstallFailed": "تعذّر تثبيت Keeper Commander. تحقق من اتصال الشبكة، ثم اتصل مرة أخرى.",
+  "error.connector.keeperPassword": "البريد الإلكتروني أو كلمة المرور الرئيسية غير صحيحة.",
+  "error.connector.keeperCode": "الرمز غير صحيح. أدخله مرة أخرى.",
+  "error.connector.keeperCodeNotAsked": "لم يطلب Keeper رمزًا.",
+  "error.connector.keeperNotApproved": "لم تتم الموافقة على هذا الجهاز في Keeper بعد. وافق عليه، ثم اضغط «متابعة».",
+  "error.connector.keeperExpired": "انتهت جلسة Keeper على هذا الكمبيوتر. اتصل مرة أخرى.",
+  "error.connector.keeperPlan":
+    "لا يسمح مسؤول Keeper لديك باستخدام Keeper Commander لهذا الحساب. اطلب منه السماح به، ثم اتصل مرة أخرى.",
+  "error.connector.keeperSso": "لا يمكن بعد توصيل حسابات Keeper التي تسجّل الدخول عبر SSO.",
+  "error.connector.keeperTwoFactorUnsupported":
+    "لا تقبل طريقة التحقق بخطوتين في هذا الحساب رمزًا يُكتب. أضف تطبيق مصادقة أو رسائل نصية في Keeper، ثم اتصل مرة أخرى.",
+  "error.connector.keeperLocked": "قفل Keeper هذا الحساب أو هذا الجهاز. افتح Keeper لإلغاء القفل، ثم اتصل مرة أخرى.",
+  "error.connector.keeperThrottled": "يطلب Keeper الانتظار بضع دقائق قبل تسجيل الدخول التالي. اتصل مرة أخرى لاحقًا.",
+  "error.connector.keeperSignInTimeout": "استغرق تسجيل الدخول إلى Keeper وقتًا طويلاً. اتصل مرة أخرى.",
+  "error.connector.keeperFileUnreadable": "ملف اتصال Keeper غير قابل للقراءة.",
 } as const satisfies PartialTranslation<typeof source>;

@@ -978,6 +978,32 @@ export const messages = defineMessages("mobile.server", {
   "mobile.server.connectors.protonPass.keyHelp":
     "In Proton Pass, make an access key that can read only the vault you share with OpenBot, then paste it here. {host} keeps the key; this phone does not.",
   "mobile.server.connectors.protonPass.keyPlaceholder": "pst_…",
+  // Keeper: the host signs in with Keeper Commander, Keeper's command-line tool, and reads one shared folder.
+  "mobile.server.connectors.keeper.title": "Keeper",
+  "mobile.server.connectors.keeper.description":
+    "Share one Keeper folder with OpenBot on {host}, so agents on {host} can sign in to sites in its browser.",
+  "mobile.server.connectors.keeper.accountHelp":
+    "Enter your Keeper email and master password. They go to {host} once, and {host} gives them to Keeper Commander. This phone does not keep them.",
+  "mobile.server.connectors.keeper.email": "Email",
+  "mobile.server.connectors.keeper.masterPassword": "Master password",
+  "mobile.server.connectors.keeper.signingIn": "{host} is signing in to Keeper…",
+  "mobile.server.connectors.keeper.makingFolder": "{host} is making the shared folder…",
+  "mobile.server.connectors.keeper.code": "Code",
+  "mobile.server.connectors.keeper.twoFactorHint":
+    "Keeper asks for a two-step code. Enter the code from your authenticator app or text message. It goes to {host} once; this phone does not keep it.",
+  "mobile.server.connectors.keeper.deviceHint":
+    "Keeper sent an approval email and a notification to your other devices. Approve this device there, then press Continue. Or type the code from the email.",
+  "mobile.server.connectors.keeper.codeWrong": "The code is not correct. Try again.",
+  "mobile.server.connectors.keeper.folderTitle": "Shared folder",
+  "mobile.server.connectors.keeper.folderFooter":
+    "Move a login into this folder in Keeper to let agents sign in with it. Remove it to stop.",
+  "mobile.server.connectors.keeper.plan":
+    "Your Keeper administrator does not allow Keeper Commander for this account. Ask them to allow it, then connect again.",
+  "mobile.server.connectors.keeper.expiredTitle": "The Keeper session ended",
+  "mobile.server.connectors.keeper.expiredBody":
+    "Agents on {host} cannot sign in with your shared logins until you connect again.",
+  "mobile.server.connectors.keeper.disconnectBody":
+    "{host} ends its Keeper session. The folder and its logins stay in your Keeper vault.",
   // A password manager that the host connects through its CLI. {name} is the manager, such as
   // Proton Pass. {date} is a date, such as 5 Nov 2026.
   "mobile.server.connectors.passwordManager.unavailable": "{name} is not available on this server.",

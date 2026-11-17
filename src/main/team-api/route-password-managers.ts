@@ -6,6 +6,8 @@ import {
 import { type DynamicRecord, isDynamicRecord } from "@openbot/contracts/runtime-values";
 import {
   PASSWORD_MANAGERS_CAPABILITY,
+  PASSWORD_MANAGERS_CODE_LIMIT,
+  PASSWORD_MANAGERS_EMAIL_LIMIT,
   PASSWORD_MANAGERS_KEY_LIMIT,
   PASSWORD_MANAGERS_LIMIT,
   PASSWORD_MANAGERS_PASSWORD_LIMIT,
@@ -51,6 +53,18 @@ function connectMethod(body: DynamicRecord): PasswordManagerConnectMethod {
     const password = stringField(value, "password", false, PASSWORD_MANAGERS_PASSWORD_LIMIT);
     registerSecretValue(password, { allowShort: true });
     return { kind, password };
+  }
+  if (kind === "account") {
+    const email = stringField(value, "email", false, PASSWORD_MANAGERS_EMAIL_LIMIT);
+    const password = stringField(value, "password", false, PASSWORD_MANAGERS_PASSWORD_LIMIT);
+    registerSecretValue(password, { allowShort: true });
+    return { kind, email, password };
+  }
+  if (kind === "code") {
+    // An empty code checks a device approval again.
+    const code = stringField(value, "code", true, PASSWORD_MANAGERS_CODE_LIMIT);
+    if (code) registerSecretValue(code, { allowShort: true });
+    return { kind, code };
   }
   throw new HttpError(400, sourceText("error.connector.passwordManagerMethod"));
 }

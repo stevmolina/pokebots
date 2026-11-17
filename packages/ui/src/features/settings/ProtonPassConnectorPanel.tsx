@@ -80,8 +80,10 @@ type ConnectStep = "browser" | "extra-password" | "setup" | "connected" | "faile
 
 function connectStep(status: PasswordManagerStatus): ConnectStep {
   if (status.state === "connected") return "connected";
-  if (status.state === "signing-in") return status.step ?? "browser";
-  return "failed";
+  if (status.state !== "signing-in") return "failed";
+  const step = status.step ?? "browser";
+  // Proton Pass never asks for a code. The host sends these two steps for Keeper only.
+  return step === "two-factor" || step === "device-approval" ? "setup" : step;
 }
 
 /** The index of the step in the dialog's stepper. */

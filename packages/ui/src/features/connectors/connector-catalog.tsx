@@ -5,6 +5,7 @@ import {
   BitwardenTile,
   DiscordTile,
   GitHubTile,
+  KeeperTile,
   OnePasswordTile,
   ProtonPassTile,
   SlackTile,
@@ -72,5 +73,11 @@ export const CONNECTOR_LISTINGS: Readonly<Record<ConnectorId, ConnectorListing>>
     tagline: "marketplace.app.protonPassTagline",
     category: "productivity",
     Mark: () => <ProtonPassTile />,
+  },
+  keeper: {
+    title: "connector.keeper.title",
+    tagline: "marketplace.app.keeperTagline",
+    category: "productivity",
+    Mark: () => <KeeperTile />,
   },
 };
