@@ -1577,6 +1577,9 @@ export function MobileWorkspaceProvider({ children }: PropsWithChildren) {
   // the phone shows from its cache looks online in its quiet first attempt. That look does not end
   // this, and the server keeps that attempt: the app opens another server only after it.
   const startupFallback = useRef(true);
+  // A start on the server the user opened last waits for it: only a failed connection opens another
+  // server. A far server can take longer than the wait (about 6 s from South America to Europe).
+  const startedOnLastServer = useRef(lastServerId !== null && activeServerId === lastServerId);
   const [startupWaitOver, setStartupWaitOver] = useState(false);
   // The wait starts when the list of servers arrives, because the connections start then.
   const startServerListed = servers.some((server) => server.id === activeServerId);
@@ -1594,7 +1597,7 @@ export function MobileWorkspaceProvider({ children }: PropsWithChildren) {
     }
     if (active?.resuming === true) return;
     const activeFailed = active?.state === "offline" || active?.state === "error";
-    if (!startupWaitOver && !activeFailed) return;
+    if (!activeFailed && (!startupWaitOver || startedOnLastServer.current)) return;
     const online = sortByPreference(servers).find((server) => server.state === "online");
     if (!online) return;
     startupFallback.current = false;
