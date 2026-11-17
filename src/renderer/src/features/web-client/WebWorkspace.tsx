@@ -2263,7 +2263,7 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
   const chatHistory = createWebChatHistory({
     current: () => {
       const hostId = workspace.state.host?.hostId;
-      if (!hostId || page() !== "agents" || agentFormOpen()) return null;
+      if (!hostId || page() !== "agents" || agentFormPageOpen()) return null;
       const channelId = channels.state.selectedId;
       if (channelId) return { hostId, kind: "channel", id: channelId };
       const agentId = workspace.state.selectedId;
@@ -3303,7 +3303,7 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                           server={server()}
                           agents={workspace.shownAgents()}
                           activeAgentId={workspace.state.selectedId ?? ""}
-                          composerAvailable={status().phase === "ready" && !agentFormOpen()}
+                          composerAvailable={status().phase === "ready" && !agentFormPageOpen()}
                           onOpenAgent={(agentId) => {
                             setMobilePane("conversation");
                             if (agentId !== workspace.state.selectedId) void select(agentId);
@@ -4231,7 +4231,12 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
               </Show>
               <Show
                 when={
-                  !tasksOpen() && !agentFormOpen() && !channelOpen() && !noHost() && !hostOffline() && routinesView()
+                  !tasksOpen() &&
+                  !agentFormPageOpen() &&
+                  !channelOpen() &&
+                  !noHost() &&
+                  !hostOffline() &&
+                  routinesView()
                 }
               >
                 {/* A host switch starts the canvas again, with that host's webhook relay status. */}
