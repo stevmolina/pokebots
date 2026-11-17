@@ -126,7 +126,6 @@ export function PreviewGridSheet() {
       {/* The sheet's own scroll view, as every sheet of the app; the title row is its sticky header. */}
       <SheetScrollView
         className="bg-transparent"
-        scrollEdgeEffect={false}
         keyboardShouldPersistTaps="handled"
         keyboardDismissMode="on-drag"
         header={

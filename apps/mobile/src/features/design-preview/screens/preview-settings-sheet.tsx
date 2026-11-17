@@ -45,10 +45,9 @@ export function PreviewSettingsSheet() {
     </View>
   );
   return (
-    // The sheet's own scroll view, as every sheet of the app; the close circle is its sticky header.
+    // The sheet's own scroll view, as every sheet of the app; the close circle is its sticky header (sticky with the edge effect on).
     <SheetScrollView
       className="bg-transparent"
-      scrollEdgeEffect={false}
       header={
         <View style={{ paddingTop: b4.closeTop, paddingLeft: size.headerInset, alignItems: "flex-start" }}>
           <PreviewCircleButton
