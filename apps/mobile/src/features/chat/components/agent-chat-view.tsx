@@ -349,10 +349,11 @@ export function MobileChatView({
       setUnreadLine({ agentId: agent.id, messageId: firstUnreadMessageId });
   }, [agent.id, firstUnreadMessageId]);
   const markRead = useCallback(() => {
-    if (!latestId || readHeldFor.current?.agentId === agent.id) return;
+    // A covered chat is not seen, so it does not read the messages behind the cover.
+    if (covered || !latestId || readHeldFor.current?.agentId === agent.id) return;
     unreadLineSettledFor.current = agent.id;
     markAgentRead(agent.id, latestId, agent.serverId);
-  }, [agent.id, agent.serverId, latestId, markAgentRead]);
+  }, [agent.id, agent.serverId, covered, latestId, markAgentRead]);
   const markUnread = useCallback(
     (messageId: string) => {
       const agentId = agent.id;
@@ -530,11 +531,11 @@ export function MobileChatView({
       onPullPastEnd={pullOn ? openInfo : null}
     />
   );
-  if (!covered) return chat;
+  // One wrapper in both states, so the chat keeps its state when the cover ends.
   return (
     <View className="flex-1">
       {chat}
-      <View className="absolute inset-0 bg-background" />
+      {covered ? <View className="absolute inset-0 bg-background" /> : null}
     </View>
   );
 }
