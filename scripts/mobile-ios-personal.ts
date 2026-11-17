@@ -13,7 +13,7 @@
 //   bun scripts/mobile-ios-personal.ts [--device <name or id>] [--team <team id>] [--skip-prebuild]
 //
 // Environment: OPENBOT_IOS_PERSONAL_BUNDLE_ID (default xyz.pokebots.personal),
-// OPENBOT_IOS_PERSONAL_NAME (default Pokebots), OPENBOT_IOS_TEAM_ID.
+// OPENBOT_IOS_PERSONAL_NAME (default Pokebots), OPENBOT_BRAND_NAME (default Pokebots), OPENBOT_IOS_TEAM_ID.
 
 import { spawnSync } from "node:child_process";
 import { existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
@@ -42,6 +42,9 @@ const env: NodeJS.ProcessEnv = {
   DEVELOPER_DIR: process.env.DEVELOPER_DIR ?? XCODE_DEVELOPER_DIR,
   OPENBOT_IOS_PERSONAL: "1",
   OPENBOT_IOS_PERSONAL_NAME: process.env.OPENBOT_IOS_PERSONAL_NAME ?? "Pokebots",
+  // The Pokebots look: the app icon, the splash, the colors, and "Pokebots" in place of "OpenBot" in
+  // the text (`apps/mobile/metro-brand-transformer.js`). Set it to an empty value for the OpenBot look.
+  OPENBOT_BRAND_NAME: process.env.OPENBOT_BRAND_NAME ?? "Pokebots",
   EXPO_PUBLIC_APP_ENV: "production",
 };
 const bundleId = env.OPENBOT_IOS_PERSONAL_BUNDLE_ID ?? "xyz.pokebots.personal";

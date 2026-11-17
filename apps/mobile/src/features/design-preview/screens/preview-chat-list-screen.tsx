@@ -3,10 +3,10 @@ import { Typography } from "heroui-native";
 import ChevronDown from "lucide-react-native/icons/chevron-down";
 import ChevronRight from "lucide-react-native/icons/chevron-right";
 import ChevronUp from "lucide-react-native/icons/chevron-up";
+import LayoutGrid from "lucide-react-native/icons/layout-grid";
 import ListChecks from "lucide-react-native/icons/list-checks";
 import Plus from "lucide-react-native/icons/plus";
 import Search from "lucide-react-native/icons/search";
-import Star from "lucide-react-native/icons/star";
 import { Fragment, type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   type LayoutChangeEvent,
@@ -26,7 +26,6 @@ import { SheetScrollEdgeEffect } from "@/shared/components/sheet-scroll-edge-eff
 import { haptics } from "@/shared/lib/haptics";
 import { useText } from "@/shared/lib/text";
 import {
-  AppsGlyph,
   PreviewCircleButton,
   PreviewFace,
   PreviewGlass,
@@ -222,7 +221,7 @@ export function PreviewChatListScreen() {
               alignItems: "center",
               gap: 4,
               opacity: pressed ? 0.85 : 1,
-              boxShadow: "0 4px 12px rgba(62, 130, 242, 0.28)",
+              boxShadow: "0 4px 12px rgba(47, 124, 246, 0.28)",
             })}
           >
             <Typography style={[type.pill, { color: colors.onAccent }]}>
@@ -249,7 +248,7 @@ export function PreviewChatListScreen() {
         }}
       >
         <PreviewCircleButton label={t("mobile.workspace.preview.apps")} size={size.gridButton}>
-          <AppsGlyph color={colors.icon} />
+          <LayoutGrid size={22} color={colors.icon} strokeWidth={1.8} />
         </PreviewCircleButton>
         <Pressable accessibilityRole="search" accessibilityLabel={t("mobile.workspace.preview.search")}>
           <PreviewGlass width={searchWidth} height={size.searchHeight}>
@@ -268,7 +267,6 @@ export function PreviewChatListScreen() {
 
 function Hero({ onPress }: { onPress: () => void }) {
   const colors = usePreviewColors();
-  const badge = size.heroBadge;
   return (
     <Pressable
       accessibilityRole="button"
@@ -278,23 +276,6 @@ function Hero({ onPress }: { onPress: () => void }) {
     >
       <View style={{ width: size.heroAvatar, height: size.heroAvatar }}>
         <PreviewFace agent={PREVIEW_MAIN_AGENT} size={size.heroAvatar} />
-        <View
-          style={{
-            position: "absolute",
-            right: -2,
-            bottom: -2,
-            width: badge,
-            height: badge,
-            borderRadius: badge / 2,
-            backgroundColor: colors.heroBadge,
-            borderWidth: 2,
-            borderColor: colors.background,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <Star size={11} color="#ffffff" fill="#ffffff" strokeWidth={1.5} />
-        </View>
       </View>
       <Typography style={[type.heroLabel, { color: colors.title, marginTop: size.heroLabelGap }]}>
         {PREVIEW_MAIN_AGENT.name}

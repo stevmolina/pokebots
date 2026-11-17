@@ -24,10 +24,11 @@ const LIGHT = {
   /** The count beside a section label, lighter than the label. */
   sectionCount: "#b4b4b6",
   /**
-   * The one accent: unread dot, unread pill, links. The screenshots are Display P3: the raw #3e81f1
-   * of the reference is #1983f9 in sRGB, which React Native takes.
+   * The one accent: unread dot, unread pill, links, checks. It is the Pokebots brand blue
+   * (`POKEBOTS_HUE_COLORS[215]`), not the reference's blue: the preview keeps the reference's layout
+   * and calm, and Pokebots' own colors.
    */
-  accent: "#1983f9",
+  accent: "#2f7cf6",
   onAccent: "#ffffff",
   /** Agent message bubble. */
   agentBubble: "#f1f1f2",
@@ -38,8 +39,6 @@ const LIGHT = {
   icon: "#000000",
   /** The solid stand-in for glass when Liquid Glass is off or Reduce Transparency is on. */
   glassFallback: "#ffffff",
-  /** Star badge of the main agent: the brand sunny yellow. */
-  heroBadge: "#f5b83d",
   /** Quiet lines for tasks and routine runs in a chat. */
   quietLine: "#8b8b8d",
   /** Profile and its pages: a light gray page with white groups. */
@@ -68,7 +67,7 @@ const DARK: PreviewColors = {
   time: "#5e5e62",
   section: "#8e8e93",
   sectionCount: "#5e5e62",
-  accent: "#1983f9",
+  accent: "#2f7cf6",
   onAccent: "#ffffff",
   agentBubble: "#262628",
   agentText: "#ffffff",
@@ -76,7 +75,6 @@ const DARK: PreviewColors = {
   placeholder: "#8e8e93",
   icon: "#ffffff",
   glassFallback: "#242426",
-  heroBadge: "#f5b83d",
   quietLine: "#8e8e93",
   pageBackground: "#000000",
   groupBackground: "#1c1c1e",
@@ -100,7 +98,6 @@ export const previewSize = {
   /** The main agent at the top of the list. Its top is 90 pt under the header buttons. */
   heroAvatar: 88,
   heroTop: 90,
-  heroBadge: 22,
   heroLabelGap: 10,
   /** Section labels: 20 pt from the side, 45 pt apart. */
   sectionInset: 20,

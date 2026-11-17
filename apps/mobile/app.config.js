@@ -32,22 +32,46 @@ const withoutPushEntitlement = (config) =>
     return mod;
   });
 
+// The Pokebots look of the personal build, when `OPENBOT_BRAND_NAME` is "Pokebots": the Pokebots app
+// icon, a light blue splash with the mascot, and `extra.brand`, which `src/shared/lib/app-brand.ts`
+// reads for the colors and the mascot inside the app. The store build never reads these values.
+const BRAND_NAME_ENV = "OPENBOT_BRAND_NAME";
+const POKEBOTS_ICON = "./assets/pokebots/app-icon.png";
+const POKEBOTS_SPLASH = {
+  backgroundColor: "#D5E5FD",
+  image: "./assets/pokebots/mark.png",
+  imageWidth: 150,
+  resizeMode: "contain",
+  // The dark block is the light one mixed half with the dark canvas, as `bloub-look.ts` draws it.
+  dark: { backgroundColor: "#757D89", image: "./assets/pokebots/mark.png" },
+};
+
 /** @param {import('expo/config').ExpoConfig} config */
 function personalIosConfig(config) {
+  const pokebots = process.env[BRAND_NAME_ENV] === "Pokebots";
   const plugins = (config.plugins ?? [])
     .filter((plugin) => !PERSONAL_DROPPED_PLUGINS.has(Array.isArray(plugin) ? plugin[0] : plugin))
-    .map((plugin) =>
-      Array.isArray(plugin) && plugin[0] === "./plugins/with-share-target"
-        ? [plugin[0], { ...plugin[1], ios: { ...plugin[1].ios, enabled: false } }]
-        : plugin,
-    );
+    // The other app icons are the OpenBot logo colors, so the Pokebots build has its one icon.
+    .filter((plugin) => !(pokebots && plugin === "./plugins/with-app-icons"))
+    .map((plugin) => {
+      if (Array.isArray(plugin) && plugin[0] === "./plugins/with-share-target")
+        return [plugin[0], { ...plugin[1], ios: { ...plugin[1].ios, enabled: false } }];
+      if (pokebots && Array.isArray(plugin) && plugin[0] === "expo-splash-screen")
+        return [plugin[0], { ...plugin[1], ...POKEBOTS_SPLASH }];
+      return plugin;
+    });
   const { appleTeamId: _team, associatedDomains: _domains, ...ios } = config.ios ?? {};
   return withoutPushEntitlement({
     ...config,
     name: process.env[PERSONAL_NAME_ENV] || config.name,
-    ios: { ...ios, bundleIdentifier: process.env[PERSONAL_BUNDLE_ID_ENV] || "xyz.pokebots.personal" },
+    ios: {
+      ...ios,
+      bundleIdentifier: process.env[PERSONAL_BUNDLE_ID_ENV] || "xyz.pokebots.personal",
+      ...(pokebots ? { icon: POKEBOTS_ICON } : {}),
+    },
     plugins,
     updates: { ...config.updates, enabled: false },
+    extra: { ...config.extra, ...(pokebots ? { brand: "pokebots" } : {}) },
   });
 }
 

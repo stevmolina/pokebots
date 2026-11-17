@@ -1,7 +1,6 @@
 import { GlassView } from "expo-glass-effect";
 import type { PropsWithChildren } from "react";
 import { Pressable, View } from "react-native";
-import Svg, { Path, Rect } from "react-native-svg";
 import { useUniwind } from "uniwind";
 import { AvatarThumbnail } from "@/features/agents/components/bloub-avatar";
 import { haptics } from "@/shared/lib/haptics";
@@ -90,17 +89,5 @@ export function UnreadDot({ shown }: { shown: boolean }) {
         backgroundColor: shown ? colors.accent : "transparent",
       }}
     />
-  );
-}
-
-/** The grid button glyph of the reference: three rounded squares and a plus in the fourth place. */
-export function AppsGlyph({ color, size = 22 }: { color: string; size?: number }) {
-  return (
-    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={1.9}>
-      <Rect x={3} y={3} width={7.5} height={7.5} rx={1.6} />
-      <Rect x={13.5} y={3} width={7.5} height={7.5} rx={1.6} />
-      <Rect x={3} y={13.5} width={7.5} height={7.5} rx={1.6} />
-      <Path d="M17.25 13.5v7.5M13.5 17.25h7.5" strokeLinecap="round" />
-    </Svg>
   );
 }
