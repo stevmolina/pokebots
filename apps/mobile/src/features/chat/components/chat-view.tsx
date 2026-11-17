@@ -356,7 +356,8 @@ export function ChatView({
   const calmProvider = calmAgent?.provider;
   const modelButton = useMemo(
     () =>
-      calmProvider && calmAgent
+      // An agent of a provider that the server names itself keeps its model on the Runtime page.
+      calmProvider && calmAgent && !calmAgent.foreignProvider
         ? {
             label: t("mobile.workspace.preview.modelButton", {
               name: calmAgent.model ?? providerDisplayName(calmProvider),

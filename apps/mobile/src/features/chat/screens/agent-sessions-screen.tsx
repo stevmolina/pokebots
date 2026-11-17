@@ -77,14 +77,8 @@ export function AgentSessionsScreen() {
             value={agent.model ?? providerDisplayName(agent.provider)}
             onPress={() => {
               void haptics.impact("soft");
-              sheetStack?.dispatch(
-                StackActions.replace(AGENT_INFO_ROUTE, {
-                  agentId,
-                  serverId,
-                  screen: "models",
-                  params: { agentId, serverId },
-                }),
-              );
+              // A full address: the profile opens under the model list, so Back goes to the profile.
+              router.replace({ pathname: "/agent-info/[agentId]/models", params: { agentId, serverId } });
             }}
           >
             <Typography.Paragraph>{t("mobile.agent.runtime.model")}</Typography.Paragraph>

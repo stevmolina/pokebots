@@ -9,11 +9,12 @@ import { useQuery } from "@tanstack/react-query";
 import { router, useLocalSearchParams } from "expo-router";
 import { Typography } from "heroui-native";
 import Check from "lucide-react-native/icons/check";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { View } from "react-native";
 import { useCSSVariable } from "uniwind";
 import { AgentSpeedField } from "@/features/agents/components/agent-host-fields";
-import { EFFORT_LABELS } from "@/features/agents/components/agent-runtime-fields";
+import { EFFORT_LABELS, useProviderAccounts } from "@/features/agents/components/agent-runtime-fields";
+import { withAccountModels } from "@/features/agents/model/agent-model-picker";
 import { useQueryScope } from "@/features/auth/context/mobile-session-context";
 import { PreviewChips } from "@/features/design-preview/components/preview-page";
 import { ProviderMark } from "@/features/servers/components/provider-mark";
@@ -23,7 +24,7 @@ import {
   SettingsRow,
   SettingsSection,
 } from "@/features/settings/components/settings-content";
-import { useMobileWorkspace } from "@/features/workspace/context/mobile-workspace-context";
+import { type MobileAgent, useMobileWorkspace } from "@/features/workspace/context/mobile-workspace-context";
 import { queryKeys } from "@/features/workspace/model/query-keys";
 import { showsOnline } from "@/features/workspace/model/server-status";
 import { haptics } from "@/shared/lib/haptics";
@@ -36,16 +37,31 @@ import { useText } from "@/shared/lib/text";
  * the provider account and the other settings.
  */
 export function AgentCalmModelScreen() {
-  const { t, errorMessage } = useText();
-  const accent = String(useCSSVariable("--openbot-accent"));
+  const { t } = useText();
   const { agentId, serverId: serverParam } = useLocalSearchParams<{ agentId: string; serverId?: string }>();
   const workspace = useMobileWorkspace();
-  const queryScope = useQueryScope();
   const serverId = serverParam ?? workspace.activeServer.id;
   const agent = workspace.agents.find((candidate) => candidate.id === agentId && candidate.serverId === serverId);
+  if (!agent)
+    return (
+      <SettingsContent>
+        <Typography.Paragraph>{t("mobile.agent.edit.gone")}</Typography.Paragraph>
+      </SettingsContent>
+    );
+  return <CalmModelList agent={agent} />;
+}
+
+function CalmModelList({ agent }: { agent: MobileAgent }) {
+  const { t, errorMessage } = useText();
+  const accent = String(useCSSVariable("--openbot-accent"));
+  const workspace = useMobileWorkspace();
+  const queryScope = useQueryScope();
+  const serverId = agent.serverId;
   const host = workspace.servers.find((candidate) => candidate.id === serverId);
-  const available = Boolean(agent && showsOnline(host));
+  const available = showsOnline(host);
   const [saving, setSaving] = useState(false);
+  // One save at a time: a second tap before the first answer does nothing.
+  const pending = useRef(false);
   const [error, setError] = useState<string | null>(null);
   const models = useQuery({
     queryKey: queryKeys.agentModels(queryScope, serverId),
@@ -53,19 +69,26 @@ export function AgentCalmModelScreen() {
     enabled: available,
     retry: false,
   });
-  if (!agent)
-    return (
-      <SettingsContent>
-        <Typography.Paragraph>{t("mobile.agent.edit.gone")}</Typography.Paragraph>
-      </SettingsContent>
-    );
+  // The models that only the agent's chosen account serves join its provider's list, as on the Runtime page.
+  const { accounts } = useProviderAccounts(agent, available);
+  const accountId = accounts?.agents.find((entry) => entry.agentId === agent.id)?.accountId;
+  const accountModels =
+    accounts?.providers
+      .find((entry) => entry.provider === agent.provider)
+      ?.accounts.find((account) => account.id === accountId)?.models ?? [];
+  const allModels = [
+    ...(models.data ?? []).filter((option) => option.provider !== agent.provider),
+    ...withAccountModels(models.data?.filter((option) => option.provider === agent.provider) ?? [], accountModels),
+  ];
   // An agent of a provider that the server names itself, such as a custom agent, keeps the Runtime page.
-  const groups = agent.foreignProvider ? [] : groupByProvider(models.data ?? []);
-  const selected = models.data?.find((option) => option.provider === agent.provider && option.id === agent.model);
+  const groups = agent.foreignProvider ? [] : groupByProvider(allModels);
+  const selected = allModels.find((option) => option.provider === agent.provider && option.id === agent.model);
 
   async function choose(option: AgentModelOption): Promise<void> {
-    if (!agent || saving || !available) return;
+    if (saving || !available) return;
     if (option.provider === agent.provider && option.id === agent.model) return;
+    if (pending.current) return;
+    pending.current = true;
     void haptics.selection();
     setSaving(true);
     setError(null);
@@ -78,19 +101,19 @@ export function AgentCalmModelScreen() {
         { agentId: agent.id, provider: option.provider, model: option.id, reasoningEffort: effort },
         agent.serverId,
       );
-      // An account belongs to one provider: a new provider uses its default account, as the Runtime page does.
-      if (option.provider !== agent.provider)
-        await workspace.setAgentProviderAccount({ agentId: agent.id, accountId: null }, agent.serverId);
     } catch (cause) {
       setError(errorMessage(cause, t("mobile.agent.edit.failed")));
       void haptics.notification("error");
     } finally {
+      pending.current = false;
       setSaving(false);
     }
   }
 
   async function chooseEffort(effort: AgentReasoningEffort): Promise<void> {
-    if (!agent || saving || !available || effort === agent.reasoningEffort) return;
+    if (saving || !available || effort === agent.reasoningEffort) return;
+    if (pending.current) return;
+    pending.current = true;
     void haptics.selection();
     setSaving(true);
     setError(null);
@@ -100,6 +123,7 @@ export function AgentCalmModelScreen() {
       setError(errorMessage(cause, t("mobile.agent.edit.failed")));
       void haptics.notification("error");
     } finally {
+      pending.current = false;
       setSaving(false);
     }
   }
