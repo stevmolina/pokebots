@@ -34,6 +34,12 @@ import {
   useMarketplaceInstalled,
 } from "../model/use-marketplace";
 
+/**
+ * The order of the kinds in the new design's one list, as the overview shows them: agents, apps, skills.
+ * Inside a kind the most installed come first, so a next catalog page adds rows inside its kind.
+ */
+const CALM_KIND_ORDER: Record<MarketplaceKind, number> = { agent: 0, app: 1, skill: 2 };
+
 /** The chips of the new design: all listings, each kind, and what the server already has. */
 const CALM_CHIPS = ["all", "app", "agent", "skill", "installed"] as const;
 
@@ -103,7 +109,9 @@ export function MarketplaceScreen() {
       <FilteredList
         listings={(() => {
           const shown = catalog.listings.filter((item) => matchesFilter(item, filter, installed.installed));
-          return calm ? shown.sort(byPopularity) : shown;
+          return calm
+            ? shown.sort((a, b) => CALM_KIND_ORDER[a.kind] - CALM_KIND_ORDER[b.kind] || byPopularity(a, b))
+            : shown;
         })()}
         filter={filter}
         calm={calm}

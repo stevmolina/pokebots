@@ -21,7 +21,7 @@ import Shield from "lucide-react-native/icons/shield";
 import Vibrate from "lucide-react-native/icons/vibrate";
 import WandSparkles from "lucide-react-native/icons/wand-sparkles";
 import X from "lucide-react-native/icons/x";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Alert, View } from "react-native";
 import { useCSSVariable, useUniwind } from "uniwind";
 import { mobileUserName } from "@/features/auth/api/mobile-user-name";
@@ -31,7 +31,12 @@ import { fileLimitText, MOBILE_LARGE_FILE_BYTES } from "@/features/chat/model/la
 import { usePreviewColors } from "@/features/design-preview/components/preview-parts";
 import { useAppDrawer } from "@/features/servers/components/app-drawer-shell";
 import { ServerAvatar } from "@/features/servers/components/server-avatar";
-import { SettingsContent, SettingsRow, SettingsSection } from "@/features/settings/components/settings-content";
+import {
+  SettingsContent,
+  SettingsNote,
+  SettingsRow,
+  SettingsSection,
+} from "@/features/settings/components/settings-content";
 import { SettingsSwitch } from "@/features/settings/components/settings-controls";
 import { RowIcon } from "@/features/settings/components/settings-row-icon";
 import { agentDefaultsServers } from "@/features/settings/model/agent-defaults";
@@ -62,7 +67,7 @@ import { useText } from "@/shared/lib/text";
 export function CalmSettingsScreen() {
   const { session, signOut } = useMobileSession();
   const text = useText();
-  const { t } = text;
+  const { t, errorMessage } = text;
   const { theme } = useUniwind();
   const { openDrawer } = useAppDrawer();
   const danger = String(useCSSVariable("--openbot-danger-text"));
@@ -76,6 +81,11 @@ export function CalmSettingsScreen() {
   const photoQuality = usePhotoQualityPreference();
   const [photoQualityError, setPhotoQualityError] = useState<string | null>(null);
   const [signingOut, setSigningOut] = useState(false);
+  const [signOutError, setSignOutError] = useState<string | null>(null);
+  // As Profile does: one sign-out at a time, so a second tap cannot ask again.
+  const signOutLock = useRef(false);
+  // The first tap that leaves the sheet wins; a fast second tap must not close the screen under it.
+  const leaving = useRef(false);
   const displayName = session ? mobileUserName(session.user) : t("mobile.settings.home.profile");
   const apiUrl = session?.apiUrl ?? "";
   const cloudServersOn = useMobileFeature(apiUrl, "cloudServers");
@@ -86,18 +96,24 @@ export function CalmSettingsScreen() {
   const showsBilling = cloudServersOn && billing.data?.available !== false;
   const planCount = billing.data?.servers.length;
 
+  function leave(then?: () => void) {
+    if (leaving.current) return;
+    leaving.current = true;
+    router.back();
+    then?.();
+  }
   function close() {
     void haptics.impact("soft");
-    router.back();
+    leave();
   }
   function openServer(server: MobileServer) {
+    if (leaving.current) return;
     if (server.id !== activeServerId) selectServer(server.id);
-    router.back();
+    leave();
   }
   // The drawer holds every tool of the open server. It opens under the sheet while the sheet closes.
   function openServerTools() {
-    router.back();
-    openDrawer();
+    leave(openDrawer);
   }
   function saveLargeFiles(automatic: boolean) {
     setLargeFilesError(null);
@@ -114,19 +130,26 @@ export function CalmSettingsScreen() {
     });
   }
   function confirmSignOut() {
+    if (signOutLock.current) return;
     Alert.alert(t("mobile.settings.profile.signOutTitle"), t("mobile.settings.profile.signOutBody"), [
       { text: t("common.cancel"), style: "cancel" },
       {
         text: t("mobile.settings.profile.signOut"),
         style: "destructive",
         onPress: () => {
+          if (signOutLock.current) return;
+          signOutLock.current = true;
           setSigningOut(true);
+          setSignOutError(null);
           void signOut()
-            .catch(() => {
+            .catch((cause: unknown) => {
+              setSignOutError(errorMessage(cause, t("mobile.settings.profile.saveFailed")));
               void haptics.notification("error");
-              Alert.alert(t("mobile.settings.saveFailed"));
             })
-            .finally(() => setSigningOut(false));
+            .finally(() => {
+              signOutLock.current = false;
+              setSigningOut(false);
+            });
         },
       },
     ]);

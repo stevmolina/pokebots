@@ -311,6 +311,7 @@ export function MobileSearchResultRow({
           leading={<RowIcon icon={SETTING_ICON[setting.id]} />}
           title={setting.title}
           detail={setting.detail}
+          trailing={kindLabel}
           query={query}
           onPress={() => {
             onLeave();
@@ -326,7 +327,13 @@ export function MobileSearchResultRow({
           leading={<RowIcon icon={WorkflowIcon} />}
           title={routine.name}
           detail={owner.name}
-          trailing={kindLabel ?? (routine.active ? undefined : t("mobile.search.routinePaused"))}
+          trailing={
+            routine.active
+              ? kindLabel
+              : kindLabel
+                ? `${kindLabel} · ${t("mobile.search.routinePaused")}`
+                : t("mobile.search.routinePaused")
+          }
           query={query}
           onPress={() => {
             onLeave();

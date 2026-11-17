@@ -339,7 +339,10 @@ export function MobileSearchResults({
           <PreviewChips
             options={filters.map((id) => ({ id, label: t(FILTER_LABEL[id]) }))}
             value={filter}
-            onChange={selectFilter}
+            // The chips give their own tap feedback, so the choice adds none.
+            onChange={(next) => {
+              if (next !== filter && filters.includes(next)) setFilter(next);
+            }}
             paddingX={14}
           />
         </ScrollView>
