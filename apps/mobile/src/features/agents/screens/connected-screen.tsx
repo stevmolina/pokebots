@@ -1013,7 +1013,7 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
           ) : listReady ? (
             <ChatDragProvider screen={dragScreen}>
               <Animated.FlatList
-                key={activeServer.id}
+                key={calm ? `${activeServer.id}:calm` : activeServer.id}
                 ref={listRef}
                 scrollEnabled={!dragging}
                 onLayout={(event) => {
@@ -1060,9 +1060,11 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
                 onMomentumScrollBegin={() => setListMoving(true)}
                 onScrollEndDrag={() => setListMoving(false)}
                 onMomentumScrollEnd={() => setListMoving(false)}
-                onViewableItemsChanged={calmUnread.onViewableItemsChanged}
-                viewabilityConfig={calmUnread.viewabilityConfig}
-                onScrollToIndexFailed={calmUnread.onScrollToIndexFailed}
+                // Only the calm look follows the visible rows, for its unread pill. The list remounts when
+                // the look changes (its key), as FlatList cannot change this callback while mounted.
+                onViewableItemsChanged={calm ? calmUnread.onViewableItemsChanged : undefined}
+                viewabilityConfig={calm ? calmUnread.viewabilityConfig : undefined}
+                onScrollToIndexFailed={calm ? calmUnread.onScrollToIndexFailed : undefined}
                 ListFooterComponent={calm && hasHiddenChats ? <CalmHiddenLink count={hiddenChatCount} /> : undefined}
                 ListHeaderComponent={
                   <AgentListRowReveal index={0} reveal={listReveal}>
