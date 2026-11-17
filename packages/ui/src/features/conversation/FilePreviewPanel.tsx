@@ -3,9 +3,12 @@ import type { FilePreview, WorkspaceDirectory, WorkspaceDirectoryEntry } from "@
 import {
   ArrowLeft,
   Button,
+  Check,
   Code,
-  CopyButton,
+  Copy,
   Download,
+  DropdownMenu,
+  Ellipsis,
   ExternalLink,
   File,
   Folder,
@@ -126,6 +129,8 @@ export default function FilePreviewPanel(props: FilePreviewPanelProps) {
   const hasPage = () => pageHtml() !== null || pageUrl() !== null;
   const showsSourceText = () =>
     (previewKind() === "text" && (rawSource() || !hasPage())) || (previewKind() === "markdown" && rawSource());
+  /** A file always has an action in the "..." menu (download or open). A folder has none. */
+  const hasActions = () => file() !== null;
   const title = () => props.directory?.name ?? props.preview?.name ?? "";
   /** The whole text of a text or Markdown file. Copy takes all of it; the view shows up to `TEXT_LIMIT`. */
   const source = createMemo(() => {
@@ -257,70 +262,84 @@ export default function FilePreviewPanel(props: FilePreviewPanelProps) {
           <Folder class="file-preview-file-icon" />
         </Show>
         <h2 title={props.directory?.path ?? title()}>{title()}</h2>
-        <Show when={previewKind() === "markdown"}>
-          <HeaderButton
-            label={t("preview.panel.rawMarkdown")}
-            pressed={rawSource()}
-            onClick={() => setRawSource((raw) => !raw)}
-          >
-            <Code class="browser-toolbar-icon" />
-          </HeaderButton>
-        </Show>
-        <Show when={hasPage()}>
-          <HeaderButton
-            label={t("preview.panel.rawHtml")}
-            pressed={rawSource()}
-            onClick={() => setRawSource((raw) => !raw)}
-          >
-            <Code class="browser-toolbar-icon" />
-          </HeaderButton>
-        </Show>
-        <Show when={hasPage() && !rawSource()}>
-          <HeaderButton
-            label={t(pageDark() ? "preview.panel.lightPage" : "preview.panel.darkPage")}
-            onClick={() => setPageScheme(pageDark() ? "light" : "dark")}
-          >
-            <Show when={pageDark()} fallback={<Moon class="browser-toolbar-icon" />}>
-              <Sun class="browser-toolbar-icon" />
-            </Show>
-          </HeaderButton>
-        </Show>
-        <Show when={showsSourceText()}>
-          <HeaderButton label={t("preview.panel.wrapLines")} pressed={wrapLines()} onClick={toggleWrapLines}>
-            <WrapText class="browser-toolbar-icon" />
-          </HeaderButton>
-        </Show>
-        <Show when={source()}>
-          {(value) => (
-            <LabelTooltip content={t("preview.panel.copy")}>
-              <LabelTooltipTrigger
-                as={CopyButton}
-                class="browser-toolbar-button file-preview-copy"
-                value={value()}
-                label={t("preview.panel.copy")}
-                iconOnly
-              />
-            </LabelTooltip>
-          )}
-        </Show>
-        <Show when={file() && props.allowExternalOpen !== false}>
-          <HeaderButton label={t("preview.panel.openExternally")} onClick={props.onOpenExternally}>
-            <ExternalLink class="browser-toolbar-icon" />
-          </HeaderButton>
-        </Show>
-        <Show when={file() && props.onDownload}>
-          {(download) => (
-            <HeaderButton label={t("preview.panel.download")} onClick={() => download()()}>
-              <Download class="browser-toolbar-icon" />
-            </HeaderButton>
-          )}
-        </Show>
-        <Show when={file() && props.onReveal}>
-          {(reveal) => (
-            <HeaderButton label={t("preview.panel.reveal")} onClick={() => reveal()()}>
-              <FolderOpen class="browser-toolbar-icon" />
-            </HeaderButton>
-          )}
+        <Show when={hasActions()}>
+          <DropdownMenu.Root placement="bottom-end" gutter={6}>
+            <DropdownMenu.Trigger
+              class="browser-toolbar-button file-preview-more no-drag"
+              aria-label={t("chat.actions.more")}
+            >
+              <Ellipsis class="browser-toolbar-icon" aria-hidden="true" />
+            </DropdownMenu.Trigger>
+            <DropdownMenu.Portal>
+              <DropdownMenu.Content class="agent-context-menu" aria-label={t("chat.actions.more")}>
+                <Show when={previewKind() === "markdown"}>
+                  <DropdownMenu.Item onSelect={() => setRawSource((raw) => !raw)}>
+                    <Code class="agent-context-icon size-4" aria-hidden="true" />
+                    <span>{t("preview.panel.rawMarkdown")}</span>
+                    <Show when={rawSource()}>
+                      <Check class="ui-menu-trailing size-4" aria-hidden="true" />
+                    </Show>
+                  </DropdownMenu.Item>
+                </Show>
+                <Show when={hasPage()}>
+                  <DropdownMenu.Item onSelect={() => setRawSource((raw) => !raw)}>
+                    <Code class="agent-context-icon size-4" aria-hidden="true" />
+                    <span>{t("preview.panel.rawHtml")}</span>
+                    <Show when={rawSource()}>
+                      <Check class="ui-menu-trailing size-4" aria-hidden="true" />
+                    </Show>
+                  </DropdownMenu.Item>
+                </Show>
+                <Show when={hasPage() && !rawSource()}>
+                  <DropdownMenu.Item onSelect={() => setPageScheme(pageDark() ? "light" : "dark")}>
+                    <Show when={pageDark()} fallback={<Moon class="agent-context-icon size-4" aria-hidden="true" />}>
+                      <Sun class="agent-context-icon size-4" aria-hidden="true" />
+                    </Show>
+                    <span>{t(pageDark() ? "preview.panel.lightPage" : "preview.panel.darkPage")}</span>
+                  </DropdownMenu.Item>
+                </Show>
+                <Show when={showsSourceText()}>
+                  <DropdownMenu.Item onSelect={toggleWrapLines}>
+                    <WrapText class="agent-context-icon size-4" aria-hidden="true" />
+                    <span>{t("preview.panel.wrapLines")}</span>
+                    <Show when={wrapLines()}>
+                      <Check class="ui-menu-trailing size-4" aria-hidden="true" />
+                    </Show>
+                  </DropdownMenu.Item>
+                </Show>
+                <Show when={source()}>
+                  {(value) => (
+                    <DropdownMenu.Item onSelect={() => void navigator.clipboard?.writeText(value())}>
+                      <Copy class="agent-context-icon size-4" aria-hidden="true" />
+                      <span>{t("preview.panel.copy")}</span>
+                    </DropdownMenu.Item>
+                  )}
+                </Show>
+                <Show when={file() && props.allowExternalOpen !== false}>
+                  <DropdownMenu.Item onSelect={props.onOpenExternally}>
+                    <ExternalLink class="agent-context-icon size-4" aria-hidden="true" />
+                    <span>{t("preview.panel.openExternally")}</span>
+                  </DropdownMenu.Item>
+                </Show>
+                <Show when={file() && props.onDownload}>
+                  {(download) => (
+                    <DropdownMenu.Item onSelect={() => download()()}>
+                      <Download class="agent-context-icon size-4" aria-hidden="true" />
+                      <span>{t("preview.panel.download")}</span>
+                    </DropdownMenu.Item>
+                  )}
+                </Show>
+                <Show when={file() && props.onReveal}>
+                  {(reveal) => (
+                    <DropdownMenu.Item onSelect={() => reveal()()}>
+                      <FolderOpen class="agent-context-icon size-4" aria-hidden="true" />
+                      <span>{t("preview.panel.reveal")}</span>
+                    </DropdownMenu.Item>
+                  )}
+                </Show>
+              </DropdownMenu.Content>
+            </DropdownMenu.Portal>
+          </DropdownMenu.Root>
         </Show>
         {/* In the side panel, the file tab closes the file, so this button hides there. */}
         <HeaderButton
