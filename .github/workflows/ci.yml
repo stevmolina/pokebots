@@ -302,6 +302,9 @@ jobs:
       - name: Run native Agent Computer REST E2E
         run: bun scripts/agent-computer-e2e.ts
 
+      - name: Run the Rooms proxy E2E check
+        run: bun scripts/rooms-proxy-e2e.ts
+
       - name: Run the Team API routes E2E test
         run: bun run test:team-api-routes
 
@@ -317,6 +320,7 @@ jobs:
           path: |
             .openbot-build/team-api-routes-e2e/
             .openbot-build/agent-computer-e2e/
+            .openbot-build/rooms-e2e/
             .openbot-build/keeper-driver-e2e/
           if-no-files-found: ignore
 

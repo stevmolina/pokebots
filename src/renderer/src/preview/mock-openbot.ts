@@ -1788,6 +1788,7 @@ export function createMockOpenBot(options: MockOpenBotOptions = {}): MockOpenBot
     githubConnector: createMockGitHubConnector(),
     linkAccount: createMockLinkAccount(),
     onePasswordConnector: createMockOnePasswordConnector(),
+    rooms: { execute: async () => ({ connected: false }) },
     agentComputer: createMockAgentComputer(),
     bitwardenConnector: createMockBitwardenConnector(),
     passwordManagers: createMockPasswordManagers(),

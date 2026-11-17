@@ -1,6 +1,7 @@
 import { defineMessages } from "../../../message";
 
 export const messages = defineMessages("error.team", {
+  "error.team.roomsRequestFailed": "Rooms could not complete the request. Check your connection and try again.",
   // Errors that the Team API and the team store send to clients.
   "error.team.ownerNotLinked": "This host is not linked to an OpenBot owner account.",
   "error.team.ownerEmailRequired": "Sign in with the OpenBot email that created this host.",

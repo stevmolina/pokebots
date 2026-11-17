@@ -157,7 +157,9 @@ export async function startAgentComputerFixture() {
     close: () =>
       new Promise<void>((resolve, reject) => {
         server.closeAllConnections();
-        server.close((error) => (error ? reject(error) : resolve()));
+        server.close((error) =>
+          error && !("code" in error && error.code === "ERR_SERVER_NOT_RUNNING") ? reject(error) : resolve(),
+        );
       }),
   };
 }

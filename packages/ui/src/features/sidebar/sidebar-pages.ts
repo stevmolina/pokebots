@@ -14,6 +14,7 @@ export type SidebarPage =
   | "schedule"
   | "usage"
   | "library"
+  | "rooms"
   | "machines"
   | "marketplace"
   | "settings";
@@ -66,6 +67,8 @@ export interface SidebarPages {
   /** Every connected server with its agents. Absent where the app knows one server only, such as the web client. */
   onComputers?: (() => void) | undefined;
   onMachines?: ((button: HTMLElement) => void) | undefined;
+  /** Absent where the server has no Rooms page: a joined server that is older or that the user cannot administer. */
+  onRooms?: (() => void) | undefined;
   /** Absent while Marketplace cannot open. */
   onMarketplace?: (() => void) | undefined;
   onSettings: (button: HTMLElement) => void;

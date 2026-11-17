@@ -1,6 +1,7 @@
 import { isUpdateActivePhase } from "@openbot/contracts/ipc";
 import { AGENT_COMPUTER_CAPABILITY } from "@openbot/contracts/team-protocol/agent-computer-v1";
 import { AGENT_TASKS_CAPABILITY } from "@openbot/contracts/team-protocol/agent-tasks-v1";
+import { ROOMS_CAPABILITY } from "@openbot/contracts/team-protocol/rooms-v1";
 import type { SidebarPage, SidebarPages } from "@openbot/ui/features/sidebar/sidebar-pages";
 import type { SidebarView } from "@openbot/ui/features/sidebar/sidebar-types";
 import { useText } from "@openbot/ui/text";
@@ -99,6 +100,7 @@ export function useWorkspaceSidebarPages(): () => SidebarPages {
           if (server) serverSettings.openServerSettings(server.id, null, "cloud-computers");
         }
       : undefined,
+    onRooms: serverCanAdminister(activeServer(), ROOMS_CAPABILITY) ? () => windowPage.openRooms(null) : undefined,
     onMarketplace: () => {
       windowPage.leavePricing();
       setSkillsMarketplaceOpen(true);

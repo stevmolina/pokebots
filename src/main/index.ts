@@ -110,6 +110,7 @@ import { pluginIpcHandlers } from "./ipc/plugin-handlers";
 import { providerAdminIpcHandlers } from "./ipc/provider-admin-handlers";
 import { providerDetectionIpcHandlers } from "./ipc/provider-detection-handlers";
 import { providerIpcHandlers } from "./ipc/provider-handlers";
+import { roomsIpcHandlers } from "./ipc/rooms-handlers";
 import { routineFeedIpcHandlers } from "./ipc/routine-feed-handlers";
 import { routineFlowIpcHandlers } from "./ipc/routine-flow-handlers";
 import { routineIpcHandlers } from "./ipc/routine-handlers";
@@ -856,6 +857,7 @@ function registerIpcHandlers({
   linkAccount,
   onePasswordConnector,
   bitwardenConnector,
+  rooms,
   agentComputer,
   passwordManagers,
   vault,
@@ -997,6 +999,7 @@ function registerIpcHandlers({
     ...linkAccountIpcHandlers({ linkAccount }),
     ...onePasswordConnectorIpcHandlers({ onePasswordConnector, remoteServers }),
     ...bitwardenConnectorIpcHandlers({ bitwardenConnector, remoteServers }),
+    ...roomsIpcHandlers({ rooms, remoteServers }),
     ...agentComputerIpcHandlers({ agentComputer, remoteServers }),
     ...passwordManagersIpcHandlers({ passwordManagers, remoteServers, openExternal: openLink }),
     ...vaultIpcHandlers({ vault, getMainWindow: getDialogParent, translate: language.translate, remoteServers }),

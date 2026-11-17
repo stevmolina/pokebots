@@ -1129,6 +1129,10 @@ Network traffic can also occur when:
 - a user or an agent visits a page in the embedded browser;
 - a user submits text that is not a web address in the browser address bar, which sends the query to Google Search;
 - a locally installed Codex plugin connects to its service;
+- the Rooms screen sends room messages, memory edits, task changes, and invite requests to
+  `rooms.mcpbox.dev` from the computer that runs OpenBot, using its encrypted Rooms MCP sign-in.
+  A joined client sends these requests through its host. Owners and admins use the host's connected
+  Rooms account. Rooms stores the shared content under its own privacy terms;
 - an MCP server the user enabled is reached at its own address, and, when that server asks for a
   sign-in, OpenBot connects to the server's authorization service to register itself, to exchange
   the grant the browser returns, and to renew the token. When the user signs out of the server or
