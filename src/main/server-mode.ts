@@ -27,7 +27,7 @@ import { sourceText } from "@openbot/i18n/source";
 import { Deferred, Effect } from "effect";
 import QRCode from "qrcode";
 import { runCauseEffect } from "../backend/effect-boundary";
-import type { CentralAuthManager } from "./central-auth-manager";
+import { type CentralAuthManager, isHostNotOnAccount } from "./central-auth-manager";
 import type { HostService } from "./host-service";
 import { readBodyWithin } from "./http-body";
 import { createHostedMobileConnect } from "./mobile-connect-host";
@@ -91,6 +91,7 @@ export interface ServerModeOptions {
     | "canPersistSession"
     | "redeemServerClaim"
     | "logout"
+    | "removeOwnedRemoteHost"
     | "createMobileConnect"
   >;
   host: Pick<
@@ -309,6 +310,7 @@ export class ServerMode {
       case "POST /v1/mobile-connect":
         return runCauseEffect(this.#mobileConnect());
       case "POST /v1/logout":
+        await runCauseEffect(this.#leaveAccount());
         await runCauseEffect(
           this.#options.centralAuth.logout().pipe(Effect.mapError(({ cause }) => new RemoteWorkflowError({ cause }))),
         );
@@ -317,6 +319,26 @@ export class ServerMode {
         return failure(404, "not_found");
     }
   }
+
+  /**
+   * Removes this server's host record from the account that it leaves, while the session still
+   * works. Else that account keeps a server in its list that nothing answers for. Best effort: an
+   * account service that does not answer must not stop the sign-out. A later sign-in of the same
+   * account registers the host again.
+   */
+  readonly #leaveAccount = Effect.fn("ServerMode.leaveAccount")(function* (this: ServerMode) {
+    const { centralAuth, host } = this.#options;
+    const serverId = host.getStatus().serverId;
+    if (centralAuth.getState().status !== "signed_in" || !serverId) return;
+    yield* centralAuth.removeOwnedRemoteHost(serverId).pipe(
+      Effect.catch(({ cause }) =>
+        // Gone already or owned by another account: nothing is left to remove.
+        isHostNotOnAccount(cause)
+          ? Effect.void
+          : Effect.sync(() => this.#options.onError("The server could not leave its account before sign-out.", cause)),
+      ),
+    );
+  });
 
   #status(): Answer {
     const account = this.#options.centralAuth.getState();
