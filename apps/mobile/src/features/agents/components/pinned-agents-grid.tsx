@@ -27,7 +27,7 @@ import {
 } from "@/features/agents/components/chat-drag";
 import { ChatLinkPressable } from "@/features/agents/components/chat-link-pressable";
 import { usePreviewColors } from "@/features/design-preview/components/preview-parts";
-import { useCalmLook } from "@/features/design-preview/model/calm-look";
+import { useCalmRows } from "@/features/design-preview/model/calm-look";
 import { previewSize, previewType } from "@/features/design-preview/model/preview-tokens";
 import {
   useAgentListUnreadCount,
@@ -69,7 +69,7 @@ export function PinnedAgentsGrid({
   const dropTarget = useChatDropTarget(PIN_AREA_KEY);
   // The calm look shows one pinned agent as the big face at the top of home, as the design preview's
   // main agent; several pins stay a grid, centered.
-  const calm = useCalmLook();
+  const calm = useCalmRows();
   const hero = calm && agents.length === 1 && !children;
   return (
     <Animated.View layout={animateLayout ? PINNED_LAYOUT : undefined}>

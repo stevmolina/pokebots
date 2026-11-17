@@ -19,16 +19,17 @@ import { Alert, Pressable, View } from "react-native";
 import Animated, { cubicBezier } from "react-native-reanimated";
 import { showFailureAlert } from "@/features/analytics/failure-reports";
 import { UnreadDot, usePreviewColors } from "@/features/design-preview/components/preview-parts";
-import { useCalmLook } from "@/features/design-preview/model/calm-look";
+import { useCalmRows } from "@/features/design-preview/model/calm-look";
 import { previewSize, previewType } from "@/features/design-preview/model/preview-tokens";
 import {
   useMobileWorkspaceReader,
   useMobileWorkspaceSelector,
 } from "@/features/workspace/context/mobile-workspace-context";
 import { showsOnline } from "@/features/workspace/model/server-status";
-import { type MenuAction, MenuView } from "@/shared/components/menu-view";
+import { type MenuAction, type MenuComponentRef, MenuView } from "@/shared/components/menu-view";
 import { haptics } from "@/shared/lib/haptics";
 import { useReducedMotion } from "@/shared/lib/motion";
+import { isAndroid } from "@/shared/lib/platform";
 import { currentText, useText } from "@/shared/lib/text";
 import { END_X, MIRROR_IN_RTL } from "@/shared/lib/text-direction";
 import { typeScale } from "@/shared/lib/type-scale";
@@ -83,9 +84,12 @@ export const SidebarSectionHeader = memo(function SidebarSectionHeader({
   const muted = String(mutedColor);
   const accentForeground = String(accentForegroundColor);
   const reducedMotion = useReducedMotion();
-  const calm = useCalmLook();
+  const calm = useCalmRows();
   const calmColors = usePreviewColors();
   const pending = useRef(false);
+  // Android: the label's own long press opens the calm menu. `shouldOpenOnLongPress` does not open it
+  // there, because the label takes the long press (as in `server-drawer-content.tsx`).
+  const calmMenu = useRef<MenuComponentRef | null>(null);
   const [saving, setSaving] = useState(false);
   const index = layout?.order.indexOf(id) ?? -1;
   // A folder moves among the folders next to it. Only a host with `sidebar-folders-v1` sends parents,
@@ -210,11 +214,26 @@ export const SidebarSectionHeader = memo(function SidebarSectionHeader({
     const Chevron = collapsed ? ChevronRight : ChevronDown;
     return (
       <MenuView
+        {...(isAndroid
+          ? {
+              ref: (instance: MenuComponentRef | null) => {
+                calmMenu.current = instance;
+              },
+            }
+          : null)}
         actions={actions}
         shouldOpenOnLongPress
         onPressAction={({ nativeEvent }) => onMenuAction(nativeEvent.event)}
       >
         <Pressable
+          onLongPress={
+            isAndroid
+              ? () => {
+                  void haptics.longPress();
+                  calmMenu.current?.show();
+                }
+              : undefined
+          }
           accessibilityRole="button"
           accessibilityLabel={
             showUnread ? `${toggleLabel}, ${t("mobile.agent.section.unread", { count: unread })}` : toggleLabel
@@ -226,7 +245,7 @@ export const SidebarSectionHeader = memo(function SidebarSectionHeader({
             onToggle(id);
           }}
           style={({ pressed }) => ({
-            height: previewSize.sectionPitch,
+            minHeight: previewSize.sectionPitch,
             paddingLeft: previewSize.sectionInset,
             paddingRight: previewSize.rowTrailingInset,
             flexDirection: "row",
