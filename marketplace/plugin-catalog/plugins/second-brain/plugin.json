@@ -1,0 +1,37 @@
+{
+  "slug": "second-brain",
+  "name": "Second Brain",
+  "tagline": "Your Pokebots remember each project",
+  "description": "Second Brain gives your Pokebots one memory per project or client. The memory is markdown notes in your own git repo, called a brain. Before your Pokebots answer, they search the brain and cite the page and date of each fact. They read and add the brain's private files, such as spreadsheets and PDFs. When you settle a decision, they record it as a pull request on the brain repo, or as a commit when you turned on direct writes. They can also search your own past agent chats. You sign in once in the browser, and your GitHub access decides which brains your Pokebots can read.",
+  "category": "productivity",
+  "creatorName": "Pokebots",
+  "iconUrl": "https://api.pokebots.xyz/plugin-icons/second-brain.png",
+  "version": "1.0.0",
+  "prompts": [
+    {
+      "id": "prompt-search-decision",
+      "text": "Search my brain for what we decided about pricing, and cite the pages."
+    },
+    { "id": "prompt-list-files", "text": "Which files does this project's brain hold? Open the newest report." },
+    { "id": "prompt-remember", "text": "Record in my brain that we deploy on Fridays only." },
+    { "id": "prompt-search-chats", "text": "Search my past agent chats for how we fixed the sign-in bug." }
+  ],
+  "apps": [
+    {
+      "id": "app-second-brain-mcp",
+      "name": "Second Brain",
+      "description": "Search, read and write the facts and files of your brains, and search your own agent chats, with browser sign-in.",
+      "iconUrl": "https://api.pokebots.xyz/plugin-icons/second-brain.png",
+      "server": {
+        "name": "second-brain",
+        "transport": "http",
+        "url": "https://brain.mcpbox.dev/mcp",
+        "auth": [{ "id": "second-brain-oauth", "kind": "link", "label": "Sign in" }]
+      }
+    }
+  ],
+  "skills": [],
+  "websiteUrl": "https://brain.mcpbox.dev",
+  "privacyPolicyUrl": null,
+  "termsUrl": null
+}

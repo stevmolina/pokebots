@@ -75,6 +75,18 @@
       "detailSha256": "8ecc544dca109f960949c8ae554a61fc49246c4fa61d419b139ecbdae1f95b37"
     },
     {
+      "slug": "second-brain",
+      "version": "1.0.0",
+      "featured": false,
+      "detailSha256": "9cafac2f056de3f8c4f99835b6eace96e8b7fa3166cc8d71625f3f5d8793f4a4"
+    },
+    {
+      "slug": "rooms",
+      "version": "1.0.0",
+      "featured": false,
+      "detailSha256": "9d002a1524c021a2e2d2994ddec61a3f65d59d27a2aea97cb4caa390188a6a44"
+    },
+    {
       "slug": "figma",
       "version": "1.1.0",
       "featured": true,
