@@ -19,6 +19,7 @@ import { AppLockOverlay } from "@/features/app-lock/components/app-lock-overlay"
 import { installAppLock } from "@/features/app-lock/model/app-lock";
 import { DevelopmentConnectLinkHandler } from "@/features/auth/components/development-connect-link-handler";
 import { MobileSessionProvider, useMobileSession } from "@/features/auth/context/mobile-session-context";
+import { loadDesignPreview, useDesignPreview } from "@/features/design-preview/model/preview-switch";
 import { loadOnboardingProgress } from "@/features/onboarding/model/onboarding-progress";
 import { resetNotificationAvatars } from "@/features/push-notifications/notification-avatars";
 import { installNotificationHandler } from "@/features/push-notifications/use-notification-taps";
@@ -91,7 +92,9 @@ function RootNavigator() {
   const appearanceReady = useAppearance((state) => state.ready);
   // Motion choices are read before the first screen, so no screen starts an animation that Settings turned off.
   const motionReady = useMotionPreferences((state) => state.ready);
-  const preferencesReady = appearanceReady && motionReady;
+  // The design preview switch is read before the first screen, so a start with it on opens the preview.
+  const designPreviewReady = useDesignPreview((state) => state.ready);
+  const preferencesReady = appearanceReady && motionReady && designPreviewReady;
   const busy = loading || !preferencesReady;
   const { covered, nativeHidden, reportArtwork, reportContentReady } = useSplashGate(
     busy,
@@ -188,6 +191,8 @@ function RootNavigator() {
                     }}
                   />
                 </Stack.Protected>
+                {/* The calm design preview, with made-up data. Open signed in or not; it reads no server. */}
+                <Stack.Screen name="design-preview" options={{ animation: "fade", headerShown: false }} />
                 <Stack.Screen name="incoming-link" options={{ headerShown: false }} />
                 <Stack.Screen name="incoming-share" options={{ headerShown: false }} />
               </Stack>
@@ -228,6 +233,7 @@ export default function RootLayout() {
     void untilForeground().then(() => {
       void loadAppearance().catch(() => undefined);
       void loadHapticsPreference().catch(() => undefined);
+      void loadDesignPreview().catch(() => undefined);
       void loadLargeFilePreference().catch(() => undefined);
       void loadPhotoQualityPreference().catch(() => undefined);
       void loadMessageColor().catch(() => undefined);

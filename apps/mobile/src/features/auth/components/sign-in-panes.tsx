@@ -1,4 +1,5 @@
 import { ONE_TIME_CODE_LENGTH } from "@openbot/contracts/validation";
+import { useRouter } from "expo-router";
 import { Button, Spinner, Typography } from "heroui-native";
 import type { LucideIcon } from "lucide-react-native";
 import ChevronDown from "lucide-react-native/icons/chevron-down";
@@ -27,6 +28,7 @@ import {
   signInMotion,
 } from "@/features/auth/components/sign-in-motion";
 import { type EmailSignIn, formatTimer } from "@/features/auth/model/use-email-sign-in";
+import { DESIGN_PREVIEW_ALLOWED, setDesignPreview } from "@/features/design-preview/model/preview-switch";
 import { BLOUB_MOVE_MS } from "@/shared/components/bloub-stage/bloub-look";
 import { haptics } from "@/shared/lib/haptics";
 import { SPLASH_EASE_IN_OUT } from "@/shared/lib/splash-motion";
@@ -309,6 +311,7 @@ export function OptionsPane({
   reduced: boolean;
 }) {
   const { t } = useText();
+  const router = useRouter();
   const colors = useSignInColors();
   const riseStyle = useAnimatedStyle(() => ({ transform: [{ translateY: -helpShift.get() }] }));
   return (
@@ -319,9 +322,24 @@ export function OptionsPane({
         </PaneItem>
       ) : null}
       <PaneItem index={0} motion={motion}>
-        <Typography.Heading type="h1" accessibilityRole="header" className="tracking-openbot-tight">
-          {t("mobile.auth.signIn.title")}
-        </Typography.Heading>
+        {/* A long press on the title opens the calm design preview with made-up data (off by default). */}
+        <Pressable
+          accessible={false}
+          delayLongPress={800}
+          onLongPress={
+            DESIGN_PREVIEW_ALLOWED
+              ? () => {
+                  void haptics.longPress();
+                  setDesignPreview(true);
+                  router.replace("/design-preview");
+                }
+              : undefined
+          }
+        >
+          <Typography.Heading type="h1" accessibilityRole="header" className="tracking-openbot-tight">
+            {t("mobile.auth.signIn.title")}
+          </Typography.Heading>
+        </Pressable>
       </PaneItem>
       <PaneItem index={1} motion={motion} className="mt-2.5">
         <Typography.Paragraph color="muted">{t("mobile.auth.signIn.subtitle")}</Typography.Paragraph>
