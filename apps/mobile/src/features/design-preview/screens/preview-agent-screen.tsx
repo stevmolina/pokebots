@@ -143,12 +143,15 @@ export function PreviewAgentScreen() {
           label={t("mobile.workspace.preview.notifications")}
           height={profile.toggleRowHeight}
           trailing={
-            <RoutineActiveSwitch
-              label={t("mobile.workspace.preview.notifications")}
-              value={notify}
-              disabled={false}
-              onValueChange={setNotify}
-            />
+            // The switch ends 4 pt further in than a chevron, as in the reference.
+            <View style={{ marginRight: 4 }}>
+              <RoutineActiveSwitch
+                label={t("mobile.workspace.preview.notifications")}
+                value={notify}
+                disabled={false}
+                onValueChange={setNotify}
+              />
+            </View>
           }
         />
       </PreviewGroup>
