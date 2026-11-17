@@ -6,9 +6,11 @@
 //    before the approval says so), then connects. The master password reaches the bridge on stdin
 //    only, never in an argument, and the stored file has no secret in clear text.
 // 3. The browser sees only the logins of the site, without passwords; the fill reads the password
-//    and the one-time code. Each call stores the new clone code, so many calls in a row work.
+//    and the one-time code. Each call stores the new clone code, so many calls in a row work, also
+//    when a call fails after its sign-in. A login whose website changed is not filled on its old site.
 // 4. A restart reads the stored connection, and a stopped sign-in leaves nothing.
-// 5. Keeper ends the session: the status says expired. Disconnect signs out and removes the files.
+// 5. Keeper ends the session: the status says expired, also after a failed new sign-in. Disconnect
+//    signs out and removes the files. A cancel removes the killed bridge's temporary config.
 // 6. The values that the driver registers are redacted in log text.
 // `bun run test:keeper-driver`. Writes .openbot-build/keeper-driver-e2e/report.json.
 import assert from "node:assert/strict";
@@ -203,6 +205,23 @@ try {
   assert.ok((await requests()).every((entry) => entry.op === "login" || entry.cloneOk === true));
   pass("the browser sees the site's logins without passwords, the fill reads them, and each new clone code is kept");
 
+  // The login's website changed in Keeper after the list was read: the old page gets nothing.
+  await writeFile(join(state, "moved"), "");
+  assert.equal(await runCauseEffect(driver.secretFor(FAKE_KEEPER_UID, "https://example.com", "password")), null);
+  await rm(join(state, "moved"));
+  pass("a login whose website changed in Keeper is not filled on its old site");
+
+  // A call that signs in and then fails still keeps the new clone code, so the next call works.
+  await writeFile(join(state, "sync-fail"), "");
+  await runCauseEffect(driver.secretFor(FAKE_KEEPER_UID, "https://example.com", "password")).catch(() => null);
+  await rm(join(state, "sync-fail"));
+  assert.equal(
+    await runCauseEffect(driver.secretFor(FAKE_KEEPER_UID, "https://example.com", "password")),
+    FAKE_KEEPER_LOGIN_PASSWORD,
+  );
+  assert.ok((await requests()).every((entry) => entry.op === "login" || entry.cloneOk === true));
+  pass("a call that fails after its sign-in keeps the new clone code");
+
   // 6. Redaction of what the driver registered.
   const line = `password=${FAKE_KEEPER_LOGIN_PASSWORD} master=${FAKE_KEEPER_PASSWORD} code=${FAKE_KEEPER_CODE}`;
   const redacted = redactSecrets(line);
@@ -225,7 +244,13 @@ try {
   assert.equal(expired.state, "failed");
   assert.equal(expired.error, sourceText("error.connector.keeperExpired"));
   assert.equal(await runCauseEffect(restarted.loginsFor("https://example.com")), null);
-  pass("an ended session shows as expired, and the browser stops reading");
+  // A new sign-in with a wrong password does not bring the ended session back.
+  await runCauseEffect(restarted.connect({ kind: "account", email: FAKE_KEEPER_EMAIL, password: "wrong" }));
+  const retried = await waitFor(restarted, "the failed sign-in", (status) => status.state !== "signing-in");
+  assert.equal(retried.state, "failed");
+  assert.equal(restarted.connected(), false);
+  assert.equal(await runCauseEffect(restarted.loginsFor("https://example.com")), null);
+  pass("an ended session shows as expired, the browser stops reading, and a failed new sign-in keeps it ended");
   await rm(join(state, "expired"));
   const before = (await requests()).length;
   await runCauseEffect(restarted.disconnect());
@@ -242,10 +267,15 @@ try {
     }),
   );
   await waitFor(restarted, "the two-step code", (status) => status.step === "two-factor");
+  assert.ok(await exists(join(dataDirectory, "tmp", "keeper-fake", "config.json")));
   const cancelled = await runCauseEffect(cancelEngine.cancel("keeper"));
   assert.equal(cancelled.state, "disconnected");
   assert.ok(!(await exists(storePath)));
-  pass("cancel stops a sign-in that waits for a code, and nothing is stored");
+  const deadline = Date.now() + WAIT_MS;
+  while ((await exists(join(dataDirectory, "tmp"))) && Date.now() < deadline)
+    await new Promise((done) => setTimeout(done, 20));
+  assert.ok(!(await exists(join(dataDirectory, "tmp"))), "The killed bridge's temporary config is removed.");
+  pass("cancel stops a sign-in that waits for a code, nothing is stored, and the temporary config is removed");
 
   report.requests = await requests();
   report.passed = true;

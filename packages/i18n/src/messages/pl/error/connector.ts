@@ -72,6 +72,8 @@ export const messages = {
     "Keeper zablokował to konto lub to urządzenie. Otwórz Keeper, aby je odblokować, a potem połącz ponownie.",
   "error.connector.keeperThrottled":
     "Keeper prosi o odczekanie kilku minut przed kolejnym logowaniem. Połącz ponownie później.",
+  "error.connector.keeperPersistentLogin":
+    "Administrator Keeper wyłączył opcję „Stay logged in”, której potrzebuje OpenBot. Poproś o jej włączenie, a potem połącz ponownie.",
   "error.connector.keeperSignInTimeout": "Logowanie do Keeper trwało zbyt długo. Połącz ponownie.",
   "error.connector.keeperFileUnreadable": "Nie można odczytać pliku połączenia Keeper.",
 } as const satisfies PartialTranslation<typeof source>;

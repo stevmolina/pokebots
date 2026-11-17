@@ -72,6 +72,8 @@ export const messages = {
     "Keeper heeft dit account of dit apparaat vergrendeld. Open Keeper om het te ontgrendelen en verbind daarna opnieuw.",
   "error.connector.keeperThrottled":
     "Keeper vraagt een paar minuten te wachten voor de volgende aanmelding. Maak later opnieuw verbinding.",
+  "error.connector.keeperPersistentLogin":
+    'Je Keeper-beheerder heeft "Stay logged in" uitgezet, wat OpenBot nodig heeft. Vraag om het toe te staan en maak dan opnieuw verbinding.',
   "error.connector.keeperSignInTimeout": "Het aanmelden bij Keeper duurde te lang. Verbind opnieuw.",
   "error.connector.keeperFileUnreadable": "Het Keeper-verbindingsbestand is onleesbaar.",
 } as const satisfies PartialTranslation<typeof source>;

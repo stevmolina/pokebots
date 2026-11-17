@@ -73,6 +73,8 @@ export const messages = {
     "Keeper がこのアカウントまたはこのデバイスをロックしました。Keeper を開いてロックを解除してから、もう一度接続してください。",
   "error.connector.keeperThrottled":
     "Keeper から次のサインインまで数分待つよう求められました。後でもう一度接続してください。",
+  "error.connector.keeperPersistentLogin":
+    "Keeper の管理者が OpenBot に必要な「Stay logged in」をオフにしています。許可を依頼してから、もう一度接続してください。",
   "error.connector.keeperSignInTimeout": "Keeper へのサインインに時間がかかりすぎました。もう一度接続してください。",
   "error.connector.keeperFileUnreadable": "Keeper の接続ファイルを読み取れません。",
 } as const satisfies PartialTranslation<typeof source>;

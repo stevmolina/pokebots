@@ -36,6 +36,8 @@ from keepercommander.error import KeeperApiError  # noqa: E402
 from keepercommander.params import KeeperParams  # noqa: E402
 from keepercommander import rest_api, vault  # noqa: E402
 from keepercommander.record import get_totp_code  # noqa: E402
+from keepercommander.commands.utils import ThisDeviceCommand  # noqa: E402
+from keepercommander.loginv3 import LoginV3API  # noqa: E402
 
 SHARED_FOLDER = "Shared with OpenBot"
 CODE_CHANNELS = (
@@ -149,8 +151,8 @@ class AccountUi(login_steps.LoginUi):
             error = "code"
 
     def on_sso_redirect(self, step):
-        # Commander then tries the account's master password, which an SSO user can make.
-        step.cancel()
+        # An SSO user can also have a master password. A cancel here stops the login with an interrupt.
+        step.login_with_password()
 
     def on_sso_data_key(self, step):
         self.failure = "sso"
@@ -267,8 +269,11 @@ def login_entry(params, uid):
     }
 
 
-def open_stored(request):
+def open_stored(request, holder):
+    """Signs in with the stored config. The session is in 'holder' before the sign-in, so the clone
+    code that Keeper gives at the sign-in goes back to OpenBot also when a later step fails."""
     session = Session(request.get("config"))
+    holder.append(session)
     params = session.params
     if not params.user or not params.clone_code:
         raise Failure("expired")
@@ -303,12 +308,16 @@ def op_login(request, holder):
     if not params.session_token:
         raise Failure(ui.failure or "password")
     send({"event": "step", "step": "setup", "error": None})
-    # Persistent login keeps this device signed in, so later calls need no password.
-    for command in ("this-device register", "this-device persistent-login on", "this-device timeout 30d"):
-        try:
-            cli.do_command(params, command)
-        except Exception:
-            logging.error("Keeper Commander could not run a device setting.")
+    # Persistent login keeps this device signed in, so later calls need no password. Without it the
+    # session ends soon after this sign-in, so the connection fails now instead of later.
+    if ThisDeviceCommand.is_persistent_login_disabled(params):
+        raise Failure("persistent-login")
+    LoginV3API.register_encrypted_data_key_for_device(params)
+    LoginV3API.set_user_setting(params, "persistent_login", "1")
+    try:
+        cli.do_command(params, "this-device timeout 30d")
+    except Exception:
+        logging.error("Keeper Commander could not set the device timeout.")
     api.sync_down(params)
     if not find_shared_folder(params):
         params.current_folder = ""
@@ -319,37 +328,36 @@ def op_login(request, holder):
 
 
 def op_list(request, holder):
-    session = open_stored(request)
-    holder.append(session)
+    session = open_stored(request, holder)
     params = session.params
     logins = [entry for entry in (login_entry(params, uid) for uid in sorted(shared_record_uids(params))) if entry]
     return {"logins": logins, "folder": SHARED_FOLDER if find_shared_folder(params) else None}
 
 
 def op_secret(request, holder):
-    session = open_stored(request)
-    holder.append(session)
+    session = open_stored(request, holder)
     params = session.params
     uid = request.get("uid")
     if not isinstance(uid, str) or uid not in shared_record_uids(params):
-        return {"value": None}
+        return {"value": None, "urls": []}
     record = vault.KeeperRecord.load(params, uid)
     if record is None:
-        return {"value": None}
+        return {"value": None, "urls": []}
+    # The record's websites now, so OpenBot checks the page again: the list it has can be older.
+    websites = field_values(record, "url")
     if request.get("kind") == "totp":
-        urls = field_values(record, "oneTimeCode")
-        code = get_totp_code(urls[0]) if urls else None
-        return {"value": code[0] if code else None}
+        codes = field_values(record, "oneTimeCode")
+        code = get_totp_code(codes[0]) if codes else None
+        return {"value": code[0] if code else None, "urls": websites}
     passwords = field_values(record, "password")
-    return {"value": passwords[0] if passwords else None}
+    return {"value": passwords[0] if passwords else None, "urls": websites}
 
 
 def op_logout(request, holder):
     try:
-        session = open_stored(request)
+        session = open_stored(request, holder)
     except Failure:
         return {}
-    holder.append(session)
     try:
         cli.do_command(session.params, "logout")
     except Exception:

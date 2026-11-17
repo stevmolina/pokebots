@@ -75,7 +75,7 @@ export type KeeperHelperRequest =
 /** One line that the bridge writes. Unknown fields are ignored. */
 export type KeeperHelperEvent =
   | { event: "step"; step: "two-factor" | "device-approval" | "setup"; error: "code" | "pending" | null }
-  | { event: "done"; config: KeeperConfig | null; logins?: unknown; value?: unknown }
+  | { event: "done"; config: KeeperConfig | null; logins?: unknown; value?: unknown; urls?: unknown }
   | { event: "error"; code: string; config: KeeperConfig | null };
 
 /** The last line of a call. */
@@ -116,7 +116,8 @@ function parseEvent(value: unknown): KeeperHelperEvent | null {
     const error = value.error === "code" || value.error === "pending" ? value.error : null;
     return { event: "step", step, error };
   }
-  if (value.event === "done") return { event: "done", config, logins: value.logins, value: value.value };
+  if (value.event === "done")
+    return { event: "done", config, logins: value.logins, value: value.value, urls: value.urls };
   if (value.event === "error" && typeof value.code === "string") return { event: "error", code: value.code, config };
   return null;
 }
@@ -201,6 +202,8 @@ function bridgeFailure(code: string): PasswordManagerError {
       return fail(sourceText("error.connector.keeperLocked"));
     case "throttled":
       return fail(sourceText("error.connector.keeperThrottled"));
+    case "persistent-login":
+      return fail(sourceText("error.connector.keeperPersistentLogin"));
     default:
       return fail(sourceText("error.connector.keeperFailed"));
   }
@@ -296,6 +299,11 @@ export class KeeperDriver implements PasswordManagerDriver, PasswordVault {
   #index: { readAt: number; logins: Map<string, IndexedLogin> } | null = null;
   #error: string | null = null;
   #errorCode: PasswordManagerErrorCode | null = null;
+  /**
+   * Why Keeper ended the stored session (`expired` or `plan`). It stays until a sign-in succeeds or a
+   * disconnect, so a failed new sign-in does not show the old session as connected.
+   */
+  #ended: KeeperFailure | null = null;
   #keepAlive: ReturnType<typeof setInterval> | null = null;
 
   constructor(options: KeeperDriverOptions) {
@@ -308,6 +316,8 @@ export class KeeperDriver implements PasswordManagerDriver, PasswordVault {
   readonly load = Effect.fn("Keeper.load")(function* (this: KeeperDriver) {
     const error = yield* this.#options.store.load();
     if (error) logger.warn("The Keeper connection file could not be read.", { cause: toLogValue(error) });
+    // A config that a quit left in the temporary folder is not used again.
+    yield* io(() => rm(join(this.#options.dataDirectory, "tmp"), { recursive: true, force: true })).pipe(Effect.ignore);
     const record = this.#options.store.read();
     if (!record) return;
     registerRecord(record);
@@ -328,7 +338,9 @@ export class KeeperDriver implements PasswordManagerDriver, PasswordVault {
         loginCount: this.#index?.logins.size ?? null,
       };
     }
-    return this.#error ? { ...base, ...failure, state: "failed" } : base;
+    if (this.#error) return { ...base, ...failure, state: "failed" };
+    const ended = this.#ended;
+    return ended ? { ...base, state: "failed", error: ended.message, errorCode: ended.code } : base;
   }
 
   onChanged(listener: (status: PasswordManagerStatus) => void): () => void {
@@ -337,12 +349,7 @@ export class KeeperDriver implements PasswordManagerDriver, PasswordVault {
   }
 
   connected(): boolean {
-    return (
-      !this.#attempt &&
-      this.#options.store.read() !== null &&
-      this.#errorCode !== "expired" &&
-      this.#errorCode !== "plan"
-    );
+    return !this.#attempt && !this.#ended && this.#options.store.read() !== null;
   }
 
   readonly connect = Effect.fn("Keeper.connect")(function* (
@@ -412,6 +419,7 @@ export class KeeperDriver implements PasswordManagerDriver, PasswordVault {
     }
     yield* this.#options.store.clear();
     yield* io(() => rm(this.#options.dataDirectory, { recursive: true, force: true }));
+    this.#ended = null;
     this.#error = null;
     this.#errorCode = null;
     this.#emit();
@@ -457,7 +465,14 @@ export class KeeperDriver implements PasswordManagerDriver, PasswordVault {
       const read = yield* Effect.result(this.#storedCall({ op: "secret", uid: id, kind }));
       if (Result.isSuccess(read)) {
         const secret = read.success.value;
-        if (typeof secret === "string" && secret) return secret;
+        // The list can be 10 minutes old: the login's websites now must still match the page.
+        const urls = read.success.urls;
+        const current = Array.isArray(urls) ? urls.filter((url) => typeof url === "string") : [];
+        if (typeof secret === "string" && secret && matchesOrigin({ ...login, urls: current }, origin)) return secret;
+        if (typeof secret === "string" && secret) {
+          yield* this.#logins(true).pipe(Effect.ignore);
+          return null;
+        }
       }
       // The list can be 10 minutes old. A login that left the shared folder gives null, and the fill
       // tells the agent to list the logins again. A login that is still there keeps its failure.
@@ -551,6 +566,7 @@ export class KeeperDriver implements PasswordManagerDriver, PasswordVault {
           const kept = yield* this.#options.store.write(record, () => this.#attempt === attempt && !signal.aborted);
           if (!kept) return yield* fail(sourceText("error.connector.keeperFailed"));
           this.#index = null;
+          this.#ended = null;
           this.#attempt = null;
           this.#error = null;
           this.#errorCode = null;
@@ -608,9 +624,14 @@ export class KeeperDriver implements PasswordManagerDriver, PasswordVault {
           timeoutMs: options.timeoutMs,
           ...(onStep ? { onStep } : {}),
         });
-        const pending = call.result.finally(() => this.#running.delete(pending));
+        // The bridge deletes its temporary config when it ends normally. A cancel, a quit or a timeout
+        // kills it first, so the config is removed here before any answer reaches a caller. Calls run
+        // one at a time, so no other call uses the folder.
+        const temp = join(this.#options.dataDirectory, "tmp");
+        const result = call.result.finally(() => rm(temp, { recursive: true, force: true }).catch(() => undefined));
+        const pending = result.finally(() => this.#running.delete(pending));
         this.#running.add(pending);
-        return Promise.resolve(call);
+        return Promise.resolve({ result, answer: call.answer });
       });
     });
   }
@@ -716,6 +737,7 @@ export class KeeperDriver implements PasswordManagerDriver, PasswordVault {
   }
 
   #setError(failure: KeeperFailure): void {
+    if (failure.code === "expired" || failure.code === "plan") this.#ended = failure;
     this.#error = failure.message;
     this.#errorCode = failure.code;
     this.#emit();

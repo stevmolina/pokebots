@@ -77,6 +77,8 @@ export const messages = {
   "error.connector.keeperLocked":
     "Keeper נעל את החשבון או את המכשיר הזה. יש לפתוח את Keeper כדי לבטל את הנעילה, ואז להתחבר שוב.",
   "error.connector.keeperThrottled": "Keeper מבקש להמתין כמה דקות לפני הכניסה הבאה. התחבר שוב מאוחר יותר.",
+  "error.connector.keeperPersistentLogin":
+    'מנהל Keeper כיבה את "Stay logged in", ש-OpenBot צריך. בקש ממנו לאפשר זאת ואז התחבר שוב.',
   "error.connector.keeperSignInTimeout": "ההתחברות ל-Keeper נמשכה זמן רב מדי. יש להתחבר שוב.",
   "error.connector.keeperFileUnreadable": "קובץ החיבור ל-Keeper אינו קריא.",
 } as const satisfies PartialTranslation<typeof source>;

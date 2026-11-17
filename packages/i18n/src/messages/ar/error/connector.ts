@@ -75,6 +75,8 @@ export const messages = {
     "لا تقبل طريقة التحقق بخطوتين في هذا الحساب رمزًا يُكتب. أضف تطبيق مصادقة أو رسائل نصية في Keeper، ثم اتصل مرة أخرى.",
   "error.connector.keeperLocked": "قفل Keeper هذا الحساب أو هذا الجهاز. افتح Keeper لإلغاء القفل، ثم اتصل مرة أخرى.",
   "error.connector.keeperThrottled": "يطلب Keeper الانتظار بضع دقائق قبل تسجيل الدخول التالي. اتصل مرة أخرى لاحقًا.",
+  "error.connector.keeperPersistentLogin":
+    'أوقف مسؤول Keeper خيار "Stay logged in" الذي يحتاجه OpenBot. اطلب منه السماح به، ثم اتصل مرة أخرى.',
   "error.connector.keeperSignInTimeout": "استغرق تسجيل الدخول إلى Keeper وقتًا طويلاً. اتصل مرة أخرى.",
   "error.connector.keeperFileUnreadable": "ملف اتصال Keeper غير قابل للقراءة.",
 } as const satisfies PartialTranslation<typeof source>;

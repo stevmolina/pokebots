@@ -72,6 +72,8 @@ export const messages = {
   "error.connector.keeperLocked":
     "Keeper가 이 계정 또는 이 기기를 잠갔습니다. Keeper를 열어 잠금을 해제한 다음 다시 연결하세요.",
   "error.connector.keeperThrottled": "Keeper가 다음 로그인 전에 몇 분 기다리라고 요청합니다. 나중에 다시 연결하세요.",
+  "error.connector.keeperPersistentLogin":
+    'Keeper 관리자가 OpenBot에 필요한 "Stay logged in"을 껐습니다. 허용을 요청한 뒤 다시 연결하세요.',
   "error.connector.keeperSignInTimeout": "Keeper 로그인이 너무 오래 걸렸습니다. 다시 연결하세요.",
   "error.connector.keeperFileUnreadable": "Keeper 연결 파일을 읽을 수 없습니다.",
 } as const satisfies PartialTranslation<typeof source>;

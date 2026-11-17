@@ -90,6 +90,8 @@ export const messages = defineMessages("error.connector", {
   "error.connector.keeperLocked":
     "Keeper locked this account or this device. Open Keeper to unlock it, then connect again.",
   "error.connector.keeperThrottled": "Keeper asks to wait a few minutes before the next sign-in. Connect again later.",
+  "error.connector.keeperPersistentLogin":
+    'Your Keeper administrator turned off "Stay logged in", which OpenBot needs. Ask them to allow it, then connect again.',
   "error.connector.keeperSignInTimeout": "The Keeper sign-in took too long. Connect again.",
   "error.connector.keeperFileUnreadable": "The Keeper connection file is unreadable.",
 });

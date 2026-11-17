@@ -7,7 +7,7 @@
 // persistent login) and `clone` (the clone code that Keeper accepts next), and the log, where each
 // request is appended without its secrets.
 
-import { appendFileSync, existsSync, readFileSync, writeFileSync } from "node:fs";
+import { appendFileSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { createInterface } from "node:readline";
 import { type DynamicRecord, isDynamicRecord } from "@openbot/contracts/runtime-values";
@@ -56,6 +56,15 @@ function config(clone: string): DynamicRecord {
 }
 
 async function login(request: DynamicRecord): Promise<void> {
+  // As the bridge does: Commander's config sits in a private temporary folder while the call runs.
+  const temp = join(process.env.TMPDIR ?? "", "keeper-fake");
+  mkdirSync(temp, { recursive: true });
+  writeFileSync(join(temp, "config.json"), "{}");
+  await loginSteps(request);
+  rmSync(temp, { recursive: true, force: true });
+}
+
+async function loginSteps(request: DynamicRecord): Promise<void> {
   const passwordOk = request.email === FAKE_KEEPER_EMAIL && request.password === FAKE_KEEPER_PASSWORD;
   log({ op: "login", passwordOk });
   if (!passwordOk) return send({ event: "error", code: "password", config: null });
@@ -99,6 +108,11 @@ async function main(): Promise<void> {
   if (request.op === "login") return login(request);
   const next = stored(request);
   if (!next) return;
+  if (existsSync(join(STATE, "sync-fail"))) {
+    // The sign-in worked and gave a new clone code, then the vault read failed.
+    send({ event: "error", code: "failed", config: next });
+    return;
+  }
   if (request.op === "list") {
     send({
       event: "done",
@@ -126,7 +140,8 @@ async function main(): Promise<void> {
   } else if (request.op === "secret") {
     const value =
       request.uid !== FAKE_KEEPER_UID ? null : request.kind === "totp" ? "123456" : FAKE_KEEPER_LOGIN_PASSWORD;
-    send({ event: "done", config: next, value });
+    const urls = existsSync(join(STATE, "moved")) ? ["https://elsewhere.example"] : ["https://example.com/login"];
+    send({ event: "done", config: next, value, urls });
   } else if (request.op === "logout") {
     send({ event: "done", config: null });
   } else {

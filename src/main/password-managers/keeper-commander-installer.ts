@@ -163,7 +163,8 @@ export const managedKeeperCommander = Effect.fn("KeeperCommander.managed")(funct
     if (digest !== release.sha256) return yield* passwordManagerFailure(failed);
     yield* io(() => mkdir(unpacked));
     if (windows) {
-      yield* extractZipFiles(archive, unpacked, [release.entry], failed).pipe(
+      // The zip holds exactly these three files, and the extractor refuses a zip with another entry.
+      yield* extractZipFiles(archive, unpacked, ["uv.exe", "uvw.exe", "uvx.exe"], failed).pipe(
         Effect.mapError(({ cause }) => new PasswordManagerError({ cause })),
       );
     } else {

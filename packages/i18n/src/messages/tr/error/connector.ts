@@ -72,6 +72,8 @@ export const messages = {
     "Keeper bu hesabı veya bu cihazı kilitledi. Kilidi açmak için Keeper'ı açın, ardından yeniden bağlanın.",
   "error.connector.keeperThrottled":
     "Keeper bir sonraki oturum açmadan önce birkaç dakika beklemenizi istiyor. Daha sonra yeniden bağlanın.",
+  "error.connector.keeperPersistentLogin":
+    'Keeper yöneticiniz OpenBot\'un ihtiyaç duyduğu "Stay logged in" özelliğini kapattı. İzin vermesini isteyin, sonra yeniden bağlanın.',
   "error.connector.keeperSignInTimeout": "Keeper oturum açma işlemi çok uzun sürdü. Yeniden bağlanın.",
   "error.connector.keeperFileUnreadable": "Keeper bağlantı dosyası okunamıyor.",
 } as const satisfies PartialTranslation<typeof source>;

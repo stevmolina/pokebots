@@ -63,6 +63,8 @@ export const messages = {
     "此账户的两步验证方式无法使用输入的验证码。请在 Keeper 中添加验证器应用或短信，然后重新连接。",
   "error.connector.keeperLocked": "Keeper 已锁定此账户或此设备。请打开 Keeper 解锁，然后重新连接。",
   "error.connector.keeperThrottled": "Keeper 要求在下次登录前等待几分钟。请稍后重新连接。",
+  "error.connector.keeperPersistentLogin":
+    "你的 Keeper 管理员关闭了 OpenBot 需要的“Stay logged in”。请让管理员允许，然后重新连接。",
   "error.connector.keeperSignInTimeout": "登录 Keeper 用时过长。请重新连接。",
   "error.connector.keeperFileUnreadable": "无法读取 Keeper 连接文件。",
 } as const satisfies PartialTranslation<typeof source>;
