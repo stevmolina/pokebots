@@ -385,21 +385,66 @@
    avatar that title draws: 18px, and lifted by the same optical offset, because the bloub is drawn
    at 128% of its box and sits low in it without one. */
 .channel-title .channel-avatar {
-  min-width: 18px;
-  height: 18px;
+  min-width: 24px;
+  height: 24px;
 }
-/* A square picture looks smaller than a round face of the same box, so it takes 20px. */
+/* A square picture looks smaller than a round face of the same box, so it takes 26px. */
 .channel-title .channel-avatar-picture {
-  --channel-avatar-size: 20px;
+  --channel-avatar-size: 26px;
 }
 .channel-title .agent-avatar {
   --agent-avatar-optical-offset: -2px;
 
-  width: 18px;
-  height: 18px;
+  width: 24px;
+  height: 24px;
 }
 .channel-title .channel-avatar .agent-avatar + .agent-avatar {
-  margin-inline-start: -8px;
+  margin-inline-start: -10px;
+}
+
+/*
+ * The channel is a name pill at the top centre of the chat, as an agent chat has: a surface-color pill 40px
+ * tall with a soft lift. The pill centres with `inset` and `margin: auto`, not `transform`, because
+ * Electron reads the no-drag area from layout boxes. The topic after the name is quieter.
+ */
+.conversation-header:has(> .conversation-heading-group > .channel-title) {
+  position: relative;
+}
+.conversation-heading-group > .channel-title.ui-button {
+  position: absolute;
+  inset: 0;
+  width: fit-content;
+  max-width: calc(100% - 10 * var(--openbot-space-4));
+  height: 40px;
+  gap: var(--openbot-space-2);
+  margin: auto;
+  border: 0;
+  border-radius: var(--openbot-radius-pill);
+  background: var(--openbot-bg-surface);
+  padding-inline: var(--openbot-space-2) 14px;
+  box-shadow:
+    0 4px 12px -1px color-mix(in srgb, var(--openbot-text-primary) 8%, transparent),
+    0 2px 4px -2px color-mix(in srgb, var(--openbot-text-primary) 6%, transparent);
+}
+.conversation-heading-group > .channel-title.ui-button:hover:not(:disabled) {
+  background: var(--openbot-bg-control-hover);
+}
+.conversation-heading-group > .channel-title h1 {
+  font-weight: var(--openbot-weight-medium);
+}
+/* The overlapping faces are cut out in the colour of the pill that they sit on. The window rules
+   set this to the page colour with the same parts, so these name more of them. */
+:is(.app-window > .app-frame-edge, .app-window > .app-frame-edge.app-frame-flat)
+  .conversation-heading-group
+  > .channel-title.ui-button {
+  --agent-avatar-outline: var(--openbot-bg-surface);
+}
+@media (hover: hover) and (pointer: fine) {
+  :is(.app-window > .app-frame-edge, .app-window > .app-frame-edge.app-frame-flat)
+    .conversation-heading-group
+    > .channel-title.ui-button:hover:not(:disabled) {
+    --agent-avatar-outline: var(--openbot-bg-control-hover);
+  }
 }
 /* The faces overlap, and each outline cuts the face below it in the colour of the page. The framed
    window puts the title on the top row instead (window.css). */

@@ -219,6 +219,11 @@
   border-color: var(--openbot-text-dim);
 }
 
+/* The one-line pill keeps its hairline while it has the focus, and only a little darker. */
+.composer[data-compact]:focus-within {
+  border-color: color-mix(in srgb, var(--openbot-text-primary) 20%, transparent);
+}
+
 .composer:has(.composer-editor-surface[aria-disabled="true"]) {
   border-color: var(--openbot-border);
 }

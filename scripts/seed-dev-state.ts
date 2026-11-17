@@ -1029,6 +1029,11 @@ async function seedConversations(
           attachments.spreadsheetNumberFormats,
         ],
       },
+      {
+        // No file is named in the text, so the files show as cards under it.
+        ...message("chief-assistant-file-cards", "assistant", "The launch files are ready.", 41 * MINUTE),
+        attachments: [attachments.image, attachments.pdf, attachments.spreadsheet, attachments.audio],
+      },
       message(
         "chief-assistant-rich-previews",
         "assistant",

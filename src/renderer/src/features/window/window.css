@@ -406,23 +406,22 @@
     color: var(--openbot-text-primary);
   }
 
-  /* A short line between the model and the side panel button */
-  .app-window > .app-frame-edge .conversation-header-actions > .side-panel-toggle {
-    position: relative;
-    margin-inline-start: calc(var(--openbot-space-2) + 1px);
-    overflow: visible;
+  /* The side panel button is a round button like the search and new buttons of the sidebar: a surface-color
+   * circle with a hairline, and no short line before it. */
+  .app-window > .app-frame-edge .conversation-header .conversation-header-actions > .side-panel-toggle {
+    width: 34px;
+    min-width: 34px;
+    height: 34px;
+    border: 1px solid color-mix(in srgb, var(--openbot-text-primary) 8%, transparent);
+    border-radius: var(--openbot-radius-pill);
+    background: var(--openbot-bg-surface);
   }
 
-  .app-window > .app-frame-edge .conversation-header-actions > .side-panel-toggle::before {
-    position: absolute;
-    top: 50%;
-    inset-inline-start: calc(-1 * var(--openbot-space-2) - 1px);
-    width: 1px;
-    height: var(--window-hairline-height);
-    translate: 0 -50%;
-    background: var(--openbot-border-strong);
-    content: "";
-    pointer-events: none;
+  @media (hover: hover) and (pointer: fine) {
+    .app-window > .app-frame-edge .conversation-header .conversation-header-actions > .side-panel-toggle:hover {
+      border-color: color-mix(in srgb, var(--openbot-text-primary) 8%, transparent);
+      background: var(--openbot-bg-control-hover);
+    }
   }
 
   /* The usage and schedule pages sit in the card, as the chat does. Their title and controls go in the
