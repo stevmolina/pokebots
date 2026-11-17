@@ -1,16 +1,32 @@
 import { foreignProvider } from "@openbot/contracts/agent-providers";
-import { agentNextProviderAccountId } from "@openbot/contracts/ipc";
+import {
+  type AgentPermissionLevel,
+  agentNextProviderAccountId,
+  agentPermissionLevel,
+  DEFAULT_AGENT_ACCESS,
+} from "@openbot/contracts/ipc";
+import type { AppTextKey } from "@openbot/i18n";
 import type { ProviderModelPicker } from "@openbot/ui/components/ProviderModelPicker";
 import { useText } from "@openbot/ui/text";
 import type { ComponentProps } from "@solidjs/web";
+import { usePlatform } from "../../platform";
+import { shortcutPlatform } from "../shortcuts/shortcut-platform";
 import { useConversationViewScope } from "./conversation-scope";
 
+const ACCESS_LABEL = {
+  workspace: "agentSettings.access.workspace",
+  ask: "agentSettings.access.ask",
+  full: "agentSettings.access.full",
+} as const satisfies Record<AgentPermissionLevel, AppTextKey>;
+
 /**
- * The model picker of the open agent, as a row of the details pane. A model, effort, provider or
- * account chosen during a turn applies from the next turn.
+ * The model picker of the open agent, as the Model row of the details pane. A model, effort,
+ * provider or account chosen during a turn applies from the next turn. While it is open, ⌘1 to ⌘9
+ * choose a model, and its footer shows and opens the agent's access, as the message box chip did.
  */
 export function useAgentModelPicker(): () => ComponentProps<typeof ProviderModelPicker> {
   const { t } = useText();
+  const platform = usePlatform();
   const {
     fastMode,
     ultrafast,
@@ -18,10 +34,26 @@ export function useAgentModelPicker(): () => ComponentProps<typeof ProviderModel
     props,
     selectAndConfirmModel,
     selectAndConfirmReasoning,
+    setActiveRightPanel,
     settingsModel,
     settingsProvider,
     settingsReasoning,
   } = useConversationViewScope();
+  const access = () => {
+    const agent = props.agent;
+    // An agent whose approvals this app does not know shows no level, so the footer never guesses.
+    if (!agent || props.agentAutoApproves === undefined) return undefined;
+    const level = agentPermissionLevel({
+      access: agent.access ?? DEFAULT_AGENT_ACCESS,
+      autoApprove: props.agentAutoApproves,
+    });
+    return { label: t(ACCESS_LABEL[level]), onOpen: () => setActiveRightPanel("settings") };
+  };
+  /**
+   * The keyboard: the one that main reports on desktop. The web client has a fixed app info, so the
+   * browser's guess counts there.
+   */
+  const keyboard = () => shortcutPlatform(platform.appInfoLoadedFromHost() ? platform.appInfo()?.platform : undefined);
   return () => {
     return {
       variant: "field",
@@ -48,6 +80,8 @@ export function useAgentModelPicker(): () => ComponentProps<typeof ProviderModel
       fastMode: fastMode(),
       ultrafast: ultrafast(),
       onFastModeChange: fastModeChange(),
+      shortcutPlatform: keyboard(),
+      access: access(),
     };
   };
 }
