@@ -7,6 +7,7 @@ import {
   serverWorkspacePhase,
 } from "@openbot/ui/features/servers/ServerConnectionNotice";
 import { useText } from "@openbot/ui/text";
+import type { JSX } from "@solidjs/web";
 import { createEffect, createMemo, createSignal, Show } from "solid-js";
 import { useAccountUsagePolling } from "./features/account/account-usage-polling";
 import { AgentDockHost, useAgentDockPlacement } from "./features/agent-dock/AgentDockHost";
@@ -72,11 +73,13 @@ export function WorkspaceShell(props: {
   account: () => CentralAuthUser;
   /**
    * The startup splash covers the window and does not let heavy views mount yet. The first load then
-   * shows no screen of its own, only its toast, and the chat waits to mount.
+   * puts its recovery controls in that splash, and the chat waits to mount.
    */
   behindSplash?: () => boolean;
   /** The first load does not cover the window any more, so the startup splash can go. */
   onStartupReady?: () => void;
+  /** Recovery controls for the startup splash while it covers this workspace. */
+  onStartupNotice?: (notice: JSX.Element) => void;
 }) {
   const platform = usePlatform();
   /** A window that main opened for one chat shows that chat alone, with no sidebar. */
@@ -270,6 +273,7 @@ export function WorkspaceShell(props: {
   const connectionNotice = (cover = false, screen = true) => (
     <ServerConnectionNotice
       screen={screen}
+      onLoadingNotice={cover && !screen ? props.onStartupNotice : undefined}
       name={activeServer()?.name ?? ""}
       initial={cover || !scope.connection.synced}
       ready={cover ? !fullWindowLoading() : undefined}

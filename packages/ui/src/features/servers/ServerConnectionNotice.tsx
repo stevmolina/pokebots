@@ -1,4 +1,5 @@
 import type { HostedServerIssue, HostedServerSleep, HostedServerStart } from "@openbot/contracts/ipc";
+import type { JSX } from "@solidjs/web";
 import { createEffect, createMemo, createSignal, Show, untrack } from "solid-js";
 import { Button } from "../../button";
 import { ErrorReference } from "../../error-reference";
@@ -72,6 +73,8 @@ export interface ServerConnectionNoticeProps {
   onMountViews?: (() => void) | undefined;
   /** False when another loading screen already covers the window: the first load then shows only its inline notice. */
   screen?: boolean;
+  /** Puts recovery controls in the loading screen that already covers this notice. */
+  onLoadingNotice?: (notice: JSX.Element) => void;
   /** Removes Details, for a notice that is not about the server connection. */
   hideDetails?: boolean;
   onRetry: () => void;
@@ -242,6 +245,27 @@ export function ServerConnectionNotice(props: ServerConnectionNoticeProps) {
       </Show>
     </div>
   );
+  createEffect(
+    () => {
+      const send = props.screen === false ? props.onLoadingNotice : undefined;
+      return send
+        ? {
+            send,
+            notice: firstLoadControls() ? (
+              <>
+                <p>{title()}</p>
+                {firstLoadNotice()}
+              </>
+            ) : undefined,
+          }
+        : null;
+    },
+    (value) => {
+      if (!value) return;
+      value.send(value.notice);
+      return () => value.send(undefined);
+    },
+  );
   return (
     <>
       <Show
@@ -264,7 +288,7 @@ export function ServerConnectionNotice(props: ServerConnectionNoticeProps) {
           when={props.screen !== false}
           fallback={
             // Another loading screen covers the window, so the notice sits in the pane as a banner.
-            <Show when={firstLoadControls()}>
+            <Show when={firstLoadControls() && !props.onLoadingNotice}>
               <section class="server-connection-notice" role="status" aria-live="polite">
                 <div>
                   <p>{title()}</p>
@@ -309,6 +333,8 @@ export interface ConversationLoadNoticeProps {
    * so the chat under it does not show for a moment first.
    */
   immediate?: boolean;
+  /** Server recovery controls shown in this conversation loading screen. */
+  children?: JSX.Element;
   onRetry: () => void;
 }
 
@@ -361,7 +387,9 @@ export function ConversationLoadNotice(props: ConversationLoadNoticeProps) {
             label={t("server.connection.loading", { name: props.name })}
             title={t("server.connection.loading", { name: props.name })}
             onExited={() => setScreen((current) => (current === key ? null : current))}
-          />
+          >
+            {props.children}
+          </AppLoadingScreen>
         )}
       </Show>
       <Show when={props.error}>

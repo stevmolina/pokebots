@@ -88,6 +88,25 @@ try {
   assert.equal(longAnnounced, false, "A long drop showed a connection toast.");
   assert.equal(await page.getByText("Chief").first().isVisible(), true, "The app did not mend the link.");
 
+  // An existing splash or conversation loader must expose the recovery controls it receives.
+  const coveredLoads = [];
+  for (const story of [
+    "auth-apploadingscreen--slow-first-load-behind-splash",
+    "auth-apploadingscreen--first-load-behind-conversation",
+  ]) {
+    await page.goto(`${storybook}/iframe.html?id=${story}&viewMode=story`, { waitUntil: "commit", timeout: 120_000 });
+    const retry = page.getByRole("button", { name: "Retry", exact: true });
+    await retry.waitFor({ timeout: 120_000 });
+    await page.screenshot({ path: resolve(OUT, `${story}.png`) });
+    await retry.click();
+    await page.getByRole("status", { name: "Retry attempts" }).filter({ hasText: "1" }).waitFor();
+    assert.equal(await page.locator("[data-sonner-toast]").count(), 0, "A covered load showed a toast.");
+    await page.getByRole("button", { name: "Details", exact: true }).click();
+    await page.getByRole("alertdialog").waitFor();
+    await page.screenshot({ path: resolve(OUT, `${story}-details.png`) });
+    coveredLoads.push({ story, retry: true, details: true });
+  }
+
   const video = page.video();
   await context.close();
   const report = {
@@ -96,6 +115,7 @@ try {
     shortDropShowedToast: shortAnnounced,
     longDropMs: LONG_DROP_MS,
     longDropShowedToast: longAnnounced,
+    coveredLoads,
     video: video ? await video.path() : null,
   };
   writeFileSync(resolve(OUT, "report.json"), `${JSON.stringify(report, null, 2)}\n`);

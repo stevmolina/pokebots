@@ -3065,6 +3065,7 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
     workspace.state.status === "online" ? (workspace.conversation()?.error ?? null) : null;
   /** While the page load waits for the sidebar, the host answered: the cover still loads, it does not reconnect. */
   const coverPhase = () => (workspace.state.status === "online" ? "loading" : connectionPhase());
+  const [frameNotice, setFrameNotice] = createSignal<JSX.Element>();
   const connectionNotice = (cover = false) => {
     const phase = cover ? coverPhase : connectionPhase;
     return (
@@ -3075,6 +3076,7 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
         onExited={cover ? () => setLoadingCover(false) : undefined}
         fullWindow={fullWindowLoading()}
         screen={!frameConnecting()}
+        onLoadingNotice={frameConnecting() ? (notice) => setFrameNotice(() => notice) : undefined}
         issue={workspace.state.hostedIssue}
         start={workspace.state.hostedStart}
         updateVersion={workspace.state.hostRestart?.version ?? null}
@@ -3151,7 +3153,9 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                         const id = workspace.state.selectedId;
                         if (id) void workspace.select(id);
                       }}
-                    />
+                    >
+                      {frameNotice()}
+                    </ConversationLoadNotice>
                   </Show>
                 </>
               }
