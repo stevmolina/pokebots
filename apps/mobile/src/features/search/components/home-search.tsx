@@ -619,6 +619,7 @@ export function HomeSearchBar({
   blurTarget,
   leading,
   sideInset = 16,
+  shortPlaceholder = false,
 }: {
   search: HomeSearch;
   /** Android: the home content that the field blurs. */
@@ -627,6 +628,8 @@ export function HomeSearchBar({
   leading?: ReactNode;
   /** The space between the screen side and the bar. */
   sideInset?: number;
+  /** The one-word "Search" placeholder, for a field that is too narrow for the long one (the calm look). */
+  shortPlaceholder?: boolean;
 }) {
   const { t } = useText();
   const { input } = search;
@@ -710,7 +713,7 @@ export function HomeSearchBar({
   const canSend = Boolean(target && search.query.trim()) && !search.sending;
   const placeholder = target
     ? t("mobile.search.thread.placeholder")
-    : search.canUseTasks
+    : search.canUseTasks && !shortPlaceholder
       ? t("mobile.search.placeholder")
       : t("common.search");
 

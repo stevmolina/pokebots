@@ -602,6 +602,7 @@ export const messages = {
   "mobile.agent.home.connecting": "Conectando ao servidor",
   "mobile.agent.home.loadingServers": "Carregando seus servidores",
   "mobile.agent.home.addAgent": "Adicionar agente",
+  "mobile.agent.home.openProfile": "Abrir perfil e servidores",
   "mobile.agent.home.newChannel": "Novo canal",
   "mobile.agent.home.retrySections": "Recarregar pastas",
   "mobile.agent.home.serversFailed": "Não foi possível carregar seus servidores",

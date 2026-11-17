@@ -51,6 +51,8 @@ import {
   useAppUpdateHeader,
 } from "@/features/app-update/components/app-update-header";
 import { useAppUpdate } from "@/features/app-update/model/app-update";
+import { mobileUserName } from "@/features/auth/api/mobile-user-name";
+import { useMobileSession } from "@/features/auth/context/mobile-session-context";
 import { ChannelListRow } from "@/features/channels/components/channel-list";
 import { useChannels } from "@/features/channels/components/use-channels";
 import {
@@ -104,6 +106,7 @@ import { useAppLoadingOverlay, useScreenLoadingLabel } from "@/shared/components
 import { ChromeGlassSheen } from "@/shared/components/chrome-glass-sheen";
 import { LargeTitle, LargeTitleBar, useLargeTitleScroll } from "@/shared/components/large-title";
 import { type MenuAction, MenuView } from "@/shared/components/menu-view";
+import { ProfileAvatar } from "@/shared/components/profile-avatar";
 import { useChromeGlass } from "@/shared/lib/chrome-glass";
 import { haptics } from "@/shared/lib/haptics";
 import { BAR_BUTTON_SIZE, NATIVE_BAR_HEIGHT, useBarTop } from "@/shared/lib/native-bar";
@@ -398,6 +401,10 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
   const calm = useCalmLook() && !pane;
   const calmReady = useCalmLookStore((state) => state.ready);
   const calmColors = usePreviewColors();
+  // The calm look shows the user's photo, or initials, in the profile button.
+  const { session } = useMobileSession();
+  const profileName = session ? mobileUserName(session.user) : "";
+  const profilePhoto = session?.user.avatarUrl ? new URL(session.user.avatarUrl, session.apiUrl).toString() : null;
   const { isLoaderPresent } = useAppLoadingOverlay();
   const { openDrawer } = useAppDrawer();
   const workspace = useMobileWorkspaceReader();
@@ -506,10 +513,22 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
       )
       .finally(() => setMarkingAllRead(false));
   };
+  // The calm look always has a main agent, the big face at the top of home: the first pinned agent, else
+  // the agent named Pokebot, else the first agent. Pinning another agent first makes it the main one.
+  const heroAgent = useMemo(() => {
+    if (!calm) return null;
+    return (
+      pinnedAgents[0] ??
+      activeAgents.find((agent) => agent.name.trim().toLowerCase() === "pokebot") ??
+      activeAgents[0] ??
+      null
+    );
+  }, [calm, pinnedAgents, activeAgents]);
   const unpinnedAgents = useMemo(() => {
     const pinned = new Set(pinnedAgentIds);
-    return activeAgents.filter((agent) => !pinned.has(agent.id));
-  }, [activeAgents, pinnedAgentIds]);
+    // The main agent of the calm look is not repeated as a row.
+    return activeAgents.filter((agent) => !pinned.has(agent.id) && agent.id !== heroAgent?.id);
+  }, [activeAgents, pinnedAgentIds, heroAgent]);
   const sidebar = sidebarByServer[activeServer.id];
   // A waiting agent leaves its section for "Needs you". A pinned agent stays in its tile, which shows the same badge.
   const waitingAgentIds = useWaitingAgentIds();
@@ -1075,7 +1094,7 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
                         // under the floating buttons, as in the design preview.
                         <>
                           <AppUpdateSpacer header={updateHeader} headerHeight={headerHeight} />
-                          <View style={{ height: hasPins ? 30 : 12 }} />
+                          <View style={{ height: hasPins || heroAgent ? 30 : 12 }} />
                         </>
                       ) : hasSelectedServer ? (
                         <LargeTitle
@@ -1104,7 +1123,8 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
                         </View>
                       ) : null}
                       <PinnedAgentsGrid
-                        agents={pinnedAgents}
+                        agents={heroAgent ? pinnedAgents.filter((agent) => agent.id !== heroAgent.id) : pinnedAgents}
+                        heroAgent={heroAgent}
                         animateLayout={!updateHeader.moving}
                         dropZone={dragging && !hasPins}
                       >
@@ -1215,6 +1235,7 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
             blurTarget={searchBlurTarget}
             leading={calm ? <CalmBottomGrid serverId={activeServer.id} /> : undefined}
             sideInset={calm ? previewSize.bottomBarInset : undefined}
+            shortPlaceholder={calm}
           />
         ) : null}
         {calm && searchShows && !search.open && !updateHeader.expanded ? <CalmUnreadPill unread={calmUnread} /> : null}
@@ -1266,11 +1287,21 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
             <Stack.Toolbar placement="left">
               {/* The search takes the screen, so the bar buttons go while it is open. */}
               {/* The calm look shows the profile here: the drawer holds the servers, the profile and Settings. */}
-              <Stack.Toolbar.Button
-                icon={calm ? "person.crop.circle" : "sidebar.leading"}
-                hidden={search.open}
-                onPress={openDrawer}
-              />
+              {calm ? (
+                <Stack.Toolbar.View key="calm-profile" hidden={search.open}>
+                  <Pressable
+                    accessibilityRole="button"
+                    accessibilityLabel={t("mobile.agent.home.openProfile")}
+                    hitSlop={6}
+                    onPress={openDrawer}
+                    style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
+                  >
+                    <ProfileAvatar neutral name={profileName} imageUrl={profilePhoto} size={34} />
+                  </Pressable>
+                </Stack.Toolbar.View>
+              ) : (
+                <Stack.Toolbar.Button icon="sidebar.leading" hidden={search.open} onPress={openDrawer} />
+              )}
               <Stack.Toolbar.View hidesSharedBackground hidden={search.open}>
                 <ConnectionHeaderStatus server={hasSelectedServer ? activeServer : undefined} />
               </Stack.Toolbar.View>
@@ -1286,6 +1317,8 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
                 />
               </Stack.Toolbar.View>
               <Stack.Toolbar.Menu
+                // A new key when the look changes, so the bar draws the new icon at once.
+                key={calm ? "calm-add" : "chat-options"}
                 icon={calm ? "plus" : "ellipsis"}
                 accessibilityLabel={t("mobile.agent.home.chatOptions")}
                 separateBackground

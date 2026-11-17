@@ -5113,5 +5113,6 @@
     "ru",
     "tr",
     "zh"
-  ]
+  ],
+  "mobile.agent.home.openProfile": ["ar", "de", "es", "fr", "he", "it", "ja", "ko", "nl", "pl", "ru", "tr", "zh"]
 }

@@ -204,6 +204,11 @@ interface ChatComposerProps {
   voiceAvatar?: ReactNode;
   /** The agent's colours for the glow in the call bar. */
   voicePalette?: VoicePalette;
+  /**
+   * The calm look's model button: the agent's provider logo before the mic, which opens the agent's
+   * model page. Undefined in the current look.
+   */
+  modelButton?: { label: string; logo: ReactNode; onPress: () => void };
 }
 
 const NO_FILES: ChatAttachments["items"] = [];
@@ -296,6 +301,7 @@ export const ChatComposer = memo(function ChatComposer({
   liquidGlassAvailable,
   muted,
   raised,
+  modelButton,
   onChangeDraft,
   onSend,
   createArtifact,
@@ -376,8 +382,10 @@ export const ChatComposer = memo(function ChatComposer({
   // The dictation mic sits left of the main control whatever the draft holds. It stays mounted in the
   // voice mode and fades with the morph, so the controls do not jump when the mode opens.
   const dictationMic = Boolean(dictation?.available);
+  // The controls before the main one: the calm look's model button and the dictation mic.
+  const leadControls = (dictationMic ? 1 : 0) + (modelButton ? 1 : 0);
   // How far the main control sits right of the centre of the control row, which the row scales about.
-  const micSlack = dictationMic ? (CONTROL_SIZE + CONTROL_GAP) / 2 : 0;
+  const micSlack = (leadControls * (CONTROL_SIZE + CONTROL_GAP)) / 2;
   const focusedReplyVersion = useRef(0);
   useEffect(() => {
     if (isFocused && !disabled && replyTarget && focusedReplyVersion.current !== replyFocusVersion) {
@@ -458,7 +466,7 @@ export const ChatComposer = memo(function ChatComposer({
   const lineHeight = 22 * fontScale;
   // Without the plus, the text starts at the card's own inset.
   const leadingInset = attachments ? ROW_CONTROL_INSET : FIELD_INSET;
-  const trailingInset = ROW_CONTROL_INSET + (dictationMic ? CONTROL_SIZE + CONTROL_GAP : 0);
+  const trailingInset = ROW_CONTROL_INSET + leadControls * (CONTROL_SIZE + CONTROL_GAP);
   const rowTextWidth = barWidth - BAR_INSET * 2 - trailingInset - leadingInset;
   // One reading drives both the shape and the height. Measuring the two widths
   // separately gave the card two targets in two frames, so it animated twice.
@@ -499,7 +507,7 @@ export const ChatComposer = memo(function ChatComposer({
   // Without the plus, the placeholder starts at the card's own inset.
   const restLeadingInset = attachments ? restTextInset : FIELD_INSET;
   // The dictation mic takes its drawn size and gap beside the main control.
-  const restTrailingInset = restTextInset + (dictationMic ? (CONTROL_SIZE + CONTROL_GAP) * REST_CONTROL_SCALE : 0);
+  const restTrailingInset = restTextInset + leadControls * (CONTROL_SIZE + CONTROL_GAP) * REST_CONTROL_SCALE;
   // Sized from the placeholder, so the bar carries no empty space. Full width
   // until the measurement lands: a bar that starts narrow would jump open.
   const restWidth =
@@ -1505,8 +1513,8 @@ export const ChatComposer = memo(function ChatComposer({
                   <DictationStrip
                     level={dictation.level}
                     presence={dictationPresence}
-                    // The strip ends at the dictation mic, which is Stop now, left of the main control.
-                    right={TOOLBAR_PADDING + 2 * (CONTROL_SIZE + CONTROL_GAP)}
+                    // The strip ends at the first control left of the main one: the model button or the mic.
+                    right={TOOLBAR_PADDING + (leadControls + 1) * (CONTROL_SIZE + CONTROL_GAP)}
                     foreground={String(foreground)}
                     accent={accentFill}
                   />
@@ -1515,6 +1523,26 @@ export const ChatComposer = memo(function ChatComposer({
                   style={[{ flexDirection: "row", alignItems: "center", gap: CONTROL_GAP }, controlStyle]}
                   pointerEvents={barMode && voiceOpen ? "none" : "auto"}
                 >
+                  {modelButton ? (
+                    <Animated.View
+                      key="model"
+                      style={dictationMicStyle}
+                      pointerEvents={voiceOpen ? "none" : "auto"}
+                      accessibilityElementsHidden={voiceOpen}
+                      importantForAccessibility={voiceOpen ? "no-hide-descendants" : "auto"}
+                    >
+                      <Pressable
+                        accessibilityLabel={modelButton.label}
+                        accessibilityRole="button"
+                        hitSlop={4}
+                        className="size-10 items-center justify-center rounded-full"
+                        style={({ pressed }) => ({ opacity: pressed ? 0.55 : 1 })}
+                        onPress={modelButton.onPress}
+                      >
+                        {modelButton.logo}
+                      </Pressable>
+                    </Animated.View>
+                  ) : null}
                   {dictationMic && dictation ? (
                     <Animated.View
                       key="dictation-mic"

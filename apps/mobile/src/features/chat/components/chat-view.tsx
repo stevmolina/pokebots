@@ -43,6 +43,9 @@ import {
   presentChatMessages,
 } from "@/features/chat/model/chat-messages";
 import { finishedTurnSummaries, type TurnStepsSummary } from "@/features/chat/model/turn-thinking";
+import { usePreviewColors } from "@/features/design-preview/components/preview-parts";
+import { CalmBubbleContext, useCalmLook } from "@/features/design-preview/model/calm-look";
+import { ProviderMark } from "@/features/servers/components/provider-mark";
 import { liveVoiceWebRtc } from "@/features/voice/model/live-voice-webrtc";
 import { replyVoiceReady } from "@/features/voice/model/reply-voice";
 import { useVoiceSettings } from "@/features/voice/model/voice-settings";
@@ -341,6 +344,33 @@ export function ChatView({
   const [appActive, setAppActive] = useState(AppState.currentState === "active");
   const reducedTransparency = useReducedTransparency();
   const server = useMobileWorkspaceSelector((current) => current.servers.find((item) => item.id === target.serverId));
+  // The calm look puts the agent's provider logo in the composer: it opens the agent's model page.
+  const calm = useCalmLook();
+  const calmColors = usePreviewColors();
+  const calmAgent = useMobileWorkspaceSelector((current) =>
+    calm && target.kind === "agent"
+      ? current.agents.find((agent) => agent.id === target.id && agent.serverId === target.serverId)
+      : undefined,
+  );
+  const calmProvider = calmAgent?.provider;
+  const modelButton = useMemo(
+    () =>
+      calmProvider && calmAgent
+        ? {
+            label: t("mobile.workspace.preview.modelButton", { name: calmAgent.model ?? calmProvider }),
+            logo: <ProviderMark provider={calmProvider} size={22} />,
+            onPress: () => {
+              void haptics.selection();
+              // The agent's Model page: it saves the choice, and its Model row opens the picker.
+              router.push({
+                pathname: "/agent-info/[agentId]/runtime",
+                params: { agentId: calmAgent.id, serverId: calmAgent.serverId },
+              });
+            },
+          }
+        : undefined,
+    [calmProvider, calmAgent, t],
+  );
   const insets = useSafeAreaInsets();
   const keyboardOffset = Math.max(insets.bottom, 10) - 10;
   const [foreground, muted, fieldBackground, raised, action, actionForeground, background] = useThemeColor([
@@ -1192,7 +1222,7 @@ export function ChatView({
 
   return (
     <GestureDetector gesture={edgeBackGesture}>
-      <View className="flex-1" style={{ backgroundColor: background }}>
+      <View className="flex-1" style={{ backgroundColor: calm ? calmColors.background : background }}>
         <View
           className="flex-1"
           // Nothing here may switch on the card: this view is an ancestor of
@@ -1226,83 +1256,85 @@ export function ChatView({
               onBack={leaveConversation}
               threadMenu={threadMenu}
             />
-            <ChatMessageList
-              agents={serverAgents}
-              rowsShown={rowsShown}
-              target={target}
-              motion={motion}
-              sending={Boolean(sendingMessage)}
-              awaitingTurn={awaitingTurn}
-              keyboardOffset={keyboardOffset}
-              canSend={serverOnline && canSend}
-              online={serverOnline}
-              activity={activity}
-              activities={activities}
-              historyState={
-                ready
-                  ? "ready"
-                  : server?.initialConnectionPending
-                    ? "connecting"
-                    : !serverOnline
-                      ? "waiting"
-                      : historyLoadFailed
-                        ? "error"
-                        : "loading"
-              }
-              catchingUp={catchingUp}
-              appActive={appActive}
-              activeTurnId={activeTurnId}
-              turnSummaries={turnSummaries}
-              onOpenTurn={thinkingAgentId ? openTurn : undefined}
-              // The form is a new object on each render. Without a question the list does not read it,
-              // so it is left out and does not draw the list again.
-              questionForm={questionForm?.messageId ? questionForm : undefined}
-              onSelectQuestion={readOnly ? undefined : onSelectQuestion}
-              activityAccessory={activityAccessory}
-              approvals={readOnly ? undefined : approvals}
-              browserRequests={chatBrowserRequests}
-              serverName={server?.name ?? ""}
-              onRespondApproval={respondToApproval}
-              readsWholeApprovals={workspace().readsWholeApprovals(target.serverId)}
-              onLoadWholeApproval={loadWholeApproval}
-              foreground={foreground}
-              messages={messages}
-              messageAliases={messageAliases}
-              referenceMessages={referenceMessages}
-              hasOlder={hasOlder}
-              olderLoading={olderLoading}
-              olderError={olderError}
-              onLoadOlder={loadOlder}
-              onReply={readOnly ? undefined : replyToMessage}
-              onBranch={onBranch && !readOnly ? branchMessage : undefined}
-              branchPoints={branchPoints}
-              onReact={canReact && !readOnly ? react : undefined}
-              onDeleteMessage={deleteMessage && !readOnly ? deleteListMessage : undefined}
-              deletesAnyMessage={deletesAnyMessage}
-              onMarkUnread={markUnread ? markListMessageUnread : undefined}
-              markUnreadMessageIds={markUnreadMessageIds}
-              onTogglePin={togglePin ? togglePinListMessage : undefined}
-              pinnedMessageIds={pinnedRowIds}
-              unreadLineMessageIds={unreadLineMessageIds}
-              sendChannels={sendToChannel?.channels}
-              onSendToChannel={sendToChannel && !readOnly ? sendMessageToChannel : undefined}
-              onSendCardText={readOnly ? undefined : sendCardText}
-              selectingMessageId={selection?.message.id ?? null}
-              onSelectText={selectText}
-              onSelectionChange={changeSelection}
-              onDismissSelection={dismissSelection}
-              muted={muted}
-              showStarter={
-                showStarter && serverOnline && canSend && ready && !activity && projectedMessages.length === 0
-              }
-              topInset={insets.top}
-              onRetryHistory={fetchHistory}
-              focusMessageId={focusMessageId}
-              focusUnread={focusUnread}
-              onFocusPlaced={onFocusPlaced}
-              upload={listUpload}
-              outboxStatuses={outboxStatuses}
-            />
+            <CalmBubbleContext.Provider value={calm ? calmColors.agentBubble : null}>
+              <ChatMessageList
+                agents={serverAgents}
+                rowsShown={rowsShown}
+                target={target}
+                motion={motion}
+                sending={Boolean(sendingMessage)}
+                awaitingTurn={awaitingTurn}
+                keyboardOffset={keyboardOffset}
+                canSend={serverOnline && canSend}
+                online={serverOnline}
+                activity={activity}
+                activities={activities}
+                historyState={
+                  ready
+                    ? "ready"
+                    : server?.initialConnectionPending
+                      ? "connecting"
+                      : !serverOnline
+                        ? "waiting"
+                        : historyLoadFailed
+                          ? "error"
+                          : "loading"
+                }
+                catchingUp={catchingUp}
+                appActive={appActive}
+                activeTurnId={activeTurnId}
+                turnSummaries={turnSummaries}
+                onOpenTurn={thinkingAgentId ? openTurn : undefined}
+                // The form is a new object on each render. Without a question the list does not read it,
+                // so it is left out and does not draw the list again.
+                questionForm={questionForm?.messageId ? questionForm : undefined}
+                onSelectQuestion={readOnly ? undefined : onSelectQuestion}
+                activityAccessory={activityAccessory}
+                approvals={readOnly ? undefined : approvals}
+                browserRequests={chatBrowserRequests}
+                serverName={server?.name ?? ""}
+                onRespondApproval={respondToApproval}
+                readsWholeApprovals={workspace().readsWholeApprovals(target.serverId)}
+                onLoadWholeApproval={loadWholeApproval}
+                foreground={foreground}
+                messages={messages}
+                messageAliases={messageAliases}
+                referenceMessages={referenceMessages}
+                hasOlder={hasOlder}
+                olderLoading={olderLoading}
+                olderError={olderError}
+                onLoadOlder={loadOlder}
+                onReply={readOnly ? undefined : replyToMessage}
+                onBranch={onBranch && !readOnly ? branchMessage : undefined}
+                branchPoints={branchPoints}
+                onReact={canReact && !readOnly ? react : undefined}
+                onDeleteMessage={deleteMessage && !readOnly ? deleteListMessage : undefined}
+                deletesAnyMessage={deletesAnyMessage}
+                onMarkUnread={markUnread ? markListMessageUnread : undefined}
+                markUnreadMessageIds={markUnreadMessageIds}
+                onTogglePin={togglePin ? togglePinListMessage : undefined}
+                pinnedMessageIds={pinnedRowIds}
+                unreadLineMessageIds={unreadLineMessageIds}
+                sendChannels={sendToChannel?.channels}
+                onSendToChannel={sendToChannel && !readOnly ? sendMessageToChannel : undefined}
+                onSendCardText={readOnly ? undefined : sendCardText}
+                selectingMessageId={selection?.message.id ?? null}
+                onSelectText={selectText}
+                onSelectionChange={changeSelection}
+                onDismissSelection={dismissSelection}
+                muted={muted}
+                showStarter={
+                  showStarter && serverOnline && canSend && ready && !activity && projectedMessages.length === 0
+                }
+                topInset={insets.top}
+                onRetryHistory={fetchHistory}
+                focusMessageId={focusMessageId}
+                focusUnread={focusUnread}
+                onFocusPlaced={onFocusPlaced}
+                upload={listUpload}
+                outboxStatuses={outboxStatuses}
+              />
+            </CalmBubbleContext.Provider>
             <Animated.View
               style={[{ position: "absolute", left: 0, right: 0, bottom: 0 }, motion.composerStyle]}
               pointerEvents="box-none"
@@ -1484,6 +1516,7 @@ export function ChatView({
                   liquidGlassAvailable={liquidGlassAvailable}
                   muted={muted}
                   raised={raised}
+                  modelButton={modelButton}
                   onChangeDraft={setDraft}
                   onSend={send}
                   onStop={requestStop}

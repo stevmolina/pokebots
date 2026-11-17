@@ -34,7 +34,7 @@ import {
   useAgentListUnreadThreads,
   useAgentListWaitReason,
 } from "@/features/workspace/components/use-agent-activity";
-import type { MobileAgent } from "@/features/workspace/context/mobile-workspace-context";
+import { type MobileAgent, useMobileWorkspaceSelector } from "@/features/workspace/context/mobile-workspace-context";
 import { isAndroid, longPressDelay } from "@/shared/lib/platform";
 import { useText } from "@/shared/lib/text";
 import { typeScale } from "@/shared/lib/type-scale";
@@ -57,22 +57,34 @@ const PINNED_PADDING_X = 12;
  */
 export function PinnedAgentsGrid({
   agents,
+  heroAgent = null,
   animateLayout = true,
   dropZone = false,
   children,
 }: PropsWithChildren<{
   agents: MobileAgent[];
+  /**
+   * The calm look's main agent, drawn as the big face above the other pins, as in the design preview.
+   * Home picks it; it is not in `agents`. Null in the current look.
+   */
+  heroAgent?: MobileAgent | null;
   animateLayout?: boolean;
   /** Shows an empty place for a new pin, while the user drags a chat and nothing is pinned. */
   dropZone?: boolean;
 }>) {
   const dropTarget = useChatDropTarget(PIN_AREA_KEY);
-  // The calm look shows one pinned agent as the big face at the top of home, as the design preview's
-  // main agent; several pins stay a grid, centered.
+  // The calm look centers the pins under the main agent.
   const calm = useCalmRows();
-  const hero = calm && agents.length === 1 && !children;
+  const heroPinned = useMobileWorkspaceSelector(({ pinnedAgentIds }) =>
+    heroAgent ? pinnedAgentIds.includes(heroAgent.id) : false,
+  );
   return (
     <Animated.View layout={animateLayout ? PINNED_LAYOUT : undefined}>
+      {heroAgent ? (
+        <View style={{ width: "100%", alignItems: "center", paddingTop: 14 }}>
+          <PinnedAgentItem key={heroAgent.id} agent={heroAgent} hero pinned={heroPinned} />
+        </View>
+      ) : null}
       {agents.length > 0 || children ? (
         <Animated.View exiting={PINNED_EXIT} style={{ width: "100%" }}>
           <View
@@ -89,7 +101,7 @@ export function PinnedAgentsGrid({
             }}
           >
             {agents.map((agent) => (
-              <PinnedAgentItem key={agent.id} agent={agent} hero={hero} />
+              <PinnedAgentItem key={agent.id} agent={agent} />
             ))}
             {children}
           </View>
@@ -120,7 +132,16 @@ function PinDropZone({ dropTarget }: { dropTarget: ReturnType<typeof useChatDrop
   );
 }
 
-const PinnedAgentItem = memo(function PinnedAgentItem({ agent, hero = false }: { agent: MobileAgent; hero?: boolean }) {
+const PinnedAgentItem = memo(function PinnedAgentItem({
+  agent,
+  hero = false,
+  pinned = true,
+}: {
+  agent: MobileAgent;
+  hero?: boolean;
+  /** False for the calm look's main agent when it is not pinned: a drag of it then pins it. */
+  pinned?: boolean;
+}) {
   const calmColors = usePreviewColors();
   const size = hero ? previewSize.heroAvatar : 64;
   const { t } = useText();
@@ -129,7 +150,7 @@ const PinnedAgentItem = memo(function PinnedAgentItem({ agent, hero = false }: {
   const [menuKey, setMenuKey] = useState(0);
   const drag = useChatDrag("pin", () => ({
     chat: { kind: "agent", id: agent.id },
-    pinned: true,
+    pinned,
     name: agent.name,
     preview: <AgentDragPreview agent={agent} />,
   }));
