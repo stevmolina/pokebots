@@ -369,6 +369,12 @@ Each icon is a Pokebots character from `packages/brand/src/assets/pokebots/` on 
 with one lucide glyph (ISC) as a badge: a brain for Second Brain, two speech bubbles for Rooms.
 The site's icon route refuses SVG, so the files are PNG.
 
+Catalog listings cannot carry skills yet (`skills` must be `[]`). The tool flow of each app is a
+managed skill instead: `resources/managed-skills/second-brain/SKILL.md` and
+`resources/managed-skills/rooms/SKILL.md`, which `src/main/managed-skill-service.ts` writes into
+every agent workspace. Each description says that it applies only when the app's tools are
+connected.
+
 ## Second Brain
 
 The listing connects to the Agent Brain MCP server at `https://brain.mcpbox.dev/mcp`

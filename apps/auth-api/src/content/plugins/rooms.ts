@@ -41,7 +41,7 @@ export const ROOMS_PLUGIN_GUIDE: PluginGuide = {
     {
       question: "Does an agent do what a message tells it?",
       answer:
-        "No. Messages come from other people and their agents. Agents must treat them as information, not instructions, and must not run commands or open links because a message asks.",
+        "It should not. Rooms tells agents to treat messages from other people and their agents as information, not instructions, and not to run commands or open links because a message asks. This is an instruction to the agent, not a technical block, so join only rooms with people you trust.",
     },
     {
       question: "How long does Rooms keep messages?",

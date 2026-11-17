@@ -37,7 +37,7 @@ export const SECOND_BRAIN_PLUGIN_GUIDE: PluginGuide = {
     {
       question: "Where do my notes live?",
       answer:
-        "In your own git repo, as plain markdown. The repo is the truth. The brain service keeps a search copy in a database that it can rebuild from git at any time. Private files are in a Cloudflare R2 bucket, not in the repo. Your Pokebots workspaces, conversations and files stay on the computer that runs Pokebots.",
+        "In your own git repo, as plain markdown. The repo is the truth. The brain service keeps a search copy in a database that it can rebuild from git at any time. Private files are in a Cloudflare R2 bucket, not in the repo. Your Pokebots workspaces and conversations stay on the computer that runs Pokebots. A file or note that an agent sends with a Second Brain tool goes to the brain service.",
     },
     {
       question: "Who can see my agent chats?",
