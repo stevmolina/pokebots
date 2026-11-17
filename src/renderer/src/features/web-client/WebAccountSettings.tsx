@@ -171,8 +171,9 @@ export default function WebAccountSettings(props: WebAccountSettingsProps) {
   );
 
   // The request counter never resets, so the effect runs again on each later opening with the same
-  // value. Act only on a value that this component has not handled yet.
-  let handledMachinesRequest = props.machinesRequest ?? 0;
+  // value. Act only on a value that this component has not handled yet. It starts at 0, so a first
+  // mount that comes with a request (Back from a machine before settings ever opened) still acts on it.
+  let handledMachinesRequest = 0;
   createEffect(
     () => (props.open ? props.machinesRequest : null),
     (request) => {
