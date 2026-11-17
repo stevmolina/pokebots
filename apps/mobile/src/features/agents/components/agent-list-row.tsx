@@ -3,7 +3,16 @@ import MaskedView from "@react-native-masked-view/masked-view";
 import { BlurView } from "expo-blur";
 import { Link } from "expo-router";
 import { Typography } from "heroui-native";
-import { memo, type PropsWithChildren, type ReactNode, useEffect, useId, useMemo, useState } from "react";
+import {
+  type ComponentProps,
+  memo,
+  type PropsWithChildren,
+  type ReactNode,
+  useEffect,
+  useId,
+  useMemo,
+  useState,
+} from "react";
 import { StyleSheet, View } from "react-native";
 import Animated, {
   Easing,
@@ -189,11 +198,13 @@ function AgentRowBody({
   agent,
   leftInset,
   rightInset,
+  onPress,
   onPressIn,
   onLongPress,
   onPressOut,
   measurer,
 }: AgentListRowProps & {
+  onPress?: ComponentProps<typeof ChatLinkPressable>["onPress"];
   onPressIn?: () => void;
   onLongPress?: () => void;
   onPressOut?: () => void;
@@ -269,6 +280,8 @@ function AgentRowBody({
         if (event.nativeEvent.actionName === "pin") toggleAgentPinAnimated(agent.id);
       }}
       className="w-full"
+      // Link injects navigation into this component. The calm row must pass it to the pressable.
+      onPress={calm ? onPress : undefined}
       onPressIn={onPressIn}
       delayLongPress={longPressDelay}
       onLongPress={onLongPress}
