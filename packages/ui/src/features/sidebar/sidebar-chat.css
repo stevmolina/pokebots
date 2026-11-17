@@ -137,23 +137,27 @@
   display: flex;
   width: 100%;
   height: auto;
+  min-height: 30px;
   justify-content: flex-start;
   gap: var(--openbot-space-1-5);
-  border-radius: var(--openbot-radius-md);
-  padding: var(--openbot-space-4) var(--openbot-space-3) var(--openbot-space-2);
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-md);
+  border: 0;
+  border-radius: var(--openbot-radius-sm);
+  padding: var(--openbot-space-3) var(--openbot-space-2) var(--openbot-space-1);
+  color: var(--openbot-text-secondary);
+  font-size: var(--openbot-text-sm);
   font-weight: var(--openbot-weight-regular);
+  line-height: 18px;
 }
 
 .sidebar-chat .sidebar-dock-head.ui-button:is(:hover, :focus-visible) {
   background: transparent;
-  color: var(--openbot-text-secondary);
+  color: var(--openbot-text-primary);
 }
 
+/* The chevron is a faint hint after the count, so a heading reads "Name        9". */
 .sidebar-dock-chevron {
-  width: 14px;
-  height: 14px;
+  width: 12px;
+  height: 12px;
   flex: none;
   transition: transform var(--openbot-duration-fast) ease;
 }
@@ -170,8 +174,10 @@
   white-space: nowrap;
 }
 
+/* The count sits at the end of the heading, open or closed. */
 .sidebar-dock-count {
   flex: none;
+  margin-inline-start: auto;
   font-variant-numeric: tabular-nums;
 }
 
@@ -209,13 +215,15 @@
   height: auto;
   align-items: center;
   gap: var(--openbot-space-1-5);
+  border: 0;
   border-radius: var(--openbot-radius-pill);
   background: var(--openbot-accent);
-  box-shadow: var(--openbot-shadow-raised);
-  padding: var(--openbot-space-2) var(--openbot-space-4);
+  box-shadow: 0 1px 3px color-mix(in srgb, var(--openbot-text-primary) 12%, transparent);
+  padding: 5px var(--openbot-space-3) 5px 10px;
   color: var(--openbot-text-on-accent);
-  font-size: var(--openbot-text-md);
+  font-size: var(--openbot-text-sm);
   font-weight: var(--openbot-weight-medium);
+  line-height: 18px;
   pointer-events: auto;
   white-space: nowrap;
 }
@@ -286,12 +294,13 @@
   display: flex;
   width: 100%;
   height: auto;
-  min-height: 72px;
+  min-height: 54px;
   align-items: center;
   justify-content: flex-start;
-  gap: var(--openbot-space-3);
-  border-radius: var(--openbot-radius-card);
-  padding: var(--openbot-space-3);
+  gap: 10px;
+  border: 0;
+  border-radius: var(--openbot-radius-lg);
+  padding: 8px;
   color: inherit;
   font-weight: inherit;
   text-align: left;
@@ -330,14 +339,14 @@
   min-width: 0;
   flex: 1;
   flex-direction: column;
-  gap: 2px;
+  gap: 0;
 }
 
 .sidebar-chat-name {
   overflow: hidden;
   color: var(--openbot-text-primary);
-  font-size: var(--openbot-text-lg);
-  font-weight: var(--openbot-weight-semibold);
+  font-size: var(--openbot-text-md);
+  font-weight: var(--openbot-weight-medium);
   line-height: 20px;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -347,7 +356,7 @@
 .sidebar-chat-preview {
   overflow: hidden;
   color: var(--openbot-text-secondary);
-  font-size: var(--openbot-text-md);
+  font-size: var(--openbot-text-sm);
   font-weight: var(--openbot-weight-regular);
   line-height: 18px;
   text-overflow: ellipsis;
@@ -1311,4 +1320,104 @@
 .sidebar-chat-time,
 .sidebar-chat-presence {
   display: none;
+}
+
+/* The calm list on a computer: 36px faces, and the main agent as a tile on top. The phone list keeps its
+ * own sizes (`web-phone.css`). */
+@media (min-width: 721px) {
+  .sidebar-chat .sidebar-chat-row {
+    --sidebar-chat-face: 36px;
+  }
+
+  .sidebar-dock-chevron {
+    opacity: 0.6;
+  }
+
+  .sidebar-featured {
+    display: flex;
+    justify-content: center;
+    padding: var(--openbot-space-1) 0 var(--openbot-space-2);
+  }
+
+  .sidebar-chat .sidebar-featured-button.ui-button {
+    position: relative;
+    display: flex;
+    min-width: 96px;
+    height: auto;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    border-radius: var(--openbot-radius-lg);
+    padding: var(--openbot-space-2) var(--openbot-space-3);
+    color: var(--openbot-text-primary);
+  }
+
+  .sidebar-chat .sidebar-featured-button.ui-button:hover {
+    background: var(--openbot-hover);
+  }
+
+  .sidebar-chat .sidebar-featured-button.ui-button[aria-current="page"],
+  .sidebar-chat .sidebar-featured-button.ui-button[aria-current="page"]:hover,
+  .sidebar-featured[data-menu-open] > .sidebar-featured-button.ui-button {
+    --agent-avatar-outline: var(--openbot-bg-control-active);
+
+    background: var(--openbot-bg-control-active);
+  }
+
+  /* The plush is drawn larger than its box, and its feet reach about 14px below it. The margin keeps
+   * the name under the feet. */
+  .sidebar-featured-avatar {
+    position: relative;
+    display: block;
+    width: 60px;
+    height: 60px;
+    margin-bottom: 14px;
+  }
+
+  .sidebar-featured-avatar > .agent-avatar {
+    width: 100%;
+    height: 100%;
+  }
+
+  .sidebar-featured-badge {
+    position: absolute;
+    top: -2px;
+    inset-inline-end: -6px;
+    display: grid;
+    width: 20px;
+    height: 20px;
+    place-items: center;
+    border-radius: var(--openbot-radius-pill);
+    background: var(--openbot-warning);
+    color: var(--openbot-text-on-accent);
+    box-shadow: 0 0 0 2px var(--openbot-bg-sidebar);
+  }
+
+  .sidebar-featured-badge > svg {
+    width: 11px;
+    height: 11px;
+    fill: currentcolor;
+  }
+
+  .sidebar-featured-name {
+    max-width: 180px;
+    overflow: hidden;
+    font-size: var(--openbot-text-sm);
+    font-weight: var(--openbot-weight-medium);
+    line-height: 16px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* A reply that the user did not read: the unread dot of a row, on the corner of the face. */
+  .sidebar-featured-unread {
+    position: absolute;
+    top: 12px;
+    inset-inline-start: calc(50% - 38px);
+    width: 8px;
+    height: 8px;
+    border-radius: var(--openbot-radius-pill);
+    background: var(--openbot-accent);
+    box-shadow: 0 0 0 2px var(--openbot-bg-sidebar);
+  }
 }

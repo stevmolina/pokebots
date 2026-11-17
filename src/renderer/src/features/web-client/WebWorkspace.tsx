@@ -181,7 +181,6 @@ import type { SettingsPagePlacement } from "@openbot/ui/features/settings/Settin
 import { createSettingsHostedServersStore } from "@openbot/ui/features/settings/stores/hosted-servers-store";
 import type { ShortcutId } from "@openbot/ui/features/shortcuts/shortcut-registry";
 import { Sidebar } from "@openbot/ui/features/sidebar/Sidebar";
-import { SidebarCommunityCard } from "@openbot/ui/features/sidebar/SidebarCommunityCard";
 import { sidebarAgentOrder } from "@openbot/ui/features/sidebar/sidebar-agent-order";
 import {
   computeSidebarAgentStates,
@@ -320,7 +319,6 @@ import type { HostPromptCacheTtlCalls } from "../settings/provider-prompt-cache"
 import { AppShortcuts } from "../shortcuts/AppShortcuts";
 import { onShortcutCommand } from "../shortcuts/shortcut-commands";
 import { shortcutPlatform } from "../shortcuts/shortcut-platform";
-import { createCommunityCardVisibility } from "../sidebar/community-card";
 import { createSidebarAlertCards, SidebarAlertCards } from "../sidebar/SidebarAlertCards";
 import { isReaderAuthor } from "../team/reader-identity";
 import type { ServerVaultOptions } from "../vault/ServerVaultPanel";
@@ -1036,7 +1034,6 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
       hiddenAgentIds: hiddenAgentIds(),
     }),
   );
-  const communityCard = createCommunityCardVisibility();
   const [messageFocusRequest, setMessageFocusRequest] = createSignal<{
     agentId: string;
     messageId: string;
@@ -3085,6 +3082,8 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
     onSettings: openAccountSettings,
     account: account(),
     onUpgrade: () => setBillingOpen(true),
+    onJoinDiscord: () => void openWebDestination("discord"),
+    onFollowX: () => void openWebDestination("x"),
     onSignOut: () => void signOut(),
     onConnectServers: server()
       ? () => {
@@ -3562,21 +3561,12 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                     onOpenSearch={() => setSearchOpen(true)}
                     onOpenMarketplace={openMarketplace}
                     footer={
-                      <>
-                        <SidebarAlertCards
-                          cards={alertCards}
-                          serverName={server()?.name ?? ""}
-                          members={workspace.state.presence?.members ?? []}
-                          onOpenStorage={(serverId) => void openServerSettings(serverId, null, "storage")}
-                        />
-                        <Show when={!phone() && !alertCards.shown() && !communityCard.dismissed()}>
-                          <SidebarCommunityCard
-                            onJoinDiscord={() => void openWebDestination("discord")}
-                            onFollowX={() => void openWebDestination("x")}
-                            onDismiss={communityCard.dismiss}
-                          />
-                        </Show>
-                      </>
+                      <SidebarAlertCards
+                        cards={alertCards}
+                        serverName={server()?.name ?? ""}
+                        members={workspace.state.presence?.members ?? []}
+                        onOpenStorage={(serverId) => void openServerSettings(serverId, null, "storage")}
+                      />
                     }
                     emptyAction={
                       firstAgent()

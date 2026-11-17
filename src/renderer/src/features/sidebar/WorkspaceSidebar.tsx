@@ -3,12 +3,10 @@ import { AGENT_NOTIFICATION_LEVELS_CAPABILITY } from "@openbot/contracts/team-pr
 import { CONVERSATION_UNREAD_FROM_CAPABILITY } from "@openbot/contracts/team-protocol/conversation-unread-from-v1";
 import { AGENT_HIDDEN_CAPABILITY } from "@openbot/contracts/team-protocol/current";
 import { Sidebar } from "@openbot/ui/features/sidebar/Sidebar";
-import { SidebarCommunityCard } from "@openbot/ui/features/sidebar/SidebarCommunityCard";
-import { SidebarMobileAppCard } from "@openbot/ui/features/sidebar/SidebarMobileAppCard";
 import { sidebarChannelWaits } from "@openbot/ui/features/sidebar/sidebar-agent-states";
 import { teamMemberName } from "@openbot/ui/features/team/TeamPersonAvatar";
 import { useText } from "@openbot/ui/text";
-import { createEffect, createMemo, createSignal, onSettled, Show } from "solid-js";
+import { createEffect, createMemo, createSignal, onSettled } from "solid-js";
 import { appPort } from "../../app-port";
 import { type ChatHistoryEntry, chatHistoryKeys } from "../../chat-history";
 import { useLayout } from "../../layout";
@@ -39,16 +37,11 @@ import { usePresence } from "../team/team-context";
 import { SidebarUpdateIsland } from "../updates/SidebarUpdateIsland";
 import { useWindowPage } from "../window/window-page-context";
 import { useWorkspaceSidebarPages } from "../window/workspace-sidebar-pages";
-import { createCommunityCardVisibility } from "./community-card";
 import { useCustomSidebarThreadLanes } from "./custom-sidebar-thread-lanes";
 import { DevWorktreeLabel } from "./DevWorktreeLabel";
 import { createSidebarAlertCards, SidebarAlertCards } from "./SidebarAlertCards";
 import { ServerUpgradeOffer } from "./server-upgrade-offer";
 import { useSidebar } from "./sidebar-context";
-
-/** Dismissing the mobile app card is a choice of this computer, like the sidebar width. The key is
- * new with the Android release, so a computer that dismissed the iPhone-only card sees it once more. */
-const MOBILE_APP_DISMISSED_STORAGE_KEY = "openbot:mobile-app-card-dismissed";
 
 /**
  * The list of Agents and people. It reads the most domains of any pane, and every
@@ -82,7 +75,7 @@ export function WorkspaceSidebar(props: { peopleEnabled: boolean }) {
   );
   const { openServerSettings, serverSettingsOpen } = useServerSettings();
   const serverActions = useServerActions();
-  const { openAppSettings, setSkillsMarketplaceOpen } = useSettings();
+  const { setSkillsMarketplaceOpen } = useSettings();
   const {
     agentList,
     agentListConnecting,
@@ -168,10 +161,6 @@ export function WorkspaceSidebar(props: { peopleEnabled: boolean }) {
     reorderPinnedSidebarItems,
     reorderSidebarPeople,
   } = useSidebar();
-  const [mobileAppDismissed, setMobileAppDismissed] = createSignal(
-    window.localStorage.getItem(MOBILE_APP_DISMISSED_STORAGE_KEY) === "true",
-  );
-  const communityCard = createCommunityCardVisibility();
   const alertCards = createSidebarAlertCards(activeServer);
   // A clear in Server settings frees space and can change an alert level, so both cards read
   // again when settings close.
@@ -476,34 +465,14 @@ export function WorkspaceSidebar(props: { peopleEnabled: boolean }) {
         onOpenSearch={() => setGlobalSearchVisibility(true)}
         footer={
           <>
-            {/* One card at a time. A machine over its alert level comes first, then a disk that is
-             * almost full; the community card waits until the mobile app card is dismissed. */}
+            {/* One alert card at a time: a machine over its alert level comes first, then a disk that is
+             * almost full. The mobile app and community links are in the profile menu. */}
             <SidebarAlertCards
               cards={alertCards}
               serverName={activeServer()?.name ?? ""}
               members={teamPresence().members}
               onOpenStorage={(serverId) => openServerSettings(serverId, null, "storage")}
             />
-            <Show when={!platform.landingPreview && !alertCards.shown() && !mobileAppDismissed()}>
-              <SidebarMobileAppCard
-                onOpenInstall={() => openAppSettings(null, "mobile-connect")}
-                onDismiss={() => {
-                  window.localStorage.setItem(MOBILE_APP_DISMISSED_STORAGE_KEY, "true");
-                  setMobileAppDismissed(true);
-                }}
-              />
-            </Show>
-            <Show
-              when={
-                !platform.landingPreview && !alertCards.shown() && mobileAppDismissed() && !communityCard.dismissed()
-              }
-            >
-              <SidebarCommunityCard
-                onJoinDiscord={() => void appPort().openExternal("discord")}
-                onFollowX={() => void appPort().openExternal("x")}
-                onDismiss={communityCard.dismiss}
-              />
-            </Show>
             <SidebarUpdateIsland />
           </>
         }

@@ -15,6 +15,7 @@ import { ChannelAvatar } from "../channels/ChannelAvatar";
 import { SidebarAgentContextMenu } from "./SidebarAgentContextMenu";
 import { SidebarAgentIndicator, SidebarPinnedAvatar } from "./SidebarAgentIndicator";
 import { SidebarChannelContextMenu } from "./SidebarChannelContextMenu";
+import { useSidebarFeaturedAgent } from "./SidebarFeaturedAgent";
 import { SidebarNameTooltip } from "./SidebarNameTooltip";
 import { sidebarUnreadBadge } from "./sidebar-agent-states";
 import { sidebarAgentStateLabel } from "./sidebar-filtering";
@@ -36,6 +37,14 @@ export function SidebarPinnedGroup() {
     stopSidebarDragging,
   } = useSidebarScope();
   const { t, format } = useText();
+  const featured = useSidebarFeaturedAgent();
+  /** The tile at the top of the list shows the main agent, so the group does not repeat it. The phone list keeps it. */
+  const pinnedItems = createMemo(() => {
+    const tileKey = props.largeTitle ? undefined : featured()?.pinnedKey;
+    return tileKey === undefined
+      ? resolvedPinnedItems()
+      : resolvedPinnedItems().filter((item) => sidebarPinnedItemKey(item.ref) !== tileKey);
+  });
   const chatName = (chat: SidebarChatItem) => (chat.kind === "agent" ? chat.agent.name : chat.channel.name);
   /** A pinned chat shows as open only while the chats are on screen, not under another page. */
   const chatsOnScreen = () => {
@@ -49,7 +58,7 @@ export function SidebarPinnedGroup() {
     else props.onSelectChannel?.(chat.id);
   };
   return (
-    <Show when={resolvedPinnedItems().length > 0 || emptyPinnedDropVisible()}>
+    <Show when={pinnedItems().length > 0 || emptyPinnedDropVisible()}>
       <section
         class={[
           "sidebar-chat-group sidebar-pinned-group",
@@ -64,7 +73,7 @@ export function SidebarPinnedGroup() {
           <Show when={emptyPinnedDropVisible()}>
             <li class="sidebar-pinned-empty-drop">{t("sidebar.pinned.dropHint")}</li>
           </Show>
-          <For each={resolvedPinnedItems()}>
+          <For each={pinnedItems()}>
             {(item) => {
               const key = () => sidebarPinnedItemKey(item.ref);
               const name = () => chatName(item.chat);

@@ -1,10 +1,11 @@
 /**
- * The bottom of the open chat sidebar: three quiet buttons on one borderless row.
+ * The bottom of the open chat sidebar: two quiet buttons on one borderless row.
  *
  * 1. Profile: the account photo with the status dot of the active machine. Its menu holds the weekly
- *    usage, the plan, the machine switch, the pages, Help, Settings and the account actions.
- * 2. Providers: the provider stack with its usage rings and card.
- * 3. Connect apps: a grid button whose menu opens the app catalog.
+ *    usage and the Usage page (the provider rings that sat in this row moved there), the plan, the
+ *    machine switch, the pages, the mobile app and community links, Help, Settings and the account
+ *    actions.
+ * 2. Connect apps: a grid button whose menu opens the app catalog.
  */
 
 import {
@@ -24,9 +25,9 @@ import {
 import { createMemo, For, Show } from "solid-js";
 import { useText } from "../../text";
 import { ServerMark } from "../servers/ServerRail";
+import { DiscordMark, XMark } from "../settings/brand-marks";
 import { SidebarMoreMenuItems } from "./SidebarMoreMenu";
 import { usePillPages } from "./SidebarPill";
-import { SidebarProviderStack } from "./SidebarProviderStack";
 import type { SidebarPages } from "./sidebar-pages";
 import { useSidebarScope } from "./sidebar-scope";
 
@@ -151,6 +152,25 @@ export function SidebarProfileMenu(props: {
               </DropdownMenu.Item>
             )}
           </Show>
+          <Show when={props.pages.onJoinDiscord || props.pages.onFollowX}>
+            <DropdownMenu.Separator />
+            <Show when={props.pages.onJoinDiscord}>
+              {(open) => (
+                <DropdownMenu.Item onSelectAfterClose={() => open()()}>
+                  <DiscordMark class="agent-context-icon size-4" />
+                  <span>{t("sidebar.community.joinDiscord")}</span>
+                </DropdownMenu.Item>
+              )}
+            </Show>
+            <Show when={props.pages.onFollowX}>
+              {(open) => (
+                <DropdownMenu.Item onSelectAfterClose={() => open()()}>
+                  <XMark class="agent-context-icon size-4" />
+                  <span>{t("sidebar.community.followX")}</span>
+                </DropdownMenu.Item>
+              )}
+            </Show>
+          </Show>
           <Show when={props.pages.onAddAccount || props.pages.onSignOut}>
             <DropdownMenu.Separator />
             <Show when={props.pages.onAddAccount}>
@@ -225,11 +245,6 @@ export function SidebarFooter(props: { pages: SidebarPages }) {
     <div class="sidebar-footer" role="toolbar" aria-label={t("sidebar.footer.label")}>
       <SidebarProfileMenu pages={props.pages} />
       <div class="sidebar-footer-actions">
-        <SidebarProviderStack
-          usageRows={props.pages.usageRows}
-          customAgentUsage={props.pages.customAgentUsage}
-          onOpenUsage={props.pages.onUsage}
-        />
         <ConnectAppsMenu pages={props.pages} />
       </div>
     </div>

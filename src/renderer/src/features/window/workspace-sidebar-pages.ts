@@ -108,6 +108,10 @@ export function useWorkspaceSidebarPages(): () => SidebarPages {
     onSettings: (button) => (updateNotice() ? openAppSettings(button, "updates") : windowPage.openSettings(button)),
     settingsNotice: updateNotice(),
     account: auth.signedInAccount() ?? undefined,
+    // The landing preview is a demo page, not an app that installs or links out.
+    onMobileApp: platform.landingPreview ? undefined : () => openAppSettings(null, "mobile-connect"),
+    onJoinDiscord: platform.landingPreview ? undefined : () => void appPort().openExternal("discord"),
+    onFollowX: platform.landingPreview ? undefined : () => void appPort().openExternal("x"),
     onSignOut: auth.signedInAccount() ? () => void auth.logoutCentralAccount() : undefined,
     help,
     onCollapse: () => layout.setSidebarCollapsed(true),
