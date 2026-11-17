@@ -68,12 +68,14 @@ export function PreviewChatScreen() {
   // so each sheet can be shown and captured without a touch.
   const sheetOpened = useRef(false);
   useEffect(() => {
-    if (sheetOpened.current || (sheet !== "sessions" && sheet !== "message")) return;
+    const routes = {
+      sessions: "/design-preview/sessions",
+      message: "/design-preview/message-actions",
+      model: "/design-preview/model",
+    } as const;
+    if (sheetOpened.current || (sheet !== "sessions" && sheet !== "message" && sheet !== "model")) return;
     sheetOpened.current = true;
-    const timer = setTimeout(
-      () => router.push(sheet === "sessions" ? "/design-preview/sessions" : "/design-preview/message-actions"),
-      600,
-    );
+    const timer = setTimeout(() => router.push(routes[sheet]), 600);
     return () => clearTimeout(timer);
   }, [router, sheet]);
 

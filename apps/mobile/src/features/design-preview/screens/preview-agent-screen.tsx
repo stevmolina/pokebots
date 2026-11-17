@@ -1,7 +1,6 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Typography } from "heroui-native";
 import Clock from "lucide-react-native/icons/clock";
-import Cpu from "lucide-react-native/icons/cpu";
 import Ellipsis from "lucide-react-native/icons/ellipsis";
 import Folder from "lucide-react-native/icons/folder";
 import Monitor from "lucide-react-native/icons/monitor";
@@ -11,6 +10,7 @@ import { useEffect, useRef, useState } from "react";
 import { Pressable, View } from "react-native";
 import { useUniwind } from "uniwind";
 import { RoutineActiveSwitch } from "@/features/agents/components/routine-active-switch";
+import { ProviderMark } from "@/features/servers/components/provider-mark";
 import { MenuView } from "@/shared/components/menu-view";
 import { haptics } from "@/shared/lib/haptics";
 import { useText } from "@/shared/lib/text";
@@ -24,7 +24,7 @@ import {
 } from "../components/preview-page";
 import { PreviewCircleButton, PreviewFace, PreviewGlass, usePreviewColors } from "../components/preview-parts";
 import { previewAgent } from "../model/preview-data";
-import { previewModelName, usePreviewModelChoice } from "../model/preview-model-choice";
+import { previewModelMark, previewModelName, usePreviewModelChoice } from "../model/preview-model-choice";
 import { previewProfile as profile, previewSize as size, previewType as type } from "../model/preview-tokens";
 
 /**
@@ -104,7 +104,7 @@ export function PreviewAgentScreen() {
       <PreviewGap size={profile.groupsTop} />
       <PreviewGroup>
         <PreviewRow
-          icon={<Cpu size={iconSize} color={iconColor} strokeWidth={1.6} />}
+          icon={<ProviderMark provider={previewModelMark(modelId)} size={iconSize} />}
           label={t("mobile.workspace.preview.model")}
           value={previewModelName(modelId)}
           onPress={openModel}

@@ -1,11 +1,11 @@
 import { router } from "expo-router";
 import { Typography } from "heroui-native";
 import Check from "lucide-react-native/icons/check";
-import Cpu from "lucide-react-native/icons/cpu";
 import MessageSquare from "lucide-react-native/icons/message-square";
 import Pin from "lucide-react-native/icons/pin";
 import Plus from "lucide-react-native/icons/plus";
 import Search from "lucide-react-native/icons/search";
+import { ProviderMark } from "@/features/servers/components/provider-mark";
 import { SettingsRow, SettingsSection } from "@/features/settings/components/settings-content";
 import { SheetScrollView } from "@/shared/components/sheet-scroll-view";
 import { haptics } from "@/shared/lib/haptics";
@@ -13,7 +13,7 @@ import { useText } from "@/shared/lib/text";
 import { usePreviewColors } from "../components/preview-parts";
 import { usePreviewTime } from "../components/preview-time";
 import { PREVIEW_PINNED_COUNT, PREVIEW_SESSIONS } from "../model/preview-data";
-import { previewModelName, usePreviewModelChoice } from "../model/preview-model-choice";
+import { previewModelMark, previewModelName, usePreviewModelChoice } from "../model/preview-model-choice";
 import { previewSheet } from "../model/preview-tokens";
 
 /**
@@ -36,7 +36,7 @@ export function PreviewSessionsSheet() {
       {/* The model of this agent, two taps away in the chat. The sheet makes room for the picker. */}
       <SettingsSection>
         <SettingsRow
-          leading={<Cpu size={size} color={icon} strokeWidth={1.7} />}
+          leading={<ProviderMark provider={previewModelMark(modelId)} size={22} />}
           value={previewModelName(modelId)}
           onPress={() => {
             void haptics.selection();

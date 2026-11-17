@@ -1,6 +1,7 @@
 import { Typography } from "heroui-native";
 import Check from "lucide-react-native/icons/check";
 import { View } from "react-native";
+import { ProviderMark } from "@/features/servers/components/provider-mark";
 import { SettingsRow, SettingsSection } from "@/features/settings/components/settings-content";
 import { SheetScrollView } from "@/shared/components/sheet-scroll-view";
 import { haptics } from "@/shared/lib/haptics";
@@ -22,26 +23,34 @@ export function PreviewModelSheet() {
   return (
     <SheetScrollView scrollEdgeEffect={false} contentContainerClassName="gap-5 px-4 pb-safe-offset-5 pt-7">
       {PREVIEW_MODEL_GROUPS.map((group) => (
-        <SettingsSection key={group.provider} title={group.provider}>
-          {group.models.map((model) => {
-            const current = model.id === choice.modelId;
-            return (
-              <SettingsRow
-                key={model.id}
-                supportingText={model.note}
-                checked={current}
-                disclosure={false}
-                trailing={current ? <Check size={20} color={colors.accent} strokeWidth={2.2} /> : undefined}
-                onPress={() => {
-                  void haptics.selection();
-                  usePreviewModelChoice.setState({ modelId: model.id });
-                }}
-              >
-                <Typography>{model.name}</Typography>
-              </SettingsRow>
-            );
-          })}
-        </SettingsSection>
+        <View key={group.provider} style={{ gap: 8 }}>
+          {/* The provider's logo before its name, the same logo as the composer button. */}
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 6, paddingHorizontal: 16 }}>
+            <ProviderMark provider={group.mark} size={14} />
+            <Typography style={[type.groupCaption, { color: colors.groupCaption }]}>{group.provider}</Typography>
+          </View>
+          <SettingsSection>
+            {group.models.map((model) => {
+              const current = model.id === choice.modelId;
+              return (
+                <SettingsRow
+                  key={model.id}
+                  leading={<ProviderMark provider={group.mark} size={22} />}
+                  supportingText={model.note}
+                  checked={current}
+                  disclosure={false}
+                  trailing={current ? <Check size={20} color={colors.accent} strokeWidth={2.2} /> : undefined}
+                  onPress={() => {
+                    void haptics.selection();
+                    usePreviewModelChoice.setState({ modelId: model.id });
+                  }}
+                >
+                  <Typography>{model.name}</Typography>
+                </SettingsRow>
+              );
+            })}
+          </SettingsSection>
+        </View>
       ))}
       <View style={{ gap: 10 }}>
         <Typography style={[type.groupCaption, { color: colors.groupCaption, marginLeft: 16 }]}>
