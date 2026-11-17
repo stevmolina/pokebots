@@ -57,3 +57,9 @@ export const CalmRowsContext = createContext(false);
 export function useCalmRows(): boolean {
   return useContext(CalmRowsContext);
 }
+
+/**
+ * The fill of an agent's message bubble in the calm look, from the chat list down to its bubbles.
+ * Null in the current look, where the bubble keeps its theme fill.
+ */
+export const CalmBubbleContext = createContext<string | null>(null);

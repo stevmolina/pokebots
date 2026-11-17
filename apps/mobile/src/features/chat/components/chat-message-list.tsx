@@ -80,6 +80,7 @@ import {
   indexChatMessages,
 } from "@/features/chat/model/chat-messages";
 import type { TurnStepsSummary } from "@/features/chat/model/turn-thinking";
+import { CalmBubbleContext, useCalmLook } from "@/features/design-preview/model/calm-look";
 import { readableOn } from "@/features/onboarding/model/onboarding-colors";
 import { useMessageColor } from "@/features/settings/model/message-color";
 import { useRoutineCollapsePreference } from "@/features/settings/model/routine-collapse";
@@ -208,6 +209,8 @@ function ChatBubble({
   // that the background trails the text, so there, as with the animation off, the background fills
   // the bubble in the same layout pass as the text.
   const sized = agent && animateSize && !isAndroid;
+  // The calm look's soft gray for an agent's bubble.
+  const calmFill = useContext(CalmBubbleContext);
   const size = useSharedValue({ width: 0, height: 0, measured: false });
   const shown = useSharedValue(collapsed ? 0 : 1);
   useEffect(() => {
@@ -247,8 +250,13 @@ function ChatBubble({
           // A new view when the setting changes, so a filled background keeps no animated size.
           key={sized ? "sized" : "filled"}
           pointerEvents="none"
-          className="absolute left-0 top-0 bg-control/60"
-          style={[BUBBLE_CORNER, sized ? null : StyleSheet.absoluteFill, background]}
+          className={calmFill ? "absolute left-0 top-0" : "absolute left-0 top-0 bg-control/60"}
+          style={[
+            BUBBLE_CORNER,
+            sized ? null : StyleSheet.absoluteFill,
+            calmFill ? { backgroundColor: calmFill } : null,
+            background,
+          ]}
         />
       ) : null}
       {children}
@@ -1490,8 +1498,10 @@ export const ChatMessageList = memo(function ChatMessageList({
   const arrivals = useMessageArrivals(replySession.key, messages, watchesArrivals);
   const messageColorMode = useMessageColor((state) => state.mode);
   const customMessageColor = useMessageColor((state) => state.customColor);
+  // The calm look draws the reader's bubbles in the agent's color, whatever the message color setting.
+  const calmAgentColor = useCalmLook() && target.kind === "agent";
   const userBubbleColor =
-    messageColorMode === "custom"
+    messageColorMode === "custom" && !calmAgentColor
       ? customMessageColor
       : avatarHeadColor(
           target.kind === "agent" ? target.avatarSeed : target.id,
@@ -1499,7 +1509,8 @@ export const ChatMessageList = memo(function ChatMessageList({
           target.kind === "agent" ? target.avatarColor : null,
         );
   // A channel has no one agent color for the reader's messages.
-  const coloredMessages = messageColorMode === "custom" || (messageColorMode === "agent" && target.kind === "agent");
+  const coloredMessages =
+    calmAgentColor || messageColorMode === "custom" || (messageColorMode === "agent" && target.kind === "agent");
   // Dark text on a light color and white text on a dark one, so the text stays readable.
   const userForeground = readableOn(userBubbleColor);
   const appearance = useConnectionAppearance(!canSend);

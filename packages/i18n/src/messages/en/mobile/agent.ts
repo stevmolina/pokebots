@@ -579,6 +579,7 @@ export const messages = defineMessages("mobile.agent", {
   "mobile.agent.home.connecting": "Connecting to server",
   "mobile.agent.home.loadingServers": "Loading your servers",
   "mobile.agent.home.addAgent": "Add agent",
+  "mobile.agent.home.openProfile": "Open profile and servers",
   "mobile.agent.home.newChannel": "New channel",
   "mobile.agent.home.retrySections": "Retry folders",
   "mobile.agent.home.serversFailed": "Couldn’t load your servers",

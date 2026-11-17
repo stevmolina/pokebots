@@ -17,6 +17,7 @@ import { ChatGlassIconButton } from "@/features/chat/components/chat-glass-icon-
 import type { ChatThreadMenu } from "@/features/chat/components/chat-thread-menu";
 import { useMessagePinsEnabled } from "@/features/chat/components/use-message-pins";
 import { useSplitDetailRoot } from "@/features/chat/components/use-split-detail-root";
+import { useCalmLook } from "@/features/design-preview/model/calm-look";
 import { useMobileWorkspaceSelector } from "@/features/workspace/context/mobile-workspace-context";
 import { showsOnline } from "@/features/workspace/model/server-status";
 import { useColumnWidth, useSplitLayout } from "@/shared/components/adaptive-split";
@@ -86,6 +87,14 @@ export const ChatHeader = memo(function ChatHeader({
   const barTop = useBarTop();
   const splitShown = useSplitLayout() !== null;
   const warning = useThemeColor("warning");
+  // The calm look: the name opens the agent's info, and the sessions move into the More menu.
+  const calm = useCalmLook();
+  // A side thread passes its own actions menu, which has no room for Sessions: there the name keeps
+  // opening the sessions, as in the current look.
+  const sessionsInMore = calm && actionsMenu === undefined;
+  const sessionsMenu = sessionsInMore ? threadMenu : undefined;
+  const pillMenu = sessionsInMore ? undefined : threadMenu;
+  const sessionsAttention = sessionsMenu?.attention ?? 0;
   const disconnected = useMobileWorkspaceSelector(
     (current) => !current.servers.some((server) => server.id === target.serverId && showsOnline(server)),
   );
@@ -194,17 +203,28 @@ export const ChatHeader = memo(function ChatHeader({
     image: "exclamationmark.triangle",
     imageColor: String(warning),
   };
+  const sessionsAction: MenuAction = {
+    id: "sessions",
+    title: t("mobile.chat.sessions.title"),
+    image: "bubble.left.and.bubble.right",
+  };
   const moreActions: MenuAction[] = [
+    ...(sessionsMenu ? [sessionsAction] : []),
     ...(browserShown ? [browserAction] : []),
     ...(pinsShown ? [pinsAction] : []),
     ...(attention ? [{ id: "attention-section", title: "", displayInline: true, subactions: [attentionAction] }] : []),
   ];
   const onMoreAction = (id: string) => {
-    if (id === "attention") openChannelActions();
+    if (id === "sessions") sessionsMenu?.open();
+    else if (id === "attention") openChannelActions();
     else if (id === "browser") openBrowser();
     else if (id === "pins") openPins();
   };
-  const moreLabel = attention ? t("mobile.chat.header.moreAttention") : t("mobile.chat.header.more");
+  const moreLabel = attention
+    ? t("mobile.chat.header.moreAttention")
+    : sessionsAttention > 0
+      ? t("mobile.chat.header.moreSessions", { count: sessionsAttention })
+      : t("mobile.chat.header.more");
   const moreHidden = moreActions.length === 0;
   // Not in a BlurReveal: glass stops rendering under an ancestor with zero opacity, so the button hides
   // itself, and its glass turns off with the native animation. A menu with no items, such as a channel
@@ -240,6 +260,11 @@ export const ChatHeader = memo(function ChatHeader({
         <Ellipsis color={iconColor} size={24} strokeWidth={2} />
         {attention ? (
           <View className="absolute top-2 right-2 size-2 rounded-full" style={{ backgroundColor: String(warning) }} />
+        ) : sessionsMenu && sessionsAttention > 0 ? (
+          <View
+            className="absolute top-2 right-2 size-2 rounded-full"
+            style={{ backgroundColor: sessionsMenu.color }}
+          />
         ) : null}
       </GlassView>
     </MenuView>
@@ -266,25 +291,25 @@ export const ChatHeader = memo(function ChatHeader({
         overflow: "hidden",
       }}
     >
-      {threadMenu ? (
+      {pillMenu ? (
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={
-            threadMenu.attention > 0
-              ? t("mobile.chat.threads.menuAttention", { name: target.name, count: threadMenu.attention })
+            pillMenu.attention > 0
+              ? t("mobile.chat.threads.menuAttention", { name: target.name, count: pillMenu.attention })
               : t("mobile.chat.threads.menu", { name: target.name })
           }
           className="min-w-0 flex-row items-center gap-2 pr-3 pl-2.5"
           hitSlop={8}
           style={{ height: pillHeight, maxWidth: kicker ? width - insets.left - insets.right - titleReserve : 220 }}
-          onPress={threadMenu.open}
+          onPress={pillMenu.open}
         >
           {identity}
           <ChevronDown color={iconColor} size={16} strokeWidth={2.5} />
-          {threadMenu.attention > 0 ? (
+          {pillMenu.attention > 0 ? (
             <View
               className="absolute top-1.5 right-2 size-2.5 rounded-full"
-              style={{ backgroundColor: threadMenu.color }}
+              style={{ backgroundColor: pillMenu.color }}
             />
           ) : null}
         </Pressable>
@@ -294,6 +319,8 @@ export const ChatHeader = memo(function ChatHeader({
           accessibilityRole="button"
           accessibilityLabel={t("mobile.chat.header.info", { name: target.name })}
           hitSlop={8}
+          // A long title, such as a side thread's, stays clear of the button on the other side.
+          style={{ maxWidth: kicker ? width - insets.left - insets.right - titleReserve : 220 }}
           onPress={() => {
             void haptics.impact("soft");
             if (target.kind === "channel")
@@ -380,7 +407,11 @@ export const ChatHeader = memo(function ChatHeader({
               accessibilityLabel={moreLabel}
               hidden={accessibilityHidden || moreHidden}
             >
-              {attention ? <Stack.Toolbar.Badge style={{ backgroundColor: String(warning) }} /> : null}
+              {attention ? (
+                <Stack.Toolbar.Badge style={{ backgroundColor: String(warning) }} />
+              ) : sessionsMenu && sessionsAttention > 0 ? (
+                <Stack.Toolbar.Badge style={{ backgroundColor: sessionsMenu.color }} />
+              ) : null}
               {toolbarMenuItems(moreActions, onMoreAction)}
             </Stack.Toolbar.Menu>
           )}
@@ -391,6 +422,7 @@ export const ChatHeader = memo(function ChatHeader({
           ) : null}
         </Stack.Toolbar>
         <SheetScrollEdgeEffect
+          surface={calm ? "sheet" : "canvas"}
           style={{ height: topInset + 82, left: 0, position: "absolute", right: 0, top: 0, zIndex: 10 }}
         />
         {verticalBar ? (
@@ -441,6 +473,7 @@ export const ChatHeader = memo(function ChatHeader({
         {trailingButtons}
       </View>
       <SheetScrollEdgeEffect
+        surface={calm ? "sheet" : "canvas"}
         style={{ height: topInset + 82, left: 0, position: "absolute", right: 0, top: 0, zIndex: 10 }}
       />
     </>
