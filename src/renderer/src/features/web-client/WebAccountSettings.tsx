@@ -20,8 +20,10 @@ import {
   toast,
   UserRound,
 } from "@openbot/ui";
+import { documentColorScheme } from "@openbot/ui/document-color-scheme";
 import { AppearanceSelect } from "@openbot/ui/features/settings/AppearanceSelect";
 import { ACTION_SOUND_CHOICES, TASK_SOUND_CHOICES } from "@openbot/ui/features/settings/app-settings";
+import { ChatBackgroundSetting } from "@openbot/ui/features/settings/ChatBackgroundSetting";
 import { ChatBubbleStyleSelect } from "@openbot/ui/features/settings/ChatBubbleStyleSelect";
 import { OwnChatColorTrigger } from "@openbot/ui/features/settings/ChatColorSetting";
 import { LanguageSelect } from "@openbot/ui/features/settings/LanguageSelect";
@@ -43,9 +45,11 @@ import { playSoundChoice, readTaskSound, setTaskSound } from "../../completion-s
 import { webReportsEnabled } from "../../error-reports";
 import { useLayout } from "../../layout";
 import { currentDevicePlatform, setSendShortcutMode, useSendShortcutMode } from "../../send-shortcut-preference";
+import { ChatBackdropSetting } from "../settings/ChatBackdropSetting";
 import { connectionLogText } from "./connection-log";
 import type { WebAccountCalls } from "./web-account";
 import { sendWebAnalyticsChoice, setWebAnalyticsEnabled } from "./web-analytics";
+import { setWebChatBackground, useWebChatBackground } from "./web-chat-background";
 import { setWebLiveVoice, useWebLiveVoice } from "./web-live-voice";
 import type { WebNotificationSettings } from "./web-notification-settings";
 import type { WebPush } from "./web-push";
@@ -135,6 +139,7 @@ export default function WebAccountSettings(props: WebAccountSettingsProps) {
   const showAgentSteps = useShowAgentSteps();
   const compactMessageActions = useCompactMessageActions();
   const bubbleStyle = useChatBubbleStyle();
+  const chatBackground = useWebChatBackground();
   const webLiveVoice = useWebLiveVoice();
   // Playback reads the stored value on each event, so the menus follow a change from another tab.
   const [soundChoice, setSoundChoice] = createSignal(readActionSoundChoice());
@@ -171,8 +176,9 @@ export default function WebAccountSettings(props: WebAccountSettingsProps) {
   );
 
   // The request counter never resets, so the effect runs again on each later opening with the same
-  // value. Act only on a value that this component has not handled yet.
-  let handledMachinesRequest = props.machinesRequest ?? 0;
+  // value. Act only on a value that this component has not handled yet. It starts at 0, so a first
+  // mount that comes with a request (Back from a machine before settings ever opened) still acts on it.
+  let handledMachinesRequest = 0;
   createEffect(
     () => (props.open ? props.machinesRequest : null),
     (request) => {
@@ -341,6 +347,29 @@ export default function WebAccountSettings(props: WebAccountSettingsProps) {
                     onChange={setChatBubbleStyle}
                     {...(modalElement ? { mount: modalElement } : {})}
                   />
+                </ItemActions>
+              </Item>
+              <Item class="settings-modal-row">
+                <ItemContent>
+                  <ItemTitle>{t("settings.chatBackground.title")}</ItemTitle>
+                  <ItemDescription>{t("settings.chatBackground.description")}</ItemDescription>
+                </ItemContent>
+                <ItemActions>
+                  <ChatBackgroundSetting
+                    scheme={documentColorScheme()}
+                    light={chatBackground().chatBackgroundLight}
+                    dark={chatBackground().chatBackgroundDark}
+                    onChange={setWebChatBackground}
+                  />
+                </ItemActions>
+              </Item>
+              <Item class="settings-modal-row">
+                <ItemContent>
+                  <ItemTitle>{t("settings.chatBackdrop.title")}</ItemTitle>
+                  <ItemDescription>{t("settings.chatBackdrop.description")}</ItemDescription>
+                </ItemContent>
+                <ItemActions>
+                  <ChatBackdropSetting {...(modalElement ? { mount: modalElement } : {})} />
                 </ItemActions>
               </Item>
             </ItemGroup>

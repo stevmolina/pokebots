@@ -87,6 +87,7 @@ import { Route as V1AgentTemplatesMineRouteImport } from './routes/v1/agent-temp
 import { Route as V1AuthLogoutRouteImport } from './routes/v1/auth/logout'
 import { Route as V1AvatarsUserIdRouteImport } from './routes/v1/avatars/$userId'
 import { Route as V1FeedbackSimilarRouteImport } from './routes/v1/feedback/similar'
+import { Route as V1FeedbackWithdrawRouteImport } from './routes/v1/feedback/withdraw'
 import { Route as V1GithubInstallationTokensRouteImport } from './routes/v1/github/installation-tokens'
 import { Route as V1MeAnalyticsRouteImport } from './routes/v1/me/analytics'
 import { Route as V1MeAvatarRouteImport } from './routes/v1/me/avatar'
@@ -137,6 +138,7 @@ import { Route as V1MarketplaceAgentsIndexRouteImport } from './routes/v1/market
 import { Route as V1MarketplaceAgentsAgentIdRouteImport } from './routes/v1/marketplace/agents/$agentId'
 import { Route as V1MarketplaceAgentsMineRouteImport } from './routes/v1/marketplace/agents/mine'
 import { Route as V1MeBillingIndexRouteImport } from './routes/v1/me/billing/index'
+import { Route as V1MeBillingDetailsRouteImport } from './routes/v1/me/billing/details'
 import { Route as V1MeBillingPortalRouteImport } from './routes/v1/me/billing/portal'
 import { Route as V1MeBillingStorageRouteImport } from './routes/v1/me/billing/storage'
 import { Route as V1MeLicenseIndexRouteImport } from './routes/v1/me/license/index'
@@ -615,6 +617,11 @@ const V1FeedbackSimilarRoute = V1FeedbackSimilarRouteImport.update({
   path: '/similar',
   getParentRoute: () => V1FeedbackRoute,
 } as any)
+const V1FeedbackWithdrawRoute = V1FeedbackWithdrawRouteImport.update({
+  id: '/withdraw',
+  path: '/withdraw',
+  getParentRoute: () => V1FeedbackRoute,
+} as any)
 const V1GithubInstallationTokensRoute =
   V1GithubInstallationTokensRouteImport.update({
     id: '/v1/github/installation-tokens',
@@ -868,6 +875,11 @@ const V1MarketplaceAgentsMineRoute = V1MarketplaceAgentsMineRouteImport.update({
 const V1MeBillingIndexRoute = V1MeBillingIndexRouteImport.update({
   id: '/billing/',
   path: '/billing/',
+  getParentRoute: () => V1MeRoute,
+} as any)
+const V1MeBillingDetailsRoute = V1MeBillingDetailsRouteImport.update({
+  id: '/billing/details',
+  path: '/billing/details',
   getParentRoute: () => V1MeRoute,
 } as any)
 const V1MeBillingPortalRoute = V1MeBillingPortalRouteImport.update({
@@ -1440,6 +1452,7 @@ export interface FileRoutesByFullPath {
   '/v1/auth/logout': typeof V1AuthLogoutRoute
   '/v1/avatars/$userId': typeof V1AvatarsUserIdRoute
   '/v1/feedback/similar': typeof V1FeedbackSimilarRoute
+  '/v1/feedback/withdraw': typeof V1FeedbackWithdrawRoute
   '/v1/github/installation-tokens': typeof V1GithubInstallationTokensRoute
   '/v1/me/analytics': typeof V1MeAnalyticsRoute
   '/v1/me/avatar': typeof V1MeAvatarRoute
@@ -1489,6 +1502,7 @@ export interface FileRoutesByFullPath {
   '/v1/auth/workos/start': typeof V1AuthWorkosStartRoute
   '/v1/marketplace/agents/$agentId': typeof V1MarketplaceAgentsAgentIdRouteWithChildren
   '/v1/marketplace/agents/mine': typeof V1MarketplaceAgentsMineRoute
+  '/v1/me/billing/details': typeof V1MeBillingDetailsRoute
   '/v1/me/billing/portal': typeof V1MeBillingPortalRoute
   '/v1/me/billing/storage': typeof V1MeBillingStorageRoute
   '/v1/me/license/checkout': typeof V1MeLicenseCheckoutRoute
@@ -1653,6 +1667,7 @@ export interface FileRoutesByTo {
   '/v1/auth/logout': typeof V1AuthLogoutRoute
   '/v1/avatars/$userId': typeof V1AvatarsUserIdRoute
   '/v1/feedback/similar': typeof V1FeedbackSimilarRoute
+  '/v1/feedback/withdraw': typeof V1FeedbackWithdrawRoute
   '/v1/github/installation-tokens': typeof V1GithubInstallationTokensRoute
   '/v1/me/analytics': typeof V1MeAnalyticsRoute
   '/v1/me/avatar': typeof V1MeAvatarRoute
@@ -1702,6 +1717,7 @@ export interface FileRoutesByTo {
   '/v1/auth/workos/start': typeof V1AuthWorkosStartRoute
   '/v1/marketplace/agents/$agentId': typeof V1MarketplaceAgentsAgentIdRouteWithChildren
   '/v1/marketplace/agents/mine': typeof V1MarketplaceAgentsMineRoute
+  '/v1/me/billing/details': typeof V1MeBillingDetailsRoute
   '/v1/me/billing/portal': typeof V1MeBillingPortalRoute
   '/v1/me/billing/storage': typeof V1MeBillingStorageRoute
   '/v1/me/license/checkout': typeof V1MeLicenseCheckoutRoute
@@ -1871,6 +1887,7 @@ export interface FileRoutesById {
   '/v1/auth/logout': typeof V1AuthLogoutRoute
   '/v1/avatars/$userId': typeof V1AvatarsUserIdRoute
   '/v1/feedback/similar': typeof V1FeedbackSimilarRoute
+  '/v1/feedback/withdraw': typeof V1FeedbackWithdrawRoute
   '/v1/github/installation-tokens': typeof V1GithubInstallationTokensRoute
   '/v1/me/analytics': typeof V1MeAnalyticsRoute
   '/v1/me/avatar': typeof V1MeAvatarRoute
@@ -1920,6 +1937,7 @@ export interface FileRoutesById {
   '/v1/auth/workos/start': typeof V1AuthWorkosStartRoute
   '/v1/marketplace/agents/$agentId': typeof V1MarketplaceAgentsAgentIdRouteWithChildren
   '/v1/marketplace/agents/mine': typeof V1MarketplaceAgentsMineRoute
+  '/v1/me/billing/details': typeof V1MeBillingDetailsRoute
   '/v1/me/billing/portal': typeof V1MeBillingPortalRoute
   '/v1/me/billing/storage': typeof V1MeBillingStorageRoute
   '/v1/me/license/checkout': typeof V1MeLicenseCheckoutRoute
@@ -2086,6 +2104,7 @@ export interface FileRouteTypes {
     | '/v1/auth/logout'
     | '/v1/avatars/$userId'
     | '/v1/feedback/similar'
+    | '/v1/feedback/withdraw'
     | '/v1/github/installation-tokens'
     | '/v1/me/analytics'
     | '/v1/me/avatar'
@@ -2135,6 +2154,7 @@ export interface FileRouteTypes {
     | '/v1/auth/workos/start'
     | '/v1/marketplace/agents/$agentId'
     | '/v1/marketplace/agents/mine'
+    | '/v1/me/billing/details'
     | '/v1/me/billing/portal'
     | '/v1/me/billing/storage'
     | '/v1/me/license/checkout'
@@ -2299,6 +2319,7 @@ export interface FileRouteTypes {
     | '/v1/auth/logout'
     | '/v1/avatars/$userId'
     | '/v1/feedback/similar'
+    | '/v1/feedback/withdraw'
     | '/v1/github/installation-tokens'
     | '/v1/me/analytics'
     | '/v1/me/avatar'
@@ -2348,6 +2369,7 @@ export interface FileRouteTypes {
     | '/v1/auth/workos/start'
     | '/v1/marketplace/agents/$agentId'
     | '/v1/marketplace/agents/mine'
+    | '/v1/me/billing/details'
     | '/v1/me/billing/portal'
     | '/v1/me/billing/storage'
     | '/v1/me/license/checkout'
@@ -2516,6 +2538,7 @@ export interface FileRouteTypes {
     | '/v1/auth/logout'
     | '/v1/avatars/$userId'
     | '/v1/feedback/similar'
+    | '/v1/feedback/withdraw'
     | '/v1/github/installation-tokens'
     | '/v1/me/analytics'
     | '/v1/me/avatar'
@@ -2565,6 +2588,7 @@ export interface FileRouteTypes {
     | '/v1/auth/workos/start'
     | '/v1/marketplace/agents/$agentId'
     | '/v1/marketplace/agents/mine'
+    | '/v1/me/billing/details'
     | '/v1/me/billing/portal'
     | '/v1/me/billing/storage'
     | '/v1/me/license/checkout'
@@ -3383,6 +3407,13 @@ declare module '@tanstack/solid-router' {
       preLoaderRoute: typeof V1FeedbackSimilarRouteImport
       parentRoute: typeof V1FeedbackRoute
     }
+    '/v1/feedback/withdraw': {
+      id: '/v1/feedback/withdraw'
+      path: '/withdraw'
+      fullPath: '/v1/feedback/withdraw'
+      preLoaderRoute: typeof V1FeedbackWithdrawRouteImport
+      parentRoute: typeof V1FeedbackRoute
+    }
     '/v1/github/installation-tokens': {
       id: '/v1/github/installation-tokens'
       path: '/v1/github/installation-tokens'
@@ -3731,6 +3762,13 @@ declare module '@tanstack/solid-router' {
       path: '/billing'
       fullPath: '/v1/me/billing/'
       preLoaderRoute: typeof V1MeBillingIndexRouteImport
+      parentRoute: typeof V1MeRoute
+    }
+    '/v1/me/billing/details': {
+      id: '/v1/me/billing/details'
+      path: '/billing/details'
+      fullPath: '/v1/me/billing/details'
+      preLoaderRoute: typeof V1MeBillingDetailsRouteImport
       parentRoute: typeof V1MeRoute
     }
     '/v1/me/billing/portal': {
@@ -4405,10 +4443,12 @@ const TeamsRouteWithChildren = TeamsRoute._addFileChildren(TeamsRouteChildren)
 
 interface V1FeedbackRouteChildren {
   V1FeedbackSimilarRoute: typeof V1FeedbackSimilarRoute
+  V1FeedbackWithdrawRoute: typeof V1FeedbackWithdrawRoute
 }
 
 const V1FeedbackRouteChildren: V1FeedbackRouteChildren = {
   V1FeedbackSimilarRoute: V1FeedbackSimilarRoute,
+  V1FeedbackWithdrawRoute: V1FeedbackWithdrawRoute,
 }
 
 const V1FeedbackRouteWithChildren = V1FeedbackRoute._addFileChildren(
@@ -4420,6 +4460,7 @@ interface V1MeRouteChildren {
   V1MeAvatarRoute: typeof V1MeAvatarRoute
   V1MeChatColorRoute: typeof V1MeChatColorRoute
   V1MeProfileRoute: typeof V1MeProfileRoute
+  V1MeBillingDetailsRoute: typeof V1MeBillingDetailsRoute
   V1MeBillingPortalRoute: typeof V1MeBillingPortalRoute
   V1MeBillingStorageRoute: typeof V1MeBillingStorageRoute
   V1MeLicenseCheckoutRoute: typeof V1MeLicenseCheckoutRoute
@@ -4435,6 +4476,7 @@ const V1MeRouteChildren: V1MeRouteChildren = {
   V1MeAvatarRoute: V1MeAvatarRoute,
   V1MeChatColorRoute: V1MeChatColorRoute,
   V1MeProfileRoute: V1MeProfileRoute,
+  V1MeBillingDetailsRoute: V1MeBillingDetailsRoute,
   V1MeBillingPortalRoute: V1MeBillingPortalRoute,
   V1MeBillingStorageRoute: V1MeBillingStorageRoute,
   V1MeLicenseCheckoutRoute: V1MeLicenseCheckoutRoute,

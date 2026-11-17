@@ -8,6 +8,7 @@
  */
 
 import {
+  BriefcaseBusiness,
   Button,
   Check,
   ChevronRight,
@@ -23,6 +24,7 @@ import {
   Plus,
   Settings,
   Smartphone,
+  Sparkles,
   Store,
   UserAvatar,
   UserPlus,
@@ -187,6 +189,22 @@ export function SidebarProfileMenu(props: {
                     </DropdownMenu.Item>
                   )}
                 </Show>
+                <Show when={props.pages.onProviders}>
+                  {(open) => (
+                    <DropdownMenu.Item onSelectAfterClose={openFromTrigger(open())}>
+                      <Sparkles class="agent-context-icon size-4" aria-hidden="true" />
+                      <span>{t("app.rail.providers")}</span>
+                    </DropdownMenu.Item>
+                  )}
+                </Show>
+                <Show when={props.pages.onCrm}>
+                  {(open) => (
+                    <DropdownMenu.Item onSelectAfterClose={openFromTrigger(open())}>
+                      <BriefcaseBusiness class="agent-context-icon size-4" aria-hidden="true" />
+                      <span>{t("app.rail.crm")}</span>
+                    </DropdownMenu.Item>
+                  )}
+                </Show>
                 <Show when={props.pages.onMarketplace}>
                   {(onMarketplace) => (
                     <DropdownMenu.Item onSelectAfterClose={() => onMarketplace()()}>
@@ -277,8 +295,8 @@ export function SidebarProfileMenu(props: {
 }
 
 /**
- * The grid button of the footer. It opens the Marketplace at once, as a modal over the window. The MCP servers entry
- * that its menu had on the web client is a row of the Marketplace side panel now.
+ * The grid button of the footer. It opens the Marketplace at once, as a modal over the window. The custom MCP
+ * servers that its menu had on the web client are part of the Marketplace now.
  */
 export function ConnectAppsButton(props: { pages: SidebarPages; class?: string }) {
   const { t } = useText();

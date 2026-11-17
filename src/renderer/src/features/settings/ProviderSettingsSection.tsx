@@ -55,6 +55,7 @@ import {
   type ProviderClaudeCompactWindow,
   type ProviderClaudeUserSetup,
   type ProviderDefaultChoice,
+  type ProviderEnvironmentControl,
   type ProviderModelVisibilityControl,
   type ProviderPromptCache,
   type ProviderSettingsDetail,
@@ -72,6 +73,7 @@ import {
   type ProviderClaudeCompactWindowSource,
 } from "./provider-claude-compact-window";
 import { createProviderClaudeUserSetup, type ProviderClaudeUserSetupSource } from "./provider-claude-user-setup";
+import { createProviderEnvironment, type ProviderEnvironmentSource } from "./provider-environment";
 import { createHostDefaultProvider, type HostDefaultProviderSource } from "./provider-host-default";
 import { createProviderModelVisibility, type ProviderModelVisibilitySource } from "./provider-model-visibility";
 import { createProviderPromptCache, type ProviderPromptCacheSource } from "./provider-prompt-cache";
@@ -111,9 +113,11 @@ interface ProviderSettingsSectionProps {
   onUpdateCustomProvider?: ((input: UpdateCustomProviderInput) => Promise<CustomProviderRestart>) | undefined;
   /**
    * The endpoints are this computer's, so the form offers "Runs on" and the model limits. A joined
-   * server's host keeps both as they are: the Team API has neither.
+   * server's host keeps the model limits as they are: the Team API has none.
    */
   localEndpoints?: boolean | undefined;
+  /** A joined server's host with `custom-provider-harness-choice-v1`: the form offers "Runs on" too. */
+  customProviderHarnessChoice?: boolean | undefined;
   onSignInProvider?: ((provider: AgentProviderId) => void | Promise<void>) | undefined;
   /** Adds, names and removes the accounts of each provider that can hold more than one. */
   accountActions?: ProviderAccountActions | undefined;
@@ -134,6 +138,7 @@ interface ProviderSettingsSectionProps {
   claudeUserSetup?: ProviderClaudeUserSetup | undefined;
   claudeAiTools?: ProviderClaudeAiTools | undefined;
   claudeCompactWindow?: ProviderClaudeCompactWindow | undefined;
+  environment?: ((provider: AgentProviderId) => ProviderEnvironmentControl | undefined) | undefined;
   modelVisibility?: ((provider: AgentProviderId) => ProviderModelVisibilityControl) | undefined;
 }
 
@@ -152,9 +157,9 @@ function ProviderSettingsSection(props: ProviderSettingsSectionProps) {
     const endpoint = customProviderOfModel(choice?.preferredModel, customProviders());
     return endpoint && choice?.preferredProvider === harnessOf(endpoint) ? (choice.preferredModel ?? null) : null;
   };
-  /** "Runs on" is of this computer: a joined server's host keeps the harness of each endpoint. */
+  /** "Runs on": this computer, or a joined server's host that lets an admin choose the harness. */
   const harnesses = () =>
-    props.localEndpoints
+    props.localEndpoints || props.customProviderHarnessChoice
       ? CUSTOM_PROVIDER_HARNESSES.map((id) => {
           const option = props.store.providerOptions().find((item) => item.id === id);
           return { id, ready: servesCustomProvider(option), runtime: option?.runtimeStatus };
@@ -237,6 +242,7 @@ function ProviderSettingsSection(props: ProviderSettingsSectionProps) {
     onAdd: (value) => props.onAddCustomProvider?.(value),
     onDelete: (id) => props.onDeleteCustomProvider?.(id),
     onUpdate: (input) => props.onUpdateCustomProvider?.(input),
+    discoverModels: () => props.detectedProviderApi?.discoverModels,
     onSaved: (value) => void selectSavedEndpoint(value),
     onRemoved: (id) => {
       const provider = props.defaultProvider?.preferredProvider ?? null;
@@ -313,6 +319,7 @@ function ProviderSettingsSection(props: ProviderSettingsSectionProps) {
         claudeUserSetup={props.claudeUserSetup}
         claudeAiTools={props.claudeAiTools}
         claudeCompactWindow={props.claudeCompactWindow}
+        environment={props.environment}
         modelVisibility={props.modelVisibility}
         footer={
           <>
@@ -364,6 +371,8 @@ function ProviderSettingsSection(props: ProviderSettingsSectionProps) {
           harnesses={harnesses()}
           onDownloadHarness={downloadHarness()}
           harnessError={downloadError()}
+          discovery={host.discovery()}
+          onDiscoverModels={host.discover()}
           busy={host.state.saving}
           submitError={host.state.submitError}
           takenProviderIds={customProviders().map((provider) => provider.id)}
@@ -561,6 +570,8 @@ export interface HostProviderSettings {
   onDeleteCustomProvider?: ((id: string) => Promise<CustomProviderRestart>) | undefined;
   /** Without it the rows have no Edit. A joined server's host edits only with `custom-provider-edit-v1`. */
   onUpdateCustomProvider?: ((input: UpdateCustomProviderInput) => Promise<CustomProviderRestart>) | undefined;
+  /** A joined server's host with `custom-provider-harness-choice-v1`: the endpoint form offers "Runs on". */
+  customProviderHarnessChoice?: boolean | undefined;
   providerKeys?: ProviderKeyApi | undefined;
   /** How each row signs in, from where the user connects. */
   connection?: ProviderConnectionApi | undefined;
@@ -599,6 +610,8 @@ export function HostProviderSettingsPanel(
     claudeAiTools?: ProviderClaudeAiToolsSource | undefined;
     /** The Claude page's compaction size, for a host with `claude-compact-window-v1` that this account administers. */
     claudeCompactWindow?: ProviderClaudeCompactWindowSource | undefined;
+    /** The Environment section of each provider page, for a host with `provider-environment-v1` that this account administers. */
+    providerEnvironment?: ProviderEnvironmentSource | undefined;
     /** The Models section of each provider page, for a host with `model-visibility-v1` that this account administers. */
     modelVisibility?: ProviderModelVisibilitySource | undefined;
     /** The Default provider of a joined host with `provider-default-v1` that this account administers. */
@@ -624,6 +637,10 @@ export function HostProviderSettingsPanel(
   );
   const claudeCompactWindow = createProviderClaudeCompactWindow(
     () => props.claudeCompactWindow,
+    () => props.agentStatus,
+  );
+  const environment = createProviderEnvironment(
+    () => props.providerEnvironment,
     () => props.agentStatus,
   );
   const keys = createProviderKeyState({
@@ -684,6 +701,7 @@ export function HostProviderSettingsPanel(
         onDeleteCustomProvider={props.onDeleteCustomProvider}
         onUpdateCustomProvider={props.onUpdateCustomProvider}
         localEndpoints={props.hostName === undefined}
+        customProviderHarnessChoice={props.customProviderHarnessChoice}
         accountActions={props.accountActions}
         // With detection off there is no list, not an empty one.
         providerDetection={props.detectionSettings?.enabled === false ? undefined : props.providerDetection}
@@ -698,6 +716,7 @@ export function HostProviderSettingsPanel(
         claudeUserSetup={claudeUserSetup()}
         claudeAiTools={claudeAiTools()}
         claudeCompactWindow={claudeCompactWindow()}
+        environment={environment()}
         modelVisibility={modelVisibility()}
         detectionSettings={
           <Show when={props.detectionSettings}>

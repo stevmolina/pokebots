@@ -1709,3 +1709,8 @@
 .agent-routine-starter .agent-routine-row small {
   white-space: normal;
 }
+
+/* The row that a setting card in the chat opened, as the settings search marks a row */
+.agent-settings-page [data-search-match] {
+  background: var(--openbot-bg-control-active);
+}

@@ -27,6 +27,11 @@ export const LibraryPanel = lazy(() =>
 export const MachinesPanel = lazy(() =>
   import("./features/servers/MachinesPanel").then((module) => ({ default: module.MachinesPanel })),
 );
+export const CrmPage = lazy(() => import("./features/crm/CrmPage").then((module) => ({ default: module.CrmPage })));
+/** The CRM page without the desktop contexts, for the browser app. */
+export const CrmScreen = lazy(() =>
+  import("./features/crm/CrmScreen").then((module) => ({ default: module.CrmScreen })),
+);
 export const ServerLibrary = lazy(() =>
   import("./features/files/ServerLibrary").then((module) => ({ default: module.ServerLibrary })),
 );
