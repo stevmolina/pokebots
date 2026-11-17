@@ -1,3 +1,5 @@
+import { ROOMS_CAPABILITY, ROOMS_ROUTE } from "@openbot/contracts/team-protocol/rooms-v1";
+import { RoomsService } from "../src/main/rooms-service";
 // Drives the real `TeamApiServer` on a loopback port over HTTP, as a remote client does. The team
 // store and the direct-message store are the real ones on temporary files. The agent service, the
 // mailbox and the browser are small in-memory stand-ins that record each call, so a check can show
@@ -2354,7 +2356,12 @@ async function runRouteChecks() {
   libraryStore.onChanged(() => {
     for (const listener of agentEventListeners) listener({ type: "library-folders-changed" });
   });
+  const rooms = new RoomsService({
+    accessToken: () => Effect.succeed(null),
+    refreshAccessToken: () => Effect.succeed(null),
+  });
   server = new TeamApiServer({
+    rooms,
     agentComputer,
     appVersion: APP_VERSION,
     agentImport,
@@ -3008,6 +3015,18 @@ async function runRouteChecks() {
   );
   assert.ok(typeof adaToken === "string" && typeof adaId === "string", "ada did not join.");
 
+  const roomsAdmin = await call("POST", ROOMS_ROUTE, {
+    token: adaToken,
+    protocol: 9,
+    json: { kind: "list" },
+    capabilities: [ROOMS_CAPABILITY],
+  });
+  check(
+    "Rooms admin route returns a disconnected account without a token",
+    roomsAdmin.status === 200 && field(roomsAdmin.body, "connected") === false,
+    summary(roomsAdmin),
+  );
+
   const reuse = await call("POST", TEAM_API_ROUTES.join.server, {
     json: { inviteToken: adminInvite.token, username: "ada2", password: ADA_PASSWORD },
   });
@@ -3043,6 +3062,21 @@ async function runRouteChecks() {
     { redeemedServerIds, serverId },
   );
   assert.ok(typeof bobToken === "string" && typeof bobId === "string", "bob did not join.");
+
+  const roomsMember = await call("POST", ROOMS_ROUTE, {
+    token: bobToken,
+    protocol: 9,
+    capabilities: [ROOMS_CAPABILITY],
+    json: { kind: "list" },
+  });
+  check("Rooms refuses a member before it reads the host account", roomsMember.status === 403, summary(roomsMember));
+  const roomsUnsupported = await call("POST", ROOMS_ROUTE, {
+    token: adaToken,
+    protocol: 9,
+    capabilities: [],
+    json: { kind: "list" },
+  });
+  check("Rooms requires its optional host capability", roomsUnsupported.status !== 200, summary(roomsUnsupported));
 
   // Native Agent Computer, through the real Team API dispatcher and frozen optional codecs.
   {
@@ -3833,7 +3867,7 @@ async function runRouteChecks() {
   // ---- Host turn limits (host-turn-limits-v1) ----
   {
     const v9 = { capabilities: [HOST_TURN_LIMITS_CAPABILITY], protocol: TEAM_PROTOCOL_V9 };
-    const automatic = { turnLimit: null, automaticTurnLimit: 8, agentTaskLimit: null, defaultAgentTaskLimit: 4 };
+    const automatic = { turnLimit: null, automaticTurnLimit: 8, agentTaskLimit: null, defaultAgentTaskLimit: 64 };
     const adminRead = await call("POST", HOST_TURN_LIMITS_ROUTES.settings, { token: adaToken, json: {}, ...v9 });
     check(
       "an admin reads the automatic turn limits of a host with no choice",
@@ -3880,7 +3914,7 @@ async function runRouteChecks() {
     });
     const reloaded = new HostTurnLimitsPreferenceStore(hostTurnLimitsPath, () => 8);
     await runCauseEffect(reloaded.load());
-    const chosen = { turnLimit: 32, automaticTurnLimit: 8, agentTaskLimit: 8, defaultAgentTaskLimit: 4 };
+    const chosen = { turnLimit: 32, automaticTurnLimit: 8, agentTaskLimit: 8, defaultAgentTaskLimit: 64 };
     check(
       "an admin sets limits above the automatic one, the file keeps them, and agents on the default get 8",
       adminSet.status === 200 &&
@@ -3897,7 +3931,7 @@ async function runRouteChecks() {
     });
     const reloadedUnlimited = new HostTurnLimitsPreferenceStore(hostTurnLimitsPath, () => 8);
     await runCauseEffect(reloadedUnlimited.load());
-    const unlimited = { turnLimit: "unlimited", automaticTurnLimit: 8, agentTaskLimit: 64, defaultAgentTaskLimit: 4 };
+    const unlimited = { turnLimit: "unlimited", automaticTurnLimit: 8, agentTaskLimit: 64, defaultAgentTaskLimit: 64 };
     check(
       "an admin sets no total limit and 64 for each agent, and the file keeps them",
       unlimitedSet.status === 200 &&

@@ -228,6 +228,7 @@ import {
   REMOTE_COMPUTER_USE_CAPABILITY,
   type RemoteComputerCallEvent,
 } from "@openbot/contracts/team-protocol/remote-computer-use-v1";
+import { ROOMS_CAPABILITY } from "@openbot/contracts/team-protocol/rooms-v1";
 import { ROUTINE_RUN_COMMAND_CAPABILITY } from "@openbot/contracts/team-protocol/routine-run-command-v1";
 import { ROUTINES_ONCE_CAPABILITY } from "@openbot/contracts/team-protocol/routines-once-v1";
 import { SERVER_AUDIT_CAPABILITY } from "@openbot/contracts/team-protocol/server-audit-v1";
@@ -416,6 +417,7 @@ import { routeProviders } from "./team-api/route-providers";
 import { routePushNotifications } from "./team-api/route-push-notifications";
 import { routeRemoteComputer } from "./team-api/route-remote-computer";
 import { routeRemoteScreen } from "./team-api/route-remote-screen";
+import { routeRooms } from "./team-api/route-rooms";
 import { routeRoutineFlows } from "./team-api/route-routine-flows";
 import { routeRoutineResults } from "./team-api/route-routine-results";
 import { routeRoutineRunCommand } from "./team-api/route-routine-run-command";
@@ -1257,6 +1259,7 @@ export class TeamApiServer {
       if ((await routeWhatsAppWorkingMessage(context, this.#options.connectors)) === "handled") return;
       if ((await routeOnePasswordConnector(context, this.#options.onePasswordConnector)) === "handled") return;
       if ((await routeBitwardenConnector(context, this.#options.bitwardenConnector)) === "handled") return;
+      if ((await routeRooms(context, this.#options.rooms)) === "handled") return;
       if ((await routeAgentComputer(context, this.#options.agentComputer)) === "handled") return;
       if ((await routePasswordManagers(context, this.#options.passwordManagers)) === "handled") return;
       if ((await routeVault(context, this.#options.vault)) === "handled") return;
@@ -2669,6 +2672,7 @@ export class TeamApiServer {
           if (capability === WHATSAPP_WORKING_MESSAGE_CAPABILITY) return this.#options.connectors !== undefined;
           if (capability === ONEPASSWORD_CONNECTOR_CAPABILITY) return this.#options.onePasswordConnector !== undefined;
           if (capability === BITWARDEN_CONNECTOR_CAPABILITY) return this.#options.bitwardenConnector !== undefined;
+          if (capability === ROOMS_CAPABILITY) return this.#options.rooms !== undefined;
           if (capability === COMPUTER_MANAGEMENT_CAPABILITY || capability === AGENT_COMPUTER_CAPABILITY)
             return this.#options.agentComputer !== undefined;
           if (capability === PASSWORD_MANAGERS_CAPABILITY) return this.#options.passwordManagers !== undefined;

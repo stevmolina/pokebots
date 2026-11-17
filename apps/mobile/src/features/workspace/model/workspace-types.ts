@@ -194,6 +194,7 @@ import type {
   SaveEventRoutineResult,
   WebhookSecret,
 } from "@openbot/contracts/ipc-events";
+import type { RoomsRequest, RoomsResult } from "@openbot/contracts/rooms";
 import type { ServerAppearance } from "@openbot/contracts/team-protocol/host-appearance-v1";
 import type { LiveVoiceSessionResponse, LiveVoiceStartRequest } from "@openbot/contracts/team-protocol/live-voice-v1";
 import type { QueueEditRequest } from "@openbot/contracts/team-protocol/queue-edit-v1";
@@ -647,7 +648,8 @@ export interface MobileWorkspaceContextValue {
   cancelPasswordManager: (manager: PasswordManagerId, serverId: string) => Promise<PasswordManagerStatus>;
   /** The host deletes its access key. The vault stays in the manager. */
   disconnectPasswordManager: (manager: PasswordManagerId, serverId: string) => Promise<PasswordManagerStatus>;
-  /** The host's Vault. No answer carries a password, a card number or a security code. */
+  /** The host's Rooms account. Only an owner or admin can use it. */
+  roomsRequest: (input: RoomsRequest, serverId: string) => Promise<RoomsResult>;
   agentComputer: AgentComputerPort;
   loadVault: (serverId: string) => Promise<VaultState>;
   /** The current two-step code of each login with a key. The key stays on the host. */
@@ -1093,6 +1095,8 @@ export interface MobileWorkspaceContextValue {
   /** Searches file names in the server's agent chats. An empty query lists the newest files. */
   searchFiles: (query: string, serverId: string, cursor?: string) => Promise<ConversationFileSearchPage>;
   /** True when the host advertises `agent-tasks-v1`. A member who can message an agent can use its tasks. */
+  canUseRooms: (serverId: string) => boolean;
+  /** True when the host advertises agent-tasks-v1. */
   canUseTasks: (serverId: string) => boolean;
   /** True when the host advertises `agent-threads-v1`: a member who can message an agent can rename and delete its threads. */
   canEditThreads: (serverId: string) => boolean;
@@ -1275,6 +1279,7 @@ export type MobileWorkspaceCapabilityCheck =
   | "canChooseNewAgentModel"
   | "canInstallAgentTemplate"
   | "canSearchFiles"
+  | "canUseRooms"
   | "canUseTasks"
   | "canEditThreads"
   | "canReadThreads"

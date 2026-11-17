@@ -1,0 +1,1 @@
+{ "method": "POST", "path": "/v1/admin/rooms", "body": { "kind": "list" } }

@@ -125,6 +125,7 @@ import { ANDROID_PUSH_NOTIFICATIONS_CODECS } from "./push-notifications-android-
 import { PUSH_NOTIFICATIONS_CODECS } from "./push-notifications-v1";
 import { WEB_PUSH_NOTIFICATIONS_CODECS } from "./push-notifications-web-v1";
 import { REMOTE_COMPUTER_USE_CODECS } from "./remote-computer-use-v1";
+import { ROOMS_CODECS } from "./rooms-v1";
 import { ROUTINE_FLOW_STOP_CODECS } from "./routine-flow-stop-v1";
 import { ROUTINE_FLOWS_CODECS } from "./routine-flows-v1";
 import { ROUTINE_RECOVERY_CODECS } from "./routine-recovery-v1";
@@ -276,6 +277,7 @@ const CODECS: ReadonlyMap<string, OptionalRouteCodec> = new Map([
   ...BITWARDEN_CONNECTOR_CODECS,
   ...AGENT_COMPUTER_CODECS,
   ...COMPUTER_MANAGEMENT_CODECS,
+  ...ROOMS_CODECS,
   ...BROWSER_COLOR_SCHEME_CODECS,
   ...AGENT_ACCESS_CODECS,
   ...MCP_ACCESS_CODECS,

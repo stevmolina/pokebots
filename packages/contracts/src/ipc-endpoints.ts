@@ -12,6 +12,7 @@ import type {
 } from "./ipc-agent-session-settings";
 import type { RemoteComputerServer, RemoteComputerSession, SetRemoteComputerServerInput } from "./ipc-remote-computer";
 import type { ServerAuditLog } from "./ipc-server-audit";
+import type { RoomsRequest, RoomsResult } from "./rooms";
 // The one channel list. Each endpoint holds its wire value, the group it belongs to, and whether it
 // is a request the renderer invokes or an event the main process sends. That is what lets a
 // registrar bind its handlers as an object keyed by endpoint, so a channel with no handler, and a
@@ -1521,6 +1522,7 @@ export const IPC_ENDPOINTS = {
   // this computer cannot open the host's vault.
   // The Agent Computer account of a server (`agent-computer-v1` on a joined server): its agents start
   // cloud computers with it. The API key goes from the renderer to main once, in `connect`.
+  rooms: { execute: scopedRequest<RoomsRequest, RoomsResult>()("rooms:execute") },
   agentComputer: {
     manage: scopedRequest<ComputerManagementInput, ComputerManagementResult, "required">()("agent-computer:manage"),
     status: scopedQuery<AgentComputerStatus, "required">()("agent-computer:status"),
@@ -2450,6 +2452,7 @@ export const IPC_GROUP_PATHS = {
   hostAdmin: "hostAdmin",
   githubConnector: "githubConnector",
   onePasswordConnector: "onePasswordConnector",
+  rooms: "rooms",
   agentComputer: "agentComputer",
   bitwardenConnector: "bitwardenConnector",
   passwordManagers: "passwordManagers",

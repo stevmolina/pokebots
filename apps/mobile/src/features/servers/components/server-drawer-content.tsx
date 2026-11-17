@@ -636,6 +636,7 @@ function DrawerServerTools({
     serverRowState(current, serverId, (checks) => checks.canReadServerStorage(serverId)),
   );
   // Until the host answers, a server without kept values shows Threads and Workflows from its last connection.
+  const roomsAvailable = useMobileWorkspaceSelector((current) => current.canUseRooms(serverId));
   const tasksRow = useMobileWorkspaceSelector((current) =>
     serverRowState(current, serverId, (checks) => checks.canUseTasks(serverId)),
   );
@@ -644,6 +645,7 @@ function DrawerServerTools({
   );
   const routes = useMemo(
     (): Record<DrawerRoute, Href> => ({
+      rooms: { pathname: "/server-rooms", params: { serverId } },
       tasks: { pathname: "/server-tasks", params: { serverId } },
       routines: { pathname: "/server-routines", params: { serverId } },
       workflows: { pathname: "/server-workflows", params: { serverId } },
@@ -658,6 +660,10 @@ function DrawerServerTools({
   );
   // A tool that this server does not have is null. A tool that only the last connection had is disabled.
   const tools: Record<DrawerToolId, DrawerTool | null> = {
+    rooms:
+      roomsAvailable && (server.role === "owner" || server.role === "admin")
+        ? { icon: UsersRound, label: t("rooms.title") }
+        : null,
     tasks: values.tasks
       ? {
           icon: ListChecks,

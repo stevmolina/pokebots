@@ -665,6 +665,7 @@ function AuthenticatedStack() {
           title: t("mobile.app.route.routine"),
         }}
       />
+      <Stack.Screen name="server-rooms" options={largeTitlePage} />
       <Stack.Screen name="server-tasks" options={largeTitlePage} />
       <Stack.Screen name="server-workflows/index" options={largeTitlePage} />
       <Stack.Screen name="server-workflows/workflow" options={largeTitlePage} />

@@ -309,6 +309,7 @@ import {
   decodePasswordManagerResponses,
 } from "./password-manager-decoding";
 import { decodeProviderRuntimeSnapshot } from "./provider-runtime";
+import { decodeRoomsResultFromMain } from "./rooms-decoding";
 import { decodeRoutineFlowCanvas, decodeRoutineFlowLink } from "./routine-flow-decoding";
 import {
   decodeRoutineResultDeliveries,
@@ -1078,6 +1079,7 @@ const openbotApi: OpenBotDesktopApi = {
     hostDisconnect: decodePasswordManagerResponse,
     hostOpenSignIn: decodeVoid,
   }),
+  rooms: bridgeGroup(IPC_ENDPOINTS.rooms, { execute: decodeRoomsResultFromMain }),
   agentComputer: bridgeGroup(IPC_ENDPOINTS.agentComputer, {
     manage: decodeComputerManagementResultFromMain,
     status: decodeAgentComputerStatusFromMain,

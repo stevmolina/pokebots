@@ -14,6 +14,7 @@ export type WindowPage =
   | "workflows"
   | "usage"
   | "library"
+  | "rooms"
   | "machines"
   | "marketplace"
   | "settings"
@@ -218,6 +219,11 @@ const context = createSimpleContext({
         leavePricing();
         const serverId = activeServerId();
         if (serverId) usage.openLibrary(serverId, source);
+      },
+      openRooms(source: HTMLElement | null) {
+        leavePricing();
+        const serverId = activeServerId();
+        if (serverId) usage.openRooms(serverId, source);
       },
       openMachines(source: HTMLElement | null) {
         const serverId = activeServerId();

@@ -166,6 +166,7 @@ import { PROVIDER_ACCOUNT_POOL_CAPABILITY } from "@openbot/contracts/team-protoc
 import { PROVIDER_ACCOUNTS_CAPABILITY } from "@openbot/contracts/team-protocol/provider-accounts-v1";
 import { PROVIDERS_ADMIN_CAPABILITY } from "@openbot/contracts/team-protocol/providers-v1";
 import { TEAM_QUEUE_EDIT_CAPABILITY } from "@openbot/contracts/team-protocol/queue-edit-v1";
+import { ROOMS_CAPABILITY, ROOMS_ROUTE } from "@openbot/contracts/team-protocol/rooms-v1";
 import { ROUTINE_RECOVERY_CAPABILITY } from "@openbot/contracts/team-protocol/routine-recovery-v1";
 import { ROUTINE_RESULTS_CAPABILITY } from "@openbot/contracts/team-protocol/routine-results-v1";
 import { SERVER_AUDIT_CAPABILITY } from "@openbot/contracts/team-protocol/server-audit-v1";
@@ -374,6 +375,7 @@ import type {
   MobileWorkspaceState,
   ServerUpdateAccess,
 } from "@/features/workspace/model/workspace-types";
+import { decodeRoomsResultFromHost } from "./rooms-decoding";
 
 /** Sends one Team API request to a server; without a server ID it uses the active server. */
 export type WorkspaceRequest = <T>(
@@ -512,6 +514,7 @@ type HostRequestActions = Pick<
   | "connectPasswordManager"
   | "cancelPasswordManager"
   | "disconnectPasswordManager"
+  | "roomsRequest"
   | "agentComputer"
   | "loadVault"
   | "loadVaultCodes"
@@ -668,6 +671,7 @@ export function createHostRequestChecks(capabilities: ServerCapabilities): HostR
   const has = (serverId: string, capability: string) => hasCapability(capabilities, serverId, capability);
   return {
     canSearchFiles: (serverId) => has(serverId, CONVERSATION_FILE_SEARCH_CAPABILITY),
+    canUseRooms: (serverId) => has(serverId, ROOMS_CAPABILITY),
     canUseTasks: (serverId) => has(serverId, AGENT_TASKS_CAPABILITY),
     canEditThreads: (serverId) => has(serverId, AGENT_THREADS_CAPABILITY),
     canReadThreads: (serverId) => has(serverId, AGENT_THREAD_READS_CAPABILITY),
@@ -864,6 +868,13 @@ export function createHostRequestActions({
   }
   const checks = createHostRequestChecks(capabilities);
   const actions: HostRequestActions = {
+    roomsRequest: (input, serverId) =>
+      capabilityApi(serverId, ROOMS_CAPABILITY, "rooms.unavailable")(
+        "POST",
+        ROOMS_ROUTE,
+        decodeRoomsResultFromHost,
+        input,
+      ),
     agentComputer: createAgentComputerPort(
       (serverId) => (method, path, decode, body) =>
         capabilityApi(

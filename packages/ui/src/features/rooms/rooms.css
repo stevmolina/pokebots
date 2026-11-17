@@ -1,0 +1,108 @@
+.rooms-panel {
+  color: var(--openbot-text-primary);
+  padding: 24px;
+  height: 100%;
+  overflow: auto;
+  min-width: 0;
+}
+.rooms-panel h1 {
+  font-size: var(--openbot-text-xl);
+  font-weight: 600;
+  margin: 0;
+}
+.rooms-panel h2 {
+  font-size: var(--openbot-text-md);
+  font-weight: 500;
+}
+.rooms-header,
+.rooms-actions,
+.rooms-message-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.rooms-header {
+  justify-content: space-between;
+}
+.rooms-muted,
+.rooms-message-meta time,
+.rooms-panel small {
+  color: var(--openbot-text-muted);
+  font-size: var(--openbot-text-sm);
+}
+.rooms-form {
+  display: grid;
+  gap: 16px;
+  max-width: 640px;
+}
+.rooms-panel label {
+  display: grid;
+  gap: 8px;
+  font-size: var(--openbot-text-sm);
+}
+.rooms-panel input,
+.rooms-panel textarea {
+  background: transparent;
+  color: inherit;
+  border: 1px solid var(--openbot-border);
+  border-radius: var(--openbot-radius-md);
+  padding: 10px;
+  min-width: 0;
+  width: 100%;
+  font: inherit;
+  box-sizing: border-box;
+}
+.rooms-panel textarea {
+  min-height: 88px;
+  resize: vertical;
+}
+.rooms-list {
+  display: grid;
+  margin-top: 24px;
+}
+.rooms-list-row {
+  justify-content: space-between;
+  padding: 16px 8px;
+}
+.rooms-messages {
+  max-width: 800px;
+  min-height: 160px;
+}
+.rooms-messages article {
+  padding: 16px 0;
+}
+.rooms-panel article p {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.rooms-composer {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: 12px;
+  max-width: 800px;
+}
+.rooms-board {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
+}
+.rooms-board article {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--openbot-border);
+}
+@media (max-width: 720px) {
+  .rooms-panel {
+    padding: 16px;
+  }
+  .rooms-board {
+    grid-template-columns: 1fr;
+  }
+  .rooms-composer {
+    grid-template-columns: 1fr;
+  }
+  .rooms-message-meta time {
+    display: none;
+  }
+}

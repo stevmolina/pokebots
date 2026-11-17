@@ -88,6 +88,7 @@ import { MCP_SIGN_IN_CAPABILITY } from "@openbot/contracts/team-protocol/mcp-sig
 import { MESSAGE_DELETE_CAPABILITY } from "@openbot/contracts/team-protocol/message-delete-v1";
 import { MESSAGE_PINS_CAPABILITY } from "@openbot/contracts/team-protocol/message-pins-v1";
 import { PROVIDER_ACCOUNTS_CAPABILITY } from "@openbot/contracts/team-protocol/provider-accounts-v1";
+import { ROOMS_CAPABILITY, ROOMS_ROUTE } from "@openbot/contracts/team-protocol/rooms-v1";
 import { ROUTINE_FLOW_STOP_CAPABILITY } from "@openbot/contracts/team-protocol/routine-flow-stop-v1";
 import { ROUTINE_FLOWS_CAPABILITY } from "@openbot/contracts/team-protocol/routine-flows-v1";
 import { ROUTINE_RECOVERY_CAPABILITY } from "@openbot/contracts/team-protocol/routine-recovery-v1";
@@ -165,6 +166,7 @@ import { createLicenseStore } from "@openbot/ui/features/billing/license-store";
 import { isConnectorId } from "@openbot/ui/features/connectors/connectors";
 import { unloadedHistory } from "@openbot/ui/features/conversation/ChatScrollRail";
 import type { DiagramModelChoice } from "@openbot/ui/features/diagrams/DiagramNewAgentCard";
+import { RoomsPanel } from "@openbot/ui/features/rooms/RoomsPanel";
 import { LeaveServerDialog } from "@openbot/ui/features/servers/LeaveServerDialog";
 import { RestartServerDialog } from "@openbot/ui/features/servers/RestartServerDialog";
 import type { ServerActionCallbacks } from "@openbot/ui/features/servers/ServerActionItems";
@@ -208,6 +210,7 @@ import {
   untrack,
 } from "solid-js";
 import { queuedDeliveriesInOrder } from "../../queue-reconciliation";
+import { decodeRoomsResultFromHost } from "./web-rooms";
 // Copying a selection with a formula in it gives its LaTeX source, as on desktop.
 import "katex/contrib/copy-tex";
 // Copying a selection gives clean HTML, as on desktop.
@@ -448,7 +451,7 @@ async function reportedFailure(send: () => Promise<unknown>, options: PromptAnsw
 }
 
 /** The pages of the connected host that cover the conversation. */
-type HostPageView = "usage" | "schedule" | "tasks" | "workflows" | "library";
+type HostPageView = "rooms" | "usage" | "schedule" | "tasks" | "workflows" | "library";
 
 type WebWorkspaceProps = {
   accountId: string;
@@ -2187,6 +2190,7 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
   const screenStylesNeeded = () =>
     accountSettingsOpen() ||
     billingOpen() ||
+    page() === "rooms" ||
     tasksOpen() ||
     agentFormOpen() ||
     serverSettings.state.open ||
@@ -2199,7 +2203,13 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
     },
   );
   const agentChatOpen = () =>
-    !tasksOpen() && !agentFormOpen() && !channelOpen() && !noHost() && !hostOffline() && !routinesView();
+    page() !== "rooms" &&
+    !tasksOpen() &&
+    !agentFormOpen() &&
+    !channelOpen() &&
+    !noHost() &&
+    !hostOffline() &&
+    !routinesView();
   /**
    * The provider that a server's provider step chose, by server. In memory only, as on desktop: the
    * saved setup choice is of the desktop computer, not of the server.
@@ -3042,6 +3052,13 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
     usageRows: usageRows(),
     onChats: () => showSidebarView("agents"),
     onRoutines: routinesSupported() ? () => showSidebarView("routines") : undefined,
+    onRooms:
+      workspace.state.capabilities.includes(ROOMS_CAPABILITY) && canAdministerServer(workspace.state.host?.role)
+        ? () => {
+            const id = server()?.id;
+            if (id) void openHostPage(id, "rooms", null);
+          }
+        : undefined,
     onTasks: tasksSupported()
       ? (button) => {
           const id = server()?.id;
@@ -3234,7 +3251,11 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
               page={
                 <Show
                   when={
-                    page() === "usage" || page() === "schedule" || page() === "workflows" || page() === "library"
+                    page() === "rooms" ||
+                    page() === "usage" ||
+                    page() === "schedule" ||
+                    page() === "workflows" ||
+                    page() === "library"
                       ? server()
                       : undefined
                   }
@@ -3351,6 +3372,18 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                               self={account().name ?? undefined}
                             />
                           </Loading>
+                        </Show>
+                      </Match>
+                      <Match when={page() === "rooms"}>
+                        <Show when={page() === "rooms" ? server()?.id : undefined} keyed>
+                          {(roomServerId) => (
+                            <RoomsPanel
+                              request={(input) =>
+                                hostRequest(roomServerId)("POST", ROOMS_ROUTE, decodeRoomsResultFromHost, input)
+                              }
+                              onConnect={openMarketplace}
+                            />
+                          )}
                         </Show>
                       </Match>
                       <Match when={page() === "library"}>

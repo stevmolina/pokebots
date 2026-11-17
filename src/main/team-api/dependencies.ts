@@ -35,6 +35,7 @@ import type { ProviderDetectionSettingsStore } from "../provider-detection-setti
 import type { ProviderRuntimeManager } from "../provider-runtime-manager";
 import type { RemoteWorkflowError } from "../remote-service-effects";
 import type { RequestedUpdate } from "../requested-update";
+import type { RoomsService } from "../rooms-service";
 import type { ServerAuditStore } from "../server-audit-store";
 import type { ServerPersonalityPreferenceStore } from "../server-personality-preference-store";
 import type { ServerTimezonePreferenceStore } from "../server-timezone-preference-store";
@@ -763,6 +764,7 @@ export interface TeamApiOptions {
   connectors?: TeamApiConnectors | undefined;
   onePasswordConnector?: TeamApiOnePasswordConnector | undefined;
   bitwardenConnector?: TeamApiBitwardenConnector | undefined;
+  rooms?: RoomsService;
   agentComputer?: TeamApiAgentComputer | undefined;
   passwordManagers?: TeamApiPasswordManagers | undefined;
   vault?: TeamApiVault | undefined;

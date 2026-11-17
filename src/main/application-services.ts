@@ -58,6 +58,7 @@ import { MAC_PERMISSION_URLS } from "./mac-permission-urls";
 import { PushNotificationStore } from "./push-notification-store";
 import { DESKTOP_USE_MS } from "./push-notifications";
 import { RemoteWorkflowError, toRemoteWorkflowError } from "./remote-service-effects";
+import { RoomsService } from "./rooms-service";
 /**
  * The composition root. Every long-lived service the desktop app owns is built here, in one
  * function, in dependency order, and handed back as a single record.
@@ -738,6 +739,7 @@ export interface ApplicationServices {
   linkAccount: LinkAccountService;
   onePasswordConnector: OnePasswordConnectorService;
   bitwardenConnector: BitwardenConnectorService;
+  rooms: RoomsService;
   agentComputer: AgentComputerService;
   passwordManagers: PasswordManagersService;
   vault: VaultService;
@@ -1946,6 +1948,7 @@ export async function createApplicationServices({
     logger: createOpenBotLogger("mcp-oauth"),
   });
   mcpOAuthAuthority = mcpOAuth;
+  const rooms = new RoomsService(mcpOAuth);
   teardown.push(TEARDOWN_ORDER.mcpOAuth, "MCP token refresh", () => Effect.runPromise(mcpOAuth.close()));
   /*
    * The built-in GitHub connection. Loaded before the agent service, because the first spawn reads
@@ -3579,6 +3582,8 @@ export async function createApplicationServices({
     // Present, so the host advertises `bitwarden-connector-v1`. An owner or admin connects it with an
     // API key and the master password: a session key from their computer cannot open this vault.
     bitwardenConnector,
+    // Rooms uses the host's encrypted MCP account and is restricted to owners and admins.
+    rooms,
     // Present, so the host advertises `agent-computer-v1`. An owner or admin connects it with an API key.
     agentComputer,
     // Present, so the host advertises `password-managers-v1`. An owner or admin connects Proton Pass
@@ -4817,6 +4822,7 @@ export async function createApplicationServices({
     linkAccount,
     onePasswordConnector,
     bitwardenConnector,
+    rooms,
     agentComputer,
     passwordManagers,
     vault,

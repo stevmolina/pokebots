@@ -8,6 +8,7 @@ import {
   ChevronRight,
   CircleQuestionMark,
   DropdownMenu,
+  MessageSquare,
   Monitor,
   Settings,
   SlidersHorizontal,
@@ -54,6 +55,14 @@ export function SidebarMoreMenuItems(props: {
           <DropdownMenu.Item onSelectAfterClose={() => open()()}>
             <Monitor class="agent-context-icon size-4" aria-hidden="true" />
             <span>{t("server.computers.title")}</span>
+          </DropdownMenu.Item>
+        )}
+      </Show>
+      <Show when={props.pages.onRooms}>
+        {(open) => (
+          <DropdownMenu.Item onSelectAfterClose={() => open()()}>
+            <MessageSquare class="agent-context-icon size-4" aria-hidden="true" />
+            <span>{t("rooms.title")}</span>
           </DropdownMenu.Item>
         )}
       </Show>
