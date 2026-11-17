@@ -369,7 +369,8 @@ app (`/Applications/Pokebots.app`), which `electron-builder.custom.yml` builds. 
 
 ## Pull requests
 
-- Open a PR only when asked.
+- Open PRs for finished work without asking. Merge low-risk changes when required checks and reviews pass.
+  Ask for approval before merging a change that can lose user data, expose secrets, or be hard to reverse.
 - Write the PR body from `.github/PULL_REQUEST_TEMPLATE.md`. Organization members and users with
   write access do not sign the Contributor License Agreement. An author who must sign sends a signed
   PDF by email. Never sign, fill in, or send the agreement for the author.
