@@ -13,21 +13,31 @@ const DAY_MS = 86_400_000;
 const TIME = { hour: "numeric", minute: "2-digit" } as const;
 const DATE = { weekday: "short", month: "short", day: "numeric" } as const;
 
-/** The label of each message that opens a day, by message ID. One pass over the loaded rows. */
+/**
+ * The label of each message that opens a day, by message ID. One pass over the loaded rows.
+ *
+ * `groupGapMs` also labels a message that comes this long after the message before it, so a quiet
+ * chat shows its time stamps between groups of messages, as the calm look of the design preview does.
+ */
 export function chatDayLabels(
   rows: readonly { id: string; createdAt?: string }[],
   text: { t: MobileTranslate; format: AppFormat },
-  { hasOlder = false, now = new Date() }: { hasOlder?: boolean; now?: Date } = {},
+  { hasOlder = false, now = new Date(), groupGapMs }: { hasOlder?: boolean; now?: Date; groupGapMs?: number } = {},
 ): ReadonlyMap<string, string> {
   const labels = new Map<string, string>();
   const today = startOfDay(now);
   const timeZoneOffset = now.getTimezoneOffset();
   let previousDay: number | undefined;
+  let previousTime: number | undefined;
   let skipFirst = hasOlder;
   for (const row of rows) {
     if (!row.createdAt) continue;
     const day = messageDay(row.createdAt, timeZoneOffset);
-    if (Number.isNaN(day) || day === previousDay) continue;
+    if (Number.isNaN(day)) continue;
+    const at = Date.parse(row.createdAt);
+    const gap = groupGapMs !== undefined && previousTime !== undefined && at - previousTime >= groupGapMs;
+    previousTime = at;
+    if (day === previousDay && !gap) continue;
     previousDay = day;
     if (skipFirst) {
       skipFirst = false;

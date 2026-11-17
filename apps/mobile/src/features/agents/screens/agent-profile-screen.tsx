@@ -1,16 +1,20 @@
 import { avatarHeadColor } from "@openbot/brand/bloub-avatar";
+import { providerDisplayName } from "@openbot/contracts/agent-providers";
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import { StackActions } from "expo-router/react-navigation";
 import { Typography } from "heroui-native";
 import CalendarClock from "lucide-react-native/icons/calendar-clock";
 import LibraryBig from "lucide-react-native/icons/library-big";
 import Monitor from "lucide-react-native/icons/monitor";
+import Sparkles from "lucide-react-native/icons/sparkles";
 import { Pressable, View } from "react-native";
 import { AgentNotificationLevelRow } from "@/features/agents/components/agent-chat-settings";
 import { BloubAvatarPreview } from "@/features/agents/components/bloub-avatar";
 import { AgentSessionsSection } from "@/features/chat/components/agent-sessions-section";
 import { DRAFT_THREAD_ID, MAIN_THREAD_ID } from "@/features/chat/components/chat-thread-menu";
 import { setMainSession, useMainSession } from "@/features/chat/model/main-session";
+import { useCalmLook } from "@/features/design-preview/model/calm-look";
+import { ProviderMark } from "@/features/servers/components/provider-mark";
 import { SettingsContent, SettingsRow, SettingsSection } from "@/features/settings/components/settings-content";
 import { RowIcon } from "@/features/settings/components/settings-row-icon";
 import { useMobileWorkspace, useMobileWorkspaceSelector } from "@/features/workspace/context/mobile-workspace-context";
@@ -42,6 +46,8 @@ export function AgentProfileScreen() {
     serverRowState(current, serverId, (checks) => checks.canControlComputer(serverId)),
   );
   const mainId = useMainSession(serverId, agentId) ?? MAIN_THREAD_ID;
+  // The calm look brings the agent's model and skills to the profile, as the design preview does.
+  const calm = useCalmLook();
   if (!agent)
     return (
       <SettingsContent>
@@ -50,7 +56,12 @@ export function AgentProfileScreen() {
     );
   const params = { agentId: agent.id, serverId: agent.serverId };
   const push = (
-    pathname: "/agent-info/[agentId]/edit" | "/agent-info/[agentId]/library" | "/agent-info/[agentId]/routines",
+    pathname:
+      | "/agent-info/[agentId]/edit"
+      | "/agent-info/[agentId]/library"
+      | "/agent-info/[agentId]/routines"
+      | "/agent-info/[agentId]/runtime"
+      | "/agent-info/[agentId]/skills",
   ) => {
     void haptics.impact("soft");
     router.push({ pathname, params });
@@ -112,6 +123,15 @@ export function AgentProfileScreen() {
         />
       ) : null}
       <SettingsSection>
+        {calm && agent.provider ? (
+          <SettingsRow
+            leading={<ProviderMark provider={agent.provider} size={22} />}
+            value={agent.model ?? providerDisplayName(agent.provider)}
+            onPress={() => push("/agent-info/[agentId]/runtime")}
+          >
+            <Typography.Paragraph>{t("mobile.agent.runtime.model")}</Typography.Paragraph>
+          </SettingsRow>
+        ) : null}
         <SettingsRow leading={<RowIcon icon={LibraryBig} />} onPress={() => push("/agent-info/[agentId]/library")}>
           <Typography.Paragraph>{t("mobile.agent.profile.library")}</Typography.Paragraph>
         </SettingsRow>
@@ -130,6 +150,11 @@ export function AgentProfileScreen() {
         <SettingsRow leading={<RowIcon icon={CalendarClock} />} onPress={() => push("/agent-info/[agentId]/routines")}>
           <Typography.Paragraph>{t("mobile.agent.info.routines.title")}</Typography.Paragraph>
         </SettingsRow>
+        {calm ? (
+          <SettingsRow leading={<RowIcon icon={Sparkles} />} onPress={() => push("/agent-info/[agentId]/skills")}>
+            <Typography.Paragraph>{t("mobile.agent.info.skills.title")}</Typography.Paragraph>
+          </SettingsRow>
+        ) : null}
       </SettingsSection>
       {agent.notifications !== undefined && workspace.canSetAgentNotificationLevel(agent.serverId) ? (
         <SettingsSection footer={t("mobile.agent.profile.notificationsFooter")}>
