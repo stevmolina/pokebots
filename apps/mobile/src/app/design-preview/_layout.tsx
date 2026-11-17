@@ -10,7 +10,13 @@ const SHEET = {
   presentation: "formSheet",
   sheetGrabberVisible: true,
   sheetExpandsWhenScrolledToEdge: false,
+  // The page behind stays dimmed at every height, as in the reference.
+  sheetLargestUndimmedDetentIndex: "none",
 } as const;
+
+// The first stop matches the reference: the sheet top at 404 pt on a 844 pt phone. iOS measures the
+// detent below the status bar, so the fraction is 0.55, not 0.52.
+const DETENTS = [0.55, 0.85];
 
 export default function DesignPreviewLayout() {
   // Opening the preview, also from the link `openbot://design-preview`, turns the switch on, so the
@@ -21,11 +27,11 @@ export default function DesignPreviewLayout() {
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen
         name="sessions"
-        options={{ ...SHEET, contentStyle: { backgroundColor: sheetBackground }, sheetAllowedDetents: [0.6, 0.85] }}
+        options={{ ...SHEET, contentStyle: { backgroundColor: sheetBackground }, sheetAllowedDetents: DETENTS }}
       />
       <Stack.Screen
         name="message-actions"
-        options={{ ...SHEET, contentStyle: { backgroundColor: sheetBackground }, sheetAllowedDetents: [0.6, 0.85] }}
+        options={{ ...SHEET, contentStyle: { backgroundColor: sheetBackground }, sheetAllowedDetents: DETENTS }}
       />
     </Stack>
   );
