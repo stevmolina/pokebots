@@ -5,7 +5,7 @@ import { useThemeColor } from "heroui-native/hooks";
 import ArrowLeft from "lucide-react-native/icons/arrow-left";
 import ChevronDown from "lucide-react-native/icons/chevron-down";
 import Ellipsis from "lucide-react-native/icons/ellipsis";
-import { memo, useMemo } from "react";
+import { memo, type ReactNode, type RefObject, useMemo, useRef } from "react";
 import { Pressable, View, type ViewStyle } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useUniwind } from "uniwind";
@@ -89,6 +89,8 @@ export const ChatHeader = memo(function ChatHeader({
   const warning = useThemeColor("warning");
   // The calm look: the name opens the agent's info, and the sessions move into the More menu.
   const calm = useCalmLook();
+  // The newest pill of the centered title, read by the title view when what it shows changes.
+  const centeredPillRender = useRef<() => ReactNode>(() => null);
   // A side thread passes its own actions menu, which has no room for Sessions: there the name keeps
   // opening the sessions, as in the current look.
   const sessionsInMore = calm && actionsMenu === undefined;
@@ -370,6 +372,38 @@ export const ChatHeader = memo(function ChatHeader({
       moreButton(BAR_BUTTON_SIZE)
     );
 
+  // The new design centers the name pill between Back and More, as the design preview does: the native
+  // bar's title view, which iOS centers. The vertical bar of iPhone Duo keeps its own top row, and a
+  // hidden header (voice mode) shows no title. The title option is set again only when what the pill
+  // shows changes, not on each render, such as each streamed chunk.
+  const centerTitle = isIOS && calm && !verticalBar;
+  const centeredPillWidth = Math.max(120, width - insets.left - insets.right - 2 * (NATIVE_BAR_HEIGHT + 32));
+  centeredPillRender.current = () => (
+    <View className="flex-row" style={{ height: NATIVE_BAR_HEIGHT, maxWidth: centeredPillWidth }}>
+      {titlePill}
+    </View>
+  );
+  const centeredVersion = [
+    target.kind,
+    target.id,
+    target.serverId,
+    target.name,
+    title ?? "",
+    kicker ?? "",
+    pillMenu ? `${pillMenu.attention}:${pillMenu.color}` : "",
+    centeredPillWidth,
+    liquidGlassAvailable,
+    String(fallbackBackground),
+    disconnected,
+  ].join("|");
+  const centeredTitle = useMemo(
+    () =>
+      centerTitle && !accessibilityHidden ? (
+        <CenteredTitle render={centeredPillRender} version={centeredVersion} />
+      ) : null,
+    [centerTitle, accessibilityHidden, centeredVersion],
+  );
+
   if (isIOS) {
     // The chat routes show the native bar on iOS, so its items morph into and out of the bar items of
     // the screen under the chat, as on the other screens. iOS moves native bar buttons into the
@@ -377,6 +411,7 @@ export const ChatHeader = memo(function ChatHeader({
     // while the content scrolls, so the title is not one then: it stays drawn at the top.
     return (
       <>
+        {centeredTitle ? <Stack.Title asChild>{centeredTitle}</Stack.Title> : null}
         <Stack.Toolbar placement="left">
           <Stack.Toolbar.Button
             icon="chevron.backward"
@@ -384,7 +419,7 @@ export const ChatHeader = memo(function ChatHeader({
             hidden={splitDetailRoot || accessibilityHidden}
             onPress={goBack}
           />
-          {verticalBar ? null : (
+          {verticalBar || centerTitle ? null : (
             <Stack.Toolbar.View hidesSharedBackground hidden={accessibilityHidden}>
               <View className="flex-row" style={{ height: NATIVE_BAR_HEIGHT }}>
                 {titlePill}
@@ -431,7 +466,13 @@ export const ChatHeader = memo(function ChatHeader({
             pointerEvents="box-none"
             accessibilityElementsHidden={accessibilityHidden}
             importantForAccessibility={accessibilityHidden ? "no-hide-descendants" : "auto"}
-            style={{ top: barTop, left: insets.left + 16, right: insets.right + 16, height: BAR_BUTTON_SIZE }}
+            style={{
+              top: barTop,
+              left: insets.left + 16,
+              right: insets.right + 16,
+              height: BAR_BUTTON_SIZE,
+              justifyContent: calm ? "center" : undefined,
+            }}
           >
             {titlePill}
           </View>
@@ -467,10 +508,20 @@ export const ChatHeader = memo(function ChatHeader({
           </ChatGlassIconButton>
         )}
 
-        {titlePill}
+        {calm ? <View className="flex-1" /> : titlePill}
 
         <View className="flex-1" />
         {trailingButtons}
+        {calm ? (
+          // The new design centers the name between Back and More, as the design preview does.
+          <View
+            className="absolute inset-y-0 flex-row items-center justify-center"
+            pointerEvents="box-none"
+            style={{ left: insets.left + 16 + BAR_BUTTON_SIZE + 8, right: insets.right + 16 + BAR_BUTTON_SIZE + 8 }}
+          >
+            {titlePill}
+          </View>
+        ) : null}
       </View>
       <SheetScrollEdgeEffect
         surface={calm ? "sheet" : "canvas"}
@@ -478,4 +529,18 @@ export const ChatHeader = memo(function ChatHeader({
       />
     </>
   );
+});
+
+/**
+ * The centered title view of the new design. Its props change only when what the pill shows changes,
+ * so the native bar sets its title again only then; it draws the newest pill of the chat header.
+ */
+const CenteredTitle = memo(function CenteredTitle({
+  render,
+}: {
+  render: RefObject<() => ReactNode>;
+  /** What the pill shows, as one string: a change draws the title again. */
+  version: string;
+}) {
+  return render.current();
 });
