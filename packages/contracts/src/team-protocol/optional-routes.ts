@@ -42,6 +42,7 @@ import { AGENT_WAITS_CODECS } from "./agent-waits-v1";
 import { ARTIFACT_REQUEST_CODECS } from "./artifact-request-v1";
 import { BACKGROUND_PROCESSES_CODECS } from "./background-processes-v1";
 import { BITWARDEN_CONNECTOR_CODECS } from "./bitwarden-connector-v1";
+import { BRAIN_CODECS } from "./brain-v1";
 import { BROWSER_COLOR_SCHEME_CODECS } from "./browser-color-scheme-v1";
 import { BROWSER_PAGE_STATE_CODECS } from "./browser-page-state-v1";
 import { BROWSER_PROFILES_CODECS } from "./browser-profiles-v1";
@@ -165,6 +166,7 @@ import { WORKSPACE_DIRECTORY_CODECS } from "./workspace-directory-v1";
 export type { OptionalRouteCodec } from "./admin-wire";
 
 const CODECS: ReadonlyMap<string, OptionalRouteCodec> = new Map([
+  ...BRAIN_CODECS,
   ...AGENT_ADMIN_CODECS,
   ...AGENT_MEMORIES_CODECS,
   ...SKILLS_ADMIN_CODECS,

@@ -8,6 +8,7 @@
  */
 
 import {
+  Brain,
   Button,
   CalendarClock,
   ChartArea,
@@ -173,7 +174,7 @@ export function usePillPages(pages: () => SidebarPages) {
   const { t } = useText();
   return createMemo((): PillPage[] => {
     const list: PillPage[] = [];
-    const { onRoutines, onWorkflows, onTasks, onSchedule, onUsage, onLibrary, onMachines } = pages();
+    const { onRoutines, onWorkflows, onTasks, onSchedule, onUsage, onLibrary, onMachines, onBrain } = pages();
     if (onRoutines)
       list.push({ id: "routines", label: t("sidebar.view.routines"), icon: Workflow, open: () => onRoutines() });
     if (onWorkflows) {
@@ -184,6 +185,7 @@ export function usePillPages(pages: () => SidebarPages) {
     list.push({ id: "usage", label: t("app.rail.usage"), icon: ChartArea, open: onUsage });
     if (onLibrary)
       list.push({ id: "library", label: t("app.rail.library"), icon: GalleryVerticalEnd, open: onLibrary });
+    if (onBrain) list.push({ id: "brain", label: t("app.rail.brain"), icon: Brain, open: onBrain });
     if (onMachines) list.push({ id: "machines", label: t("app.rail.machines"), icon: Server, open: onMachines });
     return list;
   });

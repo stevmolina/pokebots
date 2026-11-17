@@ -632,6 +632,7 @@ function DrawerServerTools({
     serverRowState(current, serverId, (checks) => checks.canControlComputer(serverId)),
   );
   // An older host has no storage routes, so it has no Library, as on desktop.
+  const brain = useMobileWorkspaceSelector((current) => current.canUseBrain(serverId));
   const library = useMobileWorkspaceSelector((current) =>
     serverRowState(current, serverId, (checks) => checks.canReadServerStorage(serverId)),
   );
@@ -651,6 +652,7 @@ function DrawerServerTools({
       workflows: { pathname: "/server-workflows", params: { serverId } },
       marketplace: { pathname: "/server-marketplace", params: { serverId } },
       usage: { pathname: "/server-usage", params: { serverId } },
+      brain: { pathname: "/brain", params: { serverId } },
       library: { pathname: "/server-library", params: { serverId } },
       remoteDesktop: { pathname: "/remote-desktop/[serverId]", params: { serverId } },
       members: { pathname: "/server-settings/members", params: { serverId } },
@@ -685,6 +687,7 @@ function DrawerServerTools({
       : workflowsRow === "disabled"
         ? { icon: Waypoints, label: t("mobile.app.route.workflows"), disabled: true }
         : null,
+    brain: brain ? { icon: GalleryVerticalEnd, label: t("mobile.brain.title") } : null,
     marketplace: { icon: Store, label: t("mobile.app.route.marketplace") },
     usage: { icon: ChartArea, label: t("mobile.app.route.usage"), value: values.usage },
     library:

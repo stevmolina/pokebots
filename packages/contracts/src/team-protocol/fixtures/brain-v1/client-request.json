@@ -1,0 +1,5 @@
+{
+  "method": "POST",
+  "path": "/v1/brain/request",
+  "body": { "operation": "search", "mcpServerId": "brain-example", "brain": "example/notes", "query": "launch" }
+}

@@ -3,6 +3,7 @@ import { Loading, Match, Show, Switch } from "solid-js";
 import { AgentUsagePanel, LibraryPanel, MachinesPanel, WorkflowsPage } from "../../lazy-views";
 import { SkillsMarketplace } from "../../WorkspaceOverlays";
 import { RoomsPage } from "../rooms/RoomsPage";
+import { BrainPage } from "../brain/BrainPage";
 import { SchedulePanel } from "../schedule/SchedulePanel";
 import { useServers } from "../servers/servers-context";
 import { UsageMachine } from "../usage/UsageMachine";
@@ -70,6 +71,9 @@ export function WindowPageView() {
             </Match>
             <Match when={usage.state.view === "rooms"}>
               <RoomsPage serverId={serverId()} />
+            </Match>
+            <Match when={usage.state.view === "brain"}>
+              <BrainPage serverId={serverId()} />
             </Match>
             <Match when={usage.state.view === "machines"}>
               <Loading>

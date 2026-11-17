@@ -1,6 +1,7 @@
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from "node:http";
 import { createRequire } from "node:module";
 import { dirname, join } from "node:path";
+import { BRAIN_CAPABILITY } from "@openbot/contracts/brain";
 import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
 import {
   AGENT_RUNTIME_SNAPSHOT_BYTES_LIMIT,
@@ -349,6 +350,7 @@ import { routeAgentWaits } from "./team-api/route-agent-waits";
 import { routeAgents } from "./team-api/route-agents";
 import { routeBackgroundProcesses } from "./team-api/route-background-processes";
 import { routeBitwardenConnector } from "./team-api/route-bitwarden-connector";
+import { routeBrain } from "./team-api/route-brain";
 import { routeBrowser } from "./team-api/route-browser";
 import { routeBrowserProfiles } from "./team-api/route-browser-profiles";
 import { routeBrowserProxies } from "./team-api/route-browser-proxies";
@@ -1226,6 +1228,11 @@ export class TeamApiServer {
       if ((await this.#routeBrowser(context)) === "handled") return;
       if ((await this.#routeFiles(context)) === "handled") return;
       if ((await routeChannels(context, this.#options.channels, this.#options.agents, hidden)) === "handled") return;
+      if (
+        (await routeBrain(context, this.#options.brain, this.#options.mcpServers, this.#mcpServerOwners())) ===
+        "handled"
+      )
+        return;
       const { mcpServers } = this.#options;
       const mcpServerOwners = this.#mcpServerOwners();
       if (
@@ -2644,6 +2651,7 @@ export class TeamApiServer {
             return (
               this.#options.remoteScreen?.checkSetup !== undefined && this.#options.remoteScreen?.test !== undefined
             );
+          if (capability === BRAIN_CAPABILITY) return this.#options.brain !== undefined;
           if (capability === MCP_SERVERS_CAPABILITY) return this.#options.mcpServers !== undefined;
           if (capability === LIVE_VOICE_CAPABILITY) return this.#options.liveVoice !== undefined;
           // Each account signs in with the browser, so it needs the sign-in routes too.

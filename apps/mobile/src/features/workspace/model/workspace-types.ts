@@ -1,4 +1,5 @@
 import type { AttachmentSupport } from "@openbot/contracts/attachment-files";
+import type { BrainRequest, BrainResponse } from "@openbot/contracts/brain";
 import type {
   AddAgentFolderInput,
   AddedAgent,
@@ -783,6 +784,7 @@ export interface MobileWorkspaceContextValue {
    */
   canManageMcpServers: (serverId: string) => boolean;
   /** The MCP servers that the host gives its agents. Each change answers with the whole list. */
+  brainRequest: (input: BrainRequest, serverId: string) => Promise<BrainResponse>;
   listMcpServers: (serverId: string) => Promise<McpServerConfig[]>;
   /** An empty id adds a server. */
   saveMcpServer: (config: McpServerConfig, serverId: string) => Promise<McpServerConfig[]>;
@@ -1096,6 +1098,7 @@ export interface MobileWorkspaceContextValue {
   searchFiles: (query: string, serverId: string, cursor?: string) => Promise<ConversationFileSearchPage>;
   /** True when the host advertises `agent-tasks-v1`. A member who can message an agent can use its tasks. */
   canUseRooms: (serverId: string) => boolean;
+  canUseBrain: (serverId: string) => boolean;
   /** True when the host advertises agent-tasks-v1. */
   canUseTasks: (serverId: string) => boolean;
   /** True when the host advertises `agent-threads-v1`: a member who can message an agent can rename and delete its threads. */
@@ -1280,6 +1283,7 @@ export type MobileWorkspaceCapabilityCheck =
   | "canInstallAgentTemplate"
   | "canSearchFiles"
   | "canUseRooms"
+  | "canUseBrain"
   | "canUseTasks"
   | "canEditThreads"
   | "canReadThreads"

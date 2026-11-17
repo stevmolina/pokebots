@@ -15,6 +15,7 @@ export type WindowPage =
   | "usage"
   | "library"
   | "rooms"
+  | "brain"
   | "machines"
   | "marketplace"
   | "settings"
@@ -224,6 +225,11 @@ const context = createSimpleContext({
         leavePricing();
         const serverId = activeServerId();
         if (serverId) usage.openRooms(serverId, source);
+      },
+      openBrain(source: HTMLElement | null) {
+        leavePricing();
+        const serverId = activeServerId();
+        if (serverId) usage.openBrain(serverId, source);
       },
       openMachines(source: HTMLElement | null) {
         const serverId = activeServerId();

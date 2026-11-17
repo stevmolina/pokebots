@@ -1,3 +1,4 @@
+import { BRAIN_CAPABILITY } from "@openbot/contracts/brain";
 import { isUpdateActivePhase } from "@openbot/contracts/ipc";
 import { AGENT_COMPUTER_CAPABILITY } from "@openbot/contracts/team-protocol/agent-computer-v1";
 import { AGENT_TASKS_CAPABILITY } from "@openbot/contracts/team-protocol/agent-tasks-v1";
@@ -93,6 +94,10 @@ export function useWorkspaceSidebarPages(): () => SidebarPages {
     onUsage: windowPage.openUsage,
     // An older joined server has no storage routes, so it has no Library.
     onLibrary: serverHasStorage(activeServer()) ? windowPage.openLibrary : undefined,
+    onBrain:
+      !activeServer() || activeServer()?.kind === "local" || serverSupportsCapability(activeServer(), BRAIN_CAPABILITY)
+        ? windowPage.openBrain
+        : undefined,
     onMachines: windowPage.openMachines,
     onComputers: serverCanAdminister(activeServer(), AGENT_COMPUTER_CAPABILITY)
       ? () => {

@@ -1,4 +1,5 @@
 import type { Effect } from "effect";
+import type { BrainService } from "../../backend/brain-service";
 import type { ChannelService } from "../../backend/channel-service";
 import type { AcpRegistry } from "../acp-registry";
 import type { AgentAccessStore } from "../agent-access-store";
@@ -756,6 +757,7 @@ export interface TeamApiOptions {
   /** `events-v1`: admin-only event source and routine management. */
   events?: HostEventsApi | undefined;
   channels?: ChannelService | undefined;
+  brain?: BrainService | undefined;
   mcpServers?: TeamApiMcpServers | undefined;
   mcpServerOwners?: TeamApiMcpServerOwners | undefined;
   mcpAccess?: TeamApiMcpAccess | undefined;
