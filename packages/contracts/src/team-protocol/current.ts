@@ -806,6 +806,10 @@ export function isAgentMessageRoute(method: string, path: string): boolean {
 // The v8 marker stays out: a client sends it only after the host reports protocol 8.
 export const TEAM_BOOTSTRAP_CAPABILITIES = TEAM_CURRENT_CAPABILITIES.filter(
   (capability) =>
+    capability !== BRAIN_CAPABILITY &&
+    capability !== ROOMS_CAPABILITY &&
+    capability !== AGENT_HOST_SETTINGS_CAPABILITY &&
+    capability !== MCP_SIGN_IN_CAPABILITY &&
     capability !== TEAM_OPEN_PROVIDERS_CAPABILITY &&
     capability !== AGENT_MEMORIES_CAPABILITY &&
     capability !== AGENT_SESSION_SETTINGS_CAPABILITY &&

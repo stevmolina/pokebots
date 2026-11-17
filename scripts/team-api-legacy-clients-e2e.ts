@@ -20,6 +20,7 @@
 // - browser-vault-skip-v1: a protocol 9 client that asks for it gets why a saved login was not filled on
 //   the event socket and a WebRTC event; any other client gets the released takeover request (#7262).
 // Run: `bun scripts/team-api-legacy-clients-e2e.ts`.
+// Add `--bootstrap-only` to check only the first compatibility request.
 // Writes .openbot-build/team-api-legacy-clients-e2e/report.json.
 import assert from "node:assert/strict";
 import { generateKeyPairSync, randomBytes, randomUUID, sign, verify } from "node:crypto";
@@ -396,7 +397,7 @@ let server: InstanceType<typeof TeamApiServer> | null = null;
 let socket: WebSocket | undefined;
 const peers: InstanceType<typeof TeamWebRtcHostPeer>[] = [];
 
-try {
+checks: try {
   await runCauseEffect(sidebar.initialize());
   // The stores only: `AgentService.initialize` would start the provider CLIs, which no step needs.
   await runCauseEffect(agentStore.initialize());
@@ -423,6 +424,26 @@ try {
   });
   const port = await Effect.runPromise(server.start());
   report.host.port = port;
+
+  await step("bootstrap: the first request fits the released 64-capability limit", async () => {
+    const capabilities = teamCapabilitiesForProtocol(undefined);
+    assert.ok(capabilities.length <= 64, `An older host refuses ${capabilities.length} capabilities.`);
+    const response = await fetch(`http://127.0.0.1:${port}/v1/compatibility`, {
+      headers: {
+        [TEAM_PROTOCOL_VERSION_HEADER]: "6",
+        [TEAM_APP_VERSION_HEADER]: CLIENT_VERSION,
+        [TEAM_CAPABILITIES_HEADER]: capabilities.join(","),
+      },
+    });
+    assert.equal(response.status, 200);
+    const host = decodeTeamProtocolSupportV1(await response.json());
+    assert.ok(host.capabilities.includes("agent-duplication"));
+    return { sent: capabilities.length, received: host.capabilities.length };
+  });
+  if (process.argv.includes("--bootstrap-only")) {
+    report.passed = true;
+    break checks;
+  }
 
   // --- v1 over HTTP ---
 
@@ -1645,4 +1666,4 @@ try {
   await rm(root, { recursive: true, force: true });
 }
 
-process.stdout.write(`Team API v1-v3, v7, v8 and v9 clients passed. Report: ${join(OUT, "report.json")}\n`);
+process.stdout.write(`Team API checks passed. Report: ${join(OUT, "report.json")}\n`);
