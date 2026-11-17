@@ -37,6 +37,7 @@ export type WhatsAppPort = Pick<
   | "answerWhatsAppRequest"
   | "setWhatsAppOwnNumber"
   | "setWhatsAppWorkingMessage"
+  | "setWhatsAppStatusReactions"
 >;
 
 /** This computer's WhatsApp, through main. Read on each call: tests and stories replace `window.openbot`. */
@@ -59,6 +60,7 @@ export type HostWhatsAppApi = Pick<
   | "hostAnswerWhatsAppRequest"
   | "hostSetWhatsAppOwnNumber"
   | "hostSetWhatsAppWorkingMessage"
+  | "hostSetWhatsAppStatusReactions"
 >;
 
 /**
@@ -90,6 +92,7 @@ export function hostWhatsAppPort(
     answerWhatsAppRequest: (input) => call((api, id) => api.hostAnswerWhatsAppRequest(input, id)),
     setWhatsAppOwnNumber: (input) => call((api, id) => api.hostSetWhatsAppOwnNumber(input, id)),
     setWhatsAppWorkingMessage: (input) => call((api, id) => api.hostSetWhatsAppWorkingMessage(input, id)),
+    setWhatsAppStatusReactions: (input) => call((api, id) => api.hostSetWhatsAppStatusReactions(input, id)),
   };
 }
 
@@ -240,6 +243,8 @@ export function createWhatsAppConnector(
         onSetOwnNumber: (workspaceId, ownNumber) => run(() => port().setWhatsAppOwnNumber({ workspaceId, ownNumber })),
         onSetWorkingMessage: (workspaceId, workingMessage) =>
           run(() => port().setWhatsAppWorkingMessage({ workspaceId, workingMessage })),
+        onSetStatusReactions: (workspaceId, statusReactions) =>
+          run(() => port().setWhatsAppStatusReactions({ workspaceId, statusReactions })),
         onAddOrchestrator: (choice) =>
           run(async () => {
             const { sectionId } = await port().addWhatsAppOrchestrator({ ...(choice ?? {}) });

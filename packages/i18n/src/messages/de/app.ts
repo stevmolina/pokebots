@@ -53,6 +53,8 @@ export const messages = {
   "app.rail.workflows": "Workflows",
   "app.rail.usage": "Nutzung",
   "app.rail.library": "Bibliothek",
+  "app.rail.providers": "Anbieter",
+  "app.rail.crm": "CRM",
   "app.rail.marketplace": "Marktplatz",
   "app.rail.settings": "Einstellungen",
   "app.rail.more": "Mehr",

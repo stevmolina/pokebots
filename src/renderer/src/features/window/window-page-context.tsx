@@ -17,6 +17,7 @@ export type WindowPage =
   | "rooms"
   | "brain"
   | "machines"
+  | "crm"
   | "marketplace"
   | "settings"
   | "server-settings"
@@ -235,6 +236,11 @@ const context = createSimpleContext({
       openMachines(source: HTMLElement | null) {
         const serverId = activeServerId();
         if (serverId) usage.openMachines(serverId, source);
+      },
+      openCrm(source: HTMLElement | null, connectors = false) {
+        leavePricing();
+        const serverId = activeServerId();
+        if (serverId) usage.openCrm(serverId, source, connectors);
       },
       openSettings(source: HTMLElement | null) {
         leavePricing();

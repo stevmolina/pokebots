@@ -16,6 +16,7 @@ import {
   SIDEBAR_DOCK_OPEN_PREFIX,
   SIDEBAR_DOCK_WORKING_ID,
   type SidebarProps,
+  sidebarChatOrderSortsSections,
 } from "./sidebar-types";
 import { createSidebarAnnouncementStore } from "./stores/announcement-store";
 import { createSidebarDataStore } from "./stores/data-store";
@@ -25,8 +26,8 @@ import { createSidebarPendingStore } from "./stores/pending-store";
 
 export function createSidebarScope(props: SidebarProps) {
   const layoutMutable = () => props.layoutMutable !== false;
-  /** A chat drags only in the manual orders. "Unread first" sorts each section itself. */
-  const chatsDraggable = () => layoutMutable() && props.chatOrder !== "unread-first";
+  /** A chat drags only in the manual orders. "Recent activity" and "Unread first" sort each section. */
+  const chatsDraggable = () => layoutMutable() && !sidebarChatOrderSortsSections(props.chatOrder);
   const scrollFades = createScrollFades({ stuck: ".sidebar-folder > header" });
 
   const { announce, announceError, reorderAnnouncement } = createSidebarAnnouncementStore();
@@ -55,6 +56,7 @@ export function createSidebarScope(props: SidebarProps) {
     resolvedPinnedItems,
     sectionAcceptsChat,
     sectionCanNest,
+    sectionChatCount,
     sectionChildren,
     sectionIsCollapsed: layoutSectionIsCollapsed,
     sectionIsInside,
@@ -307,6 +309,7 @@ export function createSidebarScope(props: SidebarProps) {
     scrollFades,
     sectionDeleteTarget,
     sectionCanNest,
+    sectionChatCount,
     sectionChildren,
     sectionDragClasses: dragState.sectionDragClasses,
     sectionIsCollapsed,
