@@ -1,3 +1,7 @@
+### Changed
+
+- New design (Settings > Appearance) is on by default in the Pokebots build; Settings still turns it off.
+
 ### Fixed
 
 - New design (Settings > Appearance, Pokebots build): the iPad and iPhone Duo pane keeps the current
