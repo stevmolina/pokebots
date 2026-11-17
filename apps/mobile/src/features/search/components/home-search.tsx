@@ -2,8 +2,7 @@ import { avatarHeadColor } from "@openbot/brand/bloub-avatar";
 import { isAgentTaskOpen, taskNeedsYou } from "@openbot/team-client/agent-tasks";
 import * as Crypto from "expo-crypto";
 import { type Href, router, useFocusEffect } from "expo-router";
-import type { NativeStackNavigationProp } from "expo-router/native-stack";
-import { type ParamListBase, useNavigation } from "expo-router/react-navigation";
+import { useNavigation } from "expo-router/react-navigation";
 import { Spinner, Typography } from "heroui-native";
 import { useThemeColor } from "heroui-native/hooks";
 import type { LucideIcon } from "lucide-react-native";
@@ -22,7 +21,6 @@ import Settings from "lucide-react-native/icons/settings";
 import SlidersHorizontal from "lucide-react-native/icons/sliders-horizontal";
 import UsersRound from "lucide-react-native/icons/users-round";
 import {
-  type ComponentProps,
   type PropsWithChildren,
   type ReactNode,
   type RefObject,
@@ -41,7 +39,6 @@ import {
   TextInput,
   type TextInputInstance,
   View,
-  type ViewInstance,
 } from "react-native";
 import { KeyboardAwareScrollView, useReanimatedKeyboardAnimation } from "react-native-keyboard-controller";
 import Animated, {
@@ -64,7 +61,6 @@ import { openChatFromPane, useChatListPane } from "@/features/agents/components/
 import { reportMobileNotification } from "@/features/analytics/failure-reports";
 import { MobileSearchResults, SearchCaption } from "@/features/search/components/mobile-search-results";
 import { setHomeSearchOpener } from "@/features/search/model/home-search-request";
-import { useAppDrawerShown } from "@/features/servers/components/app-drawer-activity";
 import { useAppDrawer } from "@/features/servers/components/app-drawer-shell";
 import { TaskListRow } from "@/features/servers/components/task-list-row";
 import { useServerTasks } from "@/features/servers/model/use-server-tasks";
@@ -75,7 +71,7 @@ import {
 } from "@/features/workspace/context/mobile-workspace-context";
 import { BlurSwap } from "@/shared/components/blur-swap";
 import { useBottomFieldMetrics } from "@/shared/components/bottom-field-metrics";
-import { ANDROID_BLUR, GLASS_CAPSULE_HEIGHT, GlassCapsule } from "@/shared/components/glass-capsule";
+import { GLASS_CAPSULE_HEIGHT, GlassCapsule } from "@/shared/components/glass-capsule";
 import { SheetScrollEdgeEffect } from "@/shared/components/sheet-scroll-edge-effect";
 import { haptics } from "@/shared/lib/haptics";
 import { useReducedMotion, useTransitionMode } from "@/shared/lib/motion";
@@ -616,14 +612,11 @@ function TaskTargetRow({ agent, onPress }: { agent: MobileAgent; onPress: () => 
 /** The field at the bottom of home. It rides on the keyboard, and a close button comes in beside it. */
 export function HomeSearchBar({
   search,
-  blurTarget,
   leading,
   sideInset = 16,
   shortPlaceholder = false,
 }: {
   search: HomeSearch;
-  /** Android: the home content that the field blurs. */
-  blurTarget?: RefObject<ViewInstance | null>;
   /** A button before the field, such as the grid of the calm look. It leaves while the search is open. */
   leading?: ReactNode;
   /** The space between the screen side and the bar. */
@@ -697,7 +690,6 @@ export function HomeSearchBar({
   const layout = reduced ? undefined : FIELD_LAYOUT;
   const enter = reduced ? undefined : closeButtonEnter;
   const exit = reduced ? undefined : closeButtonExit;
-  const homeAtRest = useHomeAtRest();
   const { target } = search;
   const prepareFromTouch = () => {
     if (search.open) return;
@@ -779,15 +771,12 @@ export function HomeSearchBar({
         </Animated.View>
       ) : null}
       <Animated.View className="min-w-0 flex-1" layout={layout}>
-        <HomeFieldCapsule
+        <GlassCapsule
           height={fieldHeight}
           liquidGlass={liquidGlass}
           fallbackBackground={fieldBackground}
           tint={resultTint}
           tintShown={showsResult}
-          blurTarget={blurTarget}
-          // The open results lie over the list and are not in the target, so the field is solid then.
-          blurPaused={search.open || !homeAtRest}
         >
           {/* The field stays mounted under the result, so "Try again" can focus it at once. The field
               fades out first; the result then fades in from 97% as the tint comes in. */}
@@ -918,7 +907,7 @@ export function HomeSearchBar({
               />
             ) : null}
           </Animated.View>
-        </HomeFieldCapsule>
+        </GlassCapsule>
       </Animated.View>
     </Animated.View>
   );
@@ -1020,51 +1009,6 @@ function TargetChip({ agent, onPress }: { agent: MobileAgent; onPress: () => voi
       </Typography.Paragraph>
     </Pressable>
   );
-}
-
-/**
- * Android: whether home shows with no screen over it and no push or pop in progress. The field's
- * blur blurs the whole home list again on each frame that the list changes, so it stops from the
- * moment home loses focus. It starts again when home has focus and its return animation has ended.
- * A sheet over home does not hide home, so its close gives focus with no animation to wait for.
- */
-function useHomeAtRest(): boolean {
-  const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
-  const [atRest, setAtRest] = useState(true);
-  useEffect(() => {
-    if (!ANDROID_BLUR) return;
-    // A screen that slid over home hid it; home then comes back with its own animation.
-    let hidden = false;
-    const listeners = [
-      navigation.addListener("blur", () => setAtRest(false)),
-      navigation.addListener("focus", () => {
-        if (!hidden) setAtRest(true);
-      }),
-      navigation.addListener("transitionStart", () => setAtRest(false)),
-      navigation.addListener("transitionEnd", (event) => {
-        if (event.data.closing) {
-          hidden = !navigation.isFocused();
-          return;
-        }
-        hidden = false;
-        if (navigation.isFocused()) setAtRest(true);
-      }),
-    ];
-    return () => {
-      for (const remove of listeners) remove();
-    };
-  }, [navigation]);
-  return atRest;
-}
-
-/**
- * The capsule of the home field. It shows the solid glass while the drawer is open or moves: the
- * scrim covers home then, and the Android blur would blur the whole home list again on each frame of
- * the motion. Only the capsule reads the drawer state, so the field itself does not render again.
- */
-function HomeFieldCapsule({ blurPaused = false, ...props }: ComponentProps<typeof GlassCapsule>) {
-  const drawerShown = useAppDrawerShown();
-  return <GlassCapsule {...props} blurPaused={blurPaused || drawerShown} />;
 }
 
 interface Shortcut {

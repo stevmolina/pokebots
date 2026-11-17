@@ -5,6 +5,7 @@
 
 import {
   Brain,
+  BriefcaseBusiness,
   Check,
   ChevronRight,
   CircleQuestionMark,
@@ -13,6 +14,7 @@ import {
   Monitor,
   Settings,
   SlidersHorizontal,
+  Sparkles,
   Store,
   type Waypoints,
 } from "@openbot/ui";
@@ -72,6 +74,22 @@ export function SidebarMoreMenuItems(props: {
           <DropdownMenu.Item onSelectAfterClose={() => open()()}>
             <Brain class="agent-context-icon size-4" aria-hidden="true" />
             <span>{t("app.rail.brain")}</span>
+          </DropdownMenu.Item>
+        )}
+      </Show>
+      <Show when={props.pages.onProviders}>
+        {(open) => (
+          <DropdownMenu.Item onSelectAfterClose={props.open(open())}>
+            <Sparkles class="agent-context-icon size-4" aria-hidden="true" />
+            <span>{t("app.rail.providers")}</span>
+          </DropdownMenu.Item>
+        )}
+      </Show>
+      <Show when={props.pages.onCrm}>
+        {(open) => (
+          <DropdownMenu.Item onSelectAfterClose={props.open(open())}>
+            <BriefcaseBusiness class="agent-context-icon size-4" aria-hidden="true" />
+            <span>{t("app.rail.crm")}</span>
           </DropdownMenu.Item>
         )}
       </Show>

@@ -2,6 +2,7 @@ import { BRAIN_CAPABILITY } from "@openbot/contracts/brain";
 import { isUpdateActivePhase } from "@openbot/contracts/ipc";
 import { AGENT_COMPUTER_CAPABILITY } from "@openbot/contracts/team-protocol/agent-computer-v1";
 import { AGENT_TASKS_CAPABILITY } from "@openbot/contracts/team-protocol/agent-tasks-v1";
+import { CRM_CAPABILITY } from "@openbot/contracts/team-protocol/crm-v1";
 import { ROOMS_CAPABILITY } from "@openbot/contracts/team-protocol/rooms-v1";
 import type { SidebarPage, SidebarPages } from "@openbot/ui/features/sidebar/sidebar-pages";
 import type { SidebarView } from "@openbot/ui/features/sidebar/sidebar-types";
@@ -13,7 +14,11 @@ import { useAuth } from "../account/account-context";
 import { useChannels } from "../channels/channels-context";
 import { useCustomAgents } from "../custom-agents/custom-agents-context";
 import { serverHasStorage } from "../files/storage-usage";
-import { serverCanAdminister, serverSupportsCapability } from "../servers/server-capabilities";
+import {
+  activeServerHasProviderSettings,
+  serverCanAdminister,
+  serverSupportsCapability,
+} from "../servers/server-capabilities";
 import { useServerSettings } from "../servers/server-settings";
 import { useServers } from "../servers/servers-context";
 import { useSettings } from "../settings/settings-context";
@@ -21,6 +26,7 @@ import { shortcutPlatform as devicePlatform } from "../shortcuts/shortcut-platfo
 import { useUpdates } from "../updates/updates-context";
 import { useWhatsNew } from "../updates/whats-new-context";
 import { usePlanLimitRows } from "../usage/plan-limit-rows";
+import { useUsage } from "../usage/usage-context";
 import { createHelpMenu } from "./help-menu";
 import { useWindowPage } from "./window-page-context";
 
@@ -46,6 +52,7 @@ export function useWorkspaceSidebarPages(): () => SidebarPages {
   const whatsNew = useWhatsNew();
   const { activeServer } = useServers();
   const auth = useAuth();
+  const usage = useUsage();
   /** Chats and Routines show the same page; they set the middle pane. */
   function showSidebarView(view: SidebarView) {
     windowPage.showAgents();
@@ -68,6 +75,14 @@ export function useWorkspaceSidebarPages(): () => SidebarPages {
     const server = activeServer();
     return !server || server.kind === "local" || serverSupportsCapability(server, AGENT_TASKS_CAPABILITY);
   };
+  /** Server Settings > Providers of this computer, or of a joined server that this account administers. */
+  const openProviders = (): ((button: HTMLElement) => void) | undefined => {
+    const server = activeServer();
+    if (!server || !activeServerHasProviderSettings(server)) return undefined;
+    return (button) => serverSettings.openServerSettings(server.id, button, "providers");
+  };
+  /** Only an owner or admin reads the CRM, on a host with CRM routes, while Server Settings turns it on. */
+  const crmShown = () => serverCanAdminister(activeServer(), CRM_CAPABILITY) && usage.crmEnabled() === true;
   const current = (): SidebarPage | null => {
     const page = windowPage.page();
     if (page === "agents") return layout.sidebarView() === "routines" ? "routines" : "chats";
@@ -106,6 +121,8 @@ export function useWorkspaceSidebarPages(): () => SidebarPages {
       !activeServer() || activeServer()?.kind === "local" || serverSupportsCapability(activeServer(), BRAIN_CAPABILITY)
         ? () => windowPage.openBrain(null)
         : undefined,
+    onProviders: openProviders(),
+    onCrm: crmShown() ? (button) => windowPage.openCrm(button) : undefined,
     onMarketplace: () => {
       windowPage.leavePricing();
       setSkillsMarketplaceOpen(true);

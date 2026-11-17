@@ -3,6 +3,8 @@ import { Marketplace } from "@openbot/ui/features/marketplace/Marketplace";
 import type { MarketplaceApp } from "@openbot/ui/features/marketplace/marketplace-model";
 import { createMarketplaceNavigation } from "@openbot/ui/features/marketplace/marketplace-view";
 import { createEffect, createSignal, untrack } from "solid-js";
+import { McpServerControls } from "../servers/McpServerControls";
+import { McpServerForm } from "../servers/McpServerForm";
 import { MarketplaceDialogs, watchConnectors } from "./MarketplaceDialogs";
 import { createMarketplaceController, type MarketplaceControllerProps } from "./marketplace-controller";
 
@@ -35,7 +37,10 @@ export interface MarketplaceModalProps extends MarketplaceControllerProps {
 /** The Marketplace on this computer's or a joined server's data, with the dialogs it opens. */
 export function MarketplaceModal(props: MarketplaceModalProps) {
   const nav = createMarketplaceNavigation();
-  const controller = createMarketplaceController(props);
+  const controller = createMarketplaceController(props, (tools) => ({
+    form: (form) => <McpServerForm tools={tools} id={form.id} onClose={form.onClose} />,
+    controls: (controls) => <McpServerControls tools={tools} id={controls.id} />,
+  }));
   /**
    * A Connect press from a chat card. It runs when the listing is in the apps and their states are
    * read, so an installed app is not installed again.
@@ -94,6 +99,23 @@ export function MarketplaceModal(props: MarketplaceModalProps) {
             draft.missingListing = link.kind;
           });
       });
+    },
+  );
+
+  /* Sign in on an agent's card opens the row's page once the rows are read. A custom row's card
+     then starts the sign-in; an app's page has its own Reconnect. The page id, not an object, so a
+     new read of the rows does not open the page again. */
+  createEffect(
+    () => {
+      const id = props.open ? props.mcpSignInRequest : undefined;
+      return id ? controller.mcpServerApp(id) : undefined;
+    },
+    (app) => {
+      if (app === undefined) return;
+      nav.reset();
+      if (app) nav.go({ kind: "app", id: app });
+      // Only a custom row's card takes the request; another page, or no row, ends it here.
+      if (!app?.startsWith("custom:")) untrack(() => props.onMcpSignInRequestHandled)?.();
     },
   );
 

@@ -1,5 +1,5 @@
 import { foreignProvider } from "@openbot/contracts/agent-providers";
-import { agentNextProviderAccountId } from "@openbot/contracts/ipc";
+import { agentNextProviderAccountId, workspaceAccessEnforced } from "@openbot/contracts/ipc";
 import type { ProviderModelPicker } from "@openbot/ui/components/ProviderModelPicker";
 import { useText } from "@openbot/ui/text";
 import type { ComponentProps } from "@solidjs/web";
@@ -52,6 +52,7 @@ export function useAgentModelPicker(): () => ComponentProps<typeof ProviderModel
       disabledReason: t("conversation.header.modelsUnavailable"),
       accountChoice: true,
       providerAccountId: props.agent ? agentNextProviderAccountId(props.agent) : undefined,
+      workspaceOnly: props.agent ? workspaceAccessEnforced(props.agent) : false,
       accountUsage: props.accountUsage,
       onChange: (model, provider, accountId, effort) => void selectAndConfirmModel(model, provider, accountId, effort),
       onReasoningEffortChange: (effort) => void selectAndConfirmReasoning(effort),

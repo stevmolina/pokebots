@@ -19,6 +19,7 @@ import {
   Pin,
   PinOff,
   Trash2,
+  Wallpaper,
 } from "@openbot/ui";
 import { prefersReducedMotion } from "@openbot/ui/utils";
 import type { JSX } from "@solidjs/web";
@@ -535,13 +536,16 @@ export function MessageBody(props: {
      while the file arrives, so the chat does not grow when the image shows. An image that does not
      load shows as a card. */
   const [unloadedImages, setUnloadedImages] = createSignal<ReadonlySet<string>>(new Set());
+  /* A generated image is what the user asked to see, so it loads up to a larger limit than a thumbnail. */
+  const loadLimit = (attachment: AttachmentSummary) =>
+    props.message.imageGeneration && props.message.attachments?.[0]?.id === attachment.id ? "generated" : "thumbnail";
   const arrivingImage = (attachment: AttachmentSummary) => {
     const source = props.mediaSource;
     return (
       source !== undefined &&
       attachment.previewKind === "image" &&
       !attachment.previewUrl &&
-      attachment.size <= source.thumbnailLimit &&
+      attachment.size <= (loadLimit(attachment) === "generated" ? source.generatedImageLimit : source.thumbnailLimit) &&
       !unloadedImages().has(attachment.id)
     );
   };
@@ -556,6 +560,9 @@ export function MessageBody(props: {
     const images = new Set(standaloneImageAttachments());
     return standaloneAttachments().filter((attachment) => !images.has(attachment));
   });
+  /* A full cache removes the oldest image. A shown image that lost its file this way shows as a card
+     and does not load again: a new load would remove the next image, and the downloads would not stop. */
+  const loadedImages = new Set<string>();
   createEffect(
     () => standaloneImageAttachments().filter((attachment) => !attachment.previewUrl),
     (arriving) => {
@@ -563,9 +570,14 @@ export function MessageBody(props: {
       const unloaded = (attachment: AttachmentSummary) =>
         setUnloadedImages((current) => new Set(current).add(attachment.id));
       for (const attachment of arriving) {
-        void source?.load(attachment).then(
+        if (loadedImages.has(attachment.id)) {
+          unloaded(attachment);
+          continue;
+        }
+        void source?.load(attachment, loadLimit(attachment)).then(
           (shown) => {
-            if (!shown) unloaded(attachment);
+            if (shown) loadedImages.add(attachment.id);
+            else unloaded(attachment);
           },
           () => unloaded(attachment),
         );
@@ -1195,6 +1207,8 @@ export interface MessageMenuItemsProps {
   sendToChannel?: { channels: { id: string; name: string }[]; onSend: (channelId: string) => void } | undefined;
   /** Pins this message to its chat, or unpins it. Without it, the menu has no such item. */
   pin?: { pinned: boolean; onToggle: () => void } | undefined;
+  /** Puts the page, picture or GIF of this message behind the window. Without it, the menu has no such item. */
+  onUseAsBackdrop?: (() => void) | undefined;
   /** Asks to delete this message. Without it, the menu has no such item. */
   onDelete?: (() => void) | undefined;
 }
@@ -1202,15 +1216,16 @@ export interface MessageMenuItemsProps {
 /**
  * The items of a message's menu. The right-click menu and the More button of the action row show the
  * same items. A row of quick reactions comes first, then up to four main actions (Reply, Copy, Read
- * aloud, Pin). Everything else sits under More: the other reactions, Send to channel, Branch from here,
- * Mark unread and Delete.
+ * aloud, Pin). Everything else sits under More: the other reactions, Send to channel, Use as backdrop,
+ * Branch from here, Mark unread and Delete.
  */
 export function MessageMenuItems(props: MessageMenuItemsProps) {
   const { t } = useText();
   const react = (emoji: MessageReaction) => props.onReact(props.message.reaction === emoji ? null : emoji);
   const sendToChannel = () => (props.sendToChannel?.channels.length ? props.sendToChannel : undefined);
   const hasMore = () =>
-    props.reactions !== false || Boolean(sendToChannel() || props.onBranch || props.onMarkUnread || props.onDelete);
+    props.reactions !== false ||
+    Boolean(sendToChannel() || props.onUseAsBackdrop || props.onBranch || props.onMarkUnread || props.onDelete);
   const reactionRow = (emojis: readonly MessageReaction[], extra: boolean) => (
     <ContextMenu.RadioGroup
       class={extra ? "message-menu-reactions message-menu-reactions-more" : "message-menu-reactions"}
@@ -1276,7 +1291,11 @@ export function MessageMenuItems(props: MessageMenuItemsProps) {
             <ContextMenu.SubContent class="ui-action-menu" aria-label={t("app.rail.more")}>
               <Show when={props.reactions !== false}>
                 {reactionRow(MORE_MESSAGE_REACTIONS, true)}
-                <Show when={sendToChannel() || props.onBranch || props.onMarkUnread || props.onDelete}>
+                <Show
+                  when={
+                    sendToChannel() || props.onUseAsBackdrop || props.onBranch || props.onMarkUnread || props.onDelete
+                  }
+                >
                   <ContextMenu.Separator />
                 </Show>
               </Show>
@@ -1301,6 +1320,14 @@ export function MessageMenuItems(props: MessageMenuItemsProps) {
                       </ContextMenu.SubContent>
                     </ContextMenu.Portal>
                   </ContextMenu.Sub>
+                )}
+              </Show>
+              <Show when={props.onUseAsBackdrop}>
+                {(onUseAsBackdrop) => (
+                  <ContextMenu.Item onSelectAfterClose={onUseAsBackdrop()}>
+                    <Wallpaper aria-hidden="true" />
+                    <span>{t("chat.menu.useAsBackdrop")}</span>
+                  </ContextMenu.Item>
                 )}
               </Show>
               <Show when={props.onBranch}>
