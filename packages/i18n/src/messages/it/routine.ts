@@ -245,6 +245,10 @@ export const messages = {
   "routine.settings.create": "Crea routine",
   "routine.settings.loading": "Caricamento delle routine…",
   "routine.settings.empty": "Ancora nessuna routine.",
+  "routine.heartbeat.add": "Aggiungi heartbeat",
+  "routine.heartbeat.name": "Heartbeat",
+  "routine.heartbeat.description":
+    "Controlla un elenco ogni 2 ore e scrive solo quando qualcosa richiede la tua attenzione.",
   "routine.settings.paused": "In pausa",
   "routine.settings.completed": "Completata · {schedule}",
   "routine.settings.active": "Attiva",

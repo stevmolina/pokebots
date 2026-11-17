@@ -671,6 +671,30 @@ export const messages = {
   "mobile.server.connectors.protonPass.keyHelp":
     "在 Proton Pass 中创建一个只能读取你与 OpenBot 共享的保险库的访问密钥，然后粘贴到这里。{host} 保存该密钥；这部手机不保存。",
   "mobile.server.connectors.protonPass.keyPlaceholder": "pst_…",
+  "mobile.server.connectors.keeper.title": "Keeper",
+  "mobile.server.connectors.keeper.description":
+    "与 {host} 上的 OpenBot 共享一个 Keeper 文件夹，让 {host} 上的代理可以在其浏览器中登录网站。",
+  "mobile.server.connectors.keeper.accountHelp":
+    "输入你的 Keeper 邮箱和主密码。它们只会发送给 {host} 一次，由 {host} 交给 Keeper Commander。这部手机不会保存。",
+  "mobile.server.connectors.keeper.email": "邮箱",
+  "mobile.server.connectors.keeper.masterPassword": "主密码",
+  "mobile.server.connectors.keeper.signingIn": "{host} 正在登录 Keeper…",
+  "mobile.server.connectors.keeper.makingFolder": "{host} 正在创建共享文件夹…",
+  "mobile.server.connectors.keeper.code": "验证码",
+  "mobile.server.connectors.keeper.twoFactorHint":
+    "Keeper 要求输入两步验证码。输入验证器应用或短信中的验证码。验证码只发送给 {host} 一次；这部手机不会保存。",
+  "mobile.server.connectors.keeper.deviceHint":
+    "Keeper 已发送批准邮件，并通知了你的其他设备。在那里批准此设备，然后点击“继续”。也可以输入邮件中的验证码。",
+  "mobile.server.connectors.keeper.codeWrong": "验证码不正确。请重试。",
+  "mobile.server.connectors.keeper.folderTitle": "共享文件夹",
+  "mobile.server.connectors.keeper.folderFooter":
+    "在 Keeper 中把登录信息移入该文件夹，代理即可用它登录。移出后即停止。",
+  "mobile.server.connectors.keeper.plan":
+    "你的 Keeper 管理员不允许此账户使用 Keeper Commander。请让管理员允许使用，然后重新连接。",
+  "mobile.server.connectors.keeper.expiredTitle": "Keeper 会话已结束",
+  "mobile.server.connectors.keeper.expiredBody": "在你重新连接之前，{host} 上的代理无法使用共享的登录信息登录。",
+  "mobile.server.connectors.keeper.disconnectBody":
+    "{host} 会结束它的 Keeper 会话。文件夹及其登录信息保留在你的 Keeper 保险库中。",
   "mobile.server.connectors.passwordManager.unavailable": "{name} 在此服务器上不可用。",
   "mobile.server.connectors.passwordManager.howItWorks":
     "在这部手机上登录 {name}。然后 {host} 会创建一个共享保险库及其只读访问密钥，并只保存该密钥。代理永远看不到密码。",

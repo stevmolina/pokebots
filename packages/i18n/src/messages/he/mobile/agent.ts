@@ -140,6 +140,8 @@ export const messages = {
   "mobile.agent.info.routinePaused": "מושהית",
   "mobile.agent.info.noRoutines": "אין שגרות עדיין.",
   "mobile.agent.info.addRoutine": "הוספת שגרה",
+  "mobile.agent.info.addHeartbeat": "הוספת דופק",
+  "mobile.agent.heartbeat.name": "דופק",
   "mobile.agent.info.skillsUnsupported": "המארח הזה לא תומך במיומנויות. יש לעדכן את OpenBot במארח.",
   "mobile.agent.info.noSkills": "אין מיומנויות עדיין.",
   "mobile.agent.info.skillsManaged": "המיומנויות של הסוכן הזה מנוהלות במארח.",

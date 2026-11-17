@@ -23,7 +23,7 @@ const workspace = {
   onAddOrchestrator: fn(),
 };
 
-/** GitHub is connected; Slack, Discord, Telegram, WhatsApp, 1Password, Bitwarden and Proton Pass are not set up. */
+/** GitHub is connected; Slack, Discord, Telegram, WhatsApp, 1Password, Bitwarden, Proton Pass and Keeper are not set up. */
 export const STORY_CONNECTOR_DETAILS: readonly ConnectorDetail[] = [
   { id: "slack", props: { ...workspace, platform: "slack" } },
   { id: "discord", props: { ...workspace, platform: "discord" } },
@@ -127,6 +127,17 @@ export const STORY_CONNECTOR_DETAILS: readonly ConnectorDetail[] = [
       onOpenSignIn: fn(),
     },
   },
+  {
+    id: "keeper",
+    props: {
+      status: disconnectedPasswordManager("keeper", ["account"]),
+      busy: false,
+      onConnect: fn(),
+      onSubmitCode: fn(),
+      onCancel: fn(),
+      onDisconnect: fn(),
+    },
+  },
 ];
 
 const ORCHESTRATOR: SlackIntegrationAgent = {
@@ -225,6 +236,14 @@ export const CONNECTED_CONNECTOR_DETAILS: readonly ConnectorDetail[] = STORY_CON
             loginCount: 12,
             expiresAt: Date.UTC(2027, 10, 5),
           },
+        },
+      };
+    case "keeper":
+      return {
+        ...detail,
+        props: {
+          ...detail.props,
+          status: { ...detail.props.status, state: "connected", vaultNames: ["Shared with OpenBot"], loginCount: 12 },
         },
       };
     default:

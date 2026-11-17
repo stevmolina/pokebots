@@ -54,4 +54,26 @@ export const messages = {
   "error.connector.protonPassSignInTimeout": "La connexion à Proton a pris trop de temps. Connectez-vous à nouveau.",
   "error.connector.protonPassSetupFailed":
     "Impossible de créer le coffre Shared with OpenBot ou sa clé d’accès dans Proton Pass. Connectez-vous à nouveau.",
+  "error.connector.keeperFailed": "Impossible de connecter Keeper. Connectez-vous à nouveau.",
+  "error.connector.keeperCliInstallFailed":
+    "Impossible d’installer Keeper Commander. Vérifiez la connexion réseau, puis connectez-vous à nouveau.",
+  "error.connector.keeperPassword": "L’e-mail ou le mot de passe principal est incorrect.",
+  "error.connector.keeperCode": "Le code est incorrect. Saisissez-le à nouveau.",
+  "error.connector.keeperCodeNotAsked": "Keeper n’a pas demandé de code.",
+  "error.connector.keeperNotApproved":
+    "Keeper n’a pas encore approuvé cet appareil. Approuvez-le, puis sélectionnez Continuer.",
+  "error.connector.keeperExpired": "La session Keeper sur cet ordinateur est terminée. Connectez-vous à nouveau.",
+  "error.connector.keeperPlan":
+    "Votre administrateur Keeper n’autorise pas Keeper Commander pour ce compte. Demandez-lui de l’autoriser, puis connectez-vous à nouveau.",
+  "error.connector.keeperSso": "Les comptes Keeper qui se connectent avec le SSO ne peuvent pas encore être connectés.",
+  "error.connector.keeperTwoFactorUnsupported":
+    "La méthode en deux étapes de ce compte n’accepte pas de code saisi. Ajoutez une application d’authentification ou les SMS dans Keeper, puis connectez-vous à nouveau.",
+  "error.connector.keeperLocked":
+    "Keeper a verrouillé ce compte ou cet appareil. Ouvrez Keeper pour le déverrouiller, puis connectez-vous à nouveau.",
+  "error.connector.keeperThrottled":
+    "Keeper demande d’attendre quelques minutes avant la prochaine connexion. Reconnectez-vous plus tard.",
+  "error.connector.keeperPersistentLogin":
+    "Votre administrateur Keeper a désactivé « Stay logged in », dont OpenBot a besoin. Demandez-lui de l’autoriser, puis reconnectez-vous.",
+  "error.connector.keeperSignInTimeout": "La connexion à Keeper a pris trop de temps. Connectez-vous à nouveau.",
+  "error.connector.keeperFileUnreadable": "Le fichier de connexion Keeper est illisible.",
 } as const satisfies PartialTranslation<typeof source>;

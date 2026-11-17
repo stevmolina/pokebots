@@ -74,4 +74,24 @@ export const messages = defineMessages("error.connector", {
   "error.connector.protonPassSignInTimeout": "The Proton sign-in took too long. Connect again.",
   "error.connector.protonPassSetupFailed":
     "Could not make the vault Shared with OpenBot or its access key in Proton Pass. Connect again.",
+  "error.connector.keeperFailed": "Could not connect Keeper. Connect again.",
+  "error.connector.keeperCliInstallFailed":
+    "Could not install Keeper Commander. Check the network connection, then connect again.",
+  "error.connector.keeperPassword": "The email or the master password is not correct.",
+  "error.connector.keeperCode": "The code is not correct. Enter it again.",
+  "error.connector.keeperCodeNotAsked": "Keeper did not ask for a code.",
+  "error.connector.keeperNotApproved": "Keeper did not approve this device yet. Approve it, then select Continue.",
+  "error.connector.keeperExpired": "The Keeper session on this computer ended. Connect again.",
+  "error.connector.keeperPlan":
+    "Your Keeper administrator does not allow Keeper Commander for this account. Ask them to allow it, then connect again.",
+  "error.connector.keeperSso": "Keeper accounts that sign in with SSO cannot connect yet.",
+  "error.connector.keeperTwoFactorUnsupported":
+    "This account's two-step method cannot take a typed code. Add an authenticator app or text messages in Keeper, then connect again.",
+  "error.connector.keeperLocked":
+    "Keeper locked this account or this device. Open Keeper to unlock it, then connect again.",
+  "error.connector.keeperThrottled": "Keeper asks to wait a few minutes before the next sign-in. Connect again later.",
+  "error.connector.keeperPersistentLogin":
+    'Your Keeper administrator turned off "Stay logged in", which OpenBot needs. Ask them to allow it, then connect again.',
+  "error.connector.keeperSignInTimeout": "The Keeper sign-in took too long. Connect again.",
+  "error.connector.keeperFileUnreadable": "The Keeper connection file is unreadable.",
 });

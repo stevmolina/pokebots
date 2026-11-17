@@ -6,7 +6,7 @@ import {
   messagingStatus,
   whatsappStatus,
 } from "@/features/servers/model/connectors";
-import { passwordManagerConnectorStatus } from "@/features/servers/model/password-managers";
+import { isMobilePasswordManagerId, passwordManagerConnectorStatus } from "@/features/servers/model/password-managers";
 import { useServerConnectors } from "@/features/servers/model/use-server-connectors";
 
 /** The status of one connector. A connector that the server cannot run has no row. */
@@ -67,7 +67,7 @@ export function useConnectorRowState(serverId: string): { rows: ConnectorRow[]; 
         if (!status) return failed(id, bitwardenError);
         return [{ id, status: status.connecting ? "connecting" : status.connected ? "connected" : "idle" }];
       }
-      if (id === "protonpass") {
+      if (isMobilePasswordManagerId(id)) {
         // A host lists only the managers that it can connect, so a manager that it does not list has no row.
         if (!passwordManagersAvailable) return [];
         if (!passwordManagersData) return failed(id, passwordManagersError);

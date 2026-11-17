@@ -672,4 +672,65 @@ export const messages = {
     "OpenBot מוחק את מפתח הגישה שלו ב-{host}. הכספת ופרטי הכניסה שבה נשארים בחשבון Proton שלך.",
   "connector.protonPass.disconnect": "ניתוק",
   "connector.protonPass.actionFailed": "OpenBot לא הצליח לשנות את החיבור ל-Proton Pass.",
+  "connector.keeper.title": "Keeper",
+  "connector.keeper.description": "אפשר לתת לסוכנים להתחבר לאתרים עם פרטי הכניסה בתיקייה משותפת של Keeper.",
+  "connector.keeper.descriptionHost":
+    "אפשר לתת לסוכנים ב-{host} להתחבר לאתרים עם פרטי הכניסה בתיקייה משותפת של Keeper.",
+  "connector.keeper.connect": "חיבור",
+  "connector.keeper.setupTitle": "התחברות",
+  "connector.keeper.setupDescription":
+    "יש להזין את האימייל והסיסמה הראשית של Keeper. OpenBot מוסר אותם ל-Keeper Commander פעם אחת ולא שומר אותם. Keeper Commander הוא כלי שורת הפקודה של Keeper.",
+  "connector.keeper.setupDescriptionHost":
+    "יש להזין את האימייל והסיסמה הראשית של Keeper. {host} מוסר אותם ל-Keeper Commander פעם אחת ולא שומר אותם. Keeper Commander הוא כלי שורת הפקודה של Keeper.",
+  "connector.keeper.emailLabel": "אימייל",
+  "connector.keeper.passwordLabel": "סיסמה ראשית",
+  // The exact folder name that OpenBot makes in Keeper. Keep it in English.
+  "connector.keeper.folderName": "Shared with OpenBot",
+  "connector.keeper.folderSetup":
+    "OpenBot יוצר את התיקייה הזו בכספת בעת החיבור. כדי לשתף פרטי כניסה, יש להעביר אותם אליה.",
+  "connector.keeper.showSteps": "הצגת השלבים",
+  "connector.keeper.stepsLabel": "שלבי החיבור",
+  "connector.keeper.stepSignIn": "התחברות",
+  "connector.keeper.stepVerify": "אימות",
+  "connector.keeper.stepDone": "סיום",
+  "connector.keeper.signInTitle": "מתחבר ל-Keeper",
+  "connector.keeper.signInDescription": "Keeper Commander מתחבר עם החשבון שלך.",
+  "connector.keeper.signInDescriptionHost": "{host} מתחבר ל-Keeper עם החשבון שלך.",
+  "connector.keeper.twoFactorTitle": "יש להזין את הקוד",
+  "connector.keeper.twoFactorDescription":
+    "Keeper מבקש קוד אימות דו־שלבי. יש להזין את הקוד מאפליקציית האימות או מהודעת הטקסט.",
+  "connector.keeper.deviceTitle": "יש לאשר את המכשיר הזה",
+  "connector.keeper.deviceDescription":
+    "Keeper שלח אימייל לאישור והתראה למכשירים האחרים שלך. יש לאשר את המכשיר הזה בקישור שבאימייל או במכשיר אחר, ואז ללחוץ על ״המשך״. אפשר גם להקליד את הקוד מהאימייל.",
+  "connector.keeper.codeLabel": "קוד",
+  "connector.keeper.codeWrong": "הקוד שגוי. יש להזין אותו שוב.",
+  "connector.keeper.continue": "המשך",
+  "connector.keeper.setupStepTitle": "יוצר את התיקייה המשותפת",
+  "connector.keeper.setupStepDescription": "OpenBot יוצר בכספת את התיקייה ״{folder}״ ומפעיל התחברות עבור המכשיר הזה.",
+  "connector.keeper.doneTitle": "Keeper מחובר",
+  "connector.keeper.doneDescription": "כדי לאפשר לסוכנים להתחבר עם פרטי כניסה, יש להעביר אותם אל ״{folder}״.",
+  "connector.keeper.failedTitle": "החיבור ל-Keeper נכשל",
+  "connector.keeper.done": "סיום",
+  "connector.keeper.close": "סגירה",
+  "connector.keeper.statusConnecting": "מתחבר",
+  "connector.keeper.statusConnected": "מחובר",
+  "connector.keeper.statusExpired": "הסשן הסתיים",
+  "connector.keeper.expiredTitle": "הסשן של Keeper הסתיים",
+  "connector.keeper.expiredDescription":
+    "סוכנים לא יכולים להתחבר עם פרטי הכניסה המשותפים עד להתחברות מחדש. יש להזין את הסיסמה הראשית למטה.",
+  "connector.keeper.planTitle": "Keeper Commander חסום",
+  "connector.keeper.planDescription":
+    "מנהל Keeper שלך לא מאפשר את Keeper Commander לחשבון הזה. יש לבקש ממנו לאפשר אותו ואז להתחבר שוב.",
+  "connector.keeper.folderTitle": "תיקייה משותפת",
+  "connector.keeper.folderDescription":
+    "כדי לאפשר לסוכנים להתחבר עם פרטי כניסה, יש להעביר אותם לתיקייה הזו ב-Keeper. כדי להפסיק, יש להסיר אותם.",
+  "connector.keeper.loginCount": { one: "כניסה אחת", two: "שתי כניסות", other: "{count} כניסות" },
+  "connector.keeper.loginsLoading": "סופר כניסות…",
+  "connector.keeper.disconnectTitle": "ניתוק Keeper",
+  "connector.keeper.disconnectSummary":
+    "OpenBot מסיים את הסשן שלו ב-Keeper במחשב הזה. התיקייה ופרטי הכניסה שבה נשארים בכספת של Keeper.",
+  "connector.keeper.disconnectSummaryHost":
+    "OpenBot מסיים את הסשן שלו ב-Keeper ב-{host}. התיקייה ופרטי הכניסה שבה נשארים בכספת של Keeper.",
+  "connector.keeper.disconnect": "ניתוק",
+  "connector.keeper.actionFailed": "OpenBot לא הצליח לשנות את החיבור ל-Keeper.",
 } as const satisfies PartialTranslation<typeof source>;

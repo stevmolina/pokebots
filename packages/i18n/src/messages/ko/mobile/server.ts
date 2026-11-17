@@ -681,6 +681,31 @@ export const messages = {
   "mobile.server.connectors.protonPass.keyHelp":
     "Proton Pass에서 OpenBot과 공유하는 보관함만 읽을 수 있는 액세스 키를 만든 다음 여기에 붙여 넣으세요. 키는 {host}에 보관되고 이 휴대폰에는 저장되지 않아요.",
   "mobile.server.connectors.protonPass.keyPlaceholder": "pst_…",
+  "mobile.server.connectors.keeper.title": "Keeper",
+  "mobile.server.connectors.keeper.description":
+    "Keeper 폴더 하나를 {host}의 OpenBot과 공유하면 {host}의 에이전트가 브라우저에서 사이트에 로그인할 수 있어요.",
+  "mobile.server.connectors.keeper.accountHelp":
+    "Keeper 이메일과 마스터 비밀번호를 입력하세요. 한 번만 {host}에 전달되고, {host}이(가) Keeper Commander에 넘겨줘요. 이 휴대폰에는 저장되지 않아요.",
+  "mobile.server.connectors.keeper.email": "이메일",
+  "mobile.server.connectors.keeper.masterPassword": "마스터 비밀번호",
+  "mobile.server.connectors.keeper.signingIn": "{host}이(가) Keeper에 로그인하는 중…",
+  "mobile.server.connectors.keeper.makingFolder": "{host}이(가) 공유 폴더를 만드는 중…",
+  "mobile.server.connectors.keeper.code": "코드",
+  "mobile.server.connectors.keeper.twoFactorHint":
+    "Keeper가 2단계 인증 코드를 요청해요. 인증 앱이나 문자 메시지의 코드를 입력하세요. 코드는 {host}에 한 번만 전달되고 이 휴대폰에는 저장되지 않아요.",
+  "mobile.server.connectors.keeper.deviceHint":
+    "Keeper가 승인 이메일을 보내고 다른 기기에도 알림을 보냈어요. 그곳에서 이 기기를 승인한 다음 계속을 누르세요. 또는 이메일의 코드를 입력하세요.",
+  "mobile.server.connectors.keeper.codeWrong": "코드가 올바르지 않아요. 다시 입력하세요.",
+  "mobile.server.connectors.keeper.folderTitle": "공유 폴더",
+  "mobile.server.connectors.keeper.folderFooter":
+    "에이전트가 로그인 정보를 사용하게 하려면 Keeper에서 이 폴더로 옮기세요. 사용을 멈추려면 폴더에서 제거하세요.",
+  "mobile.server.connectors.keeper.plan":
+    "Keeper 관리자가 이 계정에서 Keeper Commander를 허용하지 않아요. 관리자에게 허용을 요청한 다음 다시 연결하세요.",
+  "mobile.server.connectors.keeper.expiredTitle": "Keeper 세션이 종료되었어요",
+  "mobile.server.connectors.keeper.expiredBody":
+    "다시 연결할 때까지 {host}의 에이전트가 공유 로그인 정보로 로그인할 수 없어요.",
+  "mobile.server.connectors.keeper.disconnectBody":
+    "{host}에서 Keeper 세션을 종료해요. 폴더와 그 안의 로그인 정보는 Keeper 보관함에 남아요.",
   "mobile.server.connectors.passwordManager.unavailable": "이 서버에서는 {name}을(를) 사용할 수 없어요.",
   "mobile.server.connectors.passwordManager.howItWorks":
     "이 휴대폰에서 {name}에 로그인하세요. 그러면 {host}이(가) 공유 보관함과 그 보관함의 읽기 전용 액세스 키를 만들고, 그 키만 보관해요. 에이전트는 비밀번호를 볼 수 없어요.",

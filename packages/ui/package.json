@@ -258,6 +258,7 @@
     "./features/settings/AgentComputerPanel": "./src/features/settings/AgentComputerPanel.tsx",
     "./features/settings/OnePasswordConnectorPanel": "./src/features/settings/OnePasswordConnectorPanel.tsx",
     "./features/settings/ProtonPassConnectorPanel": "./src/features/settings/ProtonPassConnectorPanel.tsx",
+    "./features/settings/KeeperConnectorPanel": "./src/features/settings/KeeperConnectorPanel.tsx",
     "./features/settings/SlackIntegrationPanel": "./src/features/settings/SlackIntegrationPanel.tsx",
     "./features/settings/TelegramIntegrationPanel": "./src/features/settings/TelegramIntegrationPanel.tsx",
     "./features/settings/WhatsAppIntegrationPanel": "./src/features/settings/WhatsAppIntegrationPanel.tsx",

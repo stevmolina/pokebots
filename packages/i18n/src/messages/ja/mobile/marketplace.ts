@@ -24,6 +24,7 @@ export const messages = {
   "mobile.marketplace.app.onePasswordTagline": "共有したログイン情報でサイトにサインイン",
   "mobile.marketplace.app.bitwardenTagline": "共有フォルダーのログイン情報でサイトにサインイン",
   "mobile.marketplace.app.protonPassTagline": "共有保管庫のログイン情報でサイトにサインイン",
+  "mobile.marketplace.app.keeperTagline": "共有フォルダーのログイン情報でサイトにサインイン",
   "mobile.marketplace.search.placeholder": "マーケットプレイスを検索",
   "mobile.marketplace.search.clear": "検索をクリア",
   "mobile.marketplace.search.close": "検索を閉じる",

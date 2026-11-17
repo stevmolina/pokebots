@@ -719,6 +719,31 @@ export const messages = {
   "mobile.server.connectors.protonPass.keyHelp":
     "En Proton Pass, crea una clave de acceso que solo pueda leer la bóveda que compartes con OpenBot y pégala aquí. {host} guarda la clave; este teléfono no.",
   "mobile.server.connectors.protonPass.keyPlaceholder": "pst_…",
+  "mobile.server.connectors.keeper.title": "Keeper",
+  "mobile.server.connectors.keeper.description":
+    "Comparte una carpeta de Keeper con OpenBot en {host} para que los agentes de {host} puedan iniciar sesión en sitios desde su navegador.",
+  "mobile.server.connectors.keeper.accountHelp":
+    "Escribe tu correo electrónico y tu contraseña maestra de Keeper. Van a {host} una sola vez, y {host} se los da a Keeper Commander. Este teléfono no los guarda.",
+  "mobile.server.connectors.keeper.email": "Correo electrónico",
+  "mobile.server.connectors.keeper.masterPassword": "Contraseña maestra",
+  "mobile.server.connectors.keeper.signingIn": "{host} está iniciando sesión en Keeper…",
+  "mobile.server.connectors.keeper.makingFolder": "{host} está creando la carpeta compartida…",
+  "mobile.server.connectors.keeper.code": "Código",
+  "mobile.server.connectors.keeper.twoFactorHint":
+    "Keeper pide un código de dos pasos. Escribe el código de tu app de autenticación o del mensaje de texto. Va a {host} una sola vez; este teléfono no lo guarda.",
+  "mobile.server.connectors.keeper.deviceHint":
+    "Keeper envió un correo de aprobación y una notificación a tus otros dispositivos. Aprueba este dispositivo allí y pulsa Continuar. O escribe el código del correo.",
+  "mobile.server.connectors.keeper.codeWrong": "El código no es correcto. Inténtalo de nuevo.",
+  "mobile.server.connectors.keeper.folderTitle": "Carpeta compartida",
+  "mobile.server.connectors.keeper.folderFooter":
+    "Mueve una credencial a esta carpeta en Keeper para que los agentes inicien sesión con ella. Quítala para dejar de compartirla.",
+  "mobile.server.connectors.keeper.plan":
+    "Tu administrador de Keeper no permite Keeper Commander para esta cuenta. Pídele que lo permita y vuelve a conectar.",
+  "mobile.server.connectors.keeper.expiredTitle": "La sesión de Keeper terminó",
+  "mobile.server.connectors.keeper.expiredBody":
+    "Los agentes de {host} no pueden iniciar sesión con tus credenciales compartidas hasta que vuelvas a conectar.",
+  "mobile.server.connectors.keeper.disconnectBody":
+    "{host} cierra su sesión de Keeper. La carpeta y sus credenciales se quedan en tu bóveda de Keeper.",
   "mobile.server.connectors.passwordManager.unavailable": "{name} no está disponible en este servidor.",
   "mobile.server.connectors.passwordManager.howItWorks":
     "Inicia sesión en {name} en este teléfono. Después, {host} crea una bóveda compartida y una clave de acceso de solo lectura para ella, y guarda solo esa clave. Los agentes nunca ven una contraseña.",

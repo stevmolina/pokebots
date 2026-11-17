@@ -55,4 +55,25 @@ export const messages = {
   "error.connector.protonPassSignInTimeout": "Proton oturum açma işlemi çok uzun sürdü. Yeniden bağlanın.",
   "error.connector.protonPassSetupFailed":
     "Proton Pass'te Shared with OpenBot kasası veya erişim anahtarı oluşturulamadı. Yeniden bağlanın.",
+  "error.connector.keeperFailed": "Keeper bağlanamadı. Yeniden bağlanın.",
+  "error.connector.keeperCliInstallFailed":
+    "Keeper Commander yüklenemedi. Ağ bağlantısını kontrol edin, ardından yeniden bağlanın.",
+  "error.connector.keeperPassword": "E-posta veya ana parola doğru değil.",
+  "error.connector.keeperCode": "Kod doğru değil. Yeniden girin.",
+  "error.connector.keeperCodeNotAsked": "Keeper kod istemedi.",
+  "error.connector.keeperNotApproved": "Bu cihaz Keeper'da henüz onaylanmadı. Onaylayın, sonra Devam'a basın.",
+  "error.connector.keeperExpired": "Bu bilgisayardaki Keeper oturumu sona erdi. Yeniden bağlanın.",
+  "error.connector.keeperPlan":
+    "Keeper yöneticiniz bu hesap için Keeper Commander'a izin vermiyor. İzin vermesini isteyin, ardından yeniden bağlanın.",
+  "error.connector.keeperSso": "SSO ile oturum açan Keeper hesapları henüz bağlanamıyor.",
+  "error.connector.keeperTwoFactorUnsupported":
+    "Bu hesabın iki adımlı doğrulama yöntemi yazılan bir kodu kabul etmiyor. Keeper'da bir kimlik doğrulama uygulaması veya kısa mesaj ekleyin, ardından yeniden bağlanın.",
+  "error.connector.keeperLocked":
+    "Keeper bu hesabı veya bu cihazı kilitledi. Kilidi açmak için Keeper'ı açın, ardından yeniden bağlanın.",
+  "error.connector.keeperThrottled":
+    "Keeper bir sonraki oturum açmadan önce birkaç dakika beklemenizi istiyor. Daha sonra yeniden bağlanın.",
+  "error.connector.keeperPersistentLogin":
+    'Keeper yöneticiniz OpenBot\'un ihtiyaç duyduğu "Stay logged in" özelliğini kapattı. İzin vermesini isteyin, sonra yeniden bağlanın.',
+  "error.connector.keeperSignInTimeout": "Keeper oturum açma işlemi çok uzun sürdü. Yeniden bağlanın.",
+  "error.connector.keeperFileUnreadable": "Keeper bağlantı dosyası okunamıyor.",
 } as const satisfies PartialTranslation<typeof source>;

@@ -1,5 +1,7 @@
 import { createEffect, createSignal, flush, onCleanup } from "solid-js";
 import { APP_LOGO_CORNER, APP_LOGO_EYE_POINTS, APP_LOGO_SIZE } from "./app-logo-shape";
+import { PokebotsAppLogo } from "./PokebotsAppLogo";
+import { POKEBOTS_LANDING_ARTWORK } from "./pokebots-avatar";
 
 export type AppLogoAnimation = "none" | "blink" | "look-around" | "surprised";
 export type AppLogoVariant = "production" | "dev" | "preview";
@@ -27,6 +29,7 @@ const BLINK_DURATION = 192;
 const FIRST_BLINK_DELAY = 2_112;
 
 export function AppLogo(props: AppLogoProps) {
+  if (POKEBOTS_LANDING_ARTWORK) return <PokebotsAppLogo class={["app-logo", props.class].filter(Boolean).join(" ")} />;
   const [clickReaction, setClickReaction] = createSignal(false);
   const [easterEgg, setEasterEgg] = createSignal(false);
   const [blinking, setBlinking] = createSignal(false);

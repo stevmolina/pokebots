@@ -126,6 +126,7 @@ export const messages = {
   "marketplace.app.whatsappTagline": "הצ'אט שלך והאנשים שאישרת ב-WhatsApp",
   "marketplace.app.bitwardenTagline": "התחברות לאתרים עם פרטי כניסה מתיקייה משותפת",
   "marketplace.app.protonPassTagline": "התחברות לאתרים עם פרטי כניסה מכספת משותפת",
+  "marketplace.app.keeperTagline": "התחברות לאתרים עם פרטי כניסה מתיקייה משותפת",
   "marketplace.app.onePasswordCategory": "ניהול כניסות ופרטי גישה",
   "marketplace.app.yourApps": "האפליקציות שלך",
   "marketplace.app.addCustom": "הוספה מותאמת אישית",

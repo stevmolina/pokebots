@@ -1035,6 +1035,22 @@
   "marketplace.agentUpdate.others": ["ar", "de", "es", "fr", "it", "ja", "ko", "nl", "pl", "pt", "ru", "tr", "zh"],
   "marketplace.agentUpdate.replace": ["ar", "de", "es", "fr", "it", "ja", "ko", "nl", "pl", "pt", "ru", "tr", "zh"],
   "marketplace.agentUpdate.title": ["ar", "de", "es", "fr", "it", "ja", "ko", "nl", "pl", "pt", "ru", "tr", "zh"],
+  "mobile.agent.heartbeat.instruction": [
+    "ar",
+    "de",
+    "es",
+    "fr",
+    "he",
+    "it",
+    "ja",
+    "ko",
+    "nl",
+    "pl",
+    "pt",
+    "ru",
+    "tr",
+    "zh"
+  ],
   "mobile.agent.runtime.accountApiKey": ["zh"],
   "mobile.app.route.remoteDesktop": ["ar", "de", "es", "fr", "it", "ja", "ko", "nl", "pl", "pt", "ru", "tr", "zh"],
   "mobile.auth.email.workosContinue": [
@@ -3540,6 +3556,7 @@
   "provider.settings.usedByCount": ["de", "es", "fr", "it", "ja", "pl", "pt", "ru", "tr"],
   "provider.settings.version": ["de", "es", "fr", "it", "ja", "pl", "pt", "ru", "tr"],
   "provider.settings.versionAvailable": ["de", "es", "fr", "it", "ja", "pl", "pt", "ru", "tr"],
+  "routine.heartbeat.instruction": ["ar", "de", "es", "fr", "he", "it", "ja", "ko", "nl", "pl", "pt", "ru", "tr", "zh"],
   "routine.settings.instructionRequired": ["de", "es", "fr", "it", "ja", "pl", "pt", "ru", "tr"],
   "routine.settings.nameRequired": ["de", "es", "fr", "it", "ja", "pl", "pt", "ru", "tr"],
   "routine.trigger.kind": ["de", "es", "fr", "it", "ja", "pl", "pt", "ru", "tr"],
@@ -4752,7 +4769,7 @@
   "vault.untitledContact": ["de", "es", "fr", "it", "ja", "ko", "pt", "ru", "tr"],
   "vault.untitledLogin": ["de", "es", "fr", "it", "ja", "ko", "pt", "ru", "tr"],
   "vault.variableNameHint": ["de", "es", "fr", "it", "ja", "ko", "nl", "pt", "ru", "tr", "zh"],
-  "webClient.settings.connectionLog.title": [
+  "webClient.settings.connectionLog.copyFailed": [
     "ar",
     "de",
     "es",
@@ -4784,7 +4801,7 @@
     "tr",
     "zh"
   ],
-  "webClient.settings.connectionLog.copyFailed": [
+  "webClient.settings.connectionLog.title": [
     "ar",
     "de",
     "es",

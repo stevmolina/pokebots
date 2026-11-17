@@ -56,4 +56,24 @@ export const messages = {
   "error.connector.protonPassSignInTimeout": "Proton 로그인이 너무 오래 걸렸습니다. 다시 연결하세요.",
   "error.connector.protonPassSetupFailed":
     "Proton Pass에서 Shared with OpenBot 보관함이나 해당 액세스 키를 만들지 못했습니다. 다시 연결하세요.",
+  "error.connector.keeperFailed": "Keeper를 연결하지 못했습니다. 다시 연결하세요.",
+  "error.connector.keeperCliInstallFailed":
+    "Keeper Commander를 설치하지 못했습니다. 네트워크 연결을 확인한 후 다시 연결하세요.",
+  "error.connector.keeperPassword": "이메일 또는 마스터 비밀번호가 올바르지 않습니다.",
+  "error.connector.keeperCode": "코드가 올바르지 않습니다. 다시 입력하세요.",
+  "error.connector.keeperCodeNotAsked": "Keeper가 코드를 요청하지 않았습니다.",
+  "error.connector.keeperNotApproved": "Keeper가 아직 이 기기를 승인하지 않았습니다. 승인한 다음 계속을 선택하세요.",
+  "error.connector.keeperExpired": "이 컴퓨터의 Keeper 세션이 종료되었습니다. 다시 연결하세요.",
+  "error.connector.keeperPlan":
+    "Keeper 관리자가 이 계정에서 Keeper Commander를 허용하지 않습니다. 관리자에게 허용을 요청한 다음 다시 연결하세요.",
+  "error.connector.keeperSso": "SSO로 로그인하는 Keeper 계정은 아직 연결할 수 없습니다.",
+  "error.connector.keeperTwoFactorUnsupported":
+    "이 계정의 2단계 인증 방식은 입력한 코드를 받을 수 없습니다. Keeper에서 인증 앱이나 문자 메시지를 추가한 다음 다시 연결하세요.",
+  "error.connector.keeperLocked":
+    "Keeper가 이 계정 또는 이 기기를 잠갔습니다. Keeper를 열어 잠금을 해제한 다음 다시 연결하세요.",
+  "error.connector.keeperThrottled": "Keeper가 다음 로그인 전에 몇 분 기다리라고 요청합니다. 나중에 다시 연결하세요.",
+  "error.connector.keeperPersistentLogin":
+    'Keeper 관리자가 OpenBot에 필요한 "Stay logged in"을 껐습니다. 허용을 요청한 뒤 다시 연결하세요.',
+  "error.connector.keeperSignInTimeout": "Keeper 로그인이 너무 오래 걸렸습니다. 다시 연결하세요.",
+  "error.connector.keeperFileUnreadable": "Keeper 연결 파일을 읽을 수 없습니다.",
 } as const satisfies PartialTranslation<typeof source>;

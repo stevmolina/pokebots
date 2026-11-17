@@ -54,4 +54,25 @@ export const messages = {
   "error.connector.protonPassSignInTimeout": "El inicio de sesión de Proton tardó demasiado. Vuelve a conectar.",
   "error.connector.protonPassSetupFailed":
     "No se pudo crear la bóveda Shared with OpenBot ni su clave de acceso en Proton Pass. Vuelve a conectar.",
+  "error.connector.keeperFailed": "No se pudo conectar Keeper. Vuelve a conectar.",
+  "error.connector.keeperCliInstallFailed":
+    "No se pudo instalar Keeper Commander. Comprueba la conexión de red y vuelve a conectar.",
+  "error.connector.keeperPassword": "El correo electrónico o la contraseña maestra no son correctos.",
+  "error.connector.keeperCode": "El código no es correcto. Introdúcelo de nuevo.",
+  "error.connector.keeperCodeNotAsked": "Keeper no ha pedido un código.",
+  "error.connector.keeperNotApproved": "Keeper aún no ha aprobado este dispositivo. Apruébalo y selecciona Continuar.",
+  "error.connector.keeperExpired": "La sesión de Keeper en este equipo ha terminado. Vuelve a conectar.",
+  "error.connector.keeperPlan":
+    "Tu administrador de Keeper no permite Keeper Commander para esta cuenta. Pídele que lo permita y vuelve a conectar.",
+  "error.connector.keeperSso": "Las cuentas de Keeper que inician sesión con SSO aún no se pueden conectar.",
+  "error.connector.keeperTwoFactorUnsupported":
+    "El método de dos pasos de esta cuenta no admite un código escrito. Añade una app de autenticación o mensajes de texto en Keeper y vuelve a conectar.",
+  "error.connector.keeperLocked":
+    "Keeper bloqueó esta cuenta o este dispositivo. Abre Keeper para desbloquearlo y vuelve a conectar.",
+  "error.connector.keeperThrottled":
+    "Keeper pide esperar unos minutos antes del próximo inicio de sesión. Vuelve a conectar más tarde.",
+  "error.connector.keeperPersistentLogin":
+    'Tu administrador de Keeper desactivó "Stay logged in", que OpenBot necesita. Pídele que lo permita y vuelve a conectar.',
+  "error.connector.keeperSignInTimeout": "El inicio de sesión en Keeper tardó demasiado. Vuelve a conectar.",
+  "error.connector.keeperFileUnreadable": "El archivo de conexión de Keeper no se puede leer.",
 } as const satisfies PartialTranslation<typeof source>;

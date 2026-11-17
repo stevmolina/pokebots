@@ -143,6 +143,8 @@ export const messages = {
   "mobile.agent.info.routinePaused": "一時停止中",
   "mobile.agent.info.noRoutines": "ルーティンはまだありません。",
   "mobile.agent.info.addRoutine": "ルーティンを追加",
+  "mobile.agent.info.addHeartbeat": "ハートビートを追加",
+  "mobile.agent.heartbeat.name": "ハートビート",
   "mobile.agent.info.skillsUnsupported": "このホストはスキルに対応していません。ホストの OpenBot を更新してください。",
   "mobile.agent.info.noSkills": "スキルはまだありません。",
   "mobile.agent.info.skillsManaged": "このエージェントのスキルはホストで管理されています。",

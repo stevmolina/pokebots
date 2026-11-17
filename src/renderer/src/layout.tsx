@@ -128,8 +128,12 @@ const Layout = createSimpleContext({
     const [serverView, setServerViewSignal] = createSignal<ServerView>(
       window.localStorage.getItem(SERVER_VIEW_STORAGE_KEY) === "rail" ? "rail" : "menu",
     );
+    // The web client always opens on the chats: its fixed `appInfo` is already set here, and a saved
+    // Routines choice would cover the chat on every load. Desktop keeps the saved choice.
     const [sidebarView, setSidebarViewSignal] = createSignal<SidebarView>(
-      window.localStorage.getItem(SIDEBAR_VIEW_STORAGE_KEY) === "routines" ? "routines" : "agents",
+      platform.appInfo()?.version !== "web" && window.localStorage.getItem(SIDEBAR_VIEW_STORAGE_KEY) === "routines"
+        ? "routines"
+        : "agents",
     );
     const [sidebarChatOrder, setSidebarChatOrderSignal] = createSignal<SidebarChatOrder>(readSidebarChatOrder());
     const [railPinChoices, setRailPinChoices] = createSignal<RailPinChoices>(readRailPinChoices());

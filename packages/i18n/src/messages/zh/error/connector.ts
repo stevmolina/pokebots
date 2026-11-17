@@ -49,4 +49,22 @@ export const messages = {
   "error.connector.protonPassSignInTimeout": "Proton 登录用时过长。请重新连接。",
   "error.connector.protonPassSetupFailed":
     "无法在 Proton Pass 中创建保管库 Shared with OpenBot 或其访问密钥。请重新连接。",
+  "error.connector.keeperFailed": "无法连接 Keeper。请重新连接。",
+  "error.connector.keeperCliInstallFailed": "无法安装 Keeper Commander。请检查网络连接，然后重新连接。",
+  "error.connector.keeperPassword": "邮箱或主密码不正确。",
+  "error.connector.keeperCode": "验证码不正确。请重新输入。",
+  "error.connector.keeperCodeNotAsked": "Keeper 没有要求输入验证码。",
+  "error.connector.keeperNotApproved": "Keeper 尚未批准此设备。批准后，选择“继续”。",
+  "error.connector.keeperExpired": "这台电脑上的 Keeper 会话已结束。请重新连接。",
+  "error.connector.keeperPlan":
+    "你的 Keeper 管理员不允许此账户使用 Keeper Commander。请让管理员允许使用，然后重新连接。",
+  "error.connector.keeperSso": "使用 SSO 登录的 Keeper 账户暂时无法连接。",
+  "error.connector.keeperTwoFactorUnsupported":
+    "此账户的两步验证方式无法使用输入的验证码。请在 Keeper 中添加验证器应用或短信，然后重新连接。",
+  "error.connector.keeperLocked": "Keeper 已锁定此账户或此设备。请打开 Keeper 解锁，然后重新连接。",
+  "error.connector.keeperThrottled": "Keeper 要求在下次登录前等待几分钟。请稍后重新连接。",
+  "error.connector.keeperPersistentLogin":
+    "你的 Keeper 管理员关闭了 OpenBot 需要的“Stay logged in”。请让管理员允许，然后重新连接。",
+  "error.connector.keeperSignInTimeout": "登录 Keeper 用时过长。请重新连接。",
+  "error.connector.keeperFileUnreadable": "无法读取 Keeper 连接文件。",
 } as const satisfies PartialTranslation<typeof source>;

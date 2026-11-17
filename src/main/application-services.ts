@@ -365,6 +365,8 @@ import { NotificationPreferenceStore } from "./notification-preference-store";
 import { OnePasswordConnectorService } from "./onepassword-connector-service";
 import { OnePasswordConnectorStore } from "./onepassword-connector-store";
 import { EncryptedRecordStore } from "./password-managers/encrypted-record-store";
+import { managedKeeperCommander } from "./password-managers/keeper-commander-installer";
+import { KeeperDriver, keeperRecordSchema } from "./password-managers/keeper-driver";
 import { PasswordManagersService } from "./password-managers/password-managers-service";
 import { managedProtonPassCli } from "./password-managers/proton-pass-cli-installer";
 import { ProtonPassDriver, protonPassRecordSchema } from "./password-managers/proton-pass-driver";
@@ -499,6 +501,8 @@ const NOTIFICATION_PREFERENCE_FILE = "openbot-notification-preference-v1.json";
 const PUSH_NOTIFICATION_FILE = "openbot-push-notifications-v1.json";
 const BUSY_MESSAGE_MODE_PREFERENCE_FILE = "openbot-busy-message-mode-v1.json";
 const PROVIDER_CLI_APP_VERSION_FILE = "openbot-provider-cli-app-version-v1.json";
+/** The provider CLIs that a server downloads at start when it has none of them. */
+const SERVER_DEFAULT_PROVIDER_CLIS: readonly ManagedProviderId[] = ["claude", "codex", "cursor", "grok"];
 const AGENT_DEFAULTS_PREFERENCE_FILE = "openbot-agent-defaults-v1.json";
 const AGENT_MEMORY_LIMIT_PREFERENCE_FILE = "openbot-agent-memory-limit-v1.json";
 const MEMORY_REVIEW_PREFERENCE_FILE = "openbot-memory-review-v1.json";
@@ -549,6 +553,8 @@ const BITWARDEN_CONNECTOR_FILE = "openbot-bitwarden-connector-v1.json";
 const AGENT_COMPUTER_FILE = "openbot-agent-computer-v1.json";
 /** The Proton Pass agent access key of this computer or host, with the same cipher. */
 const PROTONPASS_CONNECTOR_FILE = "openbot-protonpass-connector-v1.json";
+/** The Keeper Commander config (device key and clone code) of this computer or host, with the same cipher. */
+const KEEPER_CONNECTOR_FILE = "openbot-keeper-connector-v1.json";
 /** The logins, payment cards and contact info of the Vault in Server settings, with the same cipher. */
 const VAULT_FILE = "openbot-vault-v1.json";
 /** Which agent each imported Hermes profile made, so a second import updates that agent. */
@@ -2012,8 +2018,8 @@ export async function createApplicationServices({
   );
   /*
    * The password-manager engine. 1Password and Bitwarden keep their own services, panels and
-   * teardown, and the browser reads their logins directly. The Proton Pass CLI data and OpenBot's
-   * copy of `pass-cli` stay outside every root an agent can write.
+   * teardown, and the browser reads their logins directly. The Proton Pass CLI data, OpenBot's
+   * copy of `pass-cli` and its Keeper Commander install stay outside every root an agent can write.
    */
   const protonPassCliTarget = runtimeTarget(process.platform, process.arch);
   const passwordManagers = new PasswordManagersService([
@@ -2030,6 +2036,23 @@ export async function createApplicationServices({
         ? (signal) =>
             managedProtonPassCli({
               directory: join(app.getPath("userData"), "provider-state", "protonpass-cli"),
+              target: protonPassCliTarget,
+              signal,
+            })
+        : null,
+    }),
+    new KeeperDriver({
+      store: new EncryptedRecordStore({
+        path: join(app.getPath("userData"), KEEPER_CONNECTOR_FILE),
+        cipher: secretCipher,
+        decode: Schema.decodeUnknownSync(keeperRecordSchema),
+        unreadable: sourceText("error.connector.keeperFileUnreadable"),
+      }),
+      dataDirectory: join(app.getPath("userData"), "provider-state", "keeper-host"),
+      installCli: protonPassCliTarget
+        ? (signal) =>
+            managedKeeperCommander({
+              directory: join(app.getPath("userData"), "provider-state", "keeper-cli"),
               target: protonPassCliTarget,
               signal,
             })
@@ -2871,7 +2894,16 @@ export async function createApplicationServices({
    * old, which the user read as uninstalled (#4995). A too-old row has no `cliSource`, as the
    * resolution failed; the download does nothing when the copy in the store is already the newest.
    * A failed download shows its error, and the user can retry it.
+   *
+   * A server (hosted, or self-hosted with `OPENBOT_SERVER=1`, the Docker image included) also
+   * downloads the managed copy of the main provider CLIs that it does not have, so a new server
+   * shows them ready for sign-in and not "Not downloaded". Only a provider that is on and that has
+   * no CLI at all (`not-installed`), once per start: a CLI the user installed resolves and is kept.
+   * The download waits for a disk restore, and a failed download shows its error for a retry.
+   * A desktop and its local server child download nothing here.
    */
+  const downloadsServerDefaultClis = hostedServer !== null || serverModeEnvironment !== null;
+  const startedServerDefaultClis = new Set<ManagedProviderId>();
   const replacedOutdatedSystemClis = new Set<ManagedProviderId>();
   const trackSystemCliVersions = (status: AgentStatus): void => {
     let copyInUse = false;
@@ -2887,6 +2919,25 @@ export async function createApplicationServices({
       ) {
         replacedOutdatedSystemClis.add(provider.id);
         Effect.runFork(providerRuntimes.download(provider.id).pipe(Effect.ignore));
+      }
+      if (
+        downloadsServerDefaultClis &&
+        provider.state === "not-installed" &&
+        SERVER_DEFAULT_PROVIDER_CLIS.includes(provider.id) &&
+        !startedServerDefaultClis.has(provider.id) &&
+        !providerUse.off().includes(provider.id)
+      ) {
+        startedServerDefaultClis.add(provider.id);
+        const id = provider.id;
+        // Checked again when it starts: the user can turn the provider off during a disk restore.
+        const download = Effect.suspend(() =>
+          providerUse.off().includes(id) ? Effect.void : providerRuntimes.download(id).pipe(Effect.asVoid),
+        ).pipe(
+          Effect.catch((error) =>
+            Effect.sync(() => logger.warn(`The ${id} CLI did not download on this server.`, toLogValue(error.cause))),
+          ),
+        );
+        Effect.runFork(diskRestoring() ? diskRestoreEnded.pipe(Effect.andThen(download)) : download);
       }
     }
     if (copyInUse) Effect.runFork(providerRuntimes.providerUseChanged());

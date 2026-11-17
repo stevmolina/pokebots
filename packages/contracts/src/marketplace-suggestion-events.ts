@@ -16,6 +16,7 @@ export const CONNECTOR_IDS = [
   "onepassword",
   "bitwarden",
   "protonpass",
+  "keeper",
 ] as const;
 
 export type ConnectorId = (typeof CONNECTOR_IDS)[number];

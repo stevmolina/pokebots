@@ -93,6 +93,7 @@ export const messages = {
   "marketplace.app.whatsappTagline": "Seu próprio chat e as pessoas que você permitir no WhatsApp",
   "marketplace.app.bitwardenTagline": "Entre em sites com logins de uma pasta compartilhada",
   "marketplace.app.protonPassTagline": "Entre em sites com logins de um cofre compartilhado",
+  "marketplace.app.keeperTagline": "Entre em sites com logins de uma pasta compartilhada",
   "marketplace.app.onePasswordCategory": "Gerenciamento de logins e credenciais",
   "marketplace.app.yourApps": "Seus apps",
   "marketplace.app.addCustom": "Adicionar personalizado",

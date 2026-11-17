@@ -706,6 +706,31 @@ export const messages = {
   "mobile.server.connectors.protonPass.keyHelp":
     "Proton Pass で、OpenBot と共有する保管庫だけを読み取れるアクセスキーを作成し、ここに貼り付けてください。キーは {host} が保持し、この電話には保存されません。",
   "mobile.server.connectors.protonPass.keyPlaceholder": "pst_…",
+  "mobile.server.connectors.keeper.title": "Keeper",
+  "mobile.server.connectors.keeper.description":
+    "Keeper のフォルダーを 1 つ {host} の OpenBot と共有すると、{host} のエージェントがそのブラウザでサイトにサインインできます。",
+  "mobile.server.connectors.keeper.accountHelp":
+    "Keeper のメールアドレスとマスターパスワードを入力してください。これらは一度だけ {host} に送られ、{host} が Keeper Commander に渡します。この電話には保存されません。",
+  "mobile.server.connectors.keeper.email": "メールアドレス",
+  "mobile.server.connectors.keeper.masterPassword": "マスターパスワード",
+  "mobile.server.connectors.keeper.signingIn": "{host} が Keeper にサインインしています…",
+  "mobile.server.connectors.keeper.makingFolder": "{host} が共有フォルダーを作成しています…",
+  "mobile.server.connectors.keeper.code": "コード",
+  "mobile.server.connectors.keeper.twoFactorHint":
+    "Keeper が 2 段階認証コードを求めています。認証アプリまたはテキストメッセージのコードを入力してください。コードは一度だけ {host} に送られ、この電話には保存されません。",
+  "mobile.server.connectors.keeper.deviceHint":
+    "Keeper が承認メールを送信し、他のデバイスにも通知しました。そこでこのデバイスを承認してから、「続ける」を押してください。メールのコードを入力することもできます。",
+  "mobile.server.connectors.keeper.codeWrong": "コードが正しくありません。もう一度お試しください。",
+  "mobile.server.connectors.keeper.folderTitle": "共有フォルダ",
+  "mobile.server.connectors.keeper.folderFooter":
+    "エージェントにログイン情報でサインインさせるには、Keeper でそのログイン情報をこのフォルダに移動してください。やめるには削除してください。",
+  "mobile.server.connectors.keeper.plan":
+    "Keeper の管理者が、このアカウントでの Keeper Commander を許可していません。許可を依頼してから、もう一度接続してください。",
+  "mobile.server.connectors.keeper.expiredTitle": "Keeper のセッションが終了しました",
+  "mobile.server.connectors.keeper.expiredBody":
+    "もう一度接続するまで、{host} のエージェントは共有ログイン情報でサインインできません。",
+  "mobile.server.connectors.keeper.disconnectBody":
+    "{host} は Keeper のセッションを終了します。フォルダーとそのログイン情報は Keeper の保管庫に残ります。",
   "mobile.server.connectors.passwordManager.unavailable": "{name} はこのサーバーでは利用できません。",
   "mobile.server.connectors.passwordManager.howItWorks":
     "この電話で {name} にサインインしてください。その後 {host} が共有保管庫とその読み取り専用アクセスキーを作成し、そのキーだけを保持します。エージェントがパスワードを見ることはありません。",

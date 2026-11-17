@@ -141,6 +141,10 @@ export const messages = defineMessages("mobile.agent", {
   "mobile.agent.info.routinePaused": "Paused",
   "mobile.agent.info.noRoutines": "No routines yet.",
   "mobile.agent.info.addRoutine": "Add routine",
+  "mobile.agent.info.addHeartbeat": "Add heartbeat",
+  "mobile.agent.heartbeat.name": "Heartbeat",
+  "mobile.agent.heartbeat.instruction":
+    "Heartbeat check. Go through this checklist:\n- New messages or mail that wait for my reply\n- Failing CI runs or pull requests that wait for me\n- Reminders or deadlines due today\n\nReport only what needs my attention, in a few short lines: what it is and what to do next.\nWhen nothing needs my attention, call the routine_no_update tool and write nothing else.",
   "mobile.agent.info.skillsUnsupported": "This host does not support skills. Update OpenBot on the host.",
   "mobile.agent.info.noSkills": "No skills yet.",
   "mobile.agent.info.skillsManaged": "Skills for this agent are managed on the host.",

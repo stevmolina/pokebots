@@ -150,6 +150,8 @@ export const messages = {
   "mobile.agent.info.routinePaused": "Duraklatıldı",
   "mobile.agent.info.noRoutines": "Henüz rutin yok.",
   "mobile.agent.info.addRoutine": "Rutin ekle",
+  "mobile.agent.info.addHeartbeat": "Nabız ekle",
+  "mobile.agent.heartbeat.name": "Nabız",
   "mobile.agent.info.skillsUnsupported":
     "Bu ana makine becerileri desteklemiyor. Ana makinedeki OpenBot'u güncelleyin.",
   "mobile.agent.info.noSkills": "Henüz beceri yok.",

@@ -634,4 +634,64 @@ export const messages = {
     "OpenBot verwijdert zijn toegangssleutel op {host}. De kluis en de logins erin blijven in je Proton-account.",
   "connector.protonPass.disconnect": "Loskoppelen",
   "connector.protonPass.actionFailed": "OpenBot kon de Proton Pass-verbinding niet wijzigen.",
+  "connector.keeper.title": "Keeper",
+  "connector.keeper.description": "Agents loggen in op sites met de logins uit een gedeelde Keeper-map.",
+  "connector.keeper.descriptionHost": "Agents op {host} loggen in op sites met de logins uit een gedeelde Keeper-map.",
+  "connector.keeper.connect": "Verbinden",
+  "connector.keeper.setupTitle": "Aanmelden",
+  "connector.keeper.setupDescription":
+    "Voer je Keeper-e-mailadres en hoofdwachtwoord in. OpenBot geeft ze één keer door aan Keeper Commander en bewaart ze niet. Keeper Commander is de opdrachtregeltool van Keeper.",
+  "connector.keeper.setupDescriptionHost":
+    "Voer je Keeper-e-mailadres en hoofdwachtwoord in. {host} geeft ze één keer door aan Keeper Commander en bewaart ze niet. Keeper Commander is de opdrachtregeltool van Keeper.",
+  "connector.keeper.emailLabel": "E-mail",
+  "connector.keeper.passwordLabel": "Hoofdwachtwoord",
+  "connector.keeper.folderName": "Shared with OpenBot",
+  "connector.keeper.folderSetup":
+    "OpenBot maakt deze map in je kluis wanneer je verbindt. Verplaats logins erheen om ze te delen.",
+  "connector.keeper.showSteps": "Stappen tonen",
+  "connector.keeper.stepsLabel": "Verbindingsstappen",
+  "connector.keeper.stepSignIn": "Aanmelden",
+  "connector.keeper.stepVerify": "Verifiëren",
+  "connector.keeper.stepDone": "Klaar",
+  "connector.keeper.signInTitle": "Aanmelden bij Keeper",
+  "connector.keeper.signInDescription": "Keeper Commander meldt zich aan met je account.",
+  "connector.keeper.signInDescriptionHost": "{host} meldt zich aan bij Keeper met je account.",
+  "connector.keeper.twoFactorTitle": "Voer je code in",
+  "connector.keeper.twoFactorDescription":
+    "Keeper vraagt om een tweestapscode. Voer de code uit je authenticator-app of sms in.",
+  "connector.keeper.deviceTitle": "Keur dit apparaat goed",
+  "connector.keeper.deviceDescription":
+    "Keeper heeft een goedkeuringsmail en een melding naar je andere apparaten gestuurd. Keur dit apparaat goed via de link in de e-mail of op een ander apparaat en kies dan Doorgaan. Of typ de code uit de e-mail.",
+  "connector.keeper.codeLabel": "Code",
+  "connector.keeper.codeWrong": "De code is niet juist. Voer hem opnieuw in.",
+  "connector.keeper.continue": "Doorgaan",
+  "connector.keeper.setupStepTitle": "Gedeelde map maken",
+  "connector.keeper.setupStepDescription":
+    "OpenBot maakt de map ‘{folder}’ in je kluis en zet het aanmelden voor dit apparaat aan.",
+  "connector.keeper.doneTitle": "Keeper is verbonden",
+  "connector.keeper.doneDescription": "Verplaats logins naar ‘{folder}’ zodat agents ermee kunnen inloggen.",
+  "connector.keeper.failedTitle": "Keeper is niet verbonden",
+  "connector.keeper.done": "Klaar",
+  "connector.keeper.close": "Sluiten",
+  "connector.keeper.statusConnecting": "Verbinden",
+  "connector.keeper.statusConnected": "Verbonden",
+  "connector.keeper.statusExpired": "Sessie beëindigd",
+  "connector.keeper.expiredTitle": "De Keeper-sessie is beëindigd",
+  "connector.keeper.expiredDescription":
+    "Agents kunnen niet inloggen met je gedeelde logins tot je opnieuw verbindt. Voer hieronder je hoofdwachtwoord in.",
+  "connector.keeper.planTitle": "Keeper Commander is geblokkeerd",
+  "connector.keeper.planDescription":
+    "Je Keeper-beheerder staat Keeper Commander niet toe voor dit account. Vraag of het toegestaan kan worden en verbind daarna opnieuw.",
+  "connector.keeper.folderTitle": "Gedeelde map",
+  "connector.keeper.folderDescription":
+    "Verplaats in Keeper een login naar deze map zodat agents ermee kunnen inloggen. Haal hem eruit om te stoppen.",
+  "connector.keeper.loginCount": { one: "{count} login", other: "{count} logins" },
+  "connector.keeper.loginsLoading": "Logins tellen…",
+  "connector.keeper.disconnectTitle": "Keeper loskoppelen",
+  "connector.keeper.disconnectSummary":
+    "OpenBot beëindigt zijn Keeper-sessie op deze computer. De map en de logins erin blijven in je Keeper-kluis.",
+  "connector.keeper.disconnectSummaryHost":
+    "OpenBot beëindigt zijn Keeper-sessie op {host}. De map en de logins erin blijven in je Keeper-kluis.",
+  "connector.keeper.disconnect": "Loskoppelen",
+  "connector.keeper.actionFailed": "OpenBot kon de Keeper-verbinding niet wijzigen.",
 } as const satisfies PartialTranslation<typeof source>;

@@ -13,6 +13,8 @@ import {
 import type { TeamCurrentCapability } from "@openbot/contracts/team-protocol/current";
 import {
   PASSWORD_MANAGERS_CAPABILITY,
+  PASSWORD_MANAGERS_CODE_LIMIT,
+  PASSWORD_MANAGERS_EMAIL_LIMIT,
   PASSWORD_MANAGERS_KEY_LIMIT,
   PASSWORD_MANAGERS_PASSWORD_LIMIT,
   PASSWORD_MANAGERS_ROUTES,
@@ -61,6 +63,18 @@ function decodeMethod(value: unknown): PasswordManagerConnectMethod {
     const password = requireString(value.password, "password", PASSWORD_MANAGERS_PASSWORD_LIMIT);
     registerSecretValue(password, { allowShort: true });
     return { kind: "extra-password", password };
+  }
+  if (value.kind === "account") {
+    const email = requireString(value.email, "email", PASSWORD_MANAGERS_EMAIL_LIMIT);
+    const password = requireString(value.password, "password", PASSWORD_MANAGERS_PASSWORD_LIMIT);
+    registerSecretValue(password, { allowShort: true });
+    return { kind: "account", email, password };
+  }
+  if (value.kind === "code") {
+    if (typeof value.code !== "string" || value.code.length > PASSWORD_MANAGERS_CODE_LIMIT)
+      throw new Error("Invalid password manager code.");
+    if (value.code) registerSecretValue(value.code, { allowShort: true });
+    return { kind: "code", code: value.code };
   }
   throw new Error("Invalid password manager connect method.");
 }

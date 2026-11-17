@@ -620,6 +620,7 @@ const CONNECTOR_LINKS: Readonly<Record<ConnectorId, readonly ConnectorLink[]>> =
   ],
   bitwarden: [{ label: "plugin.link.website", url: "https://bitwarden.com" }],
   protonpass: [{ label: "plugin.link.website", url: "https://proton.me/pass" }],
+  keeper: [{ label: "plugin.link.website", url: "https://www.keepersecurity.com" }],
 };
 
 /** Who makes each connector's service: the name the user knows it by. */
@@ -632,6 +633,7 @@ const CONNECTOR_DEVELOPER = {
   onepassword: "connector.onePassword.title",
   bitwarden: "connector.bitwarden.title",
   protonpass: "connector.protonPass.title",
+  keeper: "connector.keeper.title",
 } as const satisfies Record<ConnectorId, AppTextKey>;
 
 /** The information card of a connector page: what it gives, its developer, category and website. */

@@ -1,6 +1,7 @@
 import {
   DISCORD_MARK_PATH,
   GITHUB_MARK_PATH,
+  KEEPER_MARK_PATH,
   ONEPASSWORD_MARK_PATH,
   PROTON_MARK_PATH,
   SLACK_MARK_PATH,
@@ -21,6 +22,7 @@ const MARK_PATHS: Record<Exclude<MobileConnectorId, "bitwarden">, string> = {
   github: GITHUB_MARK_PATH,
   onepassword: ONEPASSWORD_MARK_PATH,
   protonpass: PROTON_MARK_PATH,
+  keeper: KEEPER_MARK_PATH,
 };
 
 /** The connector's mark on a tile, as the desktop Marketplace shows it. */
@@ -36,7 +38,7 @@ export function ConnectorLogo({ id, size = 32 }: { id: MobileConnectorId; size?:
         <Lock size={mark} color={foreground} strokeWidth={1.75} />
       ) : (
         <Svg width={mark} height={mark} viewBox="0 0 24 24">
-          <Path d={MARK_PATHS[id]} fill={foreground} />
+          <Path d={MARK_PATHS[id]} fill={foreground} fillRule="evenodd" />
         </Svg>
       )}
     </View>

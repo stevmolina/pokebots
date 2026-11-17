@@ -31,7 +31,7 @@
 // item "OpenBot Safe Storage" or the local signing certificate: a new name there loses the data or
 // the macOS privacy grants.
 
-import { copyFileSync, existsSync, readFileSync, writeFileSync } from "node:fs";
+import { copyFileSync, existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 
 /** The build-time setting that turns the brand layer on, and the product name it shows. */
@@ -231,10 +231,146 @@ export const LITERAL_RULES: readonly LiteralRule[] = [
     find: "`From: OpenBot <",
     replace: (name) => `\`From: ${name} <`,
   },
+  // The included models in the provider lists, and the version names in Settings > Updates.
+  {
+    file: "packages/contracts/src/agent-providers.ts",
+    find: '"Included with OpenBot"',
+    replace: (name) => JSON.stringify(`Included with ${name}`),
+  },
+  {
+    file: "src/renderer/src/features/onboarding/SetupProviderPicker.tsx",
+    find: 'const INCLUDED_DESCRIPTION = "Included with OpenBot";',
+    replace: (name) => `const INCLUDED_DESCRIPTION = ${JSON.stringify(`Included with ${name}`)};`,
+  },
+  {
+    file: "packages/ui/src/features/settings/stores/updates-store.ts",
+    find: "`OpenBot v${",
+    replace: (name) => `\`${name} v\${`,
+  },
+  // The agent share card: its button and its site.
+  {
+    file: "src/renderer/src/features/agent-templates/agent-template-card.tsx",
+    find: 'const label = "Add to OpenBot";',
+    replace: (name) => `const label = ${JSON.stringify(`Add to ${name}`)};`,
+  },
+  {
+    file: "src/renderer/src/features/agent-templates/agent-template-card.tsx",
+    find: 'context.fillText("openbot.run",',
+    replace: (name) => `context.fillText(${JSON.stringify(name === "Pokebots" ? "pokebots.xyz" : "openbot.run")},`,
+  },
+  // Server names: the name a new server takes, and the name of a server that has none.
+  {
+    file: "src/renderer/src/features/server-setup/ServerSetupScreen.tsx",
+    find: 'const PRODUCT_NAME = "OpenBot";',
+    replace: (name) => `const PRODUCT_NAME = ${JSON.stringify(name)};`,
+  },
+  {
+    file: "src/renderer/src/features/server-setup/ServerSetupScreen.tsx",
+    find: 'const DEFAULT_SERVER_NAME = "OpenBot";',
+    replace: (name) => `const DEFAULT_SERVER_NAME = ${JSON.stringify(name)};`,
+  },
+  {
+    file: "src/renderer/src/features/servers/server-settings.tsx",
+    find: 'const FALLBACK_SERVER_NAME = "OpenBot";',
+    replace: (name) => `const FALLBACK_SERVER_NAME = ${JSON.stringify(name)};`,
+  },
+  {
+    file: "src/main/server-mode.ts",
+    find: 'const DEFAULT_SERVER_NAME = "OpenBot";',
+    replace: (name) => `const DEFAULT_SERVER_NAME = ${JSON.stringify(name)};`,
+  },
+  {
+    file: "src/main/host-service.ts",
+    find: '{ serverName: "OpenBot" }',
+    replace: (name) => `{ serverName: ${JSON.stringify(name)} }`,
+  },
+  {
+    file: "src/main/mobile-connect-host.ts",
+    find: '{ serverName: "OpenBot" }',
+    replace: (name) => `{ serverName: ${JSON.stringify(name)} }`,
+  },
+  // Other names in the desktop and web views.
+  {
+    file: "src/renderer/src/features/web-client/WebPhoneAppScreen.tsx",
+    find: 'const PRODUCT_NAME = "OpenBot";',
+    replace: (name) => `const PRODUCT_NAME = ${JSON.stringify(name)};`,
+  },
+  {
+    file: "src/renderer/src/platform.tsx",
+    find: 'name: "OpenBot",',
+    replace: (name) => `name: ${JSON.stringify(name)},`,
+  },
+  {
+    file: "src/renderer/src/features/servers/ServerDesktopPanel.tsx",
+    find: 'const REMOTE_HOST_GATEWAY_NAME = "OpenBot Remote Host Gateway";',
+    replace: (name) => `const REMOTE_HOST_GATEWAY_NAME = ${JSON.stringify(`${name} Remote Host Gateway`)};`,
+  },
+  {
+    file: "packages/ui/src/user-avatar.tsx",
+    find: '|| "OpenBot";',
+    replace: (name) => `|| ${JSON.stringify(name)};`,
+  },
+  {
+    file: "src/renderer/src/features/web-client/connection-log.ts",
+    find: '"OpenBot web connection log"',
+    replace: (name) => JSON.stringify(`${name} web connection log`),
+  },
+  {
+    file: "packages/contracts/src/ipc-mcp-servers.ts",
+    find: "`OpenBot already uses the name ",
+    replace: (name) => `\`${name} already uses the name `,
+  },
+  {
+    file: "src/renderer/src/features/provider-updates/provider-runtime-store.ts",
+    find: `"OpenBot does not manage this provider's CLI."`,
+    replace: (name) => JSON.stringify(`${name} does not manage this provider's CLI.`),
+  },
+  {
+    file: "src/main/ipc/provider-handlers.ts",
+    find: `"OpenBot does not manage this provider's CLI."`,
+    replace: (name) => JSON.stringify(`${name} does not manage this provider's CLI.`),
+  },
+  // The names of the backup and diagnostics files that Settings saves.
+  {
+    file: "src/main/maintenance-service.ts",
+    find: "`OpenBot-",
+    replace: (name) => `\`${name}-`,
+  },
+  // The toasts that ask the user to follow OpenBot on social networks and to star it on GitHub: a
+  // branded build never shows them.
+  {
+    file: "src/renderer/src/features/conversation/social-follow-prompt.tsx",
+    find: "const MAX_SHOWS = RETRY_DAYS.length + 1;",
+    replace: () => "const MAX_SHOWS = 0;",
+  },
+  {
+    file: "src/renderer/src/features/conversation/github-star-prompt.tsx",
+    find: "export function noteAgentMessageSent(): void {",
+    replace: () => "export function noteAgentMessageSent(): void {\n  return;",
+  },
 ];
 
-/** Modules outside the catalogs whose string values are all branded: the email that the Worker sends. */
-export const BRANDED_MODULES: readonly string[] = ["apps/auth-api/src/server/email-templates.ts"];
+/**
+ * Modules outside the catalogs whose string values are all branded: the email that the Worker sends,
+ * the errors of shared links, and plugin descriptions. Their only "OpenBot" strings are text that a
+ * reader sees, never a path, a header or an identifier.
+ */
+export const BRANDED_MODULES: readonly string[] = [
+  "apps/auth-api/src/server/email-templates.ts",
+  "packages/contracts/src/invite-links.ts",
+  "packages/contracts/src/marketplace-links.ts",
+  "packages/contracts/src/plugin-links.ts",
+  "packages/contracts/src/agent-template-links.ts",
+  "src/renderer/src/features/settings/marketplace-plugin-catalog.ts",
+];
+
+/**
+ * The release notes of the What's New dialog: the English file and one file per language. The app
+ * loads them by URL (`?url&no-inline`), so the bundler copies them without a transform, and
+ * `brandReleaseNotesOutput` brands the copies after the build writes them.
+ */
+export const RELEASE_NOTES_FILES =
+  /^src\/renderer\/src\/features\/updates\/(whats-new-releases|whats-new\/[a-z]{2})\.json$/;
 
 const CATALOG_DIRECTORY = "packages/i18n/src/messages/";
 
@@ -340,6 +476,37 @@ export function brandWebOutput(outDir: string, root: string, settings: BrandSett
   return changed;
 }
 
+/** The release notes with the product name in each string value. Keys and kept phrases stay. */
+export function brandReleaseNotes(json: string, settings: BrandSettings): string {
+  return brandStringValues(json, (text) => brandText(text, settings.name)).code;
+}
+
+/** A What's New file: a list of releases, each with its version, notices and groups. */
+function isReleaseNotes(json: string): boolean {
+  return /^\s*\[\s*\{\s*"version"/.test(json) && json.includes('"notices"') && json.includes('"groups"');
+}
+
+/**
+ * Brands the What's New files in the `assets` folder of a build output. They are found by their
+ * shape, because the bundler names them after the language and a hash. Returns the files that changed.
+ */
+export function brandReleaseNotesOutput(outDir: string, settings: BrandSettings): string[] {
+  const assets = join(outDir, "assets");
+  if (!existsSync(assets)) return [];
+  const changed: string[] = [];
+  for (const file of readdirSync(assets)) {
+    if (!file.endsWith(".json")) continue;
+    const path = join(assets, file);
+    const json = readFileSync(path, "utf8");
+    if (!isReleaseNotes(json)) continue;
+    const branded = brandReleaseNotes(json, settings);
+    if (branded === json) continue;
+    writeFileSync(path, branded);
+    changed.push(file);
+  }
+  return changed;
+}
+
 /** The part of a Vite plugin that this layer uses, so that this file needs no Vite dependency. */
 interface BrandPlugin {
   readonly name: string;
@@ -377,6 +544,7 @@ export function brandPlugins(
       writeBundle(options) {
         if (!options.dir) return;
         const iconFolder = env[BRAND_WEB_ICONS_ENV]?.trim() || DEFAULT_WEB_ICONS;
+        brandReleaseNotesOutput(options.dir, settings);
         const changed = brandWebOutput(options.dir, root, settings, iconFolder);
         if (changed.length === 1) this.warn(`The brand layer found no web icons in ${iconFolder}.`);
       },

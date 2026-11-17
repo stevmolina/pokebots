@@ -655,4 +655,67 @@ export const messages = {
     "OpenBot löscht seinen Zugriffsschlüssel auf {host}. Der Tresor und seine Zugangsdaten bleiben in Ihrem Proton-Konto.",
   "connector.protonPass.disconnect": "Trennen",
   "connector.protonPass.actionFailed": "OpenBot konnte die Proton-Pass-Verbindung nicht ändern.",
+  "connector.keeper.title": "Keeper",
+  "connector.keeper.description":
+    "Agents melden sich bei Websites mit den Zugangsdaten aus einem geteilten Keeper-Ordner an.",
+  "connector.keeper.descriptionHost":
+    "Agents auf {host} melden sich bei Websites mit den Zugangsdaten aus einem geteilten Keeper-Ordner an.",
+  "connector.keeper.connect": "Verbinden",
+  "connector.keeper.setupTitle": "Anmelden",
+  "connector.keeper.setupDescription":
+    "Gib deine Keeper-E-Mail-Adresse und dein Master-Passwort ein. OpenBot gibt sie einmal an Keeper Commander weiter und speichert sie nicht. Keeper Commander ist das Kommandozeilen-Tool von Keeper.",
+  "connector.keeper.setupDescriptionHost":
+    "Gib deine Keeper-E-Mail-Adresse und dein Master-Passwort ein. {host} gibt sie einmal an Keeper Commander weiter und speichert sie nicht. Keeper Commander ist das Kommandozeilen-Tool von Keeper.",
+  "connector.keeper.emailLabel": "E-Mail",
+  "connector.keeper.passwordLabel": "Master-Passwort",
+  "connector.keeper.folderName": "Shared with OpenBot",
+  "connector.keeper.folderSetup":
+    "OpenBot erstellt diesen Ordner beim Verbinden in deinem Tresor. Verschiebe Zugangsdaten hinein, um sie zu teilen.",
+  "connector.keeper.showSteps": "Schritte zeigen",
+  "connector.keeper.stepsLabel": "Verbindungsschritte",
+  "connector.keeper.stepSignIn": "Anmelden",
+  "connector.keeper.stepVerify": "Bestätigen",
+  "connector.keeper.stepDone": "Fertig",
+  "connector.keeper.signInTitle": "Anmeldung bei Keeper",
+  "connector.keeper.signInDescription": "Keeper Commander meldet sich mit deinem Konto an.",
+  "connector.keeper.signInDescriptionHost": "{host} meldet sich mit deinem Konto bei Keeper an.",
+  "connector.keeper.twoFactorTitle": "Code eingeben",
+  "connector.keeper.twoFactorDescription":
+    "Keeper fragt nach einem Zwei-Faktor-Code. Gib den Code aus deiner Authenticator-App oder SMS ein.",
+  "connector.keeper.deviceTitle": "Dieses Gerät genehmigen",
+  "connector.keeper.deviceDescription":
+    "Keeper hat eine Genehmigungs-E-Mail und eine Benachrichtigung an deine anderen Geräte gesendet. Genehmige dieses Gerät mit dem Link in der E-Mail oder auf einem anderen Gerät und drücke dann auf Weiter. Oder gib den Code aus der E-Mail ein.",
+  "connector.keeper.codeLabel": "Code",
+  "connector.keeper.codeWrong": "Der Code ist nicht korrekt. Gib ihn erneut ein.",
+  "connector.keeper.continue": "Weiter",
+  "connector.keeper.setupStepTitle": "Geteilter Ordner wird erstellt",
+  "connector.keeper.setupStepDescription":
+    "OpenBot erstellt den Ordner „{folder}“ in deinem Tresor und aktiviert die Anmeldung für dieses Gerät.",
+  "connector.keeper.doneTitle": "Keeper ist verbunden",
+  "connector.keeper.doneDescription":
+    "Verschiebe Zugangsdaten nach „{folder}“, damit Agents sich damit anmelden können.",
+  "connector.keeper.failedTitle": "Keeper ist nicht verbunden",
+  "connector.keeper.done": "Fertig",
+  "connector.keeper.close": "Schließen",
+  "connector.keeper.statusConnecting": "Verbinden",
+  "connector.keeper.statusConnected": "Verbunden",
+  "connector.keeper.statusExpired": "Sitzung beendet",
+  "connector.keeper.expiredTitle": "Die Keeper-Sitzung wurde beendet",
+  "connector.keeper.expiredDescription":
+    "Agents können sich erst wieder mit deinen geteilten Zugangsdaten anmelden, wenn du dich erneut verbindest. Gib unten dein Master-Passwort ein.",
+  "connector.keeper.planTitle": "Keeper Commander ist gesperrt",
+  "connector.keeper.planDescription":
+    "Dein Keeper-Administrator erlaubt Keeper Commander für dieses Konto nicht. Bitte ihn, es zu erlauben, und verbinde dann erneut.",
+  "connector.keeper.folderTitle": "Geteilter Ordner",
+  "connector.keeper.folderDescription":
+    "Verschiebe Zugangsdaten in Keeper in diesen Ordner, damit Agents sich damit anmelden können. Entferne sie wieder, um den Zugriff zu beenden.",
+  "connector.keeper.loginCount": { one: "{count} Anmeldung", other: "{count} Anmeldungen" },
+  "connector.keeper.loginsLoading": "Zugangsdaten werden gezählt…",
+  "connector.keeper.disconnectTitle": "Keeper trennen",
+  "connector.keeper.disconnectSummary":
+    "OpenBot beendet seine Keeper-Sitzung auf diesem Computer. Der Ordner und seine Zugangsdaten bleiben in deinem Keeper-Tresor.",
+  "connector.keeper.disconnectSummaryHost":
+    "OpenBot beendet seine Keeper-Sitzung auf {host}. Der Ordner und seine Zugangsdaten bleiben in deinem Keeper-Tresor.",
+  "connector.keeper.disconnect": "Trennen",
+  "connector.keeper.actionFailed": "OpenBot konnte die Keeper-Verbindung nicht ändern.",
 } as const satisfies PartialTranslation<typeof source>;
