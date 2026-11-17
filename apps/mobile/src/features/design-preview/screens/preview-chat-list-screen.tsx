@@ -18,9 +18,7 @@ import {
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useUniwind } from "uniwind";
 import { useColumnWidth } from "@/shared/components/adaptive-split";
-import { MenuView } from "@/shared/components/menu-view";
 import { ProfileAvatar } from "@/shared/components/profile-avatar";
 import { SheetScrollEdgeEffect } from "@/shared/components/sheet-scroll-edge-effect";
 import { haptics } from "@/shared/lib/haptics";
@@ -34,6 +32,7 @@ import {
 } from "../components/preview-parts";
 import { usePreviewTime } from "../components/preview-time";
 import {
+  PREVIEW_ACCOUNT,
   PREVIEW_DONE_COUNT,
   PREVIEW_LOOSE_CHATS,
   PREVIEW_MAIN_AGENT,
@@ -41,7 +40,6 @@ import {
   PREVIEW_SECTIONS,
   type PreviewChat,
 } from "../model/preview-data";
-import { setDesignPreview } from "../model/preview-switch";
 import { previewSheet, previewSize as size, previewType as type } from "../model/preview-tokens";
 
 const LOOSE = "loose";
@@ -53,7 +51,6 @@ export function PreviewChatListScreen() {
   const colors = usePreviewColors();
   const insets = useSafeAreaInsets();
   const width = useColumnWidth();
-  const { theme } = useUniwind();
   const scrollRef = useRef<ScrollViewInstance>(null);
   const [open, setOpen] = useState<ReadonlySet<string>>(() => new Set([PREVIEW_OPEN_SECTION, LOOSE]));
   // Where each unread row is in the scroll content, and what part of the content shows now.
@@ -170,21 +167,20 @@ export function PreviewChatListScreen() {
       />
 
       <View style={{ position: "absolute", top: insets.top, left: size.headerInset + insets.left }}>
-        <MenuView
-          colorScheme={theme === "dark" ? "dark" : "light"}
-          actions={[{ id: "leave", title: t("mobile.workspace.preview.leave"), attributes: { destructive: true } }]}
-          onPressAction={({ nativeEvent }) => {
-            if (nativeEvent.event !== "leave") return;
-            setDesignPreview(false);
-            router.replace("/");
+        {/* The profile circle opens Settings, as in the reference; New design there leaves the preview. */}
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={t("mobile.workspace.preview.profile")}
+          onPress={() => {
+            void haptics.selection();
+            router.push("/design-preview/settings");
           }}
+          style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
         >
-          <View accessible accessibilityRole="button" accessibilityLabel={t("mobile.workspace.preview.profile")}>
-            <PreviewGlass width={size.headerButton} height={size.headerButton}>
-              <ProfileAvatar name="Steven" neutral size={size.headerButton - 6} />
-            </PreviewGlass>
-          </View>
-        </MenuView>
+          <PreviewGlass width={size.headerButton} height={size.headerButton}>
+            <ProfileAvatar name={PREVIEW_ACCOUNT.name} neutral size={size.headerButton - 6} />
+          </PreviewGlass>
+        </Pressable>
       </View>
       <View style={{ position: "absolute", top: insets.top, right: size.headerInset + insets.right }}>
         <PreviewCircleButton label={t("mobile.workspace.preview.newChat")}>
@@ -247,10 +243,21 @@ export function PreviewChatListScreen() {
           gap: size.bottomBarGap,
         }}
       >
-        <PreviewCircleButton label={t("mobile.workspace.preview.apps")} size={size.gridButton}>
+        <PreviewCircleButton
+          label={t("mobile.workspace.preview.apps")}
+          size={size.gridButton}
+          onPress={() => router.push("/design-preview/grid")}
+        >
           <LayoutGrid size={22} color={colors.icon} strokeWidth={1.8} />
         </PreviewCircleButton>
-        <Pressable accessibilityRole="search" accessibilityLabel={t("mobile.workspace.preview.search")}>
+        <Pressable
+          accessibilityRole="search"
+          accessibilityLabel={t("mobile.workspace.preview.search")}
+          onPress={() => {
+            void haptics.selection();
+            router.push("/design-preview/search");
+          }}
+        >
           <PreviewGlass width={searchWidth} height={size.searchHeight}>
             <View style={{ flex: 1, flexDirection: "row", alignItems: "center", paddingLeft: 15, gap: 10 }}>
               <Search size={21} color={colors.icon} strokeWidth={2.5} />

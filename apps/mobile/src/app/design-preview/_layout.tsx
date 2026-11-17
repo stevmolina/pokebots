@@ -20,6 +20,8 @@ const SHEET = {
 const DETENTS = [0.55, 0.85];
 // The model list is long, so its sheet has one tall stop.
 const TALL = [0.85];
+// Settings and the grid open as tall sheets, as in the reference: the page behind shows only above.
+const FULL = [1];
 
 export default function DesignPreviewLayout() {
   // Opening the preview, also from the link `openbot://design-preview`, turns the switch on, so the
@@ -44,6 +46,10 @@ export default function DesignPreviewLayout() {
         name="model"
         options={{ ...SHEET, contentStyle: { backgroundColor: sheetBackground }, sheetAllowedDetents: TALL }}
       />
+      <Stack.Screen name="settings" options={{ ...SHEET, sheetGrabberVisible: false, sheetAllowedDetents: FULL }} />
+      <Stack.Screen name="grid" options={{ ...SHEET, sheetGrabberVisible: false, sheetAllowedDetents: FULL }} />
+      {/* Search opens in place over the list, as the reference does. */}
+      <Stack.Screen name="search" options={{ animation: "fade", animationDuration: 180 }} />
     </Stack>
   );
 }

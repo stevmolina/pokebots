@@ -101,7 +101,7 @@ export function PreviewSettingsSheet() {
           <PreviewRow
             label={t("mobile.workspace.preview.connectApps")}
             detail={t("mobile.workspace.preview.connectAppsHelp")}
-            onPress={tap}
+            onPress={() => router.replace("/design-preview/grid")}
           />
         </PreviewGroup>
         <PreviewGap size={b4.groupGap} />
