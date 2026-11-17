@@ -52,7 +52,8 @@ export default defineConfig({
     },
   },
   preload: {
-    plugins: [...brand, externalizeDepsPlugin({ exclude: ["@openbot/contracts"] })],
+    // A sandboxed preload can only require Electron, so the bundle holds zod, which the contracts import.
+    plugins: [...brand, externalizeDepsPlugin({ exclude: ["@openbot/contracts", "zod"] })],
     build: {
       rollupOptions: {
         input: {
