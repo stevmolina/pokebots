@@ -4,6 +4,9 @@ import { useCSSVariable } from "uniwind";
 import { setDesignPreview } from "@/features/design-preview/model/preview-switch";
 import { SplashContentReadyContext } from "@/shared/lib/use-splash-gate";
 
+// A link straight to a sheet (`openbot://design-preview/settings`) opens it over the list, as a tap does.
+export const unstable_settings = { initialRouteName: "index" };
+
 /** The sheets of the preview, with the options of the app's own sessions and message sheets. */
 const SHEET = {
   headerShown: false,
