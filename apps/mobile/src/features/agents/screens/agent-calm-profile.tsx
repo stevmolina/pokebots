@@ -1,7 +1,9 @@
+import { avatarHeadColor } from "@openbot/brand/bloub-avatar";
 import { canAdministerServer, providerDisplayName } from "@openbot/contracts/ipc";
 import { useQuery } from "@tanstack/react-query";
 import * as Clipboard from "expo-clipboard";
-import { router, Stack } from "expo-router";
+import { router, Stack, useNavigation } from "expo-router";
+import { StackActions } from "expo-router/react-navigation";
 import { Typography } from "heroui-native";
 import CalendarClock from "lucide-react-native/icons/calendar-clock";
 import LibraryBig from "lucide-react-native/icons/library-big";
@@ -13,6 +15,9 @@ import { useAgentDelete } from "@/features/agents/components/agent-delete-sectio
 import { BloubAvatarPreview } from "@/features/agents/components/bloub-avatar";
 import { agentSkillsQuery } from "@/features/agents/model/agent-skills-query";
 import { useQueryScope } from "@/features/auth/context/mobile-session-context";
+import { AgentSessionsSection } from "@/features/chat/components/agent-sessions-section";
+import { DRAFT_THREAD_ID, MAIN_THREAD_ID } from "@/features/chat/components/chat-thread-menu";
+import { setMainSession, useMainSession } from "@/features/chat/model/main-session";
 import { ProviderMark } from "@/features/servers/components/provider-mark";
 import { SettingsContent, SettingsRow, SettingsSection } from "@/features/settings/components/settings-content";
 import { RowIcon } from "@/features/settings/components/settings-row-icon";
@@ -35,11 +40,18 @@ type ProfilePage =
   | "/agent-info/[agentId]/models"
   | "/agent-info/[agentId]/skills";
 
+/** The route names in the app stack: `app/(app)/task/[taskId].tsx` and `app/(app)/server-tasks.tsx`. */
+const TASK_ROUTE = "task/[taskId]";
+const TASKS_ROUTE = "server-tasks";
+/** The sessions that the profile shows before "All sessions", as the profile of today's look. */
+const SESSIONS_SHOWN = 5;
+
 /**
  * The agent's profile in the new design, as the design preview draws it: the face, the name and an
- * Edit pill; then Model, Library and Computer; then "Set up" with the routines and skills and their
- * counts; then the notifications. The sessions are in the chat's More sheet. More in the bar copies the
- * agent's ID and, for an owner or admin, deletes the agent.
+ * Edit pill; then the agent's newest sessions, as the profile of today's look lists them (a tap opens
+ * one and makes it the main session); then Model, Library and Computer; then "Set up" with the
+ * routines and skills and their counts; then the notifications. More in the bar copies the agent's ID
+ * and, for an owner or admin, deletes the agent.
  */
 export function AgentCalmProfile({ agent }: { agent: MobileAgent }) {
   const { t, format } = useText();
@@ -53,6 +65,10 @@ export function AgentCalmProfile({ agent }: { agent: MobileAgent }) {
   );
   const manageSkills = useMobileWorkspaceSelector((current) => current.canManageAgentSkills(serverId));
   const { deleting, ask } = useAgentDelete(agent);
+  // The stack that presents this sheet. The sheet has its own stack inside.
+  const sheetStack = useNavigation().getParent();
+  const tasksSupported = useMobileWorkspaceSelector((current) => current.canUseTasks(serverId));
+  const mainId = useMainSession(serverId, agent.id) ?? MAIN_THREAD_ID;
   // The same reads as the Model, Routines and Skills pages, so each row shows what its page shows.
   const models = useQuery({
     queryKey: queryKeys.agentModels(queryScope, serverId),
@@ -79,6 +95,17 @@ export function AgentCalmProfile({ agent }: { agent: MobileAgent }) {
   const push = (pathname: ProfilePage) => {
     void haptics.impact("soft");
     router.push({ pathname, params });
+  };
+  /** Opens a session over the chat and makes it the main session, as the profile of today's look does. */
+  const openSession = (id: string) => {
+    void haptics.selection();
+    if (id === MAIN_THREAD_ID) {
+      setMainSession(serverId, agent.id, null);
+      router.dismissTo({ pathname: "/chat/[agentId]", params: { agentId: agent.id } });
+      return;
+    }
+    if (id !== DRAFT_THREAD_ID) setMainSession(serverId, agent.id, id);
+    sheetStack?.dispatch(StackActions.replace(TASK_ROUTE, { serverId, agentId: agent.id, taskId: id }));
   };
   return (
     <SettingsContent>
@@ -120,6 +147,22 @@ export function AgentCalmProfile({ agent }: { agent: MobileAgent }) {
           <Typography.Paragraph weight="medium">{t("mobile.agent.profile.edit")}</Typography.Paragraph>
         </Pressable>
       </View>
+      {tasksSupported ? (
+        <AgentSessionsSection
+          serverId={serverId}
+          agentId={agent.id}
+          activeId={mainId}
+          color={avatarHeadColor(agent.avatarSeed, agent.avatarHue, agent.avatarColor)}
+          limit={SESSIONS_SHOWN}
+          title={t("mobile.chat.sessions.title")}
+          onOpen={openSession}
+          onNew={() => openSession(DRAFT_THREAD_ID)}
+          onAll={() => {
+            void haptics.impact("soft");
+            sheetStack?.dispatch(StackActions.replace(TASKS_ROUTE, { serverId, agentId: agent.id }));
+          }}
+        />
+      ) : null}
       <SettingsSection>
         {agent.provider && !agent.foreignProvider ? (
           <SettingsRow
