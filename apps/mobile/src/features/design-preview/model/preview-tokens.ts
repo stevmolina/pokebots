@@ -185,7 +185,9 @@ export const previewBatch4 = {
   searchFirstRowTop: 8,
   searchRowHeight: 80,
   searchAvatar: 44,
-  searchCloseButton: 44,
+  /** The close circle beside the field: 47 pt like the grid button, 21 pt after the field. */
+  searchCloseButton: 47,
+  searchFieldGap: 21,
   /** Grid sheet: the title row centered on the close circle, chips 34 pt high 34 pt under it, rows 68 pt with a 30 pt icon. */
   gridChipsTop: 34,
   gridChipHeight: 34,

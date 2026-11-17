@@ -86,7 +86,7 @@ export function PreviewSearchScreen() {
     return q ? [...agents, ...messages] : agents;
   }, [filter, query]);
 
-  const fieldWidth = width - size.bottomBarInset * 2 - b4.searchCloseButton - size.bottomBarGap;
+  const fieldWidth = width - size.bottomBarInset * 2 - b4.searchCloseButton - b4.searchFieldGap;
   const label = (kind: Result["kind"]) =>
     kind === "message"
       ? t("mobile.workspace.preview.typeMessage")
@@ -192,7 +192,7 @@ export function PreviewSearchScreen() {
             marginHorizontal: size.bottomBarInset,
             flexDirection: "row",
             alignItems: "center",
-            gap: size.bottomBarGap,
+            gap: b4.searchFieldGap,
           }}
         >
           <PreviewGlass width={fieldWidth} height={size.searchHeight}>
