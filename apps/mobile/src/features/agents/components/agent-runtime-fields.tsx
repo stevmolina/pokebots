@@ -37,7 +37,7 @@ import {
 import { queryKeys } from "@/features/workspace/model/query-keys";
 import { useText } from "@/shared/lib/text";
 
-const EFFORT_LABELS = {
+export const EFFORT_LABELS = {
   none: "mobile.agent.runtime.effort.none",
   minimal: "mobile.agent.runtime.effort.minimal",
   low: "mobile.agent.runtime.effort.low",

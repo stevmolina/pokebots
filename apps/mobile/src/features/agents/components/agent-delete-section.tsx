@@ -11,12 +11,10 @@ import { haptics } from "@/shared/lib/haptics";
 import { currentText, useText } from "@/shared/lib/text";
 
 /**
- * The last group of Agent info: delete the agent, as the agent menu of the chat list does. The host
- * lets only an owner or an admin delete an agent, so the parent shows it only to them. After the
- * delete, the sheet and the chat of the agent under it close.
+ * Asks before deleting the agent, then deletes it and closes the sheet and the chat under it. Agent
+ * info and the profile's More menu use it.
  */
-export function AgentDeleteSection({ agent, disabled }: { agent: MobileAgent; disabled: boolean }) {
-  const { t } = useText();
+export function useAgentDelete(agent: MobileAgent) {
   const workspace = useMobileWorkspaceReader();
   const [deleting, setDeleting] = useState(false);
   const lock = useRef(false);
@@ -44,24 +42,33 @@ export function AgentDeleteSection({ agent, disabled }: { agent: MobileAgent; di
     }
   }
 
+  function ask() {
+    void haptics.notification("warning");
+    const text = currentText();
+    Alert.alert(text.t("mobile.agent.menu.deleteTitle", { name: agent.name }), text.t("mobile.agent.menu.deleteBody"), [
+      { text: text.t("common.cancel"), style: "cancel" },
+      { text: text.t("common.delete"), style: "destructive", onPress: () => void remove() },
+    ]);
+  }
+
+  return { deleting, ask };
+}
+
+/**
+ * The last group of Agent info: delete the agent, as the agent menu of the chat list does. The host
+ * lets only an owner or an admin delete an agent, so the parent shows it only to them. After the
+ * delete, the sheet and the chat of the agent under it close.
+ */
+export function AgentDeleteSection({ agent, disabled }: { agent: MobileAgent; disabled: boolean }) {
+  const { t } = useText();
+  const { deleting, ask } = useAgentDelete(agent);
   return (
     <SettingsSection>
       <SettingsRow
         leading={<RowIcon icon={Trash2} tone="danger" />}
         disabled={disabled || deleting}
         disclosure={false}
-        onPress={() => {
-          void haptics.notification("warning");
-          const text = currentText();
-          Alert.alert(
-            text.t("mobile.agent.menu.deleteTitle", { name: agent.name }),
-            text.t("mobile.agent.menu.deleteBody"),
-            [
-              { text: text.t("common.cancel"), style: "cancel" },
-              { text: text.t("common.delete"), style: "destructive", onPress: () => void remove() },
-            ],
-          );
-        }}
+        onPress={ask}
       >
         <Typography.Paragraph className="text-danger-text">{t("common.delete")}</Typography.Paragraph>
       </SettingsRow>

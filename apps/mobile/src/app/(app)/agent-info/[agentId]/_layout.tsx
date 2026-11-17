@@ -37,6 +37,7 @@ export default function AgentInfoLayout() {
       <Stack.Screen name="usage" options={{ title: t("mobile.agent.info.usage.title") }} />
       <Stack.Screen name="memories" options={{ title: t("mobile.agent.info.memories.title") }} />
       <Stack.Screen name="skills" options={{ title: t("mobile.agent.info.skills.title") }} />
+      <Stack.Screen name="models" options={{ title: t("mobile.agent.runtime.model") }} />
       <Stack.Screen name="files" options={{ title: t("mobile.agent.info.files.title") }} />
       <Stack.Screen name="instructions" options={{ title: t("mobile.agent.instructionsFile.title") }} />
       <Stack.Screen name="routines" options={{ title: t("mobile.agent.info.routines.title") }} />

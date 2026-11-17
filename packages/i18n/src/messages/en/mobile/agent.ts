@@ -314,6 +314,7 @@ export const messages = defineMessages("mobile.agent", {
   "mobile.agent.runtime.effort.max": "Max",
   "mobile.agent.runtime.effort.ultra": "Ultra",
   "mobile.agent.runtime.retryModels": "Retry models",
+  "mobile.agent.calmModel.moreSettings": "More model settings",
   "mobile.agent.runtime.loadingModels": "Loading models…",
   "mobile.agent.runtime.noModels": "No models available for this provider.",
   "mobile.agent.runtime.searchModels": "Search models",

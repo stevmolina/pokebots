@@ -345,7 +345,7 @@ export function ChatView({
   const [appActive, setAppActive] = useState(AppState.currentState === "active");
   const reducedTransparency = useReducedTransparency();
   const server = useMobileWorkspaceSelector((current) => current.servers.find((item) => item.id === target.serverId));
-  // The calm look puts the agent's provider logo in the composer: it opens the agent's model page.
+  // The calm look puts the agent's provider logo in the composer: it opens the agent's model sheet.
   const calm = useCalmLook();
   const calmColors = usePreviewColors();
   const calmAgent = useMobileWorkspaceSelector((current) =>
@@ -364,9 +364,9 @@ export function ChatView({
             logo: <ProviderMark provider={calmProvider} size={22} />,
             onPress: () => {
               void haptics.selection();
-              // The agent's Model page: it saves the choice, and its Model row opens the picker.
+              // The agent's model sheet: every model of the server by provider; a tap saves it.
               router.push({
-                pathname: "/agent-info/[agentId]/runtime",
+                pathname: "/agent-info/[agentId]/models",
                 params: { agentId: calmAgent.id, serverId: calmAgent.serverId },
               });
             },

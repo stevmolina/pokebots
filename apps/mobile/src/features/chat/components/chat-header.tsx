@@ -370,6 +370,10 @@ export const ChatHeader = memo(function ChatHeader({
       moreButton(BAR_BUTTON_SIZE)
     );
 
+  // The new design centers the name pill; the vertical bar of iPhone Duo keeps its own top row.
+  const centerTitle = calm && !verticalBar;
+  const centeredPillWidth = Math.max(120, width - insets.left - insets.right - 2 * (NATIVE_BAR_HEIGHT + 32));
+
   if (isIOS) {
     // The chat routes show the native bar on iOS, so its items morph into and out of the bar items of
     // the screen under the chat, as on the other screens. iOS moves native bar buttons into the
@@ -377,6 +381,24 @@ export const ChatHeader = memo(function ChatHeader({
     // while the content scrolls, so the title is not one then: it stays drawn at the top.
     return (
       <>
+        {centerTitle ? (
+          // The new design centers the name between Back and More, as the design preview does. iOS centers
+          // the title view of the native bar; the pill stays narrower than the space between the buttons.
+          <Stack.Screen
+            options={{
+              headerTitle: () => (
+                <View
+                  className="flex-row"
+                  accessibilityElementsHidden={accessibilityHidden}
+                  importantForAccessibility={accessibilityHidden ? "no-hide-descendants" : "auto"}
+                  style={{ height: NATIVE_BAR_HEIGHT, maxWidth: centeredPillWidth }}
+                >
+                  {titlePill}
+                </View>
+              ),
+            }}
+          />
+        ) : null}
         <Stack.Toolbar placement="left">
           <Stack.Toolbar.Button
             icon="chevron.backward"
@@ -384,7 +406,7 @@ export const ChatHeader = memo(function ChatHeader({
             hidden={splitDetailRoot || accessibilityHidden}
             onPress={goBack}
           />
-          {verticalBar ? null : (
+          {verticalBar || centerTitle ? null : (
             <Stack.Toolbar.View hidesSharedBackground hidden={accessibilityHidden}>
               <View className="flex-row" style={{ height: NATIVE_BAR_HEIGHT }}>
                 {titlePill}
@@ -431,7 +453,13 @@ export const ChatHeader = memo(function ChatHeader({
             pointerEvents="box-none"
             accessibilityElementsHidden={accessibilityHidden}
             importantForAccessibility={accessibilityHidden ? "no-hide-descendants" : "auto"}
-            style={{ top: barTop, left: insets.left + 16, right: insets.right + 16, height: BAR_BUTTON_SIZE }}
+            style={{
+              top: barTop,
+              left: insets.left + 16,
+              right: insets.right + 16,
+              height: BAR_BUTTON_SIZE,
+              justifyContent: calm ? "center" : undefined,
+            }}
           >
             {titlePill}
           </View>
@@ -467,10 +495,20 @@ export const ChatHeader = memo(function ChatHeader({
           </ChatGlassIconButton>
         )}
 
-        {titlePill}
+        {calm ? <View className="flex-1" /> : titlePill}
 
         <View className="flex-1" />
         {trailingButtons}
+        {calm ? (
+          // The new design centers the name between Back and More, as the design preview does.
+          <View
+            className="absolute inset-y-0 flex-row items-center justify-center"
+            pointerEvents="box-none"
+            style={{ left: insets.left + 16 + BAR_BUTTON_SIZE + 8, right: insets.right + 16 + BAR_BUTTON_SIZE + 8 }}
+          >
+            {titlePill}
+          </View>
+        ) : null}
       </View>
       <SheetScrollEdgeEffect
         surface={calm ? "sheet" : "canvas"}
