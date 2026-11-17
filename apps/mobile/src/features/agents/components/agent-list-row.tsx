@@ -280,8 +280,9 @@ function AgentRowBody({
         if (event.nativeEvent.actionName === "pin") toggleAgentPinAnimated(agent.id);
       }}
       className="w-full"
-      // Link injects navigation into this component. The calm row must pass it to the pressable.
-      onPress={calm ? onPress : undefined}
+      // Link injects navigation into this component. Every row look must pass it to the pressable:
+      // the pane of a wide window draws the current rows, and they open the chat the same way.
+      onPress={onPress}
       onPressIn={onPressIn}
       delayLongPress={longPressDelay}
       onLongPress={onLongPress}
