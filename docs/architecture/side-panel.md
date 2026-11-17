@@ -3,6 +3,10 @@
 ## Side panel panes
 
 The side panel is on the right side of a chat. Each open pane has a tab at the top of the panel.
+When only Agent settings is open, the panel has no tab strip (`singleSettingsPane` in
+`conversation-scope.ts`). The pane has a round Close details button, and Browser, Files, and
+Maximize side panel are rows under its Tools group. The strip comes back when a second pane or a
+tab is open, or when the panel is maximized (it then has Restore and Close side panel).
 File tabs and side threads also have tabs there, but they have their own models: `SidePanelState.files`
 in `panels-store.ts` and the thread list of the agent. The pane registry does not include them.
 
@@ -78,7 +82,10 @@ these in the real app:
 `scripts/side-panel-panes-e2e.ts` checks the launcher and Add menu order, selection, close, collapse,
 maximize, an agent change with the panel open and closed, and the side question release in the
 `App/Playground` story.
-`scripts/web-side-panel-e2e.ts` compares the web and desktop panels in Storybook.
+`scripts/web-side-panel-e2e.ts` compares the web and desktop panels in Storybook: no strip with one
+pane, Maximize and Restore, resize, a second pane (Files, in the desktop story only), Close details,
+and the phone layout. Start Storybook with `bun run storybook`, then run
+`bun scripts/web-side-panel-e2e.ts --storybook=<url>`.
 
 An agent change closes Agent settings, Files, and a file preview (`resetPanelsForAgent` in
 `conversation-scope.ts`). The tabs stay. When the panel stays open, it then shows the last tab again.

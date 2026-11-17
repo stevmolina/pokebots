@@ -1628,6 +1628,7 @@
 /* The focus view of the root page: × at the top right, then the face, name, segmented tabs and Edit toggle. */
 .agent-settings-focus-top {
   display: flex;
+  flex: 0 0 auto;
   min-height: 44px;
   align-items: center;
   justify-content: flex-end;
