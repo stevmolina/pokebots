@@ -314,6 +314,7 @@ export function CalmSettingsScreen() {
                 {t("mobile.settings.profile.signOut")}
               </Typography.Paragraph>
             </SettingsRow>
+            {signOutError ? <SettingsNote>{signOutError}</SettingsNote> : null}
           </SettingsSection>
         ) : null}
         <CalmSettingsFooter />
