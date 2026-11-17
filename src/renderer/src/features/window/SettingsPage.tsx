@@ -3,7 +3,6 @@ import { Button, Server } from "@openbot/ui";
 import { createSignal, For, flush, onCleanup, Show } from "solid-js";
 import { useI18n } from "../../i18n-context";
 import { usePlatform } from "../../platform";
-import { useAuth } from "../account/account-context";
 import { canManageStorage, serverHasBackgroundProcesses } from "../files/storage-usage";
 import type { ServerSettingsSection } from "../servers/ServerSettingsModal";
 import {
@@ -15,7 +14,12 @@ import { useServerSettings } from "../servers/server-settings";
 import { useServers } from "../servers/servers-context";
 import { useSettings } from "../settings/settings-context";
 import { navItem, navItems, type SettingsTab, settingsRowShown, settingsTabShown } from "../settings/settings-tabs";
-import { openFirstSettingsSection, SettingsPageFrame, SettingsSearchField } from "./SettingsPageFrame";
+import {
+  openFirstSettingsSection,
+  ServerSettingsPageTitle,
+  SettingsPageFrame,
+  SettingsSearchField,
+} from "./SettingsPageFrame";
 import { type SettingsKind, useWindowPage } from "./window-page-context";
 
 /** A personal search entry: a tab, or a row of a tab. A row has an anchor; a tab has none and opens at the top. */
@@ -106,8 +110,7 @@ export function SettingsPage(props: { kind: SettingsKind }) {
   const settings = useSettings();
   const serverSettings = useServerSettings();
   const platform = usePlatform();
-  const { activeServer, servers } = useServers();
-  const { signedInAccount } = useAuth();
+  const { activeServer } = useServers();
   const [personalQuery, setPersonalQuery] = createSignal("");
   /** The search of this page. The server settings read the server search to filter their section list. */
   const query = () => (props.kind === "personal" ? personalQuery() : windowPage.serverSettingsQuery());
@@ -179,23 +182,32 @@ export function SettingsPage(props: { kind: SettingsKind }) {
     target.querySelector<HTMLElement>("button, input, select, [tabindex]")?.focus({ preventScroll: true });
   };
 
+  /** The machine whose settings show. Back goes to the list of machines, in the user settings. */
+  const machine = () => {
+    const server = props.kind === "server" ? serverSettings.serverSettingsTarget() : null;
+    if (!server) return undefined;
+    return {
+      server,
+      onBack: () => settings.openAppSettings(serverSettings.serverSettingsRestoreTarget(), "machines"),
+    };
+  };
+
   return (
     <SettingsPageFrame
       heading={
-        <h1 class="settings-page-title" tabindex={-1}>
-          {i18n.t("app.settingsPage.unifiedTitle")}
-        </h1>
+        <Show
+          when={props.kind === "server" ? serverSettings.serverSettingsTarget() : null}
+          fallback={
+            <h1 class="settings-page-title" tabindex={-1}>
+              {i18n.t("app.settingsPage.unifiedTitle")}
+            </h1>
+          }
+        >
+          {(server) => <ServerSettingsPageTitle server={server()} />}
+        </Show>
       }
       sectionsHidden={results() !== null}
-      tiers={{
-        kind: props.kind,
-        // The Overall row closes this page, so the focus goes back to what opened the first page.
-        onOpenPersonal: () => settings.openAppSettings(serverSettings.serverSettingsRestoreTarget()),
-        account: signedInAccount(),
-        machines: servers(),
-        activeMachineId: props.kind === "server" ? (serverSettings.serverSettingsTarget()?.id ?? null) : null,
-        onOpenMachine: (serverId) => serverSettings.openServerSettings(serverId, settings.appSettingsRestoreTarget()),
-      }}
+      machine={machine()}
       onMounts={(mounts) => {
         content = mounts?.content;
         nav = mounts?.nav;

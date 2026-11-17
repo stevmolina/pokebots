@@ -104,7 +104,6 @@ export const messages = {
   "app.rail.mediaCreditsMeta": "الأرصدة",
   "app.rail.mediaCreditsWindow": "{credits} من {quota} من أرصدة الفريق",
   "app.settingsPage.title": "إعداداتك",
-  "app.settingsPage.serverSettings": "إعدادات الخادم {server}",
   "app.settingsPage.search": "البحث في الإعدادات",
   "app.settingsPage.searchPlaceholder": "ابحث في الإعدادات…",
   "app.settingsPage.results": "نتائج البحث في الإعدادات",

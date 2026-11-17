@@ -1,33 +1,23 @@
-import type { CentralAuthUser, ServerSummary } from "@openbot/contracts/ipc";
-import { Button, ChevronRight, IconButton, Input, PanelLeft, Search, UserAvatar, UserRound, X } from "@openbot/ui";
+import type { ServerSummary } from "@openbot/contracts/ipc";
+import { Button, ChevronLeft, Dialog, IconButton, Input, PanelLeft, Search, X } from "@openbot/ui";
 import { ServerMark } from "@openbot/ui/features/servers/ServerRail";
 import type { SettingsPagePlacement } from "@openbot/ui/features/settings/SettingsDialogShell";
 import { useText } from "@openbot/ui/text";
 import type { JSX } from "@solidjs/web";
-import { createSignal, For, flush, onSettled, Show } from "solid-js";
+import { createSignal, flush, onCleanup, Show } from "solid-js";
 
-/**
- * The two-tier section list of the standalone settings page: "Overall" holds the settings of the user,
- * and "Machines" lists each server, with the sections of the open one under its row. Only one panel
- * is on screen at a time, so the section mount moves to the group of the open page.
- */
-export interface SettingsPageTiers {
-  kind: "personal" | "server";
-  /** Opens the settings of the user from the Overall group while a machine is open. */
-  onOpenPersonal: () => void;
-  account: Pick<CentralAuthUser, "name" | "email" | "avatarUrl"> | null;
-  machines: readonly ServerSummary[];
-  /** The machine whose settings are open, when `kind` is "server". */
-  activeMachineId: string | null;
-  onOpenMachine: (serverId: string) => void;
+/** The machine whose settings the modal shows. Back goes to the list of machines. */
+export interface SettingsPageMachine {
+  server: ServerSummary;
+  onBack: () => void;
 }
 
 /**
- * The frame of a settings page, on desktop and on the web: the heading and the section list at the
- * width of the sidebar, the path to an open detail page in the top row, and the panel. The settings
- * panel shows its nav, path and content in the mounts that `onMounts` gets. The footer, below the
- * section list, holds the row that opens the other settings page. The Close button at the end of the
- * top row is the visible way out of the page.
+ * The frame of the settings, on desktop and on the web: a centered modal over the window, with the section
+ * list on the left and the panel on the right. The settings panel shows its nav, path and content in the
+ * mounts that `onMounts` gets. The section list holds the sections of the user, or, while a machine is
+ * open, a Machines row that goes back to the list and then the sections of that machine. The Close button
+ * and Escape close the modal; on a phone the modal fills the screen and the section list is a drawer.
  */
 export function SettingsPageFrame(props: {
   heading: JSX.Element;
@@ -35,169 +25,136 @@ export function SettingsPageFrame(props: {
   children?: JSX.Element;
   sectionsHidden?: boolean;
   footer?: JSX.Element;
+  /** Set while a machine's settings show. The list starts with a row that goes back to the machines. */
+  machine?: SettingsPageMachine | undefined;
   onMounts: (mounts: SettingsPagePlacement | undefined) => void;
-  /** Escape outside a popup or a text field of the window. */
+  /** Escape. A search clears first, then the page closes. */
   onEscape: () => void;
-  /** The Close button. It closes the page, also while a search has text. */
+  /** The Close button and a click on the dimmed window. It closes the page, also while a search has text. */
   onClose: () => void;
-  /** The unified two-tier list. Without it, the page shows one flat section list. */
-  tiers?: SettingsPageTiers | undefined;
 }) {
   const { t } = useText();
   /** At 720px and below, the section list is a drawer that the top row opens. */
   const [drawerOpen, setDrawerOpen] = createSignal(false);
-  let nav!: HTMLDivElement;
-  let content!: HTMLDivElement;
-  let path!: HTMLDivElement;
-  let root!: HTMLDivElement;
+  let nav: HTMLDivElement | undefined;
+  let content: HTMLDivElement | undefined;
+  let path: HTMLDivElement | undefined;
+  let root: HTMLDivElement | undefined;
+  let mounted = false;
 
-  onSettled(() => {
+  // The dialog mounts its parts after this component runs, so the mounts are reported when the last ref lands.
+  function reportMounts(): void {
+    if (mounted || !nav || !content || !path) return;
+    mounted = true;
     props.onMounts({ nav, content, path });
-    // As on the usage and schedule pages, the heading takes the focus, so a screen reader reads the
-    // page that opened. The settings shell puts the focus back on the opener when the page closes.
-    root.querySelector<HTMLElement>(".settings-page-title")?.focus({ preventScroll: true });
-    // Escape closes the page, as it closed the settings dialog. On the document and after the
-    // delegated handlers, so a control that handles Escape keeps it. A click can put the focus back on
-    // the rail or the server menu, so a target outside the page also counts, except an open popup or a
-    // text field.
-    const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key !== "Escape" || event.defaultPrevented) return;
-      const target = event.target instanceof Element ? event.target : null;
-      if (target?.closest("[role=dialog], [role=alertdialog], [role=menu], [role=listbox]")) return;
-      if (target && !root.contains(target) && target.closest("input, textarea, select, [contenteditable]")) return;
-      event.preventDefault();
-      props.onEscape();
-    };
-    document.addEventListener("keydown", closeOnEscape);
-    return () => {
-      document.removeEventListener("keydown", closeOnEscape);
-      props.onMounts(undefined);
-    };
+  }
+  onCleanup(() => {
+    if (mounted) props.onMounts(undefined);
   });
 
-  // One element for the section list: the panel shows its nav in it, so it moves between the groups
-  // and is never made again while the page is open.
-  const sectionsElement = <div class="settings-page-sections" ref={nav} hidden={props.sectionsHidden} />;
-  const sections = () => sectionsElement;
+  // One element for the section list: the panel shows its nav in it, so it is never made again while the page is open.
+  const sectionsElement = (
+    <div
+      class="settings-page-sections"
+      ref={(element) => {
+        nav = element;
+        reportMounts();
+      }}
+      hidden={props.sectionsHidden}
+    />
+  );
   // A tap on a section in the drawer opens it and closes the drawer.
   const closeDrawerOnSection = (event: MouseEvent) => {
-    if (event.target instanceof Element && event.target.closest(".settings-modal-nav-item, .settings-page-tier-row"))
+    if (event.target instanceof Element && event.target.closest(".settings-modal-nav-item, .settings-page-back"))
       setDrawerOpen(false);
   };
   return (
-    <div
-      class={["settings-page", { "settings-page-unified": Boolean(props.tiers) }]}
-      ref={root}
-      data-drawer-open={drawerOpen() ? "" : undefined}
+    <Dialog.Root
+      open
+      onOpenChange={(open) => {
+        if (!open) props.onClose();
+      }}
     >
-      <IconButton
-        variant="ghost"
-        size="icon-sm"
-        class="settings-page-drawer-toggle"
-        label={t("app.settingsPage.sections")}
-        aria-expanded={drawerOpen() ? "true" : "false"}
-        onClick={() => setDrawerOpen((open) => !open)}
-      >
-        <PanelLeft aria-hidden="true" />
-      </IconButton>
-      <Button
-        variant="ghost"
-        type="button"
-        class="settings-page-drawer-scrim"
-        tabindex={-1}
-        aria-label={t("common.close")}
-        onClick={() => setDrawerOpen(false)}
-      />
-      <div class="settings-page-nav" ref={(element) => element.addEventListener("click", closeDrawerOnSection)}>
-        {props.heading}
-        {props.children}
-        <Show when={props.tiers} fallback={sections()}>
-          {(tiers) => (
-            <div class="settings-page-tiers">
-              <div class="settings-page-tier-label">{t("app.settingsPage.overall")}</div>
-              <Show
-                when={tiers().kind === "personal"}
-                fallback={
-                  <Button
-                    variant="ghost"
-                    type="button"
-                    class="settings-modal-nav-item settings-page-tier-row"
-                    onClick={() => tiers().onOpenPersonal()}
-                  >
-                    <Show
-                      when={tiers().account?.avatarUrl ? tiers().account : null}
-                      fallback={<UserRound aria-hidden="true" />}
-                    >
-                      {(account) => <UserAvatar user={account()} class="settings-page-switch-avatar" decorative />}
-                    </Show>
-                    <span class="settings-page-switch-label">{t("app.settingsPage.title")}</span>
-                  </Button>
-                }
-              >
-                {sections()}
-              </Show>
-              <Show when={tiers().machines.length > 0}>
-                <div class="settings-page-tier-label">{t("app.settingsPage.machines")}</div>
-                <For each={tiers().machines} keyed={(machine) => machine.id}>
-                  {(item) => {
-                    const open = () => tiers().kind === "server" && tiers().activeMachineId === item().id;
-                    return (
-                      <>
-                        <Button
-                          variant="ghost"
-                          type="button"
-                          class="settings-modal-nav-item settings-page-tier-row settings-unified-machine"
-                          aria-current={open() ? "page" : undefined}
-                          data-selected={open() ? "" : undefined}
-                          onClick={() => {
-                            if (!open()) tiers().onOpenMachine(item().id);
-                          }}
-                        >
-                          <span class="server-menu-mark" aria-hidden="true">
-                            <ServerMark server={item()} />
-                          </span>
-                          <span class="settings-page-switch-label">{item().name}</span>
-                          <span
-                            class="settings-page-machine-dot"
-                            data-online={item().state === "online" ? "" : undefined}
-                            aria-hidden="true"
-                          />
-                        </Button>
-                        <Show when={open()}>
-                          <div class="settings-page-tier-children">{sections()}</div>
-                        </Show>
-                      </>
-                    );
-                  }}
-                </For>
-              </Show>
-              {/* A server page whose machine is not in the list keeps its sections at the end. */}
-              <Show
-                when={
-                  tiers().kind === "server" &&
-                  !tiers().machines.some((machine) => machine.id === tiers().activeMachineId)
-                }
-              >
-                {sections()}
-              </Show>
-            </div>
-          )}
-        </Show>
-        <div class="settings-page-footer">{props.footer}</div>
-      </div>
-      <div class="settings-page-path-row" ref={path} />
-      <IconButton
-        variant="secondary"
-        size="icon-sm"
-        class="settings-page-close"
-        label={t("common.close")}
-        data-cuelume-tap="close"
-        onClick={() => props.onClose()}
-      >
-        <X aria-hidden="true" />
-      </IconButton>
-      <div class="settings-page-content" ref={content} />
-    </div>
+      <Dialog.Portal>
+        <Dialog.Overlay class="settings-page-overlay" />
+        <Dialog.Content
+          class="settings-page"
+          aria-label={t("app.settingsPage.unifiedTitle")}
+          aria-describedby={undefined}
+          ref={(element: HTMLDivElement) => {
+            root = element;
+          }}
+          data-drawer-open={drawerOpen() ? "" : undefined}
+          onOpenAutoFocus={(event) => {
+            // As on the usage and schedule pages, the heading takes the focus, so a screen reader reads the page.
+            event.preventDefault();
+            root?.querySelector<HTMLElement>(".settings-page-title")?.focus({ preventScroll: true });
+          }}
+          onEscapeKeyDown={(event) => {
+            // The popups of the panel close on their own Escape first, because they are the top layer.
+            event.preventDefault();
+            props.onEscape();
+          }}
+        >
+          <IconButton
+            variant="ghost"
+            size="icon-sm"
+            class="settings-page-drawer-toggle"
+            label={t("app.settingsPage.sections")}
+            aria-expanded={drawerOpen() ? "true" : "false"}
+            onClick={() => setDrawerOpen((open) => !open)}
+          >
+            <PanelLeft aria-hidden="true" />
+          </IconButton>
+          <Button
+            variant="ghost"
+            type="button"
+            class="settings-page-drawer-scrim"
+            tabindex={-1}
+            aria-label={t("common.close")}
+            onClick={() => setDrawerOpen(false)}
+          />
+          <div class="settings-page-nav" ref={(element) => element.addEventListener("click", closeDrawerOnSection)}>
+            <Show when={props.machine}>
+              {(machine) => (
+                <Button variant="ghost" type="button" class="settings-page-back" onClick={() => machine().onBack()}>
+                  <ChevronLeft aria-hidden="true" />
+                  <span>{t("app.settingsPage.machines")}</span>
+                </Button>
+              )}
+            </Show>
+            {props.heading}
+            {props.children}
+            {sectionsElement}
+            <div class="settings-page-footer">{props.footer}</div>
+          </div>
+          <div
+            class="settings-page-path-row"
+            ref={(element) => {
+              path = element;
+              reportMounts();
+            }}
+          />
+          <IconButton
+            variant="ghost"
+            size="icon-sm"
+            class="settings-page-close"
+            label={t("common.close")}
+            data-cuelume-tap="close"
+            onClick={() => props.onClose()}
+          >
+            <X aria-hidden="true" />
+          </IconButton>
+          <div
+            class="settings-page-content"
+            ref={(element) => {
+              content = element;
+              reportMounts();
+            }}
+          />
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
   );
 }
 
@@ -245,54 +202,5 @@ export function ServerSettingsPageTitle(props: { server: ServerSummary }) {
       </span>
       <span class="server-menu-name">{props.server.name}</span>
     </h1>
-  );
-}
-
-/**
- * The row of the user settings page that opens the settings of the server in the top row. It names the
- * server, so the user sees that this page is not its settings.
- */
-export function ServerSettingsLink(props: { server: ServerSummary; onOpen: () => void }) {
-  const { t } = useText();
-  return (
-    <Button
-      variant="ghost"
-      type="button"
-      class="settings-modal-nav-item settings-page-switch"
-      onClick={() => props.onOpen()}
-    >
-      <span class="server-menu-mark" aria-hidden="true">
-        <ServerMark server={props.server} />
-      </span>
-      <span class="settings-page-switch-label">
-        {t("app.settingsPage.serverSettings", { server: props.server.name })}
-      </span>
-      <ChevronRight class="settings-page-switch-chevron" aria-hidden="true" />
-    </Button>
-  );
-}
-
-/**
- * The row of a server settings page that opens the user settings. It shows the account photo; without a
- * photo, it shows a person icon, as initials are not legible at the size of an icon.
- */
-export function PersonalSettingsLink(props: {
-  account: Pick<CentralAuthUser, "name" | "email" | "avatarUrl"> | null;
-  onOpen: () => void;
-}) {
-  const { t } = useText();
-  return (
-    <Button
-      variant="ghost"
-      type="button"
-      class="settings-modal-nav-item settings-page-switch"
-      onClick={() => props.onOpen()}
-    >
-      <Show when={props.account?.avatarUrl ? props.account : null} fallback={<UserRound aria-hidden="true" />}>
-        {(account) => <UserAvatar user={account()} class="settings-page-switch-avatar" decorative />}
-      </Show>
-      <span class="settings-page-switch-label">{t("app.settingsPage.title")}</span>
-      <ChevronRight class="settings-page-switch-chevron" aria-hidden="true" />
-    </Button>
   );
 }

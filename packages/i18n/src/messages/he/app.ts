@@ -101,7 +101,6 @@ export const messages = {
   "app.rail.mediaCreditsMeta": "קרדיטים",
   "app.rail.mediaCreditsWindow": "{credits} מתוך {quota} קרדיטי צוות",
   "app.settingsPage.title": "ההגדרות שלך",
-  "app.settingsPage.serverSettings": "הגדרות השרת {server}",
   "app.settingsPage.search": "חיפוש בהגדרות",
   "app.settingsPage.searchPlaceholder": "חיפוש בהגדרות…",
   "app.settingsPage.results": "תוצאות חיפוש בהגדרות",

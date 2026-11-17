@@ -21,7 +21,7 @@ type WorkspaceFrameProps = ParentProps<
     left: JSX.Element;
     /** The page of the rail. A page of another kind than the agents covers the middle panes, and makes them inert. */
     windowPage: WindowPage;
-    /** A page that covers the sidebar and the middle panes below the top row. */
+    /** A page that covers the middle panes below the top row, or a modal over the window. */
     page?: JSX.Element;
     connection?: JSX.Element;
     initialLoading?: boolean;
@@ -40,7 +40,9 @@ type WorkspaceFrameProps = ParentProps<
 export function WorkspaceFrame(props: WorkspaceFrameProps) {
   const platform = usePlatform();
   const layout = useLayout();
-  const pageOpen = () => windowPageKind(props.windowPage) !== "agents";
+  const pageOpen = () => windowPageKind(props.windowPage) === "titled";
+  /** A modal page, such as the settings, shows over the panes, which stay as they were. */
+  const modalOpen = () => windowPageKind(props.windowPage) === "modal";
   const rest = omit(
     props,
     "compact",
@@ -99,6 +101,7 @@ export function WorkspaceFrame(props: WorkspaceFrameProps) {
       <Show when={pageOpen()}>
         <div class="conversation-panel window-page">{props.page}</div>
       </Show>
+      <Show when={modalOpen()}>{props.page}</Show>
       {props.after}
     </div>
   );

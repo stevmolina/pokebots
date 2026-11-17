@@ -66,6 +66,7 @@
 @import "./features/settings/settings-modal.css";
 @import "@openbot/ui/features/window/page-header.css";
 @import "./features/window/window.css";
+@import "./features/window/settings-page.css";
 @import "./features/files/library.css";
 @import "@openbot/ui/features/settings/opencode-key-dialog.css";
 @import "./features/settings/settings-mobile-connect.css";

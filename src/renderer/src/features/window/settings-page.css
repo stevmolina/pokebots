@@ -1,0 +1,484 @@
+/* The settings: a centered modal over the window, about 900 x 700, with the section list on the left.
+ * The sidebar and the conversation stay behind a dimmed, softly blurred window. A phone shows it full screen. */
+.settings-page-overlay {
+  z-index: calc(var(--openbot-layer-dialog) + 1);
+}
+
+.ui-dialog-content.settings-page {
+  --settings-page-radius: 16px;
+  --settings-page-nav-width: 224px;
+  /* The ink of the text at a low opacity: the one color of every line and fill of the modal. */
+  --settings-page-hairline: color-mix(in srgb, var(--openbot-text-primary) 9%, transparent);
+  --settings-page-fill: color-mix(in srgb, var(--openbot-text-primary) 6%, transparent);
+  --settings-page-fill-strong: color-mix(in srgb, var(--openbot-text-primary) 9%, transparent);
+  --settings-page-shadow:
+    0 24px 56px -16px color-mix(in srgb, var(--openbot-text-primary) 22%, transparent),
+    0 6px 16px -6px color-mix(in srgb, var(--openbot-text-primary) 12%, transparent);
+  /* The content is a sibling of the overlay, so it centers itself on the window. */
+  position: fixed;
+  z-index: calc(var(--openbot-layer-dialog) + 2);
+  inset: 0;
+  display: grid;
+  width: min(900px, calc(100vw - 2 * var(--openbot-space-6)));
+  height: min(700px, calc(100dvh - 2 * var(--openbot-space-6)));
+  min-width: 0;
+  min-height: 0;
+  grid-template-columns: var(--settings-page-nav-width) minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr);
+  margin: auto;
+  overflow: hidden;
+  outline: 0;
+  border: 1px solid var(--settings-page-hairline);
+  border-radius: var(--settings-page-radius);
+  background: var(--openbot-bg-canvas);
+  box-shadow: var(--settings-page-shadow);
+  color: var(--openbot-text-primary);
+  animation: settings-page-in var(--openbot-duration-normal) var(--openbot-ease-out);
+}
+
+@keyframes settings-page-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.985);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-dialog-content.settings-page {
+    animation: none;
+  }
+}
+
+/* The section list: the sidebar surface, a hairline at its end. */
+.settings-page-nav {
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+  grid-row: 1 / -1;
+  flex-direction: column;
+  gap: var(--openbot-space-1);
+  overflow: hidden;
+  border-inline-end: 1px solid var(--settings-page-hairline);
+  background: var(--openbot-bg-sidebar);
+  padding: var(--openbot-space-4) var(--openbot-space-2) var(--openbot-space-2);
+}
+
+.settings-page-title {
+  margin: 0 0 var(--openbot-space-2);
+  padding: 0 var(--openbot-space-2);
+  color: var(--openbot-text-primary);
+  font-size: var(--openbot-text-xl);
+  font-weight: var(--openbot-weight-semibold);
+  line-height: var(--openbot-leading-xl);
+}
+
+/* The heading takes the focus when the page opens, only so a screen reader reads it. */
+.settings-page-title:focus {
+  outline: none;
+}
+
+/* A machine's heading: the mark and the name, as the server menu shows them. */
+.settings-page-server {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: var(--openbot-space-2);
+}
+
+.settings-page-server .server-menu-mark {
+  width: var(--openbot-icon-md);
+  height: var(--openbot-icon-md);
+  flex: none;
+}
+
+.settings-page-server .server-menu-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Back from a machine to the list of machines. */
+.settings-page-back.ui-button {
+  height: var(--openbot-control-sm);
+  align-self: flex-start;
+  justify-content: flex-start;
+  gap: var(--openbot-space-1);
+  margin-bottom: var(--openbot-space-1);
+  border-radius: var(--openbot-radius-lg);
+  padding-inline: var(--openbot-space-2);
+  color: var(--openbot-text-secondary);
+  font-size: var(--openbot-text-md);
+  font-weight: var(--openbot-weight-regular);
+}
+
+.settings-page-back > svg {
+  width: var(--openbot-icon-md);
+  height: var(--openbot-icon-md);
+  stroke-width: var(--openbot-icon-stroke-lg);
+}
+
+/* A capsule search field */
+.settings-page-search {
+  flex: none;
+  height: var(--openbot-control-md);
+  margin: 0 0 var(--openbot-space-2);
+  border: 1px solid var(--settings-page-hairline);
+  border-radius: var(--openbot-radius-pill);
+  background: var(--openbot-bg-control);
+  padding: 0 var(--openbot-space-3);
+}
+
+.settings-page-search > svg {
+  flex: none;
+  width: var(--openbot-icon-sm);
+  height: var(--openbot-icon-sm);
+  stroke-width: var(--openbot-icon-stroke-lg);
+}
+
+.settings-page-search input {
+  height: 100%;
+  padding: 0;
+  font-size: var(--openbot-text-md);
+}
+
+/* The title and the search stay at the top. The list below them scrolls. */
+.settings-page-sections,
+.settings-page-results {
+  min-height: 0;
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding-bottom: var(--openbot-space-2);
+}
+
+.settings-page-sections[hidden] {
+  display: none;
+}
+
+.settings-page-footer {
+  flex: none;
+}
+
+.settings-page-footer:empty {
+  display: none;
+}
+
+/* The rows of the list: 32 px, 14 px text, the open one on a fill of the ink. */
+.settings-page-nav .settings-modal-nav {
+  gap: var(--openbot-space-0-5);
+}
+
+.settings-page-nav .settings-modal-nav-item {
+  min-height: var(--openbot-control-md);
+  border-radius: var(--openbot-radius-lg);
+  padding-inline: var(--openbot-space-2);
+  color: var(--openbot-text-secondary);
+  font-size: var(--openbot-text-md);
+  font-weight: var(--openbot-weight-regular);
+}
+
+.settings-page-nav .settings-modal-nav-item svg {
+  stroke-width: var(--openbot-icon-stroke-lg);
+}
+
+.settings-page-nav .settings-modal-nav-item[aria-current="page"],
+.settings-page-nav .settings-modal-nav-item[data-selected] {
+  background: var(--settings-page-fill-strong);
+  color: var(--openbot-text-primary);
+  font-weight: var(--openbot-weight-regular);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .settings-page-nav .settings-modal-nav-item:not([aria-current], [data-selected]):hover {
+    background: var(--settings-page-fill);
+  }
+}
+
+/* The text that shows when no setting matches the search */
+.settings-page-empty {
+  margin: var(--openbot-space-4) 0 var(--openbot-space-1);
+  padding: 0 var(--openbot-space-2);
+  color: var(--openbot-text-muted);
+  font-size: var(--openbot-text-sm);
+}
+
+/* A search result: the section with its icon, and below it the matching row title */
+.settings-page-results {
+  display: flex;
+  flex-direction: column;
+  gap: var(--openbot-space-0-5);
+  margin: var(--openbot-space-1) 0 0;
+  padding-inline: 0;
+  list-style: none;
+}
+
+.settings-page-result {
+  display: flex;
+  width: 100%;
+  height: auto;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--openbot-space-0-5);
+  border: 0;
+  border-radius: var(--openbot-radius-lg);
+  background: transparent;
+  padding: var(--openbot-space-1-5) var(--openbot-space-2);
+  color: var(--openbot-text-primary);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .settings-page-result:hover {
+    background: var(--settings-page-fill);
+  }
+}
+
+.settings-page-result:focus-visible {
+  outline: 0;
+  box-shadow: var(--openbot-focus-ring);
+}
+
+.settings-page-result-section {
+  display: flex;
+  align-items: center;
+  gap: var(--openbot-space-2);
+  color: var(--openbot-text-muted);
+  font-size: var(--openbot-text-sm);
+}
+
+.settings-page-result-section svg {
+  width: var(--openbot-icon-sm);
+  height: var(--openbot-icon-sm);
+  stroke-width: var(--openbot-icon-stroke-lg);
+}
+
+.settings-page-result-title {
+  overflow: hidden;
+  padding-inline-start: calc(var(--openbot-icon-sm) + var(--openbot-space-2));
+  font-size: var(--openbot-text-md);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The path of an open detail page, such as Providers › ChatGPT, above the panel. It ends before Close. */
+.settings-page-path-row {
+  display: flex;
+  min-width: 0;
+  grid-column: 2;
+  grid-row: 1;
+  align-items: center;
+  padding: var(--openbot-space-3) calc(var(--openbot-control-md) + var(--openbot-space-6)) 0 var(--openbot-space-4);
+}
+
+.settings-page-path-row:empty {
+  display: none;
+}
+
+/* Close: a 32 px ghost circle in the top corner of the modal. */
+.settings-page-close.ui-button {
+  position: absolute;
+  z-index: 2;
+  inset-block-start: var(--openbot-space-3);
+  inset-inline-end: var(--openbot-space-3);
+  width: var(--openbot-control-md);
+  height: var(--openbot-control-md);
+  border-radius: var(--openbot-radius-pill);
+  background: var(--settings-page-fill);
+  color: var(--openbot-text-secondary);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .settings-page-close.ui-button:hover {
+    background: var(--settings-page-fill-strong);
+    color: var(--openbot-text-primary);
+  }
+}
+
+.settings-page-content {
+  position: relative;
+  grid-column: 2;
+  grid-row: 2;
+  min-width: 0;
+  min-height: 0;
+}
+
+/* The panel of the settings, inside the modal: it fills the content column and has no frame of its own. */
+.settings-page-content > .settings-modal.settings-modal-page {
+  width: 100%;
+  height: 100%;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  animation: none;
+  will-change: auto;
+}
+
+.settings-page-content > .settings-modal-page > .settings-modal-main {
+  background: transparent;
+}
+
+.settings-page-content > .settings-modal-page .settings-modal-content {
+  width: 100%;
+  padding-inline: var(--openbot-space-8);
+}
+
+/* The row that a search result opened */
+.settings-page-content [data-search-match] {
+  border-radius: var(--openbot-radius-md);
+  background: var(--settings-page-fill-strong);
+}
+
+/* The title of a section, the first line of the panel, level with Close. */
+.settings-page .settings-modal-page > .settings-modal-main > .settings-modal-scroll-frame > .settings-modal-content {
+  gap: var(--openbot-space-4);
+  padding-top: var(--openbot-space-6);
+}
+
+.settings-page .settings-page-heading {
+  min-height: var(--openbot-control-md);
+  padding-inline-end: calc(var(--openbot-control-md) + var(--openbot-space-2));
+  font-size: var(--openbot-text-3xl);
+  line-height: var(--openbot-leading-3xl);
+}
+
+/* The calm rows of the panel: group labels and rows at 14 px, a help line at 13 px in the muted ink, and raised
+ * cards with a hairline and a 14 px radius. */
+.settings-page .settings-modal-page .ui-settings-section-heading {
+  font-size: var(--openbot-text-md);
+  font-weight: var(--openbot-weight-medium);
+  line-height: var(--openbot-leading-md);
+}
+
+.settings-page .settings-modal-page .settings-modal-card:is(.ui-card, .ui-item-group) {
+  border-color: var(--settings-page-hairline);
+  border-radius: var(--openbot-radius-card);
+  background: var(--openbot-bg-control);
+}
+
+.settings-page .settings-modal-page .settings-modal-card > :is(.ui-item, .ui-switch-field) {
+  min-height: var(--openbot-control-xl);
+  padding: var(--openbot-space-2) var(--openbot-space-4);
+}
+
+.settings-page .settings-modal-page :where(.ui-item-title, .ui-switch-label),
+.settings-page .settings-modal-page .settings-modal-row-title {
+  font-size: var(--openbot-text-md);
+  line-height: var(--openbot-leading-md);
+}
+
+.settings-page .settings-modal-page :where(.ui-item-description, .ui-switch-description) {
+  font-size: var(--openbot-text-sm);
+  line-height: var(--openbot-leading-sm);
+}
+
+/* Back points to the reading direction. */
+.settings-page-back:dir(rtl) > svg {
+  transform: scaleX(-1);
+}
+
+/* The drawer controls show only on a phone. */
+.settings-page-drawer-toggle,
+.settings-page-drawer-scrim.ui-button {
+  display: none;
+}
+
+/* At 720 px and below the modal fills the screen. The section list is a drawer from the leading edge, which
+ * the button in the top row opens. */
+@media (max-width: 720px) {
+  .ui-dialog-content.settings-page {
+    width: 100vw;
+    height: 100dvh;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .settings-page-drawer-toggle.ui-button {
+    z-index: 2;
+    display: inline-grid;
+    grid-column: 1;
+    grid-row: 1;
+    align-self: center;
+    justify-self: start;
+    margin: var(--openbot-space-2) var(--openbot-space-3);
+    border-radius: var(--openbot-radius-pill);
+  }
+
+  .settings-page-path-row {
+    grid-column: 1;
+    grid-row: 1;
+    min-height: calc(var(--openbot-control-lg) + var(--openbot-space-4));
+    padding: 0 calc(var(--openbot-control-lg) + var(--openbot-space-4));
+  }
+
+  .settings-page-content {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .settings-page-content > .settings-modal-page .settings-modal-content {
+    padding-inline: var(--openbot-space-4);
+  }
+
+  .settings-page-nav {
+    position: absolute;
+    z-index: 4;
+    inset-block: 0;
+    inset-inline-start: 0;
+    width: min(300px, 86%);
+    border: 0;
+    border-inline-end: 1px solid var(--settings-page-hairline);
+    padding: var(--openbot-space-4) var(--openbot-space-3) var(--web-phone-bottom-inset, var(--openbot-space-3));
+    box-shadow: var(--settings-page-shadow);
+    transform: translateX(calc(-100% - 24px));
+    transition: transform var(--openbot-duration-normal) var(--openbot-ease-out);
+  }
+
+  .settings-page-nav:dir(rtl) {
+    transform: translateX(calc(100% + 24px));
+  }
+
+  .settings-page[data-drawer-open] .settings-page-nav {
+    transform: none;
+  }
+
+  .settings-page[data-drawer-open] > .settings-page-drawer-scrim.ui-button {
+    position: absolute;
+    z-index: 3;
+    inset: 0;
+    display: block;
+    width: auto;
+    height: auto;
+    border: 0;
+    border-radius: 0;
+    padding: 0;
+    background: var(--openbot-dialog-overlay);
+  }
+
+  .settings-page-sections,
+  .settings-page-results {
+    max-height: none;
+  }
+
+  /* In the drawer the sections stay one column, not the scrolling row of a narrow modal. */
+  .settings-page-nav .settings-modal-nav {
+    display: grid;
+    overflow-x: visible;
+  }
+
+  .settings-page-nav .settings-modal-nav-item {
+    width: 100%;
+  }
+}
+
+@media (max-width: 720px) and (prefers-reduced-motion: reduce) {
+  .settings-page-nav {
+    transition: none;
+  }
+}

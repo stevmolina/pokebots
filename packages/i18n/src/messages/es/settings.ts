@@ -334,6 +334,7 @@ export const messages = {
   "settings.tab.billing.description": "Licencia, planes de servidor, método de pago y facturas.",
   "settings.tab.hostedServers.title": "Servidores alojados",
   "settings.tab.hostedServers.description": "Crea servidores de OpenBot que funcionen con este equipo apagado.",
+  "settings.tab.machines.description": "Abre los ajustes de cada máquina que usas.",
   "settings.tab.appearance.description": "Elige el tema, los colores, el idioma y las fuentes.",
   "settings.tab.appBehavior.description": "Elige cómo se inicia y funciona OpenBot en este equipo.",
   "settings.appearance.colorsTitle": "Colores",

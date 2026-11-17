@@ -97,7 +97,6 @@ export const messages = {
   "app.rail.mediaCreditsMeta": "Créditos",
   "app.rail.mediaCreditsWindow": "{credits} de {quota} créditos da equipe",
   "app.settingsPage.title": "Suas configurações",
-  "app.settingsPage.serverSettings": "Configurações do servidor {server}",
   "app.settingsPage.search": "Pesquisar configurações",
   "app.settingsPage.searchPlaceholder": "Pesquisar configurações…",
   "app.settingsPage.results": "Resultados da pesquisa de configurações",

@@ -100,7 +100,6 @@ export const messages = {
   "app.rail.mediaCreditsMeta": "Credits",
   "app.rail.mediaCreditsWindow": "{credits} von {quota} Team-Credits",
   "app.settingsPage.title": "Deine Einstellungen",
-  "app.settingsPage.serverSettings": "Servereinstellungen von {server}",
   "app.settingsPage.search": "Einstellungen durchsuchen",
   "app.settingsPage.searchPlaceholder": "Einstellungen durchsuchen…",
   "app.settingsPage.results": "Suchergebnisse der Einstellungen",
