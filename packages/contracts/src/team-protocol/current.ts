@@ -201,7 +201,11 @@ import { TEAM_UI_BLOCKS_CAPABILITY } from "./ui-blocks-v1";
 import { USAGE_CREDITS_CAPABILITY } from "./usage-credits-v1";
 import { TEAM_USAGE_TERTIARY_CAPABILITY } from "./usage-tertiary-v1";
 import { TEAM_OPEN_PROVIDERS_CAPABILITY } from "./v8";
-import { TEAM_LONG_CAPABILITY_LISTS_CAPABILITY, TEAM_PROTOCOL_V9_CAPABILITIES } from "./v9";
+import {
+  TEAM_LONG_CAPABILITY_LISTS_CAPABILITY,
+  TEAM_PROTOCOL_V9_CAPABILITIES,
+  TEAM_PROTOCOL_V9_CAPABILITY_LIMIT,
+} from "./v9";
 import { VAULT_IMPORT_CAPABILITY } from "./vault-import-v1";
 import { VAULT_CAPABILITY } from "./vault-v1";
 import { VAULT_V2_CAPABILITY } from "./vault-v2";
@@ -1156,15 +1160,27 @@ const TEAM_PROTOCOL_V7_CURRENT_CAPABILITIES = TEAM_PROTOCOL_V8_CURRENT_CAPABILIT
     capability !== PROVIDERS_V8_CAPABILITY &&
     capability !== TEAM_CONTEXT_USAGE_CAPABILITY,
 );
+/**
+ * The most that a protocol 9 peer reads in one list. The current list is longer than this, and a
+ * released host refuses a request that names more (`unsupported_operation`), as a released client
+ * refuses a compatibility answer that lists more. The late entries wait until the host list is known.
+ */
+const TEAM_PROTOCOL_V9_UNNEGOTIATED_CAPABILITIES = TEAM_CURRENT_CAPABILITIES.slice(
+  0,
+  TEAM_PROTOCOL_V9_CAPABILITY_LIMIT,
+);
 export function teamCapabilitiesForProtocol(
   protocol: number | null | undefined,
   hostCapabilities?: readonly string[],
 ): readonly TeamCurrentCapability[] {
   if (protocol === null || protocol === undefined || protocol < 7) return TEAM_BOOTSTRAP_CAPABILITIES;
   if (protocol >= 9) {
-    if (!hostCapabilities) return TEAM_CURRENT_CAPABILITIES;
+    if (!hostCapabilities) return TEAM_PROTOCOL_V9_UNNEGOTIATED_CAPABILITIES;
     const supported = new Set(hostCapabilities);
-    return TEAM_CURRENT_CAPABILITIES.filter((capability) => supported.has(capability));
+    return TEAM_CURRENT_CAPABILITIES.filter((capability) => supported.has(capability)).slice(
+      0,
+      TEAM_PROTOCOL_V9_CAPABILITY_LIMIT,
+    );
   }
   return protocol === 8 ? TEAM_PROTOCOL_V8_CURRENT_CAPABILITIES : TEAM_PROTOCOL_V7_CURRENT_CAPABILITIES;
 }
