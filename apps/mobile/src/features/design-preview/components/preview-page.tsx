@@ -1,5 +1,6 @@
 import { useRouter } from "expo-router";
 import { Typography } from "heroui-native";
+import ArrowUpRight from "lucide-react-native/icons/arrow-up-right";
 import ChevronLeft from "lucide-react-native/icons/chevron-left";
 import ChevronRight from "lucide-react-native/icons/chevron-right";
 import { Children, type PropsWithChildren, type ReactNode } from "react";
@@ -125,23 +126,36 @@ export function PreviewGroup({
   );
 }
 
-/** One row: icon, label, gray value, chevron. Without `onPress` it has no chevron. */
+/**
+ * One row: icon, label, gray value, chevron. Without `onPress` it has no chevron. `detail` adds a gray
+ * line under the label, `link` swaps the chevron for an arrow (it opens a page outside the app), and
+ * `chevron={false}` drops the chevron of a row that acts in place, such as Sign out.
+ */
 export function PreviewRow({
   icon,
   label,
+  detail,
   value,
   trailing,
   height = profile.rowHeight,
+  labelColor,
+  link = false,
+  chevron = true,
   onPress,
 }: {
   icon?: ReactNode;
   label: string;
+  detail?: string;
   value?: string;
   trailing?: ReactNode;
   height?: number;
+  labelColor?: string;
+  link?: boolean;
+  chevron?: boolean;
   onPress?: () => void;
 }) {
   const colors = usePreviewColors();
+  const labelStyle = [type.rowLabel, { color: labelColor ?? colors.title }];
   const body = (
     <>
       {icon ? (
@@ -151,24 +165,33 @@ export function PreviewRow({
           {icon}
         </View>
       ) : null}
-      <Typography
-        numberOfLines={1}
-        style={[
-          type.rowLabel,
-          { flex: 1, color: colors.title, marginLeft: icon ? profile.rowLabelInset : profile.rowPlainInset },
-        ]}
-      >
-        {label}
-      </Typography>
-      {value ? <Typography style={[type.rowValue, { color: colors.rowValue }]}>{value}</Typography> : null}
+      <View style={{ flex: 1, marginLeft: icon ? profile.rowLabelInset : profile.rowPlainInset }}>
+        <Typography numberOfLines={detail ? 2 : 1} style={labelStyle}>
+          {label}
+        </Typography>
+        {detail ? (
+          <Typography numberOfLines={2} style={[type.rowDetail, { color: colors.rowValue }]}>
+            {detail}
+          </Typography>
+        ) : null}
+      </View>
+      {value ? (
+        <Typography numberOfLines={1} style={[type.rowValue, { color: colors.rowValue, marginLeft: 8 }]}>
+          {value}
+        </Typography>
+      ) : null}
       {trailing}
-      {onPress ? (
+      {onPress && link ? (
+        <ArrowUpRight size={18} color={colors.rowValue} strokeWidth={1.6} style={{ marginLeft: profile.chevronGap }} />
+      ) : null}
+      {onPress && !link && chevron ? (
         <ChevronRight size={20} color={colors.rowValue} strokeWidth={1.6} style={{ marginLeft: profile.chevronGap }} />
       ) : null}
     </>
   );
   const style = {
-    height,
+    minHeight: height,
+    paddingVertical: detail ? 9 : 0,
     flexDirection: "row" as const,
     alignItems: "center" as const,
     paddingRight: profile.rowPaddingRight,

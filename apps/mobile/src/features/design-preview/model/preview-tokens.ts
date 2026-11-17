@@ -55,6 +55,10 @@ const LIGHT = {
   strongFill: "#060606",
   /** The Library list sits in one gray group. */
   libraryGroup: "#ededed",
+  /** Settings and the grid sheet: a light gray sheet with white groups. */
+  sheetBackground: "#f8f8f8",
+  /** Sign out and other destructive rows. The reference's raw P3 red #b80505 is #c90000 in sRGB. */
+  danger: "#c90000",
 };
 
 export type PreviewColors = typeof LIGHT;
@@ -84,6 +88,8 @@ const DARK: PreviewColors = {
   softFill: "#2c2c2e",
   strongFill: "#ffffff",
   libraryGroup: "#1c1c1e",
+  sheetBackground: "#141414",
+  danger: "#ff453a",
 };
 
 export function previewColors(scheme: "light" | "dark"): PreviewColors {
@@ -156,6 +162,41 @@ export const previewSheet = {
   /** The long-press card of a chat row. */
   rowPreviewHeaderHeight: 60,
   rowPreviewHeight: 150,
+} as const;
+
+/** Settings, search and the grid sheet (batch 4), measured from the reference. */
+export const previewBatch4 = {
+  /** The close circle: 44 pt, 16 pt from the left, 17 pt under the sheet top. */
+  closeTop: 17,
+  /** Settings: the first group 97 pt under the sheet top; groups 16 pt from the sides, rows 52 pt. */
+  settingsTop: 97,
+  rowHeight: 52,
+  /** A row with a gray line under its label. */
+  detailRowHeight: 62,
+  groupGap: 26,
+  accountAvatar: 32,
+  /** The footer: a 54 pt logo, the name and the version, centered. */
+  footerTop: 60,
+  footerLogo: 54,
+  /** Search: chips 35 pt high at the safe-area top + 4; result rows 80 pt with a 44 pt face. */
+  searchChipsTop: 4,
+  searchChipHeight: 35,
+  /** The first result row starts 8 pt under the chips. */
+  searchFirstRowTop: 8,
+  searchRowHeight: 80,
+  searchAvatar: 44,
+  searchCloseButton: 44,
+  /** Grid sheet: the title row centered on the close circle, chips 34 pt high 34 pt under it, rows 68 pt with a 30 pt icon. */
+  gridChipsTop: 34,
+  gridChipHeight: 34,
+  gridCaptionTop: 20,
+  gridFirstRowGap: 12,
+  gridRowHeight: 68,
+  gridIcon: 30,
+  gridIconRadius: 7,
+  gridConnectHeight: 30,
+  gridConnectPaddingX: 13,
+  gridHeaderPillHeight: 48,
 } as const;
 
 /** The agent profile and its pages, measured from the reference. */
