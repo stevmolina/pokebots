@@ -1539,21 +1539,14 @@ button.chat-action-target:active,
 }
 
 /*
- * Calm bubbles: an agent's text on a soft 6 % ink fill, not a raised card. The text
- * bubble stops at 560 px; a table, a code block or a picture keeps the wide width. A bubble with a chat
- * color keeps its tint.
+ * Calm bubbles: an agent's text on a soft 6 % ink fill, not a raised card. The text bubble has the same
+ * wide width as a table, a code block or a picture, so a long reply shows more lines at once. A bubble
+ * with a chat color keeps its tint.
  */
 .message-entry-agent
   .ui-bubble-variant-muted:not(.message-bubble-colored, .message-bubble-member)
   > .ui-bubble-content {
   background: color-mix(in srgb, var(--openbot-text-primary) 6%, transparent);
-}
-
-.message-entry-agent
-  .ui-bubble:not(
-    :has(:is(.message-code-block, .message-data-table-scroll, .image-generation, .media-generation, .image-gallery))
-  ) {
-  max-width: min(100%, 560px);
 }
 
 /* An image keeps its size in a person's bubble too: the bubble does not shrink to the text. */
