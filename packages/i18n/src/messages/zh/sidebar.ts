@@ -171,6 +171,5 @@ export const messages = {
   "sidebar.machine.alertTo": "警报将发送给 {name}",
   "sidebar.machine.details": "查看详情",
   "sidebar.machine.dismiss": "隐藏，直到下次警报",
-  "sidebar.community.joinDiscord": "加入 Discord",
   "sidebar.community.followX": "在 X 上关注 OpenBot",
 } as const satisfies PartialTranslation<typeof source>;

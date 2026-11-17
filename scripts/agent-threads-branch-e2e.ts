@@ -289,6 +289,8 @@ try {
   const lastButton = branchButtons(sourceTitle).last();
   const buttonDisabled = await lastButton.isDisabled();
   await branchPoints(sourceTitle).last().click({ button: "right" });
+  // Branch from here sits under the More submenu of the message menu.
+  await page.getByRole("menuitem", { name: english("app.rail.more"), exact: true }).click();
   const menuItem = page.getByRole("menuitem", { name: english("chat.menu.branch"), exact: true });
   await menuItem.waitFor({ timeout: UI_WAIT_MS });
   const menuItemDisabled =

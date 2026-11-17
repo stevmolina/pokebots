@@ -617,6 +617,45 @@
   height: 15px;
 }
 
+/* The reaction rows of a message menu: six quick emoji across the top of the menu, and the other eight
+ * in a grid under More. They are menu radio items, so the plain row rules of .ui-action-menu would
+ * stretch them; these rules outrank those. */
+.ui-action-menu .message-menu-reactions {
+  display: flex;
+  justify-content: space-between;
+  gap: 0;
+}
+
+.ui-action-menu .message-menu-reactions-more {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  justify-items: center;
+  row-gap: 2px;
+}
+
+.ui-action-menu:not([data-menu-layout="grid"]) .message-menu-reactions [role="menuitemradio"] {
+  display: grid;
+  width: 30px;
+  min-height: 30px;
+  height: 30px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: var(--openbot-radius-lg);
+  padding: 0;
+  font-size: var(--openbot-text-2xl);
+  line-height: 1;
+}
+
+.ui-action-menu:not([data-menu-layout="grid"]) .message-menu-reactions [role="menuitemradio"][aria-checked="true"] {
+  background: var(--ui-menu-item-hover);
+}
+
+.ui-action-menu:not([data-menu-layout="grid"])
+  .message-menu-reactions
+  [role="menuitemradio"]:is(:hover, [data-highlighted]) {
+  transform: scale(1.1);
+}
+
 .message-reaction-pill {
   display: flex;
   min-width: 0;

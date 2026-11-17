@@ -208,6 +208,8 @@ async function openVoicePill(page: Page, streams = 1): Promise<void> {
   }
   await page.evaluate((count) => window.voiceConversationE2E?.arm(count), streams);
   await page.getByRole("button", { name: "Add to prompt", exact: true }).click();
+  // Voice sits under the More submenu of the "+" menu.
+  await page.getByRole("menuitem", { name: "More", exact: true }).click();
   await page.getByRole("menuitem", { name: "Voice", exact: true }).click();
   await pill.waitFor();
 }

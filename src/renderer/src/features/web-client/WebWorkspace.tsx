@@ -3082,7 +3082,6 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
     onSettings: openAccountSettings,
     account: account(),
     onUpgrade: () => setBillingOpen(true),
-    onJoinDiscord: () => void openWebDestination("discord"),
     onFollowX: () => void openWebDestination("x"),
     onSignOut: () => void signOut(),
     onConnectServers: server()

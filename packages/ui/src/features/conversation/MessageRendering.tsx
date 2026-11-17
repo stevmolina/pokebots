@@ -1200,15 +1200,43 @@ export interface MessageMenuItemsProps {
 }
 
 /**
- * The items of a message's menu. The right-click menu and the More button of the action row show
- * the same items; React opens a submenu with every reaction.
+ * The items of a message's menu. The right-click menu and the More button of the action row show the
+ * same items. A row of quick reactions comes first, then up to four main actions (Reply, Copy, Read
+ * aloud, Pin). Everything else sits under More: the other reactions, Send to channel, Branch from here,
+ * Mark unread and Delete.
  */
 export function MessageMenuItems(props: MessageMenuItemsProps) {
   const { t } = useText();
   const react = (emoji: MessageReaction) => props.onReact(props.message.reaction === emoji ? null : emoji);
   const sendToChannel = () => (props.sendToChannel?.channels.length ? props.sendToChannel : undefined);
+  const hasMore = () =>
+    props.reactions !== false || Boolean(sendToChannel() || props.onBranch || props.onMarkUnread || props.onDelete);
+  const reactionRow = (emojis: readonly MessageReaction[], extra: boolean) => (
+    <ContextMenu.RadioGroup
+      class={extra ? "message-menu-reactions message-menu-reactions-more" : "message-menu-reactions"}
+      aria-label={t("chat.actions.chooseReaction")}
+      value={props.message.reaction ?? ""}
+    >
+      <For each={emojis}>
+        {(emoji) => (
+          <ContextMenu.RadioItem
+            value={emoji}
+            closeOnSelect
+            aria-label={t("chat.actions.react", { emoji })}
+            onSelect={() => react(emoji)}
+          >
+            {emoji}
+          </ContextMenu.RadioItem>
+        )}
+      </For>
+    </ContextMenu.RadioGroup>
+  );
   return (
     <>
+      <Show when={props.reactions !== false}>
+        {reactionRow(MESSAGE_REACTIONS, false)}
+        <ContextMenu.Separator />
+      </Show>
       <Show when={props.onReply}>
         {(onReply) => (
           <ContextMenu.Item onSelectAfterClose={onReply()}>
@@ -1221,43 +1249,6 @@ export function MessageMenuItems(props: MessageMenuItemsProps) {
         <CopyIcon />
         <span>{t("chat.menu.copy")}</span>
       </ContextMenu.Item>
-      <Show when={props.reactions !== false}>
-        <ContextMenu.Sub>
-          <ContextMenu.SubTrigger>
-            <ReactionIcon />
-            <span>{t("chat.menu.react")}</span>
-            <ChevronRight class="ui-menu-trailing" aria-hidden="true" />
-          </ContextMenu.SubTrigger>
-          <ContextMenu.Portal>
-            <ContextMenu.SubContent
-              class="ui-action-menu reaction-picker"
-              data-menu-layout="grid"
-              aria-label={t("chat.actions.chooseReaction")}
-            >
-              <For each={[MESSAGE_REACTIONS, MORE_MESSAGE_REACTIONS]}>
-                {(row, index) => (
-                  <div class={["reaction-picker-row", { "reaction-picker-more": index() > 0 }]}>
-                    <ContextMenu.RadioGroup class="reaction-picker-options" value={props.message.reaction ?? ""}>
-                      <For each={row}>
-                        {(emoji) => (
-                          <ContextMenu.RadioItem
-                            value={emoji}
-                            closeOnSelect
-                            aria-label={t("chat.actions.react", { emoji })}
-                            onSelect={() => react(emoji)}
-                          >
-                            {emoji}
-                          </ContextMenu.RadioItem>
-                        )}
-                      </For>
-                    </ContextMenu.RadioGroup>
-                  </div>
-                )}
-              </For>
-            </ContextMenu.SubContent>
-          </ContextMenu.Portal>
-        </ContextMenu.Sub>
-      </Show>
       <Show when={props.readAloud}>
         {(readAloud) => (
           <ContextMenu.Item onSelect={() => readAloud().onToggle()}>
@@ -1265,32 +1256,6 @@ export function MessageMenuItems(props: MessageMenuItemsProps) {
             <span>{readAloud().reading ? t("chat.actions.stopReading") : t("chat.actions.readAloud")}</span>
           </ContextMenu.Item>
         )}
-      </Show>
-      <Show when={sendToChannel()}>
-        {(sendToChannel) => (
-          <ContextMenu.Sub>
-            <ContextMenu.SubTrigger>
-              <Hash aria-hidden="true" />
-              <span>{t("chat.menu.sendToChannel")}</span>
-              <ChevronRight class="ui-menu-trailing" aria-hidden="true" />
-            </ContextMenu.SubTrigger>
-            <ContextMenu.Portal>
-              <ContextMenu.SubContent class="ui-action-menu" aria-label={t("chat.menu.chooseChannel")}>
-                <For each={sendToChannel().channels}>
-                  {(channel) => (
-                    <ContextMenu.Item onSelectAfterClose={() => sendToChannel().onSend(channel.id)}>
-                      <Hash aria-hidden="true" />
-                      <span>{channel.name}</span>
-                    </ContextMenu.Item>
-                  )}
-                </For>
-              </ContextMenu.SubContent>
-            </ContextMenu.Portal>
-          </ContextMenu.Sub>
-        )}
-      </Show>
-      <Show when={props.onBranch || props.onMarkUnread || props.pin}>
-        <ContextMenu.Separator />
       </Show>
       <Show when={props.pin}>
         {(pin) => (
@@ -1300,32 +1265,74 @@ export function MessageMenuItems(props: MessageMenuItemsProps) {
           </ContextMenu.Item>
         )}
       </Show>
-      <Show when={props.onBranch}>
-        {(onBranch) => (
-          <ContextMenu.Item disabled={props.branchDisabled === true} onSelectAfterClose={onBranch()}>
-            <BranchIcon />
-            <span>{t("chat.menu.branch")}</span>
-          </ContextMenu.Item>
-        )}
-      </Show>
-      <Show when={props.onMarkUnread}>
-        {(onMarkUnread) => (
-          <ContextMenu.Item onSelect={onMarkUnread()}>
-            <CircleDot aria-hidden="true" />
-            <span>{t("chat.menu.markUnread")}</span>
-          </ContextMenu.Item>
-        )}
-      </Show>
-      <Show when={props.onDelete}>
-        {(onDelete) => (
-          <>
-            <ContextMenu.Separator />
-            <ContextMenu.Item class="ui-action-menu-danger" onSelectAfterClose={onDelete()}>
-              <Trash2 aria-hidden="true" />
-              <span>{t("chat.menu.delete")}</span>
-            </ContextMenu.Item>
-          </>
-        )}
+      <Show when={hasMore()}>
+        <ContextMenu.Sub>
+          <ContextMenu.SubTrigger>
+            <MoreIcon />
+            <span>{t("app.rail.more")}</span>
+            <ChevronRight class="ui-menu-trailing" aria-hidden="true" />
+          </ContextMenu.SubTrigger>
+          <ContextMenu.Portal>
+            <ContextMenu.SubContent class="ui-action-menu" aria-label={t("app.rail.more")}>
+              <Show when={props.reactions !== false}>
+                {reactionRow(MORE_MESSAGE_REACTIONS, true)}
+                <Show when={sendToChannel() || props.onBranch || props.onMarkUnread || props.onDelete}>
+                  <ContextMenu.Separator />
+                </Show>
+              </Show>
+              <Show when={sendToChannel()}>
+                {(sendToChannel) => (
+                  <ContextMenu.Sub>
+                    <ContextMenu.SubTrigger>
+                      <Hash aria-hidden="true" />
+                      <span>{t("chat.menu.sendToChannel")}</span>
+                      <ChevronRight class="ui-menu-trailing" aria-hidden="true" />
+                    </ContextMenu.SubTrigger>
+                    <ContextMenu.Portal>
+                      <ContextMenu.SubContent class="ui-action-menu" aria-label={t("chat.menu.chooseChannel")}>
+                        <For each={sendToChannel().channels}>
+                          {(channel) => (
+                            <ContextMenu.Item onSelectAfterClose={() => sendToChannel().onSend(channel.id)}>
+                              <Hash aria-hidden="true" />
+                              <span>{channel.name}</span>
+                            </ContextMenu.Item>
+                          )}
+                        </For>
+                      </ContextMenu.SubContent>
+                    </ContextMenu.Portal>
+                  </ContextMenu.Sub>
+                )}
+              </Show>
+              <Show when={props.onBranch}>
+                {(onBranch) => (
+                  <ContextMenu.Item disabled={props.branchDisabled === true} onSelectAfterClose={onBranch()}>
+                    <BranchIcon />
+                    <span>{t("chat.menu.branch")}</span>
+                  </ContextMenu.Item>
+                )}
+              </Show>
+              <Show when={props.onMarkUnread}>
+                {(onMarkUnread) => (
+                  <ContextMenu.Item onSelect={onMarkUnread()}>
+                    <CircleDot aria-hidden="true" />
+                    <span>{t("chat.menu.markUnread")}</span>
+                  </ContextMenu.Item>
+                )}
+              </Show>
+              <Show when={props.onDelete}>
+                {(onDelete) => (
+                  <>
+                    <ContextMenu.Separator />
+                    <ContextMenu.Item class="ui-action-menu-danger" onSelectAfterClose={onDelete()}>
+                      <Trash2 aria-hidden="true" />
+                      <span>{t("chat.menu.delete")}</span>
+                    </ContextMenu.Item>
+                  </>
+                )}
+              </Show>
+            </ContextMenu.SubContent>
+          </ContextMenu.Portal>
+        </ContextMenu.Sub>
       </Show>
     </>
   );

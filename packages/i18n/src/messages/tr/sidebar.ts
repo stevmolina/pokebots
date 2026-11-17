@@ -173,6 +173,5 @@ export const messages = {
   "sidebar.machine.alertTo": "Uyarı alıcısı: {name}",
   "sidebar.machine.details": "Ayrıntıları gör",
   "sidebar.machine.dismiss": "Sonraki uyarıya kadar gizle",
-  "sidebar.community.joinDiscord": "Discord’a katıl",
   "sidebar.community.followX": "X’te OpenBot’u takip et",
 } as const satisfies PartialTranslation<typeof source>;

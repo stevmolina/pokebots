@@ -47,6 +47,7 @@ export { default as Clock3 } from "lucide-solid/icons/clock-3";
 export { default as Cloud } from "lucide-solid/icons/cloud";
 export { default as Code } from "lucide-solid/icons/code";
 export { default as Command } from "lucide-solid/icons/command";
+export { default as Compass } from "lucide-solid/icons/compass";
 export { default as Copy } from "lucide-solid/icons/copy";
 export { default as CopyPlus } from "lucide-solid/icons/copy-plus";
 export { default as CornerDownLeft } from "lucide-solid/icons/corner-down-left";

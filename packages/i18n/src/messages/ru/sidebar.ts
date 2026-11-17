@@ -222,6 +222,5 @@ export const messages = {
   "sidebar.machine.alertTo": "Оповещение получит {name}",
   "sidebar.machine.details": "Подробнее",
   "sidebar.machine.dismiss": "Скрыть до следующего оповещения",
-  "sidebar.community.joinDiscord": "Войти в Discord",
   "sidebar.community.followX": "Читать OpenBot в X",
 } as const satisfies PartialTranslation<typeof source>;

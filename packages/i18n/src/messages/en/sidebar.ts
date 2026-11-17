@@ -48,6 +48,7 @@ export const messages = defineMessages("sidebar", {
   "sidebar.footer.upgrade": "Upgrade plan",
   "sidebar.footer.machines": "Machines",
   "sidebar.footer.addMachine": "Add machine",
+  "sidebar.footer.goTo": "Go to",
   "sidebar.footer.addAccount": "Add account",
   "sidebar.footer.connectApps": "Connect apps",
   "sidebar.footer.browseApps": "Browse apps",
@@ -189,6 +190,5 @@ export const messages = defineMessages("sidebar", {
   "sidebar.machine.alertTo": "The alert goes to {name}",
   "sidebar.machine.details": "View details",
   "sidebar.machine.dismiss": "Hide until the next alert",
-  "sidebar.community.joinDiscord": "Join the Discord",
   "sidebar.community.followX": "Follow OpenBot on X",
 });

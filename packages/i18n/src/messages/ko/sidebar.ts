@@ -173,6 +173,5 @@ export const messages = {
   "sidebar.machine.alertTo": "알림은 {name}에게 전송돼요",
   "sidebar.machine.details": "세부정보 보기",
   "sidebar.machine.dismiss": "다음 알림까지 숨기기",
-  "sidebar.community.joinDiscord": "Discord 참여",
   "sidebar.community.followX": "X에서 OpenBot 팔로우",
 } as const satisfies PartialTranslation<typeof source>;

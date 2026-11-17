@@ -457,6 +457,8 @@ interface Screen {
 
 // The profile button opens the menu with the machines, Settings, Marketplace, Routines and Usage.
 const PROFILE_MENU = { role: "button", name: /profile, machines and settings$/ } as const;
+/** Every page of the profile menu sits in its "Go to" submenu. */
+const GO_TO = { role: "menuitem", name: /^Go to$/ } as const;
 const SCREENS: readonly Screen[] = [
   { name: "chat-list", story: "web-workspace--connected", steps: [] },
   {
@@ -485,14 +487,18 @@ const SCREENS: readonly Screen[] = [
   {
     name: "marketplace",
     story: "web-workspace--connected",
-    steps: [PROFILE_MENU, { role: "menuitem", name: /^Marketplace$/ }],
+    steps: [PROFILE_MENU, GO_TO, { role: "menuitem", name: /^Marketplace$/ }],
   },
   {
     name: "routines",
     story: "web-workspace--connected",
-    steps: [PROFILE_MENU, { role: "menuitem", name: /^Routines$/ }],
+    steps: [PROFILE_MENU, GO_TO, { role: "menuitem", name: /^Routines$/ }],
   },
-  { name: "usage", story: "web-workspace--connected", steps: [PROFILE_MENU, { role: "menuitem", name: /^Usage$/ }] },
+  {
+    name: "usage",
+    story: "web-workspace--connected",
+    steps: [PROFILE_MENU, GO_TO, { role: "menuitem", name: /^Usage$/ }],
+  },
   { name: "profile-menu", story: "web-workspace--connected", steps: [PROFILE_MENU] },
 ];
 

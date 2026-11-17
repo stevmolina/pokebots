@@ -25,7 +25,6 @@ export function storySidebarPages(
     onMarketplace: fn(),
     onSettings: fn(),
     onMobileApp: fn(),
-    onJoinDiscord: fn(),
     onFollowX: fn(),
     onCollapse: fn(),
     shortcutPlatform: "mac",
