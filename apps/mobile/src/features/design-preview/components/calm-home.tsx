@@ -37,7 +37,9 @@ export function CalmGroupLabel({ title, count }: { title: string; count: number 
         backgroundColor: colors.background,
       }}
     >
-      <Typography style={[type.section, { color: colors.section }]}>{title}</Typography>
+      <Typography numberOfLines={1} style={[type.section, { color: colors.section, flexShrink: 1 }]}>
+        {title}
+      </Typography>
       <Typography style={[type.section, { color: colors.sectionCount }]}>{format.number(count)}</Typography>
     </View>
   );
@@ -63,7 +65,9 @@ export function CalmHiddenLink({ count }: { count: number }) {
         opacity: pressed ? 0.5 : 1,
       })}
     >
-      <Typography style={[type.section, { color: colors.section }]}>{t("mobile.agent.hidden.title")}</Typography>
+      <Typography numberOfLines={1} style={[type.section, { color: colors.section, flexShrink: 1 }]}>
+        {t("mobile.agent.hidden.title")}
+      </Typography>
       <Typography style={[type.section, { color: colors.sectionCount }]}>{format.number(count)}</Typography>
       <ChevronRight size={16} color={colors.sectionCount} strokeWidth={1.8} style={MIRROR_IN_RTL} />
     </Pressable>
@@ -219,7 +223,7 @@ export function CalmUnreadPill({ unread }: { unread: CalmUnread }) {
           unread.scrollTo(next);
         }}
         style={({ pressed }) => ({
-          height: size.unreadPillHeight,
+          minHeight: size.unreadPillHeight,
           borderRadius: size.unreadPillHeight / 2,
           borderCurve: "continuous",
           backgroundColor: colors.accent,
@@ -232,7 +236,7 @@ export function CalmUnreadPill({ unread }: { unread: CalmUnread }) {
           boxShadow: "0 4px 12px rgba(47, 124, 246, 0.28)",
         })}
       >
-        <Typography style={[type.pill, { color: colors.onAccent }]}>
+        <Typography numberOfLines={1} style={[type.pill, { color: colors.onAccent }]}>
           {t("mobile.workspace.preview.unread", { count })}
         </Typography>
         <Chevron size={18} color={colors.onAccent} strokeWidth={2.2} />

@@ -263,14 +263,14 @@ export function PreviewChips<T extends string>({
               onChange(option.id);
             }}
             style={{
-              height: profile.chipHeight,
+              minHeight: profile.chipHeight,
               paddingHorizontal: paddingX,
               borderRadius: profile.chipHeight / 2,
               backgroundColor: active ? colors.strongFill : colors.softFill,
               justifyContent: "center",
             }}
           >
-            <Typography style={[type.chip, { color: active ? colors.pageBackground : colors.title }]}>
+            <Typography numberOfLines={1} style={[type.chip, { color: active ? colors.pageBackground : colors.title }]}>
               {option.label}
             </Typography>
           </Pressable>
