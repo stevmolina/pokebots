@@ -161,7 +161,7 @@
    * show the card line through it, so the transparent window keeps the fill of the tabs. */
   :root:not([data-openbot-window-glass])
     .app-window
-    > .app-frame-edge
+    > .app-frame-edge:not(.app-frame-flat)
     :is(.conversation-panel > .conversation-header, .side-panel-docked > .side-panel-header)
     > .tab-shape {
     --tab-shape-curve: var(--openbot-radius-md);
@@ -314,6 +314,11 @@
     border: 0;
     border-radius: 0;
     background: var(--openbot-border);
+  }
+
+  /* The flat window draws one hairline between the chat and a docked panel. */
+  .app-window > .app-frame-edge.app-frame-flat :is(.settings-panel, .browser-panel)::before {
+    width: 0.5px;
   }
 
   .app-window

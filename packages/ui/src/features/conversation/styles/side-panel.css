@@ -240,7 +240,7 @@
 }
 
 @media (min-width: 721px) {
-  .app-frame-flat .side-panel-docked > :is(.browser-panel, .settings-panel, .file-preview-panel) {
+  .app-frame-flat .side-panel-docked > .file-preview-panel {
     border-inline-start: 0.5px solid var(--openbot-border);
   }
 }
