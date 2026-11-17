@@ -202,6 +202,11 @@ try {
   // The side question opens from the composer. Closing its tab deletes the question.
   const composerAdd = page.getByRole("button", { name: "Add to prompt" });
   await composerAdd.click();
+  // Side question sits under the More submenu of the "+" menu.
+  await page
+    .getByRole("menuitem", { name: "More", exact: true })
+    .click()
+    .catch(() => undefined);
   const sideQuestionItem = page.getByRole("menuitem", { name: "Side question" });
   const sideQuestionListed = await sideQuestionItem
     .waitFor({ timeout: WAIT_MS })

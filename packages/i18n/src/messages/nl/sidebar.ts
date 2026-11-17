@@ -175,6 +175,5 @@ export const messages = {
   "sidebar.machine.alertTo": "Het alarm gaat naar {name}",
   "sidebar.machine.details": "Details bekijken",
   "sidebar.machine.dismiss": "Verbergen tot het volgende alarm",
-  "sidebar.community.joinDiscord": "Word lid van de Discord",
   "sidebar.community.followX": "Volg OpenBot op X",
 } as const satisfies PartialTranslation<typeof source>;

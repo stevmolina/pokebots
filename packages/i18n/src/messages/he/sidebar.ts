@@ -168,6 +168,5 @@ export const messages = {
   "sidebar.machine.alertTo": "ההתראה נשלחת אל {name}",
   "sidebar.machine.details": "הצגת פרטים",
   "sidebar.machine.dismiss": "הסתרה עד ההתראה הבאה",
-  "sidebar.community.joinDiscord": "הצטרפות ל-Discord",
   "sidebar.community.followX": "מעקב אחרי OpenBot ב-X",
 } as const satisfies PartialTranslation<typeof source>;

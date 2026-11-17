@@ -8,9 +8,11 @@ import {
   Bell,
   BellOff,
   CheckCheck,
+  ChevronRight,
   CircleDot,
   ContextMenu,
   Copy,
+  Ellipsis,
   MessageCirclePlus,
   Moon,
   Pin,
@@ -26,7 +28,12 @@ import { SidebarMoveToSubmenu } from "./SidebarMoveToSubmenu";
 import { type SidebarPinnedItem, sidebarPinnedItemKey } from "./sidebar-pins";
 import { useSidebarScope } from "./sidebar-scope";
 
-/** `userHidden` swaps the hide item for a restore item that names the section the agent goes back to. */
+/**
+ * The menu stays at about eight rows. Pin, read state, a new thread, Move to and Edit stay on top, with
+ * Make main agent where it applies and Delete last. Mute, Open in new window, Duplicate and Hide sit
+ * under More. `userHidden` swaps the hide item for a restore item that names the section the agent
+ * goes back to; Restore stays on top, since it is the one thing a hidden agent needs.
+ */
 export function SidebarAgentContextMenu(menuProps: {
   agent: AgentProfile;
   pinned: boolean;
@@ -55,6 +62,11 @@ export function SidebarAgentContextMenu(menuProps: {
     items.splice(targetIndex, 0, source);
     props.onReorderPinned(items);
   };
+  /** Whether any item remains for the More submenu, so an empty submenu never shows. */
+  const hasMore = () =>
+    Boolean(props.onSetAgentMuted) ||
+    (!menuProps.userHidden && Boolean(props.onOpenAgentWindow || props.onHideAgent)) ||
+    (props.duplicateSupported !== false && Boolean(props.onDuplicateAgent));
   return (
     <ContextMenu.Portal>
       <ContextMenu.Content class="agent-context-menu" aria-label={t("sidebar.agentMenu.label")}>
@@ -101,16 +113,6 @@ export function SidebarAgentContextMenu(menuProps: {
             </ContextMenu.Item>
           )}
         </Show>
-        <Show when={props.onSetAgentMuted}>
-          {(setMuted) => (
-            <ContextMenu.Item data-cuelume-tap="toggle" onSelect={() => setMuted()(menuProps.agent.id, !muted())}>
-              <Show when={muted()} fallback={<BellOff class="agent-context-icon size-4" aria-hidden="true" />}>
-                <Bell class="agent-context-icon size-4" aria-hidden="true" />
-              </Show>
-              <span>{muted() ? t("sidebar.agentMenu.unmute") : t("sidebar.agentMenu.mute")}</span>
-            </ContextMenu.Item>
-          )}
-        </Show>
         <Show when={!menuProps.userHidden && props.onNewAgentThread}>
           {(start) => (
             <ContextMenu.Item onSelectAfterClose={() => start()(menuProps.agent.id)}>
@@ -119,43 +121,72 @@ export function SidebarAgentContextMenu(menuProps: {
             </ContextMenu.Item>
           )}
         </Show>
-        <Show when={!menuProps.userHidden && props.onOpenAgentWindow}>
-          {(open) => (
-            <ContextMenu.Item onSelect={() => open()(menuProps.agent.id)}>
-              <AppWindow class="agent-context-icon size-4" aria-hidden="true" />
-              <span>{t("sidebar.agentMenu.openWindow")}</span>
-            </ContextMenu.Item>
-          )}
-        </Show>
         <SidebarMoveToSubmenu chatId={menuProps.agent.id} />
         <ContextMenu.Item onSelect={() => props.onEditAgent(menuProps.agent.id)}>
           <EditIcon />
           <span>{t("sidebar.agentMenu.edit")}</span>
         </ContextMenu.Item>
-        <Show when={props.duplicateSupported !== false && props.onDuplicateAgent}>
-          <ContextMenu.Item
-            disabled={props.duplicatingAgentIds?.has(menuProps.agent.id) ?? false}
-            onSelect={() => void props.onDuplicateAgent?.(menuProps.agent.id).catch(() => undefined)}
-          >
-            <Copy class="agent-context-icon size-4" aria-hidden="true" />
-            <span>
-              {props.duplicatingAgentIds?.has(menuProps.agent.id)
-                ? t("sidebar.agentMenu.duplicating")
-                : t("sidebar.agentMenu.duplicate")}
-            </span>
-          </ContextMenu.Item>
-        </Show>
-        <Show when={!menuProps.userHidden && props.onHideAgent}>
-          <ContextMenu.Item onSelectAfterClose={() => props.onHideAgent?.(menuProps.agent.id)}>
-            <Moon class="agent-context-icon size-4" aria-hidden="true" />
-            <span>{t("sidebar.agentMenu.hide")}</span>
-          </ContextMenu.Item>
-        </Show>
         <Show when={menuProps.userHidden && props.onRestoreAgent}>
           <ContextMenu.Item onSelectAfterClose={() => props.onRestoreAgent?.(menuProps.agent.id)}>
             <RotateCcw class="agent-context-icon size-4" aria-hidden="true" />
             <span>{restoreLabel()}</span>
           </ContextMenu.Item>
+        </Show>
+        <Show when={hasMore()}>
+          <ContextMenu.Sub>
+            <ContextMenu.SubTrigger>
+              <Ellipsis class="agent-context-icon size-4" aria-hidden="true" />
+              <span>{t("app.rail.more")}</span>
+              <ChevronRight class="agent-context-submenu-chevron size-4" aria-hidden="true" />
+            </ContextMenu.SubTrigger>
+            <ContextMenu.Portal>
+              <ContextMenu.SubContent
+                class="ui-action-menu agent-context-menu agent-context-submenu"
+                aria-label={t("app.rail.more")}
+              >
+                <Show when={props.onSetAgentMuted}>
+                  {(setMuted) => (
+                    <ContextMenu.Item
+                      data-cuelume-tap="toggle"
+                      onSelect={() => setMuted()(menuProps.agent.id, !muted())}
+                    >
+                      <Show when={muted()} fallback={<BellOff class="agent-context-icon size-4" aria-hidden="true" />}>
+                        <Bell class="agent-context-icon size-4" aria-hidden="true" />
+                      </Show>
+                      <span>{muted() ? t("sidebar.agentMenu.unmute") : t("sidebar.agentMenu.mute")}</span>
+                    </ContextMenu.Item>
+                  )}
+                </Show>
+                <Show when={!menuProps.userHidden && props.onOpenAgentWindow}>
+                  {(open) => (
+                    <ContextMenu.Item onSelect={() => open()(menuProps.agent.id)}>
+                      <AppWindow class="agent-context-icon size-4" aria-hidden="true" />
+                      <span>{t("sidebar.agentMenu.openWindow")}</span>
+                    </ContextMenu.Item>
+                  )}
+                </Show>
+                <Show when={props.duplicateSupported !== false && props.onDuplicateAgent}>
+                  <ContextMenu.Item
+                    disabled={props.duplicatingAgentIds?.has(menuProps.agent.id) ?? false}
+                    onSelect={() => void props.onDuplicateAgent?.(menuProps.agent.id).catch(() => undefined)}
+                  >
+                    <Copy class="agent-context-icon size-4" aria-hidden="true" />
+                    <span>
+                      {props.duplicatingAgentIds?.has(menuProps.agent.id)
+                        ? t("sidebar.agentMenu.duplicating")
+                        : t("sidebar.agentMenu.duplicate")}
+                    </span>
+                  </ContextMenu.Item>
+                </Show>
+                <Show when={!menuProps.userHidden && props.onHideAgent}>
+                  <ContextMenu.Item onSelectAfterClose={() => props.onHideAgent?.(menuProps.agent.id)}>
+                    <Moon class="agent-context-icon size-4" aria-hidden="true" />
+                    <span>{t("sidebar.agentMenu.hide")}</span>
+                  </ContextMenu.Item>
+                </Show>
+              </ContextMenu.SubContent>
+            </ContextMenu.Portal>
+          </ContextMenu.Sub>
         </Show>
         <Show when={props.deleteSupported !== false}>
           <ContextMenu.Separator />

@@ -173,6 +173,5 @@ export const messages = {
   "sidebar.machine.alertTo": "アラートは {name} に送信されます",
   "sidebar.machine.details": "詳細を表示",
   "sidebar.machine.dismiss": "次のアラートまで非表示",
-  "sidebar.community.joinDiscord": "Discord に参加",
   "sidebar.community.followX": "X で OpenBot をフォロー",
 } as const satisfies PartialTranslation<typeof source>;

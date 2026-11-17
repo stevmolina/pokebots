@@ -194,6 +194,5 @@ export const messages = {
   "sidebar.machine.alertTo": "Die Warnung geht an {name}",
   "sidebar.machine.details": "Details ansehen",
   "sidebar.machine.dismiss": "Bis zur nächsten Warnung ausblenden",
-  "sidebar.community.joinDiscord": "Zum Discord",
   "sidebar.community.followX": "OpenBot auf X folgen",
 } as const satisfies PartialTranslation<typeof source>;
