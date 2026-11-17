@@ -720,7 +720,7 @@ export type TeamApiOnePasswordConnector = Pick<
 /** `agent-computer-v1`: the Agent Computer account of this host, by an API key. */
 export type TeamApiAgentComputer = Pick<
   AgentComputerService,
-  "status" | "connect" | "test" | "disconnect" | "machines"
+  "status" | "connect" | "test" | "disconnect" | "machines" | "manage"
 >;
 
 /** `bitwarden-connector-v1`: the Bitwarden connection of this host, by an API key and the master password. */

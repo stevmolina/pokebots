@@ -108,6 +108,10 @@ import { BROWSER_PROFILES_CAPABILITY } from "@openbot/contracts/team-protocol/br
 import { BROWSER_PROXIES_CAPABILITY } from "@openbot/contracts/team-protocol/browser-proxies-v1";
 import { BROWSING_MEMORY_CAPABILITY } from "@openbot/contracts/team-protocol/browsing-memory-v1";
 import { CHANNEL_ROUTES } from "@openbot/contracts/team-protocol/channels-v1";
+import {
+  COMPUTER_MANAGEMENT_CAPABILITY,
+  COMPUTER_MANAGEMENT_ROUTE,
+} from "@openbot/contracts/team-protocol/computer-management-v1";
 import { CONNECTORS_CAPABILITY } from "@openbot/contracts/team-protocol/connectors-v1";
 import {
   CONTEXT_COMPACT_CAPABILITY,
@@ -860,8 +864,13 @@ export function createHostRequestActions({
   }
   const checks = createHostRequestChecks(capabilities);
   const actions: HostRequestActions = {
-    agentComputer: createAgentComputerPort((serverId) =>
-      capabilityApi(serverId, AGENT_COMPUTER_CAPABILITY, "mobile.server.cloudComputers.unavailable"),
+    agentComputer: createAgentComputerPort(
+      (serverId) => (method, path, decode, body) =>
+        capabilityApi(
+          serverId,
+          path === COMPUTER_MANAGEMENT_ROUTE ? COMPUTER_MANAGEMENT_CAPABILITY : AGENT_COMPUTER_CAPABILITY,
+          "mobile.server.cloudComputers.unavailable",
+        )(method, path, decode, body),
     ),
     // Async, so a host without the capability rejects the promise and does not throw at the call.
     restartServerItself: async (serverId) => runTeamRequest(requestHostRestart(restartAdmin(serverId))),

@@ -1,4 +1,5 @@
 import { isUpdateActivePhase } from "@openbot/contracts/ipc";
+import { AGENT_COMPUTER_CAPABILITY } from "@openbot/contracts/team-protocol/agent-computer-v1";
 import { AGENT_TASKS_CAPABILITY } from "@openbot/contracts/team-protocol/agent-tasks-v1";
 import type { SidebarPage, SidebarPages } from "@openbot/ui/features/sidebar/sidebar-pages";
 import type { SidebarView } from "@openbot/ui/features/sidebar/sidebar-types";
@@ -10,7 +11,8 @@ import { useAuth } from "../account/account-context";
 import { useChannels } from "../channels/channels-context";
 import { useCustomAgents } from "../custom-agents/custom-agents-context";
 import { serverHasStorage } from "../files/storage-usage";
-import { serverSupportsCapability } from "../servers/server-capabilities";
+import { serverCanAdminister, serverSupportsCapability } from "../servers/server-capabilities";
+import { useServerSettings } from "../servers/server-settings";
 import { useServers } from "../servers/servers-context";
 import { useSettings } from "../settings/settings-context";
 import { shortcutPlatform as devicePlatform } from "../shortcuts/shortcut-platform";
@@ -26,6 +28,7 @@ import { useWindowPage } from "./window-page-context";
  * Settings change the page in the card.
  */
 export function useWorkspaceSidebarPages(): () => SidebarPages {
+  const serverSettings = useServerSettings();
   const platform = usePlatform();
   /** The keyboard of this computer, once main has reported the system. */
   const shortcutPlatform = () => {
@@ -90,6 +93,12 @@ export function useWorkspaceSidebarPages(): () => SidebarPages {
     // An older joined server has no storage routes, so it has no Library.
     onLibrary: serverHasStorage(activeServer()) ? windowPage.openLibrary : undefined,
     onMachines: windowPage.openMachines,
+    onComputers: serverCanAdminister(activeServer(), AGENT_COMPUTER_CAPABILITY)
+      ? () => {
+          const server = activeServer();
+          if (server) serverSettings.openServerSettings(server.id, null, "cloud-computers");
+        }
+      : undefined,
     onMarketplace: () => {
       windowPage.leavePricing();
       setSkillsMarketplaceOpen(true);

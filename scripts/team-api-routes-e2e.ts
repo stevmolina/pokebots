@@ -223,6 +223,10 @@ import {
 } from "@openbot/contracts/team-protocol/claude-user-setup-v1";
 import { CODEX_API_KEY_CAPABILITY } from "@openbot/contracts/team-protocol/codex-api-key-v1";
 import {
+  COMPUTER_MANAGEMENT_CAPABILITY,
+  COMPUTER_MANAGEMENT_ROUTE,
+} from "@openbot/contracts/team-protocol/computer-management-v1";
+import {
   CONTEXT_COMPACT_CAPABILITY,
   CONTEXT_COMPACT_ROUTES,
   ContextCompactRefusedError,
@@ -2260,7 +2264,7 @@ let server: TeamApiServer | null = null;
 let channelHost: TeamApiServer | null = null;
 let channelService: ChannelService | null = null;
 
-try {
+async function runRouteChecks() {
   await runCauseEffect(store.initialize());
   const OWNER_PASSWORD = "owner-password-e2e";
   await runCauseEffect(store.configure("E2E Server", "owner", OWNER_PASSWORD));
@@ -3065,7 +3069,10 @@ try {
       invalid.status === 400 && extra.status === 200 && computerFixture.requests.length === 0,
       { invalid: invalid.status, extra: extra.status },
     );
-    const connected = await call("POST", AGENT_COMPUTER_ROUTES.connect, { ...options, json: { apiKey: FIXTURE_KEY } });
+    const connected = await call("POST", AGENT_COMPUTER_ROUTES.connect, {
+      ...options,
+      json: { apiKey: FIXTURE_KEY },
+    });
     const status = await call("POST", AGENT_COMPUTER_ROUTES.status, options);
     const tested = await call("POST", AGENT_COMPUTER_ROUTES.test, options);
     const machines = await call("POST", AGENT_COMPUTER_ROUTES.machines, options);
@@ -3098,6 +3105,46 @@ try {
         (await client.connect(FIXTURE_KEY, serverId)).connected,
       {},
     );
+    const management = { ...options, capabilities: [AGENT_COMPUTER_CAPABILITY, COMPUTER_MANAGEMENT_CAPABILITY] };
+    const input = { operation: "start", target: "demo-project", size: "large", confirm: "no" };
+    const requestCount = computerFixture.requests.length;
+    for (const denied of [{ ...management, token: undefined }, { ...management, token: bobToken }, options]) {
+      const reply = await call("POST", COMPUTER_MANAGEMENT_ROUTE, { ...denied, json: input });
+      check("computer management rejects a missing identity, role or capability", reply.status !== 200, {
+        status: reply.status,
+      });
+    }
+    check("refused computer controls do not reach REST", computerFixture.requests.length === requestCount, {});
+    const unconfirmed = await call("POST", COMPUTER_MANAGEMENT_ROUTE, {
+      ...management,
+      json: { ...input, operation: "destroy", target: "demo-machine" },
+    });
+    check(
+      "destroy requires explicit confirmation",
+      unconfirmed.status !== 200 && computerFixture.requests.length === requestCount,
+      { status: unconfirmed.status },
+    );
+    const managementClient = createAgentComputerPort(() => async (method, path, decode, body) => {
+      const reply = await call(method, path, { ...management, json: body });
+      assert.equal(reply.status, 200);
+      return decode(reply.body);
+    });
+    for (const operation of ["start", "stop", "start", "screenshot", "destroy"] as const) {
+      const result = await managementClient.manage(
+        {
+          operation,
+          target: operation === "start" ? "demo-project" : "demo-machine",
+          size: "large",
+          confirm: operation === "destroy" ? "yes" : "no",
+        },
+        serverId,
+      );
+      check(
+        `computer ${operation} through the shared client and real host`,
+        operation !== "screenshot" || result.screenshot?.startsWith("data:image/png;base64,") === true,
+        {},
+      );
+    }
     const disconnected = await call("POST", AGENT_COMPUTER_ROUTES.disconnect, options);
     check(
       "an admin disconnects Agent Computer and the host forgets the key",
@@ -3119,6 +3166,8 @@ try {
     errorIs(fourth, 400, sourceText("error.team.memberLimit", { limit: 3 })) && store.listMembers().length === 3,
     summary(fourth),
   );
+
+  if (process.argv.includes("--computers-only")) return;
 
   // ---- Sign-in, rate limit, account sign-in, logout ----
   {
@@ -3197,7 +3246,9 @@ try {
       field(stranger.body, "sessionToken") === undefined,
     summary(stranger),
   );
-  const refusedTicket = await call("POST", TEAM_API_ROUTES.auth.account, { json: { accountTicket: "ticket-unknown" } });
+  const refusedTicket = await call("POST", TEAM_API_ROUTES.auth.account, {
+    json: { accountTicket: "ticket-unknown" },
+  });
   check(
     "account sign-in with a refused ticket gives 401 signInRequired",
     errorIs(refusedTicket, 401, sourceText("error.team.signInRequired")),
@@ -3594,7 +3645,10 @@ try {
     );
     const unknownProvider = await call("POST", AGENT_BACKUP_MODELS_ROUTES.update, {
       token: adaToken,
-      json: { agentId: "agent-ada", backupModels: { automatic: false, order: [{ provider: "later", model: "m-1" }] } },
+      json: {
+        agentId: "agent-ada",
+        backupModels: { automatic: false, order: [{ provider: "later", model: "m-1" }] },
+      },
       capabilities: backupCapabilities,
     });
     const tooMany = await call("POST", AGENT_BACKUP_MODELS_ROUTES.update, {
@@ -5786,7 +5840,11 @@ try {
       errorIs(unsupported, 400, sourceText("error.team.skillLearningUnsupported")),
       summary(unsupported),
     );
-    const memberRead = await call("POST", SKILL_LEARNING_ROUTES.settings, { token: bobToken, json: {}, capabilities });
+    const memberRead = await call("POST", SKILL_LEARNING_ROUTES.settings, {
+      token: bobToken,
+      json: {},
+      capabilities,
+    });
     const memberSet = await call("POST", SKILL_LEARNING_ROUTES.update, {
       token: bobToken,
       json: { mode: "off" },
@@ -6159,7 +6217,11 @@ try {
         callsOf("importSignIn").length === 0,
       summary(unsupported),
     );
-    const imported = await call("POST", BROWSER_SIGN_IN_STORAGE_ROUTES.import, { token: bobToken, json, capabilities });
+    const imported = await call("POST", BROWSER_SIGN_IN_STORAGE_ROUTES.import, {
+      token: bobToken,
+      json,
+      capabilities,
+    });
     const cookiesOnly = await call("POST", BROWSER_SIGN_IN_STORAGE_ROUTES.import, {
       token: bobToken,
       json: { ...json, storage: null },
@@ -6205,7 +6267,11 @@ try {
         !list(field(older.body, "capabilities")).includes(BROWSING_MEMORY_CAPABILITY),
       [summary(compatibility), summary(older)],
     );
-    const adminRead = await call("POST", BROWSING_MEMORY_ROUTES.settings, { token: adaToken, json: {}, capabilities });
+    const adminRead = await call("POST", BROWSING_MEMORY_ROUTES.settings, {
+      token: adaToken,
+      json: {},
+      capabilities,
+    });
     check(
       "an admin reads the default: learning from browsing is off",
       adminRead.status === 200 && isDeepStrictEqual(adminRead.body, { enabled: false }),
@@ -6217,7 +6283,11 @@ try {
       errorIs(unsupported, 400, sourceText("error.team.browsingMemoryUnsupported")),
       summary(unsupported),
     );
-    const memberRead = await call("POST", BROWSING_MEMORY_ROUTES.settings, { token: bobToken, json: {}, capabilities });
+    const memberRead = await call("POST", BROWSING_MEMORY_ROUTES.settings, {
+      token: bobToken,
+      json: {},
+      capabilities,
+    });
     const memberSet = await call("POST", BROWSING_MEMORY_ROUTES.update, {
       token: bobToken,
       json: { enabled: true },
@@ -6932,7 +7002,11 @@ try {
     const bobOther = await openLevelsSocket(bobToken);
     const adaDevice = await openLevelsSocket(adaToken);
     const bobGot = await changeUntilEvent(bobOther, () =>
-      call("POST", AGENT_NOTIFICATION_LEVELS_ROUTES.server, { token: bobToken, json: { level: "all" }, capabilities }),
+      call("POST", AGENT_NOTIFICATION_LEVELS_ROUTES.server, {
+        token: bobToken,
+        json: { level: "all" },
+        capabilities,
+      }),
     );
     // Ada's own change is her first event: an event of bob would have come before it on her socket.
     const adaGot = await changeUntilEvent(adaDevice, () =>
@@ -7271,7 +7345,11 @@ try {
       list(field(compatibility.body, "capabilities")).includes(PROVIDER_DEFAULT_CAPABILITY),
       summary(compatibility),
     );
-    const adminRead = await call("POST", PROVIDER_DEFAULT_ROUTES.settings, { token: adaToken, json: {}, capabilities });
+    const adminRead = await call("POST", PROVIDER_DEFAULT_ROUTES.settings, {
+      token: adaToken,
+      json: {},
+      capabilities,
+    });
     check(
       "an admin reads the default provider of the host",
       adminRead.status === 200 && isDeepStrictEqual(adminRead.body, { provider: "codex", model: null }),
@@ -7761,7 +7839,10 @@ try {
       [summary(v5), summary(member)],
     );
     // No Pi process runs while Pi downloads, so a restart of the provider would fail on the missing CLI.
-    const pending = await call("POST", PROVIDERS_V8_ROUTES.apiKeySet, { ...v8, json: { provider: "inception", key } });
+    const pending = await call("POST", PROVIDERS_V8_ROUTES.apiKeySet, {
+      ...v8,
+      json: { provider: "inception", key },
+    });
     check(
       "while the host downloads Pi, a key-only provider's key is saved without a provider restart",
       pending.status === 200 &&
@@ -8034,8 +8115,14 @@ try {
       [summary(before), summary(set), summary(after)],
     );
     const tooSmall = await call("POST", CLAUDE_COMPACT_WINDOW_ROUTES.update, { ...setup, json: { tokens: 50_000 } });
-    const tooLarge = await call("POST", CLAUDE_COMPACT_WINDOW_ROUTES.update, { ...setup, json: { tokens: 2_000_000 } });
-    const fraction = await call("POST", CLAUDE_COMPACT_WINDOW_ROUTES.update, { ...setup, json: { tokens: 150_000.5 } });
+    const tooLarge = await call("POST", CLAUDE_COMPACT_WINDOW_ROUTES.update, {
+      ...setup,
+      json: { tokens: 2_000_000 },
+    });
+    const fraction = await call("POST", CLAUDE_COMPACT_WINDOW_ROUTES.update, {
+      ...setup,
+      json: { tokens: 150_000.5 },
+    });
     const unchanged = await call("POST", CLAUDE_COMPACT_WINDOW_ROUTES.settings, { ...setup, json: {} });
     check(
       "the host refuses a size below 100,000, above 1,000,000 or not whole, and keeps the saved size",
@@ -8238,7 +8325,13 @@ try {
     const savedOld = await call("POST", CHANNEL_ROUTES.command, {
       ...use,
       capabilities: [CHANNEL_CHATS_CAPABILITY],
-      json: { type: "save", operationId: "picture-icon-old", channelId, update: true, draft: { ...draft, icon: null } },
+      json: {
+        type: "save",
+        operationId: "picture-icon-old",
+        channelId,
+        update: true,
+        draft: { ...draft, icon: null },
+      },
     });
     const removed = await call("DELETE", imagePath({}), use);
     const staleRead = await call("GET", imagePath({ v: version ?? "" }), use);
@@ -8367,7 +8460,11 @@ try {
       json: {},
       protocol: TEAM_PROTOCOL_V9,
     });
-    const member = await call("POST", CUSTOM_AGENTS_ROUTES.delete, { ...v9, token: bobToken, json: { id: "cursor" } });
+    const member = await call("POST", CUSTOM_AGENTS_ROUTES.delete, {
+      ...v9,
+      token: bobToken,
+      json: { id: "cursor" },
+    });
     check(
       "the custom agent routes without the capability get 400 customAgentsUnavailable, and a member gets 403",
       errorIs(unsupported, 400, sourceText("error.provider.customAgentsUnavailable")) &&
@@ -8875,7 +8972,11 @@ try {
       json: {},
       protocol: TEAM_PROTOCOL_V9,
     });
-    const memberOverview = await call("POST", WHATSAPP_CONNECTOR_ROUTES.overview, { token: bobToken, json: {}, ...v9 });
+    const memberOverview = await call("POST", WHATSAPP_CONNECTOR_ROUTES.overview, {
+      token: bobToken,
+      json: {},
+      ...v9,
+    });
     const memberLink = await call("POST", WHATSAPP_CONNECTOR_ROUTES.linkStart, {
       token: bobToken,
       json: { method: "qr", phoneNumber: null, ownNumber: true },
@@ -9836,7 +9937,9 @@ try {
       [summary(first), summary(early), summary(resumed)],
     );
     const second = await sendPart(adaToken, uploadId, 1, lastPart);
-    const otherFinish = await partsCall(owner.sessionToken, INSTANCE_TRANSFER_CHUNKS_ROUTES.uploadFinish, { uploadId });
+    const otherFinish = await partsCall(owner.sessionToken, INSTANCE_TRANSFER_CHUNKS_ROUTES.uploadFinish, {
+      uploadId,
+    });
     const finished = await partsCall(adaToken, INSTANCE_TRANSFER_CHUNKS_ROUTES.uploadFinish, { uploadId });
     const token = field(finished.body, "token");
     check(
@@ -10211,7 +10314,13 @@ try {
         !saved.text.includes(VAULT_PASSWORD) &&
         // The route sends a submit with the save, whatever decision the body names.
         isDeepStrictEqual(callsOf("respondToBrowserSecret").at(-1), [
-          { requestId: "auth-1", agentId: "agent-ada", decision: "submit", secret: VAULT_PASSWORD, saveToVault: true },
+          {
+            requestId: "auth-1",
+            agentId: "agent-ada",
+            decision: "submit",
+            secret: VAULT_PASSWORD,
+            saveToVault: true,
+          },
         ]),
       summary(saved),
     );
@@ -11217,7 +11326,9 @@ try {
         errorIs(sharedBig, 413, sourceText("error.team.sharedFileTooLarge")),
       [summary(sharedMissing), summary(shared), summary(sharedBig)],
     );
-    const workspaceMissing = await call("GET", `${TEAM_API_ROUTES.workspaceFiles}?path=notes.md`, { token: bobToken });
+    const workspaceMissing = await call("GET", `${TEAM_API_ROUTES.workspaceFiles}?path=notes.md`, {
+      token: bobToken,
+    });
     const workspace = await call("GET", `${TEAM_API_ROUTES.workspaceFiles}?botId=agent-ada&path=notes.md`, {
       token: bobToken,
     });
@@ -11856,7 +11967,11 @@ try {
     });
     accessLevels = { revision: 24, everyone: { "agent-ada": "view" }, roles: [] };
     const viewerList = await call("POST", AGENT_THREAD_QUEUE_ROUTES.list, { token: bobToken, ...v9, json: listBody });
-    const viewerOrder = await call("POST", AGENT_THREAD_QUEUE_ROUTES.reorder, { token: bobToken, ...v9, json: order });
+    const viewerOrder = await call("POST", AGENT_THREAD_QUEUE_ROUTES.reorder, {
+      token: bobToken,
+      ...v9,
+      json: order,
+    });
     accessLevels = { revision: 25, everyone: {}, roles: [] };
     check(
       "the thread queue routes without the capability, with an unknown field, of a hidden agent, or for a member who can only view are refused",
@@ -12008,7 +12123,11 @@ try {
       json: { agentId: "agent-ada" },
     });
     accessLevels = { revision: 28, everyone: { "agent-ada": "chat" }, roles: [] };
-    const chatOnly = await call("POST", AGENT_PENDING_RUNTIME_ROUTES.update, { token: bobToken, ...v9, json: change });
+    const chatOnly = await call("POST", AGENT_PENDING_RUNTIME_ROUTES.update, {
+      token: bobToken,
+      ...v9,
+      json: change,
+    });
     accessLevels = { revision: 29, everyone: {}, roles: [] };
     const namedAccount = await call("POST", AGENT_PENDING_RUNTIME_ROUTES.update, {
       token: bobToken,
@@ -12303,7 +12422,9 @@ try {
       ...v9,
       json: { owner: agentOwner },
     });
-    const releasedList = await call("GET", TEAM_API_ROUTES.agent.routines("agent-ada"), { token: owner.sessionToken });
+    const releasedList = await call("GET", TEAM_API_ROUTES.agent.routines("agent-ada"), {
+      token: owner.sessionToken,
+    });
     check(
       "the owner lists only the `once` routine of the agent, with its place, and the released list still leaves it out",
       ownerList.status === 200 &&
@@ -12601,7 +12722,11 @@ try {
         restarts() === 0,
       [summary(withoutCompatibility), summary(withoutRestart), summary(unsupported)],
     );
-    const memberRestart = await call("POST", HOST_RESTART_ROUTES.restart, { token: bobToken, json: {}, capabilities });
+    const memberRestart = await call("POST", HOST_RESTART_ROUTES.restart, {
+      token: bobToken,
+      json: {},
+      capabilities,
+    });
     const wrongMethod = await call("GET", HOST_RESTART_ROUTES.restart, { token: adaToken, capabilities });
     check(
       "a member cannot restart the server, only POST restarts it, and the host does not restart",
@@ -12892,7 +13017,11 @@ try {
     const otherAgent = await act(bobToken, { type: "place", fileIds: ["file-oc-1"], folderId: "folder-campaign" });
     const unknownFolder = await act(bobToken, { type: "place", fileIds: ["file-ada-1"], folderId: "folder-missing" });
     const scansBeforeUnknown = scans();
-    const unknownFile = await act(bobToken, { type: "place", fileIds: ["file-missing"], folderId: "folder-campaign" });
+    const unknownFile = await act(bobToken, {
+      type: "place",
+      fileIds: ["file-missing"],
+      folderId: "folder-campaign",
+    });
     const unknownAgent = await act(bobToken, {
       type: "create",
       id: "folder-nobody",
@@ -13249,11 +13378,20 @@ try {
     ),
     { lines: logged.length },
   );
-} finally {
-  await closeComputerFixture?.();
+}
+
+// A separate function reads the declared types: the checks assign these handles inside runRouteChecks.
+async function stopServers() {
   if (channelHost) await Effect.runPromise(channelHost.stop());
   if (channelService) await Effect.runPromise(channelService.stop());
   if (server) await Effect.runPromise(server.stop());
+}
+
+try {
+  await runRouteChecks();
+} finally {
+  await closeComputerFixture?.();
+  await stopServers();
   database.close();
   rmSync(root, { recursive: true, force: true });
 }

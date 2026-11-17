@@ -24,10 +24,13 @@ import {
 import { createSignal, Show } from "solid-js";
 import { useText } from "../../text";
 import { type CloudComputer, CloudComputerList } from "../servers/CloudComputerList";
+import { type ComputerAction, ComputerStartForm } from "../servers/ComputerControls";
 
 export interface AgentComputerPanelProps {
   /** Null until the first read answers. */
   status: AgentComputerStatus | null;
+  onManage?: ComputerAction | undefined;
+  screenshot?: string | null | undefined;
   /** Why the status could not be read. */
   statusError: string | null;
   /** Null until the list is read, or while the account is not connected. */
@@ -144,6 +147,12 @@ export function AgentComputerPanel(props: AgentComputerPanelProps) {
             </Button>
           }
         >
+          <Show when={props.onManage}>
+            {(manage) => <ComputerStartForm busy={Boolean(props.busy)} onManage={manage()} />}
+          </Show>
+          <Show when={props.screenshot}>
+            {(image) => <img class="computer-screenshot" src={image()} alt={t("server.computers.screenshot")} />}
+          </Show>
           <Show when={props.machinesError}>{(error) => <Alert tone="danger">{error()}</Alert>}</Show>
           <Show when={props.machines}>
             {(machines) => (
@@ -155,7 +164,12 @@ export function AgentComputerPanel(props: AgentComputerPanelProps) {
                   </Text>
                 }
               >
-                <CloudComputerList machines={machines()} onOpenLiveView={props.onOpenLiveView} />
+                <CloudComputerList
+                  machines={machines()}
+                  busy={Boolean(props.busy)}
+                  onManage={props.onManage}
+                  onOpenLiveView={props.onOpenLiveView}
+                />
               </Show>
             )}
           </Show>

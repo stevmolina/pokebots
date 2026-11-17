@@ -1,4 +1,4 @@
-import type { AgentComputerStatus } from "@openbot/contracts/ipc";
+import type { AgentComputerStatus, ComputerManagementInput } from "@openbot/contracts/ipc";
 import type { AgentComputerPort } from "@openbot/team-client/agent-computer";
 import type { CloudComputer } from "@openbot/ui/features/servers/CloudComputerList";
 import { AgentComputerPanel } from "@openbot/ui/features/settings/AgentComputerPanel";
@@ -14,16 +14,19 @@ const AGENT_COMPUTER_KEYS_URL = "https://computer.mcpbox.dev/keys";
  */
 export interface ServerCloudComputersOptions {
   api: AgentComputerPort;
+  management?: boolean | undefined;
   openUrl: (url: string) => void;
 }
 
 export function ServerCloudComputersPanel(props: {
   serverId: string;
   api: AgentComputerPort;
+  management?: boolean | undefined;
   openUrl: (url: string) => void;
 }) {
   const { t, errorMessage } = useText();
   const api = () => props.api;
+  const [screenshot, setScreenshot] = createSignal<string | null>(null);
   const [status, setStatus] = createSignal<AgentComputerStatus | null>(null);
   const [statusError, setStatusError] = createSignal<string | null>(null);
   const [machines, setMachines] = createSignal<readonly CloudComputer[] | null>(null);
@@ -38,8 +41,16 @@ export function ServerCloudComputersPanel(props: {
   async function loadMachines(serverId: string, current: number): Promise<void> {
     try {
       const list = await api().machines(serverId);
+      const metadata = props.management
+        ? await api().manage({ operation: "list", target: "registry", size: "standard", confirm: "no" }, serverId)
+        : null;
       if (current !== generation) return;
-      setMachines(list.machines);
+      setMachines(
+        list.machines.map((machine) => ({
+          ...machine,
+          size: metadata?.sizes.find((row) => row.id === machine.id)?.size,
+        })),
+      );
       setMachinesError(null);
     } catch (error) {
       if (current === generation) setMachinesError(errorMessage(error, t("server.cloudComputers.loadFailed")));
@@ -48,6 +59,7 @@ export function ServerCloudComputersPanel(props: {
 
   function seen(next: AgentComputerStatus, serverId: string, current: number): void {
     if (current !== generation) return;
+    setScreenshot(null);
     setStatus(next);
     setStatusError(null);
     setMachines(null);
@@ -60,6 +72,7 @@ export function ServerCloudComputersPanel(props: {
     ({ serverId, api }) => {
       const current = ++generation;
       setBusy(null);
+      setScreenshot(null);
       setStatus(null);
       setMachines(null);
       setStatusError(null);
@@ -98,8 +111,29 @@ export function ServerCloudComputersPanel(props: {
     }
   }
 
+  async function manage(input: ComputerManagementInput): Promise<void> {
+    if (busy()) return;
+    const serverId = props.serverId;
+    const current = ++generation;
+    setBusy(input.operation);
+    setMachinesError(null);
+    setScreenshot(null);
+    try {
+      const result = await api().manage(input, serverId);
+      if (current !== generation) return;
+      setScreenshot(result.screenshot);
+      await loadMachines(serverId, current);
+    } catch (error) {
+      if (current === generation) setMachinesError(errorMessage(error, t("server.cloudComputers.loadFailed")));
+    } finally {
+      if (current === generation) setBusy(null);
+    }
+  }
+
   return (
     <AgentComputerPanel
+      onManage={props.management ? manage : undefined}
+      screenshot={screenshot()}
       status={status()}
       statusError={statusError()}
       machines={machines()}

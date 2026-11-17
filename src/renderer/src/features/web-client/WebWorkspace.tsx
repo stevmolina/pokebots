@@ -62,6 +62,7 @@ import {
   CLAUDE_USER_SETUP_ROUTES,
   decodeClaudeUserSetupResponse,
 } from "@openbot/contracts/team-protocol/claude-user-setup-v1";
+import { COMPUTER_MANAGEMENT_CAPABILITY } from "@openbot/contracts/team-protocol/computer-management-v1";
 import { CONNECTORS_CAPABILITY } from "@openbot/contracts/team-protocol/connectors-v1";
 import { CONTEXT_COMPACT_CAPABILITY } from "@openbot/contracts/team-protocol/context-compact-v1";
 import { CONTEXT_RESET_CAPABILITY } from "@openbot/contracts/team-protocol/context-reset-v1";
@@ -3053,6 +3054,12 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
     },
     onWorkflows: workflowsRailAction(),
     onLibrary: libraryRailAction(),
+    onComputers: serverCanAdminister(server(), AGENT_COMPUTER_CAPABILITY)
+      ? () => {
+          const current = server();
+          if (current) void openServerSettings(current.id, null, "cloud-computers");
+        }
+      : undefined,
     onUsage: (button) => {
       const id = server()?.id;
       if (id) void openHostPage(id, "usage", button);
@@ -3710,6 +3717,7 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                         cloudComputers={
                           serverCanAdminister(target(), AGENT_COMPUTER_CAPABILITY)
                             ? {
+                                management: serverCanAdminister(target(), COMPUTER_MANAGEMENT_CAPABILITY),
                                 api: cloudComputers,
                                 openUrl: (url) => void window.open(url, "_blank", "noopener,noreferrer"),
                               }

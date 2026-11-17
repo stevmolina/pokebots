@@ -1,8 +1,8 @@
-import type { AgentComputerMachine, AgentComputerStatus } from "@openbot/contracts/ipc";
+import type { AgentComputerMachine, AgentComputerStatus, ComputerManagementInput } from "@openbot/contracts/ipc";
 import { router, useLocalSearchParams } from "expo-router";
 import { Typography } from "heroui-native";
 import { useEffect, useRef, useState } from "react";
-import { Linking } from "react-native";
+import { Alert, Image, Linking } from "react-native";
 import {
   SettingsContent,
   SettingsNote,
@@ -43,6 +43,10 @@ export function ServerCloudComputersScreen() {
 function CloudComputerAccount({ serverId }: { serverId: string }) {
   const { t, errorMessage } = useText();
   const { agentComputer: api } = useMobileWorkspaceActions();
+  const { canControlComputers } = useMobileWorkspace();
+  const [context, setContext] = useState("");
+  const [size, setSize] = useState<"standard" | "large">("standard");
+  const [screenshot, setScreenshot] = useState<string | null>(null);
   const [state, setState] = useState<{
     status: AgentComputerStatus | null;
     machines: AgentComputerMachine[];
@@ -90,6 +94,14 @@ function CloudComputerAccount({ serverId }: { serverId: string }) {
     } finally {
       locked.current = false;
     }
+  }
+  async function manage(input: ComputerManagementInput) {
+    setScreenshot(null);
+    await act(async () => {
+      const result = await api.manage(input, serverId);
+      if (input.operation === "screenshot") setScreenshot(result.screenshot);
+      return api.status(serverId);
+    });
   }
   function open(url: string) {
     if (!/^https?:\/\//u.test(url)) return;
@@ -158,16 +170,112 @@ function CloudComputerAccount({ serverId }: { serverId: string }) {
           <SettingsRow disabled={state.busy} disclosure={false} onPress={() => void act(() => api.status(serverId))}>
             <Typography.Paragraph>{t("mobile.server.cloudComputers.refresh")}</Typography.Paragraph>
           </SettingsRow>
+          {canControlComputers(serverId) ? (
+            <>
+              <SheetFormField
+                label={t("mobile.server.computers.context")}
+                value={context}
+                onChangeText={setContext}
+                autoCapitalize="none"
+                maxLength={32}
+                editable={!state.busy}
+              />
+              <SettingsRow
+                disabled={state.busy}
+                disclosure={false}
+                onPress={() => setSize(size === "standard" ? "large" : "standard")}
+              >
+                <Typography.Paragraph>
+                  {size === "standard" ? t("mobile.server.computers.standard") : t("mobile.server.computers.large")}
+                </Typography.Paragraph>
+              </SettingsRow>
+              <SettingsRow
+                disabled={state.busy || !/^[a-z0-9-]{1,32}$/u.test(context)}
+                disclosure={false}
+                onPress={() => void manage({ operation: "start", target: context, size, confirm: "no" })}
+              >
+                <Typography.Paragraph>{t("mobile.server.computers.start")}</Typography.Paragraph>
+              </SettingsRow>
+            </>
+          ) : null}
+          {screenshot ? (
+            <Image
+              source={{ uri: screenshot }}
+              style={{ width: "100%", aspectRatio: 16 / 9 }}
+              resizeMode="contain"
+              accessibilityLabel={t("mobile.server.computers.screenshot")}
+            />
+          ) : null}
           {state.machines.length ? (
             state.machines.map((machine) => (
-              <SettingsRow
-                key={machine.id}
-                disclosure={Boolean(machine.liveViewUrl)}
-                onPress={machine.liveViewUrl ? () => open(machine.liveViewUrl ?? "") : undefined}
-              >
-                <Typography.Paragraph>{machine.context}</Typography.Paragraph>
-                <Typography.Paragraph className="text-grouped-secondary">{machine.status}</Typography.Paragraph>
-              </SettingsRow>
+              <SettingsSection key={machine.id}>
+                <SettingsRow
+                  disclosure={Boolean(machine.liveViewUrl)}
+                  onPress={machine.liveViewUrl ? () => open(machine.liveViewUrl ?? "") : undefined}
+                >
+                  <Typography.Paragraph>{machine.context}</Typography.Paragraph>
+                  <Typography.Paragraph className="text-grouped-secondary">{machine.status}</Typography.Paragraph>
+                </SettingsRow>
+                {canControlComputers(serverId) ? (
+                  <>
+                    <SettingsRow
+                      disabled={state.busy}
+                      disclosure={false}
+                      onPress={() =>
+                        void manage({
+                          operation: machine.status === "running" ? "stop" : "start",
+                          target: machine.status === "running" ? machine.id : machine.context,
+                          size: "standard",
+                          confirm: "no",
+                        })
+                      }
+                    >
+                      <Typography.Paragraph>
+                        {machine.status === "running"
+                          ? t("mobile.server.computers.stop")
+                          : t("mobile.server.computers.start")}
+                      </Typography.Paragraph>
+                    </SettingsRow>
+                    {machine.status === "running" ? (
+                      <SettingsRow
+                        disabled={state.busy}
+                        disclosure={false}
+                        onPress={() =>
+                          void manage({ operation: "screenshot", target: machine.id, size: "standard", confirm: "no" })
+                        }
+                      >
+                        <Typography.Paragraph>{t("mobile.server.computers.screenshot")}</Typography.Paragraph>
+                      </SettingsRow>
+                    ) : null}
+                    <SettingsRow
+                      disabled={state.busy}
+                      disclosure={false}
+                      onPress={() =>
+                        Alert.alert(
+                          t("mobile.server.computers.destroy"),
+                          t("mobile.server.computers.destroyDescription"),
+                          [
+                            { text: t("common.cancel"), style: "cancel" },
+                            {
+                              text: t("mobile.server.computers.destroy"),
+                              style: "destructive",
+                              onPress: () =>
+                                void manage({
+                                  operation: "destroy",
+                                  target: machine.id,
+                                  size: "standard",
+                                  confirm: "yes",
+                                }),
+                            },
+                          ],
+                        )
+                      }
+                    >
+                      <Typography.Paragraph>{t("mobile.server.computers.destroy")}</Typography.Paragraph>
+                    </SettingsRow>
+                  </>
+                ) : null}
+              </SettingsSection>
             ))
           ) : (
             <SettingsNote>{t("mobile.server.cloudComputers.empty")}</SettingsNote>

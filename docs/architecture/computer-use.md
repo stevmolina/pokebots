@@ -426,3 +426,22 @@ Repeatable proof: `bun scripts/agent-computer-e2e.ts`, `bun run test:team-api-ro
 `bun scripts/coding-jobs-controller-smoke.ts`. They write JSON reports under `.openbot-build/`.
 The REST proof uses a local HTTP server and does not start a paid cloud machine. The Team API
 CI job runs it before the route checks and uploads both reports.
+
+### Human computer controls
+
+Computers in the sidebar More menu opens the server's cloud computer screen. The shared
+`AgentComputerPanel` receives data and actions from a platform adapter. The renderer and web
+adapter use `AgentComputerPort`; native mobile uses the same port and native controls.
+This is the pattern for future Rooms and Brain controls when their REST APIs are available.
+
+Machine actions use the optional `computer-management-v1` capability and the admin-only
+`POST /v1/admin/agent-computer/manage` route. The old `agent-computer-v1` codec stays frozen.
+The host validates the action, calls the existing Effect API adapter, and keeps the key in its
+existing encrypted store. Destroy needs explicit confirmation. A screenshot stays in screen
+memory and is limited to 1 MiB to fit the joined-server frame; larger images fail safely.
+Live view links are bearer credentials and remain registered for log redaction.
+
+The API supplies size and pause deadlines, but no machine-to-agent assignment, running-since
+time, or per-machine cost in the registry. The screen says that agent use is not reported.
+A context is an account-wide label, not an agent identity. Standard and large sizes apply only
+to new contexts; resuming a context preserves its size and files.

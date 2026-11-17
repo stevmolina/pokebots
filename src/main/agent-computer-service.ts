@@ -3,7 +3,7 @@
 // system, kept decrypted in memory only, and registered for redaction before anything can log it.
 
 import { readFile, rm } from "node:fs/promises";
-import type { AgentComputerMachineList, AgentComputerStatus } from "@openbot/contracts/ipc";
+import type { AgentComputerMachineList, AgentComputerStatus, ComputerManagementInput } from "@openbot/contracts/ipc";
 import { sourceText } from "@openbot/i18n/source";
 import { registerSecretValue } from "@openbot/logging";
 import { Effect, Result, Schema, Semaphore } from "effect";
@@ -146,6 +146,38 @@ export class AgentComputerService {
       };
       return list;
     }).pipe(Effect.withSpan("AgentComputerService.machines"));
+  }
+
+  manage(input: ComputerManagementInput) {
+    return Effect.gen({ self: this }, function* () {
+      const operation = input.operation;
+      const sizes = (yield* this.api.list()).map((machine) => ({ id: machine.id, size: machine.size ?? null }));
+      if (operation === "start") yield* this.api.start(input.target, input.size);
+      else if (operation === "stop") yield* this.api.stop(input.target);
+      else if (operation === "destroy") {
+        if (input.confirm !== "yes")
+          return yield* Effect.fail(
+            new AgentComputerServiceFailed({ cause: new Error(sourceText("error.connector.agentComputerUnexpected")) }),
+          );
+        yield* this.api.destroy(input.target);
+      } else if (operation === "screenshot") {
+        const image = yield* this.api.screenshot(input.target);
+        // Leave room for JSON and protocol framing on a joined server.
+        if (image.mimeType !== "image/png" || image.bytes.length > 1024 * 1024)
+          return yield* Effect.fail(
+            new AgentComputerServiceFailed({ cause: new Error(sourceText("error.connector.agentComputerUnexpected")) }),
+          );
+        return { screenshot: `data:image/png;base64,${image.bytes.toString("base64")}`, sizes };
+      }
+      return { screenshot: null, sizes };
+    }).pipe(
+      Effect.mapError((failure) =>
+        failure instanceof AgentComputerServiceFailed
+          ? failure
+          : new AgentComputerServiceFailed({ cause: new Error(failureText(failure)) }),
+      ),
+      Effect.withSpan("AgentComputerService.manage"),
+    );
   }
 
   #serialize<A>(change: Effect.Effect<A, AgentComputerServiceFailed>): Effect.Effect<A, AgentComputerServiceFailed> {

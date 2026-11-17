@@ -1,6 +1,16 @@
 import { defineMessages } from "../../../message";
 
 export const messages = defineMessages("mobile.server", {
+  "mobile.server.computers.context": "Computer name",
+  "mobile.server.computers.standard": "Standard \u00b7 2 vCPU",
+  "mobile.server.computers.large": "Large \u00b7 8 vCPU",
+  "mobile.server.computers.start": "Start",
+  "mobile.server.computers.stop": "Stop",
+  "mobile.server.computers.destroy": "Destroy",
+  "mobile.server.computers.screenshot": "Latest screenshot",
+  "mobile.server.computers.destroyDescription":
+    "This permanently deletes the computer and all its files. Stop it to keep its data.",
+
   "mobile.server.cloudComputers.title": "Cloud computers",
   "mobile.server.cloudComputers.description":
     "Connect this server to Agent Computer. The host encrypts the API key. Running computers keep running after you disconnect.",
