@@ -6,7 +6,7 @@ import Check from "lucide-react-native/icons/check";
 import { useRef, useState } from "react";
 import { Pressable, View } from "react-native";
 import { useUniwind } from "uniwind";
-import { saveCalmLook, useCalmLookStore } from "@/features/design-preview/model/calm-look";
+import { saveCalmLook, useCalmLook, useCalmLookStore } from "@/features/design-preview/model/calm-look";
 import { DESIGN_PREVIEW_ALLOWED } from "@/features/design-preview/model/preview-switch";
 import { readableOn } from "@/features/onboarding/model/onboarding-colors";
 import { AppIconSection } from "@/features/settings/components/app-icon-row";
@@ -48,6 +48,7 @@ export function AppearanceSettingsScreen() {
   const { t } = useText();
   const { theme } = useUniwind();
   const { value, ready, saving } = useAppearance();
+  const calmLook = useCalmLook();
   const [error, setError] = useState<string | null>(null);
   const messageColor = useMessageColor();
   const [messageColorError, setMessageColorError] = useState<string | null>(null);
@@ -153,7 +154,8 @@ export function AppearanceSettingsScreen() {
           />
         ) : null}
       </SettingsSection>
-      <RoutineCollapseSection dark={theme === "dark"} />
+      {/* The new design always groups routine runs into one closed line, so the switch only shows without it. */}
+      {calmLook ? null : <RoutineCollapseSection dark={theme === "dark"} />}
     </SettingsContent>
   );
 }

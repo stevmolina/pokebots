@@ -1,7 +1,8 @@
 import type { MobileTextKey } from "@openbot/i18n/mobile";
 import { Typography } from "heroui-native";
 import ChevronDown from "lucide-react-native/icons/chevron-down";
-import { useEffect } from "react";
+import ListChecks from "lucide-react-native/icons/list-checks";
+import { useContext, useEffect } from "react";
 import { Pressable, View } from "react-native";
 import Animated, {
   cancelAnimation,
@@ -21,6 +22,7 @@ import Animated, {
 import Svg, { Circle, Path } from "react-native-svg";
 import { useCSSVariable } from "uniwind";
 import type { ChatMessage, ChatPlanStepState } from "@/features/chat/model/chat-messages";
+import { CalmBubbleContext } from "@/features/design-preview/model/calm-look";
 import { haptics } from "@/shared/lib/haptics";
 import { useReducedMotion } from "@/shared/lib/motion";
 import { useText } from "@/shared/lib/text";
@@ -228,7 +230,9 @@ export function ChatPlan({ message }: { message: PlanMessage }) {
   const { t } = useText();
   const colors = usePlanColors();
   const reducedMotion = useReducedMotion();
-  const [open, setOpen] = useKeptOpen(`plan:${message.id}`, true);
+  // The calm look draws the list as one quiet gray line that opens in place, closed at first.
+  const calm = useContext(CalmBubbleContext) !== null;
+  const [open, setOpen] = useKeptOpen(`plan:${message.id}`, !calm);
   // A list that the reader closed mounts closed when its row scrolls back into view.
   const openness = useSharedValue(open ? 1 : 0);
   const opening = useSharedValue(open);
@@ -260,8 +264,12 @@ export function ChatPlan({ message }: { message: PlanMessage }) {
     // The title that the card mounts with does not enter; a title that a toggle changes does.
     <LayoutAnimationConfig skipEntering>
       <View
-        className="w-full self-stretch overflow-hidden rounded-[14px] border"
-        style={{ borderColor: colors.border, backgroundColor: colors.canvas, borderCurve: "continuous" }}
+        className={
+          calm ? "w-full self-stretch overflow-hidden" : "w-full self-stretch overflow-hidden rounded-[14px] border"
+        }
+        style={
+          calm ? undefined : { borderColor: colors.border, backgroundColor: colors.canvas, borderCurve: "continuous" }
+        }
       >
         <Pressable
           accessibilityRole="button"
@@ -271,16 +279,28 @@ export function ChatPlan({ message }: { message: PlanMessage }) {
             void haptics.selection();
             setOpen((value) => !value);
           }}
-          className="flex-row items-center gap-3 p-3"
+          hitSlop={calm ? 8 : undefined}
+          className={calm ? "flex-row items-center gap-1.5 self-start px-1 py-1" : "flex-row items-center gap-3 p-3"}
           style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
         >
-          <SummaryMark done={done} total={total} colors={colors} />
-          <Animated.View key={headerText} entering={TITLE_ENTER} className="min-w-0 flex-1">
-            <Typography.Paragraph numberOfLines={1} style={{ color: colors.primary }}>
+          {calm ? (
+            <ListChecks size={15} color={colors.muted} strokeWidth={1.8} />
+          ) : (
+            <SummaryMark done={done} total={total} colors={colors} />
+          )}
+          <Animated.View key={headerText} entering={TITLE_ENTER} className={calm ? "min-w-0 shrink" : "min-w-0 flex-1"}>
+            <Typography.Paragraph
+              type={calm ? "body-sm" : undefined}
+              numberOfLines={1}
+              style={{ color: calm ? colors.muted : colors.primary }}
+            >
               {headerText}
             </Typography.Paragraph>
           </Animated.View>
-          <Typography.Paragraph style={{ color: colors.muted, fontVariant: ["tabular-nums"] }}>
+          <Typography.Paragraph
+            type={calm ? "body-sm" : undefined}
+            style={{ color: colors.muted, fontVariant: ["tabular-nums"] }}
+          >
             {t("mobile.chat.plan.count", { done, total })}
           </Typography.Paragraph>
           <Animated.View
@@ -300,7 +320,10 @@ export function ChatPlan({ message }: { message: PlanMessage }) {
           accessibilityElementsHidden={!open}
           importantForAccessibility={open ? "auto" : "no-hide-descendants"}
         >
-          <View className="gap-1 px-3 pb-3" onLayout={(event) => contentHeight.set(event.nativeEvent.layout.height)}>
+          <View
+            className={calm ? "gap-1 px-1 pb-2" : "gap-1 px-3 pb-3"}
+            onLayout={(event) => contentHeight.set(event.nativeEvent.layout.height)}
+          >
             {message.explanation ? (
               <Typography.Paragraph type="body-sm" style={{ color: colors.muted }}>
                 {message.explanation}

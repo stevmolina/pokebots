@@ -80,6 +80,7 @@ import {
   indexChatMessages,
 } from "@/features/chat/model/chat-messages";
 import type { TurnStepsSummary } from "@/features/chat/model/turn-thinking";
+import { usePreviewColors } from "@/features/design-preview/components/preview-parts";
 import { CalmBubbleContext, useCalmLook } from "@/features/design-preview/model/calm-look";
 import { readableOn } from "@/features/onboarding/model/onboarding-colors";
 import { useMessageColor } from "@/features/settings/model/message-color";
@@ -119,6 +120,8 @@ import { useReplyHaptics } from "./use-reply-haptics";
 
 /** The most movement and time of a touch that ends the selection: more is a scroll or a hold. */
 const TAP_SLOP = 10;
+/** In the calm look, a message this long after the one before it gets a time stamp above it. */
+const CALM_GROUP_GAP_MS = 60 * 60 * 1000;
 const TAP_DURATION_MS = 400;
 /** The selection handles stand this far out of the row of the selected message. */
 const HANDLE_MARGIN = 24;
@@ -1104,6 +1107,8 @@ interface RowContextValue {
   onOpenTurn: ((turnId: string) => void) | undefined;
   /** The day and time above each message that opens a day. */
   dayLabels: ReadonlyMap<string, string>;
+  /** The quiet gray of the calm look's time stamps, or null in the current look. */
+  calmStampColor: string | null;
   /** The "Branched from" line and the row that it follows. */
   branchDivider: { rowId: string; label: string | null; onOpen: (() => void) | undefined } | null;
   /** The row that the NEW line shows above. */
@@ -1186,9 +1191,20 @@ function ChatRow({ item }: { item: VisibleMessage }) {
         <FocusHighlight rowId={message.id} color={row.highlightColor} shown={row.highlightShown} />
       ) : null}
       {day ? (
-        <Typography.Paragraph type="body-xs" align="center" className="pb-3 pt-1 text-muted">
-          {day}
-        </Typography.Paragraph>
+        row.calmStampColor ? (
+          <Typography.Paragraph
+            type="body-xs"
+            align="center"
+            className="pb-3 pt-2"
+            style={{ color: row.calmStampColor }}
+          >
+            {day}
+          </Typography.Paragraph>
+        ) : (
+          <Typography.Paragraph type="body-xs" align="center" className="pb-3 pt-1 text-muted">
+            {day}
+          </Typography.Paragraph>
+        )
       ) : null}
       {message.id === row.unreadLineRowId ? (
         <UnreadLineRow rowId={message.id} color={row.unreadLineColor} animated={row.unreadLineAnimated} />
@@ -1499,7 +1515,9 @@ export const ChatMessageList = memo(function ChatMessageList({
   const messageColorMode = useMessageColor((state) => state.mode);
   const customMessageColor = useMessageColor((state) => state.customColor);
   // The calm look draws the reader's bubbles in the agent's color, whatever the message color setting.
-  const calmAgentColor = useCalmLook() && target.kind === "agent";
+  const calmLook = useCalmLook();
+  const calmTimeColor = usePreviewColors().time;
+  const calmAgentColor = calmLook && target.kind === "agent";
   const userBubbleColor =
     messageColorMode === "custom" && !calmAgentColor
       ? customMessageColor
@@ -1543,9 +1561,13 @@ export const ChatMessageList = memo(function ChatMessageList({
     [messages, turnSummaries, unreadLineMessageIds, focusMessageId, focusUnread, branchDivider?.afterId],
   );
   // One pass over the loaded rows when they change; the rows read their label from the context.
+  // The calm look also stamps the time between groups of messages that are an hour apart, in its
+  // quiet gray.
+  const groupGapMs = calmLook ? CALM_GROUP_GAP_MS : undefined;
+  const calmStampColor = calmLook ? calmTimeColor : null;
   const dayLabels = useMemo(
-    () => chatDayLabels(visibleMessages, { t, format }, { hasOlder }),
-    [visibleMessages, t, format, hasOlder],
+    () => chatDayLabels(visibleMessages, { t, format }, { hasOlder, groupGapMs }),
+    [visibleMessages, t, format, hasOlder, groupGapMs],
   );
   // Every image of the loaded messages, in chat order, for the viewer's carousel.
   const images = useMemo(() => conversationImages(visibleMessages), [visibleMessages]);
@@ -1826,8 +1848,9 @@ export const ChatMessageList = memo(function ChatMessageList({
   );
   // The setting applies when the chat opens. A change while the list shows would give each group
   // that the reader did not toggle another kind in `rowType`, and spoil the averages of both kinds.
+  // The calm look keeps routine runs as one closed line, whatever the setting.
   const [routineGroupsState] = useState<RoutineGroupsState>(() => ({
-    collapse: useRoutineCollapsePreference.getState().enabled,
+    collapse: useRoutineCollapsePreference.getState().enabled || calmLook,
     groups: new Map(),
   }));
   const routineRowType = useCallback(
@@ -1854,6 +1877,7 @@ export const ChatMessageList = memo(function ChatMessageList({
       turnSummaries,
       onOpenTurn,
       dayLabels,
+      calmStampColor,
       branchDivider: rowBranchDivider,
       unreadLineRowId,
       unreadLineColor,
@@ -1879,6 +1903,7 @@ export const ChatMessageList = memo(function ChatMessageList({
       turnSummaries,
       onOpenTurn,
       dayLabels,
+      calmStampColor,
       rowBranchDivider,
       unreadLineRowId,
       unreadLineColor,
