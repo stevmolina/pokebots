@@ -335,7 +335,12 @@ import { isReaderAuthor } from "../team/reader-identity";
 import type { ServerVaultOptions } from "../vault/ServerVaultPanel";
 import { createVaultStore } from "../vault/stores/vault-store";
 import { createHelpMenu } from "../window/help-menu";
-import { openFirstSettingsSection, SettingsPageFrame, SettingsSearchField } from "../window/SettingsPageFrame";
+import {
+  openFirstSettingsSection,
+  ServerSettingsPageTitle,
+  SettingsPageFrame,
+  SettingsSearchField,
+} from "../window/SettingsPageFrame";
 import { WindowBackdrop } from "../window/WindowBackdrop";
 import type { SettingsKind, WindowPage } from "../window/window-page-context";
 import { WebConnectComputer } from "./WebConnectComputer";
@@ -1437,6 +1442,17 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
     serverSettings.setOpen(false);
     setHostPage(null);
     setMarketplaceOpen(true);
+  }
+  /** Each request for the Machines section adds one, so the section opens again after the user left it. */
+  const [machinesRequest, setMachinesRequest] = createSignal(0);
+  /** The machine whose settings show, for the Back row of the modal. */
+  function settingsMachine(kind: SettingsKind) {
+    const current = server();
+    return kind === "server" && current ? { server: current, onBack: openMachinesSettings } : undefined;
+  }
+  function openMachinesSettings() {
+    setMachinesRequest((request) => request + 1);
+    openAccountSettings();
   }
   function openAccountSettings() {
     // On a phone the page shows in the conversation pane.
@@ -3414,18 +3430,18 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                       {(kind) => (
                         <SettingsPageFrame
                           heading={
-                            <h1 class="settings-page-title" tabindex={-1}>
-                              {t("app.settingsPage.unifiedTitle")}
-                            </h1>
+                            <Show
+                              when={kind === "server" ? server() : null}
+                              fallback={
+                                <h1 class="settings-page-title" tabindex={-1}>
+                                  {t("app.settingsPage.unifiedTitle")}
+                                </h1>
+                              }
+                            >
+                              {(target) => <ServerSettingsPageTitle server={target()} />}
+                            </Show>
                           }
-                          tiers={{
-                            kind,
-                            onOpenPersonal: openAccountSettings,
-                            account: account(),
-                            machines: servers(),
-                            activeMachineId: server()?.id ?? null,
-                            onOpenMachine: (serverId) => void openServerSettings(serverId, null),
-                          }}
+                          machine={settingsMachine(kind)}
                           onMounts={(mounts) => {
                             setSettingsMounts(mounts);
                             if (!mounts) setServerSettingsQuery("");
@@ -3847,6 +3863,9 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                         appearance={props.appearance}
                         onChangeAppearance={props.onChangeAppearance}
                         onOpenBilling={() => setBillingOpen(true)}
+                        machines={servers()}
+                        onOpenMachine={(serverId) => void openServerSettings(serverId, null)}
+                        machinesRequest={machinesRequest()}
                         onSignOut={signOut}
                         notifications={notificationSettings}
                         webPush={webPush}

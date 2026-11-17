@@ -100,7 +100,6 @@ export const messages = {
   "app.rail.mediaCreditsMeta": "クレジット",
   "app.rail.mediaCreditsWindow": "チームのクレジット {quota} のうち {credits}",
   "app.settingsPage.title": "個人設定",
-  "app.settingsPage.serverSettings": "{server} サーバーの設定",
   "app.settingsPage.search": "設定を検索",
   "app.settingsPage.searchPlaceholder": "設定を検索…",
   "app.settingsPage.results": "設定の検索結果",

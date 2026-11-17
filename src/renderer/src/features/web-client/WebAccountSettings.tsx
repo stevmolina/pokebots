@@ -1,6 +1,6 @@
 import { type AppAppearance, isAppAppearance } from "@openbot/contracts/app-appearance";
 import type { AppLanguage } from "@openbot/contracts/app-language";
-import type { AvatarColor, CentralAuthUser } from "@openbot/contracts/ipc";
+import type { AvatarColor, CentralAuthUser, ServerSummary } from "@openbot/contracts/ipc";
 import type { AppTextKey } from "@openbot/i18n";
 import {
   Button,
@@ -11,6 +11,7 @@ import {
   ItemDescription,
   ItemGroup,
   ItemTitle,
+  Server,
   SettingsSection,
   SlidersHorizontal,
   SwitchField,
@@ -29,6 +30,7 @@ import { LanguageSelect } from "@openbot/ui/features/settings/LanguageSelect";
 import { NotificationMatrix, NotificationScopeTitle } from "@openbot/ui/features/settings/NotificationMatrix";
 import { SendShortcutSelect } from "@openbot/ui/features/settings/SendShortcutSelect";
 import { SettingsDialogShell, type SettingsPagePlacement } from "@openbot/ui/features/settings/SettingsDialogShell";
+import { SettingsMachinesTab } from "@openbot/ui/features/settings/SettingsMachinesTab";
 import { SettingsProfileTab } from "@openbot/ui/features/settings/SettingsProfileTab";
 import { SidebarChatOrderSelect } from "@openbot/ui/features/settings/SidebarChatOrderSelect";
 import { SoundChoiceSelect } from "@openbot/ui/features/settings/SoundChoiceSelect";
@@ -52,7 +54,7 @@ import { setWebLiveVoice, useWebLiveVoice } from "./web-live-voice";
 import type { WebNotificationSettings } from "./web-notification-settings";
 import type { WebPush } from "./web-push";
 
-const TABS = ["preferences", "profile"] as const;
+const TABS = ["preferences", "profile", "machines"] as const;
 type WebAccountSettingsTab = (typeof TABS)[number];
 
 const TAB_ITEMS = {
@@ -65,6 +67,11 @@ const TAB_ITEMS = {
     titleKey: "webClient.settings.general.title",
     descriptionKey: "webClient.settings.preferences.description",
     icon: SlidersHorizontal,
+  },
+  machines: {
+    titleKey: "app.settingsPage.machines",
+    descriptionKey: "settings.tab.machines.description",
+    icon: Server,
   },
 } as const satisfies Record<
   WebAccountSettingsTab,
@@ -84,6 +91,10 @@ export interface WebAccountSettingsProps {
   onChangeAppearance: (appearance: AppAppearance) => void;
   /** Closes these settings and opens the plans and servers of the account. */
   onOpenBilling: () => void;
+  /** The machines of the account, for the Machines section. */
+  machines: readonly ServerSummary[];
+  /** Opens the settings of one machine in this modal. */
+  onOpenMachine: (serverId: string) => void;
   onSignOut: () => Promise<void>;
   /** The levels of each host and its agents, which apply on all devices of the user. */
   notifications: WebNotificationSettings;
@@ -91,6 +102,8 @@ export interface WebAccountSettingsProps {
   webPush?: WebPush | undefined;
   /** Opens Preferences at the notification row of one host. Each nonce opens once. */
   notificationFocusRequest?: { serverId: string; nonce: number } | null | undefined;
+  /** Opens the Machines section, as the Back row of a machine's settings does. Each nonce opens once. */
+  machinesRequest?: number | null | undefined;
 }
 
 /**
@@ -162,6 +175,19 @@ export default function WebAccountSettings(props: WebAccountSettingsProps) {
     },
   );
 
+  // The request counter never resets, so the effect runs again on each later opening with the same
+  // value. Act only on a value that this component has not handled yet. It starts at 0, so a first
+  // mount that comes with a request (Back from a machine before settings ever opened) still acts on it.
+  let handledMachinesRequest = 0;
+  createEffect(
+    () => (props.open ? props.machinesRequest : null),
+    (request) => {
+      if (!request || request === handledMachinesRequest) return;
+      handledMachinesRequest = request;
+      setActiveTab("machines");
+    },
+  );
+
   return (
     <Tabs.Root
       value={activeTab()}
@@ -224,6 +250,10 @@ export default function WebAccountSettings(props: WebAccountSettingsProps) {
             canRevokeSession
             onSignOut={props.onSignOut}
           />
+        </Tabs.Content>
+
+        <Tabs.Content value="machines" class="settings-modal-tab-panel" data-tab="machines">
+          <SettingsMachinesTab machines={props.machines} onOpenMachine={props.onOpenMachine} />
         </Tabs.Content>
 
         <Tabs.Content value="preferences" class="settings-modal-tab-panel" data-tab="preferences">

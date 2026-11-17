@@ -97,7 +97,6 @@ export const messages = {
   "app.rail.mediaCreditsMeta": "크레딧",
   "app.rail.mediaCreditsWindow": "팀 크레딧 {quota} 중 {credits}",
   "app.settingsPage.title": "내 설정",
-  "app.settingsPage.serverSettings": "{server} 서버 설정",
   "app.settingsPage.search": "설정 검색",
   "app.settingsPage.searchPlaceholder": "설정 검색…",
   "app.settingsPage.results": "설정 검색 결과",

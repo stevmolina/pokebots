@@ -32,11 +32,8 @@ import { createBillingStore } from "@openbot/ui/features/billing/billing-store";
 import { LicenseSection } from "@openbot/ui/features/billing/LicenseSection";
 import { createLicenseStore } from "@openbot/ui/features/billing/license-store";
 import type { GeneralSettingsValue } from "@openbot/ui/features/settings/app-settings";
-import {
-  SettingsDialogShell,
-  SettingsNavGroupLabel,
-  type SettingsPagePlacement,
-} from "@openbot/ui/features/settings/SettingsDialogShell";
+import { SettingsDialogShell, type SettingsPagePlacement } from "@openbot/ui/features/settings/SettingsDialogShell";
+import { SettingsMachinesTab } from "@openbot/ui/features/settings/SettingsMachinesTab";
 import { SettingsMobileConnectTab } from "@openbot/ui/features/settings/SettingsMobileConnectTab";
 import { SettingsProfileTab } from "@openbot/ui/features/settings/SettingsProfileTab";
 import { SettingsUpdatesTab } from "@openbot/ui/features/settings/SettingsUpdatesTab";
@@ -44,7 +41,9 @@ import { createSettingsHostedServersStore } from "@openbot/ui/features/settings/
 import { createSettingsMobileConnectStore } from "@openbot/ui/features/settings/stores/mobile-connect-store";
 import { createSettingsProfileStore } from "@openbot/ui/features/settings/stores/profile-store";
 import { createSettingsUpdatesStore } from "@openbot/ui/features/settings/stores/updates-store";
-import { createEffect, createSignal, Show, untrack } from "solid-js";
+import { cx } from "@openbot/ui/utils";
+import type { JSX } from "@solidjs/web";
+import { createEffect, createSignal, For, Show, untrack } from "solid-js";
 import { useI18n } from "../../i18n-context";
 import { ComputerUseSetup } from "../computer-use/ComputerUseSetup";
 import { RemoteComputerSettings } from "../computer-use/RemoteComputerSettings";
@@ -58,7 +57,15 @@ import { SettingsDynamicIslandTab } from "./SettingsDynamicIslandTab";
 import { SettingsGeneralTab } from "./SettingsGeneralTab";
 import { SettingsNotificationsTab } from "./SettingsNotificationsTab";
 import { SettingsVoiceTab } from "./SettingsVoiceTab";
-import { dynamicIslandSettingsShown, navItem, navItems, type SettingsTab, settingsTabShown } from "./settings-tabs";
+import {
+  dynamicIslandSettingsShown,
+  navItem,
+  type SettingsSection,
+  type SettingsTab,
+  sectionOfTab,
+  settingsSections,
+  settingsTabShown,
+} from "./settings-tabs";
 import { createSettingsVoiceStore } from "./settings-voice-store";
 
 export interface SettingsModalProps {
@@ -76,8 +83,10 @@ export interface SettingsModalProps {
   builtInDisplayGeometry?: DynamicIslandGeometry | undefined;
   /** The agents of the active server for the Agent dock tab. Without it, the tab does not show. */
   agentDock?: AgentDockSettingsModel | undefined;
-  /** The servers that the Notifications and Dynamic Island tabs list. */
+  /** The servers that the Notifications and Dynamic Island tabs and the Machines section list. */
   servers?: readonly ServerSummary[];
+  /** Opens the settings of one machine in this modal. Without it, the Machines section does not show. */
+  onOpenMachine?: ((serverId: string) => void) | undefined;
   /** Writes the notification level of a server. Resolves after `servers` shows it. */
   onSetServerNotificationLevel?: ((serverId: string, level: ServerNotificationLevel) => Promise<void>) | undefined;
   /** Mutes a server on this computer. No duration mutes until the user unmutes. */
@@ -147,6 +156,12 @@ export function SettingsModal(props: SettingsModalProps) {
   const [activeTab, setActiveTab] = createSignal<SettingsTab>(
     untrack(() => (props.initialTab === "hosted-servers" ? "billing" : props.initialTab)) ?? "general",
   );
+  /** The tab that each section opened on last, so a section reopens where the user left it. */
+  const lastTabs: Partial<Record<SettingsSection, SettingsTab>> = {};
+  function selectTab(tab: SettingsTab): void {
+    lastTabs[sectionOfTab(tab).value] = tab;
+    setActiveTab(tab);
+  }
   let modalElement: HTMLElement | undefined;
   const profile = createSettingsProfileStore(props, () => activeTab() === "profile");
   const profileActivity = createProfileActivityStore(
@@ -188,47 +203,57 @@ export function SettingsModal(props: SettingsModalProps) {
     },
     (tab) => {
       if (!tab) return;
-      setActiveTab(tab);
+      selectTab(tab);
     },
   );
   const agentDockShown = () =>
     settingsTabShown("agent-dock", { platform: props.appInfo?.platform, chatWindow: props.chatWindow === true }) &&
     props.agentDock !== undefined;
-  const visibleNavItems = () =>
-    navItems.filter(
-      (item) =>
-        settingsTabShown(item.value, { platform: props.appInfo?.platform, chatWindow: props.chatWindow === true }) &&
-        (item.value !== "agent-dock" || props.agentDock !== undefined),
-    );
-
-  const title = () => i18n.t(navItem(activeTab()).titleKey);
+  const tabVisible = (tab: SettingsTab) =>
+    settingsTabShown(tab, { platform: props.appInfo?.platform, chatWindow: props.chatWindow === true }) &&
+    (tab !== "agent-dock" || props.agentDock !== undefined) &&
+    (tab !== "machines" || props.onOpenMachine !== undefined);
+  /** The sections of the list, each with the tabs that this computer shows. */
+  const visibleSections = () =>
+    settingsSections
+      .map((section) => ({ section, tabs: section.tabs.filter(tabVisible) }))
+      .filter((entry) => entry.tabs.length > 0);
+  const activeSection = () => sectionOfTab(activeTab());
+  const activeSectionTabs = () => activeSection().tabs.filter(tabVisible);
+  /** A section with several tabs names itself in the heading, and its tabs are chips below it. */
+  const title = () =>
+    activeSectionTabs().length > 1 ? i18n.t(activeSection().titleKey) : i18n.t(navItem(activeTab()).titleKey);
   const description = () => i18n.t(navItem(activeTab()).descriptionKey);
 
+  /**
+   * The tab list holds one trigger for each section, with a value that never changes. Kobalte reads the
+   * value of a trigger once, so a trigger that followed the open tab would send the list back to the
+   * first one. The tabs inside a section are chips, and the panels are drawn below by `TabPanel`.
+   */
   const tabsProps = {
     get value() {
-      return activeTab();
+      return activeSection().value;
     },
     onChange(value: string) {
-      if (
-        value === "general" ||
-        value === "appearance" ||
-        value === "app-behavior" ||
-        value === "notifications" ||
-        value === "voice" ||
-        (value === "dynamic-island" && dynamicIslandShown()) ||
-        (value === "agent-dock" && agentDockShown()) ||
-        value === "computer-use" ||
-        value === "profile" ||
-        value === "billing" ||
-        value === "mobile-connect" ||
-        value === "updates"
-      ) {
-        setActiveTab(value);
-      }
+      const entry = visibleSections().find((candidate) => candidate.section.value === value);
+      if (!entry) return;
+      const last = lastTabs[entry.section.value];
+      selectTab(last && entry.tabs.includes(last) ? last : (entry.tabs[0] ?? "general"));
     },
     orientation: "vertical" as const,
     activationMode: "automatic" as const,
   };
+
+  /** The panel of one tab. It exists only while its tab is open, as an unselected Kobalte panel did. */
+  function TabPanel(panel: { tab: SettingsTab; class?: string; children: JSX.Element }) {
+    return (
+      <Show when={activeTab() === panel.tab}>
+        <div class={cx("settings-modal-tab-panel", panel.class)} data-tab={panel.tab} data-selected="">
+          {panel.children}
+        </div>
+      </Show>
+    );
+  }
 
   /** Shown above the rows that the preference read fills, while those rows show default values. */
   const preferencesLoadError = () => (
@@ -274,27 +299,44 @@ export function SettingsModal(props: SettingsModalProps) {
         onContentElement={(element) => (modalElement = element)}
         sidebar={
           <Tabs.List class="settings-modal-nav" aria-label={i18n.t("settings.sections.label")}>
-            {visibleNavItems().map((item, index, items) => {
-              const NavIcon = item.icon;
-              const group = item.group !== items[index - 1]?.group ? item.group : undefined;
-              return (
-                <>
-                  {group ? <SettingsNavGroupLabel label={i18n.t(group)} /> : null}
+            <For each={visibleSections()} keyed={(entry) => entry.section.value}>
+              {(entry) => {
+                const NavIcon = entry().section.icon;
+                return (
                   <Tabs.Trigger
                     class="settings-modal-nav-item"
-                    value={item.value}
-                    aria-current={activeTab() === item.value ? "page" : undefined}
+                    value={entry().section.value}
+                    aria-current={activeSection().value === entry().section.value ? "page" : undefined}
                   >
                     <NavIcon aria-hidden="true" />
-                    <span>{i18n.t(item.titleKey)}</span>
+                    <span>{i18n.t(entry().section.titleKey)}</span>
                   </Tabs.Trigger>
-                </>
-              );
-            })}
+                );
+              }}
+            </For>
           </Tabs.List>
         }
+        subnav={
+          <Show when={activeSectionTabs().length > 1}>
+            <nav class="settings-modal-chips" aria-label={i18n.t(activeSection().titleKey)}>
+              <For each={activeSectionTabs()} keyed={(tab) => tab}>
+                {(tab) => (
+                  <Button
+                    variant="ghost"
+                    type="button"
+                    class="settings-modal-chip"
+                    aria-pressed={activeTab() === tab() ? "true" : "false"}
+                    onClick={() => selectTab(tab())}
+                  >
+                    {i18n.t(navItem(tab()).titleKey)}
+                  </Button>
+                )}
+              </For>
+            </nav>
+          </Show>
+        }
       >
-        <Tabs.Content value="general" class="settings-modal-tab-panel" data-tab="general">
+        <TabPanel tab="general">
           {preferencesLoadError()}
           <SettingsGeneralTab
             part="general"
@@ -307,9 +349,9 @@ export function SettingsModal(props: SettingsModalProps) {
             chatColor={props.account.chatColor ?? null}
             onSetChatColor={props.onSetChatColor}
           />
-        </Tabs.Content>
+        </TabPanel>
 
-        <Tabs.Content value="appearance" class="settings-modal-tab-panel" data-tab="appearance">
+        <TabPanel tab="appearance">
           {preferencesLoadError()}
           <SettingsGeneralTab
             part="appearance"
@@ -322,9 +364,9 @@ export function SettingsModal(props: SettingsModalProps) {
             chatColor={props.account.chatColor ?? null}
             onSetChatColor={props.onSetChatColor}
           />
-        </Tabs.Content>
+        </TabPanel>
 
-        <Tabs.Content value="app-behavior" class="settings-modal-tab-panel" data-tab="app-behavior">
+        <TabPanel tab="app-behavior">
           {preferencesLoadError()}
           <SettingsGeneralTab
             part="app-behavior"
@@ -337,9 +379,9 @@ export function SettingsModal(props: SettingsModalProps) {
             chatColor={props.account.chatColor ?? null}
             onSetChatColor={props.onSetChatColor}
           />
-        </Tabs.Content>
+        </TabPanel>
 
-        <Tabs.Content value="notifications" class="settings-modal-tab-panel" data-tab="notifications">
+        <TabPanel tab="notifications">
           {preferencesLoadError()}
           <SettingsNotificationsTab
             value={props.value}
@@ -361,19 +403,19 @@ export function SettingsModal(props: SettingsModalProps) {
             focusRequest={props.notificationFocusRequest}
             menuMount={modalElement}
           />
-        </Tabs.Content>
+        </TabPanel>
 
-        <Tabs.Content value="voice" class="settings-modal-tab-panel" data-tab="voice">
+        <TabPanel tab="voice">
           <SettingsVoiceTab
             store={voice}
             selectMount={modalElement}
             codexLiveAccess={props.codexLiveAccess}
             onConnectCodex={props.onConnectCodex}
           />
-        </Tabs.Content>
+        </TabPanel>
 
         <Show when={dynamicIslandShown()}>
-          <Tabs.Content value="dynamic-island" class="settings-modal-tab-panel" data-tab="dynamic-island">
+          <TabPanel tab="dynamic-island">
             {preferencesLoadError()}
             <SettingsDynamicIslandTab
               value={props.value}
@@ -384,23 +426,23 @@ export function SettingsModal(props: SettingsModalProps) {
               onUpdateSetting={updateSetting}
               onUpdateSettings={updateSettings}
             />
-          </Tabs.Content>
+          </TabPanel>
         </Show>
 
         <Show when={agentDockShown() && props.agentDock}>
           {(model) => (
-            <Tabs.Content value="agent-dock" class="settings-modal-tab-panel" data-tab="agent-dock">
+            <TabPanel tab="agent-dock">
               <SettingsAgentDockTab model={model()} selectMount={modalElement} />
-            </Tabs.Content>
+            </TabPanel>
           )}
         </Show>
 
-        <Tabs.Content value="computer-use" class="settings-modal-tab-panel" data-tab="computer-use">
+        <TabPanel tab="computer-use">
           <ComputerUseSetup variant="settings" />
           <RemoteComputerSettings />
-        </Tabs.Content>
+        </TabPanel>
 
-        <Tabs.Content value="profile" class="settings-modal-tab-panel profile-panel" data-tab="profile">
+        <TabPanel tab="profile" class="profile-panel">
           <SettingsProfileTab
             store={profile}
             account={props.account}
@@ -409,9 +451,9 @@ export function SettingsModal(props: SettingsModalProps) {
             canRevokeSession={Boolean(props.onRevokeAccountSession)}
             onSignOut={props.onSignOut}
           />
-        </Tabs.Content>
+        </TabPanel>
 
-        <Tabs.Content value="billing" class="settings-modal-tab-panel" data-tab="billing">
+        <TabPanel tab="billing">
           <BillingPanel
             store={billing}
             available={Boolean(props.billingApi)}
@@ -426,9 +468,9 @@ export function SettingsModal(props: SettingsModalProps) {
               />
             }
           />
-        </Tabs.Content>
+        </TabPanel>
 
-        <Tabs.Content value="mobile-connect" class="settings-modal-tab-panel" data-tab="mobile-connect">
+        <TabPanel tab="mobile-connect">
           <SettingsMobileConnectTab
             store={mobileConnect}
             canCreateTicket={Boolean(props.onCreateMobileConnect)}
@@ -437,9 +479,9 @@ export function SettingsModal(props: SettingsModalProps) {
             canRevokeDevice={Boolean(props.onRevokeMobileConnectedDevice)}
             canSetRoute={Boolean(props.onSetRemoteNetworkRoute)}
           />
-        </Tabs.Content>
+        </TabPanel>
 
-        <Tabs.Content value="updates" class="settings-modal-tab-panel" data-tab="updates">
+        <TabPanel tab="updates">
           {preferencesLoadError()}
           <SettingsUpdatesTab
             store={updates}
@@ -448,7 +490,15 @@ export function SettingsModal(props: SettingsModalProps) {
             onUpdateSetting={updateSetting}
             selectMount={modalElement}
           />
-        </Tabs.Content>
+        </TabPanel>
+
+        <Show when={props.onOpenMachine}>
+          {(openMachine) => (
+            <TabPanel tab="machines">
+              <SettingsMachinesTab machines={props.servers ?? []} onOpenMachine={openMachine()} />
+            </TabPanel>
+          )}
+        </Show>
       </SettingsDialogShell>
     </Tabs.Root>
   );

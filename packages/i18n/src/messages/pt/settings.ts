@@ -345,6 +345,7 @@ export const messages = {
   "settings.tab.hostedServers.title": "Servidores hospedados",
   "settings.tab.hostedServers.description":
     "Crie servidores OpenBot que funcionam quando este computador está desligado.",
+  "settings.tab.machines.description": "Abra as configurações de cada máquina que você usa.",
   "settings.tab.appearance.description": "Escolha o tema, as cores, o idioma e as fontes.",
   "settings.tab.appBehavior.description": "Escolha como o OpenBot inicia e funciona neste computador.",
   "settings.appearance.colorsTitle": "Cores",

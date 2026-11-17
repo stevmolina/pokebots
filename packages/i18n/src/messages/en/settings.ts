@@ -346,6 +346,7 @@ export const messages = defineMessages("settings", {
   "settings.tab.billing.description": "License, server plans, payment method and invoices.",
   "settings.tab.hostedServers.title": "Hosted servers",
   "settings.tab.hostedServers.description": "Create OpenBot servers that run when this computer is off.",
+  "settings.tab.machines.description": "Open the settings of each machine that you use.",
   "settings.tab.appearance.description": "Choose the theme, colors, language and fonts.",
   "settings.tab.appBehavior.description": "Choose how OpenBot starts and runs on this computer.",
   "settings.appearance.colorsTitle": "Colors",

@@ -1176,6 +1176,7 @@ function AppSettings(props: AccountProps) {
         chatWindow={platform.chatWindow !== null}
         builtInDisplayGeometry={builtInDisplayGeometry()}
         servers={servers()}
+        onOpenMachine={(serverId) => openServerSettings(serverId, appSettingsRestoreTarget())}
         agentDock={agentDockSettings()}
         updateStatus={updates.status()}
         onUpdateAction={updates.runAction}

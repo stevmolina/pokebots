@@ -311,6 +311,7 @@
     "./features/billing/BillingServerLifecycle": "./src/features/billing/BillingServerLifecycle.tsx",
     "./features/settings/SettingsHostedServersTab": "./src/features/settings/SettingsHostedServersTab.tsx",
     "./features/settings/SettingsHostedSitesTab": "./src/features/settings/SettingsHostedSitesTab.tsx",
+    "./features/settings/SettingsMachinesTab": "./src/features/settings/SettingsMachinesTab.tsx",
     "./features/settings/SettingsMobileConnectTab": "./src/features/settings/SettingsMobileConnectTab.tsx",
     "./features/settings/SettingsProfileTab": "./src/features/settings/SettingsProfileTab.tsx",
     "./features/settings/SettingsUpdatesTab": "./src/features/settings/SettingsUpdatesTab.tsx",

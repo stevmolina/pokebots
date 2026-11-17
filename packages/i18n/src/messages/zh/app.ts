@@ -101,7 +101,6 @@ export const messages = {
   "app.rail.mediaCreditsMeta": "积分",
   "app.rail.mediaCreditsWindow": "团队积分 {quota} 中的 {credits}",
   "app.settingsPage.title": "个人设置",
-  "app.settingsPage.serverSettings": "{server} 服务器设置",
   "app.settingsPage.search": "搜索设置",
   "app.settingsPage.searchPlaceholder": "搜索设置…",
   "app.settingsPage.results": "设置搜索结果",
