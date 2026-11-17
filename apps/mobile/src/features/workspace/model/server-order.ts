@@ -30,6 +30,24 @@ export function defaultServerKey(apiUrl: string, userId: string): string {
   return `openbot.default-server.v1.${remoteHostFingerprint(JSON.stringify([new URL(apiUrl).origin, userId]))}`;
 }
 
+/**
+ * The server the user opened last on this device, for the account. The app opens on it when it
+ * starts, as the desktop opens on its active server. A new key: an older version does not read it.
+ */
+export function lastServerKey(apiUrl: string, userId: string): string {
+  return `openbot.last-server.v1.${remoteHostFingerprint(JSON.stringify([new URL(apiUrl).origin, userId]))}`;
+}
+
+export function decodeLastServer(stored: string | null): string | null {
+  if (stored === null) return null;
+  try {
+    const value = JSON.parse(stored);
+    return isString(value) ? value : null;
+  } catch {
+    return null;
+  }
+}
+
 /** With no saved choice, the paired host is the default, as before. A saved `null` means no default. */
 export function decodeDefaultServer(stored: string | null, pairedHostId: string | undefined): string | null {
   const fallback = pairedHostId ?? null;
