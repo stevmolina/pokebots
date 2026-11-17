@@ -4,7 +4,7 @@ import Check from "lucide-react-native/icons/check";
 import Server from "lucide-react-native/icons/server";
 import X from "lucide-react-native/icons/x";
 import { useState } from "react";
-import { Image, ScrollView, View } from "react-native";
+import { Image, ScrollView, StyleSheet, View } from "react-native";
 import { RoutineActiveSwitch } from "@/features/agents/components/routine-active-switch";
 import { AppLogo } from "@/features/auth/components/app-logo";
 import { ProfileAvatar } from "@/shared/components/profile-avatar";
@@ -44,7 +44,8 @@ export function PreviewSettingsSheet() {
     </View>
   );
   return (
-    <View style={{ flex: 1, backgroundColor: colors.sheetBackground }}>
+    // A form sheet gives its root no height of its own, so the page fills the sheet's edges.
+    <View style={[StyleSheet.absoluteFill, { backgroundColor: colors.sheetBackground }]}>
       <ScrollView
         style={{ flex: 1 }}
         contentInsetAdjustmentBehavior="never"

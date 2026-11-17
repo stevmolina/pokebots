@@ -8,7 +8,7 @@ import Puzzle from "lucide-react-native/icons/puzzle";
 import Search from "lucide-react-native/icons/search";
 import X from "lucide-react-native/icons/x";
 import { useState } from "react";
-import { Pressable, ScrollView, TextInput, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, TextInput, View } from "react-native";
 import { KeyboardStickyView } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { APP_FONT } from "@/shared/lib/app-font";
@@ -121,7 +121,8 @@ export function PreviewGridSheet() {
   );
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.background }}>
+    // A form sheet gives its root no height of its own, so the page fills the sheet's edges.
+    <View style={[StyleSheet.absoluteFill, { backgroundColor: colors.background }]}>
       <ScrollView
         style={{ flex: 1 }}
         contentInsetAdjustmentBehavior="never"
