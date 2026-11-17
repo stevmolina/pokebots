@@ -20,7 +20,7 @@
  */
 
 import { SIDEBAR_PEOPLE_SECTION_ID, SIDEBAR_UNASSIGNED_SECTION_ID } from "@openbot/contracts/ipc";
-import { Button, ChevronDown } from "@openbot/ui";
+import { ArrowDown, Button } from "@openbot/ui";
 import type { JSX } from "@solidjs/web";
 import { createMemo, createSignal, For, onSettled, Show } from "solid-js";
 import { useText } from "../../text";
@@ -499,7 +499,7 @@ function closedGroupsOf(row: HTMLElement): string[] {
 }
 
 /**
- * The floating "3 unread" button under the list. It counts the unread chats of the groups that are
+ * The floating "More unreads" pill under the list, with the count for a screen reader. It counts the unread chats of the groups that are
  * out of view, and a click opens the group of the next one and scrolls to it. It hides while every
  * unread chat is in view.
  */
@@ -587,8 +587,9 @@ export function SidebarUnreadJump(jumpProps: { list: () => HTMLElement | undefin
     <Show when={count() > 0}>
       <div class="sidebar-unread-jump-wrap">
         <Button type="button" class="sidebar-unread-jump" onClick={jump}>
-          <span>{t("sidebar.folder.unread", { count: count() })}</span>
-          <ChevronDown aria-hidden="true" />
+          <ArrowDown aria-hidden="true" />
+          <span>{t("sidebar.unread.more")}</span>
+          <span class="sr-only">{t("sidebar.folder.unread", { count: count() })}</span>
         </Button>
       </div>
     </Show>

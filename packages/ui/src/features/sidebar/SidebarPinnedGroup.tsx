@@ -15,6 +15,7 @@ import { ChannelAvatar } from "../channels/ChannelAvatar";
 import { SidebarAgentContextMenu } from "./SidebarAgentContextMenu";
 import { SidebarAgentIndicator, SidebarPinnedAvatar } from "./SidebarAgentIndicator";
 import { SidebarChannelContextMenu } from "./SidebarChannelContextMenu";
+import { useSidebarFeaturedAgent } from "./SidebarFeaturedAgent";
 import { SidebarNameTooltip } from "./SidebarNameTooltip";
 import { sidebarUnreadBadge } from "./sidebar-agent-states";
 import { sidebarAgentStateLabel } from "./sidebar-filtering";
@@ -36,6 +37,17 @@ export function SidebarPinnedGroup() {
     stopSidebarDragging,
   } = useSidebarScope();
   const { t, format } = useText();
+  const featured = useSidebarFeaturedAgent();
+  /** Only the chat sidebar (with pages) draws the tile; the phone list and the fallback nav keep the pin in the group. */
+  const tileShown = () => !props.largeTitle && props.pages !== undefined;
+  const tileAgentId = () => (tileShown() && featured()?.pinnedKey !== undefined ? featured()?.agent.id : undefined);
+  /** The tile at the top of the list shows the main agent, so the group does not repeat it. The phone list keeps it. */
+  const pinnedItems = createMemo(() => {
+    const tileKey = tileShown() ? featured()?.pinnedKey : undefined;
+    return tileKey === undefined
+      ? resolvedPinnedItems()
+      : resolvedPinnedItems().filter((item) => sidebarPinnedItemKey(item.ref) !== tileKey);
+  });
   const chatName = (chat: SidebarChatItem) => (chat.kind === "agent" ? chat.agent.name : chat.channel.name);
   /** A pinned chat shows as open only while the chats are on screen, not under another page. */
   const chatsOnScreen = () => {
@@ -49,7 +61,7 @@ export function SidebarPinnedGroup() {
     else props.onSelectChannel?.(chat.id);
   };
   return (
-    <Show when={resolvedPinnedItems().length > 0 || emptyPinnedDropVisible()}>
+    <Show when={pinnedItems().length > 0 || emptyPinnedDropVisible()}>
       <section
         class={[
           "sidebar-chat-group sidebar-pinned-group",
@@ -64,7 +76,7 @@ export function SidebarPinnedGroup() {
           <Show when={emptyPinnedDropVisible()}>
             <li class="sidebar-pinned-empty-drop">{t("sidebar.pinned.dropHint")}</li>
           </Show>
-          <For each={resolvedPinnedItems()}>
+          <For each={pinnedItems()}>
             {(item) => {
               const key = () => sidebarPinnedItemKey(item.ref);
               const name = () => chatName(item.chat);
@@ -222,7 +234,9 @@ export function SidebarPinnedGroup() {
                       </ContextMenu.Trigger>
                       <Switch>
                         <Match when={item.chat.kind === "agent" ? item.chat.agent : undefined}>
-                          {(agent) => <SidebarAgentContextMenu agent={agent()} pinned={true} />}
+                          {(agent) => (
+                            <SidebarAgentContextMenu agent={agent()} pinned={true} mainAgentId={tileAgentId()} />
+                          )}
                         </Match>
                         <Match when={item.chat.kind === "channel" ? item.chat.channel : undefined}>
                           {(channel) => <SidebarChannelContextMenu channel={channel()} pinned={true} />}

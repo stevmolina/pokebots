@@ -84,8 +84,12 @@ export interface SidebarPages {
   account?: { name: string | null; email: string; avatarUrl: string | null } | undefined;
   /** Opens the plans. Absent where the plan cannot change here. */
   onUpgrade?: (() => void) | undefined;
-  /** Shows how to get the mobile app. */
+  /** Shows how to get the mobile app. It moved here from a card at the bottom of the sidebar. */
   onMobileApp?: (() => void) | undefined;
+  /** Opens the Discord community. Help has it too. It moved here from a card at the bottom of the sidebar. */
+  onJoinDiscord?: (() => void) | undefined;
+  /** Opens the OpenBot account on X. It moved here from a card at the bottom of the sidebar. */
+  onFollowX?: (() => void) | undefined;
   /** Signs in with another account. */
   onAddAccount?: (() => void) | undefined;
   /** Signs out of the account. */

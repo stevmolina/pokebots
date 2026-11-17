@@ -244,6 +244,14 @@ export const WorkingAndDone: Story = {
   },
 };
 
+/**
+ * The first pinned agent is the main agent: a centered tile at the top, with its star and the menu of
+ * the agent. The pinned group does not repeat it.
+ */
+export const MainAgentTile: Story = {
+  args: { pinnedItems: [{ kind: "agent", id: firstId }] },
+};
+
 /** A folder open in the dock, with the folder in it. */
 export const FolderOpen: Story = {
   args: { collapsedSectionIds: [`dock:open:${haloRxId}`] },

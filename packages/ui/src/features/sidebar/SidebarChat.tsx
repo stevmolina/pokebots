@@ -191,7 +191,11 @@ function UpdateButton() {
   );
 }
 
-/** The top row: collapse or expand, then Search and New. It also moves the window. */
+/**
+ * The top row: Search and New. It also moves the window. The open sidebar has no toggle button, as the
+ * Grok Bot desktop app has none: the shortcut and the drag handle close it. The dock keeps one button
+ * that opens it again, so a closed sidebar always has a way back with the mouse, on every page.
+ */
 function SidebarChatTopbar(topProps: {
   pages: SidebarPages;
   /** The large title of the list, shown small in the top row once the large one scrolled away. */
@@ -200,7 +204,7 @@ function SidebarChatTopbar(topProps: {
 }) {
   const { props } = useSidebarScope();
   const { t } = useText();
-  const label = () => (props.compact ? t("sidebar.topbar.expand") : t("sidebar.chat.collapse"));
+  const label = () => t("sidebar.topbar.expand");
   const platform = () => topProps.pages.shortcutPlatform;
   return (
     <div class="window-drag sidebar-chat-top">
@@ -208,19 +212,21 @@ function SidebarChatTopbar(topProps: {
       <Show when={topProps.title}>
         <SidebarProfileMenu pages={topProps.pages} compact placement="bottom-start" />
       </Show>
-      <MotionTooltip content={buttonTip(label(), "toggleSidebar", platform())}>
-        <Button
-          variant="ghost"
-          type="button"
-          class="sidebar-chat-toggle no-drag"
-          aria-label={label()}
-          aria-controls="agent-sidebar"
-          aria-expanded={props.compact ? "false" : "true"}
-          onClick={() => (props.compact ? props.onExpand() : topProps.pages.onCollapse())}
-        >
-          <PanelLeft aria-hidden="true" />
-        </Button>
-      </MotionTooltip>
+      <Show when={props.compact}>
+        <MotionTooltip content={buttonTip(label(), "toggleSidebar", platform())}>
+          <Button
+            variant="ghost"
+            type="button"
+            class="sidebar-chat-toggle no-drag"
+            aria-label={label()}
+            aria-controls="agent-sidebar"
+            aria-expanded="false"
+            onClick={() => props.onExpand()}
+          >
+            <PanelLeft aria-hidden="true" />
+          </Button>
+        </MotionTooltip>
+      </Show>
       <Show when={topProps.title} fallback={<span class="sidebar-chat-spacer" />}>
         {(title) => (
           <span
@@ -434,8 +440,8 @@ function SidebarChatList(listProps: { onTitleHiddenChange: (hidden: boolean) => 
               onOpenServers={props.onOpenServers}
             />
             <SidebarSearchField onOpen={props.onOpenSearch} />
-            <SidebarFeaturedAgent />
           </Show>
+          <SidebarFeaturedAgent />
           <Show
             when={props.allMachines}
             fallback={

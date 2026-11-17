@@ -62,6 +62,11 @@
     font-size: var(--openbot-text-lg);
   }
 
+  /* The phone list shows a count only while the folder is closed; the desktop list always shows it. */
+  .web-app-frame > .sidebar-chat .sidebar-dock-head .sidebar-dock-count[data-open] {
+    display: none;
+  }
+
   .web-app-frame > .sidebar-chat .sidebar-dock-group + .sidebar-dock-group {
     margin-top: 0;
   }

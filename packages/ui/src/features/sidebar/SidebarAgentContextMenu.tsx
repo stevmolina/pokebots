@@ -16,18 +16,25 @@ import {
   Pin,
   PinOff,
   RotateCcw,
+  Star,
 } from "@openbot/ui";
 import { Show } from "solid-js";
 import type { AgentProfile } from "../../data";
 import { useText } from "../../text";
 import { DeleteIcon, EditIcon } from "./SidebarIcons";
 import { SidebarMoveToSubmenu } from "./SidebarMoveToSubmenu";
-import type { SidebarPinnedItem } from "./sidebar-pins";
+import { type SidebarPinnedItem, sidebarPinnedItemKey } from "./sidebar-pins";
 import { useSidebarScope } from "./sidebar-scope";
 
 /** `userHidden` swaps the hide item for a restore item that names the section the agent goes back to. */
-export function SidebarAgentContextMenu(menuProps: { agent: AgentProfile; pinned: boolean; userHidden?: boolean }) {
-  const { customSectionById, openDelete, props } = useSidebarScope();
+export function SidebarAgentContextMenu(menuProps: {
+  agent: AgentProfile;
+  pinned: boolean;
+  userHidden?: boolean;
+  /** Set on a pinned agent that is not the tile at the top: the item moves it before the tile's agent. */
+  mainAgentId?: string;
+}) {
+  const { chatPinnedItems, customSectionById, openDelete, props } = useSidebarScope();
   const { t } = useText();
   const ref = (): SidebarPinnedItem => ({ kind: "agent", id: menuProps.agent.id });
   const unread = () => props.unreadAgentIds?.has(menuProps.agent.id) ?? false;
@@ -37,9 +44,35 @@ export function SidebarAgentContextMenu(menuProps: { agent: AgentProfile; pinned
     const section = assigned ? customSectionById().get(assigned) : undefined;
     return section ? t("sidebar.agentMenu.restoreTo", { section: section.name }) : t("sidebar.agentMenu.restore");
   };
+  /** The tile shows the first pinned agent, so moving this pin before the tile's pin makes it the main agent. */
+  const makeMain = (mainAgentId: string) => {
+    const items = [...chatPinnedItems()];
+    const sourceIndex = items.findIndex((item) => sidebarPinnedItemKey(item) === sidebarPinnedItemKey(ref()));
+    if (sourceIndex < 0) return;
+    const [source] = items.splice(sourceIndex, 1);
+    const targetIndex = items.findIndex((item) => item.kind === "agent" && item.id === mainAgentId);
+    if (!source || targetIndex < 0) return;
+    items.splice(targetIndex, 0, source);
+    props.onReorderPinned(items);
+  };
   return (
     <ContextMenu.Portal>
       <ContextMenu.Content class="agent-context-menu" aria-label={t("sidebar.agentMenu.label")}>
+        <Show
+          when={
+            menuProps.pinned &&
+            !props.allMachines &&
+            menuProps.mainAgentId !== menuProps.agent.id &&
+            menuProps.mainAgentId
+          }
+        >
+          {(mainAgentId) => (
+            <ContextMenu.Item onSelect={() => makeMain(mainAgentId())}>
+              <Star class="agent-context-icon size-4" aria-hidden="true" />
+              <span>{t("sidebar.agentMenu.makeMain")}</span>
+            </ContextMenu.Item>
+          )}
+        </Show>
         {/* Pins belong to one server, so the "All machines" view shows none and offers none. */}
         <Show when={!props.allMachines}>
           <ContextMenu.Item
