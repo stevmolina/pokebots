@@ -1,3 +1,4 @@
+import type { BrainRequest, BrainResponse } from "./brain";
 import type {
   AcpRegistryEntry,
   AcpRegistryInstallation,
@@ -2250,6 +2251,7 @@ export const IPC_ENDPOINTS = {
   },
   // A separate group, not part of `servers`: a group is what one registrar covers in full, and
   // `servers` is bound against `RemoteServerManager` while these are bound against `AgentService`.
+  brain: { request: scopedRequest<BrainRequest, BrainResponse>()("brain:request") },
   mcpServers: {
     // Every MCP method names its server, because the settings modal can be open for a server the user
     // has not switched to. Each mutation answers with the whole list, so the panel never merges.
@@ -2487,6 +2489,7 @@ export const IPC_GROUP_PATHS = {
   browserInput: "browser",
   servers: "servers",
   agentAdmin: "agent",
+  brain: "brain",
   mcpServers: "agent",
   storage: "storage",
   agentImport: "agentImport",

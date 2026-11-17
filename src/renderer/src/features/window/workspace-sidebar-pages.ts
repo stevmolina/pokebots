@@ -1,3 +1,4 @@
+import { BRAIN_CAPABILITY } from "@openbot/contracts/brain";
 import { isUpdateActivePhase } from "@openbot/contracts/ipc";
 import { AGENT_COMPUTER_CAPABILITY } from "@openbot/contracts/team-protocol/agent-computer-v1";
 import { AGENT_TASKS_CAPABILITY } from "@openbot/contracts/team-protocol/agent-tasks-v1";
@@ -101,6 +102,10 @@ export function useWorkspaceSidebarPages(): () => SidebarPages {
         }
       : undefined,
     onRooms: serverCanAdminister(activeServer(), ROOMS_CAPABILITY) ? () => windowPage.openRooms(null) : undefined,
+    onBrain:
+      !activeServer() || activeServer()?.kind === "local" || serverSupportsCapability(activeServer(), BRAIN_CAPABILITY)
+        ? () => windowPage.openBrain(null)
+        : undefined,
     onMarketplace: () => {
       windowPage.leavePricing();
       setSkillsMarketplaceOpen(true);

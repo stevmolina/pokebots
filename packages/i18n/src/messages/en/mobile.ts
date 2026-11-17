@@ -3,6 +3,7 @@ import { messages as mobileAgent } from "./mobile/agent";
 import { messages as mobileApp } from "./mobile/app";
 import { messages as mobileAppLock } from "./mobile/appLock";
 import { messages as mobileAuth } from "./mobile/auth";
+import { messages as mobileBrain } from "./mobile/brain";
 import { messages as mobileBrowser } from "./mobile/browser";
 import { messages as mobileChannel } from "./mobile/channel";
 import { messages as mobileChat } from "./mobile/chat";
@@ -25,6 +26,7 @@ export const enMobile = {
   ...shared,
   ...source,
   ...mobileApp,
+  ...mobileBrain,
   ...mobileAppLock,
   ...mobileChat,
   ...mobileBrowser,

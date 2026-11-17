@@ -7,6 +7,7 @@ import { messages as agentTemplate } from "./agentTemplate";
 import { messages as app } from "./app";
 import { messages as attachment } from "./attachment";
 import { messages as billing } from "./billing";
+import { messages as brain } from "./brain";
 import { messages as browser } from "./browser";
 import { messages as channel } from "./channel";
 import { messages as chat } from "./chat";
@@ -104,4 +105,5 @@ export const es = {
   ...vault,
   ...uiBlock,
   ...sitePage,
+  ...brain,
 } as const satisfies PartialTranslation<AppMessages>;

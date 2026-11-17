@@ -299,6 +299,9 @@ jobs:
         with:
           install: ignore-scripts
 
+      - name: Run Brain host route E2E
+        run: bun --preload ./scripts/team-api-routes-e2e-electron.mjs scripts/brain-e2e.ts
+
       - name: Run native Agent Computer REST E2E
         run: bun scripts/agent-computer-e2e.ts
 

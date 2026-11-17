@@ -1,4 +1,5 @@
 import { isAvatarMimeType } from "@openbot/contracts/avatar-images";
+import { BRAIN_CAPABILITY, BRAIN_ROUTE, decodeBrainResponse } from "@openbot/contracts/brain";
 import {
   type AvatarColor,
   agentSpeed,
@@ -572,6 +573,7 @@ type HostRequestActions = Pick<
   | "loadHostedSites"
   | "deleteHostedSite"
   | "providerAdmin"
+  | "brainRequest"
   | "listMcpServers"
   | "saveMcpServer"
   | "removeMcpServer"
@@ -672,6 +674,7 @@ export function createHostRequestChecks(capabilities: ServerCapabilities): HostR
   return {
     canSearchFiles: (serverId) => has(serverId, CONVERSATION_FILE_SEARCH_CAPABILITY),
     canUseRooms: (serverId) => has(serverId, ROOMS_CAPABILITY),
+    canUseBrain: (serverId) => has(serverId, BRAIN_CAPABILITY),
     canUseTasks: (serverId) => has(serverId, AGENT_TASKS_CAPABILITY),
     canEditThreads: (serverId) => has(serverId, AGENT_THREADS_CAPABILITY),
     canReadThreads: (serverId) => has(serverId, AGENT_THREAD_READS_CAPABILITY),
@@ -1073,6 +1076,8 @@ export function createHostRequestActions({
         capabilityApi(serverId, PROVIDERS_ADMIN_CAPABILITY, "mobile.server.providers.unsupported"),
         capabilities.get(serverId) ?? [],
       ),
+    brainRequest: (input, serverId) =>
+      capabilityApi(serverId, BRAIN_CAPABILITY, "error.brain.request")("POST", BRAIN_ROUTE, decodeBrainResponse, input),
     listMcpServers: async (serverId) => runTeamRequest(listMcpServers(mcpAdmin(serverId))),
     saveMcpServer: async (config, serverId) => runTeamRequest(saveMcpServer(mcpAdmin(serverId), { config })),
     removeMcpServer: async (mcpServerId, serverId) =>

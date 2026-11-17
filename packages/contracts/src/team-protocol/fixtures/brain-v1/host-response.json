@@ -1,0 +1,17 @@
+{
+  "status": 200,
+  "body": {
+    "claims": [
+      {
+        "id": "demo-launch-date",
+        "text": "The launch is on Tuesday.",
+        "page": "wiki/decisions.md",
+        "line": 12,
+        "authority": "live",
+        "verified_at": "2026-11-17",
+        "commit": "abc123",
+        "url": "https://github.com/example/notes/blob/abc123/wiki/decisions.md#L12"
+      }
+    ]
+  }
+}

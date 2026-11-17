@@ -15,6 +15,7 @@ export type SidebarPage =
   | "usage"
   | "library"
   | "rooms"
+  | "brain"
   | "machines"
   | "marketplace"
   | "settings";
@@ -69,6 +70,8 @@ export interface SidebarPages {
   onMachines?: ((button: HTMLElement) => void) | undefined;
   /** Absent where the server has no Rooms page: a joined server that is older or that the user cannot administer. */
   onRooms?: (() => void) | undefined;
+  /** Absent where the host has no Brain route, or where this computer cannot open one. */
+  onBrain?: (() => void) | undefined;
   /** Absent while Marketplace cannot open. */
   onMarketplace?: (() => void) | undefined;
   onSettings: (button: HTMLElement) => void;

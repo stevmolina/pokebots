@@ -236,6 +236,7 @@ import {
   decodeWorkflowNotificationOpenedEvent,
 } from "./app-decoding";
 import { decodeBackgroundProcesses } from "./background-process-decoding";
+import { decodeBrainFromMain } from "./brain-decoding";
 import {
   decodeBrowserBounds,
   decodeBrowserControlState,
@@ -1609,6 +1610,7 @@ const openbotApi: OpenBotDesktopApi = {
     takePendingListing: decodePendingListing,
     openListing: dropInvalid(decodePendingListing),
   }),
+  brain: bridgeGroup(IPC_ENDPOINTS.brain, { request: decodeBrainFromMain }),
   marketplace: bridgeGroup(IPC_ENDPOINTS.marketplace, {
     takePendingListing: decodePendingMarketplaceListing,
     openListing: dropInvalid(decodePendingMarketplaceListing),

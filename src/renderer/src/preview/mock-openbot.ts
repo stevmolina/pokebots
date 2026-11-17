@@ -231,6 +231,7 @@ import { createMockAgentComputer } from "./mock-agent-computer";
 import { createMockAuth, type MockAuthOptions } from "./mock-auth";
 import { createMockBilling, previewBillingServers } from "./mock-billing";
 import { createMockBitwardenConnector } from "./mock-bitwarden-connector";
+import { mockBrainRequest } from "./mock-brain";
 import { createMockBrowser, type MockBrowserOptions } from "./mock-browser";
 import { createMockChannels, type MockChannelSeed } from "./mock-channels";
 import { createMockEvents } from "./mock-events";
@@ -3690,6 +3691,7 @@ export function createMockOpenBot(options: MockOpenBotOptions = {}): MockOpenBot
         return () => undefined;
       },
     },
+    brain: { request: mockBrainRequest },
     marketplace: {
       takePendingListing: async () => null,
       onOpenListing: (listener) => {

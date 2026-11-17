@@ -1,0 +1,322 @@
+/*
+ * Brain: a quiet reading surface. One column, hairlines instead of cards, and one accent for the
+ * single primary action on each screen. The page imports this file with its root component.
+ */
+.brain-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--openbot-space-4);
+  max-inline-size: 760px;
+  block-size: 100%;
+  margin-inline: auto;
+  padding: var(--openbot-space-6);
+  overflow: auto;
+  color: var(--openbot-text-primary);
+}
+.brain-panel h1,
+.brain-panel h2,
+.brain-panel h3 {
+  margin: 0;
+  font-weight: 500;
+}
+.brain-panel h1 {
+  font-size: var(--openbot-text-xl);
+}
+.brain-panel h2 {
+  font-size: var(--openbot-text-lg);
+  overflow-wrap: anywhere;
+}
+.brain-panel h3 {
+  margin-block-start: var(--openbot-space-3);
+  font-size: var(--openbot-text-sm);
+  font-weight: 500;
+  color: var(--openbot-text-muted);
+}
+.brain-panel p {
+  margin: 0;
+}
+
+.brain-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--openbot-space-3);
+  flex-wrap: wrap;
+}
+.brain-title {
+  display: flex;
+  align-items: center;
+  gap: var(--openbot-space-2);
+}
+.brain-title svg {
+  inline-size: var(--openbot-icon-md);
+  block-size: var(--openbot-icon-md);
+  color: var(--openbot-text-muted);
+}
+.brain-header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--openbot-space-2);
+  min-inline-size: 0;
+}
+.brain-header-actions select {
+  max-inline-size: 220px;
+}
+
+.brain-tabs {
+  align-self: flex-start;
+  max-inline-size: 100%;
+}
+.brain-search {
+  display: flex;
+  align-items: center;
+  gap: var(--openbot-space-2);
+  padding-inline: var(--openbot-space-3);
+  border: 1px solid var(--openbot-border);
+  border-radius: var(--openbot-radius-pill);
+  background: var(--openbot-bg-control);
+}
+.brain-search:focus-within {
+  border-color: var(--openbot-border-focus);
+}
+.brain-search > svg {
+  flex: none;
+  inline-size: var(--openbot-icon-sm);
+  block-size: var(--openbot-icon-sm);
+  color: var(--openbot-text-muted);
+}
+.brain-search input {
+  flex: 1;
+  min-inline-size: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.brain-hint {
+  color: var(--openbot-text-muted);
+  font-size: var(--openbot-text-sm);
+}
+.brain-alert,
+.brain-result {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--openbot-space-3);
+  flex-wrap: wrap;
+  padding: var(--openbot-space-3);
+  border-radius: var(--openbot-radius-md);
+  font-size: var(--openbot-text-sm);
+}
+.brain-alert {
+  background: var(--openbot-danger-soft);
+  color: var(--openbot-danger-text);
+}
+.brain-result {
+  background: var(--openbot-accent-soft);
+}
+.brain-alert-actions,
+.brain-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--openbot-space-2);
+  flex-wrap: wrap;
+}
+
+.brain-list {
+  display: flex;
+  flex-direction: column;
+}
+.brain-row.ui-button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--openbot-space-1-5);
+  block-size: auto;
+  padding: var(--openbot-space-3) var(--openbot-space-2);
+  border-radius: 0;
+  border-block-end: 1px solid var(--openbot-border);
+  white-space: normal;
+  text-align: start;
+}
+.brain-row-line {
+  display: flex;
+  align-items: center;
+  gap: var(--openbot-space-2);
+  min-inline-size: 0;
+}
+.brain-row-line svg {
+  flex: none;
+  inline-size: var(--openbot-icon-sm);
+  block-size: var(--openbot-icon-sm);
+  color: var(--openbot-text-muted);
+}
+.brain-row-title {
+  overflow-wrap: anywhere;
+  font-weight: 400;
+  line-height: var(--openbot-leading-md);
+}
+.brain-row-snippet {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  color: var(--openbot-text-secondary);
+  font-size: var(--openbot-text-sm);
+  font-weight: 400;
+}
+.brain-row-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--openbot-space-2);
+  flex-wrap: wrap;
+  color: var(--openbot-text-muted);
+  font-size: var(--openbot-text-sm);
+  font-weight: 400;
+}
+.brain-more {
+  align-self: center;
+}
+
+.brain-upload {
+  display: flex;
+}
+.brain-upload-card,
+.brain-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--openbot-space-3);
+  inline-size: 100%;
+}
+.brain-upload-card {
+  padding: var(--openbot-space-3);
+  border: 1px solid var(--openbot-border);
+  border-radius: var(--openbot-radius-md);
+}
+
+.brain-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--openbot-space-3);
+  margin-block: auto;
+  padding-block: var(--openbot-space-8);
+  text-align: center;
+}
+.brain-empty svg {
+  inline-size: var(--openbot-icon-lg);
+  block-size: var(--openbot-icon-lg);
+  color: var(--openbot-text-muted);
+}
+.brain-empty p {
+  max-inline-size: 36ch;
+  color: var(--openbot-text-secondary);
+}
+
+.brain-detail {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--openbot-space-3);
+  min-inline-size: 0;
+}
+.brain-back {
+  margin-inline-start: calc(var(--openbot-space-2) * -1);
+}
+.brain-claim {
+  font-size: var(--openbot-text-xl);
+  line-height: var(--openbot-leading-xl);
+}
+.brain-source {
+  display: flex;
+  align-items: center;
+  gap: var(--openbot-space-2);
+  flex-wrap: wrap;
+}
+.brain-source code {
+  font-family: var(--openbot-font-mono);
+  color: var(--openbot-text-muted);
+  font-size: var(--openbot-text-sm);
+}
+.brain-plain-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--openbot-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.brain-plain-list li {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--openbot-space-0-5);
+  overflow-wrap: anywhere;
+}
+.brain-plain-list small {
+  color: var(--openbot-text-muted);
+}
+.brain-reader-head {
+  display: flex;
+  align-items: center;
+  gap: var(--openbot-space-2);
+  flex-wrap: wrap;
+  inline-size: 100%;
+}
+.brain-reader-head h2 {
+  flex: 1;
+  min-inline-size: 0;
+}
+.brain-page,
+.brain-text {
+  inline-size: 100%;
+  min-inline-size: 0;
+}
+.brain-text {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font: inherit;
+  line-height: var(--openbot-leading-lg);
+}
+.brain-chat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--openbot-space-4);
+  inline-size: 100%;
+}
+.brain-turn {
+  display: flex;
+  flex-direction: column;
+  gap: var(--openbot-space-1);
+}
+.brain-turn strong {
+  color: var(--openbot-text-muted);
+  font-size: var(--openbot-text-sm);
+  font-weight: 500;
+}
+.brain-turn p {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  line-height: var(--openbot-leading-lg);
+}
+.brain-turn[data-role="user"] p {
+  padding: var(--openbot-space-2) var(--openbot-space-3);
+  border-radius: var(--openbot-radius-md);
+  background: var(--openbot-bg-control);
+}
+
+@media (max-width: 720px) {
+  .brain-panel {
+    padding: var(--openbot-space-4);
+  }
+  .brain-header-actions {
+    inline-size: 100%;
+  }
+  .brain-header-actions select {
+    flex: 1;
+  }
+  .brain-claim {
+    font-size: var(--openbot-text-lg);
+  }
+}
