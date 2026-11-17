@@ -70,6 +70,7 @@ export function WorkspaceFrame(props: WorkspaceFrameProps) {
         "app-frame",
         props.class,
         {
+          "app-frame-flat": true,
           "app-frame-sidebar-compact": props.compact,
           "app-frame-sidebar-closed": layout.sidebarClosed(),
           "app-frame-edge": platform.appInfo() !== null,

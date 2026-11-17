@@ -22,10 +22,10 @@
   position: absolute;
   top: 50%;
   inset-inline-start: 0;
-  width: 1px;
+  width: 0.5px;
   height: var(--openbot-icon-lg);
   translate: 0 -50%;
-  background: var(--openbot-border-strong);
+  background: var(--openbot-border);
   content: "";
   pointer-events: none;
 }
@@ -237,6 +237,12 @@
 /* In the dock, a pane starts under the tab row. Its inset card starts at the top row's line. */
 .side-panel-docked > :is(.browser-panel, .settings-panel) {
   top: var(--left-header-height, 38px);
+}
+
+@media (min-width: 721px) {
+  .app-frame-flat .side-panel-docked > :is(.browser-panel, .settings-panel, .file-preview-panel) {
+    border-inline-start: 0.5px solid var(--openbot-border);
+  }
 }
 
 .app-frame-edge .side-panel-docked > :is(.browser-panel, .settings-panel)::before {
