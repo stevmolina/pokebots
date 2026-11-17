@@ -8551,19 +8551,19 @@ async function runRouteChecks() {
       "the host advertises claude-user-setup-v1 to protocol 9 only, and an admin reads and turns on the switch, which the host saves and announces once",
       list(field(compatibility.body, "capabilities")).includes(CLAUDE_USER_SETUP_CAPABILITY) &&
         !list(field(older.body, "capabilities")).includes(CLAUDE_USER_SETUP_CAPABILITY) &&
-        isDeepStrictEqual(before.body, { enabled: false }) &&
-        isDeepStrictEqual(on.body, { enabled: true }) &&
-        isDeepStrictEqual(again.body, { enabled: true }) &&
-        isDeepStrictEqual(after.body, { enabled: true }) &&
+        isDeepStrictEqual(before.body, { enabled: true }) &&
+        isDeepStrictEqual(on.body, { enabled: false }) &&
+        isDeepStrictEqual(again.body, { enabled: false }) &&
+        isDeepStrictEqual(after.body, { enabled: false }) &&
         CLAUDE_USER_SETUP_CODECS.get(CLAUDE_USER_SETUP_ROUTES.update)?.response(200, on.body) !== undefined &&
-        isDeepStrictEqual(saved, { version: 1, enabled: true }) &&
+        isDeepStrictEqual(saved, { version: 1, enabled: false }) &&
         callsOf("claudeUserSetupChanged").length === 1,
       [summary(before), summary(on), summary(after)],
     );
     const member = await call("POST", CLAUDE_USER_SETUP_ROUTES.update, {
       ...setup,
       token: bobToken,
-      json: { enabled: false },
+      json: { enabled: true },
     });
     const memberRead = await call("POST", CLAUDE_USER_SETUP_ROUTES.settings, { ...setup, token: bobToken, json: {} });
     const noCapability = await call("POST", CLAUDE_USER_SETUP_ROUTES.update, {
@@ -8654,12 +8654,12 @@ async function runRouteChecks() {
     const compatibility = await call("GET", TEAM_API_ROUTES.compatibility, { protocol: TEAM_PROTOCOL_V9 });
     const older = await call("GET", TEAM_API_ROUTES.compatibility, { protocol: 8 });
     const before = await call("POST", CLAUDE_AI_TOOLS_ROUTES.settings, { ...tools, json: {} });
-    const on = await call("POST", CLAUDE_AI_TOOLS_ROUTES.update, { ...tools, json: { enabled: true } });
-    const again = await call("POST", CLAUDE_AI_TOOLS_ROUTES.update, { ...tools, json: { enabled: true } });
+    const on = await call("POST", CLAUDE_AI_TOOLS_ROUTES.update, { ...tools, json: { enabled: false } });
+    const again = await call("POST", CLAUDE_AI_TOOLS_ROUTES.update, { ...tools, json: { enabled: false } });
     const after = await call("POST", CLAUDE_AI_TOOLS_ROUTES.settings, { ...tools, json: {} });
     const saved = parseJson(readFileSync(join(root, "claude-ai-tools.json"), "utf8"));
     check(
-      "the host advertises claude-ai-tools-v1 to protocol 9 only, and an admin reads and turns on the switch, which the host saves and announces once",
+      "the host advertises claude-ai-tools-v1 to protocol 9 only, and an admin reads the switch (on by default) and turns it off, which the host saves and announces once",
       list(field(compatibility.body, "capabilities")).includes(CLAUDE_AI_TOOLS_CAPABILITY) &&
         !list(field(older.body, "capabilities")).includes(CLAUDE_AI_TOOLS_CAPABILITY) &&
         isDeepStrictEqual(before.body, { enabled: false }) &&
@@ -8682,13 +8682,13 @@ async function runRouteChecks() {
       protocol: TEAM_PROTOCOL_V9,
       json: { enabled: false },
     });
-    const off = await call("POST", CLAUDE_AI_TOOLS_ROUTES.update, { ...tools, json: { enabled: false } });
+    const off = await call("POST", CLAUDE_AI_TOOLS_ROUTES.update, { ...tools, json: { enabled: true } });
     check(
       "a member cannot read or set the claude.ai tools switch (403), a client without claude-ai-tools-v1 gets 400, and neither changes it",
       member.status === 403 &&
         memberRead.status === 403 &&
         errorIs(noCapability, 400, sourceText("error.team.claudeAiToolsUnsupported")) &&
-        isDeepStrictEqual(off.body, { enabled: false }) &&
+        isDeepStrictEqual(off.body, { enabled: true }) &&
         callsOf("claudeAiToolsChanged").length === 2,
       [summary(member), summary(memberRead), summary(noCapability), summary(off)],
     );

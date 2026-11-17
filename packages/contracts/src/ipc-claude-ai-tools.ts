@@ -11,8 +11,11 @@ export interface ClaudeAiToolsSetting {
   enabled: boolean;
 }
 
-/** Off, so that each turn sends the shorter prompt and no agent reaches the claude.ai account. */
-export const DEFAULT_CLAUDE_AI_TOOLS: ClaudeAiToolsSetting = { enabled: false };
+/**
+ * On, so that every Claude agent has the Artifact tools without a setup step. A user who turned the
+ * switch off keeps it off: the saved file holds the choice.
+ */
+export const DEFAULT_CLAUDE_AI_TOOLS: ClaudeAiToolsSetting = { enabled: true };
 
 export function decodeClaudeAiToolsSetting(value: unknown): ClaudeAiToolsSetting {
   if (!isDynamicRecord(value) || !isBoolean(value.enabled)) throw new Error("Invalid claude.ai tools setting.");

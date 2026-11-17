@@ -6,7 +6,7 @@ import { PreferenceStore } from "./preference-file";
 /**
  * Whether the Claude agents of this computer get the Artifact tools and the claude.ai connectors of
  * the Claude Code sign-in. A Claude process reads it when it starts, so a change applies to the next
- * process, not to a running turn. A file without the switch reads as the default, off.
+ * process, not to a running turn. A file without the switch reads as the default, on.
  */
 export type ClaudeAiToolsPreferenceStore = PreferenceStore<ClaudeAiToolsSetting>;
 
