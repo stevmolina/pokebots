@@ -168,7 +168,7 @@ export const previewProfile = {
   face: 88,
   nameGap: 9,
   editPillHeight: 38,
-  editPillPaddingX: 14,
+  editPillPaddingX: 10,
   editPillGap: 10,
   /** First group 25 pt under the Edit pill; groups 16 pt from the sides, rows 52 pt. */
   groupsTop: 25,
@@ -190,6 +190,9 @@ export const previewProfile = {
   chipGap: 8,
   chipPaddingX: 18,
   libraryRowHeight: 72,
+  /** Right padding of a row: the chevron ends 23 pt from the group edge, 16 pt after a value. */
+  rowPaddingRight: 17,
+  chevronGap: 9,
 } as const;
 
 /** Type sizes. The preview keeps the app font (Inter); the reference uses the system font. */
@@ -213,7 +216,7 @@ export const previewType = {
   groupCaption: { fontSize: 14, lineHeight: 18 },
   help: { fontSize: 14, lineHeight: 19 },
   chip: { fontSize: 15, lineHeight: 20, fontWeight: "500" },
-  rowDetail: { fontSize: 14, lineHeight: 19 },
+  rowDetail: { fontSize: 14, lineHeight: 18 },
 } as const satisfies Record<string, TextStyle>;
 
 /**

@@ -162,10 +162,17 @@ export function PreviewRow({
       </Typography>
       {value ? <Typography style={[type.rowValue, { color: colors.rowValue }]}>{value}</Typography> : null}
       {trailing}
-      {onPress ? <ChevronRight size={20} color={colors.rowValue} strokeWidth={1.6} style={{ marginLeft: 6 }} /> : null}
+      {onPress ? (
+        <ChevronRight size={20} color={colors.rowValue} strokeWidth={1.6} style={{ marginLeft: profile.chevronGap }} />
+      ) : null}
     </>
   );
-  const style = { height, flexDirection: "row" as const, alignItems: "center" as const, paddingRight: 14 };
+  const style = {
+    height,
+    flexDirection: "row" as const,
+    alignItems: "center" as const,
+    paddingRight: profile.rowPaddingRight,
+  };
   if (!onPress) return <View style={style}>{body}</View>;
   return (
     <Pressable

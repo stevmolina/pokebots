@@ -43,7 +43,7 @@ export function PreviewAgentEditScreen() {
       }}
       style={({ pressed }) => ({
         height: size.headerButton,
-        paddingHorizontal: 26,
+        paddingHorizontal: 19,
         borderRadius: size.headerButton / 2,
         backgroundColor: colors.strongFill,
         justifyContent: "center",
@@ -76,7 +76,7 @@ export function PreviewAgentEditScreen() {
           <Pencil size={19} color={colors.icon} strokeWidth={1.8} />
         </View>
       </View>
-      <PreviewGap size={30} />
+      <PreviewGap size={23} />
       <PreviewCaption>{t("mobile.workspace.preview.name")}</PreviewCaption>
       <PreviewGroup>
         <TextInput
@@ -111,7 +111,7 @@ export function PreviewRoutinesScreen() {
             alignItems: "center",
             paddingVertical: 14,
             paddingLeft: profile.rowPlainInset,
-            paddingRight: 14,
+            paddingRight: 19,
             gap: 12,
           }}
         >
@@ -160,7 +160,7 @@ export function PreviewLibraryScreen() {
           { id: "files", label: t("mobile.workspace.preview.filterFiles") },
         ]}
       />
-      <PreviewGap size={20} />
+      <PreviewGap size={17} />
       <PreviewCaption>{t("mobile.workspace.preview.thisWeek")}</PreviewCaption>
       <PreviewGroup fill={colors.libraryGroup}>
         {shown.map((item) => (
