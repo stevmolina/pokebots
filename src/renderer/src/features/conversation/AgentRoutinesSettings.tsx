@@ -61,7 +61,6 @@ import {
   ROUTINE_LOCAL_DRAFT_KINDS,
   ROUTINE_SAVED_DRAFT_KINDS,
   routineDraftProblem,
-  routineOnceCompleted,
   routineOncePassed,
   routineScheduleFromDraft,
   routineScheduleToDraft,
@@ -74,7 +73,14 @@ import { desktopAnalytics } from "../../analytics";
 import { writeClipboardText } from "../../clipboard";
 import { HostedUpsellRoutinesNotice, hostedUpsellRoutineCreated } from "../servers/hosted-server-upsell-controller";
 import { trackRoutineAction } from "./routine-analytics";
-import { isEventRoutine, routineListSummary, routineScheduleOf } from "./routine-summary";
+import {
+  isEventRoutine,
+  routineCompleted,
+  routineListSummary,
+  routineScheduleOf,
+  routineTriggerKind,
+  routineWebhookTrigger,
+} from "./routine-summary";
 import type { RoutineEditorRecord, RoutinesPort } from "./routines-port";
 
 export interface RoutineSelectionRequest {
@@ -1270,16 +1276,6 @@ export function AgentRoutinesSettings(props: AgentRoutinesSettingsProps) {
   );
 }
 
-function routineCompleted(routine: RoutineEditorRecord): boolean {
-  if (routineTriggerKind(routine) === "webhook") return false;
-  return routineOnceCompleted({
-    active: routine.active,
-    timezone: routine.timezone,
-    schedule: routineScheduleOf(routine),
-    updatedAt: routine.updatedAt,
-  });
-}
-
 /**
  * The draft with a new schedule. A switch to a one-time run also runs it when OpenBot opens after
  * its time, so a reminder is not lost; the person can still choose to skip it.
@@ -1294,10 +1290,6 @@ function withSchedule(value: RoutineDraft, scheduleDraft: RoutineScheduleDraft):
     scheduleDraft,
     missedPolicy,
   };
-}
-
-function routineTriggerKind(routine: RoutineEditorRecord): RoutineDraft["triggerKind"] {
-  return isEventRoutine(routine) && routine.trigger.kind === "webhook" ? "webhook" : "schedule";
 }
 
 /** The trigger fields of a draft that opens `routine`. */
@@ -1325,8 +1317,7 @@ function webhookTriggerOf(routine: RoutineEditorRecord | RoutineDraft): RoutineW
         }
       : null;
   }
-  if (!isEventRoutine(routine) || routine.trigger.kind !== "webhook") return null;
-  return { kind: "webhook", eventType: routine.trigger.eventType, filters: routine.trigger.filters };
+  return routineWebhookTrigger(routine);
 }
 
 function validDraft(draft: RoutineDraft): boolean {

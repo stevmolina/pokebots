@@ -144,11 +144,11 @@
 }
 
 .conversation-panel.browser-panel-active > .voice-pill-dock {
-  inset-inline-end: var(--browser-panel-width, 380px);
+  inset-inline-end: var(--browser-panel-width, 459px);
 }
 
 .conversation-panel[data-settings-panel] > .voice-pill-dock {
-  inset-inline-end: var(--settings-panel-width, 360px);
+  inset-inline-end: var(--settings-panel-width, 459px);
 }
 
 .voice-pill-filter {

@@ -2767,6 +2767,17 @@ export function createConversationViewScope(props: ConversationProps) {
       progressUpdate: (message) => isNarrationItemId(message.id, props.agent?.provider),
     });
 
+  const singleSettingsPane = createMemo(
+    () =>
+      !channel &&
+      activeRightPanel() === "settings" &&
+      !sidePanel().maximized &&
+      sidePanel().panes.length === 1 &&
+      sidePanel().panes[0] === "settings" &&
+      (props.threads?.side.tabs.length ?? 0) === 0 &&
+      sidePanel().files.length === 0,
+  );
+
   return {
     sideThreadOpen,
     threadSearch,
@@ -2904,6 +2915,7 @@ export function createConversationViewScope(props: ConversationProps) {
     toggleSubagentPanel,
     sidePanel,
     sidePanelOpen,
+    singleSettingsPane,
     setSidePanelMaximized,
     openSidePanelPane,
     toggleSidePanel,

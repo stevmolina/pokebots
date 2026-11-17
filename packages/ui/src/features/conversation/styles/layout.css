@@ -37,7 +37,7 @@
 .conversation-panel[data-settings-panel]:where(:not(.browser-panel-active)) > .composer-wrap {
   padding-inline: max(
     var(--openbot-space-1-5),
-    calc((100% - var(--settings-panel-width, 360px) - var(--conversation-column-width) - 12px) / 2)
+    calc((100% - var(--settings-panel-width, 459px) - var(--conversation-column-width) - 12px) / 2)
   );
 }
 

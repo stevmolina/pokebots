@@ -4,9 +4,11 @@ import { AGENT_NOTIFICATION_LEVELS_CAPABILITY } from "@openbot/contracts/team-pr
 import { BROWSER_PROFILES_CAPABILITY } from "@openbot/contracts/team-protocol/browser-profiles-v1";
 import { ROUTINE_RUN_COMMAND_CAPABILITY } from "@openbot/contracts/team-protocol/routine-run-command-v1";
 import { classifyFailure } from "@openbot/telemetry";
+import { buttonVariants, DropdownMenu, Folder, Maximize2, Minimize2, Plus } from "@openbot/ui";
 import { PanelResizer } from "@openbot/ui/components/PanelResizer";
-import { settingsPanelMaxWidth } from "@openbot/ui/components/SettingsPanel";
+import { SettingsLinkGroup, SettingsLinkRow, settingsPanelMaxWidth } from "@openbot/ui/components/SettingsPanel";
 import { BROWSER_NEW_TAB_URL } from "@openbot/ui/features/browser/browser-suggestions";
+import { ComputerIcon } from "@openbot/ui/features/conversation/ConversationIcons";
 import { SidePanelHeader, SidePanelLauncher, type SidePanelPane } from "@openbot/ui/features/conversation/SidePanel";
 import { SideQuestionPanel } from "@openbot/ui/features/conversation/SideQuestionPanel";
 import { SubagentPanel } from "@openbot/ui/features/conversation/Subagents";
@@ -51,7 +53,18 @@ const loadAgentSettingsPanel = () => import("./AgentSettingsPanel");
 
 import { type HostFolderPick, HostFolderPicker } from "@openbot/ui/features/conversation/HostFolderPicker";
 import { Portal } from "@solidjs/web";
-import { createEffect, createMemo, createSignal, Loading, lazy, onSettled, Show, untrack } from "solid-js";
+import {
+  createEffect,
+  createMemo,
+  createSignal,
+  createUniqueId,
+  For,
+  Loading,
+  lazy,
+  onSettled,
+  Show,
+  untrack,
+} from "solid-js";
 import {
   agentFolderCalls,
   agentInstructionsCalls,
@@ -207,6 +220,8 @@ export function ConversationPanels(panelProps: { onOpenUsage?: ((trigger: HTMLBu
     activeRightPanel,
     sidePanel,
     sidePanelOpen,
+    singleSettingsPane,
+    hideBrowserPanel,
     setSidePanelMaximized,
     openSidePanelPane,
     toggleSidePanel,
@@ -539,10 +554,22 @@ export function ConversationPanels(panelProps: { onOpenUsage?: ((trigger: HTMLBu
   };
   const sideThreadTabs = () => props.threads?.side.tabs ?? [];
   const moveSideThread = (id: string, index: number) => props.threads?.side.onMove(id, index);
+  const toolsTitleId = createUniqueId();
+  const browserOpenable = () => sidePanelPanes().includes("browser");
+  const filesOpenable = () => sidePanelPanes().includes("files");
+  const closedToolPanes = () =>
+    (["browser", "files"] as const).filter(
+      (pane) => sidePanelPanes().includes(pane) && !sidePanel().panes.includes(pane),
+    );
+  const openNewBrowserTab = () => {
+    // The new tab shows in the Browser pane, so the pane comes to the front first.
+    openSidePanelPane("browser");
+    void openBrowserAddress(BROWSER_NEW_TAB_URL, true);
+  };
   return (
     <>
       <HostFolderPicker request={folderPick()} browse={browsePickFolders} onDone={finishFolderPick} />
-      <Show when={sidePanelOpen()}>
+      <Show when={sidePanelOpen() && !singleSettingsPane()}>
         <SidePanelHeader
           panes={sidePanel().panes}
           selected={selectedPane()}
@@ -568,11 +595,7 @@ export function ConversationPanels(panelProps: { onOpenUsage?: ((trigger: HTMLBu
           }}
           onToggleMaximized={() => setSidePanelMaximized(!sidePanel().maximized)}
           onCollapse={toggleSidePanel}
-          onNewBrowserTab={() => {
-            // The new tab shows in the Browser pane, so the pane comes to the front first.
-            openSidePanelPane("browser");
-            void openBrowserAddress(BROWSER_NEW_TAB_URL, true);
-          }}
+          onNewBrowserTab={openNewBrowserTab}
         />
       </Show>
 
@@ -895,8 +918,81 @@ export function ConversationPanels(panelProps: { onOpenUsage?: ((trigger: HTMLBu
               modelOptions={props.modelOptions}
               working={agentActivity() === "Working"}
               maxWidth={sidePanelMaxWidth}
-              onClose={() => closeSidePanelPane("settings")}
+              onClose={() => (singleSettingsPane() ? hideBrowserPanel() : closeSidePanelPane("settings"))}
               onWidthChange={setSidePanelWidth}
+              tools={
+                <section class="settings-link-section" aria-labelledby={toolsTitleId}>
+                  <div class="settings-link-section-header">
+                    <h3 id={toolsTitleId} class="settings-link-section-title">
+                      {t("agentSettings.groups.tools")}
+                    </h3>
+                    <Show when={browserOpenable() || closedToolPanes().length > 0}>
+                      <DropdownMenu.Root placement="bottom-end" gutter={4}>
+                        <DropdownMenu.Trigger
+                          class={buttonVariants({
+                            variant: "ghost",
+                            size: "icon-sm",
+                            class: "agent-settings-tools-add",
+                          })}
+                          aria-label={t("conversation.sidePanel.add")}
+                          title={t("conversation.sidePanel.add")}
+                        >
+                          <Plus aria-hidden="true" />
+                        </DropdownMenu.Trigger>
+                        <DropdownMenu.Portal>
+                          <DropdownMenu.Content>
+                            <Show when={browserOpenable()}>
+                              <DropdownMenu.Item class="side-panel-menu-item" onSelectAfterClose={openNewBrowserTab}>
+                                <Plus aria-hidden="true" />
+                                {t("browser.newTab")}
+                              </DropdownMenu.Item>
+                              <Show when={closedToolPanes().length > 0}>
+                                <DropdownMenu.Separator />
+                              </Show>
+                            </Show>
+                            <For each={closedToolPanes()}>
+                              {(pane) => (
+                                <DropdownMenu.Item
+                                  class="side-panel-menu-item"
+                                  onSelectAfterClose={() => openSidePanelPane(pane)}
+                                >
+                                  <Show when={pane === "browser"} fallback={<Folder aria-hidden="true" />}>
+                                    <ComputerIcon />
+                                  </Show>
+                                  {t(`conversation.sidePanel.pane.${pane}`)}
+                                </DropdownMenu.Item>
+                              )}
+                            </For>
+                          </DropdownMenu.Content>
+                        </DropdownMenu.Portal>
+                      </DropdownMenu.Root>
+                    </Show>
+                  </div>
+                  <SettingsLinkGroup inset class="agent-settings-overview-card">
+                    <Show when={browserOpenable()}>
+                      <SettingsLinkRow
+                        icon={<ComputerIcon />}
+                        label={t("conversation.sidePanel.pane.browser")}
+                        onClick={() => openSidePanelPane("browser")}
+                      />
+                    </Show>
+                    <Show when={filesOpenable()}>
+                      <SettingsLinkRow
+                        icon={<Folder aria-hidden="true" />}
+                        label={t("conversation.sidePanel.pane.files")}
+                        onClick={() => openSidePanelPane("files")}
+                      />
+                    </Show>
+                    <SettingsLinkRow
+                      icon={sidePanel().maximized ? <Minimize2 aria-hidden="true" /> : <Maximize2 aria-hidden="true" />}
+                      label={t(
+                        sidePanel().maximized ? "conversation.sidePanel.restore" : "conversation.sidePanel.maximize",
+                      )}
+                      onClick={() => setSidePanelMaximized(!sidePanel().maximized)}
+                    />
+                  </SettingsLinkGroup>
+                </section>
+              }
               onUpdateAgent={props.onUpdateAgent}
               onUpdateRuntimeSettings={updateRuntimeSettings}
               onSetAgentAvatar={props.onSetAgentAvatar}
