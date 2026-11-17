@@ -46,13 +46,6 @@
   white-space: nowrap;
 }
 
-/* Copy is a shared icon button; its icon matches the other header icons. */
-.file-preview-copy svg {
-  width: 15px;
-  height: 15px;
-  stroke-width: 2;
-}
-
 .file-preview-file-icon {
   width: 15px;
   height: 15px;
@@ -344,4 +337,38 @@
 /* Back points to the start side. */
 :dir(rtl) .file-preview-header svg[class~="lucide-arrow-left"] {
   transform: scaleX(-1);
+}
+
+/* One slim bar. In the side panel the tab already names the file, so the header gives its row to the
+ * page and floats the "..." menu over the top end corner. Back keeps its place beside it. */
+/* The edge frame rule that makes this header relative has four classes, so this one has five. */
+.side-panel-docked .file-preview-panel.browser-panel > .file-preview-header.file-preview-header {
+  position: absolute;
+  inset-block-start: 8px;
+  inset-inline-end: 12px;
+  z-index: 2;
+  height: auto;
+  border-bottom: 0;
+  padding: 0;
+  pointer-events: none;
+}
+
+.side-panel-docked .file-preview-panel > .file-preview-header > h2 {
+  display: none;
+}
+
+.side-panel-docked .file-preview-panel > .file-preview-header > .browser-toolbar-button {
+  pointer-events: auto;
+  border-radius: var(--openbot-radius-pill);
+  background: var(--openbot-bg-surface-raised);
+  box-shadow: var(--openbot-shadow-raised);
+  opacity: 0.72;
+  transition: opacity var(--openbot-duration-normal) var(--openbot-ease-out);
+}
+
+.side-panel-docked
+  .file-preview-panel
+  > .file-preview-header
+  > .browser-toolbar-button:is(:hover, :focus-visible, [data-expanded]) {
+  opacity: 1;
 }
