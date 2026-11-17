@@ -17,6 +17,9 @@ export const AGENT_COMPUTER_CONTEXT_PATTERN = /^[a-z0-9-]{1,32}$/u;
 export const AGENT_COMPUTER_BASH_TIMEOUT_MAX = 600;
 /** The API's file cap. */
 export const AGENT_COMPUTER_FILE_LIMIT = 1024 * 1024;
+/** Machine sizes: standard is 2 vCPU, large is 8 vCPU. An older API ignores the size and answers without one. */
+export const AGENT_COMPUTER_SIZES = ["standard", "large"] as const;
+export type AgentComputerSize = (typeof AGENT_COMPUTER_SIZES)[number];
 
 /**
  * A failed call. `code` is the API's error code, or `NETWORK_ERROR`, `NOT_CONNECTED` and
@@ -31,6 +34,7 @@ export class AgentComputerFailed extends Schema.TaggedError<AgentComputerFailed>
 const machineSchema = Schema.Struct({
   id: Schema.String,
   context: Schema.String,
+  size: Schema.optional(Schema.String),
   status: Schema.String,
   deadline_at: Schema.NullOr(Schema.String),
   live_view_url: Schema.NullOr(Schema.String),
@@ -43,6 +47,8 @@ const listSchema = Schema.Struct({ machines: Schema.Array(machineSchema) });
 const startSchema = Schema.Struct({
   id: Schema.String,
   context: Schema.String,
+  size: Schema.optional(Schema.String),
+  size_note: Schema.optional(Schema.String),
   existing: Schema.Boolean,
   resumed: Schema.Boolean,
   other_contexts: Schema.optional(Schema.Array(Schema.String)),
@@ -52,6 +58,7 @@ const startSchema = Schema.Struct({
     Schema.Struct({
       plan: Schema.String,
       minutes_remaining: Schema.NullOr(Schema.Number),
+      rate: Schema.optional(Schema.Number),
       upgrade_url: Schema.optional(Schema.String),
       manage_url: Schema.optional(Schema.String),
     }),
@@ -119,8 +126,12 @@ export class AgentComputerApi {
     return machines;
   });
 
-  readonly start = Effect.fn("AgentComputerApi.start")(function* (this: AgentComputerApi, context: string) {
-    const answer = yield* this.#json("POST", "/machines/start", { context }, 300_000);
+  readonly start = Effect.fn("AgentComputerApi.start")(function* (
+    this: AgentComputerApi,
+    context: string,
+    size?: AgentComputerSize,
+  ) {
+    const answer = yield* this.#json("POST", "/machines/start", size ? { context, size } : { context }, 300_000);
     const started = yield* decode(startSchema, answer);
     registerSecretValue(started.live_view_url);
     if (started.billing?.upgrade_url) registerSecretValue(started.billing.upgrade_url);

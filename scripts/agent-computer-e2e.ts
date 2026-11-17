@@ -12,6 +12,7 @@ import {
   handleAgentComputerTool,
 } from "../src/backend/agent-computer/agent-computer-tools";
 import { codingComputer } from "../src/backend/agent-tasks/coding-computer";
+import type { DynamicToolResult } from "../src/backend/protocol";
 import { AgentComputerService } from "../src/main/agent-computer-service";
 import {
   decodeAgentComputerMachineListFromHost,
@@ -53,6 +54,10 @@ const service = () => new AgentComputerService({ path, cipher, baseUrl: fixture.
 const account = service();
 const workspace = join(root, "workspace");
 await mkdir(workspace);
+const textOf = (result: DynamicToolResult) => {
+  const item = result.contentItems[0];
+  return item?.type === "inputText" ? item.text : "{}";
+};
 const tool = (name: AgentComputerToolName, args: unknown, approve = false) =>
   run(
     handleAgentComputerTool(account.api, {
@@ -99,6 +104,17 @@ try {
   assert.equal(huge.truncated, true);
   assert.ok(huge.stdout.length <= 64 * 1024 && huge.stdout.endsWith("END"));
   assert.equal(fixture.requests.filter((request) => request.body.context === "exhausted").length, 1);
+  const large = JSON.parse(textOf(await tool("computer_start", { context: "render", size: "large" })));
+  assert.equal(large.size, "large");
+  assert.equal(large.billing.rate, 2.5);
+  assert.ok(fixture.requests.some((r) => r.body.context === "render" && r.body.size === "large"));
+  const kept = JSON.parse(textOf(await tool("computer_start", { context: "demo-project", size: "large" })));
+  assert.equal(kept.size, "standard");
+  assert.match(kept.size_note, /new context/u);
+  // A start without size sends no size, so an older API sees the request it always saw.
+  assert.equal(fixture.requests.find((r) => r.body.context === "demo-project")?.body.size, undefined);
+  assert.match(JSON.stringify(await tool("computer_start", { context: "render", size: "huge" })), /error/u);
+  checks.push("start passes size, reports the machine's real size, size_note and billing rate");
   assert.match(JSON.stringify(await tool("computer_start", { context: "malformed" })), /BAD_RESPONSE/u);
   assert.match(JSON.stringify(await tool("computer_start", { context: "INVALID" })), /error/u);
   assert.match(JSON.stringify(await tool("computer_bash", { id: "demo-machine", cmd: "paused" })), /MACHINE_PAUSED/u);
