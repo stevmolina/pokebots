@@ -6,9 +6,17 @@
 @import "../../styles.css";
 @import "./web-phone.css";
 @import "./web-phone-chat.css";
+@import "./web-phone-list.css";
 @import "./web-app.css";
 @source "../../";
 
 /* These files only run in desktop windows. Shared renderer and UI sources remain enabled. */
 @source not "../agent-dock";
 @source not "../../preview";
+
+/* A backdrop paints at -1 under the page, so the page is clear while it shows. The root keeps the
+ * canvas color behind the backdrop. (Upstream adds this beside `.web-app`, which the fork moved to
+ * `web-app.css`.) */
+:root[data-openbot-window-glass] .web-app {
+  background: transparent;
+}

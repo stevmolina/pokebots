@@ -1,13 +1,18 @@
 import {
   decodeAgentComputerMachineListFromHost,
   decodeAgentComputerStatusFromHost,
+  decodeComputerManagementResultFromHost,
 } from "../remote-agent-computer-decoding";
 // The Agent Computer account of a server: read its status, connect an API key, test it, disconnect,
 // and list its machines. Each endpoint goes to this computer's service or to a joined server's
 // `agent-computer-v1` routes.
 
-import { AGENT_COMPUTER_KEY_INPUT_LIMIT } from "@openbot/contracts/ipc";
+import { AGENT_COMPUTER_KEY_INPUT_LIMIT, decodeComputerManagementInput } from "@openbot/contracts/ipc";
 import { AGENT_COMPUTER_CAPABILITY, AGENT_COMPUTER_ROUTES } from "@openbot/contracts/team-protocol/agent-computer-v1";
+import {
+  COMPUTER_MANAGEMENT_CAPABILITY,
+  COMPUTER_MANAGEMENT_ROUTE,
+} from "@openbot/contracts/team-protocol/computer-management-v1";
 import type { TeamCurrentCapability } from "@openbot/contracts/team-protocol/current";
 import { sourceText } from "@openbot/i18n/source";
 import { registerSecretValue } from "@openbot/logging";
@@ -22,7 +27,7 @@ import { scopedHandler, scopedQueryHandler } from "./scoped-handler";
 import { stringPayload } from "./validation";
 
 export interface AgentComputerIpcDependencies {
-  agentComputer: Pick<AgentComputerService, "status" | "connect" | "test" | "disconnect" | "machines">;
+  agentComputer: Pick<AgentComputerService, "status" | "connect" | "test" | "disconnect" | "machines" | "manage">;
   remoteServers: {
     supportsCapability(serverId: string, capability: TeamCurrentCapability): boolean;
     request<T>(
@@ -48,6 +53,14 @@ export function agentComputerIpcHandlers({
 
   return {
     agentComputer: {
+      manage: scopedHandler(decodeComputerManagementInput, {
+        local: (input) => runCauseEffect(agentComputer.manage(input)),
+        remote: (input, serverId) => {
+          if (!remoteServers.supportsCapability(serverId, COMPUTER_MANAGEMENT_CAPABILITY))
+            throw new Error(sourceText("error.team.connectorsUnsupported"));
+          return post(serverId, COMPUTER_MANAGEMENT_ROUTE, decodeComputerManagementResultFromHost, { ...input });
+        },
+      }),
       status: scopedQueryHandler({
         local: () => agentComputer.status(),
         remote: (serverId) => post(serverId, AGENT_COMPUTER_ROUTES.status, decodeAgentComputerStatusFromHost),

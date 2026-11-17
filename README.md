@@ -461,6 +461,7 @@ See [web client delivery](docs/web-client.md) for the release gate and focused c
 | `bun run test:related -- <source>...` | Run, on one worker, only the test files that import the named source files. |
 | `bun run test:browser-agent-session` | Check that an agent with its own browser session, and the agents of a named browser profile, keep their cookies and storage apart, across popups, a restart, a deleted profile, and a clear. |
 | `bun run test:browser-profile-agents` | Check that the shared profile, an agent's own session, a named profile, and the delete of a named profile change the stored browser profile of an agent, and that the choice stays after a restart. |
+| `bun run test:browser-takeover-deadline` | Run the real attention registry past a provider's tool-call deadline (#9689): a password or takeover card stays open after its call gets the waiting answer, the next call for the tab waits on the same card, a result between calls reaches that call, and the end of the turn closes the card. Offline; writes `.openbot-build/browser-takeover-deadline-e2e/report.json`. |
 | `bun run test:browser` | Run the complete local embedded-browser smoke test, including cross-process persistence. Use `--scenario=controls`, `--scenario=tool-boundary`, `--scenario=evaluation`, `--scenario=wait-deadlines`, or `--scenario=popups` for one isolated scenario. |
 | `bun run test:codex` | Probe the real CLI handshake and account without starting a paid turn. |
 | `bun run test:durations` | Re-record how long each desktop test file takes. CI splits its shards by this table, so run it when the two shards stop finishing together. |
@@ -747,3 +748,12 @@ show the update phase, the staged version, and each tenant's work state. No Git 
 or compilation is required on the host.
 Normal desktop users need only the DMG. See the [host deployment guide](docs/multi-tenant-hosting.md)
 for existing-user enrollment, password handling, package upgrades, and required target-host checks.
+
+## Brain
+
+Open **More → Brain** in the sidebar. Connect **Second Brain** in Apps first, then sign in to that
+MCP connection. Brain reuses this sign-in. Choose a brain to search facts, read their sources and
+history, browse pages, add or download files, record or fix facts, and find past agent chats.
+A fact change shows whether it opened a pull request or committed directly. File adds from the
+screen have a 512 KB limit. Brain content stays in memory. For a joined server, update the host
+to a version with `brain-v1`; older hosts do not show Brain.

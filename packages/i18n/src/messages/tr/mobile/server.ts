@@ -458,7 +458,7 @@ export const messages = {
   "mobile.server.settings.timezoneNoMatch": "Bu aramayla eşleşen saat dilimi yok.",
   "mobile.server.settings.timezoneMore": "Diğer saat dilimlerini görmek için adın devamını yazın.",
   "mobile.server.settings.timezoneDescription":
-    "Mesaj gönderenin saat dilimini belirtmediğinde yeni rutinler bu saat dilimini kullanır.",
+    "Mesaj gönderenin saat dilimini belirtmediğinde yeni rutinler bu saat dilimini kullanır. Bir sunucuda tarayıcı da bir sonraki yeniden başlatmadan sonra bunu kullanır.",
   "mobile.server.settings.timezoneLoading": "Saat dilimi yükleniyor…",
   "mobile.server.settings.timezoneLoadFailed": "Sunucunun saat dilimi yüklenemedi.",
   "mobile.server.settings.timezoneSaveFailed": "Saat dilimi kaydedilemedi. Tekrar deneyin.",
@@ -716,6 +716,31 @@ export const messages = {
   "mobile.server.connectors.protonPass.keyHelp":
     "Proton Pass'te yalnızca OpenBot ile paylaştığınız kasayı okuyabilen bir erişim anahtarı oluşturun ve buraya yapıştırın. Anahtarı {host} saklar; bu telefon saklamaz.",
   "mobile.server.connectors.protonPass.keyPlaceholder": "pst_…",
+  "mobile.server.connectors.keeper.title": "Keeper",
+  "mobile.server.connectors.keeper.description":
+    "{host} üzerindeki OpenBot ile bir Keeper klasörü paylaşın; böylece {host} üzerindeki ajanlar onun tarayıcısında sitelere giriş yapabilir.",
+  "mobile.server.connectors.keeper.accountHelp":
+    "Keeper e-posta adresinizi ve ana parolanızı girin. Bunlar {host} cihazına bir kez gönderilir ve {host} bunları Keeper Commander'a verir. Bu telefon saklamaz.",
+  "mobile.server.connectors.keeper.email": "E-posta",
+  "mobile.server.connectors.keeper.masterPassword": "Ana parola",
+  "mobile.server.connectors.keeper.signingIn": "{host}, Keeper'da oturum açıyor…",
+  "mobile.server.connectors.keeper.makingFolder": "{host} paylaşılan klasörü oluşturuyor…",
+  "mobile.server.connectors.keeper.code": "Kod",
+  "mobile.server.connectors.keeper.twoFactorHint":
+    "Keeper iki adımlı doğrulama kodu istiyor. Kimlik doğrulama uygulamanızdaki veya kısa mesajınızdaki kodu girin. Kod {host} cihazına bir kez gönderilir; bu telefon saklamaz.",
+  "mobile.server.connectors.keeper.deviceHint":
+    "Keeper, diğer cihazlarınıza bir onay e-postası ve bildirim gönderdi. Bu cihazı orada onaylayın, sonra Devam'a basın. Ya da e-postadaki kodu yazın.",
+  "mobile.server.connectors.keeper.codeWrong": "Kod doğru değil. Yeniden deneyin.",
+  "mobile.server.connectors.keeper.folderTitle": "Paylaşılan klasör",
+  "mobile.server.connectors.keeper.folderFooter":
+    "Ajanların bir girişle oturum açmasına izin vermek için girişi Keeper'da bu klasöre taşıyın. Durdurmak için kaldırın.",
+  "mobile.server.connectors.keeper.plan":
+    "Keeper yöneticiniz bu hesap için Keeper Commander'a izin vermiyor. İzin vermesini isteyin, sonra yeniden bağlanın.",
+  "mobile.server.connectors.keeper.expiredTitle": "Keeper oturumu sona erdi",
+  "mobile.server.connectors.keeper.expiredBody":
+    "Siz yeniden bağlanana kadar {host} üzerindeki ajanlar paylaşılan oturum bilgilerinizle oturum açamaz.",
+  "mobile.server.connectors.keeper.disconnectBody":
+    "{host}, Keeper oturumunu sonlandırır. Klasör ve içindeki oturum bilgileri Keeper kasanızda kalır.",
   "mobile.server.connectors.passwordManager.unavailable": "{name} bu sunucuda kullanılamıyor.",
   "mobile.server.connectors.passwordManager.howItWorks":
     "Bu telefonda {name} hesabınıza giriş yapın. Ardından {host} paylaşılan bir kasa ve onun için salt okunur bir erişim anahtarı oluşturur ve yalnızca bu anahtarı saklar. Ajanlar hiçbir zaman parola görmez.",
@@ -915,6 +940,9 @@ export const messages = {
   "mobile.server.connectors.whatsapp.workingMessage": "“Üzerinde çalışılıyor…” mesajı",
   "mobile.server.connectors.whatsapp.workingMessageDescription":
     "OpenBot bunu ajan çalışırken gönderir, sonra yanıtla değiştirir. Yalnızca yanıtı göndermek için kapatın.",
+  "mobile.server.connectors.whatsapp.statusReactions": "Durum tepkileri",
+  "mobile.server.connectors.whatsapp.statusReactionsDescription":
+    "OpenBot bir mesaj geldiğinde 👀, yanıt hazır olduğunda ✅ tepkisi verir. Hiç tepki göndermemek için kapatın.",
   "mobile.server.connectors.whatsapp.orchestratorTitle": "WhatsApp Düzenleyicisi",
   "mobile.server.connectors.whatsapp.orchestratorDescription":
     "Bu ajan bağlı tüm numaralarınızdan OpenBot'a gelen mesajları alır. Kısa olanları kendisi yanıtlar, diğer işleri doğru ajana iletir ve WhatsApp'ta yanıt verir.",
@@ -1140,6 +1168,22 @@ export const messages = {
   "mobile.server.providers.compactWindowDefault": "Claude Code varsayılanı",
   "mobile.server.providers.compactWindowTokens": "{size} token",
   "mobile.server.providers.compactWindowLoadFailed": "Bu sunucunun sıkıştırma boyutu yüklenemedi.",
+  "mobile.server.environment.row": "Değişkenler",
+  "mobile.server.environment.title": "Ortam",
+  "mobile.server.environment.hint":
+    "Her {name} sürecinin aldığı API anahtarları, temel URL’ler ve diğer ayarlar. Bir değişiklik, süren turlar bitince geçerli olur.",
+  "mobile.server.environment.codexHint":
+    "OPENAI_BASE_URL, anahtar olarak OPENAI_API_KEY ile ChatGPT’nin model isteklerini bu adrese gönderir.",
+  "mobile.server.environment.shellNote": "Ajanların çalıştırdığı komutlar bu değerleri okuyabilir.",
+  "mobile.server.environment.add": "Değişken ekle",
+  "mobile.server.environment.namePlaceholder": "VARIABLE_NAME",
+  "mobile.server.environment.valuePlaceholder": "Değer",
+  "mobile.server.environment.saved": "Kayıtlı",
+  "mobile.server.environment.sensitive": "Gizli",
+  "mobile.server.environment.remove": "Kaldır",
+  "mobile.server.environment.save": "Kaydet",
+  "mobile.server.environment.loadFailed": "{name} değişkenleri yüklenemedi.",
+  "mobile.server.environment.invalid": "Önce adları düzeltin.",
   "mobile.server.providers.disconnect": "Bağlantıyı kes",
   "mobile.server.providers.disconnectTitle": "{name} bağlantısı kesilsin mi?",
   "mobile.server.providers.disconnectBody":

@@ -1,4 +1,4 @@
-import { Button, buttonVariants, Pin, PinOff, Popover } from "@openbot/ui";
+import { Button, buttonVariants, ChevronRight, Pin, PinOff, Popover } from "@openbot/ui";
 import type { AgentProfile } from "@openbot/ui/data";
 import { ReplyQuote } from "@openbot/ui/features/conversation/ReplyQuote";
 import { useText } from "@openbot/ui/text";
@@ -34,6 +34,11 @@ export interface PinnedMessagesProps {
   openRequest?: number | undefined;
   /** The pin button stays in the header only as the anchor of the list. A screen reader skips it. */
   quiet?: boolean | undefined;
+  /**
+   * `row` is a row of the details pane: the pin icon, the title, the number of pins and a chevron. The list
+   * opens from it. The default is the icon button of the chat header.
+   */
+  variant?: "button" | "row" | undefined;
 }
 
 /**
@@ -76,15 +81,35 @@ export function PinnedMessages(props: PinnedMessagesProps) {
 
   return (
     <Popover.Root open={open()} onOpenChange={change} placement="bottom-end" gutter={6}>
-      <Popover.Trigger
-        class={`${buttonVariants({ variant: "ghost" })} header-panel-toggle pinned-messages-button no-drag`}
-        aria-label={t("chat.pins.title")}
-        title={t("chat.pins.title")}
-        aria-hidden={props.quiet ? "true" : undefined}
-        tabindex={props.quiet ? -1 : undefined}
+      <Show
+        when={props.variant === "row"}
+        fallback={
+          <Popover.Trigger
+            class={`${buttonVariants({ variant: "ghost" })} header-panel-toggle pinned-messages-button no-drag`}
+            aria-label={t("chat.pins.title")}
+            title={t("chat.pins.title")}
+            aria-hidden={props.quiet ? "true" : undefined}
+            tabindex={props.quiet ? -1 : undefined}
+          >
+            <Pin aria-hidden="true" class="size-[14px]" />
+          </Popover.Trigger>
+        }
       >
-        <Pin aria-hidden="true" class="size-[14px]" />
-      </Popover.Trigger>
+        <Popover.Trigger class={`${buttonVariants({ variant: "ghost" })} settings-link pinned-messages-row`}>
+          <span class="settings-link-label">
+            <span class="settings-link-icon">
+              <Pin aria-hidden="true" />
+            </span>
+            <span class="settings-link-text ui-text-truncate">{t("chat.pins.title")}</span>
+          </span>
+          <span class="settings-link-value">
+            <Show when={props.pins.length > 0}>
+              <span class="settings-link-text ui-text-truncate">{props.pins.length}</span>
+            </Show>
+            <ChevronRight aria-hidden="true" />
+          </span>
+        </Popover.Trigger>
+      </Show>
       <Popover.Portal>
         <Popover.Content
           ref={(element: HTMLDivElement) => {

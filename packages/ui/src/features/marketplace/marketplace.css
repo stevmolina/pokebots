@@ -1447,6 +1447,140 @@ html:active-view-transition-type(marketplace-group) [data-marketplace-shared] .m
   }
 }
 
+/* ---------------------------------------------------------------- modal */
+
+/* The Marketplace is a centered modal (about 900 x 700) over the dimmed window, as the settings are: radius 16, a
+   hairline and a soft shadow. The kinds are on the left, the listing on the right, Close in the top corner. */
+.skills-marketplace-overlay {
+  z-index: calc(var(--openbot-layer-dialog) + 1);
+}
+
+.ui-dialog-content.skills-marketplace {
+  --marketplace-modal-radius: 16px;
+  --marketplace-inset: var(--openbot-space-8);
+  --marketplace-hairline: color-mix(in srgb, var(--openbot-text-primary) 9%, transparent);
+  position: fixed;
+  z-index: calc(var(--openbot-layer-dialog) + 2);
+  inset: 0;
+  width: min(900px, calc(100vw - 2 * var(--openbot-space-6)));
+  height: min(700px, calc(100dvh - 2 * var(--openbot-space-6)));
+  margin: auto;
+  grid-template-columns: 224px minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr);
+  outline: 0;
+  border: 1px solid var(--marketplace-hairline);
+  border-radius: var(--marketplace-modal-radius);
+  background: var(--openbot-bg-canvas);
+  box-shadow:
+    0 24px 56px -16px color-mix(in srgb, var(--openbot-text-primary) 22%, transparent),
+    0 6px 16px -6px color-mix(in srgb, var(--openbot-text-primary) 12%, transparent);
+  animation: marketplace-modal-in var(--openbot-duration-normal) var(--openbot-ease-out);
+}
+
+@keyframes marketplace-modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.985);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-dialog-content.skills-marketplace {
+    animation: none;
+  }
+}
+
+/* The kinds: the sidebar surface, a hairline at its end. */
+.ui-dialog-content.skills-marketplace .marketplace-nav {
+  grid-row: 1 / -1;
+  grid-column: 1;
+  border-inline-end-color: var(--marketplace-hairline);
+  background: var(--openbot-bg-sidebar);
+}
+
+.ui-dialog-content.skills-marketplace .marketplace-nav-title {
+  font-size: var(--openbot-text-xl);
+  line-height: var(--openbot-leading-xl);
+}
+
+/* The path of an open page, in the first row of the listing. It stays hidden while the listing is the list. */
+.ui-dialog-content.skills-marketplace .skills-marketplace-topbar {
+  grid-column: 2;
+  grid-row: 1;
+  min-height: 0;
+  padding-block: var(--openbot-space-3) 0;
+  padding-inline: var(--marketplace-inset) calc(var(--openbot-control-md) + var(--openbot-space-6));
+  border-bottom: 0;
+}
+
+.ui-dialog-content.skills-marketplace .skills-marketplace-topbar:not(:has(*)) {
+  display: none;
+}
+
+.ui-dialog-content.skills-marketplace .skills-marketplace-body {
+  grid-row: 2;
+  grid-column: 2;
+}
+
+.ui-dialog-content.skills-marketplace .marketplace-frame {
+  padding-block: var(--openbot-space-6) var(--openbot-space-8);
+}
+
+/* Close: a 32 px ghost circle in the top corner of the modal. */
+.skills-marketplace-close.ui-button {
+  position: absolute;
+  z-index: 2;
+  inset-block-start: var(--openbot-space-3);
+  inset-inline-end: var(--openbot-space-3);
+  width: var(--openbot-control-md);
+  height: var(--openbot-control-md);
+  border-radius: var(--openbot-radius-pill);
+  background: color-mix(in srgb, var(--openbot-text-primary) 6%, transparent);
+  color: var(--openbot-text-secondary);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .skills-marketplace-close.ui-button:hover {
+    background: color-mix(in srgb, var(--openbot-text-primary) 9%, transparent);
+    color: var(--openbot-text-primary);
+  }
+}
+
+/* At 720 px and below the modal fills the screen, and the kinds are one row above the listing. */
+@media (max-width: 720px) {
+  .ui-dialog-content.skills-marketplace {
+    width: 100vw;
+    height: 100dvh;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto minmax(0, 1fr);
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .ui-dialog-content.skills-marketplace .marketplace-nav {
+    grid-row: 2;
+    grid-column: 1;
+    padding-inline-end: calc(var(--openbot-control-md) + var(--openbot-space-6));
+    border-bottom: 1px solid var(--marketplace-hairline);
+  }
+
+  .ui-dialog-content.skills-marketplace .skills-marketplace-topbar {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .ui-dialog-content.skills-marketplace .skills-marketplace-body {
+    grid-row: 3;
+    grid-column: 1;
+  }
+
+  /* The kinds stay on one line each, so the row scrolls instead of wrapping a name. */
+  .ui-dialog-content.skills-marketplace .ui-button.marketplace-nav-item {
+    white-space: nowrap;
+  }
+}
+
 /* Last, because it is the most specific icon rule: every button icon in the window is 16px. */
 .skills-marketplace .ui-button > svg,
 .marketplace-search > svg {

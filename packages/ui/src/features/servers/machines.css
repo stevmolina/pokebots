@@ -328,3 +328,20 @@
   align-items: center;
   gap: var(--openbot-space-2);
 }
+
+.computer-details {
+  padding: var(--openbot-space-3);
+  color: var(--openbot-text-secondary);
+  font-size: var(--openbot-text-sm);
+}
+.computer-details summary {
+  cursor: pointer;
+}
+.computer-screenshot {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+.agent-computer-actions {
+  flex-wrap: wrap;
+}

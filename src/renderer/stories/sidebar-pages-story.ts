@@ -24,6 +24,8 @@ export function storySidebarPages(
     onMachines: fn(),
     onMarketplace: fn(),
     onSettings: fn(),
+    onMobileApp: fn(),
+    onFollowX: fn(),
     onCollapse: fn(),
     shortcutPlatform: "mac",
     settingsShortcut: true,

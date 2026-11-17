@@ -24,6 +24,7 @@ import {
   CircleCheck,
   Clock3,
   ConfirmDialog,
+  HeartPulse,
   Input,
   ItemGroup,
   Link,
@@ -52,6 +53,7 @@ import { RoutineTriggerMenu } from "@openbot/ui/features/conversation/RoutineTri
 import { RoutineWebhookTrigger } from "@openbot/ui/features/conversation/RoutineWebhookTrigger";
 import {
   ROUTINE_EVERY_DAY,
+  ROUTINE_HEARTBEAT_SCHEDULE,
   type RoutineScheduleDraft,
   switchDraftKind,
 } from "@openbot/ui/features/conversation/routine-schedule-draft";
@@ -68,10 +70,10 @@ import { useText } from "@openbot/ui/text";
 import type { JSX } from "@solidjs/web";
 import { createEffect, createMemo, createSignal, createStore, For, onCleanup, Show, untrack } from "solid-js";
 import { actionToast } from "../../action-toast";
-import { type DesktopAnalyticsScope, desktopAnalytics } from "../../analytics";
+import { desktopAnalytics } from "../../analytics";
 import { writeClipboardText } from "../../clipboard";
-import { webhookFailureCode } from "../../webhook-failure-code";
 import { HostedUpsellRoutinesNotice, hostedUpsellRoutineCreated } from "../servers/hosted-server-upsell-controller";
+import { trackRoutineAction } from "./routine-analytics";
 import { isEventRoutine, routineListSummary, routineScheduleOf } from "./routine-summary";
 import type { RoutineEditorRecord, RoutinesPort } from "./routines-port";
 
@@ -380,20 +382,26 @@ export function AgentRoutinesSettings(props: AgentRoutinesSettingsProps) {
     void loadResultOptions();
   }
 
-  function createDraft(): void {
+  /**
+   * Opens a new routine. A heartbeat starts filled in: a quiet check every 2 hours in the agent's chat,
+   * with a checklist the person edits. It is a normal routine, so it saves on a joined server too.
+   */
+  function createDraft(preset?: "heartbeat"): void {
     draftBase = null;
     setConfirmDelete(false);
     setRuns([]);
     setError(null);
     draftRevision = 0;
-    setDirty(false);
+    // A filled-in draft is a change, so Save shows at once and leaving asks first.
+    setDirty(preset === "heartbeat");
+    const scheduleDraft = preset === "heartbeat" ? ROUTINE_HEARTBEAT_SCHEDULE : NEW_ROUTINE_SCHEDULE;
     setDraft({
       id: null,
-      name: "",
-      instruction: "",
+      name: preset === "heartbeat" ? t("routine.heartbeat.name") : "",
+      instruction: preset === "heartbeat" ? t("routine.heartbeat.instruction") : "",
       active: true,
-      schedule: routineScheduleFromDraft(NEW_ROUTINE_SCHEDULE),
-      scheduleDraft: NEW_ROUTINE_SCHEDULE,
+      schedule: routineScheduleFromDraft(scheduleDraft),
+      scheduleDraft,
       limitPolicy: "wait",
       missedPolicy: "skip",
       runIn: "chat",
@@ -729,6 +737,11 @@ export function AgentRoutinesSettings(props: AgentRoutinesSettingsProps) {
     );
   }
 
+  /** A heartbeat is one agent's check-in in its own chat, so a channel's list does not offer it. */
+  function heartbeatOffered(): boolean {
+    return props.port.ownerNoun === "agent";
+  }
+
   function scheduleKinds() {
     return props.port.onceSchedule ? ROUTINE_LOCAL_DRAFT_KINDS : ROUTINE_SAVED_DRAFT_KINDS;
   }
@@ -837,15 +850,29 @@ export function AgentRoutinesSettings(props: AgentRoutinesSettingsProps) {
             </Button>
           }
         >
-          <Button
-            variant="ghost"
-            type="button"
-            class="settings-panel-nav-button"
-            aria-label={t("routine.settings.create")}
-            onClick={createDraft}
-          >
-            <Plus aria-hidden="true" />
-          </Button>
+          <div class="agent-routines-header-actions">
+            <Show when={heartbeatOffered()}>
+              <Button
+                variant="ghost"
+                type="button"
+                class="settings-panel-nav-button"
+                aria-label={t("routine.heartbeat.add")}
+                title={t("routine.heartbeat.add")}
+                onClick={() => createDraft("heartbeat")}
+              >
+                <HeartPulse aria-hidden="true" />
+              </Button>
+            </Show>
+            <Button
+              variant="ghost"
+              type="button"
+              class="settings-panel-nav-button"
+              aria-label={t("routine.settings.create")}
+              onClick={() => createDraft()}
+            >
+              <Plus aria-hidden="true" />
+            </Button>
+          </div>
         </Show>
       </header>
       <div ref={scrollFades.bind} class={["agent-routines-body", scrollFades.classes()]} onScroll={scrollFades.measure}>
@@ -856,7 +883,31 @@ export function AgentRoutinesSettings(props: AgentRoutinesSettingsProps) {
               <Show when={!loading()} fallback={<p class="agent-routines-empty">{t("routine.settings.loading")}</p>}>
                 <Show
                   when={routines().length > 0}
-                  fallback={<p class="agent-routines-empty">{t("routine.settings.empty")}</p>}
+                  fallback={
+                    <>
+                      <p class="agent-routines-empty">{t("routine.settings.empty")}</p>
+                      <Show when={heartbeatOffered()}>
+                        <ItemGroup class="agent-routine-card agent-routine-starter">
+                          <div class="agent-routine-list-item">
+                            <Button
+                              variant="ghost"
+                              type="button"
+                              class="agent-routine-row"
+                              onClick={() => createDraft("heartbeat")}
+                            >
+                              <span class="agent-routine-status-icon-active">
+                                <HeartPulse aria-hidden="true" />
+                              </span>
+                              <span>
+                                <strong>{t("routine.heartbeat.add")}</strong>
+                                <small>{t("routine.heartbeat.description")}</small>
+                              </span>
+                            </Button>
+                          </div>
+                        </ItemGroup>
+                      </Show>
+                    </>
+                  }
                 >
                   <div class="agent-routines-list">
                     <For each={listedRoutines()} keyed={(routine) => routine.id}>
@@ -1286,21 +1337,4 @@ function validDraft(draft: RoutineDraft): boolean {
 
 function isBlankNewDraft(draft: RoutineDraft): boolean {
   return draft.id === null && draft.triggerKind === "schedule" && !draft.name.trim() && !draft.instruction.trim();
-}
-
-function trackRoutineAction(
-  analytics: DesktopAnalyticsScope,
-  action: "create" | "update" | "delete" | "test",
-  routine: Pick<RoutineDraft, "triggerKind" | "schedule">,
-  startedAt: number,
-  result: "succeeded" | "failed",
-  error?: unknown,
-): void {
-  analytics.track("routine_action", {
-    action,
-    trigger_type: routine.triggerKind === "webhook" ? "webhook" : routine.schedule.kind,
-    duration_ms: Math.max(0, Math.round(performance.now() - startedAt)),
-    result,
-    ...(result === "failed" ? { failure_code: webhookFailureCode(error, `${action}_failed`) } : {}),
-  });
 }

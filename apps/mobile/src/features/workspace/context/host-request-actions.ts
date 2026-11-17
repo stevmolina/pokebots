@@ -1,4 +1,5 @@
 import { isAvatarMimeType } from "@openbot/contracts/avatar-images";
+import { BRAIN_CAPABILITY, BRAIN_ROUTE, decodeBrainResponse } from "@openbot/contracts/brain";
 import {
   type AvatarColor,
   agentSpeed,
@@ -15,6 +16,7 @@ import {
   decodeAgentNewChatSettings,
   decodeAgentPlanCardSettings,
   decodeAgentSpeedSettings,
+  decodeAgentSteeringModels,
   decodeAgentTaskLimitSettings,
   decodeChannelRoutineRuns,
   decodeChannelRoutines,
@@ -38,7 +40,10 @@ import {
   STORAGE_CAPABILITY,
   type TeamRole,
   withFastServiceTiers,
+  withSteeringModels,
+  withWhatsAppStatusReactions,
   withWhatsAppWorkingMessages,
+  withWorkspaceOnlyLimit,
 } from "@openbot/contracts/ipc";
 import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
 import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
@@ -108,6 +113,10 @@ import { BROWSER_PROFILES_CAPABILITY } from "@openbot/contracts/team-protocol/br
 import { BROWSER_PROXIES_CAPABILITY } from "@openbot/contracts/team-protocol/browser-proxies-v1";
 import { BROWSING_MEMORY_CAPABILITY } from "@openbot/contracts/team-protocol/browsing-memory-v1";
 import { CHANNEL_ROUTES } from "@openbot/contracts/team-protocol/channels-v1";
+import {
+  COMPUTER_MANAGEMENT_CAPABILITY,
+  COMPUTER_MANAGEMENT_ROUTE,
+} from "@openbot/contracts/team-protocol/computer-management-v1";
 import { CONNECTORS_CAPABILITY } from "@openbot/contracts/team-protocol/connectors-v1";
 import {
   CONTEXT_COMPACT_CAPABILITY,
@@ -155,6 +164,7 @@ import { MCP_SIGN_IN_CAPABILITY } from "@openbot/contracts/team-protocol/mcp-sig
 import { MEMORY_REVIEW_CAPABILITY } from "@openbot/contracts/team-protocol/memory-review-v1";
 import { MESSAGE_DELETE_CAPABILITY, MESSAGE_DELETE_ROUTES } from "@openbot/contracts/team-protocol/message-delete-v1";
 import { MESSAGE_PINS_CAPABILITY } from "@openbot/contracts/team-protocol/message-pins-v1";
+import { MODEL_STEERING_CAPABILITY, MODEL_STEERING_ROUTES } from "@openbot/contracts/team-protocol/model-steering-v1";
 import { ONEPASSWORD_CONNECTOR_CAPABILITY } from "@openbot/contracts/team-protocol/onepassword-connector-v1";
 import { PASSWORD_MANAGERS_CAPABILITY } from "@openbot/contracts/team-protocol/password-managers-v1";
 import { PROVIDER_ACCOUNT_MODELS_CAPABILITY } from "@openbot/contracts/team-protocol/provider-account-models-v1";
@@ -162,6 +172,7 @@ import { PROVIDER_ACCOUNT_POOL_CAPABILITY } from "@openbot/contracts/team-protoc
 import { PROVIDER_ACCOUNTS_CAPABILITY } from "@openbot/contracts/team-protocol/provider-accounts-v1";
 import { PROVIDERS_ADMIN_CAPABILITY } from "@openbot/contracts/team-protocol/providers-v1";
 import { TEAM_QUEUE_EDIT_CAPABILITY } from "@openbot/contracts/team-protocol/queue-edit-v1";
+import { ROOMS_CAPABILITY, ROOMS_ROUTE } from "@openbot/contracts/team-protocol/rooms-v1";
 import { ROUTINE_RECOVERY_CAPABILITY } from "@openbot/contracts/team-protocol/routine-recovery-v1";
 import { ROUTINE_RESULTS_CAPABILITY } from "@openbot/contracts/team-protocol/routine-results-v1";
 import { SERVER_AUDIT_CAPABILITY } from "@openbot/contracts/team-protocol/server-audit-v1";
@@ -183,17 +194,20 @@ import { VAULT_IMPORT_CAPABILITY } from "@openbot/contracts/team-protocol/vault-
 import { VAULT_CAPABILITY } from "@openbot/contracts/team-protocol/vault-v1";
 import { VAULT_V2_CAPABILITY } from "@openbot/contracts/team-protocol/vault-v2";
 import { VAULT_V3_CAPABILITY } from "@openbot/contracts/team-protocol/vault-v3";
+import { VAULT_V4_CAPABILITY } from "@openbot/contracts/team-protocol/vault-v4";
 import { WHATSAPP_CONNECTOR_CAPABILITY } from "@openbot/contracts/team-protocol/whatsapp-connector-v1";
+import { WHATSAPP_STATUS_REACTIONS_CAPABILITY } from "@openbot/contracts/team-protocol/whatsapp-status-reactions-v1";
 import { WHATSAPP_WORKING_MESSAGE_CAPABILITY } from "@openbot/contracts/team-protocol/whatsapp-working-message-v1";
 import { WORKFLOWS_CHATS_CAPABILITY } from "@openbot/contracts/team-protocol/workflows-chats-v1";
 import { WORKFLOWS_GITHUB_CAPABILITY } from "@openbot/contracts/team-protocol/workflows-github-v1";
 import { WORKFLOWS_CAPABILITY } from "@openbot/contracts/team-protocol/workflows-v1";
+import { WORKSPACE_ONLY_PROCESS_LIMIT_CAPABILITY } from "@openbot/contracts/team-protocol/workspace-only-process-limit-v1";
 import type { MobileTextKey } from "@openbot/i18n/mobile";
 import { sourceText } from "@openbot/i18n/source";
 import { readHostAnalytics } from "@openbot/team-client";
 import { createAgentComputerPort } from "@openbot/team-client/agent-computer";
 import { readPlanLimits } from "@openbot/team-client/plan-limits";
-import type { RemoteFileUpload, RemoteLargeDownload } from "@openbot/team-client/remote-peer";
+import type { RemoteDownloadWatch, RemoteFileUpload, RemoteLargeDownload } from "@openbot/team-client/remote-peer";
 import { buildRoutineCalendar, type RoutineCalendarSource } from "@openbot/team-client/routine-calendar";
 import {
   addAgentFolder,
@@ -312,8 +326,10 @@ import {
   whatsappConnectorRemoveSender,
   whatsappConnectorSetEnabled,
   whatsappConnectorSetOwnNumber,
+  whatsappConnectorSetStatusReactions,
   whatsappConnectorSetWorkingMessage,
   whatsappConnectorStartLink,
+  whatsappConnectorStatusReactions,
   whatsappConnectorWorkingMessages,
 } from "@openbot/team-client/team-admin-requests";
 import {
@@ -370,6 +386,7 @@ import type {
   MobileWorkspaceState,
   ServerUpdateAccess,
 } from "@/features/workspace/model/workspace-types";
+import { decodeRoomsResultFromHost } from "./rooms-decoding";
 
 /** Sends one Team API request to a server; without a server ID it uses the active server. */
 export type WorkspaceRequest = <T>(
@@ -381,6 +398,7 @@ export type WorkspaceRequest = <T>(
   upload?: RemoteFileUpload,
   onUploadProgress?: (fraction: number) => void,
   largeDownload?: RemoteLargeDownload,
+  download?: RemoteDownloadWatch,
 ) => Promise<T>;
 
 /** The capability checks that only read what a host advertised. */
@@ -508,6 +526,7 @@ type HostRequestActions = Pick<
   | "connectPasswordManager"
   | "cancelPasswordManager"
   | "disconnectPasswordManager"
+  | "roomsRequest"
   | "agentComputer"
   | "loadVault"
   | "loadVaultCodes"
@@ -555,6 +574,7 @@ type HostRequestActions = Pick<
   | "answerWhatsAppRequest"
   | "setWhatsAppOwnNumber"
   | "setWhatsAppWorkingMessage"
+  | "setWhatsAppStatusReactions"
   | "loadServerUpdate"
   | "checkServerUpdate"
   | "startServerUpdate"
@@ -565,6 +585,7 @@ type HostRequestActions = Pick<
   | "loadHostedSites"
   | "deleteHostedSite"
   | "providerAdmin"
+  | "brainRequest"
   | "listMcpServers"
   | "saveMcpServer"
   | "removeMcpServer"
@@ -664,6 +685,8 @@ export function createHostRequestChecks(capabilities: ServerCapabilities): HostR
   const has = (serverId: string, capability: string) => hasCapability(capabilities, serverId, capability);
   return {
     canSearchFiles: (serverId) => has(serverId, CONVERSATION_FILE_SEARCH_CAPABILITY),
+    canUseRooms: (serverId) => has(serverId, ROOMS_CAPABILITY),
+    canUseBrain: (serverId) => has(serverId, BRAIN_CAPABILITY),
     canUseTasks: (serverId) => has(serverId, AGENT_TASKS_CAPABILITY),
     canEditThreads: (serverId) => has(serverId, AGENT_THREADS_CAPABILITY),
     canReadThreads: (serverId) => has(serverId, AGENT_THREAD_READS_CAPABILITY),
@@ -688,6 +711,7 @@ export function createHostRequestChecks(capabilities: ServerCapabilities): HostR
     canInstallAgentTemplate: (serverId) => has(serverId, AGENT_INSTALL_CAPABILITY),
     canEditQueue: (serverId) => has(serverId, TEAM_QUEUE_EDIT_CAPABILITY),
     canCreateArtifact: (serverId) => has(serverId, ARTIFACT_REQUEST_CAPABILITY),
+    canReadModelSteering: (serverId) => has(serverId, MODEL_STEERING_CAPABILITY),
     canRetryMessage: (serverId) => has(serverId, TEAM_MESSAGE_CLIENT_ID_CAPABILITY),
     canDeleteMessages: (serverId) => has(serverId, MESSAGE_DELETE_CAPABILITY),
     canMarkUnreadFrom: (serverId) => has(serverId, CONVERSATION_UNREAD_FROM_CAPABILITY),
@@ -820,7 +844,13 @@ export function createHostRequestActions({
     capabilityApi(serverId, PASSWORD_MANAGERS_CAPABILITY, "mobile.server.connectors.unsupported");
   const vaultAdmin = (serverId: string) => capabilityApi(serverId, VAULT_CAPABILITY, "mobile.server.vault.unsupported");
   const vaultVersion = (serverId: string) =>
-    has(serverId, VAULT_V3_CAPABILITY) ? 3 : has(serverId, VAULT_V2_CAPABILITY) ? 2 : 1;
+    has(serverId, VAULT_V4_CAPABILITY)
+      ? 4
+      : has(serverId, VAULT_V3_CAPABILITY)
+        ? 3
+        : has(serverId, VAULT_V2_CAPABILITY)
+          ? 2
+          : 1;
   const vaultImportAdmin = (serverId: string) =>
     capabilityApi(serverId, VAULT_IMPORT_CAPABILITY, "mobile.server.vault.unsupported");
   /** Any member imports agents. The host keeps each export under a token that only its sender uses. */
@@ -860,8 +890,20 @@ export function createHostRequestActions({
   }
   const checks = createHostRequestChecks(capabilities);
   const actions: HostRequestActions = {
-    agentComputer: createAgentComputerPort((serverId) =>
-      capabilityApi(serverId, AGENT_COMPUTER_CAPABILITY, "mobile.server.cloudComputers.unavailable"),
+    roomsRequest: (input, serverId) =>
+      capabilityApi(serverId, ROOMS_CAPABILITY, "rooms.unavailable")(
+        "POST",
+        ROOMS_ROUTE,
+        decodeRoomsResultFromHost,
+        input,
+      ),
+    agentComputer: createAgentComputerPort(
+      (serverId) => (method, path, decode, body) =>
+        capabilityApi(
+          serverId,
+          path === COMPUTER_MANAGEMENT_ROUTE ? COMPUTER_MANAGEMENT_CAPABILITY : AGENT_COMPUTER_CAPABILITY,
+          "mobile.server.cloudComputers.unavailable",
+        )(method, path, decode, body),
     ),
     // Async, so a host without the capability rejects the promise and does not throw at the call.
     restartServerItself: async (serverId) => runTeamRequest(requestHostRestart(restartAdmin(serverId))),
@@ -996,13 +1038,23 @@ export function createHostRequestActions({
     // `whatsapp-connector-v1` is frozen without the "Working on it…" setting: a second request reads
     // it. The numbers of an older host carry no setting, and the page then shows no switch.
     loadWhatsAppConnector: async (serverId) => {
-      const overview = whatsappConnectorOverview(whatsappAdmin(serverId));
-      if (!has(serverId, WHATSAPP_WORKING_MESSAGE_CAPABILITY)) return runTeamRequest(overview);
+      const api = whatsappAdmin(serverId);
       return runTeamRequest(
-        Effect.zipWith(
-          overview,
-          whatsappConnectorWorkingMessages(whatsappAdmin(serverId)),
-          withWhatsAppWorkingMessages,
+        Effect.all(
+          [
+            whatsappConnectorOverview(api),
+            has(serverId, WHATSAPP_WORKING_MESSAGE_CAPABILITY)
+              ? whatsappConnectorWorkingMessages(api)
+              : Effect.succeed(null),
+            has(serverId, WHATSAPP_STATUS_REACTIONS_CAPABILITY)
+              ? whatsappConnectorStatusReactions(api)
+              : Effect.succeed(null),
+          ],
+          { concurrency: "unbounded" },
+        ).pipe(
+          Effect.map(([overview, workingMessages, statusReactions]) =>
+            withWhatsAppStatusReactions(withWhatsAppWorkingMessages(overview, workingMessages), statusReactions),
+          ),
         ),
       );
     },
@@ -1035,6 +1087,13 @@ export function createHostRequestActions({
           input,
         ),
       ),
+    setWhatsAppStatusReactions: async (input, serverId) =>
+      runTeamRequest(
+        whatsappConnectorSetStatusReactions(
+          capabilityApi(serverId, WHATSAPP_STATUS_REACTIONS_CAPABILITY, "mobile.server.connectors.unsupported"),
+          input,
+        ),
+      ),
     loadServerUpdate: async (serverId, access) =>
       runTeamRequest(getHostUpdateStatus(updateApi(serverId, access), access === "member")),
     checkServerUpdate: async (serverId, access) =>
@@ -1053,6 +1112,8 @@ export function createHostRequestActions({
         capabilityApi(serverId, PROVIDERS_ADMIN_CAPABILITY, "mobile.server.providers.unsupported"),
         capabilities.get(serverId) ?? [],
       ),
+    brainRequest: (input, serverId) =>
+      capabilityApi(serverId, BRAIN_CAPABILITY, "error.brain.request")("POST", BRAIN_ROUTE, decodeBrainResponse, input),
     listMcpServers: async (serverId) => runTeamRequest(listMcpServers(mcpAdmin(serverId))),
     saveMcpServer: async (config, serverId) => runTeamRequest(saveMcpServer(mcpAdmin(serverId), { config })),
     removeMcpServer: async (mcpServerId, serverId) =>
@@ -1190,12 +1251,19 @@ export function createHostRequestActions({
         : has(serverId, AGENT_FAST_MODE_CAPABILITY)
           ? AGENT_FAST_MODE_ROUTES.models
           : null;
-      if (!fastRoute) return models;
-      const [options, fast] = await Promise.all([
+      // `model-steering-v1` marks the models of a custom agent that steers, as for desktop. It is
+      // optional: when the route fails, a custom agent shows Send now.
+      const [options, fast, steering] = await Promise.all([
         models,
-        request("POST", fastRoute, decodeAgentFastModels, {}, serverId).catch(() => []),
+        fastRoute ? request("POST", fastRoute, decodeAgentFastModels, {}, serverId).catch(() => []) : [],
+        has(serverId, MODEL_STEERING_CAPABILITY)
+          ? request("POST", MODEL_STEERING_ROUTES.list, decodeAgentSteeringModels, {}, serverId).catch(() => [])
+          : [],
       ]);
-      return withFastServiceTiers(options, fast);
+      return withWorkspaceOnlyLimit(
+        withSteeringModels(withFastServiceTiers(options, fast), steering),
+        has(serverId, WORKSPACE_ONLY_PROCESS_LIMIT_CAPABILITY),
+      );
     },
     loadAgentMemorySelection: (agentId, serverId) =>
       runTeamRequest(
@@ -1544,9 +1612,11 @@ export function createHostRequestActions({
           sessionId,
         ),
       ),
-    compactContext: async (agentId, serverId) => {
+    compactContext: async (agentId, serverId, taskId) => {
       requireCapability(capabilities, serverId, CONTEXT_COMPACT_CAPABILITY, "mobile.agent.compact.unsupported");
-      await request("POST", CONTEXT_COMPACT_ROUTES.compact, ignoreResponse, { agentId }, serverId);
+      if (taskId === undefined)
+        await request("POST", CONTEXT_COMPACT_ROUTES.compact, ignoreResponse, { agentId }, serverId);
+      else await request("POST", CONTEXT_COMPACT_ROUTES.compactTask, ignoreResponse, { agentId, taskId }, serverId);
     },
     // Async, so a host without the capability rejects the promise and does not throw at the call.
     listSharedTables: async (serverId) => runTeamRequest(listSharedTables(sharedTablesAdmin(serverId))),
@@ -1652,7 +1722,7 @@ export function createHostRequestActions({
         await request("POST", MESSAGE_DELETE_ROUTES.agent, ignoreResponse, body, serverId);
       }
     },
-    downloadAttachment: (serverId, attachmentId, largeDownload) => {
+    downloadAttachment: (serverId, attachmentId, largeDownload, progress) => {
       const download = () =>
         request(
           "GET",
@@ -1663,6 +1733,7 @@ export function createHostRequestActions({
           undefined,
           undefined,
           largeDownload,
+          progress,
         );
       // Limit native/DOM copies when a message contains several large images. A file above the
       // attachment limit has its own lane: the images of the chat do not wait behind it, and two

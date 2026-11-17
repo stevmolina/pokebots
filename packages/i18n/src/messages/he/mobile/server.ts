@@ -574,7 +574,7 @@ export const messages = {
   "mobile.server.settings.timezoneNoMatch": "אין אזור זמן שמתאים לחיפוש הזה.",
   "mobile.server.settings.timezoneMore": "יש להקליד עוד מהשם כדי לראות אזורי זמן אחרים.",
   "mobile.server.settings.timezoneDescription":
-    "שגרות חדשות משתמשות באזור הזמן הזה כשההודעה לא מציינת את אזור הזמן של השולח.",
+    "שגרות חדשות משתמשות באזור הזמן הזה כשההודעה לא מציינת את אזור הזמן של השולח. בשרת, גם הדפדפן משתמש בו אחרי ההפעלה מחדש הבאה.",
   "mobile.server.settings.timezoneLoading": "טוען אזור זמן…",
   "mobile.server.settings.timezoneLoadFailed": "לא ניתן לטעון את אזור הזמן של השרת.",
   "mobile.server.settings.timezoneSaveFailed": "לא ניתן לשמור את אזור הזמן. אפשר לנסות שוב.",
@@ -832,6 +832,17 @@ export const messages = {
   "mobile.server.vault.variableNameHint":
     "משתנה הסביבה שתוכנית קוראת: אותיות גדולות באנגלית, ספרות ו-_. סוכנים מוצאים את המפתח לפי השם הזה.",
   "mobile.server.vault.apiKey": "מפתח API",
+  "mobile.server.vault.agents": "סוכנים",
+  "mobile.server.vault.agentsAll": "כל הסוכנים",
+  "mobile.server.vault.agentsAllHint": "„כל הסוכנים” כולל גם כל סוכן שיתווסף בהמשך.",
+  "mobile.server.vault.agentsNone": "יש לבחור לפחות סוכן אחד.",
+  "mobile.server.vault.agentsSome": "{chosen} מתוך {total}",
+  "mobile.server.vault.agentsListed": "סוכנים: {agents}",
+  "mobile.server.vault.searchAgents": "חיפוש סוכנים",
+  "mobile.server.vault.noAgentMatches": "אין סוכנים שתואמים לחיפוש.",
+  "mobile.server.vault.agentOptions": "אפשרויות",
+  "mobile.server.vault.selectAll": "בחירת הכול",
+  "mobile.server.vault.deselectAll": "ביטול הבחירה",
   "mobile.server.vault.delete": "מחיקת פריט",
   "mobile.server.vault.deleteTitle": "למחוק את הפריט הזה?",
   "mobile.server.vault.deleteBody": "סוכנים ב-{host} לא יוכלו עוד להשתמש בו. אי אפשר לבטל את הפעולה.",
@@ -992,6 +1003,31 @@ export const messages = {
   "mobile.server.connectors.protonPass.keyHelp":
     "ב-Proton Pass יש ליצור מפתח גישה שיכול לקרוא רק את הכספת שמשותפת עם OpenBot, ואז להדביק אותו כאן. {host} שומר את המפתח; הטלפון הזה לא.",
   "mobile.server.connectors.protonPass.keyPlaceholder": "pst_…",
+  "mobile.server.connectors.keeper.title": "Keeper",
+  "mobile.server.connectors.keeper.description":
+    "שיתוף תיקייה אחת של Keeper עם OpenBot ב-{host}, כדי שסוכנים ב-{host} יוכלו להתחבר לאתרים בדפדפן שלו.",
+  "mobile.server.connectors.keeper.accountHelp":
+    "יש להזין את האימייל והסיסמה הראשית של Keeper. הם נשלחים ל-{host} פעם אחת, ו-{host} מוסר אותם ל-Keeper Commander. הטלפון הזה לא שומר אותם.",
+  "mobile.server.connectors.keeper.email": "אימייל",
+  "mobile.server.connectors.keeper.masterPassword": "סיסמה ראשית",
+  "mobile.server.connectors.keeper.signingIn": "{host} מתחבר ל-Keeper…",
+  "mobile.server.connectors.keeper.makingFolder": "{host} יוצר את התיקייה המשותפת…",
+  "mobile.server.connectors.keeper.code": "קוד",
+  "mobile.server.connectors.keeper.twoFactorHint":
+    "Keeper מבקש קוד אימות דו־שלבי. יש להזין את הקוד מאפליקציית האימות או מהודעת הטקסט. הוא נשלח ל-{host} פעם אחת; הטלפון הזה לא שומר אותו.",
+  "mobile.server.connectors.keeper.deviceHint":
+    "Keeper שלח אימייל לאישור והתראה למכשירים האחרים שלך. יש לאשר שם את המכשיר הזה, ואז ללחוץ על ״המשך״. אפשר גם להקליד את הקוד מהאימייל.",
+  "mobile.server.connectors.keeper.codeWrong": "הקוד שגוי. יש לנסות שוב.",
+  "mobile.server.connectors.keeper.folderTitle": "תיקייה משותפת",
+  "mobile.server.connectors.keeper.folderFooter":
+    "כדי לאפשר לסוכנים להתחבר עם פרטי כניסה, יש להעביר אותם לתיקייה הזו ב-Keeper. כדי להפסיק, יש להסיר אותם.",
+  "mobile.server.connectors.keeper.plan":
+    "מנהל Keeper שלך לא מאפשר את Keeper Commander לחשבון הזה. יש לבקש ממנו לאפשר אותו ואז להתחבר שוב.",
+  "mobile.server.connectors.keeper.expiredTitle": "הסשן של Keeper הסתיים",
+  "mobile.server.connectors.keeper.expiredBody":
+    "סוכנים ב-{host} לא יכולים להתחבר עם פרטי הכניסה המשותפים עד להתחברות מחדש.",
+  "mobile.server.connectors.keeper.disconnectBody":
+    "{host} מסיים את הסשן שלו ב-Keeper. התיקייה ופרטי הכניסה שבה נשארים בכספת של Keeper.",
   // A password manager that the host connects through its CLI. {name} is the manager, such as
   // Proton Pass. {date} is a date, such as 5 Nov 2026.
   "mobile.server.connectors.passwordManager.unavailable": "{name} לא זמין בשרת הזה.",
@@ -1206,6 +1242,9 @@ export const messages = {
   "mobile.server.connectors.whatsapp.workingMessage": "הודעת ״עובד על זה…״",
   "mobile.server.connectors.whatsapp.workingMessageDescription":
     "OpenBot שולח אותה בזמן שהסוכן עובד, ואז מחליף אותה בתשובה. יש לכבות כדי לשלוח רק את התשובה.",
+  "mobile.server.connectors.whatsapp.statusReactions": "תגובות סטטוס",
+  "mobile.server.connectors.whatsapp.statusReactionsDescription":
+    "OpenBot מגיב עם 👀 כשהודעה מגיעה ועם ✅ כשהתשובה מוכנה. יש לכבות כדי לא לשלוח תגובות.",
   "mobile.server.connectors.whatsapp.orchestratorTitle": "WhatsApp Orchestrator",
   "mobile.server.connectors.whatsapp.orchestratorDescription":
     "הסוכן הזה מקבל את ההודעות ל-OpenBot מכל המספרים המקושרים שלך. הוא עונה בעצמו על הודעות קצרות, מעביר עבודה אחרת לסוכן המתאים, ועונה ב-WhatsApp.",
@@ -1439,6 +1478,22 @@ export const messages = {
   "mobile.server.providers.compactWindowDefault": "ברירת המחדל של Claude Code",
   "mobile.server.providers.compactWindowTokens": "{size} טוקנים",
   "mobile.server.providers.compactWindowLoadFailed": "לא ניתן לטעון את גודל הכיווץ של השרת הזה.",
+  "mobile.server.environment.row": "משתנים",
+  "mobile.server.environment.title": "סביבה",
+  "mobile.server.environment.hint":
+    "מפתחות API, כתובות בסיס והגדרות אחרות שכל תהליך של {name} מקבל. שינוי חל כשהתורות הנוכחיים מסתיימים.",
+  "mobile.server.environment.codexHint":
+    "OPENAI_BASE_URL, עם OPENAI_API_KEY כמפתח שלו, שולח את בקשות המודל של ChatGPT לכתובת הזו.",
+  "mobile.server.environment.shellNote": "הפקודות שסוכנים מריצים יכולות לקרוא את הערכים האלה.",
+  "mobile.server.environment.add": "הוספת משתנה",
+  "mobile.server.environment.namePlaceholder": "VARIABLE_NAME",
+  "mobile.server.environment.valuePlaceholder": "ערך",
+  "mobile.server.environment.saved": "נשמר",
+  "mobile.server.environment.sensitive": "רגיש",
+  "mobile.server.environment.remove": "הסרה",
+  "mobile.server.environment.save": "שמירה",
+  "mobile.server.environment.loadFailed": "לא ניתן לטעון את המשתנים של {name}.",
+  "mobile.server.environment.invalid": "תקנו קודם את השמות.",
   "mobile.server.providers.disconnect": "ניתוק",
   "mobile.server.providers.disconnectTitle": "לנתק את {name}?",
   "mobile.server.providers.disconnectBody":

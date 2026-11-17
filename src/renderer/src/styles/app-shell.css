@@ -103,10 +103,12 @@
   flex-direction: column;
   overflow: hidden;
   outline: 0;
+  border-radius: var(--openbot-radius-palette);
   background: var(--openbot-bg-control);
+  /* Calm: a soft shadow and a hairline of ink, no heavy ring. */
   box-shadow:
-    0 0 0 1px var(--openbot-dialog-ring),
-    var(--openbot-shadow-dialog);
+    0 0 0 1px color-mix(in srgb, var(--openbot-text-primary) 6%, transparent),
+    0 18px 48px color-mix(in srgb, var(--openbot-shadow-dialog) 55%, transparent);
   color: var(--openbot-text-primary);
   transform: translateX(-50%);
   transform-origin: 50% 0;
@@ -134,26 +136,26 @@
 
 .global-search-control {
   display: flex;
-  height: 48px;
   flex: 0 0 auto;
+  flex-wrap: wrap;
   align-items: center;
-  gap: var(--openbot-space-2);
-  border-bottom: 1px solid var(--openbot-border);
-  padding-block: 0;
-  padding-inline: var(--openbot-space-4) var(--openbot-space-2);
+  column-gap: var(--openbot-space-3);
+  row-gap: 0;
+  padding-block: var(--openbot-space-1) 0;
+  padding-inline: var(--openbot-space-6);
   color: var(--openbot-text-muted);
 }
 
 .global-search-control > svg {
-  width: var(--openbot-icon-md);
-  height: var(--openbot-icon-md);
+  width: var(--openbot-icon-lg);
+  height: var(--openbot-icon-lg);
   flex: 0 0 auto;
   stroke-width: var(--openbot-icon-stroke);
 }
 
 .global-search-control .global-search-input {
   min-width: 0;
-  height: 100%;
+  height: 64px;
   flex: 1;
   border: 0;
   border-radius: 0;
@@ -162,8 +164,8 @@
   padding: 0;
   box-shadow: none;
   color: var(--openbot-text-primary);
-  font-size: var(--openbot-text-lg);
-  line-height: var(--openbot-leading-lg);
+  font-size: var(--openbot-text-search);
+  line-height: 28px;
 }
 
 .global-search-control .global-search-input:focus {
@@ -177,7 +179,15 @@
 }
 
 .global-search-filters {
-  flex: 0 0 auto;
+  min-width: 0;
+  flex: 0 0 100%;
+  overflow-x: auto;
+  padding-block: var(--openbot-space-1) var(--openbot-space-3);
+  scrollbar-width: none;
+}
+
+.global-search-filters::-webkit-scrollbar {
+  display: none;
 }
 
 .global-search-filters [role="tablist"] {
@@ -192,9 +202,9 @@
   z-index: 1;
   height: var(--openbot-control-xs);
   border: 0;
-  border-radius: var(--openbot-radius-sm);
+  border-radius: var(--openbot-radius-pill);
   background: transparent;
-  padding: 0 var(--openbot-space-2);
+  padding: 0 var(--openbot-space-3);
   color: var(--openbot-text-muted);
   font-family: inherit;
   font-size: var(--openbot-text-sm);
@@ -219,8 +229,8 @@
   top: 0;
   left: 0;
   height: var(--openbot-control-xs);
-  border-radius: var(--openbot-radius-sm);
-  background: var(--openbot-bg-control-active);
+  border-radius: var(--openbot-radius-pill);
+  background: color-mix(in srgb, var(--openbot-text-primary) 8%, transparent);
   pointer-events: none;
   transition:
     transform var(--openbot-duration-normal) var(--openbot-ease-out),
@@ -243,7 +253,7 @@
   max-height: min(400px, calc(100dvh - 240px));
   overflow-y: auto;
   background: transparent;
-  padding: var(--openbot-space-1-5);
+  padding: var(--openbot-space-1-5) var(--openbot-space-2) var(--openbot-space-2);
   transform: none;
   scrollbar-width: none;
   /* A key press scrolls the active row clear of the scroll fade. */
@@ -290,10 +300,10 @@
   height: var(--openbot-control-sm);
   align-items: flex-end;
   justify-content: space-between;
-  padding: 0 var(--openbot-space-2) var(--openbot-space-1);
-  color: var(--openbot-text-muted);
+  padding: 0 var(--openbot-space-3) var(--openbot-space-1);
+  color: color-mix(in srgb, var(--openbot-text-primary) 50%, transparent);
   font-size: var(--openbot-text-sm);
-  font-weight: var(--openbot-weight-medium);
+  font-weight: var(--openbot-weight-regular);
   line-height: var(--openbot-leading-sm);
 }
 
@@ -310,10 +320,10 @@
 .global-search-highlight {
   position: absolute;
   top: 0;
-  right: var(--openbot-space-1-5);
-  left: var(--openbot-space-1-5);
-  border-radius: var(--openbot-radius-sm);
-  background: var(--openbot-bg-control-active);
+  right: var(--openbot-space-2);
+  left: var(--openbot-space-2);
+  border-radius: var(--openbot-radius-card);
+  background: color-mix(in srgb, var(--openbot-text-primary) 8%, transparent);
   pointer-events: none;
   transition:
     transform var(--openbot-duration-fast) var(--openbot-ease-out),
@@ -325,12 +335,16 @@
 }
 
 .global-search-result {
-  display: flex;
-  min-height: var(--openbot-control-lg);
+  display: grid;
+  height: 56px;
+  min-height: 56px;
+  grid-template-columns: 32px minmax(0, 1fr) auto auto;
+  grid-template-rows: auto auto;
+  align-content: center;
   align-items: center;
-  gap: var(--openbot-space-2);
-  border-radius: var(--openbot-radius-sm);
-  padding: 0 var(--openbot-space-2);
+  column-gap: var(--openbot-space-3);
+  border-radius: var(--openbot-radius-card);
+  padding: 0 var(--openbot-space-3);
   color: var(--openbot-text-primary);
   font-size: var(--openbot-text-md);
   line-height: var(--openbot-leading-md);
@@ -341,17 +355,21 @@
 .global-search-avatar.agent-avatar {
   --agent-avatar-optical-offset: calc(var(--openbot-icon-lg) * -0.14);
 
-  width: var(--openbot-icon-lg);
-  height: var(--openbot-icon-lg);
+  width: 32px;
+  height: 32px;
   flex: 0 0 auto;
+  grid-column: 1;
+  grid-row: 1 / span 2;
 }
 
 /* Rows with no agent (channels, files, commands) show an icon in the same slot as the avatar. */
 .global-search-icon {
   display: grid;
-  width: var(--openbot-icon-lg);
-  height: var(--openbot-icon-lg);
+  width: 32px;
+  height: 32px;
   flex: 0 0 auto;
+  grid-column: 1;
+  grid-row: 1 / span 2;
   place-items: center;
   color: var(--openbot-text-muted);
 }
@@ -371,25 +389,42 @@
 }
 
 .global-search-result-title {
-  max-width: 40%;
-  flex: 0 1 auto;
+  grid-column: 2;
+  grid-row: 1;
   color: var(--openbot-text-primary);
-  font-weight: var(--openbot-weight-medium);
+  font-weight: var(--openbot-weight-regular);
 }
 
 .global-search-result-detail {
-  flex: 1;
-  color: var(--openbot-text-muted);
+  grid-column: 2;
+  grid-row: 2;
+  color: color-mix(in srgb, var(--openbot-text-primary) 56%, transparent);
+}
+
+/* A message row names the agent, then who wrote the message. */
+.global-search-result-head {
+  display: flex;
+  min-width: 0;
+  grid-column: 2;
+  grid-row: 1;
+  align-items: baseline;
+  gap: var(--openbot-space-2);
+}
+
+.global-search-result-head > .global-search-result-title {
+  min-width: 0;
 }
 
 .global-search-result-author {
   flex: 0 0 auto;
-  color: var(--openbot-text-secondary);
+  color: color-mix(in srgb, var(--openbot-text-primary) 56%, transparent);
+  font-size: var(--openbot-text-sm);
 }
 
 .global-search-result-time {
-  flex: 0 0 auto;
-  color: var(--openbot-text-muted);
+  grid-column: 3;
+  grid-row: 1 / span 2;
+  color: color-mix(in srgb, var(--openbot-text-primary) 45%, transparent);
   font-size: var(--openbot-text-sm);
   font-variant-numeric: tabular-nums;
 }
@@ -403,8 +438,10 @@
 /* Every row keeps the space of the hint, so the time does not move when the highlight moves. */
 .global-search-result .global-search-result-enter {
   flex: 0 0 auto;
+  grid-column: 4;
+  grid-row: 1 / span 2;
   border: 0;
-  background: var(--openbot-bg-control-hover);
+  background: color-mix(in srgb, var(--openbot-text-primary) 8%, transparent);
   opacity: 0;
   transition: opacity var(--openbot-duration-fast) var(--openbot-ease-out);
 }
@@ -474,9 +511,9 @@
   flex: 0 0 auto;
   align-items: center;
   gap: var(--openbot-space-4);
-  border-top: 1px solid var(--openbot-border);
-  padding: 0 var(--openbot-space-4);
-  color: var(--openbot-text-muted);
+  border-top: 1px solid color-mix(in srgb, var(--openbot-text-primary) 6%, transparent);
+  padding: 0 var(--openbot-space-6);
+  color: color-mix(in srgb, var(--openbot-text-primary) 45%, transparent);
   font-size: var(--openbot-text-sm);
   line-height: var(--openbot-leading-sm);
 }
@@ -519,23 +556,12 @@
     max-height: calc(100dvh - 124px);
   }
 
-  /* The filters go to their own row, so the input keeps the full width. */
   .global-search-control {
-    height: auto;
-    flex-wrap: wrap;
-    row-gap: 0;
+    padding-inline: var(--openbot-space-4);
   }
 
   .global-search-control .global-search-input {
-    height: 48px;
-  }
-
-  .global-search-filters {
-    min-width: 0;
-    flex-basis: 100%;
-    overflow-x: auto;
-    padding-block: var(--openbot-space-1) var(--openbot-space-2);
-    scrollbar-width: none;
+    height: 56px;
   }
 
   .global-search-footer,
@@ -1722,6 +1748,19 @@ textarea {
   white-space: nowrap;
 }
 
+/* The chat count of a closed section follows its name, as in the Hidden group, and pushes the end
+   of the header to the far side. A long name shortens before the count does. The start margin takes
+   the 8px gap of .sidebar-section-toggle back to the space-1 of the Hidden group count. */
+.sidebar-section-count {
+  flex: 0 0 auto;
+  margin-inline: calc(var(--openbot-space-1) - 8px) auto;
+  color: var(--openbot-text-muted);
+  font-size: var(--openbot-text-sm);
+  font-weight: 400;
+  line-height: 16px;
+  font-variant-numeric: tabular-nums;
+}
+
 .sidebar-section-chevron {
   flex: 0 0 auto;
   opacity: 0;
@@ -2127,6 +2166,12 @@ textarea {
   grid-template-rows: 1fr;
   padding: 0;
   opacity: 1;
+  transition: grid-template-rows var(--openbot-duration-normal) var(--openbot-ease-out);
+
+  /* The area grows from nothing, so the rows under it slide down instead of jumping. */
+  @starting-style {
+    grid-template-rows: 0fr;
+  }
 }
 
 .sidebar-pinned-group-empty-target .sidebar-pinned-list {
@@ -2563,12 +2608,16 @@ textarea {
   overflow: visible;
 }
 
+/* The face paints past the avatar box. In the sidebar it covered the edge of the row above, so a
+   click there opened the agent below. Only the box takes the pointer. The eyes follow the pointer
+   through a window listener, so they still move. */
 .agent-avatar > svg {
   display: block;
   width: 128%;
   height: 128%;
   overflow: visible;
   translate: var(--agent-avatar-optical-offset-x, 0) var(--agent-avatar-optical-offset, 0);
+  pointer-events: none;
 }
 
 /* The outline: a ring in the colour of the surface under the avatar, so a face that overlaps another

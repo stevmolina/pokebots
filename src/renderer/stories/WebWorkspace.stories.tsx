@@ -1,4 +1,9 @@
-import type { AgentProviderStatus, AgentStatus } from "@openbot/contracts/ipc";
+import {
+  type AgentProviderStatus,
+  type AgentStatus,
+  SIDEBAR_PEOPLE_SECTION_ID,
+  SIDEBAR_UNASSIGNED_SECTION_ID,
+} from "@openbot/contracts/ipc";
 import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
 import { AGENT_TASKS_CAPABILITY, AGENT_TASKS_ROUTES } from "@openbot/contracts/team-protocol/agent-tasks-v1";
 import { AGENT_THREADS_CAPABILITY, AGENT_THREADS_ROUTES } from "@openbot/contracts/team-protocol/agent-threads-v1";
@@ -14,6 +19,7 @@ import type { WebRuntimeFactory } from "../src/features/web-client/web-client-co
 import { WebHostOtherTabError } from "../src/features/web-client/web-host-lock";
 import { WebHostIncompatibleError } from "../src/features/web-client/web-runtime";
 import { createBenchWebRuntime } from "../src/preview/bench-web-runtime";
+import { requireFixture, STORY_AGENT_SUMMARIES } from "../src/preview/fixtures";
 import { mockAccountCatalogFetch } from "../src/preview/mock-account-catalog";
 import { MOCK_HOSTED_SERVER_CATALOG } from "../src/preview/mock-hosted-servers";
 import { createMockOpenBot } from "../src/preview/mock-openbot";
@@ -303,7 +309,10 @@ const threadsRuntime: WebRuntimeFactory = (_accountId, events) => {
   };
 };
 
-/** Side threads in the browser: Chief has two open thread tabs. Open Chief to see them. */
+/**
+ * Side threads in the browser: Chief's main session is "Pricing page copy". Open Chief, then its pill,
+ * to see the Sessions card.
+ */
 export const Threads: Story = {
   args: { createRuntime: threadsRuntime },
   render: (args) => {
@@ -440,4 +449,106 @@ const connectionDropRuntime: WebRuntimeFactory = (accountId, events, fetch) => {
 
 export const ConnectionDrop: Story = {
   args: { createRuntime: connectionDropRuntime },
+};
+
+const LIST_NAMES = [
+  "Space Apps",
+  "Motion",
+  "Pokebot",
+  "Flights",
+  "NASA Hackathon",
+  "HackaSpace",
+  "Master of Puppets",
+  "Tax Helper",
+  "Recipes",
+  "Gym Plan",
+  "Trip Notes",
+  "Budget",
+] as const;
+const LIST_HUES = [0, 30, 55, 100, 150, 185, 215, 245, 280, 320] as const;
+const LIST_FOLDERS = [
+  { id: "folder-energy", name: "Total Energies" },
+  { id: "folder-agency", name: "Agency Proposal" },
+  { id: "folder-sporadic", name: "Sporadic" },
+  { id: "folder-brand", name: "Personal Brand" },
+] as const;
+
+const LIST_SENT = "2026-08-19T09:40:00.000Z";
+
+/** A fuller phone list: twelve chats, four folders and one unread chat, so the list and its unread button show. */
+const phoneListRuntime: WebRuntimeFactory = (_accountId, events) => {
+  const now = Date.now();
+  const agents = LIST_NAMES.map((name, index) => {
+    const base = requireFixture(STORY_AGENT_SUMMARIES[index % STORY_AGENT_SUMMARIES.length], "Story agent");
+    return {
+      ...base,
+      id: `list-${index}`,
+      name,
+      threadId: `thread-list-${index}`,
+      preview: "The summary is ready for your review.",
+      updatedAt: new Date(now - (index + 1) * 40 * 60_000).toISOString(),
+      avatarSeed: name,
+      avatarHue: LIST_HUES[index % LIST_HUES.length] ?? null,
+    };
+  });
+  const folderOf = (index: number) => LIST_FOLDERS[index - 4]?.id;
+  const mock = createMockOpenBot({
+    agents,
+    // Two replies that the person has not read, in the chat that sits below the first screen.
+    snapshots: {
+      "list-9": {
+        agentId: "list-9",
+        threadId: "thread-list-9",
+        activeTurnId: null,
+        revision: 1,
+        messages: [
+          {
+            id: "list-9-1",
+            author: "user",
+            source: "user",
+            text: "Plan the week.",
+            createdAt: LIST_SENT,
+            status: "completed",
+          },
+          {
+            id: "list-9-2",
+            author: "assistant",
+            source: "assistant",
+            text: "Monday is for the gym.",
+            createdAt: LIST_SENT,
+            status: "completed",
+          },
+          {
+            id: "list-9-3",
+            author: "assistant",
+            source: "assistant",
+            text: "Tuesday is for rest.",
+            createdAt: LIST_SENT,
+            status: "completed",
+          },
+        ],
+      },
+    },
+    sidebarLayout: {
+      revision: 1,
+      sections: LIST_FOLDERS.map((folder) => ({ id: folder.id, name: folder.name })),
+      order: [...LIST_FOLDERS.map((folder) => folder.id), SIDEBAR_PEOPLE_SECTION_ID, SIDEBAR_UNASSIGNED_SECTION_ID],
+      agentAssignments: Object.fromEntries(
+        agents.flatMap((agent, index) => {
+          const folder = folderOf(index);
+          return folder ? [[agent.id, folder]] : [];
+        }),
+      ),
+      agentOrder: agents.map((agent) => agent.id),
+    },
+    conversationReads: {
+      "list-9": { unreadCount: 2, firstUnreadMessageId: "list-9-2", throughMessageId: "list-9-1" },
+    },
+  });
+  return mockWebRuntimeFor(mock, events);
+};
+
+/** The chat list with enough chats, folders and one unread chat to judge the phone layout at 390 px wide. */
+export const PhoneList: Story = {
+  args: { createRuntime: phoneListRuntime },
 };

@@ -44,6 +44,8 @@ interface SettingsDialogShellProps {
    */
   crumb?: SettingsCrumb | null | undefined;
   sidebar: JSX.Element;
+  /** Chips below the title of a section that holds several pages, such as Account: Profile, Billing. */
+  subnav?: JSX.Element;
   contentKey: string;
   children: JSX.Element;
   class?: string;
@@ -279,6 +281,7 @@ export function SettingsDialogShell(props: SettingsDialogShellProps) {
                         {props.title}
                       </h2>
                     </Show>
+                    <Show when={!props.crumb}>{props.subnav}</Show>
                     {props.children}
                   </div>
                 </div>

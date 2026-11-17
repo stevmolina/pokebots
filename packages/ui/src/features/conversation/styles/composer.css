@@ -158,9 +158,9 @@
   );
 
   /* Half of the one-line height, so one line is a full pill. The cards above tuck in this far. */
-  --composer-pill-radius: 24px;
+  --composer-pill-radius: 22px;
 
-  /* The model chip reads the width of the message box. */
+  /* The message box has no model chip now: the model is a row of the details pane. */
   container: openbot-composer / inline-size;
   position: relative;
   z-index: 11;
@@ -181,13 +181,16 @@
     height var(--composer-resize-duration) var(--composer-resize-ease);
 }
 
+/* One 44px pill, as in Grok Bot: a hairline, a soft shadow, and 28px buttons 7px from the edge. */
 .composer[data-compact] {
   grid-template-columns: 28px minmax(0, 1fr) auto;
-  min-height: 48px;
+  min-height: 44px;
   align-items: center;
   gap: 8px;
+  border: 0.5px solid color-mix(in srgb, var(--openbot-text-primary) 12%, transparent);
   border-radius: var(--composer-pill-radius);
-  padding: 8px 10px;
+  padding: 7px 8px;
+  box-shadow: 0 2px 8px -1px color-mix(in srgb, var(--openbot-text-primary) 5%, transparent);
 }
 
 /*
@@ -202,6 +205,10 @@
 
 .composer-wrap:has(> .composer[data-small]) {
   --composer-stack-pill-half: 20px;
+}
+
+.composer-wrap:has(> .composer[data-compact]:not([data-small])) {
+  --composer-stack-pill-half: 22px;
 }
 
 /*

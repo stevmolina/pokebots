@@ -37,7 +37,7 @@ before the push.
 3. Triage each finding as `babysit` Step 2 says: fix only findings that
    you can prove. Record the others as not valid, with the reason.
 4. Run the narrowest relevant test file and
-   `biome check --write --max-diagnostics=none <changed paths>`. Run one
+   `bun run check:paths <changed paths>`. Run one
    typecheck project for the code you changed, as `AGENTS.md` says. Do not
    run broad checks.
 5. Commit the fixes. The pre-commit hook runs its own checks. Do not use

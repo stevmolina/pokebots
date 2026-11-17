@@ -3,9 +3,11 @@
 import {
   DISCORD_MARK_PATH,
   GITHUB_MARK_PATH,
+  KEEPER_MARK_PATH,
   ONEPASSWORD_MARK_PATH,
   PROTON_MARK_PATH,
   SLACK_MARK_PATH,
+  STRIPE_MARK_PATH,
   TELEGRAM_MARK_PATH,
   WHATSAPP_MARK_PATH,
 } from "@openbot/brand/connector-mark-shape";
@@ -104,6 +106,15 @@ export function DiscordTile() {
   );
 }
 
+/** Stripe's app icon: the white "S" on Stripe's purple. */
+export function StripeTile() {
+  return (
+    <BrandTile background="#635BFF">
+      <path d={STRIPE_MARK_PATH} fill="#FFFFFF" />
+    </BrandTile>
+  );
+}
+
 export function TelegramTile() {
   return (
     <BrandTile background="#26A5E4">
@@ -154,6 +165,15 @@ export function ProtonPassTile() {
   return (
     <BrandTile background="#6D4AFF">
       <path d={PROTON_MARK_PATH} fill="#FFFFFF" />
+    </BrandTile>
+  );
+}
+
+/** Keeper's yellow with a black shield, as the shield and the keyhole of the brand-neutral path. */
+export function KeeperTile() {
+  return (
+    <BrandTile background="#FFC700">
+      <path d={KEEPER_MARK_PATH} fill="#000000" fill-rule="evenodd" />
     </BrandTile>
   );
 }

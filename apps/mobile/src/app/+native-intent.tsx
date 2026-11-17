@@ -1,5 +1,6 @@
 import { isCompanySignInReturn } from "@/features/auth/model/company-sign-in-return";
 import { acceptDevelopmentConnectLink } from "@/features/auth/model/development-connect-link";
+import { designPreviewRoute } from "@/features/design-preview/model/preview-switch";
 import { redirectIncomingLink } from "@/features/links/model/incoming-links";
 import { isLiveActivityLink, liveActivityRoute } from "@/features/live-activity/model/live-activity-link";
 import { isMessagingInstallReturn } from "@/features/servers/model/connectors";
@@ -14,6 +15,9 @@ export function redirectSystemPath({ path, initial }: { path: string; initial: b
   if (isMessagingInstallReturn(path)) return null;
   // The browser session of a company sign-in takes its return. Another copy of the link opens nothing.
   if (isCompanySignInReturn(path)) return null;
+  // The calm design preview, with made-up data. It reads no server, so it needs no further check.
+  const preview = designPreviewRoute(path);
+  if (preview) return preview;
   try {
     if (isLiveActivityLink(path)) return liveActivityRoute(path, initial);
     if (isIncomingShareLink(path)) {

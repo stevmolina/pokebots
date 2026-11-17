@@ -1,6 +1,21 @@
 import { defineMessages } from "../../message";
 
 export const messages = defineMessages("server", {
+  "server.computers.title": "Computers",
+  "server.computers.context": "Computer name",
+  "server.computers.contextHint": "Use lowercase letters, digits and hyphens. Reuse a name to resume its computer.",
+  "server.computers.standard": "Standard \u00b7 2 vCPU",
+  "server.computers.large": "Large \u00b7 8 vCPU",
+  "server.computers.start": "Start",
+  "server.computers.stop": "Stop",
+  "server.computers.destroy": "Destroy",
+  "server.computers.actions": "Details and actions",
+  "server.computers.screenshot": "Latest screenshot",
+  "server.computers.agentUnknown": "Agent use is not reported by this service.",
+  "server.computers.destroyTitle": "Destroy {name}?",
+  "server.computers.destroyDescription":
+    "This permanently deletes the computer and all its files. Stop it to keep its data.",
+
   "server.connection.planEnded": "The plan for {name} has ended",
   "server.connection.wakeFailed": "Could not start {name}",
   "server.connection.startTimeout": "{name} did not start in time",
@@ -304,8 +319,6 @@ export const messages = defineMessages("server", {
   "server.settings.membersDescription": "Publish this server, invite people, and manage access.",
   "server.settings.desktopTitle": "Remote desktop",
   "server.settings.desktopDescription": "Configure or connect to this server’s desktop.",
-  "server.settings.mcpTitle": "MCP",
-  "server.settings.mcpDescription": "Connect MCP servers and choose which ones this server’s agents can use.",
   "server.settings.storageTitle": "Storage",
   "server.settings.storageDescription": "See what OpenBot keeps on this server’s disk, and free space.",
   "server.settings.hostedSitesTitle": "Sites",
@@ -347,7 +360,6 @@ export const messages = defineMessages("server", {
   "server.settings.copyFailedTitle": "Copy failed",
   "server.settings.copyFailed": "OpenBot could not copy this value.",
   "server.settings.unavailableTitle": "Server settings unavailable",
-  "server.settings.unsavedMcpChanges": "Unsaved MCP changes",
   "server.settings.reset": "Reset",
   "server.settings.unsavedChanges": "Unsaved changes",
   "server.settings.changesNotSaved": "Changes not saved",
@@ -355,6 +367,12 @@ export const messages = defineMessages("server", {
   "server.settings.group.agents": "Agents",
   "server.settings.group.people": "People",
   "server.settings.group.server": "Server",
+  "server.settings.experimentalTitle": "Experimental",
+  "server.settings.experimentalDescription": "Turn on features that are not complete yet.",
+  "server.settings.experimentalFeatures": "Features",
+  "server.settings.experimentalCrm": "CRM",
+  "server.settings.experimentalCrmDescription":
+    "Show the CRM page to owners and admins, let agents read the CRM, and sync Stripe. When you turn it off, the data stays.",
   "server.settings.agentDefaultsTitle": "Agent defaults",
   "server.settings.threadsCard": "Threads and timezone",
   "server.settings.memoryTitle": "Memory",
@@ -433,7 +451,7 @@ export const messages = defineMessages("server", {
     "Choose what the agents on this server can do when you do not set it for an agent.",
   "server.settings.timezone": "Timezone",
   "server.settings.timezoneDescription":
-    "New routines use this timezone when the message does not give the sender's timezone.",
+    "New routines use this timezone when the message does not give the sender's timezone. On a server, the browser also uses it after the next restart.",
   "server.settings.timezoneAutomatic": "Automatic ({zone})",
   "server.settings.timezoneLoadFailed": "Could not load the server timezone.",
   "server.settings.turnLimit": "Threads at the same time",

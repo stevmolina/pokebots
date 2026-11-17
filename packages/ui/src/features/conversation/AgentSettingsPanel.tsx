@@ -1,5 +1,10 @@
 import type { ExpressionId } from "@norbert_bodziony/bloub";
-import { agentProviderDescriptor, agentProviderName, foreignProvider } from "@openbot/contracts/agent-providers";
+import {
+  agentProviderDescriptor,
+  agentProviderName,
+  agentSteersTurns,
+  foreignProvider,
+} from "@openbot/contracts/agent-providers";
 import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
 import {
   type AgentBackupModels,
@@ -35,6 +40,7 @@ import {
   type UpdateAgentAdminSettingsInput,
   type UpdateAgentInput,
   widensAgentPermission,
+  workspaceAccessEnforced,
 } from "@openbot/contracts/ipc";
 import type { AppTextKey } from "@openbot/i18n";
 import {
@@ -118,6 +124,14 @@ import { AgentChatColorRow } from "../settings/ChatColorSetting";
 import { AgentDeleteHistoryDialog } from "./AgentDeleteHistoryDialog";
 import { type AgentFolderCalls, AgentFoldersPage, AgentFoldersRow, createAgentFolders } from "./AgentFolders";
 import { AgentNewChatDialog } from "./AgentNewChatDialog";
+import {
+  AGENT_SETTING_LINK_ROWS,
+  AGENT_SETTINGS_PAGE_TITLE,
+  type AgentSettingReveal,
+  type AgentSettingsPage,
+  revealSettingRow,
+  waitForSettingRow,
+} from "./agent-setting-links";
 import { BackupModelsPage } from "./BackupModels";
 
 export interface AgentRuntimeSettings {
@@ -193,7 +207,17 @@ export interface AgentSettingsPanelProps {
   onResizeEnd: (width: number) => void;
   /** The width from the last drag. When the chat gets wider again, the panel goes back to it. */
   preferredWidth?: (() => number) | undefined;
-  /** Application-owned navigation and detail surfaces, in the existing panel layout. */
+  /**
+   * Shows one row, as a setting card in the chat asks: its page opens and the row is marked. While
+   * `detailOpen`, only the page changes.
+   */
+  reveal?: AgentSettingReveal | null | undefined;
+  /**
+   * The calm first view under the agent's face: its sessions, and one card with its library, computer
+   * and routines. "Edit" hides it and shows the full settings.
+   */
+  overview?: JSX.Element;
+  /** Application-owned rows of the full settings view, which "Edit" opens. */
   links?: JSX.Element;
   detailOpen?: boolean;
   children?: JSX.Element;
@@ -256,19 +280,6 @@ function choiceBrowserProfile(choice: BrowserProfileChoice): AgentBrowserProfile
 
 const INSTRUCTIONS_SAVE_DELAY_MS = 400;
 
-/**
- * The pages behind the root list. The root edits the agent's face, name, title and instructions
- * in place, as the mobile app does, and shows one row for each page.
- */
-type AgentSettingsPage = "permissions" | "folders" | "backup-models" | "advanced";
-
-const PAGE_TITLE: Record<AgentSettingsPage, AppTextKey> = {
-  permissions: "agentSettings.permissions.title",
-  folders: "agentSettings.folders.title",
-  "backup-models": "agentSettings.backupModels.title",
-  advanced: "agentSettings.advanced.title",
-};
-
 /** The three free-text fields of the panel, each with a flag for edits made since the last save. */
 interface AgentTextFields {
   description: string;
@@ -323,7 +334,10 @@ export default function AgentSettingsPanel(props: AgentSettingsPanelProps) {
   const agentDefaults = () => props.agentDefaults ?? DEFAULT_AGENT_DEFAULTS;
   const [newChatOpen, setNewChatOpen] = createSignal(false);
   const [deleteHistoryOpen, setDeleteHistoryOpen] = createSignal(false);
-  /** The name, title, description and chat color show only while the user edits the profile. */
+  /**
+   * The full settings view: the name, title, description and chat color, then every settings row.
+   * Without it, the panel shows the calm first view.
+   */
   const [editing, setEditing] = createSignal(false);
   const [draft, setDraft] = createStore<AgentSettingsDraft>({
     avatar: {
@@ -377,6 +391,33 @@ export default function AgentSettingsPanel(props: AgentSettingsPanelProps) {
       )?.focus(),
     );
   }
+
+  // The row can show later than its page, such as a row that waits for the host. A new request, another
+  // page, an input of the user in the page or a closed panel stops the wait.
+  createEffect(
+    () => props.reveal,
+    (reveal) => {
+      if (!reveal) return;
+      const row = AGENT_SETTING_LINK_ROWS[reveal.settingId];
+      // An effect cannot flush, so a new page shows after this callback, and the observer finds its row.
+      const pageShown = untrack(page) === row.page;
+      setPage(row.page);
+      // The calm first view shows only the notification row; "Edit" shows the other rows of the root.
+      if (row.page === null) setEditing(reveal.settingId !== "agent.notification-level");
+      // A detail page covers the panel: the page is where its Back goes, and no row shows to mark.
+      if (untrack(() => props.detailOpen)) return;
+      const root = pageRoot;
+      if (!root) return;
+      if (!row.match) {
+        if (row.page) openPage(row.page);
+        return;
+      }
+      const label = t(row.match);
+      if (pageShown && revealSettingRow(root, label)) return;
+      // The user went to another page: the row is not wanted there.
+      return waitForSettingRow(root, () => untrack(page) !== row.page || revealSettingRow(root, label));
+    },
+  );
 
   function closePage(): void {
     returnFocusPage = page();
@@ -965,7 +1006,8 @@ export default function AgentSettingsPanel(props: AgentSettingsPanelProps) {
     return (
       provider !== undefined &&
       (draft.busyMessage === "default" ? defaultBusyMessageMode() : draft.busyMessage) === "steer" &&
-      agentProviderDescriptor(provider).steer !== "native"
+      // A custom agent steers when its model reports it (#4977).
+      !agentSteersTurns({ provider, model: draft.runtime.model }, props.modelOptions)
     );
   };
 
@@ -1075,7 +1117,7 @@ export default function AgentSettingsPanel(props: AgentSettingsPanelProps) {
         >
           {(current) => (
             <SettingsPanelHeader
-              title={t(PAGE_TITLE[current()])}
+              title={t(AGENT_SETTINGS_PAGE_TITLE[current()])}
               onBack={closePage}
               backLabel={t("agentSettings.backToSettings")}
               onClose={props.onClose}
@@ -1360,11 +1402,16 @@ export default function AgentSettingsPanel(props: AgentSettingsPanelProps) {
                   </Popover.Root>
                 </div>
                 <h3 class="agent-settings-hero-name">{draft.fields.name || props.agent.name}</h3>
-                <Show when={draft.fields.title || props.agent.title}>
-                  {(title) => <p class="agent-settings-hero-title">{title()}</p>}
+                {/* One line under the name: the agent's title, else the start of its description. */}
+                <Show when={draft.fields.title || props.agent.title || props.agent.description.trim()}>
+                  {(title) => (
+                    <p class="agent-settings-hero-title" dir="auto">
+                      {title()}
+                    </p>
+                  )}
                 </Show>
                 <Button
-                  variant="outline"
+                  variant="secondary"
                   size="sm"
                   type="button"
                   class="agent-settings-edit-toggle"
@@ -1372,8 +1419,7 @@ export default function AgentSettingsPanel(props: AgentSettingsPanelProps) {
                   aria-controls="agent-settings-edit-fields"
                   onClick={() => setEditing((open) => !open)}
                 >
-                  <Pencil aria-hidden="true" />
-                  <span>{editing() ? t("common.done") : t("common.edit")}</span>
+                  {editing() ? t("common.done") : t("common.edit")}
                 </Button>
               </div>
               <Show when={editing()}>
@@ -1439,100 +1485,103 @@ export default function AgentSettingsPanel(props: AgentSettingsPanelProps) {
                   </Show>
                 </div>
               </Show>
-              {/* One scroll of rows: what it knows, what it does, its rules, then its computer and voice. */}
-              {props.links}
-              <SettingsLinkGroup inset title={t("agentSettings.groups.rules")}>
-                <SettingsLinkRow
-                  ref={pageRowRef("permissions")}
-                  icon={<ShieldCheck aria-hidden="true" />}
-                  label={t("agentSettings.permissions.title")}
-                  value={t(ACCESS_LABEL[draft.permission])}
-                  onClick={() => openPage("permissions")}
-                />
-                <Show when={props.folders}>
-                  <AgentFoldersRow
-                    ref={pageRowRef("folders")}
-                    folders={agentFolders}
-                    wideAccess={wideAccess()}
-                    onOpen={() => openPage("folders")}
-                  />
+              <Show when={!editing()}>
+                {props.overview}
+                <Show when={props.notificationLevel}>
+                  {(options) => (
+                    <>
+                      <SettingsLinkGroup inset class="agent-settings-runtime-rows agent-settings-notify">
+                        <SettingsLinkRow
+                          icon={<Bell aria-hidden="true" />}
+                          label={t("agentSettings.notificationLevel.title")}
+                          value={notificationLevelLabel(options())}
+                          onClick={(trigger) => options().onOpen(trigger)}
+                        />
+                      </SettingsLinkGroup>
+                      <Text as="p" class="agent-settings-runtime-note" variant="caption" tone="muted">
+                        {t("agentSettings.notificationLevel.footer")}
+                      </Text>
+                    </>
+                  )}
                 </Show>
-                <SettingsLinkRow
-                  ref={pageRowRef("advanced")}
-                  icon={<SlidersHorizontal aria-hidden="true" />}
-                  label={t("agentSettings.advanced.title")}
-                  onClick={() => openPage("advanced")}
-                />
-              </SettingsLinkGroup>
-              <SettingsLinkGroup
-                inset
-                class="agent-settings-runtime-rows agent-settings-computer-card"
-                title={t("agentSettings.groups.model")}
-              >
-                <ProviderModelPicker
-                  variant="field"
-                  icon={
-                    <span class="settings-link-icon">
-                      <Cpu aria-hidden="true" />
-                    </span>
-                  }
-                  ariaLabel={t("agentSettings.runtime.model")}
-                  provider={draft.runtime.provider}
-                  foreignProvider={agentForeignProvider()}
-                  value={draft.runtime.model}
-                  agentStatus={props.agentStatus}
-                  modelOptions={props.modelOptions}
-                  runtimeStatuses={props.providerRuntimeStatuses}
-                  customProviders={props.customProviders}
-                  customAgents={props.customAgents}
-                  onDownloadProvider={props.onDownloadProvider}
-                  onCancelProviderDownload={props.onCancelProviderDownload}
-                  onConnectProvider={props.onConnectProvider}
-                  canConnectProvider={props.canConnectProvider}
-                  onManageProviders={props.onManageProviders}
-                  disabledReason={t("agentSettings.runtime.modelUnavailable")}
-                  accountChoice
-                  providerAccountId={agentNextProviderAccountId(props.agent)}
-                  onChange={(nextModel, provider, accountId, effort) =>
-                    void selectModel(nextModel, provider, accountId, effort)
-                  }
-                  reasoningEffort={draft.runtime.reasoningEffort}
-                  onReasoningEffortChange={(effort) => {
-                    if (effort !== draft.runtime.reasoningEffort) void selectReasoning(effort);
-                  }}
-                  fastMode={props.fastMode}
-                  ultrafast={props.ultrafast}
-                  onFastModeChange={props.onFastModeChange}
-                />
-                <Show when={props.backupModelsEditable}>
+              </Show>
+              <Show when={editing()}>
+                {/* One scroll of rows: what it knows, what it does, its rules, then its model. */}
+                {props.links}
+                <SettingsLinkGroup inset title={t("agentSettings.groups.rules")}>
                   <SettingsLinkRow
-                    ref={pageRowRef("backup-models")}
-                    icon={<ArrowLeftRight aria-hidden="true" />}
-                    label={t("agentSettings.backupModels.title")}
-                    value={backupModelsSummary()}
-                    onClick={() => openPage("backup-models")}
+                    ref={pageRowRef("permissions")}
+                    icon={<ShieldCheck aria-hidden="true" />}
+                    label={t("agentSettings.permissions.title")}
+                    value={t(ACCESS_LABEL[draft.permission])}
+                    onClick={() => openPage("permissions")}
                   />
-                </Show>
-              </SettingsLinkGroup>
-              <Show when={props.notificationLevel}>
-                <SettingsLinkGroup inset class="agent-settings-runtime-rows" title={t("agentSettings.groups.alerts")}>
-                  <Show when={props.notificationLevel}>
-                    {(options) => (
-                      <SettingsLinkRow
-                        icon={<Bell aria-hidden="true" />}
-                        label={t("agentSettings.notificationLevel.title")}
-                        value={notificationLevelLabel(options())}
-                        wrapValue
-                        onClick={(trigger) => options().onOpen(trigger)}
-                      />
-                    )}
+                  <Show when={props.folders}>
+                    <AgentFoldersRow
+                      ref={pageRowRef("folders")}
+                      folders={agentFolders}
+                      wideAccess={wideAccess()}
+                      onOpen={() => openPage("folders")}
+                    />
+                  </Show>
+                  <SettingsLinkRow
+                    ref={pageRowRef("advanced")}
+                    icon={<SlidersHorizontal aria-hidden="true" />}
+                    label={t("agentSettings.advanced.title")}
+                    onClick={() => openPage("advanced")}
+                  />
+                </SettingsLinkGroup>
+                <SettingsLinkGroup
+                  inset
+                  class="agent-settings-runtime-rows agent-settings-computer-card"
+                  title={t("agentSettings.groups.model")}
+                >
+                  <ProviderModelPicker
+                    variant="field"
+                    icon={
+                      <span class="settings-link-icon">
+                        <Cpu aria-hidden="true" />
+                      </span>
+                    }
+                    ariaLabel={t("agentSettings.runtime.model")}
+                    provider={draft.runtime.provider}
+                    foreignProvider={agentForeignProvider()}
+                    value={draft.runtime.model}
+                    agentStatus={props.agentStatus}
+                    modelOptions={props.modelOptions}
+                    runtimeStatuses={props.providerRuntimeStatuses}
+                    customProviders={props.customProviders}
+                    customAgents={props.customAgents}
+                    onDownloadProvider={props.onDownloadProvider}
+                    onCancelProviderDownload={props.onCancelProviderDownload}
+                    onConnectProvider={props.onConnectProvider}
+                    canConnectProvider={props.canConnectProvider}
+                    onManageProviders={props.onManageProviders}
+                    disabledReason={t("agentSettings.runtime.modelUnavailable")}
+                    accountChoice
+                    providerAccountId={agentNextProviderAccountId(props.agent)}
+                    workspaceOnly={workspaceAccessEnforced(props.agent)}
+                    onChange={(nextModel, provider, accountId, effort) =>
+                      void selectModel(nextModel, provider, accountId, effort)
+                    }
+                    reasoningEffort={draft.runtime.reasoningEffort}
+                    onReasoningEffortChange={(effort) => {
+                      if (effort !== draft.runtime.reasoningEffort) void selectReasoning(effort);
+                    }}
+                    fastMode={props.fastMode}
+                    ultrafast={props.ultrafast}
+                    onFastModeChange={props.onFastModeChange}
+                  />
+                  <Show when={props.backupModelsEditable}>
+                    <SettingsLinkRow
+                      ref={pageRowRef("backup-models")}
+                      icon={<ArrowLeftRight aria-hidden="true" />}
+                      label={t("agentSettings.backupModels.title")}
+                      value={backupModelsSummary()}
+                      onClick={() => openPage("backup-models")}
+                    />
                   </Show>
                 </SettingsLinkGroup>
-                <Show when={props.notificationLevel}>
-                  <Text as="p" class="agent-settings-runtime-note" variant="caption" tone="muted">
-                    {t("agentSettings.notificationLevel.note")}
-                  </Text>
-                </Show>
               </Show>
             </Show>
             <Show when={page() === "permissions"}>

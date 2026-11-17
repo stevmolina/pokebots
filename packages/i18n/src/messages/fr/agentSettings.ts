@@ -103,7 +103,6 @@ export const messages = {
   "agentSettings.groups.does": "Actions",
   "agentSettings.groups.rules": "Règles",
   "agentSettings.groups.model": "Modèle",
-  "agentSettings.groups.alerts": "Alertes",
   "agentSettings.saveFailed": "Impossible d’enregistrer les réglages de l’agent.",
 
   "agentSettings.name": "Nom",
@@ -175,10 +174,8 @@ export const messages = {
   "agentSettings.busyMessage.steerUnsupported":
     "{provider} ne peut pas orienter un tour en cours. Les messages envoyés pendant son travail attendent dans la file.",
   "agentSettings.notificationLevel.title": "Me notifier",
+  "agentSettings.notificationLevel.footer": "Recevez une notification quand cet agent termine ou vous attend.",
   "agentSettings.notificationLevel.server": "Par défaut du serveur ({level})",
-  "agentSettings.notificationLevel.note":
-    "Ce choix ne concerne que vous, sur tous vos appareils. Si le serveur est en sourdine ou réglé sur « Rien », cet agent reste aussi silencieux.",
-
   "agentSettings.newChat.title": "Nouvelle discussion",
   "agentSettings.newChat.description": "L’agent oublie cette discussion. Sa configuration reste.",
   "agentSettings.newChat.button": "Commencer",
@@ -215,6 +212,10 @@ export const messages = {
   "agentSettings.links.tablesCount": { one: "{count} table", other: "{count} tables" },
   "agentSettings.links.files": "Fichiers",
   "agentSettings.links.routines": "Routines",
+  "agentSettings.links.library": "Bibliothèque",
+  "agentSettings.links.computer": "Ordinateur",
+  "agentSettings.links.computerActive": "En cours",
+  "agentSettings.links.computerOffline": "Hors ligne",
   "agentSettings.links.routinesCount": { one: "{count} configurée", other: "{count} configurées" },
   "agentSettings.links.routinesNone": "Aucune",
   "agentSettings.runtime.workspaceNote":

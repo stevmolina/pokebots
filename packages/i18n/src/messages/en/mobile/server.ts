@@ -1,6 +1,16 @@
 import { defineMessages } from "../../../message";
 
 export const messages = defineMessages("mobile.server", {
+  "mobile.server.computers.context": "Computer name",
+  "mobile.server.computers.standard": "Standard \u00b7 2 vCPU",
+  "mobile.server.computers.large": "Large \u00b7 8 vCPU",
+  "mobile.server.computers.start": "Start",
+  "mobile.server.computers.stop": "Stop",
+  "mobile.server.computers.destroy": "Destroy",
+  "mobile.server.computers.screenshot": "Latest screenshot",
+  "mobile.server.computers.destroyDescription":
+    "This permanently deletes the computer and all its files. Stop it to keep its data.",
+
   "mobile.server.cloudComputers.title": "Cloud computers",
   "mobile.server.cloudComputers.description":
     "Connect this server to Agent Computer. The host encrypts the API key. Running computers keep running after you disconnect.",
@@ -567,7 +577,7 @@ export const messages = defineMessages("mobile.server", {
   "mobile.server.settings.timezoneNoMatch": "No timezone matches this search.",
   "mobile.server.settings.timezoneMore": "Type more of the name to see other timezones.",
   "mobile.server.settings.timezoneDescription":
-    "New routines use this timezone when the message does not give the sender's timezone.",
+    "New routines use this timezone when the message does not give the sender's timezone. On a server, the browser also uses it after the next restart.",
   "mobile.server.settings.timezoneLoading": "Loading timezone…",
   "mobile.server.settings.timezoneLoadFailed": "Could not load the server timezone.",
   "mobile.server.settings.timezoneSaveFailed": "Could not save the timezone. Try again.",
@@ -823,6 +833,17 @@ export const messages = defineMessages("mobile.server", {
   "mobile.server.vault.variableNameHint":
     "The environment variable that a program reads: capital letters, digits and _. Agents find the key by this name.",
   "mobile.server.vault.apiKey": "API key",
+  "mobile.server.vault.agents": "Agents",
+  "mobile.server.vault.agentsAll": "All agents",
+  "mobile.server.vault.agentsAllHint": "All agents also includes each agent that is added later.",
+  "mobile.server.vault.agentsNone": "Choose at least one agent.",
+  "mobile.server.vault.agentsSome": "{chosen} of {total}",
+  "mobile.server.vault.agentsListed": "Agents: {agents}",
+  "mobile.server.vault.searchAgents": "Search agents",
+  "mobile.server.vault.noAgentMatches": "No agents match this search.",
+  "mobile.server.vault.agentOptions": "Options",
+  "mobile.server.vault.selectAll": "Select all",
+  "mobile.server.vault.deselectAll": "Deselect all",
   "mobile.server.vault.delete": "Delete item",
   "mobile.server.vault.deleteTitle": "Delete this item?",
   "mobile.server.vault.deleteBody": "Agents on {host} can no longer use it. You cannot undo this.",
@@ -978,6 +999,32 @@ export const messages = defineMessages("mobile.server", {
   "mobile.server.connectors.protonPass.keyHelp":
     "In Proton Pass, make an access key that can read only the vault you share with OpenBot, then paste it here. {host} keeps the key; this phone does not.",
   "mobile.server.connectors.protonPass.keyPlaceholder": "pst_…",
+  // Keeper: the host signs in with Keeper Commander, Keeper's command-line tool, and reads one shared folder.
+  "mobile.server.connectors.keeper.title": "Keeper",
+  "mobile.server.connectors.keeper.description":
+    "Share one Keeper folder with OpenBot on {host}, so agents on {host} can sign in to sites in its browser.",
+  "mobile.server.connectors.keeper.accountHelp":
+    "Enter your Keeper email and master password. They go to {host} once, and {host} gives them to Keeper Commander. This phone does not keep them.",
+  "mobile.server.connectors.keeper.email": "Email",
+  "mobile.server.connectors.keeper.masterPassword": "Master password",
+  "mobile.server.connectors.keeper.signingIn": "{host} is signing in to Keeper…",
+  "mobile.server.connectors.keeper.makingFolder": "{host} is making the shared folder…",
+  "mobile.server.connectors.keeper.code": "Code",
+  "mobile.server.connectors.keeper.twoFactorHint":
+    "Keeper asks for a two-step code. Enter the code from your authenticator app or text message. It goes to {host} once; this phone does not keep it.",
+  "mobile.server.connectors.keeper.deviceHint":
+    "Keeper sent an approval email and a notification to your other devices. Approve this device there, then press Continue. Or type the code from the email.",
+  "mobile.server.connectors.keeper.codeWrong": "The code is not correct. Try again.",
+  "mobile.server.connectors.keeper.folderTitle": "Shared folder",
+  "mobile.server.connectors.keeper.folderFooter":
+    "Move a login into this folder in Keeper to let agents sign in with it. Remove it to stop.",
+  "mobile.server.connectors.keeper.plan":
+    "Your Keeper administrator does not allow Keeper Commander for this account. Ask them to allow it, then connect again.",
+  "mobile.server.connectors.keeper.expiredTitle": "The Keeper session ended",
+  "mobile.server.connectors.keeper.expiredBody":
+    "Agents on {host} cannot sign in with your shared logins until you connect again.",
+  "mobile.server.connectors.keeper.disconnectBody":
+    "{host} ends its Keeper session. The folder and its logins stay in your Keeper vault.",
   // A password manager that the host connects through its CLI. {name} is the manager, such as
   // Proton Pass. {date} is a date, such as 5 Nov 2026.
   "mobile.server.connectors.passwordManager.unavailable": "{name} is not available on this server.",
@@ -1187,6 +1234,9 @@ export const messages = defineMessages("mobile.server", {
   "mobile.server.connectors.whatsapp.workingMessage": "“Working on it…” message",
   "mobile.server.connectors.whatsapp.workingMessageDescription":
     "OpenBot posts it while the agent works, then replaces it with the answer. Turn off to post only the answer.",
+  "mobile.server.connectors.whatsapp.statusReactions": "Status reactions",
+  "mobile.server.connectors.whatsapp.statusReactionsDescription":
+    "OpenBot reacts with 👀 when a message arrives and with ✅ when the answer is ready. Turn off to send no reactions.",
   "mobile.server.connectors.whatsapp.orchestratorTitle": "WhatsApp Orchestrator",
   "mobile.server.connectors.whatsapp.orchestratorDescription":
     "This agent receives the messages for OpenBot from all your linked numbers. It answers short ones itself, gives other work to the right agent, and answers in WhatsApp.",
@@ -1428,6 +1478,22 @@ export const messages = defineMessages("mobile.server", {
   "mobile.server.providers.compactWindowDefault": "Claude Code default",
   "mobile.server.providers.compactWindowTokens": "{size} tokens",
   "mobile.server.providers.compactWindowLoadFailed": "Could not load the compaction size of this server.",
+  "mobile.server.environment.row": "Variables",
+  "mobile.server.environment.title": "Environment",
+  "mobile.server.environment.hint":
+    "API keys, base URLs and other settings that each {name} process gets. A change applies when the current turns end.",
+  "mobile.server.environment.codexHint":
+    "OPENAI_BASE_URL, with OPENAI_API_KEY as its key, sends the model requests of ChatGPT to that address.",
+  "mobile.server.environment.shellNote": "The commands that agents run can read these values.",
+  "mobile.server.environment.add": "Add variable",
+  "mobile.server.environment.namePlaceholder": "VARIABLE_NAME",
+  "mobile.server.environment.valuePlaceholder": "Value",
+  "mobile.server.environment.saved": "Saved",
+  "mobile.server.environment.sensitive": "Sensitive",
+  "mobile.server.environment.remove": "Remove",
+  "mobile.server.environment.save": "Save",
+  "mobile.server.environment.loadFailed": "Could not load the variables of {name}.",
+  "mobile.server.environment.invalid": "Correct the names first.",
   "mobile.server.providers.disconnect": "Disconnect",
   "mobile.server.providers.disconnectTitle": "Disconnect {name}?",
   "mobile.server.providers.disconnectBody":

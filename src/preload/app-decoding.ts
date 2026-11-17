@@ -7,6 +7,7 @@
 import { isAgentTemplateId } from "@openbot/contracts/agent-template-links";
 import { type AppShortcutCommand, isAppShortcutCommand } from "@openbot/contracts/app-shortcut";
 import { type BillingState, parseBillingState } from "@openbot/contracts/billing";
+import { type BillingDetails, parseBillingDetails } from "@openbot/contracts/billing-details";
 import {
   type HostedServerCatalog,
   type HostedServerList,
@@ -103,6 +104,7 @@ import {
   isVoiceModelId,
   isVoiceServerProbe,
   isVoiceServerSettings,
+  isVoiceTurnPause,
   isXaiSpeechVoice,
   type LinkAccountStatus,
   type MobileConnectedDevice,
@@ -624,14 +626,15 @@ export function decodeSpeechModelStatus(value: unknown): SpeechModelStatus {
 
 export function decodeSpeechSettings(value: unknown): SpeechSettings {
   const settings = decodeRecord(value, "speech settings");
-  const { modelId, voice, elevenLabsVoice, xaiVoice, speed, codexLiveVoice } = settings;
+  const { modelId, voice, elevenLabsVoice, xaiVoice, speed, codexLiveVoice, turnPauseMs } = settings;
   if (
     !isSpeechModelId(modelId) ||
     !isSpeechVoice(voice) ||
     !isElevenLabsSpeechVoice(elevenLabsVoice) ||
     !isXaiSpeechVoice(xaiVoice) ||
     !isSpeechSpeed(speed) ||
-    !(codexLiveVoice === null || isCodexLiveVoice(codexLiveVoice))
+    !(codexLiveVoice === null || isCodexLiveVoice(codexLiveVoice)) ||
+    !isVoiceTurnPause(turnPauseMs)
   )
     throw new Error("Invalid speech settings.");
   return {
@@ -643,6 +646,7 @@ export function decodeSpeechSettings(value: unknown): SpeechSettings {
     speed,
     codexLive: requiredBoolean(settings, "codexLive"),
     codexLiveVoice,
+    turnPauseMs,
   };
 }
 
@@ -763,6 +767,12 @@ export function decodeBillingState(value: unknown): BillingState {
   const state = parseBillingState(value);
   if (!state) throw new Error("Invalid billing state response.");
   return state;
+}
+
+export function decodeBillingDetails(value: unknown): BillingDetails {
+  const details = parseBillingDetails(value);
+  if (!details) throw new Error("Invalid billing details response.");
+  return details;
 }
 
 export function decodeLicenseState(value: unknown): LicenseState {

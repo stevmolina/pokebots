@@ -63,6 +63,11 @@ export const messages = {
   "mobile.agent.menu.unmute": "Wyłącz wyciszenie",
   "mobile.agent.menu.hide": "Ukryj",
   "mobile.agent.menu.info": "Informacje",
+  "mobile.agent.profile.edit": "Edytuj",
+  "mobile.agent.profile.library": "Biblioteka",
+  "mobile.agent.profile.computer": "Komputer",
+  "mobile.agent.profile.notificationsFooter":
+    "Otrzymaj powiadomienie, gdy ten agent skończy lub będzie na Ciebie czekać. Tylko dla Ciebie, na wszystkich Twoich urządzeniach.",
   "mobile.agent.menu.more": "Więcej",
   "mobile.agent.menu.copyId": "Kopiuj ID",
   "mobile.agent.menu.duplicate": "Duplikuj",
@@ -153,6 +158,8 @@ export const messages = {
   "mobile.agent.info.routinePaused": "Wstrzymana",
   "mobile.agent.info.noRoutines": "Brak rutyn.",
   "mobile.agent.info.addRoutine": "Dodaj rutynę",
+  "mobile.agent.info.addHeartbeat": "Dodaj heartbeat",
+  "mobile.agent.heartbeat.name": "Heartbeat",
   "mobile.agent.info.skillsUnsupported": "Ten host nie obsługuje umiejętności. Zaktualizuj OpenBot na hoście.",
   "mobile.agent.info.noSkills": "Brak umiejętności.",
   "mobile.agent.info.skillsManaged": "Umiejętnościami tego agenta zarządza się na hoście.",
@@ -338,6 +345,8 @@ export const messages = {
   "mobile.agent.runtime.noModels": "Brak dostępnych modeli dla tego dostawcy.",
   "mobile.agent.runtime.searchModels": "Szukaj modeli",
   "mobile.agent.runtime.noMatches": "Żaden model nie pasuje do wyszukiwania.",
+  "mobile.agent.runtime.workspaceOnlyUnavailable":
+    "Ten dostawca nie działa z opcją „Tylko obszar roboczy” w systemach Windows i Linux. Aby go użyć, najpierw zmień „Uprawnienia”.",
   "mobile.agent.runtime.usageLimit": "Osiągnięto limit użycia",
   "mobile.agent.runtime.usageLimitWindow": "Limit ({window})",
   "mobile.agent.runtime.usageLimitResets": "{limit} · Reset {time}",
@@ -428,8 +437,6 @@ export const messages = {
   "mobile.agent.notificationLevel.title": "Powiadamiaj mnie o",
   "mobile.agent.notificationLevel.server": "Ustawienie serwera",
   "mobile.agent.notificationLevel.serverValue": "Ustawienie serwera ({level})",
-  "mobile.agent.notificationLevel.footer":
-    "„Powiadamiaj mnie o” dotyczy tylko ciebie, na wszystkich twoich urządzeniach.",
   "mobile.agent.notificationLevel.unsupported":
     "Ten serwer nie może zapisać twojego poziomu powiadomień dla agenta. Zaktualizuj OpenBot na komputerze, na którym działa.",
   "mobile.agent.newChat.title": "Nowy czat",
@@ -659,6 +666,7 @@ export const messages = {
   "mobile.agent.home.markAllRead": "Oznacz wszystkie jako przeczytane",
   "mobile.agent.home.sort.title": "Sortuj czaty",
   "mobile.agent.home.sort.manual": "Ręcznie",
+  "mobile.agent.home.sort.recent": "Ostatnia aktywność",
   "mobile.agent.home.sort.unreadGroup": "Nieprzeczytane w grupie",
   "mobile.agent.home.sort.unreadFirst": "Nieprzeczytane najpierw w folderach",
   "mobile.agent.route.appearance": "Wygląd",

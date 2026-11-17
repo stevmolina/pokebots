@@ -24,6 +24,7 @@ export const messages = {
   "mobile.marketplace.app.onePasswordTagline": "Вход на сайты с общими учётными данными",
   "mobile.marketplace.app.bitwardenTagline": "Вход на сайты с учётными данными из общей папки",
   "mobile.marketplace.app.protonPassTagline": "Вход на сайты с учётными данными из общего хранилища",
+  "mobile.marketplace.app.keeperTagline": "Вход на сайты с учётными данными из общей папки",
   "mobile.marketplace.search.placeholder": "Поиск по каталогу",
   "mobile.marketplace.search.clear": "Очистить поиск",
   "mobile.marketplace.search.close": "Закрыть поиск",
@@ -62,6 +63,7 @@ export const messages = {
   "mobile.marketplace.facts.accessSignIn": "Вход",
   "mobile.marketplace.facts.accessLocal": "Этот компьютер",
   "mobile.marketplace.facts.accessNone": "Без входа",
+  "mobile.marketplace.facts.accessMac": "Только Mac",
   "mobile.marketplace.permission.admin": "Устанавливать из каталога могут только владельцы и администраторы.",
   "mobile.marketplace.permission.unavailable":
     "Этот сервер не в сети, или его версия OpenBot слишком старая для этого. Обновите OpenBot на компьютере, где он работает.",
@@ -112,6 +114,8 @@ export const messages = {
   "mobile.marketplace.app.linkInvalid": "Используйте ссылку https на {hostname}.",
   "mobile.marketplace.app.docs": "Получить ключ",
   "mobile.marketplace.app.local": "Это приложение работает на компьютере с OpenBot. Настройте его на этом компьютере.",
+  "mobile.marketplace.app.needsMac":
+    "Это приложение работает только на Mac, где запущен OpenBot, а этот сервер — не Mac.",
   "mobile.marketplace.app.relayUnsupported":
     "Этому приложению нужен вход в браузере. Обновите OpenBot на сервере или подключите приложение на компьютере.",
   "mobile.marketplace.app.waiting": "Ожидание страницы входа…",

@@ -1,4 +1,4 @@
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
+import { type DynamicRecord, isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
 import { normalizeEmailAddress } from "@openbot/contracts/validation";
 import { Effect, Schema } from "effect";
 import { createRemoteJWKSet, customFetch, jwtVerify } from "jose";
@@ -15,6 +15,7 @@ export interface WorkosMetadata {
   authorizationEndpoint: string;
   tokenEndpoint: string;
   jwksUri: string;
+  userinfoEndpoint: string | null;
 }
 
 /** Provider-only operations. This adapter does not create accounts or grant server membership. */
@@ -74,6 +75,10 @@ export class WorkosOidc {
       authorizationEndpoint: document.authorization_endpoint,
       tokenEndpoint: document.token_endpoint,
       jwksUri: document.jwks_uri,
+      userinfoEndpoint:
+        isString(document.userinfo_endpoint) && this.#validUrl(document.userinfo_endpoint)
+          ? document.userinfo_endpoint
+          : null,
     } satisfies WorkosMetadata;
   });
 
@@ -141,6 +146,39 @@ export class WorkosOidc {
     ) {
       return yield* new WorkosOidcError({ code: "token" });
     }
-    return { subject: claims.sub, email };
+    const pictureUrl =
+      this.#pictureClaim(claims) ??
+      (yield* this.#userinfoPicture(
+        input.metadata,
+        claims.sub,
+        isString(response.access_token) ? response.access_token : null,
+      ));
+    return { subject: claims.sub, email, pictureUrl };
   });
+
+  /** The sign-in works without a picture, so a failed lookup is an absent picture. */
+  readonly #userinfoPicture = (metadata: WorkosMetadata, subject: string, accessToken: string | null) =>
+    Effect.promise(async () => {
+      if (!metadata.userinfoEndpoint || !accessToken) return null;
+      try {
+        const result = await this.#fetch(metadata.userinfoEndpoint, {
+          headers: { Authorization: `Bearer ${accessToken}`, Accept: "application/json" },
+          redirect: "manual",
+          signal: AbortSignal.timeout(TIMEOUT_MS),
+        });
+        if (!result.ok) return null;
+        const body = await result.json();
+        // The userinfo answer belongs to the same account only when its subject matches the token.
+        return isDynamicRecord(body) && body.sub === subject ? this.#pictureClaim(body) : null;
+      } catch {
+        return null;
+      }
+    });
+
+  /** A link to the account picture, from the standard claim or the WorkOS profile field. */
+  #pictureClaim(claims: DynamicRecord): string | null {
+    const value = claims.picture ?? claims.profile_picture_url;
+    if (!isString(value) || value.length > 2048 || !this.#validUrl(value)) return null;
+    return new URL(value).toString();
+  }
 }

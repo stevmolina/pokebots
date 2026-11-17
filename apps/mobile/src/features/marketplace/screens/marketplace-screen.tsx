@@ -4,6 +4,8 @@ import { type ReactNode, useRef, useState } from "react";
 import { Pressable, ScrollView, View, type ViewInstance } from "react-native";
 import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { PreviewChips } from "@/features/design-preview/components/preview-page";
+import { useCalmLook } from "@/features/design-preview/model/calm-look";
 import { SettingsNote, SettingsSection } from "@/features/settings/components/settings-content";
 import { useMobileWorkspaceSelector } from "@/features/workspace/context/mobile-workspace-context";
 import { AndroidBlurTarget } from "@/shared/components/android-header-blur";
@@ -31,6 +33,15 @@ import {
   useMarketplaceCatalog,
   useMarketplaceInstalled,
 } from "../model/use-marketplace";
+
+/**
+ * The order of the kinds in the new design's one list, as the overview shows them: agents, apps, skills.
+ * Inside a kind the most installed come first, so a next catalog page adds rows inside its kind.
+ */
+const CALM_KIND_ORDER: Record<MarketplaceKind, number> = { agent: 0, app: 1, skill: 2 };
+
+/** The chips of the new design: all listings, each kind, and what the server already has. */
+const CALM_CHIPS = ["all", "app", "agent", "skill", "installed"] as const;
 
 /** The agents of the shelf and the skills of the list on the overview. */
 const OVERVIEW_ROWS = 8;
@@ -75,7 +86,9 @@ export function MarketplaceScreen() {
     void haptics.selection();
     setFilter({ ...NO_MARKETPLACE_FILTER, kind });
   };
-  const listMode = isMarketplaceFiltered(filter) || catalog.search.length > 0;
+  // The new design shows one quiet list with chips for the kinds, as the approved design preview.
+  const calm = useCalmLook();
+  const listMode = calm || isMarketplaceFiltered(filter) || catalog.search.length > 0;
 
   // The agents and skills did not load. The bundled apps still show under it, with a way to retry.
   const loadFailed =
@@ -94,8 +107,14 @@ export function MarketplaceScreen() {
   else if (listMode)
     content = (
       <FilteredList
-        listings={catalog.listings.filter((item) => matchesFilter(item, filter, installed.installed))}
+        listings={(() => {
+          const shown = catalog.listings.filter((item) => matchesFilter(item, filter, installed.installed));
+          return calm
+            ? shown.sort((a, b) => CALM_KIND_ORDER[a.kind] - CALM_KIND_ORDER[b.kind] || byPopularity(a, b))
+            : shown;
+        })()}
         filter={filter}
+        calm={calm}
         pending={catalog.pending}
         more={catalog}
         installed={installed}
@@ -139,7 +158,32 @@ export function MarketplaceScreen() {
           onScroll={scroll.onScroll}
         >
           <LargeTitle scroll={scroll} title={title} caption={server?.name} />
-          <View className="gap-7 pt-3">
+          <View className={calm ? "gap-4 pt-1" : "gap-7 pt-3"}>
+            {calm && server ? (
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="handled">
+                <PreviewChips
+                  options={CALM_CHIPS.map((id) => ({
+                    id,
+                    label: t(
+                      id === "all"
+                        ? "mobile.marketplace.filter.all"
+                        : id === "installed"
+                          ? "mobile.marketplace.installed"
+                          : KIND_LABELS[id],
+                    ),
+                  }))}
+                  value={filter.installed ? "installed" : (filter.kind ?? "all")}
+                  onChange={(id) =>
+                    setFilter({
+                      ...filter,
+                      kind: id === "all" || id === "installed" ? null : id,
+                      installed: id === "installed",
+                    })
+                  }
+                  paddingX={14}
+                />
+              </ScrollView>
+            ) : null}
             {loadFailed}
             {content}
           </View>
@@ -276,9 +320,12 @@ function FilteredList({
   installed,
   onOpen,
   onClear,
+  calm = false,
 }: {
   listings: MarketplaceListing[];
   filter: MarketplaceFilter;
+  /** The new design names the filter with its chips, so the list has no filter line. */
+  calm?: boolean;
   pending: boolean;
   /** The next catalog page, as the desktop "Load more". */
   more: Pick<MarketplaceCatalog, "hasMore" | "loadingMore" | "loadMoreFailed" | "loadMore">;
@@ -294,7 +341,7 @@ function FilteredList({
   ].filter(Boolean);
   return (
     <View className="gap-3 px-4">
-      {parts.length > 0 ? (
+      {parts.length > 0 && !calm ? (
         <View className="flex-row items-baseline justify-between px-1">
           <Typography.Paragraph
             numberOfLines={1}

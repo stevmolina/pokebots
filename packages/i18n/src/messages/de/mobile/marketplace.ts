@@ -24,6 +24,7 @@ export const messages = {
   "mobile.marketplace.app.onePasswordTagline": "Bei Websites mit von dir geteilten Zugangsdaten anmelden",
   "mobile.marketplace.app.bitwardenTagline": "Bei Websites mit Zugangsdaten aus einem geteilten Ordner anmelden",
   "mobile.marketplace.app.protonPassTagline": "Bei Websites mit Zugangsdaten aus einem geteilten Tresor anmelden",
+  "mobile.marketplace.app.keeperTagline": "Bei Websites mit Zugangsdaten aus einem geteilten Ordner anmelden",
   "mobile.marketplace.search.placeholder": "Marketplace durchsuchen",
   "mobile.marketplace.search.clear": "Suche löschen",
   "mobile.marketplace.search.close": "Suche schließen",
@@ -62,6 +63,7 @@ export const messages = {
   "mobile.marketplace.facts.accessSignIn": "Anmeldung",
   "mobile.marketplace.facts.accessLocal": "Dieser Computer",
   "mobile.marketplace.facts.accessNone": "Ohne Anmeldung",
+  "mobile.marketplace.facts.accessMac": "Nur Mac",
   "mobile.marketplace.permission.admin": "Nur Eigentümer und Administratoren können aus dem Marketplace installieren.",
   "mobile.marketplace.permission.unavailable":
     "Dieser Server ist offline, oder sein OpenBot ist dafür zu alt. Aktualisiere OpenBot auf dem Computer, der ihn ausführt.",
@@ -115,6 +117,8 @@ export const messages = {
   "mobile.marketplace.app.linkInvalid": "Verwende einen https-Link auf {hostname}.",
   "mobile.marketplace.app.docs": "Schlüssel holen",
   "mobile.marketplace.app.local": "Diese App läuft auf dem Computer mit OpenBot. Richte sie auf diesem Computer ein.",
+  "mobile.marketplace.app.needsMac":
+    "Diese App funktioniert nur auf einem Mac, auf dem OpenBot läuft, und dieser Server ist kein Mac.",
   "mobile.marketplace.app.relayUnsupported":
     "Diese App verlangt eine Anmeldung im Browser. Aktualisiere OpenBot auf dem Server oder verbinde die App auf dem Computer.",
   "mobile.marketplace.app.waiting": "Warten auf die Anmeldeseite…",

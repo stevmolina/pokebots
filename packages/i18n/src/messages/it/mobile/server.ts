@@ -451,7 +451,7 @@ export const messages = {
   "mobile.server.settings.timezoneNoMatch": "Nessun fuso orario corrisponde alla ricerca.",
   "mobile.server.settings.timezoneMore": "Scrivi più lettere del nome per vedere altri fusi orari.",
   "mobile.server.settings.timezoneDescription":
-    "Le nuove routine usano questo fuso orario quando il messaggio non indica quello del mittente.",
+    "Le nuove routine usano questo fuso orario quando il messaggio non indica quello del mittente. Su un server, anche il browser lo usa dopo il prossimo riavvio.",
   "mobile.server.settings.timezoneLoading": "Caricamento fuso orario…",
   "mobile.server.settings.timezoneLoadFailed": "Impossibile caricare il fuso orario del server.",
   "mobile.server.settings.timezoneSaveFailed": "Impossibile salvare il fuso orario. Riprova.",
@@ -710,6 +710,31 @@ export const messages = {
   "mobile.server.connectors.protonPass.keyHelp":
     "In Proton Pass, crea una chiave di accesso che può leggere solo il vault che condividi con OpenBot, poi incollala qui. {host} conserva la chiave; questo telefono no.",
   "mobile.server.connectors.protonPass.keyPlaceholder": "pst_…",
+  "mobile.server.connectors.keeper.title": "Keeper",
+  "mobile.server.connectors.keeper.description":
+    "Condividi una cartella di Keeper con OpenBot su {host}, così gli agenti su {host} possono accedere ai siti nel suo browser.",
+  "mobile.server.connectors.keeper.accountHelp":
+    "Inserisci l'email e la password principale di Keeper. Vanno a {host} una sola volta e {host} le passa a Keeper Commander. Questo telefono non le conserva.",
+  "mobile.server.connectors.keeper.email": "Email",
+  "mobile.server.connectors.keeper.masterPassword": "Password principale",
+  "mobile.server.connectors.keeper.signingIn": "{host} sta accedendo a Keeper…",
+  "mobile.server.connectors.keeper.makingFolder": "{host} sta creando la cartella condivisa…",
+  "mobile.server.connectors.keeper.code": "Codice",
+  "mobile.server.connectors.keeper.twoFactorHint":
+    "Keeper chiede un codice in due passaggi. Inserisci il codice della tua app di autenticazione o del messaggio di testo. Va a {host} una sola volta; questo telefono non lo conserva.",
+  "mobile.server.connectors.keeper.deviceHint":
+    "Keeper ha inviato un'email di approvazione e una notifica agli altri tuoi dispositivi. Approva lì questo dispositivo, poi premi Continua. Oppure digita il codice dell'email.",
+  "mobile.server.connectors.keeper.codeWrong": "Il codice non è corretto. Riprova.",
+  "mobile.server.connectors.keeper.folderTitle": "Cartella condivisa",
+  "mobile.server.connectors.keeper.folderFooter":
+    "Sposta una credenziale in questa cartella in Keeper per permettere agli agenti di accedere con essa. Rimuovila per smettere.",
+  "mobile.server.connectors.keeper.plan":
+    "Il tuo amministratore di Keeper non consente Keeper Commander per questo account. Chiedigli di consentirlo, poi connetti di nuovo.",
+  "mobile.server.connectors.keeper.expiredTitle": "La sessione di Keeper è terminata",
+  "mobile.server.connectors.keeper.expiredBody":
+    "Gli agenti su {host} non possono accedere con le tue credenziali condivise finché non connetti di nuovo.",
+  "mobile.server.connectors.keeper.disconnectBody":
+    "{host} termina la sua sessione Keeper. La cartella e le sue credenziali restano nel tuo vault Keeper.",
   "mobile.server.connectors.passwordManager.unavailable": "{name} non è disponibile su questo server.",
   "mobile.server.connectors.passwordManager.howItWorks":
     "Accedi a {name} su questo telefono. Poi {host} crea un vault condiviso e una chiave di accesso in sola lettura per il vault, e conserva solo quella chiave. Gli agenti non vedono mai una password.",
@@ -911,6 +936,9 @@ export const messages = {
   "mobile.server.connectors.whatsapp.workingMessage": "Messaggio «Ci sto lavorando…»",
   "mobile.server.connectors.whatsapp.workingMessageDescription":
     "OpenBot lo invia mentre l’agente lavora, poi lo sostituisce con la risposta. Disattiva per inviare solo la risposta.",
+  "mobile.server.connectors.whatsapp.statusReactions": "Reazioni di stato",
+  "mobile.server.connectors.whatsapp.statusReactionsDescription":
+    "OpenBot reagisce con 👀 quando arriva un messaggio e con ✅ quando la risposta è pronta. Disattiva per non inviare reazioni.",
   "mobile.server.connectors.whatsapp.orchestratorTitle": "WhatsApp Orchestrator",
   "mobile.server.connectors.whatsapp.orchestratorDescription":
     "Questo agente riceve i messaggi per OpenBot da tutti i tuoi numeri collegati. Risponde da solo a quelli brevi, passa il resto all'agente giusto e risponde su WhatsApp.",
@@ -1143,6 +1171,22 @@ export const messages = {
   "mobile.server.providers.compactWindowTokens": "{size} token",
   "mobile.server.providers.compactWindowLoadFailed":
     "Impossibile caricare la dimensione di compattazione di questo server.",
+  "mobile.server.environment.row": "Variabili",
+  "mobile.server.environment.title": "Ambiente",
+  "mobile.server.environment.hint":
+    "Chiavi API, URL di base e altre impostazioni che riceve ogni processo di {name}. Una modifica si applica quando finiscono i turni in corso.",
+  "mobile.server.environment.codexHint":
+    "OPENAI_BASE_URL, con OPENAI_API_KEY come chiave, invia le richieste ai modelli di ChatGPT a quell’indirizzo.",
+  "mobile.server.environment.shellNote": "I comandi che gli agenti eseguono possono leggere questi valori.",
+  "mobile.server.environment.add": "Aggiungi variabile",
+  "mobile.server.environment.namePlaceholder": "VARIABLE_NAME",
+  "mobile.server.environment.valuePlaceholder": "Valore",
+  "mobile.server.environment.saved": "Salvata",
+  "mobile.server.environment.sensitive": "Sensibile",
+  "mobile.server.environment.remove": "Rimuovi",
+  "mobile.server.environment.save": "Salva",
+  "mobile.server.environment.loadFailed": "Impossibile caricare le variabili di {name}.",
+  "mobile.server.environment.invalid": "Correggi prima i nomi.",
   "mobile.server.providers.disconnect": "Disconnetti",
   "mobile.server.providers.disconnectTitle": "Disconnettere {name}?",
   "mobile.server.providers.disconnectBody":

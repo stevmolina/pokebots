@@ -1,7 +1,7 @@
 import { classifyFailure, type FailureProperties, type NotificationMetadata } from "@openbot/telemetry";
 import { errorReference } from "@openbot/user-errors";
 import type { ComponentProps, JSX } from "@solidjs/web";
-import { createEffect, createSignal, omit, onSettled } from "solid-js";
+import { createEffect, omit, onSettled } from "solid-js";
 import {
   Toaster as Sonner,
   type ExternalToast as SonnerExternalToast,
@@ -16,6 +16,8 @@ import { cx } from "./utils";
 
 export type ToasterProps = ComponentProps<typeof Sonner> & {
   onToastShown?: (metadata: FailureProperties) => void;
+  /** Hides the toasts but keeps them, for example while a native view covers their place. */
+  hidden?: boolean;
 };
 export type ExternalToast = SonnerExternalToast & {
   report?: NotificationMetadata;
@@ -66,6 +68,26 @@ export function setToastErrorAction(resolver: ToastErrorAction): () => void {
     if (errorAction === resolver) errorAction = undefined;
   };
 }
+/** Says whether an error toast with these words shows nothing. */
+export type ToastErrorMute = (words: string) => boolean;
+let errorMute: ToastErrorMute | undefined;
+/**
+ * An app sets one predicate, for error words that it does not show, such as connection noise that
+ * its own status already shows. It runs for the title and the description. Returns the way to remove it.
+ */
+export function setToastErrorMute(predicate: ToastErrorMute): () => void {
+  errorMute = predicate;
+  return () => {
+    if (errorMute === predicate) errorMute = undefined;
+  };
+}
+function mutedError(
+  message: Parameters<typeof sonnerToast>[0],
+  description: SonnerExternalToast["description"],
+): boolean {
+  if (!errorMute) return false;
+  return [message, description].some((words) => typeof words === "string" && errorMute?.(words) === true);
+}
 function actionForError(
   message: Parameters<typeof sonnerToast>[0],
   description: SonnerExternalToast["description"],
@@ -82,6 +104,7 @@ function outcomeToast(kind: "error" | "warning") {
   return (message: Parameters<typeof sonnerToast>[0], options?: ExternalToast) => {
     const { report, error, fallback, ...data } = options ?? {};
     const given = data.description;
+    if (kind === "error" && mutedError(message, given)) return data.id ?? "muted-error";
     if (error !== undefined) data.description = withReference(error, data.description, fallback);
     if (kind === "error" && data.action === undefined) {
       const action = actionForError(message, given);
@@ -147,17 +170,16 @@ export const TOAST_DURATION = 3_000;
 /** The longest time a toast shows, for every toast, an important one too. */
 export const TOAST_MAX_DURATION = 3_000;
 
-const [hasVisibleToasts, setHasVisibleToasts] = createSignal(false);
-
 export function Toaster(props: ToasterProps): JSX.Element {
   // The desktop app mounts the Toaster outside its text provider, so it follows the active locale.
   const { t } = currentText();
   const notifications = useSonner();
-  const sonnerProps = omit(props, "onToastShown");
+  const sonnerProps = omit(props, "onToastShown", "hidden");
   createEffect(
-    () => notifications.toasts(),
-    (toasts) => {
-      if (!props.onToastShown) return;
+    // Tracks `hidden`, so a toast is reported when it shows, not while it is hidden.
+    () => ({ toasts: notifications.toasts(), hidden: props.hidden }),
+    ({ toasts, hidden }) => {
+      if (!props.onToastShown || hidden) return;
       const current = new Set(sonnerToast.getToasts().map((item) => item.id));
       for (const id of shown)
         if (!current.has(id)) {
@@ -184,25 +206,22 @@ export function Toaster(props: ToasterProps): JSX.Element {
   let layer: HTMLDivElement | undefined;
   onSettled(() => {
     if (!layer) return;
-    const updateVisibility = () => {
-      setHasVisibleToasts(Boolean(layer?.querySelector("[data-sonner-toast]")));
+    const markCloseButtons = () => {
       // solid-sonner renders the close button, so mark it here for the close cue.
       for (const button of layer?.querySelectorAll("[data-close-button]:not([data-cuelume-close])") ?? []) {
         button.setAttribute("data-cuelume-close", "");
         button.setAttribute("data-cuelume-emphasis", "subtle");
       }
     };
-    // Track mounted toasts so native content stays behind their exit animation too.
-    const observer = new MutationObserver(updateVisibility);
+    const observer = new MutationObserver(markCloseButtons);
     observer.observe(layer, { childList: true, subtree: true });
-    updateVisibility();
+    markCloseButtons();
     return () => {
       observer.disconnect();
-      setHasVisibleToasts(false);
     };
   });
   return (
-    <div ref={layer} data-kb-top-layer="" class="ui-toast-layer">
+    <div ref={layer} data-kb-top-layer="" class={cx("ui-toast-layer", props.hidden && "ui-toast-layer-hidden")}>
       <Sonner
         {...sonnerProps}
         class={cx("ui-toaster", (props.closeButton ?? true) && "ui-toaster-closeable", props.class)}
@@ -232,4 +251,3 @@ export function Toaster(props: ToasterProps): JSX.Element {
 }
 
 export type { ToastT } from "solid-sonner";
-export { hasVisibleToasts };

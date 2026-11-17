@@ -30,6 +30,7 @@ export {
   parseRoutineDateKey,
   ROUTINE_EVERY_DAY,
   ROUTINE_EVERY_HOURS,
+  ROUTINE_HEARTBEAT_SCHEDULE,
   ROUTINE_WORKDAYS,
   type RoutineClock,
   type RoutineDraftKind,

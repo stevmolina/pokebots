@@ -271,6 +271,10 @@ export const messages = {
   "routine.calendar.entryMeta": "{when} · {schedule} · {status}",
   "routine.calendar.openAgent": "Открыть {name}",
   "routine.calendar.completed": "Завершено",
+  "routine.calendar.new": "Новая регулярная задача",
+  "routine.calendar.newOn": "Новая регулярная задача: {day}",
+  "routine.calendar.agent": "Агент",
+  "routine.calendar.agentChoice": "Агент: {name}",
 
   "routine.settings.loadFailed": "Не удалось загрузить регулярные задачи.",
   "routine.settings.loadRunsFailed": "Не удалось загрузить историю запусков.",
@@ -286,6 +290,10 @@ export const messages = {
   "routine.settings.create": "Создать регулярную задачу",
   "routine.settings.loading": "Загрузка регулярных задач…",
   "routine.settings.empty": "Регулярных задач пока нет.",
+  "routine.heartbeat.add": "Добавить пульс",
+  "routine.heartbeat.name": "Пульс",
+  "routine.heartbeat.description":
+    "Проверяет список каждые 2 часа и пишет, только когда что-то требует вашего внимания.",
   "routine.settings.paused": "Приостановлена",
   "routine.settings.completed": "Завершена · {schedule}",
   "routine.settings.active": "Активна",

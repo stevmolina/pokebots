@@ -5,7 +5,7 @@ import type { PasswordManagerId, PasswordManagerStatus } from "@openbot/contract
  * (`password-managers-v1`). 1Password and Bitwarden keep their own pages and routes. To add a
  * manager, add its id here with its text and its sign-in site.
  */
-const MOBILE_PASSWORD_MANAGER_IDS = ["protonpass"] as const satisfies readonly PasswordManagerId[];
+const MOBILE_PASSWORD_MANAGER_IDS = ["protonpass", "keeper"] as const satisfies readonly PasswordManagerId[];
 
 export type MobilePasswordManagerId = (typeof MOBILE_PASSWORD_MANAGER_IDS)[number];
 
@@ -13,14 +13,24 @@ export function isMobilePasswordManagerId(value: string): value is MobilePasswor
   return MOBILE_PASSWORD_MANAGER_IDS.some((id) => id === value);
 }
 
-/** The text that is different for each manager. The shared page writes the rest with `{name}`. */
+/**
+ * The text that is different for each manager. The shared page writes the rest with `{name}`. Proton
+ * Pass connects with an access key, so it has the `key` texts. Keeper connects with the account's
+ * email and master password, and the page names its texts (`mobile.server.connectors.keeper.*`).
+ */
 export const PASSWORD_MANAGER_TEXT = {
   protonpass: {
     description: "mobile.server.connectors.protonPass.description",
     keyHelp: "mobile.server.connectors.protonPass.keyHelp",
     keyPlaceholder: "mobile.server.connectors.protonPass.keyPlaceholder",
   },
-} as const satisfies Record<MobilePasswordManagerId, Record<"description" | "keyHelp" | "keyPlaceholder", string>>;
+  keeper: {
+    description: "mobile.server.connectors.keeper.description",
+  },
+} as const satisfies Record<
+  MobilePasswordManagerId,
+  { description: string; keyHelp?: string; keyPlaceholder?: string }
+>;
 
 /**
  * The site of each manager's sign-in page. A joined server names the page that the phone opens, so
@@ -28,7 +38,9 @@ export const PASSWORD_MANAGER_TEXT = {
  */
 const SIGN_IN_SITES = {
   protonpass: "proton.me",
-} as const satisfies Record<MobilePasswordManagerId, string>;
+  // Keeper connects with the account in the page, so the host names no sign-in page.
+  keeper: null,
+} as const satisfies Record<MobilePasswordManagerId, string | null>;
 
 /**
  * `address` when it is an https page of the manager's sign-in site, otherwise null. The React Native
@@ -42,6 +54,7 @@ export function passwordManagerSignInPage(manager: MobilePasswordManagerId, addr
   const host = (end < 0 ? rest : rest.slice(0, end)).toLowerCase();
   const path = end < 0 ? "" : rest.slice(end);
   const site = SIGN_IN_SITES[manager];
+  if (site === null) return null;
   if (!/^[a-z0-9.-]+$/u.test(host) || !(host === site || host.endsWith(`.${site}`))) return null;
   return /^[^\s\\]*$/u.test(path) ? address : null;
 }

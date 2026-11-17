@@ -694,8 +694,8 @@ do not all pass the check before their processes grow. A start that fails counts
 
 | Level | When | What happens |
 | --- | --- | --- |
-| `ok` | Other times. After `low`, only at 256 MB above the `low` limit. | Turns start. |
-| `low` | Free memory is less than 512 MB or 12% of the total. | No new turn starts; the message stays queued. The agent shows one notice in each low period. The browser opens no new tab. At each sample, a Claude thread whose background tasks sent nothing for 30 minutes closes; with normal memory, background tasks keep their thread open. |
+| `ok` | Other times. After `low`, only at 256 MB above the `low` limit (10% of the total when that is less). | Turns start. |
+| `low` | Free memory is less than 512 MB or 12% of the total. Below 2.5 GB of total memory, 20% of the total replaces 512 MB, so a small server does not stay `low`. It is always at least 64 MB above the `critical` limit. | No new turn starts; the message stays queued. The agent shows one notice in each low period. The browser opens no new tab. At each sample, a Claude thread whose background tasks sent nothing for 30 minutes closes; with normal memory, background tasks keep their thread open. |
 | `critical` | Free memory is less than 256 MB or 6% of the total. | As `low`. Also, the provider threads with no turn close one time. They open again from their session at the next turn. Leftover agent processes stop (see below). |
 
 Agent processes (`AgentProcesses` in `src/main/server-memory.ts`):
@@ -1129,8 +1129,10 @@ server got the machine in that moment.
 
 A machine of the pool is not the boat image:
 
-- It has no agent CLI for all users (`claude`, `codex`, `pi`) and no `node`. A provider shows that
-  its CLI is not downloaded, and the user downloads it in OpenBot.
+- It has no agent CLI for all users (`claude`, `codex`, `pi`) and no `node`. At its start, OpenBot
+  downloads its own copy of the Claude, Codex, Cursor and Grok CLIs when they are on and missing, so
+  they show ready for sign-in. A failed download shows its error and a Retry. Another provider
+  shows that its CLI is not downloaded, and the user downloads it in OpenBot.
 - It has no Docker and no boat desktop. OpenBot uses its own virtual displays.
 - It shows the storage of a moved server (25, 75 and 150 GB), which is more than the plan table of
   the pricing page.
@@ -1397,8 +1399,9 @@ The VPS is not the same machine as the sandbox:
 
 - The boat image has commands that npm installed for all users (`claude`, `codex` and `pnpm` on
   2026-11-11). The VPS has none. The move copies the agent CLIs that the customer signed in to, and
-  `import` names each other one that is missing. A provider that used a missing command shows that
-  its CLI is not downloaded, and the user downloads it in OpenBot.
+  `import` names each other one that is missing. OpenBot downloads its own copy of the Claude, Codex,
+  Cursor and Grok CLIs at its start when they are missing. Another provider that used a missing
+  command shows that its CLI is not downloaded, and the user downloads it in OpenBot.
 - `prepare` makes only the primary group of `user`, and the VPS has no Docker. `import` names each
   group that `user` had in the sandbox (`docker` and `ascii-streaming-audio` on 2026-11-11). An
   agent of the customer that used Docker does not have it after the move.
@@ -1752,9 +1755,34 @@ sends the operator one message:
 | The owner cancels the renewal of a server plan or a license | ``Cancelled renewal of the <server plan or license> for `<email>`: <product>, <amount> (<currency>) for 1 <month or year>. It ends on <date>.`` | None. |
 | The owner resumes that renewal | ``Resumed renewal of the <server plan or license> for `<email>`: <product>, <amount> (<currency>) for 1 <month or year>.`` | None. |
 | A server plan or a license ends | ``Ended <server plan or license> for `<email>`: <product>, <amount> (<currency>) for 1 <month or year>. Reason: <cancelled or not paid>.`` | None. |
+| A paid Checkout page has a billing address in another country than the saved billing country | `VAT check: Checkout page <session ID> took the VAT of <country> (<treatment>), but its billing address is in <country>. ...` | Check the VAT of its invoice. |
+| Paid sales to consumers in other EU countries reach EUR 9,000 (net) in a calendar year, once a year | `VAT limit: in <year>, sales to consumers in other EU countries reached <amount> (net). ...` | Register for the EU One Stop Shop and charge the VAT of the buyer's country before EUR 10,000. |
 
-A pool message has no account, email or name. A purchase message (the last 5 rows) has the email of
-the account, on a developer decision, so keep the webhook in a private channel. Its amount is the list
+A purchase message (the last 5 rows) and a payment message (below) have the email of the account, on a
+developer decision, so keep the webhook in a private channel. A pool message has no account, email or
+name.
+
+The same webhook also gets one payment message for each invoice line of a server plan or a license
+that is paid or that fails, and for each refund and dispute:
+
+| Event | Message |
+| --- | --- |
+| A paid invoice line | ``Paid server plan for `<email>`: <plan>, <amount> (<currency>), 1 <month or year> period. <First purchase, Renewal or Adjustment>.`` |
+| A failed payment | ``Failed payment of the <server plan or license> for `<email>`: <product>, <amount> (<currency>), 1 <month or year> period. Reason: <Stripe reason>.`` |
+| A refund | ``Refunded <server plan or license> for `<email>`: <product>, <amount> (<currency>), 1 <month or year> period.`` |
+| A refund that failed after it was counted | ``Failed refund of the <server plan or license> for `<email>`: ...`` |
+| A dispute, and a lost dispute | ``Disputed payment of the <server plan or license> for `<email>`: ...``, ``Lost dispute of the <server plan or license> for `<email>`: ...`` |
+
+The product of a license is its number of users, such as `5 users`. The amount is the amount of the
+payment, the refund or the dispute. An adjustment is a plan change or a manual invoice. The sales
+ledger sends the message (`BillingSales.processPending`, in the cron of each 5 minutes), in the run that
+puts the fact in the OpenPanel ledger, so the message comes at most some minutes after the payment and
+one time. It needs `OPENPANEL_CLIENT_ID` and `OPENPANEL_CLIENT_SECRET` too. An imported payment, a $0 paid
+invoice (a trial start or a $0 proration) and a checkout step send no message. An account that is gone shows as `an unknown account`.
+`bun run test:billing-sale-alert` checks the messages. Thus a first purchase sends a `New` message and
+a `Paid` message.
+
+The amount of a purchase message is the list
 amount of one period, before a discount. A license at the bundle price adds `bundle price`, and a
 subscription that starts with a trial adds `It starts with a free trial.` Each new subscription sends
 one start message, and each ended subscription one end message: a claim in `billing_webhook_events`
@@ -1762,7 +1790,7 @@ one start message, and each ended subscription one end message: a claim in `bill
 A cancel or resume message goes out with the sync that stores the change, so a repeated event sends
 nothing. A cancel date that Stripe has for the subscription (`cancel_at`) is the date of the cancel
 message. One sync sends one message: a cancel that Stripe stores together with a change of plan or
-users sends no cancel message. A change of plan or users and a renewal payment send nothing. A server
+users sends no cancel message. A change of plan or users sends no purchase message. A server
 order with a license sends two messages, one for each subscription. A subscription that ends after its
 owner cancelled the renewal sends the cancel message and, later, the end message. A deleted server, a
 full refund and a dispute end the plan at once. The reason is `not paid` when the last payment of the

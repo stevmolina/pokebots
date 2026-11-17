@@ -22,6 +22,7 @@ import Volume2 from "lucide-react-native/icons/volume-2";
 import { useEffect, useRef, useState } from "react";
 import { Alert, Pressable, View } from "react-native";
 import { useCSSVariable } from "uniwind";
+import { useCalmLook } from "@/features/design-preview/model/calm-look";
 import { SettingsRow, SettingsSection } from "@/features/settings/components/settings-content";
 import { canReadAloud, toggleReadAloud, useReadingAloud } from "@/features/voice/model/message-reading";
 import { canChangeReplySpeed } from "@/features/voice/model/reply-voice";
@@ -59,11 +60,14 @@ function emojiRows(all: boolean): string[][] {
 /**
  * The sheet that a touch and hold on a message opens: the reactions on top, then the actions on the
  * files of the message, then Reply, Branch, Mark unread and Send to channel, then the actions on the
- * text, and Delete last. Each action closes the sheet.
+ * text, and Delete last. Each action closes the sheet. The new design groups them as the design
+ * preview does: Reply and Mark unread; Copy, Select text and Read aloud; Branch, Send to channel and Pin.
  */
 export function MessageActionsScreen() {
   const { t, format } = useText();
   const request = useMessageActionsRequest();
+  // The new design orders the actions as the design preview does: reply, text, then the rest.
+  const calm = useCalmLook();
   const [foreground, muted] = useThemeColor(["foreground", "muted"]);
   const danger = String(useCSSVariable("--openbot-danger-text"));
   const [moreEmoji, setMoreEmoji] = useState(false);
@@ -170,130 +174,266 @@ export function MessageActionsScreen() {
         />
       ) : null}
 
-      {request.onReply || request.onBranch || request.onMarkUnread || request.onTogglePin || sendToChannel ? (
-        <SettingsSection>
-          {request.onReply ? (
-            <SettingsRow
-              leading={<Reply size={ICON_SIZE} color={icon} style={MIRROR_IN_RTL} />}
-              disclosure={false}
-              onPress={() => run(() => request.onReply?.())}
-            >
-              <Typography>{t("mobile.chat.message.reply")}</Typography>
-            </SettingsRow>
+      {calm ? (
+        <>
+          {request.onReply || request.onMarkUnread ? (
+            <SettingsSection>
+              {request.onReply ? (
+                <SettingsRow
+                  leading={<Reply size={ICON_SIZE} color={icon} style={MIRROR_IN_RTL} />}
+                  disclosure={false}
+                  onPress={() => run(() => request.onReply?.())}
+                >
+                  <Typography>{t("mobile.chat.message.reply")}</Typography>
+                </SettingsRow>
+              ) : null}
+              {request.onMarkUnread ? (
+                <SettingsRow
+                  leading={<MailDot size={ICON_SIZE} color={icon} />}
+                  disclosure={false}
+                  onPress={() => run(() => request.onMarkUnread?.())}
+                >
+                  <Typography>{t("mobile.chat.message.markUnread")}</Typography>
+                </SettingsRow>
+              ) : null}
+            </SettingsSection>
           ) : null}
-          {request.onBranch ? (
-            <SettingsRow
-              leading={<GitFork size={ICON_SIZE} color={icon} />}
-              disclosure={false}
-              onPress={() => run(() => request.onBranch?.())}
-            >
-              <Typography>{t("mobile.chat.message.branch")}</Typography>
-            </SettingsRow>
+          {request.copyText || request.onSelectText ? (
+            <SettingsSection footer={sent}>
+              {request.copyText ? (
+                <SettingsRow
+                  leading={<Copy size={ICON_SIZE} color={icon} />}
+                  disclosure={false}
+                  onPress={() => run(() => void copy())}
+                >
+                  <Typography>{t("mobile.chat.message.copy")}</Typography>
+                </SettingsRow>
+              ) : null}
+              {request.onSelectText ? (
+                <SettingsRow
+                  leading={<TextCursor size={ICON_SIZE} color={icon} />}
+                  disclosure={false}
+                  onPress={() => {
+                    afterClose.current = request.onSelectText;
+                    router.back();
+                  }}
+                >
+                  <Typography>{t("mobile.chat.message.selectText")}</Typography>
+                </SettingsRow>
+              ) : null}
+              {readAloudId ? (
+                <SettingsRow
+                  leading={
+                    reading ? <Square size={ICON_SIZE} color={icon} /> : <Volume2 size={ICON_SIZE} color={icon} />
+                  }
+                  disclosure={false}
+                  disabled={!canReadAloud}
+                  onPress={() => run(() => toggleReadAloud(readAloudId, request.copyText))}
+                  trailing={
+                    speedReady ? (
+                      // Changes the speed and keeps the sheet open, so the user can press again.
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        className="rounded-xl"
+                        isDisabled={!canChangeSpeed}
+                        accessibilityLabel={speedLabel}
+                        onPress={changeSpeed}
+                      >
+                        <Button.Label className="text-foreground">
+                          {t("mobile.chat.message.readAloudSpeedValue", { speed: format.number(speed) })}
+                        </Button.Label>
+                      </Button>
+                    ) : undefined
+                  }
+                  accessibilityActions={canChangeSpeed ? [{ name: SPEED_ACTION, label: speedLabel }] : undefined}
+                  onAccessibilityAction={(event) => {
+                    if (event.nativeEvent.actionName === SPEED_ACTION) changeSpeed();
+                  }}
+                >
+                  <Typography>
+                    {reading ? t("mobile.chat.message.stopReading") : t("mobile.chat.message.readAloud")}
+                  </Typography>
+                </SettingsRow>
+              ) : null}
+            </SettingsSection>
+          ) : sent ? (
+            <Typography.Paragraph type="body-xs" className="px-4 text-grouped-secondary">
+              {sent}
+            </Typography.Paragraph>
           ) : null}
-          {request.onMarkUnread ? (
-            <SettingsRow
-              leading={<MailDot size={ICON_SIZE} color={icon} />}
-              disclosure={false}
-              onPress={() => run(() => request.onMarkUnread?.())}
-            >
-              <Typography>{t("mobile.chat.message.markUnread")}</Typography>
-            </SettingsRow>
+          {request.onBranch || sendToChannel || request.onTogglePin ? (
+            <SettingsSection>
+              {request.onBranch ? (
+                <SettingsRow
+                  leading={<GitFork size={ICON_SIZE} color={icon} />}
+                  disclosure={false}
+                  onPress={() => run(() => request.onBranch?.())}
+                >
+                  <Typography>{t("mobile.chat.message.branch")}</Typography>
+                </SettingsRow>
+              ) : null}
+              {sendToChannel ? (
+                <CoveringMenuView
+                  accessibilityLabel={t("mobile.chat.message.sendToChannel")}
+                  title={t("mobile.chat.message.chooseChannel")}
+                  actions={sendToChannel.channels.map((channel) => ({ id: channel.id, title: channel.name }))}
+                  onPressAction={({ nativeEvent }) => {
+                    const channelId = nativeEvent.event;
+                    if (!sendToChannel.channels.some((channel) => channel.id === channelId)) return;
+                    // The channel opens when the sheet has closed.
+                    afterClose.current = () => sendToChannel.onSend(channelId);
+                    router.back();
+                  }}
+                >
+                  <SettingsRow leading={<Hash size={ICON_SIZE} color={icon} />} disclosure={false}>
+                    <Typography>{t("mobile.chat.message.sendToChannel")}</Typography>
+                  </SettingsRow>
+                </CoveringMenuView>
+              ) : null}
+              {request.onTogglePin ? (
+                <SettingsRow
+                  leading={
+                    request.pinned ? <PinOff size={ICON_SIZE} color={icon} /> : <Pin size={ICON_SIZE} color={icon} />
+                  }
+                  disclosure={false}
+                  onPress={() => run(() => request.onTogglePin?.())}
+                >
+                  <Typography>{request.pinned ? t("mobile.chat.pins.unpin") : t("mobile.chat.pins.pin")}</Typography>
+                </SettingsRow>
+              ) : null}
+            </SettingsSection>
           ) : null}
-          {request.onTogglePin ? (
-            <SettingsRow
-              leading={
-                request.pinned ? <PinOff size={ICON_SIZE} color={icon} /> : <Pin size={ICON_SIZE} color={icon} />
-              }
-              disclosure={false}
-              onPress={() => run(() => request.onTogglePin?.())}
-            >
-              <Typography>{request.pinned ? t("mobile.chat.pins.unpin") : t("mobile.chat.pins.pin")}</Typography>
-            </SettingsRow>
+        </>
+      ) : (
+        <>
+          {request.onReply || request.onBranch || request.onMarkUnread || request.onTogglePin || sendToChannel ? (
+            <SettingsSection>
+              {request.onReply ? (
+                <SettingsRow
+                  leading={<Reply size={ICON_SIZE} color={icon} style={MIRROR_IN_RTL} />}
+                  disclosure={false}
+                  onPress={() => run(() => request.onReply?.())}
+                >
+                  <Typography>{t("mobile.chat.message.reply")}</Typography>
+                </SettingsRow>
+              ) : null}
+              {request.onBranch ? (
+                <SettingsRow
+                  leading={<GitFork size={ICON_SIZE} color={icon} />}
+                  disclosure={false}
+                  onPress={() => run(() => request.onBranch?.())}
+                >
+                  <Typography>{t("mobile.chat.message.branch")}</Typography>
+                </SettingsRow>
+              ) : null}
+              {request.onMarkUnread ? (
+                <SettingsRow
+                  leading={<MailDot size={ICON_SIZE} color={icon} />}
+                  disclosure={false}
+                  onPress={() => run(() => request.onMarkUnread?.())}
+                >
+                  <Typography>{t("mobile.chat.message.markUnread")}</Typography>
+                </SettingsRow>
+              ) : null}
+              {request.onTogglePin ? (
+                <SettingsRow
+                  leading={
+                    request.pinned ? <PinOff size={ICON_SIZE} color={icon} /> : <Pin size={ICON_SIZE} color={icon} />
+                  }
+                  disclosure={false}
+                  onPress={() => run(() => request.onTogglePin?.())}
+                >
+                  <Typography>{request.pinned ? t("mobile.chat.pins.unpin") : t("mobile.chat.pins.pin")}</Typography>
+                </SettingsRow>
+              ) : null}
+              {sendToChannel ? (
+                <CoveringMenuView
+                  accessibilityLabel={t("mobile.chat.message.sendToChannel")}
+                  title={t("mobile.chat.message.chooseChannel")}
+                  actions={sendToChannel.channels.map((channel) => ({ id: channel.id, title: channel.name }))}
+                  onPressAction={({ nativeEvent }) => {
+                    const channelId = nativeEvent.event;
+                    if (!sendToChannel.channels.some((channel) => channel.id === channelId)) return;
+                    // The channel opens when the sheet has closed.
+                    afterClose.current = () => sendToChannel.onSend(channelId);
+                    router.back();
+                  }}
+                >
+                  <SettingsRow leading={<Hash size={ICON_SIZE} color={icon} />} disclosure={false}>
+                    <Typography>{t("mobile.chat.message.sendToChannel")}</Typography>
+                  </SettingsRow>
+                </CoveringMenuView>
+              ) : null}
+            </SettingsSection>
           ) : null}
-          {sendToChannel ? (
-            <CoveringMenuView
-              accessibilityLabel={t("mobile.chat.message.sendToChannel")}
-              title={t("mobile.chat.message.chooseChannel")}
-              actions={sendToChannel.channels.map((channel) => ({ id: channel.id, title: channel.name }))}
-              onPressAction={({ nativeEvent }) => {
-                const channelId = nativeEvent.event;
-                if (!sendToChannel.channels.some((channel) => channel.id === channelId)) return;
-                // The channel opens when the sheet has closed.
-                afterClose.current = () => sendToChannel.onSend(channelId);
-                router.back();
-              }}
-            >
-              <SettingsRow leading={<Hash size={ICON_SIZE} color={icon} />} disclosure={false}>
-                <Typography>{t("mobile.chat.message.sendToChannel")}</Typography>
-              </SettingsRow>
-            </CoveringMenuView>
-          ) : null}
-        </SettingsSection>
-      ) : null}
 
-      {request.copyText || request.onSelectText ? (
-        <SettingsSection footer={sent}>
-          {request.copyText ? (
-            <SettingsRow
-              leading={<Copy size={ICON_SIZE} color={icon} />}
-              disclosure={false}
-              onPress={() => run(() => void copy())}
-            >
-              <Typography>{t("mobile.chat.message.copy")}</Typography>
-            </SettingsRow>
+          {request.copyText || request.onSelectText ? (
+            <SettingsSection footer={sent}>
+              {request.copyText ? (
+                <SettingsRow
+                  leading={<Copy size={ICON_SIZE} color={icon} />}
+                  disclosure={false}
+                  onPress={() => run(() => void copy())}
+                >
+                  <Typography>{t("mobile.chat.message.copy")}</Typography>
+                </SettingsRow>
+              ) : null}
+              {readAloudId ? (
+                <SettingsRow
+                  leading={
+                    reading ? <Square size={ICON_SIZE} color={icon} /> : <Volume2 size={ICON_SIZE} color={icon} />
+                  }
+                  disclosure={false}
+                  disabled={!canReadAloud}
+                  onPress={() => run(() => toggleReadAloud(readAloudId, request.copyText))}
+                  trailing={
+                    speedReady ? (
+                      // Changes the speed and keeps the sheet open, so the user can press again.
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        className="rounded-xl"
+                        isDisabled={!canChangeSpeed}
+                        accessibilityLabel={speedLabel}
+                        onPress={changeSpeed}
+                      >
+                        <Button.Label className="text-foreground">
+                          {t("mobile.chat.message.readAloudSpeedValue", { speed: format.number(speed) })}
+                        </Button.Label>
+                      </Button>
+                    ) : undefined
+                  }
+                  accessibilityActions={canChangeSpeed ? [{ name: SPEED_ACTION, label: speedLabel }] : undefined}
+                  onAccessibilityAction={(event) => {
+                    if (event.nativeEvent.actionName === SPEED_ACTION) changeSpeed();
+                  }}
+                >
+                  <Typography>
+                    {reading ? t("mobile.chat.message.stopReading") : t("mobile.chat.message.readAloud")}
+                  </Typography>
+                </SettingsRow>
+              ) : null}
+              {request.onSelectText ? (
+                <SettingsRow
+                  leading={<TextCursor size={ICON_SIZE} color={icon} />}
+                  disclosure={false}
+                  onPress={() => {
+                    afterClose.current = request.onSelectText;
+                    router.back();
+                  }}
+                >
+                  <Typography>{t("mobile.chat.message.selectText")}</Typography>
+                </SettingsRow>
+              ) : null}
+            </SettingsSection>
+          ) : sent ? (
+            <Typography.Paragraph type="body-xs" className="px-4 text-grouped-secondary">
+              {sent}
+            </Typography.Paragraph>
           ) : null}
-          {readAloudId ? (
-            <SettingsRow
-              leading={reading ? <Square size={ICON_SIZE} color={icon} /> : <Volume2 size={ICON_SIZE} color={icon} />}
-              disclosure={false}
-              disabled={!canReadAloud}
-              onPress={() => run(() => toggleReadAloud(readAloudId, request.copyText))}
-              trailing={
-                speedReady ? (
-                  // Changes the speed and keeps the sheet open, so the user can press again.
-                  <Button
-                    size="sm"
-                    variant="secondary"
-                    className="rounded-xl"
-                    isDisabled={!canChangeSpeed}
-                    accessibilityLabel={speedLabel}
-                    onPress={changeSpeed}
-                  >
-                    <Button.Label className="text-foreground">
-                      {t("mobile.chat.message.readAloudSpeedValue", { speed: format.number(speed) })}
-                    </Button.Label>
-                  </Button>
-                ) : undefined
-              }
-              accessibilityActions={canChangeSpeed ? [{ name: SPEED_ACTION, label: speedLabel }] : undefined}
-              onAccessibilityAction={(event) => {
-                if (event.nativeEvent.actionName === SPEED_ACTION) changeSpeed();
-              }}
-            >
-              <Typography>
-                {reading ? t("mobile.chat.message.stopReading") : t("mobile.chat.message.readAloud")}
-              </Typography>
-            </SettingsRow>
-          ) : null}
-          {request.onSelectText ? (
-            <SettingsRow
-              leading={<TextCursor size={ICON_SIZE} color={icon} />}
-              disclosure={false}
-              onPress={() => {
-                afterClose.current = request.onSelectText;
-                router.back();
-              }}
-            >
-              <Typography>{t("mobile.chat.message.selectText")}</Typography>
-            </SettingsRow>
-          ) : null}
-        </SettingsSection>
-      ) : sent ? (
-        <Typography.Paragraph type="body-xs" className="px-4 text-grouped-secondary">
-          {sent}
-        </Typography.Paragraph>
-      ) : null}
-
+        </>
+      )}
       {request.onDelete ? (
         <SettingsSection>
           <SettingsRow

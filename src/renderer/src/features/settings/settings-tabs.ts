@@ -29,7 +29,8 @@ export type SettingsTab =
   | "billing"
   | "mobile-connect"
   | "updates"
-  | "hosted-servers";
+  | "hosted-servers"
+  | "machines";
 
 /**
  * A row of a tab that the settings search finds. The title key is also the anchor of the row: the
@@ -97,6 +98,7 @@ export const navItems: ReadonlyArray<SettingsNavItem> = [
       { titleKey: "settings.chatColor.title", descriptionKey: "settings.chatColor.description" },
       { titleKey: "settings.bubbleStyle.title", descriptionKey: "settings.bubbleStyle.description" },
       { titleKey: "settings.chatBackground.title", descriptionKey: "settings.chatBackground.description" },
+      { titleKey: "settings.chatBackdrop.title", descriptionKey: "settings.chatBackdrop.description" },
       { titleKey: "settings.language.title", descriptionKey: "settings.language.description" },
       { titleKey: "settings.interfaceSize.title", descriptionKey: "settings.interfaceSize.description" },
       { titleKey: "settings.interfaceFont.title", descriptionKey: "settings.interfaceFont.description" },
@@ -125,6 +127,7 @@ export const navItems: ReadonlyArray<SettingsNavItem> = [
     rows: [
       { titleKey: "settings.voice.dictation.section" },
       { titleKey: "settings.voice.language.section", descriptionKey: "settings.voice.language.description" },
+      { titleKey: "settings.voice.pause.title", descriptionKey: "settings.voice.pause.description" },
       {
         titleKey: "settings.voice.speech.readReplies.title",
         descriptionKey: "settings.voice.speech.readReplies.description",
@@ -257,7 +260,66 @@ export const navItems: ReadonlyArray<SettingsNavItem> = [
     icon: Server,
     rows: [],
   },
+  {
+    value: "machines",
+    titleKey: "app.settingsPage.machines",
+    descriptionKey: "settings.tab.machines.description",
+    icon: Server,
+    rows: [],
+  },
 ];
+
+/** A section of the list on the left of the settings. A section with several tabs shows them as chips. */
+export type SettingsSection =
+  | "general"
+  | "appearance"
+  | "notifications"
+  | "voice"
+  | "account"
+  | "computer"
+  | "updates"
+  | "machines";
+
+type SettingsSectionItem = {
+  value: SettingsSection;
+  titleKey: AppTextKey;
+  icon: typeof Settings;
+  /** The tabs of the section, in the order of its chips. The first is the one that the section opens on. */
+  tabs: ReadonlyArray<SettingsTab>;
+};
+
+/**
+ * The eight sections of the settings list. Each tab keeps its own panel, so a link to one tab still opens
+ * it: the section that holds the tab opens with that tab chosen.
+ */
+export const settingsSections: ReadonlyArray<SettingsSectionItem> = [
+  { value: "general", titleKey: "settings.tab.general.title", icon: Settings, tabs: ["general"] },
+  { value: "appearance", titleKey: "settings.appearance.title", icon: Palette, tabs: ["appearance"] },
+  { value: "notifications", titleKey: "settings.tab.notifications.title", icon: Bell, tabs: ["notifications"] },
+  { value: "voice", titleKey: "settings.tab.voice.title", icon: Mic, tabs: ["voice"] },
+  {
+    value: "account",
+    titleKey: "settings.sections.group.account",
+    icon: UserRound,
+    tabs: ["profile", "billing", "mobile-connect"],
+  },
+  {
+    value: "computer",
+    titleKey: "settings.sections.group.thisComputer",
+    icon: Power,
+    tabs: ["app-behavior", "dynamic-island", "agent-dock", "computer-use"],
+  },
+  { value: "updates", titleKey: "settings.tab.updates.title", icon: CircleArrowDown, tabs: ["updates"] },
+  { value: "machines", titleKey: "app.settingsPage.machines", icon: Server, tabs: ["machines"] },
+];
+
+/** The section that holds a tab. Hosted servers lives in Billing, so it belongs to Account. */
+export function sectionOfTab(tab: SettingsTab): SettingsSectionItem {
+  const target = tab === "hosted-servers" ? "billing" : tab;
+  const found = settingsSections.find((section) => section.tabs.includes(target));
+  if (!found) throw new Error(`Settings tab without a section: ${tab}`);
+  return found;
+}
 
 export function navItem(tab: SettingsTab): SettingsNavItem {
   const found = navItems.find((item) => item.value === tab);

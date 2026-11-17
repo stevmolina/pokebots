@@ -36,8 +36,37 @@
 
   .web-app-frame[data-web-mobile-pane="conversation"] .web-phone-back.ui-button {
     top: 10px;
+    z-index: 5;
     inset-inline-start: var(--openbot-space-3);
     width: var(--phone-chat-button);
+  }
+
+  /*
+   * The name pill sits in the middle of the screen, between the round buttons, with "+" for a new
+   * session after it.
+   */
+  .web-app-frame[data-web-mobile-pane="conversation"] .conversation-heading-group > .conversation-session-pill {
+    position: absolute;
+    inset: 10px 0 auto;
+    width: fit-content;
+    max-width: calc(100% - 2 * (var(--phone-chat-button) + var(--openbot-space-4)));
+    margin: 0 auto;
+  }
+
+  /* The workspace-only lock sat after the name. With the name centered it would float alone at the start. */
+  .web-app-frame[data-web-mobile-pane="conversation"] .conversation-session-pill > .conversation-access-lock {
+    display: none;
+  }
+
+  /* "+" as a round glass button, the height of the pill. */
+  .web-app-frame[data-web-mobile-pane="conversation"] .conversation-new-session.ui-button {
+    width: var(--phone-chat-button);
+    height: var(--phone-chat-button);
+    border: 1px solid var(--phone-chat-glass-border);
+    background: var(--phone-chat-glass);
+    -webkit-backdrop-filter: blur(20px) saturate(1.6);
+    backdrop-filter: blur(20px) saturate(1.6);
+    box-shadow: var(--phone-chat-glass-shadow);
   }
 
   /* The name and its picture sit in one pill, centered. The role line stays out of the pill. */
@@ -80,6 +109,41 @@
     justify-content: center;
     border-radius: var(--openbot-radius-pill);
     padding-inline: var(--openbot-space-1);
+  }
+
+  /*
+   * With threads, the round control on the trailing edge is the menu button: dots that open the thread
+   * menu, which also holds the pin and the side panel. The empty glass circle of the header actions goes.
+   */
+  .web-app-frame[data-web-mobile-pane="conversation"]
+    .conversation-header[data-phone-menu]
+    .conversation-header-actions:not(:has(.remote-desktop-button, .conversation-model-pending)) {
+    display: none;
+  }
+
+  .web-app-frame[data-web-mobile-pane="conversation"]
+    .conversation-header[data-phone-menu]
+    .agent-threads-phone-more.ui-button {
+    position: absolute;
+    z-index: 5;
+    top: 10px;
+    inset-inline-end: var(--openbot-space-3);
+    width: var(--phone-chat-button);
+    height: var(--phone-chat-button);
+    border: 1px solid var(--phone-chat-glass-border);
+    border-radius: var(--openbot-radius-pill);
+    background: var(--phone-chat-glass);
+    -webkit-backdrop-filter: blur(20px) saturate(1.6);
+    backdrop-filter: blur(20px) saturate(1.6);
+    box-shadow: var(--phone-chat-glass-shadow);
+  }
+
+  .web-app-frame[data-web-mobile-pane="conversation"]
+    .conversation-header[data-phone-menu]
+    .agent-threads-phone-more
+    > svg {
+    width: var(--openbot-icon-lg);
+    height: var(--openbot-icon-lg);
   }
 
   /* ---------------------------------------------------------------- bubbles */
@@ -135,5 +199,111 @@
     width: 40px;
     height: 40px;
     border-radius: var(--openbot-radius-pill);
+  }
+
+  /* ---------------------------------------------------------------- calmer page */
+
+  /* One light page under the floating controls, as in Grok Bot. */
+  .web-app-frame[data-web-mobile-pane="conversation"] main.conversation-panel {
+    --phone-chat-bubble: color-mix(in srgb, var(--openbot-text-primary) 5%, transparent);
+
+    background: var(--openbot-bg-surface-raised);
+  }
+
+  /* The thread name is a quiet caption under the name pill, not a second header row. */
+  .web-app-frame[data-web-mobile-pane="conversation"] .agent-thread-title {
+    justify-content: center;
+    padding: var(--openbot-space-1) var(--openbot-space-8) 0;
+    color: var(--openbot-text-muted);
+    font-size: var(--openbot-text-sm);
+    font-weight: var(--openbot-weight-regular);
+  }
+
+  .web-app-frame[data-web-mobile-pane="conversation"] .agent-thread-title > svg {
+    display: none;
+  }
+
+  /* Replies read like text, not like a card: more air, a rounder bubble. */
+  .web-app-frame[data-web-mobile-pane="conversation"] .message-entry-agent .ui-bubble-content {
+    border-radius: var(--openbot-radius-bubble);
+    padding: var(--openbot-space-4) var(--openbot-space-4);
+  }
+
+  /* A file name in a reply is soft text, not a boxed code chip. */
+  .web-app-frame[data-web-mobile-pane="conversation"] .message-entry-agent .ui-bubble-content :not(pre) > code {
+    border: 0;
+    border-radius: var(--openbot-radius-sm);
+    background: color-mix(in srgb, var(--openbot-text-primary) 7%, transparent);
+    padding: 1px 6px;
+    font-family: inherit;
+    font-size: var(--openbot-text-md);
+    font-weight: var(--openbot-weight-medium);
+  }
+
+  /* ---------------------------------------------------------------- tasks as chips */
+
+  /* Running tasks are one row of small pills above the composer, not a list that takes a third of the screen. */
+  .web-app-frame[data-web-mobile-pane="conversation"] .background-workers {
+    display: flex;
+    gap: var(--openbot-space-2);
+    overflow-x: auto;
+    border-top: 0;
+    margin-bottom: 0;
+    padding: var(--openbot-space-1) var(--openbot-space-1) var(--openbot-space-2);
+    scrollbar-width: none;
+  }
+
+  .web-app-frame[data-web-mobile-pane="conversation"] .background-worker-row.ui-button {
+    width: auto;
+    min-height: 0;
+    height: 38px;
+    flex: none;
+    gap: var(--openbot-space-2);
+    border: 1px solid var(--phone-chat-glass-border);
+    border-radius: var(--openbot-radius-pill);
+    background: var(--phone-chat-glass);
+    padding: 0 var(--openbot-space-3) 0 var(--openbot-space-1);
+    box-shadow: var(--phone-chat-glass-shadow);
+  }
+
+  .web-app-frame[data-web-mobile-pane="conversation"]
+    .background-worker-row
+    > :not(.background-worker-avatar, .background-worker-copy),
+  .web-app-frame[data-web-mobile-pane="conversation"] .background-worker-copy > :not(.background-worker-title) {
+    display: none;
+  }
+
+  .web-app-frame[data-web-mobile-pane="conversation"] .background-worker-avatar {
+    width: 28px;
+    height: 28px;
+  }
+
+  .web-app-frame[data-web-mobile-pane="conversation"] .background-worker-title {
+    font-size: var(--openbot-text-sm);
+    font-weight: var(--openbot-weight-medium);
+  }
+
+  /* ---------------------------------------------------------------- composer */
+
+  /* The send button carries the brand color, like Grok Bot's round action button. */
+  .web-app-frame[data-web-mobile-pane="conversation"]
+    .composer-wrap
+    > .composer
+    .composer-primary-actions
+    > .voice-button {
+    background: var(--openbot-accent);
+    color: var(--openbot-text-on-accent);
+  }
+
+  .web-app-frame[data-web-mobile-pane="conversation"]
+    .composer-wrap
+    > .composer
+    .composer-primary-actions
+    > .voice-button:disabled {
+    opacity: 0.7;
+  }
+
+  .web-app-frame[data-web-mobile-pane="conversation"] .composer-wrap {
+    background: transparent;
   }
 }

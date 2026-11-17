@@ -1,5 +1,7 @@
 import type { PasswordManagerStatus } from "@openbot/contracts/ipc";
 import {
+  PASSWORD_MANAGERS_CODE_LIMIT,
+  PASSWORD_MANAGERS_EMAIL_LIMIT,
   PASSWORD_MANAGERS_KEY_LIMIT,
   PASSWORD_MANAGERS_PASSWORD_LIMIT,
 } from "@openbot/contracts/team-protocol/password-managers-v1";
@@ -40,11 +42,12 @@ async function openSignIn(manager: MobilePasswordManagerId, address: string | nu
 }
 
 /**
- * Server settings › Connectors › a password manager of a joined server, such as Proton Pass
- * (`password-managers-v1`). The host runs the sign-in of the manager's CLI. The phone opens the
- * sign-in page, and sends the extra password when the manager asks for one. Then the host makes its
- * own read-only access key and keeps only that key. An access key that the user made is the other
- * way in. A key or a password goes to the host once; this phone keeps no copy.
+ * Server settings › Connectors › a password manager of a joined server, such as Proton Pass or Keeper
+ * (`password-managers-v1`). The host runs the sign-in of the manager's CLI. For Proton Pass, the phone
+ * opens the sign-in page, and sends the extra password when the manager asks for one. Then the host
+ * makes its own read-only access key and keeps only that key. An access key that the user made is the
+ * other way in. For Keeper, the phone takes the account's email and master password, and the code that
+ * Keeper asks for. A key, a password or a code goes to the host once; this phone keeps no copy.
  */
 export function PasswordManagerConnectorPage({
   server,
@@ -61,10 +64,20 @@ export function PasswordManagerConnectorPage({
   const [key, setKey] = useState("");
   const [keyOpen, setKeyOpen] = useState(false);
   const [extraPassword, setExtraPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [masterPassword, setMasterPassword] = useState("");
+  const [code, setCode] = useState("");
+  /** True after the manager asked for a code in this sign-in, so the last `setup` step is the folder. */
+  const [verified, setVerified] = useState(false);
   /** True after Connect when the host had no sign-in page yet: the page opens it when it comes. */
   const openWhenReady = useRef(false);
   const status = query.data?.find((candidate) => candidate.manager === manager);
   const signInUrl = status?.state === "signing-in" && status.step === "browser" ? status.signInUrl : null;
+  const signInStep = status?.state === "signing-in" ? (status.step ?? "setup") : null;
+  useEffect(() => {
+    if (signInStep === null) setVerified(false);
+    else if (signInStep === "two-factor" || signInStep === "device-approval") setVerified(true);
+  }, [signInStep]);
   useEffect(() => {
     if (!openWhenReady.current || signInUrl === null) return;
     openWhenReady.current = false;
@@ -72,7 +85,8 @@ export function PasswordManagerConnectorPage({
   }, [signInUrl, manager, action.perform]);
   const host = server.name;
   const name = t(CONNECTOR_TITLE_KEYS[manager]);
-  const text = PASSWORD_MANAGER_TEXT[manager];
+  /** The texts of the access key. Only Proton Pass has them. */
+  const keyText = manager === "protonpass" ? PASSWORD_MANAGER_TEXT[manager] : null;
   if (!status)
     return (
       <SettingsContent>
@@ -90,7 +104,8 @@ export function PasswordManagerConnectorPage({
   const state = passwordManagerConnectorStatus(status, now);
   const trimmedKey = key.trim();
   const canSignIn = status.methods.includes("browser");
-  const canUseKey = status.methods.includes("key");
+  const canUseKey = keyText !== null && status.methods.includes("key");
+  const canUseAccount = status.methods.includes("account");
 
   const signIn = () =>
     void action.perform(async () => {
@@ -110,6 +125,25 @@ export function PasswordManagerConnectorPage({
         setKey("");
         setKeyOpen(false);
       });
+  const connectWithAccount = () => {
+    const address = email.trim();
+    const secret = masterPassword;
+    // The master password leaves the form when the request starts, as on the desktop.
+    setMasterPassword("");
+    void action.perform(async () => {
+      await connectPasswordManager(
+        { manager, method: { kind: "account", email: address, password: secret } },
+        server.id,
+      );
+    });
+  };
+  const sendCode = () => {
+    const typed = code.trim();
+    setCode("");
+    void action.perform(async () => {
+      await connectPasswordManager({ manager, method: { kind: "code", code: typed } }, server.id);
+    });
+  };
   const sendExtraPassword = () => {
     const password = extraPassword;
     // The password leaves the form when the request starts, as on the desktop.
@@ -126,7 +160,9 @@ export function PasswordManagerConnectorPage({
   const disconnect = () =>
     Alert.alert(
       t("mobile.server.connectors.passwordManager.disconnectTitle", { name }),
-      t("mobile.server.connectors.passwordManager.disconnectBody", { host, name }),
+      canUseAccount
+        ? t("mobile.server.connectors.keeper.disconnectBody", { host })
+        : t("mobile.server.connectors.passwordManager.disconnectBody", { host, name }),
       [
         { text: t("common.cancel"), style: "cancel" },
         {
@@ -143,17 +179,72 @@ export function PasswordManagerConnectorPage({
     if (canSignIn) signIn();
     else setKeyOpen(true);
   };
+  const accountForm = (
+    <>
+      <SheetFormField
+        label={t("mobile.server.connectors.keeper.email")}
+        autoCapitalize="none"
+        autoCorrect={false}
+        inputMode="email"
+        maxLength={PASSWORD_MANAGERS_EMAIL_LIMIT}
+        value={email}
+        editable={!action.busy}
+        onChangeText={(value) => {
+          setEmail(value);
+          action.reset();
+        }}
+      />
+      <SheetFormField
+        label={t("mobile.server.connectors.keeper.masterPassword")}
+        autoCapitalize="none"
+        autoCorrect={false}
+        secureTextEntry
+        maxLength={PASSWORD_MANAGERS_PASSWORD_LIMIT}
+        value={masterPassword}
+        editable={!action.busy}
+        onChangeText={(value) => {
+          setMasterPassword(value);
+          action.reset();
+        }}
+      />
+      <SettingsSection>
+        <SettingsRow
+          disclosure={false}
+          disabled={action.busy || email.trim().length === 0 || masterPassword.length === 0}
+          onPress={connectWithAccount}
+        >
+          <Typography.Paragraph className="text-accent">
+            {action.busy
+              ? t("mobile.server.connectors.passwordManager.connecting")
+              : t("mobile.server.connectors.passwordManager.connect", { name })}
+          </Typography.Paragraph>
+        </SettingsRow>
+      </SettingsSection>
+    </>
+  );
   /** The known failures have their own text. Another failure shows the host's sentence. */
   const statusFailure = (): string | null => {
-    if (status.errorCode === "plan") return t("mobile.server.connectors.passwordManager.plan", { name });
+    if (status.errorCode === "plan")
+      return canUseAccount
+        ? t("mobile.server.connectors.keeper.plan")
+        : t("mobile.server.connectors.passwordManager.plan", { name });
     if (status.errorCode === "extra-password") return t("mobile.server.connectors.passwordManager.extraPasswordWrong");
-    if (status.errorCode === "expired")
-      return status.state === "connected" ? null : t("mobile.server.connectors.passwordManager.expiredTitle", { name });
+    // A wrong code shows under its field.
+    if (status.errorCode === "code") return null;
+    if (status.errorCode === "expired") {
+      if (status.state === "connected") return null;
+      return canUseAccount
+        ? t("mobile.server.connectors.keeper.expiredTitle")
+        : t("mobile.server.connectors.passwordManager.expiredTitle", { name });
+    }
     return status.error ? sourceText(status.error) : null;
   };
   const failure = action.error
     ? errorMessage(action.error, t("mobile.server.connectors.actionFailed", { name }))
     : (statusFailure() ?? (query.isError ? errorMessage(query.error, t("mobile.server.connectors.readFailed")) : null));
+  const vaultFooter = canUseAccount
+    ? t("mobile.server.connectors.keeper.folderFooter")
+    : t("mobile.server.connectors.passwordManager.vaultFooter", { name });
   const cancelRow = (
     <SettingsRow disclosure={false} disabled={action.busy} onPress={cancel}>
       <Typography.Paragraph className="text-accent">{t("common.cancel")}</Typography.Paragraph>
@@ -166,29 +257,46 @@ export function PasswordManagerConnectorPage({
         id={manager}
         status={t(expired ? "mobile.server.connectors.statusExpired" : CONNECTOR_STATUS_KEYS[state])}
         attention={state === "attention"}
-        description={t(text.description, { host })}
+        description={
+          manager === "keeper"
+            ? t(PASSWORD_MANAGER_TEXT.keeper.description, { host })
+            : t(PASSWORD_MANAGER_TEXT.protonpass.description, { host })
+        }
       />
       <ConnectorError message={failure} />
       {status.state === "connected" ? (
         <>
           {expired ? (
-            <SettingsSection
-              title={t("mobile.server.connectors.passwordManager.expiredTitle", { name })}
-              footer={t("mobile.server.connectors.passwordManager.expiredBody", { host })}
-            >
-              <SettingsRow disclosure={false} disabled={action.busy} onPress={reconnect}>
-                <Typography.Paragraph className="text-accent">
-                  {t("mobile.server.connectors.reconnect")}
-                </Typography.Paragraph>
-              </SettingsRow>
-            </SettingsSection>
+            canUseAccount ? (
+              <>
+                <SettingsNote>
+                  {`${t("mobile.server.connectors.keeper.expiredTitle")}. ${t("mobile.server.connectors.keeper.expiredBody", { host })}`}
+                </SettingsNote>
+                {accountForm}
+              </>
+            ) : (
+              <SettingsSection
+                title={t("mobile.server.connectors.passwordManager.expiredTitle", { name })}
+                footer={t("mobile.server.connectors.passwordManager.expiredBody", { host })}
+              >
+                <SettingsRow disclosure={false} disabled={action.busy} onPress={reconnect}>
+                  <Typography.Paragraph className="text-accent">
+                    {t("mobile.server.connectors.reconnect")}
+                  </Typography.Paragraph>
+                </SettingsRow>
+              </SettingsSection>
+            )
           ) : null}
           <SettingsSection
-            title={t("mobile.server.connectors.passwordManager.vaultTitle")}
+            title={
+              canUseAccount
+                ? t("mobile.server.connectors.keeper.folderTitle")
+                : t("mobile.server.connectors.passwordManager.vaultTitle")
+            }
             footer={
               status.loginCount === null
-                ? t("mobile.server.connectors.passwordManager.vaultFooter", { name })
-                : `${t("mobile.server.connectors.passwordManager.loginCount", { count: status.loginCount })} · ${t("mobile.server.connectors.passwordManager.vaultFooter", { name })}`
+                ? vaultFooter
+                : `${t("mobile.server.connectors.passwordManager.loginCount", { count: status.loginCount })} · ${vaultFooter}`
             }
           >
             {status.vaultNames.map((vault) => (
@@ -196,21 +304,23 @@ export function PasswordManagerConnectorPage({
                 <Typography.Paragraph>{vault}</Typography.Paragraph>
               </SettingsRow>
             ))}
-            <SettingsRow
-              disclosure={false}
-              supportingText={
-                status.expiresAt === null
-                  ? t("mobile.server.connectors.passwordManager.keyReadOnly")
-                  : t(
-                      expired
-                        ? "mobile.server.connectors.passwordManager.keyExpired"
-                        : "mobile.server.connectors.passwordManager.keyExpires",
-                      { date: format.date(status.expiresAt, EXPIRY_FORMAT) },
-                    )
-              }
-            >
-              <Typography.Paragraph>{t("mobile.server.connectors.passwordManager.keyTitle")}</Typography.Paragraph>
-            </SettingsRow>
+            {canUseAccount ? null : (
+              <SettingsRow
+                disclosure={false}
+                supportingText={
+                  status.expiresAt === null
+                    ? t("mobile.server.connectors.passwordManager.keyReadOnly")
+                    : t(
+                        expired
+                          ? "mobile.server.connectors.passwordManager.keyExpired"
+                          : "mobile.server.connectors.passwordManager.keyExpires",
+                        { date: format.date(status.expiresAt, EXPIRY_FORMAT) },
+                      )
+                }
+              >
+                <Typography.Paragraph>{t("mobile.server.connectors.passwordManager.keyTitle")}</Typography.Paragraph>
+              </SettingsRow>
+            )}
           </SettingsSection>
           <SettingsSection>
             <SettingsRow disclosure={false} disabled={action.busy} onPress={disconnect}>
@@ -282,21 +392,64 @@ export function PasswordManagerConnectorPage({
               {cancelRow}
             </SettingsSection>
           </>
+        ) : status.step === "two-factor" || status.step === "device-approval" ? (
+          <>
+            <SheetFormField
+              label={t("mobile.server.connectors.keeper.code")}
+              autoCapitalize="none"
+              autoCorrect={false}
+              maxLength={PASSWORD_MANAGERS_CODE_LIMIT}
+              value={code}
+              editable={!action.busy}
+              error={status.errorCode === "code" ? t("mobile.server.connectors.keeper.codeWrong") : undefined}
+              hint={
+                status.step === "two-factor"
+                  ? t("mobile.server.connectors.keeper.twoFactorHint", { host })
+                  : t("mobile.server.connectors.keeper.deviceHint")
+              }
+              onChangeText={(value) => {
+                setCode(value);
+                action.reset();
+              }}
+            />
+            <SettingsSection>
+              <SettingsRow
+                disclosure={false}
+                // Device approval accepts an empty code: the user approved the device elsewhere.
+                disabled={action.busy || (status.step === "two-factor" && code.trim().length === 0)}
+                onPress={sendCode}
+              >
+                <Typography.Paragraph className="text-accent">
+                  {t("mobile.server.connectors.passwordManager.continue")}
+                </Typography.Paragraph>
+              </SettingsRow>
+              {cancelRow}
+            </SettingsSection>
+          </>
         ) : (
           <>
-            <SettingsNote>{t("mobile.server.connectors.passwordManager.setupBody", { host })}</SettingsNote>
+            <SettingsNote>
+              {canUseAccount
+                ? verified
+                  ? t("mobile.server.connectors.keeper.makingFolder", { host })
+                  : t("mobile.server.connectors.keeper.signingIn", { host })
+                : t("mobile.server.connectors.passwordManager.setupBody", { host })}
+            </SettingsNote>
             <SettingsSection>{cancelRow}</SettingsSection>
           </>
         )
       ) : (
         <>
           <SettingsNote>
-            {canSignIn
-              ? t("mobile.server.connectors.passwordManager.howItWorks", { host, name })
-              : canUseKey
-                ? t(text.keyHelp, { host })
-                : t("mobile.server.connectors.passwordManager.unavailable", { name })}
+            {canUseAccount
+              ? t("mobile.server.connectors.keeper.accountHelp", { host })
+              : canSignIn
+                ? t("mobile.server.connectors.passwordManager.howItWorks", { host, name })
+                : keyText !== null && canUseKey
+                  ? t(keyText.keyHelp, { host })
+                  : t("mobile.server.connectors.passwordManager.unavailable", { name })}
           </SettingsNote>
+          {canUseAccount ? accountForm : null}
           {canSignIn ? (
             <SettingsSection>
               <SettingsRow disclosure={false} disabled={action.busy} onPress={signIn}>
@@ -308,18 +461,18 @@ export function PasswordManagerConnectorPage({
               </SettingsRow>
             </SettingsSection>
           ) : null}
-          {canUseKey && (keyOpen || !canSignIn) ? (
+          {keyText !== null && canUseKey && (keyOpen || !canSignIn) ? (
             <>
               <SheetFormField
                 label={t("mobile.server.connectors.passwordManager.key")}
-                placeholder={t(text.keyPlaceholder)}
+                placeholder={t(keyText.keyPlaceholder)}
                 autoCapitalize="none"
                 autoCorrect={false}
                 secureTextEntry
                 maxLength={PASSWORD_MANAGERS_KEY_LIMIT}
                 value={key}
                 editable={!action.busy}
-                hint={canSignIn ? t(text.keyHelp, { host }) : undefined}
+                hint={canSignIn ? t(keyText.keyHelp, { host }) : undefined}
                 onChangeText={(value) => {
                   setKey(value);
                   action.reset();

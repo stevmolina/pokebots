@@ -1,8 +1,11 @@
+import { isAvatarMimeType, isValidAvatarImage } from "@openbot/contracts/avatar-images";
 import { MOBILE_COMPANY_SIGN_IN_RETURN } from "@openbot/contracts/company-sign-in";
+import { AVATAR_IMAGE_LIMITS } from "@openbot/contracts/input-limits";
 import { isAvatarColor } from "@openbot/contracts/ipc-agent-identity";
 import { normalizeEmailAddress } from "@openbot/contracts/validation";
 import { sourceText } from "@openbot/i18n/source-english";
 import { Effect, Schema } from "effect";
+import { avatarObjectKey } from "./avatar-storage";
 import { randomToken, sha256 } from "./crypto";
 import { mobileSessionStatements } from "./d1-auth-repository";
 import { PERSISTENT_SESSION_EXPIRES_AT } from "./session-policy";
@@ -20,7 +23,8 @@ export const WORKOS_WEB_RETURN_PATH = "/api/browser/workos/return";
 type Bindings = Pick<
   WorkerBindings,
   "DB" | "WORKOS_OIDC_ISSUER" | "WORKOS_OIDC_CLIENT_ID" | "WORKOS_OIDC_CLIENT_SECRET"
->;
+> &
+  Partial<Pick<WorkerBindings, "AVATARS">>;
 
 export class WorkosSignInError extends Schema.TaggedError<WorkosSignInError>()("WorkosSignInError", {
   status: Schema.Number,
@@ -263,6 +267,8 @@ export class WorkosSignInService {
       })
       .pipe(Effect.mapError(providerError));
     const userId = yield* this.#accountFor(configuration.issuer, identity);
+    if (identity.pictureUrl) yield* this.#importPicture(userId, identity.pictureUrl);
+    else console.info("workos picture: the provider sent none");
     const exchangeCode = randomToken(32);
     const codeHash = yield* hash(exchangeCode);
     const configurationHash = yield* hash(`${configuration.issuer}\n${configuration.clientId}`);
@@ -354,6 +360,47 @@ export class WorkosSignInService {
     if (!row) return yield* failed;
     return { sessionToken: session.token, user: mapUser(row) };
   });
+
+  /**
+   * Copy the provider picture (Google, GitHub) into our own storage when the account has none.
+   * A picture the person chose stays. Any failure leaves the account without a picture and never
+   * stops the sign-in.
+   */
+  readonly #importPicture = (userId: string, pictureUrl: string) =>
+    Effect.promise(async () => {
+      const bucket = this.#bindings.AVATARS;
+      if (!bucket) return console.info("workos picture: no avatar storage");
+      try {
+        const current = await this.#database
+          .prepare("SELECT avatar_url FROM users WHERE id = ?")
+          .bind(userId)
+          .first<{ avatar_url: string | null }>();
+        if (!current || current.avatar_url) return console.info("workos picture: account already has one");
+        const response = await fetch(pictureUrl, { redirect: "manual", signal: AbortSignal.timeout(8_000) });
+        const mimeType = response.headers.get("Content-Type")?.split(";", 1)[0]?.trim() ?? "";
+        if (!response.ok || !isAvatarMimeType(mimeType))
+          return console.info(`workos picture: refused status ${response.status} type ${mimeType}`);
+        const declared = Number(response.headers.get("Content-Length") ?? 0);
+        if (declared > AVATAR_IMAGE_LIMITS.storedBytes) return console.info("workos picture: too large");
+        const bytes = new Uint8Array(await response.arrayBuffer());
+        if (bytes.byteLength > AVATAR_IMAGE_LIMITS.storedBytes || !isValidAvatarImage(mimeType, bytes))
+          return console.info("workos picture: not a valid image");
+        const version = crypto.randomUUID();
+        const key = avatarObjectKey(userId, version);
+        await bucket.put(key, bytes, {
+          httpMetadata: { contentType: mimeType, cacheControl: "public, max-age=31536000, immutable" },
+        });
+        const updated = await this.#database
+          .prepare("UPDATE users SET avatar_url = ?, updated_at = ? WHERE id = ? AND avatar_url IS NULL")
+          .bind(`/v1/avatars/${encodeURIComponent(userId)}?v=${version}`, this.#now(), userId)
+          .run();
+        if (updated.meta.changes !== 1) await bucket.delete(key);
+        else console.info("workos picture: saved");
+      } catch (error) {
+        // No picture is an acceptable result.
+        console.info("workos picture: failed", error instanceof Error ? error.name : "unknown");
+      }
+    });
 
   readonly #accountFor = Effect.fn("WorkosSignIn.accountFor")(function* (
     this: WorkosSignInService,

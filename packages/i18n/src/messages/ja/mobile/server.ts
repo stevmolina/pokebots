@@ -447,7 +447,7 @@ export const messages = {
   "mobile.server.settings.timezoneNoMatch": "この検索に一致するタイムゾーンはありません。",
   "mobile.server.settings.timezoneMore": "他のタイムゾーンを表示するには、名前をもっと入力してください。",
   "mobile.server.settings.timezoneDescription":
-    "メッセージに送信者のタイムゾーンがない場合、新しいルーティンはこのタイムゾーンを使います。",
+    "メッセージに送信者のタイムゾーンがない場合、新しいルーティンはこのタイムゾーンを使います。サーバーでは、次の再起動後にブラウザーもこのタイムゾーンを使います。",
   "mobile.server.settings.timezoneLoading": "タイムゾーンを読み込んでいます…",
   "mobile.server.settings.timezoneLoadFailed": "サーバーのタイムゾーンを読み込めませんでした。",
   "mobile.server.settings.timezoneSaveFailed": "タイムゾーンを保存できませんでした。もう一度お試しください。",
@@ -706,6 +706,31 @@ export const messages = {
   "mobile.server.connectors.protonPass.keyHelp":
     "Proton Pass で、OpenBot と共有する保管庫だけを読み取れるアクセスキーを作成し、ここに貼り付けてください。キーは {host} が保持し、この電話には保存されません。",
   "mobile.server.connectors.protonPass.keyPlaceholder": "pst_…",
+  "mobile.server.connectors.keeper.title": "Keeper",
+  "mobile.server.connectors.keeper.description":
+    "Keeper のフォルダーを 1 つ {host} の OpenBot と共有すると、{host} のエージェントがそのブラウザでサイトにサインインできます。",
+  "mobile.server.connectors.keeper.accountHelp":
+    "Keeper のメールアドレスとマスターパスワードを入力してください。これらは一度だけ {host} に送られ、{host} が Keeper Commander に渡します。この電話には保存されません。",
+  "mobile.server.connectors.keeper.email": "メールアドレス",
+  "mobile.server.connectors.keeper.masterPassword": "マスターパスワード",
+  "mobile.server.connectors.keeper.signingIn": "{host} が Keeper にサインインしています…",
+  "mobile.server.connectors.keeper.makingFolder": "{host} が共有フォルダーを作成しています…",
+  "mobile.server.connectors.keeper.code": "コード",
+  "mobile.server.connectors.keeper.twoFactorHint":
+    "Keeper が 2 段階認証コードを求めています。認証アプリまたはテキストメッセージのコードを入力してください。コードは一度だけ {host} に送られ、この電話には保存されません。",
+  "mobile.server.connectors.keeper.deviceHint":
+    "Keeper が承認メールを送信し、他のデバイスにも通知しました。そこでこのデバイスを承認してから、「続ける」を押してください。メールのコードを入力することもできます。",
+  "mobile.server.connectors.keeper.codeWrong": "コードが正しくありません。もう一度お試しください。",
+  "mobile.server.connectors.keeper.folderTitle": "共有フォルダ",
+  "mobile.server.connectors.keeper.folderFooter":
+    "エージェントにログイン情報でサインインさせるには、Keeper でそのログイン情報をこのフォルダに移動してください。やめるには削除してください。",
+  "mobile.server.connectors.keeper.plan":
+    "Keeper の管理者が、このアカウントでの Keeper Commander を許可していません。許可を依頼してから、もう一度接続してください。",
+  "mobile.server.connectors.keeper.expiredTitle": "Keeper のセッションが終了しました",
+  "mobile.server.connectors.keeper.expiredBody":
+    "もう一度接続するまで、{host} のエージェントは共有ログイン情報でサインインできません。",
+  "mobile.server.connectors.keeper.disconnectBody":
+    "{host} は Keeper のセッションを終了します。フォルダーとそのログイン情報は Keeper の保管庫に残ります。",
   "mobile.server.connectors.passwordManager.unavailable": "{name} はこのサーバーでは利用できません。",
   "mobile.server.connectors.passwordManager.howItWorks":
     "この電話で {name} にサインインしてください。その後 {host} が共有保管庫とその読み取り専用アクセスキーを作成し、そのキーだけを保持します。エージェントがパスワードを見ることはありません。",
@@ -886,6 +911,9 @@ export const messages = {
   "mobile.server.connectors.whatsapp.workingMessage": "「対応しています…」メッセージ",
   "mobile.server.connectors.whatsapp.workingMessageDescription":
     "エージェントの作業中に OpenBot が送信し、その後、回答に置き換えます。回答だけを送信するにはオフにしてください。",
+  "mobile.server.connectors.whatsapp.statusReactions": "ステータスのリアクション",
+  "mobile.server.connectors.whatsapp.statusReactionsDescription":
+    "メッセージが届くと OpenBot が 👀 で、回答の準備ができると ✅ でリアクションします。リアクションを送信しないにはオフにしてください。",
   "mobile.server.connectors.whatsapp.orchestratorTitle": "WhatsApp Orchestrator",
   "mobile.server.connectors.whatsapp.orchestratorDescription":
     "このエージェントは、リンクしたすべての番号から OpenBot 宛てのメッセージを受け取ります。短いものには自分で回答し、その他の作業は適切なエージェントに任せて、WhatsApp で回答します。",
@@ -1116,6 +1144,22 @@ export const messages = {
   "mobile.server.providers.compactWindowDefault": "Claude Code の既定",
   "mobile.server.providers.compactWindowTokens": "{size} トークン",
   "mobile.server.providers.compactWindowLoadFailed": "このサーバーの圧縮サイズを読み込めませんでした。",
+  "mobile.server.environment.row": "変数",
+  "mobile.server.environment.title": "環境",
+  "mobile.server.environment.hint":
+    "{name} の各プロセスが受け取る API キー、ベース URL などの設定です。変更は進行中のターンが終わると適用されます。",
+  "mobile.server.environment.codexHint":
+    "OPENAI_BASE_URL と、そのキーとしての OPENAI_API_KEY で、ChatGPT のモデルへのリクエストをそのアドレスに送ります。",
+  "mobile.server.environment.shellNote": "エージェントが実行するコマンドはこれらの値を読めます。",
+  "mobile.server.environment.add": "変数を追加",
+  "mobile.server.environment.namePlaceholder": "VARIABLE_NAME",
+  "mobile.server.environment.valuePlaceholder": "値",
+  "mobile.server.environment.saved": "保存済み",
+  "mobile.server.environment.sensitive": "機密",
+  "mobile.server.environment.remove": "削除",
+  "mobile.server.environment.save": "保存",
+  "mobile.server.environment.loadFailed": "{name} の変数を読み込めませんでした。",
+  "mobile.server.environment.invalid": "先に名前を修正してください。",
   "mobile.server.providers.disconnect": "接続を解除",
   "mobile.server.providers.disconnectTitle": "{name} の接続を解除しますか？",
   "mobile.server.providers.disconnectBody":

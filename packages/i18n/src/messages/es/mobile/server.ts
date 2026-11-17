@@ -457,7 +457,7 @@ export const messages = {
   "mobile.server.settings.timezoneNoMatch": "Ninguna zona horaria coincide con esta búsqueda.",
   "mobile.server.settings.timezoneMore": "Escribe más del nombre para ver otras zonas horarias.",
   "mobile.server.settings.timezoneDescription":
-    "Las rutinas nuevas usan esta zona horaria cuando el mensaje no indica la zona horaria del remitente.",
+    "Las rutinas nuevas usan esta zona horaria cuando el mensaje no indica la zona horaria del remitente. En un servidor, el navegador también la usa después del próximo reinicio.",
   "mobile.server.settings.timezoneLoading": "Cargando zona horaria…",
   "mobile.server.settings.timezoneLoadFailed": "No se pudo cargar la zona horaria del servidor.",
   "mobile.server.settings.timezoneSaveFailed": "No se pudo guardar la zona horaria. Inténtalo de nuevo.",
@@ -719,6 +719,31 @@ export const messages = {
   "mobile.server.connectors.protonPass.keyHelp":
     "En Proton Pass, crea una clave de acceso que solo pueda leer la bóveda que compartes con OpenBot y pégala aquí. {host} guarda la clave; este teléfono no.",
   "mobile.server.connectors.protonPass.keyPlaceholder": "pst_…",
+  "mobile.server.connectors.keeper.title": "Keeper",
+  "mobile.server.connectors.keeper.description":
+    "Comparte una carpeta de Keeper con OpenBot en {host} para que los agentes de {host} puedan iniciar sesión en sitios desde su navegador.",
+  "mobile.server.connectors.keeper.accountHelp":
+    "Escribe tu correo electrónico y tu contraseña maestra de Keeper. Van a {host} una sola vez, y {host} se los da a Keeper Commander. Este teléfono no los guarda.",
+  "mobile.server.connectors.keeper.email": "Correo electrónico",
+  "mobile.server.connectors.keeper.masterPassword": "Contraseña maestra",
+  "mobile.server.connectors.keeper.signingIn": "{host} está iniciando sesión en Keeper…",
+  "mobile.server.connectors.keeper.makingFolder": "{host} está creando la carpeta compartida…",
+  "mobile.server.connectors.keeper.code": "Código",
+  "mobile.server.connectors.keeper.twoFactorHint":
+    "Keeper pide un código de dos pasos. Escribe el código de tu app de autenticación o del mensaje de texto. Va a {host} una sola vez; este teléfono no lo guarda.",
+  "mobile.server.connectors.keeper.deviceHint":
+    "Keeper envió un correo de aprobación y una notificación a tus otros dispositivos. Aprueba este dispositivo allí y pulsa Continuar. O escribe el código del correo.",
+  "mobile.server.connectors.keeper.codeWrong": "El código no es correcto. Inténtalo de nuevo.",
+  "mobile.server.connectors.keeper.folderTitle": "Carpeta compartida",
+  "mobile.server.connectors.keeper.folderFooter":
+    "Mueve una credencial a esta carpeta en Keeper para que los agentes inicien sesión con ella. Quítala para dejar de compartirla.",
+  "mobile.server.connectors.keeper.plan":
+    "Tu administrador de Keeper no permite Keeper Commander para esta cuenta. Pídele que lo permita y vuelve a conectar.",
+  "mobile.server.connectors.keeper.expiredTitle": "La sesión de Keeper terminó",
+  "mobile.server.connectors.keeper.expiredBody":
+    "Los agentes de {host} no pueden iniciar sesión con tus credenciales compartidas hasta que vuelvas a conectar.",
+  "mobile.server.connectors.keeper.disconnectBody":
+    "{host} cierra su sesión de Keeper. La carpeta y sus credenciales se quedan en tu bóveda de Keeper.",
   "mobile.server.connectors.passwordManager.unavailable": "{name} no está disponible en este servidor.",
   "mobile.server.connectors.passwordManager.howItWorks":
     "Inicia sesión en {name} en este teléfono. Después, {host} crea una bóveda compartida y una clave de acceso de solo lectura para ella, y guarda solo esa clave. Los agentes nunca ven una contraseña.",
@@ -927,6 +952,9 @@ export const messages = {
   "mobile.server.connectors.whatsapp.workingMessage": "Mensaje «Trabajando en ello…»",
   "mobile.server.connectors.whatsapp.workingMessageDescription":
     "OpenBot lo envía mientras el agente trabaja y luego lo sustituye por la respuesta. Desactívalo para enviar solo la respuesta.",
+  "mobile.server.connectors.whatsapp.statusReactions": "Reacciones de estado",
+  "mobile.server.connectors.whatsapp.statusReactionsDescription":
+    "OpenBot reacciona con 👀 cuando llega un mensaje y con ✅ cuando la respuesta está lista. Desactívalas para no enviar reacciones.",
   "mobile.server.connectors.whatsapp.orchestratorTitle": "Orquestador de WhatsApp",
   "mobile.server.connectors.whatsapp.orchestratorDescription":
     "Este agente recibe los mensajes para OpenBot de todos tus números vinculados. Responde él mismo a los cortos, asigna el resto del trabajo al agente adecuado y responde en WhatsApp.",
@@ -1158,6 +1186,22 @@ export const messages = {
   "mobile.server.providers.compactWindowDefault": "Predeterminado de Claude Code",
   "mobile.server.providers.compactWindowTokens": "{size} tokens",
   "mobile.server.providers.compactWindowLoadFailed": "No se pudo cargar el tamaño de compactación de este servidor.",
+  "mobile.server.environment.row": "Variables",
+  "mobile.server.environment.title": "Entorno",
+  "mobile.server.environment.hint":
+    "Claves de API, URL base y otros ajustes que recibe cada proceso de {name}. Un cambio se aplica cuando terminan los turnos en curso.",
+  "mobile.server.environment.codexHint":
+    "OPENAI_BASE_URL, con OPENAI_API_KEY como clave, envía las solicitudes de modelo de ChatGPT a esa dirección.",
+  "mobile.server.environment.shellNote": "Los comandos que ejecutan los agentes pueden leer estos valores.",
+  "mobile.server.environment.add": "Añadir variable",
+  "mobile.server.environment.namePlaceholder": "VARIABLE_NAME",
+  "mobile.server.environment.valuePlaceholder": "Valor",
+  "mobile.server.environment.saved": "Guardada",
+  "mobile.server.environment.sensitive": "Sensible",
+  "mobile.server.environment.remove": "Quitar",
+  "mobile.server.environment.save": "Guardar",
+  "mobile.server.environment.loadFailed": "No se pudieron cargar las variables de {name}.",
+  "mobile.server.environment.invalid": "Corrige primero los nombres.",
   "mobile.server.providers.disconnect": "Desconectar",
   "mobile.server.providers.disconnectTitle": "¿Desconectar {name}?",
   "mobile.server.providers.disconnectBody":

@@ -1,7 +1,12 @@
 import { TEAM_AGENT_CREATE_MODEL_CAPABILITY } from "@openbot/contracts/team-protocol/current";
 import { PROVIDER_ACCOUNTS_CAPABILITY } from "@openbot/contracts/team-protocol/provider-accounts-v1";
-import { FIRST_AGENT_SUGGESTIONS, FirstAgentSetup } from "@openbot/ui/features/agents/FirstAgentSetup";
-import { createEffect, createMemo, createSignal } from "solid-js";
+import {
+  FIRST_AGENT_SUGGESTIONS,
+  type FirstAgentDraft,
+  FirstAgentSetup,
+} from "@openbot/ui/features/agents/FirstAgentSetup";
+import { NewAgentDialog } from "@openbot/ui/features/agents/NewAgentDialog";
+import { createEffect, createMemo, createSignal, Show, untrack } from "solid-js";
 import { useProviders } from "../../providers";
 import { useAuth } from "../account/account-context";
 import { useCustomAgents } from "../custom-agents/custom-agents-context";
@@ -15,9 +20,10 @@ import { useAgents } from "./agents-context";
 import { withHostAccountUsage } from "./host-provider-accounts";
 
 /**
- * The create-an-agent form, which takes over the conversation pane instead of
- * opening over it. `mode` is derived from the agent list rather than passed in
- * because the first agent and the fifth are the same command with different copy.
+ * The create-an-agent form. The first agent of a server takes over the conversation pane, with suggestions
+ * and the model. Every other agent opens as a small dialog over the workspace: a face, a color and a name,
+ * and the user sets the purpose and the model later in Edit agent. `mode` is derived from the agent list
+ * rather than passed in because both are the same command with different copy.
  */
 export function WorkspaceAgentSetup() {
   const {
@@ -107,39 +113,62 @@ export function WorkspaceAgentSetup() {
     },
   );
 
+  /**
+   * Whether this is the first agent, read once. The new agent joins the list before the form closes, and the
+   * form must not change from the page to the dialog while it saves.
+   */
+  const first = untrack(() => agentList().length === 0);
+
+  /** A change of the model or the account means the user chose it, so the saved setup stops resolving it. */
+  function changeDraft(next: FirstAgentDraft): void {
+    const current = agentSetupDraft();
+    if (
+      next.provider !== current.provider ||
+      next.model !== current.model ||
+      next.reasoningEffort !== current.reasoningEffort ||
+      next.providerAccountId !== current.providerAccountId
+    )
+      setModelTouched(true);
+    setAgentSetupDraft(next);
+  }
+
   return (
-    <FirstAgentSetup
-      value={agentSetupDraft()}
-      suggestions={FIRST_AGENT_SUGGESTIONS}
-      mode={agentList().length === 0 ? "first" : "additional"}
-      submitting={creatingAgent()}
-      error={agentSetupError()}
-      modelOptions={createModelSupported() ? modelOptions() : undefined}
-      agentStatus={agentStatus()}
-      accountChoice={accountChoice()}
-      accountUsage={accountChoice() ? withHostAccountUsage(auth.accountUsage(), hostAccountLimits()) : undefined}
-      runtimeStatuses={localProviderDownloads() ? providerRuntimeStatuses() : undefined}
-      customProviders={activeCustomProviders()}
-      // The custom agents are this computer's. A joined host's picker counts its own from its models.
-      customAgents={activeServer()?.kind === "local" ? customAgents() : undefined}
-      onDownloadProvider={localProviderDownloads() ? downloadProviderRuntime : undefined}
-      onCancelProviderDownload={localProviderDownloads() ? cancelProviderRuntimeDownload : undefined}
-      onConnectProvider={localProviderDownloads() ? connectProvider : undefined}
-      onAddCustomProvider={manageProviders() ? openProviderSettings : undefined}
-      onManageProviders={manageProviders() ? openProviderSettings : undefined}
-      onChange={(next) => {
-        const current = agentSetupDraft();
-        if (
-          next.provider !== current.provider ||
-          next.model !== current.model ||
-          next.reasoningEffort !== current.reasoningEffort ||
-          next.providerAccountId !== current.providerAccountId
-        )
-          setModelTouched(true);
-        setAgentSetupDraft(next);
-      }}
-      onSubmit={createAgent}
-      onCancel={agentList().length > 0 ? cancelAgentSetup : undefined}
-    />
+    <Show
+      when={first}
+      fallback={
+        <NewAgentDialog
+          value={agentSetupDraft()}
+          submitting={creatingAgent()}
+          error={agentSetupError()}
+          onChange={changeDraft}
+          onSubmit={createAgent}
+          onCancel={cancelAgentSetup}
+        />
+      }
+    >
+      <FirstAgentSetup
+        value={agentSetupDraft()}
+        suggestions={FIRST_AGENT_SUGGESTIONS}
+        mode={agentList().length === 0 ? "first" : "additional"}
+        submitting={creatingAgent()}
+        error={agentSetupError()}
+        modelOptions={createModelSupported() ? modelOptions() : undefined}
+        agentStatus={agentStatus()}
+        accountChoice={accountChoice()}
+        accountUsage={accountChoice() ? withHostAccountUsage(auth.accountUsage(), hostAccountLimits()) : undefined}
+        runtimeStatuses={localProviderDownloads() ? providerRuntimeStatuses() : undefined}
+        customProviders={activeCustomProviders()}
+        // The custom agents are this computer's. A joined host's picker counts its own from its models.
+        customAgents={activeServer()?.kind === "local" ? customAgents() : undefined}
+        onDownloadProvider={localProviderDownloads() ? downloadProviderRuntime : undefined}
+        onCancelProviderDownload={localProviderDownloads() ? cancelProviderRuntimeDownload : undefined}
+        onConnectProvider={localProviderDownloads() ? connectProvider : undefined}
+        onAddCustomProvider={manageProviders() ? openProviderSettings : undefined}
+        onManageProviders={manageProviders() ? openProviderSettings : undefined}
+        onChange={changeDraft}
+        onSubmit={createAgent}
+        onCancel={agentList().length > 0 ? cancelAgentSetup : undefined}
+      />
+    </Show>
   );
 }

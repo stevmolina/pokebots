@@ -413,6 +413,9 @@ export const messages = {
   "connector.whatsapp.workingMessage": "Сообщение «Уже работаю…»",
   "connector.whatsapp.workingMessageDescription":
     "OpenBot отправляет его, пока агент работает, а затем заменяет ответом. Выключите, чтобы отправлять только ответ.",
+  "connector.whatsapp.statusReactions": "Реакции статуса",
+  "connector.whatsapp.statusReactionsDescription":
+    "OpenBot ставит 👀, когда приходит сообщение, и ✅, когда ответ готов. Выключите, чтобы не отправлять реакции.",
   "connector.whatsapp.orchestratorTitle": "Оркестратор WhatsApp",
   "connector.whatsapp.orchestratorDescription":
     "Этот агент получает сообщения для OpenBot со всех ваших привязанных номеров. Короткие он обрабатывает сам, остальную работу передаёт нужному агенту и отвечает в WhatsApp.",
@@ -673,4 +676,69 @@ export const messages = {
     "OpenBot удаляет свой ключ доступа на {host}. Хранилище и его учётные данные остаются в вашем аккаунте Proton.",
   "connector.protonPass.disconnect": "Отключить",
   "connector.protonPass.actionFailed": "OpenBot не смог изменить подключение Proton Pass.",
+  "connector.keeper.title": "Keeper",
+  "connector.keeper.description": "Агенты входят на сайты с учётными данными из общей папки Keeper.",
+  "connector.keeper.descriptionHost": "Агенты на {host} входят на сайты с учётными данными из общей папки Keeper.",
+  "connector.keeper.connect": "Подключить",
+  "connector.keeper.setupTitle": "Вход",
+  "connector.keeper.setupDescription":
+    "Введите адрес электронной почты Keeper и мастер-пароль. OpenBot один раз передаёт их Keeper Commander и не хранит. Keeper Commander: инструмент командной строки Keeper.",
+  "connector.keeper.setupDescriptionHost":
+    "Введите адрес электронной почты Keeper и мастер-пароль. {host} один раз передаёт их Keeper Commander и не хранит. Keeper Commander: инструмент командной строки Keeper.",
+  "connector.keeper.emailLabel": "Электронная почта",
+  "connector.keeper.passwordLabel": "Мастер-пароль",
+  "connector.keeper.folderName": "Shared with OpenBot",
+  "connector.keeper.folderSetup":
+    "OpenBot создаёт эту папку в вашем хранилище при подключении. Переместите в неё учётные данные, чтобы поделиться ими.",
+  "connector.keeper.showSteps": "Показать шаги",
+  "connector.keeper.stepsLabel": "Шаги подключения",
+  "connector.keeper.stepSignIn": "Вход",
+  "connector.keeper.stepVerify": "Проверка",
+  "connector.keeper.stepDone": "Готово",
+  "connector.keeper.signInTitle": "Вход в Keeper",
+  "connector.keeper.signInDescription": "Keeper Commander входит с вашей учётной записью.",
+  "connector.keeper.signInDescriptionHost": "{host} входит в Keeper с вашей учётной записью.",
+  "connector.keeper.twoFactorTitle": "Введите код",
+  "connector.keeper.twoFactorDescription":
+    "Keeper запрашивает код двухэтапной проверки. Введите код из приложения-аутентификатора или SMS.",
+  "connector.keeper.deviceTitle": "Подтвердите это устройство",
+  "connector.keeper.deviceDescription":
+    "Keeper отправил письмо с подтверждением и уведомление на другие ваши устройства. Подтвердите это устройство по ссылке из письма или на другом устройстве, затем нажмите «Продолжить». Или введите код из письма.",
+  "connector.keeper.codeLabel": "Код",
+  "connector.keeper.codeWrong": "Код неверен. Введите его снова.",
+  "connector.keeper.continue": "Продолжить",
+  "connector.keeper.setupStepTitle": "Создание общей папки",
+  "connector.keeper.setupStepDescription":
+    "OpenBot создаёт папку «{folder}» в вашем хранилище и включает вход для этого устройства.",
+  "connector.keeper.doneTitle": "Keeper подключён",
+  "connector.keeper.doneDescription": "Переместите учётные данные в «{folder}», чтобы агенты могли входить с ними.",
+  "connector.keeper.failedTitle": "Keeper не подключён",
+  "connector.keeper.done": "Готово",
+  "connector.keeper.close": "Закрыть",
+  "connector.keeper.statusConnecting": "Подключение",
+  "connector.keeper.statusConnected": "Подключено",
+  "connector.keeper.statusExpired": "Сеанс завершён",
+  "connector.keeper.expiredTitle": "Сеанс Keeper завершён",
+  "connector.keeper.expiredDescription":
+    "Агенты не могут входить с общими учётными данными, пока вы не подключитесь снова. Введите мастер-пароль ниже.",
+  "connector.keeper.planTitle": "Keeper Commander заблокирован",
+  "connector.keeper.planDescription":
+    "Администратор Keeper не разрешает Keeper Commander для этой учётной записи. Попросите его разрешить и подключитесь снова.",
+  "connector.keeper.folderTitle": "Общая папка",
+  "connector.keeper.folderDescription":
+    "Переместите логин в эту папку в Keeper, чтобы агенты могли входить с его помощью. Уберите его оттуда, чтобы прекратить доступ.",
+  "connector.keeper.loginCount": {
+    one: "{count} логин",
+    few: "{count} логина",
+    many: "{count} логинов",
+    other: "{count} логина",
+  },
+  "connector.keeper.loginsLoading": "Подсчёт учётных данных…",
+  "connector.keeper.disconnectTitle": "Отключить Keeper",
+  "connector.keeper.disconnectSummary":
+    "OpenBot завершает свой сеанс Keeper на этом компьютере. Папка и её учётные данные остаются в вашем хранилище Keeper.",
+  "connector.keeper.disconnectSummaryHost":
+    "OpenBot завершает свой сеанс Keeper на {host}. Папка и её учётные данные остаются в вашем хранилище Keeper.",
+  "connector.keeper.disconnect": "Отключить",
+  "connector.keeper.actionFailed": "OpenBot не смог изменить подключение Keeper.",
 } as const satisfies PartialTranslation<typeof source>;

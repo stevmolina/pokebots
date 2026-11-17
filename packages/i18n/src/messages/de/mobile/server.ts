@@ -464,7 +464,7 @@ export const messages = {
   "mobile.server.settings.timezoneNoMatch": "Keine Zeitzone passt zu dieser Suche.",
   "mobile.server.settings.timezoneMore": "Gib mehr vom Namen ein, um weitere Zeitzonen zu sehen.",
   "mobile.server.settings.timezoneDescription":
-    "Neue Routinen verwenden diese Zeitzone, wenn die Nachricht die Zeitzone des Absenders nicht angibt.",
+    "Neue Routinen verwenden diese Zeitzone, wenn die Nachricht die Zeitzone des Absenders nicht angibt. Auf einem Server verwendet auch der Browser sie nach dem nächsten Neustart.",
   "mobile.server.settings.timezoneLoading": "Zeitzone wird geladen…",
   "mobile.server.settings.timezoneLoadFailed": "Die Zeitzone des Servers konnte nicht geladen werden.",
   "mobile.server.settings.timezoneSaveFailed": "Die Zeitzone konnte nicht gespeichert werden. Versuche es erneut.",
@@ -732,6 +732,31 @@ export const messages = {
   "mobile.server.connectors.protonPass.keyHelp":
     "Erstelle in Proton Pass einen Zugriffsschlüssel, der nur den mit OpenBot geteilten Tresor lesen kann, und füge ihn hier ein. {host} speichert den Schlüssel, dieses Telefon nicht.",
   "mobile.server.connectors.protonPass.keyPlaceholder": "pst_…",
+  "mobile.server.connectors.keeper.title": "Keeper",
+  "mobile.server.connectors.keeper.description":
+    "Teile einen Keeper-Ordner mit OpenBot auf {host}, damit Agenten auf {host} sich in dessen Browser bei Websites anmelden können.",
+  "mobile.server.connectors.keeper.accountHelp":
+    "Gib deine Keeper-E-Mail-Adresse und dein Master-Passwort ein. Sie gehen einmal an {host}, und {host} gibt sie an Keeper Commander weiter. Dieses Telefon speichert sie nicht.",
+  "mobile.server.connectors.keeper.email": "E-Mail",
+  "mobile.server.connectors.keeper.masterPassword": "Master-Passwort",
+  "mobile.server.connectors.keeper.signingIn": "{host} meldet sich bei Keeper an…",
+  "mobile.server.connectors.keeper.makingFolder": "{host} erstellt den geteilten Ordner…",
+  "mobile.server.connectors.keeper.code": "Code",
+  "mobile.server.connectors.keeper.twoFactorHint":
+    "Keeper fragt nach einem Zwei-Faktor-Code. Gib den Code aus deiner Authenticator-App oder SMS ein. Er geht einmal an {host}; dieses Telefon speichert ihn nicht.",
+  "mobile.server.connectors.keeper.deviceHint":
+    "Keeper hat eine Genehmigungs-E-Mail und eine Benachrichtigung an deine anderen Geräte gesendet. Genehmige dort dieses Gerät und tippe dann auf Weiter. Oder gib den Code aus der E-Mail ein.",
+  "mobile.server.connectors.keeper.codeWrong": "Der Code ist nicht korrekt. Versuche es erneut.",
+  "mobile.server.connectors.keeper.folderTitle": "Geteilter Ordner",
+  "mobile.server.connectors.keeper.folderFooter":
+    "Verschiebe in Keeper eine Anmeldung in diesen Ordner, damit Agenten sich damit anmelden können. Entferne sie, um den Zugriff zu beenden.",
+  "mobile.server.connectors.keeper.plan":
+    "Dein Keeper-Administrator erlaubt Keeper Commander für dieses Konto nicht. Bitte ihn, es zu erlauben, und verbinde dann erneut.",
+  "mobile.server.connectors.keeper.expiredTitle": "Die Keeper-Sitzung wurde beendet",
+  "mobile.server.connectors.keeper.expiredBody":
+    "Agenten auf {host} können sich erst wieder mit deinen geteilten Zugangsdaten anmelden, wenn du dich erneut verbindest.",
+  "mobile.server.connectors.keeper.disconnectBody":
+    "{host} beendet seine Keeper-Sitzung. Der Ordner und seine Zugangsdaten bleiben in deinem Keeper-Tresor.",
   "mobile.server.connectors.passwordManager.unavailable": "{name} ist auf diesem Server nicht verfügbar.",
   "mobile.server.connectors.passwordManager.howItWorks":
     "Melde dich auf diesem Telefon bei {name} an. Dann erstellt {host} einen geteilten Tresor und einen schreibgeschützten Zugriffsschlüssel dafür und speichert nur diesen Schlüssel. Agenten sehen nie ein Passwort.",
@@ -940,6 +965,9 @@ export const messages = {
   "mobile.server.connectors.whatsapp.workingMessage": "Nachricht „Wird bearbeitet…“",
   "mobile.server.connectors.whatsapp.workingMessageDescription":
     "OpenBot sendet sie, während der Agent arbeitet, und ersetzt sie dann durch die Antwort. Schalte sie aus, um nur die Antwort zu senden.",
+  "mobile.server.connectors.whatsapp.statusReactions": "Status-Reaktionen",
+  "mobile.server.connectors.whatsapp.statusReactionsDescription":
+    "OpenBot reagiert mit 👀, wenn eine Nachricht ankommt, und mit ✅, wenn die Antwort fertig ist. Schalte sie aus, um keine Reaktionen zu senden.",
   "mobile.server.connectors.whatsapp.orchestratorTitle": "WhatsApp-Orchestrator",
   "mobile.server.connectors.whatsapp.orchestratorDescription":
     "Dieser Agent empfängt die Nachrichten für OpenBot von all deinen verknüpften Nummern. Kurze beantwortet er selbst, andere Aufgaben gibt er an den passenden Agenten weiter und antwortet in WhatsApp.",
@@ -1174,6 +1202,22 @@ export const messages = {
   "mobile.server.providers.compactWindowTokens": "{size} Tokens",
   "mobile.server.providers.compactWindowLoadFailed":
     "Die Komprimierungsgröße dieses Servers konnte nicht geladen werden.",
+  "mobile.server.environment.row": "Variablen",
+  "mobile.server.environment.title": "Umgebung",
+  "mobile.server.environment.hint":
+    "API-Schlüssel, Basis-URLs und andere Einstellungen, die jeder {name}-Prozess erhält. Eine Änderung gilt, wenn die laufenden Durchgänge enden.",
+  "mobile.server.environment.codexHint":
+    "OPENAI_BASE_URL sendet mit OPENAI_API_KEY als Schlüssel die Modellanfragen von ChatGPT an diese Adresse.",
+  "mobile.server.environment.shellNote": "Die Befehle, die Agenten ausführen, können diese Werte lesen.",
+  "mobile.server.environment.add": "Variable hinzufügen",
+  "mobile.server.environment.namePlaceholder": "VARIABLE_NAME",
+  "mobile.server.environment.valuePlaceholder": "Wert",
+  "mobile.server.environment.saved": "Gespeichert",
+  "mobile.server.environment.sensitive": "Vertraulich",
+  "mobile.server.environment.remove": "Entfernen",
+  "mobile.server.environment.save": "Speichern",
+  "mobile.server.environment.loadFailed": "Die Variablen von {name} konnten nicht geladen werden.",
+  "mobile.server.environment.invalid": "Korrigiere zuerst die Namen.",
   "mobile.server.providers.disconnect": "Trennen",
   "mobile.server.providers.disconnectTitle": "{name} trennen?",
   "mobile.server.providers.disconnectBody":

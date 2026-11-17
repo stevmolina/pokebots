@@ -437,7 +437,8 @@ export const messages = {
   "mobile.server.settings.timezoneSearch": "搜索时区",
   "mobile.server.settings.timezoneNoMatch": "没有匹配该搜索的时区。",
   "mobile.server.settings.timezoneMore": "输入更多名称以查看其他时区。",
-  "mobile.server.settings.timezoneDescription": "消息没有给出发送者的时区时，新的自动化任务使用该时区。",
+  "mobile.server.settings.timezoneDescription":
+    "消息没有给出发送者的时区时，新的自动化任务使用该时区。在服务器上，浏览器也会在下次重启后使用该时区。",
   "mobile.server.settings.timezoneLoading": "正在加载时区…",
   "mobile.server.settings.timezoneLoadFailed": "无法加载服务器时区。",
   "mobile.server.settings.timezoneSaveFailed": "无法保存时区，请重试。",
@@ -671,6 +672,30 @@ export const messages = {
   "mobile.server.connectors.protonPass.keyHelp":
     "在 Proton Pass 中创建一个只能读取你与 OpenBot 共享的保险库的访问密钥，然后粘贴到这里。{host} 保存该密钥；这部手机不保存。",
   "mobile.server.connectors.protonPass.keyPlaceholder": "pst_…",
+  "mobile.server.connectors.keeper.title": "Keeper",
+  "mobile.server.connectors.keeper.description":
+    "与 {host} 上的 OpenBot 共享一个 Keeper 文件夹，让 {host} 上的代理可以在其浏览器中登录网站。",
+  "mobile.server.connectors.keeper.accountHelp":
+    "输入你的 Keeper 邮箱和主密码。它们只会发送给 {host} 一次，由 {host} 交给 Keeper Commander。这部手机不会保存。",
+  "mobile.server.connectors.keeper.email": "邮箱",
+  "mobile.server.connectors.keeper.masterPassword": "主密码",
+  "mobile.server.connectors.keeper.signingIn": "{host} 正在登录 Keeper…",
+  "mobile.server.connectors.keeper.makingFolder": "{host} 正在创建共享文件夹…",
+  "mobile.server.connectors.keeper.code": "验证码",
+  "mobile.server.connectors.keeper.twoFactorHint":
+    "Keeper 要求输入两步验证码。输入验证器应用或短信中的验证码。验证码只发送给 {host} 一次；这部手机不会保存。",
+  "mobile.server.connectors.keeper.deviceHint":
+    "Keeper 已发送批准邮件，并通知了你的其他设备。在那里批准此设备，然后点击“继续”。也可以输入邮件中的验证码。",
+  "mobile.server.connectors.keeper.codeWrong": "验证码不正确。请重试。",
+  "mobile.server.connectors.keeper.folderTitle": "共享文件夹",
+  "mobile.server.connectors.keeper.folderFooter":
+    "在 Keeper 中把登录信息移入该文件夹，代理即可用它登录。移出后即停止。",
+  "mobile.server.connectors.keeper.plan":
+    "你的 Keeper 管理员不允许此账户使用 Keeper Commander。请让管理员允许使用，然后重新连接。",
+  "mobile.server.connectors.keeper.expiredTitle": "Keeper 会话已结束",
+  "mobile.server.connectors.keeper.expiredBody": "在你重新连接之前，{host} 上的代理无法使用共享的登录信息登录。",
+  "mobile.server.connectors.keeper.disconnectBody":
+    "{host} 会结束它的 Keeper 会话。文件夹及其登录信息保留在你的 Keeper 保险库中。",
   "mobile.server.connectors.passwordManager.unavailable": "{name} 在此服务器上不可用。",
   "mobile.server.connectors.passwordManager.howItWorks":
     "在这部手机上登录 {name}。然后 {host} 会创建一个共享保险库及其只读访问密钥，并只保存该密钥。代理永远看不到密码。",
@@ -843,6 +868,9 @@ export const messages = {
   "mobile.server.connectors.whatsapp.workingMessage": "“正在处理…”消息",
   "mobile.server.connectors.whatsapp.workingMessageDescription":
     "代理工作时，OpenBot 会发送这条消息，随后用回答替换它。关闭后只发送回答。",
+  "mobile.server.connectors.whatsapp.statusReactions": "状态表情回应",
+  "mobile.server.connectors.whatsapp.statusReactionsDescription":
+    "消息到达时，OpenBot 会用 👀 回应；回答准备好后用 ✅ 回应。关闭后不发送任何表情回应。",
   "mobile.server.connectors.whatsapp.orchestratorTitle": "WhatsApp 调度助手",
   "mobile.server.connectors.whatsapp.orchestratorDescription":
     "该助手接收你所有已关联号码中发给 OpenBot 的消息。简单的问题它自己回答，其余的交给合适的助手处理，并在 WhatsApp 中回答。",
@@ -1051,6 +1079,21 @@ export const messages = {
   "mobile.server.providers.compactWindowDefault": "Claude Code 默认",
   "mobile.server.providers.compactWindowTokens": "{size} 个 token",
   "mobile.server.providers.compactWindowLoadFailed": "无法加载该服务器的压缩大小。",
+  "mobile.server.environment.row": "变量",
+  "mobile.server.environment.title": "环境",
+  "mobile.server.environment.hint": "{name} 的每个进程获得的 API 密钥、基础 URL 等设置。更改在当前回合结束后生效。",
+  "mobile.server.environment.codexHint":
+    "OPENAI_BASE_URL 配合作为密钥的 OPENAI_API_KEY，会把 ChatGPT 的模型请求发送到该地址。",
+  "mobile.server.environment.shellNote": "智能体运行的命令可以读取这些值。",
+  "mobile.server.environment.add": "添加变量",
+  "mobile.server.environment.namePlaceholder": "VARIABLE_NAME",
+  "mobile.server.environment.valuePlaceholder": "值",
+  "mobile.server.environment.saved": "已保存",
+  "mobile.server.environment.sensitive": "敏感",
+  "mobile.server.environment.remove": "移除",
+  "mobile.server.environment.save": "保存",
+  "mobile.server.environment.loadFailed": "无法加载 {name} 的变量。",
+  "mobile.server.environment.invalid": "请先修正名称。",
   "mobile.server.providers.disconnect": "断开连接",
   "mobile.server.providers.disconnectTitle": "断开 {name}？",
   "mobile.server.providers.disconnectBody":

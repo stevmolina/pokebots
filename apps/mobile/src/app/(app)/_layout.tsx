@@ -458,6 +458,18 @@ function AuthenticatedStack() {
         }}
       />
       <Stack.Screen
+        name="context-usage/[agentId]"
+        // The context ring of the composer opens it. The header comes from the route's `_layout.tsx`.
+        options={{
+          contentStyle: { backgroundColor: sheetBackground },
+          headerShown: false,
+          scrollEdgeEffects: { top: "hidden", bottom: "soft" },
+          presentation: "formSheet",
+          sheetAllowedDetents: [0.6, 0.85],
+          sheetGrabberVisible: true,
+        }}
+      />
+      <Stack.Screen
         name="channel-actions/[channelId]"
         // The header comes from the route's `_layout.tsx`: Android draws no header on a formSheet route.
         options={{
@@ -665,6 +677,7 @@ function AuthenticatedStack() {
           title: t("mobile.app.route.routine"),
         }}
       />
+      <Stack.Screen name="server-rooms" options={largeTitlePage} />
       <Stack.Screen name="server-tasks" options={largeTitlePage} />
       <Stack.Screen name="server-workflows/index" options={largeTitlePage} />
       <Stack.Screen name="server-workflows/workflow" options={largeTitlePage} />
@@ -686,6 +699,7 @@ function AuthenticatedStack() {
         }}
       />
       <Stack.Screen name="server-usage/index" options={largeTitlePage} />
+      <Stack.Screen name="brain" options={largeTitlePage} />
       <Stack.Screen name="server-library" options={largeTitlePage} />
       <Stack.Screen name="server-marketplace/index" options={largeTitlePage} />
       <Stack.Screen
@@ -720,6 +734,18 @@ function AuthenticatedStack() {
           scrollEdgeEffects: { top: "hidden", bottom: "soft" },
           presentation: "formSheet",
           sheetAllowedDetents: [0.6],
+          sheetGrabberVisible: true,
+        }}
+      />
+      <Stack.Screen
+        name="agent-sessions"
+        // The header comes from the route's `_layout.tsx`: Android draws no header on a formSheet route.
+        options={{
+          contentStyle: { backgroundColor: sheetBackground },
+          headerShown: false,
+          scrollEdgeEffects: { top: "hidden", bottom: "soft" },
+          presentation: "formSheet",
+          sheetAllowedDetents: [0.6, 0.85],
           sheetGrabberVisible: true,
         }}
       />
@@ -772,6 +798,28 @@ function AuthenticatedStack() {
       />
       <Stack.Screen
         name="turn-thinking"
+        options={{
+          contentStyle: { backgroundColor: sheetBackground },
+          headerShown: false,
+          scrollEdgeEffects: { top: "hidden", bottom: "soft" },
+          presentation: "formSheet",
+          sheetAllowedDetents: [0.85],
+          sheetGrabberVisible: true,
+        }}
+      />
+      <Stack.Screen
+        name="subagent"
+        options={{
+          contentStyle: { backgroundColor: sheetBackground },
+          headerShown: false,
+          scrollEdgeEffects: { top: "hidden", bottom: "soft" },
+          presentation: "formSheet",
+          sheetAllowedDetents: [0.85],
+          sheetGrabberVisible: true,
+        }}
+      />
+      <Stack.Screen
+        name="memory-changes"
         options={{
           contentStyle: { backgroundColor: sheetBackground },
           headerShown: false,

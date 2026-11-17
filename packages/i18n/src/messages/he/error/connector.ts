@@ -27,9 +27,16 @@ export const messages = {
     "OpenBot לא הצליח להתקין את ה-CLI של 1Password. יש לבדוק את החיבור לאינטרנט ולנסות שוב.",
   "error.connector.onePasswordCliSignedOut":
     "ה-CLI של 1Password לא מחובר. יש להפעיל את האינטגרציה שלו באפליקציית 1Password ולהתחבר שוב.",
+  "error.connector.onePasswordAppUnreachable":
+    "OpenBot לא מצליח להתחבר לאפליקציית 1Password. יש לפתוח את 1Password ולבטל את הנעילה. בהגדרות > מפתחים יש לוודא ש״Integrate with 1Password CLI״ מופעל. לאחר מכן יש לנסות שוב.",
   "error.connector.onePasswordCliFailed": "ה-CLI של 1Password נכשל: {detail}",
+  "error.connector.onePasswordCliForbidden":
+    "חשבון 1Password שלך לא מאפשר לך ליצור את הכספת המשותפת או חשבון שירות. יש לבקש את ההרשאה הזו מבעלים או ממנהל של החשבון, או לבקש מהם אסימון של חשבון שירות וללחוץ על ״שימוש באסימון״.",
   "error.connector.onePasswordUnexpected": "1Password שלח תשובה לא צפויה: {detail}",
   "error.connector.onePasswordTokenRejected": "1Password לא קיבל את האסימון של חשבון השירות.",
+  "error.connector.onePasswordUnreachable":
+    "OpenBot לא הצליח להתחבר ל-1Password. יש לבדוק את החיבור לאינטרנט ולנסות שוב.",
+  "error.connector.onePasswordRateLimited": "1Password קיבל יותר מדי בקשות. יש להמתין כמה דקות ולנסות שוב.",
   "error.connector.onePasswordNoVault": "חשבון השירות לא יכול לקרוא אף כספת. יש לתת לו גישה לכספת ולנסות שוב.",
   "error.connector.onePasswordFileUnreadable": "קובץ החיבור ל-1Password אינו קריא.",
   "error.connector.onePasswordFileTooLarge": "קובץ החיבור ל-1Password גדול מדי.",
@@ -62,4 +69,23 @@ export const messages = {
   "error.connector.protonPassSignInTimeout": "ההתחברות ל-Proton נמשכה זמן רב מדי. יש להתחבר שוב.",
   "error.connector.protonPassSetupFailed":
     "לא ניתן ליצור ב-Proton Pass את הכספת Shared with OpenBot או את מפתח הגישה שלה. יש להתחבר שוב.",
+  "error.connector.keeperFailed": "לא ניתן לחבר את Keeper. יש להתחבר שוב.",
+  "error.connector.keeperCliInstallFailed": "לא ניתן להתקין את Keeper Commander. יש לבדוק את חיבור הרשת ולהתחבר שוב.",
+  "error.connector.keeperPassword": "האימייל או הסיסמה הראשית שגויים.",
+  "error.connector.keeperCode": "הקוד שגוי. יש להזין אותו שוב.",
+  "error.connector.keeperCodeNotAsked": "Keeper לא ביקש קוד.",
+  "error.connector.keeperNotApproved": "המכשיר הזה עדיין לא אושר ב-Keeper. יש לאשר אותו ואז ללחוץ על ״המשך״.",
+  "error.connector.keeperExpired": "הסשן של Keeper במחשב הזה הסתיים. יש להתחבר שוב.",
+  "error.connector.keeperPlan":
+    "מנהל Keeper שלך לא מאפשר את Keeper Commander לחשבון הזה. יש לבקש ממנו לאפשר אותו ואז להתחבר שוב.",
+  "error.connector.keeperSso": "עדיין לא ניתן לחבר חשבונות Keeper שמתחברים באמצעות SSO.",
+  "error.connector.keeperTwoFactorUnsupported":
+    "שיטת האימות הדו־שלבי של החשבון הזה לא מקבלת קוד מוקלד. יש להוסיף ב-Keeper אפליקציית אימות או הודעות טקסט, ואז להתחבר שוב.",
+  "error.connector.keeperLocked":
+    "Keeper נעל את החשבון או את המכשיר הזה. יש לפתוח את Keeper כדי לבטל את הנעילה, ואז להתחבר שוב.",
+  "error.connector.keeperThrottled": "Keeper מבקש להמתין כמה דקות לפני הכניסה הבאה. התחבר שוב מאוחר יותר.",
+  "error.connector.keeperPersistentLogin":
+    'מנהל Keeper כיבה את "Stay logged in", ש-OpenBot צריך. בקש ממנו לאפשר זאת ואז התחבר שוב.',
+  "error.connector.keeperSignInTimeout": "ההתחברות ל-Keeper נמשכה זמן רב מדי. יש להתחבר שוב.",
+  "error.connector.keeperFileUnreadable": "קובץ החיבור ל-Keeper אינו קריא.",
 } as const satisfies PartialTranslation<typeof source>;

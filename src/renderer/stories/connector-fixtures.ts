@@ -23,7 +23,7 @@ const workspace = {
   onAddOrchestrator: fn(),
 };
 
-/** GitHub is connected; Slack, Discord, Telegram, WhatsApp, 1Password, Bitwarden and Proton Pass are not set up. */
+/** GitHub is connected; Slack, Discord, Telegram, WhatsApp, 1Password, Bitwarden, Proton Pass and Keeper are not set up. */
 export const STORY_CONNECTOR_DETAILS: readonly ConnectorDetail[] = [
   { id: "slack", props: { ...workspace, platform: "slack" } },
   { id: "discord", props: { ...workspace, platform: "discord" } },
@@ -57,6 +57,7 @@ export const STORY_CONNECTOR_DETAILS: readonly ConnectorDetail[] = [
       onSetEnabled: fn(),
       onSetOwnNumber: fn(),
       onSetWorkingMessage: fn(),
+      onSetStatusReactions: fn(),
       onAddOrchestrator: fn(),
       loadGroups: fn(async () => []),
       onAddSender: fn(),
@@ -125,6 +126,17 @@ export const STORY_CONNECTOR_DETAILS: readonly ConnectorDetail[] = [
       onCancel: fn(),
       onDisconnect: fn(),
       onOpenSignIn: fn(),
+    },
+  },
+  {
+    id: "keeper",
+    props: {
+      status: disconnectedPasswordManager("keeper", ["account"]),
+      busy: false,
+      onConnect: fn(),
+      onSubmitCode: fn(),
+      onCancel: fn(),
+      onDisconnect: fn(),
     },
   },
 ];
@@ -197,6 +209,7 @@ export const CONNECTED_CONNECTOR_DETAILS: readonly ConnectorDetail[] = STORY_CON
               workspaceId: "447700900123",
               ownNumber: true,
               workingMessage: true,
+              statusReactions: true,
               allowedSenders: [],
               pendingRequests: [],
             },
@@ -225,6 +238,14 @@ export const CONNECTED_CONNECTOR_DETAILS: readonly ConnectorDetail[] = STORY_CON
             loginCount: 12,
             expiresAt: Date.UTC(2027, 10, 5),
           },
+        },
+      };
+    case "keeper":
+      return {
+        ...detail,
+        props: {
+          ...detail.props,
+          status: { ...detail.props.status, state: "connected", vaultNames: ["Shared with OpenBot"], loginCount: 12 },
         },
       };
     default:

@@ -24,6 +24,7 @@ export const messages = {
   "mobile.marketplace.app.onePasswordTagline": "用你共享的登录信息登录网站",
   "mobile.marketplace.app.bitwardenTagline": "用共享文件夹中的登录信息登录网站",
   "mobile.marketplace.app.protonPassTagline": "用共享保管库中的登录信息登录网站",
+  "mobile.marketplace.app.keeperTagline": "用共享文件夹中的登录信息登录网站",
   "mobile.marketplace.search.placeholder": "搜索市场",
   "mobile.marketplace.search.clear": "清除搜索",
   "mobile.marketplace.search.close": "关闭搜索",
@@ -62,6 +63,7 @@ export const messages = {
   "mobile.marketplace.facts.accessSignIn": "登录",
   "mobile.marketplace.facts.accessLocal": "这台电脑",
   "mobile.marketplace.facts.accessNone": "无需登录",
+  "mobile.marketplace.facts.accessMac": "仅限 Mac",
   "mobile.marketplace.permission.admin": "只有所有者和管理员可以从市场安装。",
   "mobile.marketplace.permission.unavailable":
     "该服务器已离线，或其 OpenBot 版本过旧。请更新运行它的电脑上的 OpenBot。",
@@ -108,6 +110,7 @@ export const messages = {
   "mobile.marketplace.app.linkInvalid": "请使用 {hostname} 上的 https 链接。",
   "mobile.marketplace.app.docs": "获取密钥",
   "mobile.marketplace.app.local": "该应用运行在装有 OpenBot 的电脑上。请在那台电脑上设置。",
+  "mobile.marketplace.app.needsMac": "此应用仅在运行 OpenBot 的 Mac 上可用，而此服务器不是 Mac。",
   "mobile.marketplace.app.relayUnsupported":
     "该应用需要在浏览器中登录。请更新服务器上的 OpenBot，或在电脑上连接该应用。",
   "mobile.marketplace.app.waiting": "正在等待登录页面…",

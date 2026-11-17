@@ -103,7 +103,6 @@ export const messages = {
   "agentSettings.groups.does": "Aufgaben",
   "agentSettings.groups.rules": "Regeln",
   "agentSettings.groups.model": "Modell",
-  "agentSettings.groups.alerts": "Benachrichtigungen",
   "agentSettings.saveFailed": "Die Agenteneinstellungen konnten nicht gespeichert werden.",
   "agentSettings.name": "Name",
   "agentSettings.nameLabel": "Agentenname",
@@ -170,9 +169,9 @@ export const messages = {
   "agentSettings.busyMessage.steerUnsupported":
     "{provider} kann einen laufenden Durchlauf nicht steuern. Während der Arbeit gesendete Nachrichten warten in der Warteschlange.",
   "agentSettings.notificationLevel.title": "Mich benachrichtigen",
+  "agentSettings.notificationLevel.footer":
+    "Erhalte eine Mitteilung, wenn dieser Agent fertig ist oder auf dich wartet.",
   "agentSettings.notificationLevel.server": "Server-Standard ({level})",
-  "agentSettings.notificationLevel.note":
-    "Diese Wahl gilt nur für dich, auf allen deinen Geräten. Ist der Server stummgeschaltet oder auf „Nichts“ gesetzt, bleibt auch dieser Agent still.",
   "agentSettings.newChat.title": "Neuer Chat",
   "agentSettings.newChat.description": "Der Agent vergisst diesen Chat. Seine Einrichtung bleibt erhalten.",
   "agentSettings.newChat.button": "Starten",
@@ -216,6 +215,10 @@ export const messages = {
   },
   "agentSettings.links.files": "Dateien",
   "agentSettings.links.routines": "Routinen",
+  "agentSettings.links.library": "Bibliothek",
+  "agentSettings.links.computer": "Computer",
+  "agentSettings.links.computerActive": "In Benutzung",
+  "agentSettings.links.computerOffline": "Offline",
   "agentSettings.links.routinesCount": {
     one: "{count} eingerichtet",
     other: "{count} eingerichtet",

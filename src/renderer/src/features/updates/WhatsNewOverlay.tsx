@@ -3,6 +3,7 @@ import { WhatsNewDialog } from "@openbot/ui/features/updates/WhatsNewDialog";
 import { useText } from "@openbot/ui/text";
 import { createEffect, untrack } from "solid-js";
 import { appPort } from "../../app-port";
+import { statusAlertsShown } from "./status-alerts";
 import { useWhatsNew } from "./whats-new-context";
 
 /** Mounted only when the workspace is ready, outside the lifetime of a selected server. */
@@ -10,7 +11,7 @@ export function WhatsNewOverlay(props: { ready: boolean }) {
   const { t, errorMessage } = useText();
   const whatsNew = useWhatsNew();
   createEffect(
-    () => props.ready && whatsNew.state.version !== "",
+    () => statusAlertsShown() && props.ready && whatsNew.state.version !== "",
     (ready) => {
       if (ready) untrack(whatsNew.start);
     },

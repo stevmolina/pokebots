@@ -99,9 +99,20 @@ const provider = Bun.serve({
         issuer,
         authorization_endpoint: `${issuer}/authorize`,
         token_endpoint: `${issuer}/token`,
+        userinfo_endpoint: `${issuer}/userinfo`,
         jwks_uri: `${issuer}/jwks`,
         token_endpoint_auth_methods_supported: ["client_secret_post"],
       });
+    const png = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 1, 2, 3]);
+    if (url.pathname === "/avatar.png") return new Response(png, { headers: { "Content-Type": "image/png" } });
+    if (url.pathname === "/not-an-image")
+      return new Response("<html></html>", { headers: { "Content-Type": "text/html" } });
+    if (url.pathname === "/userinfo") {
+      const subject = request.headers.get("Authorization")?.replace("Bearer ", "") ?? "";
+      return Response.json(
+        subject.startsWith("info-") ? { sub: subject, picture: `${issuer}/avatar.png` } : { sub: subject },
+      );
+    }
     if (url.pathname === "/jwks") return Response.json({ keys: [jwk] });
     if (url.pathname === "/authorize") {
       const redirect = new URL(url.searchParams.get("redirect_uri") ?? "");
@@ -134,8 +145,14 @@ const provider = Bun.serve({
         (await runApiEffect(sha256(form.get("code_verifier") ?? ""))) !== grant.challenge
       )
         return Response.json({ error: "invalid_grant" }, { status: 400 });
+      const picture = grant.email.startsWith("pic-")
+        ? `${issuer}/avatar.png`
+        : grant.email.startsWith("badpic-")
+          ? `${issuer}/not-an-image`
+          : undefined;
       const token = await new SignJWT({
         email: grant.email,
+        ...(picture ? { picture } : {}),
         email_verified: verifiedEmail,
         nonce: badNonce ? "wrong-nonce" : grant.nonce,
       })
@@ -145,7 +162,7 @@ const provider = Bun.serve({
         .setSubject(grant.email)
         .setExpirationTime("5m")
         .sign(keys.privateKey);
-      return Response.json({ id_token: token });
+      return Response.json({ id_token: token, access_token: grant.email });
     }
     return new Response(null, { status: 404 });
   },
@@ -575,6 +592,45 @@ try {
       (error) => error instanceof CompanySignInError && error.code === "workos_sign_in_required",
     );
   checks.push("prior company start and exchange also defer to the configured WorkOS provider");
+
+  async function signInAs(email: string) {
+    const flow = await start(undefined, email);
+    const returned = await callback(flow.authorizationUrl);
+    const exchangeCode = returned.target?.searchParams.get("code");
+    assert(exchangeCode);
+    const response = await post("/v1/auth/workos/exchange", { code: exchangeCode, codeVerifier: flow.verifier });
+    assert.equal(response.status, 200);
+    return Schema.decodeUnknownSync(sessionSchema)(await response.json()).user.id;
+  }
+  async function avatarOf(userId: string) {
+    const row = await database
+      .prepare("SELECT avatar_url FROM users WHERE id = ?")
+      .bind(userId)
+      .first<{ avatar_url: string | null }>();
+    return row?.avatar_url ?? null;
+  }
+  async function storedPicture(userId: string, avatarUrl: string | null) {
+    const match = avatarUrl?.match(new RegExp(`^/v1/avatars/${userId}\\?v=([0-9a-f-]{36})$`, "u"));
+    assert(match?.[1], `unexpected avatar url ${avatarUrl}`);
+    const object = await platform.env.AVATARS.get(`users/${userId}/${match[1]}`);
+    assert(object);
+    return new Uint8Array(await object.arrayBuffer());
+  }
+  now += 60_000;
+  const claimUser = await signInAs("pic-claim@example.test");
+  const claimAvatar = await avatarOf(claimUser);
+  assert.equal((await storedPicture(claimUser, claimAvatar)).byteLength, 11);
+  const userinfoUser = await signInAs("info-userinfo@example.test");
+  assert.equal((await storedPicture(userinfoUser, await avatarOf(userinfoUser))).byteLength, 11);
+  const badUser = await signInAs("badpic-html@example.test");
+  assert.equal(await avatarOf(badUser), null);
+  const plainUser = await signInAs("plain-nopicture@example.test");
+  assert.equal(await avatarOf(plainUser), null);
+  assert.equal(await signInAs("pic-claim@example.test"), claimUser);
+  assert.equal(await avatarOf(claimUser), claimAvatar);
+  checks.push(
+    "provider picture is saved at sign-in from the token or userinfo; a non-image or a missing picture leaves none; a saved picture is kept",
+  );
 
   await writeFile(
     join(

@@ -16,6 +16,19 @@
   scale: calc(1.45 / 1.15);
 }
 
+/* An avatar draws its face at 128% of its box, because a drawn bloub leaves a margin around its body.
+   The landing art fills its picture to the edge, so at that size it fills a sidebar row from top to
+   bottom. A scale and not a size, so it also holds on the surfaces that set the face size again. */
+.agent-avatar > .pokebots-portrait {
+  scale: calc(1 / 1.28);
+}
+
+/* A grid cell sized to its content grows with the face, which draws past the box, so the face hangs
+   down from the top of the box. A cell the size of the box keeps the face on the centre of the box. */
+.agent-avatar:has(> .pokebots-portrait) {
+  grid-template: 100% / 100%;
+}
+
 /* Landing art has its own eyes and accessories. The live state stays outside the portrait. */
 .pokebots-portrait-mark {
   fill: none;

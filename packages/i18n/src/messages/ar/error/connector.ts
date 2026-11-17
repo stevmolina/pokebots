@@ -27,9 +27,16 @@ export const messages = {
     "تعذّر على OpenBot تثبيت 1Password CLI. تحقق من الاتصال بالإنترنت، ثم حاول مرة أخرى.",
   "error.connector.onePasswordCliSignedOut":
     "لم يتم تسجيل الدخول إلى 1Password CLI. فعّل تكامله في تطبيق 1Password، ثم اتصل مرة أخرى.",
+  "error.connector.onePasswordAppUnreachable":
+    "لا يستطيع OpenBot الوصول إلى تطبيق 1Password. افتح 1Password وافتح قفله. في Settings > Developer، تأكد من تشغيل «Integrate with 1Password CLI». ثم حاول مرة أخرى.",
   "error.connector.onePasswordCliFailed": "فشل 1Password CLI: {detail}",
+  "error.connector.onePasswordCliForbidden":
+    "لا يسمح لك حساب 1Password بإنشاء الخزنة المشتركة أو حساب خدمة. اطلب هذا الإذن من مالك الحساب أو مسؤوله، أو اطلب منه رمز حساب خدمة وانقر «استخدام رمز».",
   "error.connector.onePasswordUnexpected": "أرسل 1Password إجابة غير متوقعة: {detail}",
   "error.connector.onePasswordTokenRejected": "لم يقبل 1Password رمز حساب الخدمة.",
+  "error.connector.onePasswordUnreachable":
+    "تعذّر على OpenBot الاتصال بـ 1Password. تحقق من الاتصال بالإنترنت، ثم حاول مرة أخرى.",
+  "error.connector.onePasswordRateLimited": "تلقّى 1Password طلبات كثيرة جدًا. انتظر بضع دقائق، ثم حاول مرة أخرى.",
   "error.connector.onePasswordNoVault": "لا يمكن لحساب الخدمة قراءة أي خزنة. امنحه الوصول إلى خزنة، ثم حاول مرة أخرى.",
   "error.connector.onePasswordFileUnreadable": "ملف اتصال 1Password غير قابل للقراءة.",
   "error.connector.onePasswordFileTooLarge": "ملف اتصال 1Password كبير جدًا.",
@@ -61,4 +68,22 @@ export const messages = {
   "error.connector.protonPassSignInTimeout": "استغرق تسجيل الدخول إلى Proton وقتًا طويلاً. اتصل مرة أخرى.",
   "error.connector.protonPassSetupFailed":
     "تعذّر إنشاء الخزنة Shared with OpenBot أو مفتاح الوصول الخاص بها في Proton Pass. اتصل مرة أخرى.",
+  "error.connector.keeperFailed": "تعذّر توصيل Keeper. اتصل مرة أخرى.",
+  "error.connector.keeperCliInstallFailed": "تعذّر تثبيت Keeper Commander. تحقق من اتصال الشبكة، ثم اتصل مرة أخرى.",
+  "error.connector.keeperPassword": "البريد الإلكتروني أو كلمة المرور الرئيسية غير صحيحة.",
+  "error.connector.keeperCode": "الرمز غير صحيح. أدخله مرة أخرى.",
+  "error.connector.keeperCodeNotAsked": "لم يطلب Keeper رمزًا.",
+  "error.connector.keeperNotApproved": "لم تتم الموافقة على هذا الجهاز في Keeper بعد. وافق عليه، ثم اضغط «متابعة».",
+  "error.connector.keeperExpired": "انتهت جلسة Keeper على هذا الكمبيوتر. اتصل مرة أخرى.",
+  "error.connector.keeperPlan":
+    "لا يسمح مسؤول Keeper لديك باستخدام Keeper Commander لهذا الحساب. اطلب منه السماح به، ثم اتصل مرة أخرى.",
+  "error.connector.keeperSso": "لا يمكن بعد توصيل حسابات Keeper التي تسجّل الدخول عبر SSO.",
+  "error.connector.keeperTwoFactorUnsupported":
+    "لا تقبل طريقة التحقق بخطوتين في هذا الحساب رمزًا يُكتب. أضف تطبيق مصادقة أو رسائل نصية في Keeper، ثم اتصل مرة أخرى.",
+  "error.connector.keeperLocked": "قفل Keeper هذا الحساب أو هذا الجهاز. افتح Keeper لإلغاء القفل، ثم اتصل مرة أخرى.",
+  "error.connector.keeperThrottled": "يطلب Keeper الانتظار بضع دقائق قبل تسجيل الدخول التالي. اتصل مرة أخرى لاحقًا.",
+  "error.connector.keeperPersistentLogin":
+    'أوقف مسؤول Keeper خيار "Stay logged in" الذي يحتاجه OpenBot. اطلب منه السماح به، ثم اتصل مرة أخرى.',
+  "error.connector.keeperSignInTimeout": "استغرق تسجيل الدخول إلى Keeper وقتًا طويلاً. اتصل مرة أخرى.",
+  "error.connector.keeperFileUnreadable": "ملف اتصال Keeper غير قابل للقراءة.",
 } as const satisfies PartialTranslation<typeof source>;

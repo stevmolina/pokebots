@@ -2,8 +2,10 @@ import { useCallback, useMemo, useRef, useState } from "react";
 import { showFailureAlert } from "@/features/analytics/failure-reports";
 import {
   decodeDefaultServer,
+  decodeLastServer,
   decodeServerOrder,
   defaultServerKey,
+  lastServerKey,
   serverOrderKey,
   sortServers,
 } from "@/features/workspace/model/server-order";
@@ -47,6 +49,26 @@ export function useServerOrder(
   }, [defaultKey, pairedHostId]);
   const [savedDefaultServer, setSavedDefaultServer] = useState<{ key: string; id: string | null } | null>(null);
   const defaultServerId = savedDefaultServer?.key === defaultKey ? savedDefaultServer.id : storedDefaultServer;
+  // Read once per account: the app opens on it, and later choices only need to be saved.
+  const lastKey = lastServerKey(apiUrl, userId);
+  const lastServerId = useMemo(() => {
+    try {
+      return decodeLastServer(LockedKeychain.getItem(lastKey));
+    } catch {
+      return null;
+    }
+  }, [lastKey]);
+  /** Saves the server the user opened, for the next start. A failed save keeps the old start server. */
+  const rememberServer = useCallback(
+    (serverId: string) => {
+      try {
+        LockedKeychain.setItem(lastKey, JSON.stringify(serverId));
+      } catch {
+        // The next start opens the first server of the list, as before.
+      }
+    },
+    [lastKey],
+  );
   const orderedServers = useMemo(
     () => sortServers(servers, serverOrder, defaultServerId),
     [servers, serverOrder, defaultServerId],
@@ -82,5 +104,13 @@ export function useServerOrder(
     [orderKey, defaultKey],
   );
 
-  return { serverOrder, defaultServerId, orderedServers, sortByPreference, reorderServers };
+  return {
+    serverOrder,
+    defaultServerId,
+    lastServerId,
+    orderedServers,
+    sortByPreference,
+    reorderServers,
+    rememberServer,
+  };
 }

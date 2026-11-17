@@ -97,7 +97,6 @@ export const messages = {
   "agentSettings.groups.does": "하는 일",
   "agentSettings.groups.rules": "규칙",
   "agentSettings.groups.model": "모델",
-  "agentSettings.groups.alerts": "알림",
   "agentSettings.saveFailed": "에이전트 설정을 저장할 수 없어요.",
   "agentSettings.name": "이름",
   "agentSettings.nameLabel": "에이전트 이름",
@@ -163,9 +162,8 @@ export const messages = {
   "agentSettings.busyMessage.steerUnsupported":
     "{provider}은(는) 실행 중인 턴에 방향을 지시할 수 없어요. 작업 중에 보낸 메시지는 대기열에서 기다려요.",
   "agentSettings.notificationLevel.title": "내 알림",
+  "agentSettings.notificationLevel.footer": "이 에이전트가 끝나거나 응답을 기다릴 때 알림을 받습니다.",
   "agentSettings.notificationLevel.server": "서버 기본값 ({level})",
-  "agentSettings.notificationLevel.note":
-    "이 설정은 나에게만 적용되며 내 모든 기기에 적용돼요. 서버가 음소거되었거나 '없음'으로 설정되면 이 에이전트도 알리지 않아요.",
   "agentSettings.newChat.title": "새 채팅",
   "agentSettings.newChat.description": "에이전트가 이 채팅을 잊어요. 설정은 그대로 유지돼요.",
   "agentSettings.newChat.button": "시작",
@@ -199,6 +197,10 @@ export const messages = {
   "agentSettings.links.tablesCount": { other: "테이블 {count}개" },
   "agentSettings.links.files": "파일",
   "agentSettings.links.routines": "루틴",
+  "agentSettings.links.library": "라이브러리",
+  "agentSettings.links.computer": "컴퓨터",
+  "agentSettings.links.computerActive": "사용 중",
+  "agentSettings.links.computerOffline": "오프라인",
   "agentSettings.links.routinesCount": { other: "{count}개 설정됨" },
   "agentSettings.links.routinesNone": "없음",
   "agentSettings.runtime.workspaceNote":

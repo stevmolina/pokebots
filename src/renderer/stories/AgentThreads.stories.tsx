@@ -5,6 +5,8 @@ import type { MockOpenBotOptions } from "../src/preview/mock-openbot";
 import {
   AGENT_ID,
   SERVER_BUSY_OPTIONS,
+  SUBAGENT_THREAD_FALLBACK_OPTIONS,
+  SUBAGENT_THREAD_OPTIONS,
   TABS_KEY,
   THREAD_OPTIONS,
   THREAD_QUEUE_OPTIONS,
@@ -13,12 +15,16 @@ import {
 import { createAppDom, openChat, PrototypeApp } from "./prototype-support";
 import "./agent-threads-story.css";
 
-/** The real app on Chief, with the open tabs that this device stored. */
+/**
+ * The real app on Chief, with the main session that this device stored. `open` is the chat tab list of
+ * older versions: the app ignores it. `panel` opens the agent panel with its Sessions card.
+ */
 function AgentThreadsApp(props: {
   open: string[];
   active: string | null;
   options?: MockOpenBotOptions;
   startNew?: boolean;
+  panel?: boolean;
 }) {
   const options = props.options ?? THREAD_OPTIONS;
   localStorage.setItem(
@@ -33,11 +39,13 @@ function AgentThreadsApp(props: {
     const observer = new MutationObserver(() => {
       if (!openedChat) openedChat = openChat(root, AGENT_ID);
       if (!openedChat) return;
-      if (!props.startNew) {
+      if (!props.startNew && !props.panel) {
         observer.disconnect();
         return;
       }
-      const button = root.querySelector<HTMLButtonElement>(".agent-threads-icon-button");
+      const button = root.querySelector<HTMLButtonElement>(
+        props.startNew ? ".conversation-new-session" : ".conversation-session-pill .conversation-title",
+      );
       if (button) {
         button.click();
         observer.disconnect();
@@ -61,22 +69,28 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/** The agent's own chat, with four open side threads as tabs: done, working, failed and queued. */
-export const Tabs: Story = {
+/** The agent's own chat as the main session. The header shows Chief as a pill, with "+" for a new session. */
+export const MainChat: Story = {
   render: () => <AgentThreadsApp open={["pricing", "competitors", "release", "links"]} active={null} />,
 };
 
 /**
- * Unread agent messages in three side threads: a blue dot on their tabs and menu rows, and the count on
- * Chief's sidebar row. A state badge outranks the dot. Open a thread to read it.
+ * The pill opens the agent panel. Its Sessions card lists the main session first, then the newest
+ * others, each with its state: done, working, failed and queued.
  */
-export const UnreadThreads: Story = {
-  render: () => (
-    <AgentThreadsApp open={["pricing", "competitors", "release", "links"]} active={null} options={UNREAD_OPTIONS} />
-  ),
+export const SessionsPanel: Story = {
+  render: () => <AgentThreadsApp open={[]} active="pricing" panel />,
 };
 
-/** A side thread in the place of the chat, with its context meter. */
+/**
+ * Unread agent messages in three side threads: a blue dot on their session rows, and the count on
+ * Chief's sidebar row. A state badge outranks the dot. Open a session to read it.
+ */
+export const UnreadThreads: Story = {
+  render: () => <AgentThreadsApp open={[]} active={null} options={UNREAD_OPTIONS} panel />,
+};
+
+/** A side thread as the main session, with its title in the pill and its context meter. */
 export const SideThread: Story = {
   render: () => <AgentThreadsApp open={["pricing", "competitors"]} active="pricing" />,
 };
@@ -97,6 +111,25 @@ export const QueuedThread: Story = {
 /** A thread held while the server is low on memory: the reason, and the messages that wait. */
 export const ServerBusyThread: Story = {
   render: () => <AgentThreadsApp open={["hackathon-bot"]} active="hackathon-bot" options={SERVER_BUSY_OPTIONS} />,
+};
+
+/**
+ * A side thread whose turn ended while its background subagent works. The bar under the title shows
+ * what the subagent does now; click it for its newest steps. The worker row above the message box
+ * shows it too. Both go away when the subagent ends.
+ */
+export const BackgroundSubagent: Story = {
+  render: () => <AgentThreadsApp open={["fix-buttons"]} active="fix-buttons" options={SUBAGENT_THREAD_OPTIONS} />,
+};
+
+/**
+ * The same thread from a server without agent-task-subagents-v1. The subagents message arrives as its
+ * text only, so the thread shows no bar and no worker row.
+ */
+export const BackgroundSubagentOlderServer: Story = {
+  render: () => (
+    <AgentThreadsApp open={["fix-buttons"]} active="fix-buttons" options={SUBAGENT_THREAD_FALLBACK_OPTIONS} />
+  ),
 };
 
 /**

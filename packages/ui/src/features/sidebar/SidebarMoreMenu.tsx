@@ -4,12 +4,17 @@
  */
 
 import {
+  Brain,
+  BriefcaseBusiness,
   Check,
   ChevronRight,
   CircleQuestionMark,
   DropdownMenu,
+  MessageSquare,
+  Monitor,
   Settings,
   SlidersHorizontal,
+  Sparkles,
   Store,
   type Waypoints,
 } from "@openbot/ui";
@@ -48,6 +53,46 @@ export function SidebarMoreMenuItems(props: {
           </DropdownMenu.Item>
         )}
       </For>
+      <Show when={props.pages.onComputers}>
+        {(open) => (
+          <DropdownMenu.Item onSelectAfterClose={() => open()()}>
+            <Monitor class="agent-context-icon size-4" aria-hidden="true" />
+            <span>{t("server.computers.title")}</span>
+          </DropdownMenu.Item>
+        )}
+      </Show>
+      <Show when={props.pages.onRooms}>
+        {(open) => (
+          <DropdownMenu.Item onSelectAfterClose={() => open()()}>
+            <MessageSquare class="agent-context-icon size-4" aria-hidden="true" />
+            <span>{t("rooms.title")}</span>
+          </DropdownMenu.Item>
+        )}
+      </Show>
+      <Show when={props.pages.onBrain}>
+        {(open) => (
+          <DropdownMenu.Item onSelectAfterClose={() => open()()}>
+            <Brain class="agent-context-icon size-4" aria-hidden="true" />
+            <span>{t("app.rail.brain")}</span>
+          </DropdownMenu.Item>
+        )}
+      </Show>
+      <Show when={props.pages.onProviders}>
+        {(open) => (
+          <DropdownMenu.Item onSelectAfterClose={props.open(open())}>
+            <Sparkles class="agent-context-icon size-4" aria-hidden="true" />
+            <span>{t("app.rail.providers")}</span>
+          </DropdownMenu.Item>
+        )}
+      </Show>
+      <Show when={props.pages.onCrm}>
+        {(open) => (
+          <DropdownMenu.Item onSelectAfterClose={props.open(open())}>
+            <BriefcaseBusiness class="agent-context-icon size-4" aria-hidden="true" />
+            <span>{t("app.rail.crm")}</span>
+          </DropdownMenu.Item>
+        )}
+      </Show>
       <Show when={props.pages.onMarketplace}>
         {(onMarketplace) => (
           <DropdownMenu.Item onSelectAfterClose={() => onMarketplace()()}>

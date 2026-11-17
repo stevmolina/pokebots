@@ -24,6 +24,7 @@ export const messages = {
   "mobile.marketplace.app.onePasswordTagline": "Inicia sesión en sitios con las credenciales que compartes",
   "mobile.marketplace.app.bitwardenTagline": "Inicia sesión en sitios con credenciales de una carpeta compartida",
   "mobile.marketplace.app.protonPassTagline": "Inicia sesión en sitios con credenciales de una bóveda compartida",
+  "mobile.marketplace.app.keeperTagline": "Inicia sesión en sitios con credenciales de una carpeta compartida",
   "mobile.marketplace.search.placeholder": "Buscar en el marketplace",
   "mobile.marketplace.search.clear": "Borrar búsqueda",
   "mobile.marketplace.search.close": "Cerrar búsqueda",
@@ -62,6 +63,7 @@ export const messages = {
   "mobile.marketplace.facts.accessSignIn": "Inicio de sesión",
   "mobile.marketplace.facts.accessLocal": "Este ordenador",
   "mobile.marketplace.facts.accessNone": "Sin inicio de sesión",
+  "mobile.marketplace.facts.accessMac": "Solo Mac",
   "mobile.marketplace.permission.admin":
     "Solo los propietarios y administradores pueden instalar desde el marketplace.",
   "mobile.marketplace.permission.unavailable":
@@ -115,6 +117,8 @@ export const messages = {
   "mobile.marketplace.app.linkInvalid": "Usa un enlace https de {hostname}.",
   "mobile.marketplace.app.docs": "Obtener clave",
   "mobile.marketplace.app.local": "Esta app se ejecuta en el ordenador con OpenBot. Configúrala en ese ordenador.",
+  "mobile.marketplace.app.needsMac":
+    "Esta app solo funciona en un Mac que ejecuta OpenBot, y este servidor no es un Mac.",
   "mobile.marketplace.app.relayUnsupported":
     "Esta app pide iniciar sesión en el navegador. Actualiza OpenBot en el servidor o conecta la app en el ordenador.",
   "mobile.marketplace.app.waiting": "Esperando la página de inicio de sesión…",

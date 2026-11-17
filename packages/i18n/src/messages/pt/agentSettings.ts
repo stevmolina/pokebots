@@ -102,7 +102,6 @@ export const messages = {
   "agentSettings.groups.does": "Faz",
   "agentSettings.groups.rules": "Regras",
   "agentSettings.groups.model": "Modelo",
-  "agentSettings.groups.alerts": "Alertas",
   "agentSettings.saveFailed": "Não foi possível salvar as configurações do agente.",
   "agentSettings.name": "Nome",
   "agentSettings.nameLabel": "Nome do agente",
@@ -169,9 +168,9 @@ export const messages = {
   "agentSettings.busyMessage.steerUnsupported":
     "{provider} não pode orientar um turno em andamento. As mensagens enviadas enquanto ele trabalha esperam na fila.",
   "agentSettings.notificationLevel.title": "Me notificar",
+  "agentSettings.notificationLevel.footer":
+    "Receba uma notificação quando este agente terminar ou estiver aguardando você.",
   "agentSettings.notificationLevel.server": "Padrão do servidor ({level})",
-  "agentSettings.notificationLevel.note":
-    "Esta escolha vale só para você, em todos os seus dispositivos. Se o servidor estiver silenciado ou em “Nada”, este agente também fica em silêncio.",
   "agentSettings.newChat.title": "Novo chat",
   "agentSettings.newChat.description": "O agente esquece este chat. Sua configuração é mantida.",
   "agentSettings.newChat.button": "Iniciar",
@@ -206,6 +205,10 @@ export const messages = {
   "agentSettings.links.tablesCount": { one: "{count} tabela", other: "{count} tabelas" },
   "agentSettings.links.files": "Arquivos",
   "agentSettings.links.routines": "Rotinas",
+  "agentSettings.links.library": "Biblioteca",
+  "agentSettings.links.computer": "Computador",
+  "agentSettings.links.computerActive": "Em uso",
+  "agentSettings.links.computerOffline": "Offline",
   "agentSettings.links.routinesCount": { one: "{count} configurada", other: "{count} configuradas" },
   "agentSettings.links.routinesNone": "Nenhuma",
   "agentSettings.runtime.workspaceNote":

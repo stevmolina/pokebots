@@ -7,6 +7,8 @@ import type { NativeScrollEvent, NativeSyntheticEvent } from "react-native";
 import { useCSSVariable } from "uniwind";
 import { useAgentModelPicker, withAccountModels } from "@/features/agents/model/agent-model-picker";
 import { useQueryScope } from "@/features/auth/context/mobile-session-context";
+import { useCalmLook } from "@/features/design-preview/model/calm-look";
+import { ProviderMark } from "@/features/servers/components/provider-mark";
 import {
   SettingsContent,
   SettingsNote,
@@ -35,6 +37,8 @@ export function AgentModelPickerScreen() {
   const workspace = useMobileWorkspaceActions();
   const queryScope = useQueryScope();
   const request = useAgentModelPicker((state) => state.request);
+  // The calm look shows the provider's logo on each model, as the design preview does.
+  const calm = useCalmLook();
   const [search, setSearch] = useState("");
   const serverId = request?.serverId ?? "";
   // The same query as the Model row, so the list shows at once from its cache.
@@ -116,6 +120,7 @@ export function AgentModelPickerScreen() {
                 key={option.id}
                 checked={on}
                 disclosure={false}
+                leading={calm ? <ProviderMark provider={request.provider} size={22} /> : undefined}
                 supportingText={option.name === option.id ? undefined : option.id}
                 trailing={on ? <Check size={18} color={accent} strokeWidth={2} /> : null}
                 onPress={() => {

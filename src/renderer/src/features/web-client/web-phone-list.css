@@ -1,0 +1,154 @@
+/*
+ * The phone chat list, in the Grok Bot look: the top row tight under the status bar, a large face with
+ * its name, quiet folder rows, flat chat rows with room to breathe, and soft floating controls over a
+ * gentle fade. It only changes how the list looks on a phone. Data, markup and the desktop layout stay
+ * as they were. `web-phone.css` has the structure of the list; these rules sit after it and refine it.
+ */
+
+@media (max-width: 720px) {
+  .web-app-frame > .sidebar-chat {
+    --sidebar-chat-face: 52px;
+    --web-phone-glass: color-mix(in srgb, var(--openbot-bg-surface-raised) 74%, transparent);
+    --web-phone-glass-border: color-mix(in srgb, var(--openbot-text-primary) 8%, transparent);
+    --web-phone-glass-shadow: 0 2px 14px color-mix(in srgb, var(--openbot-text-primary) 10%, transparent);
+  }
+
+  /* ---------------------------------------------------------------- top row */
+
+  /*
+   * The installed app already pads `.web-app` for the notch (`web-app.css`). The list padded for it
+   * again, which left about 50px of empty space above the profile circle and the New button.
+   */
+  @media (display-mode: standalone), (display-mode: fullscreen) {
+    .web-app-frame > .sidebar {
+      padding-top: 0;
+    }
+  }
+
+  .web-app-frame > .sidebar-chat .sidebar-chat-top {
+    min-height: 52px;
+    padding-top: 0;
+  }
+
+  /* The profile circle and New float on the canvas as soft glass, not as flat discs. */
+  .web-app-frame > .sidebar-chat .sidebar-chat-top .sidebar-chat-round {
+    border-color: var(--web-phone-glass-border);
+    background: var(--web-phone-glass);
+    -webkit-backdrop-filter: blur(20px) saturate(1.6);
+    backdrop-filter: blur(20px) saturate(1.6);
+    box-shadow: var(--web-phone-glass-shadow);
+  }
+
+  /* ---------------------------------------------------------------- face and name */
+
+  /* The face keeps its size. The name sits close under it, and the folders follow with room. */
+  .sidebar-featured {
+    padding-block: 0 var(--openbot-space-4);
+  }
+
+  /* ---------------------------------------------------------------- folders */
+
+  .web-app-frame > .sidebar-chat .sidebar-dock-head.ui-button {
+    min-height: 48px;
+  }
+
+  .web-app-frame > .sidebar-chat .sidebar-dock-head .sidebar-dock-name {
+    color: var(--openbot-text-muted);
+    font-size: var(--openbot-text-xl);
+  }
+
+  .web-app-frame > .sidebar-chat .sidebar-dock-head .sidebar-dock-count {
+    color: color-mix(in srgb, var(--openbot-text-muted) 70%, transparent);
+    font-size: var(--openbot-text-lg);
+  }
+
+  /* The phone list shows a count only while the folder is closed; the desktop list always shows it. */
+  .web-app-frame > .sidebar-chat .sidebar-dock-head .sidebar-dock-count[data-open] {
+    display: none;
+  }
+
+  .web-app-frame > .sidebar-chat .sidebar-dock-group + .sidebar-dock-group {
+    margin-top: 0;
+  }
+
+  /* ---------------------------------------------------------------- chat rows */
+
+  /* Flat: no highlight for the open chat and none on touch, and no divider. */
+  .web-app-frame > .sidebar-chat .sidebar-chat-row.ui-button,
+  .web-app-frame > .sidebar-chat .sidebar-chat-row.sidebar-chat-active.ui-button,
+  .web-app-frame > .sidebar-chat .sidebar-chat-row.sidebar-chat-active.ui-button:hover {
+    --agent-avatar-outline: var(--openbot-bg-sidebar);
+
+    border: 0;
+    background: transparent;
+    padding-block: var(--openbot-space-3);
+    box-shadow: none;
+  }
+
+  .web-app-frame > .sidebar-chat .sidebar-chat-row.ui-button:active {
+    background: color-mix(in srgb, var(--openbot-text-primary) 4%, transparent);
+  }
+
+  /* The name is plain and a little larger. The text block is 44px tall. */
+  .web-app-frame > .sidebar-chat .sidebar-chat-row .sidebar-chat-name {
+    color: var(--openbot-text-primary);
+    font-size: var(--openbot-text-2xl);
+    font-weight: var(--openbot-weight-medium);
+    line-height: 22px;
+  }
+
+  .web-app-frame > .sidebar-chat .sidebar-chat-row .sidebar-chat-preview {
+    color: var(--openbot-text-muted);
+    font-size: var(--openbot-text-lg);
+    line-height: 20px;
+  }
+
+  .web-app-frame > .sidebar-chat .sidebar-chat-row > .sidebar-chat-time {
+    top: calc(50% - 22px);
+    color: color-mix(in srgb, var(--openbot-text-muted) 80%, transparent);
+    font-size: var(--openbot-text-md);
+    line-height: 22px;
+  }
+
+  /* The unread dot is a little larger, at the end of the preview line, under the time. */
+  .web-app-frame > .sidebar-chat .sidebar-chat-row > .sidebar-chat-unread {
+    top: calc(50% + 7px);
+    inset-inline-start: auto;
+    inset-inline-end: var(--web-phone-row-pad);
+    width: 10px;
+    height: 10px;
+    transform: none;
+  }
+
+  /* ---------------------------------------------------------------- floating controls */
+
+  /* The grid button, the search pill and its X button are soft glass, over the fade that is already there. */
+  .web-app-frame > .web-phone-tab-bar .web-phone-apps-button.ui-button,
+  .web-app-frame > .web-phone-tab-bar .web-phone-search-close.ui-button,
+  .web-app-frame > .web-phone-tab-bar .web-phone-search-pill {
+    border-color: color-mix(in srgb, var(--openbot-text-primary) 8%, transparent);
+    background: color-mix(in srgb, var(--openbot-bg-surface-raised) 74%, transparent);
+    -webkit-backdrop-filter: blur(20px) saturate(1.6);
+    backdrop-filter: blur(20px) saturate(1.6);
+    box-shadow: 0 2px 14px color-mix(in srgb, var(--openbot-text-primary) 10%, transparent);
+  }
+
+  /*
+   * The list passes under the unread button and the fade, as under the search pill, so the last
+   * face is never cut off by a hard edge. The end of the list keeps its room for the search pill.
+   */
+  .web-app-frame > .sidebar-chat .sidebar-chat-list:has(> .sidebar-unread-jump-wrap) {
+    margin-bottom: 0;
+  }
+
+  .web-app-frame > .sidebar-chat .sidebar-chat-list:has(> .sidebar-unread-jump-wrap)::after {
+    display: block;
+  }
+
+  .web-app-frame > .sidebar-chat .sidebar-unread-jump.ui-button {
+    gap: var(--openbot-space-2);
+    padding: var(--openbot-space-3) var(--openbot-space-6);
+    font-size: var(--openbot-text-xl);
+    box-shadow: 0 6px 20px color-mix(in srgb, var(--openbot-accent) 35%, transparent);
+  }
+}

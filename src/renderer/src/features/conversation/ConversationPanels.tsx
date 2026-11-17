@@ -32,6 +32,7 @@ import { serverCanAdminister, serverSupportsCapability } from "../servers/server
 import { codexLiveAccess } from "../speech/codex-live-access";
 import { speechPort } from "../speech/speech-port";
 import { cycleSpeechSpeed, speechSpeed } from "../speech/speech-speed";
+import { useAgentModelPicker } from "./agent-model-picker";
 import { ConversationSideThread } from "./ConversationSideThread";
 import { isChatVisualAppShortcut } from "./chat-visual-shortcuts";
 import { htmlAttachmentPageHtml, htmlAttachmentPageUrl } from "./chat-visual-url";
@@ -44,6 +45,7 @@ import { desktopChatEventRoutinesApi } from "./routine-webhooks-api";
 import type { RoutineResultsCalls } from "./routines-port";
 import { type CodexLivePort, createCodexLiveConversation } from "./stores/codex-live-conversation-store";
 import type { VoiceConversationKind } from "./stores/voice-session-store";
+import { useChatPinnedMessages } from "./use-chat-pinned-messages";
 
 const loadAgentSettingsPanel = () => import("./AgentSettingsPanel");
 
@@ -188,6 +190,8 @@ export function ConversationPanels(panelProps: { onOpenUsage?: ((trigger: HTMLBu
     settingsOpen,
     skillSettingsRequest,
     instructionsSettingsRequest,
+    agentSettingRowRequest,
+    handleAgentSettingRowRequest,
     routineSettingsRequest,
     settingsModel,
     settingsProvider,
@@ -222,10 +226,13 @@ export function ConversationPanels(panelProps: { onOpenUsage?: ((trigger: HTMLBu
     openPanelThread,
     closePanelThread,
     movePanelThreadToChat,
+    moveThreadToPanel,
     channel,
     replyJump,
   } = useConversationViewScope();
   const { t, errorMessage } = useText();
+  const agentModelPicker = useAgentModelPicker();
+  const chatPins = useChatPinnedMessages();
   const chatAgentKey = () => (props.agent ? `${props.server?.id ?? "local"}:${props.agent.id}` : null);
   // A channel cannot send the turns of a conversation. Elsewhere the pill stays while the conversation
   // is on, also when its access ends, so End stays in view.
@@ -766,6 +773,20 @@ export function ConversationPanels(panelProps: { onOpenUsage?: ((trigger: HTMLBu
         {(agent) => (
           <Loading>
             <AgentSettingsPanel
+              sessions={props.threads ? { ...props.threads.header, onMoveToSide: moveThreadToPanel } : undefined}
+              modelPicker={agentModelPicker()}
+              pins={chatPins()}
+              computer={
+                props.remoteDesktopEnabled !== false && props.server?.kind === "remote"
+                  ? {
+                      active: Boolean(props.remoteDesktopSessionActive),
+                      enabled: Boolean(props.remoteDesktopSessionActive || props.server.state === "online"),
+                      onOpen: (trigger) => {
+                        if (props.server) void props.onOpenRemoteDesktop(props.server.id, trigger);
+                      },
+                    }
+                  : undefined
+              }
               remoteClient={Boolean(props.runtime)}
               localHost={props.server?.kind === "local"}
               routineRunPlace={
@@ -883,6 +904,8 @@ export function ConversationPanels(panelProps: { onOpenUsage?: ((trigger: HTMLBu
               instructionsRequest={
                 instructionsSettingsRequest()?.agentId === agent().id ? instructionsSettingsRequest() : null
               }
+              settingReveal={agentSettingRowRequest()?.agentId === agent().id ? agentSettingRowRequest() : null}
+              onSettingRevealHandled={handleAgentSettingRowRequest}
               routineSelectionRequest={
                 routineSettingsRequest()?.agentId === agent().id ? routineSettingsRequest() : null
               }

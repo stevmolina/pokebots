@@ -382,6 +382,9 @@ export const messages = {
   "connector.whatsapp.workingMessage": "Mensagem “Trabalhando nisso…”",
   "connector.whatsapp.workingMessageDescription":
     "O OpenBot a envia enquanto o agente trabalha e depois a substitui pela resposta. Desative para enviar só a resposta.",
+  "connector.whatsapp.statusReactions": "Reações de status",
+  "connector.whatsapp.statusReactionsDescription":
+    "O OpenBot reage com 👀 quando uma mensagem chega e com ✅ quando a resposta está pronta. Desative para não enviar reações.",
   "connector.whatsapp.orchestratorTitle": "Orquestrador do WhatsApp",
   "connector.whatsapp.orchestratorDescription":
     "Este agente recebe as mensagens para o OpenBot de todos os seus números vinculados. Ele mesmo responde às curtas, encaminha o restante do trabalho ao agente certo e responde no WhatsApp.",
@@ -640,4 +643,65 @@ export const messages = {
     "O OpenBot exclui a chave de acesso dele em {host}. O cofre e os logins dele ficam na sua conta Proton.",
   "connector.protonPass.disconnect": "Desconectar",
   "connector.protonPass.actionFailed": "O OpenBot não conseguiu alterar a conexão do Proton Pass.",
+  "connector.keeper.title": "Keeper",
+  "connector.keeper.description": "Os agentes entram em sites com os logins de uma pasta compartilhada do Keeper.",
+  "connector.keeper.descriptionHost":
+    "Os agentes em {host} entram em sites com os logins de uma pasta compartilhada do Keeper.",
+  "connector.keeper.connect": "Conectar",
+  "connector.keeper.setupTitle": "Entrar",
+  "connector.keeper.setupDescription":
+    "Digite seu e-mail e sua senha mestra do Keeper. O OpenBot os entrega ao Keeper Commander uma única vez e não os guarda. Keeper Commander é a ferramenta de linha de comando do Keeper.",
+  "connector.keeper.setupDescriptionHost":
+    "Digite seu e-mail e sua senha mestra do Keeper. {host} os entrega ao Keeper Commander uma única vez e não os guarda. Keeper Commander é a ferramenta de linha de comando do Keeper.",
+  "connector.keeper.emailLabel": "E-mail",
+  "connector.keeper.passwordLabel": "Senha mestra",
+  "connector.keeper.folderName": "Shared with OpenBot",
+  "connector.keeper.folderSetup":
+    "O OpenBot cria esta pasta no seu cofre quando você conecta. Mova logins para ela para compartilhá-los.",
+  "connector.keeper.showSteps": "Ver etapas",
+  "connector.keeper.stepsLabel": "Etapas da conexão",
+  "connector.keeper.stepSignIn": "Entrar",
+  "connector.keeper.stepVerify": "Verificar",
+  "connector.keeper.stepDone": "Pronto",
+  "connector.keeper.signInTitle": "Entrando no Keeper",
+  "connector.keeper.signInDescription": "O Keeper Commander está entrando com sua conta.",
+  "connector.keeper.signInDescriptionHost": "{host} está entrando no Keeper com sua conta.",
+  "connector.keeper.twoFactorTitle": "Digite seu código",
+  "connector.keeper.twoFactorDescription":
+    "O Keeper pede um código de duas etapas. Digite o código do seu app autenticador ou da mensagem de texto.",
+  "connector.keeper.deviceTitle": "Aprove este dispositivo",
+  "connector.keeper.deviceDescription":
+    "O Keeper enviou um e-mail de aprovação e uma notificação para seus outros dispositivos. Aprove este dispositivo com o link do e-mail ou em outro dispositivo e clique em Continuar. Ou digite o código do e-mail.",
+  "connector.keeper.codeLabel": "Código",
+  "connector.keeper.codeWrong": "O código não está correto. Digite-o de novo.",
+  "connector.keeper.continue": "Continuar",
+  "connector.keeper.setupStepTitle": "Criando a pasta compartilhada",
+  "connector.keeper.setupStepDescription":
+    "O OpenBot cria a pasta “{folder}” no seu cofre e ativa o login neste dispositivo.",
+  "connector.keeper.doneTitle": "O Keeper está conectado",
+  "connector.keeper.doneDescription": "Mova logins para “{folder}” para que os agentes entrem com eles.",
+  "connector.keeper.failedTitle": "O Keeper não conectou",
+  "connector.keeper.done": "Pronto",
+  "connector.keeper.close": "Fechar",
+  "connector.keeper.statusConnecting": "Conectando",
+  "connector.keeper.statusConnected": "Conectado",
+  "connector.keeper.statusExpired": "Sessão encerrada",
+  "connector.keeper.expiredTitle": "A sessão do Keeper foi encerrada",
+  "connector.keeper.expiredDescription":
+    "Os agentes não podem entrar com seus logins compartilhados até você conectar de novo. Digite sua senha mestra abaixo.",
+  "connector.keeper.planTitle": "O Keeper Commander está bloqueado",
+  "connector.keeper.planDescription":
+    "Seu administrador do Keeper não permite o Keeper Commander nesta conta. Peça que ele permita e conecte de novo.",
+  "connector.keeper.folderTitle": "Pasta compartilhada",
+  "connector.keeper.folderDescription":
+    "Mova um login para esta pasta no Keeper para que os agentes entrem com ele. Remova-o para parar.",
+  "connector.keeper.loginCount": { one: "{count} login", other: "{count} logins" },
+  "connector.keeper.loginsLoading": "Contando logins…",
+  "connector.keeper.disconnectTitle": "Desconectar o Keeper",
+  "connector.keeper.disconnectSummary":
+    "O OpenBot encerra a sessão dele no Keeper neste computador. A pasta e os logins dela ficam no seu cofre do Keeper.",
+  "connector.keeper.disconnectSummaryHost":
+    "O OpenBot encerra a sessão dele no Keeper em {host}. A pasta e os logins dela ficam no seu cofre do Keeper.",
+  "connector.keeper.disconnect": "Desconectar",
+  "connector.keeper.actionFailed": "O OpenBot não conseguiu alterar a conexão do Keeper.",
 } as const satisfies PartialTranslation<typeof source>;

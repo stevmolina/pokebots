@@ -22,10 +22,10 @@
   position: absolute;
   top: 50%;
   inset-inline-start: 0;
-  width: 1px;
+  width: 0.5px;
   height: var(--openbot-icon-lg);
   translate: 0 -50%;
-  background: var(--openbot-border-strong);
+  background: var(--openbot-border);
   content: "";
   pointer-events: none;
 }
@@ -239,6 +239,12 @@
   top: var(--left-header-height, 38px);
 }
 
+@media (min-width: 721px) {
+  .app-frame-flat .side-panel-docked > .file-preview-panel {
+    border-inline-start: 0.5px solid var(--openbot-border);
+  }
+}
+
 .app-frame-edge .side-panel-docked > :is(.browser-panel, .settings-panel)::before {
   top: -1px;
 }
@@ -398,44 +404,6 @@
 
 .side-panel-tabs[data-dragging] .side-panel-tab-icon:has(.agent-threads-state) {
   opacity: 1;
-}
-
-/* The copy of a thread tab that the pointer takes from one tab row to the other. */
-.thread-tab-ghost {
-  position: fixed;
-  z-index: 1000;
-  max-width: 140px;
-  white-space: nowrap;
-  border: 1px solid var(--openbot-border);
-  background: var(--openbot-bg-control-active);
-  color: var(--openbot-text-primary);
-  pointer-events: none;
-  translate: -50% -50%;
-}
-
-.thread-tab-ghost .side-panel-tab-label {
-  overflow: hidden;
-  font-size: var(--openbot-text-sm);
-  text-overflow: ellipsis;
-}
-
-/* Where a thread tab of the chat header goes when the pointer lets it go over the side panel. */
-.side-panel-drop {
-  position: absolute;
-  z-index: 17;
-  top: calc(var(--left-header-height, 38px) + var(--openbot-space-2));
-  inset-inline-end: var(--openbot-space-2);
-  bottom: var(--openbot-space-2);
-  display: grid;
-  width: calc(var(--side-panel-width, 380px) - 2 * var(--openbot-space-2));
-  place-items: start center;
-  padding-top: var(--openbot-space-6);
-  border: 1px dashed var(--openbot-text-secondary);
-  border-radius: var(--openbot-radius-lg);
-  background: var(--openbot-bg-control-hover);
-  color: var(--openbot-text-primary);
-  font-size: var(--openbot-text-sm);
-  pointer-events: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

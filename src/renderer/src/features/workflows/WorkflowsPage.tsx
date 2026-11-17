@@ -67,6 +67,7 @@ function DesktopWorkflowsCanvas(props: { serverId: string; host: WorkflowHost; a
   return (
     <WorkflowsCanvas
       host={props.host}
+      serverId={props.serverId}
       admin={props.admin}
       agents={agentList()}
       models={modelOptions()}

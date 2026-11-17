@@ -418,6 +418,9 @@ export const messages = {
   "connector.whatsapp.workingMessage": "Wiadomość „Pracuję nad tym…”",
   "connector.whatsapp.workingMessageDescription":
     "OpenBot wysyła ją, gdy agent pracuje, a potem zastępuje odpowiedzią. Wyłącz, aby wysyłać tylko odpowiedź.",
+  "connector.whatsapp.statusReactions": "Reakcje stanu",
+  "connector.whatsapp.statusReactionsDescription":
+    "OpenBot reaguje 👀, gdy przychodzi wiadomość, i ✅, gdy odpowiedź jest gotowa. Wyłącz, aby nie wysyłać reakcji.",
   "connector.whatsapp.orchestratorTitle": "WhatsApp Orchestrator",
   "connector.whatsapp.orchestratorDescription":
     "Ten agent odbiera wiadomości do OpenBot ze wszystkich twoich połączonych numerów. Na krótkie odpowiada sam, inną pracę przekazuje odpowiedniemu agentowi i odpowiada w WhatsApp.",
@@ -681,4 +684,71 @@ export const messages = {
     "OpenBot usuwa swój klucz dostępu z {host}. Sejf i jego dane logowania zostają na Twoim koncie Proton.",
   "connector.protonPass.disconnect": "Odłącz",
   "connector.protonPass.actionFailed": "OpenBot nie mógł zmienić połączenia z Proton Pass.",
+  "connector.keeper.title": "Keeper",
+  "connector.keeper.description": "Agenci logują się do witryn danymi logowania z udostępnionego folderu Keeper.",
+  "connector.keeper.descriptionHost":
+    "Agenci na {host} logują się do witryn danymi logowania z udostępnionego folderu Keeper.",
+  "connector.keeper.connect": "Połącz",
+  "connector.keeper.setupTitle": "Logowanie",
+  "connector.keeper.setupDescription":
+    "Wpisz e-mail i hasło główne do Keeper. OpenBot przekazuje je Keeper Commander jeden raz i ich nie zachowuje. Keeper Commander to narzędzie wiersza poleceń Keeper.",
+  "connector.keeper.setupDescriptionHost":
+    "Wpisz e-mail i hasło główne do Keeper. {host} przekazuje je Keeper Commander jeden raz i ich nie zachowuje. Keeper Commander to narzędzie wiersza poleceń Keeper.",
+  "connector.keeper.emailLabel": "E-mail",
+  "connector.keeper.passwordLabel": "Hasło główne",
+  // The exact folder name that OpenBot makes in Keeper. Keep it in English.
+  "connector.keeper.folderName": "Shared with OpenBot",
+  "connector.keeper.folderSetup":
+    "OpenBot tworzy ten folder w Twoim sejfie podczas łączenia. Przenieś do niego dane logowania, aby je udostępnić.",
+  "connector.keeper.showSteps": "Pokaż kroki",
+  "connector.keeper.stepsLabel": "Kroki połączenia",
+  "connector.keeper.stepSignIn": "Logowanie",
+  "connector.keeper.stepVerify": "Weryfikacja",
+  "connector.keeper.stepDone": "Gotowe",
+  "connector.keeper.signInTitle": "Logowanie do Keeper",
+  "connector.keeper.signInDescription": "Keeper Commander loguje się na Twoje konto.",
+  "connector.keeper.signInDescriptionHost": "{host} loguje się do Keeper na Twoje konto.",
+  "connector.keeper.twoFactorTitle": "Wpisz kod",
+  "connector.keeper.twoFactorDescription":
+    "Keeper prosi o kod weryfikacji dwuetapowej. Wpisz kod z aplikacji uwierzytelniającej lub z SMS-a.",
+  "connector.keeper.deviceTitle": "Zatwierdź to urządzenie",
+  "connector.keeper.deviceDescription":
+    "Keeper wysłał e-mail z prośbą o zatwierdzenie i powiadomienie na Twoje inne urządzenia. Zatwierdź to urządzenie linkiem z e-maila lub na innym urządzeniu, a potem naciśnij Dalej. Możesz też wpisać kod z e-maila.",
+  "connector.keeper.codeLabel": "Kod",
+  "connector.keeper.codeWrong": "Kod jest nieprawidłowy. Wpisz go ponownie.",
+  "connector.keeper.continue": "Dalej",
+  "connector.keeper.setupStepTitle": "Tworzenie udostępnionego folderu",
+  "connector.keeper.setupStepDescription":
+    "OpenBot tworzy w Twoim sejfie folder „{folder}” i włącza logowanie dla tego urządzenia.",
+  "connector.keeper.doneTitle": "Keeper jest połączony",
+  "connector.keeper.doneDescription": "Przenieś dane logowania do „{folder}”, aby agenci mogli się nimi logować.",
+  "connector.keeper.failedTitle": "Nie połączono Keeper",
+  "connector.keeper.done": "Gotowe",
+  "connector.keeper.close": "Zamknij",
+  "connector.keeper.statusConnecting": "Łączenie",
+  "connector.keeper.statusConnected": "Połączono",
+  "connector.keeper.statusExpired": "Sesja wygasła",
+  "connector.keeper.expiredTitle": "Sesja Keeper wygasła",
+  "connector.keeper.expiredDescription":
+    "Agenci nie mogą logować się udostępnionymi danymi, dopóki nie połączysz się ponownie. Wpisz poniżej hasło główne.",
+  "connector.keeper.planTitle": "Keeper Commander jest zablokowany",
+  "connector.keeper.planDescription":
+    "Administrator Keeper nie zezwala na Keeper Commander dla tego konta. Poproś go o zezwolenie, a potem połącz ponownie.",
+  "connector.keeper.folderTitle": "Udostępniony folder",
+  "connector.keeper.folderDescription":
+    "Przenieś login do tego folderu w Keeper, aby agenci mogli się nim logować. Usuń go z folderu, aby cofnąć dostęp.",
+  "connector.keeper.loginCount": {
+    one: "{count} login",
+    few: "{count} loginy",
+    many: "{count} loginów",
+    other: "{count} loginu",
+  },
+  "connector.keeper.loginsLoading": "Liczenie danych logowania…",
+  "connector.keeper.disconnectTitle": "Odłącz Keeper",
+  "connector.keeper.disconnectSummary":
+    "OpenBot kończy swoją sesję Keeper na tym komputerze. Folder i jego dane logowania zostają w Twoim sejfie Keeper.",
+  "connector.keeper.disconnectSummaryHost":
+    "OpenBot kończy swoją sesję Keeper na {host}. Folder i jego dane logowania zostają w Twoim sejfie Keeper.",
+  "connector.keeper.disconnect": "Odłącz",
+  "connector.keeper.actionFailed": "OpenBot nie mógł zmienić połączenia z Keeper.",
 } as const satisfies PartialTranslation<typeof source>;

@@ -2,9 +2,7 @@ import type { ChannelSummary, HiddenAgent, SidebarLayoutSnapshot } from "@openbo
 import { Button } from "@openbot/ui";
 import type { AvatarMood } from "@openbot/ui/bloub-avatar";
 import { Sidebar } from "@openbot/ui/features/sidebar/Sidebar";
-import { SidebarCommunityCard } from "@openbot/ui/features/sidebar/SidebarCommunityCard";
 import { SidebarMachineCard } from "@openbot/ui/features/sidebar/SidebarMachineCard";
-import { SidebarMobileAppCard } from "@openbot/ui/features/sidebar/SidebarMobileAppCard";
 import { SidebarStorageCard } from "@openbot/ui/features/sidebar/SidebarStorageCard";
 import { normalizeSidebarPinnedItems, type SidebarPinnedItem } from "@openbot/ui/features/sidebar/sidebar-pins";
 import {
@@ -283,6 +281,12 @@ export const Populated: Story = {
   decorators: [(Story) => <div style={{ width: "280px", height: "100vh" }}>{Story()}</div>],
 };
 
+/** "Recent activity": each section shows its chats by last activity, the most recent first. */
+export const RecentActivity: Story = {
+  args: { chatOrder: "recent", pinnedItems: pinnedOne },
+  decorators: [(Story) => <div style={{ width: "280px", height: "100vh" }}>{Story()}</div>],
+};
+
 /** "Unread in a group": the chats with unread replies leave their sections for a group under "Needs you". */
 export const UnreadGroup: Story = {
   args: { chatOrder: "unread-group", pinnedItems: pinnedOne },
@@ -312,16 +316,6 @@ export const ChatHistory: Story = {
       onForward: fn(),
     },
   },
-  decorators: [(Story) => <div style={{ width: "280px", height: "100vh" }}>{Story()}</div>],
-};
-
-export const MobileAppCard: Story = {
-  args: { footer: <SidebarMobileAppCard onOpenInstall={fn()} onDismiss={fn()} /> },
-  decorators: [(Story) => <div style={{ width: "280px", height: "100vh" }}>{Story()}</div>],
-};
-
-export const CommunityCard: Story = {
-  args: { footer: <SidebarCommunityCard onJoinDiscord={fn()} onFollowX={fn()} onDismiss={fn()} /> },
   decorators: [(Story) => <div style={{ width: "280px", height: "100vh" }}>{Story()}</div>],
 };
 

@@ -535,7 +535,7 @@ export const messages = {
   "mobile.server.settings.timezoneNoMatch": "لا توجد منطقة زمنية تطابق هذا البحث.",
   "mobile.server.settings.timezoneMore": "اكتب المزيد من الاسم لرؤية مناطق زمنية أخرى.",
   "mobile.server.settings.timezoneDescription":
-    "تستخدم المهام الدورية الجديدة هذه المنطقة الزمنية عندما لا تذكر الرسالة المنطقة الزمنية للمرسل.",
+    "تستخدم المهام الدورية الجديدة هذه المنطقة الزمنية عندما لا تذكر الرسالة المنطقة الزمنية للمرسل. على الخادم، يستخدمها المتصفح أيضًا بعد إعادة التشغيل التالية.",
   "mobile.server.settings.timezoneLoading": "جارٍ تحميل المنطقة الزمنية…",
   "mobile.server.settings.timezoneLoadFailed": "تعذّر تحميل المنطقة الزمنية للخادم.",
   "mobile.server.settings.timezoneSaveFailed": "تعذّر حفظ المنطقة الزمنية. أعد المحاولة.",
@@ -819,6 +819,17 @@ export const messages = {
   "mobile.server.vault.variableNameHint":
     "متغير البيئة الذي يقرؤه البرنامج: أحرف لاتينية كبيرة وأرقام و_. يجد الوكلاء المفتاح بهذا الاسم.",
   "mobile.server.vault.apiKey": "مفتاح API",
+  "mobile.server.vault.agents": "الوكلاء",
+  "mobile.server.vault.agentsAll": "كل الوكلاء",
+  "mobile.server.vault.agentsAllHint": "يشمل «كل الوكلاء» أيضًا كل وكيل يُضاف لاحقًا.",
+  "mobile.server.vault.agentsNone": "اختر وكيلًا واحدًا على الأقل.",
+  "mobile.server.vault.agentsSome": "{chosen} من {total}",
+  "mobile.server.vault.agentsListed": "الوكلاء: {agents}",
+  "mobile.server.vault.searchAgents": "البحث عن وكلاء",
+  "mobile.server.vault.noAgentMatches": "لا يوجد وكلاء يطابقون هذا البحث.",
+  "mobile.server.vault.agentOptions": "خيارات",
+  "mobile.server.vault.selectAll": "تحديد الكل",
+  "mobile.server.vault.deselectAll": "إلغاء التحديد",
   "mobile.server.vault.delete": "حذف العنصر",
   "mobile.server.vault.deleteTitle": "هل تريد حذف هذا العنصر؟",
   "mobile.server.vault.deleteBody": "لن يتمكن الوكلاء على {host} من استخدامه بعد الآن. لا يمكنك التراجع عن هذا.",
@@ -978,6 +989,31 @@ export const messages = {
   "mobile.server.connectors.protonPass.keyHelp":
     "في Proton Pass، أنشئ مفتاح وصول يمكنه قراءة الخزنة التي تشاركها مع OpenBot فقط، ثم الصقه هنا. يحتفظ {host} بالمفتاح؛ ولا يحتفظ به هذا الهاتف.",
   "mobile.server.connectors.protonPass.keyPlaceholder": "pst_…",
+  "mobile.server.connectors.keeper.title": "Keeper",
+  "mobile.server.connectors.keeper.description":
+    "شارك مجلد Keeper واحدًا مع OpenBot على {host}، حتى يتمكن الوكلاء على {host} من تسجيل الدخول إلى المواقع في متصفحه.",
+  "mobile.server.connectors.keeper.accountHelp":
+    "أدخل بريدك الإلكتروني وكلمة المرور الرئيسية في Keeper. يصلان إلى {host} مرة واحدة، ثم يسلّمهما {host} إلى Keeper Commander. لا يحتفظ بهما هذا الهاتف.",
+  "mobile.server.connectors.keeper.email": "البريد الإلكتروني",
+  "mobile.server.connectors.keeper.masterPassword": "كلمة المرور الرئيسية",
+  "mobile.server.connectors.keeper.signingIn": "يسجّل {host} الدخول إلى Keeper…",
+  "mobile.server.connectors.keeper.makingFolder": "ينشئ {host} المجلد المشترك…",
+  "mobile.server.connectors.keeper.code": "الرمز",
+  "mobile.server.connectors.keeper.twoFactorHint":
+    "يطلب Keeper رمز التحقق بخطوتين. أدخل الرمز من تطبيق المصادقة أو من الرسالة النصية. يصل إلى {host} مرة واحدة؛ ولا يحتفظ به هذا الهاتف.",
+  "mobile.server.connectors.keeper.deviceHint":
+    "أرسل Keeper رسالة بريد للموافقة وإشعارًا إلى أجهزتك الأخرى. وافق على هذا الجهاز هناك، ثم اضغط «متابعة». أو اكتب الرمز الموجود في البريد.",
+  "mobile.server.connectors.keeper.codeWrong": "الرمز غير صحيح. حاول مرة أخرى.",
+  "mobile.server.connectors.keeper.folderTitle": "المجلد المشترك",
+  "mobile.server.connectors.keeper.folderFooter":
+    "انقل بيانات دخول إلى هذا المجلد في Keeper ليسجّل الوكلاء الدخول بها. أزلها منه للإيقاف.",
+  "mobile.server.connectors.keeper.plan":
+    "لا يسمح مسؤول Keeper لديك باستخدام Keeper Commander لهذا الحساب. اطلب منه السماح به، ثم اتصل مرة أخرى.",
+  "mobile.server.connectors.keeper.expiredTitle": "انتهت جلسة Keeper",
+  "mobile.server.connectors.keeper.expiredBody":
+    "لا يستطيع الوكلاء على {host} تسجيل الدخول ببيانات الدخول المشتركة حتى تتصل مرة أخرى.",
+  "mobile.server.connectors.keeper.disconnectBody":
+    "ينهي {host} جلسته في Keeper. يبقى المجلد وبيانات الدخول فيه في خزنة Keeper.",
   "mobile.server.connectors.passwordManager.unavailable": "{name} غير متاح على هذا الخادم.",
   "mobile.server.connectors.passwordManager.howItWorks":
     "سجّل الدخول إلى {name} على هذا الهاتف. بعد ذلك ينشئ {host} خزنة مشتركة ومفتاح وصول للقراءة فقط لها، ويحتفظ بهذا المفتاح فقط. لا يرى الوكلاء أي كلمة مرور.",
@@ -1200,6 +1236,9 @@ export const messages = {
   "mobile.server.connectors.whatsapp.workingMessage": "رسالة «جارٍ العمل على ذلك…»",
   "mobile.server.connectors.whatsapp.workingMessageDescription":
     "يرسلها OpenBot أثناء عمل الوكيل، ثم يستبدلها بالإجابة. أوقفها لإرسال الإجابة فقط.",
+  "mobile.server.connectors.whatsapp.statusReactions": "تفاعلات الحالة",
+  "mobile.server.connectors.whatsapp.statusReactionsDescription":
+    "يتفاعل OpenBot بـ 👀 عند وصول رسالة، وبـ ✅ عندما تصبح الإجابة جاهزة. أوقفها لعدم إرسال أي تفاعلات.",
   "mobile.server.connectors.whatsapp.orchestratorTitle": "WhatsApp Orchestrator",
   "mobile.server.connectors.whatsapp.orchestratorDescription":
     "يستقبل هذا الوكيل الرسائل الموجّهة إلى OpenBot من كل أرقامك المرتبطة. يجيب بنفسه عن الرسائل القصيرة، ويسند الأعمال الأخرى إلى الوكيل المناسب، ويجيب في WhatsApp.",
@@ -1439,6 +1478,22 @@ export const messages = {
   "mobile.server.providers.compactWindowDefault": "الافتراضي في Claude Code",
   "mobile.server.providers.compactWindowTokens": "{size} رمز",
   "mobile.server.providers.compactWindowLoadFailed": "تعذّر تحميل حجم الضغط لهذا الخادم.",
+  "mobile.server.environment.row": "المتغيرات",
+  "mobile.server.environment.title": "البيئة",
+  "mobile.server.environment.hint":
+    "مفاتيح API وعناوين URL الأساسية وإعدادات أخرى يحصل عليها كل عملية لـ {name}. يسري التغيير عند انتهاء الأدوار الجارية.",
+  "mobile.server.environment.codexHint":
+    "يرسل OPENAI_BASE_URL، مع OPENAI_API_KEY كمفتاح له، طلبات نماذج ChatGPT إلى ذلك العنوان.",
+  "mobile.server.environment.shellNote": "يمكن للأوامر التي يشغّلها الوكلاء قراءة هذه القيم.",
+  "mobile.server.environment.add": "إضافة متغير",
+  "mobile.server.environment.namePlaceholder": "VARIABLE_NAME",
+  "mobile.server.environment.valuePlaceholder": "القيمة",
+  "mobile.server.environment.saved": "محفوظة",
+  "mobile.server.environment.sensitive": "حساس",
+  "mobile.server.environment.remove": "إزالة",
+  "mobile.server.environment.save": "حفظ",
+  "mobile.server.environment.loadFailed": "تعذّر تحميل متغيرات {name}.",
+  "mobile.server.environment.invalid": "صحّح الأسماء أولًا.",
   "mobile.server.providers.disconnect": "قطع الاتصال",
   "mobile.server.providers.disconnectTitle": "هل تريد قطع اتصال {name}؟",
   "mobile.server.providers.disconnectBody":

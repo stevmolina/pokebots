@@ -6,11 +6,13 @@ import { create } from "zustand";
 /** `remoteDesktop` shows only for a host that shares its screen, and `library` for a host with `storage-v1`. */
 const DRAWER_TOOL_IDS = [
   "tasks",
+  "rooms",
   "routines",
   "workflows",
   "marketplace",
   "usage",
   "library",
+  "brain",
   "remoteDesktop",
   "members",
 ] as const;

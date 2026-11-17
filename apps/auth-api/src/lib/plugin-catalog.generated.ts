@@ -91,6 +91,18 @@ export const PLUGIN_CATALOG_INDEX: PluginCatalogIndex = {
       detailSha256: "8ecc544dca109f960949c8ae554a61fc49246c4fa61d419b139ecbdae1f95b37",
     },
     {
+      slug: "second-brain",
+      version: "1.0.0",
+      featured: false,
+      detailSha256: "9cafac2f056de3f8c4f99835b6eace96e8b7fa3166cc8d71625f3f5d8793f4a4",
+    },
+    {
+      slug: "rooms",
+      version: "1.0.0",
+      featured: false,
+      detailSha256: "9d002a1524c021a2e2d2994ddec61a3f65d59d27a2aea97cb4caa390188a6a44",
+    },
+    {
       slug: "figma",
       version: "1.1.0",
       featured: true,
@@ -254,9 +266,9 @@ export const PLUGIN_CATALOG_INDEX: PluginCatalogIndex = {
     },
     {
       slug: "omnisend",
-      version: "1.0.0",
+      version: "1.1.0",
       featured: false,
-      detailSha256: "73cd8cb3312090709f3c048b6c4b912c8dff27f96eb530cf36fcaf461eae7d80",
+      detailSha256: "8697d90f79d5d0c84198497d55424078f81339fe9881d4124d6fba61cbe6df74",
     },
     {
       slug: "postiz",
@@ -818,9 +830,9 @@ export const PLUGIN_CATALOG_INDEX: PluginCatalogIndex = {
     },
     {
       slug: "highlevel",
-      version: "1.0.0",
+      version: "1.1.0",
       featured: false,
-      detailSha256: "4cbf826e4921fafe5120059c745fea2ea94710916141687b6209372d9fbc24b7",
+      detailSha256: "50bf58de77f174276da93bfeec699f2883dc646f3a16cfcb0727fe0e2a051eac",
     },
     {
       slug: "hospitable",
@@ -833,6 +845,12 @@ export const PLUGIN_CATALOG_INDEX: PluginCatalogIndex = {
       version: "1.0.0",
       featured: false,
       detailSha256: "c54e87442750f3536c4ec39dbf6deba4638fa6943528ba5371190ee06e3819aa",
+    },
+    {
+      slug: "hubspot",
+      version: "1.0.0",
+      featured: false,
+      detailSha256: "efb708a2f13a17c7dc7f7879b190f9e550949b7ac95737d04d589f21fbaefbb1",
     },
     {
       slug: "ibkr",
@@ -1376,9 +1394,9 @@ export const PLUGIN_CATALOG_INDEX: PluginCatalogIndex = {
     },
     {
       slug: "tessie",
-      version: "1.0.0",
+      version: "1.1.0",
       featured: false,
-      detailSha256: "e72121c06335698e56fd223daf677a2742eac0e28a1fd05cc7c53d2d7fd9024b",
+      detailSha256: "a91a28e7f52f0283d427f6891850a694a3a24881b2a25e430f778756ac30c0ab",
     },
     {
       slug: "tinyfish",
@@ -2041,6 +2059,76 @@ export const PLUGIN_CATALOG_DETAILS: Record<string, PluginCatalogDetail> = {
     websiteUrl: "https://hindsight.vectorize.io",
     privacyPolicyUrl: "https://vectorize.io/privacy",
     termsUrl: "https://vectorize.io/terms",
+    skills: [],
+  },
+  "second-brain": {
+    slug: "second-brain",
+    name: "Second Brain",
+    tagline: "Your Pokebots remember each project",
+    description:
+      "Second Brain gives your Pokebots one memory per project or client. The memory is markdown notes in your own git repo, called a brain. Before your Pokebots answer, they search the brain and cite the page and date of each fact. They read and add the brain's private files, such as spreadsheets and PDFs. When you settle a decision, they record it as a pull request on the brain repo, or as a commit when you turned on direct writes. They can also search your own past agent chats. You sign in once in the browser, and your GitHub access decides which brains your Pokebots can read.",
+    category: "productivity",
+    creatorName: "Pokebots",
+    iconUrl: "https://api.pokebots.xyz/plugin-icons/second-brain.png",
+    version: "1.0.0",
+    prompts: [
+      { id: "prompt-search-decision", text: "Search my brain for what we decided about pricing, and cite the pages." },
+      { id: "prompt-list-files", text: "Which files does this project's brain hold? Open the newest report." },
+      { id: "prompt-remember", text: "Record in my brain that we deploy on Fridays only." },
+      { id: "prompt-search-chats", text: "Search my past agent chats for how we fixed the sign-in bug." },
+    ],
+    apps: [
+      {
+        id: "app-second-brain-mcp",
+        name: "Second Brain",
+        description:
+          "Search, read and write the facts and files of your brains, and search your own agent chats, with browser sign-in.",
+        iconUrl: "https://api.pokebots.xyz/plugin-icons/second-brain.png",
+        server: {
+          name: "second-brain",
+          transport: "http",
+          url: "https://brain.mcpbox.dev/mcp",
+          auth: [{ id: "second-brain-oauth", kind: "link", label: "Sign in" }],
+        },
+      },
+    ],
+    websiteUrl: "https://brain.mcpbox.dev",
+    privacyPolicyUrl: null,
+    termsUrl: null,
+    skills: [],
+  },
+  rooms: {
+    slug: "rooms",
+    name: "Rooms",
+    tagline: "Your Pokebots meet other agents",
+    description:
+      'Rooms lets your Pokebots chat with your friends and their AI agents in shared rooms. Each message shows who wrote it, such as "Claude · Steven". Your Pokebots read and send messages, wait for new ones, and keep a short room memory of what the room is about, what was decided and what is still open. Each room also has a task board, so a Pokebot claims a task before it starts and no two agents do the same work. You see only the rooms that you created or were invited to. You sign in once in the browser.',
+    category: "productivity",
+    creatorName: "Pokebots",
+    iconUrl: "https://api.pokebots.xyz/plugin-icons/rooms.png",
+    version: "1.0.0",
+    prompts: [
+      { id: "prompt-catch-up", text: "Which of my rooms have unread messages? Catch me up." },
+      { id: "prompt-create-room", text: "Create a room called Offsite plan and make an invite link for a friend." },
+      { id: "prompt-claim-task", text: "Read the memory of my project room, then claim the next pending task." },
+    ],
+    apps: [
+      {
+        id: "app-rooms-mcp",
+        name: "Rooms",
+        description: "Rooms, messages, room memory and task boards, with browser sign-in.",
+        iconUrl: "https://api.pokebots.xyz/plugin-icons/rooms.png",
+        server: {
+          name: "rooms",
+          transport: "http",
+          url: "https://rooms.mcpbox.dev/mcp",
+          auth: [{ id: "rooms-oauth", kind: "link", label: "Sign in" }],
+        },
+      },
+    ],
+    websiteUrl: "https://rooms.mcpbox.dev",
+    privacyPolicyUrl: null,
+    termsUrl: null,
     skills: [],
   },
   figma: {
@@ -3100,11 +3188,11 @@ export const PLUGIN_CATALOG_DETAILS: Record<string, PluginCatalogDetail> = {
     name: "Omnisend",
     tagline: "Email and SMS marketing",
     description:
-      "Omnisend lets agents read campaign and form reports, find contacts and segments, and create and edit campaigns, automations, email templates, forms and products. Each user signs in to their own Omnisend account through the browser and selects the access level on the consent screen. With write access, agents can also send campaigns and delete data. Select read-only access when agents only need reports.",
+      "Omnisend lets agents read campaign and form reports, find contacts and segments, and create and edit campaigns, automations, email templates, forms and products. Each user connects with an API key from their own Omnisend account. Agents can do what the key allows, which can include sending campaigns and deleting data.",
     category: "automation",
     creatorName: "Omnisend",
     iconUrl: "https://www.omnisend.com/wp-content/uploads/2022/07/cropped-favi-192x192.png",
-    version: "1.0.0",
+    version: "1.1.0",
     prompts: [
       { id: "prompt-last-campaign", text: "How did last week's campaigns perform compared to the week before?" },
       { id: "prompt-segment", text: "How many contacts are in the VIP segment, and how did it change this month?" },
@@ -3115,13 +3203,29 @@ export const PLUGIN_CATALOG_DETAILS: Record<string, PluginCatalogDetail> = {
         id: "app-omnisend-mcp",
         name: "Omnisend",
         description:
-          "Campaigns, automations, contacts, segments, forms and reports, over Omnisend's MCP server with browser sign-in.",
+          "Campaigns, automations, contacts, segments, forms and reports, over Omnisend's MCP server with an API key.",
         iconUrl: "https://www.omnisend.com/wp-content/uploads/2022/07/cropped-favi-192x192.png",
         server: {
           name: "omnisend",
           transport: "http",
           url: "https://mcp.omnisend.com/mcp",
-          auth: [{ id: "omnisend-oauth", kind: "link", label: "Sign in" }],
+          auth: [
+            {
+              id: "omnisend-key",
+              kind: "key",
+              label: "API key",
+              fields: [
+                {
+                  id: "api-key",
+                  label: "API key",
+                  header: "X-Api-Key",
+                  hint: "In Omnisend, open Store settings > API keys and create a key.",
+                },
+              ],
+              docsUrl: "https://app.omnisend.com/integrations/api-keys",
+              docsLabel: "Create a key",
+            },
+          ],
         },
       },
     ],
@@ -6393,11 +6497,11 @@ export const PLUGIN_CATALOG_DETAILS: Record<string, PluginCatalogDetail> = {
     name: "HighLevel",
     tagline: "CRM and marketing workspace",
     description:
-      "HighLevel lets agents read and update contacts, conversations, opportunities, and calendars in the signed-in HighLevel sub-account. Each user signs in to their own HighLevel account through the browser.",
+      "HighLevel lets agents read and update contacts, conversations, opportunities, and calendars in one HighLevel sub-account. Each user connects with a Private Integration token and the location ID of their own sub-account.",
     category: "productivity",
     creatorName: "HighLevel",
     iconUrl: "https://storage.googleapis.com/msgsndr/knES3eSWYIsc5YSZ3YLl/media/62b48689c85eccb36ca941fc.png",
-    version: "1.0.0",
+    version: "1.1.0",
     prompts: [
       { id: "prompt-new-leads", text: "List the contacts that were added this week." },
       { id: "prompt-pipeline", text: "Summarize the opportunities in my sales pipeline by stage." },
@@ -6408,13 +6512,37 @@ export const PLUGIN_CATALOG_DETAILS: Record<string, PluginCatalogDetail> = {
         id: "app-highlevel-mcp",
         name: "HighLevel",
         description:
-          "Contact, conversation, opportunity, and calendar access, over HighLevel's MCP server with browser sign-in.",
+          "Contact, conversation, opportunity, and calendar access, over HighLevel's MCP server with a Private Integration token.",
         iconUrl: "https://storage.googleapis.com/msgsndr/knES3eSWYIsc5YSZ3YLl/media/62b48689c85eccb36ca941fc.png",
         server: {
           name: "highlevel",
           transport: "http",
           url: "https://services.leadconnectorhq.com/mcp",
-          auth: [{ id: "highlevel-oauth", kind: "link", label: "Sign in" }],
+          auth: [
+            {
+              id: "highlevel-key",
+              kind: "key",
+              label: "Private Integration token",
+              fields: [
+                {
+                  id: "token",
+                  label: "Private Integration token",
+                  header: "Authorization",
+                  prefix: "Bearer ",
+                  placeholder: "pit-…",
+                  hint: "In your HighLevel sub-account, open Settings > Private Integrations and create a token.",
+                },
+                {
+                  id: "location-id",
+                  label: "Location ID",
+                  header: "locationId",
+                  hint: "In your HighLevel sub-account, open Settings > Business Profile and copy the Location ID.",
+                },
+              ],
+              docsUrl: "https://marketplace.gohighlevel.com/docs/Authorization/PrivateIntegrationsToken/index.html",
+              docsLabel: "Create a token",
+            },
+          ],
         },
       },
     ],
@@ -6490,6 +6618,59 @@ export const PLUGIN_CATALOG_DETAILS: Record<string, PluginCatalogDetail> = {
     websiteUrl: "https://www.hostinger.com",
     privacyPolicyUrl: "https://www.hostinger.com/legal/privacy-policy",
     termsUrl: "https://www.hostinger.com/legal/universal-terms-of-service-agreement",
+    skills: [],
+  },
+  hubspot: {
+    slug: "hubspot",
+    name: "HubSpot",
+    tagline: "CRM records, deals and notes",
+    description:
+      "HubSpot lets agents search and read contacts, companies, deals and tickets, and create or update records, associations, notes and tasks. HubSpot's own local server runs with a service key from your HubSpot account. The scopes of the key set what agents can read and change. The server has no delete tools.",
+    category: "productivity",
+    creatorName: "HubSpot",
+    iconUrl: "https://www.hubspot.com/hubfs/HubSpot_Logos/HubSpot-Inversed-Favicon.png",
+    version: "1.0.0",
+    prompts: [
+      { id: "prompt-deals", text: "Summarize my open deals by stage and amount." },
+      { id: "prompt-contact", text: "What do we know about the contacts at this company?" },
+      { id: "prompt-note", text: "Add a note about today's call to this contact in HubSpot." },
+    ],
+    apps: [
+      {
+        id: "app-hubspot-mcp",
+        name: "HubSpot",
+        description:
+          "CRM search, record and association updates, notes and tasks, over HubSpot's local MCP server with a service key.",
+        iconUrl: "https://www.hubspot.com/hubfs/HubSpot_Logos/HubSpot-Inversed-Favicon.png",
+        server: {
+          name: "hubspot",
+          transport: "stdio",
+          command: "npx",
+          args: ["-y", "@hubspot/mcp-server@0.4.0"],
+          auth: [
+            {
+              id: "hubspot-key",
+              kind: "key",
+              label: "Service key",
+              fields: [
+                {
+                  id: "token",
+                  label: "Service key",
+                  env: "PRIVATE_APP_ACCESS_TOKEN",
+                  hint: "In HubSpot, open Development > Keys > Service keys, create a key with the CRM scopes you need, and copy it. A private app access token also works.",
+                },
+              ],
+              docsUrl:
+                "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/authentication/account-service-keys",
+              docsLabel: "Create a key",
+            },
+          ],
+        },
+      },
+    ],
+    websiteUrl: "https://www.hubspot.com",
+    privacyPolicyUrl: "https://legal.hubspot.com/privacy-policy",
+    termsUrl: "https://legal.hubspot.com/terms-of-service",
     skills: [],
   },
   ibkr: {
@@ -9651,12 +9832,12 @@ export const PLUGIN_CATALOG_DETAILS: Record<string, PluginCatalogDetail> = {
     name: "Tessie",
     tagline: "Tesla vehicle data",
     description:
-      "Tessie lets agents read the state of the user's Tesla vehicles, such as battery, charging, location, and drive history, and send vehicle commands that the account allows. Each user signs in to their own Tessie account through the browser.",
+      "Tessie lets agents read the state of the user's Tesla vehicles, such as battery, charging, location, and drive history, and send vehicle commands that the account allows. Each user connects with an access token from their own Tessie account. The token can control the vehicles, so give it only to agents that you trust.",
     category: "other",
     creatorName: "Tessie",
     iconUrl:
       "https://cdn.prod.website-files.com/636438cc25b4915a5b7bc573/6552b78d94db7398c3281d27_square_crop_centered.png",
-    version: "1.0.0",
+    version: "1.1.0",
     prompts: [
       { id: "prompt-battery", text: "What is my car's battery level and range right now?" },
       { id: "prompt-drives", text: "Summarize my drives from last week, with distance and energy used." },
@@ -9667,14 +9848,31 @@ export const PLUGIN_CATALOG_DETAILS: Record<string, PluginCatalogDetail> = {
         id: "app-tessie-mcp",
         name: "Tessie",
         description:
-          "Vehicle state, drive history, and vehicle commands, over Tessie's MCP server with browser sign-in.",
+          "Vehicle state, drive history, and vehicle commands, over Tessie's MCP server with an access token.",
         iconUrl:
           "https://cdn.prod.website-files.com/636438cc25b4915a5b7bc573/6552b78d94db7398c3281d27_square_crop_centered.png",
         server: {
           name: "tessie",
           transport: "http",
           url: "https://mcp.tessie.com",
-          auth: [{ id: "tessie-oauth", kind: "link", label: "Sign in" }],
+          auth: [
+            {
+              id: "tessie-key",
+              kind: "key",
+              label: "Access token",
+              fields: [
+                {
+                  id: "token",
+                  label: "Access token",
+                  header: "Authorization",
+                  prefix: "Bearer ",
+                  hint: "In Tessie, open Settings > Developer and create an access token.",
+                },
+              ],
+              docsUrl: "https://dash.tessie.com/settings/developer",
+              docsLabel: "Create a token",
+            },
+          ],
         },
       },
     ],

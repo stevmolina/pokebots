@@ -1,5 +1,9 @@
-import { AGENT_COMPUTER_KEY_INPUT_LIMIT } from "@openbot/contracts/ipc";
+import { AGENT_COMPUTER_KEY_INPUT_LIMIT, decodeComputerManagementInput } from "@openbot/contracts/ipc";
 import { AGENT_COMPUTER_CAPABILITY, AGENT_COMPUTER_ROUTES } from "@openbot/contracts/team-protocol/agent-computer-v1";
+import {
+  COMPUTER_MANAGEMENT_CAPABILITY,
+  COMPUTER_MANAGEMENT_ROUTE,
+} from "@openbot/contracts/team-protocol/computer-management-v1";
 import { sourceText } from "@openbot/i18n/source";
 import { registerSecretValue } from "@openbot/logging";
 import { runCauseEffect } from "../../backend/effect-boundary";
@@ -8,7 +12,7 @@ import { HttpError } from "./http-error";
 import type { RouteOutcome, TeamApiRequestContext } from "./request-context";
 import { readJson, requireAdmin, stringField } from "./request-helpers";
 
-const ROUTES: ReadonlySet<string> = new Set(Object.values(AGENT_COMPUTER_ROUTES));
+const ROUTES: ReadonlySet<string> = new Set([...Object.values(AGENT_COMPUTER_ROUTES), COMPUTER_MANAGEMENT_ROUTE]);
 
 /**
  * The Agent Computer account of this host, which an owner or administrator connects from their own
@@ -27,6 +31,10 @@ export async function routeAgentComputer(
   // `readJson` has already run the body through the `agent-computer-v1` codec.
   const body = await readJson(request);
   switch (url.pathname) {
+    case COMPUTER_MANAGEMENT_ROUTE:
+      if (!capabilities.has(COMPUTER_MANAGEMENT_CAPABILITY))
+        throw new HttpError(400, sourceText("error.team.connectorsUnsupported"));
+      return json(200, await runCauseEffect(agentComputer.manage(decodeComputerManagementInput(body))));
     case AGENT_COMPUTER_ROUTES.connect: {
       const apiKey = stringField(body, "apiKey", false, AGENT_COMPUTER_KEY_INPUT_LIMIT).trim();
       registerSecretValue(apiKey);

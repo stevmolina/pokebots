@@ -432,6 +432,9 @@ export const messages = {
   "connector.whatsapp.workingMessage": "رسالة «جارٍ العمل على ذلك…»",
   "connector.whatsapp.workingMessageDescription":
     "يرسلها OpenBot أثناء عمل الوكيل، ثم يستبدلها بالإجابة. أوقفها لإرسال الإجابة فقط.",
+  "connector.whatsapp.statusReactions": "تفاعلات الحالة",
+  "connector.whatsapp.statusReactionsDescription":
+    "يتفاعل OpenBot بـ 👀 عند وصول رسالة، وبـ ✅ عندما تصبح الإجابة جاهزة. أوقفها لعدم إرسال أي تفاعلات.",
   "connector.whatsapp.orchestratorTitle": "WhatsApp Orchestrator",
   "connector.whatsapp.orchestratorDescription":
     "يستقبل هذا الوكيل الرسائل الموجّهة إلى OpenBot من كل أرقامك المرتبطة. يجيب بنفسه عن الرسائل القصيرة، ويسند الأعمال الأخرى إلى الوكيل المناسب، ويجيب في WhatsApp.",
@@ -688,4 +691,71 @@ export const messages = {
     "يحذف OpenBot مفتاح الوصول الخاص به على {host}. تبقى الخزنة وبيانات الدخول فيها في حساب Proton.",
   "connector.protonPass.disconnect": "قطع الاتصال",
   "connector.protonPass.actionFailed": "تعذّر على OpenBot تغيير اتصال Proton Pass.",
+  "connector.keeper.title": "Keeper",
+  "connector.keeper.description": "يسجّل الوكلاء الدخول إلى المواقع ببيانات الدخول الموجودة في مجلد Keeper مشترك.",
+  "connector.keeper.descriptionHost":
+    "يسجّل الوكلاء على {host} الدخول إلى المواقع ببيانات الدخول الموجودة في مجلد Keeper مشترك.",
+  "connector.keeper.connect": "اتصال",
+  "connector.keeper.setupTitle": "تسجيل الدخول",
+  "connector.keeper.setupDescription":
+    "أدخل بريدك الإلكتروني وكلمة المرور الرئيسية في Keeper. يسلّمهما OpenBot إلى Keeper Commander مرة واحدة ولا يحتفظ بهما. Keeper Commander هو أداة سطر الأوامر من Keeper.",
+  "connector.keeper.setupDescriptionHost":
+    "أدخل بريدك الإلكتروني وكلمة المرور الرئيسية في Keeper. يسلّمهما {host} إلى Keeper Commander مرة واحدة ولا يحتفظ بهما. Keeper Commander هو أداة سطر الأوامر من Keeper.",
+  "connector.keeper.emailLabel": "البريد الإلكتروني",
+  "connector.keeper.passwordLabel": "كلمة المرور الرئيسية",
+  // The exact folder name that OpenBot makes in Keeper. Keep it in English.
+  "connector.keeper.folderName": "Shared with OpenBot",
+  "connector.keeper.folderSetup": "ينشئ OpenBot هذا المجلد في خزنتك عند الاتصال. انقل بيانات الدخول إليه لمشاركتها.",
+  "connector.keeper.showSteps": "عرض الخطوات",
+  "connector.keeper.stepsLabel": "خطوات الاتصال",
+  "connector.keeper.stepSignIn": "تسجيل الدخول",
+  "connector.keeper.stepVerify": "التحقق",
+  "connector.keeper.stepDone": "تم",
+  "connector.keeper.signInTitle": "جارٍ تسجيل الدخول إلى Keeper",
+  "connector.keeper.signInDescription": "يسجّل Keeper Commander الدخول بحسابك.",
+  "connector.keeper.signInDescriptionHost": "يسجّل {host} الدخول إلى Keeper بحسابك.",
+  "connector.keeper.twoFactorTitle": "أدخل الرمز",
+  "connector.keeper.twoFactorDescription":
+    "يطلب Keeper رمز التحقق بخطوتين. أدخل الرمز من تطبيق المصادقة أو من الرسالة النصية.",
+  "connector.keeper.deviceTitle": "وافق على هذا الجهاز",
+  "connector.keeper.deviceDescription":
+    "أرسل Keeper رسالة بريد للموافقة وإشعارًا إلى أجهزتك الأخرى. وافق على هذا الجهاز من الرابط في البريد أو من جهاز آخر، ثم اضغط «متابعة». أو اكتب الرمز الموجود في البريد.",
+  "connector.keeper.codeLabel": "الرمز",
+  "connector.keeper.codeWrong": "الرمز غير صحيح. أدخله مرة أخرى.",
+  "connector.keeper.continue": "متابعة",
+  "connector.keeper.setupStepTitle": "جارٍ إنشاء المجلد المشترك",
+  "connector.keeper.setupStepDescription": "ينشئ OpenBot المجلد «{folder}» في خزنتك ويفعّل تسجيل الدخول لهذا الجهاز.",
+  "connector.keeper.doneTitle": "تم توصيل Keeper",
+  "connector.keeper.doneDescription": "انقل بيانات الدخول إلى «{folder}» ليسجّل الوكلاء الدخول بها.",
+  "connector.keeper.failedTitle": "لم يتصل Keeper",
+  "connector.keeper.done": "تم",
+  "connector.keeper.close": "إغلاق",
+  "connector.keeper.statusConnecting": "جارٍ الاتصال",
+  "connector.keeper.statusConnected": "متصل",
+  "connector.keeper.statusExpired": "انتهت الجلسة",
+  "connector.keeper.expiredTitle": "انتهت جلسة Keeper",
+  "connector.keeper.expiredDescription":
+    "لا يستطيع الوكلاء تسجيل الدخول ببيانات الدخول المشتركة حتى تتصل مرة أخرى. أدخل كلمة المرور الرئيسية أدناه.",
+  "connector.keeper.planTitle": "Keeper Commander محظور",
+  "connector.keeper.planDescription":
+    "لا يسمح مسؤول Keeper لديك باستخدام Keeper Commander لهذا الحساب. اطلب منه السماح به، ثم اتصل مرة أخرى.",
+  "connector.keeper.folderTitle": "المجلد المشترك",
+  "connector.keeper.folderDescription":
+    "انقل بيانات دخول إلى هذا المجلد في Keeper ليسجّل الوكلاء الدخول بها. أزلها منه للإيقاف.",
+  "connector.keeper.loginCount": {
+    zero: "لا بيانات دخول",
+    one: "بيانات دخول واحدة",
+    two: "بيانات دخول اثنتان",
+    few: "{count} بيانات دخول",
+    many: "{count} بيانات دخول",
+    other: "{count} بيانات دخول",
+  },
+  "connector.keeper.loginsLoading": "جارٍ عدّ بيانات الدخول…",
+  "connector.keeper.disconnectTitle": "فصل Keeper",
+  "connector.keeper.disconnectSummary":
+    "ينهي OpenBot جلسته في Keeper على هذا الكمبيوتر. يبقى المجلد وبيانات الدخول فيه في خزنة Keeper.",
+  "connector.keeper.disconnectSummaryHost":
+    "ينهي OpenBot جلسته في Keeper على {host}. يبقى المجلد وبيانات الدخول فيه في خزنة Keeper.",
+  "connector.keeper.disconnect": "قطع الاتصال",
+  "connector.keeper.actionFailed": "تعذّر على OpenBot تغيير اتصال Keeper.",
 } as const satisfies PartialTranslation<typeof source>;

@@ -18,9 +18,17 @@ export const messages = {
     "OpenBot は 1Password CLI をインストールできませんでした。インターネット接続を確認してから、もう一度お試しください。",
   "error.connector.onePasswordCliSignedOut":
     "1Password CLI はサインインしていません。1Password アプリで連携をオンにしてから、もう一度接続してください。",
+  "error.connector.onePasswordAppUnreachable":
+    "OpenBot が 1Password アプリに接続できません。1Password を開いてロックを解除してください。「設定」>「開発者」で「1Password CLI と連携」がオンになっていることを確認し、もう一度お試しください。",
   "error.connector.onePasswordCliFailed": "1Password CLI が失敗しました: {detail}",
+  "error.connector.onePasswordCliForbidden":
+    "この 1Password アカウントには、共有保管庫やサービスアカウントを作成する権限がありません。アカウントのオーナーまたは管理者にこの権限を依頼するか、サービスアカウントのトークンを受け取って「トークンを使う」をクリックしてください。",
   "error.connector.onePasswordUnexpected": "1Password から予期しない応答がありました: {detail}",
   "error.connector.onePasswordTokenRejected": "1Password はサービスアカウントのトークンを受け付けませんでした。",
+  "error.connector.onePasswordUnreachable":
+    "OpenBot は 1Password に接続できませんでした。インターネット接続を確認してから、もう一度お試しください。",
+  "error.connector.onePasswordRateLimited":
+    "1Password へのリクエストが多すぎます。数分待ってから、もう一度お試しください。",
   "error.connector.onePasswordNoVault":
     "サービスアカウントは保管庫を読み取れません。保管庫へのアクセス権を付与してから、もう一度お試しください。",
   "error.connector.onePasswordFileUnreadable": "1Password の接続ファイルを読み取れません。",
@@ -55,4 +63,26 @@ export const messages = {
     "Proton へのサインインに時間がかかりすぎました。もう一度接続してください。",
   "error.connector.protonPassSetupFailed":
     "Proton Pass で保管庫 Shared with OpenBot またはそのアクセスキーを作成できませんでした。もう一度接続してください。",
+  "error.connector.keeperFailed": "Keeper に接続できませんでした。もう一度接続してください。",
+  "error.connector.keeperCliInstallFailed":
+    "Keeper Commander をインストールできませんでした。ネットワーク接続を確認してから、もう一度接続してください。",
+  "error.connector.keeperPassword": "メールアドレスまたはマスターパスワードが正しくありません。",
+  "error.connector.keeperCode": "コードが正しくありません。もう一度入力してください。",
+  "error.connector.keeperCodeNotAsked": "Keeper はコードを求めていません。",
+  "error.connector.keeperNotApproved":
+    "Keeper はまだこのデバイスを承認していません。承認してから「続ける」を選んでください。",
+  "error.connector.keeperExpired": "このコンピューター上の Keeper セッションが終了しました。もう一度接続してください。",
+  "error.connector.keeperPlan":
+    "Keeper の管理者が、このアカウントでの Keeper Commander を許可していません。許可を依頼してから、もう一度接続してください。",
+  "error.connector.keeperSso": "SSO でサインインする Keeper アカウントは、まだ接続できません。",
+  "error.connector.keeperTwoFactorUnsupported":
+    "このアカウントの 2 段階認証の方法では、入力したコードを使えません。Keeper で認証アプリまたはテキストメッセージを追加してから、もう一度接続してください。",
+  "error.connector.keeperLocked":
+    "Keeper がこのアカウントまたはこのデバイスをロックしました。Keeper を開いてロックを解除してから、もう一度接続してください。",
+  "error.connector.keeperThrottled":
+    "Keeper から次のサインインまで数分待つよう求められました。後でもう一度接続してください。",
+  "error.connector.keeperPersistentLogin":
+    "Keeper の管理者が OpenBot に必要な「Stay logged in」をオフにしています。許可を依頼してから、もう一度接続してください。",
+  "error.connector.keeperSignInTimeout": "Keeper へのサインインに時間がかかりすぎました。もう一度接続してください。",
+  "error.connector.keeperFileUnreadable": "Keeper の接続ファイルを読み取れません。",
 } as const satisfies PartialTranslation<typeof source>;

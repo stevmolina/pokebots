@@ -18,9 +18,17 @@ export const messages = {
     "OpenBot konnte die 1Password CLI nicht installieren. Prüfe die Internetverbindung und versuche es erneut.",
   "error.connector.onePasswordCliSignedOut":
     "Die 1Password CLI ist nicht angemeldet. Aktiviere ihre Integration in der 1Password-App und verbinde sie erneut.",
+  "error.connector.onePasswordAppUnreachable":
+    "OpenBot erreicht die 1Password-App nicht. Öffne 1Password und entsperre es. Prüfe unter Einstellungen > Entwickler, dass „In 1Password CLI integrieren“ aktiv ist. Versuche es dann erneut.",
   "error.connector.onePasswordCliFailed": "Die 1Password CLI ist fehlgeschlagen: {detail}",
+  "error.connector.onePasswordCliForbidden":
+    "Dein 1Password-Konto erlaubt dir nicht, den geteilten Tresor oder ein Dienstkonto zu erstellen. Bitte einen Inhaber oder Administrator des Kontos um diese Berechtigung, oder bitte ihn um ein Dienstkonto-Token und klicke auf „Token verwenden“.",
   "error.connector.onePasswordUnexpected": "1Password hat eine unerwartete Antwort gesendet: {detail}",
   "error.connector.onePasswordTokenRejected": "1Password hat das Dienstkonto-Token nicht akzeptiert.",
+  "error.connector.onePasswordUnreachable":
+    "OpenBot konnte keine Verbindung zu 1Password herstellen. Prüfe die Internetverbindung und versuche es erneut.",
+  "error.connector.onePasswordRateLimited":
+    "1Password hat zu viele Anfragen erhalten. Warte ein paar Minuten und versuche es erneut.",
   "error.connector.onePasswordNoVault":
     "Das Dienstkonto kann keinen Tresor lesen. Gib ihm Zugriff auf einen Tresor und versuche es erneut.",
   "error.connector.onePasswordFileUnreadable": "Die 1Password-Verbindungsdatei ist nicht lesbar.",
@@ -54,4 +62,26 @@ export const messages = {
   "error.connector.protonPassSignInTimeout": "Die Proton-Anmeldung hat zu lange gedauert. Verbinde erneut.",
   "error.connector.protonPassSetupFailed":
     "Der Tresor Shared with OpenBot oder sein Zugriffsschlüssel konnte in Proton Pass nicht erstellt werden. Verbinde erneut.",
+  "error.connector.keeperFailed": "Keeper konnte nicht verbunden werden. Verbinde erneut.",
+  "error.connector.keeperCliInstallFailed":
+    "Keeper Commander konnte nicht installiert werden. Prüfe die Netzwerkverbindung und verbinde dann erneut.",
+  "error.connector.keeperPassword": "Die E-Mail-Adresse oder das Master-Passwort ist nicht korrekt.",
+  "error.connector.keeperCode": "Der Code ist nicht korrekt. Gib ihn erneut ein.",
+  "error.connector.keeperCodeNotAsked": "Keeper hat nicht nach einem Code gefragt.",
+  "error.connector.keeperNotApproved":
+    "Keeper hat dieses Gerät noch nicht genehmigt. Genehmige es und wähle dann Weiter.",
+  "error.connector.keeperExpired": "Die Keeper-Sitzung auf diesem Computer wurde beendet. Verbinde erneut.",
+  "error.connector.keeperPlan":
+    "Dein Keeper-Administrator erlaubt Keeper Commander für dieses Konto nicht. Bitte ihn, es zu erlauben, und verbinde dann erneut.",
+  "error.connector.keeperSso": "Keeper-Konten, die sich per SSO anmelden, können noch nicht verbunden werden.",
+  "error.connector.keeperTwoFactorUnsupported":
+    "Die Zwei-Faktor-Methode dieses Kontos akzeptiert keinen eingegebenen Code. Füge in Keeper eine Authenticator-App oder SMS hinzu und verbinde dann erneut.",
+  "error.connector.keeperLocked":
+    "Keeper hat dieses Konto oder dieses Gerät gesperrt. Öffne Keeper, um es zu entsperren, und verbinde dann erneut.",
+  "error.connector.keeperThrottled":
+    "Keeper bittet, vor der nächsten Anmeldung ein paar Minuten zu warten. Verbinde dich später erneut.",
+  "error.connector.keeperPersistentLogin":
+    "Dein Keeper-Administrator hat „Stay logged in“ deaktiviert, das OpenBot braucht. Bitte ihn, es zu erlauben, und verbinde dich dann erneut.",
+  "error.connector.keeperSignInTimeout": "Die Keeper-Anmeldung hat zu lange gedauert. Verbinde erneut.",
+  "error.connector.keeperFileUnreadable": "Die Keeper-Verbindungsdatei ist nicht lesbar.",
 } as const satisfies PartialTranslation<typeof source>;

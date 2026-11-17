@@ -1,4 +1,4 @@
-import { Host, Switch } from "@expo/ui";
+import { Host } from "@expo/ui";
 import { eventFilterDraftsValid, eventFiltersFromDrafts } from "@openbot/contracts/event-filter-value";
 import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
 import {
@@ -18,6 +18,7 @@ import {
 import type { EventRoutineOwner } from "@openbot/contracts/ipc-events";
 import type { MobileTextKey } from "@openbot/i18n/mobile";
 import {
+  ROUTINE_HEARTBEAT_SCHEDULE,
   type RoutineScheduleDraft,
   routineDraftProblemCode,
   routineScheduleFromDraft,
@@ -40,6 +41,7 @@ import {
   useMobileWorkspaceSelector,
 } from "@/features/workspace/context/mobile-workspace-context";
 import { queryKeys } from "@/features/workspace/model/query-keys";
+import { AppSwitch } from "@/shared/components/app-switch";
 import { SheetFormField } from "@/shared/components/sheet-form-field";
 import { SheetSaveAction } from "@/shared/components/sheet-save-action";
 import { haptics } from "@/shared/lib/haptics";
@@ -336,10 +338,13 @@ export function RoutineEditor({
   routine,
   available,
   port,
+  preset,
 }: {
   agent: Pick<MobileAgent, "id" | "serverId">;
   routine?: RoutineRecord;
   available: boolean;
+  /** A new heartbeat starts filled in: a quiet check every 2 hours with a checklist to edit, as on desktop. */
+  preset?: "heartbeat" | undefined;
   port?: {
     create(input: Omit<CreateRoutineInput, "agentId">): Promise<void>;
     update(input: Omit<UpdateRoutineInput, "agentId">): Promise<void>;
@@ -392,7 +397,15 @@ export function RoutineEditor({
     eventType?: string;
     filters?: FilterDraft[];
     missedPolicy?: RoutineMissedPolicy;
-  }>({});
+  }>(() =>
+    preset === "heartbeat" && !routine
+      ? {
+          name: t("mobile.agent.heartbeat.name"),
+          instruction: t("mobile.agent.heartbeat.instruction"),
+          schedule: ROUTINE_HEARTBEAT_SCHEDULE,
+        }
+      : {},
+  );
   const name = edits.name ?? routine?.name ?? "";
   const instruction = edits.instruction ?? routine?.instruction ?? "";
   const savedSchedule = routine && "schedule" in routine.trigger ? routine.trigger.schedule : DEFAULT_SCHEDULE;
@@ -690,7 +703,7 @@ export function RoutineEditor({
           <SettingsRow
             trailing={
               <Host matchContents colorScheme={theme === "dark" ? "dark" : "light"}>
-                <Switch
+                <AppSwitch
                   label={t("mobile.agent.record.enabled")}
                   value={activeOverride ?? routine.active}
                   disabled={disabled || toggle.pending}

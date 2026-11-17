@@ -86,11 +86,11 @@ interface ProviderModelPickerProps {
    */
   variant?: "pill" | "field" | "composer";
   /**
-   * The keyboard of the device. The `composer` variant then names ⌘1 to ⌘9 (Ctrl on a PC) on the
-   * first nine models of the open provider, and the keys choose them while the picker is open.
+   * The keyboard of the device. The picker then names ⌘1 to ⌘9 (Ctrl on a PC) on the first nine
+   * models of the open provider, and the keys choose them while the picker is open.
    */
   shortcutPlatform?: "mac" | "pc" | undefined;
-  /** The access of the agent, in the footer of the `composer` variant. A click opens its setting. */
+  /** The access of the agent, in the footer of the picker. A click opens its setting. */
   access?: { label: string; onOpen: (trigger: HTMLElement) => void } | undefined;
   ariaLabel?: string;
   label?: string;
@@ -133,6 +133,11 @@ interface ProviderModelPickerProps {
    * without a reading, no model does. The picker does not ask the provider again.
    */
   accountUsage?: AccountUsage | null | undefined;
+  /**
+   * The agent has Workspace only access. A model that the host cannot run with it
+   * (`workspaceOnlyUnavailable`) shows but cannot be chosen, and its tab says why.
+   */
+  workspaceOnly?: boolean | undefined;
   /**
    * The agent's provider when this build does not know it. The host still runs the agent, so the
    * picker shows its model, and it cannot open until OpenBot is updated.
@@ -431,16 +436,43 @@ export function ProviderModelPicker(props: ProviderModelPickerProps) {
   );
   const modelAvailable = (model: PickerModel): boolean =>
     providerAvailability(props.agentStatus, props.modelOptions, model.provider, t).state === "available";
+  /** The providers that the host refuses for a Workspace only agent. An account's own models too. */
+  const workspaceOnlyBlockedProviders = createMemo(
+    () =>
+      new Set<string>(
+        props.workspaceOnly
+          ? props.modelOptions.filter((option) => option.workspaceOnlyUnavailable).map((option) => option.provider)
+          : [],
+      ),
+  );
+  const workspaceOnlyBlocked = (model: PickerModel): boolean => workspaceOnlyBlockedProviders().has(model.provider);
   /** The pool's line on the pool's entry, in the place of the account's email, while the provider is available. */
   const poolSummary = (key: RailKey, status: AgentProviderStatus): string | undefined =>
     status.state === "available" && key === railOf(key) ? railPool(railOf(key))?.summary : undefined;
+  /**
+   * The line that says where the provider's models come from when its CLI settings give them from
+   * elsewhere, such as Ollama models under ChatGPT (#9956). It comes before the pool's line: it explains
+   * the list below it. Only the provider's own entry has it, as its own sign-in read those settings.
+   */
+  const sourceSummary = (key: RailKey, status: AgentProviderStatus): string | undefined => {
+    const rail = railOf(key);
+    const source = status.modelSource;
+    if (rail === CUSTOM_RAIL || key !== rail || status.state !== "available" || !source) return undefined;
+    const cli = agentProviderCliName(rail);
+    return source.kind === "provider"
+      ? t("provider.picker.modelSourceProvider", { name: source.name, cli })
+      : t("provider.picker.modelSourceCatalog", { cli });
+  };
   const railSummary = (key: RailKey, status: AgentProviderStatus): string => {
     const rail = railOf(key);
-    return rail === CUSTOM_RAIL ? customSummary() : (poolSummary(key, status) ?? providerSummary(rail, status, text));
+    return rail === CUSTOM_RAIL
+      ? customSummary()
+      : (sourceSummary(key, status) ?? poolSummary(key, status) ?? providerSummary(rail, status, text));
   };
   const railHeadingSummary = (key: RailKey, status: AgentProviderStatus): string => {
     const rail = railOf(key);
-    if (rail !== CUSTOM_RAIL) return poolSummary(key, status) ?? providerHeadingSummary(rail, status, text);
+    if (rail !== CUSTOM_RAIL)
+      return sourceSummary(key, status) ?? poolSummary(key, status) ?? providerHeadingSummary(rail, status, text);
     // OpenCode is what serves a custom endpoint, so its trouble is this tab's trouble.
     return status.state === "available" ? customSummary() : providerStatusLabel(status.state, t);
   };
@@ -568,7 +600,7 @@ export function ProviderModelPicker(props: ProviderModelPickerProps) {
   }
 
   function selectModel(option: PickerModel, accountId: string | null, key: RailKey): void {
-    if (props.disabled || !modelAvailable(option)) return;
+    if (props.disabled || !modelAvailable(option) || workspaceOnlyBlocked(option)) return;
     if (!showsReasoningEffort() && !option.variants.length) setOpen(false);
     const queued = queuedEffort();
     setQueuedEffort(undefined);
@@ -616,7 +648,7 @@ export function ProviderModelPicker(props: ProviderModelPickerProps) {
    */
   const panelShortcuts = new Map<RailKey, { models: () => PickerModel[]; choose: (model: PickerModel) => void }>();
   const shortcutKey = (index: number): string | undefined => {
-    if (!composer() || !props.shortcutPlatform || index < 0 || index > 8) return undefined;
+    if (!props.shortcutPlatform || index < 0 || index > 8) return undefined;
     return props.shortcutPlatform === "mac" ? `⌘${index + 1}` : `Ctrl+${index + 1}`;
   };
   const showsReasoningEffort = () => props.reasoningEffort !== undefined && props.onReasoningEffortChange !== undefined;
@@ -715,7 +747,7 @@ export function ProviderModelPicker(props: ProviderModelPickerProps) {
       class={["provider-model-popover", { "provider-model-popover-composer": composer() }]}
       aria-hidden={open() ? undefined : "true"}
       onKeyDown={(event) => {
-        const digit = composer() && props.shortcutPlatform ? /^[1-9]$/.exec(event.key)?.[0] : undefined;
+        const digit = props.shortcutPlatform ? /^[1-9]$/.exec(event.key)?.[0] : undefined;
         const modifier = props.shortcutPlatform === "mac" ? event.metaKey : event.ctrlKey;
         if (digit && modifier && !event.altKey && !event.shiftKey) {
           const panel = panelShortcuts.get(railProvider());
@@ -993,7 +1025,8 @@ export function ProviderModelPicker(props: ProviderModelPickerProps) {
             );
             const available = () => status().state === "available";
             // An account that is not signed in holds back the models its provider serves.
-            const modelEnabled = (model: PickerModel) => modelAvailable(model) && (accountId() === null || available());
+            const modelEnabled = (model: PickerModel) =>
+              modelAvailable(model) && (accountId() === null || available()) && !workspaceOnlyBlocked(model);
             const effortLocked = () => !available();
             /** A spent window that limits every model of the tab: a chip beside the provider name. */
             const headingSpent = createMemo(() => (available() ? entrySpentWindow(key) : undefined));
@@ -1185,6 +1218,11 @@ export function ProviderModelPicker(props: ProviderModelPickerProps) {
                           </Button>
                         )}
                       </Show>
+                    </div>
+                  </Show>
+                  <Show when={available() && models().some(workspaceOnlyBlocked)}>
+                    <div class="provider-model-empty" role="status">
+                      {t("provider.picker.workspaceOnlyUnavailable")}
                     </div>
                   </Show>
                   <Show
@@ -1434,9 +1472,9 @@ export function ProviderModelPicker(props: ProviderModelPickerProps) {
           }}
         </For>
       </Tabs.Root>
-      <Show when={composer() && (composerSpeeds() || props.access)}>
+      <Show when={(composer() && composerSpeeds()) || props.access}>
         <div class="provider-model-footer">
-          <Show when={composerSpeeds()}>
+          <Show when={composer() && composerSpeeds()}>
             {(speeds) => (
               <fieldset class="provider-model-speed-switch" aria-label={t("provider.picker.speed")}>
                 <For each={speeds()}>

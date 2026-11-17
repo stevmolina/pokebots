@@ -1,4 +1,5 @@
 import { AGENT_MEMORY_CONTEXT_BUDGET_BYTES, essentialMemoryBytes } from "@openbot/contracts/agent-memory-context";
+import { feedbackSentIssue, feedbackWithdrawnItemType } from "@openbot/contracts/feedback";
 import type {
   AcpRegistryEntry,
   AgentProviderRef,
@@ -150,11 +151,14 @@ import {
   type PromptCacheTtlSetting,
   type ProviderAccountStatus,
   type ProviderDetectionSettings,
+  type ProviderEnvironment,
+  type ProviderEnvironmentProvider,
   type ProviderModelVisibility,
   parseAgentAccessChange,
   parseBrowserProxyAddress,
   parseProviderModelVisibilityChange,
   parseSetMcpAccessInput,
+  providerEnvironmentProblem,
   type QueueDelivery,
   type QueuedMessageReceipt,
   type QueueSnapshot,
@@ -231,8 +235,10 @@ import { createMockAgentComputer } from "./mock-agent-computer";
 import { createMockAuth, type MockAuthOptions } from "./mock-auth";
 import { createMockBilling, previewBillingServers } from "./mock-billing";
 import { createMockBitwardenConnector } from "./mock-bitwarden-connector";
+import { mockBrainRequest } from "./mock-brain";
 import { createMockBrowser, type MockBrowserOptions } from "./mock-browser";
 import { createMockChannels, type MockChannelSeed } from "./mock-channels";
+import { type MockCrmSeed, mockCrm } from "./mock-crm";
 import { createMockEvents } from "./mock-events";
 import { createMockGitHubConnector } from "./mock-github-connector";
 import { createMockHostPersonality } from "./mock-host-personality";
@@ -301,6 +307,8 @@ export interface MockOpenBotOptions
   routineFlowLinks?: RoutineFlowLink[];
   routineFlowSteps?: RoutineFlowStep[];
   workflows?: MockWorkflowSeed[];
+  /** The CRM when the preview starts. Without it, the CRM is empty. */
+  crm?: MockCrmSeed;
   customProviders?: CustomProviderSummary[];
   /** The read state of each agent's chat, keyed by agent id. An agent with none shows no unread count. */
   conversationReads?: Record<string, ConversationReadState>;
@@ -534,6 +542,11 @@ export function createMockOpenBot(options: MockOpenBotOptions = {}): MockOpenBot
   let claudeUserSetup: ClaudeUserSetupSetting = { ...DEFAULT_CLAUDE_USER_SETUP };
   let claudeAiTools: ClaudeAiToolsSetting = { ...DEFAULT_CLAUDE_AI_TOOLS };
   let claudeCompactWindow: ClaudeCompactWindowSetting = { ...DEFAULT_CLAUDE_COMPACT_WINDOW };
+  /** The variables of each provider; a sensitive one keeps its value here, as the host keeps it encrypted. */
+  const providerVariables = new Map<
+    ProviderEnvironmentProvider,
+    { name: string; value: string; sensitive: boolean }[]
+  >();
   /** The models each provider's picker shows, after the user changed the list. Unchanged providers show all. */
   const shownModels = new Map<string, readonly string[]>();
   let agentAccess: AgentAccessChange = { revision: 0, everyone: {}, roles: [] };
@@ -1737,6 +1750,7 @@ export function createMockOpenBot(options: MockOpenBotOptions = {}): MockOpenBot
     workflows: mockWorkflows(options.workflows ?? [], (workflowId) =>
       emitAgentEvent({ type: "workflows-changed", workflowId }),
     ),
+    crm: mockCrm(options.crm ?? {}, () => emitAgentEvent({ type: "crm-changed" })),
     routineResults: mockRoutineResults(routines, options, (agentId) =>
       emitAgentEvent({ type: "routines-changed", agentId }),
     ),
@@ -1788,6 +1802,7 @@ export function createMockOpenBot(options: MockOpenBotOptions = {}): MockOpenBot
     githubConnector: createMockGitHubConnector(),
     linkAccount: createMockLinkAccount(),
     onePasswordConnector: createMockOnePasswordConnector(),
+    rooms: { execute: async () => ({ connected: false }) },
     agentComputer: createMockAgentComputer(),
     bitwardenConnector: createMockBitwardenConnector(),
     passwordManagers: createMockPasswordManagers(),
@@ -1978,6 +1993,23 @@ export function createMockOpenBot(options: MockOpenBotOptions = {}): MockOpenBot
       connectAccountKey: async (input) => {
         await api.connectProviderAccountKey(input);
       },
+      // The preview has no provider to finish a code sign-in: the code stays until the dialog closes.
+      startAccountCodeLogin: async ({ provider, accountId }) => {
+        const status = await api.connectProviderAccount({ provider, accountId });
+        const accounts = status.providers?.find((row) => row.id === provider)?.accounts ?? [];
+        return {
+          accountId: accountId ?? accounts.at(-1)?.id ?? "a0000000000000001",
+          start: {
+            kind: "code",
+            userCode: "ABCD-12345",
+            verificationUrl: "https://example.com/device",
+            expiresAt: Date.now() + 15 * 60_000,
+          },
+        };
+      },
+      submitAccountCodeLogin: async () => undefined,
+      accountCodeLoginStatus: async () => ({ result: null }),
+      cancelAccountCodeLogin: async () => undefined,
       renameAccount: async (input) => {
         await api.renameProviderAccount(input);
       },
@@ -3038,11 +3070,25 @@ export function createMockOpenBot(options: MockOpenBotOptions = {}): MockOpenBot
       cancelMessageLink: async () => undefined,
       searchConversationMessages: async (input) => {
         const query = input.query.trim().replace(/\s+/g, " ").toLocaleLowerCase();
-        const results = agents.flatMap((agent) =>
-          getSnapshot(agent.id)
-            .messages.filter((message) => message.text.replace(/\s+/g, " ").toLocaleLowerCase().includes(query))
-            .map((message) => ({ agentId: agent.id, message: clone(message) })),
-        );
+        const matches = (message: ConversationMessage) =>
+          message.text.replace(/\s+/g, " ").toLocaleLowerCase().includes(query);
+        const results = agents
+          .filter((agent) => input.agentId === undefined || agent.id === input.agentId)
+          .flatMap((agent) => [
+            ...getSnapshot(agent.id)
+              .messages.filter(matches)
+              .map((message) => ({ agentId: agent.id, message: clone(message) })),
+            // As the backend does: side threads only when asked, and not an archived one.
+            ...(input.includeSideThreads ? (tasks.get(agent.id) ?? []) : [])
+              .filter((task) => task.closedAt === null)
+              .flatMap((task) =>
+                taskConversation(task)
+                  .messages.filter(matches)
+                  .map((message) => ({ agentId: agent.id, message: clone(message), taskId: task.id })),
+              ),
+          ])
+          // Newest first, as the backend returns them.
+          .sort((left, right) => right.message.createdAt.localeCompare(left.message.createdAt));
         return { results: results.slice(0, input.limit ?? 100), total: results.length, nextCursor: null };
       },
       searchConversationFiles: async (input) => {
@@ -3119,6 +3165,20 @@ export function createMockOpenBot(options: MockOpenBotOptions = {}): MockOpenBot
         });
         emitAgentEvent({ type: "message-pins-changed", agentId: input.agentId });
       },
+      // The preview has no account service: the card changes to a removed card at once.
+      withdrawFeedback: async (input) => {
+        const card = getSnapshot(input.agentId).messages.find((message) => message.id === input.messageId);
+        const issue = card ? feedbackSentIssue(card) : null;
+        if (!issue) return { status: "notFound" };
+        updateSnapshot(input.agentId, (snapshot) => {
+          snapshot.messages = snapshot.messages.map((message) =>
+            message.id === input.messageId
+              ? { ...message, itemType: feedbackWithdrawnItemType(issue.number) }
+              : message,
+          );
+        });
+        return { status: "withdrawn" };
+      },
       chooseAttachments: async (_input) => [],
       importAttachmentData: async (data) =>
         data.map((file) => ({
@@ -3149,6 +3209,7 @@ export function createMockOpenBot(options: MockOpenBotOptions = {}): MockOpenBot
       openWorkspaceFile: async (_input: OpenWorkspaceFileInput) => undefined,
       previewSharedFile: async (input: OpenSharedFileInput) => mockFilePreview(input.path, "shared-file"),
       releaseFilePreview: async () => undefined,
+      addPreviewPage: async () => null,
       previewWorkspaceFile: async (input: OpenWorkspaceFileInput) => {
         // A path with no extension is a folder here, so a folder chip reaches the listing as on desktop.
         if (!/\.[^/]+$/u.test(input.path)) throw new Error("Workspace path is not a file.");
@@ -3689,6 +3750,7 @@ export function createMockOpenBot(options: MockOpenBotOptions = {}): MockOpenBot
         return () => undefined;
       },
     },
+    brain: { request: mockBrainRequest },
     marketplace: {
       takePendingListing: async () => null,
       onOpenListing: (listener) => {
@@ -3775,6 +3837,39 @@ export function createMockOpenBot(options: MockOpenBotOptions = {}): MockOpenBot
         if (!isClaudeCompactWindowTokens(tokens)) throw new Error("Invalid Claude compaction size.");
         claudeCompactWindow = { tokens };
         return clone(claudeCompactWindow);
+      },
+      getProviderEnvironment: async (provider): Promise<ProviderEnvironment> => ({
+        provider,
+        variables: (providerVariables.get(provider) ?? []).map((variable) => ({
+          name: variable.name,
+          value: variable.sensitive ? "" : variable.value,
+          sensitive: variable.sensitive,
+          stored: variable.sensitive,
+        })),
+      }),
+      setProviderEnvironment: async ({ provider, variables }): Promise<ProviderEnvironment> => {
+        const previous = providerVariables.get(provider) ?? [];
+        const names = variables.map((variable) => variable.name.trim());
+        const next = variables.map((variable, index) => {
+          const name = names[index] ?? "";
+          const problem = providerEnvironmentProblem(provider, name, names);
+          if (problem === "reserved") throw new Error(sourceText("error.provider.environmentNameReserved", { name }));
+          if (problem === "duplicate") throw new Error(sourceText("error.provider.environmentNameDuplicate", { name }));
+          if (problem) throw new Error(sourceText("error.provider.environmentNameInvalid", { name }));
+          const value = variable.value ?? previous.find((item) => item.name === name && item.sensitive)?.value;
+          if (value === undefined) throw new Error(sourceText("error.provider.customAgentEnvValueMissing", { name }));
+          return { name, value, sensitive: variable.sensitive };
+        });
+        providerVariables.set(provider, next);
+        return {
+          provider,
+          variables: next.map((variable) => ({
+            name: variable.name,
+            value: variable.sensitive ? "" : variable.value,
+            sensitive: variable.sensitive,
+            stored: variable.sensitive,
+          })),
+        };
       },
       // Preview has one host, so every server shares one model list.
       getModelVisibility: async (provider) => modelVisibility(provider),

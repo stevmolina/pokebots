@@ -1,0 +1,48 @@
+import { POKEBOTS_HUE_COLORS } from "@openbot/brand/pokebots-avatar";
+import Constants from "expo-constants";
+import { Uniwind } from "uniwind";
+
+/*
+ * The Pokebots look of Steven's personal iPhone build. `app.config.js` sets `extra.brand` to
+ * "pokebots" only for that build (`scripts/mobile-ios-personal.ts`), so the store build reads null and
+ * keeps the OpenBot look. All of the fork's brand choices for the phone app are in this module, so the
+ * daily upstream merge touches only the few lines that call it.
+ */
+
+export const APP_BRAND: "pokebots" | null = Constants.expoConfig?.extra?.brand === "pokebots" ? "pokebots" : null;
+
+/**
+ * The account service where the Pokebots build signs in by email or WorkOS: the same one as the
+ * Pokebots desktop app (`scripts/custom-build-install.sh`). It has WorkOS on, so the sign-in screen
+ * offers WorkOS. After sign-in the app keeps the service of the session, as for a QR code sign-in.
+ * The store build returns null and keeps the OpenBot service.
+ */
+export const BRAND_ACCOUNT_API_URL: string | null = APP_BRAND === "pokebots" ? "https://api.pokebots.xyz" : null;
+
+/** The Pokebots colors of the phone app: the brand blue for buttons, a light blue for the big block. */
+export const POKEBOTS_BRAND = {
+  /** Buttons, the sign-in actions and the app logo color. */
+  accent: POKEBOTS_HUE_COLORS[215],
+  onAccent: "#ffffff",
+  /** The block of the splash and the sign-in screen: the brand blue at 20%, so the mascot stands out. */
+  stage: "#d5e5fd",
+  /** Text and the back button on the block. */
+  onStage: "#0b1f3a",
+} as const;
+
+/** The mascot that takes the place of the eyes on the block: the Pokebots app icon. */
+export const POKEBOTS_MARK = require("../../../assets/pokebots/mark.png");
+
+/**
+ * Gives the app the brand colors before the first screen. The logo color is a theme variable that
+ * buttons, avatars and the block read, so changing it here changes all of them at once.
+ */
+export function applyAppBrand(): void {
+  if (APP_BRAND !== "pokebots") return;
+  for (const theme of ["light", "dark"] as const) {
+    Uniwind.updateCSSVariables(theme, {
+      "--openbot-logo-production": POKEBOTS_BRAND.accent,
+      "--openbot-logo-eye": POKEBOTS_BRAND.onAccent,
+    });
+  }
+}

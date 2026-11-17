@@ -18,9 +18,15 @@ export const messages = {
     "OpenBot 找不到 1Password CLI。请安装它并在 1Password 应用中开启集成，或改用服务账号令牌。",
   "error.connector.onePasswordCliInstallFailed": "OpenBot 无法安装 1Password CLI，请检查网络连接后重试。",
   "error.connector.onePasswordCliSignedOut": "1Password CLI 未登录。请在 1Password 应用中开启集成后重新连接。",
+  "error.connector.onePasswordAppUnreachable":
+    "OpenBot 无法连接到 1Password 应用。请打开 1Password 并解锁。在“设置 > 开发者”中确认已开启“与 1Password CLI 集成”，然后重试。",
   "error.connector.onePasswordCliFailed": "1Password CLI 执行失败：{detail}",
+  "error.connector.onePasswordCliForbidden":
+    "你的 1Password 账户不允许你创建共享保险库或服务账号。请向账户的所有者或管理员申请此权限，或向他们索取服务账号令牌，然后点击“使用令牌”。",
   "error.connector.onePasswordUnexpected": "1Password 返回了意外的响应：{detail}",
   "error.connector.onePasswordTokenRejected": "1Password 未接受该服务账号令牌。",
+  "error.connector.onePasswordUnreachable": "OpenBot 无法连接到 1Password，请检查网络连接后重试。",
+  "error.connector.onePasswordRateLimited": "1Password 收到的请求过多，请等待几分钟后重试。",
   "error.connector.onePasswordNoVault": "该服务账号无法读取任何保险库。请授予其保险库访问权限后重试。",
   "error.connector.onePasswordFileUnreadable": "1Password 连接文件无法读取。",
   "error.connector.onePasswordFileTooLarge": "1Password 连接文件过大。",
@@ -49,4 +55,22 @@ export const messages = {
   "error.connector.protonPassSignInTimeout": "Proton 登录用时过长。请重新连接。",
   "error.connector.protonPassSetupFailed":
     "无法在 Proton Pass 中创建保管库 Shared with OpenBot 或其访问密钥。请重新连接。",
+  "error.connector.keeperFailed": "无法连接 Keeper。请重新连接。",
+  "error.connector.keeperCliInstallFailed": "无法安装 Keeper Commander。请检查网络连接，然后重新连接。",
+  "error.connector.keeperPassword": "邮箱或主密码不正确。",
+  "error.connector.keeperCode": "验证码不正确。请重新输入。",
+  "error.connector.keeperCodeNotAsked": "Keeper 没有要求输入验证码。",
+  "error.connector.keeperNotApproved": "Keeper 尚未批准此设备。批准后，选择“继续”。",
+  "error.connector.keeperExpired": "这台电脑上的 Keeper 会话已结束。请重新连接。",
+  "error.connector.keeperPlan":
+    "你的 Keeper 管理员不允许此账户使用 Keeper Commander。请让管理员允许使用，然后重新连接。",
+  "error.connector.keeperSso": "使用 SSO 登录的 Keeper 账户暂时无法连接。",
+  "error.connector.keeperTwoFactorUnsupported":
+    "此账户的两步验证方式无法使用输入的验证码。请在 Keeper 中添加验证器应用或短信，然后重新连接。",
+  "error.connector.keeperLocked": "Keeper 已锁定此账户或此设备。请打开 Keeper 解锁，然后重新连接。",
+  "error.connector.keeperThrottled": "Keeper 要求在下次登录前等待几分钟。请稍后重新连接。",
+  "error.connector.keeperPersistentLogin":
+    "你的 Keeper 管理员关闭了 OpenBot 需要的“Stay logged in”。请让管理员允许，然后重新连接。",
+  "error.connector.keeperSignInTimeout": "登录 Keeper 用时过长。请重新连接。",
+  "error.connector.keeperFileUnreadable": "无法读取 Keeper 连接文件。",
 } as const satisfies PartialTranslation<typeof source>;

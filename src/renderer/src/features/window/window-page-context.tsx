@@ -14,21 +14,25 @@ export type WindowPage =
   | "workflows"
   | "usage"
   | "library"
+  | "rooms"
+  | "brain"
   | "machines"
+  | "crm"
   | "marketplace"
   | "settings"
   | "server-settings"
   | "pricing";
 
 /**
- * How a page sits in the window. The tasks page shows in the middle pane, as the agents do. A settings
- * page starts below the top row. The title of a schedule, workflows, usage, Library, Marketplace or
- * pricing page goes in the top row of the card. The chat sidebar stays beside every page.
+ * How a page sits in the window. The tasks page shows in the middle pane, as the agents do. The settings
+ * pages and the Marketplace show in a centered modal over the window: the sidebar and the conversation stay behind it. The
+ * title of a schedule, workflows, usage, Library or pricing page goes in the top row of the
+ * card. The chat sidebar stays beside every page.
  */
-export type WindowPageKind = "agents" | "settings" | "titled";
+export type WindowPageKind = "agents" | "modal" | "titled";
 
 export function windowPageKind(page: WindowPage): WindowPageKind {
-  if (page === "settings" || page === "server-settings") return "settings";
+  if (page === "settings" || page === "server-settings" || page === "marketplace") return "modal";
   return page === "agents" || page === "tasks" ? "agents" : "titled";
 }
 
@@ -219,9 +223,24 @@ const context = createSimpleContext({
         const serverId = activeServerId();
         if (serverId) usage.openLibrary(serverId, source);
       },
+      openRooms(source: HTMLElement | null) {
+        leavePricing();
+        const serverId = activeServerId();
+        if (serverId) usage.openRooms(serverId, source);
+      },
+      openBrain(source: HTMLElement | null) {
+        leavePricing();
+        const serverId = activeServerId();
+        if (serverId) usage.openBrain(serverId, source);
+      },
       openMachines(source: HTMLElement | null) {
         const serverId = activeServerId();
         if (serverId) usage.openMachines(serverId, source);
+      },
+      openCrm(source: HTMLElement | null, connectors = false) {
+        leavePricing();
+        const serverId = activeServerId();
+        if (serverId) usage.openCrm(serverId, source, connectors);
       },
       openSettings(source: HTMLElement | null) {
         leavePricing();

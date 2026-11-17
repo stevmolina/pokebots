@@ -62,6 +62,11 @@ export const messages = {
   "mobile.agent.menu.unmute": "Sesi aç",
   "mobile.agent.menu.hide": "Gizle",
   "mobile.agent.menu.info": "Bilgi",
+  "mobile.agent.profile.edit": "Düzenle",
+  "mobile.agent.profile.library": "Kitaplık",
+  "mobile.agent.profile.computer": "Bilgisayar",
+  "mobile.agent.profile.notificationsFooter":
+    "Bu ajan bitirdiğinde veya sizi beklediğinde bildirim alın. Yalnızca sizin için, tüm cihazlarınızda.",
   "mobile.agent.menu.more": "Daha fazla",
   "mobile.agent.menu.copyId": "Kimliği kopyala",
   "mobile.agent.menu.duplicate": "Çoğalt",
@@ -145,6 +150,8 @@ export const messages = {
   "mobile.agent.info.routinePaused": "Duraklatıldı",
   "mobile.agent.info.noRoutines": "Henüz rutin yok.",
   "mobile.agent.info.addRoutine": "Rutin ekle",
+  "mobile.agent.info.addHeartbeat": "Nabız ekle",
+  "mobile.agent.heartbeat.name": "Nabız",
   "mobile.agent.info.skillsUnsupported":
     "Bu ana makine becerileri desteklemiyor. Ana makinedeki OpenBot'u güncelleyin.",
   "mobile.agent.info.noSkills": "Henüz beceri yok.",
@@ -327,6 +334,8 @@ export const messages = {
   "mobile.agent.runtime.noModels": "Bu sağlayıcı için kullanılabilir model yok.",
   "mobile.agent.runtime.searchModels": "Modellerde ara",
   "mobile.agent.runtime.noMatches": "Aramanızla eşleşen model yok.",
+  "mobile.agent.runtime.workspaceOnlyUnavailable":
+    'Bu sağlayıcı Windows ve Linux\'ta "Yalnızca çalışma alanı" ile çalışmaz. Kullanmak için önce "İzinler"i değiştirin.',
   "mobile.agent.runtime.usageLimit": "Kullanım sınırına ulaşıldı",
   "mobile.agent.runtime.usageLimitWindow": "{window} sınırı",
   "mobile.agent.runtime.usageLimitResets": "{limit} · {time} tarihinde sıfırlanır",
@@ -413,8 +422,6 @@ export const messages = {
   "mobile.agent.notificationLevel.title": "Şunun hakkında bildir",
   "mobile.agent.notificationLevel.server": "Sunucu ayarı",
   "mobile.agent.notificationLevel.serverValue": "Sunucu ayarı ({level})",
-  "mobile.agent.notificationLevel.footer":
-    "“Şunun hakkında bildir” yalnızca senin içindir ve tüm cihazlarında geçerlidir.",
   "mobile.agent.notificationLevel.unsupported":
     "Bu sunucu bir ajan için kendi bildirim düzeyini saklayamıyor. OpenBot’u onu çalıştıran bilgisayarda güncelle.",
   "mobile.agent.newChat.title": "Yeni sohbet",
@@ -619,6 +626,7 @@ export const messages = {
   "mobile.agent.home.markAllRead": "Tümünü okundu olarak işaretle",
   "mobile.agent.home.sort.title": "Sohbetleri sırala",
   "mobile.agent.home.sort.manual": "Elle",
+  "mobile.agent.home.sort.recent": "Son etkinlik",
   "mobile.agent.home.sort.unreadGroup": "Okunmamışlar bir grupta",
   "mobile.agent.home.sort.unreadFirst": "Klasörlerde önce okunmamışlar",
   "mobile.agent.route.appearance": "Görünüm",

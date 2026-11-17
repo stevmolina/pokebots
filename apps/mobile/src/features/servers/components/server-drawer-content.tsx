@@ -2,6 +2,7 @@ import type { MobileTranslate } from "@openbot/i18n/mobile";
 import type { Href } from "expo-router";
 import { Typography } from "heroui-native";
 import type { LucideIcon } from "lucide-react-native";
+import Brain from "lucide-react-native/icons/brain";
 import CalendarClock from "lucide-react-native/icons/calendar-clock";
 import ChartArea from "lucide-react-native/icons/chart-area";
 import Check from "lucide-react-native/icons/check";
@@ -487,7 +488,6 @@ export const ServerDrawerContent = memo(function ServerDrawerContent({
                   editingTools ? t("mobile.server.drawer.doneEditingSidebar") : t("mobile.server.drawer.doneEditing")
                 }
                 color={mutedColor}
-                fallbackVariant="filled"
                 systemName="checkmark"
                 onPress={stopEditing}
               >
@@ -497,7 +497,6 @@ export const ServerDrawerContent = memo(function ServerDrawerContent({
               <ServerDrawerIconButton
                 accessibilityLabel={showsPlans ? t("mobile.server.drawer.add") : t("mobile.server.drawer.join")}
                 color={mutedColor}
-                fallbackVariant="filled"
                 systemName="plus"
                 onPress={() =>
                   onNavigate(
@@ -632,10 +631,12 @@ function DrawerServerTools({
     serverRowState(current, serverId, (checks) => checks.canControlComputer(serverId)),
   );
   // An older host has no storage routes, so it has no Library, as on desktop.
+  const brain = useMobileWorkspaceSelector((current) => current.canUseBrain(serverId));
   const library = useMobileWorkspaceSelector((current) =>
     serverRowState(current, serverId, (checks) => checks.canReadServerStorage(serverId)),
   );
   // Until the host answers, a server without kept values shows Threads and Workflows from its last connection.
+  const roomsAvailable = useMobileWorkspaceSelector((current) => current.canUseRooms(serverId));
   const tasksRow = useMobileWorkspaceSelector((current) =>
     serverRowState(current, serverId, (checks) => checks.canUseTasks(serverId)),
   );
@@ -644,11 +645,13 @@ function DrawerServerTools({
   );
   const routes = useMemo(
     (): Record<DrawerRoute, Href> => ({
+      rooms: { pathname: "/server-rooms", params: { serverId } },
       tasks: { pathname: "/server-tasks", params: { serverId } },
       routines: { pathname: "/server-routines", params: { serverId } },
       workflows: { pathname: "/server-workflows", params: { serverId } },
       marketplace: { pathname: "/server-marketplace", params: { serverId } },
       usage: { pathname: "/server-usage", params: { serverId } },
+      brain: { pathname: "/brain", params: { serverId } },
       library: { pathname: "/server-library", params: { serverId } },
       remoteDesktop: { pathname: "/remote-desktop/[serverId]", params: { serverId } },
       members: { pathname: "/server-settings/members", params: { serverId } },
@@ -658,6 +661,10 @@ function DrawerServerTools({
   );
   // A tool that this server does not have is null. A tool that only the last connection had is disabled.
   const tools: Record<DrawerToolId, DrawerTool | null> = {
+    rooms:
+      roomsAvailable && (server.role === "owner" || server.role === "admin")
+        ? { icon: UsersRound, label: t("rooms.title") }
+        : null,
     tasks: values.tasks
       ? {
           icon: ListChecks,
@@ -679,6 +686,7 @@ function DrawerServerTools({
       : workflowsRow === "disabled"
         ? { icon: Waypoints, label: t("mobile.app.route.workflows"), disabled: true }
         : null,
+    brain: brain ? { icon: Brain, label: t("mobile.brain.title") } : null,
     marketplace: { icon: Store, label: t("mobile.app.route.marketplace") },
     usage: { icon: ChartArea, label: t("mobile.app.route.usage"), value: values.usage },
     library:

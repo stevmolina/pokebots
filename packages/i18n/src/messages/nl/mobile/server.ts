@@ -455,7 +455,7 @@ export const messages = {
   "mobile.server.settings.timezoneNoMatch": "Geen tijdzone komt overeen met deze zoekopdracht.",
   "mobile.server.settings.timezoneMore": "Typ meer van de naam om andere tijdzones te zien.",
   "mobile.server.settings.timezoneDescription":
-    "Nieuwe routines gebruiken deze tijdzone als het bericht de tijdzone van de afzender niet vermeldt.",
+    "Nieuwe routines gebruiken deze tijdzone als het bericht de tijdzone van de afzender niet vermeldt. Op een server gebruikt ook de browser deze tijdzone na de volgende herstart.",
   "mobile.server.settings.timezoneLoading": "Tijdzone laden…",
   "mobile.server.settings.timezoneLoadFailed": "Kan de tijdzone van de server niet laden.",
   "mobile.server.settings.timezoneSaveFailed": "Kan de tijdzone niet opslaan. Probeer het opnieuw.",
@@ -688,6 +688,31 @@ export const messages = {
   "mobile.server.connectors.protonPass.keyHelp":
     "Maak in Proton Pass een toegangssleutel die alleen de kluis kan lezen die je met OpenBot deelt, en plak die hier. {host} bewaart de sleutel; deze telefoon niet.",
   "mobile.server.connectors.protonPass.keyPlaceholder": "pst_…",
+  "mobile.server.connectors.keeper.title": "Keeper",
+  "mobile.server.connectors.keeper.description":
+    "Deel een Keeper-map met OpenBot op {host}, zodat agents op {host} zich in de browser bij sites kunnen aanmelden.",
+  "mobile.server.connectors.keeper.accountHelp":
+    "Voer je Keeper-e-mailadres en hoofdwachtwoord in. Ze gaan één keer naar {host}, en {host} geeft ze aan Keeper Commander. Deze telefoon bewaart ze niet.",
+  "mobile.server.connectors.keeper.email": "E-mail",
+  "mobile.server.connectors.keeper.masterPassword": "Hoofdwachtwoord",
+  "mobile.server.connectors.keeper.signingIn": "{host} meldt zich aan bij Keeper…",
+  "mobile.server.connectors.keeper.makingFolder": "{host} maakt de gedeelde map…",
+  "mobile.server.connectors.keeper.code": "Code",
+  "mobile.server.connectors.keeper.twoFactorHint":
+    "Keeper vraagt om een tweestapscode. Voer de code uit je authenticator-app of sms in. Hij gaat één keer naar {host}; deze telefoon bewaart hem niet.",
+  "mobile.server.connectors.keeper.deviceHint":
+    "Keeper heeft een goedkeuringsmail en een melding naar je andere apparaten gestuurd. Keur dit apparaat daar goed en tik dan op Doorgaan. Of typ de code uit de e-mail.",
+  "mobile.server.connectors.keeper.codeWrong": "De code is niet juist. Probeer het opnieuw.",
+  "mobile.server.connectors.keeper.folderTitle": "Gedeelde map",
+  "mobile.server.connectors.keeper.folderFooter":
+    "Verplaats in Keeper een login naar deze map zodat agents ermee kunnen inloggen. Haal hem eruit om te stoppen.",
+  "mobile.server.connectors.keeper.plan":
+    "Je Keeper-beheerder staat Keeper Commander niet toe voor dit account. Vraag of het toegestaan kan worden en verbind daarna opnieuw.",
+  "mobile.server.connectors.keeper.expiredTitle": "De Keeper-sessie is beëindigd",
+  "mobile.server.connectors.keeper.expiredBody":
+    "Agents op {host} kunnen niet inloggen met je gedeelde logins tot je opnieuw verbindt.",
+  "mobile.server.connectors.keeper.disconnectBody":
+    "{host} beëindigt zijn Keeper-sessie. De map en de logins erin blijven in je Keeper-kluis.",
   "mobile.server.connectors.passwordManager.unavailable": "{name} is niet beschikbaar op deze server.",
   "mobile.server.connectors.passwordManager.howItWorks":
     "Meld je op deze telefoon aan bij {name}. Daarna maakt {host} een gedeelde kluis en een alleen-lezen toegangssleutel ervoor, en bewaart alleen die sleutel. Agents zien nooit een wachtwoord.",
@@ -887,6 +912,9 @@ export const messages = {
   "mobile.server.connectors.whatsapp.workingMessage": "Bericht “Mee bezig…”",
   "mobile.server.connectors.whatsapp.workingMessageDescription":
     "OpenBot stuurt het terwijl de agent werkt en vervangt het daarna door het antwoord. Zet dit uit om alleen het antwoord te sturen.",
+  "mobile.server.connectors.whatsapp.statusReactions": "Statusreacties",
+  "mobile.server.connectors.whatsapp.statusReactionsDescription":
+    "OpenBot reageert met 👀 als er een bericht binnenkomt en met ✅ als het antwoord klaar is. Zet dit uit om geen reacties te sturen.",
   "mobile.server.connectors.whatsapp.orchestratorTitle": "WhatsApp Orchestrator",
   "mobile.server.connectors.whatsapp.orchestratorDescription":
     "Deze agent ontvangt de berichten voor OpenBot van al je gekoppelde nummers. Korte berichten beantwoordt hij zelf, ander werk geeft hij aan de juiste agent, en hij antwoordt in WhatsApp.",
@@ -1113,6 +1141,22 @@ export const messages = {
   "mobile.server.providers.compactWindowDefault": "Standaard van Claude Code",
   "mobile.server.providers.compactWindowTokens": "{size} tokens",
   "mobile.server.providers.compactWindowLoadFailed": "Kan de compressiegrootte van deze server niet laden.",
+  "mobile.server.environment.row": "Variabelen",
+  "mobile.server.environment.title": "Omgeving",
+  "mobile.server.environment.hint":
+    "API-sleutels, basis-URL’s en andere instellingen die elk {name}-proces krijgt. Een wijziging geldt als de lopende beurten klaar zijn.",
+  "mobile.server.environment.codexHint":
+    "OPENAI_BASE_URL stuurt met OPENAI_API_KEY als sleutel de modelverzoeken van ChatGPT naar dat adres.",
+  "mobile.server.environment.shellNote": "De opdrachten die agents uitvoeren, kunnen deze waarden lezen.",
+  "mobile.server.environment.add": "Variabele toevoegen",
+  "mobile.server.environment.namePlaceholder": "VARIABLE_NAME",
+  "mobile.server.environment.valuePlaceholder": "Waarde",
+  "mobile.server.environment.saved": "Opgeslagen",
+  "mobile.server.environment.sensitive": "Gevoelig",
+  "mobile.server.environment.remove": "Verwijderen",
+  "mobile.server.environment.save": "Opslaan",
+  "mobile.server.environment.loadFailed": "Kan de variabelen van {name} niet laden.",
+  "mobile.server.environment.invalid": "Verbeter eerst de namen.",
   "mobile.server.providers.disconnect": "Ontkoppelen",
   "mobile.server.providers.disconnectTitle": "{name} ontkoppelen?",
   "mobile.server.providers.disconnectBody":

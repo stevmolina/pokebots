@@ -63,6 +63,11 @@ export const messages = {
   "mobile.agent.menu.unmute": "ミュートを解除",
   "mobile.agent.menu.hide": "非表示",
   "mobile.agent.menu.info": "情報",
+  "mobile.agent.profile.edit": "編集",
+  "mobile.agent.profile.library": "ライブラリ",
+  "mobile.agent.profile.computer": "コンピューター",
+  "mobile.agent.profile.notificationsFooter":
+    "このエージェントが終わったときや、あなたを待っているときに通知します。あなただけの設定で、すべてのデバイスに適用されます。",
   "mobile.agent.menu.more": "その他",
   "mobile.agent.menu.copyId": "ID をコピー",
   "mobile.agent.menu.duplicate": "複製",
@@ -138,6 +143,8 @@ export const messages = {
   "mobile.agent.info.routinePaused": "一時停止中",
   "mobile.agent.info.noRoutines": "ルーティンはまだありません。",
   "mobile.agent.info.addRoutine": "ルーティンを追加",
+  "mobile.agent.info.addHeartbeat": "ハートビートを追加",
+  "mobile.agent.heartbeat.name": "ハートビート",
   "mobile.agent.info.skillsUnsupported": "このホストはスキルに対応していません。ホストの OpenBot を更新してください。",
   "mobile.agent.info.noSkills": "スキルはまだありません。",
   "mobile.agent.info.skillsManaged": "このエージェントのスキルはホストで管理されています。",
@@ -318,6 +325,8 @@ export const messages = {
   "mobile.agent.runtime.noModels": "このプロバイダーで利用できるモデルはありません。",
   "mobile.agent.runtime.searchModels": "モデルを検索",
   "mobile.agent.runtime.noMatches": "検索に一致するモデルはありません。",
+  "mobile.agent.runtime.workspaceOnlyUnavailable":
+    "このプロバイダーは、Windows と Linux では「ワークスペースのみ」で動作しません。使うには、先に「権限」を変更してください。",
   "mobile.agent.runtime.usageLimit": "使用量の上限に達しました",
   "mobile.agent.runtime.usageLimitWindow": "{window}の上限",
   "mobile.agent.runtime.usageLimitResets": "{limit} · {time} にリセット",
@@ -404,8 +413,6 @@ export const messages = {
   "mobile.agent.notificationLevel.title": "通知する内容",
   "mobile.agent.notificationLevel.server": "サーバーの設定",
   "mobile.agent.notificationLevel.serverValue": "サーバーの設定（{level}）",
-  "mobile.agent.notificationLevel.footer":
-    "「通知する内容」はあなただけの設定で、あなたのすべてのデバイスに適用されます。",
   "mobile.agent.notificationLevel.unsupported":
     "このサーバーはエージェントごとの通知レベルを保存できません。サーバーを実行しているコンピューターで OpenBot をアップデートしてください。",
   "mobile.agent.newChat.title": "新しいチャット",
@@ -605,6 +612,7 @@ export const messages = {
   "mobile.agent.home.markAllRead": "すべて既読にする",
   "mobile.agent.home.sort.title": "チャットの並べ替え",
   "mobile.agent.home.sort.manual": "手動",
+  "mobile.agent.home.sort.recent": "最近のアクティビティ",
   "mobile.agent.home.sort.unreadGroup": "未読をグループにまとめる",
   "mobile.agent.home.sort.unreadFirst": "フォルダー内で未読を先頭に",
   "mobile.agent.route.appearance": "外観",

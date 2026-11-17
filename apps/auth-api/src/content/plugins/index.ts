@@ -1,4 +1,5 @@
 import { AAVE_PLUGIN_GUIDE } from "./aave";
+
 import { AIRTABLE_PLUGIN_GUIDE } from "./airtable";
 import { ATLASSIAN_PLUGIN_GUIDE } from "./atlassian";
 import { BRAVE_SEARCH_PLUGIN_GUIDE } from "./brave-search";
@@ -31,6 +32,8 @@ import { RENDER_PLUGIN_GUIDE } from "./render";
 import { RESEND_PLUGIN_GUIDE } from "./resend";
 import { REVENUECAT_PLUGIN_GUIDE } from "./revenuecat";
 import { ROBINHOOD_PLUGIN_GUIDE } from "./robinhood";
+import { ROOMS_PLUGIN_GUIDE } from "./rooms";
+import { SECOND_BRAIN_PLUGIN_GUIDE } from "./second-brain";
 import { SENTRY_PLUGIN_GUIDE } from "./sentry";
 import { STRIPE_PLUGIN_GUIDE } from "./stripe";
 import { SUNRA_PLUGIN_GUIDE } from "./sunra";
@@ -51,6 +54,8 @@ const PLUGIN_GUIDES: Readonly<Record<string, PluginGuide>> = {
   cobrain: COBRAIN_PLUGIN_GUIDE,
   honcho: HONCHO_PLUGIN_GUIDE,
   hindsight: HINDSIGHT_PLUGIN_GUIDE,
+  "second-brain": SECOND_BRAIN_PLUGIN_GUIDE,
+  rooms: ROOMS_PLUGIN_GUIDE,
   composio: COMPOSIO_PLUGIN_GUIDE,
   context7: CONTEXT7_PLUGIN_GUIDE,
   figma: FIGMA_PLUGIN_GUIDE,

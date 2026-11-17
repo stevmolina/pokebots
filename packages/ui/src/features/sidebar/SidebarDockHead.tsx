@@ -1,7 +1,7 @@
 /**
- * What a group heading of the chat list shows: a quiet name and a small chevron after it. An open group
- * shows a chevron that points down. A closed group shows its count and a chevron that points to the
- * side, and a dot when it holds an unread chat. The caller owns the button, so a folder heading keeps
+ * What a group heading of the chat list shows: a quiet name, its count at the end, and a small chevron
+ * after the count that points down while the group is open and to the side while it is closed. A closed
+ * group also shows a dot when it holds an unread chat. The caller owns the button, so a folder heading keeps
  * the menu and the drag of its section.
  */
 
@@ -35,9 +35,10 @@ export function SidebarDockHeadContent(headProps: SidebarDockHeadProps) {
           </>
         )}
       </Show>
-      <Show when={!headProps.open}>
-        <span class="sidebar-dock-count">{format.number(headProps.count)}</span>
-      </Show>
+      {/* The count shows open or closed, at the end of the heading. The phone list hides it while open. */}
+      <span class="sidebar-dock-count" data-open={headProps.open ? "" : undefined}>
+        {format.number(headProps.count)}
+      </span>
       <Show when={!headProps.open && headProps.unread}>
         <span class="sidebar-chat-unread" aria-hidden="true" />
         <span class="sr-only">{t("sidebar.chat.unread")}</span>

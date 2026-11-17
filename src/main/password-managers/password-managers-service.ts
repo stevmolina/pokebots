@@ -46,13 +46,13 @@ export class PasswordManagersService {
   /**
    * Why `connect` refuses `input` before the driver runs, as catalog text, or null. An unknown
    * manager and a method that the driver does not list are refused. `extra-password` answers a
-   * `browser` sign-in, so it needs `browser`.
+   * `browser` sign-in, so it needs `browser`; `code` answers an `account` sign-in, so it needs `account`.
    */
   refusal(manager: string, method?: PasswordManagerConnectMethod): string | null {
     const driver = isPasswordManagerId(manager) ? this.#drivers.get(manager) : undefined;
     if (!driver) return sourceText("error.connector.passwordManagerUnknown");
     if (!method) return null;
-    const kind = method.kind === "extra-password" ? "browser" : method.kind;
+    const kind = method.kind === "extra-password" ? "browser" : method.kind === "code" ? "account" : method.kind;
     return driver.status().methods.includes(kind) ? null : sourceText("error.connector.passwordManagerMethod");
   }
 

@@ -1,6 +1,7 @@
 import { isKnownAgentProvider } from "@openbot/contracts/agent-providers";
 import type { AppAppearance } from "@openbot/contracts/app-appearance";
 import type { AppLanguage } from "@openbot/contracts/app-language";
+import { BRAIN_CAPABILITY } from "@openbot/contracts/brain";
 import { HOSTED_SERVER_CONTACT_URL } from "@openbot/contracts/hosted-servers";
 import {
   type AddedAgent,
@@ -25,6 +26,7 @@ import {
   decodeAgentSpeedSettings,
   decodeHostTurnLimits,
   LEGACY_RESPONSE_STYLE,
+  type McpSignInState,
   type RoutineFields,
   type ServerConnectionState,
   type ServerSummary,
@@ -50,6 +52,7 @@ import { AGENT_USAGE_LIMIT_CAPABILITY } from "@openbot/contracts/team-protocol/a
 import { AGENT_WAITS_CAPABILITY } from "@openbot/contracts/team-protocol/agent-waits-v1";
 import { BROWSER_PROFILES_CAPABILITY } from "@openbot/contracts/team-protocol/browser-profiles-v1";
 import { BROWSER_PROXIES_CAPABILITY } from "@openbot/contracts/team-protocol/browser-proxies-v1";
+import { TEAM_BROWSER_VIEW_CAPABILITY } from "@openbot/contracts/team-protocol/browser-view-v1";
 import { CHANNEL_BROWSER_CAPABILITY } from "@openbot/contracts/team-protocol/channel-browser-v1";
 import { CHANNEL_ISOLATION_CAPABILITY } from "@openbot/contracts/team-protocol/channel-isolation-v1";
 import { CHANNEL_PICTURE_CAPABILITY } from "@openbot/contracts/team-protocol/channel-picture-v1";
@@ -62,11 +65,13 @@ import {
   CLAUDE_USER_SETUP_ROUTES,
   decodeClaudeUserSetupResponse,
 } from "@openbot/contracts/team-protocol/claude-user-setup-v1";
+import { COMPUTER_MANAGEMENT_CAPABILITY } from "@openbot/contracts/team-protocol/computer-management-v1";
 import { CONNECTORS_CAPABILITY } from "@openbot/contracts/team-protocol/connectors-v1";
 import { CONTEXT_COMPACT_CAPABILITY } from "@openbot/contracts/team-protocol/context-compact-v1";
 import { CONTEXT_RESET_CAPABILITY } from "@openbot/contracts/team-protocol/context-reset-v1";
 import { CONVERSATION_FILE_SEARCH_CAPABILITY } from "@openbot/contracts/team-protocol/conversation-file-search-v1";
 import { CONVERSATION_UNREAD_FROM_CAPABILITY } from "@openbot/contracts/team-protocol/conversation-unread-from-v1";
+import { CRM_CAPABILITY } from "@openbot/contracts/team-protocol/crm-v1";
 import {
   AGENT_HIDDEN_CAPABILITY,
   AGENT_HIDDEN_WORK_CAPABILITY,
@@ -87,6 +92,7 @@ import { MCP_SIGN_IN_CAPABILITY } from "@openbot/contracts/team-protocol/mcp-sig
 import { MESSAGE_DELETE_CAPABILITY } from "@openbot/contracts/team-protocol/message-delete-v1";
 import { MESSAGE_PINS_CAPABILITY } from "@openbot/contracts/team-protocol/message-pins-v1";
 import { PROVIDER_ACCOUNTS_CAPABILITY } from "@openbot/contracts/team-protocol/provider-accounts-v1";
+import { ROOMS_CAPABILITY, ROOMS_ROUTE } from "@openbot/contracts/team-protocol/rooms-v1";
 import { ROUTINE_FLOW_STOP_CAPABILITY } from "@openbot/contracts/team-protocol/routine-flow-stop-v1";
 import { ROUTINE_FLOWS_CAPABILITY } from "@openbot/contracts/team-protocol/routine-flows-v1";
 import { ROUTINE_RECOVERY_CAPABILITY } from "@openbot/contracts/team-protocol/routine-recovery-v1";
@@ -96,6 +102,7 @@ import { SIDE_QUESTION_CAPABILITY } from "@openbot/contracts/team-protocol/side-
 import { SIGN_IN_RELAY_CAPABILITY } from "@openbot/contracts/team-protocol/sign-in-relay-v1";
 import { SKILL_LEARNING_CAPABILITY } from "@openbot/contracts/team-protocol/skill-learning-v1";
 import { STORAGE_CHANNEL_CAPABILITY } from "@openbot/contracts/team-protocol/storage-channel-v1";
+import { THREAD_MESSAGE_SEARCH_CAPABILITY } from "@openbot/contracts/team-protocol/thread-message-search-v1";
 import { VAULT_IMPORT_CAPABILITY } from "@openbot/contracts/team-protocol/vault-import-v1";
 import { VAULT_CAPABILITY } from "@openbot/contracts/team-protocol/vault-v1";
 import { VAULT_V2_CAPABILITY } from "@openbot/contracts/team-protocol/vault-v2";
@@ -104,7 +111,6 @@ import { VAULT_V4_CAPABILITY } from "@openbot/contracts/team-protocol/vault-v4";
 import { WEBHOOK_SENDER_SECRET_CAPABILITY } from "@openbot/contracts/team-protocol/webhook-sender-secret-v1";
 import { WEBHOOK_TESTS_CAPABILITY } from "@openbot/contracts/team-protocol/webhook-tests-v1";
 import { WHATSAPP_CONNECTOR_CAPABILITY } from "@openbot/contracts/team-protocol/whatsapp-connector-v1";
-import { WHATSAPP_WORKING_MESSAGE_CAPABILITY } from "@openbot/contracts/team-protocol/whatsapp-working-message-v1";
 import { WORKFLOWS_CAPABILITY } from "@openbot/contracts/team-protocol/workflows-v1";
 import { runTeamEffect } from "@openbot/team-client";
 import { createAgentComputerPort } from "@openbot/team-client/agent-computer";
@@ -127,6 +133,7 @@ import {
   getHostModelVisibility,
   getHostPersonality,
   getHostPromptCacheTtl,
+  getHostProviderEnvironment,
   getHostReleaseStatus,
   getHostSkillLearning,
   getHostTimezone,
@@ -143,6 +150,7 @@ import {
   setHostModelVisibility,
   setHostPersonality,
   setHostPromptCacheTtl,
+  setHostProviderEnvironment,
   setHostSkillLearning,
   setHostTimezone,
   setHostUpdateSettings,
@@ -152,9 +160,9 @@ import {
 } from "@openbot/team-client/team-admin-requests";
 import { clearAgentContext, type TeamApiRequest } from "@openbot/team-client/team-api-requests";
 import { classifyFailure } from "@openbot/telemetry";
-import { Button, hasVisibleToasts, toast } from "@openbot/ui";
+import { Button, toast } from "@openbot/ui";
 import type { GlobalSearchRoutine } from "@openbot/ui/components/GlobalSearch";
-import type { AgentMessage } from "@openbot/ui/data";
+import type { AgentMessage, ComposerThreadMessageMatch } from "@openbot/ui/data";
 import { accountUsageProviderRows } from "@openbot/ui/features/account/account-usage-view";
 import { computeAgentAvatarMoods } from "@openbot/ui/features/agents/agent-avatar-mood";
 import { createFirstAgentDraft, type FirstAgentDraft } from "@openbot/ui/features/agents/FirstAgentSetup";
@@ -164,6 +172,7 @@ import { createLicenseStore } from "@openbot/ui/features/billing/license-store";
 import { isConnectorId } from "@openbot/ui/features/connectors/connectors";
 import { unloadedHistory } from "@openbot/ui/features/conversation/ChatScrollRail";
 import type { DiagramModelChoice } from "@openbot/ui/features/diagrams/DiagramNewAgentCard";
+import { RoomsPanel } from "@openbot/ui/features/rooms/RoomsPanel";
 import { LeaveServerDialog } from "@openbot/ui/features/servers/LeaveServerDialog";
 import { RestartServerDialog } from "@openbot/ui/features/servers/RestartServerDialog";
 import type { ServerActionCallbacks } from "@openbot/ui/features/servers/ServerActionItems";
@@ -178,7 +187,6 @@ import type { SettingsPagePlacement } from "@openbot/ui/features/settings/Settin
 import { createSettingsHostedServersStore } from "@openbot/ui/features/settings/stores/hosted-servers-store";
 import type { ShortcutId } from "@openbot/ui/features/shortcuts/shortcut-registry";
 import { Sidebar } from "@openbot/ui/features/sidebar/Sidebar";
-import { SidebarCommunityCard } from "@openbot/ui/features/sidebar/SidebarCommunityCard";
 import { sidebarAgentOrder } from "@openbot/ui/features/sidebar/sidebar-agent-order";
 import {
   computeSidebarAgentStates,
@@ -195,6 +203,7 @@ import {
   createMemo,
   createRoot,
   createSignal,
+  createStore,
   flush,
   Loading,
   lazy,
@@ -206,18 +215,21 @@ import {
   untrack,
 } from "solid-js";
 import { queuedDeliveriesInOrder } from "../../queue-reconciliation";
+import { WebBrainPage } from "../brain/WebBrainPage";
+import { decodeRoomsResultFromHost } from "./web-rooms";
 // Copying a selection with a formula in it gives its LaTeX source, as on desktop.
 import "katex/contrib/copy-tex";
 // Copying a selection gives clean HTML, as on desktop.
 import "../../selection-copy";
 import { actionToast } from "../../action-toast";
 import { desktopAnalytics } from "../../analytics";
-import { formatMessageTime, toAgentMessage } from "../../app-message-projection";
+import { collectThreadMessageMatches, formatMessageTime, toAgentMessage } from "../../app-message-projection";
 import { ProviderSignInDialogs } from "../../components/ProviderSignInDialogs";
 import { isGlobalSearchShortcut } from "../../global-search-shortcut";
 import { LayoutProvider, useLayout } from "../../layout";
 import {
   AgentUsagePanel,
+  CrmScreen,
   RoutineFlowsCanvas,
   ScheduleView,
   ServerLibrary,
@@ -241,7 +253,7 @@ import { createUsageRefreshPoll } from "../account/usage-refresh-poll";
 import { conversationThreads } from "../agent-threads/conversation-threads";
 import { type NewAgentDraft, newAgentInput } from "../agents/agent-create-input";
 import { type CreationPreference, resolveCreationModel } from "../agents/agent-creation-model";
-import { agentErrorDetails, claimErrorToast, readableAgentError } from "../agents/agent-error-text";
+import { agentErrorDetails, claimErrorToast, createRetryNotices, readableAgentError } from "../agents/agent-error-text";
 import { withHostAccountUsage, withHostProfileAccount } from "../agents/host-provider-accounts";
 import { createRemoteAgentAdmin, updateRemoteAgent } from "../agents/remote-agent-admin";
 import type { ServerBrowserProfilesOptions } from "../browser/ServerBrowserProfilesPanel";
@@ -271,12 +283,15 @@ import {
 } from "../conversation/message-delete-access";
 import { webEventRoutinesApi } from "../conversation/routine-webhooks-api";
 import { trackUsageLimitShown, usageLimitAskFrom } from "../conversation/usage-limit-ask";
+import { createCrmEnabled } from "../crm/crm-enabled";
 import type { FilesPort } from "../files/files-port";
 import { hostSetupProviderProps } from "../onboarding/host-setup-provider-props";
 import { createRoutineTimezonePrompt } from "../schedule/routine-timezone-prompt";
 import type { ScheduleRoutine } from "../schedule/SchedulePanel";
+import { scheduleRoutinePorts } from "../schedule/schedule-routine-create";
 import type { AddServerOverlay as AddServerOverlayView, AddServerResume } from "../servers/AddServerOverlay";
 import { createHostedUpsellOffline, HostedServerUpsell } from "../servers/hosted-server-upsell-controller";
+import { mcpSignInRecord } from "../servers/mcp-servers";
 import { saveRemoteFrameChannels } from "../servers/remote-workspace-frame";
 import type { HostAgentDefaultsCalls } from "../servers/ServerAgentsSection";
 import type { HostServerAuditCalls } from "../servers/ServerAuditSection";
@@ -294,7 +309,6 @@ import {
   remoteMcpSignIn,
   remoteUpdateServer,
   serverCanAdminister,
-  serverCanManageMcp,
   serverRoleCanAdminister,
   serverRotatesHostKey,
 } from "../servers/server-capabilities";
@@ -309,21 +323,28 @@ import { licenseContactUs, trackLicenseEvent } from "../settings/license-analyti
 import type { HostClaudeAiToolsCalls } from "../settings/provider-claude-ai-tools";
 import type { HostClaudeCompactWindowCalls } from "../settings/provider-claude-compact-window";
 import type { HostClaudeUserSetupCalls } from "../settings/provider-claude-user-setup";
+import type { HostProviderEnvironmentCalls } from "../settings/provider-environment";
 import type { HostModelVisibilityCalls } from "../settings/provider-model-visibility";
 import type { HostPromptCacheTtlCalls } from "../settings/provider-prompt-cache";
 import { AppShortcuts } from "../shortcuts/AppShortcuts";
 import { onShortcutCommand } from "../shortcuts/shortcut-commands";
 import { shortcutPlatform } from "../shortcuts/shortcut-platform";
-import { createCommunityCardVisibility } from "../sidebar/community-card";
 import { createSidebarAlertCards, SidebarAlertCards } from "../sidebar/SidebarAlertCards";
 import { isReaderAuthor } from "../team/reader-identity";
 import type { ServerVaultOptions } from "../vault/ServerVaultPanel";
 import { createVaultStore } from "../vault/stores/vault-store";
 import { createHelpMenu } from "../window/help-menu";
-import { openFirstSettingsSection, SettingsPageFrame, SettingsSearchField } from "../window/SettingsPageFrame";
+import {
+  openFirstSettingsSection,
+  ServerSettingsPageTitle,
+  SettingsPageFrame,
+  SettingsSearchField,
+} from "../window/SettingsPageFrame";
+import { WindowBackdrop } from "../window/WindowBackdrop";
 import type { SettingsKind, WindowPage } from "../window/window-page-context";
 import { WebConnectComputer } from "./WebConnectComputer";
 import { WebMobileNavigation, type WebMobilePane, WebPhoneBack, type WebPhoneTab } from "./WebMobileNavigation";
+import { WebPhoneSearch } from "./WebPhoneSearch";
 import { WebServerOtherTab } from "./WebServerOtherTab";
 import { createWebAccountCalls } from "./web-account";
 import { createWebAccountUsage } from "./web-account-usage";
@@ -337,6 +358,7 @@ import { createWebChatHistory, type WebChatHistoryEntry } from "./web-chat-histo
 import { createWebWorkspace, type WebRuntimeFactory } from "./web-client-context";
 import { createWebConversationRuntime } from "./web-conversation-runtime";
 import { createWebConversationView } from "./web-conversation-view";
+import { webCrmHost } from "./web-crm";
 import { createWebFileSaver } from "./web-file-download";
 import { webGitHubConnectorPort } from "./web-github-connector";
 import { createWebHostedServers } from "./web-hosted-server-state";
@@ -444,7 +466,7 @@ async function reportedFailure(send: () => Promise<unknown>, options: PromptAnsw
 }
 
 /** The pages of the connected host that cover the conversation. */
-type HostPageView = "usage" | "schedule" | "tasks" | "workflows" | "library";
+type HostPageView = "rooms" | "brain" | "usage" | "schedule" | "tasks" | "workflows" | "library" | "crm";
 
 type WebWorkspaceProps = {
   accountId: string;
@@ -833,6 +855,8 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
   const [marketplaceOpen, setMarketplaceOpen] = createSignal(false);
   /** The Usage, Schedule or Tasks page of the connected host. As on desktop, it follows a host switch. */
   const [hostPage, setHostPage] = createSignal<{ view: HostPageView; trigger: HTMLElement | null } | null>(null);
+  /** The server whose CRM page opens its connectors. The page takes it once. */
+  const [crmConnectorsRequest, setCrmConnectorsRequest] = createSignal<string>();
   /** A server at its site limit offers the server plans, which have more sites, to its owner. */
   function canOfferServerPlans(): boolean {
     return (
@@ -861,6 +885,7 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
   function closeHostPage() {
     const trigger = hostPage()?.trigger;
     setHostPage(null);
+    setCrmConnectorsRequest(undefined);
     queueMicrotask(() => {
       if (trigger?.isConnected) trigger.focus({ preventScroll: true });
     });
@@ -964,6 +989,44 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
     openAccountSettings();
   }
   const [searchOpen, setSearchOpen] = createSignal(false);
+  /**
+   * The phone search: its field is the pill of the bottom bar and its results replace the chat list.
+   * `routines` is set when the Routines filter is chosen, so the routines load only then.
+   */
+  const [phoneSearch, setPhoneSearch] = createStore({ open: false, query: "", routines: false });
+  const phoneSearching = () => phone() && phoneSearch.open;
+  /** Closes the phone search, and the keyboard with it. */
+  function closePhoneSearch(): void {
+    setPhoneSearch((state) => {
+      state.open = false;
+      state.query = "";
+      state.routines = false;
+    });
+    blurPhoneSearchField();
+  }
+  /**
+   * Opens the phone search over the chat list. From a pushed chat or page, such as Tasks, the list
+   * comes back first: the results take its place.
+   */
+  function openPhoneSearch(): void {
+    if (untrack(mobilePane) !== "workspace") phoneBack();
+    setPhoneSearch((state) => {
+      state.open = true;
+    });
+  }
+  // A chat or page that opens by another path, or a window wider than a phone, ends the search, so it
+  // does not wait hidden under the chat with its old query.
+  createEffect(
+    () => phone() && mobilePane() === "workspace",
+    (shown) => {
+      if (!shown && untrack(() => phoneSearch.open)) closePhoneSearch();
+    },
+  );
+  /** Takes the keyboard down and leaves the results open. */
+  function blurPhoneSearchField(): void {
+    const focused = document.activeElement;
+    if (focused instanceof HTMLElement && focused.closest(".web-phone-tab-bar")) focused.blur();
+  }
   /** The hidden agents that the host stops: they get no mention and no channel work. */
   const pausedAgentIds = createMemo(() => (hiddenAgentsWork() ? noAgentIds : hiddenAgentIds()));
   // In sidebar order, so that ⌘1-9 opens the agents the user put at the top.
@@ -974,7 +1037,6 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
       hiddenAgentIds: hiddenAgentIds(),
     }),
   );
-  const communityCard = createCommunityCardVisibility();
   const [messageFocusRequest, setMessageFocusRequest] = createSignal<{
     agentId: string;
     messageId: string;
@@ -1034,6 +1096,18 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
   /** A host without `conversation-file-search-v1` gets no Files filter. A named function: a ternary prop would make a memo. */
   function fileSearch() {
     return workspace.state.capabilities.includes(CONVERSATION_FILE_SEARCH_CAPABILITY) ? searchAllFiles : undefined;
+  }
+  /** The side thread messages of the open agent that have the `@` query. */
+  function searchAgentThreadMessages(query: string): Promise<ComposerThreadMessageMatch[]> {
+    const id = workspace.state.selectedId;
+    if (!id || workspace.state.status !== "online") return Promise.resolve([]);
+    return collectThreadMessageMatches((cursor) => workspace.runtime.search(id, query, cursor, true));
+  }
+  /** An older host does not name the thread of a search result, so its `@` list finds thread titles only. */
+  function threadSearch() {
+    return workspace.state.capabilities.includes(THREAD_MESSAGE_SEARCH_CAPABILITY)
+      ? searchAgentThreadMessages
+      : undefined;
   }
   /** A search hit in a side thread opens its tab, as the desktop does; another hit opens the message. */
   function openSearchHit(agentId: string, messageId: string) {
@@ -1168,7 +1242,10 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
   const [searchRoutinesLoading, setSearchRoutinesLoading] = createSignal(false);
   let searchRoutinesRequest = 0;
   createEffect(
-    () => searchOpen() && workspace.state.status === "online" && runtime.routines !== undefined,
+    () =>
+      (searchOpen() || (phoneSearching() && phoneSearch.routines)) &&
+      workspace.state.status === "online" &&
+      runtime.routines !== undefined,
     (load) => {
       const request = ++searchRoutinesRequest;
       const api = runtime.routines;
@@ -1313,7 +1390,6 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
     presence: () => workspace.state.presence,
     refreshHosts: () => workspace.refreshHosts(),
     setAppearance: (hostId, appearance) => workspace.setHostAppearance(hostId, appearance),
-    relaySupported: () => workspace.state.capabilities.includes(SIGN_IN_RELAY_CAPABILITY),
   });
   /** Only the owner of a host with `host-key-rotation-v1` changes its key. A named function, not a ternary prop. */
   function rotateHostKeyAction() {
@@ -1349,6 +1425,17 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
     setHostPage(null);
     setMarketplaceOpen(true);
   }
+  /** Each request for the Machines section adds one, so the section opens again after the user left it. */
+  const [machinesRequest, setMachinesRequest] = createSignal(0);
+  /** The machine whose settings show, for the Back row of the modal. */
+  function settingsMachine(kind: SettingsKind) {
+    const current = server();
+    return kind === "server" && current ? { server: current, onBack: openMachinesSettings } : undefined;
+  }
+  function openMachinesSettings() {
+    setMachinesRequest((request) => request + 1);
+    openAccountSettings();
+  }
   function openAccountSettings() {
     // On a phone the page shows in the conversation pane.
     setMobilePane("conversation");
@@ -1380,7 +1467,12 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
       if (unsupported) setHostPage(null);
     },
   );
-  const marketplaceCalls = createWebMarketplaceCalls(props.accountFetch, hostRequest);
+  const marketplaceCalls = createWebMarketplaceCalls(props.accountFetch, hostRequest, {
+    canAdminister: () => serverRoleCanAdminister(server()),
+    hostTab: () =>
+      workspace.state.capabilities.includes(MCP_SIGN_IN_CAPABILITY) &&
+      workspace.state.capabilities.includes(TEAM_BROWSER_VIEW_CAPABILITY),
+  });
   // The host's connectors, for an owner or admin. The web client has no computer of its own.
   const connectorTarget = createMemo(() => remoteAdminServer(server(), CONNECTORS_CAPABILITY));
   const githubPort = webGitHubConnectorPort(() => hostRequest());
@@ -1431,6 +1523,41 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
       if (id) void openHostPage(id, "library", button);
     };
   }
+  /** Only an owner or admin reads the CRM, on a host with `crm-v1`. */
+  const crmAllowed = () =>
+    canAdministerServer(workspace.state.host?.role) && workspace.state.capabilities.includes(CRM_CAPABILITY);
+  const crmHost = webCrmHost({ request: () => hostRequest(), onHostEvent: workspace.onHostEvent });
+  const crmServerId = createMemo(() => (crmAllowed() ? server()?.id : undefined));
+  /** The Server Settings > Experimental switch. A new host object for each server, so a switch reads it again. */
+  const crmSwitch = createCrmEnabled(createMemo(() => (crmServerId() === undefined ? undefined : { ...crmHost })));
+  const crmEnabled = crmSwitch.enabled;
+  /** The CRM shows only while an owner or admin has it on in Server Settings > Experimental. */
+  const crmSupported = () => crmAllowed() && crmEnabled() === true;
+  // As the Library: a member, or an older host, has no CRM item. The page also closes when the CRM is off.
+  createEffect(
+    () => page() === "crm" && workspace.state.status === "online" && (!crmAllowed() || crmEnabled() === false),
+    (unsupported) => {
+      if (unsupported) setHostPage(null);
+    },
+  );
+  /** The CRM item of the sidebar More menu. A named function, not a ternary prop. */
+  function crmPageAction(): ((button: HTMLElement) => void) | undefined {
+    if (!crmSupported()) return undefined;
+    return (button) => {
+      const id = server()?.id;
+      if (!id) return;
+      setCrmConnectorsRequest(undefined);
+      void openHostPage(id, "crm", button);
+    };
+  }
+  /** The Providers item of the sidebar More menu, only when this account manages the providers. */
+  function providersPageAction(): ((button: HTMLElement) => void) | undefined {
+    if (!providerSettings()) return undefined;
+    return (button) => {
+      const id = server()?.id;
+      if (id) void openServerSettings(id, button, "providers");
+    };
+  }
   /** The Workflows page of the sidebar, only on a host with `workflows-v1`. A named function, not a ternary prop. */
   function workflowsRailAction(): (() => void) | undefined {
     if (!workflowsSupported()) return undefined;
@@ -1446,9 +1573,7 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
     workspace.state.capabilities.includes(DISCORD_ACCESS_CAPABILITY),
   );
   onCleanup(webMessaging.dispose);
-  const webWhatsApp = webHostWhatsApp(hostRequest, () =>
-    workspace.state.capabilities.includes(WHATSAPP_WORKING_MESSAGE_CAPABILITY),
-  );
+  const webWhatsApp = webHostWhatsApp(hostRequest, (capability) => workspace.state.capabilities.includes(capability));
   const whatsappPort = hostWhatsAppPort(
     () => remoteAdminServer(server(), WHATSAPP_CONNECTOR_CAPABILITY)?.id,
     () => webWhatsApp,
@@ -1820,6 +1945,16 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
         setHostClaudeCompactWindow(hostRequest(serverId), tokens).pipe(Effect.mapError((error) => error.cause)),
       ),
   };
+  const hostProviderEnvironmentCalls: HostProviderEnvironmentCalls = {
+    getProviderEnvironment: async (provider, serverId) =>
+      runTeamEffect(
+        getHostProviderEnvironment(hostRequest(serverId), provider).pipe(Effect.mapError((error) => error.cause)),
+      ),
+    setProviderEnvironment: async (update, serverId) =>
+      runTeamEffect(
+        setHostProviderEnvironment(hostRequest(serverId), update).pipe(Effect.mapError((error) => error.cause)),
+      ),
+  };
   const hostModelVisibilityCalls: HostModelVisibilityCalls = {
     getModelVisibility: async (provider, serverId) =>
       runTeamEffect(
@@ -1905,10 +2040,19 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
       }),
   };
   const [serverSettingsSection, setServerSettingsSection] = createSignal<ServerSettingsSection | null>(null);
-  /** Set when the Marketplace asked for the form that adds an MCP server, until the MCP section opens it. */
-  const [mcpAddRequest, setMcpAddRequest] = createSignal(false);
-  /** The MCP row that a chat card asked to sign in to. The MCP section starts its sign-in, as its Sign in button does. */
+  /** Counts the open requests, so a second request for the shown section moves to it again. */
+  const [serverSettingsRequest, setServerSettingsRequest] = createSignal(0);
+  /** The MCP row that a chat card asked to sign in to. Its Marketplace page starts the sign-in, as its Sign in button does. */
   const [mcpSignInRequest, setMcpSignInRequest] = createSignal<string | null>(null);
+  // The request ends with the page, also when another page or a server switch closes it.
+  createEffect(marketplaceOpen, (open) => {
+    if (!open) setMcpSignInRequest(null);
+  });
+  /** The host's MCP sign-in state as the Marketplace last read it, so a chat card shows Signed in. */
+  const [mcpSignIns, setMcpSignIns] = createSignal<{
+    serverId: string;
+    states: Readonly<Record<string, McpSignInState>>;
+  } | null>(null);
   async function openServerSettings(
     serverId: string,
     trigger: HTMLElement | null,
@@ -1922,8 +2066,7 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
       if (server()?.id !== serverId || workspace.state.status !== "online") return;
     }
     setServerSettingsSection(section);
-    setMcpAddRequest(false);
-    setMcpSignInRequest(null);
+    setServerSettingsRequest((count) => count + 1);
     setMobilePane("conversation");
     setHostPage(null);
     setMarketplaceOpen(false);
@@ -2086,14 +2229,22 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
   );
   // As on desktop: an agent's error is the banner above its composer, and the newest one replaces
   // the last. An error with no agent is a toast, once per text in 30 seconds. The host redacts the
-  // message before it sends it.
+  // message before it sends it. The end of the agent's turn removes a retry notice.
+  const retryNotices = createRetryNotices();
   onCleanup(
     workspace.onHostEvent((event) => {
-      if (event.type !== "error") return;
       const serverId = server()?.id;
+      if (event.type === "turn-completed") {
+        if (!serverId) return;
+        const key = composerDraftKey({ agentId: event.agentId, serverId });
+        retryNotices.clearAtTurnEnd(key, controller.setConversationErrors, controller.setConversationErrorRuns);
+        return;
+      }
+      if (event.type !== "error") return;
       if (event.agentId && serverId) {
         const key = composerDraftKey({ agentId: event.agentId, serverId });
         const message = readableAgentError(event.message);
+        retryNotices.noteError(key, event.message, message);
         controller.setConversationErrors((current) => ({ ...current, [key]: message }));
         // The general sentence hides the cause, so the user can copy it into a report (#6410).
         const details = agentErrorDetails(event.message, message);
@@ -2119,12 +2270,27 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
   const firstAgent = () => workspace.state.agentsLoaded && workspace.profiles().length === 0 && createSupported();
   /** An open channel still takes the pane, as a channel closes the desktop form. */
   const agentFormOpen = () => creating() || (firstAgent() && !channelOpen());
+  /**
+   * Whether the form is the full page of the first agent, which takes the pane. Another agent opens as a dialog
+   * over the pane that is open. The new agent joins the host before the save ends, so the form keeps the kind
+   * that it opened as until it closes.
+   */
+  let formOpenedAsPage = false;
+  const agentFormPageOpen = createMemo(() => {
+    if (!agentFormOpen()) {
+      formOpenedAsPage = false;
+      return false;
+    }
+    if (firstAgent()) formOpenedAsPage = true;
+    return formOpenedAsPage;
+  });
   // Tasks, billing, settings pages and server setup styles are not in the first stylesheet.
   // The marketplace stays on the first stylesheet: its navigation reuses a settings class.
   const [screenStylesReady, setScreenStylesReady] = createSignal(false);
   const screenStylesNeeded = () =>
     accountSettingsOpen() ||
     billingOpen() ||
+    page() === "rooms" ||
     tasksOpen() ||
     agentFormOpen() ||
     serverSettings.state.open ||
@@ -2137,7 +2303,13 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
     },
   );
   const agentChatOpen = () =>
-    !tasksOpen() && !agentFormOpen() && !channelOpen() && !noHost() && !hostOffline() && !routinesView();
+    page() !== "rooms" &&
+    !tasksOpen() &&
+    !agentFormPageOpen() &&
+    !channelOpen() &&
+    !noHost() &&
+    !hostOffline() &&
+    !routinesView();
   /**
    * The provider that a server's provider step chose, by server. In memory only, as on desktop: the
    * saved setup choice is of the desktop computer, not of the server.
@@ -2162,7 +2334,7 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
   const chatHistory = createWebChatHistory({
     current: () => {
       const hostId = workspace.state.host?.hostId;
-      if (!hostId || page() !== "agents" || agentFormOpen()) return null;
+      if (!hostId || page() !== "agents" || agentFormPageOpen()) return null;
       const channelId = channels.state.selectedId;
       if (channelId) return { hostId, kind: "channel", id: channelId };
       const agentId = workspace.state.selectedId;
@@ -2383,11 +2555,6 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
       workspace.state.capabilities.includes("browser-control") &&
       workspace.state.capabilities.includes("browser-view"),
   );
-  /** The host opens an MCP sign-in page in its own browser, and the live view shows it here. */
-  const mcpSignInSupported = () =>
-    workspace.state.capabilities.includes(SIGN_IN_RELAY_CAPABILITY) ||
-    (workspace.state.capabilities.includes(MCP_SIGN_IN_CAPABILITY) &&
-      workspace.state.capabilities.includes("browser-view"));
   const clearSelectedAgentContext = createMemo(() => {
     const agent = workspace.selected();
     if (!agent || !workspace.runtime.admin || !workspace.state.capabilities.includes(CONTEXT_RESET_CAPABILITY))
@@ -2609,12 +2776,31 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
     const snapshot = routineSnapshot();
     return snapshot?.current ? snapshot.routines.map((routine) => routine.id) : undefined;
   };
-  /** The chat card signs in as the MCP section's Sign in button does, for a reader who manages the host's MCP servers. */
+  /** The chat card opens the row's Marketplace page, which signs in, for a reader who manages the host's MCP servers. */
   const openMcpSignInFromChat = () => {
-    const current = server();
-    if (!serverCanManageMcp(current) || !remoteMcpSignIn(current)) return undefined;
-    return (mcpServerId: string, trigger: HTMLElement | null) =>
-      void openServerSettings(current.id, trigger, "mcp").then(() => setMcpSignInRequest(mcpServerId));
+    if (!remoteMcpSignIn(server())) return undefined;
+    return (mcpServerId: string) => {
+      setMcpSignInRequest(mcpServerId);
+      openMarketplace();
+    };
+  };
+  const mcpSignedIn = (mcpServerId: string) => {
+    const known = mcpSignIns();
+    return known?.serverId === server()?.id && known?.states[mcpServerId]?.signedIn === true;
+  };
+  /**
+   * Reads `mcpSignIns` again for each new Sign in card in a chat, for the server whose states it holds:
+   * a read from before the agent's test can still say that a refused sign-in is current (#6661).
+   */
+  const refreshMcpSignInsFromChat = () => {
+    const serverId = mcpSignIns()?.serverId;
+    if (!serverId || serverId !== server()?.id) return;
+    void marketplaceCalls.mcp
+      .listMcpSignIns(serverId)
+      .then(mcpSignInRecord, () => null)
+      .then((states) => {
+        if (states && mcpSignIns()?.serverId === serverId) setMcpSignIns({ serverId, states });
+      });
   };
   const offlineUpsell = createHostedUpsellOffline(() => workspace.state.hostOffline);
   /** The side threads of the connected host. Each host has its own, with its own tabs. */
@@ -2689,7 +2875,8 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
       approvals: workspace.state.approvals,
       prompts: workspace.state.prompts,
       takeovers: workspace.state.takeovers,
-      newThreadTitle: t("conversation.threads.new"),
+      newThreadTitle: t("conversation.sessions.new"),
+      mainTitle: t("conversation.sessions.main"),
       onRespondApproval: (item, decision, options) =>
         reportedFailure(() => workspace.approve({ requestId: item.requestId, decision }), options),
       contextStates: () => workspace.state.threadContextStates,
@@ -2979,6 +3166,13 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
     usageRows: usageRows(),
     onChats: () => showSidebarView("agents"),
     onRoutines: routinesSupported() ? () => showSidebarView("routines") : undefined,
+    onRooms:
+      workspace.state.capabilities.includes(ROOMS_CAPABILITY) && canAdministerServer(workspace.state.host?.role)
+        ? () => {
+            const id = server()?.id;
+            if (id) void openHostPage(id, "rooms", null);
+          }
+        : undefined,
     onTasks: tasksSupported()
       ? (button) => {
           const id = server()?.id;
@@ -2990,7 +3184,21 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
       if (id) void openHostPage(id, "schedule", button);
     },
     onWorkflows: workflowsRailAction(),
+    onBrain: workspace.state.capabilities.includes(BRAIN_CAPABILITY)
+      ? () => {
+          const id = server()?.id;
+          if (id) void openHostPage(id, "brain", null);
+        }
+      : undefined,
     onLibrary: libraryRailAction(),
+    onProviders: providersPageAction(),
+    onCrm: crmPageAction(),
+    onComputers: serverCanAdminister(server(), AGENT_COMPUTER_CAPABILITY)
+      ? () => {
+          const current = server();
+          if (current) void openServerSettings(current.id, null, "cloud-computers");
+        }
+      : undefined,
     onUsage: (button) => {
       const id = server()?.id;
       if (id) void openHostPage(id, "usage", button);
@@ -2999,13 +3207,8 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
     onSettings: openAccountSettings,
     account: account(),
     onUpgrade: () => setBillingOpen(true),
+    onFollowX: () => void openWebDestination("x"),
     onSignOut: () => void signOut(),
-    onConnectServers: server()
-      ? () => {
-          const id = server()?.id;
-          if (id) void openServerSettings(id, null, "mcp");
-        }
-      : undefined,
     help,
     onCollapse: () => layout.setSidebarCollapsed(true),
     shortcutPlatform: shortcutPlatform(),
@@ -3114,6 +3317,7 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
             </div>
           }
         >
+          <WindowBackdrop pages="srcdoc" />
           {/* As on desktop: the chat sidebar sits at the left of the frame and opens the pages. */}
           <div class="app-window web-app-window">
             <WorkspaceFrame
@@ -3169,7 +3373,13 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
               page={
                 <Show
                   when={
-                    page() === "usage" || page() === "schedule" || page() === "workflows" || page() === "library"
+                    page() === "rooms" ||
+                    page() === "brain" ||
+                    page() === "usage" ||
+                    page() === "schedule" ||
+                    page() === "workflows" ||
+                    page() === "library" ||
+                    page() === "crm"
                       ? server()
                       : undefined
                   }
@@ -3182,11 +3392,12 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                           open={page() === "marketplace"}
                           onOpenChange={setMarketplaceOpen}
                           calls={marketplaceCalls}
+                          browserRuntime={workspace.runtime.browser}
                           connectors={connectors}
                           server={server()}
                           agents={workspace.shownAgents()}
                           activeAgentId={workspace.state.selectedId ?? ""}
-                          composerAvailable={status().phase === "ready" && !agentFormOpen()}
+                          composerAvailable={status().phase === "ready" && !agentFormPageOpen()}
                           onOpenAgent={(agentId) => {
                             setMobilePane("conversation");
                             if (agentId !== workspace.state.selectedId) void select(agentId);
@@ -3210,27 +3421,27 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                           }}
                           marketplaceListing={props.marketplaceListing}
                           onMarketplaceListingConsumed={props.onMarketplaceListingConsumed}
-                          onAddServer={(serverId) => {
-                            void openServerSettings(serverId, null, "mcp").then(() => setMcpAddRequest(true));
-                          }}
+                          mcpSignInRequest={mcpSignInRequest()}
+                          onMcpSignInRequestHandled={() => setMcpSignInRequest(null)}
+                          onMcpSignIns={(serverId, states) => setMcpSignIns({ serverId, states })}
                         />
                       }
                     >
                       {(kind) => (
                         <SettingsPageFrame
                           heading={
-                            <h1 class="settings-page-title" tabindex={-1}>
-                              {t("app.settingsPage.unifiedTitle")}
-                            </h1>
+                            <Show
+                              when={kind === "server" ? server() : null}
+                              fallback={
+                                <h1 class="settings-page-title" tabindex={-1}>
+                                  {t("app.settingsPage.unifiedTitle")}
+                                </h1>
+                              }
+                            >
+                              {(target) => <ServerSettingsPageTitle server={target()} />}
+                            </Show>
                           }
-                          tiers={{
-                            kind,
-                            onOpenPersonal: openAccountSettings,
-                            account: account(),
-                            machines: servers(),
-                            activeMachineId: server()?.id ?? null,
-                            onOpenMachine: (serverId) => void openServerSettings(serverId, null),
-                          }}
+                          machine={settingsMachine(kind)}
                           onMounts={(mounts) => {
                             setSettingsMounts(mounts);
                             if (!mounts) setServerSettingsQuery("");
@@ -3276,16 +3487,36 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                       <Match when={page() === "workflows"}>
                         {/* Keyed: the page reads the workflows of one server, as on desktop. */}
                         <Show when={target().id} keyed>
-                          <Loading>
-                            <WorkflowsCanvas
-                              host={workflowHost}
-                              admin={canAdministerServer(workspace.state.host?.role)}
-                              agents={workspace.profiles()}
-                              models={models()}
-                              status={providerAdmin.status()}
-                              self={account().name ?? undefined}
+                          {(serverId) => (
+                            <Loading>
+                              <WorkflowsCanvas
+                                host={workflowHost}
+                                serverId={serverId}
+                                admin={canAdministerServer(workspace.state.host?.role)}
+                                agents={workspace.profiles()}
+                                models={models()}
+                                status={providerAdmin.status()}
+                                self={account().name ?? undefined}
+                              />
+                            </Loading>
+                          )}
+                        </Show>
+                      </Match>
+                      <Match when={page() === "rooms"}>
+                        <Show when={page() === "rooms" ? server()?.id : undefined} keyed>
+                          {(roomServerId) => (
+                            <RoomsPanel
+                              request={(input) =>
+                                hostRequest(roomServerId)("POST", ROOMS_ROUTE, decodeRoomsResultFromHost, input)
+                              }
+                              onConnect={openMarketplace}
                             />
-                          </Loading>
+                          )}
+                        </Show>
+                      </Match>
+                      <Match when={page() === "brain" && workspace.state.capabilities.includes(BRAIN_CAPABILITY)}>
+                        <Show when={server()?.id} keyed>
+                          {(id) => <WebBrainPage request={hostRequest(id)} onConnect={openMarketplace} />}
                         </Show>
                       </Match>
                       <Match when={page() === "library"}>
@@ -3307,6 +3538,24 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                           )}
                         </Show>
                       </Match>
+                      <Match when={page() === "crm"}>
+                        {/* Keyed: the page reads the CRM of one server, as on desktop. */}
+                        <Show when={target().id} keyed>
+                          {(serverId) => (
+                            <Loading>
+                              <CrmScreen
+                                serverId={serverId}
+                                host={crmHost}
+                                agents={workspace.profiles()}
+                                connectors={{
+                                  requested: () => crmConnectorsRequest() === serverId,
+                                  taken: () => setCrmConnectorsRequest(undefined),
+                                }}
+                              />
+                            </Loading>
+                          )}
+                        </Show>
+                      </Match>
                       <Match when={page() === "schedule"}>
                         <Loading>
                           <ScheduleView
@@ -3323,6 +3572,7 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                             }}
                             onOpenRoutine={openRoutine}
                             onCreateRoutine={createRoutine}
+                            routinePorts={scheduleRoutinePorts(target(), runtime)}
                           />
                         </Loading>
                       </Match>
@@ -3464,21 +3714,12 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                     onOpenSearch={() => setSearchOpen(true)}
                     onOpenMarketplace={openMarketplace}
                     footer={
-                      <>
-                        <SidebarAlertCards
-                          cards={alertCards}
-                          serverName={server()?.name ?? ""}
-                          members={workspace.state.presence?.members ?? []}
-                          onOpenStorage={(serverId) => void openServerSettings(serverId, null, "storage")}
-                        />
-                        <Show when={!phone() && !alertCards.shown() && !communityCard.dismissed()}>
-                          <SidebarCommunityCard
-                            onJoinDiscord={() => void openWebDestination("discord")}
-                            onFollowX={() => void openWebDestination("x")}
-                            onDismiss={communityCard.dismiss}
-                          />
-                        </Show>
-                      </>
+                      <SidebarAlertCards
+                        cards={alertCards}
+                        serverName={server()?.name ?? ""}
+                        members={workspace.state.presence?.members ?? []}
+                        onOpenStorage={(serverId) => void openServerSettings(serverId, null, "storage")}
+                      />
                     }
                     emptyAction={
                       firstAgent()
@@ -3502,9 +3743,51 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                         onClick={() => setServersOpen(false)}
                       />
                     </Show>
+                    <Show when={phoneSearching()}>
+                      <WebPhoneSearch
+                        query={phoneSearch.query}
+                        agents={searchAgents()}
+                        channels={channels.supported() ? globalSearchChannels(channels.state.channels) : undefined}
+                        routines={searchRoutines()}
+                        routinesLoading={searchRoutinesLoading()}
+                        onShowRoutines={() =>
+                          setPhoneSearch((state) => {
+                            state.routines = true;
+                          })
+                        }
+                        onSearchMessages={searchAllMessages}
+                        onSearchFiles={fileSearch()}
+                        onSelectAgent={(id) => {
+                          closePhoneSearch();
+                          setMobilePane("conversation");
+                          void select(id);
+                        }}
+                        onSelectChannel={(id) => {
+                          closePhoneSearch();
+                          openChannel(id);
+                        }}
+                        onSelectMessage={(agentId, messageId) => {
+                          closePhoneSearch();
+                          openSearchHit(agentId, messageId);
+                        }}
+                        onSelectRoutine={(routine) => {
+                          closePhoneSearch();
+                          selectSearchRoutine(routine);
+                        }}
+                        onScrollStart={blurPhoneSearchField}
+                      />
+                    </Show>
                     <WebMobileNavigation
                       onOpenApps={workspace.state.status === "online" ? openMarketplace : undefined}
-                      onOpenSearch={() => setSearchOpen(true)}
+                      searching={phoneSearching()}
+                      searchQuery={phoneSearch.query}
+                      onOpenSearch={openPhoneSearch}
+                      onSearchQuery={(query) =>
+                        setPhoneSearch((state) => {
+                          state.query = query;
+                        })
+                      }
+                      onCloseSearch={closePhoneSearch}
                     />
                   </Show>
                 </>
@@ -3538,6 +3821,7 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                     onRefreshServers={workspace.retryHosts}
                     resume={hostedServers.addServer()?.resume}
                     license={licenseCalls}
+                    billingDetails={billingCalls}
                     onOpenUrl={(url) => window.open(url, "_blank", "noopener")}
                     onClose={hostedServers.closeAddServer}
                     onOpenServer={(serverId) => {
@@ -3579,6 +3863,9 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                         appearance={props.appearance}
                         onChangeAppearance={props.onChangeAppearance}
                         onOpenBilling={() => setBillingOpen(true)}
+                        machines={servers()}
+                        onOpenMachine={(serverId) => void openServerSettings(serverId, null)}
+                        machinesRequest={machinesRequest()}
                         onSignOut={signOut}
                         notifications={notificationSettings}
                         webPush={webPush}
@@ -3606,10 +3893,12 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                         onFirstSectionOpened={() => setServerSettingsQuery("")}
                         restoreFocusTarget={serverSettings.restoreTarget()}
                         initialSection={serverSettingsSection()}
+                        initialSectionRequest={serverSettingsRequest()}
                         platform="darwin"
                         cloudComputers={
                           serverCanAdminister(target(), AGENT_COMPUTER_CAPABILITY)
                             ? {
+                                management: serverCanAdminister(target(), COMPUTER_MANAGEMENT_CAPABILITY),
                                 api: cloudComputers,
                                 openUrl: (url) => void window.open(url, "_blank", "noopener,noreferrer"),
                               }
@@ -3641,57 +3930,6 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                         onRemoveServer={removeFromSettings(target().id)}
                         onOpenScreenRecordingSettings={unavailable}
                         onRecheckScreenRecording={unavailable}
-                        mcpServers={serverSettings.state.mcp}
-                        mcpLoadError={serverSettings.state.mcpError}
-                        onMcpSectionShown={() => {
-                          void serverSettings.refreshMcp();
-                          if (mcpSignInSupported()) void serverSettings.refreshMcpSignIns().catch(() => undefined);
-                        }}
-                        onRetryMcpServers={() => void serverSettings.refreshMcp()}
-                        mcpAddRequest={mcpAddRequest()}
-                        mcpSignInRequest={mcpSignInRequest()}
-                        onMcpSignInRequestHandled={() => setMcpSignInRequest(null)}
-                        onMcpAddRequestHandled={() => setMcpAddRequest(false)}
-                        onSaveMcpServer={async (config) => {
-                          await serverSettings.saveMcpServer(config);
-                          // A saved row can name an address the host is already signed in to.
-                          if (mcpSignInSupported()) void serverSettings.refreshMcpSignIns().catch(() => undefined);
-                        }}
-                        onRemoveMcpServer={serverSettings.removeMcpServer}
-                        onSetMcpServerEnabled={serverSettings.setMcpServerEnabled}
-                        onTestMcpServer={serverSettings.testMcpServer}
-                        // A host with `sign-in-relay-v1` signs in through this browser and a pasted address.
-                        // An older host opens the page in its own browser, and the live view shows it here.
-                        mcpSignIn={
-                          mcpSignInSupported()
-                            ? {
-                                states: serverSettings.state.mcpSignIns,
-                                remote: {
-                                  hostName: target().name,
-                                  runtime: workspace.runtime.browser,
-                                  clipboard: workspace.state.capabilities.includes("browser-view-clipboard"),
-                                  pages: serverSettings.state.mcpSignInPages,
-                                  relay: workspace.state.capabilities.includes(SIGN_IN_RELAY_CAPABILITY)
-                                    ? {
-                                        pages: serverSettings.state.mcpSignInRelays,
-                                        paste: serverSettings.pasteMcpSignInRelay,
-                                        open: serverSettings.openMcpSignInRelay,
-                                      }
-                                    : undefined,
-                                },
-                                start: serverSettings.signInMcpServer,
-                                cancel: serverSettings.cancelMcpSignIn,
-                                signOut: serverSettings.signOutMcpServer,
-                                app: workspace.state.capabilities.includes("mcp-sign-in-app-v1")
-                                  ? {
-                                      load: serverSettings.mcpSignInApp,
-                                      save: serverSettings.saveMcpSignInApp,
-                                      remove: serverSettings.removeMcpSignInApp,
-                                    }
-                                  : undefined,
-                              }
-                            : undefined
-                        }
                         storage={{
                           hostName: target().name,
                           calls: storageCalls,
@@ -3728,6 +3966,7 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                         claudeUserSetup={{ calls: hostClaudeUserSetupCalls }}
                         claudeAiTools={{ calls: hostClaudeAiToolsCalls }}
                         claudeCompactWindow={{ calls: hostClaudeCompactWindowCalls }}
+                        providerEnvironment={{ calls: hostProviderEnvironmentCalls }}
                         hostModelVisibility={{ calls: hostModelVisibilityCalls }}
                         hostDefaultProvider={{ calls: providerAdmin.hostDefaultProviderCalls }}
                         agentAccess={{ calls: hostAgentAccessCalls, listAgents: () => workspace.runtime.listAgents() }}
@@ -3742,6 +3981,7 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                         }}
                         browserProfiles={browserProfileSettings()}
                         vault={vaultSettings()}
+                        crm={crmHost}
                         // The providers of the host are its own, so there is no sign-in here.
                         instanceTransfer={instanceTransferSettings()}
                         // Any member imports into a host with `agent-import-v1`.
@@ -3790,6 +4030,7 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                         onContactUs={licenseContactUs(() => window.location.assign(HOSTED_SERVER_CONTACT_URL))}
                         startBuying={licenseStart() !== null}
                         startOrder={licenseStart()?.order ?? undefined}
+                        billingDetails={billingCalls}
                       />
                     }
                   />
@@ -3918,7 +4159,7 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                   }}
                 />
               </Show>
-              <Show when={!tasksOpen() && !agentFormOpen() && channelOpen()}>
+              <Show when={!tasksOpen() && !agentFormPageOpen() && channelOpen()}>
                 {/* Keyed by the channel: the view reads its channel once, so another channel opens a new view. */}
                 <Show when={channels.state.selectedId} keyed>
                   {(channelId) => {
@@ -3965,14 +4206,8 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                         unloadedHistory={channelView.unloadedHistory()}
                         activeTurnId={channelView.activeTurnId()}
                         skillsMarketplaceOpen={marketplaceOpen()}
-                        mcpSettingsOpen={serverSettings.state.open || marketplaceOpen()}
-                        globalOverlayOpen={
-                          joinOpen() ||
-                          serverSettings.state.open ||
-                          searchOpen() ||
-                          marketplaceOpen() ||
-                          hasVisibleToasts()
-                        }
+                        mcpSettingsOpen={marketplaceOpen()}
+                        globalOverlayOpen={joinOpen() || serverSettings.state.open || searchOpen() || marketplaceOpen()}
                         settingsRequest={channelView.settingsRequest()}
                         messageFocusRequest={messageFocusRequest()}
                         queue={undefined}
@@ -3998,7 +4233,8 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                         browserTakeover={channelView.browserTakeover()}
                         // A member's Sign in card signs in as the agent chat's does (#6228).
                         onOpenMcpSignIn={openMcpSignInFromChat()}
-                        mcpSignedIn={(mcpServerId) => serverSettings.state.mcpSignIns[mcpServerId]?.signedIn === true}
+                        mcpSignedIn={mcpSignedIn}
+                        refreshMcpSignIns={refreshMcpSignInsFromChat}
                         onSelectAgent={(id) => {
                           setMobilePane("conversation");
                           void select(id);
@@ -4059,7 +4295,12 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
               </Show>
               <Show
                 when={
-                  !tasksOpen() && !agentFormOpen() && !channelOpen() && !noHost() && !hostOffline() && routinesView()
+                  !tasksOpen() &&
+                  !agentFormPageOpen() &&
+                  !channelOpen() &&
+                  !noHost() &&
+                  !hostOffline() &&
+                  routinesView()
                 }
               >
                 {/* A host switch starts the canvas again, with that host's webhook relay status. */}
@@ -4119,7 +4360,8 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                   onManageBrowserProfiles={browserProfiles() ? openBrowserProfileSettings : undefined}
                   onOpenNotificationSettings={(serverId) => openNotificationSettings(serverId)}
                   onOpenMcpSignIn={openMcpSignInFromChat()}
-                  mcpSignedIn={(mcpServerId) => serverSettings.state.mcpSignIns[mcpServerId]?.signedIn === true}
+                  mcpSignedIn={mcpSignedIn}
+                  refreshMcpSignIns={refreshMcpSignInsFromChat}
                   onOpenUsage={(trigger) => {
                     const id = server()?.id;
                     if (id) void openHostPage(id, "usage", trigger);
@@ -4159,14 +4401,13 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                   }
                   turnStepLines={workspace.stepLines()}
                   skillsMarketplaceOpen={marketplaceOpen()}
-                  mcpSettingsOpen={serverSettings.state.open || marketplaceOpen() || connectingApp() !== null}
+                  mcpSettingsOpen={marketplaceOpen() || connectingApp() !== null}
                   globalOverlayOpen={
                     joinOpen() ||
                     serverSettings.state.open ||
                     searchOpen() ||
                     marketplaceOpen() ||
-                    connectingApp() !== null ||
-                    hasVisibleToasts()
+                    connectingApp() !== null
                   }
                   settingsRequest={settingsRequest()}
                   messageFocusRequest={messageFocusRequest()}
@@ -4235,6 +4476,7 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                     const result = await workspace.runtime.search(id, query);
                     return { messageIds: result.results.map((item) => item.message.id), total: result.total };
                   }}
+                  onSearchThreads={threadSearch()}
                   onOpenSearchMessage={async (messageId) => {
                     await workspace.openSearchMessage(messageId);
                   }}

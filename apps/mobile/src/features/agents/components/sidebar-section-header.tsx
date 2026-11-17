@@ -9,6 +9,7 @@ import {
 import { router } from "expo-router";
 import { Typography } from "heroui-native";
 import { useThemeColor } from "heroui-native/hooks";
+import ChevronDown from "lucide-react-native/icons/chevron-down";
 import ChevronRight from "lucide-react-native/icons/chevron-right";
 import Ellipsis from "lucide-react-native/icons/ellipsis";
 import Folder from "lucide-react-native/icons/folder";
@@ -17,14 +18,18 @@ import { memo, useRef, useState } from "react";
 import { Alert, Pressable, View } from "react-native";
 import Animated, { cubicBezier } from "react-native-reanimated";
 import { showFailureAlert } from "@/features/analytics/failure-reports";
+import { UnreadDot, usePreviewColors } from "@/features/design-preview/components/preview-parts";
+import { useCalmRows } from "@/features/design-preview/model/calm-look";
+import { previewSize, previewType } from "@/features/design-preview/model/preview-tokens";
 import {
   useMobileWorkspaceReader,
   useMobileWorkspaceSelector,
 } from "@/features/workspace/context/mobile-workspace-context";
 import { showsOnline } from "@/features/workspace/model/server-status";
-import { type MenuAction, MenuView } from "@/shared/components/menu-view";
+import { type MenuAction, type MenuComponentRef, MenuView } from "@/shared/components/menu-view";
 import { haptics } from "@/shared/lib/haptics";
 import { useReducedMotion } from "@/shared/lib/motion";
+import { isAndroid } from "@/shared/lib/platform";
 import { currentText, useText } from "@/shared/lib/text";
 import { END_X, MIRROR_IN_RTL } from "@/shared/lib/text-direction";
 import { typeScale } from "@/shared/lib/type-scale";
@@ -48,6 +53,7 @@ export const SidebarSectionHeader = memo(function SidebarSectionHeader({
   visibleSectionIds,
   collapsed,
   onToggle,
+  count,
 }: {
   id: string;
   /** The path of the folder, for accessibility and the delete question. */
@@ -61,6 +67,8 @@ export const SidebarSectionHeader = memo(function SidebarSectionHeader({
   visibleSectionIds: readonly string[];
   collapsed: boolean;
   onToggle: (sectionId: string) => void;
+  /** The chats in the folder, which the calm look shows beside its name. */
+  count?: number;
 }) {
   const { t, format } = useText();
   const workspace = useMobileWorkspaceReader();
@@ -76,7 +84,12 @@ export const SidebarSectionHeader = memo(function SidebarSectionHeader({
   const muted = String(mutedColor);
   const accentForeground = String(accentForegroundColor);
   const reducedMotion = useReducedMotion();
+  const calm = useCalmRows();
+  const calmColors = usePreviewColors();
   const pending = useRef(false);
+  // Android: the label's own long press opens the calm menu. `shouldOpenOnLongPress` does not open it
+  // there, because the label takes the long press (as in `server-drawer-content.tsx`).
+  const calmMenu = useRef<MenuComponentRef | null>(null);
   const [saving, setSaving] = useState(false);
   const index = layout?.order.indexOf(id) ?? -1;
   // A folder moves among the folders next to it. Only a host with `sidebar-folders-v1` sends parents,
@@ -158,9 +171,109 @@ export const SidebarSectionHeader = memo(function SidebarSectionHeader({
       ? [{ id: "delete", title: t("mobile.agent.section.delete"), attributes: { disabled, destructive: true } }]
       : []),
   ];
+  const onMenuAction = (action: string) => {
+    if (action.startsWith("nest:"))
+      void run({ type: "nest", sectionId: id, parentId: action.slice(5) || null, beforeSectionId: null });
+    else if ((action === "up" || action === "down") && nested)
+      void run({
+        type: "nest",
+        sectionId: id,
+        parentId,
+        beforeSectionId: action === "up" ? (siblings[visibleIndex - 1] ?? null) : (siblings[visibleIndex + 2] ?? null),
+      });
+    else if (action === "up" || action === "down")
+      void run({
+        type: "move",
+        sectionId: id,
+        direction: action,
+        steps: Math.abs(
+          index - (layout?.order.indexOf(visibleSectionIds[visibleIndex + (action === "up" ? -1 : 1)] ?? id) ?? index),
+        ),
+      });
+    if (action === "rename") router.push({ pathname: "/section-form", params: { serverId, sectionId: id } });
+    if (action === "new-inside") {
+      if (collapsed) onToggle(id);
+      router.push({ pathname: "/section-form", params: { serverId, parentId: id } });
+    }
+    if (action === "delete")
+      Alert.alert(t("mobile.agent.section.deleteTitle", { name }), t("mobile.agent.section.deleteBody"), [
+        { text: t("common.cancel"), style: "cancel" },
+        {
+          text: t("common.delete"),
+          style: "destructive",
+          onPress: () => void run({ type: "delete", sectionId: id }),
+        },
+      ]);
+  };
   const FolderIcon = collapsed || empty ? Folder : FolderOpen;
   const showUnread = custom && collapsed && unread > 0;
   const toggleLabel = t(collapsed ? "mobile.agent.section.expand" : "mobile.agent.section.collapse", { name });
+  if (calm) {
+    // The calm look: a quiet gray label with its count and a chevron. A tap opens or closes it; a long
+    // press shows the folder menu that the ••• button shows in the other look.
+    const Chevron = collapsed ? ChevronRight : ChevronDown;
+    return (
+      <MenuView
+        {...(isAndroid
+          ? {
+              ref: (instance: MenuComponentRef | null) => {
+                calmMenu.current = instance;
+              },
+            }
+          : null)}
+        actions={actions}
+        shouldOpenOnLongPress
+        onPressAction={({ nativeEvent }) => onMenuAction(nativeEvent.event)}
+      >
+        <Pressable
+          onLongPress={
+            isAndroid
+              ? () => {
+                  void haptics.longPress();
+                  calmMenu.current?.show();
+                }
+              : undefined
+          }
+          accessibilityRole="button"
+          accessibilityLabel={
+            showUnread ? `${toggleLabel}, ${t("mobile.agent.section.unread", { count: unread })}` : toggleLabel
+          }
+          accessibilityHint={t("mobile.agent.section.options", { name })}
+          accessibilityState={{ expanded: !collapsed }}
+          onPress={() => {
+            void haptics.selection();
+            onToggle(id);
+          }}
+          style={({ pressed }) => ({
+            minHeight: previewSize.sectionPitch,
+            paddingLeft: previewSize.sectionInset,
+            paddingRight: previewSize.rowTrailingInset,
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 7,
+            backgroundColor: calmColors.background,
+            opacity: pressed ? 0.5 : 1,
+          })}
+        >
+          <Typography numberOfLines={1} style={[previewType.section, { flexShrink: 1, color: calmColors.section }]}>
+            {parentName ? `${parentName} / ${title}` : title}
+          </Typography>
+          {count === undefined ? null : (
+            <Typography style={[previewType.section, { color: calmColors.sectionCount }]}>
+              {format.number(count)}
+            </Typography>
+          )}
+          <Chevron
+            size={16}
+            color={calmColors.sectionCount}
+            strokeWidth={1.8}
+            style={collapsed ? MIRROR_IN_RTL : undefined}
+          />
+          {showUnread ? <UnreadDot shown /> : null}
+        </Pressable>
+      </MenuView>
+    );
+  }
   return (
     <View className="pt-2.5 pr-3 pb-0.5 pl-5">
       <View className="flex-row items-center">
@@ -208,47 +321,7 @@ export const SidebarSectionHeader = memo(function SidebarSectionHeader({
             </Animated.View>
           )}
         </Pressable>
-        <MenuView
-          actions={actions}
-          onPressAction={({ nativeEvent }) => {
-            const action = nativeEvent.event;
-            if (action.startsWith("nest:"))
-              void run({ type: "nest", sectionId: id, parentId: action.slice(5) || null, beforeSectionId: null });
-            else if ((action === "up" || action === "down") && nested)
-              void run({
-                type: "nest",
-                sectionId: id,
-                parentId,
-                beforeSectionId:
-                  action === "up" ? (siblings[visibleIndex - 1] ?? null) : (siblings[visibleIndex + 2] ?? null),
-              });
-            else if (action === "up" || action === "down")
-              void run({
-                type: "move",
-                sectionId: id,
-                direction: action,
-                steps: Math.abs(
-                  index -
-                    (layout?.order.indexOf(visibleSectionIds[visibleIndex + (action === "up" ? -1 : 1)] ?? id) ??
-                      index),
-                ),
-              });
-            if (action === "rename") router.push({ pathname: "/section-form", params: { serverId, sectionId: id } });
-            if (action === "new-inside") {
-              if (collapsed) onToggle(id);
-              router.push({ pathname: "/section-form", params: { serverId, parentId: id } });
-            }
-            if (action === "delete")
-              Alert.alert(t("mobile.agent.section.deleteTitle", { name }), t("mobile.agent.section.deleteBody"), [
-                { text: t("common.cancel"), style: "cancel" },
-                {
-                  text: t("common.delete"),
-                  style: "destructive",
-                  onPress: () => void run({ type: "delete", sectionId: id }),
-                },
-              ]);
-          }}
-        >
+        <MenuView actions={actions} onPressAction={({ nativeEvent }) => onMenuAction(nativeEvent.event)}>
           <View
             accessible
             accessibilityRole="button"

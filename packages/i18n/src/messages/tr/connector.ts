@@ -418,6 +418,9 @@ export const messages = {
   "connector.whatsapp.workingMessage": "“Üzerinde çalışılıyor…” mesajı",
   "connector.whatsapp.workingMessageDescription":
     "OpenBot bunu ajan çalışırken gönderir, sonra yanıtla değiştirir. Yalnızca yanıtı göndermek için kapatın.",
+  "connector.whatsapp.statusReactions": "Durum tepkileri",
+  "connector.whatsapp.statusReactionsDescription":
+    "OpenBot bir mesaj geldiğinde 👀, yanıt hazır olduğunda ✅ tepkisi verir. Hiç tepki göndermemek için kapatın.",
   "connector.whatsapp.orchestratorTitle": "WhatsApp Düzenleyicisi",
   "connector.whatsapp.orchestratorDescription":
     "Bu ajan bağlı tüm numaralarınızdan OpenBot'a gelen mesajları alır. Kısa olanları kendisi yanıtlar, diğer işleri doğru ajana iletir ve WhatsApp'ta yanıt verir.",
@@ -684,4 +687,68 @@ export const messages = {
     "OpenBot {host} üzerindeki erişim anahtarını siler. Kasa ve içindeki oturum bilgileri Proton hesabınızda kalır.",
   "connector.protonPass.disconnect": "Bağlantıyı kes",
   "connector.protonPass.actionFailed": "OpenBot, Proton Pass bağlantısını değiştiremedi.",
+  "connector.keeper.title": "Keeper",
+  "connector.keeper.description":
+    "Ajanlar, paylaşılan bir Keeper klasöründeki oturum bilgileriyle sitelerde oturum açar.",
+  "connector.keeper.descriptionHost":
+    "{host} üzerindeki ajanlar, paylaşılan bir Keeper klasöründeki oturum bilgileriyle sitelerde oturum açar.",
+  "connector.keeper.connect": "Bağla",
+  "connector.keeper.setupTitle": "Oturum aç",
+  "connector.keeper.setupDescription":
+    "Keeper e-posta adresinizi ve ana parolanızı girin. OpenBot bunları Keeper Commander'a bir kez verir ve saklamaz. Keeper Commander, Keeper'ın komut satırı aracıdır.",
+  "connector.keeper.setupDescriptionHost":
+    "Keeper e-posta adresinizi ve ana parolanızı girin. {host} bunları Keeper Commander'a bir kez verir ve saklamaz. Keeper Commander, Keeper'ın komut satırı aracıdır.",
+  "connector.keeper.emailLabel": "E-posta",
+  "connector.keeper.passwordLabel": "Ana parola",
+  // The exact folder name that OpenBot makes in Keeper. Keep it in English.
+  "connector.keeper.folderName": "Shared with OpenBot",
+  "connector.keeper.folderSetup":
+    "OpenBot bu klasörü bağlandığınızda kasanızda oluşturur. Paylaşmak için oturum bilgilerini buraya taşıyın.",
+  "connector.keeper.showSteps": "Adımları göster",
+  "connector.keeper.stepsLabel": "Bağlantı adımları",
+  "connector.keeper.stepSignIn": "Oturum aç",
+  "connector.keeper.stepVerify": "Doğrula",
+  "connector.keeper.stepDone": "Bitti",
+  "connector.keeper.signInTitle": "Keeper'da oturum açılıyor",
+  "connector.keeper.signInDescription": "Keeper Commander hesabınızla oturum açıyor.",
+  "connector.keeper.signInDescriptionHost": "{host}, Keeper'da hesabınızla oturum açıyor.",
+  "connector.keeper.twoFactorTitle": "Kodunuzu girin",
+  "connector.keeper.twoFactorDescription":
+    "Keeper iki adımlı doğrulama kodu istiyor. Kimlik doğrulama uygulamanızdaki veya kısa mesajınızdaki kodu girin.",
+  "connector.keeper.deviceTitle": "Bu cihazı onaylayın",
+  "connector.keeper.deviceDescription":
+    "Keeper, diğer cihazlarınıza bir onay e-postası ve bildirim gönderdi. E-postadaki bağlantıdan veya başka bir cihazdan bu cihazı onaylayın, sonra Devam'a basın. Ya da e-postadaki kodu yazın.",
+  "connector.keeper.codeLabel": "Kod",
+  "connector.keeper.codeWrong": "Kod doğru değil. Yeniden girin.",
+  "connector.keeper.continue": "Devam",
+  "connector.keeper.setupStepTitle": "Paylaşılan klasör oluşturuluyor",
+  "connector.keeper.setupStepDescription":
+    "OpenBot kasanızda “{folder}” klasörünü oluşturur ve bu cihaz için oturum açmayı etkinleştirir.",
+  "connector.keeper.doneTitle": "Keeper bağlandı",
+  "connector.keeper.doneDescription":
+    "Ajanların oturum açabilmesi için oturum bilgilerini “{folder}” klasörüne taşıyın.",
+  "connector.keeper.failedTitle": "Keeper bağlanmadı",
+  "connector.keeper.done": "Bitti",
+  "connector.keeper.close": "Kapat",
+  "connector.keeper.statusConnecting": "Bağlanıyor",
+  "connector.keeper.statusConnected": "Bağlı",
+  "connector.keeper.statusExpired": "Oturum sona erdi",
+  "connector.keeper.expiredTitle": "Keeper oturumu sona erdi",
+  "connector.keeper.expiredDescription":
+    "Siz yeniden bağlanana kadar ajanlar paylaşılan oturum bilgilerinizle oturum açamaz. Aşağıya ana parolanızı girin.",
+  "connector.keeper.planTitle": "Keeper Commander engellendi",
+  "connector.keeper.planDescription":
+    "Keeper yöneticiniz bu hesap için Keeper Commander'a izin vermiyor. İzin vermesini isteyin, sonra yeniden bağlanın.",
+  "connector.keeper.folderTitle": "Paylaşılan klasör",
+  "connector.keeper.folderDescription":
+    "Ajanların bir oturum bilgisiyle oturum açmasına izin vermek için onu Keeper'da bu klasöre taşıyın. Durdurmak için kaldırın.",
+  "connector.keeper.loginCount": { one: "{count} giriş", other: "{count} giriş" },
+  "connector.keeper.loginsLoading": "Oturum bilgileri sayılıyor…",
+  "connector.keeper.disconnectTitle": "Keeper bağlantısını kes",
+  "connector.keeper.disconnectSummary":
+    "OpenBot bu bilgisayardaki Keeper oturumunu sonlandırır. Klasör ve içindeki oturum bilgileri Keeper kasanızda kalır.",
+  "connector.keeper.disconnectSummaryHost":
+    "OpenBot {host} üzerindeki Keeper oturumunu sonlandırır. Klasör ve içindeki oturum bilgileri Keeper kasanızda kalır.",
+  "connector.keeper.disconnect": "Bağlantıyı kes",
+  "connector.keeper.actionFailed": "OpenBot, Keeper bağlantısını değiştiremedi.",
 } as const satisfies PartialTranslation<typeof source>;

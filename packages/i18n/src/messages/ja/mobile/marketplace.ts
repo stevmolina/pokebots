@@ -24,6 +24,7 @@ export const messages = {
   "mobile.marketplace.app.onePasswordTagline": "共有したログイン情報でサイトにサインイン",
   "mobile.marketplace.app.bitwardenTagline": "共有フォルダーのログイン情報でサイトにサインイン",
   "mobile.marketplace.app.protonPassTagline": "共有保管庫のログイン情報でサイトにサインイン",
+  "mobile.marketplace.app.keeperTagline": "共有フォルダーのログイン情報でサイトにサインイン",
   "mobile.marketplace.search.placeholder": "マーケットプレイスを検索",
   "mobile.marketplace.search.clear": "検索をクリア",
   "mobile.marketplace.search.close": "検索を閉じる",
@@ -62,6 +63,7 @@ export const messages = {
   "mobile.marketplace.facts.accessSignIn": "サインイン",
   "mobile.marketplace.facts.accessLocal": "このコンピューター",
   "mobile.marketplace.facts.accessNone": "サインイン不要",
+  "mobile.marketplace.facts.accessMac": "Mac のみ",
   "mobile.marketplace.permission.admin": "マーケットプレイスからインストールできるのはオーナーと管理者のみです。",
   "mobile.marketplace.permission.unavailable":
     "このサーバーはオフラインか、OpenBot が古すぎます。サーバーを実行しているコンピューターで OpenBot をアップデートしてください。",
@@ -116,6 +118,8 @@ export const messages = {
   "mobile.marketplace.app.docs": "キーを取得",
   "mobile.marketplace.app.local":
     "このアプリは OpenBot が動作するコンピューターで実行されます。そのコンピューターで設定してください。",
+  "mobile.marketplace.app.needsMac":
+    "このアプリは OpenBot を実行している Mac でのみ動作します。このサーバーは Mac ではありません。",
   "mobile.marketplace.app.relayUnsupported":
     "このアプリにはブラウザーでのサインインが必要です。サーバーの OpenBot をアップデートするか、コンピューターでアプリを接続してください。",
   "mobile.marketplace.app.waiting": "サインインページを待っています…",

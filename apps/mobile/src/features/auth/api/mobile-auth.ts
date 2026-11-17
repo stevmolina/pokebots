@@ -19,6 +19,7 @@ import * as Device from "expo-device";
 import * as SecureStore from "expo-secure-store";
 import { openAuthSessionAsync } from "expo-web-browser";
 import { z } from "zod";
+import { BRAND_ACCOUNT_API_URL } from "@/shared/lib/app-brand";
 import { isAndroid, isIOS } from "@/shared/lib/platform";
 import { currentText } from "@/shared/lib/text";
 import * as LockedKeychain from "../../../shared/lib/locked-keychain";
@@ -123,10 +124,15 @@ async function redeemMobileConnectSession(value: string): Promise<MobileSession>
   return session;
 }
 
-/** The account service for email sign-in. A development build can name a local one. */
+/**
+ * The account service for email and WorkOS sign-in. A development build can name a local one, and the
+ * Pokebots build uses the Pokebots service (`app-brand.ts`).
+ */
 function mobileAccountApiUrl(): string {
   const override = process.env.EXPO_PUBLIC_OPENBOT_API_URL;
-  return (override && __DEV__ && normalizeAccountApiUrl(override)) || OPENBOT_CONTROL_PLANE_ORIGIN;
+  return (
+    (override && __DEV__ && normalizeAccountApiUrl(override)) || BRAND_ACCOUNT_API_URL || OPENBOT_CONTROL_PLANE_ORIGIN
+  );
 }
 
 /** Whether this account service signs in with WorkOS. A failed look keeps the email code. */

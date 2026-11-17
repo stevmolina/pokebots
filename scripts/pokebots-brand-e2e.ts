@@ -19,6 +19,7 @@ import {
   brandPlugins,
   brandText,
   LITERAL_RULES,
+  RELEASE_NOTES_FILES,
   readBrandSettings,
   WEB_ICON_FILES,
 } from "./brand-layer";
@@ -165,6 +166,40 @@ for (const file of files) {
   check(result !== null && result.code !== code, `${file}: the brand layer changed nothing.`);
 }
 for (const literal of literalResults) check(literal.found, `${literal.file}: ${literal.find} is not in the file.`);
+// The release notes of What's New: the build copies them by URL, so the plugin brands the copies in
+// the output folder. It finds them by their shape, keeps "OpenBot" only in the kept phrases, keeps
+// valid JSON, and leaves other JSON assets as they are.
+const notesOut = join(OUT, "release-notes");
+await rm(notesOut, { recursive: true, force: true });
+await mkdir(join(notesOut, "assets"), { recursive: true });
+const otherAsset = '[{"name":"OpenBot"}]\n';
+await writeFile(join(notesOut, "assets/other-x1.json"), otherAsset);
+const UPDATES = "src/renderer/src/features/updates";
+const noteFiles = [
+  ...(await readdir(join(ROOT, UPDATES))).map((name) => `${UPDATES}/${name}`),
+  ...(await readdir(join(ROOT, UPDATES, "whats-new"))).map((name) => `${UPDATES}/whats-new/${name}`),
+].filter((path) => RELEASE_NOTES_FILES.test(path));
+check(noteFiles.length > 1, "No What's New files were found.");
+for (const file of noteFiles) {
+  const name = file.split("/").at(-1)?.replace(".json", "-hash1.json") ?? "";
+  await cp(join(ROOT, file), join(notesOut, "assets", name));
+}
+plugin.writeBundle.call(pluginContext, { dir: notesOut });
+const words = (text: string) => count(text, "OpenBot") - KEPT.reduce((sum, phrase) => sum + count(text, phrase), 0);
+const releaseNotes: Record<string, { before: number; after: number }> = {};
+for (const file of noteFiles) {
+  const name = file.split("/").at(-1)?.replace(".json", "-hash1.json") ?? "";
+  const before = await readFile(join(ROOT, file), "utf8");
+  const after = await readFile(join(notesOut, "assets", name), "utf8");
+  releaseNotes[file] = { before: words(before), after: words(after) };
+  check(words(after) === 0, `${file}: "OpenBot" is left outside the kept phrases.`);
+  check(Array.isArray(JSON.parse(after)), `${file}: the branded file is not JSON.`);
+}
+check(
+  Object.values(releaseNotes).some((note) => note.before > 0),
+  "The What's New files had no OpenBot to brand.",
+);
+check((await readFile(join(notesOut, "assets/other-x1.json"), "utf8")) === otherAsset, "Another JSON asset changed.");
 check(warnings.length === 0, `The plugin warned: ${warnings.join(" | ")}`);
 const mainIndex = await readFile(join(ROOT, "src/main/index.ts"), "utf8");
 const mainBranded = brandModule("src/main/index.ts", mainIndex, settings)?.code ?? "";
@@ -238,6 +273,7 @@ const report = {
   },
   literals: literalResults,
   outsideCatalogs,
+  releaseNotes,
   accountDefaults,
   html,
   web,

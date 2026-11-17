@@ -11,6 +11,9 @@
 // page that the client opens in the user's browser. The host then makes its own read-only access
 // and keeps only that. A `key` connection carries an access key that the user made, once; no answer
 // carries it. `extra-password` answers the step of the same name during a `browser` connection.
+// An `account` connection carries the account's email and master password once; the host gives them
+// to the manager's CLI and keeps only the CLI's own session. `code` answers its `two-factor` and
+// `device-approval` steps. A host that has no manager with `account` refuses both.
 // A member cannot use any route; `requireAdmin` on the host is the only gate.
 import {
   adminRoute,
@@ -40,6 +43,8 @@ export const PASSWORD_MANAGERS_LIMIT = 32;
 /** An access key, such as a Proton Pass `pst_<token>::<key>`, is well under this length. */
 export const PASSWORD_MANAGERS_KEY_LIMIT = 4_096;
 export const PASSWORD_MANAGERS_PASSWORD_LIMIT = 1_024;
+export const PASSWORD_MANAGERS_EMAIL_LIMIT = 320;
+export const PASSWORD_MANAGERS_CODE_LIMIT = 256;
 export const PASSWORD_MANAGERS_URL_LIMIT = 8_192;
 /** The host sends at most this many vault names, each cut to `PASSWORD_MANAGERS_VAULT_NAME_LIMIT`. */
 export const PASSWORD_MANAGERS_VAULT_LIMIT = 500;
@@ -77,6 +82,12 @@ export const PASSWORD_MANAGERS_CODECS: ReadonlyMap<string, OptionalRouteCodec> =
             kind: oneOf("extra-password"),
             password: string(PASSWORD_MANAGERS_PASSWORD_LIMIT),
           }),
+          account: fields({
+            kind: oneOf("account"),
+            email: string(PASSWORD_MANAGERS_EMAIL_LIMIT),
+            password: string(PASSWORD_MANAGERS_PASSWORD_LIMIT),
+          }),
+          code: fields({ kind: oneOf("code"), code: string(PASSWORD_MANAGERS_CODE_LIMIT) }),
         }),
       }),
       status,

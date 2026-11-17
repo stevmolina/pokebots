@@ -18,9 +18,17 @@ export const messages = {
     "OpenBot nie mógł zainstalować 1Password CLI. Sprawdź połączenie z internetem i spróbuj ponownie.",
   "error.connector.onePasswordCliSignedOut":
     "1Password CLI nie jest zalogowane. Włącz jego integrację w aplikacji 1Password, a potem połącz ponownie.",
+  "error.connector.onePasswordAppUnreachable":
+    "OpenBot nie może połączyć się z aplikacją 1Password. Otwórz 1Password i odblokuj je. W Settings > Developer sprawdź, czy opcja „Integrate with 1Password CLI” jest włączona. Potem spróbuj ponownie.",
   "error.connector.onePasswordCliFailed": "Błąd 1Password CLI: {detail}",
+  "error.connector.onePasswordCliForbidden":
+    "Twoje konto 1Password nie pozwala Ci utworzyć udostępnionego sejfu ani konta usługi. Poproś właściciela lub administratora konta o to uprawnienie albo o token konta usługi, a potem kliknij „Użyj tokenu”.",
   "error.connector.onePasswordUnexpected": "1Password wysłał nieoczekiwaną odpowiedź: {detail}",
   "error.connector.onePasswordTokenRejected": "1Password nie zaakceptował tokenu konta usługi.",
+  "error.connector.onePasswordUnreachable":
+    "OpenBot nie mógł połączyć się z 1Password. Sprawdź połączenie z internetem i spróbuj ponownie.",
+  "error.connector.onePasswordRateLimited":
+    "1Password otrzymał zbyt wiele żądań. Poczekaj kilka minut i spróbuj ponownie.",
   "error.connector.onePasswordNoVault":
     "Konto usługi nie może odczytać żadnego sejfu. Daj mu dostęp do sejfu i spróbuj ponownie.",
   "error.connector.onePasswordFileUnreadable": "Nie można odczytać pliku połączenia z 1Password.",
@@ -54,4 +62,26 @@ export const messages = {
   "error.connector.protonPassSignInTimeout": "Logowanie do Proton trwało zbyt długo. Połącz ponownie.",
   "error.connector.protonPassSetupFailed":
     "Nie udało się utworzyć sejfu Shared with OpenBot ani jego klucza dostępu w Proton Pass. Połącz ponownie.",
+  "error.connector.keeperFailed": "Nie udało się połączyć Keeper. Połącz ponownie.",
+  "error.connector.keeperCliInstallFailed":
+    "Nie udało się zainstalować Keeper Commander. Sprawdź połączenie sieciowe, a potem połącz ponownie.",
+  "error.connector.keeperPassword": "E-mail lub hasło główne jest nieprawidłowe.",
+  "error.connector.keeperCode": "Kod jest nieprawidłowy. Wpisz go ponownie.",
+  "error.connector.keeperCodeNotAsked": "Keeper nie poprosił o kod.",
+  "error.connector.keeperNotApproved":
+    "To urządzenie nie zostało jeszcze zatwierdzone w Keeper. Zatwierdź je, a potem naciśnij Dalej.",
+  "error.connector.keeperExpired": "Sesja Keeper na tym komputerze wygasła. Połącz ponownie.",
+  "error.connector.keeperPlan":
+    "Administrator Keeper nie zezwala na Keeper Commander dla tego konta. Poproś go o zezwolenie, a potem połącz ponownie.",
+  "error.connector.keeperSso": "Kont Keeper, które logują się przez SSO, nie można jeszcze połączyć.",
+  "error.connector.keeperTwoFactorUnsupported":
+    "Metoda weryfikacji dwuetapowej tego konta nie przyjmuje wpisanego kodu. Dodaj w Keeper aplikację uwierzytelniającą lub SMS-y, a potem połącz ponownie.",
+  "error.connector.keeperLocked":
+    "Keeper zablokował to konto lub to urządzenie. Otwórz Keeper, aby je odblokować, a potem połącz ponownie.",
+  "error.connector.keeperThrottled":
+    "Keeper prosi o odczekanie kilku minut przed kolejnym logowaniem. Połącz ponownie później.",
+  "error.connector.keeperPersistentLogin":
+    "Administrator Keeper wyłączył opcję „Stay logged in”, której potrzebuje OpenBot. Poproś o jej włączenie, a potem połącz ponownie.",
+  "error.connector.keeperSignInTimeout": "Logowanie do Keeper trwało zbyt długo. Połącz ponownie.",
+  "error.connector.keeperFileUnreadable": "Nie można odczytać pliku połączenia Keeper.",
 } as const satisfies PartialTranslation<typeof source>;

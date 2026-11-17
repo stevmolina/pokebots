@@ -24,6 +24,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { useCSSVariable } from "uniwind";
 import type { RoutineMarker, RoutineMarkerEvent, RoutineRunGroup } from "@/features/chat/model/chat-messages";
+import { CalmBubbleContext } from "@/features/design-preview/model/calm-look";
 import { haptics } from "@/shared/lib/haptics";
 import { useReducedMotion } from "@/shared/lib/motion";
 import { useText } from "@/shared/lib/text";
@@ -148,6 +149,8 @@ export function RoutineRunGroupRow({ group, muted }: { group: RoutineRunGroup; m
   const { t, format } = useText();
   const reducedMotion = useReducedMotion();
   const groupsState = useContext(RoutineGroupsContext);
+  // The calm look shows the run count as plain gray text, so the line stays quiet.
+  const calm = useContext(CalmBubbleContext) !== null;
   const { groups } = groupsState;
   const [saved] = useState(() => groups.get(group.id));
   const [open, setOpen] = useState(() => routineGroupOpen(groupsState, group.id));
@@ -209,16 +212,22 @@ export function RoutineRunGroupRow({ group, muted }: { group: RoutineRunGroup; m
         <Typography.Paragraph type="body-sm" className="font-medium" style={{ color: muted }}>
           {title}
         </Typography.Paragraph>
-        <View className="min-w-5 items-center rounded-full bg-control px-1.5">
-          <Typography.Paragraph
-            type="body-xs"
-            className="font-medium"
-            maxFontSizeMultiplier={1.4}
-            style={{ color: muted, fontVariant: ["tabular-nums"] }}
-          >
+        {calm ? (
+          <Typography.Paragraph type="body-sm" style={{ color: muted, fontVariant: ["tabular-nums"] }}>
             {format.number(count)}
           </Typography.Paragraph>
-        </View>
+        ) : (
+          <View className="min-w-5 items-center rounded-full bg-control px-1.5">
+            <Typography.Paragraph
+              type="body-xs"
+              className="font-medium"
+              maxFontSizeMultiplier={1.4}
+              style={{ color: muted, fontVariant: ["tabular-nums"] }}
+            >
+              {format.number(count)}
+            </Typography.Paragraph>
+          </View>
+        )}
         <Animated.View
           style={{
             transform: [{ rotate: open ? "180deg" : "0deg" }],

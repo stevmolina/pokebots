@@ -1,6 +1,6 @@
 import { type AppAppearance, isAppAppearance } from "@openbot/contracts/app-appearance";
 import type { AppLanguage } from "@openbot/contracts/app-language";
-import type { AvatarColor, CentralAuthUser } from "@openbot/contracts/ipc";
+import type { AvatarColor, CentralAuthUser, ServerSummary } from "@openbot/contracts/ipc";
 import type { AppTextKey } from "@openbot/i18n";
 import {
   Button,
@@ -11,6 +11,7 @@ import {
   ItemDescription,
   ItemGroup,
   ItemTitle,
+  Server,
   SettingsSection,
   SlidersHorizontal,
   SwitchField,
@@ -19,14 +20,17 @@ import {
   toast,
   UserRound,
 } from "@openbot/ui";
+import { documentColorScheme } from "@openbot/ui/document-color-scheme";
 import { AppearanceSelect } from "@openbot/ui/features/settings/AppearanceSelect";
 import { ACTION_SOUND_CHOICES, TASK_SOUND_CHOICES } from "@openbot/ui/features/settings/app-settings";
+import { ChatBackgroundSetting } from "@openbot/ui/features/settings/ChatBackgroundSetting";
 import { ChatBubbleStyleSelect } from "@openbot/ui/features/settings/ChatBubbleStyleSelect";
 import { OwnChatColorTrigger } from "@openbot/ui/features/settings/ChatColorSetting";
 import { LanguageSelect } from "@openbot/ui/features/settings/LanguageSelect";
 import { NotificationMatrix, NotificationScopeTitle } from "@openbot/ui/features/settings/NotificationMatrix";
 import { SendShortcutSelect } from "@openbot/ui/features/settings/SendShortcutSelect";
 import { SettingsDialogShell, type SettingsPagePlacement } from "@openbot/ui/features/settings/SettingsDialogShell";
+import { SettingsMachinesTab } from "@openbot/ui/features/settings/SettingsMachinesTab";
 import { SettingsProfileTab } from "@openbot/ui/features/settings/SettingsProfileTab";
 import { SidebarChatOrderSelect } from "@openbot/ui/features/settings/SidebarChatOrderSelect";
 import { SoundChoiceSelect } from "@openbot/ui/features/settings/SoundChoiceSelect";
@@ -41,14 +45,16 @@ import { playSoundChoice, readTaskSound, setTaskSound } from "../../completion-s
 import { webReportsEnabled } from "../../error-reports";
 import { useLayout } from "../../layout";
 import { currentDevicePlatform, setSendShortcutMode, useSendShortcutMode } from "../../send-shortcut-preference";
+import { ChatBackdropSetting } from "../settings/ChatBackdropSetting";
 import { connectionLogText } from "./connection-log";
 import type { WebAccountCalls } from "./web-account";
 import { sendWebAnalyticsChoice, setWebAnalyticsEnabled } from "./web-analytics";
+import { setWebChatBackground, useWebChatBackground } from "./web-chat-background";
 import { setWebLiveVoice, useWebLiveVoice } from "./web-live-voice";
 import type { WebNotificationSettings } from "./web-notification-settings";
 import type { WebPush } from "./web-push";
 
-const TABS = ["preferences", "profile"] as const;
+const TABS = ["preferences", "profile", "machines"] as const;
 type WebAccountSettingsTab = (typeof TABS)[number];
 
 const TAB_ITEMS = {
@@ -61,6 +67,11 @@ const TAB_ITEMS = {
     titleKey: "webClient.settings.general.title",
     descriptionKey: "webClient.settings.preferences.description",
     icon: SlidersHorizontal,
+  },
+  machines: {
+    titleKey: "app.settingsPage.machines",
+    descriptionKey: "settings.tab.machines.description",
+    icon: Server,
   },
 } as const satisfies Record<
   WebAccountSettingsTab,
@@ -80,6 +91,10 @@ export interface WebAccountSettingsProps {
   onChangeAppearance: (appearance: AppAppearance) => void;
   /** Closes these settings and opens the plans and servers of the account. */
   onOpenBilling: () => void;
+  /** The machines of the account, for the Machines section. */
+  machines: readonly ServerSummary[];
+  /** Opens the settings of one machine in this modal. */
+  onOpenMachine: (serverId: string) => void;
   onSignOut: () => Promise<void>;
   /** The levels of each host and its agents, which apply on all devices of the user. */
   notifications: WebNotificationSettings;
@@ -87,6 +102,8 @@ export interface WebAccountSettingsProps {
   webPush?: WebPush | undefined;
   /** Opens Preferences at the notification row of one host. Each nonce opens once. */
   notificationFocusRequest?: { serverId: string; nonce: number } | null | undefined;
+  /** Opens the Machines section, as the Back row of a machine's settings does. Each nonce opens once. */
+  machinesRequest?: number | null | undefined;
 }
 
 /**
@@ -122,6 +139,7 @@ export default function WebAccountSettings(props: WebAccountSettingsProps) {
   const showAgentSteps = useShowAgentSteps();
   const compactMessageActions = useCompactMessageActions();
   const bubbleStyle = useChatBubbleStyle();
+  const chatBackground = useWebChatBackground();
   const webLiveVoice = useWebLiveVoice();
   // Playback reads the stored value on each event, so the menus follow a change from another tab.
   const [soundChoice, setSoundChoice] = createSignal(readActionSoundChoice());
@@ -154,6 +172,19 @@ export default function WebAccountSettings(props: WebAccountSettingsProps) {
     () => (props.open ? props.notificationFocusRequest : null),
     (request) => {
       if (request) setActiveTab("preferences");
+    },
+  );
+
+  // The request counter never resets, so the effect runs again on each later opening with the same
+  // value. Act only on a value that this component has not handled yet. It starts at 0, so a first
+  // mount that comes with a request (Back from a machine before settings ever opened) still acts on it.
+  let handledMachinesRequest = 0;
+  createEffect(
+    () => (props.open ? props.machinesRequest : null),
+    (request) => {
+      if (!request || request === handledMachinesRequest) return;
+      handledMachinesRequest = request;
+      setActiveTab("machines");
     },
   );
 
@@ -219,6 +250,10 @@ export default function WebAccountSettings(props: WebAccountSettingsProps) {
             canRevokeSession
             onSignOut={props.onSignOut}
           />
+        </Tabs.Content>
+
+        <Tabs.Content value="machines" class="settings-modal-tab-panel" data-tab="machines">
+          <SettingsMachinesTab machines={props.machines} onOpenMachine={props.onOpenMachine} />
         </Tabs.Content>
 
         <Tabs.Content value="preferences" class="settings-modal-tab-panel" data-tab="preferences">
@@ -312,6 +347,29 @@ export default function WebAccountSettings(props: WebAccountSettingsProps) {
                     onChange={setChatBubbleStyle}
                     {...(modalElement ? { mount: modalElement } : {})}
                   />
+                </ItemActions>
+              </Item>
+              <Item class="settings-modal-row">
+                <ItemContent>
+                  <ItemTitle>{t("settings.chatBackground.title")}</ItemTitle>
+                  <ItemDescription>{t("settings.chatBackground.description")}</ItemDescription>
+                </ItemContent>
+                <ItemActions>
+                  <ChatBackgroundSetting
+                    scheme={documentColorScheme()}
+                    light={chatBackground().chatBackgroundLight}
+                    dark={chatBackground().chatBackgroundDark}
+                    onChange={setWebChatBackground}
+                  />
+                </ItemActions>
+              </Item>
+              <Item class="settings-modal-row">
+                <ItemContent>
+                  <ItemTitle>{t("settings.chatBackdrop.title")}</ItemTitle>
+                  <ItemDescription>{t("settings.chatBackdrop.description")}</ItemDescription>
+                </ItemContent>
+                <ItemActions>
+                  <ChatBackdropSetting {...(modalElement ? { mount: modalElement } : {})} />
                 </ItemActions>
               </Item>
             </ItemGroup>

@@ -9,16 +9,12 @@ import {
 import { reasoningLabel } from "@openbot/ui/components/ProviderModelPicker";
 import { findModelOption, providerAccountName } from "@openbot/ui/components/provider-accounts";
 import { ConversationHeader as SharedConversationHeader } from "@openbot/ui/features/conversation/ConversationHeader";
-import { ThreadHeader } from "@openbot/ui/features/conversation/threads/ThreadHeader";
-import {
-  DRAFT_THREAD_ID,
-  MAIN_THREAD_ID,
-  parseThreadTabKey,
-} from "@openbot/ui/features/conversation/threads/thread-types";
+import { ThreadMenu } from "@openbot/ui/features/conversation/threads/ThreadMenu";
+import type { ThreadPhoneActions } from "@openbot/ui/features/conversation/threads/thread-types";
 import { createSignal, Show } from "solid-js";
-import { actionToast } from "../../action-toast";
 import { useConversationViewScope } from "./conversation-scope";
 import { createPhoneWeb } from "./phone-web";
+import { useChatPinnedMessages } from "./use-chat-pinned-messages";
 
 const loadAgentSettingsPanel = () => import("./AgentSettingsPanel");
 
@@ -48,68 +44,26 @@ export function ConversationHeader() {
     settingsReasoning,
     sidePanelOpen,
     sideThreadOpen,
-    messagePins,
-    replyJump,
     toggleSidePanel,
-    moveThreadToPanel,
   } = useConversationViewScope();
   // The web client on a phone. A desktop window, including a narrow one, keeps the header buttons.
   const phoneWeb = createPhoneWeb();
   const [pinsRequest, setPinsRequest] = createSignal(0);
   const phoneMenu = () => phoneWeb() && props.threads !== undefined;
+  /** A desktop chat with threads keeps its new session and its pins in the details pane. */
+  const sessionsInPane = () => !phoneWeb() && props.threads !== undefined;
   const runningThreads = () => props.threads?.running ?? 0;
-  /** While a side thread is open, the agent's name goes back to the agent's own chat. */
-  const openMainChat = () => {
+  /** The title of the open session in the header pill. The agent's own chat shows only the agent. */
+  const sessionTitle = () => {
     const header = props.threads?.header;
-    return header && sideThreadOpen() ? () => header.onOpen(MAIN_THREAD_ID) : undefined;
+    if (!header || !sideThreadOpen()) return undefined;
+    return header.sessions.find((session) => session.id === header.activeId)?.title;
   };
-  /** With thread tabs, the agent's name is the tab of the agent's own chat. */
-  const titleSelected = () => (props.threads ? !sideThreadOpen() : undefined);
-  /** The tabs of all agents name each agent, so the agent's name does not show before them. */
-  const allAgentTabs = () => props.threads?.header.allAgents === true;
-  /** A tab of the tabs of all agents goes to the side panel only from the agent on screen. */
-  const moveTabToPanel = (id: string) => {
-    const tab = parseThreadTabKey(id);
-    if (!tab) moveThreadToPanel(id);
-    else if (tab.agentId === props.agent?.id) moveThreadToPanel(tab.threadId);
-  };
-  /** The chat in the main view: the open side thread, a new thread, or undefined for the agent's own chat. */
-  const viewTaskId = () => (sideThreadOpen() ? (props.threads?.open?.id ?? DRAFT_THREAD_ID) : undefined);
-  /**
-   * Opens a pin in its chat: in place in the agent's own chat, else in the tab of its thread, which
-   * reads the part around it. A pin whose message or thread is gone shows a toast, and the list reads again.
-   * A later click replaces an earlier one that is still loading, so the earlier one shows no toast.
-   */
-  let pinOpens = 0;
-  async function openPin(key: string): Promise<void> {
-    const pin = messagePins.pin(key);
-    if (!pin) return;
-    const open = ++pinOpens;
-    const opened =
-      pin.taskId === null && !sideThreadOpen()
-        ? await replyJump.jumpTo(pin.messageId)
-        : ((await props.threads?.onOpenMessage(pin.taskId, pin.messageId)) ?? false);
-    if (opened || open !== pinOpens) return;
-    actionToast.error(t("chat.pins.missing"));
-    messagePins.load();
-  }
-  /** The pins of all chats of the agent. The pins of the chat in view come first. */
+  const chatPins = useChatPinnedMessages();
+  /** The pins list stays in the header only on a phone, where the thread menu opens it. A desktop has it in the details pane. */
   const pinnedMessages = () => {
-    if (!messagePins.available()) return undefined;
-    return {
-      pins: messagePins.items(viewTaskId()),
-      agents: props.agents,
-      onOpenChange: (open: boolean) => {
-        if (open) messagePins.load();
-      },
-      onJump: (key: string) => void openPin(key),
-      onUnpin: (key: string) => {
-        const pin = messagePins.pin(key);
-        if (pin) messagePins.set(pin.taskId ?? undefined, pin.messageId, false);
-      },
-      openRequest: pinsRequest(),
-      quiet: phoneMenu(),
-    };
+    const pins = phoneMenu() ? chatPins() : undefined;
+    return pins ? { ...pins, openRequest: pinsRequest(), quiet: true } : undefined;
   };
   const working = () => agentActivity() === "Working";
   const providerName = (provider: AgentProviderRef) =>
@@ -152,45 +106,53 @@ export function ConversationHeader() {
       return undefined;
     return { running: runtimeLabel(running, next), next: runtimeLabel(next, running) };
   };
+  /** The remote desktop of a joined server. Missing on this computer and where the user turned it off. */
+  const remoteControl = () =>
+    props.remoteDesktopEnabled !== false && props.server?.kind === "remote"
+      ? {
+          enabled: Boolean(props.remoteDesktopSessionActive || props.server.state === "online"),
+          active: Boolean(props.remoteDesktopSessionActive),
+          visible: Boolean(props.remoteDesktopVisible),
+          onOpen: (trigger: HTMLElement) => {
+            if (props.server) void props.onOpenRemoteDesktop(props.server.id, trigger);
+          },
+        }
+      : undefined;
+  /** The name of the agent that controls the browser now. */
+  const actingAgentName = () =>
+    actingBrowserControl() ? (browserControlAgent()?.name ?? t("conversation.header.agentFallback")) : undefined;
+  /** The header actions in the thread menu: a phone has the pins and the side panel there. */
+  const menuActions = (): ThreadPhoneActions | undefined => {
+    if (!phoneMenu()) return undefined;
+    const onOpenPins = chatPins() ? () => setPinsRequest((value) => value + 1) : undefined;
+    const onToggleSidePanel = channel?.readOnly() ? undefined : toggleSidePanel;
+    return { onOpenPins, onToggleSidePanel, sidePanelOpen: sidePanelOpen() };
+  };
   return (
     <SharedConversationHeader
       agent={props.agent}
       title={channel ? <channel.HeaderTitle onOpenSettings={() => setActiveRightPanel("settings")} /> : undefined}
       onSettingsIntent={() => void loadAgentSettingsPanel()}
       onOpenSettings={() => setActiveRightPanel("settings")}
-      onOpenChat={openMainChat()}
-      titleSelected={titleSelected()}
-      tabbed={allAgentTabs()}
-      pendingModel={pendingModel()}
-      remoteControl={
-        props.remoteDesktopEnabled !== false && props.server?.kind === "remote"
+      session={
+        props.threads
           ? {
-              enabled: Boolean(props.remoteDesktopSessionActive || props.server.state === "online"),
-              active: Boolean(props.remoteDesktopSessionActive),
-              visible: Boolean(props.remoteDesktopVisible),
-              onOpen: (trigger) => {
-                if (props.server) void props.onOpenRemoteDesktop(props.server.id, trigger);
-              },
+              title: sessionTitle(),
+              canStartNew: props.threads.header.canStartNew,
+              onNew: props.threads.header.onNew,
             }
           : undefined
       }
+      pendingModel={pendingModel()}
+      remoteControl={remoteControl()}
+      sessionsInPane={sessionsInPane()}
       phoneMenu={phoneMenu()}
       threads={
         <Show when={props.threads}>
           {(threads) => (
-            <ThreadHeader
-              {...threads().header}
-              onMoveToSide={moveTabToPanel}
-              phoneActions={
-                phoneMenu()
-                  ? {
-                      onOpenPins: messagePins.available() ? () => setPinsRequest((value) => value + 1) : undefined,
-                      onToggleSidePanel: channel?.readOnly() ? undefined : toggleSidePanel,
-                      sidePanelOpen: sidePanelOpen(),
-                    }
-                  : undefined
-              }
-            />
+            <Show when={menuActions()}>
+              {(actions) => <ThreadMenu {...threads().header} phoneActions={actions()} />}
+            </Show>
           )}
         </Show>
       }
@@ -198,13 +160,7 @@ export function ConversationHeader() {
       sidePanel={
         channel?.readOnly()
           ? undefined
-          : {
-              open: sidePanelOpen(),
-              actingAgentName: actingBrowserControl()
-                ? (browserControlAgent()?.name ?? t("conversation.header.agentFallback"))
-                : undefined,
-              onToggle: toggleSidePanel,
-            }
+          : { open: sidePanelOpen(), actingAgentName: actingAgentName(), onToggle: toggleSidePanel }
       }
     />
   );

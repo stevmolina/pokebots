@@ -4,8 +4,10 @@ import { messages as errorAttachment } from "./error/attachment";
 import { messages as errorAuth } from "./error/auth";
 import { messages as errorBackend } from "./error/backend";
 import { messages as errorBilling } from "./error/billing";
+import { messages as errorBrain } from "./error/brain";
 import { messages as errorComputerUse } from "./error/computerUse";
 import { messages as errorConnector } from "./error/connector";
+import { messages as errorCrm } from "./error/crm";
 import { messages as errorHost } from "./error/host";
 import { messages as errorImport } from "./error/import";
 import { messages as errorKind } from "./error/kind";
@@ -40,11 +42,13 @@ export const source = {
   ...errorAuth,
   ...errorHost,
   ...errorRemote,
+  ...errorBrain,
   ...errorAgent,
   ...errorProvider,
   ...errorComputerUse,
   ...errorVoice,
   ...errorWorkflow,
+  ...errorCrm,
   ...errorBackend,
   ...errorSkill,
   ...errorMarketplace,

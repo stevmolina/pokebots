@@ -1,8 +1,10 @@
 import {
   AudioLines,
   Button,
+  ChevronRight,
   CircleDot,
   DropdownMenu,
+  Ellipsis,
   File,
   Image,
   MessageCircleQuestionMark,
@@ -34,18 +36,34 @@ export interface ComposerAddMenuProps {
   onVoice?: (() => void) | undefined;
 }
 
-/** The "+" menu of a message box: files, skills, and the side panes of the agent. */
+/**
+ * The "+" menu of a message box. Three rows stay on top: the first three of Attach files, Photos, Use a
+ * skill and Create an Artifact that the host gives. Teach a task, the side question, the voice
+ * conversation and an Artifact that did not fit sit under More.
+ */
 export function ComposerAddMenu(props: ComposerAddMenuProps) {
   const { t } = useText();
   let skillPickerChosen = false;
-  // The browser opens a file picker only in the event of the click or the key.
+  // The browser opens a file picker only in an event of user activation. A mouse press is one, so the
+  // picker opens on pointerdown, before the focus change closes the menu. A touch or pen press is not:
+  // the activation comes with the release, so those open the picker on pointerup.
   const attach = () => {
+    if (props.attachDisabled) return;
     props.onOpenChange(false);
     props.onAttach?.();
+  };
+  const attachFromPointer = (event: PointerEvent, phase: "down" | "up") => {
+    if (event.button !== 0) return;
+    if ((event.pointerType === "mouse") === (phase === "down")) attach();
   };
   const attachFromKey = (event: KeyboardEvent) => {
     if (event.key === "Enter" || event.key === " ") attach();
   };
+  // Files, Photos and Skill stay on top. Create an Artifact takes the third row when a host gives no Photos
+  // item (the desktop), and goes under More when the host gives all three.
+  const artifactOnTop = () => [props.onAttach, props.onChoosePhotos, props.onPickSkill].filter(Boolean).length < 3;
+  const hasMore = () =>
+    Boolean(props.onTeach || props.onSideQuestion || props.onVoice || (!artifactOnTop() && props.onCreateArtifact));
   return (
     <DropdownMenu.Root
       open={props.open}
@@ -69,9 +87,8 @@ export function ComposerAddMenu(props: ComposerAddMenuProps) {
           <Show when={props.onAttach}>
             <DropdownMenu.Item
               disabled={props.attachDisabled ?? false}
-              onPointerDown={(event) => {
-                if (event.button === 0) attach();
-              }}
+              onPointerDown={(event) => attachFromPointer(event, "down")}
+              onPointerUp={(event) => attachFromPointer(event, "up")}
               onKeyDown={attachFromKey}
             >
               <File aria-hidden="true" />
@@ -83,14 +100,6 @@ export function ComposerAddMenu(props: ComposerAddMenuProps) {
               <DropdownMenu.Item disabled={props.attachDisabled ?? false} onSelectAfterClose={() => choose()()}>
                 <Image aria-hidden="true" />
                 <span>{t("composer.add.photos")}</span>
-              </DropdownMenu.Item>
-            )}
-          </Show>
-          <Show when={props.onCreateArtifact}>
-            {(create) => (
-              <DropdownMenu.Item onSelectAfterClose={() => create()()}>
-                <Sparkles aria-hidden="true" />
-                <span>{t("composer.add.artifact")}</span>
               </DropdownMenu.Item>
             )}
           </Show>
@@ -107,44 +116,69 @@ export function ComposerAddMenu(props: ComposerAddMenuProps) {
               <span>{t("composer.add.skill")}</span>
             </DropdownMenu.Item>
           </Show>
-          <Show when={props.onTeach}>
-            {(teach) => (
-              <DropdownMenu.Item onSelectAfterClose={() => teach()()}>
-                <CircleDot class="composer-add-record" aria-hidden="true" />
-                <span>{t("composer.add.teach")}</span>
+          <Show when={artifactOnTop() ? props.onCreateArtifact : undefined}>
+            {(create) => (
+              <DropdownMenu.Item onSelectAfterClose={() => create()()}>
+                <Sparkles aria-hidden="true" />
+                <span>{t("composer.add.artifact")}</span>
               </DropdownMenu.Item>
             )}
           </Show>
-          <Show when={props.onSideQuestion}>
-            {(open) => (
-              <>
-                <DropdownMenu.Separator />
-                <DropdownMenu.Item
-                  onSelectAfterClose={() => {
-                    // The menu gives the focus back first. A side panel tab that gets it selects its
-                    // pane, so open the side question after that.
-                    requestAnimationFrame(() => open()());
-                  }}
-                >
-                  <MessageCircleQuestionMark aria-hidden="true" />
-                  <span>{t("conversation.sidePanel.pane.question")}</span>
-                </DropdownMenu.Item>
-              </>
-            )}
-          </Show>
-          {/* Only where a side question is: after its separator. */}
-          <Show when={props.onVoice}>
-            {(open) => (
-              <DropdownMenu.Item
-                onSelectAfterClose={() => {
-                  // As for the side question: open the pane after the menu gives the focus back.
-                  requestAnimationFrame(() => open()());
-                }}
-              >
-                <AudioLines aria-hidden="true" />
-                <span>{t("conversation.sidePanel.pane.voice")}</span>
-              </DropdownMenu.Item>
-            )}
+          <Show when={hasMore()}>
+            <DropdownMenu.Sub>
+              <DropdownMenu.SubTrigger>
+                <Ellipsis aria-hidden="true" />
+                <span>{t("app.rail.more")}</span>
+                <ChevronRight class="ui-menu-trailing" aria-hidden="true" />
+              </DropdownMenu.SubTrigger>
+              <DropdownMenu.Portal>
+                <DropdownMenu.SubContent class="ui-action-menu" aria-label={t("app.rail.more")}>
+                  <Show when={artifactOnTop() ? undefined : props.onCreateArtifact}>
+                    {(create) => (
+                      <DropdownMenu.Item onSelectAfterClose={() => create()()}>
+                        <Sparkles aria-hidden="true" />
+                        <span>{t("composer.add.artifact")}</span>
+                      </DropdownMenu.Item>
+                    )}
+                  </Show>
+                  <Show when={props.onTeach}>
+                    {(teach) => (
+                      <DropdownMenu.Item onSelectAfterClose={() => teach()()}>
+                        <CircleDot class="composer-add-record" aria-hidden="true" />
+                        <span>{t("composer.add.teach")}</span>
+                      </DropdownMenu.Item>
+                    )}
+                  </Show>
+                  <Show when={props.onSideQuestion}>
+                    {(open) => (
+                      <DropdownMenu.Item
+                        onSelectAfterClose={() => {
+                          // The menu gives the focus back first. A side panel tab that gets it selects its
+                          // pane, so open the side question after that.
+                          requestAnimationFrame(() => open()());
+                        }}
+                      >
+                        <MessageCircleQuestionMark aria-hidden="true" />
+                        <span>{t("conversation.sidePanel.pane.question")}</span>
+                      </DropdownMenu.Item>
+                    )}
+                  </Show>
+                  <Show when={props.onVoice}>
+                    {(open) => (
+                      <DropdownMenu.Item
+                        onSelectAfterClose={() => {
+                          // As for the side question: open the pane after the menu gives the focus back.
+                          requestAnimationFrame(() => open()());
+                        }}
+                      >
+                        <AudioLines aria-hidden="true" />
+                        <span>{t("conversation.sidePanel.pane.voice")}</span>
+                      </DropdownMenu.Item>
+                    )}
+                  </Show>
+                </DropdownMenu.SubContent>
+              </DropdownMenu.Portal>
+            </DropdownMenu.Sub>
           </Show>
         </DropdownMenu.Content>
       </DropdownMenu.Portal>

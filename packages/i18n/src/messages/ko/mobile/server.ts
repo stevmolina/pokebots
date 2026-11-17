@@ -438,7 +438,8 @@ export const messages = {
   "mobile.server.settings.timezoneSearch": "시간대 검색",
   "mobile.server.settings.timezoneNoMatch": "검색과 일치하는 시간대가 없어요.",
   "mobile.server.settings.timezoneMore": "이름을 더 입력하면 다른 시간대를 볼 수 있어요.",
-  "mobile.server.settings.timezoneDescription": "메시지에 보낸 사람의 시간대가 없으면 새 루틴이 이 시간대를 사용해요.",
+  "mobile.server.settings.timezoneDescription":
+    "메시지에 보낸 사람의 시간대가 없으면 새 루틴이 이 시간대를 사용해요. 서버에서는 다음 재시작 후 브라우저도 이 시간대를 사용해요.",
   "mobile.server.settings.timezoneLoading": "시간대 불러오는 중…",
   "mobile.server.settings.timezoneLoadFailed": "서버 시간대를 불러오지 못했어요.",
   "mobile.server.settings.timezoneSaveFailed": "시간대를 저장하지 못했어요. 다시 시도해 주세요.",
@@ -681,6 +682,31 @@ export const messages = {
   "mobile.server.connectors.protonPass.keyHelp":
     "Proton Pass에서 OpenBot과 공유하는 보관함만 읽을 수 있는 액세스 키를 만든 다음 여기에 붙여 넣으세요. 키는 {host}에 보관되고 이 휴대폰에는 저장되지 않아요.",
   "mobile.server.connectors.protonPass.keyPlaceholder": "pst_…",
+  "mobile.server.connectors.keeper.title": "Keeper",
+  "mobile.server.connectors.keeper.description":
+    "Keeper 폴더 하나를 {host}의 OpenBot과 공유하면 {host}의 에이전트가 브라우저에서 사이트에 로그인할 수 있어요.",
+  "mobile.server.connectors.keeper.accountHelp":
+    "Keeper 이메일과 마스터 비밀번호를 입력하세요. 한 번만 {host}에 전달되고, {host}이(가) Keeper Commander에 넘겨줘요. 이 휴대폰에는 저장되지 않아요.",
+  "mobile.server.connectors.keeper.email": "이메일",
+  "mobile.server.connectors.keeper.masterPassword": "마스터 비밀번호",
+  "mobile.server.connectors.keeper.signingIn": "{host}이(가) Keeper에 로그인하는 중…",
+  "mobile.server.connectors.keeper.makingFolder": "{host}이(가) 공유 폴더를 만드는 중…",
+  "mobile.server.connectors.keeper.code": "코드",
+  "mobile.server.connectors.keeper.twoFactorHint":
+    "Keeper가 2단계 인증 코드를 요청해요. 인증 앱이나 문자 메시지의 코드를 입력하세요. 코드는 {host}에 한 번만 전달되고 이 휴대폰에는 저장되지 않아요.",
+  "mobile.server.connectors.keeper.deviceHint":
+    "Keeper가 승인 이메일을 보내고 다른 기기에도 알림을 보냈어요. 그곳에서 이 기기를 승인한 다음 계속을 누르세요. 또는 이메일의 코드를 입력하세요.",
+  "mobile.server.connectors.keeper.codeWrong": "코드가 올바르지 않아요. 다시 입력하세요.",
+  "mobile.server.connectors.keeper.folderTitle": "공유 폴더",
+  "mobile.server.connectors.keeper.folderFooter":
+    "에이전트가 로그인 정보를 사용하게 하려면 Keeper에서 이 폴더로 옮기세요. 사용을 멈추려면 폴더에서 제거하세요.",
+  "mobile.server.connectors.keeper.plan":
+    "Keeper 관리자가 이 계정에서 Keeper Commander를 허용하지 않아요. 관리자에게 허용을 요청한 다음 다시 연결하세요.",
+  "mobile.server.connectors.keeper.expiredTitle": "Keeper 세션이 종료되었어요",
+  "mobile.server.connectors.keeper.expiredBody":
+    "다시 연결할 때까지 {host}의 에이전트가 공유 로그인 정보로 로그인할 수 없어요.",
+  "mobile.server.connectors.keeper.disconnectBody":
+    "{host}에서 Keeper 세션을 종료해요. 폴더와 그 안의 로그인 정보는 Keeper 보관함에 남아요.",
   "mobile.server.connectors.passwordManager.unavailable": "이 서버에서는 {name}을(를) 사용할 수 없어요.",
   "mobile.server.connectors.passwordManager.howItWorks":
     "이 휴대폰에서 {name}에 로그인하세요. 그러면 {host}이(가) 공유 보관함과 그 보관함의 읽기 전용 액세스 키를 만들고, 그 키만 보관해요. 에이전트는 비밀번호를 볼 수 없어요.",
@@ -868,6 +894,9 @@ export const messages = {
   "mobile.server.connectors.whatsapp.workingMessage": "“작업 중이에요…” 메시지",
   "mobile.server.connectors.whatsapp.workingMessageDescription":
     "에이전트가 작업하는 동안 OpenBot이 보내고, 이후 답변으로 바꿔요. 답변만 보내려면 끄세요.",
+  "mobile.server.connectors.whatsapp.statusReactions": "상태 반응",
+  "mobile.server.connectors.whatsapp.statusReactionsDescription":
+    "메시지가 도착하면 OpenBot이 👀로, 답변이 준비되면 ✅로 반응해요. 반응을 보내지 않으려면 끄세요.",
   "mobile.server.connectors.whatsapp.orchestratorTitle": "WhatsApp 오케스트레이터",
   "mobile.server.connectors.whatsapp.orchestratorDescription":
     "이 에이전트가 연결된 모든 번호에서 OpenBot에게 오는 메시지를 받아요. 짧은 요청은 직접 답하고, 나머지는 알맞은 에이전트에게 맡긴 뒤 WhatsApp에서 답해요.",
@@ -1091,6 +1120,22 @@ export const messages = {
   "mobile.server.providers.compactWindowDefault": "Claude Code 기본값",
   "mobile.server.providers.compactWindowTokens": "토큰 {size}",
   "mobile.server.providers.compactWindowLoadFailed": "이 서버의 압축 크기를 불러올 수 없었어요.",
+  "mobile.server.environment.row": "변수",
+  "mobile.server.environment.title": "환경",
+  "mobile.server.environment.hint":
+    "{name}의 각 프로세스가 받는 API 키, 기본 URL 등 설정이에요. 변경은 진행 중인 턴이 끝나면 적용돼요.",
+  "mobile.server.environment.codexHint":
+    "OPENAI_BASE_URL과 키인 OPENAI_API_KEY로 ChatGPT의 모델 요청을 그 주소로 보내요.",
+  "mobile.server.environment.shellNote": "에이전트가 실행하는 명령은 이 값들을 읽을 수 있어요.",
+  "mobile.server.environment.add": "변수 추가",
+  "mobile.server.environment.namePlaceholder": "VARIABLE_NAME",
+  "mobile.server.environment.valuePlaceholder": "값",
+  "mobile.server.environment.saved": "저장됨",
+  "mobile.server.environment.sensitive": "민감",
+  "mobile.server.environment.remove": "제거",
+  "mobile.server.environment.save": "저장",
+  "mobile.server.environment.loadFailed": "{name}의 변수를 불러올 수 없었어요.",
+  "mobile.server.environment.invalid": "먼저 이름을 고치세요.",
   "mobile.server.providers.disconnect": "연결 해제",
   "mobile.server.providers.disconnectTitle": "{name} 연결을 해제할까요?",
   "mobile.server.providers.disconnectBody":

@@ -1,32 +1,43 @@
 /**
- * The bottom of the open chat sidebar: three quiet buttons on one borderless row.
+ * The bottom of the open chat sidebar: two quiet buttons on one borderless row.
  *
- * 1. Profile: the account photo with the status dot of the active machine. Its menu holds the weekly
- *    usage, the plan, the machine switch, the pages, Help, Settings and the account actions.
- * 2. Providers: the provider stack with its usage rings and card.
- * 3. Connect apps: a grid button whose menu opens the app catalog.
+ * 1. Profile: the account photo with the status dot of the active machine. Its menu stays short: the
+ *    weekly usage, the plan, the machine switch, a "Go to" submenu with every page, a Help submenu
+ *    with the mobile app and community links, Settings and the account actions.
+ * 2. Connect apps: a grid button that opens the Marketplace modal.
  */
 
 import {
+  BriefcaseBusiness,
+  Button,
   Check,
+  ChevronRight,
+  CircleQuestionMark,
+  Compass,
   DropdownMenu,
   Gauge,
   LayoutGrid,
   LogOut,
+  MessageSquare,
+  Monitor,
   MotionTooltip,
   Plus,
+  Settings,
   Smartphone,
+  Sparkles,
   Store,
   UserAvatar,
   UserPlus,
   Zap,
 } from "@openbot/ui";
+import { Dynamic } from "@solidjs/web";
 import { createMemo, For, Show } from "solid-js";
 import { useText } from "../../text";
 import { ServerMark } from "../servers/ServerRail";
-import { SidebarMoreMenuItems } from "./SidebarMoreMenu";
+import { XMark } from "../settings/brand-marks";
+import { shortcutText } from "../shortcuts/shortcut-registry";
+import { HelpMenuItems } from "../updates/HelpMenu";
 import { usePillPages } from "./SidebarPill";
-import { SidebarProviderStack } from "./SidebarProviderStack";
 import type { SidebarPages } from "./sidebar-pages";
 import { useSidebarScope } from "./sidebar-scope";
 
@@ -142,15 +153,122 @@ export function SidebarProfileMenu(props: {
             )}
           </Show>
           <DropdownMenu.Separator />
-          <SidebarMoreMenuItems pages={props.pages} list={list()} open={openFromTrigger} customize={false} />
-          <Show when={props.pages.onMobileApp}>
-            {(open) => (
-              <DropdownMenu.Item onSelectAfterClose={() => open()()}>
-                <Smartphone class="agent-context-icon size-4" aria-hidden="true" />
-                <span>{t("sidebar.mobileApp.title")}</span>
-              </DropdownMenu.Item>
-            )}
-          </Show>
+          {/* Every page lives here, so the menu keeps about eight rows. */}
+          <DropdownMenu.Sub>
+            <DropdownMenu.SubTrigger>
+              <Compass class="agent-context-icon size-4" aria-hidden="true" />
+              <span>{t("sidebar.footer.goTo")}</span>
+              <ChevronRight class="agent-context-submenu-chevron size-4" aria-hidden="true" />
+            </DropdownMenu.SubTrigger>
+            <DropdownMenu.Portal>
+              <DropdownMenu.SubContent
+                class="ui-action-menu agent-context-menu agent-context-submenu"
+                aria-label={t("sidebar.footer.goTo")}
+              >
+                <For each={list()} keyed={(page) => page.id}>
+                  {(page) => (
+                    <DropdownMenu.Item onSelectAfterClose={openFromTrigger(page().open)}>
+                      <Dynamic component={page().icon} class="agent-context-icon size-4" aria-hidden="true" />
+                      <span>{page().label}</span>
+                    </DropdownMenu.Item>
+                  )}
+                </For>
+                <Show when={props.pages.onComputers}>
+                  {(open) => (
+                    <DropdownMenu.Item onSelectAfterClose={() => open()()}>
+                      <Monitor class="agent-context-icon size-4" aria-hidden="true" />
+                      <span>{t("server.computers.title")}</span>
+                    </DropdownMenu.Item>
+                  )}
+                </Show>
+                <Show when={props.pages.onRooms}>
+                  {(open) => (
+                    <DropdownMenu.Item onSelectAfterClose={() => open()()}>
+                      <MessageSquare class="agent-context-icon size-4" aria-hidden="true" />
+                      <span>{t("rooms.title")}</span>
+                    </DropdownMenu.Item>
+                  )}
+                </Show>
+                <Show when={props.pages.onProviders}>
+                  {(open) => (
+                    <DropdownMenu.Item onSelectAfterClose={openFromTrigger(open())}>
+                      <Sparkles class="agent-context-icon size-4" aria-hidden="true" />
+                      <span>{t("app.rail.providers")}</span>
+                    </DropdownMenu.Item>
+                  )}
+                </Show>
+                <Show when={props.pages.onCrm}>
+                  {(open) => (
+                    <DropdownMenu.Item onSelectAfterClose={openFromTrigger(open())}>
+                      <BriefcaseBusiness class="agent-context-icon size-4" aria-hidden="true" />
+                      <span>{t("app.rail.crm")}</span>
+                    </DropdownMenu.Item>
+                  )}
+                </Show>
+                <Show when={props.pages.onMarketplace}>
+                  {(onMarketplace) => (
+                    <DropdownMenu.Item onSelectAfterClose={() => onMarketplace()()}>
+                      <Store class="agent-context-icon size-4" aria-hidden="true" />
+                      <span>{t("app.rail.marketplace")}</span>
+                    </DropdownMenu.Item>
+                  )}
+                </Show>
+              </DropdownMenu.SubContent>
+            </DropdownMenu.Portal>
+          </DropdownMenu.Sub>
+          {/* Help also holds the mobile app and community links. The Discord link is the Help one. */}
+          <DropdownMenu.Sub
+            onOpenChange={(next: boolean) => {
+              if (next) props.pages.help.onOpen?.();
+            }}
+          >
+            <DropdownMenu.SubTrigger>
+              <CircleQuestionMark class="agent-context-icon size-4" aria-hidden="true" />
+              <span>{t("app.help.label")}</span>
+              <ChevronRight class="agent-context-submenu-chevron size-4" aria-hidden="true" />
+            </DropdownMenu.SubTrigger>
+            <DropdownMenu.Portal>
+              <DropdownMenu.SubContent
+                class="ui-action-menu agent-context-menu help-menu"
+                aria-label={t("app.help.label")}
+              >
+                <HelpMenuItems {...props.pages.help} />
+                <Show when={props.pages.onMobileApp || props.pages.onFollowX}>
+                  <DropdownMenu.Separator />
+                  <Show when={props.pages.onMobileApp}>
+                    {(open) => (
+                      <DropdownMenu.Item onSelectAfterClose={() => open()()}>
+                        <Smartphone class="agent-context-icon size-4" aria-hidden="true" />
+                        <span>{t("sidebar.mobileApp.title")}</span>
+                      </DropdownMenu.Item>
+                    )}
+                  </Show>
+                  <Show when={props.pages.onFollowX}>
+                    {(open) => (
+                      <DropdownMenu.Item onSelectAfterClose={() => open()()}>
+                        <XMark class="agent-context-icon size-4" />
+                        <span>{t("sidebar.community.followX")}</span>
+                      </DropdownMenu.Item>
+                    )}
+                  </Show>
+                </Show>
+              </DropdownMenu.SubContent>
+            </DropdownMenu.Portal>
+          </DropdownMenu.Sub>
+          <DropdownMenu.Item onSelectAfterClose={openFromTrigger(props.pages.onSettings)}>
+            <Settings class="agent-context-icon size-4" aria-hidden="true" />
+            <span>{t("app.rail.settings")}</span>
+            <Show
+              when={props.pages.settingsNotice}
+              fallback={
+                <Show when={props.pages.settingsShortcut ? props.pages.shortcutPlatform : undefined}>
+                  {(platform) => <span class="ui-menu-trailing">{shortcutText("settings", platform())}</span>}
+                </Show>
+              }
+            >
+              {(notice) => <span class="ui-menu-trailing sidebar-more-notice">{notice()}</span>}
+            </Show>
+          </DropdownMenu.Item>
           <Show when={props.pages.onAddAccount || props.pages.onSignOut}>
             <DropdownMenu.Separator />
             <Show when={props.pages.onAddAccount}>
@@ -176,44 +294,26 @@ export function SidebarProfileMenu(props: {
   );
 }
 
-/** The grid button: the app catalog, and the MCP servers of the machine where the app can open them. */
-export function ConnectAppsMenu(props: { pages: SidebarPages; class?: string; placement?: "top-end" | "top-start" }) {
+/**
+ * The grid button of the footer. It opens the Marketplace at once, as a modal over the window. The custom MCP
+ * servers that its menu had on the web client are part of the Marketplace now.
+ */
+export function ConnectAppsButton(props: { pages: SidebarPages; class?: string }) {
   const { t } = useText();
   return (
     <Show when={props.pages.onMarketplace}>
       {(onMarketplace) => (
-        <DropdownMenu.Root placement={props.placement ?? "top-end"} gutter={8}>
-          <MotionTooltip content={t("sidebar.footer.connectApps")}>
-            <DropdownMenu.Trigger
-              class={["sidebar-footer-round no-drag", props.class]}
-              aria-label={t("sidebar.footer.connectApps")}
-            >
-              <LayoutGrid aria-hidden="true" />
-            </DropdownMenu.Trigger>
-          </MotionTooltip>
-          <DropdownMenu.Portal>
-            <DropdownMenu.Content
-              class="agent-context-menu sidebar-footer-menu"
-              aria-label={t("sidebar.footer.connectApps")}
-            >
-              <div class="ui-menu-label" aria-hidden="true">
-                {t("sidebar.footer.connectApps")}
-              </div>
-              <DropdownMenu.Item onSelectAfterClose={() => onMarketplace()()}>
-                <Store class="agent-context-icon size-4" aria-hidden="true" />
-                <span>{t("sidebar.footer.browseApps")}</span>
-              </DropdownMenu.Item>
-              <Show when={props.pages.onConnectServers}>
-                {(open) => (
-                  <DropdownMenu.Item onSelectAfterClose={() => open()()}>
-                    <Plus class="agent-context-icon size-4" aria-hidden="true" />
-                    <span>{t("sidebar.footer.mcpServers")}</span>
-                  </DropdownMenu.Item>
-                )}
-              </Show>
-            </DropdownMenu.Content>
-          </DropdownMenu.Portal>
-        </DropdownMenu.Root>
+        <MotionTooltip content={t("sidebar.footer.connectApps")}>
+          <Button
+            variant="ghost"
+            type="button"
+            class={["sidebar-footer-round no-drag", props.class]}
+            aria-label={t("sidebar.footer.connectApps")}
+            onClick={() => onMarketplace()()}
+          >
+            <LayoutGrid aria-hidden="true" />
+          </Button>
+        </MotionTooltip>
       )}
     </Show>
   );
@@ -225,12 +325,7 @@ export function SidebarFooter(props: { pages: SidebarPages }) {
     <div class="sidebar-footer" role="toolbar" aria-label={t("sidebar.footer.label")}>
       <SidebarProfileMenu pages={props.pages} />
       <div class="sidebar-footer-actions">
-        <SidebarProviderStack
-          usageRows={props.pages.usageRows}
-          customAgentUsage={props.pages.customAgentUsage}
-          onOpenUsage={props.pages.onUsage}
-        />
-        <ConnectAppsMenu pages={props.pages} />
+        <ConnectAppsButton pages={props.pages} />
       </div>
     </div>
   );

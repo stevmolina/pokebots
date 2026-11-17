@@ -24,16 +24,14 @@
   --openbot-text-grouped-secondary: #96969b;
   --openbot-border-grouped: #333335;
   --openbot-radius-grouped: 16px;
-  /* The milky chrome of the native app where it has no Liquid Glass: the search field and bar buttons. */
+  /* The milky chrome of the iPhone app where it has no Liquid Glass: the bar buttons. */
   --openbot-bg-chrome-glass: rgba(38, 38, 40, 0.96);
   --openbot-border-chrome-glass: rgba(255, 255, 255, 0.08);
-  /* The fill of that chrome over a real blur, lighter than the solid glass. */
-  --openbot-bg-chrome-blur: rgba(26, 26, 28, 0.62);
 
   /* Neutral color system. Keep UI colors here, not in components. */
   --openbot-bg-canvas: #1a1a1a;
-  /* The window frame around the page card, darker than the card, so the card comes forward. */
-  --openbot-bg-frame: #0d0d0d;
+  /* The window base matches the flat chat surface. */
+  --openbot-bg-frame: #1a1a1a;
   /* A rail inside a menu, a step darker than the menu sheet. */
   --openbot-bg-sheet-inset: #101010;
   --openbot-bg-canvas-clear: rgba(26, 26, 26, 0);
@@ -118,7 +116,7 @@
   --openbot-queue-border: var(--openbot-border-strong);
   --openbot-queue-text: var(--openbot-text-primary);
   --openbot-queue-action: var(--openbot-text-muted);
-  --openbot-border: rgba(255, 255, 255, 0.035);
+  --openbot-border: rgba(255, 255, 255, 0.08);
   --openbot-border-strong: rgba(255, 255, 255, 0.045);
   --openbot-image-outline: rgba(255, 255, 255, 0.1);
   /* Focus is neutral: a grey border or a thin grey ring, never blue and never a halo. */
@@ -327,6 +325,7 @@
   --openbot-text-xl: 16px;
   --openbot-text-2xl: 18px;
   --openbot-text-3xl: 24px;
+  --openbot-text-search: 22px;
   --openbot-leading-sm: 18px;
   --openbot-leading-md: 20px;
   --openbot-leading-lg: 22px;
@@ -370,8 +369,9 @@
   --openbot-radius-md: 8px;
   --openbot-radius-lg: 12px;
   --openbot-radius-card: 14px;
+  --openbot-radius-palette: 16px;
   --openbot-radius-xl: 20px;
-  --openbot-radius-bubble: 22px;
+  --openbot-radius-bubble: 18px;
   --openbot-radius-bubble-inset: calc(var(--openbot-radius-bubble) - var(--openbot-space-3) - 1px);
   --openbot-radius-modal: 30px;
   --openbot-radius-media-preview: calc(var(--openbot-radius-lg) - 1px);
@@ -518,5 +518,9 @@
 }
 
 [data-provider="sunra"] {
+  --openbot-provider-current: var(--openbot-text-primary);
+}
+
+[data-provider="higgsfield"] {
   --openbot-provider-current: var(--openbot-text-primary);
 }

@@ -233,6 +233,10 @@ export const messages = {
   "routine.calendar.entryMeta": "{when} · {schedule} · {status}",
   "routine.calendar.openAgent": "Ouvrir {name}",
   "routine.calendar.completed": "Terminée",
+  "routine.calendar.new": "Nouvelle routine",
+  "routine.calendar.newOn": "Nouvelle routine le {day}",
+  "routine.calendar.agent": "Agent",
+  "routine.calendar.agentChoice": "Agent : {name}",
 
   "routine.settings.loadFailed": "Impossible de charger les routines.",
   "routine.settings.loadRunsFailed": "Impossible de charger l’historique des exécutions.",
@@ -248,6 +252,10 @@ export const messages = {
   "routine.settings.create": "Créer une routine",
   "routine.settings.loading": "Chargement des routines…",
   "routine.settings.empty": "Aucune routine pour le moment.",
+  "routine.heartbeat.add": "Ajouter un heartbeat",
+  "routine.heartbeat.name": "Heartbeat",
+  "routine.heartbeat.description":
+    "Vérifie une liste toutes les 2 heures et ne publie que si quelque chose vous concerne.",
   "routine.settings.paused": "En pause",
   "routine.settings.completed": "Terminée · {schedule}",
   "routine.settings.active": "Active",

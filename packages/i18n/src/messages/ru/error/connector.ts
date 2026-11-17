@@ -18,9 +18,17 @@ export const messages = {
     "OpenBot не смог установить CLI 1Password. Проверьте подключение к интернету и повторите попытку.",
   "error.connector.onePasswordCliSignedOut":
     "В CLI 1Password не выполнен вход. Включите его интеграцию в приложении 1Password и подключитесь снова.",
+  "error.connector.onePasswordAppUnreachable":
+    "OpenBot не может связаться с приложением 1Password. Откройте 1Password и разблокируйте его. В разделе «Настройки» > «Разработчик» проверьте, что параметр «Integrate with 1Password CLI» включён. Затем повторите попытку.",
   "error.connector.onePasswordCliFailed": "CLI 1Password завершился с ошибкой: {detail}",
+  "error.connector.onePasswordCliForbidden":
+    "Ваш аккаунт 1Password не позволяет вам создать общее хранилище или сервисный аккаунт. Попросите владельца или администратора аккаунта дать это разрешение или выдать токен сервисного аккаунта, затем нажмите «Использовать токен».",
   "error.connector.onePasswordUnexpected": "1Password прислал неожиданный ответ: {detail}",
   "error.connector.onePasswordTokenRejected": "1Password не принял токен сервисного аккаунта.",
+  "error.connector.onePasswordUnreachable":
+    "OpenBot не смог подключиться к 1Password. Проверьте подключение к интернету и повторите попытку.",
+  "error.connector.onePasswordRateLimited":
+    "1Password получил слишком много запросов. Подождите несколько минут и повторите попытку.",
   "error.connector.onePasswordNoVault":
     "Сервисный аккаунт не может читать ни одно хранилище. Дайте ему доступ к хранилищу и повторите попытку.",
   "error.connector.onePasswordFileUnreadable": "Файл подключения 1Password не читается.",
@@ -54,4 +62,26 @@ export const messages = {
   "error.connector.protonPassSignInTimeout": "Вход в Proton занял слишком много времени. Подключитесь снова.",
   "error.connector.protonPassSetupFailed":
     "Не удалось создать в Proton Pass хранилище Shared with OpenBot или его ключ доступа. Подключитесь снова.",
+  "error.connector.keeperFailed": "Не удалось подключить Keeper. Подключитесь снова.",
+  "error.connector.keeperCliInstallFailed":
+    "Не удалось установить Keeper Commander. Проверьте сетевое подключение и подключитесь снова.",
+  "error.connector.keeperPassword": "Электронная почта или мастер-пароль неверны.",
+  "error.connector.keeperCode": "Код неверен. Введите его снова.",
+  "error.connector.keeperCodeNotAsked": "Keeper не запрашивал код.",
+  "error.connector.keeperNotApproved":
+    "Keeper ещё не подтвердил это устройство. Подтвердите его и нажмите «Продолжить».",
+  "error.connector.keeperExpired": "Сеанс Keeper на этом компьютере завершён. Подключитесь снова.",
+  "error.connector.keeperPlan":
+    "Администратор Keeper не разрешает Keeper Commander для этой учётной записи. Попросите его разрешить и подключитесь снова.",
+  "error.connector.keeperSso": "Учётные записи Keeper со входом через SSO пока нельзя подключить.",
+  "error.connector.keeperTwoFactorUnsupported":
+    "Двухэтапный метод этой учётной записи не принимает введённый код. Добавьте в Keeper приложение-аутентификатор или SMS и подключитесь снова.",
+  "error.connector.keeperLocked":
+    "Keeper заблокировал эту учётную запись или это устройство. Откройте Keeper, чтобы разблокировать, и подключитесь снова.",
+  "error.connector.keeperThrottled":
+    "Keeper просит подождать несколько минут перед следующим входом. Подключитесь позже.",
+  "error.connector.keeperPersistentLogin":
+    "Администратор Keeper отключил «Stay logged in», которое нужно OpenBot. Попросите его разрешить эту функцию, затем подключитесь снова.",
+  "error.connector.keeperSignInTimeout": "Вход в Keeper занял слишком много времени. Подключитесь снова.",
+  "error.connector.keeperFileUnreadable": "Не удалось прочитать файл подключения Keeper.",
 } as const satisfies PartialTranslation<typeof source>;

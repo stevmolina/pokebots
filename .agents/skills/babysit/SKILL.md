@@ -79,7 +79,7 @@ cannot reproduce in order to turn the gate green.
    irreversible-safe, keep released Team API meaning unchanged, keep the
    renderer-to-main trust boundary, redact secrets, keep the license.
 3. Run the narrowest relevant test file and
-   `biome check --write --max-diagnostics=none <changed paths>`, as
+   `bun run check:paths <changed paths>`, as
    `AGENTS.md` says. Leave broad checks to CI.
 4. Commit the fixes on the pull request branch.
 

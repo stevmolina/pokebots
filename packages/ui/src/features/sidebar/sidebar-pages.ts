@@ -14,7 +14,10 @@ export type SidebarPage =
   | "schedule"
   | "usage"
   | "library"
+  | "rooms"
+  | "brain"
   | "machines"
+  | "crm"
   | "marketplace"
   | "settings";
 
@@ -64,7 +67,16 @@ export interface SidebarPages {
   /** Absent where the server keeps no files, such as the web client. */
   onLibrary?: ((button: HTMLElement) => void) | undefined;
   /** Every connected server with its agents. Absent where the app knows one server only, such as the web client. */
+  onComputers?: (() => void) | undefined;
   onMachines?: ((button: HTMLElement) => void) | undefined;
+  /** Absent where the server has no Rooms page: a joined server that is older or that the user cannot administer. */
+  onRooms?: (() => void) | undefined;
+  /** Absent where the host has no Brain route, or where this computer cannot open one. */
+  onBrain?: (() => void) | undefined;
+  /** Opens Server Settings > Providers. Absent when this account cannot manage the providers. */
+  onProviders?: ((button: HTMLElement) => void) | undefined;
+  /** Opens the CRM. Absent for a member, an older host, or while the CRM is off in Server Settings. */
+  onCrm?: ((button: HTMLElement) => void) | undefined;
   /** Absent while Marketplace cannot open. */
   onMarketplace?: (() => void) | undefined;
   onSettings: (button: HTMLElement) => void;
@@ -80,14 +92,14 @@ export interface SidebarPages {
   account?: { name: string | null; email: string; avatarUrl: string | null } | undefined;
   /** Opens the plans. Absent where the plan cannot change here. */
   onUpgrade?: (() => void) | undefined;
-  /** Shows how to get the mobile app. */
+  /** Shows how to get the mobile app. It sits in the Help submenu of the profile menu. */
   onMobileApp?: (() => void) | undefined;
+  /** Opens the OpenBot account on X. It sits in the Help submenu of the profile menu. */
+  onFollowX?: (() => void) | undefined;
   /** Signs in with another account. */
   onAddAccount?: (() => void) | undefined;
   /** Signs out of the account. */
   onSignOut?: (() => void) | undefined;
-  /** Opens the MCP servers of the machine in view, from the Connect apps menu. */
-  onConnectServers?: (() => void) | undefined;
   /** Whether ⌘, opens Settings here, so the Settings item names the key. The web client has no such key. */
   settingsShortcut?: boolean | undefined;
 }

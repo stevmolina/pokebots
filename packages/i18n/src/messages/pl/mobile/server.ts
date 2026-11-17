@@ -507,7 +507,7 @@ export const messages = {
   "mobile.server.settings.timezoneNoMatch": "Żadna strefa czasowa nie pasuje do wyszukiwania.",
   "mobile.server.settings.timezoneMore": "Wpisz więcej liter nazwy, aby zobaczyć inne strefy czasowe.",
   "mobile.server.settings.timezoneDescription":
-    "Nowe rutyny używają tej strefy czasowej, gdy wiadomość nie podaje strefy czasowej nadawcy.",
+    "Nowe rutyny używają tej strefy czasowej, gdy wiadomość nie podaje strefy czasowej nadawcy. Na serwerze przeglądarka też używa jej po następnym ponownym uruchomieniu.",
   "mobile.server.settings.timezoneLoading": "Wczytywanie strefy czasowej…",
   "mobile.server.settings.timezoneLoadFailed": "Nie udało się wczytać strefy czasowej serwera.",
   "mobile.server.settings.timezoneSaveFailed": "Nie udało się zapisać strefy czasowej. Spróbuj ponownie.",
@@ -800,6 +800,31 @@ export const messages = {
   "mobile.server.connectors.protonPass.keyHelp":
     "W Proton Pass utwórz klucz dostępu, który może czytać tylko sejf udostępniony OpenBotowi, i wklej go tutaj. {host} przechowuje klucz; ten telefon nie.",
   "mobile.server.connectors.protonPass.keyPlaceholder": "pst_…",
+  "mobile.server.connectors.keeper.title": "Keeper",
+  "mobile.server.connectors.keeper.description":
+    "Udostępnij jeden folder Keeper OpenBotowi na {host}, aby agenci na {host} mogli logować się do stron w jego przeglądarce.",
+  "mobile.server.connectors.keeper.accountHelp":
+    "Wpisz e-mail i hasło główne do Keeper. Trafiają one do {host} jeden raz, a {host} przekazuje je Keeper Commander. Ten telefon ich nie przechowuje.",
+  "mobile.server.connectors.keeper.email": "E-mail",
+  "mobile.server.connectors.keeper.masterPassword": "Hasło główne",
+  "mobile.server.connectors.keeper.signingIn": "{host} loguje się do Keeper…",
+  "mobile.server.connectors.keeper.makingFolder": "{host} tworzy udostępniony folder…",
+  "mobile.server.connectors.keeper.code": "Kod",
+  "mobile.server.connectors.keeper.twoFactorHint":
+    "Keeper prosi o kod weryfikacji dwuetapowej. Wpisz kod z aplikacji uwierzytelniającej lub z SMS-a. Trafia on do {host} jeden raz; ten telefon go nie przechowuje.",
+  "mobile.server.connectors.keeper.deviceHint":
+    "Keeper wysłał e-mail z prośbą o zatwierdzenie i powiadomienie na Twoje inne urządzenia. Zatwierdź tam to urządzenie, a potem naciśnij Dalej. Możesz też wpisać kod z e-maila.",
+  "mobile.server.connectors.keeper.codeWrong": "Kod jest nieprawidłowy. Spróbuj ponownie.",
+  "mobile.server.connectors.keeper.folderTitle": "Udostępniony folder",
+  "mobile.server.connectors.keeper.folderFooter":
+    "Przenieś login do tego folderu w Keeper, aby agenci mogli się nim logować. Usuń go z folderu, aby cofnąć dostęp.",
+  "mobile.server.connectors.keeper.plan":
+    "Administrator Keeper nie zezwala na Keeper Commander dla tego konta. Poproś go o zezwolenie, a potem połącz ponownie.",
+  "mobile.server.connectors.keeper.expiredTitle": "Sesja Keeper wygasła",
+  "mobile.server.connectors.keeper.expiredBody":
+    "Agenci na {host} nie mogą logować się udostępnionymi danymi, dopóki nie połączysz się ponownie.",
+  "mobile.server.connectors.keeper.disconnectBody":
+    "{host} kończy swoją sesję Keeper. Folder i jego dane logowania zostają w Twoim sejfie Keeper.",
   "mobile.server.connectors.passwordManager.unavailable": "{name} nie jest dostępny na tym serwerze.",
   "mobile.server.connectors.passwordManager.howItWorks":
     "Zaloguj się do {name} na tym telefonie. Potem {host} tworzy udostępniony sejf i klucz dostępu tylko do odczytu dla niego, i przechowuje tylko ten klucz. Agenci nigdy nie widzą hasła.",
@@ -1018,6 +1043,9 @@ export const messages = {
   "mobile.server.connectors.whatsapp.workingMessage": "Wiadomość „Pracuję nad tym…”",
   "mobile.server.connectors.whatsapp.workingMessageDescription":
     "OpenBot wysyła ją, gdy agent pracuje, a potem zastępuje odpowiedzią. Wyłącz, aby wysyłać tylko odpowiedź.",
+  "mobile.server.connectors.whatsapp.statusReactions": "Reakcje stanu",
+  "mobile.server.connectors.whatsapp.statusReactionsDescription":
+    "OpenBot reaguje 👀, gdy przychodzi wiadomość, i ✅, gdy odpowiedź jest gotowa. Wyłącz, aby nie wysyłać reakcji.",
   "mobile.server.connectors.whatsapp.orchestratorTitle": "WhatsApp Orchestrator",
   "mobile.server.connectors.whatsapp.orchestratorDescription":
     "Ten agent odbiera wiadomości do OpenBot ze wszystkich twoich połączonych numerów. Na krótkie odpowiada sam, inną pracę przekazuje odpowiedniemu agentowi i odpowiada w WhatsApp.",
@@ -1249,6 +1277,22 @@ export const messages = {
   "mobile.server.providers.compactWindowDefault": "Domyślne Claude Code",
   "mobile.server.providers.compactWindowTokens": "{size} tokenów",
   "mobile.server.providers.compactWindowLoadFailed": "Nie udało się wczytać rozmiaru kompaktowania tego serwera.",
+  "mobile.server.environment.row": "Zmienne",
+  "mobile.server.environment.title": "Środowisko",
+  "mobile.server.environment.hint":
+    "Klucze API, bazowe adresy URL i inne ustawienia, które dostaje każdy proces {name}. Zmiana działa po zakończeniu bieżących tur.",
+  "mobile.server.environment.codexHint":
+    "OPENAI_BASE_URL z kluczem OPENAI_API_KEY wysyła zapytania ChatGPT do modeli pod ten adres.",
+  "mobile.server.environment.shellNote": "Polecenia uruchamiane przez agentów mogą odczytać te wartości.",
+  "mobile.server.environment.add": "Dodaj zmienną",
+  "mobile.server.environment.namePlaceholder": "VARIABLE_NAME",
+  "mobile.server.environment.valuePlaceholder": "Wartość",
+  "mobile.server.environment.saved": "Zapisana",
+  "mobile.server.environment.sensitive": "Poufna",
+  "mobile.server.environment.remove": "Usuń",
+  "mobile.server.environment.save": "Zapisz",
+  "mobile.server.environment.loadFailed": "Nie udało się wczytać zmiennych {name}.",
+  "mobile.server.environment.invalid": "Najpierw popraw nazwy.",
   "mobile.server.providers.disconnect": "Rozłącz",
   "mobile.server.providers.disconnectTitle": "Rozłączyć {name}?",
   "mobile.server.providers.disconnectBody":

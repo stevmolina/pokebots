@@ -33,11 +33,13 @@ import {
   type ViewInstance,
   type ViewStyle,
 } from "react-native";
+import { GestureDetector, type PanGesture } from "react-native-gesture-handler";
 import Animated, {
   Easing,
   FadeInDown,
   Keyframe,
   ReduceMotion,
+  type SharedValue,
   useAnimatedStyle,
   useSharedValue,
   withDelay,
@@ -53,6 +55,7 @@ import { type ApprovalDecision, approvalTitle, ChatApprovalCard } from "@/featur
 import { ChatExchangeGroup, ChatExchangeMarker } from "@/features/chat/components/chat-exchange-marker";
 import { ChatMarkdown, chatMarkdownHasTable } from "@/features/chat/components/chat-markdown";
 import { ChatMcpSignInCard } from "@/features/chat/components/chat-mcp-sign-in-card";
+import { ChatMemoryChanges } from "@/features/chat/components/chat-memory-changes";
 import { ChatPlan } from "@/features/chat/components/chat-plan";
 import { ChatQuestionPrompt } from "@/features/chat/components/chat-question-prompt";
 import {
@@ -62,6 +65,7 @@ import {
   RoutineRunGroupRow,
   routineGroupKind,
 } from "@/features/chat/components/chat-routine-marker";
+import { ChatSubagents } from "@/features/chat/components/chat-subagents";
 import { ChatTurnStepsRow } from "@/features/chat/components/chat-turn-steps-row";
 import { useActivityPresence } from "@/features/chat/components/use-activity-presence";
 import { CHAT_ROW_GAP, type ChatMotion } from "@/features/chat/components/use-chat-motion";
@@ -80,6 +84,8 @@ import {
   indexChatMessages,
 } from "@/features/chat/model/chat-messages";
 import type { TurnStepsSummary } from "@/features/chat/model/turn-thinking";
+import { usePreviewColors } from "@/features/design-preview/components/preview-parts";
+import { CalmBubbleContext, useCalmLook } from "@/features/design-preview/model/calm-look";
 import { readableOn } from "@/features/onboarding/model/onboarding-colors";
 import { useMessageColor } from "@/features/settings/model/message-color";
 import { useRoutineCollapsePreference } from "@/features/settings/model/routine-collapse";
@@ -110,6 +116,7 @@ import { ChatMessageActionsButton, ChatMessageReactions, useMessageActions } fro
 import { ChatMessageGesture } from "./chat-message-gesture";
 import { ChatOutboxStatus, OutboxMessageMenu, type OutboxRowStatus } from "./chat-outbox-status";
 import { ChatSelectableText } from "./chat-selectable-text";
+import { type ChatSwipeGesture, ChatSwipeGestureContext } from "./chat-swipe-gesture";
 import { ChatTagActionsContext, useTaggedTabOpener } from "./chat-tag-actions";
 import { ChatVideoGeneration } from "./chat-video-generation";
 import { HistoryShownContext } from "./use-history-shown";
@@ -118,6 +125,8 @@ import { useReplyHaptics } from "./use-reply-haptics";
 
 /** The most movement and time of a touch that ends the selection: more is a scroll or a hold. */
 const TAP_SLOP = 10;
+/** In the calm look, a message this long after the one before it gets a time stamp above it. */
+const CALM_GROUP_GAP_MS = 60 * 60 * 1000;
 const TAP_DURATION_MS = 400;
 /** The selection handles stand this far out of the row of the selected message. */
 const HANDLE_MARGIN = 24;
@@ -208,6 +217,8 @@ function ChatBubble({
   // that the background trails the text, so there, as with the animation off, the background fills
   // the bubble in the same layout pass as the text.
   const sized = agent && animateSize && !isAndroid;
+  // The calm look's soft gray for an agent's bubble.
+  const calmFill = useContext(CalmBubbleContext);
   const size = useSharedValue({ width: 0, height: 0, measured: false });
   const shown = useSharedValue(collapsed ? 0 : 1);
   useEffect(() => {
@@ -247,8 +258,13 @@ function ChatBubble({
           // A new view when the setting changes, so a filled background keeps no animated size.
           key={sized ? "sized" : "filled"}
           pointerEvents="none"
-          className="absolute left-0 top-0 bg-control/60"
-          style={[BUBBLE_CORNER, sized ? null : StyleSheet.absoluteFill, background]}
+          className={calmFill ? "absolute left-0 top-0" : "absolute left-0 top-0 bg-control/60"}
+          style={[
+            BUBBLE_CORNER,
+            sized ? null : StyleSheet.absoluteFill,
+            calmFill ? { backgroundColor: calmFill } : null,
+            background,
+          ]}
         />
       ) : null}
       {children}
@@ -258,6 +274,16 @@ function ChatBubble({
 
 interface ChatMessageListProps {
   target: ChatTarget;
+  /**
+   * The swipe away from Back of an agent's chat. It attaches to the list, and a bubble that replies
+   * with a swipe in the same direction blocks it. Keep it for the life of the list: a change mounts
+   * the list again.
+   */
+  swipeGesture?: ChatSwipeGesture;
+  /** Android: how far the pull past the latest message moves the list up, as iOS bounces it. */
+  pullShift?: SharedValue<number>;
+  /** Android: the pan of the pull past the latest message. A hook gesture, on its own detector. */
+  pullGesture?: PanGesture;
   /** False while the chat opens on Android: the list has only its latest rows until the chat is in place. */
   rowsShown: boolean;
   /** Something covers the list, such as the voice mode, so screen readers skip it. */
@@ -279,6 +305,10 @@ interface ChatMessageListProps {
   turnSummaries?: ReadonlyMap<string, TurnStepsSummary>;
   /** Opens the thinking of a turn. Absent where no sheet can show it, such as a channel. */
   onOpenTurn?: (turnId: string) => void;
+  /** Opens the subagents of a turn. Absent where no sheet can show them, such as a channel. */
+  onOpenSubagents?: (messageId: string) => void;
+  /** Opens the memory changes of a turn. Absent where no sheet can show them, such as a channel. */
+  onOpenMemoryChanges?: (messageId: string) => void;
   questionForm?: QuestionPromptController;
   /** Opens the form of an open question, in a channel where several agents can ask. */
   onSelectQuestion?: (messageId: string) => void;
@@ -423,6 +453,10 @@ interface MessageRowShared {
   listWidth: number;
   /** The agent of an agent chat. A workspace file that a message of no agent names is in its workspace. */
   fileAgentId: string | undefined;
+  /** Opens the subagents of a turn in their sheet. Unset where no sheet can show them. */
+  openSubagents: ((messageId: string) => void) | undefined;
+  /** Opens the memory changes of a turn in their sheet. Unset where no sheet can show them. */
+  openMemoryChanges: ((messageId: string) => void) | undefined;
   openFile: (file: MessageFileTarget, written: MessageFileTarget | null) => Promise<void>;
   actions: {
     reply: (message: ChatBubbleMessage) => void;
@@ -859,6 +893,10 @@ const MessageRow = memo(function MessageRow({
         muted={muted}
         onContinue={actions.sendCardText}
       />
+    ) : message.kind === "subagents" ? (
+      <ChatSubagents key={message.id} message={message} onOpen={shared.openSubagents} />
+    ) : message.kind === "memory-changes" ? (
+      <ChatMemoryChanges key={message.id} message={message} onOpen={shared.openMemoryChanges} />
     ) : message.kind === "question" ? (
       <ChatQuestionPrompt
         key={message.id}
@@ -1096,6 +1134,8 @@ interface RowContextValue {
   onOpenTurn: ((turnId: string) => void) | undefined;
   /** The day and time above each message that opens a day. */
   dayLabels: ReadonlyMap<string, string>;
+  /** The quiet gray of the calm look's time stamps, or null in the current look. */
+  calmStampColor: string | null;
   /** The "Branched from" line and the row that it follows. */
   branchDivider: { rowId: string; label: string | null; onOpen: (() => void) | undefined } | null;
   /** The row that the NEW line shows above. */
@@ -1178,9 +1218,20 @@ function ChatRow({ item }: { item: VisibleMessage }) {
         <FocusHighlight rowId={message.id} color={row.highlightColor} shown={row.highlightShown} />
       ) : null}
       {day ? (
-        <Typography.Paragraph type="body-xs" align="center" className="pb-3 pt-1 text-muted">
-          {day}
-        </Typography.Paragraph>
+        row.calmStampColor ? (
+          <Typography.Paragraph
+            type="body-xs"
+            align="center"
+            className="pb-3 pt-2"
+            style={{ color: row.calmStampColor }}
+          >
+            {day}
+          </Typography.Paragraph>
+        ) : (
+          <Typography.Paragraph type="body-xs" align="center" className="pb-3 pt-1 text-muted">
+            {day}
+          </Typography.Paragraph>
+        )
       ) : null}
       {message.id === row.unreadLineRowId ? (
         <UnreadLineRow rowId={message.id} color={row.unreadLineColor} animated={row.unreadLineAnimated} />
@@ -1363,6 +1414,8 @@ export const ChatMessageList = memo(function ChatMessageList({
   activeTurnId,
   turnSummaries,
   onOpenTurn,
+  onOpenSubagents,
+  onOpenMemoryChanges,
   questionForm,
   onSelectQuestion,
   activityAccessory,
@@ -1409,6 +1462,9 @@ export const ChatMessageList = memo(function ChatMessageList({
   focusMessageId = null,
   focusUnread = false,
   onFocusPlaced,
+  swipeGesture,
+  pullShift,
+  pullGesture,
 }: ChatMessageListProps) {
   const { t, format, sourceText } = useText();
   const isFocused = useIsFocused();
@@ -1490,8 +1546,12 @@ export const ChatMessageList = memo(function ChatMessageList({
   const arrivals = useMessageArrivals(replySession.key, messages, watchesArrivals);
   const messageColorMode = useMessageColor((state) => state.mode);
   const customMessageColor = useMessageColor((state) => state.customColor);
+  // The calm look draws the reader's bubbles in the agent's color, whatever the message color setting.
+  const calmLook = useCalmLook();
+  const calmTimeColor = usePreviewColors().time;
+  const calmAgentColor = calmLook && target.kind === "agent";
   const userBubbleColor =
-    messageColorMode === "custom"
+    messageColorMode === "custom" && !calmAgentColor
       ? customMessageColor
       : avatarHeadColor(
           target.kind === "agent" ? target.avatarSeed : target.id,
@@ -1499,7 +1559,8 @@ export const ChatMessageList = memo(function ChatMessageList({
           target.kind === "agent" ? target.avatarColor : null,
         );
   // A channel has no one agent color for the reader's messages.
-  const coloredMessages = messageColorMode === "custom" || (messageColorMode === "agent" && target.kind === "agent");
+  const coloredMessages =
+    calmAgentColor || messageColorMode === "custom" || (messageColorMode === "agent" && target.kind === "agent");
   // Dark text on a light color and white text on a dark one, so the text stays readable.
   const userForeground = readableOn(userBubbleColor);
   const appearance = useConnectionAppearance(!canSend);
@@ -1532,9 +1593,13 @@ export const ChatMessageList = memo(function ChatMessageList({
     [messages, turnSummaries, unreadLineMessageIds, focusMessageId, focusUnread, branchDivider?.afterId],
   );
   // One pass over the loaded rows when they change; the rows read their label from the context.
+  // The calm look also stamps the time between groups of messages that are an hour apart, in its
+  // quiet gray.
+  const groupGapMs = calmLook ? CALM_GROUP_GAP_MS : undefined;
+  const calmStampColor = calmLook ? calmTimeColor : null;
   const dayLabels = useMemo(
-    () => chatDayLabels(visibleMessages, { t, format }, { hasOlder }),
-    [visibleMessages, t, format, hasOlder],
+    () => chatDayLabels(visibleMessages, { t, format }, { hasOlder, groupGapMs }),
+    [visibleMessages, t, format, hasOlder, groupGapMs],
   );
   // Every image of the loaded messages, in chat order, for the viewer's carousel.
   const images = useMemo(() => conversationImages(visibleMessages), [visibleMessages]);
@@ -1599,7 +1664,10 @@ export const ChatMessageList = memo(function ChatMessageList({
       tailIndex >= 0 ? { anchorIndex: tailIndex, anchorOffset: header, onReady: motion.onAnchorReady } : undefined,
     [tailIndex, header, motion.onAnchorReady],
   );
-  const sharedValues = useMemo(() => ({ scrollOffset: motion.scrollOffset }), [motion.scrollOffset]);
+  const sharedValues = useMemo(
+    () => ({ scrollOffset: motion.scrollOffset, isAtEnd: motion.atEnd }),
+    [motion.scrollOffset, motion.atEnd],
+  );
   const screen = useWindowDimensions();
   const columnWidth = useColumnWidth();
   const insets = useSafeAreaInsets();
@@ -1735,6 +1803,8 @@ export const ChatMessageList = memo(function ChatMessageList({
       branchPoints: shownBranchPoints,
       listWidth,
       fileAgentId: target.kind === "agent" ? target.id : undefined,
+      openSubagents: onOpenSubagents,
+      openMemoryChanges: onOpenMemoryChanges,
       openFile: messageFiles.open,
       actions,
     }),
@@ -1771,6 +1841,8 @@ export const ChatMessageList = memo(function ChatMessageList({
       shownBranchPoints,
       listWidth,
       target.id,
+      onOpenSubagents,
+      onOpenMemoryChanges,
       messageFiles.open,
       actions,
     ],
@@ -1815,8 +1887,9 @@ export const ChatMessageList = memo(function ChatMessageList({
   );
   // The setting applies when the chat opens. A change while the list shows would give each group
   // that the reader did not toggle another kind in `rowType`, and spoil the averages of both kinds.
+  // The calm look keeps routine runs as one closed line, whatever the setting.
   const [routineGroupsState] = useState<RoutineGroupsState>(() => ({
-    collapse: useRoutineCollapsePreference.getState().enabled,
+    collapse: useRoutineCollapsePreference.getState().enabled || calmLook,
     groups: new Map(),
   }));
   const routineRowType = useCallback(
@@ -1843,6 +1916,7 @@ export const ChatMessageList = memo(function ChatMessageList({
       turnSummaries,
       onOpenTurn,
       dayLabels,
+      calmStampColor,
       branchDivider: rowBranchDivider,
       unreadLineRowId,
       unreadLineColor,
@@ -1868,6 +1942,7 @@ export const ChatMessageList = memo(function ChatMessageList({
       turnSummaries,
       onOpenTurn,
       dayLabels,
+      calmStampColor,
       rowBranchDivider,
       unreadLineRowId,
       unreadLineColor,
@@ -2129,11 +2204,12 @@ export const ChatMessageList = memo(function ChatMessageList({
     </>
   );
 
-  return (
+  const pullStyle = useAnimatedStyle(() => ({ transform: [{ translateY: -(pullShift?.get() ?? 0) }] }));
+  const body = (
     <Animated.View
       onTouchStart={selectingMessageId ? onTouchStart : undefined}
       onTouchEnd={selectingMessageId ? onTouchEnd : undefined}
-      style={[{ flex: 1 }, historyState === "ready" ? motion.historyStyle : undefined]}
+      style={[{ flex: 1 }, historyState === "ready" ? motion.historyStyle : undefined, pullStyle]}
       accessibilityElementsHidden={accessibilityHidden || (historyState === "ready" && !motion.historyVisible)}
       importantForAccessibility={
         !accessibilityHidden && (historyState !== "ready" || motion.historyVisible) ? "auto" : "no-hide-descendants"
@@ -2146,9 +2222,11 @@ export const ChatMessageList = memo(function ChatMessageList({
             <RoutineGroupsContext value={routineGroupsState}>
               <KeptOpenContext value={replySession.keptOpen}>
                 <RowContext value={rowContext}>
-                  <ListHeaderContext value={listHeader}>
-                    <ListFooterContext value={listFooter}>{list}</ListFooterContext>
-                  </ListHeaderContext>
+                  <ChatSwipeGestureContext value={swipeGesture ?? null}>
+                    <ListHeaderContext value={listHeader}>
+                      <ListFooterContext value={listFooter}>{list}</ListFooterContext>
+                    </ListHeaderContext>
+                  </ChatSwipeGestureContext>
                 </RowContext>
               </KeptOpenContext>
             </RoutineGroupsContext>
@@ -2157,5 +2235,15 @@ export const ChatMessageList = memo(function ChatMessageList({
       </ChatImageViewerProvider>
       {messageFiles.sheet}
     </Animated.View>
+  );
+  // The pull is a hook gesture and the swipe an older one: each has its own detector. The detector of
+  // a hook gesture takes no space of its own.
+  const pulled = pullGesture ? <GestureDetector gesture={pullGesture}>{body}</GestureDetector> : body;
+  return swipeGesture ? (
+    <GestureDetector gesture={swipeGesture}>
+      <View style={{ flex: 1 }}>{pulled}</View>
+    </GestureDetector>
+  ) : (
+    pulled
   );
 }, sameListProps);

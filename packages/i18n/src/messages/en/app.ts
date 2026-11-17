@@ -1,6 +1,7 @@
 import { defineMessages } from "../../message";
 
 export const messages = defineMessages("app", {
+  "app.rail.brain": "Brain",
   // The app shell, shared state, and shared controls without a feature of their own.
   "app.loading": "Loading OpenBot",
   "app.leftPanel.resize": "Resize left sidebar",
@@ -55,6 +56,8 @@ export const messages = defineMessages("app", {
   "app.rail.usage": "Usage",
   "app.rail.library": "Library",
   "app.rail.machines": "Machines",
+  "app.rail.providers": "Providers",
+  "app.rail.crm": "CRM",
   "app.rail.marketplace": "Marketplace",
   "app.rail.settings": "Settings",
   "app.rail.more": "More",
@@ -100,10 +103,8 @@ export const messages = defineMessages("app", {
   "app.rail.mediaCreditsWindow": "{credits} of {quota} team credits",
   "app.settingsPage.title": "Your settings",
   "app.settingsPage.unifiedTitle": "Settings",
-  "app.settingsPage.overall": "Overall",
   "app.settingsPage.machines": "Machines",
   "app.settingsPage.sections": "Settings sections",
-  "app.settingsPage.serverSettings": "{server} server settings",
   "app.settingsPage.search": "Search settings",
   "app.settingsPage.searchPlaceholder": "Search settings…",
   "app.settingsPage.results": "Settings search results",

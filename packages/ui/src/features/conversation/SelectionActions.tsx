@@ -5,7 +5,7 @@ import {
   serializeFileSelectionInstruction,
   serializeSelectionInstruction,
 } from "@openbot/contracts/selection-instruction";
-import { Button, Input, TextQuote } from "@openbot/ui";
+import { Button, Input, Kbd, TextQuote } from "@openbot/ui";
 import { clamp } from "@openbot/ui/utils";
 import { Portal } from "@solidjs/web";
 import type { Element as SolidElement } from "solid-js";
@@ -255,6 +255,9 @@ export function SelectionActionsBar(props: {
   const { t } = useText();
   const [prompt, setPrompt] = createSignal("");
   const [expanded, setExpanded] = createSignal(false);
+  // With a Quote action, the bar first shows only "Add to chat" and a More button that opens the rest.
+  const [showAll, setShowAll] = createSignal(false);
+  const compact = () => Boolean(props.onQuote) && !showAll();
   const [mode, setMode] = createSignal<"idle" | "sending" | "error">("idle");
   const [lastInstruction, setLastInstruction] = createSignal("");
   const [position, setPosition] = createSignal<SelectionActionsPosition | null>(null);
@@ -338,6 +341,7 @@ export function SelectionActionsBar(props: {
         setPrompt("");
         setTypingWidth(null);
         setExpanded(false);
+        setShowAll(false);
         setMode("idle");
         setLastInstruction("");
         selectionGeneration += 1;
@@ -348,7 +352,7 @@ export function SelectionActionsBar(props: {
   );
 
   createEffect(
-    () => [prompt(), expanded(), mode(), typingWidth()],
+    () => [prompt(), expanded(), showAll(), mode(), typingWidth()],
     () => {
       queueMicrotask(updateWidth);
     },
@@ -484,7 +488,26 @@ export function SelectionActionsBar(props: {
               </Button>
             </Show>
 
-            <Show when={mode() === "idle"}>
+            <Show when={mode() === "idle" && compact()}>
+              <Show when={props.onQuote}>
+                {(onQuote) => <QuoteSelectionButton quoteShortcut={props.quoteShortcut} onQuote={() => onQuote()()} />}
+              </Show>
+              <span class="selection-actions-divider" aria-hidden="true" />
+              <Button
+                variant="ghost"
+                type="button"
+                class="selection-actions-icon-button"
+                aria-label={t("chat.selection.showMore")}
+                title={t("chat.selection.showMore")}
+                aria-expanded="false"
+                onPointerDown={(event) => event.preventDefault()}
+                onClick={() => setShowAll(true)}
+              >
+                <MoreIcon />
+              </Button>
+            </Show>
+
+            <Show when={mode() === "idle" && !compact()}>
               <div
                 class={["selection-actions-form-shell", { "selection-actions-form-shell-hidden": expanded() }]}
                 style={{
@@ -640,12 +663,15 @@ export function QuoteSelectionButton(props: { quoteShortcut: QuoteShortcutModifi
     >
       <TextQuote class="selection-actions-icon" aria-hidden="true" />
       <span class="selection-actions-label">{t("chat.selection.quote")}</span>
+      <Kbd class="selection-actions-shortcut" aria-hidden="true">
+        {t(props.quoteShortcut === "meta" ? "chat.selection.quoteShortcutMac" : "chat.selection.quoteShortcutOther")}
+      </Kbd>
     </Button>
   );
 }
 
 /* The Quote button, so the presets do not clip it. */
-const QUOTE_ACTION_WIDTH = 84;
+const QUOTE_ACTION_WIDTH = 150;
 
 /** ⌘⇧. on macOS, Ctrl+Shift+. elsewhere. A key that a visual reply page gives to the app counts too. */
 export function isQuoteShortcut(
@@ -770,6 +796,16 @@ function GrammarIcon() {
     <SelectionIcon>
       <rect x="3.5" y="4" width="13" height="12" rx="2" />
       <path d="M6.5 8h7M6.5 11h5M6.5 14h3" />
+    </SelectionIcon>
+  );
+}
+
+function MoreIcon() {
+  return (
+    <SelectionIcon>
+      <circle cx="5" cy="10" r="1.3" fill="currentColor" stroke="none" />
+      <circle cx="10" cy="10" r="1.3" fill="currentColor" stroke="none" />
+      <circle cx="15" cy="10" r="1.3" fill="currentColor" stroke="none" />
     </SelectionIcon>
   );
 }

@@ -1,4 +1,5 @@
 import type { Effect } from "effect";
+import type { BrainService } from "../../backend/brain-service";
 import type { ChannelService } from "../../backend/channel-service";
 import type { AcpRegistry } from "../acp-registry";
 import type { AgentAccessStore } from "../agent-access-store";
@@ -32,9 +33,11 @@ import type { PromptCacheTtlPreferenceStore } from "../prompt-cache-ttl-preferen
 import type { ProviderCredentialStore } from "../provider-credential-store";
 import type { ProviderDetection } from "../provider-detection";
 import type { ProviderDetectionSettingsStore } from "../provider-detection-settings-store";
+import type { ProviderEnvironmentControl } from "../provider-environment-store";
 import type { ProviderRuntimeManager } from "../provider-runtime-manager";
 import type { RemoteWorkflowError } from "../remote-service-effects";
 import type { RequestedUpdate } from "../requested-update";
+import type { RoomsService } from "../rooms-service";
 import type { ServerAuditStore } from "../server-audit-store";
 import type { ServerPersonalityPreferenceStore } from "../server-personality-preference-store";
 import type { ServerTimezonePreferenceStore } from "../server-timezone-preference-store";
@@ -75,6 +78,7 @@ import type {
 import type { Logger } from "@openbot/logging";
 import type { AgentService } from "../../backend/agent-service";
 import type { BrowserHost } from "../../backend/browser-host";
+import type { CrmPeopleOperations } from "../../backend/crm/crm-handle";
 import type { MailboxStore } from "../../backend/mailbox-store";
 import type { MessagingService } from "../../backend/messaging/messaging-service";
 import type { RoutineFlowsHandle } from "../../backend/routine-flows/routine-flows";
@@ -123,6 +127,7 @@ type TeamApiAgentMethods = Pick<
   | "generateProfile"
   | "askSideQuestion"
   | "saveSkillSuggestion"
+  | "withdrawFeedback"
   | "saveProfile"
   | "createAgent"
   | "committedAgentDuplication"
@@ -276,6 +281,7 @@ export interface TeamApiConnectors {
     | "answerWhatsAppRequest"
     | "setWhatsAppOwnNumber"
     | "setWhatsAppWorkingMessage"
+    | "setWhatsAppStatusReactions"
   >;
 }
 
@@ -306,6 +312,10 @@ export type TeamApiProviderAccounts = Pick<
   | "signInStatus"
   | "cancelSignIn"
   | "connectKey"
+  | "startCodeSignIn"
+  | "submitCodeSignIn"
+  | "codeSignInStatus"
+  | "cancelCodeSignIn"
   | "rename"
   | "remove"
   | "setAgentAccount"
@@ -478,6 +488,12 @@ export type TeamApiWorkflows = Pick<
     github?: WorkflowGitHubDirectory;
   };
 
+/**
+ * Its presence is what `#protocolSupport` advertises `crm-v1` on. Only owners and admins use it; see
+ * `crm-v1.ts` for the grant.
+ */
+export type TeamApiCrm = CrmPeopleOperations;
+
 /** The setup choice of this computer: the same file and the same service step as the local Settings save. */
 interface TeamApiDefaultProvider {
   get(): Effect.Effect<ProviderDefaultSetting, { readonly cause: unknown }>;
@@ -595,6 +611,8 @@ export interface TeamApiAdmin {
   claudeAiTools?: ClaudeAiToolsControl;
   /** `claude-compact-window-v1`: the size at which Claude Code compacts the chats of this computer's agents. */
   claudeCompactWindow?: ClaudeCompactWindowControl;
+  /** `provider-environment-v1`: the variables that each process of a provider of this computer starts with. */
+  providerEnvironment?: Pick<ProviderEnvironmentControl, "get" | "set">;
   /** `provider-detection-v1`: the local model servers and ACP agent commands that this computer finds. */
   providerDetection?: {
     detection: Pick<ProviderDetection, "scanModelServers" | "scanAgents" | "discoverModels">;
@@ -720,7 +738,7 @@ export type TeamApiOnePasswordConnector = Pick<
 /** `agent-computer-v1`: the Agent Computer account of this host, by an API key. */
 export type TeamApiAgentComputer = Pick<
   AgentComputerService,
-  "status" | "connect" | "test" | "disconnect" | "machines"
+  "status" | "connect" | "test" | "disconnect" | "machines" | "manage"
 >;
 
 /** `bitwarden-connector-v1`: the Bitwarden connection of this host, by an API key and the master password. */
@@ -755,6 +773,7 @@ export interface TeamApiOptions {
   /** `events-v1`: admin-only event source and routine management. */
   events?: HostEventsApi | undefined;
   channels?: ChannelService | undefined;
+  brain?: BrainService | undefined;
   mcpServers?: TeamApiMcpServers | undefined;
   mcpServerOwners?: TeamApiMcpServerOwners | undefined;
   mcpAccess?: TeamApiMcpAccess | undefined;
@@ -763,6 +782,7 @@ export interface TeamApiOptions {
   connectors?: TeamApiConnectors | undefined;
   onePasswordConnector?: TeamApiOnePasswordConnector | undefined;
   bitwardenConnector?: TeamApiBitwardenConnector | undefined;
+  rooms?: RoomsService;
   agentComputer?: TeamApiAgentComputer | undefined;
   passwordManagers?: TeamApiPasswordManagers | undefined;
   vault?: TeamApiVault | undefined;
@@ -785,6 +805,7 @@ export interface TeamApiOptions {
   instanceTransfer?: TeamApiInstanceTransfer;
   routineFlows?: TeamApiRoutineFlows;
   workflows?: TeamApiWorkflows;
+  crm?: TeamApiCrm;
   hiddenAgents?: TeamApiHiddenAgents;
   routineRunPlaces?: TeamApiRoutineRunPlaces;
   agentNotificationLevels?: TeamApiAgentNotificationLevels;

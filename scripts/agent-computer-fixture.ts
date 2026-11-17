@@ -4,6 +4,7 @@ import { Schema } from "effect";
 
 const bodySchema = Schema.Struct({
   context: Schema.optional(Schema.String),
+  size: Schema.optional(Schema.String),
   cmd: Schema.optional(Schema.String),
   timeout_s: Schema.optional(Schema.Number),
   cwd: Schema.optional(Schema.String),
@@ -68,6 +69,11 @@ export async function startAgentComputerFixture() {
       return json({
         id: "demo-machine",
         context: body.context,
+        // A new context gets the size asked for; the demo machine stays standard, like a real one.
+        size: body.context === "demo-project" ? "standard" : (body.size ?? "standard"),
+        ...(body.context === "demo-project" && body.size === "large"
+          ? { size_note: "This context's machine is standard. Use a new context for large." }
+          : {}),
         existing: true,
         resumed: false,
         other_contexts: ["earlier-project"],
@@ -76,6 +82,7 @@ export async function startAgentComputerFixture() {
         billing: {
           plan: "free",
           minutes_remaining: body.context === "exempt" ? null : 20,
+          ...(body.size === "large" && body.context !== "demo-project" ? { rate: 2.5 } : {}),
           upgrade_url: FIXTURE_BILLING,
           manage_url: FIXTURE_BILLING,
         },
@@ -150,7 +157,9 @@ export async function startAgentComputerFixture() {
     close: () =>
       new Promise<void>((resolve, reject) => {
         server.closeAllConnections();
-        server.close((error) => (error ? reject(error) : resolve()));
+        server.close((error) =>
+          error && !("code" in error && error.code === "ERR_SERVER_NOT_RUNNING") ? reject(error) : resolve(),
+        );
       }),
   };
 }

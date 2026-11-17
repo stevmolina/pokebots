@@ -3,20 +3,16 @@ import { isAgentTaskActive, taskApproval } from "@openbot/team-client/agent-task
 import type { AgentProfile } from "@openbot/ui/data";
 import type { AgentThreadOlderMessages } from "@openbot/ui/features/conversation/threads/AgentThreadView";
 import {
-  activeThreadId,
+  sideThreadTabs,
   type ThreadListsInput,
   threadLists,
 } from "@openbot/ui/features/conversation/threads/thread-items";
 import {
   DRAFT_THREAD_ID,
   MAIN_THREAD_ID,
-  parseThreadTabKey,
   type ThreadHeaderProps,
-  type ThreadItem,
   type ThreadStatus,
-  threadTabKey,
 } from "@openbot/ui/features/conversation/threads/thread-types";
-import { sidebarCopyWords } from "@openbot/ui/features/sidebar/sidebar-agent-families";
 import type { AgentTasks } from "../agent-tasks/agent-tasks-state";
 import type {
   BrowserTakeoverRequest,
@@ -31,6 +27,10 @@ type PromptEvent = Extract<AgentEvent, { type: "prompt" }>;
 
 export interface ConversationThreadsInput {
   agent: { id: string; updatedAt: string };
+  /** The title of the agent's own chat in the session list. */
+  mainTitle: string;
+  /** What the agent's own chat does now. Missing where the client does not know: the row then has no badge. */
+  mainStatus?: (() => ThreadStatus) | undefined;
   tasks: AgentTasks;
   tabs: AgentThreadTabsState;
   /** The approvals that wait on the server. A side thread's turn waits for the one of its own thread. */
@@ -58,29 +58,29 @@ export interface ConversationThreadsInput {
    */
   onOpenMainMessage?: ((messageId: string) => Promise<boolean>) | undefined;
   /**
-   * The tabs of all agents. With it, the header shows a tab for each thread of any agent that the user
-   * opened, with the agent's face, in the order the user opened them, and the ids of the header are
-   * `threadTabKey` values. Without it, as in the browser client, the header shows this agent's tabs.
+   * The agents that a new session can move to, from the agent picker of its empty view. Missing in a
+   * window that shows one agent.
    */
-  allTabs?: AllAgentTabsInput | undefined;
+  draftAgents?: DraftAgentsInput | undefined;
 }
 
-interface AllAgentTabsInput {
+interface DraftAgentsInput {
   agents: readonly AgentProfile[];
-  /** The state of a thread of any agent, as its tab shows it. */
-  status: (agentId: string, threadId: string) => ThreadStatus;
-  /** Shows another agent's chat with one of its threads open. */
+  /** Shows another agent's chat with one of its sessions open. */
   open: (agentId: string, threadId: string) => void;
 }
 
 /** The threads of one agent, for the conversation. Read it in a memo: it reads the thread state. */
 export function conversationThreads(input: ConversationThreadsInput): ConversationThreads {
-  const { agent, tasks, tabs, approvals, prompts, takeovers, onCompactContext, allTabs } = input;
+  const { agent, tasks, tabs, approvals, prompts, takeovers, onCompactContext, draftAgents } = input;
   const agentId = agent.id;
   const snapshot = tasks.snapshot(agentId);
   const list = snapshot?.tasks ?? [];
-  const listInput: Omit<ThreadListsInput, "open" | "draft"> = {
-    mainUpdatedAt: agent.updatedAt,
+  const activeId = tabs.activeId(agentId);
+  const listInput: ThreadListsInput = {
+    main: { title: input.mainTitle, updatedAt: agent.updatedAt, status: input.mainStatus?.() },
+    activeId,
+    draft: tabs.hasDraft(agentId),
     tasks: list,
     draftTitle: input.newThreadTitle,
     hidden: tabs.hidden(),
@@ -94,8 +94,7 @@ export function conversationThreads(input: ConversationThreadsInput): Conversati
             : undefined,
     unread: (task) => tasks.unreadCount(task),
   };
-  const lists = threadLists({ ...listInput, open: tabs.openIds(agentId), draft: tabs.hasDraft(agentId) });
-  const activeId = activeThreadId(lists.tabs, tabs.activeId(agentId));
+  const lists = threadLists(listInput);
   const open =
     activeId === MAIN_THREAD_ID
       ? undefined
@@ -163,28 +162,24 @@ export function conversationThreads(input: ConversationThreadsInput): Conversati
       onOpen: () => void tabs.openAt(agentId, sourceTaskId, sourceMessageId),
     };
   };
-  /** The tabs of this agent: its side threads and its new thread. */
-  const agentHeader = (): ThreadHeaderProps => ({
+  /** The sessions of this agent: its own chat, its side threads and its new session. */
+  const header: ThreadHeaderProps = {
     ...lists,
     activeId,
     canStartNew: true,
     onOpen: (id) => tabs.open(agentId, id),
     onNew: () => tabs.startNew(agentId),
-    onClose: (id) => tabs.close(agentId, id),
-    onCloseOthers: (id) => tabs.closeOthers(agentId, id),
-    onCloseToTheRight: (id) => tabs.closeToTheRight(agentId, id),
-    onMove: (id, index) => tabs.move(agentId, id, index),
     onArchive: (id) => void tabs.archive(agentId, id),
     onStop: (id) => tasks.stopTask(agentId, id),
     onRestore: (id) => void tabs.restore(agentId, id),
     onRename: editable ? (id, title) => void tabs.rename(agentId, id, title) : undefined,
     onDelete: editable ? (id) => void tabs.remove(agentId, id) : undefined,
-  });
+  };
   return {
     background: list.filter((task) => task.state === "running" || task.state === "queued"),
-    header: input.allTabs ? allAgentHeader(input, input.allTabs, lists, activeId) : agentHeader(),
+    header,
     side: {
-      tabs: threadLists({ ...listInput, open: tabs.sideIds(agentId), draft: false }).tabs,
+      tabs: sideThreadTabs(listInput, tabs.sideIds(agentId)),
       thread: sideThread,
       onToSide: (id) => tabs.toSide(agentId, id),
       onToChat: (id) => tabs.toChat(agentId, id),
@@ -219,7 +214,8 @@ export function conversationThreads(input: ConversationThreadsInput): Conversati
     },
     onCompactContext: open && onCompactContext ? () => onCompactContext(open.id) : undefined,
     // Custom: the new thread moves to another agent. The draft of this agent closes, and the other agent's opens.
-    onChangeDraftAgent: allTabs && open === null ? (target) => changeDraftAgent(input, allTabs, target) : undefined,
+    onChangeDraftAgent:
+      draftAgents && open === null ? (target) => changeDraftAgent(input, draftAgents, target) : undefined,
     // Only this computer moves a queued message to a new thread.
     onRunQueuedMessage: tasks.queuedMessageMovable()
       ? (deliveryId) => void tabs.runQueuedMessage(agentId, deliveryId)
@@ -283,12 +279,12 @@ export function conversationThreads(input: ConversationThreadsInput): Conversati
   };
 }
 
-/** Custom: starts the new thread with another agent, and closes the new thread of this one. */
-function changeDraftAgent(input: ConversationThreadsInput, all: AllAgentTabsInput, target: string): void {
+/** Custom: starts the new session with another agent, and closes the new session of this one. */
+function changeDraftAgent(input: ConversationThreadsInput, all: DraftAgentsInput, target: string): void {
   const { agent, tabs } = input;
   if (target === agent.id || !all.agents.some((profile) => profile.id === target)) return;
   tabs.startNew(target);
-  tabs.close(agent.id, DRAFT_THREAD_ID);
+  tabs.closeDraft(agent.id);
   all.open(target, DRAFT_THREAD_ID);
 }
 
@@ -302,122 +298,4 @@ type TaskThread = { agentId: string; threadId: string };
 /** The question or takeover that the turn of this task waits for: the one of the task's own thread. */
 function ofTaskThread<Request extends TaskThread>(task: TaskThread, requests: readonly Request[]): Request | undefined {
   return requests.find((request) => request.agentId === task.agentId && request.threadId === task.threadId);
-}
-
-/**
- * The header of the tabs of all agents. Each id is a `threadTabKey`. An id without an agent, such as a
- * task id that a message link opens, names a thread of the agent on screen.
- */
-function allAgentHeader(
-  input: ConversationThreadsInput,
-  all: AllAgentTabsInput,
-  lists: { threads: ThreadItem[]; archived: ThreadItem[] },
-  activeThread: string,
-): ThreadHeaderProps {
-  const { agent, tasks, tabs } = input;
-  const agentId = agent.id;
-  const agentById = new Map(all.agents.map((profile) => [profile.id, profile]));
-  const copyWords = sidebarCopyWords(all.agents);
-  const hidden = tabs.hidden();
-  const items: ThreadItem[] = tabs.openTabs().flatMap((tab): ThreadItem[] => {
-    const profile = agentById.get(tab.agentId);
-    if (!profile) return [];
-    const base = {
-      id: threadTabKey(tab.agentId, tab.threadId),
-      agent: { profile, copy: copyWords.get(profile.id) ?? null, onScreen: profile.id === agentId },
-    };
-    const updatedAt = profile.updatedAt ?? profile.time;
-    if (tab.threadId === MAIN_THREAD_ID)
-      return [
-        // The tab of the agent's own chat has the agent's name, so the header still names each agent.
-        { ...base, kind: "main", title: profile.name, updatedAt, status: all.status(tab.agentId, tab.threadId) },
-      ];
-    if (tab.threadId === DRAFT_THREAD_ID)
-      return tabs.hasDraft(tab.agentId)
-        ? [{ ...base, kind: "draft", title: input.newThreadTitle, updatedAt, status: { kind: "idle" } }]
-        : [];
-    const task = tasks.snapshot(tab.agentId)?.tasks.find((entry) => entry.id === tab.threadId);
-    if (!task || task.state === "closed" || hidden.has(task.id)) return [];
-    return [
-      {
-        ...base,
-        kind: "side",
-        title: task.title,
-        updatedAt: task.updatedAt,
-        status: all.status(tab.agentId, tab.threadId),
-        unread: tasks.unreadCount(task),
-      },
-    ];
-  });
-  const keys = items.map((item) => item.id);
-  const activeKey = threadTabKey(agentId, activeThread);
-  const resolve = (id: string) => parseThreadTabKey(id) ?? { agentId, threadId: id };
-  const open = (id: string) => {
-    const target = resolve(id);
-    if (target.agentId === agentId) tabs.open(agentId, target.threadId);
-    else all.open(target.agentId, target.threadId);
-  };
-  const keyed = (item: ThreadItem): ThreadItem => ({ ...item, id: threadTabKey(agentId, item.id) });
-  const editable = tasks.editable();
-  return {
-    threads: lists.threads.map(keyed),
-    archived: lists.archived.map(keyed),
-    tabs: items,
-    activeId: activeKey,
-    allAgents: true,
-    canStartNew: true,
-    onOpen: open,
-    onNew: () => tabs.startNew(agentId),
-    // The tab to the left opens in place of a closed open tab, else the tab to the right.
-    onClose: (id) => {
-      const key = threadTabKey(resolve(id).agentId, resolve(id).threadId);
-      const index = keys.indexOf(key);
-      // The last tab stays: the chat on screen always has its tab.
-      if (keys.length <= 1 && key === activeKey) return;
-      const next = keys[index - 1] ?? keys[index + 1];
-      const target = resolve(key);
-      tabs.closeOpenTab(target.agentId, target.threadId);
-      if (key === activeKey && next) open(next);
-    },
-    onCloseOthers: (id) => {
-      const target = resolve(id);
-      const key = threadTabKey(target.agentId, target.threadId);
-      tabs.retainOpenTabs(new Set([key]));
-      if (key !== activeKey) open(key);
-    },
-    onCloseToTheRight: (id) => {
-      const target = resolve(id);
-      const kept = keys.slice(0, keys.indexOf(threadTabKey(target.agentId, target.threadId)) + 1);
-      tabs.retainOpenTabs(new Set(kept));
-      if (!kept.includes(activeKey) && kept.length > 0) open(kept[kept.length - 1] ?? activeKey);
-    },
-    onMove: (id, index) => {
-      const target = resolve(id);
-      tabs.moveOpenTab(keys, threadTabKey(target.agentId, target.threadId), index);
-    },
-    onArchive: (id) => {
-      const target = resolve(id);
-      void tabs.archive(target.agentId, target.threadId);
-    },
-    onStop: (id) => {
-      const target = resolve(id);
-      tasks.stopTask(target.agentId, target.threadId);
-    },
-    onRestore: (id) => {
-      const target = resolve(id);
-      if (target.agentId === agentId) void tabs.restore(agentId, target.threadId);
-    },
-    onRename: editable
-      ? (id, title) => {
-          const target = resolve(id);
-          void tabs.rename(target.agentId, target.threadId, title);
-        }
-      : undefined,
-    onDelete: editable
-      ? (id) => {
-          const target = resolve(id);
-          void tabs.remove(target.agentId, target.threadId);
-        }
-      : undefined,
-  };
 }

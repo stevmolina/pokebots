@@ -617,6 +617,45 @@
   height: 15px;
 }
 
+/* The reaction rows of a message menu: six quick emoji across the top of the menu, and the other eight
+ * in a grid under More. They are menu radio items, so the plain row rules of .ui-action-menu would
+ * stretch them; these rules outrank those. */
+.ui-action-menu .message-menu-reactions {
+  display: flex;
+  justify-content: space-between;
+  gap: 0;
+}
+
+.ui-action-menu .message-menu-reactions-more {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  justify-items: center;
+  row-gap: 2px;
+}
+
+.ui-action-menu:not([data-menu-layout="grid"]) .message-menu-reactions [role="menuitemradio"] {
+  display: grid;
+  width: 30px;
+  min-height: 30px;
+  height: 30px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: var(--openbot-radius-lg);
+  padding: 0;
+  font-size: var(--openbot-text-2xl);
+  line-height: 1;
+}
+
+.ui-action-menu:not([data-menu-layout="grid"]) .message-menu-reactions [role="menuitemradio"][aria-checked="true"] {
+  background: var(--ui-menu-item-hover);
+}
+
+.ui-action-menu:not([data-menu-layout="grid"])
+  .message-menu-reactions
+  [role="menuitemradio"]:is(:hover, [data-highlighted]) {
+  transform: scale(1.1);
+}
+
 .message-reaction-pill {
   display: flex;
   min-width: 0;
@@ -1492,11 +1531,29 @@ button.chat-action-target:active,
  */
 :root {
   --message-wide-bubble-width: min(100%, max(720px, 70%), 1200px);
-  --message-narrow-bubble-width: min(92%, max(420px, 50%), 800px);
+  --message-narrow-bubble-width: min(80%, 560px);
 }
 
 .message-entry-agent .ui-bubble {
   max-width: var(--message-wide-bubble-width);
+}
+
+/*
+ * Calm bubbles: an agent's text on a soft 6 % ink fill, not a raised card. The text
+ * bubble stops at 560 px; a table, a code block or a picture keeps the wide width. A bubble with a chat
+ * color keeps its tint.
+ */
+.message-entry-agent
+  .ui-bubble-variant-muted:not(.message-bubble-colored, .message-bubble-member)
+  > .ui-bubble-content {
+  background: color-mix(in srgb, var(--openbot-text-primary) 6%, transparent);
+}
+
+.message-entry-agent
+  .ui-bubble:not(
+    :has(:is(.message-code-block, .message-data-table-scroll, .image-generation, .media-generation, .image-gallery))
+  ) {
+  max-width: min(100%, 560px);
 }
 
 /* An image keeps its size in a person's bubble too: the bubble does not shrink to the text. */

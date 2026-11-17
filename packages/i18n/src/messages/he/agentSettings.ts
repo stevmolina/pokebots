@@ -107,7 +107,6 @@ export const messages = {
   "agentSettings.groups.does": "עושה",
   "agentSettings.groups.rules": "כללים",
   "agentSettings.groups.model": "מודל",
-  "agentSettings.groups.alerts": "התראות",
   "agentSettings.saveFailed": "לא ניתן לשמור את הגדרות הסוכן.",
 
   "agentSettings.name": "שם",
@@ -178,10 +177,8 @@ export const messages = {
     "{provider} אינו יכול להכווין תור שרץ. הודעות שנשלחות בזמן שהוא עובד ממתינות בתור.",
 
   "agentSettings.notificationLevel.title": "התראות אליי",
+  "agentSettings.notificationLevel.footer": "קבלו התראה כשהסוכן מסיים או מחכה לכם.",
   "agentSettings.notificationLevel.server": "ברירת המחדל של השרת ({level})",
-  "agentSettings.notificationLevel.note":
-    "הבחירה הזו היא רק שלך וחלה בכל המכשירים שלך. כשהשרת מושתק או מוגדר ל״ללא״, גם הסוכן הזה שותק.",
-
   "agentSettings.newChat.title": "צ'אט חדש",
   "agentSettings.newChat.description": "הסוכן שוכח את הצ'אט הזה. ההגדרות שלו נשארות.",
   "agentSettings.newChat.button": "התחלה",
@@ -217,6 +214,10 @@ export const messages = {
   "agentSettings.links.tablesCount": { one: "טבלה אחת", two: "שתי טבלאות", other: "{count} טבלאות" },
   "agentSettings.links.files": "קבצים",
   "agentSettings.links.routines": "שגרות",
+  "agentSettings.links.library": "ספרייה",
+  "agentSettings.links.computer": "מחשב",
+  "agentSettings.links.computerActive": "בשימוש",
+  "agentSettings.links.computerOffline": "לא מקוון",
   "agentSettings.links.routinesCount": { one: "אחת הוגדרה", two: "שתיים הוגדרו", other: "{count} הוגדרו" },
   "agentSettings.links.routinesNone": "אין",
   "agentSettings.runtime.workspaceNote":

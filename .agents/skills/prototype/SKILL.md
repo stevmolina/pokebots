@@ -30,8 +30,8 @@ continue without the user.
    it is clearly the same feature.
 2. Find the current code for the feature, when it exists. Read it and its
    existing stories. Note what the user can do now, and the states it has
-   (empty, loading, error, long data). Phones use the mobile app: do not plan a
-   phone width for desktop or web client UI.
+   (empty, loading, error, long data). The desktop app needs no phone width.
+   The web client is desktop first, but also plan its phone width.
 3. Find the surface:
 
    | Surface | Story location | Stylesheet |
@@ -199,7 +199,7 @@ Rules:
 
 Run these checks one at a time:
 
-1. `bunx biome check --write --max-diagnostics=none <new files>`
+1. `bun run check:paths <new files>`
 2. The one typecheck project for the surface:
    `bun run typecheck:renderer` for `src/renderer/stories/`, or
    `bun run typecheck:api` for public web.
@@ -217,8 +217,8 @@ Run these checks one at a time:
 5. Take a screenshot of each variant with the Playwright or Chrome DevTools
    tools. Save them in `.openbot-build/prototypes/<feature>/`
    (git ignores this directory), for example `a-plan-cards.png`. Use a
-   desktop width (1440 px). For public web only, also use a phone width (390 px).
-   Desktop and web client UI get no phone-width screenshot.
+   desktop width (1440 px). For public web and web client UI, also use a phone
+   width (390 px). Desktop app UI gets no phone-width screenshot.
    The desktop stylesheet sets `overflow: hidden` on `html` and `body`, so a
    full-page screenshot shows only the viewport. Before each screenshot,
    resize the viewport height to the `scrollHeight` of `#storybook-root`.

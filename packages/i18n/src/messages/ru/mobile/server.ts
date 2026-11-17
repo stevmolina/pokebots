@@ -507,7 +507,7 @@ export const messages = {
   "mobile.server.settings.timezoneNoMatch": "Нет часовых поясов, подходящих под запрос.",
   "mobile.server.settings.timezoneMore": "Введите больше букв названия, чтобы увидеть другие часовые пояса.",
   "mobile.server.settings.timezoneDescription":
-    "Новые регулярные задачи используют этот часовой пояс, если в сообщении нет часового пояса отправителя.",
+    "Новые регулярные задачи используют этот часовой пояс, если в сообщении нет часового пояса отправителя. На сервере браузер тоже использует его после следующего перезапуска.",
   "mobile.server.settings.timezoneLoading": "Загрузка часового пояса…",
   "mobile.server.settings.timezoneLoadFailed": "Не удалось загрузить часовой пояс сервера.",
   "mobile.server.settings.timezoneSaveFailed": "Не удалось сохранить часовой пояс. Повторите попытку.",
@@ -799,6 +799,31 @@ export const messages = {
   "mobile.server.connectors.protonPass.keyHelp":
     "Создайте в Proton Pass ключ доступа, который может читать только хранилище, открытое для OpenBot, и вставьте его сюда. {host} хранит ключ; этот телефон — нет.",
   "mobile.server.connectors.protonPass.keyPlaceholder": "pst_…",
+  "mobile.server.connectors.keeper.title": "Keeper",
+  "mobile.server.connectors.keeper.description":
+    "Откройте OpenBot на {host} доступ к одной папке Keeper, чтобы агенты на {host} могли входить на сайты в его браузере.",
+  "mobile.server.connectors.keeper.accountHelp":
+    "Введите адрес электронной почты Keeper и мастер-пароль. Они один раз передаются на {host}, а {host} передаёт их Keeper Commander. Этот телефон их не хранит.",
+  "mobile.server.connectors.keeper.email": "Электронная почта",
+  "mobile.server.connectors.keeper.masterPassword": "Мастер-пароль",
+  "mobile.server.connectors.keeper.signingIn": "{host} входит в Keeper…",
+  "mobile.server.connectors.keeper.makingFolder": "{host} создаёт общую папку…",
+  "mobile.server.connectors.keeper.code": "Код",
+  "mobile.server.connectors.keeper.twoFactorHint":
+    "Keeper запрашивает код двухэтапной проверки. Введите код из приложения-аутентификатора или SMS. Он один раз передаётся на {host}; этот телефон его не хранит.",
+  "mobile.server.connectors.keeper.deviceHint":
+    "Keeper отправил письмо с подтверждением и уведомление на другие ваши устройства. Подтвердите там это устройство и нажмите «Продолжить». Или введите код из письма.",
+  "mobile.server.connectors.keeper.codeWrong": "Код неверен. Попробуйте ещё раз.",
+  "mobile.server.connectors.keeper.folderTitle": "Общая папка",
+  "mobile.server.connectors.keeper.folderFooter":
+    "Переместите логин в эту папку в Keeper, чтобы агенты могли входить с его помощью. Уберите его оттуда, чтобы прекратить доступ.",
+  "mobile.server.connectors.keeper.plan":
+    "Администратор Keeper не разрешает Keeper Commander для этой учётной записи. Попросите его разрешить и подключитесь снова.",
+  "mobile.server.connectors.keeper.expiredTitle": "Сеанс Keeper завершён",
+  "mobile.server.connectors.keeper.expiredBody":
+    "Агенты на {host} не могут входить с общими учётными данными, пока вы не подключитесь снова.",
+  "mobile.server.connectors.keeper.disconnectBody":
+    "{host} завершает свой сеанс Keeper. Папка и её учётные данные остаются в вашем хранилище Keeper.",
   "mobile.server.connectors.passwordManager.unavailable": "{name} недоступен на этом сервере.",
   "mobile.server.connectors.passwordManager.howItWorks":
     "Войдите в {name} на этом телефоне. Затем {host} создаст общее хранилище и ключ доступа только для чтения к нему и будет хранить только этот ключ. Агенты никогда не видят пароль.",
@@ -1012,6 +1037,9 @@ export const messages = {
   "mobile.server.connectors.whatsapp.workingMessage": "Сообщение «Уже работаю…»",
   "mobile.server.connectors.whatsapp.workingMessageDescription":
     "OpenBot отправляет его, пока агент работает, а затем заменяет ответом. Выключите, чтобы отправлять только ответ.",
+  "mobile.server.connectors.whatsapp.statusReactions": "Реакции статуса",
+  "mobile.server.connectors.whatsapp.statusReactionsDescription":
+    "OpenBot ставит 👀, когда приходит сообщение, и ✅, когда ответ готов. Выключите, чтобы не отправлять реакции.",
   "mobile.server.connectors.whatsapp.orchestratorTitle": "Оркестратор WhatsApp",
   "mobile.server.connectors.whatsapp.orchestratorDescription":
     "Этот агент получает сообщения для OpenBot со всех ваших привязанных номеров. Короткие он обрабатывает сам, остальную работу передаёт нужному агенту и отвечает в WhatsApp.",
@@ -1245,6 +1273,22 @@ export const messages = {
   "mobile.server.providers.compactWindowDefault": "По умолчанию Claude Code",
   "mobile.server.providers.compactWindowTokens": "{size} токенов",
   "mobile.server.providers.compactWindowLoadFailed": "Не удалось загрузить размер сжатия этого сервера.",
+  "mobile.server.environment.row": "Переменные",
+  "mobile.server.environment.title": "Окружение",
+  "mobile.server.environment.hint":
+    "Ключи API, базовые адреса и другие настройки, которые получает каждый процесс {name}. Изменение действует, когда закончатся текущие ходы.",
+  "mobile.server.environment.codexHint":
+    "OPENAI_BASE_URL с ключом OPENAI_API_KEY отправляет запросы ChatGPT к моделям по этому адресу.",
+  "mobile.server.environment.shellNote": "Команды, которые запускают агенты, могут читать эти значения.",
+  "mobile.server.environment.add": "Добавить переменную",
+  "mobile.server.environment.namePlaceholder": "VARIABLE_NAME",
+  "mobile.server.environment.valuePlaceholder": "Значение",
+  "mobile.server.environment.saved": "Сохранено",
+  "mobile.server.environment.sensitive": "Секретная",
+  "mobile.server.environment.remove": "Удалить",
+  "mobile.server.environment.save": "Сохранить",
+  "mobile.server.environment.loadFailed": "Не удалось загрузить переменные {name}.",
+  "mobile.server.environment.invalid": "Сначала исправьте имена.",
   "mobile.server.providers.disconnect": "Отключить",
   "mobile.server.providers.disconnectTitle": "Отключить {name}?",
   "mobile.server.providers.disconnectBody":

@@ -103,7 +103,6 @@ export const messages = {
   "agentSettings.groups.does": "Görevler",
   "agentSettings.groups.rules": "Kurallar",
   "agentSettings.groups.model": "Model",
-  "agentSettings.groups.alerts": "Uyarılar",
   "agentSettings.saveFailed": "Ajan ayarları kaydedilemedi.",
   "agentSettings.name": "Ad",
   "agentSettings.nameLabel": "Ajan adı",
@@ -170,9 +169,8 @@ export const messages = {
   "agentSettings.busyMessage.steerUnsupported":
     "{provider} çalışan bir turu yönlendiremez. Çalışırken gönderilen mesajlar kuyrukta bekler.",
   "agentSettings.notificationLevel.title": "Bana bildir",
+  "agentSettings.notificationLevel.footer": "Bu ajan bitirdiğinde veya sizi beklediğinde bildirim alın.",
   "agentSettings.notificationLevel.server": "Sunucu varsayılanı ({level})",
-  "agentSettings.notificationLevel.note":
-    "Bu seçim yalnızca sizin için geçerlidir ve tüm cihazlarınızda uygulanır. Sunucu sessize alınmışsa veya “Hiçbir şey” seçiliyse bu ajan da sessiz kalır.",
   "agentSettings.newChat.title": "Yeni sohbet",
   "agentSettings.newChat.description": "Ajan bu sohbeti unutur. Yapılandırması kalır.",
   "agentSettings.newChat.button": "Başlat",
@@ -206,6 +204,10 @@ export const messages = {
   "agentSettings.links.tablesCount": { one: "{count} tablo", other: "{count} tablo" },
   "agentSettings.links.files": "Dosyalar",
   "agentSettings.links.routines": "Rutinler",
+  "agentSettings.links.library": "Kitaplık",
+  "agentSettings.links.computer": "Bilgisayar",
+  "agentSettings.links.computerActive": "Kullanımda",
+  "agentSettings.links.computerOffline": "Çevrimdışı",
   "agentSettings.links.routinesCount": { one: "{count} yapılandırılmış", other: "{count} yapılandırılmış" },
   "agentSettings.links.routinesNone": "Yok",
   "agentSettings.runtime.workspaceNote":

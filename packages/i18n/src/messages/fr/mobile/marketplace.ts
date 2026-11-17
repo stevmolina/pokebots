@@ -24,6 +24,7 @@ export const messages = {
   "mobile.marketplace.app.onePasswordTagline": "Connectez-vous aux sites avec les identifiants que vous partagez",
   "mobile.marketplace.app.bitwardenTagline": "Connectez-vous aux sites avec les identifiants d’un dossier partagé",
   "mobile.marketplace.app.protonPassTagline": "Connectez-vous aux sites avec les identifiants d’un coffre partagé",
+  "mobile.marketplace.app.keeperTagline": "Connectez-vous aux sites avec les identifiants d’un dossier partagé",
   "mobile.marketplace.search.placeholder": "Rechercher dans la Marketplace",
   "mobile.marketplace.search.clear": "Effacer la recherche",
   "mobile.marketplace.search.close": "Fermer la recherche",
@@ -62,6 +63,7 @@ export const messages = {
   "mobile.marketplace.facts.accessSignIn": "Connexion",
   "mobile.marketplace.facts.accessLocal": "Cet ordinateur",
   "mobile.marketplace.facts.accessNone": "Sans connexion",
+  "mobile.marketplace.facts.accessMac": "Mac uniquement",
   "mobile.marketplace.permission.admin":
     "Seuls les propriétaires et les administrateurs peuvent installer depuis la Marketplace.",
   "mobile.marketplace.permission.unavailable":
@@ -116,6 +118,8 @@ export const messages = {
   "mobile.marketplace.app.docs": "Obtenir une clé",
   "mobile.marketplace.app.local":
     "Cette app s’exécute sur l’ordinateur avec OpenBot. Configurez-la sur cet ordinateur.",
+  "mobile.marketplace.app.needsMac":
+    "Cette app fonctionne uniquement sur un Mac qui exécute OpenBot, et ce serveur n’est pas un Mac.",
   "mobile.marketplace.app.relayUnsupported":
     "Cette app demande une connexion dans le navigateur. Mettez à jour OpenBot sur le serveur ou connectez l’app sur l’ordinateur.",
   "mobile.marketplace.app.waiting": "En attente de la page de connexion…",

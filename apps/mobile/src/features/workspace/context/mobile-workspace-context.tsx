@@ -35,6 +35,7 @@ import { BITWARDEN_CONNECTOR_CAPABILITY } from "@openbot/contracts/team-protocol
 import { BROWSER_PROFILES_CAPABILITY } from "@openbot/contracts/team-protocol/browser-profiles-v1";
 import { BROWSER_PROXIES_CAPABILITY } from "@openbot/contracts/team-protocol/browser-proxies-v1";
 import { BROWSING_MEMORY_CAPABILITY } from "@openbot/contracts/team-protocol/browsing-memory-v1";
+import { COMPUTER_MANAGEMENT_CAPABILITY } from "@openbot/contracts/team-protocol/computer-management-v1";
 import { CONNECTORS_CAPABILITY } from "@openbot/contracts/team-protocol/connectors-v1";
 import {
   AGENT_HIDDEN_WORK_CAPABILITY,
@@ -58,12 +59,14 @@ import { INSTANCE_TRANSFER_CAPABILITY } from "@openbot/contracts/team-protocol/i
 import { LIVE_ACTIVITY_PUSH_CAPABILITY } from "@openbot/contracts/team-protocol/live-activity-push-v1";
 import { LIVE_VOICE_EVENT } from "@openbot/contracts/team-protocol/live-voice-v1";
 import { LOCAL_SERVERS_CAPABILITY } from "@openbot/contracts/team-protocol/local-servers-v1";
+import { MAC_APPS_LIMIT_CAPABILITY } from "@openbot/contracts/team-protocol/mac-apps-limit-v1";
 import { MACHINE_RESOURCES_CAPABILITY } from "@openbot/contracts/team-protocol/machine-resources-v1";
 import { MCP_ACCESS_CAPABILITY } from "@openbot/contracts/team-protocol/mcp-access-v1";
 import { MEMORY_REVIEW_CAPABILITY } from "@openbot/contracts/team-protocol/memory-review-v1";
 import { ONEPASSWORD_CONNECTOR_CAPABILITY } from "@openbot/contracts/team-protocol/onepassword-connector-v1";
 import { PASSWORD_MANAGERS_CAPABILITY } from "@openbot/contracts/team-protocol/password-managers-v1";
 import { PENDING_APPROVAL_CAPABILITY } from "@openbot/contracts/team-protocol/pending-approval-v1";
+import { PHONE_FEEDBACK_CAPABILITY } from "@openbot/contracts/team-protocol/phone-feedback-v1";
 import { PROVIDER_ACCOUNTS_CAPABILITY } from "@openbot/contracts/team-protocol/provider-accounts-v1";
 import { PROVIDERS_ADMIN_CAPABILITY } from "@openbot/contracts/team-protocol/providers-v1";
 import { PUSH_NOTIFICATION_THREADS_CAPABILITY } from "@openbot/contracts/team-protocol/push-notification-threads-v1";
@@ -105,9 +108,15 @@ import {
   runTeamEffect,
 } from "@openbot/team-client";
 import { verifyEd25519Base64Url } from "@openbot/team-client/ed25519";
+import { feedbackApproval } from "@openbot/team-client/feedback-approval";
 import { createFocusUsePing } from "@openbot/team-client/focus-use";
 import { createHostedServerWake, WAKE_RECONNECT_DELAY_MS } from "@openbot/team-client/hosted-server-wake";
-import type { RemoteFileUpload, RemoteLargeDownload, RemoteTeamEvent } from "@openbot/team-client/remote-peer";
+import type {
+  RemoteDownloadWatch,
+  RemoteFileUpload,
+  RemoteLargeDownload,
+  RemoteTeamEvent,
+} from "@openbot/team-client/remote-peer";
 import { withWholeApproval } from "@openbot/team-client/runtime-attention";
 import {
   createHostLocalServer,
@@ -129,6 +138,7 @@ import {
   respondToApproval,
   respondToBrowserSecret,
   respondToBrowserTakeover,
+  sendPhoneFeedback,
   type TeamApiRequest,
   uploadAttachmentDraft,
 } from "@openbot/team-client/team-api-requests";
@@ -155,6 +165,7 @@ import { ShareExtensionSync } from "@/features/share/share-extension-sync";
 import { ShortcutsSync } from "@/features/shortcuts/shortcuts-sync";
 import { fetch } from "@/features/support/model/logged-fetch";
 import { supportLog } from "@/features/support/model/support-log";
+import { forgetPhoneFeedback, shownPhoneFeedback } from "@/features/support/model/support-log-capture";
 import type { RemoteTeamTransportRef } from "@/features/workspace/components/remote-team-transport";
 import {
   ServerConnection,
@@ -198,6 +209,7 @@ import {
   withPhoneSidebarPins,
 } from "@/features/workspace/model/agent-pins";
 import { ConnectionWaits } from "@/features/workspace/model/connection-waits";
+import { NO_CONTEXT_STATES, reduceContextStates } from "@/features/workspace/model/context-states";
 import { conversationMessageId, decodeConversationPage } from "@/features/workspace/model/conversation";
 import { MobileConversationStore } from "@/features/workspace/model/conversation-store";
 import {
@@ -212,6 +224,7 @@ import { LiveWorkspaceStore } from "@/features/workspace/model/live-workspace-st
 import {
   dropApproval,
   InactiveRequestError,
+  type PendingApproval,
   reducePendingApprovals,
 } from "@/features/workspace/model/pending-approvals";
 import { type QueryScope, queryKeys } from "@/features/workspace/model/query-keys";
@@ -413,14 +426,20 @@ export function MobileWorkspaceProvider({ children }: PropsWithChildren) {
   const removedServers = useRef(new Set<string>());
   const readRefresh = useMemo(() => createRemoteReadRefresh(), []);
   const serverCapabilities = useRef(new Map<string, readonly string[]>());
-  const { serverOrder, defaultServerId, orderedServers, sortByPreference, reorderServers } = useServerOrder(
-    session.apiUrl,
-    session.user.id,
-    session.host?.hostId,
-    servers,
+  const {
+    serverOrder,
+    defaultServerId,
+    lastServerId,
+    orderedServers,
+    sortByPreference,
+    reorderServers,
+    rememberServer,
+  } = useServerOrder(session.apiUrl, session.user.id, session.host?.hostId, servers);
+  // The app opens on the server the user opened last, else on the first server of the list. The
+  // directory corrects a saved server that is gone.
+  const [activeServerId, setActiveServerId] = useState<string | null>(
+    () => lastServerId ?? defaultServerId ?? serverOrder[0] ?? null,
   );
-  // The app opens on the first server of the list. The directory corrects a saved server that is gone.
-  const [activeServerId, setActiveServerId] = useState<string | null>(() => defaultServerId ?? serverOrder[0] ?? null);
   const activeServerIdRef = useRef(activeServerId);
   activeServerIdRef.current = activeServerId;
   const conversationStore = useMemo(
@@ -607,6 +626,7 @@ export function MobileWorkspaceProvider({ children }: PropsWithChildren) {
       liveState.update("unreadCounts", (current) => withoutKeys(current, removedAgentIds));
       liveState.update("firstUnreadMessageIds", (current) => withoutKeys(current, removedAgentIds));
       liveState.update("activityByServer", (current) => withoutKeys(current, serverIds));
+      liveState.update("contextByServer", (current) => withoutKeys(current, serverIds));
       liveState.update("threadWaitsByServer", (current) => withoutKeys(current, serverIds));
       liveState.update("turnLinesByServer", (current) => withoutKeys(current, serverIds));
       liveState.update("approvalRequests", (current) => withoutKeys(current, serverIds));
@@ -728,11 +748,12 @@ export function MobileWorkspaceProvider({ children }: PropsWithChildren) {
       upload?: RemoteFileUpload,
       onUploadProgress?: (fraction: number) => void,
       largeDownload?: RemoteLargeDownload,
+      download?: RemoteDownloadWatch,
     ): Promise<T> => {
       if (serverId) await connectionWaits.whenConnected(serverId);
       const client = serverId ? connections.current.get(serverId)?.client : null;
       if (!client) throw new Error(currentText().t("mobile.workspace.error.transportNotReady"));
-      return client.request(method, path, decode, body, upload, onUploadProgress, largeDownload);
+      return client.request(method, path, decode, body, upload, onUploadProgress, largeDownload, download);
     },
     [connectionWaits],
   );
@@ -1396,11 +1417,27 @@ export function MobileWorkspaceProvider({ children }: PropsWithChildren) {
   );
   const foregroundRef = useRef(foreground);
   foregroundRef.current = foreground;
-  /** Sends an answer to a request that the host waits on. */
+  /**
+   * Sends an answer to a request that the host waits on. A Send of a bug report about the phone app
+   * goes with this phone's version, system, network and support log, as its card showed them: the
+   * host takes no other Send of it. Without a card that showed them, the phone sends a plain answer,
+   * which the host refuses with a message to open the chat.
+   */
   const sendApproval = useCallback(
-    async (serverId: string, input: RespondToApprovalInput) => {
+    async (serverId: string, input: RespondToApprovalInput, approval: PendingApproval) => {
+      const phone =
+        input.decision === "accept" &&
+        feedbackApproval(approval)?.phone === true &&
+        hasCapability(serverCapabilities.current, serverId, PHONE_FEEDBACK_CAPABILITY)
+          ? shownPhoneFeedback(approval)
+          : null;
       try {
-        await runTeamRequest(respondToApproval(teamApi(serverId), input));
+        await runTeamRequest(
+          phone
+            ? sendPhoneFeedback(teamApi(serverId), { requestId: input.requestId, phone })
+            : respondToApproval(teamApi(serverId), input),
+        );
+        forgetPhoneFeedback(approval);
       } catch (error) {
         // Another device answered first, or the turn ended. The request is gone on the host too.
         if (error instanceof InactiveRequestError)
@@ -1672,6 +1709,11 @@ export function MobileWorkspaceProvider({ children }: PropsWithChildren) {
           return next === previous ? current : { ...current, [serverId]: next };
         });
       }
+      liveState.update("contextByServer", (current) => {
+        const previous = current[serverId] ?? NO_CONTEXT_STATES;
+        const next = reduceContextStates(previous, event);
+        return next === previous ? current : { ...current, [serverId]: next };
+      });
       // What the chat leaves out: the waits of the side threads, which the home list shows on the agent.
       liveState.update("threadWaitsByServer", (current) => {
         const previous = current[serverId] ?? [];
@@ -1947,11 +1989,11 @@ export function MobileWorkspaceProvider({ children }: PropsWithChildren) {
       respondToApproval: async (serverId, input) => {
         const pending = liveState
           .get()
-          .approvalRequests[serverId]?.some((item) => String(item.requestId) === String(input.requestId));
+          .approvalRequests[serverId]?.find((item) => String(item.requestId) === String(input.requestId));
         if (!pending) throw new InactiveRequestError(currentText().t("mobile.workspace.error.approvalInactive"));
         if (!showsOnline(serversRef.current.find((server) => server.id === serverId)))
           throw new Error(currentText().t("mobile.workspace.error.approvalOffline"));
-        await sendApproval(serverId, input);
+        await sendApproval(serverId, input, pending);
       },
       readsWholeApprovals: (serverId) =>
         hasCapability(serverCapabilities.current, serverId, PENDING_APPROVAL_CAPABILITY),
@@ -1979,6 +2021,7 @@ export function MobileWorkspaceProvider({ children }: PropsWithChildren) {
         loadGeneration.current += 1;
         conversationStore.cancelRequests();
         setActiveServerId(id);
+        rememberServer(id);
       },
       leaveServer: async (serverId) => {
         const server = serversRef.current.find((candidate) => candidate.id === serverId);
@@ -2475,6 +2518,7 @@ export function MobileWorkspaceProvider({ children }: PropsWithChildren) {
     refreshHosts,
     refreshMemberships,
     reorderServers,
+    rememberServer,
     applySidebarLayout,
     channelStore,
     conversationStore,
@@ -2583,6 +2627,7 @@ export function MobileWorkspaceProvider({ children }: PropsWithChildren) {
         canManageBitwardenConnector: (serverId) => administers(serverId, BITWARDEN_CONNECTOR_CAPABILITY),
         canManageWhatsAppConnector: (serverId) => administers(serverId, WHATSAPP_CONNECTOR_CAPABILITY),
         canManagePasswordManagers: (serverId) => administers(serverId, PASSWORD_MANAGERS_CAPABILITY),
+        canControlComputers: (serverId) => administers(serverId, COMPUTER_MANAGEMENT_CAPABILITY),
         canManageAgentComputer: (serverId) => administers(serverId, AGENT_COMPUTER_CAPABILITY),
         canManageVault: (serverId) => administers(serverId, VAULT_CAPABILITY),
         canImportVault: (serverId) => administers(serverId, VAULT_IMPORT_CAPABILITY),
@@ -2615,6 +2660,7 @@ export function MobileWorkspaceProvider({ children }: PropsWithChildren) {
         canManageMcpServers: managesMcp,
         canRelayMcpSignIn: (serverId) =>
           managesMcp(serverId) && hasCapability(capabilities, serverId, SIGN_IN_RELAY_CAPABILITY),
+        macAppsUnavailable: (serverId) => hasCapability(capabilities, serverId, MAC_APPS_LIMIT_CAPABILITY),
         canManageMcpAccess: (serverId) => administers(serverId, MCP_ACCESS_CAPABILITY),
         canAddMarketplaceAgents: (serverId) => administers(serverId, AGENT_INSTALL_CAPABILITY),
         canUpdateMarketplaceAgents: (serverId) => administers(serverId, AGENT_UPDATE_CAPABILITY),

@@ -23,7 +23,7 @@ computer of the user who signs in. A sign-in uses one of these kinds:
 | Loopback callback | URL MCP servers (`McpOAuth`), Codex browser sign-in, a page that an agent's CLI prints | The page sends the browser to `http://127.0.0.1:<port>/...`. The MCP listener uses port 28417 and path `/mcp-auth` ([`mcp-oauth-redirect-server.ts`](../../src/main/mcp-oauth-redirect-server.ts)). | The [callback relay](#remote-sign-in-the-callback-relay) (`sign-in-relay-v1`). MCP on an older host: the host's live view (`mcp-sign-in-v1`). |
 | Device code | Codex (`codex-device`), Grok, Cline, Kimi, Muse, the GitHub connector | The user types a short code on the provider's page. Nothing comes back to OpenBot. | The host starts it and the client shows the code (`providers-v1` to `providers-v5`; Kimi `providers-v8` only). Muse: the relay opens its device page with no callback. GitHub: `connectors-v1`. |
 | Pasted code | Claude on Linux (`cli` / `paste`), Cursor (`cli` / `link`) | The page shows a code, and the user pastes it into OpenBot. | The host starts it and the client takes the code (`providers-v3` to `providers-v5`). |
-| CLI-owned browser login | Claude (`auth login`), Codex, Gemini (`acp-authenticate`) | The provider's CLI opens the browser and takes its own callback. | The relay (`provider/start`): the host captures the page, and the client sends the callback query to the CLI's listener on the host. Grok, Cursor and Cline: a code kind. |
+| CLI-owned browser login | Claude (`auth login`), Codex, Gemini (`acp-authenticate`) | The provider's CLI opens the browser and takes its own callback. | The relay (`provider/start`): the host captures the page, and the client sends the callback query to the CLI's listener on the host. Grok, Cursor and Cline: a code kind. Mistral: the host takes the page from Vibe (`acp-delegated`) and the client shows it as a link (`providers-v8` with `mistral-code-sign-in-v1`). |
 | Deep link | Slack, Discord (`openbot://slack-workspace`, `openbot://discord-guild`), MCP fallback (`openbot://mcp-auth`) | A hosted page ends in an `openbot://` link, which reaches only the computer that opened it. | Slack and Discord: `connectors-v1`. The client sends the sealed grant on to the host that started the install. The browser client gets the grant from a return page of its own origin (`web-messaging-install.ts`). |
 | Terminal | Pi | OpenBot opens the CLI in a terminal on the host ([`provider-terminal-login.ts`](../../src/backend/provider-terminal-login.ts)). | Sign in on the host. |
 | Key or local session | API keys, 1Password, Bitwarden, Proton Pass | The user types a key or gives a CLI session. Proton Pass also signs in on Proton's web page. | Keys go to the host over the encrypted channel. Vault approval stays on the host. A Bitwarden session key works only on the computer that made it; a joined server gets an API key and the master password. Proton Pass: `password-managers-v1`; the client opens the host's sign-in page. |
@@ -178,7 +178,7 @@ three start routes, and `provider-account-relay-v1` and `-v2` add one more each.
 
 | Start route | What it signs in | How the host delivers the callback |
 | --- | --- | --- |
-| `mcp/start` | A URL MCP server, from server settings or the Marketplace | It gives the code to `McpOAuth` (owned flow). |
+| `mcp/start` | A URL MCP server, from the Marketplace | It gives the code to `McpOAuth` (owned flow). |
 | `provider/start` | The CLI of a provider in `SIGN_IN_RELAY_PROVIDERS`: Codex, Claude, Gemini (`antigravity`) and Muse | It replays the query to the CLI's own loopback listener on the host. A Muse device page has no callback: the client only opens it. |
 | `link/start` | A sign-in page that an agent of the host printed in its conversation | It replays the query to the loopback address of that page. |
 | `provider-account/start` | An account after the first of Codex or Claude (`PROVIDER_ACCOUNT_RELAY_PROVIDERS`), new or signed out. The separate capability `provider-account-relay-v1` adds this route ([`provider-account-relay-v1.ts`](../../packages/contracts/src/team-protocol/provider-account-relay-v1.ts)) | It replays the query to the loopback listener of the account's CLI on the host, as for `provider/start`. |
@@ -561,6 +561,19 @@ because there is no status post to reply to. The released `whatsapp-connector-v1
 carry the value, so a client reads this list and merges it (`withWhatsAppWorkingMessages`). A client
 hides the switch while the host does not have the capability. Only protocol 9 peers get it.
 
+The optional capability `whatsapp-status-reactions-v1`
+([`whatsapp-status-reactions-v1.ts`](../../packages/contracts/src/team-protocol/whatsapp-status-reactions-v1.ts),
+host route [`route-whatsapp-status-reactions.ts`](../../src/main/team-api/route-whatsapp-status-reactions.ts))
+reads and sets, for each WhatsApp number, whether OpenBot puts status reactions on a message: 👀 when
+it arrives, then ✅, ❌ or 🫡 when the request ends. The setting is on by default and is kept with the
+number's connection values, so it needs no migration. `MessagingService` reads it at each reaction,
+so with the setting off a WhatsApp message gets no reaction, and the posts do not change. A removal
+still goes out, so a request that started before the setting went off loses its 👀 at its end. In a
+quiet chat of a personal number, a failed or stopped request then shows nothing to the other person. With both this setting and “Working on it…”
+off, only the answer shows that OpenBot read the message. A client reads this list and merges it into
+the released overview (`withWhatsAppStatusReactions`), and hides the switch while the host does not
+have the capability. Only protocol 9 peers get it.
+
 The phone uses the same routes in Marketplace › Apps › WhatsApp
 (`apps/mobile/src/features/servers/components/whatsapp-connector-page.tsx`). It links only with a
 pairing code, because the WhatsApp app on the same phone cannot scan a QR code on its own screen. The
@@ -605,8 +618,8 @@ The password-manager engine
 keeps one driver for each manager
 ([`driver.ts`](../../src/main/password-managers/driver.ts)). A driver owns the sign-in, the stored
 access, the CLI and the logins of its manager. The engine owns the list, the checks that every
-manager shares, and the login sources of `password-vault-router.ts`. Proton Pass is its only
-driver: 1Password and Bitwarden keep their own services, panels and capabilities, and the router
+manager shares, and the login sources of `password-vault-router.ts`. Proton Pass and Keeper are its
+drivers: 1Password and Bitwarden keep their own services, panels and capabilities, and the router
 reads their logins directly. A new manager needs a driver, an id in `PASSWORD_MANAGER_IDS` and a
 Marketplace descriptor; no new IPC group or route.
 
@@ -633,6 +646,25 @@ keeps only the access key, in `openbot-protonpass-connector-v1.json`, and the CL
 pins, with a SHA-256 per target, into `<userData>/provider-state/protonpass-cli`. Disconnect removes
 the record and the session; the agent access key stays on the Proton account until it ends or the
 user removes it there.
+
+Keeper ([`keeper-driver.ts`](../../src/main/password-managers/keeper-driver.ts)) has one method,
+`account`. The client sends the account's email and master password once, in `connect`. The host
+gives them on stdin to a small Python bridge
+([`keeper-helper-script.ts`](../../src/main/password-managers/keeper-helper-script.ts)) that drives
+the login flow of Keeper Commander, Keeper's official CLI. When Keeper asks for a two-step code or a
+device approval, the status step is `two-factor` or `device-approval`, and the client answers with
+`code`. In `device-approval`, the host has already sent an approval email and a Keeper push, so an
+empty `code` means "check the approval again". After the sign-in, the bridge turns on Commander's
+persistent login for this device and makes the folder `Shared with OpenBot` when it is not there.
+The host keeps only Commander's config (device key and clone code) in
+`openbot-keeper-connector-v1.json`, encrypted by the operating system; the master password is not
+kept. Each later call writes that config to a private temporary file for the bridge, and stores the
+new clone code that Keeper gives at each sign-in, so calls run one at a time. The browser reads only
+the logins in `Shared with OpenBot`. [`keeper-commander-installer.ts`](../../src/main/password-managers/keeper-commander-installer.ts)
+downloads a pinned `uv` (SHA-256 per target), which installs a pinned Python and the pinned package
+list of `keeper-requirements.ts` into `<userData>/provider-state/keeper-cli`. Disconnect signs
+Commander out, which ends the persistent login, and removes the record and
+`<userData>/provider-state/keeper-host`.
 
 ## Add a Team API capability
 

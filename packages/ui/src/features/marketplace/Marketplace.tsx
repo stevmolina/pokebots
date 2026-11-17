@@ -1,12 +1,12 @@
-import { ErrorReference, IconButton, X } from "@openbot/ui";
+import { Dialog, ErrorReference, IconButton, X } from "@openbot/ui";
 import { createScrollFades } from "@openbot/ui/components/createScrollFades";
 import { PageHeader, type PageHeaderParent } from "@openbot/ui/features/window/PageHeader";
 import { useText } from "@openbot/ui/text";
 import { holdFlag } from "@openbot/ui/utils";
-import { createEffect, Match, onCleanup, onSettled, Show, Switch } from "solid-js";
+import { createEffect, Match, onCleanup, Show, Switch } from "solid-js";
 import { MarketplaceAgentPage } from "./MarketplaceAgentPage";
 import { AgentGroupPage } from "./MarketplaceAgents";
-import { MarketplaceAppPage } from "./MarketplaceAppPage";
+import { MarketplaceAppPage, MarketplaceServerPage } from "./MarketplaceAppPage";
 import { AppGroupPage, createBrowseLists, MarketplaceBrowse } from "./MarketplaceBrowse";
 import { MarketplaceNav } from "./MarketplaceNav";
 import { MarketplaceLocalSkillPage, MarketplaceSkillPage } from "./MarketplaceSkillPage";
@@ -46,6 +46,8 @@ function viewTitle(scope: MarketplaceScope, view: MarketplaceView, fallback: str
       return scope.model.apps().find((app) => app.id === view.id)?.name ?? fallback;
     case "skillGroup":
       return view.group === "yours" ? t("marketplace.skills.yours") : t(CATEGORY_LABELS[view.group]);
+    case "server":
+      return view.id === null ? t("mcp.panel.connectTitle") : t("mcp.panel.editTitle");
     case "localSkill":
       for (const agent of scope.model.agents()) {
         const skill = scope.model.installedSkill(agent.id, view.skillId);
@@ -213,6 +215,9 @@ function MarketplaceWindow(props: MarketplaceProps) {
                 <Match when={view.kind === "localSkill" && view.skillId} keyed>
                   {(skillId) => <MarketplaceLocalSkillPage scope={scope} skillId={skillId} />}
                 </Match>
+                <Match when={view.kind === "server" && view} keyed>
+                  {(server) => <MarketplaceServerPage scope={scope} id={server.id} />}
+                </Match>
               </Switch>
             )}
           </Show>
@@ -246,7 +251,7 @@ function MarketplaceWindow(props: MarketplaceProps) {
   );
 }
 
-/** The Marketplace: agents, apps and skills, and a page for each. It is a page of the window. */
+/** The Marketplace: agents, apps and skills, and a page for each. It is a modal over the window. */
 export function Marketplace(props: MarketplaceProps) {
   // A closed window starts again from the first tab, with no search and no filter.
   createEffect(
@@ -263,53 +268,62 @@ export function Marketplace(props: MarketplaceProps) {
 }
 
 /**
- * The open Marketplace page. The title takes the focus, as a new page does, and the control that
- * opened the page gets it back when the page closes with the focus in it. Escape goes back one view,
- * or else clears the search, or else closes the page. A view keeps the search but does not show it,
- * so the view goes back first. The handler is on the document and after the delegated handlers, so a
- * control that handles Escape keeps it. The focus can stay on the control that opened the page, so a
- * target outside the page also counts, except an open popup or a text field.
+ * The open Marketplace: a centered modal (about 900 x 700) over the dimmed window, with the kinds on the left and
+ * the listing on the right. The title takes the focus, as a new page does, and the control that opened the modal
+ * gets it back when it closes. Escape goes back one view, or else clears the search, or else closes the modal. A
+ * view keeps the search but does not show it, so the view goes back first. A popup or a field handles its own
+ * Escape first, because it is the top layer.
  */
 function MarketplacePage(props: MarketplaceProps) {
   const { t } = useText();
   // Each view change of the open page moves in a view transition. The caller's navigation stays plain.
   const nav = createMovingNavigation(props.nav);
-  let root!: HTMLElement;
-  const opener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+  let root: HTMLElement | undefined;
   // Dialogs that the page opens stand above it (`marketplace.css`).
   onCleanup(holdFlag(document.body, "skills-marketplace"));
-  onSettled(() => {
-    root.querySelector<HTMLElement>(".marketplace-nav-title")?.focus({ preventScroll: true });
-    const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key !== "Escape" || event.defaultPrevented) return;
-      const target = event.target instanceof Element ? event.target : null;
-      if (target?.closest("[role=dialog], [role=alertdialog], [role=menu], [role=listbox]")) return;
-      if (target && !root.contains(target) && target.closest("input, textarea, select, [contenteditable]")) return;
-      event.preventDefault();
-      if (nav.state.stack.length > 1) nav.back();
-      else if (nav.state.query)
-        nav.set((draft) => {
-          draft.query = "";
-        });
-      else props.onOpenChange(false);
-    };
-    document.addEventListener("keydown", closeOnEscape);
-    return () => {
-      document.removeEventListener("keydown", closeOnEscape);
-      // A rail button that closed the page keeps the focus.
-      const focus = document.activeElement;
-      if (focus && focus !== document.body && !root.contains(focus)) return;
-      // After the page leaves the DOM, unless the next page took the focus.
-      queueMicrotask(() => {
-        if (opener?.isConnected && (!document.activeElement || document.activeElement === document.body)) {
-          opener.focus({ preventScroll: true });
-        }
-      });
-    };
-  });
   return (
-    <section ref={root} class="skills-marketplace skills-marketplace-page" aria-label={t("marketplace.title")}>
-      <MarketplaceWindow model={props.model} nav={nav} open={props.open} onOpenChange={props.onOpenChange} />
-    </section>
+    <Dialog.Root
+      open
+      onOpenChange={(open) => {
+        if (!open) props.onOpenChange(false);
+      }}
+    >
+      <Dialog.Portal>
+        <Dialog.Overlay class="skills-marketplace-overlay" />
+        <Dialog.Content
+          ref={(element: HTMLElement) => {
+            root = element;
+          }}
+          class="skills-marketplace skills-marketplace-page"
+          aria-label={t("marketplace.title")}
+          aria-describedby={undefined}
+          onOpenAutoFocus={(event) => {
+            event.preventDefault();
+            root?.querySelector<HTMLElement>(".marketplace-nav-title")?.focus({ preventScroll: true });
+          }}
+          onEscapeKeyDown={(event) => {
+            event.preventDefault();
+            if (nav.state.stack.length > 1) nav.back();
+            else if (nav.state.query)
+              nav.set((draft) => {
+                draft.query = "";
+              });
+            else props.onOpenChange(false);
+          }}
+        >
+          <MarketplaceWindow model={props.model} nav={nav} open={props.open} onOpenChange={props.onOpenChange} />
+          <IconButton
+            variant="ghost"
+            size="icon-sm"
+            class="skills-marketplace-close"
+            label={t("common.close")}
+            data-cuelume-tap="close"
+            onClick={() => props.onOpenChange(false)}
+          >
+            <X aria-hidden="true" />
+          </IconButton>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
   );
 }

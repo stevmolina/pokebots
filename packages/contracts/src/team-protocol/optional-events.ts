@@ -3,6 +3,7 @@ import { type AgentColorsEvent, agentColorsEvent } from "./agent-colors-v1";
 import { type AgentHiddenEvent, agentHiddenEvent } from "./agent-hidden-v1";
 import { type AgentNotificationLevelsEvent, agentNotificationLevelsEvent } from "./agent-notification-levels-v1";
 import { type AgentSessionSettingsEvent, agentSessionSettingsEvent } from "./agent-session-settings-v1";
+import { withAgentTaskEventSubagents } from "./agent-task-subagents-v1";
 import { withAgentTaskEventUiBlocks } from "./agent-task-ui-blocks-v1";
 import { type AgentTasksEvent, agentTasksEvent } from "./agent-tasks-v1";
 import { type BrowserPageStateEvent, browserPageStateEvent } from "./browser-page-state-v1";
@@ -12,6 +13,7 @@ import { type BrowserUserControlEvent, browserUserControlEvent } from "./browser
 // adapters reject them, so each transport asks here first and sends or decodes them as they are.
 import { type ChannelEvent, channelEvent } from "./channels-v1";
 import { type ChatColorsEvent, chatColorsEvent } from "./chat-colors-v1";
+import { type CrmEvent, crmEvent } from "./crm-v1";
 import { type HostAppearanceEvent, hostAppearanceEvent } from "./host-appearance-v1";
 import { type HostRestartEvent, hostRestartEvent } from "./host-update-v1";
 import { type LibraryFoldersEvent, libraryFoldersEvent } from "./library-folders-events-v1";
@@ -54,7 +56,8 @@ export type OptionalTeamEvent =
   | RoutineFlowsEvent
   | UsageCreditsEvent
   | VaultEvent
-  | WorkflowsEvent;
+  | WorkflowsEvent
+  | CrmEvent;
 
 export interface OptionalTeamEventOptions {
   /**
@@ -62,6 +65,8 @@ export interface OptionalTeamEventOptions {
    * capability; a client passes `true`, because a host sends the blocks only when it was negotiated.
    */
   agentTaskUiBlocks?: boolean;
+  /** agent-task-subagents-v1: a task conversation keeps its subagents. Passed as `agentTaskUiBlocks` is. */
+  agentTaskSubagents?: boolean;
 }
 
 /** The optional event in `value`, or null for any other event. A malformed optional event throws. */
@@ -92,8 +97,10 @@ export function optionalTeamEvent(value: unknown, options?: OptionalTeamEventOpt
     routineFlowsEvent(value) ??
     usageCreditsEvent(value) ??
     vaultEvent(value) ??
-    workflowsEvent(value);
-  return event && options?.agentTaskUiBlocks ? withAgentTaskEventUiBlocks(event, value) : event;
+    workflowsEvent(value) ??
+    crmEvent(value);
+  const blocks = event && options?.agentTaskUiBlocks ? withAgentTaskEventUiBlocks(event, value) : event;
+  return blocks && options?.agentTaskSubagents ? withAgentTaskEventSubagents(blocks, value) : blocks;
 }
 
 /** Translate the optional wire event at each native transport boundary. */

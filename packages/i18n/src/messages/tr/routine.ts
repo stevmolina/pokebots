@@ -231,6 +231,10 @@ export const messages = {
   "routine.calendar.entryMeta": "{when} · {schedule} · {status}",
   "routine.calendar.openAgent": "{name} ajanını aç",
   "routine.calendar.completed": "Tamamlandı",
+  "routine.calendar.new": "Yeni rutin",
+  "routine.calendar.newOn": "{day} için yeni rutin",
+  "routine.calendar.agent": "Ajan",
+  "routine.calendar.agentChoice": "Ajan: {name}",
 
   "routine.settings.loadFailed": "Rutinler yüklenemedi.",
   "routine.settings.loadRunsFailed": "Çalıştırma geçmişi yüklenemedi.",
@@ -246,6 +250,10 @@ export const messages = {
   "routine.settings.create": "Rutin oluştur",
   "routine.settings.loading": "Rutinler yükleniyor…",
   "routine.settings.empty": "Henüz rutin yok.",
+  "routine.heartbeat.add": "Nabız ekle",
+  "routine.heartbeat.name": "Nabız",
+  "routine.heartbeat.description":
+    "Her 2 saatte bir listeyi kontrol eder ve yalnızca dikkatinizi gerektiren bir şey olduğunda yazar.",
   "routine.settings.paused": "Duraklatıldı",
   "routine.settings.completed": "Tamamlandı · {schedule}",
   "routine.settings.active": "Etkin",

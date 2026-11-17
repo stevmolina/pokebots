@@ -14,11 +14,16 @@ import { isPathInside } from "../backend/path-containment";
 const MANAGED_SKILL_SLUG = "openbot-site-hosting";
 export const SKILL_CREATOR_SKILL_SLUG = "openbot-skill-creator";
 export const DATA_SKILL_SLUG = "openbot-data";
+/** How to use the Second Brain and Rooms apps of the Apps marketplace, when they are connected. */
+export const SECOND_BRAIN_SKILL_SLUG = "second-brain";
+export const ROOMS_SKILL_SLUG = "rooms";
 /** The skills OpenBot writes into every agent workspace. Add a new managed skill here too. */
 export const MANAGED_SKILL_SLUGS: ReadonlySet<string> = new Set([
   MANAGED_SKILL_SLUG,
   SKILL_CREATOR_SKILL_SLUG,
   DATA_SKILL_SLUG,
+  SECOND_BRAIN_SKILL_SLUG,
+  ROOMS_SKILL_SLUG,
 ]);
 export const OWNERSHIP_MARKER = SKILL_OWNERSHIP_MARKER;
 /** The workspace skill folders OpenBot writes. Each provider reads at least one of them. */
