@@ -1,7 +1,8 @@
 import { Stack } from "expo-router/stack";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { useCSSVariable } from "uniwind";
 import { setDesignPreview } from "@/features/design-preview/model/preview-switch";
+import { SplashContentReadyContext } from "@/shared/lib/use-splash-gate";
 
 /** The sheets of the preview, with the options of the app's own sessions and message sheets. */
 const SHEET = {
@@ -24,6 +25,10 @@ export default function DesignPreviewLayout() {
   // Opening the preview, also from the link `openbot://design-preview`, turns the switch on, so the
   // next start opens it again. The profile menu of the preview turns it off.
   useEffect(() => setDesignPreview(true), []);
+  // A start that opens the preview shows no sign-in screen, which is what reports the first screen
+  // ready on a signed-out start. Without this report the splash stays up.
+  const reportContentReady = useContext(SplashContentReadyContext);
+  useEffect(() => reportContentReady(), [reportContentReady]);
   const sheetBackground = String(useCSSVariable("--openbot-bg-sheet"));
   return (
     <Stack screenOptions={{ headerShown: false }}>
