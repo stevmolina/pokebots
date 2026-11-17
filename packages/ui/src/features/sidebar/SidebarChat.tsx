@@ -192,9 +192,9 @@ function UpdateButton() {
 }
 
 /**
- * The top row: Search and New. It also moves the window. The open sidebar has no toggle button, as the
- * Grok Bot desktop app has none: the shortcut and the drag handle close it. The dock keeps one button
- * that opens it again, so a closed sidebar always has a way back with the mouse, on every page.
+ * The top row: the sidebar toggle, Search and New. It also moves the window. The dock's button opens
+ * the sidebar again, so a closed sidebar always has a way back with the mouse, on every page. The open
+ * sidebar has a button that closes it where the window can close it (`onCollapse`); a phone has none.
  */
 function SidebarChatTopbar(topProps: {
   pages: SidebarPages;
@@ -204,29 +204,31 @@ function SidebarChatTopbar(topProps: {
 }) {
   const { props } = useSidebarScope();
   const { t } = useText();
-  const label = () => t("sidebar.topbar.expand");
+  const label = () => t(props.compact ? "sidebar.topbar.expand" : "sidebar.topbar.collapse");
   const platform = () => topProps.pages.shortcutPlatform;
+  const toggle = () => (props.compact ? props.onExpand() : props.onCollapse?.());
+  const toggleButton = () => (
+    <MotionTooltip content={buttonTip(label(), "toggleSidebar", platform())}>
+      <Button
+        variant="ghost"
+        type="button"
+        class="sidebar-chat-toggle no-drag"
+        aria-label={label()}
+        aria-controls="agent-sidebar"
+        aria-expanded={props.compact ? "false" : "true"}
+        onClick={toggle}
+      >
+        <PanelLeft aria-hidden="true" />
+      </Button>
+    </MotionTooltip>
+  );
   return (
     <div class="window-drag sidebar-chat-top">
       {/* A phone has no footer: the profile photo sits in the top corner, as the iOS app has it. */}
       <Show when={topProps.title}>
         <SidebarProfileMenu pages={topProps.pages} compact placement="bottom-start" />
       </Show>
-      <Show when={props.compact}>
-        <MotionTooltip content={buttonTip(label(), "toggleSidebar", platform())}>
-          <Button
-            variant="ghost"
-            type="button"
-            class="sidebar-chat-toggle no-drag"
-            aria-label={label()}
-            aria-controls="agent-sidebar"
-            aria-expanded="false"
-            onClick={() => props.onExpand()}
-          >
-            <PanelLeft aria-hidden="true" />
-          </Button>
-        </MotionTooltip>
-      </Show>
+      <Show when={props.compact}>{toggleButton()}</Show>
       <Show when={topProps.title} fallback={<span class="sidebar-chat-spacer" />}>
         {(title) => (
           <span
@@ -240,6 +242,8 @@ function SidebarChatTopbar(topProps: {
         )}
       </Show>
       <UpdateButton />
+      {/* The open row has the window buttons at its start, so the toggle joins Search and New at the end. */}
+      <Show when={!props.compact && props.onCollapse && !topProps.title}>{toggleButton()}</Show>
       <RoundButton
         label={t("sidebar.chat.search")}
         onClick={props.onOpenSearch}
