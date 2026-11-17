@@ -18,6 +18,7 @@ import {
   Gauge,
   LayoutGrid,
   LogOut,
+  MessageCircle,
   MessageSquare,
   Monitor,
   MotionTooltip,
@@ -165,6 +166,10 @@ export function SidebarProfileMenu(props: {
                 class="ui-action-menu agent-context-menu agent-context-submenu"
                 aria-label={t("sidebar.footer.goTo")}
               >
+                <DropdownMenu.Item onSelectAfterClose={openFromTrigger(props.pages.onChats)}>
+                  <MessageCircle class="agent-context-icon size-4" aria-hidden="true" />
+                  <span>{t("sidebar.pill.chats")}</span>
+                </DropdownMenu.Item>
                 <For each={list()} keyed={(page) => page.id}>
                   {(page) => (
                     <DropdownMenu.Item onSelectAfterClose={openFromTrigger(page().open)}>
