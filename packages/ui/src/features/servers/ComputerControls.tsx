@@ -27,9 +27,9 @@ export function ComputerStartForm(props: { busy: boolean; onManage: ComputerActi
           maxlength={32}
           pattern="[a-z0-9-]{1,32}"
           required
-          onInput={(event) =>
+          onValueChange={(value) =>
             setState((state) => {
-              state.context = event.currentTarget.value;
+              state.context = value;
             })
           }
         />
