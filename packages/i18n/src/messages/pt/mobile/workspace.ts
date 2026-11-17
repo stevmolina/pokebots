@@ -58,7 +58,6 @@ export const messages = {
   "mobile.workspace.preview.dictate": "Ditar",
   "mobile.workspace.preview.voice": "Falar com {name}",
   "mobile.workspace.preview.send": "Enviar",
-  "mobile.workspace.preview.leave": "Sair da prévia do design",
   "mobile.workspace.preview.searchInChat": "Buscar no chat",
   "mobile.workspace.preview.photoOrVideo": "Foto ou vídeo",
   "mobile.workspace.preview.takePhoto": "Tirar foto",

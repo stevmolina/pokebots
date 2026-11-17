@@ -67,9 +67,7 @@ export function PreviewSearchScreen() {
       agent,
     }));
     const messages: Result[] = q
-      ? PREVIEW_SEARCH_MESSAGES.filter(
-          (m) => m.match.toLowerCase().includes(q) || q.includes(m.match.slice(0, q.length)),
-        ).map((m) => ({
+      ? PREVIEW_SEARCH_MESSAGES.filter((m) => m.match.toLowerCase().includes(q)).map((m) => ({
           kind: "message",
           id: m.id,
           agent: previewAgent(m.agentId),

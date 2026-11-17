@@ -54,7 +54,6 @@ export const messages = defineMessages("mobile.workspace", {
   "mobile.workspace.preview.dictate": "Dictate",
   "mobile.workspace.preview.voice": "Talk with {name}",
   "mobile.workspace.preview.send": "Send",
-  "mobile.workspace.preview.leave": "Leave design preview",
   "mobile.workspace.preview.searchInChat": "Search in chat",
   "mobile.workspace.preview.photoOrVideo": "Photo or video",
   "mobile.workspace.preview.takePhoto": "Take photo",

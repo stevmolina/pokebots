@@ -4834,7 +4834,6 @@
   "mobile.workspace.preview.dictate": ["ar", "de", "es", "fr", "he", "it", "ja", "ko", "nl", "pl", "ru", "tr", "zh"],
   "mobile.workspace.preview.voice": ["ar", "de", "es", "fr", "he", "it", "ja", "ko", "nl", "pl", "ru", "tr", "zh"],
   "mobile.workspace.preview.send": ["ar", "de", "es", "fr", "he", "it", "ja", "ko", "nl", "pl", "ru", "tr", "zh"],
-  "mobile.workspace.preview.leave": ["ar", "de", "es", "fr", "he", "it", "ja", "ko", "nl", "pl", "ru", "tr", "zh"],
   "mobile.workspace.preview.searchInChat": [
     "ar",
     "de",

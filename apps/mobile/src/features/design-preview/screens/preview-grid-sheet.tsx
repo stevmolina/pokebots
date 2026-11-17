@@ -8,9 +8,10 @@ import Puzzle from "lucide-react-native/icons/puzzle";
 import Search from "lucide-react-native/icons/search";
 import X from "lucide-react-native/icons/x";
 import { useState } from "react";
-import { Pressable, ScrollView, StyleSheet, TextInput, View } from "react-native";
+import { Pressable, ScrollView, TextInput, View } from "react-native";
 import { KeyboardStickyView } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { SheetScrollView } from "@/shared/components/sheet-scroll-view";
 import { APP_FONT } from "@/shared/lib/app-font";
 import { haptics } from "@/shared/lib/haptics";
 import { useText } from "@/shared/lib/text";
@@ -121,68 +122,70 @@ export function PreviewGridSheet() {
   );
 
   return (
-    // A form sheet gives its root no height of its own, so the page fills the sheet's edges.
-    <View style={[StyleSheet.absoluteFill, { backgroundColor: colors.background }]}>
-      <ScrollView
-        style={{ flex: 1 }}
-        contentInsetAdjustmentBehavior="never"
+    <View style={{ flex: 1 }}>
+      {/* The sheet's own scroll view, as every sheet of the app; the title row is its sticky header. */}
+      <SheetScrollView
+        className="bg-transparent"
+        scrollEdgeEffect={false}
         keyboardShouldPersistTaps="handled"
         keyboardDismissMode="on-drag"
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{
-          paddingTop: b4.closeTop + size.headerButton + b4.gridChipsTop,
-          paddingBottom: insets.bottom + size.bottomBarBottom + size.searchHeight + 24,
-        }}
+        header={
+          <View
+            style={{
+              paddingTop: b4.closeTop,
+              paddingHorizontal: size.headerInset,
+              height: b4.closeTop + size.headerButton,
+              flexDirection: "row",
+              alignItems: "center",
+              backgroundColor: colors.background,
+            }}
+          >
+            <PreviewCircleButton label={t("mobile.workspace.preview.close")} onPress={() => router.back()}>
+              <X size={22} color={colors.icon} strokeWidth={1.8} />
+            </PreviewCircleButton>
+            <Typography numberOfLines={1} style={[type.pageTitle, { flex: 1, marginLeft: 13, color: colors.title }]}>
+              {t("mobile.workspace.preview.connectApps")}
+            </Typography>
+            <PreviewGlass height={size.headerButton} paddingHorizontal={16}>
+              <Typography style={[type.rowLabel, { color: colors.title }]}>
+                {t("mobile.workspace.preview.connected", { total })}
+              </Typography>
+            </PreviewGlass>
+          </View>
+        }
       >
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingLeft: 6 }}>
-          <PreviewChips<Filter>
-            value={filter}
-            onChange={setFilter}
-            options={[
-              { id: "all", label: t("mobile.workspace.preview.filterAll") },
-              { id: "app", label: t("mobile.workspace.preview.filterApps") },
-              { id: "agent", label: t("mobile.workspace.preview.filterAgents") },
-              { id: "skill", label: t("mobile.workspace.preview.filterSkills") },
-            ]}
-          />
-        </ScrollView>
-        {apps.length > 0 ? (
-          <>
-            {caption(t("mobile.workspace.preview.forYou"))}
-            <View style={{ marginTop: b4.gridFirstRowGap - 8 }}>{apps.map(row)}</View>
-          </>
-        ) : null}
-        {team.length > 0 ? (
-          <>
-            {caption(t("mobile.workspace.preview.teamAgents"))}
-            <View style={{ marginTop: b4.gridFirstRowGap - 8 }}>{team.map(row)}</View>
-          </>
-        ) : null}
-      </ScrollView>
-      <View
-        pointerEvents="box-none"
-        style={{
-          position: "absolute",
-          top: b4.closeTop,
-          left: size.headerInset,
-          right: size.headerInset,
-          height: size.headerButton,
-          flexDirection: "row",
-          alignItems: "center",
-        }}
-      >
-        <PreviewCircleButton label={t("mobile.workspace.preview.close")} onPress={() => router.back()}>
-          <X size={22} color={colors.icon} strokeWidth={1.8} />
-        </PreviewCircleButton>
-        <Typography numberOfLines={1} style={[type.pageTitle, { flex: 1, marginLeft: 13, color: colors.title }]}>
-          {t("mobile.workspace.preview.connectApps")}
-        </Typography>
-        <PreviewGlass height={size.headerButton} paddingHorizontal={16}>
-          <Typography style={[type.rowLabel, { color: colors.title }]}>
-            {t("mobile.workspace.preview.connected", { total })}
-          </Typography>
-        </PreviewGlass>
-      </View>
+        <View
+          style={{
+            paddingTop: b4.gridChipsTop,
+            paddingBottom: insets.bottom + size.bottomBarBottom + size.searchHeight + 24,
+          }}
+        >
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingLeft: 6 }}>
+            <PreviewChips<Filter>
+              value={filter}
+              onChange={setFilter}
+              options={[
+                { id: "all", label: t("mobile.workspace.preview.filterAll") },
+                { id: "app", label: t("mobile.workspace.preview.filterApps") },
+                { id: "agent", label: t("mobile.workspace.preview.filterAgents") },
+                { id: "skill", label: t("mobile.workspace.preview.filterSkills") },
+              ]}
+            />
+          </ScrollView>
+          {apps.length > 0 ? (
+            <>
+              {caption(t("mobile.workspace.preview.forYou"))}
+              <View style={{ marginTop: b4.gridFirstRowGap - 8 }}>{apps.map(row)}</View>
+            </>
+          ) : null}
+          {team.length > 0 ? (
+            <>
+              {caption(t("mobile.workspace.preview.teamAgents"))}
+              <View style={{ marginTop: b4.gridFirstRowGap - 8 }}>{team.map(row)}</View>
+            </>
+          ) : null}
+        </View>
+      </SheetScrollView>
       <KeyboardStickyView
         style={{ position: "absolute", left: 0, right: 0, bottom: size.bottomBarBottom }}
         offset={{ opened: size.bottomBarBottom - 8 }}

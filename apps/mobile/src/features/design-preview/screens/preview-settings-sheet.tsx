@@ -4,10 +4,11 @@ import Check from "lucide-react-native/icons/check";
 import Server from "lucide-react-native/icons/server";
 import X from "lucide-react-native/icons/x";
 import { useState } from "react";
-import { Image, ScrollView, StyleSheet, View } from "react-native";
+import { Image, View } from "react-native";
 import { RoutineActiveSwitch } from "@/features/agents/components/routine-active-switch";
 import { AppLogo } from "@/features/auth/components/app-logo";
 import { ProfileAvatar } from "@/shared/components/profile-avatar";
+import { SheetScrollView } from "@/shared/components/sheet-scroll-view";
 import { APP_BRAND, POKEBOTS_MARK } from "@/shared/lib/app-brand";
 import { haptics } from "@/shared/lib/haptics";
 import { useText } from "@/shared/lib/text";
@@ -44,15 +45,25 @@ export function PreviewSettingsSheet() {
     </View>
   );
   return (
-    // A form sheet gives its root no height of its own, so the page fills the sheet's edges.
-    <View style={[StyleSheet.absoluteFill, { backgroundColor: colors.sheetBackground }]}>
-      <ScrollView
-        style={{ flex: 1 }}
-        contentInsetAdjustmentBehavior="never"
-        alwaysBounceVertical={false}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingTop: b4.settingsTop, paddingBottom: 48 }}
-      >
+    // The sheet's own scroll view, as every sheet of the app; the close circle is its sticky header.
+    <SheetScrollView
+      className="bg-transparent"
+      scrollEdgeEffect={false}
+      header={
+        <View style={{ paddingTop: b4.closeTop, paddingLeft: size.headerInset, alignItems: "flex-start" }}>
+          <PreviewCircleButton
+            label={t("mobile.workspace.preview.close")}
+            onPress={() => {
+              void haptics.selection();
+              router.back();
+            }}
+          >
+            <X size={22} color={colors.icon} strokeWidth={1.8} />
+          </PreviewCircleButton>
+        </View>
+      }
+    >
+      <View style={{ paddingTop: b4.settingsTop - b4.closeTop - size.headerButton, paddingBottom: 48 }}>
         <PreviewGroup>
           <PreviewRow
             label={PREVIEW_ACCOUNT.name}
@@ -143,6 +154,8 @@ export function PreviewSettingsSheet() {
               if (on) return;
               // Off leaves the preview, as the old profile menu did.
               setDesignPreview(false);
+              // Close the sheet first, so it can't stay over the app's own start screen.
+              router.dismissAll();
               router.replace("/");
             })}
           />
@@ -190,18 +203,7 @@ export function PreviewSettingsSheet() {
             {PREVIEW_APP_VERSION.build}
           </Typography>
         </View>
-      </ScrollView>
-      <View style={{ position: "absolute", top: b4.closeTop, left: size.headerInset }}>
-        <PreviewCircleButton
-          label={t("mobile.workspace.preview.close")}
-          onPress={() => {
-            void haptics.selection();
-            router.back();
-          }}
-        >
-          <X size={22} color={colors.icon} strokeWidth={1.8} />
-        </PreviewCircleButton>
       </View>
-    </View>
+    </SheetScrollView>
   );
 }
