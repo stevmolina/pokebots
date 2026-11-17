@@ -370,8 +370,9 @@ export function createPanelsStore(deps: PanelsStoreDeps) {
   const attachmentDownloads = attachmentFiles.downloads;
 
   function attachmentAction(attachment: AttachmentSummary, action: FileAction) {
-    // A runtime has no app to open a file in, so a file it can preview opens in the panel.
-    if (action === "open" && deps.props.runtime && canPreviewAttachment(attachment)) {
+    // A file that the panel can preview opens in the panel. Opening in another app stays in
+    // the panel header (`sidebarFileAction`).
+    if (action === "open" && canPreviewAttachment(attachment)) {
       void previewAttachment(attachment);
       return;
     }
@@ -698,7 +699,8 @@ export function createPanelsStore(deps: PanelsStoreDeps) {
     if (!file) return;
     const source = file.source;
     if (source.kind === "attachment") {
-      attachmentAction(source.attachment, action);
+      // The panel already shows this file, so "open" here means the app of the system.
+      attachmentFiles.open(source.attachment, action);
       return;
     }
     if (source.kind === "workspace-folder") return;
