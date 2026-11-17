@@ -41,7 +41,7 @@ export function setDesignPreview(on: boolean): void {
 }
 
 const PREVIEW_LINK =
-  /^(?:[a-z][\w+.-]*:\/\/)?\/?(design-preview(?:\/chat\/[\w-]+|\/agent\/[\w-]+(?:\/(?:edit|routines|library))?)?)\/?(\?sheet=(?:sessions|message|model))?$/;
+  /^(?:[a-z][\w+.-]*:\/\/)?\/?(design-preview(?:\/chat\/[\w-]+|\/agent\/[\w-]+(?:\/(?:edit|routines|library))?|\/(?:settings|search|grid))?)\/?(\?sheet=(?:sessions|message|model))?$/;
 
 /**
  * The route of a link to the preview, such as `openbot://design-preview` or

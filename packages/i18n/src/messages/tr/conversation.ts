@@ -164,6 +164,9 @@ export const messages = {
   "conversation.direct.olderFailed": "Daha eski mesajlar yüklenemedi.",
   "conversation.direct.unreadFailed": "Okunmamış mesaj yüklenemedi.",
   "conversation.direct.noPerson": "Önce bir kişi seçin.",
+  "conversation.tasks.board.done": "Bitenler",
+  "conversation.tasks.board.queued": "Sırada",
+  "conversation.tasks.board.stop": "“{title}” görevini durdur",
   "conversation.tasks.empty.answer": "yanıt",
   "conversation.tasks.empty.lead": "İşi devret.",
   "conversation.tasks.empty.sample.call": "Northwind Traders görüşmesi için notları hazırla",
@@ -219,4 +222,6 @@ export const messages = {
   "conversation.tasks.state.waitingApproval": "Onayınızı bekliyor",
   "conversation.tasks.state.waitingAnswer": "Sizi bekliyor",
   "conversation.tasks.title": "Görevler",
+  "conversation.tasks.view.board": "Pano",
+  "conversation.tasks.view.list": "Liste",
 } as const satisfies PartialTranslation<typeof source>;

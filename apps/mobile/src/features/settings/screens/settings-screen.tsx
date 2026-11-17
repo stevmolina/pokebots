@@ -20,6 +20,7 @@ import { useUniwind } from "uniwind";
 import { mobileUserName } from "@/features/auth/api/mobile-user-name";
 import { useMobileSession } from "@/features/auth/context/mobile-session-context";
 import { fileLimitText, MOBILE_LARGE_FILE_BYTES } from "@/features/chat/model/large-files";
+import { useCalmLook } from "@/features/design-preview/model/calm-look";
 import { SettingsContent, SettingsRow, SettingsSection } from "@/features/settings/components/settings-content";
 import { SettingsSwitch } from "@/features/settings/components/settings-controls";
 import { RowIcon } from "@/features/settings/components/settings-row-icon";
@@ -27,6 +28,7 @@ import { agentDefaultsServers } from "@/features/settings/model/agent-defaults";
 import { useBillingState } from "@/features/settings/model/billing";
 import { saveLargeFilePreference, useLargeFilePreference } from "@/features/settings/model/large-files";
 import { savePhotoQualityPreference, usePhotoQualityPreference } from "@/features/settings/model/photo-quality";
+import { CalmSettingsScreen } from "@/features/settings/screens/calm-settings-screen";
 import { shortcutsSupported } from "@/features/shortcuts/shortcuts-native";
 import { useMobileWorkspaceSelector } from "@/features/workspace/context/mobile-workspace-context";
 import { ProfileAvatar } from "@/shared/components/profile-avatar";
@@ -34,7 +36,12 @@ import { haptics } from "@/shared/lib/haptics";
 import { refreshMobileFeatures, useMobileFeature } from "@/shared/lib/mobile-features";
 import { useText } from "@/shared/lib/text";
 
+/** Settings: the new design when its switch is on, otherwise the current look. */
 export function SettingsScreen() {
+  return useCalmLook() ? <CalmSettingsScreen /> : <ClassicSettingsScreen />;
+}
+
+function ClassicSettingsScreen() {
   const { session } = useMobileSession();
   const text = useText();
   const { t } = text;

@@ -162,6 +162,9 @@ export const messages = {
   "conversation.direct.olderFailed": "이전 메시지를 불러올 수 없어요.",
   "conversation.direct.unreadFailed": "읽지 않은 메시지를 불러올 수 없어요.",
   "conversation.direct.noPerson": "먼저 사람을 선택해 주세요.",
+  "conversation.tasks.board.done": "완료",
+  "conversation.tasks.board.queued": "대기 중",
+  "conversation.tasks.board.stop": "“{title}” 중지",
   "conversation.tasks.empty.answer": "답변",
   "conversation.tasks.empty.lead": "일을 맡겨 보세요.",
   "conversation.tasks.empty.sample.call": "Northwind Traders와의 통화 메모를 준비해 줘",
@@ -217,4 +220,6 @@ export const messages = {
   "conversation.tasks.state.waitingApproval": "승인 대기 중",
   "conversation.tasks.state.waitingAnswer": "내 응답 대기 중",
   "conversation.tasks.title": "작업",
+  "conversation.tasks.view.board": "보드",
+  "conversation.tasks.view.list": "목록",
 } as const satisfies PartialTranslation<typeof source>;

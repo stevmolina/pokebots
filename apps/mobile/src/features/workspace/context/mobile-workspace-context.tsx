@@ -414,14 +414,20 @@ export function MobileWorkspaceProvider({ children }: PropsWithChildren) {
   const removedServers = useRef(new Set<string>());
   const readRefresh = useMemo(() => createRemoteReadRefresh(), []);
   const serverCapabilities = useRef(new Map<string, readonly string[]>());
-  const { serverOrder, defaultServerId, orderedServers, sortByPreference, reorderServers } = useServerOrder(
-    session.apiUrl,
-    session.user.id,
-    session.host?.hostId,
-    servers,
+  const {
+    serverOrder,
+    defaultServerId,
+    lastServerId,
+    orderedServers,
+    sortByPreference,
+    reorderServers,
+    rememberServer,
+  } = useServerOrder(session.apiUrl, session.user.id, session.host?.hostId, servers);
+  // The app opens on the server the user opened last, else on the first server of the list. The
+  // directory corrects a saved server that is gone.
+  const [activeServerId, setActiveServerId] = useState<string | null>(
+    () => lastServerId ?? defaultServerId ?? serverOrder[0] ?? null,
   );
-  // The app opens on the first server of the list. The directory corrects a saved server that is gone.
-  const [activeServerId, setActiveServerId] = useState<string | null>(() => defaultServerId ?? serverOrder[0] ?? null);
   const activeServerIdRef = useRef(activeServerId);
   activeServerIdRef.current = activeServerId;
   const conversationStore = useMemo(
@@ -1980,6 +1986,7 @@ export function MobileWorkspaceProvider({ children }: PropsWithChildren) {
         loadGeneration.current += 1;
         conversationStore.cancelRequests();
         setActiveServerId(id);
+        rememberServer(id);
       },
       leaveServer: async (serverId) => {
         const server = serversRef.current.find((candidate) => candidate.id === serverId);
@@ -2476,6 +2483,7 @@ export function MobileWorkspaceProvider({ children }: PropsWithChildren) {
     refreshHosts,
     refreshMemberships,
     reorderServers,
+    rememberServer,
     applySidebarLayout,
     channelStore,
     conversationStore,

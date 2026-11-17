@@ -62,6 +62,7 @@ import {
   untrack,
 } from "solid-js";
 import { createComposerRowsResize } from "../conversation/createComposerRowsResize";
+import { TasksBoard } from "./TasksBoard";
 import { TasksEmptyBoard, TasksEmptyPitch } from "./TasksEmpty";
 
 /** The microphone of the Tasks composer. The page shows it; the app records and transcribes. */
@@ -142,6 +143,38 @@ interface TasksPageProps {
   sendShortcut?: SendShortcut | undefined;
   /** The window draws the macOS window controls over the image viewer's top start corner. */
   macWindowControls?: boolean | undefined;
+  /** How the page shows the tasks: the list by group, or a board with a column for each group. */
+  view?: TasksView | undefined;
+  /** Shows the List / Board switch in the header. Absent where the client has no board. */
+  onViewChange?: ((view: TasksView) => void) | undefined;
+  /** The board actions: a drop on Done closes a task, a drag out of Done reopens it, and Stop. */
+  onCloseTask?: ((task: AgentTask) => void) | undefined;
+  onReopenTask?: ((task: AgentTask) => void) | undefined;
+  onStopTask?: ((task: AgentTask) => void) | undefined;
+}
+
+export type TasksView = "list" | "board";
+
+/** The List / Board switch at the end of the page header. */
+function TasksViewSwitch(props: { view: TasksView; onChange: (view: TasksView) => void }) {
+  const { t } = useText();
+  const option = (view: TasksView, label: string) => (
+    <Button
+      type="button"
+      variant="ghost"
+      size="xs"
+      aria-pressed={props.view === view ? "true" : "false"}
+      onClick={() => props.onChange(view)}
+    >
+      {label}
+    </Button>
+  );
+  return (
+    <div class="tasks-page-view-switch">
+      {option("list", t("conversation.tasks.view.list"))}
+      {option("board", t("conversation.tasks.view.board"))}
+    </div>
+  );
 }
 
 const agentOf = (agents: readonly AgentProfile[], agentId: string) => agents.find((agent) => agent.id === agentId);
@@ -845,7 +878,8 @@ function TasksSidePanel(props: {
 }
 
 /**
- * The Tasks page of a server, on desktop and on the web: one calm column for the tasks of all agents.
+ * The Tasks page of a server, on desktop and on the web: one calm column for the tasks of all agents,
+ * or a board with a column for each group.
  * The composer is at the top, with the agent selector. Below it, the tasks by what they need. A start
  * can be undone for a few seconds. A task opens in the panel beside the list.
  */
@@ -854,8 +888,14 @@ export function TasksPage(props: TasksPageProps) {
   const headingId = createUniqueId();
   // The first start adds a task that waits, so the page shows the list as soon as the user sends.
   const empty = () => props.loaded === true && props.tasks.length === 0;
+  const board = () => props.view === "board" && props.onViewChange !== undefined && !empty();
   return (
-    <section class="tasks-page" aria-labelledby={headingId} data-empty={empty() ? "" : undefined}>
+    <section
+      class="tasks-page"
+      aria-labelledby={headingId}
+      data-empty={empty() ? "" : undefined}
+      data-view={board() ? "board" : undefined}
+    >
       <div class="tasks-page-scroll">
         <div class="tasks-page-column">
           <PageHeader
@@ -865,7 +905,11 @@ export function TasksPage(props: TasksPageProps) {
             headingId={headingId}
             onBack={props.onBack}
             frame={props.frame}
-          />
+          >
+            <Show when={props.onViewChange}>
+              {(change) => <TasksViewSwitch view={props.view ?? "list"} onChange={(view) => change()(view)} />}
+            </Show>
+          </PageHeader>
           <Show when={empty()}>
             <TasksEmptyPitch />
           </Show>
@@ -873,7 +917,18 @@ export function TasksPage(props: TasksPageProps) {
           <div class="tasks-page-took-slot" aria-live="polite">
             <Show when={props.took}>{(took) => <TaskTookLine {...props} took={took()} />}</Show>
           </div>
-          <TasksList {...props} />
+          <Show when={board()} fallback={<TasksList {...props} />}>
+            <TasksBoard
+              agents={props.agents}
+              tasks={props.tasks}
+              selectedId={props.selectedId}
+              onSelect={props.onSelect}
+              waitOf={props.waitOf}
+              onCloseTask={(task) => props.onCloseTask?.(task)}
+              onReopenTask={(task) => props.onReopenTask?.(task)}
+              onStopTask={(task) => props.onStopTask?.(task)}
+            />
+          </Show>
           <Show when={empty()}>
             <TasksEmptyBoard agents={props.agents} />
           </Show>

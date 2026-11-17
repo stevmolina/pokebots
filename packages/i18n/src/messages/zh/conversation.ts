@@ -159,6 +159,9 @@ export const messages = {
   "conversation.direct.olderFailed": "更早的消息加载失败。",
   "conversation.direct.unreadFailed": "未读消息加载失败。",
   "conversation.direct.noPerson": "请先选择一位成员。",
+  "conversation.tasks.board.done": "已完成",
+  "conversation.tasks.board.queued": "排队中",
+  "conversation.tasks.board.stop": "停止“{title}”",
   "conversation.tasks.empty.answer": "答案",
   "conversation.tasks.empty.lead": "把工作交出去。",
   "conversation.tasks.empty.sample.call": "为 Northwind Traders 准备通话笔记",
@@ -214,4 +217,6 @@ export const messages = {
   "conversation.tasks.state.waitingApproval": "等待你批准",
   "conversation.tasks.state.waitingAnswer": "等待你",
   "conversation.tasks.title": "任务",
+  "conversation.tasks.view.board": "看板",
+  "conversation.tasks.view.list": "列表",
 } as const satisfies PartialTranslation<typeof source>;
