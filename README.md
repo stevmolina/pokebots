@@ -747,3 +747,12 @@ show the update phase, the staged version, and each tenant's work state. No Git 
 or compilation is required on the host.
 Normal desktop users need only the DMG. See the [host deployment guide](docs/multi-tenant-hosting.md)
 for existing-user enrollment, password handling, package upgrades, and required target-host checks.
+
+## Brain
+
+Open **More → Brain** in the sidebar. Connect **Second Brain** in Apps first, then sign in to that
+MCP connection. Brain reuses this sign-in. Choose a brain to search facts, read their sources and
+history, browse pages, add or download files, record or fix facts, and find past agent chats.
+A fact change shows whether it opened a pull request or committed directly. File adds from the
+screen have a 512 KB limit. Brain content stays in memory. For a joined server, update the host
+to a version with `brain-v1`; older hosts do not show Brain.

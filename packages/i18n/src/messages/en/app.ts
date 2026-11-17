@@ -1,6 +1,7 @@
 import { defineMessages } from "../../message";
 
 export const messages = defineMessages("app", {
+  "app.rail.brain": "Brain",
   // The app shell, shared state, and shared controls without a feature of their own.
   "app.loading": "Loading OpenBot",
   "app.leftPanel.resize": "Resize left sidebar",

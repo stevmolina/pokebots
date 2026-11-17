@@ -79,6 +79,7 @@ import { attachmentIpcHandlers } from "./ipc/attachment-handlers";
 import { backgroundProcessIpcHandlers } from "./ipc/background-process-handlers";
 import { billingIpcHandlers } from "./ipc/billing-handlers";
 import { bitwardenConnectorIpcHandlers } from "./ipc/bitwarden-connector-handlers";
+import { brainIpcHandlers } from "./ipc/brain-handlers";
 import { browserDockIpcHandlers } from "./ipc/browser-dock-handlers";
 import { browserIpcHandlers } from "./ipc/browser-handlers";
 import { channelMemoryIpcHandlers } from "./ipc/channel-memory-handlers";
@@ -787,6 +788,7 @@ function attachWindowsSessionEndHandlers(window: BrowserWindow): void {
 }
 
 function registerIpcHandlers({
+  brain,
   service,
   signInRelayClient,
   relayedMessagingInstalls,
@@ -1117,6 +1119,7 @@ function registerIpcHandlers({
       relayedInstalls: relayedMessagingInstalls,
       openExternal: openLink,
     }),
+    ...brainIpcHandlers({ brain, remoteServers }),
     ...mcpServerIpcHandlers({
       service,
       mcpAccess,

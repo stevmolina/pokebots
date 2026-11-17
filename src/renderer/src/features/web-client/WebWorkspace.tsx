@@ -1,6 +1,7 @@
 import { isKnownAgentProvider } from "@openbot/contracts/agent-providers";
 import type { AppAppearance } from "@openbot/contracts/app-appearance";
 import type { AppLanguage } from "@openbot/contracts/app-language";
+import { BRAIN_CAPABILITY } from "@openbot/contracts/brain";
 import { HOSTED_SERVER_CONTACT_URL } from "@openbot/contracts/hosted-servers";
 import {
   type AddedAgent,
@@ -209,6 +210,7 @@ import {
   untrack,
 } from "solid-js";
 import { queuedDeliveriesInOrder } from "../../queue-reconciliation";
+import { WebBrainPage } from "../brain/WebBrainPage";
 import { decodeRoomsResultFromHost } from "./web-rooms";
 // Copying a selection with a formula in it gives its LaTeX source, as on desktop.
 import "katex/contrib/copy-tex";
@@ -449,7 +451,7 @@ async function reportedFailure(send: () => Promise<unknown>, options: PromptAnsw
 }
 
 /** The pages of the connected host that cover the conversation. */
-type HostPageView = "rooms" | "usage" | "schedule" | "tasks" | "workflows" | "library";
+type HostPageView = "rooms" | "brain" | "usage" | "schedule" | "tasks" | "workflows" | "library";
 
 type WebWorkspaceProps = {
   accountId: string;
@@ -3067,6 +3069,12 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
       if (id) void openHostPage(id, "schedule", button);
     },
     onWorkflows: workflowsRailAction(),
+    onBrain: workspace.state.capabilities.includes(BRAIN_CAPABILITY)
+      ? () => {
+          const id = server()?.id;
+          if (id) void openHostPage(id, "brain", null);
+        }
+      : undefined,
     onLibrary: libraryRailAction(),
     onComputers: serverCanAdminister(server(), AGENT_COMPUTER_CAPABILITY)
       ? () => {
@@ -3251,6 +3259,7 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                 <Show
                   when={
                     page() === "rooms" ||
+                    page() === "brain" ||
                     page() === "usage" ||
                     page() === "schedule" ||
                     page() === "workflows" ||
@@ -3383,6 +3392,11 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                               onConnect={openMarketplace}
                             />
                           )}
+                        </Show>
+                      </Match>
+                      <Match when={page() === "brain" && workspace.state.capabilities.includes(BRAIN_CAPABILITY)}>
+                        <Show when={server()?.id} keyed>
+                          {(id) => <WebBrainPage request={hostRequest(id)} onConnect={openMarketplace} />}
                         </Show>
                       </Match>
                       <Match when={page() === "library"}>

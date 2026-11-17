@@ -6,7 +6,7 @@ import { useServers } from "../servers/servers-context";
  * The host pane over the middle of the workspace: the usage report, the routine schedule, the
  * tasks, the workflows, the Library or the Machines page. One state holds them, so each path that uncovers the conversation closes any of them.
  */
-type HostPaneView = "usage" | "schedule" | "tasks" | "workflows" | "library" | "machines" | "rooms";
+type HostPaneView = "usage" | "schedule" | "tasks" | "workflows" | "library" | "machines" | "rooms" | "brain";
 
 const context = createSimpleContext({
   name: "UsageProvider",
@@ -58,6 +58,10 @@ const context = createSimpleContext({
       open("library", serverId, source);
     }
 
+    function openBrain(serverId: string, source: HTMLElement | null) {
+      open("brain", serverId, source);
+    }
+
     function openMachines(serverId: string, source: HTMLElement | null) {
       open("machines", serverId, source);
     }
@@ -103,6 +107,7 @@ const context = createSimpleContext({
       workflowRequest,
       takeWorkflowRequest: () => setWorkflowRequest(undefined),
       openLibrary,
+      openBrain,
       openMachines,
       openRooms: (serverId: string, source: HTMLElement | null) => open("rooms", serverId, source),
       closeUsage() {

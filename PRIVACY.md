@@ -2274,3 +2274,12 @@ results and local coding-job files, registers them for secret redaction, and sho
 views only through human controls. Desktop, web and mobile clients keep machine lists in
 screen memory. Access loss clears the visible list. The phone does not put these lists or
 the API key in its offline workspace copy.
+
+### Second Brain
+
+When you use the Brain screen, the computer that runs your server sends your selected brain,
+search terms, fact changes, and files you choose to Agent Brain at `brain.mcpbox.dev`. It reuses
+the Second Brain MCP connection's sign-in. OAuth tokens stay on that computer. The screen keeps
+brain pages, claims, files lists, and past chats in memory only. A file download opens a link that
+expires after about 15 minutes. Files added from this screen are limited to 512 KB so they fit the
+joined-server transport. No brain content is stored in the account service.

@@ -1,4 +1,7 @@
+import { BRAIN_CAPABILITY, BRAIN_ROUTE } from "@openbot/contracts/brain";
+import type { McpServerConfig } from "@openbot/contracts/ipc";
 import { ROOMS_CAPABILITY, ROOMS_ROUTE } from "@openbot/contracts/team-protocol/rooms-v1";
+import { BrainService } from "../src/backend/brain-service";
 import { RoomsService } from "../src/main/rooms-service";
 // Drives the real `TeamApiServer` on a loopback port over HTTP, as a remote client does. The team
 // store and the direct-message store are the real ones on temporary files. The agent service, the
@@ -2360,8 +2363,38 @@ async function runRouteChecks() {
     accessToken: () => Effect.succeed(null),
     refreshAccessToken: () => Effect.succeed(null),
   });
+  const brainConnection: McpServerConfig = {
+    id: "brain-e2e",
+    name: "Second Brain",
+    transport: "http",
+    enabled: true,
+    command: "",
+    args: [],
+    env: [],
+    envPassthrough: [],
+    workingDirectory: "",
+    url: "https://brain.mcpbox.dev/mcp",
+    headers: [],
+  };
+  let brainCalls = 0;
+  const brain = new BrainService({
+    connections: () => [brainConnection],
+    oauth: { accessToken: () => Effect.succeed("brain-e2e-token"), refreshAccessToken: () => Effect.succeed(null) },
+    fetch: async () => {
+      brainCalls++;
+      return Response.json({ brains: [{ id: "example/notes", repo: "example/notes" }] });
+    },
+  });
   server = new TeamApiServer({
     rooms,
+    brain,
+    mcpServers: {
+      listMcpServers: () => [brainConnection],
+      saveMcpServer: () => Effect.succeed([brainConnection]),
+      removeMcpServer: () => Effect.succeed([]),
+      setMcpServerEnabled: () => Effect.succeed([brainConnection]),
+      testMcpServer: () => Effect.succeed({ toolCount: 0, error: null }),
+    },
     agentComputer,
     appVersion: APP_VERSION,
     agentImport,
@@ -3077,6 +3110,31 @@ async function runRouteChecks() {
     json: { kind: "list" },
   });
   check("Rooms requires its optional host capability", roomsUnsupported.status !== 200, summary(roomsUnsupported));
+  // Brain, through the real Team API dispatcher and frozen optional codec.
+  {
+    const options = {
+      token: adaToken,
+      protocol: 9,
+      capabilities: [BRAIN_CAPABILITY],
+      json: { operation: "brains", mcpServerId: "brain-e2e" },
+    };
+    const member = await call("POST", BRAIN_ROUTE, { ...options, token: bobToken });
+    const anonymous = await call("POST", BRAIN_ROUTE, { ...options, token: undefined });
+    const unsupported = await call("POST", BRAIN_ROUTE, { ...options, capabilities: [] });
+    check(
+      "Brain refuses an unauthorized client before it spends the MCP sign-in",
+      member.status === 403 && anonymous.status === 401 && unsupported.status === 400 && brainCalls === 0,
+      { member: member.status, anonymous: anonymous.status, unsupported: unsupported.status },
+    );
+    const listed = await call("POST", BRAIN_ROUTE, options);
+    check(
+      "Brain lists accessible brains through the host dispatcher and protocol 9 codec",
+      listed.status === 200 &&
+        brainCalls === 1 &&
+        isDeepStrictEqual(listed.body, { brains: [{ id: "example/notes", repo: "example/notes" }] }),
+      summary(listed),
+    );
+  }
 
   // Native Agent Computer, through the real Team API dispatcher and frozen optional codecs.
   {

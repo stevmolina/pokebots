@@ -13,6 +13,7 @@ import { AgentApiKeys } from "../backend/agent-api-keys";
 import { AgentDatabaseSupervisor } from "../backend/agent-data/agent-database-supervisor";
 import { AgentTables } from "../backend/agent-data/agent-tables";
 import { AgentRoutineStore } from "../backend/agent-routine-store";
+import { BrainService } from "../backend/brain-service";
 import { diskRestoreEnded, diskRestoring } from "../backend/disk-restore";
 import { DiscordConnectFailed, toDiscordConnectFailed } from "../backend/messaging/discord/discord-connect";
 import { SlackConnectFailed, toSlackConnectFailed } from "../backend/messaging/slack/slack-connect";
@@ -730,6 +731,7 @@ export interface ApplicationServices {
   teamWebRtcBridge: TeamWebRtcBridge;
   /** Reached by the entry point for one thing only: handing a returning grant to its sign-in. */
   mcpOAuth: McpOAuth;
+  brain: BrainService;
   /** The sign-ins of joined servers that wait in this computer's browser, and the callbacks they take. */
   signInRelayClient: SignInRelayClient;
   /** The Slack and Discord installs that this computer opened for a joined server. */
@@ -1947,6 +1949,7 @@ export async function createApplicationServices({
     deepLinkRedirectUrl: mcpOAuthDeepLink,
     logger: createOpenBotLogger("mcp-oauth"),
   });
+  const brain = new BrainService({ oauth: mcpOAuth, connections: () => service.listMcpServers() });
   mcpOAuthAuthority = mcpOAuth;
   const rooms = new RoomsService(mcpOAuth);
   teardown.push(TEARDOWN_ORDER.mcpOAuth, "MCP token refresh", () => Effect.runPromise(mcpOAuth.close()));
@@ -3562,6 +3565,7 @@ export async function createApplicationServices({
     chat: teamChatStore,
     channels: service.channels,
     // Present, so the host advertises `mcp-servers-v1`. The routes are admin-only without `mcpServerOwners`.
+    brain,
     mcpServers: service,
     // Present, so the host advertises `mcp-member-access-v1`. A member then uses the MCP routes too,
     // and changes only the servers that they added.
@@ -4816,6 +4820,7 @@ export async function createApplicationServices({
     messaging,
     teamWebRtcBridge,
     mcpOAuth,
+    brain,
     signInRelayClient,
     relayedMessagingInstalls: new RelayedMessagingInstalls(remoteServers),
     githubConnector,
