@@ -106,7 +106,11 @@ import {
   decodeWebhookTestResult,
 } from "@openbot/contracts/ipc-events";
 import { contextBridge, ipcRenderer, webUtils } from "electron";
-import { decodeAgentComputerMachineListFromMain, decodeAgentComputerStatusFromMain } from "./agent-computer-decoding";
+import {
+  decodeAgentComputerMachineListFromMain,
+  decodeAgentComputerStatusFromMain,
+  decodeComputerManagementResultFromMain,
+} from "./agent-computer-decoding";
 import {
   decodeAccountUsageFromMain,
   decodeAgent,
@@ -1075,6 +1079,7 @@ const openbotApi: OpenBotDesktopApi = {
     hostOpenSignIn: decodeVoid,
   }),
   agentComputer: bridgeGroup(IPC_ENDPOINTS.agentComputer, {
+    manage: decodeComputerManagementResultFromMain,
     status: decodeAgentComputerStatusFromMain,
     connect: decodeAgentComputerStatusFromMain,
     test: decodeAgentComputerStatusFromMain,

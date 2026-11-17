@@ -43,3 +43,23 @@ export function decodeAgentComputerMachineListFromHost(value: unknown): AgentCom
     }),
   };
 }
+
+export function decodeComputerManagementResultFromHost(value: unknown): {
+  screenshot: string | null;
+  sizes: { id: string; size: string | null }[];
+} {
+  if (
+    !isDynamicRecord(value) ||
+    !nullableString(value.screenshot) ||
+    (value.screenshot !== null &&
+      (value.screenshot.length > 1_500_000 || !/^data:image\/png;base64,[A-Za-z0-9+/=]+$/u.test(value.screenshot)))
+  )
+    throw new Error("Invalid computer screenshot.");
+  if (!Array.isArray(value.sizes) || value.sizes.length > 200) throw new Error("Invalid computer sizes.");
+  const sizes = value.sizes.map((row: unknown) => {
+    if (!isDynamicRecord(row) || !isString(row.id) || !nullableString(row.size))
+      throw new Error("Invalid computer size.");
+    return { id: row.id, size: row.size };
+  });
+  return { screenshot: value.screenshot, sizes };
+}

@@ -64,6 +64,7 @@ export interface SidebarPages {
   /** Absent where the server keeps no files, such as the web client. */
   onLibrary?: ((button: HTMLElement) => void) | undefined;
   /** Every connected server with its agents. Absent where the app knows one server only, such as the web client. */
+  onComputers?: (() => void) | undefined;
   onMachines?: ((button: HTMLElement) => void) | undefined;
   /** Absent while Marketplace cannot open. */
   onMarketplace?: (() => void) | undefined;

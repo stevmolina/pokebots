@@ -8,6 +8,7 @@ import {
 } from "@openbot/contracts/ipc";
 import { AGENT_COMPUTER_CAPABILITY } from "@openbot/contracts/team-protocol/agent-computer-v1";
 import { BROWSER_PROFILES_CAPABILITY } from "@openbot/contracts/team-protocol/browser-profiles-v1";
+import { COMPUTER_MANAGEMENT_CAPABILITY } from "@openbot/contracts/team-protocol/computer-management-v1";
 import { PROVIDER_DETECTION_CAPABILITY } from "@openbot/contracts/team-protocol/provider-detection-v1";
 import { VAULT_IMPORT_CAPABILITY } from "@openbot/contracts/team-protocol/vault-import-v1";
 import { VAULT_CAPABILITY } from "@openbot/contracts/team-protocol/vault-v1";
@@ -1140,7 +1141,11 @@ function ServerSettings() {
           vault={vault()}
           cloudComputers={
             serverCanAdminister(server(), AGENT_COMPUTER_CAPABILITY)
-              ? { api: appPort().agentComputer, openUrl: (url) => void appPort().openUrl(url) }
+              ? {
+                  management: serverCanAdminister(server(), COMPUTER_MANAGEMENT_CAPABILITY),
+                  api: appPort().agentComputer,
+                  openUrl: (url) => void appPort().openUrl(url),
+                }
               : undefined
           }
         />

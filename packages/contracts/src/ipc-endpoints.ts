@@ -63,7 +63,12 @@ import type {
   UpdateAgentPlanCardInput,
 } from "./ipc-agent-admin";
 import type { AgentAnalytics, AgentAnalyticsInput } from "./ipc-agent-analytics";
-import type { AgentComputerMachineList, AgentComputerStatus } from "./ipc-agent-computer";
+import type {
+  AgentComputerMachineList,
+  AgentComputerStatus,
+  ComputerManagementInput,
+  ComputerManagementResult,
+} from "./ipc-agent-computer";
 import type {
   AgentDockAction,
   AgentDockDisplayInfo,
@@ -1517,6 +1522,7 @@ export const IPC_ENDPOINTS = {
   // The Agent Computer account of a server (`agent-computer-v1` on a joined server): its agents start
   // cloud computers with it. The API key goes from the renderer to main once, in `connect`.
   agentComputer: {
+    manage: scopedRequest<ComputerManagementInput, ComputerManagementResult, "required">()("agent-computer:manage"),
     status: scopedQuery<AgentComputerStatus, "required">()("agent-computer:status"),
     connect: scopedRequest<string, AgentComputerStatus, "required">()("agent-computer:connect"),
     test: scopedQuery<AgentComputerStatus, "required">()("agent-computer:test"),

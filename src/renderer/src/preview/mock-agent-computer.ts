@@ -27,7 +27,30 @@ export function createMockAgentComputer(): OpenBotDesktopApi["agentComputer"] {
       updatedAt: new Date(Date.now() - 3 * 3_600_000).toISOString(),
     },
   ];
+  const registry = machines();
   return {
+    manage: async (input) => {
+      if (input.operation === "start") {
+        const machine = registry.find((row) => row.context === input.target);
+        if (machine) machine.status = "running";
+        else
+          registry.push({
+            id: `preview-${input.target}`,
+            context: input.target,
+            status: "running",
+            deadlineAt: null,
+            liveViewUrl: null,
+            updatedAt: null,
+          });
+      } else if (input.operation === "stop") {
+        const machine = registry.find((row) => row.id === input.target);
+        if (machine) machine.status = "paused";
+      } else if (input.operation === "destroy") {
+        const index = registry.findIndex((row) => row.id === input.target);
+        if (index >= 0) registry.splice(index, 1);
+      }
+      return { screenshot: null, sizes: registry.map((row) => ({ id: row.id, size: "standard" })) };
+    },
     status: async (serverId) => status(serverId),
     connect: async (apiKey, serverId) => {
       const next = { connected: true, keyHint: apiKey.slice(0, 12), error: null };
@@ -39,6 +62,6 @@ export function createMockAgentComputer(): OpenBotDesktopApi["agentComputer"] {
       statuses.delete(serverId);
       return DISCONNECTED_AGENT_COMPUTER;
     },
-    machines: async (serverId) => ({ machines: status(serverId).connected ? machines() : [] }),
+    machines: async (serverId) => ({ machines: status(serverId).connected ? registry.map((row) => ({ ...row })) : [] }),
   };
 }

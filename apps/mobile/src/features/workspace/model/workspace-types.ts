@@ -594,6 +594,7 @@ export interface MobileWorkspaceContextValue {
   /** The same for the host's password managers, such as Proton Pass (`password-managers-v1`). */
   canManagePasswordManagers: (serverId: string) => boolean;
   /** True for an owner or admin of a host that serves its Vault to other devices (`vault-v1`). */
+  canControlComputers: (serverId: string) => boolean;
   canManageAgentComputer: (serverId: string) => boolean;
   canManageVault: (serverId: string) => boolean;
   /** The same for a CSV import from this phone (`vault-import-v1`). */
@@ -1312,6 +1313,7 @@ type ServerCheckKey =
   | "canManageBitwardenConnector"
   | "canManageWhatsAppConnector"
   | "canManagePasswordManagers"
+  | "canControlComputers"
   | "canManageAgentComputer"
   | "canManageVault"
   | "canImportVault"

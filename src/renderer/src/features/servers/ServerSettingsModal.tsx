@@ -1063,7 +1063,12 @@ export function ServerSettingsModal(props: ServerSettingsModalProps) {
                 class="settings-modal-tab-panel server-settings-panel"
                 data-tab="cloud-computers"
               >
-                <ServerCloudComputersPanel serverId={props.server.id} api={api().api} openUrl={api().openUrl} />
+                <ServerCloudComputersPanel
+                  serverId={props.server.id}
+                  management={api().management}
+                  api={api().api}
+                  openUrl={api().openUrl}
+                />
               </Tabs.Content>
             </>
           )}

@@ -35,6 +35,7 @@ import { BITWARDEN_CONNECTOR_CAPABILITY } from "@openbot/contracts/team-protocol
 import { BROWSER_PROFILES_CAPABILITY } from "@openbot/contracts/team-protocol/browser-profiles-v1";
 import { BROWSER_PROXIES_CAPABILITY } from "@openbot/contracts/team-protocol/browser-proxies-v1";
 import { BROWSING_MEMORY_CAPABILITY } from "@openbot/contracts/team-protocol/browsing-memory-v1";
+import { COMPUTER_MANAGEMENT_CAPABILITY } from "@openbot/contracts/team-protocol/computer-management-v1";
 import { CONNECTORS_CAPABILITY } from "@openbot/contracts/team-protocol/connectors-v1";
 import {
   AGENT_HIDDEN_WORK_CAPABILITY,
@@ -2591,6 +2592,7 @@ export function MobileWorkspaceProvider({ children }: PropsWithChildren) {
         canManageBitwardenConnector: (serverId) => administers(serverId, BITWARDEN_CONNECTOR_CAPABILITY),
         canManageWhatsAppConnector: (serverId) => administers(serverId, WHATSAPP_CONNECTOR_CAPABILITY),
         canManagePasswordManagers: (serverId) => administers(serverId, PASSWORD_MANAGERS_CAPABILITY),
+        canControlComputers: (serverId) => administers(serverId, COMPUTER_MANAGEMENT_CAPABILITY),
         canManageAgentComputer: (serverId) => administers(serverId, AGENT_COMPUTER_CAPABILITY),
         canManageVault: (serverId) => administers(serverId, VAULT_CAPABILITY),
         canImportVault: (serverId) => administers(serverId, VAULT_IMPORT_CAPABILITY),

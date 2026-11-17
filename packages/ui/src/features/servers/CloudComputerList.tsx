@@ -7,9 +7,11 @@
 import { Button, ExternalLink } from "@openbot/ui";
 import { For, Show } from "solid-js";
 import { useText } from "../../text";
+import { type ComputerAction, ComputerControls } from "./ComputerControls";
 
 export interface CloudComputer {
   id: string;
+  size?: string | null | undefined;
   context: string;
   /** `running` or `paused`. Another state shows as it comes. */
   status: string;
@@ -19,6 +21,8 @@ export interface CloudComputer {
 
 export interface CloudComputerListProps {
   machines: readonly CloudComputer[];
+  busy?: boolean | undefined;
+  onManage?: ComputerAction | undefined;
   onOpenLiveView: (url: string) => void;
 }
 
@@ -29,6 +33,9 @@ export function CloudComputerList(props: CloudComputerListProps) {
         {(machine) => (
           <li>
             <CloudComputerRow machine={machine()} onOpenLiveView={props.onOpenLiveView} />
+            <Show when={props.onManage}>
+              {(manage) => <ComputerControls machine={machine()} busy={Boolean(props.busy)} onManage={manage()} />}
+            </Show>
           </li>
         )}
       </For>
@@ -58,6 +65,15 @@ function CloudComputerRow(props: { machine: CloudComputer; onOpenLiveView: (url:
         <strong class="cloud-computer-name">{props.machine.context}</strong>
         <span class="cloud-computer-meta">
           <span class="cloud-computer-meta-item">{state()}</span>
+          <Show when={props.machine.size}>
+            <span class="cloud-computer-meta-item">
+              {props.machine.size === "large"
+                ? t("server.computers.large")
+                : props.machine.size === "standard"
+                  ? t("server.computers.standard")
+                  : props.machine.size}
+            </span>
+          </Show>
           <Show when={until()}>
             {(time) => (
               <span class="cloud-computer-meta-item">{t("server.cloudComputers.until", { time: time() })}</span>
@@ -72,7 +88,10 @@ function CloudComputerRow(props: { machine: CloudComputer; onOpenLiveView: (url:
             variant="outline"
             size="sm"
             aria-label={t("server.cloudComputers.openLiveViewOf", { name: props.machine.context })}
-            onClick={() => props.onOpenLiveView(url())}
+            onClick={() => {
+              const target = new URL(url());
+              if (target.protocol === "https:" || target.protocol === "http:") props.onOpenLiveView(url());
+            }}
           >
             <ExternalLink aria-hidden="true" />
             {t("server.cloudComputers.liveView")}

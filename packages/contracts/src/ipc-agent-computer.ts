@@ -74,3 +74,33 @@ export function decodeAgentComputerMachineList(value: unknown): AgentComputerMac
     }),
   };
 }
+
+export interface ComputerManagementInput {
+  operation: "list" | "start" | "stop" | "destroy" | "screenshot";
+  target: string;
+  size: "standard" | "large";
+  confirm: "yes" | "no";
+}
+export interface ComputerManagementResult {
+  screenshot: string | null;
+  sizes: { id: string; size: string | null }[];
+}
+export function decodeComputerManagementInput(value: unknown): ComputerManagementInput {
+  if (
+    !isDynamicRecord(value) ||
+    (value.operation !== "list" &&
+      value.operation !== "start" &&
+      value.operation !== "stop" &&
+      value.operation !== "destroy" &&
+      value.operation !== "screenshot") ||
+    !isString(value.target) ||
+    !value.target.length ||
+    value.target.length > 256 ||
+    (value.size !== "standard" && value.size !== "large") ||
+    (value.confirm !== "yes" && value.confirm !== "no") ||
+    (value.operation === "start" && !/^[a-z0-9-]{1,32}$/u.test(value.target)) ||
+    (value.operation === "destroy" && value.confirm !== "yes")
+  )
+    throw new Error("Invalid computer action.");
+  return { operation: value.operation, target: value.target, size: value.size, confirm: value.confirm };
+}

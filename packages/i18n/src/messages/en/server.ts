@@ -1,6 +1,21 @@
 import { defineMessages } from "../../message";
 
 export const messages = defineMessages("server", {
+  "server.computers.title": "Computers",
+  "server.computers.context": "Computer name",
+  "server.computers.contextHint": "Use lowercase letters, digits and hyphens. Reuse a name to resume its computer.",
+  "server.computers.standard": "Standard \u00b7 2 vCPU",
+  "server.computers.large": "Large \u00b7 8 vCPU",
+  "server.computers.start": "Start",
+  "server.computers.stop": "Stop",
+  "server.computers.destroy": "Destroy",
+  "server.computers.actions": "Details and actions",
+  "server.computers.screenshot": "Latest screenshot",
+  "server.computers.agentUnknown": "Agent use is not reported by this service.",
+  "server.computers.destroyTitle": "Destroy {name}?",
+  "server.computers.destroyDescription":
+    "This permanently deletes the computer and all its files. Stop it to keep its data.",
+
   "server.connection.planEnded": "The plan for {name} has ended",
   "server.connection.wakeFailed": "Could not start {name}",
   "server.connection.startTimeout": "{name} did not start in time",

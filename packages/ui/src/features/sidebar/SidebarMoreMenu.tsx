@@ -8,6 +8,7 @@ import {
   ChevronRight,
   CircleQuestionMark,
   DropdownMenu,
+  Monitor,
   Settings,
   SlidersHorizontal,
   Store,
@@ -48,6 +49,14 @@ export function SidebarMoreMenuItems(props: {
           </DropdownMenu.Item>
         )}
       </For>
+      <Show when={props.pages.onComputers}>
+        {(open) => (
+          <DropdownMenu.Item onSelectAfterClose={() => open()()}>
+            <Monitor class="agent-context-icon size-4" aria-hidden="true" />
+            <span>{t("server.computers.title")}</span>
+          </DropdownMenu.Item>
+        )}
+      </Show>
       <Show when={props.pages.onMarketplace}>
         {(onMarketplace) => (
           <DropdownMenu.Item onSelectAfterClose={() => onMarketplace()()}>

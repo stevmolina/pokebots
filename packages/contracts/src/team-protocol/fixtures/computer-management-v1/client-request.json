@@ -1,0 +1,6 @@
+{
+  "method": "POST",
+  "path": "/v1/admin/agent-computer/manage",
+  "capabilities": ["agent-computer-v1", "computer-management-v1"],
+  "body": { "operation": "start", "target": "research", "size": "large", "confirm": "no" }
+}
