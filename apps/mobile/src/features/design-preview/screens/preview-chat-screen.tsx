@@ -239,8 +239,16 @@ function useComposerMenu(): MenuAction[] {
 }
 
 function TitlePill({ agent, colors }: { agent: PreviewAgent; colors: PreviewColors }) {
+  const router = useRouter();
   return (
-    <Pressable accessibilityRole="button" accessibilityLabel={agent.name} onPress={() => void haptics.selection()}>
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={agent.name}
+      onPress={() => {
+        void haptics.selection();
+        router.push(`/design-preview/agent/${agent.id}`);
+      }}
+    >
       <PreviewGlass height={size.titlePillHeight}>
         <View
           style={{

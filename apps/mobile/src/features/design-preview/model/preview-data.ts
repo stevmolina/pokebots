@@ -264,3 +264,39 @@ export const PREVIEW_SESSIONS: { id: string; name: string | null; minutesAgo: nu
 ];
 
 export const PREVIEW_PINNED_COUNT = 2;
+
+/** Made-up models, grouped by provider, for the model picker of the preview. */
+export const PREVIEW_MODEL_GROUPS: { provider: string; models: { id: string; name: string; note: string }[] }[] = [
+  {
+    provider: "OpenAI",
+    models: [
+      { id: "gpt-6.1", name: "GPT-6.1", note: "Best for most work" },
+      { id: "gpt-6.1-mini", name: "GPT-6.1 mini", note: "Quick and cheap" },
+    ],
+  },
+  {
+    provider: "Anthropic",
+    models: [
+      { id: "claude-opus", name: "Claude Opus", note: "Deep reasoning and code" },
+      { id: "claude-sonnet", name: "Claude Sonnet", note: "Fast, strong writing" },
+    ],
+  },
+  { provider: "Google", models: [{ id: "gemini-pro", name: "Gemini Pro", note: "Long files and video" }] },
+];
+
+/** The one routine of the profile's Routines page. */
+export const PREVIEW_ROUTINE = {
+  name: "Morning check-in",
+  schedule: "Every weekday at 8:00",
+  timezone: "America/Argentina/Salta",
+};
+
+/** Made-up rows of the Library page: a link, two images, a file. */
+export const PREVIEW_LIBRARY: { id: string; kind: "link" | "image" | "file"; title: string; detail: string }[] = [
+  { id: "l1", kind: "link", title: "latam-airlines.com/booking/LA2471", detail: "latam-airlines.com" },
+  { id: "l2", kind: "image", title: "boarding-pass-lima.png", detail: "1 d" },
+  { id: "l3", kind: "file", title: "Lima trip budget.pdf", detail: "PDF · 2 d" },
+  { id: "l4", kind: "link", title: "booking.com/hotel/pe/miraflores-park", detail: "booking.com" },
+  { id: "l5", kind: "image", title: "hotel-room.jpg", detail: "3 d" },
+  { id: "l6", kind: "link", title: "maps.google.com/?q=Miraflores", detail: "maps.google.com" },
+];

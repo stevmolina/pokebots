@@ -1,6 +1,7 @@
 import { router } from "expo-router";
 import { Typography } from "heroui-native";
 import Check from "lucide-react-native/icons/check";
+import Cpu from "lucide-react-native/icons/cpu";
 import MessageSquare from "lucide-react-native/icons/message-square";
 import Pin from "lucide-react-native/icons/pin";
 import Plus from "lucide-react-native/icons/plus";
@@ -12,6 +13,7 @@ import { useText } from "@/shared/lib/text";
 import { usePreviewColors } from "../components/preview-parts";
 import { usePreviewTime } from "../components/preview-time";
 import { PREVIEW_PINNED_COUNT, PREVIEW_SESSIONS } from "../model/preview-data";
+import { previewModelName, usePreviewModelChoice } from "../model/preview-model-choice";
 import { previewSheet } from "../model/preview-tokens";
 
 /**
@@ -26,10 +28,24 @@ export function PreviewSessionsSheet() {
     void haptics.selection();
     router.back();
   };
+  const modelId = usePreviewModelChoice((state) => state.modelId);
   const icon = colors.icon;
   const size = previewSheet.iconSize;
   return (
     <SheetScrollView scrollEdgeEffect={false} contentContainerClassName="gap-4 px-4 pb-safe-offset-5 pt-7">
+      {/* The model of this agent, two taps away in the chat. The sheet makes room for the picker. */}
+      <SettingsSection>
+        <SettingsRow
+          leading={<Cpu size={size} color={icon} strokeWidth={1.7} />}
+          value={previewModelName(modelId)}
+          onPress={() => {
+            void haptics.selection();
+            router.replace("/design-preview/model");
+          }}
+        >
+          <Typography>{t("mobile.workspace.preview.model")}</Typography>
+        </SettingsRow>
+      </SettingsSection>
       <SettingsSection title={t("mobile.chat.sessions.title")}>
         {PREVIEW_SESSIONS.map((session) => (
           <SettingsRow

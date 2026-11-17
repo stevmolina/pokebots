@@ -29,11 +29,12 @@ export function setDesignPreview(on: boolean): void {
 }
 
 const PREVIEW_LINK =
-  /^(?:[a-z][\w+.-]*:\/\/)?\/?(design-preview(?:\/chat\/[\w-]+)?)\/?(\?sheet=(?:sessions|message))?$/i;
+  /^(?:[a-z][\w+.-]*:\/\/)?\/?(design-preview(?:\/chat\/[\w-]+|\/agent\/[\w-]+(?:\/(?:edit|routines|library))?)?)\/?(\?sheet=(?:sessions|message|model))?$/i;
 
 /**
  * The route of a link to the preview, such as `openbot://design-preview` or
- * `openbot://design-preview/chat/flights?sheet=message`, or null for another link.
+ * `openbot://design-preview/chat/flights?sheet=message` or
+ * `openbot://design-preview/agent/flights?sheet=model`, or null for another link.
  */
 export function designPreviewRoute(path: string): string | null {
   const match = PREVIEW_LINK.exec(path);

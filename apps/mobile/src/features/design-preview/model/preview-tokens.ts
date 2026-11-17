@@ -42,6 +42,20 @@ const LIGHT = {
   heroBadge: "#f5b83d",
   /** Quiet lines for tasks and routine runs in a chat. */
   quietLine: "#8b8b8d",
+  /** Profile and its pages: a light gray page with white groups. */
+  pageBackground: "#f7f7f7",
+  groupBackground: "#ffffff",
+  groupSeparator: "#e5e5e7",
+  /** A value beside a row label, such as "Idle" or "1 active". */
+  rowValue: "#7e7e81",
+  /** Group captions and the help text under a group. */
+  groupCaption: "#a9a9ab",
+  /** The gray Edit pill and the inactive filter chips. */
+  softFill: "#e7e7e9",
+  /** The active filter chip and the Done pill. */
+  strongFill: "#060606",
+  /** The Library list sits in one gray group. */
+  libraryGroup: "#ededed",
 };
 
 export type PreviewColors = typeof LIGHT;
@@ -64,6 +78,14 @@ const DARK: PreviewColors = {
   glassFallback: "#242426",
   heroBadge: "#f5b83d",
   quietLine: "#8e8e93",
+  pageBackground: "#000000",
+  groupBackground: "#1c1c1e",
+  groupSeparator: "#38383a",
+  rowValue: "#8e8e93",
+  groupCaption: "#6e6e73",
+  softFill: "#2c2c2e",
+  strongFill: "#ffffff",
+  libraryGroup: "#1c1c1e",
 };
 
 export function previewColors(scheme: "light" | "dark"): PreviewColors {
@@ -139,6 +161,37 @@ export const previewSheet = {
   rowPreviewHeight: 150,
 } as const;
 
+/** The agent profile and its pages, measured from the reference. */
+export const previewProfile = {
+  /** Face top 72 pt under the header buttons; 88 pt face. */
+  faceTop: 72,
+  face: 88,
+  nameGap: 9,
+  editPillHeight: 38,
+  editPillPaddingX: 14,
+  editPillGap: 10,
+  /** First group 25 pt under the Edit pill; groups 16 pt from the sides, rows 52 pt. */
+  groupsTop: 25,
+  groupInset: 16,
+  groupRadius: 16,
+  groupGap: 26,
+  rowHeight: 52,
+  rowIconInset: 20,
+  rowIconSize: 20,
+  rowLabelInset: 52,
+  /** A row with no icon, such as Notifications, starts its label here. */
+  rowPlainInset: 18,
+  /** Caption over a group, and help text under one. */
+  captionGap: 8,
+  helpGap: 9,
+  toggleRowHeight: 56,
+  /** A page header: the title centered on the back circle; chips 33 pt high, 8 pt apart. */
+  chipHeight: 33,
+  chipGap: 8,
+  chipPaddingX: 18,
+  libraryRowHeight: 72,
+} as const;
+
 /** Type sizes. The preview keeps the app font (Inter); the reference uses the system font. */
 export const previewType = {
   heroLabel: { fontSize: 14, lineHeight: 18 },
@@ -153,6 +206,14 @@ export const previewType = {
   stamp: { fontSize: 13, lineHeight: 18 },
   quietLine: { fontSize: 14, lineHeight: 19 },
   composer: { fontSize: 17, lineHeight: 22 },
+  profileName: { fontSize: 24, lineHeight: 30, fontWeight: "600" },
+  pageTitle: { fontSize: 17, lineHeight: 22, fontWeight: "500" },
+  rowLabel: { fontSize: 17, lineHeight: 22 },
+  rowValue: { fontSize: 17, lineHeight: 22 },
+  groupCaption: { fontSize: 14, lineHeight: 18 },
+  help: { fontSize: 14, lineHeight: 19 },
+  chip: { fontSize: 15, lineHeight: 20, fontWeight: "500" },
+  rowDetail: { fontSize: 14, lineHeight: 19 },
 } as const satisfies Record<string, TextStyle>;
 
 /**

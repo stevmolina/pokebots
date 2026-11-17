@@ -17,6 +17,8 @@ const SHEET = {
 // The first stop matches the reference: the sheet top at 404 pt on a 844 pt phone. iOS measures the
 // detent below the status bar, so the fraction is 0.55, not 0.52.
 const DETENTS = [0.55, 0.85];
+// The model list is long, so its sheet has one tall stop.
+const TALL = [0.85];
 
 export default function DesignPreviewLayout() {
   // Opening the preview, also from the link `openbot://design-preview`, turns the switch on, so the
@@ -32,6 +34,10 @@ export default function DesignPreviewLayout() {
       <Stack.Screen
         name="message-actions"
         options={{ ...SHEET, contentStyle: { backgroundColor: sheetBackground }, sheetAllowedDetents: DETENTS }}
+      />
+      <Stack.Screen
+        name="model"
+        options={{ ...SHEET, contentStyle: { backgroundColor: sheetBackground }, sheetAllowedDetents: TALL }}
       />
     </Stack>
   );
