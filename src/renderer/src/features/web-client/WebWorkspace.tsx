@@ -2288,6 +2288,20 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
   const firstAgent = () => workspace.state.agentsLoaded && workspace.profiles().length === 0 && createSupported();
   /** An open channel still takes the pane, as a channel closes the desktop form. */
   const agentFormOpen = () => creating() || (firstAgent() && !channelOpen());
+  /**
+   * Whether the form is the full page of the first agent, which takes the pane. Another agent opens as a dialog
+   * over the pane that is open. The new agent joins the host before the save ends, so the form keeps the kind
+   * that it opened as until it closes.
+   */
+  let formOpenedAsPage = false;
+  const agentFormPageOpen = createMemo(() => {
+    if (!agentFormOpen()) {
+      formOpenedAsPage = false;
+      return false;
+    }
+    if (firstAgent()) formOpenedAsPage = true;
+    return formOpenedAsPage;
+  });
   // Tasks, billing, settings pages and server setup styles are not in the first stylesheet.
   // The marketplace stays on the first stylesheet: its navigation reuses a settings class.
   const [screenStylesReady, setScreenStylesReady] = createSignal(false);
@@ -2309,7 +2323,7 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
   const agentChatOpen = () =>
     page() !== "rooms" &&
     !tasksOpen() &&
-    !agentFormOpen() &&
+    !agentFormPageOpen() &&
     !channelOpen() &&
     !noHost() &&
     !hostOffline() &&
@@ -2338,7 +2352,7 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
   const chatHistory = createWebChatHistory({
     current: () => {
       const hostId = workspace.state.host?.hostId;
-      if (!hostId || page() !== "agents" || agentFormOpen()) return null;
+      if (!hostId || page() !== "agents" || agentFormPageOpen()) return null;
       const channelId = channels.state.selectedId;
       if (channelId) return { hostId, kind: "channel", id: channelId };
       const agentId = workspace.state.selectedId;
@@ -3397,7 +3411,7 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                           server={server()}
                           agents={workspace.shownAgents()}
                           activeAgentId={workspace.state.selectedId ?? ""}
-                          composerAvailable={status().phase === "ready" && !agentFormOpen()}
+                          composerAvailable={status().phase === "ready" && !agentFormPageOpen()}
                           onOpenAgent={(agentId) => {
                             setMobilePane("conversation");
                             if (agentId !== workspace.state.selectedId) void select(agentId);
@@ -4159,7 +4173,7 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                   }}
                 />
               </Show>
-              <Show when={!tasksOpen() && !agentFormOpen() && channelOpen()}>
+              <Show when={!tasksOpen() && !agentFormPageOpen() && channelOpen()}>
                 {/* Keyed by the channel: the view reads its channel once, so another channel opens a new view. */}
                 <Show when={channels.state.selectedId} keyed>
                   {(channelId) => {
@@ -4295,7 +4309,12 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
               </Show>
               <Show
                 when={
-                  !tasksOpen() && !agentFormOpen() && !channelOpen() && !noHost() && !hostOffline() && routinesView()
+                  !tasksOpen() &&
+                  !agentFormPageOpen() &&
+                  !channelOpen() &&
+                  !noHost() &&
+                  !hostOffline() &&
+                  routinesView()
                 }
               >
                 {/* A host switch starts the canvas again, with that host's webhook relay status. */}

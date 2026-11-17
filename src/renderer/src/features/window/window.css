@@ -640,24 +640,9 @@
       .routine-planner-body,
       .routine-planner-empty,
       .routine-planner-error,
-      .marketplace-nav,
-      .skills-marketplace-body,
       .hosted-pricing-scroll
     ) {
     pointer-events: auto;
-  }
-
-  /* The Marketplace page: the path of a page goes in the top row, as the usage title does. The side panel and the
-   * list are below it. */
-  .app-window > .app-frame-edge > .window-page > .skills-marketplace-page {
-    grid-template-rows: var(--left-header-height) minmax(0, 1fr);
-  }
-
-  .app-window > .app-frame-edge > .window-page .skills-marketplace-topbar {
-    min-height: 0;
-    padding: 0;
-    border-bottom: 0;
-    -webkit-app-region: drag;
   }
 }
 
