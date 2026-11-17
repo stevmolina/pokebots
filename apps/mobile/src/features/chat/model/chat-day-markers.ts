@@ -1,5 +1,5 @@
 import type { AppFormat, MobileTranslate } from "@openbot/i18n/mobile";
-import { messageDay, startOfDay } from "./message-time";
+import { messageDay, messageTime, startOfDay } from "./message-time";
 
 /**
  * The separators of the chat, as on desktop (`packages/ui/src/features/conversation/chat-day-markers.ts`):
@@ -34,9 +34,13 @@ export function chatDayLabels(
     if (!row.createdAt) continue;
     const day = messageDay(row.createdAt, timeZoneOffset);
     if (Number.isNaN(day)) continue;
-    const at = Date.parse(row.createdAt);
-    const gap = groupGapMs !== undefined && previousTime !== undefined && at - previousTime >= groupGapMs;
-    previousTime = at;
+    // Only the calm look reads the time: without a gap the pass is the same as before.
+    let gap = false;
+    if (groupGapMs !== undefined) {
+      const at = messageTime(row.createdAt);
+      gap = previousTime !== undefined && at - previousTime >= groupGapMs;
+      previousTime = at;
+    }
     if (day === previousDay && !gap) continue;
     previousDay = day;
     if (skipFirst) {

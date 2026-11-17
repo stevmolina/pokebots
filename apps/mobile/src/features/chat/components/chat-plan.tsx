@@ -279,6 +279,7 @@ export function ChatPlan({ message }: { message: PlanMessage }) {
             void haptics.selection();
             setOpen((value) => !value);
           }}
+          hitSlop={calm ? 8 : undefined}
           className={calm ? "flex-row items-center gap-1.5 self-start px-1 py-1" : "flex-row items-center gap-3 p-3"}
           style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
         >
