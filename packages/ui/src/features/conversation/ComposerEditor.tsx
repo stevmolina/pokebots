@@ -90,7 +90,7 @@ import {
   trackPickerHighlight,
   trackPickerScrollFades,
 } from "./mention-picker-motion";
-import { isSendShortcutKey, type SendShortcut } from "./send-shortcut";
+import { isAlternateSubmitKey, isSendShortcutKey, type SendShortcut } from "./send-shortcut";
 
 interface ComposerEditorProps {
   agentId: string | undefined;
@@ -129,6 +129,12 @@ interface ComposerEditorProps {
   onSubmit: () => void;
   /** Tab sends the message into the agent's running turn. Absent, Tab moves the focus as usual. */
   onSteer?: (() => void) | undefined;
+  /**
+   * The platform modifier with Enter, while plain Enter sends. The renderer sends the message the
+   * opposite way to the busy-message mode: steer for a host that queues, queue for a host that steers.
+   * Absent, the chord sends like Enter.
+   */
+  onSubmitAlternate?: (() => void) | undefined;
   /**
    * Which chord sends the message. Enter keeps the current behavior; the platform modifier with
    * Enter sends and plain Enter adds a line. The renderer resolves the platform and passes it.
@@ -1034,6 +1040,8 @@ export function ComposerEditor(props: ComposerEditorProps) {
       return;
     }
 
+    // ⌘⇧Enter (Ctrl+Shift+Enter) steers the first queued message. The window listener takes it.
+    if (event.key === "Enter" && event.shiftKey && (event.metaKey || event.ctrlKey)) return;
     if (event.key === "Enter" && event.shiftKey) {
       event.preventDefault();
       if (!editor) return;
@@ -1052,7 +1060,8 @@ export function ComposerEditor(props: ComposerEditorProps) {
         return;
       }
       event.preventDefault();
-      props.onSubmit();
+      if (props.onSubmitAlternate && isAlternateSubmitKey(event, sendShortcut)) props.onSubmitAlternate();
+      else props.onSubmit();
     }
   }
 

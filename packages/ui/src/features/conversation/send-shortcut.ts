@@ -46,6 +46,16 @@ export function isSendShortcutKey(event: SendShortcutKey, shortcut: SendShortcut
   return event.ctrlKey && !event.metaKey;
 }
 
+/**
+ * Whether the keydown is the platform modifier with Enter while plain Enter sends. That chord does
+ * the opposite of the busy-message mode for one message. Shift or Alt with it, or both Cmd and Ctrl,
+ * is not this chord. A person who sends with the modifier already has it as the send chord.
+ */
+export function isAlternateSubmitKey(event: SendShortcutKey, shortcut: SendShortcut): boolean {
+  if (shortcut !== "enter" || event.key !== "Enter" || event.shiftKey || event.altKey) return false;
+  return event.metaKey !== event.ctrlKey;
+}
+
 /** The `aria-keyshortcuts` value for the chord. */
 export function sendShortcutAriaKey(shortcut: SendShortcut): "Enter" | "Meta+Enter" | "Control+Enter" {
   if (shortcut === "meta-enter") return "Meta+Enter";

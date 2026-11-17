@@ -58,6 +58,7 @@ import type {
   SidePanelPane,
 } from "./conversation-types";
 import { lastAgentReply, lastCodeBlock } from "./last-reply";
+import { openSettingsModelPicker } from "./open-model-picker";
 import { isPhoneWeb } from "./phone-web";
 import {
   clearQuotedTextHighlight,
@@ -1315,6 +1316,7 @@ export function createConversationViewScope(props: ConversationProps) {
     reorderPresentedQueue,
     submitComposer,
     steerComposer,
+    submitOpposite,
     composerAnswersPrompt,
     sendSelectionInstruction,
     sendCardMessage,
@@ -1827,6 +1829,16 @@ export function createConversationViewScope(props: ConversationProps) {
             (error: unknown) =>
               actionToast.error(errorMessage(error, t("chat.actions.copyFailed")), { id: "shortcut-copy" }),
           );
+          return true;
+        }),
+      ),
+      onShortcutCommand(
+        "openModelPicker",
+        whenShown(() => {
+          // The model picker is a row of the agent settings, so the key opens them and then the picker.
+          if (!props.agent || props.channel) return false;
+          setActiveRightPanel("settings");
+          openSettingsModelPicker(window);
           return true;
         }),
       ),
@@ -3028,6 +3040,7 @@ export function createConversationViewScope(props: ConversationProps) {
     cancelVoiceRecording,
     submitComposer,
     steerComposer,
+    submitOpposite,
     composerAnswersPrompt,
     submitting,
     unreadDividerVisible,

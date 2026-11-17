@@ -4,6 +4,7 @@ import { CONVERSATION_UNREAD_FROM_CAPABILITY } from "@openbot/contracts/team-pro
 import { AGENT_HIDDEN_CAPABILITY } from "@openbot/contracts/team-protocol/current";
 import { Sidebar } from "@openbot/ui/features/sidebar/Sidebar";
 import { sidebarChannelWaits } from "@openbot/ui/features/sidebar/sidebar-agent-states";
+import { type SidebarPinnedItem, sidebarPinnedItemKey } from "@openbot/ui/features/sidebar/sidebar-pins";
 import { teamMemberName } from "@openbot/ui/features/team/TeamPersonAvatar";
 import { useText } from "@openbot/ui/text";
 import { createEffect, createMemo, createSignal, onSettled } from "solid-js";
@@ -213,6 +214,21 @@ export function WorkspaceSidebar(props: { peopleEnabled: boolean }) {
     channels.close();
     openAgentSetup();
   };
+  // ⌘⇧P pins the open chat, or unpins it when it is pinned, as the row menu does. A direct chat has no
+  // pin, and the All machines view keeps none.
+  onSettled(() =>
+    onShortcutCommand("pinChat", () => {
+      if (allMachinesOn() || activeDirectMember()) return false;
+      const channelId = channels.state.selectedId;
+      const id = channelId ?? activeAgent()?.id;
+      if (!id) return false;
+      const item: SidebarPinnedItem = { kind: channelId ? "channel" : "agent", id };
+      const key = sidebarPinnedItemKey(item);
+      if (pinnedSidebarItems().some((candidate) => sidebarPinnedItemKey(candidate) === key)) unpinSidebarItem(item);
+      else pinSidebarItem(item);
+      return true;
+    }),
+  );
   // ⌘N and the New Chat menu item do what the sidebar's New does.
   onSettled(() =>
     onShortcutCommand("newChat", () => {

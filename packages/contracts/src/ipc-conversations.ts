@@ -190,6 +190,12 @@ export interface SendMessageInput {
    * cannot grow a field. New hosts also offer the separate artifact-request-v1 send route.
    */
   createArtifact?: boolean;
+  /**
+   * The message waits in the queue and runs after the running turn, even when the agent steers each
+   * message sent while it works. Only this computer's host reads it. A joined server drops it and
+   * follows its own busy-message mode.
+   */
+  queueOnly?: boolean;
 }
 
 /** Marks a message so a host can give that one request the claude.ai Artifact tools. */

@@ -1204,7 +1204,9 @@ export function agentIpcHandlers({
       }),
       sendMessage: scopedHandler(parseSendMessage, {
         local: (input) => runCauseEffect(service.sendMessage(input, host.conversationSender())),
-        remote: (input, serverId) => {
+        remote: (sent, serverId) => {
+          // Only this computer's host reads queueOnly; a joined server follows its own mode.
+          const { queueOnly: _queueOnly, ...input } = sent;
           if (input.createArtifact && remoteServers.supportsCapability(serverId, ARTIFACT_REQUEST_CAPABILITY)) {
             return runCauseEffect(
               remoteServers.request(serverId, ARTIFACT_REQUEST_ROUTE, decodeQueuedMessageReceipt, {
