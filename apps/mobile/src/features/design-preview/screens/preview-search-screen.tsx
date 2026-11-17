@@ -171,6 +171,7 @@ export function PreviewSearchScreen() {
         contentContainerStyle={{ alignItems: "center" }}
       >
         <PreviewChips<Filter>
+          paddingX={b4.tightChipPaddingX}
           value={filter}
           onChange={setFilter}
           options={[

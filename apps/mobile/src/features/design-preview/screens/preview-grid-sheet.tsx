@@ -146,7 +146,7 @@ export function PreviewGridSheet() {
             <Typography numberOfLines={1} style={[type.pageTitle, { flex: 1, marginLeft: 13, color: colors.title }]}>
               {t("mobile.workspace.preview.connectApps")}
             </Typography>
-            <PreviewGlass height={size.headerButton} paddingHorizontal={16}>
+            <PreviewGlass height={size.headerButton} paddingHorizontal={b4.gridHeaderPillPaddingX}>
               <Typography style={[type.rowLabel, { color: colors.title }]}>
                 {t("mobile.workspace.preview.connected", { total })}
               </Typography>
@@ -162,6 +162,7 @@ export function PreviewGridSheet() {
         >
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingLeft: 6 }}>
             <PreviewChips<Filter>
+              paddingX={b4.tightChipPaddingX}
               value={filter}
               onChange={setFilter}
               options={[

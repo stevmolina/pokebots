@@ -69,6 +69,7 @@ export function PreviewSettingsSheet() {
             label={PREVIEW_ACCOUNT.name}
             detail={PREVIEW_ACCOUNT.email}
             icon={<ProfileAvatar name={PREVIEW_ACCOUNT.name} neutral size={b4.accountAvatar} />}
+            height={b4.accountRowHeight}
             onPress={tap}
           />
           <PreviewRow label={t("mobile.workspace.preview.usage")} value={`${PREVIEW_ACCOUNT.usage}%`} onPress={tap} />

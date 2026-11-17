@@ -174,7 +174,9 @@ export const previewBatch4 = {
   /** A row with a gray line under its label. */
   detailRowHeight: 62,
   groupGap: 26,
-  accountAvatar: 32,
+  /** The account row: a 36 pt photo, the row 76 pt high. */
+  accountAvatar: 36,
+  accountRowHeight: 76,
   /** The footer: a 54 pt logo, the name and the version, centered. */
   footerTop: 60,
   footerLogo: 54,
@@ -189,15 +191,18 @@ export const previewBatch4 = {
   searchCloseButton: 47,
   searchFieldGap: 21,
   /** Grid sheet: the title row centered on the close circle, chips 34 pt high 34 pt under it, rows 68 pt with a 30 pt icon. */
-  gridChipsTop: 34,
+  gridChipsTop: 33,
   gridChipHeight: 34,
-  gridCaptionTop: 20,
+  gridCaptionTop: 19,
   gridFirstRowGap: 12,
   gridRowHeight: 68,
   gridIcon: 30,
   gridIconRadius: 7,
-  gridConnectHeight: 30,
-  gridConnectPaddingX: 13,
+  gridConnectHeight: 33,
+  gridConnectPaddingX: 8,
+  /** Search and grid chips are tighter than the Library's. */
+  tightChipPaddingX: 10,
+  gridHeaderPillPaddingX: 9,
   gridHeaderPillHeight: 48,
 } as const;
 

@@ -240,10 +240,13 @@ export function PreviewChips<T extends string>({
   options,
   value,
   onChange,
+  paddingX = profile.chipPaddingX,
 }: {
   options: { id: T; label: string }[];
   value: T;
   onChange: (id: T) => void;
+  /** The side padding of a chip; search and the grid use tighter chips than the Library. */
+  paddingX?: number;
 }) {
   const colors = usePreviewColors();
   return (
@@ -261,7 +264,7 @@ export function PreviewChips<T extends string>({
             }}
             style={{
               height: profile.chipHeight,
-              paddingHorizontal: profile.chipPaddingX,
+              paddingHorizontal: paddingX,
               borderRadius: profile.chipHeight / 2,
               backgroundColor: active ? colors.strongFill : colors.softFill,
               justifyContent: "center",
