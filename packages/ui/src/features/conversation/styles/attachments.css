@@ -1,21 +1,23 @@
+/* A file is a large rounded card on the surface color, as in Grok Bot: a 44px type icon, the name, the size under
+   it, and a hairline. The download and open buttons show when the pointer is on the card. */
 .message-attachments {
   display: grid;
-  width: min(100%, 256px);
-  gap: 7px;
+  width: min(100%, 344px);
+  gap: var(--openbot-space-2);
   margin-top: 10px;
 }
 
 .message-attachment {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 40px 40px;
+  grid-template-columns: minmax(0, 1fr) auto auto;
   min-width: 0;
-  min-height: 56px;
+  min-height: 68px;
   align-items: center;
-  gap: 6px;
-  border: 1px solid var(--openbot-border);
-  border-radius: var(--openbot-radius-lg);
-  background: var(--openbot-bg-surface-raised);
-  padding: 7px;
+  gap: var(--openbot-space-1);
+  border: 1px solid color-mix(in srgb, var(--openbot-text-primary) 8%, transparent);
+  border-radius: var(--openbot-radius-bubble);
+  background: var(--openbot-bg-surface);
+  padding: var(--openbot-space-3) var(--openbot-space-3) var(--openbot-space-3) 14px;
   transition:
     background-color var(--openbot-duration-hover) ease,
     border-color var(--openbot-duration-hover) ease;
@@ -40,7 +42,7 @@
 
 .message-attachments-group {
   display: grid;
-  width: min(100%, 256px);
+  width: min(100%, 344px);
   margin-top: var(--openbot-space-2);
   gap: var(--openbot-space-1-5);
 }
@@ -52,12 +54,12 @@
 
 .ui-button.attachment-preview-button {
   width: 100%;
-  height: 40px;
+  height: 44px;
   display: flex;
   min-width: 0;
   align-items: center;
   justify-content: flex-start;
-  gap: 10px;
+  gap: var(--openbot-space-3);
   border: 0;
   background: transparent;
   padding: 0;
@@ -78,32 +80,44 @@
 .attachment-file-copy {
   display: grid;
   min-width: 0;
-  gap: 1px;
+  gap: var(--openbot-space-0-5);
+}
+
+/* The file icon is a 44px tile, with the file's own tint. An image file shows its picture there. */
+.message-attachment .attachment-file-visual {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--openbot-radius-lg);
+}
+
+.message-attachment .attachment-file-visual svg {
+  width: 24px;
+  height: 24px;
 }
 
 .message-attachment strong {
   overflow: hidden;
   color: var(--openbot-text-primary);
-  font-size: var(--openbot-text-md);
-  font-weight: 560;
-  line-height: 17px;
+  font-size: var(--openbot-text-lg);
+  font-weight: var(--openbot-weight-regular);
+  line-height: 20px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .message-attachment small {
-  color: var(--openbot-text-readable);
+  color: var(--openbot-text-muted);
   font-size: var(--openbot-text-sm);
-  line-height: 15px;
+  line-height: 16px;
 }
 
 .attachment-open-button {
   display: grid;
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 32px;
   place-items: center;
   border: 0;
-  border-radius: var(--openbot-radius-md);
+  border-radius: var(--openbot-radius-pill);
   background: transparent;
   padding: 0;
   color: var(--openbot-text-muted);
@@ -133,10 +147,32 @@
   transform: scale(0.96);
 }
 
+/* The buttons stay out of the way until the card is in use. Keyboard focus and a running or failed
+   download show them, and a touch screen, which has no hover, always shows them. */
+.message-attachment:not([data-player="video"]) .attachment-open-button {
+  opacity: 0;
+}
+
+.message-attachment:is(:hover, :focus-within, [data-download]) .attachment-open-button,
+.message-attachment .attachment-open-button:focus-visible {
+  opacity: 1;
+}
+
+@media (hover: none), (pointer: coarse) {
+  .message-attachment .attachment-open-button {
+    opacity: 1;
+  }
+}
+
 @media (hover: hover) and (pointer: fine) {
   .message-attachment:hover {
-    border-color: var(--openbot-border-strong);
-    background: var(--openbot-bg-control-hover);
+    border-color: color-mix(in srgb, var(--openbot-text-primary) 14%, transparent);
+    background: var(--openbot-bg-surface);
+  }
+
+  /* The whole card shows the hover, so the preview button under the name paints no fill of its own. */
+  .ui-button.attachment-preview-button:hover:not(:disabled):not([data-disabled]) {
+    background: transparent;
   }
 
   .attachment-open-button:hover {
@@ -251,26 +287,19 @@
 }
 
 .message-attachment[data-media] {
-  grid-template-columns: minmax(0, 1fr) var(--openbot-control-sm) var(--openbot-control-sm);
+  grid-template-columns: minmax(0, 1fr) auto auto;
   gap: var(--openbot-space-2);
   padding: var(--openbot-space-3);
 }
 
 .message-attachment[data-media] .attachment-file-visual {
-  width: var(--openbot-control-md);
-  height: var(--openbot-control-md);
   background: var(--openbot-bg-control);
   color: var(--openbot-text-muted);
 }
 
-.message-attachment[data-media] .attachment-file-visual svg {
-  width: var(--openbot-icon-md);
-  height: var(--openbot-icon-md);
-}
-
 .message-attachment[data-media] .attachment-open-button {
-  width: var(--openbot-control-sm);
-  height: var(--openbot-control-sm);
+  width: var(--openbot-control-md);
+  height: var(--openbot-control-md);
 }
 
 .message-attachment[data-media] .attachment-open-button svg {

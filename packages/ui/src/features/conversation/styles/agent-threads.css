@@ -56,12 +56,13 @@
 
 .conversation-header[data-session-pill] .conversation-title.ui-button {
   min-width: 0;
-  height: var(--openbot-control-md);
-  gap: var(--openbot-space-1-5);
+  /* Grok Bot's name pill is 40px tall with 8px before the face and 14px after the name. */
+  height: 40px;
+  gap: var(--openbot-space-2);
   border: 0;
   border-radius: var(--openbot-radius-pill);
   background: var(--openbot-bg-surface);
-  padding-inline: var(--openbot-space-1) var(--openbot-space-3);
+  padding-inline: var(--openbot-space-2) 14px;
   /* Grok Bot's name pill: a soft lift, two layers of ink at 8 % and 6 %. */
   box-shadow:
     0 4px 12px -1px color-mix(in srgb, var(--openbot-text-primary) 8%, transparent),

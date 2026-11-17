@@ -16,11 +16,11 @@
 }
 
 /* Keep the face beside the bubble, independent of the author name and footer height. The face is a
-   little shorter than a one-line bubble, so it reads at the size of the sidebar faces. */
+   little shorter than a one-line bubble. As in a Grok Bot group chat, it is 24px. */
 .message-entry-with-author,
 .message-author-gutter,
 .chat-visual-with-author {
-  --message-author-face-size: var(--openbot-space-8);
+  --message-author-face-size: var(--openbot-space-6);
   --message-author-column: calc(var(--message-author-face-size) + var(--openbot-space-1));
 }
 
@@ -89,7 +89,10 @@
   padding-inline: var(--openbot-space-3);
   min-width: 0;
   color: var(--message-author-color, var(--openbot-text-muted));
+  /* The name is small, in the color of its agent, as in Grok Bot. */
+  font-size: var(--openbot-text-sm);
   font-weight: var(--openbot-weight-regular);
+  line-height: var(--openbot-leading-sm);
   /* A long name with no space wraps instead of widening the row. */
   overflow-wrap: anywhere;
 }
@@ -1593,13 +1596,15 @@ button.chat-action-target:active,
   gap: 10px;
 }
 
+/* An image or a video is a rounded frame with a hairline, as the file cards are. */
 .media-generation-stage {
   position: relative;
   width: 100%;
   overflow: hidden;
   aspect-ratio: var(--media-generation-ratio);
-  border-radius: var(--openbot-radius-lg);
-  background: var(--openbot-bg-control);
+  border: 1px solid color-mix(in srgb, var(--openbot-text-primary) 8%, transparent);
+  border-radius: var(--openbot-radius-bubble);
+  background: var(--openbot-bg-surface);
   isolation: isolate;
 }
 
@@ -1613,8 +1618,9 @@ button.chat-action-target:active,
   width: min(100%, 420px);
   overflow: hidden;
   aspect-ratio: var(--image-generation-ratio);
-  border-radius: var(--openbot-radius-lg);
-  background: var(--openbot-bg-control);
+  border: 1px solid color-mix(in srgb, var(--openbot-text-primary) 8%, transparent);
+  border-radius: var(--openbot-radius-bubble);
+  background: var(--openbot-bg-surface);
   isolation: isolate;
 }
 

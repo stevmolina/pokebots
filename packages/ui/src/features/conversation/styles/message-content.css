@@ -1369,6 +1369,17 @@
   color: var(--openbot-text-readable);
 }
 
+/* A quote in a solid bubble (the agent's color) is light text on that color: a lighter bar and
+   the bubble's own text strengths, so it stays readable on a dark color such as indigo. */
+.ui-bubble.message-bubble-solid .message-reply-context {
+  border-inline-start-color: color-mix(in srgb, var(--message-solid-text) 56%, transparent);
+  color: color-mix(in srgb, var(--message-solid-text) 86%, transparent);
+}
+
+.ui-bubble.message-bubble-solid .message-reply-context > span {
+  color: var(--message-solid-text);
+}
+
 /* A quote that opens its original. The button lies over the whole quote, its start mark included. */
 .message-reply-context[data-opens] {
   position: relative;

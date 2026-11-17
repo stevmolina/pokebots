@@ -20,7 +20,7 @@
   height: 100%;
   overflow: hidden;
   place-items: center;
-  border-radius: var(--openbot-radius-md);
+  border-radius: var(--openbot-radius-lg);
   background: var(--openbot-bg-control);
   padding: 0;
   color: var(--openbot-text-muted);
