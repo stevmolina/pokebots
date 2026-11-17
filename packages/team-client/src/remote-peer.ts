@@ -468,6 +468,8 @@ interface PeerState {
   localCandidates: Set<string>;
   remoteCandidates: Set<string>;
   hostProtocol: number | undefined;
+  /** The features advertised by this connection's validated compatibility response. */
+  hostCapabilities: readonly string[] | undefined;
   /** The compatibility read in flight. A request waits for it when the host protocol is not known. */
   hostProtocolRead?: Deferred.Deferred<void>;
   /** ICE restart offers sent on `connection`. See `HOST_ICE_RESTART_LIMIT`. */
@@ -1257,6 +1259,7 @@ export function createRemoteTeamPeer(
         localCandidates: new Set(),
         remoteCandidates: new Set(),
         hostProtocol: hostProtocols.get(hostId),
+        hostCapabilities: undefined,
         iceRestarts: 0,
         iceRestartSentAt: null,
         iceRestartAt: null,
@@ -1871,6 +1874,7 @@ export function createRemoteTeamPeer(
       if (pending.method === "GET" && pending.path === TEAM_API_ROUTES.compatibility && status === 200) {
         const support = yield* peerDecode(() => decodeTeamProtocolSupportV9(body));
         state.hostProtocol = support.protocol.maximum;
+        state.hostCapabilities = support.capabilities;
         hostProtocols.set(state.hostId, state.hostProtocol);
         state.compactRpc = support.capabilities.includes(COMPACT_RPC_CAPABILITY);
         rememberCompactRpc(state.hostId, state.compactRpc);
@@ -2161,9 +2165,9 @@ export function createRemoteTeamPeer(
                 }),
               );
         const requestId = createTeamRequestId((size) => crypto.getRandomValues(new Uint8Array(size)));
-        const listProtocol = checksConnection ? undefined : state.hostProtocol;
+        const listProtocol = checksConnection || !state.hostCapabilities ? undefined : state.hostProtocol;
         // The list that this request declares to the host. The snapshot request below depends on it.
-        const sentCapabilities = teamCapabilitiesForProtocol(listProtocol);
+        const sentCapabilities = teamCapabilitiesForProtocol(listProtocol, state.hostCapabilities);
         // compact-rpc-v1: a list goes in full once on each connection, then by its key only.
         const capabilitiesKey = state.compactRpc ? capabilityListKey(listProtocol) : null;
         const listSent = capabilitiesKey !== null && state.sentCapabilityKeys.has(capabilitiesKey);

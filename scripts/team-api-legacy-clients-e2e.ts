@@ -20,7 +20,6 @@
 // - browser-vault-skip-v1: a protocol 9 client that asks for it gets why a saved login was not filled on
 //   the event socket and a WebRTC event; any other client gets the released takeover request (#7262).
 // Run: `bun scripts/team-api-legacy-clients-e2e.ts`.
-// Add `--bootstrap-only` to check only the first compatibility request.
 // Writes .openbot-build/team-api-legacy-clients-e2e/report.json.
 import assert from "node:assert/strict";
 import { generateKeyPairSync, randomBytes, randomUUID, sign, verify } from "node:crypto";
@@ -397,7 +396,7 @@ let server: InstanceType<typeof TeamApiServer> | null = null;
 let socket: WebSocket | undefined;
 const peers: InstanceType<typeof TeamWebRtcHostPeer>[] = [];
 
-checks: try {
+try {
   await runCauseEffect(sidebar.initialize());
   // The stores only: `AgentService.initialize` would start the provider CLIs, which no step needs.
   await runCauseEffect(agentStore.initialize());
@@ -440,10 +439,11 @@ checks: try {
     assert.ok(host.capabilities.includes("agent-duplication"));
     return { sent: capabilities.length, received: host.capabilities.length };
   });
-  if (process.argv.includes("--bootstrap-only")) {
-    report.passed = true;
-    break checks;
-  }
+  const compatibilityResponse = await fetch(`http://127.0.0.1:${port}/v1/compatibility`, {
+    headers: { [TEAM_PROTOCOL_VERSION_HEADER]: String(TEAM_PROTOCOL_V9) },
+  });
+  assert.equal(compatibilityResponse.status, 200);
+  const hostCapabilities = decodeTeamProtocolSupportV9(await compatibilityResponse.json()).capabilities;
 
   // --- v1 over HTTP ---
 
@@ -902,7 +902,7 @@ checks: try {
 
   try {
     await step("reasoning-efforts-v1: a protocol 9 client that asks for it gets the exact levels", async () => {
-      const capabilities = teamCapabilitiesForProtocol(TEAM_PROTOCOL_V9);
+      const capabilities = teamCapabilitiesForProtocol(TEAM_PROTOCOL_V9, hostCapabilities);
       assert.ok(capabilities.includes(TEAM_REASONING_EFFORTS_CAPABILITY), "A v9 client does not ask for it.");
       const got = await efforts(TEAM_PROTOCOL_V9, capabilities);
       assert.equal(got.defaultReasoningEffort, "none");
@@ -940,7 +940,7 @@ checks: try {
     });
 
     await step("reasoning-efforts-v1: the frozen v7 decoder refuses a level that it does not know", async () => {
-      const wide = await efforts(TEAM_PROTOCOL_V9, teamCapabilitiesForProtocol(TEAM_PROTOCOL_V9));
+      const wide = await efforts(TEAM_PROTOCOL_V9, teamCapabilitiesForProtocol(TEAM_PROTOCOL_V9, hostCapabilities));
       assert.throws(() => decodeTeamProtocolV7HttpResponse("GET", "/v1/agents/models", 200, wide.models));
       return { refused: "GET /v1/agents/models" };
     });
@@ -1010,7 +1010,7 @@ checks: try {
 
   try {
     await step("usage-tertiary-v1: a protocol 9 client that asks for it gets the third window", async () => {
-      const capabilities = teamCapabilitiesForProtocol(TEAM_PROTOCOL_V9);
+      const capabilities = teamCapabilitiesForProtocol(TEAM_PROTOCOL_V9, hostCapabilities);
       assert.ok(capabilities.includes(TEAM_USAGE_TERTIARY_CAPABILITY), "A v9 client does not ask for it.");
       const results: { path: string; limits: string[][] }[] = [];
       for (const usagePath of usagePaths) {
@@ -1053,7 +1053,7 @@ checks: try {
     });
 
     await step("usage-tertiary-v1: the usage-changed event follows the capability", async () => {
-      const wire = await currentUsageEvent(teamCapabilitiesForProtocol(TEAM_PROTOCOL_V9));
+      const wire = await currentUsageEvent(teamCapabilitiesForProtocol(TEAM_PROTOCOL_V9, hostCapabilities));
       const decoded = decodeTeamProtocolV8BaseCurrentEvent(wire);
       assert.ok(decoded.kind === "known" && decoded.event.type === "usage-changed", JSON.stringify(wire));
       assert.deepEqual(decoded.event.usage.limits[0]?.tertiary, monthly);
@@ -1064,7 +1064,7 @@ checks: try {
     });
 
     await step("usage-tertiary-v1: a WebRTC event follows the capability; a bad value fails closed", async () => {
-      const wire = await currentUsageEvent(teamCapabilitiesForProtocol(TEAM_PROTOCOL_V9));
+      const wire = await currentUsageEvent(teamCapabilitiesForProtocol(TEAM_PROTOCOL_V9, hostCapabilities));
       const relayed = decodeTeamProtocolV8CurrentEvent(createTeamProtocolV8Event(1, wire, { usageTertiary: true }));
       assert.ok(relayed.status === "known" && relayed.event.type === "usage-changed");
       assert.deepEqual(relayed.event.usage.limits[0]?.tertiary, monthly);
@@ -1129,7 +1129,7 @@ checks: try {
   }
 
   await step("browser-vault-skip-v1: a protocol 9 client that asks for it gets the reason", async () => {
-    const capabilities = teamCapabilitiesForProtocol(TEAM_PROTOCOL_V9);
+    const capabilities = teamCapabilitiesForProtocol(TEAM_PROTOCOL_V9, hostCapabilities);
     assert.ok(capabilities.includes(BROWSER_VAULT_SKIP_CAPABILITY), "A v9 client does not ask for it.");
     assert.ok(
       !teamCapabilitiesForProtocol(8).includes(BROWSER_VAULT_SKIP_CAPABILITY),
@@ -1153,7 +1153,7 @@ checks: try {
   });
 
   await step("browser-vault-skip-v1: a WebRTC event follows the capability; a bad value fails closed", async () => {
-    const wire = await currentTakeoverEvent(teamCapabilitiesForProtocol(TEAM_PROTOCOL_V9));
+    const wire = await currentTakeoverEvent(teamCapabilitiesForProtocol(TEAM_PROTOCOL_V9, hostCapabilities));
     const relayed = decodeTeamProtocolV8CurrentEvent(
       createTeamProtocolV8Event(1, wire, { preserveBrowserSecrets: true, browserVaultSkip: true }),
     );
@@ -1451,7 +1451,9 @@ checks: try {
     assert.equal(first.protocol.maximum, TEAM_PROTOCOL_V9);
     assert.ok(first.capabilities.includes(TEAM_LONG_CAPABILITY_LISTS_CAPABILITY), "The protocol 9 list has no marker.");
     // A protocol 9 request may carry more than 128 capabilities.
-    const full = decodeTeamProtocolSupportV9(await compatibility(teamCapabilitiesForProtocol(TEAM_PROTOCOL_V9)));
+    const negotiated = teamCapabilitiesForProtocol(TEAM_PROTOCOL_V9, hostCapabilities);
+    assert.ok(negotiated.length <= TEAM_PROTOCOL_V9_CAPABILITY_LIMIT);
+    const full = decodeTeamProtocolSupportV9(await compatibility(negotiated));
     assert.deepEqual(full.capabilities, first.capabilities);
     // The released protocol 8 decoder still reads what a protocol 8 peer gets.
     const v8 = decodeTeamProtocolSupportV8Base(await compatibility(teamCapabilitiesForProtocol(8)));
@@ -1461,7 +1463,7 @@ checks: try {
       !v8.capabilities.includes(AGENT_NOTIFICATION_LEVELS_CAPABILITY),
       "A protocol 8 peer got a protocol 9 capability.",
     );
-    return { protocol9: first.capabilities.length, protocol8: v8.capabilities.length };
+    return { protocol9: first.capabilities.length, protocol8: v8.capabilities.length, sent: negotiated.length };
   });
 
   await step("usage-tertiary-v1 RPC: a WebRTC usage read follows the capability", async () => {
@@ -1501,7 +1503,7 @@ checks: try {
     assert.ok(agents && getUsage);
     Object.defineProperty(agents, "getUsage", { value: () => Effect.succeed(reading), configurable: true });
     try {
-      const withCapability = await usage(teamCapabilitiesForProtocol(TEAM_PROTOCOL_V9));
+      const withCapability = await usage(teamCapabilitiesForProtocol(TEAM_PROTOCOL_V9, hostCapabilities));
       assert.deepEqual(withCapability.tertiary, reading.limits[0]?.tertiary, "A protocol 9 peer got no tertiary.");
       const without = await usage(teamCapabilitiesForProtocol(8));
       assert.ok(!Object.hasOwn(without, "tertiary"), "A protocol 8 peer got tertiary.");

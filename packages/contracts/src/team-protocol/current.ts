@@ -1156,9 +1156,16 @@ const TEAM_PROTOCOL_V7_CURRENT_CAPABILITIES = TEAM_PROTOCOL_V8_CURRENT_CAPABILIT
     capability !== PROVIDERS_V8_CAPABILITY &&
     capability !== TEAM_CONTEXT_USAGE_CAPABILITY,
 );
-export function teamCapabilitiesForProtocol(protocol: number | null | undefined): readonly TeamCurrentCapability[] {
+export function teamCapabilitiesForProtocol(
+  protocol: number | null | undefined,
+  hostCapabilities?: readonly string[],
+): readonly TeamCurrentCapability[] {
   if (protocol === null || protocol === undefined || protocol < 7) return TEAM_BOOTSTRAP_CAPABILITIES;
-  if (protocol >= 9) return TEAM_CURRENT_CAPABILITIES;
+  if (protocol >= 9) {
+    if (!hostCapabilities) return TEAM_CURRENT_CAPABILITIES;
+    const supported = new Set(hostCapabilities);
+    return TEAM_CURRENT_CAPABILITIES.filter((capability) => supported.has(capability));
+  }
   return protocol === 8 ? TEAM_PROTOCOL_V8_CURRENT_CAPABILITIES : TEAM_PROTOCOL_V7_CURRENT_CAPABILITIES;
 }
 /** The capabilities that a peer of `protocol` reads: below protocol 9, without the protocol 9 ones. */
