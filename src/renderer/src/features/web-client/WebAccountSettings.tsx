@@ -170,10 +170,15 @@ export default function WebAccountSettings(props: WebAccountSettingsProps) {
     },
   );
 
+  // The request counter never resets, so the effect runs again on each later opening with the same
+  // value. Act only on a value that this component has not handled yet.
+  let handledMachinesRequest = props.machinesRequest ?? 0;
   createEffect(
     () => (props.open ? props.machinesRequest : null),
     (request) => {
-      if (request) setActiveTab("machines");
+      if (!request || request === handledMachinesRequest) return;
+      handledMachinesRequest = request;
+      setActiveTab("machines");
     },
   );
 

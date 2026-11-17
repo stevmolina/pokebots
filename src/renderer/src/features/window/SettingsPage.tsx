@@ -188,7 +188,14 @@ export function SettingsPage(props: { kind: SettingsKind }) {
     if (!server) return undefined;
     return {
       server,
-      onBack: () => settings.openAppSettings(serverSettings.serverSettingsRestoreTarget(), "machines"),
+      onBack: () => {
+        const restoreTarget = serverSettings.serverSettingsRestoreTarget();
+        // The modal applies a tab when the requested tab changes, so clear it first: a repeated Back opens
+        // Machines again, even when the user moved to another section meanwhile.
+        settings.openAppSettings(restoreTarget, undefined);
+        flush();
+        settings.openAppSettings(restoreTarget, "machines");
+      },
     };
   };
 
