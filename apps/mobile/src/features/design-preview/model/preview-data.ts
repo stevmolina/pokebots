@@ -338,3 +338,115 @@ export const PREVIEW_LIBRARY: { id: string; kind: "link" | "image" | "file"; tit
   { id: "l5", kind: "image", title: "hotel-room.jpg", detail: "3 d" },
   { id: "l6", kind: "link", title: "maps.google.com/?q=Miraflores", detail: "maps.google.com" },
 ];
+
+/** The made-up account and servers of the preview Settings sheet. */
+export const PREVIEW_ACCOUNT = { name: "Alex Rivera", email: "alex@example.com", usage: 42, plan: "Pro" };
+
+export const PREVIEW_SERVERS: { id: string; name: string; detail: string; current: boolean }[] = [
+  { id: "home", name: "Home server", detail: "This Mac", current: true },
+  { id: "work", name: "Work server", detail: "Remote · 4 members", current: false },
+  { id: "cloud", name: "Cloud server", detail: "Remote", current: false },
+];
+
+export const PREVIEW_APP_VERSION = { from: "1.4.10", to: "1.5.0", build: "1.4.10 (1)" };
+
+/** Rows of the grid sheet: apps, agents and skills from the marketplace, with a reason line. */
+export type PreviewCatalogKind = "app" | "agent" | "skill";
+
+export interface PreviewCatalogItem {
+  id: string;
+  kind: PreviewCatalogKind;
+  name: string;
+  reason: string;
+  /** The icon tile color; the glyph is the kind's icon. */
+  tint: string;
+  connected: boolean;
+}
+
+export const PREVIEW_CATALOG: PreviewCatalogItem[] = [
+  { id: "mail", kind: "app", name: "Mail", reason: "Because you use Calendar", tint: "#2f7cf6", connected: false },
+  { id: "notes", kind: "app", name: "Notes", reason: "Because you use Drive", tint: "#f5b83d", connected: false },
+  { id: "tasks", kind: "app", name: "Tasks", reason: "Because you use Mail", tint: "#5cc79e", connected: false },
+  { id: "sheets", kind: "app", name: "Sheets", reason: "Because you use Notes", tint: "#3a9f7a", connected: false },
+  {
+    id: "travel",
+    kind: "agent",
+    name: "Travel Planner",
+    reason: "Plans trips and books flights",
+    tint: "#9b82f0",
+    connected: false,
+  },
+  {
+    id: "inbox",
+    kind: "agent",
+    name: "Inbox Helper",
+    reason: "Sorts mail and drafts replies",
+    tint: "#f2843c",
+    connected: false,
+  },
+  {
+    id: "deck",
+    kind: "skill",
+    name: "Slide decks",
+    reason: "Builds a deck from notes",
+    tint: "#ef77ad",
+    connected: false,
+  },
+  { id: "pdf", kind: "skill", name: "PDF reader", reason: "Reads and sums up PDFs", tint: "#3dbfd1", connected: false },
+];
+
+export const PREVIEW_CONNECTED_COUNT = 12;
+
+/** Made-up search results for a typed query: agents and messages, with the matched words. */
+export interface PreviewSearchMessage {
+  id: string;
+  agentId: string;
+  title: string;
+  /** The context line; `match` is the part shown in bold. */
+  before: string;
+  match: string;
+  after: string;
+}
+
+export const PREVIEW_SEARCH_MESSAGES: PreviewSearchMessage[] = [
+  {
+    id: "s1",
+    agentId: "papers",
+    title: "Papers to you",
+    before: "Monday ",
+    match: "paper",
+    after: ": attention sinks in long context",
+  },
+  {
+    id: "s2",
+    agentId: "deck",
+    title: "Pitch Deck to you",
+    before: "The deck now cites the ",
+    match: "paper",
+    after: " in the appendix",
+  },
+  {
+    id: "s3",
+    agentId: "reading",
+    title: "Reading to you",
+    before: "Chapter 4 and the ",
+    match: "paper",
+    after: " on memory are next",
+  },
+  {
+    id: "s4",
+    agentId: "poke",
+    title: "You to Poke",
+    before: "Weekly AI models ",
+    match: "paper",
+    after: " review every Friday",
+  },
+  {
+    id: "s5",
+    agentId: "papers",
+    title: "Papers to you",
+    before: "Saved the ",
+    match: "paper",
+    after: " to your library",
+  },
+];
