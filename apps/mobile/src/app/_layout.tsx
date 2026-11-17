@@ -52,6 +52,7 @@ import { useBloubColors } from "@/shared/components/bloub-stage/bloub-look";
 import { BloubStage } from "@/shared/components/bloub-stage/bloub-stage";
 import { BloubStageProvider, useBloubStageRequest } from "@/shared/components/bloub-stage/bloub-stage-context";
 import { BLOUB_PRIORITY } from "@/shared/components/bloub-stage/bloub-stage-store";
+import { applyAppBrand } from "@/shared/lib/app-brand";
 import { headerFontOptions, navigationFonts } from "@/shared/lib/app-font";
 import { useReducedMotion } from "@/shared/lib/motion";
 import { nativeSplash } from "@/shared/lib/native-splash";
@@ -65,6 +66,8 @@ export const unstable_settings = {
   anchor: "index",
 };
 
+// The Pokebots build sets its brand colors before the first screen. The store build changes nothing.
+applyAppBrand();
 installSupportLog();
 installQuickActions();
 installShortcuts();
