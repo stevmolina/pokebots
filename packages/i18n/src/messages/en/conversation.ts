@@ -161,6 +161,9 @@ export const messages = defineMessages("conversation", {
   "conversation.direct.olderFailed": "Older messages could not load.",
   "conversation.direct.unreadFailed": "The unread message could not load.",
   "conversation.direct.noPerson": "Select a person first.",
+  "conversation.tasks.board.done": "Done",
+  "conversation.tasks.board.queued": "Queued",
+  "conversation.tasks.board.stop": "Stop “{title}”",
   "conversation.tasks.empty.answer": "answer",
   "conversation.tasks.empty.lead": "Hand off the work.",
   "conversation.tasks.empty.sample.call": "Prepare the call notes for Northwind Traders",
@@ -216,4 +219,6 @@ export const messages = defineMessages("conversation", {
   "conversation.tasks.state.waitingApproval": "Waiting for your approval",
   "conversation.tasks.state.waitingAnswer": "Waits for you",
   "conversation.tasks.title": "Tasks",
+  "conversation.tasks.view.board": "Board",
+  "conversation.tasks.view.list": "List",
 });

@@ -192,7 +192,10 @@ function TasksPageStory(props: {
   waitsForAnswer?: (task: AgentTask) => boolean;
   /** The host refuses each new task, so the composer shows the start error. */
   startFails?: boolean;
+  /** The saved view of the page. */
+  view?: "list" | "board";
 }) {
+  window.localStorage.setItem("openbot:tasks-view", props.view ?? "list");
   const previousApi = window.openbot;
   const tasks: Record<string, AgentTask[]> = {};
   for (const task of props.tasks) tasks[task.agentId] = [...(tasks[task.agentId] ?? []), task];
@@ -241,6 +244,15 @@ type Story = StoryObj<typeof meta>;
 
 /** The tasks of three agents. A send waits six seconds for Undo; a row opens the task beside the list. */
 export const Default: Story = { render: () => <TasksPageStory tasks={TASKS} /> };
+/**
+ * The same tasks as a board: a column for each group. Drag a card to Done to close it, and out of
+ * Done to reopen it. A working card has Stop. The List / Board switch is in the header.
+ */
+export const Board: Story = { render: () => <TasksPageStory tasks={TASKS} view="board" /> };
+/** The board while a running task waits for an approval: its card is in Needs you. */
+export const BoardWaitingForApproval: Story = {
+  render: () => <TasksPageStory tasks={TASKS} view="board" approvals={[WAITING_APPROVAL]} />,
+};
 /** No tasks: only the composer. */
 export const Empty: Story = { render: () => <TasksPageStory tasks={[]} /> };
 /** Thirty agents: the agent menu fits the window and scrolls to the last agent. */
