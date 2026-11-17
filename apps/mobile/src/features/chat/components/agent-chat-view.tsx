@@ -2,6 +2,7 @@ import { itemTypeCountsAsUnread } from "@openbot/contracts/conversation-read";
 import type { RespondToPromptInput } from "@openbot/contracts/ipc";
 import { router, useIsFocused } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { View } from "react-native";
 import { useAgentSteers } from "@/features/agents/model/use-agent-steers";
 import { showFailureAlert } from "@/features/analytics/failure-reports";
 import { useMobileSession } from "@/features/auth/context/mobile-session-context";
@@ -41,10 +42,12 @@ import { useChatQueue } from "./use-chat-queue";
 import { useComposerContextMeter } from "./use-context-usage";
 import { useMessageDelete } from "./use-message-delete";
 import { useMessagePins } from "./use-message-pins";
-import { useOpenAgentTasks } from "./use-open-agent-tasks";
+import { useOpenAgentTasksState } from "./use-open-agent-tasks";
 import { useQuestionPrompt } from "./use-question-prompt";
 
 const NO_MESSAGE_IDS: ReadonlySet<string> = new Set();
+/** How long the chat stays covered while it waits for the thread list of its main session. */
+const MAIN_COVER_MS = 1_500;
 
 /** `focusMessageId` opens the chat at a message from search instead of at the latest message. */
 export function MobileChatView({
@@ -107,13 +110,18 @@ export function MobileChatView({
     () => projectChatMessages(Object.values(conversation?.references ?? {}), memberId, accountUserId),
     [conversation?.references, memberId, accountUserId],
   );
-  const tasks = useOpenAgentTasks(agent.serverId, agent.id);
+  const { tasks, loading: tasksLoading } = useOpenAgentTasksState(agent.serverId, agent.id);
   const threadMenu = useChatThreadMenu(agent, MAIN_THREAD_ID);
   // Opening the agent shows its main session. A main side thread opens over the agent's own chat, so
   // Back still reaches the chat, and it opens once per visit, so Back does not open it again. A main
   // session that is no longer open falls back to the agent's own chat.
   const mainId = useMainSession(agent.serverId, agent.id);
   const mainOpened = useRef<string | null>(null);
+  // The chat is covered until the visit knows where it opens, so a main session shows at once and not
+  // after a flash of the agent's own chat. The cover ends when the visit has decided, when no list is
+  // on its way (offline, or a host without threads), when the chat is not on screen, or after a short
+  // wait, so a slow host never holds the chat back.
+  const [covered, setCovered] = useState(() => Boolean(mainId) && !focusMessageId);
   useEffect(() => {
     if (focusMessageId || mainOpened.current === agent.id) return;
     if (!mainId) {
@@ -129,6 +137,15 @@ export function MobileChatView({
       });
     else setMainSession(agent.serverId, agent.id, null);
   }, [agent.id, agent.serverId, focusMessageId, isFocused, mainId, tasks]);
+  useEffect(() => {
+    if (!covered) return;
+    if (mainOpened.current === agent.id || !isFocused || !tasksLoading) {
+      setCovered(false);
+      return;
+    }
+    const timer = setTimeout(() => setCovered(false), MAIN_COVER_MS);
+    return () => clearTimeout(timer);
+  }, [covered, agent.id, isFocused, tasksLoading]);
   const contextMeter = useComposerContextMeter({ serverId: agent.serverId, agentId: agent.id });
   // The pins of the agent's own chat, on a host with `message-pins-v1`.
   const pins = useMessagePins(agent.serverId, agent.id);
@@ -332,10 +349,11 @@ export function MobileChatView({
       setUnreadLine({ agentId: agent.id, messageId: firstUnreadMessageId });
   }, [agent.id, firstUnreadMessageId]);
   const markRead = useCallback(() => {
-    if (!latestId || readHeldFor.current?.agentId === agent.id) return;
+    // A covered chat is not seen, so it does not read the messages behind the cover.
+    if (covered || !latestId || readHeldFor.current?.agentId === agent.id) return;
     unreadLineSettledFor.current = agent.id;
     markAgentRead(agent.id, latestId, agent.serverId);
-  }, [agent.id, agent.serverId, latestId, markAgentRead]);
+  }, [agent.id, agent.serverId, covered, latestId, markAgentRead]);
   const markUnread = useCallback(
     (messageId: string) => {
       const agentId = agent.id;
@@ -457,7 +475,7 @@ export function MobileChatView({
       ) : null,
     [workChannel, workActivity, agent.serverId],
   );
-  return (
+  const chat = (
     <ChatView
       target={target}
       queue={queue}
@@ -512,5 +530,12 @@ export function MobileChatView({
       onSwipeForward={swipeForward}
       onPullPastEnd={pullOn ? openInfo : null}
     />
+  );
+  // One wrapper in both states, so the chat keeps its state when the cover ends.
+  return (
+    <View className="flex-1">
+      {chat}
+      {covered ? <View className="absolute inset-0 bg-background" /> : null}
+    </View>
   );
 }

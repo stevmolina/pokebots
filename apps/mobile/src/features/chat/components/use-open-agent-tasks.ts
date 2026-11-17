@@ -17,6 +17,11 @@ const NO_TASKS: AgentTask[] = [];
  * Empty on a host without `agent-tasks-v1`.
  */
 export function useOpenAgentTasks(serverId: string, agentId: string): AgentTask[] {
+  return useOpenAgentTasksState(serverId, agentId).tasks;
+}
+
+/** The open threads of one agent, and `loading` while the first list from the host is on its way. */
+export function useOpenAgentTasksState(serverId: string, agentId: string): { tasks: AgentTask[]; loading: boolean } {
   const queryScope = useQueryScope();
   const workspace = useMobileWorkspaceReader();
   const enabled = useMobileWorkspaceSelector(
@@ -32,5 +37,6 @@ export function useOpenAgentTasks(serverId: string, agentId: string): AgentTask[
   });
   const tasks = list.data?.tasks;
   // One array while the list stays, so the chat and its thread menu do not draw again.
-  return useMemo(() => (tasks?.some(isAgentTaskOpen) ? tasks.filter(isAgentTaskOpen) : NO_TASKS), [tasks]);
+  const open = useMemo(() => (tasks?.some(isAgentTaskOpen) ? tasks.filter(isAgentTaskOpen) : NO_TASKS), [tasks]);
+  return { tasks: open, loading: enabled && list.isPending };
 }
