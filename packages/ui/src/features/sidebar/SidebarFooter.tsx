@@ -8,6 +8,7 @@
  */
 
 import {
+  Brain,
   BriefcaseBusiness,
   Button,
   Check,
@@ -191,6 +192,14 @@ export function SidebarProfileMenu(props: {
                     <DropdownMenu.Item onSelectAfterClose={() => open()()}>
                       <MessageSquare class="agent-context-icon size-4" aria-hidden="true" />
                       <span>{t("rooms.title")}</span>
+                    </DropdownMenu.Item>
+                  )}
+                </Show>
+                <Show when={props.pages.onBrain}>
+                  {(open) => (
+                    <DropdownMenu.Item onSelectAfterClose={() => open()()}>
+                      <Brain class="agent-context-icon size-4" aria-hidden="true" />
+                      <span>{t("app.rail.brain")}</span>
                     </DropdownMenu.Item>
                   )}
                 </Show>
