@@ -163,6 +163,9 @@ export const messages = {
   "conversation.direct.olderFailed": "Oudere berichten konden niet worden geladen.",
   "conversation.direct.unreadFailed": "Het ongelezen bericht kon niet worden geladen.",
   "conversation.direct.noPerson": "Kies eerst een persoon.",
+  "conversation.tasks.board.done": "Klaar",
+  "conversation.tasks.board.queued": "In wachtrij",
+  "conversation.tasks.board.stop": "“{title}” stoppen",
   "conversation.tasks.empty.answer": "antwoord",
   "conversation.tasks.empty.lead": "Geef het werk uit handen.",
   "conversation.tasks.empty.sample.call": "Bereid de gespreksnotities voor Northwind Traders voor",
@@ -218,4 +221,6 @@ export const messages = {
   "conversation.tasks.state.waitingApproval": "Wacht op je goedkeuring",
   "conversation.tasks.state.waitingAnswer": "Wacht op jou",
   "conversation.tasks.title": "Taken",
+  "conversation.tasks.view.board": "Bord",
+  "conversation.tasks.view.list": "Lijst",
 } as const satisfies PartialTranslation<typeof source>;

@@ -166,6 +166,9 @@ export const messages = {
   "conversation.direct.olderFailed": "تعذّر تحميل الرسائل الأقدم.",
   "conversation.direct.unreadFailed": "تعذّر تحميل الرسالة غير المقروءة.",
   "conversation.direct.noPerson": "اختر شخصًا أولًا.",
+  "conversation.tasks.board.done": "منتهية",
+  "conversation.tasks.board.queued": "في الانتظار",
+  "conversation.tasks.board.stop": "إيقاف «{title}»",
   "conversation.tasks.empty.answer": "إجابة",
   "conversation.tasks.empty.lead": "سلّم العمل.",
   "conversation.tasks.empty.sample.call": "حضّر ملاحظات المكالمة مع Northwind Traders",
@@ -228,4 +231,6 @@ export const messages = {
   "conversation.tasks.state.waitingApproval": "بانتظار موافقتك",
   "conversation.tasks.state.waitingAnswer": "تنتظرك",
   "conversation.tasks.title": "المهام",
+  "conversation.tasks.view.board": "لوحة",
+  "conversation.tasks.view.list": "قائمة",
 } as const satisfies PartialTranslation<typeof source>;

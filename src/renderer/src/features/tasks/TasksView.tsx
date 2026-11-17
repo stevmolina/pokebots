@@ -24,7 +24,13 @@ import type { SendShortcut } from "@openbot/ui/features/conversation/send-shortc
 import { AgentThreadView, type AgentThreadVoice } from "@openbot/ui/features/conversation/threads/AgentThreadView";
 import { TaskAnswerCard } from "@openbot/ui/features/tasks/TaskAnswerCard";
 import { TaskPanel } from "@openbot/ui/features/tasks/TaskPanel";
-import { TASKS_SIDE_DEFAULT, TASKS_SIDE_MIN, TasksPage, type TasksVoice } from "@openbot/ui/features/tasks/TasksPage";
+import {
+  TASKS_SIDE_DEFAULT,
+  TASKS_SIDE_MIN,
+  TasksPage,
+  type TasksView as TasksPageView,
+  type TasksVoice,
+} from "@openbot/ui/features/tasks/TasksPage";
 import { currentText } from "@openbot/ui/text";
 import {
   createEffect,
@@ -58,6 +64,25 @@ const UNDO_MS = 6_000;
 const TASK_AGENT_STORAGE_KEY = "openbot:task-agent:v1";
 /** The width of the task panel beside the list, the same on every server. */
 const TASK_PANEL_WIDTH_STORAGE_KEY = "openbot:task-panel-width";
+/** List or Board, the same on every server. */
+const TASKS_VIEW_STORAGE_KEY = "openbot:tasks-view";
+
+/** The saved view. Blocked storage or another value reads as the list. */
+function readTasksView(): TasksPageView {
+  try {
+    return window.localStorage.getItem(TASKS_VIEW_STORAGE_KEY) === "board" ? "board" : "list";
+  } catch {
+    return "list";
+  }
+}
+
+function saveTasksView(view: TasksPageView): void {
+  try {
+    window.localStorage.setItem(TASKS_VIEW_STORAGE_KEY, view);
+  } catch {
+    // Blocked storage keeps the view for this visit only.
+  }
+}
 
 /** What the voice of the composer can do on the page: read and change the draft, and start a task. */
 export interface TasksVoiceControls {
@@ -920,6 +945,8 @@ export function TasksView(props: TasksViewProps) {
   };
 
   const headerFrame = createPageHeaderFrame();
+  const [view, setView] = createSignal<TasksPageView>(readTasksView());
+  const taskInput = (task: AgentTask) => ({ agentId: task.agentId, taskId: task.id });
   return (
     <TasksPage
       hostName={props.hostName}
@@ -991,6 +1018,20 @@ export function TasksView(props: TasksViewProps) {
         })
       }
       onSideResizeEnd={(width) => savePanelWidth(TASK_PANEL_WIDTH_STORAGE_KEY, width)}
+      view={view()}
+      onViewChange={(next) => {
+        setView(next);
+        saveTasksView(next);
+      }}
+      onCloseTask={(task) =>
+        void runAction(() => props.source.close(taskInput(task), props.serverId), "conversation.threads.error.archive")
+      }
+      onReopenTask={(task) =>
+        void runAction(() => props.source.reopen(taskInput(task), props.serverId), "conversation.threads.error.restore")
+      }
+      onStopTask={(task) =>
+        void runAction(() => props.source.stop(taskInput(task), props.serverId), "conversation.tasks.error.stop")
+      }
     />
   );
 }

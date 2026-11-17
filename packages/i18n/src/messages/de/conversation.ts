@@ -166,6 +166,9 @@ export const messages = {
   "conversation.direct.olderFailed": "Ältere Nachrichten konnten nicht geladen werden.",
   "conversation.direct.unreadFailed": "Die ungelesene Nachricht konnte nicht geladen werden.",
   "conversation.direct.noPerson": "Wähle zuerst eine Person aus.",
+  "conversation.tasks.board.done": "Erledigt",
+  "conversation.tasks.board.queued": "In Warteschlange",
+  "conversation.tasks.board.stop": "„{title}“ stoppen",
   "conversation.tasks.empty.answer": "Antwort",
   "conversation.tasks.empty.lead": "Gib die Arbeit ab.",
   "conversation.tasks.empty.sample.call": "Bereite die Gesprächsnotizen für Northwind Traders vor",
@@ -221,4 +224,6 @@ export const messages = {
   "conversation.tasks.state.waitingApproval": "Wartet auf deine Genehmigung",
   "conversation.tasks.state.waitingAnswer": "Wartet auf dich",
   "conversation.tasks.title": "Aufgaben",
+  "conversation.tasks.view.board": "Board",
+  "conversation.tasks.view.list": "Liste",
 } as const satisfies PartialTranslation<typeof source>;

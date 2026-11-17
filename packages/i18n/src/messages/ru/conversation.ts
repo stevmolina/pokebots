@@ -165,6 +165,9 @@ export const messages = {
   "conversation.direct.olderFailed": "Не удалось загрузить прежние сообщения.",
   "conversation.direct.unreadFailed": "Не удалось загрузить непрочитанное сообщение.",
   "conversation.direct.noPerson": "Сначала выберите человека.",
+  "conversation.tasks.board.done": "Готово",
+  "conversation.tasks.board.queued": "В очереди",
+  "conversation.tasks.board.stop": "Остановить «{title}»",
   "conversation.tasks.empty.answer": "ответу",
   "conversation.tasks.empty.lead": "Поручите работу.",
   "conversation.tasks.empty.sample.call": "Подготовь заметки к звонку с Northwind Traders",
@@ -220,4 +223,6 @@ export const messages = {
   "conversation.tasks.state.waitingApproval": "Ждёт вашего подтверждения",
   "conversation.tasks.state.waitingAnswer": "Ждёт вас",
   "conversation.tasks.title": "Задачи",
+  "conversation.tasks.view.board": "Доска",
+  "conversation.tasks.view.list": "Список",
 } as const satisfies PartialTranslation<typeof source>;

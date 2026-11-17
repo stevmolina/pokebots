@@ -161,6 +161,9 @@ export const messages = {
   "conversation.direct.olderFailed": "以前のメッセージを読み込めませんでした。",
   "conversation.direct.unreadFailed": "未読メッセージを読み込めませんでした。",
   "conversation.direct.noPerson": "先に相手を選択してください。",
+  "conversation.tasks.board.done": "完了",
+  "conversation.tasks.board.queued": "待機中",
+  "conversation.tasks.board.stop": "「{title}」を停止",
   "conversation.tasks.empty.answer": "答え",
   "conversation.tasks.empty.lead": "仕事は任せて。",
   "conversation.tasks.empty.sample.call": "Northwind Traders との通話メモを準備する",
@@ -216,4 +219,6 @@ export const messages = {
   "conversation.tasks.state.waitingApproval": "承認を待っています",
   "conversation.tasks.state.waitingAnswer": "あなたを待っています",
   "conversation.tasks.title": "タスク",
+  "conversation.tasks.view.board": "ボード",
+  "conversation.tasks.view.list": "リスト",
 } as const satisfies PartialTranslation<typeof source>;

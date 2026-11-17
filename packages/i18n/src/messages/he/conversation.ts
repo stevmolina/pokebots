@@ -160,6 +160,9 @@ export const messages = {
   "conversation.direct.olderFailed": "לא ניתן לטעון הודעות ישנות יותר.",
   "conversation.direct.unreadFailed": "לא ניתן לטעון את ההודעה שלא נקראה.",
   "conversation.direct.noPerson": "יש לבחור קודם אדם.",
+  "conversation.tasks.board.done": "הושלמו",
+  "conversation.tasks.board.queued": "בתור",
+  "conversation.tasks.board.stop": "עצירת ״{title}״",
   "conversation.tasks.empty.answer": "תשובה",
   "conversation.tasks.empty.lead": "מעבירים את העבודה הלאה.",
   "conversation.tasks.empty.sample.call": "הכנת הערות לשיחה עם Northwind Traders",
@@ -219,4 +222,6 @@ export const messages = {
   "conversation.tasks.state.waitingApproval": "ממתין לאישור שלך",
   "conversation.tasks.state.waitingAnswer": "ממתין לך",
   "conversation.tasks.title": "משימות",
+  "conversation.tasks.view.board": "לוח",
+  "conversation.tasks.view.list": "רשימה",
 } as const satisfies PartialTranslation<typeof source>;

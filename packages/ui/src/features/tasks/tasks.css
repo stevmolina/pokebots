@@ -628,3 +628,210 @@ html.panel-resizing .tasks-page-side {
     transition: none;
   }
 }
+
+/*
+ * The List / Board switch in the page header (TasksPage.tsx): two quiet buttons, the current one
+ * raised on the canvas.
+ */
+.tasks-page-view-switch {
+  display: flex;
+  gap: 2px;
+  padding: 2px;
+  border-radius: var(--openbot-radius-md);
+  background: var(--openbot-bg-control);
+}
+
+.tasks-page-view-switch .ui-button {
+  color: var(--openbot-text-muted);
+}
+
+.tasks-page-view-switch .ui-button[aria-pressed="true"] {
+  background: var(--openbot-bg-canvas);
+  color: var(--openbot-text-primary);
+  box-shadow: var(--openbot-shadow-card);
+}
+
+/* Board view: the page uses the full width, and the composer keeps the width of the list. */
+.tasks-page[data-view="board"] .tasks-page-column {
+  max-width: none;
+}
+
+.tasks-page[data-view="board"] .tasks-page-composer,
+.tasks-page[data-view="board"] .tasks-page-took-slot {
+  width: 100%;
+  max-width: 36rem;
+}
+
+/*
+ * The board (TasksBoard.tsx): four columns of cards. Columns keep a readable width; a narrow window
+ * or an open task panel scrolls the board sideways.
+ */
+.tasks-board {
+  display: grid;
+  align-items: start;
+  grid-template-columns: repeat(4, minmax(12rem, 1fr));
+  gap: var(--openbot-space-3);
+  margin-top: var(--openbot-space-2);
+  overflow-x: auto;
+}
+
+.tasks-board-column {
+  display: flex;
+  min-width: 0;
+  min-height: 12rem;
+  flex-direction: column;
+  gap: var(--openbot-space-1);
+  padding: var(--openbot-space-1);
+  border-radius: var(--openbot-radius-lg);
+  transition: background var(--openbot-duration-normal) ease;
+}
+
+/* A column that takes the dragged card. */
+.tasks-board-column[data-drop] {
+  background: var(--openbot-bg-control);
+}
+
+.tasks-board-heading {
+  padding-inline: var(--openbot-space-1);
+}
+
+.tasks-board-cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--openbot-space-1-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* A card: a hairline box with the title first, the muted state, then the agent. */
+.tasks-board-card {
+  position: relative;
+  border: 1px solid var(--openbot-border);
+  border-radius: var(--openbot-radius-md);
+  background: var(--openbot-bg-surface);
+  transition:
+    border-color var(--openbot-duration-fast) ease,
+    opacity var(--openbot-duration-fast) ease;
+}
+
+.tasks-board-card[draggable="true"] {
+  cursor: grab;
+}
+
+.tasks-board-card:hover {
+  border-color: var(--openbot-border-strong);
+}
+
+.tasks-board-card[data-selected] {
+  border-color: var(--openbot-border-strong);
+  background: var(--openbot-bg-control-active);
+}
+
+.tasks-board-card[data-dragging] {
+  opacity: 0.4;
+}
+
+.tasks-board-card-open.ui-button {
+  display: flex;
+  width: 100%;
+  height: auto;
+  align-items: stretch;
+  flex-direction: column;
+  gap: var(--openbot-space-1);
+  padding: var(--openbot-space-2) var(--openbot-space-3);
+  border-radius: inherit;
+  background: none;
+  color: inherit;
+  font-weight: var(--openbot-weight-regular);
+  text-align: start;
+  white-space: normal;
+  cursor: inherit;
+}
+
+.tasks-board-card-open.ui-button:focus-visible {
+  outline: 2px solid var(--openbot-focus-ring);
+  outline-offset: 1px;
+}
+
+/* The archived cards are faded, as the archived rows of the list. */
+.tasks-board-card[data-closed]:not([data-selected]) .tasks-board-card-open.ui-button {
+  opacity: 0.55;
+}
+
+.tasks-board-card-head {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--openbot-space-2);
+  /* Room for Stop at the top end of a working card. */
+  padding-inline-end: var(--openbot-space-6);
+}
+
+.tasks-board-card-head .agent-tasks-mark {
+  margin-top: 2px;
+}
+
+.tasks-board-card-title {
+  display: -webkit-box;
+  min-width: 0;
+  overflow: hidden;
+  font-size: var(--openbot-text-sm);
+  line-height: 1.35;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+/* The state and the agent line up under the title, after the mark. */
+.tasks-board-card-status,
+.tasks-board-card-agent {
+  min-width: 0;
+  padding-inline-start: calc(16px + var(--openbot-space-2));
+  color: var(--openbot-text-muted);
+  font-size: var(--openbot-text-sm);
+}
+
+.tasks-board-card-status {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Only the live progress line of a running task is a step brighter; the mark shows a failure. */
+.tasks-board-card-status[data-tone="working"] {
+  color: var(--openbot-text-secondary);
+}
+
+.tasks-board-card-agent {
+  display: flex;
+  align-items: center;
+  gap: var(--openbot-space-1-5);
+}
+
+.tasks-board-card-agent .tasks-page-avatar.agent-avatar {
+  width: 16px;
+  height: 16px;
+}
+
+.tasks-board-card-agent-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tasks-board-card-stop.ui-button {
+  position: absolute;
+  top: var(--openbot-space-1-5);
+  inset-inline-end: var(--openbot-space-1-5);
+  color: var(--openbot-text-muted);
+}
+
+.tasks-board-card-stop svg {
+  width: 10px;
+  height: 10px;
+  fill: currentColor;
+}
+
+.tasks-board .tasks-page-show-all.ui-button {
+  margin-top: var(--openbot-space-1);
+}
