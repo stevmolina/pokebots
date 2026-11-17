@@ -58,11 +58,14 @@
   min-width: 0;
   height: var(--openbot-control-md);
   gap: var(--openbot-space-1-5);
-  border: 1px solid var(--openbot-border);
+  border: 0;
   border-radius: var(--openbot-radius-pill);
   background: var(--openbot-bg-surface);
   padding-inline: var(--openbot-space-1) var(--openbot-space-3);
-  box-shadow: var(--openbot-shadow-raised);
+  /* Grok Bot's name pill: a soft lift, two layers of ink at 8 % and 6 %. */
+  box-shadow:
+    0 4px 12px -1px color-mix(in srgb, var(--openbot-text-primary) 8%, transparent),
+    0 2px 4px -2px color-mix(in srgb, var(--openbot-text-primary) 6%, transparent);
 }
 
 .conversation-header[data-session-pill] .conversation-title.ui-button:hover {
@@ -258,31 +261,6 @@
 .agent-threads-title-number {
   flex: none;
   white-space: pre;
-}
-
-/*
- * A desktop header keeps its actions in the thread menu. "+" stays after the last tab, and the "More"
- * button sits at the end of the header, where the pin and side panel buttons were.
- */
-.agent-threads-header[data-actions-menu] {
-  flex: 1 1 auto;
-}
-
-.agent-threads-header[data-actions-menu] > .agent-threads-phone-more.ui-button {
-  position: relative;
-  margin-inline-start: auto;
-}
-
-/* A remote desktop session or browser control runs. Its button is in the menu, so the menu button shows it. */
-.agent-threads-more-dot {
-  position: absolute;
-  inset-inline-end: 4px;
-  bottom: 4px;
-  width: 5px;
-  height: 5px;
-  border: 1px solid var(--openbot-bg-sidebar);
-  border-radius: var(--openbot-radius-pill);
-  background: var(--openbot-success);
 }
 
 /* As tall as a tab and with its corners, so a hover fill on "+" matches the tab fill. */

@@ -20,7 +20,6 @@ import {
 import { sourceText } from "@openbot/i18n/source";
 import { spentUsageWindow } from "@openbot/team-client/plan-limits";
 import { Button, CopyButton, Input, toast } from "@openbot/ui";
-import { ProviderModelPicker } from "@openbot/ui/components/ProviderModelPicker";
 import { AwaitingReplies } from "@openbot/ui/features/conversation/AwaitingReplies";
 import { BackgroundWorkers } from "@openbot/ui/features/conversation/BackgroundWorkers";
 import { ComposerAddMenu, ComposerArtifactChip } from "@openbot/ui/features/conversation/ComposerAddMenu";
@@ -50,7 +49,6 @@ import { reportErrorBanner, reportNotification } from "../../error-reports";
 import { deviceSendShortcut, sendShortcutAriaKey, sendShortcutHintKey } from "../../send-shortcut-preference";
 import { speechReading } from "../speech/speech-playback";
 import { stopSpokenReply } from "../speech/speech-replies";
-import { useAgentModelPicker } from "./agent-model-picker";
 import { backgroundWorkerItems } from "./background-worker-items";
 import { copyComposerSelection, readComposerCopy } from "./composer-clipboard";
 import { createComposerResize } from "./composer-resize";
@@ -148,7 +146,6 @@ export function ConversationComposer() {
     canTeachBrowserTask,
     openBrowserTeach,
   } = useConversationViewScope();
-  const modelPicker = useAgentModelPicker();
   const { t, format, sourceText: localizeSourceText } = useText();
   const messageLabel = () =>
     channel
@@ -868,9 +865,6 @@ export function ConversationComposer() {
               onVoice={openVoiceConversation()}
             />
             <div class="composer-primary-actions">
-              <Show when={props.agent}>
-                <ProviderModelPicker {...modelPicker()} />
-              </Show>
               <Show when={contextUsageView(context())}>
                 {(usage) => (
                   <ContextUsageMeter newChat={newChat()} compact={props.onCompactAgentContext} usage={usage()} />

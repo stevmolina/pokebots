@@ -86,11 +86,11 @@ interface ProviderModelPickerProps {
    */
   variant?: "pill" | "field" | "composer";
   /**
-   * The keyboard of the device. The `composer` variant then names ⌘1 to ⌘9 (Ctrl on a PC) on the
-   * first nine models of the open provider, and the keys choose them while the picker is open.
+   * The keyboard of the device. The picker then names ⌘1 to ⌘9 (Ctrl on a PC) on the first nine
+   * models of the open provider, and the keys choose them while the picker is open.
    */
   shortcutPlatform?: "mac" | "pc" | undefined;
-  /** The access of the agent, in the footer of the `composer` variant. A click opens its setting. */
+  /** The access of the agent, in the footer of the picker. A click opens its setting. */
   access?: { label: string; onOpen: (trigger: HTMLElement) => void } | undefined;
   ariaLabel?: string;
   label?: string;
@@ -616,7 +616,7 @@ export function ProviderModelPicker(props: ProviderModelPickerProps) {
    */
   const panelShortcuts = new Map<RailKey, { models: () => PickerModel[]; choose: (model: PickerModel) => void }>();
   const shortcutKey = (index: number): string | undefined => {
-    if (!composer() || !props.shortcutPlatform || index < 0 || index > 8) return undefined;
+    if (!props.shortcutPlatform || index < 0 || index > 8) return undefined;
     return props.shortcutPlatform === "mac" ? `⌘${index + 1}` : `Ctrl+${index + 1}`;
   };
   const showsReasoningEffort = () => props.reasoningEffort !== undefined && props.onReasoningEffortChange !== undefined;
@@ -715,7 +715,7 @@ export function ProviderModelPicker(props: ProviderModelPickerProps) {
       class={["provider-model-popover", { "provider-model-popover-composer": composer() }]}
       aria-hidden={open() ? undefined : "true"}
       onKeyDown={(event) => {
-        const digit = composer() && props.shortcutPlatform ? /^[1-9]$/.exec(event.key)?.[0] : undefined;
+        const digit = props.shortcutPlatform ? /^[1-9]$/.exec(event.key)?.[0] : undefined;
         const modifier = props.shortcutPlatform === "mac" ? event.metaKey : event.ctrlKey;
         if (digit && modifier && !event.altKey && !event.shiftKey) {
           const panel = panelShortcuts.get(railProvider());
@@ -1434,9 +1434,9 @@ export function ProviderModelPicker(props: ProviderModelPickerProps) {
           }}
         </For>
       </Tabs.Root>
-      <Show when={composer() && (composerSpeeds() || props.access)}>
+      <Show when={(composer() && composerSpeeds()) || props.access}>
         <div class="provider-model-footer">
-          <Show when={composerSpeeds()}>
+          <Show when={composer() && composerSpeeds()}>
             {(speeds) => (
               <fieldset class="provider-model-speed-switch" aria-label={t("provider.picker.speed")}>
                 <For each={speeds()}>

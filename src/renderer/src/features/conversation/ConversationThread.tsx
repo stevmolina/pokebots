@@ -3,7 +3,6 @@ import { ARTIFACT_REQUEST_CAPABILITY } from "@openbot/contracts/team-protocol/ar
 import type { AppTextKey } from "@openbot/i18n";
 import { classifyFailure } from "@openbot/telemetry";
 import { Input } from "@openbot/ui";
-import { ProviderModelPicker } from "@openbot/ui/components/ProviderModelPicker";
 import type { AgentMessage } from "@openbot/ui/data";
 import { ChatSearch } from "@openbot/ui/features/conversation/ChatSearch";
 import { contextUsageView } from "@openbot/ui/features/conversation/ContextUsage";
@@ -18,7 +17,6 @@ import { useChatBubbleStyle } from "../../chat-bubble-style-preference";
 import { useCompactMessageActions } from "../../compact-message-actions-preference";
 import { usePlatform } from "../../platform";
 import { deviceQuoteShortcut, deviceSendShortcut } from "../../send-shortcut-preference";
-import { useAgentModelPicker } from "./agent-model-picker";
 import { useThreadVisualReplyCard } from "./ChatVisualReply";
 import { ConversationBrowserTakeover } from "./ConversationBrowserTakeover";
 import { ConversationQuestionPrompt } from "./ConversationQuestionPrompt";
@@ -74,7 +72,6 @@ export function ConversationThread() {
     openQuote,
     branchThread,
   } = useConversationViewScope();
-  const modelPicker = useAgentModelPicker();
   const { t, errorMessage } = useText();
   const [picker, setPicker] = createSignal<HTMLInputElement>();
   /** A failed answer shows here, where the person answered, and not in the agent's own chat. */
@@ -294,12 +291,6 @@ export function ConversationThread() {
             agent={current().agent}
             agents={props.agents}
             onChangeAgent={current().threads.onChangeDraftAgent}
-            composerControls={
-              // The chip sets the agent of this chat. A new thread that another agent takes has no chip.
-              <Show when={props.agent && current().agent.id === props.agent.id}>
-                <ProviderModelPicker {...modelPicker()} />
-              </Show>
-            }
             messages={messages}
             skills={installedSkills()}
             skillsLoadFailed={installedSkillsLoadFailed()}
