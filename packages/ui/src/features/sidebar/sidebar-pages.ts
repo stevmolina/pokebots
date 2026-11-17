@@ -17,6 +17,7 @@ export type SidebarPage =
   | "rooms"
   | "brain"
   | "machines"
+  | "crm"
   | "marketplace"
   | "settings";
 
@@ -72,6 +73,10 @@ export interface SidebarPages {
   onRooms?: (() => void) | undefined;
   /** Absent where the host has no Brain route, or where this computer cannot open one. */
   onBrain?: (() => void) | undefined;
+  /** Opens Server Settings > Providers. Absent when this account cannot manage the providers. */
+  onProviders?: ((button: HTMLElement) => void) | undefined;
+  /** Opens the CRM. Absent for a member, an older host, or while the CRM is off in Server Settings. */
+  onCrm?: ((button: HTMLElement) => void) | undefined;
   /** Absent while Marketplace cannot open. */
   onMarketplace?: (() => void) | undefined;
   onSettings: (button: HTMLElement) => void;

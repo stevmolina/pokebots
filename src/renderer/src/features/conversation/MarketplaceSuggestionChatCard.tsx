@@ -1,4 +1,5 @@
 import type { McpServerConfig } from "@openbot/contracts/ipc";
+import type { AgentMessage } from "@openbot/ui/data";
 import { connectorSummary } from "@openbot/ui/features/connectors/ConnectorDetailPanel";
 import { CONNECTOR_LISTINGS } from "@openbot/ui/features/connectors/connector-catalog";
 import { isConnectorId } from "@openbot/ui/features/connectors/connectors";
@@ -11,7 +12,9 @@ import { useText } from "@openbot/ui/text";
 import { createMemo, createSignal, Show } from "solid-js";
 import type { ConnectorRegistry } from "../connectors/connector-registry";
 import { localizedPlugin } from "../settings/marketplace-plugin-text";
+import { useConversationViewScope } from "./conversation-scope";
 import { dismissMarketplaceSuggestion, marketplaceSuggestionDismissed } from "./marketplace-suggestion-dismissals";
+import { marketplaceSuggestionKnown } from "./marketplace-suggestion-known";
 
 export interface MarketplaceSuggestionChatCardProps {
   messageId: string;
@@ -117,4 +120,25 @@ export function MarketplaceSuggestionChatCard(props: MarketplaceSuggestionChatCa
       />
     </Show>
   );
+}
+
+/**
+ * The suggestion card of a side thread message, as the agent's own chat draws it. Another message, or
+ * an app this client does not know, keeps its row.
+ */
+export function useThreadMarketplaceSuggestionCard() {
+  const { props, mcpServers } = useConversationViewScope();
+  return (message: AgentMessage) => {
+    const marker = message.actionMarker;
+    if (marker?.kind !== "marketplace-suggestion" || !marketplaceSuggestionKnown(marker.appId)) return undefined;
+    return (
+      <MarketplaceSuggestionChatCard
+        messageId={message.id}
+        appId={marker.appId}
+        connectors={props.connectors}
+        mcpServers={mcpServers()}
+        onOpenMarketplaceApp={props.onOpenMarketplaceApp}
+      />
+    );
+  };
 }

@@ -1,9 +1,9 @@
 import { useText } from "@openbot/ui/text";
 import { Loading, Match, Show, Switch } from "solid-js";
-import { AgentUsagePanel, LibraryPanel, MachinesPanel, WorkflowsPage } from "../../lazy-views";
+import { AgentUsagePanel, CrmPage, LibraryPanel, MachinesPanel, WorkflowsPage } from "../../lazy-views";
 import { SkillsMarketplace } from "../../WorkspaceOverlays";
-import { RoomsPage } from "../rooms/RoomsPage";
 import { BrainPage } from "../brain/BrainPage";
+import { RoomsPage } from "../rooms/RoomsPage";
 import { SchedulePanel } from "../schedule/SchedulePanel";
 import { useServers } from "../servers/servers-context";
 import { UsageMachine } from "../usage/UsageMachine";
@@ -13,8 +13,8 @@ import { type SettingsKind, useWindowPage } from "./window-page-context";
 
 /**
  * The page of the desktop window that covers the conversation: a settings page, usage, schedule,
- * workflows, the Library, the Machines page, the Marketplace or the pricing page. The tasks page shows in
- * the middle pane, in `WorkspaceShell`.
+ * workflows, the Library, the CRM, the Machines page, the Marketplace or the pricing page. The tasks page shows
+ * in the middle pane, in `WorkspaceShell`.
  */
 export function WindowPageView() {
   const { t } = useText();
@@ -78,6 +78,11 @@ export function WindowPageView() {
             <Match when={usage.state.view === "machines"}>
               <Loading>
                 <MachinesPanel />
+              </Loading>
+            </Match>
+            <Match when={usage.state.view === "crm"}>
+              <Loading>
+                <CrmPage serverId={serverId()} />
               </Loading>
             </Match>
           </Switch>

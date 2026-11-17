@@ -41,6 +41,8 @@ import { StaticI18nProvider } from "../../i18n-context";
 import { AnalyticsConsentRow, ConsentNotice } from "../onboarding/AnalyticsConsent";
 import { createOnboardingTeam, onboardingSessionSeed } from "../onboarding/onboarding-avatars";
 import { deleteRemoteWorkspaceFrames } from "../servers/remote-workspace-frame-keys";
+import { WindowBackdropBubbles } from "../window/backdrop-bubbles";
+import { keepCachedWorkflows } from "../workflows/workflow-cache";
 import { startConnectionLog } from "./connection-log";
 import { WebLanguageStep } from "./WebLanguageStep";
 import { WebPhoneAppScreen } from "./WebPhoneAppScreen";
@@ -50,6 +52,7 @@ import { createWebAccountCalls } from "./web-account";
 import { deleteSavedAgentPictures } from "./web-agent-pictures";
 import { createWebAppearancePreference } from "./web-appearance-preference";
 import { takeWebAppStart, WEB_APP_BILLING_PARAM, type WebAppStart } from "./web-billing";
+import { syncWebChatBackground } from "./web-chat-background";
 import type { WebRuntimeFactory } from "./web-client-context";
 import { takeHostingReturn } from "./web-hosted-servers";
 import { createWebLanguagePreference } from "./web-language-preference";
@@ -211,9 +214,18 @@ function takeStartLink(): WebAppStart | null {
   return start;
 }
 
+/** The browser client. Its chat bubbles take the colors of the backdrop page that shows. */
 export function WebApp(props: { createRuntime?: WebRuntimeFactory } = {}) {
   // Settings can copy the log of each step of opening, for a phone that opens slowly.
   startConnectionLog();
+  return (
+    <WindowBackdropBubbles>
+      <WebAppContent {...props} />
+    </WindowBackdropBubbles>
+  );
+}
+
+function WebAppContent(props: { createRuntime?: WebRuntimeFactory }) {
   // This component renders the text provider, so it reads the text of the last provider that rendered.
   const text = currentText();
   const [state, setState] = createStore<{
@@ -301,6 +313,7 @@ export function WebApp(props: { createRuntime?: WebRuntimeFactory } = {}) {
     if (ended) {
       deleteRemoteWorkspaceFrames(null);
       void deleteSavedAgentPictures(null);
+      keepCachedWorkflows(null);
     }
     sessionGeneration += 1;
     setState((draft) => {
@@ -620,6 +633,8 @@ export function WebApp(props: { createRuntime?: WebRuntimeFactory } = {}) {
   const consentAgents = createOnboardingTeam(onboardingSessionSeed(), 3);
   const languagePreference = createWebLanguagePreference();
   const appearancePreference = createWebAppearancePreference();
+  // The chat background of each scheme; leaving `/app` removes it.
+  onSettled(() => syncWebChatBackground());
   // The sign-in starts in the browser language; its language button opens the wheel to change it.
   const [languageWheelOpen, setLanguageWheelOpen] = createSignal(false);
   // On a phone the web client first points to the phone app, unless the address opened a link.

@@ -8,6 +8,7 @@
  */
 
 import {
+  BriefcaseBusiness,
   Check,
   ChevronRight,
   CircleQuestionMark,
@@ -22,6 +23,7 @@ import {
   Plus,
   Settings,
   Smartphone,
+  Sparkles,
   Store,
   UserAvatar,
   UserPlus,
@@ -183,6 +185,22 @@ export function SidebarProfileMenu(props: {
                     <DropdownMenu.Item onSelectAfterClose={() => open()()}>
                       <MessageSquare class="agent-context-icon size-4" aria-hidden="true" />
                       <span>{t("rooms.title")}</span>
+                    </DropdownMenu.Item>
+                  )}
+                </Show>
+                <Show when={props.pages.onProviders}>
+                  {(open) => (
+                    <DropdownMenu.Item onSelectAfterClose={openFromTrigger(open())}>
+                      <Sparkles class="agent-context-icon size-4" aria-hidden="true" />
+                      <span>{t("app.rail.providers")}</span>
+                    </DropdownMenu.Item>
+                  )}
+                </Show>
+                <Show when={props.pages.onCrm}>
+                  {(open) => (
+                    <DropdownMenu.Item onSelectAfterClose={openFromTrigger(open())}>
+                      <BriefcaseBusiness class="agent-context-icon size-4" aria-hidden="true" />
+                      <span>{t("app.rail.crm")}</span>
                     </DropdownMenu.Item>
                   )}
                 </Show>
