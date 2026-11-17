@@ -1307,7 +1307,9 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
               </Stack.Toolbar.View>
             </Stack.Toolbar>
             <Stack.Toolbar placement="right">
-              <Stack.Toolbar.View hidden={search.open || !showsPlanLimits}>
+              {/* The calm look keeps two bar controls, profile and add: iOS folds a third one and the add
+                  menu into an overflow button. Usage stays in the drawer. */}
+              <Stack.Toolbar.View hidden={search.open || !showsPlanLimits || calm}>
                 <PlanLimitsHeaderButton
                   serverId={activeServer.id}
                   rows={planLimits.rows}
