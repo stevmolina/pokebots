@@ -219,6 +219,10 @@ export const messages = defineMessages("mobile.chat", {
   "mobile.chat.header.actionsNeeded": "Actions needed",
   "mobile.chat.header.more": "More",
   "mobile.chat.header.moreAttention": "More, actions needed",
+  "mobile.chat.header.moreSessions": {
+    one: "More, {count} session needs you",
+    other: "More, {count} sessions need you",
+  },
   "mobile.chat.pins.title": "Pinned messages",
   "mobile.chat.pins.emptyTitle": "No pinned messages",
   "mobile.chat.pins.emptyBody": "Touch and hold a message and tap Pin to keep it here.",

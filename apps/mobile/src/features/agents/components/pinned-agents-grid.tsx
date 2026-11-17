@@ -80,12 +80,7 @@ export function PinnedAgentsGrid({
   );
   return (
     <Animated.View layout={animateLayout ? PINNED_LAYOUT : undefined}>
-      {heroAgent ? (
-        <View style={{ width: "100%", alignItems: "center", paddingTop: 14 }}>
-          <PinnedAgentItem key={heroAgent.id} agent={heroAgent} hero pinned={heroPinned} />
-        </View>
-      ) : null}
-      {agents.length > 0 || children ? (
+      {heroAgent || agents.length > 0 || children ? (
         <Animated.View exiting={PINNED_EXIT} style={{ width: "100%" }}>
           <View
             ref={dropTarget}
@@ -100,6 +95,13 @@ export function PinnedAgentsGrid({
               paddingBottom: 18,
             }}
           >
+            {/* The main agent sits inside the pin area, on its own line, so a chat can still be dropped
+                on the pins when it is the only one. */}
+            {heroAgent ? (
+              <View style={{ width: "100%", alignItems: "center" }}>
+                <PinnedAgentItem key={heroAgent.id} agent={heroAgent} hero pinned={heroPinned} />
+              </View>
+            ) : null}
             {agents.map((agent) => (
               <PinnedAgentItem key={agent.id} agent={agent} />
             ))}

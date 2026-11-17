@@ -89,8 +89,12 @@ export const ChatHeader = memo(function ChatHeader({
   const warning = useThemeColor("warning");
   // The calm look: the name opens the agent's info, and the sessions move into the More menu.
   const calm = useCalmLook();
-  const sessionsMenu = calm ? threadMenu : undefined;
-  const pillMenu = calm ? undefined : threadMenu;
+  // A side thread passes its own actions menu, which has no room for Sessions: there the name keeps
+  // opening the sessions, as in the current look.
+  const sessionsInMore = calm && actionsMenu === undefined;
+  const sessionsMenu = sessionsInMore ? threadMenu : undefined;
+  const pillMenu = sessionsInMore ? undefined : threadMenu;
+  const sessionsAttention = sessionsMenu?.attention ?? 0;
   const disconnected = useMobileWorkspaceSelector(
     (current) => !current.servers.some((server) => server.id === target.serverId && showsOnline(server)),
   );
@@ -216,7 +220,11 @@ export const ChatHeader = memo(function ChatHeader({
     else if (id === "browser") openBrowser();
     else if (id === "pins") openPins();
   };
-  const moreLabel = attention ? t("mobile.chat.header.moreAttention") : t("mobile.chat.header.more");
+  const moreLabel = attention
+    ? t("mobile.chat.header.moreAttention")
+    : sessionsAttention > 0
+      ? t("mobile.chat.header.moreSessions", { count: sessionsAttention })
+      : t("mobile.chat.header.more");
   const moreHidden = moreActions.length === 0;
   // Not in a BlurReveal: glass stops rendering under an ancestor with zero opacity, so the button hides
   // itself, and its glass turns off with the native animation. A menu with no items, such as a channel
@@ -252,7 +260,7 @@ export const ChatHeader = memo(function ChatHeader({
         <Ellipsis color={iconColor} size={24} strokeWidth={2} />
         {attention ? (
           <View className="absolute top-2 right-2 size-2 rounded-full" style={{ backgroundColor: String(warning) }} />
-        ) : sessionsMenu && sessionsMenu.attention > 0 ? (
+        ) : sessionsMenu && sessionsAttention > 0 ? (
           <View
             className="absolute top-2 right-2 size-2 rounded-full"
             style={{ backgroundColor: sessionsMenu.color }}
@@ -311,6 +319,8 @@ export const ChatHeader = memo(function ChatHeader({
           accessibilityRole="button"
           accessibilityLabel={t("mobile.chat.header.info", { name: target.name })}
           hitSlop={8}
+          // A long title, such as a side thread's, stays clear of the button on the other side.
+          style={{ maxWidth: kicker ? width - insets.left - insets.right - titleReserve : 220 }}
           onPress={() => {
             void haptics.impact("soft");
             if (target.kind === "channel")
@@ -397,7 +407,11 @@ export const ChatHeader = memo(function ChatHeader({
               accessibilityLabel={moreLabel}
               hidden={accessibilityHidden || moreHidden}
             >
-              {attention ? <Stack.Toolbar.Badge style={{ backgroundColor: String(warning) }} /> : null}
+              {attention ? (
+                <Stack.Toolbar.Badge style={{ backgroundColor: String(warning) }} />
+              ) : sessionsMenu && sessionsAttention > 0 ? (
+                <Stack.Toolbar.Badge style={{ backgroundColor: sessionsMenu.color }} />
+              ) : null}
               {toolbarMenuItems(moreActions, onMoreAction)}
             </Stack.Toolbar.Menu>
           )}

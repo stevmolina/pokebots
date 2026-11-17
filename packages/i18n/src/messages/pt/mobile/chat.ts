@@ -222,6 +222,10 @@ export const messages = {
   "mobile.chat.header.actionsNeeded": "Ações necessárias",
   "mobile.chat.header.more": "Mais",
   "mobile.chat.header.moreAttention": "Mais, ações necessárias",
+  "mobile.chat.header.moreSessions": {
+    one: "Mais, {count} sessão precisa de você",
+    other: "Mais, {count} sessões precisam de você",
+  },
   "mobile.chat.pins.title": "Mensagens fixadas",
   "mobile.chat.pins.emptyTitle": "Nenhuma mensagem fixada",
   "mobile.chat.pins.emptyBody": "Toque e segure uma mensagem e toque em Fixar para mantê-la aqui.",

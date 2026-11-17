@@ -1534,6 +1534,9 @@ export const ChatComposer = memo(function ChatComposer({
                       <Pressable
                         accessibilityLabel={modelButton.label}
                         accessibilityRole="button"
+                        accessibilityState={{ disabled }}
+                        // Off with the other controls: a read-only or offline chat cannot change the model.
+                        disabled={disabled}
                         hitSlop={4}
                         className="size-10 items-center justify-center rounded-full"
                         style={({ pressed }) => ({ opacity: pressed ? 0.55 : 1 })}

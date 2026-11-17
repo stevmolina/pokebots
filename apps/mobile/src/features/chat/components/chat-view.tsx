@@ -1,4 +1,5 @@
 import { avatarHeadColor } from "@openbot/brand/bloub-avatar";
+import { providerDisplayName } from "@openbot/contracts/agent-providers";
 import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
 import type { ConversationMessage } from "@openbot/contracts/ipc";
 import { markdownPlainText } from "@openbot/contracts/markdown-preview-text";
@@ -357,7 +358,9 @@ export function ChatView({
     () =>
       calmProvider && calmAgent
         ? {
-            label: t("mobile.workspace.preview.modelButton", { name: calmAgent.model ?? calmProvider }),
+            label: t("mobile.workspace.preview.modelButton", {
+              name: calmAgent.model ?? providerDisplayName(calmProvider),
+            }),
             logo: <ProviderMark provider={calmProvider} size={22} />,
             onPress: () => {
               void haptics.selection();
