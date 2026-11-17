@@ -29,6 +29,9 @@ import { ChatLinkPressable } from "@/features/agents/components/chat-link-pressa
 import { useChatRowBackground } from "@/features/agents/components/chat-list-pane-context";
 import { useListRowChrome } from "@/features/agents/components/use-list-row-chrome";
 import { useWaitingChannel } from "@/features/channels/components/use-waiting-channel";
+import { UnreadDot, usePreviewColors } from "@/features/design-preview/components/preview-parts";
+import { useCalmLook } from "@/features/design-preview/model/calm-look";
+import { previewSize, previewType } from "@/features/design-preview/model/preview-tokens";
 import {
   useAgentListUnreadCount,
   useAgentListUnreadThreads,
@@ -209,6 +212,10 @@ function AgentRowBody({
   const unreadThreads = useAgentListUnreadThreads(agent.id);
   const waitReason = useAgentListWaitReason(agent.id);
   const isUnpinTarget = transition?.chatId === agent.id && transition.target === "row";
+  // The calm look of Settings > Appearance > New design: the row of the design preview.
+  const calm = useCalmLook();
+  const calmColors = usePreviewColors();
+  const avatarSize = calm ? previewSize.rowAvatar : 54;
   const bloub = (
     <BloubAvatar
       agentId={agent.id}
@@ -216,20 +223,21 @@ function AgentRowBody({
       hue={agent.avatarHue}
       color={agent.avatarColor}
       seed={agent.avatarSeed}
-      size={54}
+      size={avatarSize}
       animateIdle={false}
       rings
       withThreads
     />
   );
   // As on the desktop, a wait outranks the unread count in the corner of the avatar.
+  // The calm row shows unread as a dot at the end of the preview, as the design preview does.
   const waitBadge = waitReason ? (
     <AgentWaitBadge reason={waitReason} />
-  ) : unreadCount > 0 || unreadThreads ? (
+  ) : !calm && (unreadCount > 0 || unreadThreads) ? (
     <AgentUnreadBadge count={unreadCount} avatarSize={54} ringColor={background} />
   ) : null;
   const avatar = (
-    <AgentPinAvatar agentId={agent.id} location="row" size={54}>
+    <AgentPinAvatar agentId={agent.id} location="row" size={avatarSize}>
       {bloub}
       {waitBadge}
     </AgentPinAvatar>
@@ -265,52 +273,97 @@ function AgentRowBody({
       onLongPress={onLongPress}
       onPressOut={onPressOut}
     >
-      {({ pressed }) => (
-        <View
-          className="min-h-20 w-full flex-row items-center gap-3 py-1"
-          style={{
-            backgroundColor: background,
-            opacity: pressed ? 0.58 : 1,
-            paddingLeft: leftInset,
-            paddingRight: rightInset,
-          }}
-        >
-          {avatar}
-          <AgentRowTextReveal active={isUnpinTarget}>
-            <View className="min-w-0 flex-1 gap-0.5">
-              <View className="flex-row items-center gap-2">
-                <Typography.Paragraph
-                  className="font-semibold min-w-0 flex-1"
-                  numberOfLines={1}
-                  style={typeScale.rowTitle}
-                >
+      {({ pressed }) =>
+        calm ? (
+          <View
+            style={{
+              height: previewSize.rowHeight,
+              width: "100%",
+              flexDirection: "row",
+              alignItems: "center",
+              backgroundColor: calmColors.background,
+              opacity: pressed ? 0.58 : 1,
+              paddingLeft: previewSize.rowAvatarInset,
+              paddingRight: previewSize.rowTrailingInset,
+            }}
+          >
+            {avatar}
+            <View style={{ flex: 1, minWidth: 0, marginLeft: previewSize.rowTextGap }}>
+              <View style={{ flexDirection: "row", alignItems: "flex-start", gap: previewSize.rowTrailingGap }}>
+                <Typography numberOfLines={1} style={[previewType.rowTitle, { flex: 1, color: calmColors.title }]}>
                   {agent.name}
-                </Typography.Paragraph>
+                </Typography>
                 {waitReason ? (
                   <AgentWaitChip reason={waitReason} />
                 ) : (
-                  <Typography.Paragraph className="text-muted" style={typeScale.caption}>
+                  <Typography style={[previewType.rowTime, { color: calmColors.time }]}>
                     {agent.updatedLabel}
-                  </Typography.Paragraph>
+                  </Typography>
                 )}
               </View>
-              {agent.title.trim() ? (
-                <Typography.Paragraph className="text-muted" numberOfLines={1} style={typeScale.caption}>
-                  {agent.title.trim()}
-                </Typography.Paragraph>
-              ) : null}
-              <Typography.Paragraph
-                className="text-text-secondary"
-                numberOfLines={1}
-                style={[typeScale.preview, lineDirectionStyle(previewLine)]}
-              >
-                {previewLine}
-              </Typography.Paragraph>
+              <View style={{ flexDirection: "row", alignItems: "center", gap: previewSize.rowTrailingGap }}>
+                <Typography
+                  numberOfLines={1}
+                  style={[
+                    previewType.rowPreview,
+                    { flex: 1, color: calmColors.preview },
+                    lineDirectionStyle(previewLine),
+                  ]}
+                >
+                  {previewLine}
+                </Typography>
+                <UnreadDot shown={unreadCount > 0 || unreadThreads} />
+              </View>
             </View>
-          </AgentRowTextReveal>
-          {measurer}
-        </View>
-      )}
+            {measurer}
+          </View>
+        ) : (
+          <View
+            className="min-h-20 w-full flex-row items-center gap-3 py-1"
+            style={{
+              backgroundColor: background,
+              opacity: pressed ? 0.58 : 1,
+              paddingLeft: leftInset,
+              paddingRight: rightInset,
+            }}
+          >
+            {avatar}
+            <AgentRowTextReveal active={isUnpinTarget}>
+              <View className="min-w-0 flex-1 gap-0.5">
+                <View className="flex-row items-center gap-2">
+                  <Typography.Paragraph
+                    className="font-semibold min-w-0 flex-1"
+                    numberOfLines={1}
+                    style={typeScale.rowTitle}
+                  >
+                    {agent.name}
+                  </Typography.Paragraph>
+                  {waitReason ? (
+                    <AgentWaitChip reason={waitReason} />
+                  ) : (
+                    <Typography.Paragraph className="text-muted" style={typeScale.caption}>
+                      {agent.updatedLabel}
+                    </Typography.Paragraph>
+                  )}
+                </View>
+                {agent.title.trim() ? (
+                  <Typography.Paragraph className="text-muted" numberOfLines={1} style={typeScale.caption}>
+                    {agent.title.trim()}
+                  </Typography.Paragraph>
+                ) : null}
+                <Typography.Paragraph
+                  className="text-text-secondary"
+                  numberOfLines={1}
+                  style={[typeScale.preview, lineDirectionStyle(previewLine)]}
+                >
+                  {previewLine}
+                </Typography.Paragraph>
+              </View>
+            </AgentRowTextReveal>
+            {measurer}
+          </View>
+        )
+      }
     </ChatLinkPressable>
   );
 }

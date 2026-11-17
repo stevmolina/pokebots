@@ -26,6 +26,9 @@ import {
   useHoldMenu,
 } from "@/features/agents/components/chat-drag";
 import { ChatLinkPressable } from "@/features/agents/components/chat-link-pressable";
+import { usePreviewColors } from "@/features/design-preview/components/preview-parts";
+import { useCalmLook } from "@/features/design-preview/model/calm-look";
+import { previewSize, previewType } from "@/features/design-preview/model/preview-tokens";
 import {
   useAgentListUnreadCount,
   useAgentListUnreadThreads,
@@ -64,6 +67,10 @@ export function PinnedAgentsGrid({
   dropZone?: boolean;
 }>) {
   const dropTarget = useChatDropTarget(PIN_AREA_KEY);
+  // The calm look shows one pinned agent as the big face at the top of home, as the design preview's
+  // main agent; several pins stay a grid, centered.
+  const calm = useCalmLook();
+  const hero = calm && agents.length === 1 && !children;
   return (
     <Animated.View layout={animateLayout ? PINNED_LAYOUT : undefined}>
       {agents.length > 0 || children ? (
@@ -74,6 +81,7 @@ export function PinnedAgentsGrid({
             style={{
               flexDirection: "row",
               flexWrap: "wrap",
+              justifyContent: calm ? "center" : undefined,
               rowGap: 18,
               paddingHorizontal: PINNED_PADDING_X,
               paddingTop: 14,
@@ -81,7 +89,7 @@ export function PinnedAgentsGrid({
             }}
           >
             {agents.map((agent) => (
-              <PinnedAgentItem key={agent.id} agent={agent} />
+              <PinnedAgentItem key={agent.id} agent={agent} hero={hero} />
             ))}
             {children}
           </View>
@@ -112,7 +120,9 @@ function PinDropZone({ dropTarget }: { dropTarget: ReturnType<typeof useChatDrop
   );
 }
 
-const PinnedAgentItem = memo(function PinnedAgentItem({ agent }: { agent: MobileAgent }) {
+const PinnedAgentItem = memo(function PinnedAgentItem({ agent, hero = false }: { agent: MobileAgent; hero?: boolean }) {
+  const calmColors = usePreviewColors();
+  const size = hero ? previewSize.heroAvatar : 64;
   const { t } = useText();
   const agentChatPreview = useAgentChatPreview(agent);
   // Each long press mounts the Android menu again, so it opens even if an earlier one did not close.
@@ -155,14 +165,14 @@ const PinnedAgentItem = memo(function PinnedAgentItem({ agent }: { agent: Mobile
       onPressOut={holdMenu.onPressOut}
       style={({ pressed }) => ({ opacity: pressed ? 0.58 : 1 })}
     >
-      <AgentPinAvatar agentId={agent.id} location="pinned" size={64}>
+      <AgentPinAvatar agentId={agent.id} location="pinned" size={size}>
         <BloubAvatar
           agentId={agent.id}
           serverId={agent.serverId}
           hue={agent.avatarHue}
           color={agent.avatarColor}
           seed={agent.avatarSeed}
-          size={64}
+          size={size}
           animateIdle={false}
           rings
           withThreads
@@ -171,7 +181,7 @@ const PinnedAgentItem = memo(function PinnedAgentItem({ agent }: { agent: Mobile
         {waitReason ? (
           <AgentWaitBadge reason={waitReason} size={22} />
         ) : unreadCount > 0 || unreadThreads ? (
-          <AgentUnreadBadge count={unreadCount} avatarSize={64} />
+          <AgentUnreadBadge count={unreadCount} avatarSize={size} />
         ) : null}
       </AgentPinAvatar>
       <View className="w-full gap-0.5">
@@ -179,7 +189,7 @@ const PinnedAgentItem = memo(function PinnedAgentItem({ agent }: { agent: Mobile
           align="center"
           className="w-full text-text-secondary"
           numberOfLines={1}
-          style={typeScale.small}
+          style={hero ? [previewType.heroLabel, { color: calmColors.title, marginTop: 2 }] : typeScale.small}
         >
           {agent.name}
         </Typography.Paragraph>
@@ -193,7 +203,7 @@ const PinnedAgentItem = memo(function PinnedAgentItem({ agent }: { agent: Mobile
     </ChatLinkPressable>
   );
   return (
-    <PinnedChatItem>
+    <PinnedChatItem wide={hero}>
       <ChatDragArea drag={drag} fill>
         {isAndroid ? (
           <View className="w-full">
@@ -212,13 +222,13 @@ const PinnedAgentItem = memo(function PinnedAgentItem({ agent }: { agent: Mobile
   );
 });
 
-export function PinnedChatItem({ children }: PropsWithChildren) {
+export function PinnedChatItem({ children, wide = false }: PropsWithChildren<{ wide?: boolean }>) {
   return (
     <Animated.View
       entering={PINNED_ENTER}
       exiting={PINNED_EXIT}
       layout={PINNED_ITEM_LAYOUT}
-      style={{ width: `${100 / PINNED_COLUMNS}%`, alignItems: "center" }}
+      style={{ width: wide ? "40%" : `${100 / PINNED_COLUMNS}%`, alignItems: "center" }}
     >
       {children}
     </Animated.View>

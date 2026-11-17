@@ -19,6 +19,7 @@ import { AppLockOverlay } from "@/features/app-lock/components/app-lock-overlay"
 import { installAppLock } from "@/features/app-lock/model/app-lock";
 import { DevelopmentConnectLinkHandler } from "@/features/auth/components/development-connect-link-handler";
 import { MobileSessionProvider, useMobileSession } from "@/features/auth/context/mobile-session-context";
+import { loadCalmLook } from "@/features/design-preview/model/calm-look";
 import { loadDesignPreview, useDesignPreview } from "@/features/design-preview/model/preview-switch";
 import { loadOnboardingProgress } from "@/features/onboarding/model/onboarding-progress";
 import { resetNotificationAvatars } from "@/features/push-notifications/notification-avatars";
@@ -234,6 +235,7 @@ export default function RootLayout() {
       void loadAppearance().catch(() => undefined);
       void loadHapticsPreference().catch(() => undefined);
       void loadDesignPreview().catch(() => undefined);
+      void loadCalmLook().catch(() => undefined);
       void loadLargeFilePreference().catch(() => undefined);
       void loadPhotoQualityPreference().catch(() => undefined);
       void loadMessageColor().catch(() => undefined);

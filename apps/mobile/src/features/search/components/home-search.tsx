@@ -24,6 +24,7 @@ import UsersRound from "lucide-react-native/icons/users-round";
 import {
   type ComponentProps,
   type PropsWithChildren,
+  type ReactNode,
   type RefObject,
   useCallback,
   useEffect,
@@ -616,10 +617,16 @@ function TaskTargetRow({ agent, onPress }: { agent: MobileAgent; onPress: () => 
 export function HomeSearchBar({
   search,
   blurTarget,
+  leading,
+  sideInset = 16,
 }: {
   search: HomeSearch;
   /** Android: the home content that the field blurs. */
   blurTarget?: RefObject<ViewInstance | null>;
+  /** A button before the field, such as the grid of the calm look. It leaves while the search is open. */
+  leading?: ReactNode;
+  /** The space between the screen side and the bar. */
+  sideInset?: number;
 }) {
   const { t } = useText();
   const { input } = search;
@@ -711,8 +718,9 @@ export function HomeSearchBar({
     <Animated.View
       className="absolute flex-row items-center gap-2"
       pointerEvents="box-none"
-      style={[{ bottom: bottomGap, left: insets.left + 16, right: insets.right + 16 }, barStyle]}
+      style={[{ bottom: bottomGap, left: insets.left + sideInset, right: insets.right + sideInset }, barStyle]}
     >
+      {leading && !search.open ? <Animated.View layout={layout}>{leading}</Animated.View> : null}
       {search.mounted ? (
         // While the results leave, the button is out of the layout, so the field grows under it as its
         // glass dissolves. Glass does not render under a parent with opacity below 1, so only the

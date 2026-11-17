@@ -53,6 +53,16 @@ import {
 import { useAppUpdate } from "@/features/app-update/model/app-update";
 import { ChannelListRow } from "@/features/channels/components/channel-list";
 import { useChannels } from "@/features/channels/components/use-channels";
+import {
+  CalmBottomGrid,
+  CalmGroupLabel,
+  CalmHiddenLink,
+  CalmUnreadPill,
+  useCalmUnread,
+} from "@/features/design-preview/components/calm-home";
+import { usePreviewColors } from "@/features/design-preview/components/preview-parts";
+import { useCalmLook, useCalmLookStore } from "@/features/design-preview/model/calm-look";
+import { previewSize } from "@/features/design-preview/model/preview-tokens";
 import { OnboardingFlow } from "@/features/onboarding/components/onboarding-flow";
 import { useHomeOnboarding } from "@/features/onboarding/context/home-onboarding-context";
 import {
@@ -383,6 +393,11 @@ function openFromMenu(href: Href): void {
 export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "pane" }) {
   const pane = variant === "pane";
   const { t, sourceText } = useText();
+  // Settings > Appearance > New design: the real list in the calm look of the design preview. The pane
+  // of a wide window keeps the current look.
+  const calm = useCalmLook() && !pane;
+  const calmReady = useCalmLookStore((state) => state.ready);
+  const calmColors = usePreviewColors();
   const { isLoaderPresent } = useAppLoadingOverlay();
   const { openDrawer } = useAppDrawer();
   const workspace = useMobileWorkspaceReader();
@@ -420,7 +435,7 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
   // The list comes in as the loader starts to roll up, so the two overlap instead of waiting in turn.
   // The list also waits for the saved chat order, so that it does not show in one order and then move.
   const chatOrderReady = useChatOrderPreference((state) => state.ready);
-  const listReady = !showLoader && !isLoaderPresent && chatOrderReady;
+  const listReady = !showLoader && !isLoaderPresent && chatOrderReady && calmReady;
   // A new account gets the first-run flow in place of the empty home. The flow shows its own
   // connection state, so the loader does not cover it.
   const onboarding = useHomeOnboarding();
@@ -460,6 +475,9 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
     hiddenAgents.length > 0 ||
     channels.channels.some((channel) => !channel.archived && hiddenChannelIds.includes(channel.id));
   const hasPins = pinnedAgents.length + pinnedChannels.length > 0;
+  const hiddenChatCount =
+    hiddenAgents.length +
+    channels.channels.filter((channel) => !channel.archived && hiddenChannelIds.includes(channel.id)).length;
   // As Hidden chats, the menu offers Deleted channels only when the server has one to restore or read.
   const hasDeletedChannels = channels.supported && channels.channels.some((channel) => channel.archived);
   const unreadAgentIds = useUnreadAgentIds();
@@ -550,6 +568,17 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
     dragging,
     t,
   ]);
+  // The calm look shows the number of chats beside each folder name: the chats right under it.
+  const sectionChatCounts = useMemo(() => {
+    const counts = new Map<string, number>();
+    let current: string | null = null;
+    for (const item of items) {
+      if (item.kind === "section") current = item.id;
+      else if (item.kind === "waiting" || item.kind === "unread") current = null;
+      else if (current) counts.set(current, (counts.get(current) ?? 0) + 1);
+    }
+    return counts;
+  }, [items]);
   const visibleSectionIds = useMemo(
     () => items.filter((item) => item.kind === "section").map((item) => item.id),
     [items],
@@ -698,11 +727,19 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
     ({ item, index }: { item: MobileSidebarItem; index: number }) =>
       item.kind === "waiting" ? (
         <AgentListRowReveal index={index + rowOffset} reveal={listReveal} skip={holdOpen}>
-          <AgentWaitingGroupHeader count={item.count} />
+          {calm ? (
+            <CalmGroupLabel title={t("mobile.agent.list.waiting.title")} count={item.count} />
+          ) : (
+            <AgentWaitingGroupHeader count={item.count} />
+          )}
         </AgentListRowReveal>
       ) : item.kind === "unread" ? (
         <AgentListRowReveal index={index + rowOffset} reveal={listReveal} skip={holdOpen}>
-          <AgentUnreadGroupHeader count={item.count} />
+          {calm ? (
+            <CalmGroupLabel title={t("mobile.agent.list.unreadGroup.title")} count={item.count} />
+          ) : (
+            <AgentUnreadGroupHeader count={item.count} />
+          )}
         </AgentListRowReveal>
       ) : item.kind === "section" ? (
         <CollapsingRow collapsed={collapsedRowIds.has(item.id)}>
@@ -720,6 +757,7 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
                 visibleSectionIds={visibleSectionIds}
                 collapsed={collapsedSectionIds.has(item.id)}
                 onToggle={toggleSection}
+                count={sectionChatCounts.get(item.id) ?? 0}
               />
             </SectionDropTarget>
           </AgentListRowReveal>
@@ -747,6 +785,7 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
       ),
     [
       activeServer.id,
+      calm,
       channelAgents,
       collapsedRowIds,
       collapsedSectionIds,
@@ -755,11 +794,15 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
       listReveal,
       rowOffset,
       scrolling,
+      sectionChatCounts,
+      t,
       toggleSection,
       visibleSectionIds,
     ],
   );
   const listRef = useRef<FlatList>(null);
+  // The floating "N unread" pill of the calm look, which jumps to the next unread chat out of view.
+  const calmUnread = useCalmUnread({ items, collapsedRowIds, unreadAgentIds, listRef });
   /** The scroll of the list while a drag scrolls it. The user cannot scroll during a drag. */
   const dragScroll = useRef({ offset: 0, content: 0, viewport: 0 });
   // iOS insets the content under its native header, so the content rests at minus its height.
@@ -955,7 +998,7 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
   ) : null;
 
   const listTree = (
-    <View className="flex-1 bg-background">
+    <View className="flex-1 bg-background" style={calm ? { backgroundColor: calmColors.background } : undefined}>
       {/* The search field and the bar blur the home content. */}
       <AndroidBlurTarget target={searchBlurTarget} surface="canvas">
         <HomeSearchList search={search} barHeight={searchBarOffset}>
@@ -970,7 +1013,7 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
           ) : listReady ? (
             <ChatDragProvider screen={dragScreen}>
               <Animated.FlatList
-                key={activeServer.id}
+                key={calm ? `${activeServer.id}:calm` : activeServer.id}
                 ref={listRef}
                 scrollEnabled={!dragging}
                 onLayout={(event) => {
@@ -988,7 +1031,11 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
                 className="flex-1 bg-background"
                 // The side insets (the iPhone Duo rail, the landscape cutout) go outside the list. With
                 // `always`, iOS would also inset the content by them.
-                style={{ marginLeft: insets.left, marginRight: insets.right }}
+                style={{
+                  marginLeft: insets.left,
+                  marginRight: insets.right,
+                  ...(calm ? { backgroundColor: calmColors.background } : null),
+                }}
                 alwaysBounceVertical={false}
                 contentContainerClassName={items.length > 0 ? undefined : "grow"}
                 // Without a content inset from iOS (Android, the pane, the vertical bar of iPhone Duo), the
@@ -1013,9 +1060,22 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
                 onMomentumScrollBegin={() => setListMoving(true)}
                 onScrollEndDrag={() => setListMoving(false)}
                 onMomentumScrollEnd={() => setListMoving(false)}
+                // Only the calm look follows the visible rows, for its unread pill. The list remounts when
+                // the look changes (its key), as FlatList cannot change this callback while mounted.
+                onViewableItemsChanged={calm ? calmUnread.onViewableItemsChanged : undefined}
+                viewabilityConfig={calm ? calmUnread.viewabilityConfig : undefined}
+                onScrollToIndexFailed={calm ? calmUnread.onScrollToIndexFailed : undefined}
+                ListFooterComponent={calm && hasHiddenChats ? <CalmHiddenLink count={hiddenChatCount} /> : undefined}
                 ListHeaderComponent={
                   <AgentListRowReveal index={0} reveal={listReveal}>
-                    {hasSelectedServer ? (
+                    {calm ? (
+                      // The calm look has no big title: the pinned agents, or the first folder, sit
+                      // under the floating buttons, as in the design preview.
+                      <>
+                        <AppUpdateSpacer header={updateHeader} headerHeight={headerHeight} />
+                        <View style={{ height: hasPins ? 30 : 12 }} />
+                      </>
+                    ) : hasSelectedServer ? (
                       <LargeTitle
                         scroll={scroll}
                         title={activeServer.name}
@@ -1137,7 +1197,7 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
           title={activeServer.name}
           blurTarget={searchBlurTarget}
           // The connection state takes the place of the title in the bar.
-          hidden={!searchShows || statusShows || search.open}
+          hidden={calm || !searchShows || statusShows || search.open}
         >
           <AppUpdateBlock header={updateHeader} scroll={scroll} hidden={search.open} />
         </LargeTitleBar>
@@ -1147,7 +1207,15 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
       {searchShows ? <HomeSearchResults search={search} barHeight={searchBarOffset} /> : null}
 
       {/* What's new covers home with the update block, so the field leaves while it shows. */}
-      {searchShows && !updateHeader.expanded ? <HomeSearchBar search={search} blurTarget={searchBlurTarget} /> : null}
+      {searchShows && !updateHeader.expanded ? (
+        <HomeSearchBar
+          search={search}
+          blurTarget={searchBlurTarget}
+          leading={calm ? <CalmBottomGrid serverId={activeServer.id} /> : undefined}
+          sideInset={calm ? previewSize.bottomBarInset : undefined}
+        />
+      ) : null}
+      {calm && searchShows && !search.open && !updateHeader.expanded ? <CalmUnreadPill unread={calmUnread} /> : null}
 
       {onboardingReady ? (
         // The flow fades out over the home, which comes in under it with its own reveal.
@@ -1195,7 +1263,12 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
         <>
           <Stack.Toolbar placement="left">
             {/* The search takes the screen, so the bar buttons go while it is open. */}
-            <Stack.Toolbar.Button icon="sidebar.leading" hidden={search.open} onPress={openDrawer} />
+            {/* The calm look shows the profile here: the drawer holds the servers, the profile and Settings. */}
+            <Stack.Toolbar.Button
+              icon={calm ? "person.crop.circle" : "sidebar.leading"}
+              hidden={search.open}
+              onPress={openDrawer}
+            />
             <Stack.Toolbar.View hidesSharedBackground hidden={search.open}>
               <ConnectionHeaderStatus server={hasSelectedServer ? activeServer : undefined} />
             </Stack.Toolbar.View>
@@ -1211,7 +1284,7 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
               />
             </Stack.Toolbar.View>
             <Stack.Toolbar.Menu
-              icon="ellipsis"
+              icon={calm ? "plus" : "ellipsis"}
               accessibilityLabel={t("mobile.agent.home.chatOptions")}
               separateBackground
               hidden={search.open}

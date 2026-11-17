@@ -508,4 +508,7 @@ export const messages = defineMessages("mobile.settings", {
   "mobile.settings.shortcuts.send.unconfirmed": "No answer from the server. The message can be in the chat.",
   "mobile.settings.shortcuts.send.inApp": "Send in OpenBot",
   "mobile.settings.shortcuts.send.openChat": "Open chat",
+  "mobile.settings.appearance.calmLook": "New design",
+  "mobile.settings.appearance.calmLookFooter":
+    "Shows your chats in the calm look of the design preview. Only in this build.",
 });
