@@ -22,7 +22,7 @@ export interface ConnectorTransports {
   github?: () => GitHubConnectorPort;
   onePassword?: () => OnePasswordConnectorPort;
   bitwarden?: () => BitwardenConnectorPort;
-  /** The shared password manager engine, for the managers that have no port of their own (Proton Pass). */
+  /** The shared password manager engine, for the managers that have no port of their own (Proton Pass, Keeper). */
   passwordManagers?: () => PasswordManagerPort;
   messaging?: MessagingApi;
   whatsapp?: () => WhatsAppPort;
@@ -53,6 +53,7 @@ export function createConnectorSet(transports: ConnectorTransports, options: Mes
   if (transports.bitwarden) set.bitwarden = createBitwardenConnector(transports.bitwarden, options.hostName);
   if (transports.passwordManagers) {
     set.protonpass = createPasswordManagerConnector("protonpass", transports.passwordManagers, options.hostName);
+    set.keeper = createPasswordManagerConnector("keeper", transports.passwordManagers, options.hostName);
   }
   return set;
 }

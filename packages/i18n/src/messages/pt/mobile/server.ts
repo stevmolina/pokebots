@@ -719,6 +719,31 @@ export const messages = {
   "mobile.server.connectors.protonPass.keyHelp":
     "No Proton Pass, crie uma chave de acesso que só possa ler o cofre que você compartilha com o OpenBot e cole-a aqui. {host} guarda a chave; este telefone não.",
   "mobile.server.connectors.protonPass.keyPlaceholder": "pst_…",
+  "mobile.server.connectors.keeper.title": "Keeper",
+  "mobile.server.connectors.keeper.description":
+    "Compartilhe uma pasta do Keeper com o OpenBot em {host}, para que os agentes em {host} possam entrar em sites no navegador dele.",
+  "mobile.server.connectors.keeper.accountHelp":
+    "Digite seu e-mail e sua senha mestra do Keeper. Eles vão para {host} uma única vez, e {host} os entrega ao Keeper Commander. Este telefone não os guarda.",
+  "mobile.server.connectors.keeper.email": "E-mail",
+  "mobile.server.connectors.keeper.masterPassword": "Senha mestra",
+  "mobile.server.connectors.keeper.signingIn": "{host} está entrando no Keeper…",
+  "mobile.server.connectors.keeper.makingFolder": "{host} está criando a pasta compartilhada…",
+  "mobile.server.connectors.keeper.code": "Código",
+  "mobile.server.connectors.keeper.twoFactorHint":
+    "O Keeper pede um código de duas etapas. Digite o código do seu app autenticador ou da mensagem de texto. Ele vai para {host} uma única vez; este telefone não o guarda.",
+  "mobile.server.connectors.keeper.deviceHint":
+    "O Keeper enviou um e-mail de aprovação e uma notificação para seus outros dispositivos. Aprove este dispositivo lá e toque em Continuar. Ou digite o código do e-mail.",
+  "mobile.server.connectors.keeper.codeWrong": "O código não está correto. Tente de novo.",
+  "mobile.server.connectors.keeper.folderTitle": "Pasta compartilhada",
+  "mobile.server.connectors.keeper.folderFooter":
+    "Mova um login para esta pasta no Keeper para que os agentes entrem com ele. Remova-o para parar.",
+  "mobile.server.connectors.keeper.plan":
+    "Seu administrador do Keeper não permite o Keeper Commander nesta conta. Peça que ele permita e conecte de novo.",
+  "mobile.server.connectors.keeper.expiredTitle": "A sessão do Keeper foi encerrada",
+  "mobile.server.connectors.keeper.expiredBody":
+    "Os agentes em {host} não podem entrar com seus logins compartilhados até você conectar de novo.",
+  "mobile.server.connectors.keeper.disconnectBody":
+    "{host} encerra a sessão dele no Keeper. A pasta e os logins dela ficam no seu cofre do Keeper.",
   "mobile.server.connectors.passwordManager.unavailable": "{name} não está disponível neste servidor.",
   "mobile.server.connectors.passwordManager.howItWorks":
     "Entre no {name} neste telefone. Depois, {host} cria um cofre compartilhado e uma chave de acesso somente leitura para ele, e guarda apenas essa chave. Os agentes nunca veem uma senha.",

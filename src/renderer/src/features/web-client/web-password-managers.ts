@@ -16,12 +16,15 @@ import { type PasswordManagerPort, polledPasswordManagerPort } from "../connecto
 
 /**
  * The sites whose sign-in page this browser opens, by manager. Another address does not open. 1Password
- * and Bitwarden connect through their own pages, with no sign-in page from the host.
+ * and Bitwarden connect through their own pages, and Keeper takes the account in the page, with no sign-in
+ * page from the host.
  */
 const SIGN_IN_HOSTS: Readonly<Record<PasswordManagerId, readonly string[]>> = {
   onepassword: [],
   bitwarden: [],
   protonpass: ["proton.me"],
+  // Keeper connects with the account's email and master password. The host names no sign-in page.
+  keeper: [],
 };
 
 /** The sign-in page of `status`, when it is an https page of the manager's own site. */

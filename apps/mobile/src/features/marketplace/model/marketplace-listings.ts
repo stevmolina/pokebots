@@ -106,6 +106,7 @@ const CONNECTOR_CATEGORY = {
   onepassword: "productivity",
   bitwarden: "productivity",
   protonpass: "productivity",
+  keeper: "productivity",
 } as const satisfies Record<MobileConnectorId, SkillCategory>;
 
 export const CONNECTOR_TAGLINES = {
@@ -117,6 +118,7 @@ export const CONNECTOR_TAGLINES = {
   onepassword: "mobile.marketplace.app.onePasswordTagline",
   bitwarden: "mobile.marketplace.app.bitwardenTagline",
   protonpass: "mobile.marketplace.app.protonPassTagline",
+  keeper: "mobile.marketplace.app.keeperTagline",
 } as const satisfies Record<MobileConnectorId, MobileTextKey>;
 
 /**

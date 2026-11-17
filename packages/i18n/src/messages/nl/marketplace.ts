@@ -94,6 +94,7 @@ export const messages = {
   "marketplace.app.whatsappTagline": "Je eigen chat en de mensen die je toestaat in WhatsApp",
   "marketplace.app.bitwardenTagline": "Log in op sites met logins uit een gedeelde map",
   "marketplace.app.protonPassTagline": "Log in op sites met logins uit een gedeelde kluis",
+  "marketplace.app.keeperTagline": "Log in op sites met logins uit een gedeelde map",
   "marketplace.app.onePasswordCategory": "Beheer van logins en inloggegevens",
   "marketplace.app.yourApps": "Jouw apps",
   "marketplace.app.addCustom": "Eigen toevoegen",

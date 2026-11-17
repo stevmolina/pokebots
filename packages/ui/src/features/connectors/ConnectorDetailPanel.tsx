@@ -12,6 +12,7 @@ import {
   type IntegrationStatus,
   UNKNOWN_STATUS,
 } from "../settings/IntegrationLayout";
+import { KeeperConnectorPanel, type KeeperConnectorPanelProps, keeperStatus } from "../settings/KeeperConnectorPanel";
 import {
   ONEPASSWORD_STATUS,
   OnePasswordConnectorPanel,
@@ -51,6 +52,7 @@ export type ConnectorDetail =
   | { id: "onepassword"; props: OnePasswordConnectorPanelProps }
   | { id: "bitwarden"; props: BitwardenConnectorPanelProps }
   | { id: "protonpass"; props: ProtonPassConnectorPanelProps }
+  | { id: "keeper"; props: KeeperConnectorPanelProps }
   | { id: "slack" | "discord"; props: SlackIntegrationPanelProps }
   | { id: "telegram"; props: TelegramIntegrationPanelProps }
   | { id: "whatsapp"; props: WhatsAppIntegrationPanelProps };
@@ -130,6 +132,24 @@ export function connectorSummary(detail: ConnectorDetail, t: TextValue["t"]): Co
               : host
                 ? t("connector.protonPass.descriptionHost", { host })
                 : t("connector.protonPass.description"),
+      };
+    }
+    case "keeper": {
+      if (detail.props.statusError) return unknownSummary(t);
+      const status = detail.props.status;
+      const header = keeperStatus(detail.props);
+      const host = detail.props.hostName;
+      return {
+        status: header.status,
+        statusLabel: t(header.label),
+        summary:
+          header.status === "attention"
+            ? t("connector.keeper.expiredTitle")
+            : status.state === "connected" && status.loginCount !== null
+              ? t("connector.keeper.loginCount", { count: status.loginCount })
+              : host
+                ? t("connector.keeper.descriptionHost", { host })
+                : t("connector.keeper.description"),
       };
     }
     case "slack":
@@ -231,6 +251,10 @@ export function connectorDescription(detail: ConnectorDetail, t: TextValue["t"])
       const host = detail.props.hostName;
       return host ? t("connector.protonPass.descriptionHost", { host }) : t("connector.protonPass.description");
     }
+    case "keeper": {
+      const host = detail.props.hostName;
+      return host ? t("connector.keeper.descriptionHost", { host }) : t("connector.keeper.description");
+    }
     case "slack":
     case "discord":
       return t(messagingPlatformText(detail.id).description);
@@ -250,6 +274,7 @@ export function ConnectorDetailPanel(props: { detail: ConnectorDetail } & Integr
   const onePassword = () => (props.detail.id === "onepassword" ? props.detail : undefined);
   const bitwarden = () => (props.detail.id === "bitwarden" ? props.detail : undefined);
   const protonPass = () => (props.detail.id === "protonpass" ? props.detail : undefined);
+  const keeper = () => (props.detail.id === "keeper" ? props.detail : undefined);
   const workspace = () => (props.detail.id === "slack" || props.detail.id === "discord" ? props.detail : undefined);
   const telegram = () => (props.detail.id === "telegram" ? props.detail : undefined);
   const whatsapp = () => (props.detail.id === "whatsapp" ? props.detail : undefined);
@@ -288,6 +313,16 @@ export function ConnectorDetailPanel(props: { detail: ConnectorDetail } & Integr
       <Match when={protonPass()}>
         {(detail) => (
           <ProtonPassConnectorPanel
+            {...detail().props}
+            tagline={props.tagline}
+            intro={props.intro}
+            details={props.details}
+          />
+        )}
+      </Match>
+      <Match when={keeper()}>
+        {(detail) => (
+          <KeeperConnectorPanel
             {...detail().props}
             tagline={props.tagline}
             intro={props.intro}

@@ -978,6 +978,31 @@ export const messages = {
   "mobile.server.connectors.protonPass.keyHelp":
     "في Proton Pass، أنشئ مفتاح وصول يمكنه قراءة الخزنة التي تشاركها مع OpenBot فقط، ثم الصقه هنا. يحتفظ {host} بالمفتاح؛ ولا يحتفظ به هذا الهاتف.",
   "mobile.server.connectors.protonPass.keyPlaceholder": "pst_…",
+  "mobile.server.connectors.keeper.title": "Keeper",
+  "mobile.server.connectors.keeper.description":
+    "شارك مجلد Keeper واحدًا مع OpenBot على {host}، حتى يتمكن الوكلاء على {host} من تسجيل الدخول إلى المواقع في متصفحه.",
+  "mobile.server.connectors.keeper.accountHelp":
+    "أدخل بريدك الإلكتروني وكلمة المرور الرئيسية في Keeper. يصلان إلى {host} مرة واحدة، ثم يسلّمهما {host} إلى Keeper Commander. لا يحتفظ بهما هذا الهاتف.",
+  "mobile.server.connectors.keeper.email": "البريد الإلكتروني",
+  "mobile.server.connectors.keeper.masterPassword": "كلمة المرور الرئيسية",
+  "mobile.server.connectors.keeper.signingIn": "يسجّل {host} الدخول إلى Keeper…",
+  "mobile.server.connectors.keeper.makingFolder": "ينشئ {host} المجلد المشترك…",
+  "mobile.server.connectors.keeper.code": "الرمز",
+  "mobile.server.connectors.keeper.twoFactorHint":
+    "يطلب Keeper رمز التحقق بخطوتين. أدخل الرمز من تطبيق المصادقة أو من الرسالة النصية. يصل إلى {host} مرة واحدة؛ ولا يحتفظ به هذا الهاتف.",
+  "mobile.server.connectors.keeper.deviceHint":
+    "أرسل Keeper رسالة بريد للموافقة وإشعارًا إلى أجهزتك الأخرى. وافق على هذا الجهاز هناك، ثم اضغط «متابعة». أو اكتب الرمز الموجود في البريد.",
+  "mobile.server.connectors.keeper.codeWrong": "الرمز غير صحيح. حاول مرة أخرى.",
+  "mobile.server.connectors.keeper.folderTitle": "المجلد المشترك",
+  "mobile.server.connectors.keeper.folderFooter":
+    "انقل بيانات دخول إلى هذا المجلد في Keeper ليسجّل الوكلاء الدخول بها. أزلها منه للإيقاف.",
+  "mobile.server.connectors.keeper.plan":
+    "لا يسمح مسؤول Keeper لديك باستخدام Keeper Commander لهذا الحساب. اطلب منه السماح به، ثم اتصل مرة أخرى.",
+  "mobile.server.connectors.keeper.expiredTitle": "انتهت جلسة Keeper",
+  "mobile.server.connectors.keeper.expiredBody":
+    "لا يستطيع الوكلاء على {host} تسجيل الدخول ببيانات الدخول المشتركة حتى تتصل مرة أخرى.",
+  "mobile.server.connectors.keeper.disconnectBody":
+    "ينهي {host} جلسته في Keeper. يبقى المجلد وبيانات الدخول فيه في خزنة Keeper.",
   "mobile.server.connectors.passwordManager.unavailable": "{name} غير متاح على هذا الخادم.",
   "mobile.server.connectors.passwordManager.howItWorks":
     "سجّل الدخول إلى {name} على هذا الهاتف. بعد ذلك ينشئ {host} خزنة مشتركة ومفتاح وصول للقراءة فقط لها، ويحتفظ بهذا المفتاح فقط. لا يرى الوكلاء أي كلمة مرور.",

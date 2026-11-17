@@ -732,6 +732,31 @@ export const messages = {
   "mobile.server.connectors.protonPass.keyHelp":
     "Erstelle in Proton Pass einen Zugriffsschlüssel, der nur den mit OpenBot geteilten Tresor lesen kann, und füge ihn hier ein. {host} speichert den Schlüssel, dieses Telefon nicht.",
   "mobile.server.connectors.protonPass.keyPlaceholder": "pst_…",
+  "mobile.server.connectors.keeper.title": "Keeper",
+  "mobile.server.connectors.keeper.description":
+    "Teile einen Keeper-Ordner mit OpenBot auf {host}, damit Agenten auf {host} sich in dessen Browser bei Websites anmelden können.",
+  "mobile.server.connectors.keeper.accountHelp":
+    "Gib deine Keeper-E-Mail-Adresse und dein Master-Passwort ein. Sie gehen einmal an {host}, und {host} gibt sie an Keeper Commander weiter. Dieses Telefon speichert sie nicht.",
+  "mobile.server.connectors.keeper.email": "E-Mail",
+  "mobile.server.connectors.keeper.masterPassword": "Master-Passwort",
+  "mobile.server.connectors.keeper.signingIn": "{host} meldet sich bei Keeper an…",
+  "mobile.server.connectors.keeper.makingFolder": "{host} erstellt den geteilten Ordner…",
+  "mobile.server.connectors.keeper.code": "Code",
+  "mobile.server.connectors.keeper.twoFactorHint":
+    "Keeper fragt nach einem Zwei-Faktor-Code. Gib den Code aus deiner Authenticator-App oder SMS ein. Er geht einmal an {host}; dieses Telefon speichert ihn nicht.",
+  "mobile.server.connectors.keeper.deviceHint":
+    "Keeper hat eine Genehmigungs-E-Mail und eine Benachrichtigung an deine anderen Geräte gesendet. Genehmige dort dieses Gerät und tippe dann auf Weiter. Oder gib den Code aus der E-Mail ein.",
+  "mobile.server.connectors.keeper.codeWrong": "Der Code ist nicht korrekt. Versuche es erneut.",
+  "mobile.server.connectors.keeper.folderTitle": "Geteilter Ordner",
+  "mobile.server.connectors.keeper.folderFooter":
+    "Verschiebe in Keeper eine Anmeldung in diesen Ordner, damit Agenten sich damit anmelden können. Entferne sie, um den Zugriff zu beenden.",
+  "mobile.server.connectors.keeper.plan":
+    "Dein Keeper-Administrator erlaubt Keeper Commander für dieses Konto nicht. Bitte ihn, es zu erlauben, und verbinde dann erneut.",
+  "mobile.server.connectors.keeper.expiredTitle": "Die Keeper-Sitzung wurde beendet",
+  "mobile.server.connectors.keeper.expiredBody":
+    "Agenten auf {host} können sich erst wieder mit deinen geteilten Zugangsdaten anmelden, wenn du dich erneut verbindest.",
+  "mobile.server.connectors.keeper.disconnectBody":
+    "{host} beendet seine Keeper-Sitzung. Der Ordner und seine Zugangsdaten bleiben in deinem Keeper-Tresor.",
   "mobile.server.connectors.passwordManager.unavailable": "{name} ist auf diesem Server nicht verfügbar.",
   "mobile.server.connectors.passwordManager.howItWorks":
     "Melde dich auf diesem Telefon bei {name} an. Dann erstellt {host} einen geteilten Tresor und einen schreibgeschützten Zugriffsschlüssel dafür und speichert nur diesen Schlüssel. Agenten sehen nie ein Passwort.",

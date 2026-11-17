@@ -13,6 +13,7 @@ export const PASSWORD_MANAGER_BRANDS = {
   onepassword: "1Password",
   bitwarden: "Bitwarden",
   protonpass: "Proton Pass",
+  keeper: "Keeper",
 } as const satisfies Record<PasswordManagerId, string>;
 
 export const PASSWORD_MANAGER_BRAND_NAMES: readonly string[] = Object.values(PASSWORD_MANAGER_BRANDS);

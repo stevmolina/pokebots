@@ -24,6 +24,7 @@ export const messages = {
   "mobile.marketplace.app.onePasswordTagline": "Paylaştığınız oturum bilgileriyle sitelerde oturum açın",
   "mobile.marketplace.app.bitwardenTagline": "Paylaşılan bir klasördeki oturum bilgileriyle sitelerde oturum açın",
   "mobile.marketplace.app.protonPassTagline": "Paylaşılan bir kasadaki oturum bilgileriyle sitelerde oturum açın",
+  "mobile.marketplace.app.keeperTagline": "Paylaşılan bir klasördeki oturum bilgileriyle sitelerde oturum açın",
   "mobile.marketplace.search.placeholder": "Pazaryerinde ara",
   "mobile.marketplace.search.clear": "Aramayı temizle",
   "mobile.marketplace.search.close": "Aramayı kapat",

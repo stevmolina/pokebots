@@ -644,4 +644,66 @@ export const messages = {
     "OpenBot supprime sa clé d’accès sur {host}. Le coffre et ses identifiants restent dans votre compte Proton.",
   "connector.protonPass.disconnect": "Déconnecter",
   "connector.protonPass.actionFailed": "OpenBot n’a pas pu modifier la connexion Proton Pass.",
+  "connector.keeper.title": "Keeper",
+  "connector.keeper.description":
+    "Les agents se connectent aux sites avec les identifiants d’un dossier Keeper partagé.",
+  "connector.keeper.descriptionHost":
+    "Les agents de {host} se connectent aux sites avec les identifiants d’un dossier Keeper partagé.",
+  "connector.keeper.connect": "Connecter",
+  "connector.keeper.setupTitle": "Connexion",
+  "connector.keeper.setupDescription":
+    "Saisissez votre e-mail et votre mot de passe principal Keeper. OpenBot les transmet une seule fois à Keeper Commander et ne les garde pas. Keeper Commander est l’outil en ligne de commande de Keeper.",
+  "connector.keeper.setupDescriptionHost":
+    "Saisissez votre e-mail et votre mot de passe principal Keeper. {host} les transmet une seule fois à Keeper Commander et ne les garde pas. Keeper Commander est l’outil en ligne de commande de Keeper.",
+  "connector.keeper.emailLabel": "E-mail",
+  "connector.keeper.passwordLabel": "Mot de passe principal",
+  "connector.keeper.folderName": "Shared with OpenBot",
+  "connector.keeper.folderSetup":
+    "OpenBot crée ce dossier dans votre coffre à la connexion. Déplacez-y des identifiants pour les partager.",
+  "connector.keeper.showSteps": "Voir les étapes",
+  "connector.keeper.stepsLabel": "Étapes de connexion",
+  "connector.keeper.stepSignIn": "Connexion",
+  "connector.keeper.stepVerify": "Vérifier",
+  "connector.keeper.stepDone": "Terminé",
+  "connector.keeper.signInTitle": "Connexion à Keeper",
+  "connector.keeper.signInDescription": "Keeper Commander se connecte avec votre compte.",
+  "connector.keeper.signInDescriptionHost": "{host} se connecte à Keeper avec votre compte.",
+  "connector.keeper.twoFactorTitle": "Saisissez votre code",
+  "connector.keeper.twoFactorDescription":
+    "Keeper demande un code en deux étapes. Saisissez le code de votre application d’authentification ou du SMS.",
+  "connector.keeper.deviceTitle": "Approuvez cet appareil",
+  "connector.keeper.deviceDescription":
+    "Keeper a envoyé un e-mail d’approbation et une notification à vos autres appareils. Approuvez cet appareil avec le lien de l’e-mail ou sur un autre appareil, puis appuyez sur Continuer. Ou saisissez le code de l’e-mail.",
+  "connector.keeper.codeLabel": "Code",
+  "connector.keeper.codeWrong": "Le code est incorrect. Saisissez-le à nouveau.",
+  "connector.keeper.continue": "Continuer",
+  "connector.keeper.setupStepTitle": "Création du dossier partagé",
+  "connector.keeper.setupStepDescription":
+    "OpenBot crée le dossier « {folder} » dans votre coffre et active la connexion pour cet appareil.",
+  "connector.keeper.doneTitle": "Keeper est connecté",
+  "connector.keeper.doneDescription": "Déplacez des identifiants dans « {folder} » pour que les agents s’en servent.",
+  "connector.keeper.failedTitle": "Keeper n’est pas connecté",
+  "connector.keeper.done": "Terminé",
+  "connector.keeper.close": "Fermer",
+  "connector.keeper.statusConnecting": "Connexion",
+  "connector.keeper.statusConnected": "Connecté",
+  "connector.keeper.statusExpired": "Session terminée",
+  "connector.keeper.expiredTitle": "La session Keeper est terminée",
+  "connector.keeper.expiredDescription":
+    "Les agents ne peuvent plus utiliser vos identifiants partagés tant que vous ne vous reconnectez pas. Saisissez votre mot de passe principal ci-dessous.",
+  "connector.keeper.planTitle": "Keeper Commander est bloqué",
+  "connector.keeper.planDescription":
+    "Votre administrateur Keeper n’autorise pas Keeper Commander pour ce compte. Demandez-lui de l’autoriser, puis connectez à nouveau.",
+  "connector.keeper.folderTitle": "Dossier partagé",
+  "connector.keeper.folderDescription":
+    "Déplacez un identifiant dans ce dossier dans Keeper pour que les agents s’en servent. Retirez-le pour arrêter.",
+  "connector.keeper.loginCount": { one: "{count} identifiant", other: "{count} identifiants" },
+  "connector.keeper.loginsLoading": "Comptage des identifiants…",
+  "connector.keeper.disconnectTitle": "Déconnecter Keeper",
+  "connector.keeper.disconnectSummary":
+    "OpenBot met fin à sa session Keeper sur cet ordinateur. Le dossier et ses identifiants restent dans votre coffre Keeper.",
+  "connector.keeper.disconnectSummaryHost":
+    "OpenBot met fin à sa session Keeper sur {host}. Le dossier et ses identifiants restent dans votre coffre Keeper.",
+  "connector.keeper.disconnect": "Déconnecter",
+  "connector.keeper.actionFailed": "OpenBot n’a pas pu modifier la connexion Keeper.",
 } as const satisfies PartialTranslation<typeof source>;

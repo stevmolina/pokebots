@@ -365,6 +365,8 @@ import { NotificationPreferenceStore } from "./notification-preference-store";
 import { OnePasswordConnectorService } from "./onepassword-connector-service";
 import { OnePasswordConnectorStore } from "./onepassword-connector-store";
 import { EncryptedRecordStore } from "./password-managers/encrypted-record-store";
+import { managedKeeperCommander } from "./password-managers/keeper-commander-installer";
+import { KeeperDriver, keeperRecordSchema } from "./password-managers/keeper-driver";
 import { PasswordManagersService } from "./password-managers/password-managers-service";
 import { managedProtonPassCli } from "./password-managers/proton-pass-cli-installer";
 import { ProtonPassDriver, protonPassRecordSchema } from "./password-managers/proton-pass-driver";
@@ -551,6 +553,8 @@ const BITWARDEN_CONNECTOR_FILE = "openbot-bitwarden-connector-v1.json";
 const AGENT_COMPUTER_FILE = "openbot-agent-computer-v1.json";
 /** The Proton Pass agent access key of this computer or host, with the same cipher. */
 const PROTONPASS_CONNECTOR_FILE = "openbot-protonpass-connector-v1.json";
+/** The Keeper Commander config (device key and clone code) of this computer or host, with the same cipher. */
+const KEEPER_CONNECTOR_FILE = "openbot-keeper-connector-v1.json";
 /** The logins, payment cards and contact info of the Vault in Server settings, with the same cipher. */
 const VAULT_FILE = "openbot-vault-v1.json";
 /** Which agent each imported Hermes profile made, so a second import updates that agent. */
@@ -2014,8 +2018,8 @@ export async function createApplicationServices({
   );
   /*
    * The password-manager engine. 1Password and Bitwarden keep their own services, panels and
-   * teardown, and the browser reads their logins directly. The Proton Pass CLI data and OpenBot's
-   * copy of `pass-cli` stay outside every root an agent can write.
+   * teardown, and the browser reads their logins directly. The Proton Pass CLI data, OpenBot's
+   * copy of `pass-cli` and its Keeper Commander install stay outside every root an agent can write.
    */
   const protonPassCliTarget = runtimeTarget(process.platform, process.arch);
   const passwordManagers = new PasswordManagersService([
@@ -2032,6 +2036,23 @@ export async function createApplicationServices({
         ? (signal) =>
             managedProtonPassCli({
               directory: join(app.getPath("userData"), "provider-state", "protonpass-cli"),
+              target: protonPassCliTarget,
+              signal,
+            })
+        : null,
+    }),
+    new KeeperDriver({
+      store: new EncryptedRecordStore({
+        path: join(app.getPath("userData"), KEEPER_CONNECTOR_FILE),
+        cipher: secretCipher,
+        decode: Schema.decodeUnknownSync(keeperRecordSchema),
+        unreadable: sourceText("error.connector.keeperFileUnreadable"),
+      }),
+      dataDirectory: join(app.getPath("userData"), "provider-state", "keeper-host"),
+      installCli: protonPassCliTarget
+        ? (signal) =>
+            managedKeeperCommander({
+              directory: join(app.getPath("userData"), "provider-state", "keeper-cli"),
               target: protonPassCliTarget,
               signal,
             })

@@ -3,6 +3,7 @@ import {
   type PasswordManagerConnectMethod,
   type PasswordManagerStatus,
 } from "@openbot/contracts/ipc";
+import type { KeeperConnectorPanelProps } from "@openbot/ui/features/settings/KeeperConnectorPanel";
 import type { ProtonPassConnectorPanelProps } from "@openbot/ui/features/settings/ProtonPassConnectorPanel";
 import { currentText } from "@openbot/ui/text";
 import { createSignal, onCleanup, onSettled } from "solid-js";
@@ -15,11 +16,17 @@ import {
 import { type PasswordManagerPort, passwordManagerPort } from "./password-manager-port";
 
 /** The managers that the shared engine connects and that have no page of their own. */
-export type EnginePasswordManagerId = "protonpass";
+export type EnginePasswordManagerId = "protonpass" | "keeper";
 
-/** A controller whose page is a page of the shared password manager engine. */
+/**
+ * A controller whose page is a page of the shared password manager engine. The page of Proton Pass
+ * signs in in the browser. The page of Keeper takes the account's email and master password in its
+ * own form, so it has no one-click `connect`.
+ */
 export interface PasswordManagerController extends ConnectorController {
-  readonly detail: { id: EnginePasswordManagerId; props: ProtonPassConnectorPanelProps };
+  readonly detail:
+    | { id: "protonpass"; props: ProtonPassConnectorPanelProps }
+    | { id: "keeper"; props: KeeperConnectorPanelProps };
 }
 
 /**
@@ -43,7 +50,10 @@ export function createPasswordManagerConnector(
   const [offered, setOffered] = createSignal(true);
   /** Why the last list read failed, until a newer status comes. While it is set, the state is not known. */
   const [statusError, setStatusError] = createSignal<string | null>(null);
-  const actions = createConnectorActions("connector.protonPass.actionFailed", manager);
+  const actions = createConnectorActions(
+    manager === "keeper" ? "connector.keeper.actionFailed" : "connector.protonPass.actionFailed",
+    manager,
+  );
   /** Counts the statuses that came, so a failed read does not hide a status that came after it started. */
   let statuses = 0;
   /** Set by a browser connection that the user started, until its sign-in page opens. */
@@ -103,40 +113,56 @@ export function createPasswordManagerConnector(
   };
   const connect = () => connectWith({ kind: "browser" }, "connect_started");
 
-  return {
-    id: manager,
-    ready: read,
-    available: offered,
-    busy: actions.busy,
-    connect,
-    reload,
-    watch: NO_WATCH,
-    detail: {
-      id: manager,
-      props: {
-        get status() {
-          return status();
-        },
-        get busy() {
-          return actions.busy();
-        },
-        get statusError() {
-          return statusError();
-        },
-        get hostName() {
-          return hostName();
-        },
-        onRetry: reload,
-        onConnect: connect,
-        onConnectWithKey: (key) => connectWith({ kind: "key", key }, "connected"),
-        onSubmitExtraPassword: (password) => connectWith({ kind: "extra-password", password }),
-        onCancel: () => {
-          openWhenReady = false;
-          actions.run(() => port().cancel(manager), { waits: false, done: show });
-        },
-        onDisconnect: () => actions.run(() => port().disconnect(manager), { done: show, track: "disconnected" }),
-        onOpenSignIn: openSignIn,
+  const cancel = () => {
+    openWhenReady = false;
+    actions.run(() => port().cancel(manager), { waits: false, done: show });
+  };
+  const disconnect = () => actions.run(() => port().disconnect(manager), { done: show, track: "disconnected" });
+  /** What both pages read. The props are getters, so a page follows the controller. */
+  const common = () => ({
+    get status() {
+      return status();
+    },
+    get busy() {
+      return actions.busy();
+    },
+    get statusError() {
+      return statusError();
+    },
+    get hostName() {
+      return hostName();
+    },
+    onRetry: reload,
+    onCancel: cancel,
+    onDisconnect: disconnect,
+  });
+  const base = { id: manager, ready: read, available: offered, busy: actions.busy, reload, watch: NO_WATCH };
+
+  if (manager === "keeper") {
+    return {
+      ...base,
+      detail: {
+        id: "keeper",
+        props: Object.assign(common(), {
+          // The email and the master password go to the host once, in this request. No status carries them.
+          onConnect: (email: string, password: string) =>
+            connectWith({ kind: "account", email, password }, "connect_started"),
+          onSubmitCode: (code: string) => connectWith({ kind: "code", code }),
+        }),
       },
+    };
+  }
+  return {
+    ...base,
+    connect,
+    detail: {
+      id: "protonpass",
+      props: Object.assign(common(), {
+        onConnect: connect,
+        onConnectWithKey: (key: string) => connectWith({ kind: "key", key }, "connected"),
+        onSubmitExtraPassword: (password: string) => connectWith({ kind: "extra-password", password }),
+        onOpenSignIn: openSignIn,
+      }),
     },
   };
 }

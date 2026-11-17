@@ -605,8 +605,8 @@ The password-manager engine
 keeps one driver for each manager
 ([`driver.ts`](../../src/main/password-managers/driver.ts)). A driver owns the sign-in, the stored
 access, the CLI and the logins of its manager. The engine owns the list, the checks that every
-manager shares, and the login sources of `password-vault-router.ts`. Proton Pass is its only
-driver: 1Password and Bitwarden keep their own services, panels and capabilities, and the router
+manager shares, and the login sources of `password-vault-router.ts`. Proton Pass and Keeper are its
+drivers: 1Password and Bitwarden keep their own services, panels and capabilities, and the router
 reads their logins directly. A new manager needs a driver, an id in `PASSWORD_MANAGER_IDS` and a
 Marketplace descriptor; no new IPC group or route.
 
@@ -633,6 +633,25 @@ keeps only the access key, in `openbot-protonpass-connector-v1.json`, and the CL
 pins, with a SHA-256 per target, into `<userData>/provider-state/protonpass-cli`. Disconnect removes
 the record and the session; the agent access key stays on the Proton account until it ends or the
 user removes it there.
+
+Keeper ([`keeper-driver.ts`](../../src/main/password-managers/keeper-driver.ts)) has one method,
+`account`. The client sends the account's email and master password once, in `connect`. The host
+gives them on stdin to a small Python bridge
+([`keeper-helper-script.ts`](../../src/main/password-managers/keeper-helper-script.ts)) that drives
+the login flow of Keeper Commander, Keeper's official CLI. When Keeper asks for a two-step code or a
+device approval, the status step is `two-factor` or `device-approval`, and the client answers with
+`code`. In `device-approval`, the host has already sent an approval email and a Keeper push, so an
+empty `code` means "check the approval again". After the sign-in, the bridge turns on Commander's
+persistent login for this device and makes the folder `Shared with OpenBot` when it is not there.
+The host keeps only Commander's config (device key and clone code) in
+`openbot-keeper-connector-v1.json`, encrypted by the operating system; the master password is not
+kept. Each later call writes that config to a private temporary file for the bridge, and stores the
+new clone code that Keeper gives at each sign-in, so calls run one at a time. The browser reads only
+the logins in `Shared with OpenBot`. [`keeper-commander-installer.ts`](../../src/main/password-managers/keeper-commander-installer.ts)
+downloads a pinned `uv` (SHA-256 per target), which installs a pinned Python and the pinned package
+list of `keeper-requirements.ts` into `<userData>/provider-state/keeper-cli`. Disconnect signs
+Commander out, which ends the persistent login, and removes the record and
+`<userData>/provider-state/keeper-host`.
 
 ## Add a Team API capability
 

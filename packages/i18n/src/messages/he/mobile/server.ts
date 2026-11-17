@@ -992,6 +992,31 @@ export const messages = {
   "mobile.server.connectors.protonPass.keyHelp":
     "ב-Proton Pass יש ליצור מפתח גישה שיכול לקרוא רק את הכספת שמשותפת עם OpenBot, ואז להדביק אותו כאן. {host} שומר את המפתח; הטלפון הזה לא.",
   "mobile.server.connectors.protonPass.keyPlaceholder": "pst_…",
+  "mobile.server.connectors.keeper.title": "Keeper",
+  "mobile.server.connectors.keeper.description":
+    "שיתוף תיקייה אחת של Keeper עם OpenBot ב-{host}, כדי שסוכנים ב-{host} יוכלו להתחבר לאתרים בדפדפן שלו.",
+  "mobile.server.connectors.keeper.accountHelp":
+    "יש להזין את האימייל והסיסמה הראשית של Keeper. הם נשלחים ל-{host} פעם אחת, ו-{host} מוסר אותם ל-Keeper Commander. הטלפון הזה לא שומר אותם.",
+  "mobile.server.connectors.keeper.email": "אימייל",
+  "mobile.server.connectors.keeper.masterPassword": "סיסמה ראשית",
+  "mobile.server.connectors.keeper.signingIn": "{host} מתחבר ל-Keeper…",
+  "mobile.server.connectors.keeper.makingFolder": "{host} יוצר את התיקייה המשותפת…",
+  "mobile.server.connectors.keeper.code": "קוד",
+  "mobile.server.connectors.keeper.twoFactorHint":
+    "Keeper מבקש קוד אימות דו־שלבי. יש להזין את הקוד מאפליקציית האימות או מהודעת הטקסט. הוא נשלח ל-{host} פעם אחת; הטלפון הזה לא שומר אותו.",
+  "mobile.server.connectors.keeper.deviceHint":
+    "Keeper שלח אימייל לאישור והתראה למכשירים האחרים שלך. יש לאשר שם את המכשיר הזה, ואז ללחוץ על ״המשך״. אפשר גם להקליד את הקוד מהאימייל.",
+  "mobile.server.connectors.keeper.codeWrong": "הקוד שגוי. יש לנסות שוב.",
+  "mobile.server.connectors.keeper.folderTitle": "תיקייה משותפת",
+  "mobile.server.connectors.keeper.folderFooter":
+    "כדי לאפשר לסוכנים להתחבר עם פרטי כניסה, יש להעביר אותם לתיקייה הזו ב-Keeper. כדי להפסיק, יש להסיר אותם.",
+  "mobile.server.connectors.keeper.plan":
+    "מנהל Keeper שלך לא מאפשר את Keeper Commander לחשבון הזה. יש לבקש ממנו לאפשר אותו ואז להתחבר שוב.",
+  "mobile.server.connectors.keeper.expiredTitle": "הסשן של Keeper הסתיים",
+  "mobile.server.connectors.keeper.expiredBody":
+    "סוכנים ב-{host} לא יכולים להתחבר עם פרטי הכניסה המשותפים עד להתחברות מחדש.",
+  "mobile.server.connectors.keeper.disconnectBody":
+    "{host} מסיים את הסשן שלו ב-Keeper. התיקייה ופרטי הכניסה שבה נשארים בכספת של Keeper.",
   // A password manager that the host connects through its CLI. {name} is the manager, such as
   // Proton Pass. {date} is a date, such as 5 Nov 2026.
   "mobile.server.connectors.passwordManager.unavailable": "{name} לא זמין בשרת הזה.",

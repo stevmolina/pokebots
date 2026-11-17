@@ -132,6 +132,7 @@ const CONNECTOR_SETUP = {
   onepassword: "vault",
   bitwarden: "vault",
   protonpass: "vault",
+  keeper: "vault",
   github: "account",
 } as const satisfies Record<ConnectorId, AppSetup>;
 

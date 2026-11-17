@@ -228,6 +228,7 @@
     "test:browser-agent-session": "bun scripts/browser-agent-session-e2e.ts",
     "test:update-rollout": "bun scripts/update-rollout-e2e.ts",
     "test:browser-steps": "bun scripts/browser-steps-e2e.ts",
+    "test:keeper-driver": "bun scripts/keeper-driver-e2e.ts",
     "test:browser-dialogs": "bun scripts/browser-dialogs-e2e.ts",
     "test:browser-fingerprint": "bun scripts/browser-fingerprint-e2e.ts",
     "test:browser-ambiguous-targets": "bun scripts/browser-ambiguous-targets-e2e.ts",

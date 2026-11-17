@@ -4769,7 +4769,7 @@
   "vault.untitledContact": ["de", "es", "fr", "it", "ja", "ko", "pt", "ru", "tr"],
   "vault.untitledLogin": ["de", "es", "fr", "it", "ja", "ko", "pt", "ru", "tr"],
   "vault.variableNameHint": ["de", "es", "fr", "it", "ja", "ko", "nl", "pt", "ru", "tr", "zh"],
-  "webClient.settings.connectionLog.title": [
+  "webClient.settings.connectionLog.copyFailed": [
     "ar",
     "de",
     "es",
@@ -4801,7 +4801,7 @@
     "tr",
     "zh"
   ],
-  "webClient.settings.connectionLog.copyFailed": [
+  "webClient.settings.connectionLog.title": [
     "ar",
     "de",
     "es",

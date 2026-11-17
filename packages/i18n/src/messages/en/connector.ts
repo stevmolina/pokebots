@@ -674,4 +674,66 @@ export const messages = defineMessages("connector", {
     "OpenBot deletes its access key on {host}. The vault and its logins stay in your Proton account.",
   "connector.protonPass.disconnect": "Disconnect",
   "connector.protonPass.actionFailed": "OpenBot could not change the Proton Pass connection.",
+  "connector.keeper.title": "Keeper",
+  "connector.keeper.description": "Let agents sign in to sites with the logins in a shared Keeper folder.",
+  "connector.keeper.descriptionHost":
+    "Let agents on {host} sign in to sites with the logins in a shared Keeper folder.",
+  "connector.keeper.connect": "Connect",
+  "connector.keeper.setupTitle": "Sign in",
+  "connector.keeper.setupDescription":
+    "Enter your Keeper email and master password. OpenBot gives them to Keeper Commander once and does not keep them. Keeper Commander is Keeper's command-line tool.",
+  "connector.keeper.setupDescriptionHost":
+    "Enter your Keeper email and master password. {host} gives them to Keeper Commander once and does not keep them. Keeper Commander is Keeper's command-line tool.",
+  "connector.keeper.emailLabel": "Email",
+  "connector.keeper.passwordLabel": "Master password",
+  // The exact folder name that OpenBot makes in Keeper. Keep it in English.
+  "connector.keeper.folderName": "Shared with OpenBot",
+  "connector.keeper.folderSetup":
+    "OpenBot makes this folder in your vault when you connect. Move logins into it to share them.",
+  "connector.keeper.showSteps": "Show steps",
+  "connector.keeper.stepsLabel": "Connect steps",
+  "connector.keeper.stepSignIn": "Sign in",
+  "connector.keeper.stepVerify": "Verify",
+  "connector.keeper.stepDone": "Done",
+  "connector.keeper.signInTitle": "Signing in to Keeper",
+  "connector.keeper.signInDescription": "Keeper Commander is signing in with your account.",
+  "connector.keeper.signInDescriptionHost": "{host} is signing in to Keeper with your account.",
+  "connector.keeper.twoFactorTitle": "Enter your code",
+  "connector.keeper.twoFactorDescription":
+    "Keeper asks for a two-step code. Enter the code from your authenticator app or text message.",
+  "connector.keeper.deviceTitle": "Approve this device",
+  "connector.keeper.deviceDescription":
+    "Keeper sent an approval email and a notification to your other devices. Approve this device with the link in the email or on another device, then press Continue. Or type the code from the email.",
+  "connector.keeper.codeLabel": "Code",
+  "connector.keeper.codeWrong": "The code is not correct. Enter it again.",
+  "connector.keeper.continue": "Continue",
+  "connector.keeper.setupStepTitle": "Making the shared folder",
+  "connector.keeper.setupStepDescription":
+    "OpenBot makes the folder “{folder}” in your vault and turns on sign-in for this device.",
+  "connector.keeper.doneTitle": "Keeper is connected",
+  "connector.keeper.doneDescription": "Move logins into “{folder}” to let agents sign in with them.",
+  "connector.keeper.failedTitle": "Keeper did not connect",
+  "connector.keeper.done": "Done",
+  "connector.keeper.close": "Close",
+  "connector.keeper.statusConnecting": "Connecting",
+  "connector.keeper.statusConnected": "Connected",
+  "connector.keeper.statusExpired": "Session ended",
+  "connector.keeper.expiredTitle": "The Keeper session ended",
+  "connector.keeper.expiredDescription":
+    "Agents cannot sign in with your shared logins until you connect again. Enter your master password below.",
+  "connector.keeper.planTitle": "Keeper Commander is blocked",
+  "connector.keeper.planDescription":
+    "Your Keeper administrator does not allow Keeper Commander for this account. Ask them to allow it, then connect again.",
+  "connector.keeper.folderTitle": "Shared folder",
+  "connector.keeper.folderDescription":
+    "Move a login into this folder in Keeper to let agents sign in with it. Remove it to stop.",
+  "connector.keeper.loginCount": { one: "{count} login", other: "{count} logins" },
+  "connector.keeper.loginsLoading": "Counting logins…",
+  "connector.keeper.disconnectTitle": "Disconnect Keeper",
+  "connector.keeper.disconnectSummary":
+    "OpenBot ends its Keeper session on this computer. The folder and its logins stay in your Keeper vault.",
+  "connector.keeper.disconnectSummaryHost":
+    "OpenBot ends its Keeper session on {host}. The folder and its logins stay in your Keeper vault.",
+  "connector.keeper.disconnect": "Disconnect",
+  "connector.keeper.actionFailed": "OpenBot could not change the Keeper connection.",
 });

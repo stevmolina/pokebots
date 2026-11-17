@@ -24,6 +24,7 @@ export const messages = {
   "mobile.marketplace.app.onePasswordTagline": "Inicia sesión en sitios con las credenciales que compartes",
   "mobile.marketplace.app.bitwardenTagline": "Inicia sesión en sitios con credenciales de una carpeta compartida",
   "mobile.marketplace.app.protonPassTagline": "Inicia sesión en sitios con credenciales de una bóveda compartida",
+  "mobile.marketplace.app.keeperTagline": "Inicia sesión en sitios con credenciales de una carpeta compartida",
   "mobile.marketplace.search.placeholder": "Buscar en el marketplace",
   "mobile.marketplace.search.clear": "Borrar búsqueda",
   "mobile.marketplace.search.close": "Cerrar búsqueda",

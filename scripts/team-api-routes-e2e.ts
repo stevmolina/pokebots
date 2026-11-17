@@ -1912,7 +1912,54 @@ const protonPassDriver: PasswordManagerDriver = {
     return () => protonPassListeners.delete(listener);
   },
 };
-const passwordManagers = new PasswordManagersService([protonPassDriver]);
+// A stand-in Keeper driver: an `account` sign-in that asks for a two-step code. It records whether
+// the master password and the code reached it, never the values.
+const KEEPER_MASTER_PASSWORD = "e2e Keeper master password that no answer carries";
+const KEEPER_CODE = "246810";
+let keeperStatus = disconnectedPasswordManager("keeper", ["account"]);
+const keeperListeners = new Set<(status: PasswordManagerStatus) => void>();
+function setKeeper(change: Partial<PasswordManagerStatus>): PasswordManagerStatus {
+  keeperStatus = { ...keeperStatus, ...change };
+  for (const listener of keeperListeners) listener(keeperStatus);
+  return keeperStatus;
+}
+const keeperDriver: PasswordManagerDriver = {
+  id: "keeper",
+  prefix: "keeper:",
+  brand: "Keeper",
+  signInHosts: [],
+  vault: {
+    connected: () => keeperStatus.state === "connected",
+    loginsFor: () => Effect.succeed(null),
+    secretFor: () => Effect.succeed(null),
+  },
+  status: () => keeperStatus,
+  connect: (method: PasswordManagerConnectMethod) =>
+    Effect.sync(() => {
+      if (method.kind === "account") {
+        record("keeper.connect", "account", method.email, method.password === KEEPER_MASTER_PASSWORD);
+        return setKeeper({ state: "signing-in", step: "two-factor" });
+      }
+      record("keeper.connect", method.kind, method.kind === "code" && method.code === KEEPER_CODE);
+      return setKeeper({
+        state: "connected",
+        step: null,
+        vaultNames: ["Shared with OpenBot"],
+        loginCount: 0,
+      });
+    }),
+  cancel: () => Effect.sync(() => keeperStatus),
+  disconnect: () =>
+    Effect.sync(() => {
+      record("keeper.disconnect");
+      return setKeeper(disconnectedPasswordManager("keeper", ["account"]));
+    }),
+  onChanged: (listener) => {
+    keeperListeners.add(listener);
+    return () => keeperListeners.delete(listener);
+  },
+};
+const passwordManagers = new PasswordManagersService([protonPassDriver, keeperDriver]);
 // The host's WhatsApp numbers (`whatsapp-connector-v1`): an in-memory stand-in for the messaging
 // service that records each call. The other connector routes are not part of this run.
 const WHATSAPP_NUMBER = "48600100200";
@@ -9130,7 +9177,10 @@ try {
       "an admin lists the host's managers with the methods that each one takes",
       isDeepStrictEqual(
         managers.map((status) => [status.manager, status.state, status.methods]),
-        [["protonpass", "disconnected", ["browser", "key"]]],
+        [
+          ["protonpass", "disconnected", ["browser", "key"]],
+          ["keeper", "disconnected", ["account"]],
+        ],
       ),
       summary(listed),
     );
@@ -9213,6 +9263,54 @@ try {
         callsOf("protonpass.disconnect").length === 1 &&
         !protonPassDriver.vault.connected(),
       summary(disconnect),
+    );
+    const keeperBrowser = await call("POST", PASSWORD_MANAGERS_ROUTES.connect, {
+      token: adaToken,
+      json: { manager: "keeper", method: { kind: "browser" } },
+      ...v9,
+    });
+    const earlyCode = await call("POST", PASSWORD_MANAGERS_ROUTES.connect, {
+      token: adaToken,
+      json: { manager: "protonpass", method: { kind: "code", code: KEEPER_CODE } },
+      ...v9,
+    });
+    const keeperAccount = await call("POST", PASSWORD_MANAGERS_ROUTES.connect, {
+      token: adaToken,
+      json: {
+        manager: "keeper",
+        method: { kind: "account", email: "ada@example.com", password: KEEPER_MASTER_PASSWORD },
+      },
+      ...v9,
+    });
+    const keeperWaits = asClient(PASSWORD_MANAGERS_ROUTES.connect, keeperAccount, decodeHostPasswordManagerStatus);
+    const keeperCode = await call("POST", PASSWORD_MANAGERS_ROUTES.connect, {
+      token: adaToken,
+      json: { manager: "keeper", method: { kind: "code", code: KEEPER_CODE } },
+      ...v9,
+    });
+    const keeperConnected = asClient(PASSWORD_MANAGERS_ROUTES.connect, keeperCode, decodeHostPasswordManagerStatus);
+    const keeperDisconnect = await call("POST", PASSWORD_MANAGERS_ROUTES.disconnect, {
+      token: adaToken,
+      json: { manager: "keeper" },
+      ...v9,
+    });
+    check(
+      "Keeper connects with an account and a two-step code; the password and the code reach the driver and no answer carries them",
+      errorIs(keeperBrowser, 400, sourceText("error.connector.passwordManagerMethod")) &&
+        errorIs(earlyCode, 400, sourceText("error.connector.passwordManagerMethod")) &&
+        keeperWaits.state === "signing-in" &&
+        keeperWaits.step === "two-factor" &&
+        keeperConnected.state === "connected" &&
+        isDeepStrictEqual(callsOf("keeper.connect"), [
+          ["account", "ada@example.com", true],
+          ["code", true],
+        ]) &&
+        ![keeperAccount, keeperCode, keeperDisconnect].some(
+          (reply) => reply.text.includes(KEEPER_MASTER_PASSWORD) || reply.text.includes(KEEPER_CODE),
+        ) &&
+        callsOf("keeper.disconnect").length === 1 &&
+        !keeperDriver.vault.connected(),
+      [summary(keeperBrowser), summary(earlyCode), summary(keeperAccount), summary(keeperCode)],
     );
   }
 

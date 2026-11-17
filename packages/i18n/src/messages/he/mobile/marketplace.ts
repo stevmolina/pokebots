@@ -24,6 +24,7 @@ export const messages = {
   "mobile.marketplace.app.onePasswordTagline": "התחברות לאתרים עם פרטי כניסה משותפים",
   "mobile.marketplace.app.bitwardenTagline": "התחברות לאתרים עם פרטי כניסה מתיקייה משותפת",
   "mobile.marketplace.app.protonPassTagline": "התחברות לאתרים עם פרטי כניסה מכספת משותפת",
+  "mobile.marketplace.app.keeperTagline": "התחברות לאתרים עם פרטי כניסה מתיקייה משותפת",
   "mobile.marketplace.search.placeholder": "חיפוש בחנות",
   "mobile.marketplace.search.clear": "ניקוי החיפוש",
   "mobile.marketplace.search.close": "סגירת החיפוש",
