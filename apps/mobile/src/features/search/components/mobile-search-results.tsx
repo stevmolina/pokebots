@@ -2,11 +2,13 @@ import type { MobileTextKey } from "@openbot/i18n/mobile";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { Button, Typography } from "heroui-native";
 import { type ReactNode, useEffect, useMemo, useRef, useState } from "react";
-import { View } from "react-native";
+import { ScrollView, View } from "react-native";
 import Animated, { LayoutAnimationConfig } from "react-native-reanimated";
 import { mobileAnalytics } from "@/features/analytics/mobile-analytics";
 import { useMobileSession, useQueryScope } from "@/features/auth/context/mobile-session-context";
 import { useChannels } from "@/features/channels/components/use-channels";
+import { PreviewChips } from "@/features/design-preview/components/preview-page";
+import { useCalmLook } from "@/features/design-preview/model/calm-look";
 import { MobileSearchResultRow } from "@/features/search/components/search-result-row";
 import {
   MOBILE_SEARCH_FILTERS,
@@ -34,6 +36,16 @@ const FILTER_LABEL = {
   routines: "mobile.search.filter.routines",
   settings: "mobile.search.filter.settings",
 } as const satisfies Record<MobileSearchFilter, MobileTextKey>;
+
+/** The new design names the kind of each result in gray, in the singular. */
+const KIND_LABEL = {
+  agents: "mobile.search.kind.agent",
+  channels: "mobile.search.kind.channel",
+  messages: "mobile.search.kind.message",
+  files: "mobile.search.kind.file",
+  routines: "mobile.search.kind.routine",
+  settings: "mobile.search.kind.setting",
+} as const satisfies Record<Exclude<MobileSearchFilter, "all">, MobileTextKey>;
 
 // "Searching…" waits this long, so an answer that comes sooner never shows it.
 const SEARCHING_DELAY = 200;
@@ -117,6 +129,8 @@ export function MobileSearchResults({
   const queryScope = useQueryScope();
   const serverId = activeServer.id;
   const [filter, setFilter] = useState<MobileSearchFilter>("all");
+  // The new design shows the filters as chips at the top and names each result's kind on its row.
+  const calm = useCalmLook();
   const motion = useTransitionMode("searchTransitions");
   const filesSupported = canSearchFiles(serverId);
   const channelState = useChannels(serverId);
@@ -315,9 +329,24 @@ export function MobileSearchResults({
 
   return (
     <>
+      {calm ? (
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={{ paddingBottom: 12 }}
+        >
+          <PreviewChips
+            options={filters.map((id) => ({ id, label: t(FILTER_LABEL[id]) }))}
+            value={filter}
+            onChange={selectFilter}
+            paddingX={14}
+          />
+        </ScrollView>
+      ) : null}
       {/* A filter names itself above its results, with a way back to all of them. */}
       <BlurSwap swapKey={filter} mode={motion}>
-        {filter === "all" ? null : (
+        {filter === "all" || calm ? null : (
           <SearchCaption
             label={t(FILTER_LABEL[filter])}
             action={{ label: t("mobile.search.clearFilter"), onPress: () => selectFilter("all") }}
@@ -346,7 +375,7 @@ export function MobileSearchResults({
                   {/* The rows of a section that comes in come in with it. */}
                   <BlurEnter mode={motion}>
                     <LayoutAnimationConfig skipEntering>
-                      {filter === "all" ? (
+                      {filter === "all" && !calm ? (
                         <SearchCaption
                           label={label}
                           action={
@@ -373,6 +402,7 @@ export function MobileSearchResults({
                             serverId={serverId}
                             agents={agentsById}
                             onLeave={onLeave}
+                            kindLabel={calm ? t(KIND_LABEL[section.key]) : undefined}
                           />
                         </Animated.View>
                       ))}

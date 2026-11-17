@@ -518,4 +518,7 @@ export const messages = {
   "mobile.settings.appearance.calmLook": "Novo design",
   "mobile.settings.appearance.calmLookFooter":
     "Mostra suas conversas no visual calmo da prévia do design. Só nesta versão.",
+  "mobile.settings.calm.servers": "Servidores",
+  "mobile.settings.calm.serverTools": "Ferramentas do servidor",
+  "mobile.settings.calm.app": "App",
 } as const satisfies PartialTranslation<typeof source>;

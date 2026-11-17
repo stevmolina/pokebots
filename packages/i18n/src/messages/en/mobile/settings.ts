@@ -511,4 +511,7 @@ export const messages = defineMessages("mobile.settings", {
   "mobile.settings.appearance.calmLook": "New design",
   "mobile.settings.appearance.calmLookFooter":
     "Shows your chats in the calm look of the design preview. Only in this build.",
+  "mobile.settings.calm.servers": "Servers",
+  "mobile.settings.calm.serverTools": "Server tools",
+  "mobile.settings.calm.app": "App",
 });

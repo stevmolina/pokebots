@@ -208,6 +208,7 @@ export function MobileSearchResultRow({
   serverId,
   agents,
   onLeave,
+  kindLabel,
 }: {
   result: MobileSearchResult;
   query: string;
@@ -216,6 +217,8 @@ export function MobileSearchResultRow({
   agents: ReadonlyMap<string, MobileAgent>;
   /** Runs before a result opens what it names, and closes the search. */
   onLeave: () => void;
+  /** The new design names the kind of each result in gray on the right, in place of its time. */
+  kindLabel?: string;
 }) {
   const { t, format } = useText();
   const pane = useChatListPane();
@@ -241,7 +244,7 @@ export function MobileSearchResultRow({
           leading={<AgentAvatar agent={agent} />}
           title={agent.name}
           detail={agent.title.trim() || agent.preview}
-          trailing={agent.updatedLabel}
+          trailing={kindLabel ?? agent.updatedLabel}
           query={query}
           onPress={() => openChat(agent.id)}
         />
@@ -255,7 +258,7 @@ export function MobileSearchResultRow({
           leading={<ChannelAvatar channel={channel} agents={agents} size={AVATAR_SIZE} serverId={serverId} />}
           title={channel.name}
           detail={last ? t("mobile.search.authorText", { author: last.authorName, text: last.text }) : channel.title}
-          trailing={formatUpdatedAt(last?.at ?? null, format)}
+          trailing={kindLabel ?? formatUpdatedAt(last?.at ?? null, format)}
           query={query}
           onPress={() => {
             onLeave();
@@ -281,7 +284,7 @@ export function MobileSearchResultRow({
                 : t("mobile.search.authorText", { author: from.member, text: snippet })
           }
           detailLines={2}
-          trailing={formatUpdatedAt(message.createdAt, format)}
+          trailing={kindLabel ?? formatUpdatedAt(message.createdAt, format)}
           query={query}
           onPress={() => openChat(agent.id, message.id)}
         />
@@ -294,7 +297,7 @@ export function MobileSearchResultRow({
           leading={<RowIcon icon={fileIcon(file)} />}
           title={file.attachment.name}
           detail={t("mobile.search.fileDetail", { name: agent.name, size: format.fileSize(file.attachment.size) })}
-          trailing={formatUpdatedAt(file.createdAt, format)}
+          trailing={kindLabel ?? formatUpdatedAt(file.createdAt, format)}
           query={query}
           // As on desktop, a file opens the message that carries it.
           onPress={() => openChat(agent.id, file.messageId)}
@@ -323,7 +326,7 @@ export function MobileSearchResultRow({
           leading={<RowIcon icon={WorkflowIcon} />}
           title={routine.name}
           detail={owner.name}
-          trailing={routine.active ? undefined : t("mobile.search.routinePaused")}
+          trailing={kindLabel ?? (routine.active ? undefined : t("mobile.search.routinePaused"))}
           query={query}
           onPress={() => {
             onLeave();

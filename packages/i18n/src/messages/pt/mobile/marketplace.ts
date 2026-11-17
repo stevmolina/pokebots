@@ -130,4 +130,5 @@ export const messages = {
   "mobile.marketplace.try.skillNotAdded": "Adicione a habilidade a um agente para testá-la.",
   "mobile.marketplace.try.skillNotReady": "Ative ou atualize esta habilidade em um agente para testá-la.",
   "mobile.marketplace.try.appNotConnected": "Conecte o app para testá-lo.",
+  "mobile.marketplace.filter.all": "Todos",
 } as const satisfies PartialTranslation<typeof source>;

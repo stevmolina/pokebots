@@ -130,4 +130,5 @@ export const messages = defineMessages("mobile.marketplace", {
   "mobile.marketplace.try.skillNotAdded": "Add the skill to an agent to try it.",
   "mobile.marketplace.try.skillNotReady": "Turn on or update this skill on an agent to try it.",
   "mobile.marketplace.try.appNotConnected": "Connect the app to try it.",
+  "mobile.marketplace.filter.all": "All",
 });
