@@ -32,8 +32,8 @@
 
   /* Neutral color system. Keep UI colors here, not in components. */
   --openbot-bg-canvas: #1a1a1a;
-  /* The window frame around the page card, darker than the card, so the card comes forward. */
-  --openbot-bg-frame: #0d0d0d;
+  /* The window base matches the flat chat surface. */
+  --openbot-bg-frame: #1a1a1a;
   /* A rail inside a menu, a step darker than the menu sheet. */
   --openbot-bg-sheet-inset: #101010;
   --openbot-bg-canvas-clear: rgba(26, 26, 26, 0);
@@ -118,7 +118,7 @@
   --openbot-queue-border: var(--openbot-border-strong);
   --openbot-queue-text: var(--openbot-text-primary);
   --openbot-queue-action: var(--openbot-text-muted);
-  --openbot-border: rgba(255, 255, 255, 0.035);
+  --openbot-border: rgba(255, 255, 255, 0.08);
   --openbot-border-strong: rgba(255, 255, 255, 0.045);
   --openbot-image-outline: rgba(255, 255, 255, 0.1);
   /* Focus is neutral: a grey border or a thin grey ring, never blue and never a halo. */

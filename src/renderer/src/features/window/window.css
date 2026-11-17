@@ -1,9 +1,9 @@
-/* The desktop window: the frame, with the chat sidebar at its left and the card of the page beside it.
- * The sidebar opens the pages, so it stays on every page. */
+/* The desktop window has a flat chat surface beside the sidebar. The sidebar opens the pages, so it
+ * stays on every page. */
 .app-window {
-  /* The frame is darker than the card, so the card comes forward. */
+  /* The window base matches the chat surface. */
   --window-frame: var(--openbot-bg-frame);
-  /* The thin frame at the right and the bottom of the card */
+  /* Retained for the agent dock column. */
   --window-edge: var(--openbot-space-1);
   --window-hairline-height: var(--openbot-icon-lg);
   display: grid;
@@ -68,27 +68,16 @@
     padding-inline-start: 84px;
   }
 
-  /* One card holds the sidebar, the chat and the side panel, below the top row. The frame draws the
-   * card, and the panes have no background of their own, so the card's line and its four rounded
-   * corners show. The padding keeps the panes inside the card's line. */
-  .app-window > .app-frame-edge {
+  /* The chat and sidebar meet directly. The workspace has no inset card or outer frame. */
+  .app-window > .app-frame-edge.app-frame-flat {
     position: relative;
     isolation: isolate;
-    padding-block: 0 calc(var(--window-edge) + 1px);
-    padding-inline: 0 calc(var(--window-edge) + 1px);
+    padding: 0;
     background: var(--window-frame);
   }
 
-  .app-window > .app-frame-edge::before {
-    position: absolute;
-    z-index: -1;
-    inset-block: calc(var(--left-header-height) - 1px) var(--window-edge);
-    inset-inline: 0 var(--window-edge);
-    border: 1px solid var(--openbot-border);
-    border-radius: var(--openbot-radius-card);
-    background: var(--openbot-bg-canvas);
-    content: "";
-    pointer-events: none;
+  .app-window > .app-frame-edge.app-frame-flat::before {
+    content: none;
   }
 
   .app-window > .app-frame-edge.app-frame-with-server-rail::before {
@@ -105,9 +94,10 @@
     left: calc(var(--server-rail-width) + var(--left-panel-width));
   }
 
-  .app-window > .app-frame-edge > .sidebar.sidebar-chat {
+  .app-window > .app-frame-edge.app-frame-flat > .sidebar.sidebar-chat {
     --agent-avatar-outline: var(--openbot-bg-sidebar);
 
+    border-inline-end: 0.5px solid var(--openbot-border);
     background: var(--openbot-bg-sidebar);
   }
 
@@ -150,13 +140,28 @@
     content: none;
   }
 
+  .app-window > .app-frame-edge.app-frame-flat :is(.conversation-panel, .direct-conversation) {
+    background: var(--openbot-bg-canvas);
+  }
+
+  .app-window > .app-frame-edge.app-frame-flat .channel-title {
+    --agent-avatar-outline: var(--openbot-bg-canvas);
+  }
+
+  .app-window
+    > .app-frame-edge.app-frame-flat
+    :is(.conversation-panel > .conversation-header, .side-panel-docked > .side-panel-header)
+    > .tab-shape {
+    display: none;
+  }
+
   /* The selected tab of the chat header and of the side panel is part of the card: a shape with the card
    * fill and the card line goes from the top of the tab down to the card's top line, and two inward curves
    * join its sides to that line. The shape is behind the content of the tab row. A translucent card would
    * show the card line through it, so the transparent window keeps the fill of the tabs. */
   :root:not([data-openbot-window-glass])
     .app-window
-    > .app-frame-edge
+    > .app-frame-edge:not(.app-frame-flat)
     :is(.conversation-panel > .conversation-header, .side-panel-docked > .side-panel-header)
     > .tab-shape {
     --tab-shape-curve: var(--openbot-radius-md);
@@ -309,6 +314,11 @@
     border: 0;
     border-radius: 0;
     background: var(--openbot-border);
+  }
+
+  /* The flat window draws one hairline between the chat and a docked panel. */
+  .app-window > .app-frame-edge.app-frame-flat :is(.settings-panel, .browser-panel)::before {
+    width: 0.5px;
   }
 
   .app-window
