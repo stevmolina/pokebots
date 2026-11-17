@@ -216,8 +216,6 @@ export interface AgentThreadViewProps {
   aboveComposer?: JSX.Element;
   /** Custom: a row that the app shows under the thread title, such as the live bar of its subagents. */
   belowTitle?: JSX.Element;
-  /** Controls at the start of the toolbar's end group, such as the model chip of the agent. */
-  composerControls?: JSX.Element | undefined;
   /** The images of the draft that show in the thumbnail row. A send takes them with the text. */
   rowAttachments?: readonly DraftAttachment[] | undefined;
   /** The pasted images that still import, with their local previews. */
@@ -1251,7 +1249,6 @@ export function AgentThreadView(props: AgentThreadViewProps) {
               onSideQuestion={props.onSideQuestion}
             />
             <div class="composer-primary-actions">
-              {props.composerControls}
               {/* One meter for each thread: a pending Compact or an open popover stays with its thread. */}
               <Show when={props.task?.id} keyed>
                 {(_taskId) => (

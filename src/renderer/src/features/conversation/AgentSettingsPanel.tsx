@@ -14,6 +14,7 @@ import {
 import {
   BookMarked,
   CalendarClock,
+  Cpu,
   FileText,
   Folder,
   Gauge,
@@ -23,6 +24,7 @@ import {
   Table2,
   Upload,
 } from "@openbot/ui";
+import { ProviderModelPicker } from "@openbot/ui/components/ProviderModelPicker";
 import {
   SettingsLinkGroup,
   SettingsLinkRow,
@@ -45,9 +47,11 @@ import SharedAgentSettingsPanel, {
   type AgentNotificationLevelOptions,
   type AgentSettingsPanelProps as SharedAgentSettingsPanelProps,
 } from "@openbot/ui/features/conversation/AgentSettingsPanel";
+import { PinnedMessages, type PinnedMessagesProps } from "@openbot/ui/features/conversation/PinnedMessages";
 import { AgentSessions, type AgentSessionsProps } from "@openbot/ui/features/conversation/threads/AgentSessions";
 import { agentFilesLinkValue } from "@openbot/ui/features/files/AgentFilesView";
 import { useText } from "@openbot/ui/text";
+import type { ComponentProps } from "@solidjs/web";
 import { createEffect, createMemo, createSignal, createStore, Show, untrack } from "solid-js";
 import { actionToast } from "../../action-toast";
 import { createSidePanelWidth, readSidePanelWidth, saveSidePanelWidth } from "../../components/side-panel-width";
@@ -97,6 +101,10 @@ interface AgentSettingsPanelProps
   onWidthChange: (width: number) => void;
   /** The agent's sessions, at the top of the panel. Missing on a host without side threads. */
   sessions?: AgentSessionsProps | undefined;
+  /** The agent's model, as a row under the sessions. The message box has no model chip. */
+  modelPicker?: ComponentProps<typeof ProviderModelPicker> | undefined;
+  /** The pinned messages of the chat in view, as a row under the model. Missing on a host without pins. */
+  pins?: Omit<PinnedMessagesProps, "variant" | "openRequest" | "quiet"> | undefined;
   /** The agent's computer: the remote desktop of a joined server. Missing where the agent has none. */
   computer?: AgentComputerRow | undefined;
   skillSelectionRequest?: { skillId: string } | null | undefined;
@@ -554,7 +562,21 @@ export default function AgentSettingsPanel(props: AgentSettingsPanelProps) {
       overview={
         <>
           <Show when={props.sessions}>{(sessions) => <AgentSessions {...sessions()} />}</Show>
-          <SettingsLinkGroup inset class="agent-settings-overview-card">
+          <SettingsLinkGroup inset class="agent-settings-overview-card agent-settings-runtime-rows">
+            <Show when={props.modelPicker}>
+              {(picker) => (
+                <ProviderModelPicker
+                  {...picker()}
+                  icon={
+                    <span class="settings-link-icon">
+                      <Cpu aria-hidden="true" />
+                    </span>
+                  }
+                  ariaLabel={t("agentSettings.runtime.model")}
+                />
+              )}
+            </Show>
+            <Show when={props.pins}>{(pins) => <PinnedMessages {...pins()} variant="row" />}</Show>
             <Show when={libraryShown()}>
               <SettingsLinkRow
                 icon={<LibraryBig aria-hidden="true" />}

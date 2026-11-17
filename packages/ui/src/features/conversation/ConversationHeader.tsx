@@ -26,8 +26,9 @@ export interface ConversationHeaderProps {
   pinnedMessages?: PinnedMessagesProps | undefined;
   sidePanel?: SidePanelToggleProps | undefined;
   /**
-   * The agent's sessions. The header then shows the agent as a pill with the open session, and a "+"
-   * that starts a new session. Missing on a host without side threads.
+   * The agent's sessions. The header then shows the agent as a pill with the open session. A phone
+   * header has a "+" that starts a new session; a desktop one does not, the details pane has it.
+   * Missing on a host without side threads.
    */
   session?: ConversationHeaderSession | undefined;
   /** The "More" menu of the header, with the actions that the header does not show as buttons. */
@@ -38,10 +39,10 @@ export interface ConversationHeaderProps {
    */
   phoneMenu?: boolean | undefined;
   /**
-   * A desktop chat with threads. The thread menu at the end of the header opens the pins, the side
-   * panel and the remote desktop, so the header shows no button for them.
+   * A desktop chat with threads. The header has no "New session" button and no pin button: the details
+   * pane that the name pill opens has both.
    */
-  actionsMenu?: boolean | undefined;
+  sessionsInPane?: boolean | undefined;
 }
 
 export interface ConversationHeaderSession {
@@ -73,7 +74,7 @@ export function ConversationHeader(props: ConversationHeaderProps) {
       class="window-drag conversation-header"
       data-session-pill={props.agent && props.session ? "" : undefined}
       data-phone-menu={props.phoneMenu ? "" : undefined}
-      data-actions-menu={props.actionsMenu ? "" : undefined}
+      data-sessions-in-pane={props.sessionsInPane ? "" : undefined}
     >
       <div class="conversation-heading-group">
         <Show when={props.agent} fallback={props.title}>
@@ -109,7 +110,8 @@ export function ConversationHeader(props: ConversationHeaderProps) {
                   </span>
                 )}
               </Show>
-              <Show when={props.session}>
+              {/* A desktop chat starts a new session in the details pane, so the pill has no button for it. */}
+              <Show when={!props.sessionsInPane ? props.session : undefined}>
                 {(session) => (
                   <Button
                     variant="ghost"

@@ -1,4 +1,3 @@
-import type { SidePanelToggleProps } from "@openbot/ui/features/conversation/SidePanel";
 import type { SidebarWaitReason } from "@openbot/ui/features/sidebar/sidebar-types";
 
 /** What the agent does in a thread, as a sidebar row shows it for the agent. */
@@ -39,7 +38,7 @@ export interface ThreadStem {
 }
 
 /**
- * The header actions that the "More" menu keeps, on a phone and in a desktop header. Each one is
+ * The header actions that the phone "More" menu keeps. Each one is
  * missing when that action does not apply, such as pins on a host that has none, or the side panel
  * of a read-only channel.
  */
@@ -48,16 +47,6 @@ export interface ThreadPhoneActions {
   onToggleSidePanel?: (() => void) | undefined;
   /** The side panel is open, so the menu item closes it. */
   sidePanelOpen?: boolean | undefined;
-  /** Opens the remote desktop of a joined server. The menu button is the element the window opens from. */
-  onOpenRemote?: ((trigger: HTMLElement) => void) | undefined;
-  /** The remote desktop can open: the server is online, or a session runs. */
-  remoteEnabled?: boolean | undefined;
-  /** A remote desktop session runs. The item resumes it, and the menu button has a dot. */
-  remoteActive?: boolean | undefined;
-  /** A desktop header shows the side panel button next to the "More" button, so the menu does not list it. */
-  sidePanel?: SidePanelToggleProps | undefined;
-  /** A desktop header: a dropdown with the actions only. Without it, a phone sheet that also lists the sessions. */
-  desktop?: boolean | undefined;
 }
 
 /** A turn runs in the thread. The user stops it before an archive or a delete. */
@@ -98,7 +87,7 @@ export interface ThreadHeaderProps {
   onDelete?: ((id: string) => void) | undefined;
   /** Opens a side thread in the side panel. Missing when the chat has no side panel. */
   onMoveToSide?: ((id: string) => void) | undefined;
-  /** The header actions of the "More" menu: on a phone with the sessions, on a desktop alone. */
+  /** The header actions of the phone "More" menu, listed after the sessions. */
   phoneActions?: ThreadPhoneActions | undefined;
 }
 

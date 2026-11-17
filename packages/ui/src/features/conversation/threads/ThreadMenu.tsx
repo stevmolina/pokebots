@@ -9,11 +9,9 @@ import {
   Pin,
 } from "@openbot/ui";
 import { createScrollFades } from "@openbot/ui/components/createScrollFades";
-import { RemoteDesktopIcon } from "@openbot/ui/features/conversation/ConversationIcons";
-import { SidePanelToggle } from "@openbot/ui/features/conversation/SidePanel";
 import { sidebarMessageTime } from "@openbot/ui/features/sidebar/sidebar-filtering";
 import { useText } from "@openbot/ui/text";
-import { createMemo, For, onSettled, Show } from "solid-js";
+import { For, onSettled, Show } from "solid-js";
 import { ThreadStatusMark } from "./ThreadStatusMark";
 import { ThreadTitle } from "./ThreadTitle";
 import type { ThreadHeaderProps } from "./thread-types";
@@ -53,11 +51,9 @@ function ThreadMenuList(props: ThreadHeaderProps) {
   );
 }
 
-/** The "More" button at the end of the header. A dot shows while a remote desktop session runs. */
-function ThreadMenuTrigger(props: ThreadHeaderProps & { ref: (element: HTMLElement) => void }) {
+/** The "More" button at the end of the header. */
+function ThreadMenuTrigger() {
   const { t } = useText();
-  /** A remote desktop session runs, and its button is in the menu. */
-  const busy = () => props.phoneActions?.remoteActive === true;
   return (
     <DropdownMenu.Trigger
       class={buttonVariants({
@@ -67,32 +63,21 @@ function ThreadMenuTrigger(props: ThreadHeaderProps & { ref: (element: HTMLEleme
       })}
       aria-label={t("agent.dock.more")}
       title={t("agent.dock.more")}
-      ref={props.ref}
     >
       <Ellipsis aria-hidden="true" />
-      <Show when={busy()}>
-        <span class="agent-threads-more-dot" aria-hidden="true" />
-      </Show>
     </DropdownMenu.Trigger>
   );
 }
 
-/**
- * The actions of the menu: the pins, the side panel and, on a desktop, the remote desktop. A phone also
- * starts a new session here, because its header has no "+".
- */
-function ThreadMenuActions(
-  props: ThreadHeaderProps & { onOpenRemote: (open: (trigger: HTMLElement) => void) => void },
-) {
+/** The actions of the sheet: a new session, the pins and the side panel. */
+function ThreadMenuActions(props: ThreadHeaderProps) {
   const { t } = useText();
   return (
     <>
-      <Show when={props.phoneActions?.desktop !== true}>
-        <DropdownMenu.Item disabled={!props.canStartNew} onSelectAfterClose={props.onNew}>
-          <MessageCirclePlus aria-hidden="true" />
-          {t("conversation.sessions.new")}
-        </DropdownMenu.Item>
-      </Show>
+      <DropdownMenu.Item disabled={!props.canStartNew} onSelectAfterClose={props.onNew}>
+        <MessageCirclePlus aria-hidden="true" />
+        {t("conversation.sessions.new")}
+      </DropdownMenu.Item>
       <Show when={props.phoneActions?.onOpenPins}>
         {(openPins) => (
           <DropdownMenu.Item onSelectAfterClose={openPins()}>
@@ -106,19 +91,6 @@ function ThreadMenuActions(
           <DropdownMenu.Item onSelectAfterClose={togglePanel()}>
             <PanelRight aria-hidden="true" />
             {t(props.phoneActions?.sidePanelOpen ? "conversation.sidePanel.close" : "conversation.sidePanel.open")}
-          </DropdownMenu.Item>
-        )}
-      </Show>
-      <Show when={props.phoneActions?.onOpenRemote}>
-        {(open) => (
-          <DropdownMenu.Item
-            disabled={props.phoneActions?.remoteEnabled !== true}
-            onSelectAfterClose={() => props.onOpenRemote(open())}
-          >
-            <RemoteDesktopIcon />
-            {t(
-              props.phoneActions?.remoteActive ? "conversation.header.resumeRemote" : "conversation.header.openRemote",
-            )}
           </DropdownMenu.Item>
         )}
       </Show>
@@ -161,56 +133,42 @@ function screenBottomEdge() {
 }
 
 /**
- * The "More" menu of the chat header. A desktop header shows a dropdown with the header actions; the
- * sessions are in the agent panel. On a phone the menu is a sheet at the bottom of the screen: the
- * sessions come first, in reach of the thumb, and the actions follow in one group.
+ * The "More" menu of a phone chat header: a sheet at the bottom of the screen. The sessions come first,
+ * in reach of the thumb, and the actions follow in one group. A desktop header has no menu: its sessions
+ * and pins are in the details pane.
  */
 export function ThreadMenu(props: ThreadHeaderProps) {
   const { t } = useText();
-  // A memo: the menu reads it inside its own effects, where reading the header props is not allowed.
-  const sheet = createMemo(() => props.phoneActions?.desktop !== true);
-  let trigger: HTMLElement | undefined;
-  const openRemote = (open: (trigger: HTMLElement) => void) => {
-    if (trigger) open(trigger);
-  };
   return (
-    <div class="agent-threads-header" data-actions-menu={sheet() ? undefined : ""}>
+    <div class="agent-threads-header">
       <DropdownMenu.Root
-        placement={sheet() ? "top" : "bottom-end"}
-        gutter={sheet() ? 0 : 4}
-        sameWidth={sheet()}
-        flip={!sheet()}
-        overflowPadding={sheet() ? 0 : 8}
-        getAnchorRect={(anchor) => (sheet() ? screenBottomEdge() : anchor?.getBoundingClientRect())}
+        placement="top"
+        gutter={0}
+        sameWidth
+        flip={false}
+        overflowPadding={0}
+        getAnchorRect={screenBottomEdge}
       >
-        <ThreadMenuTrigger
-          {...props}
-          ref={(element) => {
-            trigger = element;
-          }}
-        />
+        <ThreadMenuTrigger />
         <DropdownMenu.Portal>
-          <DropdownMenu.Content class={sheet() ? "agent-threads-menu agent-threads-sheet" : "agent-threads-menu"}>
-            <Show when={sheet()} fallback={<ThreadMenuActions {...props} onOpenRemote={openRemote} />}>
-              <span class="agent-threads-sheet-handle" aria-hidden="true" />
-              <Show when={props.sessions.length > 0}>
-                {/* A heading for the eye; the menu items already name each session. */}
-                <div class="agent-threads-sheet-title" aria-hidden="true">
-                  {t("conversation.sessions.title")}
-                </div>
-                <ThreadMenuList {...props} />
-              </Show>
-              <div class="agent-threads-sheet-group">
-                <ThreadMenuActions {...props} onOpenRemote={openRemote} />
-                <Show when={props.archived.length > 0}>
-                  <ThreadMenuArchived {...props} />
-                </Show>
+          <DropdownMenu.Content class="agent-threads-menu agent-threads-sheet">
+            <span class="agent-threads-sheet-handle" aria-hidden="true" />
+            <Show when={props.sessions.length > 0}>
+              {/* A heading for the eye; the menu items already name each session. */}
+              <div class="agent-threads-sheet-title" aria-hidden="true">
+                {t("conversation.sessions.title")}
               </div>
+              <ThreadMenuList {...props} />
             </Show>
+            <div class="agent-threads-sheet-group">
+              <ThreadMenuActions {...props} />
+              <Show when={props.archived.length > 0}>
+                <ThreadMenuArchived {...props} />
+              </Show>
+            </div>
           </DropdownMenu.Content>
         </DropdownMenu.Portal>
       </DropdownMenu.Root>
-      <Show when={props.phoneActions?.sidePanel}>{(sidePanel) => <SidePanelToggle {...sidePanel()} />}</Show>
     </div>
   );
 }

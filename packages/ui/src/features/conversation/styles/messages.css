@@ -1492,11 +1492,29 @@ button.chat-action-target:active,
  */
 :root {
   --message-wide-bubble-width: min(100%, max(720px, 70%), 1200px);
-  --message-narrow-bubble-width: min(92%, max(420px, 50%), 800px);
+  --message-narrow-bubble-width: min(80%, 560px);
 }
 
 .message-entry-agent .ui-bubble {
   max-width: var(--message-wide-bubble-width);
+}
+
+/*
+ * Calm bubbles: an agent's text on a soft 6 % ink fill, not a raised card. The text
+ * bubble stops at 560 px; a table, a code block or a picture keeps the wide width. A bubble with a chat
+ * color keeps its tint.
+ */
+.message-entry-agent
+  .ui-bubble-variant-muted:not(.message-bubble-colored, .message-bubble-member)
+  > .ui-bubble-content {
+  background: color-mix(in srgb, var(--openbot-text-primary) 6%, transparent);
+}
+
+.message-entry-agent
+  .ui-bubble:not(
+    :has(:is(.message-code-block, .message-data-table-scroll, .image-generation, .media-generation, .image-gallery))
+  ) {
+  max-width: min(100%, 560px);
 }
 
 /* An image keeps its size in a person's bubble too: the bubble does not shrink to the text. */
