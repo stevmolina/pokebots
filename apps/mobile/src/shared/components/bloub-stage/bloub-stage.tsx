@@ -11,7 +11,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { type EdgeInsets, useSafeAreaInsets } from "react-native-safe-area-context";
-
+import { APP_BRAND } from "@/shared/lib/app-brand";
 import { useReducedMotion } from "@/shared/lib/motion";
 import { isAndroid } from "@/shared/lib/platform";
 import { SPLASH_EASE_OUT } from "@/shared/lib/splash-motion";
@@ -19,6 +19,7 @@ import { BloubEyes, EYES_HEIGHT, EYES_WIDTH } from "./bloub-eyes";
 import { BLOUB_MOVE, BLOUB_MOVE_MS, BLOUB_RADIUS, bloubEyesFrame, bloubGradient, useBloubColors } from "./bloub-look";
 import { useBloubStage } from "./bloub-stage-context";
 import type { BloubMood, BloubStageRequest } from "./bloub-stage-store";
+import { PokebotsStageMark } from "./pokebots-stage-mark";
 import { StageBackButton } from "./stage-back-button";
 
 // Over a camera, the block fades once it has mostly covered the screen; it comes back at once.
@@ -308,14 +309,18 @@ export function BloubStage({
           </View>
         </Animated.View>
         <Animated.View pointerEvents="none" style={[styles.eyes, { left: (size.width - EYES_WIDTH) / 2 }, eyesStyle]}>
-          <BloubEyes
-            mood={mood}
-            active={request !== null}
-            reduced={reduced}
-            gazeX={gazeX}
-            gazeY={gazeY}
-            eyeColor={eyeColor}
-          />
+          {APP_BRAND === "pokebots" ? (
+            <PokebotsStageMark />
+          ) : (
+            <BloubEyes
+              mood={mood}
+              active={request !== null}
+              reduced={reduced}
+              gazeX={gazeX}
+              gazeY={gazeY}
+              eyeColor={eyeColor}
+            />
+          )}
         </Animated.View>
       </View>
       {request ? (

@@ -24,6 +24,7 @@ import {
 } from "@/features/settings/model/routine-collapse";
 import { saveTextSize, useTextSize } from "@/features/settings/model/text-size";
 import { PauseSlider } from "@/features/voice/components/pause-slider";
+import { APP_BRAND } from "@/shared/lib/app-brand";
 import { haptics } from "@/shared/lib/haptics";
 import { useText } from "@/shared/lib/text";
 
@@ -85,7 +86,8 @@ export function AppearanceSettingsScreen() {
           <Typography.Paragraph>{t("mobile.settings.appearance.theme")}</Typography.Paragraph>
         </SettingsRow>
       </SettingsSection>
-      <AppIconSection />
+      {/* The Pokebots build has one icon: the other icons are the OpenBot logo colors. */}
+      {APP_BRAND === "pokebots" ? null : <AppIconSection />}
       <TextSizeSection />
       <SettingsSection footer={messageColorError ?? t("mobile.settings.appearance.messageColorFooter")}>
         <SettingsRow
