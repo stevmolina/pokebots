@@ -93,4 +93,5 @@ export const messages = defineMessages("mobile.workspace", {
   "mobile.workspace.preview.speedStandard": "Standard",
   "mobile.workspace.preview.speedFast": "Fast",
   "mobile.workspace.preview.image": "Image · {age}",
+  "mobile.workspace.preview.modelButton": "Model: {name}",
 });

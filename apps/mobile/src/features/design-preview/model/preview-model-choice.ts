@@ -1,3 +1,4 @@
+import type { AgentProviderId } from "@openbot/contracts/ipc";
 import { create } from "zustand";
 import { PREVIEW_MODEL_GROUPS } from "./preview-data";
 
@@ -18,4 +19,9 @@ export function previewModelName(id: string): string {
     if (model) return model.name;
   }
   return id;
+}
+
+/** The provider whose logo stands for a model, such as Claude for Claude Opus. */
+export function previewModelMark(id: string): AgentProviderId {
+  return PREVIEW_MODEL_GROUPS.find((group) => group.models.some((model) => model.id === id))?.mark ?? "codex";
 }

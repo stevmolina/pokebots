@@ -5065,5 +5065,6 @@
     "zh"
   ],
   "mobile.workspace.preview.speedFast": ["ar", "de", "es", "fr", "he", "it", "ja", "ko", "nl", "pl", "ru", "tr", "zh"],
-  "mobile.workspace.preview.image": ["ar", "de", "es", "fr", "he", "it", "ja", "ko", "nl", "pl", "ru", "tr", "zh"]
+  "mobile.workspace.preview.image": ["ar", "de", "es", "fr", "he", "it", "ja", "ko", "nl", "pl", "ru", "tr", "zh"],
+  "mobile.workspace.preview.modelButton": ["ar", "de", "es", "fr", "he", "it", "ja", "ko", "nl", "pl", "ru", "tr", "zh"]
 }

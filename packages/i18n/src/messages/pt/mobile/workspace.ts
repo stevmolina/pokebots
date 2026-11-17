@@ -98,4 +98,5 @@ export const messages = {
   "mobile.workspace.preview.speedStandard": "Padrão",
   "mobile.workspace.preview.speedFast": "Rápido",
   "mobile.workspace.preview.image": "Imagem · {age}",
+  "mobile.workspace.preview.modelButton": "Modelo: {name}",
 } as const satisfies PartialTranslation<typeof source>;

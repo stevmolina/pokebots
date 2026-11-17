@@ -1,4 +1,4 @@
-import type { AvatarHue } from "@openbot/contracts/ipc";
+import type { AgentProviderId, AvatarHue } from "@openbot/contracts/ipc";
 
 /*
  * Made-up data for the design preview. No real agent, chat or person: these are fixtures, so their
@@ -266,9 +266,15 @@ export const PREVIEW_SESSIONS: { id: string; name: string | null; minutesAgo: nu
 export const PREVIEW_PINNED_COUNT = 2;
 
 /** Made-up models, grouped by provider, for the model picker of the preview. */
-export const PREVIEW_MODEL_GROUPS: { provider: string; models: { id: string; name: string; note: string }[] }[] = [
+/** `mark` is the provider whose logo the composer's model button shows. */
+export const PREVIEW_MODEL_GROUPS: {
+  provider: string;
+  mark: AgentProviderId;
+  models: { id: string; name: string; note: string }[];
+}[] = [
   {
     provider: "OpenAI",
+    mark: "codex",
     models: [
       { id: "gpt-6.1", name: "GPT-6.1", note: "Best for most work" },
       { id: "gpt-6.1-mini", name: "GPT-6.1 mini", note: "Quick and cheap" },
@@ -276,12 +282,17 @@ export const PREVIEW_MODEL_GROUPS: { provider: string; models: { id: string; nam
   },
   {
     provider: "Anthropic",
+    mark: "claude",
     models: [
       { id: "claude-opus", name: "Claude Opus", note: "Deep reasoning and code" },
       { id: "claude-sonnet", name: "Claude Sonnet", note: "Fast, strong writing" },
     ],
   },
-  { provider: "Google", models: [{ id: "gemini-pro", name: "Gemini Pro", note: "Long files and video" }] },
+  {
+    provider: "Google",
+    mark: "antigravity",
+    models: [{ id: "gemini-pro", name: "Gemini Pro", note: "Long files and video" }],
+  },
 ];
 
 /** The one routine of the profile's Routines page. */

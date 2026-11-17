@@ -14,6 +14,7 @@ import { Pressable, ScrollView, type ScrollViewInstance, TextInput, View } from 
 import { KeyboardStickyView } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useUniwind } from "uniwind";
+import { ProviderMark } from "@/features/servers/components/provider-mark";
 import { type MenuAction, MenuView } from "@/shared/components/menu-view";
 import { SheetScrollEdgeEffect } from "@/shared/components/sheet-scroll-edge-effect";
 import { APP_FONT } from "@/shared/lib/app-font";
@@ -23,6 +24,7 @@ import { useText } from "@/shared/lib/text";
 import { PreviewCircleButton, PreviewFace, PreviewGlass, usePreviewColors } from "../components/preview-parts";
 import { usePreviewTime } from "../components/preview-time";
 import { PREVIEW_MESSAGES, type PreviewAgent, type PreviewMessage, previewAgent } from "../model/preview-data";
+import { previewModelMark, previewModelName, usePreviewModelChoice } from "../model/preview-model-choice";
 import {
   PREVIEW_USER_BUBBLE,
   type PreviewColors,
@@ -46,6 +48,7 @@ export function PreviewChatScreen() {
   const scrollRef = useRef<ScrollViewInstance>(null);
   const [sent, setSent] = useState<PreviewMessage[]>([]);
   const [draft, setDraft] = useState("");
+  const modelId = usePreviewModelChoice((state) => state.modelId);
 
   const send = () => {
     const text = draft.trim();
@@ -185,6 +188,14 @@ export function PreviewChatScreen() {
                 returnKeyType="send"
                 style={[type.composer, { flex: 1, fontFamily: APP_FONT, color: colors.title, paddingVertical: 0 }]}
               />
+              {/* The model of the chat, as the logo of its provider. It opens the same picker as the profile. */}
+              <ComposerCircle
+                label={t("mobile.workspace.preview.modelButton", { name: previewModelName(modelId) })}
+                fill={colors.composerButton}
+                onPress={() => router.push("/design-preview/model")}
+              >
+                <ProviderMark provider={previewModelMark(modelId)} size={17} />
+              </ComposerCircle>
               <ComposerCircle label={t("mobile.workspace.preview.dictate")} fill={colors.composerButton}>
                 <Mic size={18} color={colors.icon} strokeWidth={1.8} />
               </ComposerCircle>
