@@ -18,6 +18,9 @@ import { PinnedChatItem } from "@/features/agents/components/pinned-agents-grid"
 import { useChatSectionMenu } from "@/features/agents/components/use-chat-section-menu";
 import { useListRowChrome } from "@/features/agents/components/use-list-row-chrome";
 import { showFailureAlert } from "@/features/analytics/failure-reports";
+import { UnreadDot, usePreviewColors } from "@/features/design-preview/components/preview-parts";
+import { useCalmLook } from "@/features/design-preview/model/calm-look";
+import { previewSize, previewType } from "@/features/design-preview/model/preview-tokens";
 import {
   useMobileWorkspaceReader,
   useMobileWorkspaceSelector,
@@ -297,7 +300,10 @@ export const ChannelListRow = memo(function ChannelListRow({
   const openLabel = title
     ? t("mobile.channel.list.openWithTitle", { name: channel.name, title })
     : t("mobile.channel.list.open", { name: channel.name });
-  const size = pinned ? 64 : 54;
+  // The calm look of Settings > Appearance > New design: the row of the design preview.
+  const calm = useCalmLook() && !pinned;
+  const calmColors = usePreviewColors();
+  const size = pinned ? 64 : calm ? previewSize.rowAvatar : 54;
   const avatar = (
     <AgentPinAvatar agentId={channel.id} location={pinned ? "pinned" : "row"} size={size}>
       <ChannelAvatar channel={channel} agents={agents} size={size} serverId={serverId} disconnected={disconnected} />
@@ -356,6 +362,39 @@ export const ChannelListRow = memo(function ChannelListRow({
             ) : null}
           </View>
         </>
+      ) : calm ? (
+        ({ pressed }) => (
+          <View
+            style={{
+              height: previewSize.rowHeight,
+              width: "100%",
+              flexDirection: "row",
+              alignItems: "center",
+              backgroundColor: calmColors.background,
+              opacity: pressed ? 0.58 : 1,
+              paddingLeft: previewSize.rowAvatarInset,
+              paddingRight: previewSize.rowTrailingInset,
+            }}
+          >
+            {avatar}
+            <View style={{ flex: 1, minWidth: 0, marginLeft: previewSize.rowTextGap }}>
+              <View style={{ flexDirection: "row", alignItems: "flex-start", gap: previewSize.rowTrailingGap }}>
+                <Typography numberOfLines={1} style={[previewType.rowTitle, { flex: 1, color: calmColors.title }]}>
+                  {channel.name}
+                </Typography>
+                <Typography style={[previewType.rowTime, { color: calmColors.time }]}>
+                  {formatUpdatedAt(channel.lastMessage?.at ?? channel.createdAt, format)}
+                </Typography>
+              </View>
+              <View style={{ flexDirection: "row", alignItems: "center", gap: previewSize.rowTrailingGap }}>
+                <Typography numberOfLines={1} style={[previewType.rowPreview, { flex: 1, color: calmColors.preview }]}>
+                  {previewLine}
+                </Typography>
+                <UnreadDot shown={unread} />
+              </View>
+            </View>
+          </View>
+        )
       ) : (
         ({ pressed }) => (
           <View

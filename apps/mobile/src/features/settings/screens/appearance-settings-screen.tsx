@@ -6,6 +6,8 @@ import Check from "lucide-react-native/icons/check";
 import { useRef, useState } from "react";
 import { Pressable, View } from "react-native";
 import { useUniwind } from "uniwind";
+import { saveCalmLook, useCalmLookStore } from "@/features/design-preview/model/calm-look";
+import { DESIGN_PREVIEW_ALLOWED } from "@/features/design-preview/model/preview-switch";
 import { readableOn } from "@/features/onboarding/model/onboarding-colors";
 import { AppIconSection } from "@/features/settings/components/app-icon-row";
 import { MessageColorPicker } from "@/features/settings/components/message-color-picker";
@@ -86,6 +88,7 @@ export function AppearanceSettingsScreen() {
           <Typography.Paragraph>{t("mobile.settings.appearance.theme")}</Typography.Paragraph>
         </SettingsRow>
       </SettingsSection>
+      {DESIGN_PREVIEW_ALLOWED ? <CalmLookSection dark={theme === "dark"} /> : null}
       {/* The Pokebots build has one icon: the other icons are the OpenBot logo colors. */}
       {APP_BRAND === "pokebots" ? null : <AppIconSection />}
       <TextSizeSection />
@@ -231,6 +234,33 @@ function TextSizeSection() {
           }}
         />
       </View>
+    </SettingsSection>
+  );
+}
+
+/** The "New design" switch: home in the calm look of the design preview. Dev and Pokebots builds only. */
+function CalmLookSection({ dark }: { dark: boolean }) {
+  const { t } = useText();
+  const { on, ready, saving } = useCalmLookStore();
+  const [error, setError] = useState<string | null>(null);
+  return (
+    <SettingsSection footer={error ?? t("mobile.settings.appearance.calmLookFooter")}>
+      <SettingsRow>
+        <SettingsSwitch
+          value={on}
+          disabled={!ready || saving}
+          label={t("mobile.settings.appearance.calmLook")}
+          dark={dark}
+          onValueChange={(next) => {
+            setError(null);
+            void haptics.selection();
+            void saveCalmLook(next).catch(() => {
+              setError(t("mobile.settings.saveFailed"));
+              void haptics.notification("error");
+            });
+          }}
+        />
+      </SettingsRow>
     </SettingsSection>
   );
 }

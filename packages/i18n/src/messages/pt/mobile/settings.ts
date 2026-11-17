@@ -515,4 +515,7 @@ export const messages = {
   "mobile.settings.shortcuts.send.unconfirmed": "Sem resposta do servidor. A mensagem pode estar no chat.",
   "mobile.settings.shortcuts.send.inApp": "Enviar no OpenBot",
   "mobile.settings.shortcuts.send.openChat": "Abrir chat",
+  "mobile.settings.appearance.calmLook": "Novo design",
+  "mobile.settings.appearance.calmLookFooter":
+    "Mostra suas conversas no visual calmo da prévia do design. Só nesta versão.",
 } as const satisfies PartialTranslation<typeof source>;
