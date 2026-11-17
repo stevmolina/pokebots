@@ -12,10 +12,9 @@ const key = "openbot.mobile.design-preview.v1";
 export const DESIGN_PREVIEW_ALLOWED = __DEV__ || APP_BRAND === "pokebots";
 
 /**
- * The switch of the calm design preview. Off by default. While it is on, the app opens on the
- * preview screens with made-up data, signed in or not; the preview touches no server. A long press on
- * the sign-in title, or the link `openbot://design-preview`, turns it on. The profile menu of the
- * preview turns it off.
+ * The switch of the calm design preview, with made-up data; the preview touches no server. A long
+ * press on the sign-in title, or the link `openbot://design-preview`, opens it, and the profile menu of
+ * the preview closes it. A signed-out start always shows sign-in, so the switch never hides it.
  */
 export const useDesignPreview = create<{ on: boolean; ready: boolean }>(() => ({ on: false, ready: false }));
 
