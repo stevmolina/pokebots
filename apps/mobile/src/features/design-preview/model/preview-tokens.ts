@@ -202,7 +202,7 @@ export const previewBatch4 = {
   gridConnectPaddingX: 8,
   /** Search and grid chips are tighter than the Library's. */
   tightChipPaddingX: 10,
-  gridHeaderPillPaddingX: 9,
+  gridHeaderPillPaddingX: 20,
   gridHeaderPillHeight: 48,
 } as const;
 
