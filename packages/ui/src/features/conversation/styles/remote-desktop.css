@@ -1,5 +1,11 @@
 .conversation-panel.browser-panel-active {
-  padding-inline-end: var(--browser-panel-width, 380px);
+  padding-inline-end: var(--browser-panel-width, 459px);
+}
+
+@media (max-width: 720px) {
+  .conversation-panel.browser-panel-active {
+    padding-inline-end: 0;
+  }
 }
 
 .remote-desktop-workspace {

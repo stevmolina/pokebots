@@ -1,7 +1,7 @@
 import type { RoutineSchedule } from "@openbot/contracts/ipc";
-import type { EventRoutine } from "@openbot/contracts/ipc-events";
+import type { EventRoutine, RoutineWebhookTriggerInput } from "@openbot/contracts/ipc-events";
 import { routineDraftSummary } from "@openbot/ui/features/conversation/routine-schedule-draft";
-import { routineScheduleToDraft } from "@openbot/ui/features/conversation/routine-schedule-saved";
+import { routineOnceCompleted, routineScheduleToDraft } from "@openbot/ui/features/conversation/routine-schedule-saved";
 import { type RoutineText, routineScheduleSummary } from "@openbot/ui/features/conversation/routine-schedule-ui";
 import type { RoutineEditorRecord } from "./routines-port";
 
@@ -14,6 +14,25 @@ export function routineScheduleOf(routine: RoutineEditorRecord): RoutineSchedule
     return routine.trigger.kind === "schedule" ? routine.trigger.schedule : { kind: "daily", time: "09:00" };
   }
   return routine.trigger.schedule;
+}
+
+export function routineTriggerKind(routine: RoutineEditorRecord): "schedule" | "webhook" {
+  return isEventRoutine(routine) && routine.trigger.kind === "webhook" ? "webhook" : "schedule";
+}
+
+export function routineCompleted(routine: RoutineEditorRecord): boolean {
+  if (routineTriggerKind(routine) === "webhook") return false;
+  return routineOnceCompleted({
+    active: routine.active,
+    timezone: routine.timezone,
+    schedule: routineScheduleOf(routine),
+    updatedAt: routine.updatedAt,
+  });
+}
+
+export function routineWebhookTrigger(routine: RoutineEditorRecord): RoutineWebhookTriggerInput | null {
+  if (!isEventRoutine(routine) || routine.trigger.kind !== "webhook") return null;
+  return { kind: "webhook", eventType: routine.trigger.eventType, filters: routine.trigger.filters };
 }
 
 /**

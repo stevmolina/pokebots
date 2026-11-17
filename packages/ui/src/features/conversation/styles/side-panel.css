@@ -10,7 +10,7 @@
   display: flex;
   align-items: center;
   gap: var(--openbot-space-1);
-  width: var(--side-panel-width, 380px);
+  width: min(var(--side-panel-width, 459px), 100%);
   height: var(--left-header-height, 38px);
   min-width: 0;
   padding: 0 var(--openbot-space-2);
@@ -239,14 +239,26 @@
   top: var(--left-header-height, 38px);
 }
 
+.side-panel-docked.side-panel-single-pane > :is(.browser-panel, .settings-panel) {
+  top: 0;
+}
+
 @media (min-width: 721px) {
   .app-frame-flat .side-panel-docked > .file-preview-panel {
     border-inline-start: 0.5px solid var(--openbot-border);
+  }
+
+  .side-panel-docked:not(.side-panel-single-pane) .agent-settings-focus-top {
+    display: none;
   }
 }
 
 .app-frame-edge .side-panel-docked > :is(.browser-panel, .settings-panel)::before {
   top: -1px;
+}
+
+.app-frame-edge .side-panel-docked.side-panel-single-pane > :is(.browser-panel, .settings-panel)::before {
+  top: 0;
 }
 
 /* The tab in the top row names the pane and closes it, so a pane does not repeat its title or its
@@ -259,6 +271,10 @@
 .side-panel-docked .settings-panel-header > .side-panel-pane-close {
   display: inline-flex;
   visibility: hidden;
+}
+
+.side-panel-docked.side-panel-single-pane .settings-panel-header > .side-panel-pane-close {
+  visibility: visible;
 }
 
 /* With no open pane, the dock lists the panes it can open. */

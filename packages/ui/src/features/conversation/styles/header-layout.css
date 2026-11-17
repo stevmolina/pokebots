@@ -123,7 +123,7 @@
   inset-inline-end: 0;
   bottom: 0;
   display: flex;
-  width: var(--browser-panel-width, 380px);
+  width: min(var(--browser-panel-width, 459px), 100%);
   flex-direction: column;
   border-inline-start: 1px solid var(--openbot-border);
   background: var(--openbot-bg-canvas);

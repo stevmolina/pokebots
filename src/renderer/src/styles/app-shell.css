@@ -2705,7 +2705,7 @@ textarea {
 .avatar-editor {
   position: relative;
   z-index: var(--openbot-layer-popover);
-  width: min(284px, calc(var(--settings-panel-width, 360px) - 30px));
+  width: min(284px, calc(var(--settings-panel-width, 459px) - 30px));
   max-width: calc(100vw - 24px);
   max-height: var(--kb-popper-content-available-height, none);
   margin: 0;

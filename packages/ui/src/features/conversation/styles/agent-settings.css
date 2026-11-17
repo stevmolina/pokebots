@@ -1625,13 +1625,40 @@
   line-height: 15px;
 }
 
-/* The focus view of the root page: × at the top right, then the face, name and an Edit toggle. */
+/* The focus view of the root page: × at the top right, then the face, name, segmented tabs and Edit toggle. */
 .agent-settings-focus-top {
   display: flex;
   min-height: 44px;
   align-items: center;
   justify-content: flex-end;
-  padding: var(--openbot-space-2) var(--openbot-space-2) 0;
+  padding: var(--openbot-space-3) var(--openbot-space-3) 0;
+}
+
+.agent-settings-focus-close.ui-button {
+  width: var(--openbot-control-lg);
+  height: var(--openbot-control-lg);
+  border: 0.5px solid var(--openbot-border);
+  border-radius: var(--openbot-radius-pill);
+  background: var(--openbot-bg-surface);
+  color: var(--openbot-text-secondary);
+}
+
+.agent-settings-focus-close.ui-button > svg {
+  width: var(--openbot-icon-sm);
+  height: var(--openbot-icon-sm);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .agent-settings-focus-close.ui-button:hover:not(:disabled) {
+    background: var(--openbot-bg-control-hover);
+    color: var(--openbot-text-primary);
+  }
+}
+
+@media (min-width: 721px) {
+  .settings-panel:has(> .agent-settings-focus-top) > .settings-panel-content {
+    padding-top: var(--openbot-space-2);
+  }
 }
 
 .agent-settings-hero {
@@ -1639,29 +1666,29 @@
   flex-direction: column;
   align-items: center;
   gap: var(--openbot-space-1);
-  padding-bottom: var(--openbot-space-4);
+  padding-bottom: var(--openbot-space-2);
   text-align: center;
 }
 
 .agent-settings-hero .agent-settings-avatar-picker {
-  width: 84px;
-  height: 84px;
+  width: 64px;
+  height: 64px;
   margin: 0 auto var(--openbot-space-2);
 }
 
 .agent-settings-hero .agent-settings-avatar,
 .agent-settings-hero .agent-settings-avatar .agent-avatar {
-  --agent-avatar-optical-offset: calc(84px * -0.14);
-  width: 84px;
-  height: 84px;
+  --agent-avatar-optical-offset: calc(64px * -0.14);
+  width: 64px;
+  height: 64px;
 }
 
 .agent-settings-hero-name {
   overflow: hidden;
   max-width: 100%;
   margin: 0;
-  color: var(--openbot-text);
-  font-size: var(--openbot-text-xl, 20px);
+  color: var(--openbot-text-primary);
+  font-size: var(--openbot-text-2xl);
   font-weight: var(--openbot-weight-semibold);
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -1669,19 +1696,274 @@
 
 .agent-settings-hero-title {
   margin: 0;
-  color: var(--openbot-text-muted);
+  color: var(--openbot-text-secondary);
+  font-size: var(--openbot-text-sm);
+}
+
+.agent-settings-hero-actions {
+  display: grid;
+  width: 100%;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--openbot-space-2);
+  margin-top: var(--openbot-space-2);
+}
+
+.agent-settings-tabs {
+  grid-column: 2;
+  justify-self: center;
+}
+
+.agent-settings-tabs .ui-sliding-tabs {
+  gap: 0;
+  border-radius: var(--openbot-radius-pill);
+  background: transparent;
+  box-shadow: inset 0 0 0 0.5px var(--openbot-border);
+  padding: var(--openbot-space-0-5);
+}
+
+.agent-settings-tabs .ui-sliding-tabs-pill {
+  top: var(--openbot-space-0-5);
+  height: var(--openbot-control-sm);
+  border-radius: var(--openbot-radius-pill);
+  background: var(--openbot-bg-control-active);
+}
+
+.agent-settings-tabs .ui-sliding-tabs-trigger {
+  height: var(--openbot-control-sm);
+  border-radius: var(--openbot-radius-pill);
+  padding: 0 var(--openbot-space-3);
   font-size: var(--openbot-text-sm);
 }
 
 .agent-settings-edit-toggle.ui-button {
-  margin-top: var(--openbot-space-2);
-  gap: var(--openbot-space-1-5);
+  grid-column: 3;
+  justify-self: end;
+  height: var(--openbot-control-sm);
+  margin-top: 0;
+  border: 0.5px solid var(--openbot-border);
   border-radius: var(--openbot-radius-pill);
+  background: var(--openbot-bg-surface);
+  padding: 0 var(--openbot-space-3);
+  color: var(--openbot-text-secondary);
+  font-size: var(--openbot-text-sm);
 }
 
-.agent-settings-edit-toggle svg {
-  width: 14px;
-  height: 14px;
+.agent-settings-edit-toggle.ui-button:only-child {
+  grid-column: 2;
+  justify-self: center;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .agent-settings-edit-toggle.ui-button:hover:not(:disabled) {
+    background: var(--openbot-bg-control-hover);
+    color: var(--openbot-text-primary);
+  }
+}
+
+.agent-settings-overview-stack {
+  display: grid;
+  gap: var(--openbot-space-4);
+}
+
+.agent-settings-notify-section {
+  display: grid;
+  gap: var(--openbot-space-1-5);
+}
+
+.settings-link-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--openbot-space-2);
+}
+
+.agent-settings-section-action.ui-button {
+  height: auto;
+  min-height: var(--openbot-control-xs);
+  padding: 0 var(--openbot-space-1-5);
+  border-radius: var(--openbot-radius-pill);
+  color: var(--openbot-text-secondary);
+  font-size: var(--openbot-text-sm);
+  font-weight: var(--openbot-weight-medium);
+  gap: var(--openbot-space-1);
+}
+
+.agent-settings-section-action.ui-button > svg {
+  width: var(--openbot-icon-xs);
+  height: var(--openbot-icon-xs);
+}
+
+.agent-settings-tools-add.ui-button {
+  width: var(--openbot-control-xs);
+  height: var(--openbot-control-xs);
+  border-radius: var(--openbot-radius-pill);
+  color: var(--openbot-text-secondary);
+}
+
+.agent-settings-tools-add.ui-button > svg {
+  width: var(--openbot-icon-sm);
+  height: var(--openbot-icon-sm);
+}
+
+.agent-settings-routine-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--openbot-space-2);
+  min-height: 48px;
+  padding-inline-end: var(--openbot-space-3);
+}
+
+.agent-settings-routine-button.ui-button {
+  display: grid;
+  grid-template-columns: var(--openbot-icon-md) minmax(0, 1fr);
+  align-items: center;
+  justify-content: stretch;
+  gap: var(--openbot-space-2-5);
+  width: 100%;
+  height: auto;
+  min-height: 48px;
+  padding: var(--openbot-space-2) 0 var(--openbot-space-2) var(--openbot-space-3);
+  border: 0;
+  border-radius: 0;
+  text-align: start;
+}
+
+.agent-settings-routine-copy {
+  display: grid;
+  min-width: 0;
+  gap: var(--openbot-space-0-5);
+}
+
+.agent-settings-routine-title {
+  overflow: hidden;
+  color: var(--openbot-text-primary);
+  font-size: var(--openbot-text-md);
+  font-weight: var(--openbot-weight-medium);
+  line-height: var(--openbot-leading-sm);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.agent-settings-routine-schedule {
+  overflow: hidden;
+  color: var(--openbot-text-muted);
+  font-size: var(--openbot-text-sm);
+  line-height: var(--openbot-leading-sm);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.agent-routine-switch.ui-switch[data-checked] {
+  background: var(--agent-switch-accent, var(--openbot-accent));
+}
+
+.agent-routine-switch.ui-switch .ui-switch-thumb[data-checked] {
+  background: var(--openbot-text-on-accent);
+}
+
+.agent-routine-switch-dark-thumb.ui-switch .ui-switch-thumb[data-checked] {
+  background: var(--openbot-paper-text);
+}
+
+.agent-library-tab {
+  display: grid;
+  gap: var(--openbot-space-4);
+}
+
+.agent-library-chips {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  gap: var(--openbot-space-1-5);
+  margin: 0;
+  border: 0;
+  padding: 0;
+}
+
+.agent-library-chip.ui-button {
+  height: var(--openbot-control-sm);
+  border: 0.5px solid var(--openbot-border);
+  border-radius: var(--openbot-radius-pill);
+  background: var(--openbot-bg-surface);
+  padding: 0 var(--openbot-space-3);
+  color: var(--openbot-text-secondary);
+  font-size: var(--openbot-text-sm);
+  font-weight: var(--openbot-weight-medium);
+}
+
+.agent-library-chip-active.ui-button {
+  border-color: var(--openbot-border-strong);
+  background: var(--openbot-bg-control-active);
+  color: var(--openbot-text-primary);
+}
+
+.agent-library-file-row.ui-button {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  justify-content: stretch;
+  gap: var(--openbot-space-2-5);
+  width: 100%;
+  height: auto;
+  min-height: 46px;
+  padding: var(--openbot-space-2) var(--openbot-space-3);
+  border: 0;
+  border-radius: 0;
+  text-align: start;
+}
+
+.agent-library-file-row.ui-button > svg {
+  width: var(--openbot-icon-sm);
+  height: var(--openbot-icon-sm);
+  color: var(--openbot-text-muted);
+  stroke-width: var(--openbot-icon-stroke);
+}
+
+.agent-library-file-row.ui-button > svg:dir(rtl) {
+  transform: scaleX(-1);
+}
+
+.agent-library-file-icon {
+  display: grid;
+  width: var(--openbot-control-sm);
+  height: var(--openbot-control-sm);
+  place-items: center;
+  border-radius: var(--openbot-radius-md);
+  background: var(--openbot-bg-control);
+}
+
+.agent-library-file-copy {
+  display: grid;
+  min-width: 0;
+  gap: var(--openbot-space-0-5);
+}
+
+.agent-library-file-name {
+  overflow: hidden;
+  color: var(--openbot-text-primary);
+  font-size: var(--openbot-text-md);
+  font-weight: var(--openbot-weight-medium);
+  line-height: var(--openbot-leading-sm);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.agent-library-file-meta {
+  overflow: hidden;
+  color: var(--openbot-text-muted);
+  font-size: var(--openbot-text-sm);
+  line-height: var(--openbot-leading-sm);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.agent-library-empty {
+  padding: var(--openbot-space-3);
+  color: var(--openbot-text-muted);
+  font-size: var(--openbot-text-sm);
+  text-align: center;
 }
 
 .agent-settings-edit-fields {

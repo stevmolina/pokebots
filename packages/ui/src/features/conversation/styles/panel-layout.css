@@ -9,18 +9,26 @@
 .conversation-panel[data-settings-panel]:where(:not(.browser-panel-active)) .conversation-header,
 .conversation-panel[data-settings-panel]:where(:not(.browser-panel-active)) .conversation-scroll,
 .conversation-panel[data-settings-panel]:where(:not(.browser-panel-active)) .composer-wrap {
-  width: calc(100% - var(--settings-panel-width, 360px));
+  width: max(0px, calc(100% - var(--settings-panel-width, 459px)));
+}
+
+@media (max-width: 720px) {
+  .conversation-panel[data-settings-panel]:where(:not(.browser-panel-active)) .conversation-header,
+  .conversation-panel[data-settings-panel]:where(:not(.browser-panel-active)) .conversation-scroll,
+  .conversation-panel[data-settings-panel]:where(:not(.browser-panel-active)) .composer-wrap {
+    width: 100%;
+  }
 }
 
 .conversation-panel[data-settings-panel] .chat-search {
-  inset-inline-end: calc(var(--settings-panel-width, 360px) + 16px);
-  max-width: calc(100% - var(--settings-panel-width, 360px) - 32px);
+  inset-inline-end: calc(var(--settings-panel-width, 459px) + 16px);
+  max-width: calc(100% - var(--settings-panel-width, 459px) - 32px);
 }
 
 .conversation-panel[data-browser-side-panel] .chat-search,
 .conversation-panel[data-file-preview-panel] .chat-search {
-  inset-inline-end: calc(var(--browser-panel-width, 380px) + 16px);
-  max-width: calc(100% - var(--browser-panel-width, 380px) - 32px);
+  inset-inline-end: calc(var(--browser-panel-width, 459px) + 16px);
+  max-width: calc(100% - var(--browser-panel-width, 459px) - 32px);
 }
 
 .conversation-panel[data-browser-side-panel] .conversation-header,

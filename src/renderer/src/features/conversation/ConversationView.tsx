@@ -31,6 +31,7 @@ export function ConversationView(props: ConversationProps) {
     activeRightPanel,
     sidePanel,
     sidePanelOpen,
+    singleSettingsPane,
     handleChatSearchShortcut,
     sendSelectionInstruction,
     quoteSelection,
@@ -93,6 +94,7 @@ export function ConversationView(props: ConversationProps) {
             "conversation-drop-active": dropActive(),
             "browser-panel-active": sidePanelUsesBrowserWidth(),
             "side-panel-docked": sidePanelOpen(),
+            "side-panel-single-pane": singleSettingsPane(),
             "side-panel-maximized": sidePanelOpen() && sidePanel().maximized,
           },
         ]}

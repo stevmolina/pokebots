@@ -22,9 +22,9 @@
   inset-inline-end: 0;
   bottom: 0;
   display: flex;
-  width: var(--settings-panel-width, 360px);
+  width: min(var(--settings-panel-width, 459px), 100%);
   flex-direction: column;
-  border-inline-start: 1px solid var(--openbot-border);
+  border-inline-start: 0.5px solid var(--openbot-border);
   background: var(--openbot-bg-canvas);
   color: var(--openbot-text-primary);
   animation: settings-panel-in var(--openbot-duration-slow) cubic-bezier(0.2, 0.8, 0.2, 1) both;
@@ -420,7 +420,7 @@
 .settings-link-section-title {
   margin-block: 0;
   margin-inline: var(--openbot-space-1) 0;
-  color: var(--openbot-text-muted);
+  color: var(--openbot-text-secondary);
   font-size: var(--openbot-text-sm);
   font-weight: var(--openbot-weight-medium);
   line-height: var(--openbot-leading-sm);
@@ -428,27 +428,27 @@
 
 .settings-link-group-inset {
   margin: 0;
-  border: 1px solid var(--openbot-border);
-  border-radius: var(--openbot-radius-md);
+  border: 0.5px solid var(--openbot-border);
+  border-radius: var(--openbot-radius-lg);
   background: var(--openbot-bg-surface);
 }
 
 .settings-link-group-inset > * + * {
-  border-top: 1px solid var(--openbot-border);
+  border-top: 0.5px solid var(--openbot-border);
 }
 
 /* The card does not clip its rows, because a row can hold an inline popover. The end rows round
    their own hover background instead. A wrapper row rounds the trigger button inside it. */
 .settings-link-group-inset > :first-child,
 .settings-link-group-inset > :first-child > button {
-  border-top-left-radius: calc(var(--openbot-radius-md) - 1px);
-  border-top-right-radius: calc(var(--openbot-radius-md) - 1px);
+  border-top-left-radius: calc(var(--openbot-radius-lg) - 0.5px);
+  border-top-right-radius: calc(var(--openbot-radius-lg) - 0.5px);
 }
 
 .settings-link-group-inset > :last-child,
 .settings-link-group-inset > :last-child > button {
-  border-bottom-left-radius: calc(var(--openbot-radius-md) - 1px);
-  border-bottom-right-radius: calc(var(--openbot-radius-md) - 1px);
+  border-bottom-left-radius: calc(var(--openbot-radius-lg) - 0.5px);
+  border-bottom-right-radius: calc(var(--openbot-radius-lg) - 0.5px);
 }
 
 .settings-link-group-inset .settings-link {
