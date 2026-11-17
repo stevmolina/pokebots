@@ -11,6 +11,14 @@ import { Uniwind } from "uniwind";
 
 export const APP_BRAND: "pokebots" | null = Constants.expoConfig?.extra?.brand === "pokebots" ? "pokebots" : null;
 
+/**
+ * The account service where the Pokebots build signs in by email or WorkOS: the same one as the
+ * Pokebots desktop app (`scripts/custom-build-install.sh`). It has WorkOS on, so the sign-in screen
+ * offers WorkOS. After sign-in the app keeps the service of the session, as for a QR code sign-in.
+ * The store build returns null and keeps the OpenBot service.
+ */
+export const BRAND_ACCOUNT_API_URL: string | null = APP_BRAND === "pokebots" ? "https://api.pokebots.xyz" : null;
+
 /** The Pokebots colors of the phone app: the brand blue for buttons, a light blue for the big block. */
 export const POKEBOTS_BRAND = {
   /** Buttons, the sign-in actions and the app logo color. */
