@@ -83,6 +83,7 @@ export const messages = {
   "sidebar.agentMenu.duplicate": "تكرار الوكيل",
   "sidebar.agentMenu.duplicating": "جارٍ التكرار…",
   "sidebar.agentMenu.markRead": "تعليم كمقروء",
+  "sidebar.agentMenu.makeMain": "اجعله الوكيل الرئيسي",
   "sidebar.agentMenu.markUnread": "تعليم كغير مقروء",
   "sidebar.agentMenu.mute": "كتم الوكيل",
   "sidebar.agentMenu.unmute": "إلغاء كتم الوكيل",

@@ -12,6 +12,7 @@ import type { AgentProfile } from "../../data";
 import { useText } from "../../text";
 import { AgentAvatar } from "../agents/AgentAvatar";
 import { SidebarAgentContextMenu } from "./SidebarAgentContextMenu";
+import { sidebarAgentStateLabel } from "./sidebar-filtering";
 import { sidebarPinnedItemKey } from "./sidebar-pins";
 import { useSidebarScope } from "./sidebar-scope";
 
@@ -31,8 +32,21 @@ export function useSidebarFeaturedAgent() {
 
 export function SidebarFeaturedAgent() {
   const { props } = useSidebarScope();
-  const { t } = useText();
+  const { t, format } = useText();
   const featured = useSidebarFeaturedAgent();
+  /** What the agent waits for, as the pinned row says it, so a screen reader hears it on the tile too. */
+  const stateLabel = (agentId: string) => {
+    const state = props.agentStates[agentId];
+    return state?.kind === "routine" || state?.kind === "waiting" || state?.kind === "limited"
+      ? sidebarAgentStateLabel(state, t, format)
+      : "";
+  };
+  const tileLabel = (agent: AgentProfile) => {
+    if (props.largeTitle) return undefined;
+    const state = stateLabel(agent.id);
+    if (state) return t("sidebar.pinned.agentWithState", { name: agent.name, state });
+    return unread(agent.id) ? `${agent.name}. ${t("sidebar.chat.unread")}` : undefined;
+  };
   const [menuOpen, setMenuOpen] = createSignal(false);
   const unread = (agentId: string) =>
     props.agentStates[agentId]?.kind === "unread" || (props.threadLanes?.unreadAgentIds.has(agentId) ?? false);
@@ -45,11 +59,7 @@ export function SidebarFeaturedAgent() {
               as="button"
               type="button"
               class={[buttonVariants({ variant: "ghost" }), "sidebar-featured-button"]}
-              aria-label={
-                !props.largeTitle && unread(tile().agent.id)
-                  ? `${tile().agent.name}. ${t("sidebar.chat.unread")}`
-                  : undefined
-              }
+              aria-label={tileLabel(tile().agent)}
               aria-current={props.activeAgentId === tile().agent.id ? "page" : undefined}
               onClick={() => props.onSelectAgent(tile().agent.id)}
             >

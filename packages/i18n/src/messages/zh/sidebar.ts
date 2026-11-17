@@ -76,6 +76,7 @@ export const messages = {
   "sidebar.agentMenu.duplicate": "复制助手",
   "sidebar.agentMenu.duplicating": "正在复制…",
   "sidebar.agentMenu.markRead": "标为已读",
+  "sidebar.agentMenu.makeMain": "设为主智能体",
   "sidebar.agentMenu.markUnread": "标为未读",
   "sidebar.agentMenu.mute": "静音助手",
   "sidebar.agentMenu.unmute": "取消静音",

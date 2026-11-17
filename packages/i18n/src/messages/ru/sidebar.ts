@@ -81,6 +81,7 @@ export const messages = {
   "sidebar.agentMenu.duplicate": "Дублировать агента",
   "sidebar.agentMenu.duplicating": "Дублирование…",
   "sidebar.agentMenu.markRead": "Отметить прочитанным",
+  "sidebar.agentMenu.makeMain": "Сделать главным агентом",
   "sidebar.agentMenu.markUnread": "Отметить непрочитанным",
   "sidebar.agentMenu.mute": "Отключить уведомления",
   "sidebar.agentMenu.unmute": "Включить уведомления",

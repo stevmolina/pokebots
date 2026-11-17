@@ -76,6 +76,7 @@ export const messages = {
   "sidebar.agentMenu.duplicate": "Agent dupliceren",
   "sidebar.agentMenu.duplicating": "Dupliceren…",
   "sidebar.agentMenu.markRead": "Markeer als gelezen",
+  "sidebar.agentMenu.makeMain": "Hoofdagent maken",
   "sidebar.agentMenu.markUnread": "Markeer als ongelezen",
   "sidebar.agentMenu.mute": "Agent dempen",
   "sidebar.agentMenu.unmute": "Agent niet meer dempen",

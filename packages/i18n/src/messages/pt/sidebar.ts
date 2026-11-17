@@ -76,6 +76,7 @@ export const messages = {
   "sidebar.agentMenu.duplicate": "Duplicar agente",
   "sidebar.agentMenu.duplicating": "Duplicando…",
   "sidebar.agentMenu.markRead": "Marcar como lido",
+  "sidebar.agentMenu.makeMain": "Tornar agente principal",
   "sidebar.agentMenu.markUnread": "Marcar como não lido",
   "sidebar.agentMenu.mute": "Silenciar agente",
   "sidebar.agentMenu.unmute": "Reativar notificações",

@@ -38,9 +38,12 @@ export function SidebarPinnedGroup() {
   } = useSidebarScope();
   const { t, format } = useText();
   const featured = useSidebarFeaturedAgent();
+  /** Only the chat sidebar (with pages) draws the tile; the phone list and the fallback nav keep the pin in the group. */
+  const tileShown = () => !props.largeTitle && props.pages !== undefined;
+  const tileAgentId = () => (tileShown() && featured()?.pinnedKey !== undefined ? featured()?.agent.id : undefined);
   /** The tile at the top of the list shows the main agent, so the group does not repeat it. The phone list keeps it. */
   const pinnedItems = createMemo(() => {
-    const tileKey = props.largeTitle ? undefined : featured()?.pinnedKey;
+    const tileKey = tileShown() ? featured()?.pinnedKey : undefined;
     return tileKey === undefined
       ? resolvedPinnedItems()
       : resolvedPinnedItems().filter((item) => sidebarPinnedItemKey(item.ref) !== tileKey);
@@ -231,7 +234,9 @@ export function SidebarPinnedGroup() {
                       </ContextMenu.Trigger>
                       <Switch>
                         <Match when={item.chat.kind === "agent" ? item.chat.agent : undefined}>
-                          {(agent) => <SidebarAgentContextMenu agent={agent()} pinned={true} />}
+                          {(agent) => (
+                            <SidebarAgentContextMenu agent={agent()} pinned={true} mainAgentId={tileAgentId()} />
+                          )}
                         </Match>
                         <Match when={item.chat.kind === "channel" ? item.chat.channel : undefined}>
                           {(channel) => <SidebarChannelContextMenu channel={channel()} pinned={true} />}

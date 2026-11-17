@@ -76,6 +76,7 @@ export const messages = {
   "sidebar.agentMenu.duplicate": "エージェントを複製",
   "sidebar.agentMenu.duplicating": "複製中…",
   "sidebar.agentMenu.markRead": "既読にする",
+  "sidebar.agentMenu.makeMain": "メインエージェントにする",
   "sidebar.agentMenu.markUnread": "未読にする",
   "sidebar.agentMenu.mute": "エージェントをミュート",
   "sidebar.agentMenu.unmute": "ミュートを解除",

@@ -92,6 +92,7 @@ export const messages = defineMessages("sidebar", {
   "sidebar.agentMenu.duplicate": "Duplicate agent",
   "sidebar.agentMenu.duplicating": "Duplicating…",
   "sidebar.agentMenu.markRead": "Mark read",
+  "sidebar.agentMenu.makeMain": "Make main agent",
   "sidebar.agentMenu.markUnread": "Mark unread",
   "sidebar.agentMenu.mute": "Mute agent",
   "sidebar.agentMenu.unmute": "Unmute agent",

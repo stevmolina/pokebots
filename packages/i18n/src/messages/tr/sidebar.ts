@@ -76,6 +76,7 @@ export const messages = {
   "sidebar.agentMenu.duplicate": "Ajanı çoğalt",
   "sidebar.agentMenu.duplicating": "Çoğaltılıyor…",
   "sidebar.agentMenu.markRead": "Okundu olarak işaretle",
+  "sidebar.agentMenu.makeMain": "Ana ajan yap",
   "sidebar.agentMenu.markUnread": "Okunmadı olarak işaretle",
   "sidebar.agentMenu.mute": "Ajanı sessize al",
   "sidebar.agentMenu.unmute": "Ajanın sesini aç",
