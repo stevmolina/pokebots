@@ -263,7 +263,10 @@ export class RemoteServerClient {
       headers.set(TEAM_PROTOCOL_VERSION_HEADER, String(compatibility.negotiatedProtocol));
       if (this.#appVersion) {
         headers.set(TEAM_APP_VERSION_HEADER, this.#appVersion);
-        headers.set(TEAM_CAPABILITIES_HEADER, teamCapabilitiesForProtocol(compatibility.negotiatedProtocol).join(","));
+        headers.set(
+          TEAM_CAPABILITIES_HEADER,
+          teamCapabilitiesForProtocol(compatibility.negotiatedProtocol, compatibility.capabilities).join(","),
+        );
       }
       const response = yield* remoteFetch(input, { ...init, headers }, timeoutMs).pipe(
         Effect.mapError(
@@ -303,7 +306,7 @@ export class RemoteServerClient {
     return {
       ...(protocol === null ? {} : { protocol }),
       ...(appVersion === null ? {} : { appVersion }),
-      ...(appVersion ? { capabilities: teamCapabilitiesForProtocol(protocol) } : {}),
+      ...(appVersion ? { capabilities: teamCapabilitiesForProtocol(protocol, compatibility.capabilities) } : {}),
       preserveSemanticTags: supportsTeamSemanticTags(compatibility.capabilities),
     };
   }

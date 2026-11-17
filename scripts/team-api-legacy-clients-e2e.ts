@@ -69,6 +69,7 @@ import {
 import { AGENT_NOTIFICATION_LEVELS_CAPABILITY } from "@openbot/contracts/team-protocol/agent-notification-levels-v1";
 import {
   BROWSER_VAULT_SKIP_CAPABILITY,
+  TEAM_CURRENT_CAPABILITIES,
   TEAM_USAGE_TERTIARY_CAPABILITY,
 } from "@openbot/contracts/team-protocol/current";
 import {
@@ -1465,6 +1466,78 @@ try {
     );
     return { protocol9: first.capabilities.length, protocol8: v8.capabilities.length, sent: negotiated.length };
   });
+
+  await step(
+    "startup reads: the lists that a desktop and a phone send stay within the limit of a released host",
+    async () => {
+      // A released host reads at most 256 capabilities and refuses the request whole with
+      // `unsupported_operation`. The current list is longer than that, so a list that nobody cut to
+      // the host limit made every startup read fail on a joined server (the desktop and the phone).
+      assert.ok(
+        TEAM_CURRENT_CAPABILITIES.length > TEAM_PROTOCOL_V9_CAPABILITY_LIMIT,
+        "The current list fits the limit: this check no longer shows the failure.",
+      );
+      const read = async (method: "GET" | "POST", path: string, body: unknown, capabilities: readonly string[]) => {
+        const requestId = randomUUID();
+        const from = v2.bridge.sent.length;
+        v2.bridge.emit(
+          "data",
+          "peer-v2",
+          "rpc",
+          encodeTeamProtocolV2Frame(
+            createTeamProtocolV2Request(requestId, "http.request", {
+              method,
+              path,
+              body: encodeTeamProtocolV8WebRtcHttpRequest(method, path, body),
+              capabilities: [...capabilities],
+              capabilitiesKey: `p${TEAM_PROTOCOL_V9}`,
+            }),
+          ),
+        );
+        const frame = await v2.bridge.rpcFrom(from, rpcResponse(requestId));
+        return "result" in frame ? "ok" : `${frame.error?.status}/${frame.error?.code}`;
+      };
+      // The failure: the whole current list, as a client sent it after the compatibility read.
+      assert.equal(
+        await read("GET", "/v1/agents", null, TEAM_CURRENT_CAPABILITIES),
+        "400/unsupported_operation",
+        "A host accepted a list above its limit: the check does not show the failure.",
+      );
+      const sent = {
+        // The desktop names no host list yet, and the phone does before its compatibility read ends.
+        "no host list": teamCapabilitiesForProtocol(TEAM_PROTOCOL_V9),
+        // After the compatibility read, with what the host advertises.
+        "host list": teamCapabilitiesForProtocol(TEAM_PROTOCOL_V9, hostCapabilities),
+        // A host that knows fewer features than this client.
+        "older host": teamCapabilitiesForProtocol(TEAM_PROTOCOL_V9, hostCapabilities.slice(0, 200)),
+        bootstrap: TEAM_BOOTSTRAP_CAPABILITIES,
+      };
+      const results: Record<string, string> = {};
+      for (const [label, capabilities] of Object.entries(sent)) {
+        assert.ok(capabilities.length <= TEAM_PROTOCOL_V9_CAPABILITY_LIMIT, `${label}: ${capabilities.length} long.`);
+        assert.ok(capabilities.includes(TEAM_LONG_CAPABILITY_LISTS_CAPABILITY), `${label}: no long-list marker.`);
+        for (const [method, path, body] of [
+          ["GET", "/v1/agents", null],
+          ["GET", "/v1/compatibility", null],
+        ] as const) {
+          const result = await read(method, path, body, capabilities);
+          assert.equal(result, "ok", `${label}: ${method} ${path} got ${result}.`);
+        }
+        results[label] = `${capabilities.length} ok`;
+      }
+      // A host never advertises more than a released client decodes.
+      const advertised = decodeTeamProtocolSupportV9(
+        await (async () => {
+          const response = await fetch(`http://127.0.0.1:${port}/v1/compatibility`, {
+            headers: { [TEAM_PROTOCOL_VERSION_HEADER]: String(TEAM_PROTOCOL_V9) },
+          });
+          return response.json();
+        })(),
+      );
+      assert.ok(advertised.capabilities.length <= TEAM_PROTOCOL_V9_CAPABILITY_LIMIT);
+      return { ...results, advertised: advertised.capabilities.length, current: TEAM_CURRENT_CAPABILITIES.length };
+    },
+  );
 
   await step("usage-tertiary-v1 RPC: a WebRTC usage read follows the capability", async () => {
     const reading: AccountUsage = {

@@ -191,6 +191,8 @@ export class TeamWebRtcClientTransport extends EventEmitter<TeamWebRtcClientTran
   readonly #operations = new Set<Deferred.Deferred<void>>();
   #stopping: Deferred.Deferred<void, RemoteWorkflowError> | null = null;
   readonly #hostProtocols = new Map<string, number>();
+  /** What each host advertises. A request names only what both ends know, within the host limit. */
+  readonly #hostCapabilities = new Map<string, readonly string[]>();
   readonly #active = new Map<string, ActiveHost>();
   // A failed attempt used to end its session, so each retry against an offline host was a create, a
   // ticket and an end: three Worker requests and a Signal webhook. Only `disconnect` ends it now.
@@ -554,6 +556,7 @@ export class TeamWebRtcClientTransport extends EventEmitter<TeamWebRtcClientTran
               capabilities: [
                 ...teamCapabilitiesForProtocol(
                   path === "/v1/compatibility" ? undefined : this.#hostProtocols.get(hostId),
+                  path === "/v1/compatibility" ? undefined : this.#hostCapabilities.get(hostId),
                 ),
               ],
               ...(bodyTransferId ? { bodyTransferId } : {}),
@@ -637,6 +640,7 @@ export class TeamWebRtcClientTransport extends EventEmitter<TeamWebRtcClientTran
         if (method === "GET" && path === "/v1/compatibility" && status === 200) {
           const support = yield* remoteDecode(() => decodeTeamProtocolSupportV9(body));
           this.#hostProtocols.set(hostId, support.protocol.maximum);
+          this.#hostCapabilities.set(hostId, support.capabilities);
         }
         return { status: envelope.status, body, ...(file ? { file } : {}) };
       }).pipe(Effect.onExit((exit) => Effect.sync(() => profile?.end(exit)))),
@@ -780,6 +784,7 @@ export class TeamWebRtcClientTransport extends EventEmitter<TeamWebRtcClientTran
     this.#connectRetries.delete(hostId);
     this.#closes.set(hostId, (this.#closes.get(hostId) ?? 0) + 1);
     this.#hostProtocols.delete(hostId);
+    this.#hostCapabilities.delete(hostId);
     this.#lastAnswerAt.delete(hostId);
     this.#files.setPeerAuthenticated(hostId, false);
     const disconnected = yield* TeamClientBridge.use((bridge) => bridge.disconnect(hostId)).pipe(Effect.result);
@@ -905,6 +910,7 @@ export class TeamWebRtcClientTransport extends EventEmitter<TeamWebRtcClientTran
     active.connecting = done;
     this.#retainedSessions.delete(hostId);
     this.#hostProtocols.delete(hostId);
+    this.#hostCapabilities.delete(hostId);
     this.#active.set(hostId, active);
     const closes = this.#closes.get(hostId) ?? 0;
     const attemptId = this.#options.connectTrace?.begin(hostId);

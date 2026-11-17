@@ -757,9 +757,7 @@ export class RemoteEventStream {
         includeConversations: this.#servers.activeServerId === serverId || this.#chatWindowServerIds.has(serverId),
         ...(this.#appVersion
           ? {
-              capabilities: teamCapabilitiesForProtocol(
-                this.#connections.compatibilityFor(serverId)?.negotiatedProtocol,
-              ),
+              capabilities: this.#negotiatedCapabilities(serverId),
             }
           : {}),
       }),
@@ -794,9 +792,13 @@ export class RemoteEventStream {
   /** Whether the `agent-event-scope` message of this server names `capability`. */
   #advertises(serverId: string, capability: TeamCurrentCapability): boolean {
     if (!this.#appVersion) return false;
-    return teamCapabilitiesForProtocol(this.#connections.compatibilityFor(serverId)?.negotiatedProtocol).includes(
-      capability,
-    );
+    return this.#negotiatedCapabilities(serverId).includes(capability);
+  }
+
+  /** What this client names to the host: what both ends know, within the host limit. */
+  #negotiatedCapabilities(serverId: string): readonly TeamCurrentCapability[] {
+    const compatibility = this.#connections.compatibilityFor(serverId);
+    return teamCapabilitiesForProtocol(compatibility?.negotiatedProtocol, compatibility?.capabilities);
   }
 
   #supportsCapability(serverId: string, capability: TeamCurrentCapability): boolean {

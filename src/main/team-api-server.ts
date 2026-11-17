@@ -284,7 +284,7 @@ import { TEAM_PI_MUSE_CAPABILITY } from "@openbot/contracts/team-protocol/v7";
 import { encodeTeamProtocolV7BaseCurrentEvent } from "@openbot/contracts/team-protocol/v7-base-adapter";
 import { TEAM_OPEN_PROVIDERS_CAPABILITY } from "@openbot/contracts/team-protocol/v8";
 import { encodeTeamProtocolV8BaseCurrentEvent } from "@openbot/contracts/team-protocol/v8-base-adapter";
-import { TEAM_PROTOCOL_V9 } from "@openbot/contracts/team-protocol/v9";
+import { TEAM_PROTOCOL_V9, TEAM_PROTOCOL_V9_CAPABILITY_LIMIT } from "@openbot/contracts/team-protocol/v9";
 import { WORKSPACE_ONLY_PROCESS_LIMIT_CAPABILITY } from "@openbot/contracts/team-protocol/workspace-only-process-limit-v1";
 import { isFixedSourceText, sourceText } from "@openbot/i18n/source";
 import { createOpenBotLogger, toLogValue } from "@openbot/logging";
@@ -2665,15 +2665,16 @@ export class TeamApiServer {
   /**
    * What this host serves, as a peer of `protocol` reads it. Protocol 7 and newer get the full list,
    * older peers the legacy one. Below protocol 9 the list leaves out the protocol 9 capabilities, so it
-   * stays within the 128 that protocols 7 and 8 read.
+   * stays within the 128 that protocols 7 and 8 read. No list is longer than the 256 that a released
+   * client reads: a longer answer is refused whole, and the client cannot connect.
    */
   #protocolSupport(protocol: number | null = null): TeamProtocolSupportV1 {
     const expanded = protocol !== null && protocol >= 7;
     return {
       appVersion: this.#options.appVersion ?? "0.0.0",
       protocol: { minimum: TEAM_PROTOCOL_V1, maximum: TEAM_PROTOCOL_V9 },
-      capabilities: teamCapabilitiesVisibleToProtocol(TEAM_CURRENT_CAPABILITIES, protocol ?? TEAM_PROTOCOL_V1).filter(
-        (capability) => {
+      capabilities: teamCapabilitiesVisibleToProtocol(TEAM_CURRENT_CAPABILITIES, protocol ?? TEAM_PROTOCOL_V1)
+        .filter((capability) => {
           if (!expanded && !legacyTeamCapabilities([capability]).length) return false;
           if (
             capability === "channel-chats-v1" ||
@@ -2897,8 +2898,8 @@ export class TeamApiServer {
             return this.#options.agentNotificationLevels !== undefined;
           if (capability === SIDEBAR_PINS_CAPABILITY) return this.#options.sidebarPins !== undefined;
           return true;
-        },
-      ),
+        })
+        .slice(0, TEAM_PROTOCOL_V9_CAPABILITY_LIMIT),
     };
   }
 
