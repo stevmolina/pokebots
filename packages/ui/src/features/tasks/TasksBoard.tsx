@@ -6,7 +6,7 @@ import type { AgentProfile } from "@openbot/ui/data";
 import { AgentAvatar } from "@openbot/ui/features/agents/AgentAvatar";
 import { AgentTaskMark, type AgentTaskWait, agentTaskStatus } from "@openbot/ui/features/conversation/AgentTasks";
 import { useText } from "@openbot/ui/text";
-import { createMemo, createSignal, createUniqueId, For, Show } from "solid-js";
+import { createMemo, createSignal, createUniqueId, For, onCleanup, Show, untrack } from "solid-js";
 
 /** The closed tasks that the Done column shows before "Show all". */
 export const TASKS_BOARD_CLOSED_SHOWN = 12;
@@ -38,6 +38,12 @@ export interface TasksBoardProps {
   onStopTask: (task: AgentTask) => void;
 }
 
+/**
+ * The drag data of a card. Not `text/plain`: a drop on the composer or a message box would type the
+ * task id into it.
+ */
+const TASK_DRAG_TYPE = "application/x-openbot-task";
+
 /** A task that a drop on Done can close: open, and no turn runs or waits to start. */
 const canClose = (task: AgentTask) => task.state !== "closed" && !isAgentTaskActive(task);
 
@@ -59,6 +65,11 @@ function TaskCard(props: {
   const { t } = useText();
   const status = () => agentTaskStatus(props.task, t, props.wait);
   const draggable = () => props.task.state === "closed" || canClose(props.task);
+  // A task update can move the card during its drag. The old card leaves the page and gets no
+  // `dragend`, so the drag ends here, or the board would keep it faded.
+  onCleanup(() => {
+    if (untrack(() => props.dragging)) props.onDragEnd();
+  });
   return (
     <li
       class="tasks-board-card"
@@ -68,7 +79,7 @@ function TaskCard(props: {
       data-dragging={props.dragging ? "" : undefined}
       onDragStart={(event: DragEvent) => {
         if (!draggable()) return event.preventDefault();
-        event.dataTransfer?.setData("text/plain", props.task.id);
+        event.dataTransfer?.setData(TASK_DRAG_TYPE, props.task.id);
         if (event.dataTransfer) event.dataTransfer.effectAllowed = "move";
         props.onDragStart();
       }}
