@@ -56,7 +56,7 @@ export const Field: Story = {
   args: { variant: "field", label: "Model" },
 };
 
-/** The Model row of the details pane: ⌘1 to ⌘9 choose a model while it is open, and the footer shows the access. */
+/** The Model row of the details pane: ⌘1 to ⌘9 choose a model while it is open. */
 export const DetailsPaneRow: Story = {
   args: {
     variant: "field",
@@ -64,7 +64,6 @@ export const DetailsPaneRow: Story = {
     reasoningEffort: "medium",
     onReasoningEffortChange: fn(),
     shortcutPlatform: "mac",
-    access: { label: "Full access", onOpen: fn() },
   },
 };
 
