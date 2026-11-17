@@ -4,10 +4,11 @@
  * 1. Profile: the account photo with the status dot of the active machine. Its menu stays short: the
  *    weekly usage, the plan, the machine switch, a "Go to" submenu with every page, a Help submenu
  *    with the mobile app and community links, Settings and the account actions.
- * 2. Connect apps: a grid button whose menu opens the app catalog.
+ * 2. Connect apps: a grid button that opens the Marketplace modal.
  */
 
 import {
+  Button,
   Check,
   ChevronRight,
   CircleQuestionMark,
@@ -275,44 +276,26 @@ export function SidebarProfileMenu(props: {
   );
 }
 
-/** The grid button: the app catalog, and the MCP servers of the machine where the app can open them. */
-export function ConnectAppsMenu(props: { pages: SidebarPages; class?: string; placement?: "top-end" | "top-start" }) {
+/**
+ * The grid button of the footer. It opens the Marketplace at once, as a modal over the window. The MCP servers entry
+ * that its menu had on the web client is a row of the Marketplace side panel now.
+ */
+export function ConnectAppsButton(props: { pages: SidebarPages; class?: string }) {
   const { t } = useText();
   return (
     <Show when={props.pages.onMarketplace}>
       {(onMarketplace) => (
-        <DropdownMenu.Root placement={props.placement ?? "top-end"} gutter={8}>
-          <MotionTooltip content={t("sidebar.footer.connectApps")}>
-            <DropdownMenu.Trigger
-              class={["sidebar-footer-round no-drag", props.class]}
-              aria-label={t("sidebar.footer.connectApps")}
-            >
-              <LayoutGrid aria-hidden="true" />
-            </DropdownMenu.Trigger>
-          </MotionTooltip>
-          <DropdownMenu.Portal>
-            <DropdownMenu.Content
-              class="agent-context-menu sidebar-footer-menu"
-              aria-label={t("sidebar.footer.connectApps")}
-            >
-              <div class="ui-menu-label" aria-hidden="true">
-                {t("sidebar.footer.connectApps")}
-              </div>
-              <DropdownMenu.Item onSelectAfterClose={() => onMarketplace()()}>
-                <Store class="agent-context-icon size-4" aria-hidden="true" />
-                <span>{t("sidebar.footer.browseApps")}</span>
-              </DropdownMenu.Item>
-              <Show when={props.pages.onConnectServers}>
-                {(open) => (
-                  <DropdownMenu.Item onSelectAfterClose={() => open()()}>
-                    <Plus class="agent-context-icon size-4" aria-hidden="true" />
-                    <span>{t("sidebar.footer.mcpServers")}</span>
-                  </DropdownMenu.Item>
-                )}
-              </Show>
-            </DropdownMenu.Content>
-          </DropdownMenu.Portal>
-        </DropdownMenu.Root>
+        <MotionTooltip content={t("sidebar.footer.connectApps")}>
+          <Button
+            variant="ghost"
+            type="button"
+            class={["sidebar-footer-round no-drag", props.class]}
+            aria-label={t("sidebar.footer.connectApps")}
+            onClick={() => onMarketplace()()}
+          >
+            <LayoutGrid aria-hidden="true" />
+          </Button>
+        </MotionTooltip>
       )}
     </Show>
   );
@@ -324,7 +307,7 @@ export function SidebarFooter(props: { pages: SidebarPages }) {
     <div class="sidebar-footer" role="toolbar" aria-label={t("sidebar.footer.label")}>
       <SidebarProfileMenu pages={props.pages} />
       <div class="sidebar-footer-actions">
-        <ConnectAppsMenu pages={props.pages} />
+        <ConnectAppsButton pages={props.pages} />
       </div>
     </div>
   );

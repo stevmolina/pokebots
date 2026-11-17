@@ -24,14 +24,14 @@ export type WindowPage =
 
 /**
  * How a page sits in the window. The tasks page shows in the middle pane, as the agents do. The settings
- * pages show in a centered modal over the window: the sidebar and the conversation stay behind it. The
- * title of a schedule, workflows, usage, Library, Marketplace or pricing page goes in the top row of the
+ * pages and the Marketplace show in a centered modal over the window: the sidebar and the conversation stay behind it. The
+ * title of a schedule, workflows, usage, Library or pricing page goes in the top row of the
  * card. The chat sidebar stays beside every page.
  */
 export type WindowPageKind = "agents" | "modal" | "titled";
 
 export function windowPageKind(page: WindowPage): WindowPageKind {
-  if (page === "settings" || page === "server-settings") return "modal";
+  if (page === "settings" || page === "server-settings" || page === "marketplace") return "modal";
   return page === "agents" || page === "tasks" ? "agents" : "titled";
 }
 

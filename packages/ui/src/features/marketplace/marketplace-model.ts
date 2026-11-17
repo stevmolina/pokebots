@@ -292,6 +292,8 @@ export interface MarketplaceModel {
   mcpAccess?: MarketplaceMcpAccess | undefined;
   /** Opens the form that adds a custom MCP server. Absent when the user cannot add one. */
   addServer?: (() => void) | undefined;
+  /** Opens the MCP servers of the server that the Marketplace shows. Absent when the user cannot manage them. */
+  openServers?: (() => void) | undefined;
   runPrompt?: ((prompt: MarketplacePluginPrompt) => void) | undefined;
   copyLink: (slug: string) => void;
   /** Copies the shared link of an agent or a skill. */

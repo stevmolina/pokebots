@@ -95,8 +95,6 @@ export interface SidebarPages {
   onAddAccount?: (() => void) | undefined;
   /** Signs out of the account. */
   onSignOut?: (() => void) | undefined;
-  /** Opens the MCP servers of the machine in view, from the Connect apps menu. */
-  onConnectServers?: (() => void) | undefined;
   /** Whether ⌘, opens Settings here, so the Settings item names the key. The web client has no such key. */
   settingsShortcut?: boolean | undefined;
 }

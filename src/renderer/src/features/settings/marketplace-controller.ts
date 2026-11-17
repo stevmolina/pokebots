@@ -139,6 +139,8 @@ export interface MarketplaceControllerProps {
   macOS?: boolean | undefined;
   /** Opens the form that adds a custom MCP server. Absent when the user cannot add one. */
   onAddServer?: (() => void) | undefined;
+  /** Opens the MCP servers of the server. Absent when the user cannot manage them. */
+  onOpenServers?: (() => void) | undefined;
 }
 
 /** The connect step of one app. `settle(null)` is a closed dialog. */
@@ -1800,6 +1802,9 @@ export function createMarketplaceController(props: MarketplaceControllerProps) {
     },
     get addServer() {
       return props.onAddServer;
+    },
+    get openServers() {
+      return props.onOpenServers;
     },
     get runPrompt() {
       const run = props.onRunPluginPrompt;

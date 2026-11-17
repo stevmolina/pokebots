@@ -7,8 +7,9 @@ import {
   type FirstAgentDraft,
   FirstAgentSetup,
 } from "@openbot/ui/features/agents/FirstAgentSetup";
+import { NewAgentDialog } from "@openbot/ui/features/agents/NewAgentDialog";
 import { useText } from "@openbot/ui/text";
-import { createEffect, createStore, onSettled } from "solid-js";
+import { createEffect, createStore, onSettled, Show, untrack } from "solid-js";
 import { type CreationPreference, resolveCreationModel } from "../agents/agent-creation-model";
 import { createAgentInitialMessage } from "../agents/agent-initial-message";
 import type { WebWorkspaceRuntime } from "./web-runtime";
@@ -182,34 +183,53 @@ export function WebAgentSettings(props: {
         });
     }
   }
+  function changeDraft(value: FirstAgentDraft): void {
+    setState((draft) => {
+      if (
+        value.provider !== draft.draft.provider ||
+        value.model !== draft.draft.model ||
+        value.reasoningEffort !== draft.draft.reasoningEffort ||
+        value.providerAccountId !== draft.draft.providerAccountId
+      )
+        draft.modelTouched = true;
+      draft.draft = value;
+    });
+    props.onDraftChange?.(value);
+  }
+  /**
+   * Whether the host had no agents when the form opened, read once. The new agent joins the host before the
+   * save ends, and the form must not change from the page to the dialog while it saves.
+   */
+  const first = untrack(() => props.first);
   return (
-    <FirstAgentSetup
-      value={state.draft}
-      suggestions={FIRST_AGENT_SUGGESTIONS}
-      mode={props.first ? "first" : "additional"}
-      submitting={state.busy}
-      error={state.error}
-      modelOptions={supportsModelSelection() && state.models.length > 0 ? state.models : undefined}
-      agentStatus={state.status ?? undefined}
-      accountChoice={props.accountChoice}
-      accountUsage={props.accountUsage}
-      customProviders={props.customProviders}
-      onManageProviders={props.onManageProviders}
-      onChange={(value) => {
-        setState((draft) => {
-          if (
-            value.provider !== draft.draft.provider ||
-            value.model !== draft.draft.model ||
-            value.reasoningEffort !== draft.draft.reasoningEffort ||
-            value.providerAccountId !== draft.draft.providerAccountId
-          )
-            draft.modelTouched = true;
-          draft.draft = value;
-        });
-        props.onDraftChange?.(value);
-      }}
-      onSubmit={save}
-      onCancel={props.first ? undefined : props.onClose}
-    />
+    <Show
+      when={first}
+      fallback={
+        <NewAgentDialog
+          value={state.draft}
+          submitting={state.busy}
+          error={state.error}
+          onChange={changeDraft}
+          onSubmit={save}
+          onCancel={props.onClose}
+        />
+      }
+    >
+      <FirstAgentSetup
+        value={state.draft}
+        suggestions={FIRST_AGENT_SUGGESTIONS}
+        mode="first"
+        submitting={state.busy}
+        error={state.error}
+        modelOptions={supportsModelSelection() && state.models.length > 0 ? state.models : undefined}
+        agentStatus={state.status ?? undefined}
+        accountChoice={props.accountChoice}
+        accountUsage={props.accountUsage}
+        customProviders={props.customProviders}
+        onManageProviders={props.onManageProviders}
+        onChange={changeDraft}
+        onSubmit={save}
+      />
+    </Show>
   );
 }

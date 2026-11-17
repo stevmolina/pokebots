@@ -233,7 +233,7 @@ export function SkillsMarketplace() {
   const { selectAgent } = useNavigation();
   const { activeServer } = useServers();
   const { openInstalledMarketplaceAgent } = useServerSelection();
-  const { openMcpAdd } = useServerSettings();
+  const { openMcpAdd, openServerSettings } = useServerSettings();
   const connectors = useConnectors();
   const platform = usePlatform();
   const { remoteDesktopWorkspaceVisible, hideRemoteDesktopWorkspace } = useRemoteDesktop();
@@ -266,6 +266,10 @@ export function SkillsMarketplace() {
       onAddServer={(serverId) => {
         setSkillsMarketplaceOpen(false);
         openMcpAdd(serverId, null);
+      }}
+      onOpenServers={(serverId) => {
+        setSkillsMarketplaceOpen(false);
+        openServerSettings(serverId, null, "mcp");
       }}
     />
   );

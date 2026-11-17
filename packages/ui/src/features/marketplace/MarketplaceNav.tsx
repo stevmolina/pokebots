@@ -1,4 +1,4 @@
-import { Blocks, BookOpen, Bot, Button, TriangleAlert } from "@openbot/ui";
+import { Blocks, BookOpen, Bot, Button, Server, TriangleAlert } from "@openbot/ui";
 import { useText } from "@openbot/ui/text";
 import { Dynamic } from "@solidjs/web";
 import { For, Show } from "solid-js";
@@ -64,6 +64,23 @@ export function MarketplaceNav(props: { scope: MarketplaceScope; lists: BrowseLi
               </li>
             )}
           </For>
+          {/* The MCP servers of the server: the entry that the apps button of the sidebar had. */}
+          <Show when={props.scope.model.openServers}>
+            {(openServers) => (
+              <li>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  class="settings-modal-nav-item marketplace-nav-item"
+                  data-cuelume-tap="navigate"
+                  onClick={() => openServers()()}
+                >
+                  <Server aria-hidden="true" />
+                  <span>{t("sidebar.footer.mcpServers")}</span>
+                </Button>
+              </li>
+            )}
+          </Show>
         </ul>
       </nav>
       <Show when={yours().length > 0}>

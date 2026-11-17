@@ -86,6 +86,8 @@ export function MarketplaceOverlay(props: {
   macOS?: boolean | undefined;
   /** Opens the form that adds a custom MCP server to the server with this ID. */
   onAddServer?: ((serverId: string) => void) | undefined;
+  /** Opens the MCP servers of the server with this ID. */
+  onOpenServers?: ((serverId: string) => void) | undefined;
 }) {
   const controller = useConversationController();
   const access = createMarketplaceServerAccess(props);
@@ -95,6 +97,13 @@ export function MarketplaceOverlay(props: {
   const addServer = () => {
     const serverId = pluginServerId();
     const open = props.onAddServer;
+    if (serverId === undefined || !open) return undefined;
+    return () => open(serverId);
+  };
+  /** The MCP servers row of the side panel, for a user who can add a server to the host. */
+  const openServers = () => {
+    const serverId = pluginServerId();
+    const open = props.onOpenServers;
     if (serverId === undefined || !open) return undefined;
     return () => open(serverId);
   };
@@ -152,6 +161,7 @@ export function MarketplaceOverlay(props: {
           initialListing={props.marketplaceListing ?? undefined}
           onInitialListingConsumed={props.onMarketplaceListingConsumed}
           onAddServer={addServer()}
+          onOpenServers={openServers()}
           onRunPluginPrompt={
             composerFree()
               ? (agentId, prompt) =>

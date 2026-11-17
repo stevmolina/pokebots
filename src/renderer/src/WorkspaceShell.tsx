@@ -116,7 +116,8 @@ export function WorkspaceShell(props: {
   const middlePane = createMemo(() => {
     if (chatWindow) return "agent";
     if (windowPage.page() === "tasks") return "tasks";
-    if (agentSetupOpen()) return "agent-setup";
+    // The first agent takes the pane. Another agent opens as a dialog over the pane that is open.
+    if (agentSetupOpen() && agentList().length === 0) return "agent-setup";
     if (channelOpen()) return "channel";
     if (activeDirectMember()) return "direct";
     return layout.sidebarView() === "routines" ? "routines" : "agent";
@@ -414,7 +415,12 @@ export function WorkspaceShell(props: {
           <Show when={serverOnboardingOpen() && middlePane() !== "tasks"}>
             <WorkspaceServerOnboarding />
           </Show>
-          <Show when={middlePane() === "agent-setup" && !serverOnboardingOpen()}>
+          <Show
+            when={
+              (middlePane() === "agent-setup" || (agentSetupOpen() && agentList().length > 0)) &&
+              !serverOnboardingOpen()
+            }
+          >
             <WorkspaceAgentSetup />
           </Show>
           {/* Keyed by id: each presence snapshot is a new member object, and remounting would clear the draft. */}
