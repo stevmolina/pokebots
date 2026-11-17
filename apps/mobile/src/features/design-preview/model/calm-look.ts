@@ -1,4 +1,5 @@
 import * as SecureStore from "expo-secure-store";
+import { createContext, useContext } from "react";
 import { create } from "zustand";
 import { DESIGN_PREVIEW_ALLOWED } from "./preview-switch";
 
@@ -41,4 +42,16 @@ export async function saveCalmLook(on: boolean): Promise<void> {
 /** Whether home draws the calm look. Always false in the store build. */
 export function useCalmLook(): boolean {
   return useCalmLookStore((state) => DESIGN_PREVIEW_ALLOWED && state.on);
+}
+
+/**
+ * The look that home decided for its rows: the calm look, unless the switch is off or home is the pane
+ * of a wide window. Rows read it here, so the pane keeps the current rows, and a row does not subscribe
+ * to the switch itself. Outside home it is false.
+ */
+export const CalmRowsContext = createContext(false);
+
+/** Whether a home row draws the calm look. */
+export function useCalmRows(): boolean {
+  return useContext(CalmRowsContext);
 }

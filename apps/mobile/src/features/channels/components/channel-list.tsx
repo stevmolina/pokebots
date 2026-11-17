@@ -13,13 +13,13 @@ import { AgentPinSwipeRow } from "@/features/agents/components/agent-pin-swipe-r
 import { useAgentPinTransition } from "@/features/agents/components/agent-pin-transition";
 import { ChatDragArea, DRAG_AVATAR_SIZE, useChatDrag, useHoldMenu } from "@/features/agents/components/chat-drag";
 import { ChatLinkPressable } from "@/features/agents/components/chat-link-pressable";
-import { useChatRowBackground } from "@/features/agents/components/chat-list-pane-context";
+import { useChatRowBackground, useChatRowSelected } from "@/features/agents/components/chat-list-pane-context";
 import { PinnedChatItem } from "@/features/agents/components/pinned-agents-grid";
 import { useChatSectionMenu } from "@/features/agents/components/use-chat-section-menu";
 import { useListRowChrome } from "@/features/agents/components/use-list-row-chrome";
 import { showFailureAlert } from "@/features/analytics/failure-reports";
 import { UnreadDot, usePreviewColors } from "@/features/design-preview/components/preview-parts";
-import { useCalmLook } from "@/features/design-preview/model/calm-look";
+import { useCalmRows } from "@/features/design-preview/model/calm-look";
 import { previewSize, previewType } from "@/features/design-preview/model/preview-tokens";
 import {
   useMobileWorkspaceReader,
@@ -261,6 +261,7 @@ export const ChannelListRow = memo(function ChannelListRow({
   const { t, format } = useText();
   const [background, accent] = useThemeColor(["background", "accent"]);
   const rowBackground = useChatRowBackground(channel.id);
+  const selected = useChatRowSelected(channel.id);
   const { toggleChannelPinAnimated } = useAgentPinTransition();
   const isPinned = useMobileWorkspaceSelector(({ pinnedChannelIds }) => pinnedChannelIds.includes(channel.id));
   const pinBlocked = useMobileWorkspaceSelector(
@@ -301,7 +302,7 @@ export const ChannelListRow = memo(function ChannelListRow({
     ? t("mobile.channel.list.openWithTitle", { name: channel.name, title })
     : t("mobile.channel.list.open", { name: channel.name });
   // The calm look of Settings > Appearance > New design: the row of the design preview.
-  const calm = useCalmLook() && !pinned;
+  const calm = useCalmRows() && !pinned;
   const calmColors = usePreviewColors();
   const size = pinned ? 64 : calm ? previewSize.rowAvatar : 54;
   const avatar = (
@@ -366,11 +367,12 @@ export const ChannelListRow = memo(function ChannelListRow({
         ({ pressed }) => (
           <View
             style={{
-              height: previewSize.rowHeight,
+              minHeight: previewSize.rowHeight,
               width: "100%",
               flexDirection: "row",
               alignItems: "center",
-              backgroundColor: calmColors.background,
+              // The channel open beside the list keeps its highlight.
+              backgroundColor: selected ? rowBackground : calmColors.background,
               opacity: pressed ? 0.58 : 1,
               paddingLeft: previewSize.rowAvatarInset,
               paddingRight: previewSize.rowTrailingInset,

@@ -38,6 +38,11 @@ export function ChatListPaneProvider({ children }: PropsWithChildren) {
 }
 
 /** The background of a list row: marked in the pane for the chat that the detail column shows. */
+/** Whether the chat is the one open in the detail column of a wide window. */
+export function useChatRowSelected(chatId: string): boolean {
+  return useChatListPane()?.selectedChatId === chatId;
+}
+
 export function useChatRowBackground(chatId: string): string {
   const selected = useChatListPane()?.selectedChatId === chatId;
   const background = useThemeColor("background");

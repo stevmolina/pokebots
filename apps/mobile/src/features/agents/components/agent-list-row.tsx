@@ -26,11 +26,11 @@ import { AGENT_WAIT_STATE, AgentWaitBadge, AgentWaitChip } from "@/features/agen
 import { BloubAvatar } from "@/features/agents/components/bloub-avatar";
 import { AgentDragPreview, useChatDrag, useHoldMenu } from "@/features/agents/components/chat-drag";
 import { ChatLinkPressable } from "@/features/agents/components/chat-link-pressable";
-import { useChatRowBackground } from "@/features/agents/components/chat-list-pane-context";
+import { useChatRowBackground, useChatRowSelected } from "@/features/agents/components/chat-list-pane-context";
 import { useListRowChrome } from "@/features/agents/components/use-list-row-chrome";
 import { useWaitingChannel } from "@/features/channels/components/use-waiting-channel";
 import { UnreadDot, usePreviewColors } from "@/features/design-preview/components/preview-parts";
-import { useCalmLook } from "@/features/design-preview/model/calm-look";
+import { useCalmRows } from "@/features/design-preview/model/calm-look";
 import { previewSize, previewType } from "@/features/design-preview/model/preview-tokens";
 import {
   useAgentListUnreadCount,
@@ -201,6 +201,7 @@ function AgentRowBody({
 }) {
   const { t } = useText();
   const background = useChatRowBackground(agent.id);
+  const selected = useChatRowSelected(agent.id);
   const { toggleAgentPinAnimated, transition } = useAgentPinTransition();
   // An agent that waits in a channel says so, as its last message in its own chat is not the wait.
   const waitingChannel = useWaitingChannel(agent.id, agent.serverId);
@@ -213,7 +214,7 @@ function AgentRowBody({
   const waitReason = useAgentListWaitReason(agent.id);
   const isUnpinTarget = transition?.chatId === agent.id && transition.target === "row";
   // The calm look of Settings > Appearance > New design: the row of the design preview.
-  const calm = useCalmLook();
+  const calm = useCalmRows();
   const calmColors = usePreviewColors();
   const avatarSize = calm ? previewSize.rowAvatar : 54;
   const bloub = (
@@ -277,11 +278,12 @@ function AgentRowBody({
         calm ? (
           <View
             style={{
-              height: previewSize.rowHeight,
+              minHeight: previewSize.rowHeight,
               width: "100%",
               flexDirection: "row",
               alignItems: "center",
-              backgroundColor: calmColors.background,
+              // The chat open beside the list keeps its highlight.
+              backgroundColor: selected ? background : calmColors.background,
               opacity: pressed ? 0.58 : 1,
               paddingLeft: previewSize.rowAvatarInset,
               paddingRight: previewSize.rowTrailingInset,
