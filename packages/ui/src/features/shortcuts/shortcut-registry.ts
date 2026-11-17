@@ -61,6 +61,9 @@ export type ShortcutId =
   | "closePanel"
   | "stopAgent"
   | "stopAllAgents"
+  | "steerQueued"
+  | "openModelPicker"
+  | "pinChat"
   | "shortcuts"
   | "toggleSidebar"
   | "zoomIn"
@@ -102,19 +105,30 @@ export const SHORTCUTS: readonly ShortcutDefinition[] = [
     id: "newChat",
     group: "navigation",
     label: "app.shortcuts.newChat",
-    ...both([{ key: "n", mod: "primary", inTextFields: true }]),
+    // ⌘⇧O is the second key, as in T3 Code.
+    ...both([
+      { key: "n", mod: "primary", inTextFields: true },
+      { key: "o", mod: "primary", shift: true, inTextFields: true },
+    ]),
   },
   {
     id: "previousChat",
     group: "navigation",
     label: "app.shortcuts.previousChat",
-    ...both([{ key: "ArrowUp", alt: true, inTextFields: true }]),
+    // ⌘⇧[ is the second key, as in T3 Code. It is matched by its place: Shift types "{".
+    ...both([
+      { key: "ArrowUp", alt: true, inTextFields: true },
+      { key: "[", code: "BracketLeft", mod: "primary", shift: true, inTextFields: true },
+    ]),
   },
   {
     id: "nextChat",
     group: "navigation",
     label: "app.shortcuts.nextChat",
-    ...both([{ key: "ArrowDown", alt: true, inTextFields: true }]),
+    ...both([
+      { key: "ArrowDown", alt: true, inTextFields: true },
+      { key: "]", code: "BracketRight", mod: "primary", shift: true, inTextFields: true },
+    ]),
   },
   {
     id: "previousUnreadChat",
@@ -148,6 +162,12 @@ export const SHORTCUTS: readonly ShortcutDefinition[] = [
     group: "navigation",
     label: "app.shortcuts.switchServer",
     ...both([{ key: "digit", mod: "primary", inTextFields: true }]),
+  },
+  {
+    id: "pinChat",
+    group: "navigation",
+    label: "app.shortcuts.pinChat",
+    ...both([{ key: "p", mod: "primary", shift: true, inTextFields: true }]),
   },
   {
     // The native Preferences item fires from a text field too.
@@ -199,6 +219,13 @@ export const SHORTCUTS: readonly ShortcutDefinition[] = [
     label: "app.shortcuts.quoteSelection",
     ...both([{ key: ".", code: "Period", mod: "primary", shift: true, inTextFields: true }]),
   },
+  {
+    // Sends the first queued message into the running turn, as Steer on its row does.
+    id: "steerQueued",
+    group: "chat",
+    label: "app.shortcuts.steerQueued",
+    ...both([{ key: "Enter", mod: "primary", shift: true, inTextFields: true }]),
+  },
   { id: "closePanel", group: "chat", label: "app.shortcuts.closePanel", ...both([{ key: "Escape" }]) },
   // Agents
   {
@@ -210,6 +237,12 @@ export const SHORTCUTS: readonly ShortcutDefinition[] = [
     label: "app.shortcuts.stopAgent",
     mac: [{ key: ".", code: "Period", mod: "primary", alt: true, inTextFields: true }],
     pc: [{ key: ".", mod: "primary", alt: true, inTextFields: true }],
+  },
+  {
+    id: "openModelPicker",
+    group: "agents",
+    label: "app.shortcuts.openModelPicker",
+    ...both([{ key: "m", mod: "primary", shift: true, inTextFields: true }]),
   },
   {
     id: "stopAllAgents",

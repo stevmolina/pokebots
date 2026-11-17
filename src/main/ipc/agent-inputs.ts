@@ -602,6 +602,9 @@ export function parseSendMessage(value: unknown): SendMessageInput {
   if (value.createArtifact !== undefined && typeof value.createArtifact !== "boolean") {
     throw new Error("Invalid artifact request.");
   }
+  if (value.queueOnly !== undefined && typeof value.queueOnly !== "boolean") {
+    throw new Error("Invalid queue request.");
+  }
   return {
     agentId: requireString(value.agentId, "agentId"),
     text: value.text,
@@ -611,6 +614,7 @@ export function parseSendMessage(value: unknown): SendMessageInput {
     ...(taskId === undefined ? {} : { taskId }),
     ...(voiceRecordingDraftId === undefined ? {} : { voiceRecordingDraftId }),
     ...(value.createArtifact === true ? { createArtifact: true } : {}),
+    ...(value.queueOnly === true ? { queueOnly: true } : {}),
   };
 }
 

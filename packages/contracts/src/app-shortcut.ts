@@ -21,6 +21,9 @@ export const APP_SHORTCUT_COMMANDS = [
   "copyLastReply",
   "copyLastCode",
   "stopAgent",
+  "steerQueued",
+  "openModelPicker",
+  "pinChat",
 ] as const;
 
 export type AppShortcutCommand = (typeof APP_SHORTCUT_COMMANDS)[number];

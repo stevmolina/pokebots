@@ -6882,7 +6882,7 @@ export class AgentService extends EventEmitter<AgentServiceEvents> {
             Effect.sync(() => this.#emitError("message_preview_failed", failure.cause, agent.id)),
           ),
         );
-    yield* this.#steerWhenBusy(agent, task, snapshot, delivery.delivery.id, true, false);
+    yield* this.#steerWhenBusy(agent, task, snapshot, delivery.delivery.id, true, false, input.queueOnly === true);
     // A turn that waits on a question in this chat reads no message until that question is answered,
     // so the person who wrote instead would wait for it. A stopped turn clears its own questions.
     const waitingTurnId = snapshot.activeTurnId;
@@ -6948,9 +6948,12 @@ export class AgentService extends EventEmitter<AgentServiceEvents> {
     deliveryId: string,
     explain: boolean,
     wait: boolean,
+    // The sender asked this one message to wait its turn (Cmd+Enter), so it is never steered.
+    queueOnly = false,
   ): Effect.fn.Return<AgentMessageSteer> {
     const steerTurnId = this.#turnToSteer(agent.id, task?.taskId ?? null, snapshot);
     if (!steerTurnId) return null;
+    if (queueOnly) return "recipient-queues";
     // Different request tools need a new query. Never steer them into a running request.
     if (
       this.#mailbox.getDelivery(deliveryId)?.delivery.createArtifact ||

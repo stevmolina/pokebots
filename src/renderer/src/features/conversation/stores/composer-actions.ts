@@ -26,6 +26,7 @@ import { currentText } from "@openbot/ui/text";
 import { playActionSound } from "../../../action-sounds";
 import { claimDictatedSend, forgetDictatedMessage } from "../../speech/speech-replies";
 import { rememberAttachmentKinds } from "../attachment-analytics";
+import { busyOppositeAction } from "../busy-submit";
 import { type PastedComposerCopy, rememberComposerFile } from "../composer-clipboard";
 import {
   copyComposerDraft,
@@ -891,6 +892,7 @@ export function createComposerActions(deps: ComposerActionsDeps) {
     submittedSnapshot?: ComposerDraft,
     voice?: VoiceSend,
     steer = false,
+    queueOnly = false,
   ): Promise<boolean> {
     if (deps.attachmentBusy(targetOverride)) return false;
     if (!draftOverride && deps.currentEditingDeliveryId()) {
@@ -928,7 +930,7 @@ export function createComposerActions(deps: ComposerActionsDeps) {
     stopTeamTyping();
     deps.setComposerError(null, target);
     deps.clearConversationError(target);
-    queueSend(target, draft, text, voice, steer);
+    queueSend(target, draft, text, voice, steer, queueOnly);
     deps.clearSubmittedDraft(target, submittedSnapshot ?? draft);
     return true;
   }
@@ -943,6 +945,7 @@ export function createComposerActions(deps: ComposerActionsDeps) {
     text: string,
     voice?: VoiceSend,
     steer = false,
+    queueOnly = false,
   ): void {
     const onScreen = () => {
       const activeTarget = deps.currentTarget();
@@ -955,7 +958,7 @@ export function createComposerActions(deps: ComposerActionsDeps) {
     const queued =
       onScreen() &&
       !deps.props.channel &&
-      !hostSteers() &&
+      (!hostSteers() || queueOnly) &&
       (Boolean(deps.props.activeTurnId) ||
         deps.orderedQueuedDeliveries().length > 0 ||
         deps.pendingSends.list(target).some((send) => send.state !== "failed"));
@@ -983,6 +986,7 @@ export function createComposerActions(deps: ComposerActionsDeps) {
         pending.clientMessageId,
         pending.voiceRecordingDraftId ?? undefined,
         pending.draft.createArtifact,
+        queueOnly,
       );
       if ("error" in result) {
         playActionSound("error");
@@ -1097,6 +1101,27 @@ export function createComposerActions(deps: ComposerActionsDeps) {
     void submitMessage(undefined, undefined, undefined, undefined, !hostSteers());
   }
 
+  /**
+   * Cmd+Enter (Ctrl+Enter) while the agent works does the opposite of the busy-message mode for one
+   * message. A host that steers holds this message in the queue. A host that queues sends it into the
+   * running turn, as Tab does. An agent that cannot steer, a channel and a queued edit send as usual.
+   */
+  function submitOpposite(): void {
+    const action = busyOppositeAction({
+      busy: Boolean(deps.props.activeTurnId),
+      channel: Boolean(deps.props.channel),
+      editingQueued: Boolean(deps.currentEditingDeliveryId()),
+      agentSteers: agentSteers(),
+      hostSteers: hostSteers(),
+    });
+    if (action === "send") submitComposer();
+    else if (action === "steer") steerComposer();
+    else {
+      if (deps.attachmentBusy() || deps.uploadFailed() || deps.voicePhase() !== "idle" || !deps.agentReady()) return;
+      void submitMessage(undefined, undefined, undefined, undefined, false, true);
+    }
+  }
+
   /** An instruction about selected text is a reply to that message. A failure shows on its row. */
   async function sendSelectionInstruction(messageId: string, body: string): Promise<boolean> {
     const target = deps.currentTarget();
@@ -1151,6 +1176,7 @@ export function createComposerActions(deps: ComposerActionsDeps) {
     submitMessage,
     submitComposer,
     steerComposer,
+    submitOpposite,
     composerAnswersPrompt,
     sendSelectionInstruction,
     sendCardMessage,

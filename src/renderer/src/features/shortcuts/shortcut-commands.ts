@@ -60,6 +60,9 @@ const OWNED_KEYS = [
   "copyLastReply",
   "copyLastCode",
   "stopAgent",
+  "steerQueued",
+  "openModelPicker",
+  "pinChat",
 ] as const satisfies readonly (ShortcutId & AppShortcutCommand)[];
 
 /** A dialog or a menu keeps its keys: Escape, arrows and letters belong to it. */

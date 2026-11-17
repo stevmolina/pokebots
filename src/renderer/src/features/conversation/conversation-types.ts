@@ -353,6 +353,7 @@ export interface ConversationProps {
     clientMessageId?: string,
     voiceRecordingDraftId?: string,
     createArtifact?: boolean,
+    queueOnly?: boolean,
   ) => Promise<SendMessageResult>;
   onMarkRead: () => Promise<void>;
   /** Marks an agent message and the messages after it unread. Without it, the message menu has no such item. */

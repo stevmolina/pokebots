@@ -1005,6 +1005,7 @@ const Conversation = createSimpleContext({
       clientMessageId?: string,
       voiceRecordingDraftId?: string,
       createArtifact?: boolean,
+      queueOnly?: boolean,
     ): Promise<SendMessageResult> {
       const agentId = target?.agentId ?? activeAgent()?.id;
       const serverId = target?.serverId ?? activeServerId();
@@ -1019,6 +1020,7 @@ const Conversation = createSimpleContext({
         clientMessageId,
         voiceRecordingDraftId,
         createArtifact,
+        queueOnly,
       );
     }
 
@@ -1032,6 +1034,7 @@ const Conversation = createSimpleContext({
       clientMessageId?: string,
       voiceRecordingDraftId?: string,
       createArtifact?: boolean,
+      queueOnly?: boolean,
     ): Promise<SendMessageResult> {
       const analytics = desktopAnalytics.scope();
       const properties = analyticsAgentProperties(agentId);
@@ -1045,6 +1048,7 @@ const Conversation = createSimpleContext({
           ...(clientMessageId ? { clientMessageId } : {}),
           ...(voiceRecordingDraftId ? { voiceRecordingDraftId } : {}),
           ...(createArtifact ? { createArtifact: true } : {}),
+          ...(queueOnly ? { queueOnly: true } : {}),
         };
         const receipt = await conversationPort().agent.sendMessage(input, serverId);
         const errorKey = agentConversationKey(serverId, agentId);

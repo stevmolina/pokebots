@@ -51,10 +51,11 @@ import { type OpenWaitItem, OpenWaits } from "@openbot/ui/features/conversation/
 import { SpeakingBar } from "@openbot/ui/features/conversation/SpeakingBar";
 import { ComposerVoiceControls } from "@openbot/ui/features/conversation/VoiceRecordingMorph";
 import { useText } from "@openbot/ui/text";
-import { createEffect, createMemo, createSignal, createStore, Loading, lazy, Show } from "solid-js";
+import { createEffect, createMemo, createSignal, createStore, Loading, lazy, onSettled, Show } from "solid-js";
 import { reportErrorBanner, reportNotification } from "../../error-reports";
 import { deviceSendShortcut, sendShortcutAriaKey, sendShortcutHintKey } from "../../send-shortcut-preference";
 import { customProviderRestartMessage } from "../custom-providers/custom-provider-restart";
+import { onShortcutCommand } from "../shortcuts/shortcut-commands";
 import { speechReading } from "../speech/speech-playback";
 import { stopSpokenReply } from "../speech/speech-replies";
 import { backgroundWorkerItems } from "./background-worker-items";
@@ -129,6 +130,7 @@ export function ConversationComposer() {
     cancelVoiceRecording,
     submitComposer,
     steerComposer,
+    submitOpposite,
     composerAnswersPrompt,
     submitting,
     rowDraftAttachments,
@@ -369,6 +371,25 @@ export function ConversationComposer() {
     !submitting()
       ? steerComposer
       : undefined;
+  /**
+   * ⌘⇧Enter steers the first queued message, as Steer on its row does. With none, or while Steer on the
+   * row would be refused, the key does nothing, and the editor gets no line break from it.
+   */
+  onSettled(() =>
+    onShortcutCommand("steerQueued", () => {
+      if (channel) return false;
+      const first = presentedQueueDeliveries().find(
+        (delivery) => delivery.status === "queued" && delivery.id !== editingDeliveryId(),
+      );
+      if (first && props.activeTurnId && !steerRefused()) sendQueued()?.(first.id);
+      return true;
+    }),
+  );
+  /**
+   * Cmd+Enter (Ctrl+Enter) sends the message the opposite way to the busy-message mode. It needs the
+   * same chat state as Tab, and an agent that can steer; otherwise it sends like Enter.
+   */
+  const submitOnModEnter = () => (steers() && steerOnTab() ? submitOpposite : undefined);
   /**
    * The agent's Pi custom model while it takes text only and the draft has an image. Pi sends a note
    * in place of each image, so the model does not see it, and nothing else tells the user (#9850).
@@ -923,6 +944,7 @@ export function ConversationComposer() {
               }}
               onSubmit={submitComposer}
               onSteer={steerOnTab()}
+              onSubmitAlternate={submitOnModEnter()}
               sendShortcut={deviceSendShortcut(props.platform)}
               dictation={{ text: voiceLiveText(), final: voicePhase() === "transcribing" }}
               onPasteFiles={(files, selection, text) => pasteFiles(files, selection, undefined, text)}
