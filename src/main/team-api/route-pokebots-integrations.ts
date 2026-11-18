@@ -20,6 +20,7 @@ export interface PokebotsIntegrationRoutes {
   access: JoinedIntegrationAccess;
   brain: BrainService;
   rooms: RoomsService;
+  available?: () => boolean;
   computerBaseUrl?: string;
 }
 
@@ -30,7 +31,13 @@ export async function routePokebotsIntegrations(
   services: PokebotsIntegrationRoutes | undefined,
 ): Promise<RouteOutcome> {
   const { method, url, capabilities, request, token, sessionId, json } = context;
-  if (method !== "POST" || !paths.has(url.pathname) || !services || !capabilities.has(POKEBOTS_INTEGRATIONS_CAPABILITY))
+  if (
+    method !== "POST" ||
+    !paths.has(url.pathname) ||
+    !services ||
+    services.available?.() === false ||
+    !capabilities.has(POKEBOTS_INTEGRATIONS_CAPABILITY)
+  )
     return "unmatched";
   if (request.headers["x-openbot-webrtc-session"] !== sessionId)
     throw new HttpError(403, sourceText("error.team.authenticationRequired"));

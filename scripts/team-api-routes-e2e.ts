@@ -2529,6 +2529,7 @@ async function runRouteChecks() {
   let integrationUser = "account-bob";
   let integrationSession = "joined-integration-session";
   let integrationExchanges = 0;
+  let integrationAvailable = false;
   const integrationGrantExpiry = Date.now() + 30 * 60_000;
   const integrationAccess = new JoinedIntegrationAccess(
     store,
@@ -2549,6 +2550,7 @@ async function runRouteChecks() {
   server = new TeamApiServer({
     pokebotsIntegrations: {
       access: integrationAccess,
+      available: () => integrationAvailable,
       brain,
       rooms: joinedRooms,
       computerBaseUrl: computerFixture.baseUrl,
@@ -3494,12 +3496,15 @@ async function runRouteChecks() {
     const brainCallsBefore = brainCalls;
     const routes = POKEBOTS_INTEGRATIONS_ROUTES;
     const use = { protocol: TEAM_PROTOCOL_V9, capabilities: [POKEBOTS_INTEGRATIONS_CAPABILITY] };
+    const dormant = await call("GET", TEAM_API_ROUTES.compatibility, use);
+    integrationAvailable = true;
     const advertised = await call("GET", TEAM_API_ROUTES.compatibility, use);
     const older = await call("GET", TEAM_API_ROUTES.compatibility, { protocol: 8 });
     check(
-      "joined integrations are advertised to protocol 9",
+      "joined integrations are advertised to protocol 9 when the account service is ready",
       list(field(advertised.body, "capabilities")).includes(POKEBOTS_INTEGRATIONS_CAPABILITY) &&
-        !list(field(older.body, "capabilities")).includes(POKEBOTS_INTEGRATIONS_CAPABILITY),
+        !list(field(older.body, "capabilities")).includes(POKEBOTS_INTEGRATIONS_CAPABILITY) &&
+        !list(field(dormant.body, "capabilities")).includes(POKEBOTS_INTEGRATIONS_CAPABILITY),
       { current: advertised.status, older: older.status },
     );
 

@@ -2724,7 +2724,10 @@ export class TeamApiServer {
           if (capability === WHATSAPP_STATUS_REACTIONS_CAPABILITY) return this.#options.connectors !== undefined;
           if (capability === ONEPASSWORD_CONNECTOR_CAPABILITY) return this.#options.onePasswordConnector !== undefined;
           if (capability === BITWARDEN_CONNECTOR_CAPABILITY) return this.#options.bitwardenConnector !== undefined;
-          if (capability === POKEBOTS_INTEGRATIONS_CAPABILITY) return this.#options.pokebotsIntegrations !== undefined;
+          if (capability === POKEBOTS_INTEGRATIONS_CAPABILITY) {
+            const integration = this.#options.pokebotsIntegrations;
+            return integration !== undefined && integration.available?.() !== false;
+          }
           if (capability === ROOMS_CAPABILITY) return this.#options.rooms !== undefined;
           if (capability === COMPUTER_MANAGEMENT_CAPABILITY || capability === AGENT_COMPUTER_CAPABILITY)
             return this.#options.agentComputer !== undefined;

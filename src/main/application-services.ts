@@ -1361,6 +1361,11 @@ export async function createApplicationServices({
   void Effect.runPromise(centralAuthInitialization).catch((error) =>
     logger.warn("The account did not initialize.", toLogValue(error)),
   );
+  const refreshIntegrationAvailability = () => void Effect.runPromise(centralAuth.refreshIntegrationAvailability());
+  refreshIntegrationAvailability();
+  const integrationTimer = setInterval(refreshIntegrationAvailability, 60_000);
+  integrationTimer.unref();
+  teardown.push(TEARDOWN_ORDER.centralAuth, "integration availability refresh", () => clearInterval(integrationTimer));
 
   let profileRefreshActive = true;
   let profileRefreshing = false;
@@ -2635,7 +2640,7 @@ export async function createApplicationServices({
     agentComputerCredential: (memberId) => {
       if (host.conversationSender()?.id === memberId) return currentIntegrationCredential(centralAuth, "computer");
       const member = teamStore.memberAccounts().find((candidate) => candidate.memberId === memberId);
-      return member && joinedIntegrationAccess
+      return member && joinedIntegrationAccess && centralAuth.integrationAccountsAvailable()
         ? joinedIntegrationAccess.credentialForMember(member, { audience: "computer" })
         : undefined;
     },
@@ -3766,7 +3771,16 @@ export async function createApplicationServices({
     // Present, so the host advertises `bitwarden-connector-v1`. An owner or admin connects it with an
     // API key and the master password: a session key from their computer cannot open this vault.
     bitwardenConnector,
-    ...(joinedIntegrationAccess ? { pokebotsIntegrations: { access: joinedIntegrationAccess, brain, rooms } } : {}),
+    ...(joinedIntegrationAccess
+      ? {
+          pokebotsIntegrations: {
+            access: joinedIntegrationAccess,
+            brain,
+            rooms,
+            available: () => centralAuth.integrationAccountsAvailable(),
+          },
+        }
+      : {}),
     // Rooms uses the host's encrypted MCP account and is restricted to owners and admins.
     rooms,
     // Present, so the host advertises `agent-computer-v1`. An owner or admin connects it with an API key.

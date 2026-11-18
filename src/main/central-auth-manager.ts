@@ -241,6 +241,7 @@ export class CentralAuthManager extends EventEmitter<CentralAuthEvents> {
   #companySignInCancel: Deferred.Deferred<void> | null = null;
   /** Whether this account service uses WorkOS. Null until the first probe. A failed probe stays false. */
   #workosAccount: boolean | null = null;
+  #integrationAccountsAvailable = false;
   #companySignInTestCancel: Deferred.Deferred<void> | null = null;
   #unavailableRetryTimer: ReturnType<typeof setTimeout> | null = null;
   #unavailableRetryFailures = 0;
@@ -361,6 +362,20 @@ export class CentralAuthManager extends EventEmitter<CentralAuthEvents> {
   resolveApiUrl(path: string): string {
     return new URL(path, this.#options.apiUrl).toString();
   }
+
+  integrationAccountsAvailable(): boolean {
+    return this.#integrationAccountsAvailable;
+  }
+
+  readonly refreshIntegrationAvailability = Effect.fn("CentralAuth.refreshIntegrationAvailability")(function* (
+    this: CentralAuthManager,
+  ) {
+    if (new URL(this.#options.apiUrl).origin !== "https://api.pokebots.xyz") return;
+    const result = yield* this.#owned(
+      this.#requestEffect("/health/ready", { method: "GET", redirect: "error" }, decodeRecordHealth, 3_000),
+    ).pipe(Effect.result);
+    if (Result.isSuccess(result)) this.#integrationAccountsAvailable = result.success.pokebotsIntegrations === true;
+  }).bind(this);
 
   requestAuthorized<T>(
     path: string,
