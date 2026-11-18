@@ -31,7 +31,7 @@ import { HostedSiteInputError } from "./hosted-site-contract";
 import { enforceHostedSiteReportRateLimit as enforceReportRateLimit } from "./hosted-site-request-policy";
 import { adoptUnlinkedHostedSites, resolveHostedSiteScope } from "./hosted-site-server";
 import { HostedSiteService } from "./hosted-site-service";
-import { issueIntegrationToken } from "./integration-token";
+import { exchangeIntegrationGrant, issueIntegrationToken } from "./integration-token";
 import { JsonBodyError } from "./json-body";
 import { type ApnsRelaySender, sharedApnsSender } from "./live-activity-relay";
 import { MarketplaceQueryError } from "./marketplace-pagination";
@@ -90,8 +90,12 @@ export function requestAuthService(): AuthService {
   });
 }
 
-export function requestIntegrationToken(request: Request, userId: string) {
-  return issueIntegrationToken(request, userId, requireWorkerBindings(env));
+export function requestIntegrationToken(request: Request, userId: string, accountToken: string) {
+  return issueIntegrationToken(request, userId, requireWorkerBindings(env), undefined, accountToken);
+}
+
+export function requestIntegrationExchange(request: Request, hostId: string) {
+  return exchangeIntegrationGrant(request, hostId, requestRemoteControlPlane(), requireWorkerBindings(env));
 }
 
 export function requestWorkosSignIn(): WorkosSignInService {

@@ -47,7 +47,11 @@ const COMPANY_COOKIE = "__Host-openbot-company";
 const COMPANY_FLOW_SECONDS = 600;
 
 export interface BrowserApiServices {
-  integrationToken?: (request: Request, userId: string) => ReturnType<typeof issueIntegrationToken>;
+  integrationToken?: (
+    request: Request,
+    userId: string,
+    accountToken: string,
+  ) => ReturnType<typeof issueIntegrationToken>;
   auth: Pick<
     AuthService,
     | "startEmailSignIn"
@@ -498,7 +502,7 @@ const handleAccount = Effect.fn("BrowserApi.handleAccount")(function* (
   services: BrowserApiServices,
 ) {
   if (path === "v1/me/integrations/token" && request.method === "POST" && services.integrationToken)
-    return json(yield* services.integrationToken(request, user.id));
+    return json(yield* services.integrationToken(request, user.id, token));
   if (path === "v1/me/profile" && request.method === "PATCH") {
     const body = yield* readJsonObject(request);
     if (!isString(body.name))

@@ -14,8 +14,8 @@ import { CompanySignInError, CompanySignInService } from "../src/server/company-
 import { randomToken, sha256 } from "../src/server/crypto";
 import { D1AuthRepository } from "../src/server/d1-auth-repository";
 import { runApiEffect } from "../src/server/effect-runtime";
-import { issueIntegrationToken } from "../src/server/integration-token";
-import { RemoteControlPlane } from "../src/server/remote-control-plane";
+import { exchangeIntegrationGrant, issueIntegrationToken } from "../src/server/integration-token";
+import { RemoteControlPlane, RemoteControlPlaneError } from "../src/server/remote-control-plane";
 import type { WorkerBindings } from "../src/server/types";
 import { WorkosOidc } from "../src/server/workos-oidc";
 import { WorkosSignInError, WorkosSignInService, workosSignInEnabled } from "../src/server/workos-sign-in";
@@ -206,7 +206,11 @@ const unused = () => {
   throw new Error("An unrelated service was used.");
 };
 function errorResponse(error: unknown): Response {
-  if (error instanceof WorkosSignInError || error instanceof AuthServiceError)
+  if (
+    error instanceof WorkosSignInError ||
+    error instanceof AuthServiceError ||
+    error instanceof RemoteControlPlaneError
+  )
     return Response.json({ error: { code: error.code, message: error.message } }, { status: error.status });
   return Response.json({ error: { code: "internal_error" } }, { status: 500 });
 }
@@ -218,11 +222,17 @@ const integrationBindings = {
   POKEBOTS_INTEGRATION_PRIVATE_KEY: (await exportPKCS8(integrationKeys.privateKey)).replaceAll("\n", "\\n"),
 };
 const services: BrowserApiServices = {
-  integrationToken: (request, userId) =>
-    issueIntegrationToken(request, userId, integrationBindings, async (url) => {
-      assert.equal(String(url), `${integrationWorkosIssuer}/oauth2/jwks`);
-      return Response.json({ keys: [jwk] });
-    }),
+  integrationToken: (request, userId, accountToken) =>
+    issueIntegrationToken(
+      request,
+      userId,
+      integrationBindings,
+      async (url) => {
+        assert.equal(String(url), `${integrationWorkosIssuer}/oauth2/jwks`);
+        return Response.json({ keys: [jwk] });
+      },
+      accountToken,
+    ),
   auth: workosAuth,
   remote,
   workosSignIn: () => workos,
@@ -259,6 +269,11 @@ const app = Bun.serve({
     const path = new URL(request.url).pathname;
     if (path.startsWith("/api/browser/")) return handleBrowserApi(request, services);
     try {
+      const [, hostId] = /^\/v2\/remote\/hosts\/([^/]+)\/integrations\/token$/u.exec(path) ?? [];
+      if (hostId && request.method === "POST") {
+        const result = await runApiEffect(exchangeIntegrationGrant(request, hostId, remote, integrationBindings));
+        return Response.json(result);
+      }
       if (path === "/v1/auth/workos/start") {
         const input = Schema.decodeUnknownSync(startSchema)(await request.json());
         return Response.json(
@@ -313,7 +328,7 @@ interface WorkosTestRequest {
   deviceName?: string;
   platform?: string;
 }
-const post = (path: string, body: WorkosTestRequest) =>
+const post = (path: string, body: WorkosTestRequest | Record<string, string>) =>
   fetch(origin + path, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -577,6 +592,104 @@ try {
   checks.push(
     "links only with a valid legacy service sign-in, rejects cross-audience proof and rebinding, preserves the native principal",
   );
+  assert(browserUser);
+  const registerHost = (hostId: string) =>
+    runApiEffect(remote.registerHost(browserUser, { hostId, name: hostId, ownerMembershipId: crypto.randomUUID() }));
+  const host = await registerHost(crypto.randomUUID());
+  const otherHost = await registerHost(crypto.randomUUID());
+  assert(host.machineToken && otherHost.machineToken);
+  const browserHash = await runApiEffect(sha256(browserSessionToken));
+  const joined = await runApiEffect(remote.startSession(browserUser.id, host.hostId, browserHash));
+  const grantInput = { action: "grant", remoteSessionId: joined.sessionId };
+  const requestWithToken = (token: string) => requestIntegration(grantInput, { Cookie: `__Host-openbot-web=${token}` });
+  assert.equal((await requestWithToken(session.sessionToken)).status, 403);
+
+  const siblingToken = randomToken();
+  const siblingHash = await runApiEffect(sha256(siblingToken));
+  await database
+    .prepare(
+      `INSERT INTO auth_sessions (id, user_id, token_hash, expires_at, created_at, last_used_at)
+     VALUES (?, ?, ?, ?, ?, ?)`,
+    )
+    .bind(crypto.randomUUID(), browserUser.id, siblingHash, now + 60000, now, now)
+    .run();
+  assert.equal((await requestWithToken(siblingToken)).status, 403);
+
+  const remainingDeadline = Date.now() + 120000;
+  await database
+    .prepare("UPDATE remote_sessions SET expires_at = ? WHERE session_id = ?")
+    .bind(remainingDeadline, joined.sessionId)
+    .run();
+  const grantResponse = await requestIntegration(grantInput);
+  assert.equal(grantResponse.status, 200);
+  assert.equal(grantResponse.headers.get("Cache-Control"), "no-store");
+  const rawGrant = await grantResponse.json();
+  assert(rawGrant && typeof rawGrant === "object");
+  assert.deepEqual(Object.keys(rawGrant).sort(), ["expiresAt", "grant", "hostId", "sessionId"]);
+  const delegated = Schema.decodeUnknownSync(
+    Schema.Struct({
+      grant: Schema.String,
+      expiresAt: Schema.Number,
+      hostId: Schema.String,
+      sessionId: Schema.String,
+    }),
+  )(rawGrant);
+  assert.equal(delegated.hostId, host.hostId);
+  assert.equal(delegated.sessionId, joined.sessionId);
+  assert.equal(delegated.expiresAt, remainingDeadline);
+  const redeem = (targetHost: string, machineToken: string, profile?: string) =>
+    post(`/v2/remote/hosts/${targetHost}/integrations/token`, {
+      machineToken,
+      grant: delegated.grant,
+      audience: "rooms",
+      ...(profile ? { profile } : {}),
+    });
+  assert.equal((await redeem(otherHost.hostId, otherHost.machineToken)).status, 403);
+  assert.equal((await redeem(host.hostId, otherHost.machineToken)).status, 401);
+  for (const profile of [undefined, "native"]) {
+    const exchange = await redeem(host.hostId, host.machineToken, profile);
+    assert.equal(exchange.status, 200);
+    const issued = Schema.decodeUnknownSync(
+      Schema.Struct({
+        accessToken: Schema.String,
+        expiresAt: Schema.Number,
+        sessionId: Schema.String,
+        userId: Schema.String,
+      }),
+    )(await exchange.json());
+    assert.equal(issued.userId, browserUser.id);
+    assert.equal(issued.sessionId, joined.sessionId);
+    assert.equal(issued.expiresAt, Math.floor(remainingDeadline / 1000) * 1000);
+    const { payload: claims } = await jwtVerify(issued.accessToken, integrationKeys.publicKey, { audience: "rooms" });
+    assert.equal(claims.linked_workos_sub, profile === "native" ? undefined : legacySubject);
+  }
+  await database
+    .prepare("UPDATE remote_hosts SET auth_epoch = auth_epoch + 1 WHERE host_id = ?")
+    .bind(host.hostId)
+    .run();
+  assert.equal((await redeem(host.hostId, host.machineToken)).status, 403);
+  await database
+    .prepare("UPDATE remote_hosts SET auth_epoch = auth_epoch - 1 WHERE host_id = ?")
+    .bind(host.hostId)
+    .run();
+  await database.prepare("UPDATE auth_sessions SET revoked_at = ? WHERE token_hash = ?").bind(now, browserHash).run();
+  assert.equal((await redeem(host.hostId, host.machineToken)).status, 403);
+  await database.prepare("UPDATE auth_sessions SET revoked_at = NULL WHERE token_hash = ?").bind(browserHash).run();
+  await database
+    .prepare("UPDATE remote_memberships SET status = 'revoked' WHERE membership_id = ?")
+    .bind(host.membershipId)
+    .run();
+  assert.equal((await redeem(host.hostId, host.machineToken)).status, 403);
+  await database
+    .prepare("UPDATE remote_memberships SET status = 'active' WHERE membership_id = ?")
+    .bind(host.membershipId)
+    .run();
+  await database.prepare("UPDATE pokebots_integration_grants SET expires_at = ?").bind(Date.now()).run();
+  assert.equal((await redeem(host.hostId, host.machineToken)).status, 403);
+  checks.push(
+    "joined-server grant blocks other accounts, devices and hosts, checks host epoch and revocation, caps JWT expiry",
+  );
+
   const replay = await fetch(browserCallback.target, { headers: { Cookie: flowPair }, redirect: "manual" });
   assert(replay.headers.get("Location")?.includes("workosSignInError"));
   assert.equal(
