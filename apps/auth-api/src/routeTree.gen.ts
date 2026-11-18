@@ -141,6 +141,7 @@ import { Route as V1MeBillingIndexRouteImport } from './routes/v1/me/billing/ind
 import { Route as V1MeBillingDetailsRouteImport } from './routes/v1/me/billing/details'
 import { Route as V1MeBillingPortalRouteImport } from './routes/v1/me/billing/portal'
 import { Route as V1MeBillingStorageRouteImport } from './routes/v1/me/billing/storage'
+import { Route as V1MeIntegrationsTokenRouteImport } from './routes/v1/me/integrations/token'
 import { Route as V1MeLicenseIndexRouteImport } from './routes/v1/me/license/index'
 import { Route as V1MeLicenseCheckoutRouteImport } from './routes/v1/me/license/checkout'
 import { Route as V1MeLicensePlanRouteImport } from './routes/v1/me/license/plan'
@@ -892,6 +893,11 @@ const V1MeBillingStorageRoute = V1MeBillingStorageRouteImport.update({
   path: '/billing/storage',
   getParentRoute: () => V1MeRoute,
 } as any)
+const V1MeIntegrationsTokenRoute = V1MeIntegrationsTokenRouteImport.update({
+  id: '/integrations/token',
+  path: '/integrations/token',
+  getParentRoute: () => V1MeRoute,
+} as any)
 const V1MeLicenseIndexRoute = V1MeLicenseIndexRouteImport.update({
   id: '/license/',
   path: '/license/',
@@ -1505,6 +1511,7 @@ export interface FileRoutesByFullPath {
   '/v1/me/billing/details': typeof V1MeBillingDetailsRoute
   '/v1/me/billing/portal': typeof V1MeBillingPortalRoute
   '/v1/me/billing/storage': typeof V1MeBillingStorageRoute
+  '/v1/me/integrations/token': typeof V1MeIntegrationsTokenRoute
   '/v1/me/license/checkout': typeof V1MeLicenseCheckoutRoute
   '/v1/me/license/plan': typeof V1MeLicensePlanRoute
   '/v1/me/license/renewal': typeof V1MeLicenseRenewalRoute
@@ -1720,6 +1727,7 @@ export interface FileRoutesByTo {
   '/v1/me/billing/details': typeof V1MeBillingDetailsRoute
   '/v1/me/billing/portal': typeof V1MeBillingPortalRoute
   '/v1/me/billing/storage': typeof V1MeBillingStorageRoute
+  '/v1/me/integrations/token': typeof V1MeIntegrationsTokenRoute
   '/v1/me/license/checkout': typeof V1MeLicenseCheckoutRoute
   '/v1/me/license/plan': typeof V1MeLicensePlanRoute
   '/v1/me/license/renewal': typeof V1MeLicenseRenewalRoute
@@ -1940,6 +1948,7 @@ export interface FileRoutesById {
   '/v1/me/billing/details': typeof V1MeBillingDetailsRoute
   '/v1/me/billing/portal': typeof V1MeBillingPortalRoute
   '/v1/me/billing/storage': typeof V1MeBillingStorageRoute
+  '/v1/me/integrations/token': typeof V1MeIntegrationsTokenRoute
   '/v1/me/license/checkout': typeof V1MeLicenseCheckoutRoute
   '/v1/me/license/plan': typeof V1MeLicensePlanRoute
   '/v1/me/license/renewal': typeof V1MeLicenseRenewalRoute
@@ -2157,6 +2166,7 @@ export interface FileRouteTypes {
     | '/v1/me/billing/details'
     | '/v1/me/billing/portal'
     | '/v1/me/billing/storage'
+    | '/v1/me/integrations/token'
     | '/v1/me/license/checkout'
     | '/v1/me/license/plan'
     | '/v1/me/license/renewal'
@@ -2372,6 +2382,7 @@ export interface FileRouteTypes {
     | '/v1/me/billing/details'
     | '/v1/me/billing/portal'
     | '/v1/me/billing/storage'
+    | '/v1/me/integrations/token'
     | '/v1/me/license/checkout'
     | '/v1/me/license/plan'
     | '/v1/me/license/renewal'
@@ -2591,6 +2602,7 @@ export interface FileRouteTypes {
     | '/v1/me/billing/details'
     | '/v1/me/billing/portal'
     | '/v1/me/billing/storage'
+    | '/v1/me/integrations/token'
     | '/v1/me/license/checkout'
     | '/v1/me/license/plan'
     | '/v1/me/license/renewal'
@@ -3785,6 +3797,13 @@ declare module '@tanstack/solid-router' {
       preLoaderRoute: typeof V1MeBillingStorageRouteImport
       parentRoute: typeof V1MeRoute
     }
+    '/v1/me/integrations/token': {
+      id: '/v1/me/integrations/token'
+      path: '/integrations/token'
+      fullPath: '/v1/me/integrations/token'
+      preLoaderRoute: typeof V1MeIntegrationsTokenRouteImport
+      parentRoute: typeof V1MeRoute
+    }
     '/v1/me/license/': {
       id: '/v1/me/license/'
       path: '/license'
@@ -4463,6 +4482,7 @@ interface V1MeRouteChildren {
   V1MeBillingDetailsRoute: typeof V1MeBillingDetailsRoute
   V1MeBillingPortalRoute: typeof V1MeBillingPortalRoute
   V1MeBillingStorageRoute: typeof V1MeBillingStorageRoute
+  V1MeIntegrationsTokenRoute: typeof V1MeIntegrationsTokenRoute
   V1MeLicenseCheckoutRoute: typeof V1MeLicenseCheckoutRoute
   V1MeLicensePlanRoute: typeof V1MeLicensePlanRoute
   V1MeLicenseRenewalRoute: typeof V1MeLicenseRenewalRoute
@@ -4479,6 +4499,7 @@ const V1MeRouteChildren: V1MeRouteChildren = {
   V1MeBillingDetailsRoute: V1MeBillingDetailsRoute,
   V1MeBillingPortalRoute: V1MeBillingPortalRoute,
   V1MeBillingStorageRoute: V1MeBillingStorageRoute,
+  V1MeIntegrationsTokenRoute: V1MeIntegrationsTokenRoute,
   V1MeLicenseCheckoutRoute: V1MeLicenseCheckoutRoute,
   V1MeLicensePlanRoute: V1MeLicensePlanRoute,
   V1MeLicenseRenewalRoute: V1MeLicenseRenewalRoute,

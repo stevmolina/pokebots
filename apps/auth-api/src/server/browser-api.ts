@@ -26,6 +26,7 @@ import type { readHostLogo } from "./host-logo";
 import type { HostedServerService } from "./hosted-server-service";
 import { HostedSiteInputError, requireIdempotencyKey } from "./hosted-site-contract";
 import type { HostedSiteService } from "./hosted-site-service";
+import type { issueIntegrationToken } from "./integration-token";
 import { readJsonObject } from "./json-body";
 import { type RemoteControlPlane, RemoteControlPlaneError } from "./remote-control-plane";
 import { sendTeamInviteEmail } from "./team-invite-email";
@@ -46,6 +47,7 @@ const COMPANY_COOKIE = "__Host-openbot-company";
 const COMPANY_FLOW_SECONDS = 600;
 
 export interface BrowserApiServices {
+  integrationToken?: (request: Request, userId: string) => ReturnType<typeof issueIntegrationToken>;
   auth: Pick<
     AuthService,
     | "startEmailSignIn"
@@ -495,6 +497,8 @@ const handleAccount = Effect.fn("BrowserApi.handleAccount")(function* (
   user: AuthUser,
   services: BrowserApiServices,
 ) {
+  if (path === "v1/me/integrations/token" && request.method === "POST" && services.integrationToken)
+    return json(yield* services.integrationToken(request, user.id));
   if (path === "v1/me/profile" && request.method === "PATCH") {
     const body = yield* readJsonObject(request);
     if (!isString(body.name))

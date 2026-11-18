@@ -426,3 +426,32 @@ public key as base64url) and `WEB_PUSH_VAPID_SUBJECT` (a `mailto:` or `https:` c
 encrypted `.env.production` with `bunx dotenvx set` and to the `cloudflare-production` GitHub
 environment. A deployment stops before remote changes when they are not one key pair. A new pair ends
 every subscription: each web client subscribes again when it next opens.
+
+## Pokebots integration tokens
+
+Set the optional Worker secret `POKEBOTS_INTEGRATION_PRIVATE_KEY` to an RSA PKCS#8
+private PEM of at least 2048 bits. Use the Worker secret store. The value can contain
+line breaks or literal `\n` sequences. Use a separate key for each environment.
+Give each receiving service the matching public key. A missing or invalid signing
+key returns HTTP 503. The Worker enables all three audiences when the key is set.
+
+Desktop and mobile send their existing account session token in
+`Authorization: Bearer <token>` to `POST /v1/me/integrations/token`.
+The signed-in web app sends a same-origin POST to
+`/api/browser/v1/me/integrations/token` with `X-OpenBot-Browser: 1`.
+The browser sends its existing HttpOnly cookie with the request.
+
+Send `Content-Type: application/json` and a body with `audience` set to
+`brain`, `rooms`, or `computer`. The optional `scope` defaults to
+`integration:use`. Brain and Rooms also accept `integration:link`.
+The response has `Cache-Control: no-store` and returns `accessToken` and
+`expiresAt` as Unix milliseconds. The RS256 JWT has issuer
+`urn:pokebots:integrations`, the exact requested audience, the requested scope,
+and subject `pokebots:<account user ID>`. Its `iat` and `exp` are Unix seconds,
+300 seconds apart.
+
+If the account has exactly one verified WorkOS identity row, the token includes
+both `workos_iss` and `workos_sub`. The receiver must verify the signature,
+issuer, audience, expiry, and scope before granting access. Ending an account
+session stops new issuance. A token already issued can run until it expires.
+The Worker keeps no integration data.

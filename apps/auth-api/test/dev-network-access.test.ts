@@ -14,6 +14,7 @@ describe("development Auth API LAN access", () => {
       "/v1/mobile-auth/session",
       "/v1/me",
       "/v1/me/profile",
+      "/v1/me/integrations/token",
       "/v1/me/analytics",
       "/v1/me/chat-color",
       "/v1/me/avatar",
@@ -48,6 +49,7 @@ describe("development Auth API LAN access", () => {
     expect(developmentNetworkRequestAllowed("192.168.1.20", "/v1/mobile-auth/email/verify")).toBe(false);
     expect(developmentNetworkRequestAllowed("192.168.1.20", "/v1/mobile-auth/ticket")).toBe(false);
     expect(developmentNetworkRequestAllowed("192.168.1.20", "/v1/mobile-auth/devices/session-id/other")).toBe(false);
+    expect(developmentNetworkRequestAllowed("192.168.1.20", "/v1/me/integrations/token/other")).toBe(false);
     expect(developmentNetworkRequestAllowed("192.168.1.20", "/v1/me/other")).toBe(false);
     expect(developmentNetworkRequestAllowed("192.168.1.20", "/v1/me/chat-color/other")).toBe(false);
     expect(developmentNetworkRequestAllowed("192.168.1.20", "/v1/mobile/other")).toBe(false);
