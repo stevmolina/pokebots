@@ -107,12 +107,12 @@ export const exchangeIntegrationGrant = Effect.fn("IntegrationToken.exchangeGran
   return { ...token, userId: session.userId, sessionId: session.sessionId };
 });
 
-const integrations = {
+export const integrations = {
   brain: "https://brain.mcpbox.dev/mcp",
   rooms: "https://rooms.mcpbox.dev/mcp",
 } as const;
 
-type LinkAudience = keyof typeof integrations;
+export type LinkAudience = keyof typeof integrations;
 type IntegrationBindings = Pick<
   WorkerBindings,
   "DB" | "POKEBOTS_INTEGRATION_PRIVATE_KEY" | "POKEBOTS_INTEGRATION_WORKOS_ISSUER"
@@ -127,19 +127,20 @@ function invalidRequest() {
   );
 }
 
-function linkIssuer(bindings: IntegrationBindings): string | null {
+export function linkIssuer(bindings: IntegrationBindings): string | null {
   const value = bindings.POKEBOTS_INTEGRATION_WORKOS_ISSUER?.trim();
   if (!value || !URL.canParse(value)) return null;
   const url = new URL(value);
   return url.protocol === "https:" && (value === url.origin || value === `${url.origin}/`) ? url.origin : null;
 }
 
-const linkIdentity = Effect.fn("IntegrationToken.linkIdentity")(function* (
+export const linkIdentity = Effect.fn("IntegrationToken.linkIdentity")(function* (
   token: unknown,
   userId: string,
   audience: LinkAudience,
   bindings: IntegrationBindings,
   fetchJwks: FetchImplementation,
+  sessionHash?: string,
 ) {
   if (typeof token !== "string" || !token || token.length > 8192) return yield* invalidRequest();
   const issuer = linkIssuer(bindings);
@@ -167,8 +168,11 @@ const linkIdentity = Effect.fn("IntegrationToken.linkIdentity")(function* (
   // The two unique keys prevent both rebinding and linking the same service
   // account to a second Pokebots account, even across concurrent requests.
   const link = bindings.DB.prepare(
-    "INSERT INTO pokebots_integration_links(user_id, audience, issuer, subject, created_at) VALUES (?, ?, ?, ?, ?) ON CONFLICT DO NOTHING",
-  ).bind(userId, audience, issuer, sub, Date.now());
+    `INSERT INTO pokebots_integration_links(user_id, audience, issuer, subject, created_at)
+     SELECT ?, ?, ?, ?, ? WHERE ? IS NULL OR EXISTS (
+       SELECT 1 FROM auth_sessions WHERE token_hash = ? AND user_id = ? AND revoked_at IS NULL AND expires_at > ?
+     ) ON CONFLICT DO NOTHING`,
+  ).bind(userId, audience, issuer, sub, Date.now(), sessionHash ?? null, sessionHash ?? null, userId, Date.now());
   const read = bindings.DB.prepare(
     "SELECT issuer, subject FROM pokebots_integration_links WHERE user_id = ? AND audience = ?",
   ).bind(userId, audience);

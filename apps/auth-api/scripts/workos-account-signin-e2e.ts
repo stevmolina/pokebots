@@ -14,6 +14,7 @@ import { CompanySignInError, CompanySignInService } from "../src/server/company-
 import { randomToken, sha256 } from "../src/server/crypto";
 import { D1AuthRepository } from "../src/server/d1-auth-repository";
 import { runApiEffect } from "../src/server/effect-runtime";
+import { finishIntegrationLink, integrationLinkClient, startIntegrationLink } from "../src/server/integration-link";
 import { exchangeIntegrationGrant, issueIntegrationToken } from "../src/server/integration-token";
 import { RemoteControlPlane, RemoteControlPlaneError } from "../src/server/remote-control-plane";
 import type { WorkerBindings } from "../src/server/types";
@@ -221,7 +222,26 @@ const integrationBindings = {
   POKEBOTS_INTEGRATION_WORKOS_ISSUER: integrationWorkosIssuer,
   POKEBOTS_INTEGRATION_PRIVATE_KEY: (await exportPKCS8(integrationKeys.privateKey)).replaceAll("\n", "\\n"),
 };
+const linkOrigin = "https://app.pokebots.example.test";
+let linkProof = "";
+let expectedChallenge = "";
+let expectedResource = "";
+let linkExchanges = 0;
 const services: BrowserApiServices = {
+  integrationLinkStart: (request, userId, token) => startIntegrationLink(request, userId, token, integrationBindings),
+  integrationLinkFinish: (request, userId, token) =>
+    finishIntegrationLink(request, userId, token, integrationBindings, async (url, init) => {
+      if (String(url) === `${integrationWorkosIssuer}/oauth2/jwks`) return Response.json({ keys: [jwk] });
+      assert.equal(String(url), `${integrationWorkosIssuer}/oauth2/token`);
+      assert(init?.body instanceof URLSearchParams);
+      assert.equal(init.body.get("client_id"), `${linkOrigin}/integration-accounts/client.json`);
+      assert.equal(init.body.get("redirect_uri"), `${linkOrigin}/api/browser/integration-link/return`);
+      assert.equal(init.body.get("resource"), expectedResource);
+      assert.equal(init.body.get("grant_type"), "authorization_code");
+      assert.equal(await runApiEffect(sha256(init.body.get("code_verifier") ?? "")), expectedChallenge);
+      linkExchanges++;
+      return Response.json({ access_token: linkProof });
+    }),
   integrationToken: (request, userId, accountToken) =>
     issueIntegrationToken(
       request,
@@ -267,6 +287,11 @@ const app = Bun.serve({
   port: 0,
   async fetch(request) {
     const path = new URL(request.url).pathname;
+    if (path === "/integration-accounts/client.json") return integrationLinkClient(new Request(linkOrigin + path));
+    if (path.startsWith("/api/browser/integration-link/")) {
+      const url = new URL(request.url);
+      return handleBrowserApi(new Request(linkOrigin + url.pathname + url.search, request), services);
+    }
     if (path.startsWith("/api/browser/")) return handleBrowserApi(request, services);
     try {
       const [, hostId] = /^\/v2\/remote\/hosts\/([^/]+)\/integrations\/token$/u.exec(path) ?? [];
@@ -578,6 +603,80 @@ try {
     ).status,
     409,
   );
+  const browserCookie = (token: string) => `__Host-openbot-web=${token}`;
+  const requestLink = (audience: string, cookie = browserSessionToken, overrides: Record<string, string> = {}) =>
+    fetch(`${origin}/api/browser/integration-link/start`, {
+      method: "POST",
+      headers: { ...browserHeaders, Origin: linkOrigin, Cookie: browserCookie(cookie), ...overrides },
+      body: JSON.stringify({ audience }),
+    });
+  const startLink = async (audience: string, cookie?: string) => {
+    const response = await requestLink(audience, cookie);
+    assert.equal(response.status, 200);
+    const { authorizationUrl } = Schema.decodeUnknownSync(Schema.Struct({ authorizationUrl: Schema.String }))(
+      await response.json(),
+    );
+    const url = new URL(authorizationUrl);
+    assert.equal(url.origin + url.pathname, `${integrationWorkosIssuer}/oauth2/authorize`);
+    assert.equal(url.searchParams.get("response_type"), "code");
+    assert.equal(url.searchParams.get("code_challenge_method"), "S256");
+    assert.equal(url.searchParams.get("client_id"), `${linkOrigin}/integration-accounts/client.json`);
+    assert.equal(url.searchParams.get("redirect_uri"), `${linkOrigin}/api/browser/integration-link/return`);
+    expectedResource = `https://${audience}.mcpbox.dev/mcp`;
+    assert.equal(url.searchParams.get("resource"), expectedResource);
+    expectedChallenge = url.searchParams.get("code_challenge") ?? "";
+    assert.match(expectedChallenge, /^[A-Za-z0-9_-]{43}$/u);
+    return url.searchParams.get("state") ?? "";
+  };
+  const linkCallback = async (state: string, cookie: string, result: string, issuer = integrationWorkosIssuer) => {
+    const query = new URLSearchParams({ state, code: "local-authorization-code", iss: issuer });
+    const response = await fetch(`${origin}/api/browser/integration-link/return?${query}`, {
+      redirect: "manual",
+      headers: { Cookie: browserCookie(cookie), "Sec-Fetch-Site": "cross-site" },
+    });
+    assert.equal(response.status, 303);
+    assert.equal(response.headers.get("Location"), `${linkOrigin}/integration-accounts?result=${result}`);
+  };
+  const descriptor = await fetch(`${origin}/integration-accounts/client.json`).then((response) => response.json());
+  assert.deepEqual(descriptor, {
+    client_id: `${linkOrigin}/integration-accounts/client.json`,
+    client_name: "Pokebots",
+    redirect_uris: [`${linkOrigin}/api/browser/integration-link/return`],
+    grant_types: ["authorization_code"],
+    response_types: ["code"],
+    token_endpoint_auth_method: "none",
+  });
+  assert.equal((await requestLink("brain", "", {})).status, 401);
+  assert.equal((await requestLink("brain", undefined, { Origin: "https://other.example" })).status, 403);
+  assert.equal((await requestLink("brain", undefined, { "X-OpenBot-Browser": "" })).status, 403);
+  const brainState = await startLink("brain");
+  linkProof = await signLinkProof("user_BrainOAuth", expectedResource);
+  await linkCallback(randomToken(), browserSessionToken, "failed");
+  await linkCallback(brainState, session.sessionToken, "failed");
+  assert.equal(linkExchanges, 0);
+  await linkCallback(brainState, browserSessionToken, "linked");
+  await linkCallback(brainState, browserSessionToken, "failed");
+  assert.equal(linkExchanges, 1);
+  const expiredState = await startLink("brain");
+  await database
+    .prepare("UPDATE pokebots_integration_link_flows SET expires_at = 0 WHERE state_hash = ?")
+    .bind(await runApiEffect(sha256(expiredState)))
+    .run();
+  await linkCallback(expiredState, browserSessionToken, "failed");
+  assert.equal(linkExchanges, 1);
+  await linkCallback(await startLink("rooms"), browserSessionToken, "failed", "https://other.example");
+  assert.equal(linkExchanges, 1);
+  linkProof = await signLinkProof(legacySubject, "https://brain.mcpbox.dev/mcp");
+  await linkCallback(await startLink("rooms"), browserSessionToken, "failed");
+  linkProof = await signLinkProof(legacySubject, "https://rooms.mcpbox.dev/mcp", "https://other.example");
+  await linkCallback(await startLink("rooms"), browserSessionToken, "failed");
+  linkProof = await signLinkProof("user_OtherRooms", "https://rooms.mcpbox.dev/mcp");
+  await linkCallback(await startLink("rooms"), browserSessionToken, "failed");
+  linkProof = legacyToken;
+  await linkCallback(await startLink("rooms", session.sessionToken), session.sessionToken, "failed");
+  checks.push(
+    "Browser integration linking checks CSRF, pending ownership, PKCE, replay, issuer, audience and existing owner",
+  );
   const readIntegration = async (requestBody: Record<string, string>, audience: string) => {
     const response = await requestIntegration(requestBody);
     assert.equal(response.status, 200);
@@ -588,7 +687,7 @@ try {
   assert.equal(linked.linked_workos_sub, legacySubject);
   assert.equal(linked.linked_workos_iss, integrationWorkosIssuer);
   assert.equal((await readIntegration({ audience: "rooms", profile: "native" }, "rooms")).linked_workos_sub, undefined);
-  assert.equal((await readIntegration({ audience: "brain" }, "brain")).linked_workos_sub, undefined);
+  assert.equal((await readIntegration({ audience: "brain" }, "brain")).linked_workos_sub, "user_BrainOAuth");
   checks.push(
     "links only with a valid legacy service sign-in, rejects cross-audience proof and rebinding, preserves the native principal",
   );

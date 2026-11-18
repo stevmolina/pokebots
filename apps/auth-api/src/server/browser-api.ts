@@ -26,6 +26,7 @@ import type { readHostLogo } from "./host-logo";
 import type { HostedServerService } from "./hosted-server-service";
 import { HostedSiteInputError, requireIdempotencyKey } from "./hosted-site-contract";
 import type { HostedSiteService } from "./hosted-site-service";
+import { type finishIntegrationLink, INTEGRATION_LINK_PAGE, type startIntegrationLink } from "./integration-link";
 import type { issueIntegrationToken } from "./integration-token";
 import { readJsonObject } from "./json-body";
 import { type RemoteControlPlane, RemoteControlPlaneError } from "./remote-control-plane";
@@ -47,6 +48,8 @@ const COMPANY_COOKIE = "__Host-openbot-company";
 const COMPANY_FLOW_SECONDS = 600;
 
 export interface BrowserApiServices {
+  integrationLinkStart?: (request: Request, userId: string, token: string) => ReturnType<typeof startIntegrationLink>;
+  integrationLinkFinish?: (request: Request, userId: string, token: string) => ReturnType<typeof finishIntegrationLink>;
   integrationToken?: (
     request: Request,
     userId: string,
@@ -198,10 +201,30 @@ export function handleBrowserApi(request: Request, services: BrowserApiServices)
     return runApiResponse(finishWorkosSignIn(request, services), services.errorResponse);
   if (path === "company/return" && request.method === "GET")
     return runApiResponse(finishCompanySignIn(request, services), services.errorResponse);
+  if (path === "integration-link/return" && request.method === "GET" && services.integrationLinkFinish)
+    return runApiResponse(returnFromIntegrationLink(request, services), services.errorResponse);
   if (request.headers.get("Sec-Fetch-Site") === "cross-site")
     return Promise.resolve(failure(403, "browser_request_refused", "The browser request was refused."));
   return runApiResponse(handleBrowserOperation(request, path, services), services.errorResponse);
 }
+
+const returnFromIntegrationLink = Effect.fn("BrowserApi.returnFromIntegrationLink")(function* (
+  request: Request,
+  services: BrowserApiServices,
+) {
+  const finish = services.integrationLinkFinish;
+  const linked = yield* Effect.gen(function* () {
+    const token = browserSessionToken(request);
+    const user = token ? yield* services.auth.authenticate(token) : null;
+    return finish && token && user ? yield* finish(request, user.id, token) : false;
+  }).pipe(Effect.catchCause(() => Effect.succeed(false)));
+  const target = new URL(INTEGRATION_LINK_PAGE, request.url);
+  target.searchParams.set("result", linked ? "linked" : "failed");
+  return new Response(null, {
+    status: 303,
+    headers: { Location: target.href, "Cache-Control": "no-store", "Referrer-Policy": "no-referrer" },
+  });
+});
 
 /**
  * The provider's return through the account service. A sign-in that finished gets the session cookie,
@@ -411,6 +434,8 @@ const handleBrowserOperation = Effect.fn("BrowserApi.handleOperation")(function*
     return response;
   }
   if (!token || !user) return failure(401, "sign_in_required", "Sign in is required.");
+  if (path === "integration-link/start" && request.method === "POST" && services.integrationLinkStart)
+    return json(yield* services.integrationLinkStart(request, user.id, token));
   if (path === "session" && request.method === "GET") return json({ user });
   if (path === "v2/remote/hosts" && request.method === "GET")
     return json({ hosts: yield* services.remote.listHosts(user.id) });
