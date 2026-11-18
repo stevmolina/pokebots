@@ -1,12 +1,13 @@
 // The Agent Computer REST API (computer.mcpbox.dev): cloud Ubuntu desktops that agents start, drive
-// with shell commands, and pause. One API key per OpenBot server signs every call. The key and each
+// with shell commands, and pause. Each call uses an actor credential or a manual key. The bearer and each
 // `live_view_url` are bearer credentials: both are registered for redaction before any log can see them.
 
 import { request as httpRequest } from "node:http";
 import { request as httpsRequest } from "node:https";
 import { sourceText } from "@openbot/i18n/source";
 import { redactSecrets, registerSecretValue } from "@openbot/logging";
-import { Effect, Schema } from "effect";
+import { Effect, Redacted, Schema } from "effect";
+import type { IntegrationCredential } from "../integration-credential";
 
 export const AGENT_COMPUTER_API_URL = "https://computer.mcpbox.dev/api/v1";
 /** Where a person makes a key. */
@@ -44,6 +45,13 @@ export type AgentComputerMachine = typeof machineSchema.Type;
 
 const listSchema = Schema.Struct({ machines: Schema.Array(machineSchema) });
 
+const allowanceSchema = Schema.Struct({
+  seconds_remaining: Schema.NullOr(Schema.Number),
+  minutes_remaining: Schema.NullOr(Schema.Number),
+  resets_at: Schema.NullOr(Schema.String),
+});
+export type AgentComputerAllowance = typeof allowanceSchema.Type;
+
 const startSchema = Schema.Struct({
   id: Schema.String,
   context: Schema.String,
@@ -58,6 +66,8 @@ const startSchema = Schema.Struct({
     Schema.Struct({
       plan: Schema.String,
       minutes_remaining: Schema.NullOr(Schema.Number),
+      seconds_remaining: Schema.optional(Schema.NullOr(Schema.Number)),
+      resets_at: Schema.optional(Schema.NullOr(Schema.String)),
       rate: Schema.optional(Schema.Number),
       upgrade_url: Schema.optional(Schema.String),
       manage_url: Schema.optional(Schema.String),
@@ -93,7 +103,9 @@ const RESPONSE_LIMIT = 16 * 1024 * 1024;
 
 export interface AgentComputerApiOptions {
   /** The key, read at each call, so a connect or disconnect applies at once. Null while not connected. */
-  key: () => string | null;
+  key?: () => string | null;
+  /** Bind one authorized actor to this instance. */
+  credential?: IntegrationCredential<"computer">;
   /** The API root. A test points it at a local server. */
   baseUrl?: string | undefined;
 }
@@ -104,10 +116,12 @@ export interface AgentComputerApiOptions {
  */
 export class AgentComputerApi {
   readonly #key: () => string | null;
+  readonly #credential: IntegrationCredential<"computer"> | undefined;
   readonly #base: string;
 
   constructor(options: AgentComputerApiOptions) {
-    this.#key = options.key;
+    this.#key = options.key ?? (() => null);
+    this.#credential = options.credential;
     this.#base = (options.baseUrl ?? process.env.OPENBOT_AGENT_COMPUTER_API_URL ?? AGENT_COMPUTER_API_URL).replace(
       /\/+$/u,
       "",
@@ -115,10 +129,10 @@ export class AgentComputerApi {
   }
 
   connected(): boolean {
-    return Boolean(this.#key());
+    return Boolean(this.#credential || this.#key());
   }
 
-  /** Reads the machine registry with `key`, or with the saved key. Wakes nothing. */
+  /** Reads the machine registry without waking a machine. A manual call can override the saved key. */
   readonly list = Effect.fn("AgentComputerApi.list")(function* (this: AgentComputerApi, key?: string) {
     const answer = yield* this.#json("GET", "/machines", undefined, 30_000, key);
     const { machines } = yield* decode(listSchema, answer);
@@ -126,12 +140,25 @@ export class AgentComputerApi {
     return machines;
   });
 
+  readonly allowance = Effect.fn("AgentComputerApi.allowance")(function* (this: AgentComputerApi, key?: string) {
+    const answer = yield* this.#json("GET", "/allowance", undefined, 30_000, key);
+    return yield* decode(allowanceSchema, answer);
+  });
+
   readonly start = Effect.fn("AgentComputerApi.start")(function* (
     this: AgentComputerApi,
     context: string,
     size?: AgentComputerSize,
+    options?: { idempotencyKey?: string },
   ) {
-    const answer = yield* this.#json("POST", "/machines/start", size ? { context, size } : { context }, 300_000);
+    const answer = yield* this.#json(
+      "POST",
+      "/machines/start",
+      size ? { context, size } : { context },
+      300_000,
+      undefined,
+      options?.idempotencyKey,
+    );
     const started = yield* decode(startSchema, answer);
     registerSecretValue(started.live_view_url);
     if (started.billing?.upgrade_url) registerSecretValue(started.billing.upgrade_url);
@@ -181,8 +208,8 @@ export class AgentComputerApi {
     return yield* decode(statusSchema, answer);
   });
 
-  #json(method: "GET" | "POST", path: string, body: unknown, timeoutMs: number, key?: string) {
-    return this.#send(method, path, body, timeoutMs, key).pipe(
+  #json(method: "GET" | "POST", path: string, body: unknown, timeoutMs: number, key?: string, idempotencyKey?: string) {
+    return this.#send(method, path, body, timeoutMs, key, idempotencyKey).pipe(
       Effect.flatMap((answer) =>
         Effect.try({
           try: (): unknown => JSON.parse(answer.body.toString("utf8")),
@@ -193,26 +220,23 @@ export class AgentComputerApi {
   }
 
   /** Sends one request. A status of 400 or more fails with the API's own code and message. */
-  #send(
+  readonly #send = Effect.fn("AgentComputerApi.send")(function* (
+    this: AgentComputerApi,
     method: "GET" | "POST",
     path: string,
     body: unknown,
     timeoutMs: number,
     explicitKey?: string,
-  ): Effect.Effect<RawResponse, AgentComputerFailed> {
-    const key = explicitKey ?? this.#key();
-    if (!key)
-      return Effect.fail(
-        new AgentComputerFailed({
-          code: "NOT_CONNECTED",
-          message: sourceText("error.connector.agentComputerNotConnected"),
-          status: 0,
-        }),
-      );
+    idempotencyKey?: string,
+  ) {
+    const key = this.#credential
+      ? Redacted.value(yield* this.#credential.bearer.pipe(Effect.mapError(notConnected)))
+      : (explicitKey ?? this.#key());
+    if (!key) return yield* Effect.fail(notConnected());
     registerSecretValue(key);
     const url = new URL(`${this.#base}${path}`);
     const payload = body === undefined ? undefined : Buffer.from(JSON.stringify(body));
-    return Effect.callback<RawResponse, AgentComputerFailed>((resume, signal) => {
+    return yield* Effect.callback<RawResponse, AgentComputerFailed>((resume, signal) => {
       const send = url.protocol === "http:" ? httpRequest : httpsRequest;
       const request = send(
         url,
@@ -223,6 +247,7 @@ export class AgentComputerApi {
           headers: {
             Authorization: `Bearer ${key}`,
             Accept: "application/json",
+            ...(idempotencyKey !== undefined ? { "Idempotency-Key": idempotencyKey } : {}),
             ...(payload ? { "Content-Type": "application/json", "Content-Length": String(payload.length) } : {}),
           },
         },
@@ -249,6 +274,10 @@ export class AgentComputerApi {
                   ?.trim() ?? "",
               body: Buffer.concat(chunks),
             };
+            if (this.#credential && answer.body.includes(key)) {
+              resume(Effect.fail(badResponse(status)));
+              return;
+            }
             resume(status >= 400 ? Effect.fail(apiError(answer)) : Effect.succeed(answer));
           });
         },
@@ -257,7 +286,15 @@ export class AgentComputerApi {
       request.on("error", () => resume(Effect.fail(networkError())));
       request.end(payload);
     });
-  }
+  });
+}
+
+function notConnected() {
+  return new AgentComputerFailed({
+    code: "NOT_CONNECTED",
+    message: sourceText("error.connector.agentComputerNotConnected"),
+    status: 0,
+  });
 }
 
 function machinePath(id: string): string {
@@ -273,7 +310,7 @@ function apiError(answer: RawResponse): AgentComputerFailed {
     const parsed = Schema.decodeUnknownSync(errorSchema)(JSON.parse(answer.body.toString("utf8")));
     // An allowance error carries a signed billing link for the person: it never reaches an agent or a log.
     for (const url of parsed.error.message.match(/https?:\/\/\S+/gu) ?? []) registerSecretValue(url);
-    const code = parsed.error.code.slice(0, 64);
+    const code = redactSecrets(parsed.error.code).slice(0, 64);
     return new AgentComputerFailed({
       code,
       message:
