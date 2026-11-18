@@ -639,7 +639,8 @@
       .routine-planner-body,
       .routine-planner-empty,
       .routine-planner-error,
-      .hosted-pricing-scroll
+      .hosted-pricing-scroll,
+      .rooms-panel
     ) {
     pointer-events: auto;
   }
