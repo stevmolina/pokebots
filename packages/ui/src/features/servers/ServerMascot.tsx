@@ -1,7 +1,7 @@
 /**
- * The mark of a server that has no logo: a plush machine of the Pokebots family on a dark tile, like
- * the plush on this computer's mark. The server id picks the machine, so a server keeps the same one
- * on every screen and after a restart.
+ * The mark of a server that has no logo: a simple felt machine of the Pokebots family (one rounded
+ * body, a face and an antenna) on a dark tile. `scripts/pokebots-mascots/draw-machines.mjs` draws them.
+ * The server id picks the machine, so a server keeps the same one on every screen and after a restart.
  *
  * The tile uses the paper ink, which does not change with the theme, so a server looks the same in
  * light and dark. The picture fills the tile at every size, from the 14px mark at the end of a chat
@@ -38,7 +38,7 @@ export function ServerMascot(props: { serverId: string }) {
   return <MascotTile src={serverMascotUrl(props.serverId)} />;
 }
 
-/** The mark of the "All machines" view: three plush machines together, as a sign for "every server". */
+/** The mark of the "All machines" view: three felt machines together, as a sign for "every server". */
 export function AllMachinesMark() {
   return <MascotTile src={allMachines} />;
 }
