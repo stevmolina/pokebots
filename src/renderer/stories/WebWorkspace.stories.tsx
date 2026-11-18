@@ -4,12 +4,15 @@ import {
   SIDEBAR_PEOPLE_SECTION_ID,
   SIDEBAR_UNASSIGNED_SECTION_ID,
 } from "@openbot/contracts/ipc";
+import type { RoomSummary, RoomsResult } from "@openbot/contracts/rooms";
+import { isDynamicRecord } from "@openbot/contracts/runtime-values";
 import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
 import { AGENT_TASKS_CAPABILITY, AGENT_TASKS_ROUTES } from "@openbot/contracts/team-protocol/agent-tasks-v1";
 import { AGENT_THREADS_CAPABILITY, AGENT_THREADS_ROUTES } from "@openbot/contracts/team-protocol/agent-threads-v1";
 import { PROVIDERS_ADMIN_ROUTES } from "@openbot/contracts/team-protocol/providers-v1";
 import { PROVIDERS_RUNTIMES_V2_ROUTES } from "@openbot/contracts/team-protocol/providers-v2";
 import { PROVIDERS_SIGN_IN_V3_ROUTES } from "@openbot/contracts/team-protocol/providers-v3";
+import { ROOMS_CAPABILITY, ROOMS_ROUTE } from "@openbot/contracts/team-protocol/rooms-v1";
 import type { TeamApiRequest } from "@openbot/team-client/team-api-requests";
 import { Toaster } from "@openbot/ui";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
@@ -551,4 +554,69 @@ const phoneListRuntime: WebRuntimeFactory = (_accountId, events) => {
 /** The chat list with enough chats, folders and one unread chat to judge the phone layout at 390 px wide. */
 export const PhoneList: Story = {
   args: { createRuntime: phoneListRuntime },
+};
+
+const ROOM_NAMES = ["Claude Gang", "Crumb Bakery: checkout bug", "Mac meets VPS", "Steven + Renzo"] as const;
+const PREVIEW_ROOMS: readonly RoomSummary[] = ROOM_NAMES.map((name, index) => ({
+  id: `room-${index + 1}`,
+  name,
+  notice: "Plan the work with your people and agents.",
+  paused: false,
+  role: "owner",
+}));
+
+/** A host that has the Rooms route. It answers from four rooms; each room has two messages. */
+const roomsRuntime: WebRuntimeFactory = (_accountId, events) => {
+  const base = mockWebRuntimeFor(createMockOpenBot(), events);
+  const field = (body: unknown, key: string): string | undefined => {
+    const value = isDynamicRecord(body) ? body[key] : undefined;
+    return typeof value === "string" ? value : undefined;
+  };
+  const answer = (body: unknown): RoomsResult => {
+    const kind = field(body, "kind");
+    if (kind === "list") return { connected: true, rooms: PREVIEW_ROOMS };
+    const room = PREVIEW_ROOMS.find((candidate) => candidate.id === field(body, "roomId"));
+    if (kind === "read")
+      return {
+        connected: true,
+        ...(room ? { room } : {}),
+        messages: [
+          {
+            id: 1,
+            thread: null,
+            author: "Alice #2bd8",
+            kind: "human",
+            body: "Welcome to the room.",
+            mentions: [],
+            at: "2026-11-17T06:00:00Z",
+          },
+          {
+            id: 2,
+            thread: null,
+            author: "Claude · Alice #2bd8",
+            kind: "agent",
+            body: "I read the notice and I am ready.",
+            mentions: [],
+            at: "2026-11-17T06:01:00Z",
+          },
+        ],
+      };
+    return { connected: true, ...(room ? { room } : {}), memory: null, agents: [], tasks: [] };
+  };
+  const request: TeamApiRequest = async (_method, path, decode, body) => {
+    if (path !== ROOMS_ROUTE) throw new Error(`No preview answer for ${path}.`);
+    // A real host answers a long poll when a message comes; the preview never has news, so it waits.
+    if (field(body, "kind") === "wait") return new Promise(() => {});
+    return decode(answer(body));
+  };
+  return {
+    ...base,
+    connect: async (...args) => [...(await base.connect(...args)), ROOMS_CAPABILITY],
+    admin: { request, download: request, team: createMockOpenBot().api.host },
+  };
+};
+
+/** The Rooms section of a host with the rooms-v1 capability: Go to > Rooms, then open a room. */
+export const Rooms: Story = {
+  args: { createRuntime: roomsRuntime },
 };
