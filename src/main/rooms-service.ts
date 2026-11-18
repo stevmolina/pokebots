@@ -1,7 +1,8 @@
 import type { RoomsRequest, RoomsResult } from "@openbot/contracts/rooms";
 import { sourceText } from "@openbot/i18n/source";
-import { redactSecrets } from "@openbot/logging";
-import { Effect, Schema } from "effect";
+import { redactSecrets, registerSecretValue } from "@openbot/logging";
+import { Effect, Redacted, Schema } from "effect";
+import type { IntegrationCredential } from "../backend/integration-credential";
 import { readLimitedBody } from "../backend/limited-body";
 import type { McpOAuthAuthority } from "../backend/mcp-oauth-provider";
 
@@ -61,8 +62,18 @@ export class RoomsService {
     private readonly fetcher = fetch,
   ) {}
 
-  readonly execute = Effect.fn("RoomsService.execute")(function* (this: RoomsService, input: RoomsRequest) {
-    let token = yield* this.oauth.accessToken(ROOMS_MCP_URL).pipe(Effect.mapError(failed));
+  readonly execute = Effect.fn("RoomsService.execute")(function* (
+    this: RoomsService,
+    input: RoomsRequest,
+    credential?: IntegrationCredential<"rooms">,
+  ) {
+    let token = credential
+      ? Redacted.value(yield* credential.bearer.pipe(Effect.mapError(failed)))
+      : yield* this.oauth.accessToken(ROOMS_MCP_URL).pipe(Effect.mapError(failed));
+    if (credential) {
+      if (!token) return yield* Effect.fail(failed());
+      registerSecretValue(token);
+    }
     if (!token) return { connected: false } satisfies RoomsResult;
     const route = roomsApiRequest(input);
     const fetcher = this.fetcher;
@@ -97,6 +108,7 @@ export class RoomsService {
       });
     let result = yield* send(token);
     if (!result) {
+      if (credential) return yield* Effect.fail(failed());
       token = yield* this.oauth.refreshAccessToken(ROOMS_MCP_URL, token).pipe(Effect.mapError(failed));
       if (!token) return { connected: false } satisfies RoomsResult;
       result = yield* send(token);

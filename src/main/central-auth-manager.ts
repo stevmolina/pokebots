@@ -81,6 +81,7 @@ import {
   type RemoteMemberRecord,
 } from "./central-auth-records";
 import { awaitCompanySignIn, type CompanySignInBrowser, CompanySignInBrowserError } from "./company-sign-in-browser";
+import { decodeIntegrationBearer, type IntegrationTokenRequest } from "./integration-credentials";
 import type { NotificationRelayRequest } from "./push-notifications";
 
 interface CentralAuthEvents {
@@ -2402,14 +2403,42 @@ export class CentralAuthManager extends EventEmitter<CentralAuthEvents> {
     }
   });
 
+  readonly requestIntegrationBearer = Effect.fn("CentralAuth.requestIntegrationBearer")(function* (
+    this: CentralAuthManager,
+    userId: string,
+    { audience, profile }: IntegrationTokenRequest,
+  ) {
+    const session = this.#sessionToken;
+    const unavailable = () => new Error(sourceText("error.auth.integrationTokensUnavailable"));
+    if (!session || this.#state.status !== "signed_in" || this.#state.user.id !== userId)
+      return yield* Effect.fail(unavailable());
+    const bearer = yield* this.#owned(
+      this.#authorizedRequestEffect(
+        "/v1/me/integrations/token",
+        {
+          method: "POST",
+          redirect: "error",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ audience, profile }),
+        },
+        decodeIntegrationBearer,
+        undefined,
+        session,
+      ),
+    ).pipe(Effect.mapError(unavailable));
+    if (this.#sessionToken !== session) return yield* Effect.fail(unavailable());
+    return bearer;
+  }).bind(this);
+
   readonly #authorizedRequestEffect = Effect.fn("CentralAuth.authorizedRequest")(function* <T>(
     this: CentralAuthManager,
     path: string,
     init: RequestInit,
     decoder: (value: unknown) => T,
     timeoutMs?: number,
+    expectedSession?: string,
   ): Effect.fn.Return<T, CentralAuthOperationError, CentralAuthTransport> {
-    if (!this.#sessionToken)
+    if (!this.#sessionToken || (expectedSession !== undefined && this.#sessionToken !== expectedSession))
       return yield* new CentralAuthOperationError({
         cause: new AuthApiError(401, "unauthorized", sourceText("error.auth.signInRequired")),
       });
