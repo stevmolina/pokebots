@@ -211,12 +211,18 @@ function errorResponse(error: unknown): Response {
   return Response.json({ error: { code: "internal_error" } }, { status: 500 });
 }
 const integrationKeys = await generateKeyPair("RS256", { extractable: true });
+const integrationWorkosIssuer = "https://workos-integrations.example.test";
 const integrationBindings = {
   DB: database,
+  POKEBOTS_INTEGRATION_WORKOS_ISSUER: integrationWorkosIssuer,
   POKEBOTS_INTEGRATION_PRIVATE_KEY: (await exportPKCS8(integrationKeys.privateKey)).replaceAll("\n", "\\n"),
 };
 const services: BrowserApiServices = {
-  integrationToken: (request, userId) => issueIntegrationToken(request, userId, integrationBindings),
+  integrationToken: (request, userId) =>
+    issueIntegrationToken(request, userId, integrationBindings, async (url) => {
+      assert.equal(String(url), `${integrationWorkosIssuer}/oauth2/jwks`);
+      return Response.json({ keys: [jwk] });
+    }),
   auth: workosAuth,
   remote,
   workosSignIn: () => workos,
@@ -505,12 +511,9 @@ try {
     audience: "rooms",
     subject: `pokebots:${browserUser?.id}`,
   });
-  const identity = await database
-    .prepare("SELECT issuer, subject FROM workos_sign_in_identities WHERE user_id = ?")
-    .bind(browserUser?.id)
-    .first<{ issuer: string; subject: string }>();
-  assert(identity);
-  assert.equal(payload.workos_iss === identity.issuer && payload.workos_sub === identity.subject, true);
+  assert.equal(payload.linked_workos_sub, undefined);
+  assert.equal(payload.linked_workos_iss, undefined);
+  assert.equal(payload.workos_sub, undefined);
   assert.equal(payload.aud, "rooms");
   assert.equal(payload.scope, "integration:use");
   assert(typeof payload.exp === "number" && typeof payload.iat === "number");
@@ -523,6 +526,56 @@ try {
   assert.equal(deniedOrigin.status, 403);
   checks.push(
     "integration JWT signature, account and WorkOS claims, lifetime, no-store, audience, scope and browser access",
+  );
+  const signLinkProof = (subject: string, audience: string, issuer = integrationWorkosIssuer) =>
+    new SignJWT({ sub_profile: "user" })
+      .setProtectedHeader({ alg: "RS256", kid: jwk.kid })
+      .setIssuer(issuer)
+      .setSubject(subject)
+      .setAudience(audience)
+      .setExpirationTime("5m")
+      .sign(keys.privateKey);
+  const legacySubject = "user_RoomsTestAccount";
+  const legacyToken = await signLinkProof(legacySubject, "https://rooms.mcpbox.dev/mcp");
+  const legacyLink = { action: "link", audience: "rooms", workosAccessToken: legacyToken };
+  assert.equal((await requestIntegration({ ...legacyLink, audience: "brain" })).status, 400);
+  assert.equal(
+    (
+      await requestIntegration({
+        ...legacyLink,
+        workosAccessToken: await signLinkProof(legacySubject, "https://rooms.mcpbox.dev/mcp", provider.url.origin),
+      })
+    ).status,
+    400,
+  );
+  assert.equal((await requestIntegration(legacyLink)).status, 200);
+  assert.equal((await requestIntegration(legacyLink)).status, 200);
+  assert.equal(
+    (await requestIntegration(legacyLink, { Cookie: `__Host-openbot-web=${session.sessionToken}` })).status,
+    409,
+  );
+  assert.equal(
+    (
+      await requestIntegration({
+        ...legacyLink,
+        workosAccessToken: await signLinkProof("user_DifferentAccount", "https://rooms.mcpbox.dev/mcp"),
+      })
+    ).status,
+    409,
+  );
+  const readIntegration = async (requestBody: Record<string, string>, audience: string) => {
+    const response = await requestIntegration(requestBody);
+    assert.equal(response.status, 200);
+    const result = Schema.decodeUnknownSync(Schema.Struct({ accessToken: Schema.String }))(await response.json());
+    return (await jwtVerify(result.accessToken, integrationKeys.publicKey, { audience })).payload;
+  };
+  const linked = await readIntegration({ audience: "rooms" }, "rooms");
+  assert.equal(linked.linked_workos_sub, legacySubject);
+  assert.equal(linked.linked_workos_iss, integrationWorkosIssuer);
+  assert.equal((await readIntegration({ audience: "rooms", profile: "native" }, "rooms")).linked_workos_sub, undefined);
+  assert.equal((await readIntegration({ audience: "brain" }, "brain")).linked_workos_sub, undefined);
+  checks.push(
+    "links only with a valid legacy service sign-in, rejects cross-audience proof and rebinding, preserves the native principal",
   );
   const replay = await fetch(browserCallback.target, { headers: { Cookie: flowPair }, redirect: "manual" });
   assert(replay.headers.get("Location")?.includes("workosSignInError"));

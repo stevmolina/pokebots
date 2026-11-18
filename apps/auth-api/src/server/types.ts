@@ -149,6 +149,7 @@ export interface WorkerBindings {
   GITHUB_APP_CLIENT_ID?: string;
   /** The private key of the OpenBot GitHub App as a PKCS #8 PEM. Without it, no installation token is issued. */
   POKEBOTS_INTEGRATION_PRIVATE_KEY?: string;
+  POKEBOTS_INTEGRATION_WORKOS_ISSUER?: string;
   GITHUB_APP_PRIVATE_KEY?: string;
   /**
    * The private repository, as `owner/name`, where a withdrawn feedback issue moves. The OpenBot
