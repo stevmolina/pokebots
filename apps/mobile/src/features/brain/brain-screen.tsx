@@ -1,4 +1,5 @@
 import type { BrainRequest, BrainResponse } from "@openbot/contracts/brain";
+import { POKEBOTS_BRAIN_ID } from "@openbot/contracts/team-protocol/pokebots-integrations-v1";
 import * as DocumentPicker from "expo-document-picker";
 import { File } from "expo-file-system";
 import { router, Stack, useFocusEffect, useLocalSearchParams } from "expo-router";
@@ -43,6 +44,7 @@ export function BrainScreen() {
   });
   const generation = useRef(0);
   const supported = workspace.canUseBrain(serverId);
+  const builtIn = workspace.canUsePokebotsIntegrations(serverId);
   const scope = { mcpServerId: state.connection, brain: state.brain };
   const connect = () => router.push({ pathname: "/server-settings/mcp", params: { serverId } });
   useFocusEffect(
@@ -60,24 +62,28 @@ export function BrainScreen() {
         busy: false,
       }));
       let alive = true;
-      void workspace
-        .listMcpServers(serverId)
-        .then((rows) => {
-          const row = rows.find((item) => {
-            if (item.transport !== "http") return false;
-            try {
-              const url = new URL(item.url);
-              return url.origin === "https://brain.mcpbox.dev" && url.pathname === "/mcp";
-            } catch {
-              return false;
-            }
-          });
-          if (!row || !alive) return;
-          return workspace.brainRequest({ operation: "brains", mcpServerId: row.id }, serverId).then((data) => {
+      const connectionId = async () => {
+        if (builtIn) return POKEBOTS_BRAIN_ID;
+        const rows = await workspace.listMcpServers(serverId);
+        const row = rows.find((item) => {
+          if (item.transport !== "http") return false;
+          try {
+            const url = new URL(item.url);
+            return url.origin === "https://brain.mcpbox.dev" && url.pathname === "/mcp";
+          } catch {
+            return false;
+          }
+        });
+        return row?.id;
+      };
+      void connectionId()
+        .then((id) => {
+          if (!id || !alive) return;
+          return workspace.brainRequest({ operation: "brains", mcpServerId: id }, serverId).then((data) => {
             if (alive)
               setState((previous) => ({
                 ...previous,
-                connection: row.id,
+                connection: id,
                 brains: data.brains ?? [],
                 brain: data.brains?.[0]?.id ?? "",
               }));
@@ -90,7 +96,7 @@ export function BrainScreen() {
         alive = false;
         generation.current++;
       };
-    }, [serverId, supported, workspace.listMcpServers, workspace.brainRequest, errorMessage, t]),
+    }, [serverId, supported, builtIn, workspace.listMcpServers, workspace.brainRequest, errorMessage, t]),
   );
   async function run(input: BrainRequest, target: "data" | "detail" | "result" = "data") {
     const current = ++generation.current;

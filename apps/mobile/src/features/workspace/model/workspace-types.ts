@@ -1107,6 +1107,7 @@ export interface MobileWorkspaceContextValue {
   /** Searches file names in the server's agent chats. An empty query lists the newest files. */
   searchFiles: (query: string, serverId: string, cursor?: string) => Promise<ConversationFileSearchPage>;
   /** True when the host advertises `agent-tasks-v1`. A member who can message an agent can use its tasks. */
+  canUsePokebotsIntegrations: (serverId: string) => boolean;
   canUseRooms: (serverId: string) => boolean;
   canUseBrain: (serverId: string) => boolean;
   /** True when the host advertises agent-tasks-v1. */
@@ -1295,6 +1296,7 @@ export type MobileWorkspaceCapabilityCheck =
   | "canChooseNewAgentModel"
   | "canInstallAgentTemplate"
   | "canSearchFiles"
+  | "canUsePokebotsIntegrations"
   | "canUseRooms"
   | "canUseBrain"
   | "canUseTasks"

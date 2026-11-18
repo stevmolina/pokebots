@@ -1,4 +1,4 @@
-import { randomUUID } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { basename } from "node:path";
 import { attachmentMimeTypeForName } from "@openbot/contracts/attachment-files";
@@ -91,6 +91,7 @@ import { OPENBOT_BROWSER_NAMESPACE } from "../browser-tools";
 import type { ChannelService } from "../channel-service";
 import type { CrmHandle } from "../crm/crm";
 import type { ProviderSession } from "../database/provider-sessions";
+import type { IntegrationCredential } from "../integration-credential";
 import type { MailboxStore } from "../mailbox-store";
 import { agentMcpServers, codexDeferredMcpServers, openCodeMcpServers } from "../mcp-provider-shapes";
 import { type MessagingThreads, PLATFORM_NAMES } from "../messaging/messaging-threads";
@@ -542,6 +543,7 @@ export interface OpenBotToolRouterOptions {
   githubConnected?: (() => boolean) | undefined;
   /** The Agent Computer REST API, for the `computer_*` tools; null where nothing holds a key. */
   agentComputer?: AgentComputerApi | null | undefined;
+  agentComputerCredential?: ((memberId: string) => IntegrationCredential<"computer"> | undefined) | undefined;
   /** This build's version and system for `send_feedback`; null where this process does not know them. */
   feedbackFacts?: FeedbackFacts | null | undefined;
   /** Sends approved `send_feedback` text; null where this process has no account service. */
@@ -608,6 +610,7 @@ export class OpenBotToolRouter {
   readonly #marketplaceAppServer: (appId: string) => MarketplaceAppServer | null;
   readonly #githubConnected: () => boolean;
   readonly #agentComputer: AgentComputerApi | null;
+  readonly #agentComputerCredential: (memberId: string) => IntegrationCredential<"computer"> | undefined;
   readonly #feedbackFacts: FeedbackFacts | null;
   readonly #feedback: AgentFeedback | null;
   readonly #feedbackWithdrawal: FeedbackWithdrawal | null;
@@ -678,6 +681,7 @@ export class OpenBotToolRouter {
     this.#marketplaceAppServer = options.marketplaceAppServer ?? (() => null);
     this.#githubConnected = options.githubConnected ?? (() => false);
     this.#agentComputer = options.agentComputer ?? null;
+    this.#agentComputerCredential = options.agentComputerCredential ?? (() => undefined);
     this.#feedbackFacts = options.feedbackFacts ?? null;
     this.#feedback = options.feedback ?? null;
     this.#feedbackWithdrawal = options.feedbackWithdrawal ?? null;
@@ -3029,7 +3033,17 @@ export class OpenBotToolRouter {
     if (!agent || !api || !isAgentComputerTool(params.tool))
       return openBotToolFailure(sourceText("error.agent.toolRequestInvalid"));
     const threadId = this.#conversation.publicThreadId(agent.id, params.threadId);
-    const result = yield* handleAgentComputerTool(api, {
+    const [requester, another] = this.#turnRequesters(agent.id, params.turnId);
+    const credential = requester && !another ? this.#agentComputerCredential(requester) : undefined;
+    const result = yield* handleAgentComputerTool(credential ? api.forAccount(credential) : api, {
+      ...(credential
+        ? {
+            accountScoped: true,
+            idempotencyKey: createHash("sha256")
+              .update(JSON.stringify([agent.id, params.threadId, params.turnId, params.callId]))
+              .digest("hex"),
+          }
+        : {}),
       tool: params.tool,
       arguments: params.arguments,
       workspacePath: agent.workspacePath,

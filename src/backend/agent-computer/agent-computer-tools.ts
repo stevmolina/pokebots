@@ -139,6 +139,8 @@ export interface AgentComputerToolRequest {
   arguments: unknown;
   /** The calling agent's workspace, where `computer_get_file` saves. */
   workspacePath: string;
+  accountScoped?: boolean;
+  idempotencyKey?: string;
   /** Asks the user to approve a change, with `reason` as the question. True when approved. */
   approve: (reason: string) => Effect.Effect<boolean>;
 }
@@ -158,7 +160,9 @@ export const handleAgentComputerTool = Effect.fn("AgentComputerTools.handle")(fu
     switch (request.tool) {
       case "computer_list": {
         const machines = yield* api.list();
+        const allowance = request.accountScoped ? yield* api.allowance() : undefined;
         return textResult({
+          ...(allowance ? { allowance } : {}),
           machines: machines.map(({ id, context, size, status, deadline_at, updated_at }) => ({
             id,
             context,
@@ -171,7 +175,7 @@ export const handleAgentComputerTool = Effect.fn("AgentComputerTools.handle")(fu
       }
       case "computer_start": {
         const input = yield* parse(startSchema, request.arguments);
-        const started = yield* api.start(input.context, input.size);
+        const started = yield* api.start(input.context, input.size, { idempotencyKey: request.idempotencyKey });
         return textResult({
           id: started.id,
           context: started.context,
@@ -184,6 +188,8 @@ export const handleAgentComputerTool = Effect.fn("AgentComputerTools.handle")(fu
           billing: started.billing && {
             plan: started.billing.plan,
             minutes_remaining: started.billing.minutes_remaining,
+            seconds_remaining: started.billing.seconds_remaining,
+            resets_at: started.billing.resets_at,
             rate: started.billing.rate,
           },
           briefing: started.briefing?.filter((line) => !/live_view_url|billing\.(?:upgrade|manage)_url/u.test(line)),

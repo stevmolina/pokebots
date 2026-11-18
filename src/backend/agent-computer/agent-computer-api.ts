@@ -132,6 +132,10 @@ export class AgentComputerApi {
     return Boolean(this.#credential || this.#key());
   }
 
+  forAccount(credential: IntegrationCredential<"computer">): AgentComputerApi {
+    return new AgentComputerApi({ key: () => null, baseUrl: this.#base, credential });
+  }
+
   /** Reads the machine registry without waking a machine. A manual call can override the saved key. */
   readonly list = Effect.fn("AgentComputerApi.list")(function* (this: AgentComputerApi, key?: string) {
     const answer = yield* this.#json("GET", "/machines", undefined, 30_000, key);

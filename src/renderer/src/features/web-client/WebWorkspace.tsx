@@ -91,6 +91,10 @@ import { INSTANCE_TRANSFER_CAPABILITY } from "@openbot/contracts/team-protocol/i
 import { MCP_SIGN_IN_CAPABILITY } from "@openbot/contracts/team-protocol/mcp-sign-in-v1";
 import { MESSAGE_DELETE_CAPABILITY } from "@openbot/contracts/team-protocol/message-delete-v1";
 import { MESSAGE_PINS_CAPABILITY } from "@openbot/contracts/team-protocol/message-pins-v1";
+import {
+  POKEBOTS_INTEGRATIONS_CAPABILITY,
+  POKEBOTS_INTEGRATIONS_ROUTES,
+} from "@openbot/contracts/team-protocol/pokebots-integrations-v1";
 import { PROVIDER_ACCOUNTS_CAPABILITY } from "@openbot/contracts/team-protocol/provider-accounts-v1";
 import { ROOMS_CAPABILITY, ROOMS_ROUTE } from "@openbot/contracts/team-protocol/rooms-v1";
 import { ROUTINE_FLOW_STOP_CAPABILITY } from "@openbot/contracts/team-protocol/routine-flow-stop-v1";
@@ -3159,6 +3163,7 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
     shortcutPlatform: () => shortcutPlatform(),
   });
   /** As on desktop: the pages, the provider usage and the account switch of the chat sidebar. */
+  const builtInIntegrations = () => workspace.state.capabilities.includes(POKEBOTS_INTEGRATIONS_CAPABILITY);
   const sidebarPages = (): SidebarPages => ({
     current: sidebarPage(),
     pinned: layout.railPinned(),
@@ -3167,7 +3172,8 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
     onChats: () => showSidebarView("agents"),
     onRoutines: routinesSupported() ? () => showSidebarView("routines") : undefined,
     onRooms:
-      workspace.state.capabilities.includes(ROOMS_CAPABILITY) && canAdministerServer(workspace.state.host?.role)
+      builtInIntegrations() ||
+      (workspace.state.capabilities.includes(ROOMS_CAPABILITY) && canAdministerServer(workspace.state.host?.role))
         ? () => {
             const id = server()?.id;
             if (id) void openHostPage(id, "rooms", null);
@@ -3184,12 +3190,13 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
       if (id) void openHostPage(id, "schedule", button);
     },
     onWorkflows: workflowsRailAction(),
-    onBrain: workspace.state.capabilities.includes(BRAIN_CAPABILITY)
-      ? () => {
-          const id = server()?.id;
-          if (id) void openHostPage(id, "brain", null);
-        }
-      : undefined,
+    onBrain:
+      builtInIntegrations() || workspace.state.capabilities.includes(BRAIN_CAPABILITY)
+        ? () => {
+            const id = server()?.id;
+            if (id) void openHostPage(id, "brain", null);
+          }
+        : undefined,
     onLibrary: libraryRailAction(),
     onProviders: providersPageAction(),
     onCrm: crmPageAction(),
@@ -3507,16 +3514,34 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                           {(roomServerId) => (
                             <RoomsPanel
                               request={(input) =>
-                                hostRequest(roomServerId)("POST", ROOMS_ROUTE, decodeRoomsResultFromHost, input)
+                                builtInIntegrations()
+                                  ? hostRequest(roomServerId)(
+                                      "POST",
+                                      POKEBOTS_INTEGRATIONS_ROUTES.rooms,
+                                      decodeRoomsResultFromHost,
+                                      { request: input },
+                                    )
+                                  : hostRequest(roomServerId)("POST", ROOMS_ROUTE, decodeRoomsResultFromHost, input)
                               }
                               onConnect={openMarketplace}
                             />
                           )}
                         </Show>
                       </Match>
-                      <Match when={page() === "brain" && workspace.state.capabilities.includes(BRAIN_CAPABILITY)}>
+                      <Match
+                        when={
+                          page() === "brain" &&
+                          (builtInIntegrations() || workspace.state.capabilities.includes(BRAIN_CAPABILITY))
+                        }
+                      >
                         <Show when={server()?.id} keyed>
-                          {(id) => <WebBrainPage request={hostRequest(id)} onConnect={openMarketplace} />}
+                          {(id) => (
+                            <WebBrainPage
+                              request={hostRequest(id)}
+                              onConnect={openMarketplace}
+                              builtIn={builtInIntegrations()}
+                            />
+                          )}
                         </Show>
                       </Match>
                       <Match when={page() === "library"}>

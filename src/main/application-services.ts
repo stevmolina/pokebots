@@ -321,6 +321,7 @@ import {
   setAboveAppsXWayland,
   usesX11Windows,
 } from "./linux-wayland-output";
+import { currentIntegrationCredential } from "./local-integration-credential";
 import { localRoutineFeedDocument } from "./local-routine-calendar";
 import {
   formatLocalServerMembersRequest,
@@ -2630,6 +2631,10 @@ export async function createApplicationServices({
     vaultItems: vault.items,
     linkWallet: linkAccount,
     agentComputerKey: () => agentComputer.key(),
+    agentComputerCredential: (memberId) => {
+      if (host.conversationSender()?.id !== memberId) return undefined;
+      return currentIntegrationCredential(centralAuth, "computer");
+    },
     agentApiKeys,
     localSkillTools: () => localSkillTools(skills),
     browserProfiles: () => agentBrowserProfiles,

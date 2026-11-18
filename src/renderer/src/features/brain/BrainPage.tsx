@@ -1,4 +1,8 @@
 import { BRAIN_CAPABILITY } from "@openbot/contracts/brain";
+import {
+  POKEBOTS_BRAIN_ID,
+  POKEBOTS_INTEGRATIONS_CAPABILITY,
+} from "@openbot/contracts/team-protocol/pokebots-integrations-v1";
 import { BrainPanel } from "@openbot/ui/features/brain/BrainPanel";
 import { createEffect, createSignal, Show } from "solid-js";
 import { serverSupportsCapability } from "../servers/server-capabilities";
@@ -10,15 +14,25 @@ export function BrainPage(props: { serverId: string }) {
   const { servers } = useServers();
   const settings = useSettings();
   const [connection, setConnection] = createSignal<string | null>(null);
-  const supported = () => {
-    const server = servers().find((row) => row.id === props.serverId);
-    return server?.kind === "local" || (server && serverSupportsCapability(server, BRAIN_CAPABILITY));
-  };
+  const server = () => servers().find((row) => row.id === props.serverId);
+  const hasAccountBrain = () =>
+    server()?.kind === "remote" && serverSupportsCapability(server(), POKEBOTS_INTEGRATIONS_CAPABILITY);
+  const supported = () =>
+    server()?.kind === "local" || hasAccountBrain() || serverSupportsCapability(server(), BRAIN_CAPABILITY);
   createEffect(
-    () => props.serverId,
-    (serverId) => {
+    () => ({ serverId: props.serverId, local: server()?.kind === "local", builtIn: hasAccountBrain() }),
+    ({ serverId, local, builtIn }) => {
       setConnection(null);
       let current = true;
+      if (builtIn) {
+        setConnection(POKEBOTS_BRAIN_ID);
+        return;
+      }
+      const findLocalAccount = async () => {
+        if (!current || !local) return;
+        await brainPort().brain.request({ operation: "brains", mcpServerId: POKEBOTS_BRAIN_ID }, serverId);
+        if (current) setConnection(POKEBOTS_BRAIN_ID);
+      };
       void brainPort()
         .agent.listMcpServers(serverId)
         .then((rows) => {
@@ -32,7 +46,8 @@ export function BrainPage(props: { serverId: string }) {
               return false;
             }
           });
-          setConnection(row?.id ?? null);
+          if (row) setConnection(row.id);
+          else return findLocalAccount();
         })
         .catch(() => {
           if (current) setConnection(null);

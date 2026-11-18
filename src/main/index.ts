@@ -1030,7 +1030,7 @@ function registerIpcHandlers({
     ...linkAccountIpcHandlers({ linkAccount }),
     ...onePasswordConnectorIpcHandlers({ onePasswordConnector, remoteServers }),
     ...bitwardenConnectorIpcHandlers({ bitwardenConnector, remoteServers }),
-    ...roomsIpcHandlers({ rooms, remoteServers }),
+    ...roomsIpcHandlers({ rooms, centralAuth, remoteServers }),
     ...agentComputerIpcHandlers({ agentComputer, remoteServers }),
     ...passwordManagersIpcHandlers({ passwordManagers, remoteServers, openExternal: openLink }),
     ...vaultIpcHandlers({ vault, getMainWindow: getDialogParent, translate: language.translate, remoteServers }),
@@ -1150,7 +1150,7 @@ function registerIpcHandlers({
       relayedInstalls: relayedMessagingInstalls,
       openExternal: openLink,
     }),
-    ...brainIpcHandlers({ brain, remoteServers }),
+    ...brainIpcHandlers({ brain, centralAuth, remoteServers }),
     ...mcpServerIpcHandlers({
       service,
       mcpAccess,
