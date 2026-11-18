@@ -14,7 +14,7 @@ Use the groups and item rules of [the release notes](../../../docs/RELEASING.md#
 `bun run mobile:release:patch`, `mobile:release:minor` and `mobile:release:major` move the items of
 every file into the new version section of [`apps/mobile/CHANGELOG.md`](../CHANGELOG.md), set the
 new version in `apps/mobile/app.json`, `apps/mobile/package.json` and `bun.lock`, and delete the files. The
-pre-commit hook and the Changelog workflow check each file. The new section is `In review`, and
+Changelog workflow checks each file. The new section is `In review`, and
 `/changelog` does not show it until `bun run mobile:release:published ios` (or `android`) writes the
 date of the first store. Run the command again for the other store. See
 [the mobile release steps](../README.md#github-actions-testflight-release).
@@ -46,4 +46,4 @@ native code. The command does not change `apps/mobile/app.json`, `apps/mobile/pa
 The command stops when `--base` has a different version than `apps/mobile/app.json`, or when a
 platform does not have the store version: the update cannot reach those phones. `/changelog` and
 the app show the section as a version. It gets no Discord post, and the store update header of the
-app ignores it. The pre-commit hook and the Changelog workflow check each OTA section.
+app ignores it. The Changelog workflow checks each OTA section.

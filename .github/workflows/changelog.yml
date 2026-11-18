@@ -50,6 +50,21 @@ jobs:
             exit 1
           fi
 
+      - name: Check notes for version changes
+        shell: bash
+        run: |
+          base_desktop="$(git show HEAD^1:package.json | jq -er .version)"
+          head_desktop="$(jq -er .version package.json)"
+          if [[ "$base_desktop" != "$head_desktop" ]]; then
+            bun scripts/check-release-notes.ts
+          fi
+
+          base_mobile="$(git show HEAD^1:apps/mobile/app.json | jq -er .expo.version)"
+          head_mobile="$(jq -er .expo.version apps/mobile/app.json)"
+          if [[ "$base_mobile" != "$head_mobile" ]]; then
+            bun scripts/check-release-notes.ts --mobile
+          fi
+
       - name: Check changelog fragments
         shell: bash
         run: |

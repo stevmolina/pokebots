@@ -70,17 +70,16 @@ failure unless the user asks.
 
 Run the `ship` skill. Use the smoke result again:
 
-- Do not run `smoke` again in Gate 1. For a UI change, use the screenshots
+- Use the completed smoke check. For a UI change, use the screenshots
   from Step 1 when they show before and after. Take only the missing ones.
 - Put the smoke table in the PR `## Verification` section. For each
   `pass (flaky)` item, add the evidence of the first failure.
-- When a Gate 1 fix, a NorbiAI fix, or a CI fix changes user-visible
-  behavior, smoke the affected items again before the push. When an item
-  fails, use Step 2a.
+- When a fix changes user-visible behavior, smoke the affected items again before the push. When
+  an item fails, use Step 2a.
 
 ## Report format
 
 Give the smoke table from the `smoke` skill, with the final result of each
-item after Step 2a. Then give the gate table from the `ship` skill. When you
+item after Step 2a. Then give the merge result from the `ship` skill. When you
 stopped after the smoke test, give only the smoke report and the reason that
 you did not ship.

@@ -90,7 +90,6 @@
     "node": ">=24.0.0"
   },
   "scripts": {
-    "prepare": "bun scripts/install-git-hooks.ts",
     "postinstall": "bun scripts/electron-dist-cache.ts restore && bun scripts/install-electron.ts && bun scripts/electron-dist-cache.ts save && bun scripts/stamp-install.ts",
     "api:start": "bun run --cwd apps/auth-api start",
     "api:build": "bun run --cwd apps/auth-api build",
@@ -214,7 +213,6 @@
     "format": "biome check --write --max-diagnostics=none .",
     "knip:check": "knip",
     "check:paths": "biome check --config-path=biome.agent.json --write --max-diagnostics=none --files-ignore-unknown=true --no-errors-on-unmatched",
-    "check:staged": "biome check --write --staged --files-ignore-unknown=true --no-errors-on-unmatched",
     "test": "bun run test:desktop && bun run test:api",
     "test:desktop": "vitest run",
     "test:changed": "git merge-base origin/main HEAD > /dev/null && vitest run --changed origin/main --maxWorkers=1",

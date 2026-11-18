@@ -5,6 +5,8 @@ description: Babysit a pull request through the NorbiAI review loop until no val
 
 # Babysit
 
+NorbiAI is disabled on `stevmolina/pokebots`. Stop here for that repository.
+
 Drive one pull request through repeated NorbiAI reviews until no valid issue
 remains. Fix each valid finding. Rebut each false positive with evidence.
 Ask for a new review after each round.
