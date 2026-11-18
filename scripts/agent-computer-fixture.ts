@@ -42,6 +42,8 @@ export async function startAgentComputerFixture() {
     };
     const fail = (code: string, status: number) => json({ error: { code, message: `Fixture ${code}` } }, status);
     if (!authenticated) return fail("UNAUTHORIZED", 401);
+    if (path === "/api/v1/allowance")
+      return json({ seconds_remaining: null, minutes_remaining: null, resets_at: null });
     if (path === "/api/v1/machines") {
       if (gate) {
         const pending = gate;

@@ -74,6 +74,17 @@ const scrypt = promisify(scryptCallback);
 const INVITE_TTL_MS = 24 * 60 * 60 * 1_000;
 const SESSION_TTL_MS = 30 * 24 * 60 * 60 * 1_000;
 
+interface RemoteTeamSession {
+  member: TeamMemberSummary;
+  sessionId: string;
+  userId: string;
+  hostId: string;
+  createdAt: string;
+  sessionExpiresAt: string;
+  integrationAttempt?: symbol;
+  integrationGrant?: { value: string; expiresAt: number; timer: ReturnType<typeof setTimeout> };
+}
+
 export class TeamStoreError extends Schema.TaggedError<TeamStoreError>()("TeamStoreError", { message: Schema.String }) {
   constructor(message = "") {
     super({ message });
@@ -217,10 +228,7 @@ export class TeamStore {
   #file: StoredTeamFile = { version: 2, activeAccountId: null, hosts: [] };
   /** The host of the signed-in account. Every other method reads this one, never `#file.hosts`. */
   #state: StoredTeam | null = null;
-  readonly #remoteSessions = new Map<
-    string,
-    { member: TeamMemberSummary; sessionId: string; createdAt: string; sessionExpiresAt: string }
-  >();
+  readonly #remoteSessions = new Map<string, RemoteTeamSession>();
   #writeChain: Deferred.Deferred<void> | null = null;
   /**
    * The file exists but is neither a v2 envelope nor a v1 record - a file a newer build
@@ -1030,7 +1038,7 @@ export class TeamStore {
           if (stored) session.member = { ...publicMember(stored), role: session.member.role, disabled: false };
           continue;
         }
-        this.#remoteSessions.delete(tokenHash);
+        this.#deleteRemoteSession(tokenHash);
         closed.push(session.sessionId);
       }
       yield* this.#persistEffect();
@@ -1064,6 +1072,8 @@ export class TeamStore {
     this.#remoteSessions.set(hashToken(sessionToken), {
       member,
       sessionId: input.sessionId,
+      userId: input.userId,
+      hostId: this.#requireState().serverId,
       createdAt: new Date().toISOString(),
       sessionExpiresAt,
     });
@@ -1072,8 +1082,92 @@ export class TeamStore {
 
   closeRemoteSession(sessionId: string): void {
     for (const [tokenHash, session] of this.#remoteSessions) {
-      if (session.sessionId === sessionId) this.#remoteSessions.delete(tokenHash);
+      if (session.sessionId === sessionId) this.#deleteRemoteSession(tokenHash);
     }
+  }
+
+  #deleteRemoteSession(tokenHash: string): void {
+    const session = this.#remoteSessions.get(tokenHash);
+    if (session) this.#clearIntegrationGrant(session);
+    this.#remoteSessions.delete(tokenHash);
+  }
+
+  #clearIntegrationGrant(session: RemoteTeamSession): void {
+    if (session.integrationGrant) clearTimeout(session.integrationGrant.timer);
+    delete session.integrationGrant;
+    delete session.integrationAttempt;
+  }
+
+  #activeIntegrationSession(session: RemoteTeamSession | undefined): session is RemoteTeamSession {
+    const state = this.#state;
+    if (!session || !state || session.hostId !== state.serverId || Date.parse(session.sessionExpiresAt) <= Date.now())
+      return false;
+    const member = state.members.find((candidate) => candidate.id === session.member.id);
+    return Boolean(
+      member &&
+        !member.disabled &&
+        member.role === session.member.role &&
+        (!member.accountId || member.accountId === session.userId),
+    );
+  }
+
+  beginIntegrationAuthorization(token: string, sessionId: string) {
+    const tokenHash = hashToken(token);
+    const session = this.#remoteSessions.get(tokenHash);
+    if (!this.#activeIntegrationSession(session) || session.sessionId !== sessionId) return null;
+    const attempt = Symbol();
+    session.integrationAttempt = attempt;
+    return {
+      userId: session.userId,
+      hostId: session.hostId,
+      save: (value: string, expiresAt: number): number | null => {
+        if (
+          this.#remoteSessions.get(tokenHash) !== session ||
+          session.integrationAttempt !== attempt ||
+          !this.#activeIntegrationSession(session)
+        )
+          return null;
+        // The exchange returns the bearer expiry, which never exceeds the grant expiry.
+        const expiry = Math.min(expiresAt, Date.parse(session.sessionExpiresAt));
+        if (expiry <= Date.now()) return null;
+        if (session.integrationGrant) clearTimeout(session.integrationGrant.timer);
+        const timer = setTimeout(() => {
+          delete session.integrationGrant;
+        }, expiry - Date.now());
+        timer.unref();
+        session.integrationGrant = { value, expiresAt: expiry, timer };
+        return expiry;
+      },
+    };
+  }
+
+  integrationGrantForSession(token: string, sessionId: string) {
+    const session = this.#remoteSessions.get(hashToken(token));
+    if (!this.#activeIntegrationSession(session) || session.sessionId !== sessionId) return null;
+    return this.#integrationGrant(session);
+  }
+
+  integrationGrantForMember(memberId: string, accountId: string) {
+    let selected: ReturnType<TeamStore["integrationGrantForSession"]> = null;
+    for (const session of this.#remoteSessions.values()) {
+      if (session.member.id !== memberId || session.userId !== accountId || !this.#activeIntegrationSession(session))
+        continue;
+      const candidate = this.#integrationGrant(session);
+      if (candidate && (!selected || candidate.expiresAt > selected.expiresAt)) selected = candidate;
+    }
+    return selected;
+  }
+
+  #integrationGrant(session: RemoteTeamSession) {
+    const grant = session.integrationGrant;
+    if (!grant || grant.expiresAt <= Date.now()) return null;
+    return {
+      grant: grant.value,
+      expiresAt: grant.expiresAt,
+      sessionId: session.sessionId,
+      userId: session.userId,
+      hostId: session.hostId,
+    };
   }
 
   getMember(memberId: string): TeamMemberSummary | null {
@@ -1106,7 +1200,7 @@ export class TeamStore {
     const remote: TeamSessionSummary[] = [];
     for (const [tokenHash, session] of this.#remoteSessions) {
       if (Date.parse(session.sessionExpiresAt) <= now) {
-        this.#remoteSessions.delete(tokenHash);
+        this.#deleteRemoteSession(tokenHash);
         continue;
       }
       remote.push({
@@ -1349,8 +1443,14 @@ export class TeamStore {
     const tokenHash = hashToken(token);
     const remote = this.#remoteSessions.get(tokenHash);
     if (remote) {
-      if (Date.parse(remote.sessionExpiresAt) > Date.now()) return structuredClone(remote);
-      this.#remoteSessions.delete(tokenHash);
+      if (Date.parse(remote.sessionExpiresAt) > Date.now()) {
+        return {
+          member: structuredClone(remote.member),
+          sessionId: remote.sessionId,
+          sessionExpiresAt: remote.sessionExpiresAt,
+        };
+      }
+      this.#deleteRemoteSession(tokenHash);
     }
     const session = this.#state.sessions.find(
       (candidate) => Date.parse(candidate.expiresAt) > Date.now() && safeTextEqual(candidate.tokenHash, tokenHash),
@@ -1364,6 +1464,8 @@ export class TeamStore {
     function* (this: TeamStore, token: string): Effect.fn.Return<void, RemoteWorkflowError, TeamStoreFiles> {
       const state = yield* remoteDecode(() => this.#requireState());
       const tokenHash = hashToken(token);
+      const remote = this.#remoteSessions.get(tokenHash);
+      if (remote) this.#clearIntegrationGrant(remote);
       state.sessions = state.sessions.filter((candidate) => !safeTextEqual(candidate.tokenHash, tokenHash));
       yield* this.#persistEffect();
     },
@@ -1412,6 +1514,11 @@ export class TeamStore {
         member.role = patch.role;
       }
       if (patch.disabled !== undefined) member.disabled = patch.disabled;
+      for (const session of this.#remoteSessions.values()) {
+        if (session.member.id === memberId && !this.#activeIntegrationSession(session)) {
+          this.#clearIntegrationGrant(session);
+        }
+      }
       if (member.disabled) {
         state.sessions = state.sessions.filter((session) => session.memberId !== member.id);
       }
@@ -1432,6 +1539,9 @@ export class TeamStore {
         return yield* new RemoteWorkflowError({
           cause: new TeamStoreError(sourceText("error.team.ownerCannotRemove")),
         });
+      for (const session of this.#remoteSessions.values()) {
+        if (session.member.id === memberId) this.#clearIntegrationGrant(session);
+      }
       state.members = state.members.filter((candidate) => candidate.id !== memberId);
       state.sessions = state.sessions.filter((session) => session.memberId !== memberId);
       yield* this.#persistEffect();

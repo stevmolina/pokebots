@@ -43,6 +43,7 @@ import type { ServerPersonalityPreferenceStore } from "../server-personality-pre
 import type { ServerTimezonePreferenceStore } from "../server-timezone-preference-store";
 import type { SkillLearningPreferenceStore } from "../skill-learning-preference-store";
 import type { SkillMarketplaceService } from "../skill-marketplace-service";
+import type { PokebotsIntegrationRoutes } from "./route-pokebots-integrations";
 // What `TeamApiServer` needs from the rest of the main process, and nothing else.
 //
 // Every service arrives as a `Pick<>` of the real class. The point is not brevity: the Team API is
@@ -783,6 +784,7 @@ export interface TeamApiOptions {
   onePasswordConnector?: TeamApiOnePasswordConnector | undefined;
   bitwardenConnector?: TeamApiBitwardenConnector | undefined;
   rooms?: RoomsService;
+  pokebotsIntegrations?: PokebotsIntegrationRoutes;
   agentComputer?: TeamApiAgentComputer | undefined;
   passwordManagers?: TeamApiPasswordManagers | undefined;
   vault?: TeamApiVault | undefined;
