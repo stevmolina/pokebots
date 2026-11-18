@@ -5,17 +5,44 @@ import { Button, Typography } from "heroui-native";
 import { useCallback, useEffect, useState } from "react";
 import { FlatList, View } from "react-native";
 import { useMobileWorkspace } from "@/features/workspace/context/mobile-workspace-context";
+import { IntegrationProfiles } from "@/shared/components/integration-profiles";
 import { SheetFormField } from "@/shared/components/sheet-form-field";
 import { useText } from "@/shared/lib/text";
 import { useAppForeground } from "@/shared/lib/use-app-foreground";
 
 export function RoomsScreen() {
   const { serverId = "" } = useLocalSearchParams<{ serverId: string }>();
-  return <RoomsServerScreen key={serverId} serverId={serverId} />;
+  const { canUsePokebotsIntegrations } = useMobileWorkspace();
+  const [native, onSelect] = useState(false);
+  const builtIn = canUsePokebotsIntegrations(serverId);
+  const profile = builtIn && native ? "native" : undefined;
+  return (
+    <RoomsServerScreen
+      key={JSON.stringify([serverId, builtIn, profile])}
+      serverId={serverId}
+      builtIn={builtIn}
+      native={profile === "native"}
+      onSelect={onSelect}
+    />
+  );
 }
 
-function RoomsServerScreen({ serverId }: { serverId: string }) {
-  const { roomsRequest, canUseRooms, servers } = useMobileWorkspace();
+function RoomsServerScreen({
+  serverId,
+  builtIn,
+  native,
+  onSelect,
+}: {
+  serverId: string;
+  builtIn: boolean;
+  native: boolean;
+  onSelect: (native: boolean) => void;
+}) {
+  const { roomsRequest: request, canUseRooms, servers } = useMobileWorkspace();
+  const roomsRequest = useCallback(
+    (input: RoomsRequest, id: string) => request(input, id, native ? "native" : undefined),
+    [request, native],
+  );
   const { t, errorMessage } = useText();
   const focused = useIsFocused();
   const foreground = useAppForeground();
@@ -57,7 +84,7 @@ function RoomsServerScreen({ serverId }: { serverId: string }) {
     reason: "",
   });
   const server = servers.find((item) => item.id === serverId);
-  const supported = canUseRooms(serverId) && (server?.role === "owner" || server?.role === "admin");
+  const supported = canUseRooms(serverId) && (builtIn || server?.role === "owner" || server?.role === "admin");
   const patch = useCallback((value: Partial<typeof state>) => setState((old) => ({ ...old, ...value })), []);
   async function load() {
     const result = await roomsRequest({ kind: "list" }, serverId);
@@ -194,7 +221,11 @@ function RoomsServerScreen({ serverId }: { serverId: string }) {
         contentContainerClassName="px-5 pb-10 gap-5"
         ListHeaderComponent={
           <View className="gap-4">
-            <Typography.Paragraph className="text-muted">{t("rooms.hostAccount")}</Typography.Paragraph>
+            {builtIn ? (
+              <IntegrationProfiles native={native} onSelect={onSelect} />
+            ) : (
+              <Typography.Paragraph className="text-muted">{t("rooms.hostAccount")}</Typography.Paragraph>
+            )}
             {state.error ? <Typography.Paragraph accessibilityRole="alert">{state.error}</Typography.Paragraph> : null}
             {!supported ? (
               <Typography.Paragraph>{t("rooms.error")}</Typography.Paragraph>

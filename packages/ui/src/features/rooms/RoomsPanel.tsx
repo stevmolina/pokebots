@@ -6,6 +6,7 @@ import type {
   RoomsRequest,
   RoomsResult,
 } from "@openbot/contracts/rooms";
+import type { JSX } from "@solidjs/web";
 import { createEffect, createStore, For, onCleanup, Show } from "solid-js";
 import { Button } from "../../button";
 import { Input, Textarea } from "../../form";
@@ -13,7 +14,7 @@ import { useText } from "../../text";
 import "./rooms.css";
 
 /** The same Rooms view for desktop and web. The consumer supplies the host transport. */
-export function RoomsPanel(props: { request: RoomsPort; onConnect: () => void }) {
+export function RoomsPanel(props: { request: RoomsPort; onConnect: () => void; accountControls?: JSX.Element }) {
   const { t, format, errorMessage } = useText();
   const [state, setState] = createStore<{
     pollVersion: number;
@@ -227,7 +228,9 @@ export function RoomsPanel(props: { request: RoomsPort; onConnect: () => void })
           </Button>
         </Show>
       </header>
-      <p class="rooms-muted">{t("rooms.hostAccount")}</p>
+      <Show when={props.accountControls} fallback={<p class="rooms-muted">{t("rooms.hostAccount")}</p>}>
+        <div class="rooms-actions">{props.accountControls}</div>
+      </Show>
       <Show when={state.error}>
         <p role="alert">{state.error}</p>
         <Button

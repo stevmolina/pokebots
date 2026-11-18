@@ -55,6 +55,7 @@
 }
 .brain-header-actions {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: var(--openbot-space-2);
   min-inline-size: 0;

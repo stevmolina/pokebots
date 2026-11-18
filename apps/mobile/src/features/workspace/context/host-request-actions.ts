@@ -168,6 +168,7 @@ import { MODEL_STEERING_CAPABILITY, MODEL_STEERING_ROUTES } from "@openbot/contr
 import { ONEPASSWORD_CONNECTOR_CAPABILITY } from "@openbot/contracts/team-protocol/onepassword-connector-v1";
 import { PASSWORD_MANAGERS_CAPABILITY } from "@openbot/contracts/team-protocol/password-managers-v1";
 import {
+  integrationRequest,
   POKEBOTS_BRAIN_ID,
   POKEBOTS_INTEGRATIONS_CAPABILITY,
   POKEBOTS_INTEGRATIONS_ROUTES,
@@ -896,13 +897,13 @@ export function createHostRequestActions({
   }
   const checks = createHostRequestChecks(capabilities);
   const actions: HostRequestActions = {
-    roomsRequest: (input, serverId) =>
+    roomsRequest: (input, serverId, profile) =>
       checks.canUsePokebotsIntegrations(serverId)
         ? capabilityApi(serverId, POKEBOTS_INTEGRATIONS_CAPABILITY, "rooms.unavailable")(
             "POST",
             POKEBOTS_INTEGRATIONS_ROUTES.rooms,
             decodeRoomsResultFromHost,
-            { request: input },
+            integrationRequest(input, profile),
           )
         : capabilityApi(serverId, ROOMS_CAPABILITY, "rooms.unavailable")(
             "POST",
@@ -1130,13 +1131,13 @@ export function createHostRequestActions({
         capabilityApi(serverId, PROVIDERS_ADMIN_CAPABILITY, "mobile.server.providers.unsupported"),
         capabilities.get(serverId) ?? [],
       ),
-    brainRequest: (input, serverId) =>
+    brainRequest: (input, serverId, profile) =>
       input.mcpServerId === POKEBOTS_BRAIN_ID
         ? capabilityApi(serverId, POKEBOTS_INTEGRATIONS_CAPABILITY, "error.brain.request")(
             "POST",
             POKEBOTS_INTEGRATIONS_ROUTES.brain,
             decodeBrainResponse,
-            { request: input },
+            integrationRequest(input, profile),
           )
         : capabilityApi(serverId, BRAIN_CAPABILITY, "error.brain.request")(
             "POST",

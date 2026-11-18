@@ -21,6 +21,7 @@ import {
 } from "@openbot/ui";
 import { MarkdownFilePreview } from "@openbot/ui/features/conversation/MarkdownFilePreview";
 import { useText } from "@openbot/ui/text";
+import type { JSX } from "@solidjs/web";
 import { createMemo, createStore, For, Match, onCleanup, onSettled, Show, Switch } from "solid-js";
 import "./brain.css";
 
@@ -40,6 +41,7 @@ interface BrainResult {
 export interface BrainPanelProps {
   request: (input: BrainRequest) => Promise<BrainResponse>;
   connectionId: string | null;
+  accountControls?: JSX.Element;
   onConnect: () => void;
   onOpenLink: (url: string) => void;
 }
@@ -406,6 +408,7 @@ export function BrainPanel(props: BrainPanelProps) {
         when={props.connectionId}
         fallback={
           <div class="brain-empty">
+            {props.accountControls}
             <Brain aria-hidden="true" />
             <h1>{t("brain.connectTitle")}</h1>
             <p>{t("brain.connectBody")}</p>
@@ -419,6 +422,7 @@ export function BrainPanel(props: BrainPanelProps) {
             <h1>{t("brain.title")}</h1>
           </div>
           <div class="brain-header-actions">
+            {props.accountControls}
             <Show when={state.brains.length > 1}>
               <NativeSelect
                 size="sm"

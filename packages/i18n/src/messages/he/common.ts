@@ -31,4 +31,9 @@ export const messages = {
   "common.scrollRight": "גלילה ימינה",
   "common.scrollUp": "גלילה למעלה",
   "common.scrollDown": "גלילה למטה",
+  "common.integrationProfile": "פרופיל חשבון",
+  "common.integrationLinked": "חשבון מקושר",
+  "common.integrationNative": "חשבון Pokebots",
+  "common.integrationManual": "חיבור ידני",
+  "common.integrationLink": "קישור חשבון קיים",
 } as const satisfies PartialTranslation<typeof source>;

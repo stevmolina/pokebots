@@ -8,12 +8,40 @@ import { useCallback, useRef, useState } from "react";
 import { Linking, View } from "react-native";
 import { SettingsContent, SettingsRow, SettingsSection } from "@/features/settings/components/settings-content";
 import { useMobileWorkspace } from "@/features/workspace/context/mobile-workspace-context";
+import { IntegrationProfiles } from "@/shared/components/integration-profiles";
 import { SheetFormField } from "@/shared/components/sheet-form-field";
 import { useText } from "@/shared/lib/text";
 
 export function BrainScreen() {
   const { serverId } = useLocalSearchParams<{ serverId: string }>();
+  const { canUsePokebotsIntegrations } = useMobileWorkspace();
+  const [native, onSelect] = useState(false);
+  const builtIn = canUsePokebotsIntegrations(serverId);
+  const profile = builtIn && native ? "native" : undefined;
+  return (
+    <BrainAccountScreen
+      key={JSON.stringify([serverId, builtIn, profile])}
+      serverId={serverId}
+      builtIn={builtIn}
+      native={profile === "native"}
+      onSelect={onSelect}
+    />
+  );
+}
+
+function BrainAccountScreen({
+  serverId,
+  builtIn,
+  native,
+  onSelect,
+}: {
+  serverId: string;
+  builtIn: boolean;
+  native: boolean;
+  onSelect: (native: boolean) => void;
+}) {
   const workspace = useMobileWorkspace();
+  const profile = native ? "native" : undefined;
   const { t, errorMessage } = useText();
   const [state, setState] = useState<{
     connection: string;
@@ -44,7 +72,6 @@ export function BrainScreen() {
   });
   const generation = useRef(0);
   const supported = workspace.canUseBrain(serverId);
-  const builtIn = workspace.canUsePokebotsIntegrations(serverId);
   const scope = { mcpServerId: state.connection, brain: state.brain };
   const connect = () => router.push({ pathname: "/server-settings/mcp", params: { serverId } });
   useFocusEffect(
@@ -79,7 +106,7 @@ export function BrainScreen() {
       void connectionId()
         .then((id) => {
           if (!id || !alive) return;
-          return workspace.brainRequest({ operation: "brains", mcpServerId: id }, serverId).then((data) => {
+          return workspace.brainRequest({ operation: "brains", mcpServerId: id }, serverId, profile).then((data) => {
             if (alive)
               setState((previous) => ({
                 ...previous,
@@ -96,13 +123,13 @@ export function BrainScreen() {
         alive = false;
         generation.current++;
       };
-    }, [serverId, supported, builtIn, workspace.listMcpServers, workspace.brainRequest, errorMessage, t]),
+    }, [serverId, supported, builtIn, profile, workspace.listMcpServers, workspace.brainRequest, errorMessage, t]),
   );
   async function run(input: BrainRequest, target: "data" | "detail" | "result" = "data") {
     const current = ++generation.current;
     setState((previous) => ({ ...previous, busy: true, error: "" }));
     try {
-      const data = await workspace.brainRequest(input, serverId);
+      const data = await workspace.brainRequest(input, serverId, profile);
       if (current === generation.current)
         setState((previous) => ({
           ...previous,
@@ -146,12 +173,15 @@ export function BrainScreen() {
   return (
     <SettingsContent>
       <Stack.Screen options={{ title: t("mobile.brain.title") }} />
+      {builtIn ? <IntegrationProfiles native={native} onSelect={onSelect} /> : null}
       {!supported || !state.connection ? (
-        <SettingsSection>
-          <SettingsRow onPress={connect}>
-            <Typography>{t("mobile.brain.connect")}</Typography>
-          </SettingsRow>
-        </SettingsSection>
+        builtIn ? null : (
+          <SettingsSection>
+            <SettingsRow onPress={connect}>
+              <Typography>{t("mobile.brain.connect")}</Typography>
+            </SettingsRow>
+          </SettingsSection>
+        )
       ) : (
         <>
           <SettingsSection>

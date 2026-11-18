@@ -31,4 +31,9 @@ export const messages = {
   "common.scrollRight": "Sağa kaydır",
   "common.scrollUp": "Yukarı kaydır",
   "common.scrollDown": "Aşağı kaydır",
+  "common.integrationProfile": "Hesap profili",
+  "common.integrationLinked": "Bağlı hesap",
+  "common.integrationNative": "Pokebots hesabı",
+  "common.integrationManual": "Manuel bağlantı",
+  "common.integrationLink": "Mevcut hesabı bağla",
 } as const satisfies PartialTranslation<typeof source>;

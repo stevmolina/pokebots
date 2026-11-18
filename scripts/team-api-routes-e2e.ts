@@ -1,6 +1,7 @@
 import { BRAIN_CAPABILITY, BRAIN_ROUTE } from "@openbot/contracts/brain";
 import type { McpServerConfig } from "@openbot/contracts/ipc";
 import {
+  integrationRequest,
   POKEBOTS_BRAIN_ID,
   POKEBOTS_INTEGRATIONS_CAPABILITY,
   POKEBOTS_INTEGRATIONS_ROUTES,
@@ -2529,6 +2530,7 @@ async function runRouteChecks() {
   let integrationUser = "account-bob";
   let integrationSession = "joined-integration-session";
   let integrationExchanges = 0;
+  const integrationProfiles: { audience: string; profile?: string }[] = [];
   const integrationGrantExpiry = Date.now() + 30 * 60_000;
   const integrationAccess = new JoinedIntegrationAccess(
     store,
@@ -2537,6 +2539,7 @@ async function runRouteChecks() {
     async (_input, init) => {
       const exchange = JSON.parse(String(init.body));
       integrationExchanges++;
+      integrationProfiles.push({ audience: exchange.audience, profile: exchange.profile });
       return Response.json({
         accessToken: exchange.audience === "computer" ? FIXTURE_KEY : "fixture-integration-bearer",
         expiresAt: Date.now() + 60_000,
@@ -3534,7 +3537,7 @@ async function runRouteChecks() {
     const authorized = await call("POST", routes.authorize, { ...options, json: grant });
     const brainReply = await call("POST", routes.brain, {
       ...options,
-      json: { request: { operation: "brains", mcpServerId: POKEBOTS_BRAIN_ID }, profile: "native" },
+      json: integrationRequest({ operation: "brains", mcpServerId: POKEBOTS_BRAIN_ID }, "native"),
     });
     check(
       "Brain accepts a joined member grant only after exchange verifies account and session",
@@ -3566,6 +3569,28 @@ async function runRouteChecks() {
           resets_at: null,
         }),
       { rooms: roomsReply.status, allowance: allowance.status },
+    );
+
+    const nativeRooms = await call("POST", routes.rooms, {
+      ...options,
+      json: integrationRequest({ kind: "list" }, "native"),
+    });
+    const linkedBrain = await call("POST", routes.brain, {
+      ...options,
+      json: integrationRequest({ operation: "brains", mcpServerId: POKEBOTS_BRAIN_ID }),
+    });
+    check(
+      "a joined member can switch Brain and Rooms integration profiles",
+      nativeRooms.status === 200 &&
+        linkedBrain.status === 200 &&
+        isDeepStrictEqual(integrationProfiles.slice(-5), [
+          { audience: "brain", profile: "native" },
+          { audience: "rooms", profile: undefined },
+          { audience: "computer", profile: undefined },
+          { audience: "rooms", profile: "native" },
+          { audience: "brain", profile: undefined },
+        ]),
+      { nativeRooms: nativeRooms.status, linkedBrain: linkedBrain.status },
     );
 
     const actor = { memberId: bobId, accountId: integrationUser };

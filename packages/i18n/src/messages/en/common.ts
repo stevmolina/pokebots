@@ -35,4 +35,9 @@ export const messages = defineMessages("common", {
   "common.scrollRight": "Scroll right",
   "common.scrollUp": "Scroll up",
   "common.scrollDown": "Scroll down",
+  "common.integrationProfile": "Account profile",
+  "common.integrationLinked": "Linked account",
+  "common.integrationNative": "Pokebots account",
+  "common.integrationManual": "Manual connection",
+  "common.integrationLink": "Link existing account",
 });
