@@ -51,8 +51,10 @@ const createGrant = Effect.fn("IntegrationToken.createGrant")(function* (
          WHERE s.session_id = ? AND s.user_id = ? AND s.auth_session_hash = ?
            AND s.ended_at IS NULL AND s.expires_at > ? AND a.expires_at > ?
            AND h.machine_token_hash IS NOT NULL
+           AND (SELECT count(*) FROM pokebots_integration_grants g
+                WHERE g.session_id = s.session_id AND g.expires_at > ?) < 64
          RETURNING host_id AS hostId, expires_at AS expiresAt`,
-      ).bind(grantHash, now + GRANT_LIFETIME_MS, sessionId, userId, authSessionHash, now, now);
+      ).bind(grantHash, now + GRANT_LIFETIME_MS, sessionId, userId, authSessionHash, now, now, now);
       const [, result] = await bindings.DB.batch<{ hostId: string; expiresAt: number }>([prune, insert]);
       return result?.results[0];
     },
@@ -208,9 +210,9 @@ export const issueIntegrationToken = Effect.fn("IntegrationToken.issue")(functio
     profile,
     workosAccessToken,
   } = yield* readJsonObject(request);
+  if (!bindings.POKEBOTS_INTEGRATION_PRIVATE_KEY?.trim()) return yield* unavailable();
   if (action === "grant") return yield* createGrant(remoteSessionId, userId, accountToken, bindings);
   if (audience !== "brain" && audience !== "rooms" && audience !== "computer") return yield* invalidRequest();
-  if (!bindings.POKEBOTS_INTEGRATION_PRIVATE_KEY?.trim()) return yield* unavailable();
   if (action === "link" && audience !== "computer") {
     return yield* linkIdentity(workosAccessToken, userId, audience, bindings, fetchJwks);
   }

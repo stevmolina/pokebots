@@ -9,3 +9,4 @@ CREATE TABLE pokebots_integration_grants (
 );
 
 CREATE INDEX pokebots_integration_grants_expiry ON pokebots_integration_grants(expires_at);
+CREATE INDEX pokebots_integration_grants_session ON pokebots_integration_grants(session_id, expires_at);
