@@ -13,6 +13,13 @@ export const POKEBOTS_INTEGRATIONS_ROUTES = {
 } as const;
 export const POKEBOTS_BRAIN_ID = "pokebots-account";
 
+export const POKEBOTS_INTEGRATION_ACCOUNTS_URL = "https://app.pokebots.xyz/integration-accounts";
+export type IntegrationProfile = "native";
+
+export function integrationRequest<Request>(request: Request, profile?: IntegrationProfile) {
+  return { request, ...(profile ? { profile } : {}) };
+}
+
 const optionalProfile = { profile: oneOf("native") };
 const brainRequest = BRAIN_CODECS.get("/v1/brain/request");
 const roomsRequest = ROOMS_CODECS.get(ROOMS_ROUTE);

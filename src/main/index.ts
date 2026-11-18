@@ -961,6 +961,7 @@ function registerIpcHandlers({
       interfaceSize,
       initializeAgent: () => runCauseEffect(agentInitialization.start()),
       appVariant,
+      pokebotsIntegrations: new URL(centralAuth.resolveApiUrl("/")).origin === "https://api.pokebots.xyz",
       analyticsCaptureUrl,
       analyticsInstallId,
       getMainWindow: getDialogParent,

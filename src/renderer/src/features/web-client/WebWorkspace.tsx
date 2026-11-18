@@ -92,6 +92,7 @@ import { MCP_SIGN_IN_CAPABILITY } from "@openbot/contracts/team-protocol/mcp-sig
 import { MESSAGE_DELETE_CAPABILITY } from "@openbot/contracts/team-protocol/message-delete-v1";
 import { MESSAGE_PINS_CAPABILITY } from "@openbot/contracts/team-protocol/message-pins-v1";
 import {
+  integrationRequest,
   POKEBOTS_INTEGRATIONS_CAPABILITY,
   POKEBOTS_INTEGRATIONS_ROUTES,
 } from "@openbot/contracts/team-protocol/pokebots-integrations-v1";
@@ -220,6 +221,7 @@ import {
 } from "solid-js";
 import { queuedDeliveriesInOrder } from "../../queue-reconciliation";
 import { WebBrainPage } from "../brain/WebBrainPage";
+import { IntegrationProfiles } from "../integrations/IntegrationProfiles";
 import { decodeRoomsResultFromHost } from "./web-rooms";
 // Copying a selection with a formula in it gives its LaTeX source, as on desktop.
 import "katex/contrib/copy-tex";
@@ -3514,19 +3516,27 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                       <Match when={page() === "rooms"}>
                         <Show when={page() === "rooms" ? server()?.id : undefined} keyed>
                           {(roomServerId) => (
-                            <RoomsPanel
-                              request={(input) =>
-                                builtInIntegrations()
-                                  ? hostRequest(roomServerId)(
-                                      "POST",
-                                      POKEBOTS_INTEGRATIONS_ROUTES.rooms,
-                                      decodeRoomsResultFromHost,
-                                      { request: input },
-                                    )
-                                  : hostRequest(roomServerId)("POST", ROOMS_ROUTE, decodeRoomsResultFromHost, input)
-                              }
-                              onConnect={openMarketplace}
-                            />
+                            <IntegrationProfiles
+                              builtIn={builtInIntegrations()}
+                              openUrl={(url) => window.open(url, "_blank", "noopener,noreferrer")}
+                            >
+                              {(account, controls) => (
+                                <RoomsPanel
+                                  accountControls={builtInIntegrations() ? controls : undefined}
+                                  request={(input) =>
+                                    account !== "manual"
+                                      ? hostRequest(roomServerId)(
+                                          "POST",
+                                          POKEBOTS_INTEGRATIONS_ROUTES.rooms,
+                                          decodeRoomsResultFromHost,
+                                          integrationRequest(input, account === "native" ? account : undefined),
+                                        )
+                                      : hostRequest(roomServerId)("POST", ROOMS_ROUTE, decodeRoomsResultFromHost, input)
+                                  }
+                                  onConnect={openMarketplace}
+                                />
+                              )}
+                            </IntegrationProfiles>
                           )}
                         </Show>
                       </Match>

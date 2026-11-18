@@ -31,4 +31,9 @@ export const messages = {
   "common.scrollRight": "Rolar para a direita",
   "common.scrollUp": "Rolar para cima",
   "common.scrollDown": "Rolar para baixo",
+  "common.integrationProfile": "Perfil da conta",
+  "common.integrationLinked": "Conta vinculada",
+  "common.integrationNative": "Conta Pokebots",
+  "common.integrationManual": "Conexão manual",
+  "common.integrationLink": "Vincular conta existente",
 } as const satisfies PartialTranslation<typeof source>;

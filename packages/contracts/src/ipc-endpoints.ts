@@ -14,6 +14,7 @@ import type {
 import type { RemoteComputerServer, RemoteComputerSession, SetRemoteComputerServerInput } from "./ipc-remote-computer";
 import type { ServerAuditLog } from "./ipc-server-audit";
 import type { RoomsRequest, RoomsResult } from "./rooms";
+import type { IntegrationProfile } from "./team-protocol/pokebots-integrations-v1";
 // The one channel list. Each endpoint holds its wire value, the group it belongs to, and whether it
 // is a request the renderer invokes or an event the main process sends. That is what lets a
 // registrar bind its handlers as an object keyed by endpoint, so a channel with no handler, and a
@@ -1582,7 +1583,11 @@ export const IPC_ENDPOINTS = {
   // this computer cannot open the host's vault.
   // The Agent Computer account of a server (`agent-computer-v1` on a joined server): its agents start
   // cloud computers with it. The API key goes from the renderer to main once, in `connect`.
-  rooms: { execute: scopedRequest<RoomsRequest, RoomsResult>()("rooms:execute") },
+  rooms: {
+    execute: scopedRequest<RoomsRequest & { account?: "linked" | IntegrationProfile | "manual" }, RoomsResult>()(
+      "rooms:execute",
+    ),
+  },
   agentComputer: {
     manage: scopedRequest<ComputerManagementInput, ComputerManagementResult, "required">()("agent-computer:manage"),
     status: scopedQuery<AgentComputerStatus, "required">()("agent-computer:status"),
@@ -2340,7 +2345,7 @@ export const IPC_ENDPOINTS = {
   },
   // A separate group, not part of `servers`: a group is what one registrar covers in full, and
   // `servers` is bound against `RemoteServerManager` while these are bound against `AgentService`.
-  brain: { request: scopedRequest<BrainRequest, BrainResponse>()("brain:request") },
+  brain: { request: scopedRequest<BrainRequest & { profile?: IntegrationProfile }, BrainResponse>()("brain:request") },
   mcpServers: {
     // Every MCP method names its server, because the settings modal can be open for a server the user
     // has not switched to. Each mutation answers with the whole list, so the panel never merges.

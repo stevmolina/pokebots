@@ -1,5 +1,7 @@
-import { BRAIN_CAPABILITY, BRAIN_ROUTE, brainRequestSchema } from "@openbot/contracts/brain";
+import { BRAIN_CAPABILITY, BRAIN_ROUTE, type BrainRequest, brainRequestSchema } from "@openbot/contracts/brain";
 import {
+  type IntegrationProfile,
+  integrationRequest,
   POKEBOTS_BRAIN_ID,
   POKEBOTS_INTEGRATIONS_CAPABILITY,
   POKEBOTS_INTEGRATIONS_ROUTES,
@@ -14,6 +16,7 @@ import { decodeBrainFromHost } from "../remote-brain-decoding";
 import type { RemoteServerManager } from "../remote-server-manager";
 import type { IpcGroupHandlers } from "./define-ipc-group";
 import { scopedHandler } from "./scoped-handler";
+import { isObject } from "./validation";
 
 interface BrainIpcDependencies {
   brain: BrainService;
@@ -27,32 +30,40 @@ export function brainIpcHandlers({
 }: BrainIpcDependencies): Pick<IpcGroupHandlers, "brain"> {
   return {
     brain: {
-      request: scopedHandler((value) => brainRequestSchema.parse(value), {
-        local: (input) => {
-          const credential =
-            input.mcpServerId === POKEBOTS_BRAIN_ID ? currentIntegrationCredential(centralAuth, "brain") : undefined;
-          if (input.mcpServerId === POKEBOTS_BRAIN_ID && !credential)
-            throw new Error(sourceText("error.auth.integrationTokensUnavailable"));
-          return Effect.runPromise(brain.request(input, credential));
-        },
-        remote: (input, serverId) => {
-          if (input.mcpServerId === POKEBOTS_BRAIN_ID) {
-            if (!remoteServers.supportsCapability(serverId, POKEBOTS_INTEGRATIONS_CAPABILITY))
+      request: scopedHandler(
+        (value): BrainRequest & { profile?: IntegrationProfile } => ({
+          ...brainRequestSchema.parse(value),
+          profile: isObject(value) && value.profile === "native" ? ("native" as const) : undefined,
+        }),
+        {
+          local: ({ profile, ...input }) => {
+            const credential =
+              input.mcpServerId === POKEBOTS_BRAIN_ID
+                ? currentIntegrationCredential(centralAuth, "brain", profile)
+                : undefined;
+            if (input.mcpServerId === POKEBOTS_BRAIN_ID && !credential)
+              throw new Error(sourceText("error.auth.integrationTokensUnavailable"));
+            return Effect.runPromise(brain.request(input, credential));
+          },
+          remote: ({ profile, ...input }, serverId) => {
+            if (input.mcpServerId === POKEBOTS_BRAIN_ID) {
+              if (!remoteServers.supportsCapability(serverId, POKEBOTS_INTEGRATIONS_CAPABILITY))
+                throw new Error(sourceText("error.brain.request"));
+              return runCauseEffect(
+                remoteServers.request(serverId, POKEBOTS_INTEGRATIONS_ROUTES.brain, decodeBrainFromHost, {
+                  method: "POST",
+                  body: integrationRequest(input, profile),
+                }),
+              );
+            }
+            if (!remoteServers.supportsCapability(serverId, BRAIN_CAPABILITY))
               throw new Error(sourceText("error.brain.request"));
             return runCauseEffect(
-              remoteServers.request(serverId, POKEBOTS_INTEGRATIONS_ROUTES.brain, decodeBrainFromHost, {
-                method: "POST",
-                body: { request: input },
-              }),
+              remoteServers.request(serverId, BRAIN_ROUTE, decodeBrainFromHost, { method: "POST", body: input }),
             );
-          }
-          if (!remoteServers.supportsCapability(serverId, BRAIN_CAPABILITY))
-            throw new Error(sourceText("error.brain.request"));
-          return runCauseEffect(
-            remoteServers.request(serverId, BRAIN_ROUTE, decodeBrainFromHost, { method: "POST", body: input }),
-          );
+          },
         },
-      }),
+      ),
     },
   };
 }

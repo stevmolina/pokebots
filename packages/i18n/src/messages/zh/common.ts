@@ -36,4 +36,9 @@ export const messages = {
   "common.scrollRight": "向右滚动",
   "common.scrollUp": "向上滚动",
   "common.scrollDown": "向下滚动",
+  "common.integrationProfile": "账号配置",
+  "common.integrationLinked": "已关联账号",
+  "common.integrationNative": "Pokebots 账号",
+  "common.integrationManual": "手动连接",
+  "common.integrationLink": "关联现有账号",
 } as const satisfies PartialTranslation<typeof source>;
