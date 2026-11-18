@@ -817,7 +817,9 @@ export class TeamWebRtcHostPeer {
             "Content-Type": uploaded?.mimeType ?? input.contentType ?? "application/json",
             "OpenBot-Protocol-Version": String(protocol),
             "OpenBot-App-Version": this.#appVersion,
-            "OpenBot-Capabilities": [...this.#peerCapabilities].join(","),
+            // This request's own list. The connection's list changes with each frame: a connection
+            // check sent at the same time carries the bootstrap list, which would refuse this request.
+            "OpenBot-Capabilities": [...peerCapabilities].join(","),
             ...(this.#localSessionId ? { "X-OpenBot-WebRTC-Session": this.#localSessionId } : {}),
           },
           ...(requestBody === undefined ? {} : { body: requestBody }),
