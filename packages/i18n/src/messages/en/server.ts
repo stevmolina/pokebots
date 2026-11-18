@@ -829,6 +829,10 @@ export const messages = defineMessages("server", {
   "server.settings.personalityLoadFailed": "Could not load the server personality.",
   "server.settings.cloudComputersTitle": "Cloud computers",
   "server.settings.cloudComputersDescription": "Let the agents start cloud Ubuntu computers with Agent Computer.",
+  "server.cloudComputers.allowance": {
+    one: "{count} minute left. Resets at {time}.",
+    other: "{count} minutes left. Resets at {time}.",
+  },
   "server.cloudComputers.title": "Cloud computers",
   "server.cloudComputers.accountTitle": "Agent Computer",
   "server.cloudComputers.accountDescription":

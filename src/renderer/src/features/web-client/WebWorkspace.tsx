@@ -1152,7 +1152,9 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
   function hostRequest(serverId?: string): TeamApiRequest {
     return hostAdmin(serverId).request;
   }
-  const cloudComputers = createAgentComputerPort(hostRequest);
+  const cloudComputers = createAgentComputerPort(hostRequest, () =>
+    workspace.state.capabilities.includes(POKEBOTS_INTEGRATIONS_CAPABILITY),
+  );
   // The events routes answer only an owner or admin. A member keeps the released routine routes.
   const eventsEnabled = () =>
     workspace.state.capabilities.includes(EVENTS_CAPABILITY) && canAdministerServer(workspace.state.host?.role);

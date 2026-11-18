@@ -1031,7 +1031,7 @@ function registerIpcHandlers({
     ...onePasswordConnectorIpcHandlers({ onePasswordConnector, remoteServers }),
     ...bitwardenConnectorIpcHandlers({ bitwardenConnector, remoteServers }),
     ...roomsIpcHandlers({ rooms, centralAuth, remoteServers }),
-    ...agentComputerIpcHandlers({ agentComputer, remoteServers }),
+    ...agentComputerIpcHandlers({ agentComputer, centralAuth, remoteServers }),
     ...passwordManagersIpcHandlers({ passwordManagers, remoteServers, openExternal: openLink }),
     ...vaultIpcHandlers({ vault, getMainWindow: getDialogParent, translate: language.translate, remoteServers }),
     ...billingIpcHandlers({ billing }),

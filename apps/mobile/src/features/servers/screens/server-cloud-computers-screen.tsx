@@ -1,4 +1,9 @@
-import type { AgentComputerMachine, AgentComputerStatus, ComputerManagementInput } from "@openbot/contracts/ipc";
+import type {
+  AgentComputerAccountAllowance,
+  AgentComputerMachine,
+  AgentComputerStatus,
+  ComputerManagementInput,
+} from "@openbot/contracts/ipc";
 import { router, useLocalSearchParams } from "expo-router";
 import { Typography } from "heroui-native";
 import { useEffect, useRef, useState } from "react";
@@ -15,8 +20,8 @@ import { useText } from "@/shared/lib/text";
 
 export function CloudComputersSection({ serverId }: { serverId: string }) {
   const { t } = useText();
-  const { canManageAgentComputer } = useMobileWorkspace();
-  if (!canManageAgentComputer(serverId)) return null;
+  const { canManageAgentComputer, canUsePokebotsIntegrations } = useMobileWorkspace();
+  if (!canManageAgentComputer(serverId) && !canUsePokebotsIntegrations(serverId)) return null;
   return (
     <SettingsSection>
       <SettingsRow onPress={() => router.push({ pathname: "/server-settings/cloud-computers", params: { serverId } })}>
@@ -30,7 +35,13 @@ export function CloudComputersSection({ serverId }: { serverId: string }) {
 export function ServerCloudComputersScreen() {
   const { t } = useText();
   const { serverId } = useLocalSearchParams<{ serverId: string }>();
-  const { canManageAgentComputer } = useMobileWorkspace();
+  const { canManageAgentComputer, canUsePokebotsIntegrations } = useMobileWorkspace();
+  if (!canManageAgentComputer(serverId) && canUsePokebotsIntegrations(serverId))
+    return (
+      <SettingsContent>
+        <ComputerAllowanceNote serverId={serverId} />
+      </SettingsContent>
+    );
   if (!canManageAgentComputer(serverId))
     return (
       <SettingsContent>
@@ -40,10 +51,38 @@ export function ServerCloudComputersScreen() {
   return <CloudComputerAccount key={serverId} serverId={serverId} />;
 }
 
+function ComputerAllowanceNote({ serverId }: { serverId: string }) {
+  const { t, format } = useText();
+  const { agentComputer: api } = useMobileWorkspaceActions();
+  const [allowance, setAllowance] = useState<AgentComputerAccountAllowance | null>(null);
+  useEffect(() => {
+    let active = true;
+    setAllowance(null);
+    void api.allowance?.(serverId).then(
+      (value) => {
+        if (active) setAllowance(value);
+      },
+      () => undefined,
+    );
+    return () => {
+      active = false;
+    };
+  }, [api, serverId]);
+  if (!allowance) return null;
+  return (
+    <SettingsNote>
+      {t("mobile.server.cloudComputers.allowance", {
+        count: allowance.minutes_remaining,
+        time: format.date(new Date(allowance.resets_at), { timeStyle: "short" }),
+      })}
+    </SettingsNote>
+  );
+}
+
 function CloudComputerAccount({ serverId }: { serverId: string }) {
   const { t, errorMessage } = useText();
   const { agentComputer: api } = useMobileWorkspaceActions();
-  const { canControlComputers } = useMobileWorkspace();
+  const { canControlComputers, canUsePokebotsIntegrations } = useMobileWorkspace();
   const [context, setContext] = useState("");
   const [size, setSize] = useState<"standard" | "large">("standard");
   const [screenshot, setScreenshot] = useState<string | null>(null);
@@ -111,7 +150,10 @@ function CloudComputerAccount({ serverId }: { serverId: string }) {
   }
   return (
     <SettingsContent>
-      <SettingsNote>{t("mobile.server.cloudComputers.description")}</SettingsNote>
+      <ComputerAllowanceNote serverId={serverId} />
+      {!canUsePokebotsIntegrations(serverId) || state.status?.connected ? (
+        <SettingsNote>{t("mobile.server.cloudComputers.description")}</SettingsNote>
+      ) : null}
       {state.error ? <SettingsNote>{state.error}</SettingsNote> : null}
       {!state.status ? (
         <SettingsSection>
@@ -135,7 +177,7 @@ function CloudComputerAccount({ serverId }: { serverId: string }) {
             <Typography.Paragraph>{t("mobile.server.cloudComputers.disconnect")}</Typography.Paragraph>
           </SettingsRow>
         </SettingsSection>
-      ) : (
+      ) : !canUsePokebotsIntegrations(serverId) ? (
         <>
           <SheetFormField
             label={t("mobile.server.cloudComputers.apiKey")}
@@ -164,7 +206,7 @@ function CloudComputerAccount({ serverId }: { serverId: string }) {
             </SettingsRow>
           </SettingsSection>
         </>
-      )}
+      ) : null}
       {state.status?.connected ? (
         <SettingsSection title={t("mobile.server.cloudComputers.title")}>
           <SettingsRow disabled={state.busy} disclosure={false} onPress={() => void act(() => api.status(serverId))}>

@@ -914,9 +914,14 @@ export function createHostRequestActions({
       (serverId) => (method, path, decode, body) =>
         capabilityApi(
           serverId,
-          path === COMPUTER_MANAGEMENT_ROUTE ? COMPUTER_MANAGEMENT_CAPABILITY : AGENT_COMPUTER_CAPABILITY,
+          path === POKEBOTS_INTEGRATIONS_ROUTES.computerAllowance
+            ? POKEBOTS_INTEGRATIONS_CAPABILITY
+            : path === COMPUTER_MANAGEMENT_ROUTE
+              ? COMPUTER_MANAGEMENT_CAPABILITY
+              : AGENT_COMPUTER_CAPABILITY,
           "mobile.server.cloudComputers.unavailable",
         )(method, path, decode, body),
+      checks.canUsePokebotsIntegrations,
     ),
     // Async, so a host without the capability rejects the promise and does not throw at the call.
     restartServerItself: async (serverId) => runTeamRequest(requestHostRestart(restartAdmin(serverId))),

@@ -110,6 +110,7 @@ import {
 } from "@openbot/contracts/ipc-events";
 import { contextBridge, ipcRenderer, webUtils } from "electron";
 import {
+  decodeAgentComputerAllowanceFromMain,
   decodeAgentComputerMachineListFromMain,
   decodeAgentComputerStatusFromMain,
   decodeComputerManagementResultFromMain,
@@ -1111,6 +1112,7 @@ const openbotApi: OpenBotDesktopApi = {
   agentComputer: bridgeGroup(IPC_ENDPOINTS.agentComputer, {
     manage: decodeComputerManagementResultFromMain,
     status: decodeAgentComputerStatusFromMain,
+    allowance: decodeAgentComputerAllowanceFromMain,
     connect: decodeAgentComputerStatusFromMain,
     test: decodeAgentComputerStatusFromMain,
     disconnect: decodeAgentComputerStatusFromMain,

@@ -1,5 +1,5 @@
 import type { AgentComputerMachineList, AgentComputerStatus } from "@openbot/contracts/ipc";
-import { AGENT_COMPUTER_MACHINE_LIMIT } from "@openbot/contracts/ipc";
+import { AGENT_COMPUTER_MACHINE_LIMIT, decodeAgentComputerAccountAllowance } from "@openbot/contracts/ipc";
 import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
 
 const nullableString = (value: unknown): value is string | null => value === null || isString(value);
@@ -62,4 +62,8 @@ export function decodeComputerManagementResultFromHost(value: unknown): {
     return { id: row.id, size: row.size };
   });
   return { screenshot: value.screenshot, sizes };
+}
+
+export function decodeAgentComputerAllowanceFromHost(value: unknown) {
+  return decodeAgentComputerAccountAllowance(value);
 }

@@ -67,6 +67,7 @@ import type {
 } from "./ipc-agent-admin";
 import type { AgentAnalytics, AgentAnalyticsInput } from "./ipc-agent-analytics";
 import type {
+  AgentComputerAccountAllowance,
   AgentComputerMachineList,
   AgentComputerStatus,
   ComputerManagementInput,
@@ -1585,6 +1586,7 @@ export const IPC_ENDPOINTS = {
   agentComputer: {
     manage: scopedRequest<ComputerManagementInput, ComputerManagementResult, "required">()("agent-computer:manage"),
     status: scopedQuery<AgentComputerStatus, "required">()("agent-computer:status"),
+    allowance: scopedQuery<AgentComputerAccountAllowance | null, "required">()("agent-computer:allowance"),
     connect: scopedRequest<string, AgentComputerStatus, "required">()("agent-computer:connect"),
     test: scopedQuery<AgentComputerStatus, "required">()("agent-computer:test"),
     disconnect: scopedQuery<AgentComputerStatus, "required">()("agent-computer:disconnect"),
