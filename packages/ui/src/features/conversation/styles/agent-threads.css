@@ -101,10 +101,12 @@
 .agent-sessions-list {
   max-height: 360px;
   overflow-y: auto;
+  gap: var(--openbot-space-0-5);
+  padding: var(--openbot-space-1);
 }
 
 .agent-sessions-row {
-  position: relative;
+  border-radius: var(--openbot-radius-md);
   display: flex;
   min-height: 40px;
   align-items: center;
@@ -138,21 +140,13 @@
   white-space: nowrap;
 }
 
-/* The main session: the one on screen. */
-.agent-sessions-row[aria-current] .agent-sessions-title {
-  font-weight: var(--openbot-weight-medium);
+/* The session open in the chat. */
+.agent-sessions-row[aria-current] {
+  background: var(--openbot-bg-control-active);
 }
 
-.agent-sessions-row[aria-current]::before {
-  position: absolute;
-  top: 50%;
-  inset-inline-start: 0;
-  width: 3px;
-  height: 16px;
-  border-radius: var(--openbot-radius-pill);
-  background: var(--openbot-text-primary);
-  content: "";
-  transform: translateY(-50%);
+.agent-sessions-row[aria-current] .agent-sessions-title {
+  font-weight: var(--openbot-weight-medium);
 }
 
 .agent-sessions-row[data-archived] .agent-sessions-title {
@@ -200,7 +194,7 @@
   display: flex;
   height: auto;
   justify-content: flex-start;
-  border-radius: 0;
+  border-radius: var(--openbot-radius-md);
   font-weight: var(--openbot-weight-regular);
   min-height: 40px;
   align-items: center;
