@@ -28,8 +28,7 @@ skills for the component patterns, not the imports.
 - `bun run storybook` verifies isolated components. CI builds it; do not run `build-storybook`.
 - `bun run check:ui` is the design-system guard for this directory: shared primitives over native
   controls, Kobalte and Lucide only inside `@openbot/ui`, and palette tokens instead of colour,
-  size, radius and transition literals. The pre-commit hook runs it on each commit that stages
-  code, so do not run it by hand — its budgets only ever go down. All of them sit at zero.
+  size, radius and transition literals. CI runs this check. Its budgets only go down. All of them sit at zero.
 - Nothing here imports `src/main`, `src/backend` or `src/preload`. `biome.json` rejects it by path,
   so reaching past the IPC contract fails `bun run lint` rather than review.
 - Never verify UI with `dist/`, a packaged `.app`, a production build, or an ad-hoc preview — those

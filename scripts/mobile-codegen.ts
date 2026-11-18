@@ -16,7 +16,7 @@ const ROOT = resolve(import.meta.dirname, "..");
 const MOBILE = "apps/mobile";
 
 /** The files that the codegen reads, relative to the repository root. */
-export const MOBILE_CODEGEN_INPUTS = [
+const MOBILE_CODEGEN_INPUTS = [
   `${MOBILE}/app.json`,
   `${MOBILE}/global.css`,
   `${MOBILE}/package.json`,

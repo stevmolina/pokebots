@@ -165,14 +165,7 @@ as a routine completion or PR step.
 4. Do not run `bun run format`: it rewrites the whole repository. Use
    `bun run check:paths <paths>` for changed files, in one call. Do not run a bare
    `biome check` on paths: it loads the whole repository first and takes about 2 GB per run.
-5. The pre-commit hook (`.githooks/pre-commit`) runs `check:staged`, `check:ui`, and
-   `scripts/staged-typecheck.ts` when the commit stages code. The script runs, one at a time, only
-   the `typecheck:*` projects that can see a staged file; a root `package.json`, `tsconfig*.json` or
-   `bun.lock` selects all of them. `--dry-run [<path>...]` shows the selection. This is the only
-   exception to rule 3. Do not run these checks by hand, and do not bypass the hook with
-   `--no-verify`. The hook also runs the schema parity test when a database schema file in
-   `src/backend` is staged. It stops the commit if Biome fixes a file that also has unstaged
-   changes; stage the fixes you want and commit again.
+5. Git commits and pushes run without repository hooks. GitHub runs PR checks in the background.
 
 [Check design notes](docs/development-checks.md#check-coverage) explain CI coverage, command aliases,
 and the separate Node and Bun type environments. Read them when changing checks or dependencies.
@@ -369,7 +362,8 @@ app (`/Applications/Pokebots.app`), which `electron-builder.custom.yml` builds. 
 
 ## Pull requests
 
-- Open PRs for finished work without asking. Merge low-risk changes when required checks and reviews pass.
+- Open PRs for finished work without asking. Merge low-risk changes as soon as GitHub permits it.
+  PR checks and reviews run in the background. Follow [ship](.agents/skills/ship/SKILL.md).
   Ask for approval before merging a change that can lose user data, expose secrets, or be hard to reverse.
 - Write the PR body from `.github/PULL_REQUEST_TEMPLATE.md`. Organization members and users with
   write access do not sign the Contributor License Agreement. An author who must sign sends a signed

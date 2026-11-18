@@ -108,6 +108,8 @@ guide.
 
 ### Answering the NorbiAI review
 
+NorbiAI is disabled on Pokebots. The instructions below apply to upstream OpenBot.
+
 Every push to a branch in this repository runs the automated reviewer, and it blocks the merge on
 an unresolved P0 or P1 finding. A pull request from a fork is the exception: GitHub gives a fork's
 push run a read-only token, so it could not publish a review even if it produced one. Ask a

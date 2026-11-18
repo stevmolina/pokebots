@@ -508,7 +508,7 @@ one menu for each step. Press a digit; Enter selects the first choice, and 0 goe
 6. Show the live state: the flags and `/changelog` of production, and the posts that are due or wait.
 
 A step that changes files needs a clean working tree. It makes a branch from the `main` of GitHub,
-commits (the pre-commit hook runs), pushes, opens the pull request with the release title and body,
+commits, pushes, opens the pull request with the release title and body,
 and goes back to your branch. It can also turn on auto-merge. The menu never merges by itself.
 
 The signed `.ipa` is saved as a GitHub Actions artifact for seven days before upload. If upload

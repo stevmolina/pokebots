@@ -260,7 +260,6 @@ export interface PullRequest {
 /** Commits `paths`, pushes the branch and opens the pull request. Returns its URL. */
 export function openPullRequest({ title, body, paths, autoMerge }: PullRequest): string {
   run("git", ["add", "--", ...paths]);
-  // The pre-commit hook runs here, with its checks.
   execFileSync("git", ["commit", "--quiet", "-m", title], { stdio: "inherit" });
   run("git", ["push", "--quiet", "-u", "origin", "HEAD"]);
   const url = run("gh", ["pr", "create", "--base", "main", "--title", title, "--body", body]);
