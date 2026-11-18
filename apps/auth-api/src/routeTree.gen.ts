@@ -225,6 +225,7 @@ import { Route as V1SkillsSkillIdVersionsVersionIdContentRouteImport } from './r
 import { Route as V2RemoteHostsHostIdCompanySignInIndexRouteImport } from './routes/v2/remote/hosts/$hostId/company-sign-in/index'
 import { Route as V2RemoteHostsHostIdCompanySignInScimTokenRouteImport } from './routes/v2/remote/hosts/$hostId/company-sign-in/scim-token'
 import { Route as V2RemoteHostsHostIdCompanySignInTestRouteImport } from './routes/v2/remote/hosts/$hostId/company-sign-in/test'
+import { Route as V2RemoteHostsHostIdIntegrationsTokenRouteImport } from './routes/v2/remote/hosts/$hostId/integrations/token'
 import { Route as V2RemoteHostsHostIdMembersIndexRouteImport } from './routes/v2/remote/hosts/$hostId/members/index'
 import { Route as V2RemoteHostsHostIdMembersMembershipIdRouteImport } from './routes/v2/remote/hosts/$hostId/members/$membershipId'
 
@@ -1372,6 +1373,12 @@ const V2RemoteHostsHostIdCompanySignInTestRoute =
     path: '/v2/remote/hosts/$hostId/company-sign-in/test',
     getParentRoute: () => rootRouteImport,
   } as any)
+const V2RemoteHostsHostIdIntegrationsTokenRoute =
+  V2RemoteHostsHostIdIntegrationsTokenRouteImport.update({
+    id: '/v2/remote/hosts/$hostId/integrations/token',
+    path: '/v2/remote/hosts/$hostId/integrations/token',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const V2RemoteHostsHostIdMembersIndexRoute =
   V2RemoteHostsHostIdMembersIndexRouteImport.update({
     id: '/v2/remote/hosts/$hostId/members/',
@@ -1597,6 +1604,7 @@ export interface FileRoutesByFullPath {
   '/v1/skills/$skillId/versions/$versionId/content': typeof V1SkillsSkillIdVersionsVersionIdContentRoute
   '/v2/remote/hosts/$hostId/company-sign-in/scim-token': typeof V2RemoteHostsHostIdCompanySignInScimTokenRoute
   '/v2/remote/hosts/$hostId/company-sign-in/test': typeof V2RemoteHostsHostIdCompanySignInTestRoute
+  '/v2/remote/hosts/$hostId/integrations/token': typeof V2RemoteHostsHostIdIntegrationsTokenRoute
   '/v2/remote/hosts/$hostId/members/$membershipId': typeof V2RemoteHostsHostIdMembersMembershipIdRoute
   '/v2/remote/hosts/$hostId/company-sign-in/': typeof V2RemoteHostsHostIdCompanySignInIndexRoute
   '/v2/remote/hosts/$hostId/members/': typeof V2RemoteHostsHostIdMembersIndexRoute
@@ -1813,6 +1821,7 @@ export interface FileRoutesByTo {
   '/v1/skills/$skillId/versions/$versionId/content': typeof V1SkillsSkillIdVersionsVersionIdContentRoute
   '/v2/remote/hosts/$hostId/company-sign-in/scim-token': typeof V2RemoteHostsHostIdCompanySignInScimTokenRoute
   '/v2/remote/hosts/$hostId/company-sign-in/test': typeof V2RemoteHostsHostIdCompanySignInTestRoute
+  '/v2/remote/hosts/$hostId/integrations/token': typeof V2RemoteHostsHostIdIntegrationsTokenRoute
   '/v2/remote/hosts/$hostId/members/$membershipId': typeof V2RemoteHostsHostIdMembersMembershipIdRoute
   '/v2/remote/hosts/$hostId/company-sign-in': typeof V2RemoteHostsHostIdCompanySignInIndexRoute
   '/v2/remote/hosts/$hostId/members': typeof V2RemoteHostsHostIdMembersIndexRoute
@@ -2034,6 +2043,7 @@ export interface FileRoutesById {
   '/v1/skills/$skillId/versions/$versionId/content': typeof V1SkillsSkillIdVersionsVersionIdContentRoute
   '/v2/remote/hosts/$hostId/company-sign-in/scim-token': typeof V2RemoteHostsHostIdCompanySignInScimTokenRoute
   '/v2/remote/hosts/$hostId/company-sign-in/test': typeof V2RemoteHostsHostIdCompanySignInTestRoute
+  '/v2/remote/hosts/$hostId/integrations/token': typeof V2RemoteHostsHostIdIntegrationsTokenRoute
   '/v2/remote/hosts/$hostId/members/$membershipId': typeof V2RemoteHostsHostIdMembersMembershipIdRoute
   '/v2/remote/hosts/$hostId/company-sign-in/': typeof V2RemoteHostsHostIdCompanySignInIndexRoute
   '/v2/remote/hosts/$hostId/members/': typeof V2RemoteHostsHostIdMembersIndexRoute
@@ -2252,6 +2262,7 @@ export interface FileRouteTypes {
     | '/v1/skills/$skillId/versions/$versionId/content'
     | '/v2/remote/hosts/$hostId/company-sign-in/scim-token'
     | '/v2/remote/hosts/$hostId/company-sign-in/test'
+    | '/v2/remote/hosts/$hostId/integrations/token'
     | '/v2/remote/hosts/$hostId/members/$membershipId'
     | '/v2/remote/hosts/$hostId/company-sign-in/'
     | '/v2/remote/hosts/$hostId/members/'
@@ -2468,6 +2479,7 @@ export interface FileRouteTypes {
     | '/v1/skills/$skillId/versions/$versionId/content'
     | '/v2/remote/hosts/$hostId/company-sign-in/scim-token'
     | '/v2/remote/hosts/$hostId/company-sign-in/test'
+    | '/v2/remote/hosts/$hostId/integrations/token'
     | '/v2/remote/hosts/$hostId/members/$membershipId'
     | '/v2/remote/hosts/$hostId/company-sign-in'
     | '/v2/remote/hosts/$hostId/members'
@@ -2688,6 +2700,7 @@ export interface FileRouteTypes {
     | '/v1/skills/$skillId/versions/$versionId/content'
     | '/v2/remote/hosts/$hostId/company-sign-in/scim-token'
     | '/v2/remote/hosts/$hostId/company-sign-in/test'
+    | '/v2/remote/hosts/$hostId/integrations/token'
     | '/v2/remote/hosts/$hostId/members/$membershipId'
     | '/v2/remote/hosts/$hostId/company-sign-in/'
     | '/v2/remote/hosts/$hostId/members/'
@@ -2866,6 +2879,7 @@ export interface RootRouteChildren {
   V1MarketplaceAgentsAdminVerifiedAgentIdRoute: typeof V1MarketplaceAgentsAdminVerifiedAgentIdRoute
   V2RemoteHostsHostIdCompanySignInScimTokenRoute: typeof V2RemoteHostsHostIdCompanySignInScimTokenRoute
   V2RemoteHostsHostIdCompanySignInTestRoute: typeof V2RemoteHostsHostIdCompanySignInTestRoute
+  V2RemoteHostsHostIdIntegrationsTokenRoute: typeof V2RemoteHostsHostIdIntegrationsTokenRoute
   V2RemoteHostsHostIdMembersMembershipIdRoute: typeof V2RemoteHostsHostIdMembersMembershipIdRoute
   V2RemoteHostsHostIdCompanySignInIndexRoute: typeof V2RemoteHostsHostIdCompanySignInIndexRoute
   V2RemoteHostsHostIdMembersIndexRoute: typeof V2RemoteHostsHostIdMembersIndexRoute
@@ -4385,6 +4399,13 @@ declare module '@tanstack/solid-router' {
       preLoaderRoute: typeof V2RemoteHostsHostIdCompanySignInTestRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/v2/remote/hosts/$hostId/integrations/token': {
+      id: '/v2/remote/hosts/$hostId/integrations/token'
+      path: '/v2/remote/hosts/$hostId/integrations/token'
+      fullPath: '/v2/remote/hosts/$hostId/integrations/token'
+      preLoaderRoute: typeof V2RemoteHostsHostIdIntegrationsTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/v2/remote/hosts/$hostId/members/': {
       id: '/v2/remote/hosts/$hostId/members/'
       path: '/v2/remote/hosts/$hostId/members'
@@ -4813,6 +4834,8 @@ const rootRouteChildren: RootRouteChildren = {
     V2RemoteHostsHostIdCompanySignInScimTokenRoute,
   V2RemoteHostsHostIdCompanySignInTestRoute:
     V2RemoteHostsHostIdCompanySignInTestRoute,
+  V2RemoteHostsHostIdIntegrationsTokenRoute:
+    V2RemoteHostsHostIdIntegrationsTokenRoute,
   V2RemoteHostsHostIdMembersMembershipIdRoute:
     V2RemoteHostsHostIdMembersMembershipIdRoute,
   V2RemoteHostsHostIdCompanySignInIndexRoute:

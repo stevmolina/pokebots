@@ -2,10 +2,108 @@ import { sourceText } from "@openbot/i18n/source-english";
 import { Effect } from "effect";
 import { createRemoteJWKSet, customFetch, type FetchImplementation, importPKCS8, jwtVerify, SignJWT } from "jose";
 import { AuthServiceError } from "./auth-service";
+import { randomToken, sha256 } from "./crypto";
 import { readJsonObject } from "./json-body";
+import type { RemoteControlPlane } from "./remote-control-plane";
 import type { WorkerBindings } from "./types";
 
 const TOKEN_LIFETIME_SECONDS = 300;
+const GRANT_LIFETIME_MS = 60 * 60 * 1000;
+
+const liveSessionJoins = `
+  JOIN remote_memberships m ON m.membership_id = s.membership_id
+    AND m.host_id = s.host_id AND m.user_id = s.user_id AND m.status = 'active'
+  JOIN auth_sessions a ON a.token_hash = s.auth_session_hash
+    AND a.user_id = s.user_id AND a.revoked_at IS NULL
+  JOIN remote_hosts h ON h.host_id = s.host_id
+`;
+
+function invalidGrant() {
+  return new AuthServiceError(403, "invalid_integration_grant", sourceText("error.auth.integrationTokenInvalid"));
+}
+
+const createGrant = Effect.fn("IntegrationToken.createGrant")(function* (
+  sessionId: unknown,
+  userId: string,
+  accountToken: string | undefined,
+  bindings: IntegrationBindings,
+) {
+  if (typeof sessionId !== "string" || !sessionId || sessionId.length > 256 || !accountToken)
+    return yield* invalidRequest();
+
+  const grant = randomToken();
+  const grantHash = yield* sha256(grant);
+  const authSessionHash = yield* sha256(accountToken);
+  const now = Date.now();
+  const row = yield* Effect.tryPromise({
+    try: async () => {
+      const prune = bindings.DB.prepare(
+        `DELETE FROM pokebots_integration_grants WHERE grant_hash IN (
+           SELECT grant_hash FROM pokebots_integration_grants WHERE expires_at <= ? ORDER BY expires_at LIMIT 100
+         )`,
+      ).bind(now);
+      const insert = bindings.DB.prepare(
+        `INSERT INTO pokebots_integration_grants
+           (grant_hash, session_id, host_id, user_id, auth_session_hash, auth_epoch, expires_at)
+         SELECT ?, s.session_id, s.host_id, s.user_id, s.auth_session_hash, h.auth_epoch,
+           min(s.expires_at, a.expires_at, ?)
+         FROM remote_sessions s ${liveSessionJoins}
+         WHERE s.session_id = ? AND s.user_id = ? AND s.auth_session_hash = ?
+           AND s.ended_at IS NULL AND s.expires_at > ? AND a.expires_at > ?
+           AND h.machine_token_hash IS NOT NULL
+         RETURNING host_id AS hostId, expires_at AS expiresAt`,
+      ).bind(grantHash, now + GRANT_LIFETIME_MS, sessionId, userId, authSessionHash, now, now);
+      const [, result] = await bindings.DB.batch<{ hostId: string; expiresAt: number }>([prune, insert]);
+      return result?.results[0];
+    },
+    catch: unavailable,
+  });
+  if (!row) return yield* invalidGrant();
+  return { grant, sessionId, ...row };
+});
+
+export const exchangeIntegrationGrant = Effect.fn("IntegrationToken.exchangeGrant")(function* (
+  request: Request,
+  hostId: string,
+  remote: Pick<RemoteControlPlane, "authenticateHost">,
+  bindings: IntegrationBindings,
+) {
+  const { machineToken, grant, audience, profile } = yield* readJsonObject(request);
+  if (
+    typeof machineToken !== "string" ||
+    !machineToken ||
+    machineToken.length > 256 ||
+    typeof grant !== "string" ||
+    !/^[A-Za-z0-9_-]{43}$/u.test(grant) ||
+    (audience !== "brain" && audience !== "rooms" && audience !== "computer") ||
+    (profile !== undefined && profile !== "native")
+  )
+    return yield* invalidRequest();
+
+  const host = yield* remote.authenticateHost(hostId, machineToken);
+  const grantHash = yield* sha256(grant);
+  const now = Date.now();
+  const session = yield* Effect.tryPromise({
+    try: () =>
+      bindings.DB.prepare(
+        `SELECT s.user_id AS userId, s.session_id AS sessionId,
+         min(g.expires_at, s.expires_at, a.expires_at) AS expiresAt
+       FROM pokebots_integration_grants g
+       JOIN remote_sessions s ON s.session_id = g.session_id AND s.host_id = g.host_id
+         AND s.user_id = g.user_id AND s.auth_session_hash = g.auth_session_hash
+       ${liveSessionJoins}
+       WHERE g.grant_hash = ? AND g.host_id = ? AND g.expires_at > ?
+         AND s.ended_at IS NULL AND s.expires_at > ? AND a.expires_at > ?
+         AND g.auth_epoch = h.auth_epoch AND h.machine_token_hash = ?`,
+      )
+        .bind(grantHash, hostId, now, now, now, host.machine_token_hash)
+        .first<{ userId: string; sessionId: string; expiresAt: number }>(),
+    catch: unavailable,
+  });
+  if (!session) return yield* invalidGrant();
+  const token = yield* signToken(session.userId, audience, profile, bindings, session.expiresAt);
+  return { ...token, userId: session.userId, sessionId: session.sessionId };
+});
 
 const integrations = {
   brain: "https://brain.mcpbox.dev/mcp",
@@ -100,17 +198,38 @@ export const issueIntegrationToken = Effect.fn("IntegrationToken.issue")(functio
   userId: string,
   bindings: IntegrationBindings,
   fetchJwks: FetchImplementation = (input, init) => fetch(input, init),
+  accountToken?: string,
 ) {
-  const { action, audience, scope = "integration:use", profile, workosAccessToken } = yield* readJsonObject(request);
+  const {
+    action,
+    remoteSessionId,
+    audience,
+    scope = "integration:use",
+    profile,
+    workosAccessToken,
+  } = yield* readJsonObject(request);
+  if (action === "grant") return yield* createGrant(remoteSessionId, userId, accountToken, bindings);
   if (audience !== "brain" && audience !== "rooms" && audience !== "computer") return yield* invalidRequest();
-  const pem = bindings.POKEBOTS_INTEGRATION_PRIVATE_KEY?.replaceAll("\\n", "\n").trim();
-  if (!pem) return yield* unavailable();
+  if (!bindings.POKEBOTS_INTEGRATION_PRIVATE_KEY?.trim()) return yield* unavailable();
   if (action === "link" && audience !== "computer") {
     return yield* linkIdentity(workosAccessToken, userId, audience, bindings, fetchJwks);
   }
   if (action !== undefined || scope !== "integration:use" || (profile !== undefined && profile !== "native"))
     return yield* invalidRequest();
 
+  return yield* signToken(userId, audience, profile, bindings);
+});
+
+const signToken = Effect.fn("IntegrationToken.sign")(function* (
+  userId: string,
+  audience: LinkAudience | "computer",
+  profile: "native" | undefined,
+  bindings: IntegrationBindings,
+  expiryLimit = Infinity,
+) {
+  const pem = bindings.POKEBOTS_INTEGRATION_PRIVATE_KEY?.replaceAll("\\n", "\n").trim();
+  if (!pem) return yield* unavailable();
+  const scope = "integration:use";
   const key = yield* Effect.tryPromise({ try: () => importPKCS8(pem, "RS256"), catch: unavailable });
   const identity =
     audience === "computer" || profile === "native"
@@ -129,7 +248,8 @@ export const issueIntegrationToken = Effect.fn("IntegrationToken.issue")(functio
       ? { scope, linked_workos_iss: identity.issuer, linked_workos_sub: identity.subject }
       : { scope };
   const issuedAt = Math.floor(Date.now() / 1000);
-  const expiresAt = issuedAt + TOKEN_LIFETIME_SECONDS;
+  const expiresAt = Math.min(issuedAt + TOKEN_LIFETIME_SECONDS, Math.floor(expiryLimit / 1000));
+  if (expiresAt <= issuedAt) return yield* invalidGrant();
   const accessToken = yield* Effect.tryPromise({
     try: () =>
       new SignJWT(claims)

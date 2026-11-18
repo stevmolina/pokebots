@@ -19,8 +19,8 @@ export const Route = createFileRoute("/v1/me/integrations/token")({
           Effect.gen(function* () {
             const token = bearerToken(request);
             const user = token ? yield* requestAuthService().authenticate(token) : null;
-            if (!user) return apiError(401, "unauthorized", sourceText("error.auth.signInRequired"));
-            return json(yield* requestIntegrationToken(request, user.id));
+            if (!token || !user) return apiError(401, "unauthorized", sourceText("error.auth.signInRequired"));
+            return json(yield* requestIntegrationToken(request, user.id, token));
           }),
           authErrorResponse,
         ),
