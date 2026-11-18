@@ -43,7 +43,7 @@ export function AgentSessionsScreen() {
   /** The screen under the sheet shows a side thread or a new session, not the agent's own chat. */
   const inThread = current !== MAIN_THREAD_ID;
   // The new design puts the agent's model on top and the pinned messages under the sessions, as the
-  // design preview does; the agent's info is on the name in the chat header.
+  // design preview does.
   const calm = useCalmLook();
   const pinsEnabled = useMessagePinsEnabled(serverId);
 
