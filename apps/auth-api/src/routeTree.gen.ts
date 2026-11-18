@@ -21,6 +21,7 @@ import { Route as ClaRouteImport } from './routes/cla'
 import { Route as CommercialLicenseRouteImport } from './routes/commercial-license'
 import { Route as CommerciallicenseRouteImport } from './routes/commerciallicense'
 import { Route as DpaRouteImport } from './routes/dpa'
+import { Route as IntegrationAccountsRouteImport } from './routes/integration-accounts'
 import { Route as JoinRouteImport } from './routes/join'
 import { Route as LlmsDottxtRouteImport } from './routes/llms[.]txt'
 import { Route as PrivacyRouteImport } from './routes/privacy'
@@ -52,6 +53,7 @@ import { Route as GuidesRssDotxmlRouteImport } from './routes/guides/rss[.]xml'
 import { Route as HealthHostingRouteImport } from './routes/health/hosting'
 import { Route as HealthLiveRouteImport } from './routes/health/live'
 import { Route as HealthReadyRouteImport } from './routes/health/ready'
+import { Route as IntegrationAccountsClientDotjsonRouteImport } from './routes/integration-accounts_.client[.]json'
 import { Route as MarketplaceIndexRouteImport } from './routes/marketplace/index'
 import { Route as MarketplaceAppsRouteImport } from './routes/marketplace/apps'
 import { Route as NewsIndexRouteImport } from './routes/news/index'
@@ -285,6 +287,11 @@ const DpaRoute = DpaRouteImport.update({
   path: '/dpa',
   getParentRoute: () => rootRouteImport,
 } as any)
+const IntegrationAccountsRoute = IntegrationAccountsRouteImport.update({
+  id: '/integration-accounts',
+  path: '/integration-accounts',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const JoinRoute = JoinRouteImport.update({
   id: '/join',
   path: '/join',
@@ -441,6 +448,12 @@ const HealthReadyRoute = HealthReadyRouteImport.update({
   path: '/health/ready',
   getParentRoute: () => rootRouteImport,
 } as any)
+const IntegrationAccountsClientDotjsonRoute =
+  IntegrationAccountsClientDotjsonRouteImport.update({
+    id: '/integration-accounts_/client.json',
+    path: '/integration-accounts/client.json',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const MarketplaceIndexRoute = MarketplaceIndexRouteImport.update({
   id: '/marketplace/',
   path: '/marketplace/',
@@ -1402,6 +1415,7 @@ export interface FileRoutesByFullPath {
   '/commercial-license': typeof CommercialLicenseRoute
   '/commerciallicense': typeof CommerciallicenseRoute
   '/dpa': typeof DpaRoute
+  '/integration-accounts': typeof IntegrationAccountsRoute
   '/join': typeof JoinRoute
   '/llms.txt': typeof LlmsDottxtRoute
   '/privacy': typeof PrivacyRoute
@@ -1428,6 +1442,7 @@ export interface FileRoutesByFullPath {
   '/health/hosting': typeof HealthHostingRoute
   '/health/live': typeof HealthLiveRoute
   '/health/ready': typeof HealthReadyRoute
+  '/integration-accounts/client.json': typeof IntegrationAccountsClientDotjsonRoute
   '/marketplace/apps': typeof MarketplaceAppsRoute
   '/news/$slug': typeof NewsSlugRoute
   '/news/openbot-vs-grokbot': typeof NewsOpenbotVsGrokbotRoute
@@ -1619,6 +1634,7 @@ export interface FileRoutesByTo {
   '/commercial-license': typeof CommercialLicenseRoute
   '/commerciallicense': typeof CommerciallicenseRoute
   '/dpa': typeof DpaRoute
+  '/integration-accounts': typeof IntegrationAccountsRoute
   '/join': typeof JoinRoute
   '/llms.txt': typeof LlmsDottxtRoute
   '/privacy': typeof PrivacyRoute
@@ -1645,6 +1661,7 @@ export interface FileRoutesByTo {
   '/health/hosting': typeof HealthHostingRoute
   '/health/live': typeof HealthLiveRoute
   '/health/ready': typeof HealthReadyRoute
+  '/integration-accounts/client.json': typeof IntegrationAccountsClientDotjsonRoute
   '/marketplace/apps': typeof MarketplaceAppsRoute
   '/news/$slug': typeof NewsSlugRoute
   '/news/openbot-vs-grokbot': typeof NewsOpenbotVsGrokbotRoute
@@ -1840,6 +1857,7 @@ export interface FileRoutesById {
   '/commercial-license': typeof CommercialLicenseRoute
   '/commerciallicense': typeof CommerciallicenseRoute
   '/dpa': typeof DpaRoute
+  '/integration-accounts': typeof IntegrationAccountsRoute
   '/join': typeof JoinRoute
   '/llms.txt': typeof LlmsDottxtRoute
   '/privacy': typeof PrivacyRoute
@@ -1866,6 +1884,7 @@ export interface FileRoutesById {
   '/health/hosting': typeof HealthHostingRoute
   '/health/live': typeof HealthLiveRoute
   '/health/ready': typeof HealthReadyRoute
+  '/integration-accounts_/client.json': typeof IntegrationAccountsClientDotjsonRoute
   '/marketplace/apps': typeof MarketplaceAppsRoute
   '/news/$slug': typeof NewsSlugRoute
   '/news/openbot-vs-grokbot': typeof NewsOpenbotVsGrokbotRoute
@@ -2060,6 +2079,7 @@ export interface FileRouteTypes {
     | '/commercial-license'
     | '/commerciallicense'
     | '/dpa'
+    | '/integration-accounts'
     | '/join'
     | '/llms.txt'
     | '/privacy'
@@ -2086,6 +2106,7 @@ export interface FileRouteTypes {
     | '/health/hosting'
     | '/health/live'
     | '/health/ready'
+    | '/integration-accounts/client.json'
     | '/marketplace/apps'
     | '/news/$slug'
     | '/news/openbot-vs-grokbot'
@@ -2277,6 +2298,7 @@ export interface FileRouteTypes {
     | '/commercial-license'
     | '/commerciallicense'
     | '/dpa'
+    | '/integration-accounts'
     | '/join'
     | '/llms.txt'
     | '/privacy'
@@ -2303,6 +2325,7 @@ export interface FileRouteTypes {
     | '/health/hosting'
     | '/health/live'
     | '/health/ready'
+    | '/integration-accounts/client.json'
     | '/marketplace/apps'
     | '/news/$slug'
     | '/news/openbot-vs-grokbot'
@@ -2497,6 +2520,7 @@ export interface FileRouteTypes {
     | '/commercial-license'
     | '/commerciallicense'
     | '/dpa'
+    | '/integration-accounts'
     | '/join'
     | '/llms.txt'
     | '/privacy'
@@ -2523,6 +2547,7 @@ export interface FileRouteTypes {
     | '/health/hosting'
     | '/health/live'
     | '/health/ready'
+    | '/integration-accounts_/client.json'
     | '/marketplace/apps'
     | '/news/$slug'
     | '/news/openbot-vs-grokbot'
@@ -2719,6 +2744,7 @@ export interface RootRouteChildren {
   CommercialLicenseRoute: typeof CommercialLicenseRoute
   CommerciallicenseRoute: typeof CommerciallicenseRoute
   DpaRoute: typeof DpaRoute
+  IntegrationAccountsRoute: typeof IntegrationAccountsRoute
   JoinRoute: typeof JoinRoute
   LlmsDottxtRoute: typeof LlmsDottxtRoute
   PrivacyRoute: typeof PrivacyRoute
@@ -2740,6 +2766,7 @@ export interface RootRouteChildren {
   HealthHostingRoute: typeof HealthHostingRoute
   HealthLiveRoute: typeof HealthLiveRoute
   HealthReadyRoute: typeof HealthReadyRoute
+  IntegrationAccountsClientDotjsonRoute: typeof IntegrationAccountsClientDotjsonRoute
   MarketplaceAppsRoute: typeof MarketplaceAppsRoute
   NewsSlugRoute: typeof NewsSlugRoute
   NewsOpenbotVsGrokbotRoute: typeof NewsOpenbotVsGrokbotRoute
@@ -2971,6 +2998,13 @@ declare module '@tanstack/solid-router' {
       preLoaderRoute: typeof DpaRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/integration-accounts': {
+      id: '/integration-accounts'
+      path: '/integration-accounts'
+      fullPath: '/integration-accounts'
+      preLoaderRoute: typeof IntegrationAccountsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/join': {
       id: '/join'
       path: '/join'
@@ -3186,6 +3220,13 @@ declare module '@tanstack/solid-router' {
       path: '/health/ready'
       fullPath: '/health/ready'
       preLoaderRoute: typeof HealthReadyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/integration-accounts_/client.json': {
+      id: '/integration-accounts_/client.json'
+      path: '/integration-accounts/client.json'
+      fullPath: '/integration-accounts/client.json'
+      preLoaderRoute: typeof IntegrationAccountsClientDotjsonRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/marketplace/': {
@@ -4661,6 +4702,7 @@ const rootRouteChildren: RootRouteChildren = {
   CommercialLicenseRoute: CommercialLicenseRoute,
   CommerciallicenseRoute: CommerciallicenseRoute,
   DpaRoute: DpaRoute,
+  IntegrationAccountsRoute: IntegrationAccountsRoute,
   JoinRoute: JoinRoute,
   LlmsDottxtRoute: LlmsDottxtRoute,
   PrivacyRoute: PrivacyRoute,
@@ -4683,6 +4725,7 @@ const rootRouteChildren: RootRouteChildren = {
   HealthHostingRoute: HealthHostingRoute,
   HealthLiveRoute: HealthLiveRoute,
   HealthReadyRoute: HealthReadyRoute,
+  IntegrationAccountsClientDotjsonRoute: IntegrationAccountsClientDotjsonRoute,
   MarketplaceAppsRoute: MarketplaceAppsRoute,
   NewsSlugRoute: NewsSlugRoute,
   NewsOpenbotVsGrokbotRoute: NewsOpenbotVsGrokbotRoute,
