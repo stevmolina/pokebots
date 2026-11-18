@@ -7,6 +7,9 @@ export const messages = defineMessages("error.auth", {
   "error.auth.networkBlocked":
     "A firewall or proxy on this network blocked OpenBot from reaching {host}. Ask your network administrator to allow {host}, then try again.",
   "error.auth.signInFirst": "Sign in to OpenBot first.",
+  "error.auth.integrationAccountAlreadyLinked": "This integration account is already linked.",
+  "error.auth.integrationTokenInvalid": "The integration token request is invalid.",
+  "error.auth.integrationTokensUnavailable": "Integration tokens are unavailable.",
   "error.auth.signInRequired": "Sign in is required.",
   "error.auth.chatColorUnavailable": "The account service does not support chat colors yet. Try again later.",
   "error.auth.accountChangedDuringRegister": "The signed-in account changed while this server was being registered.",

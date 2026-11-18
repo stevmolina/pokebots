@@ -31,6 +31,7 @@ import {
   remoteHostFingerprint,
 } from "./host-key-handover";
 import type { TeamClientFetch } from "./index";
+import { decodeIntegrationGrant } from "./integration-authorization";
 
 export interface RemoteTeamHost {
   hostId: string;
@@ -606,9 +607,22 @@ export class RemoteTeamDirectoryClient {
     });
   }
 
+  readonly requestIntegrationGrant = Effect.fn("RemoteDirectory.requestIntegrationGrant")(function* (
+    this: RemoteTeamDirectoryClient,
+    hostId: string,
+    sessionId: string,
+  ) {
+    const value = yield* this.#request("/v1/me/integrations/token", {
+      method: "POST",
+      body: { action: "grant", remoteSessionId: sessionId },
+      redirect: "error",
+    });
+    return yield* directoryDecode(() => decodeIntegrationGrant(value, hostId, sessionId));
+  }).bind(this);
+
   #request(
     path: string,
-    options: { method?: string; body?: object; authenticated?: boolean } = {},
+    options: { method?: string; body?: object; authenticated?: boolean; redirect?: RequestRedirect } = {},
   ): Effect.Effect<unknown, DirectoryFailure> {
     return Effect.acquireUseRelease(
       Effect.sync(() => {
@@ -623,6 +637,7 @@ export class RemoteTeamDirectoryClient {
             try: () =>
               this.#fetch(new URL(browser ? `/api/browser${path}` : path, this.#apiUrl), {
                 ...(browser ? { credentials: "same-origin" as const } : {}),
+                ...(options.redirect ? { redirect: options.redirect } : {}),
                 method: options.method ?? "GET",
                 headers: {
                   ...(this.#authentication.kind === "bearer" && options.authenticated !== false

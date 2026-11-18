@@ -199,6 +199,7 @@ import type {
 import type { RoomsRequest, RoomsResult } from "@openbot/contracts/rooms";
 import type { ServerAppearance } from "@openbot/contracts/team-protocol/host-appearance-v1";
 import type { LiveVoiceSessionResponse, LiveVoiceStartRequest } from "@openbot/contracts/team-protocol/live-voice-v1";
+import type { IntegrationProfile } from "@openbot/contracts/team-protocol/pokebots-integrations-v1";
 import type { QueueEditRequest } from "@openbot/contracts/team-protocol/queue-edit-v1";
 import type { RemoteConnectionFailure, RemoteRecoveryStatus, RemoteTeamDirectoryClient } from "@openbot/team-client";
 import type { AgentComputerPort } from "@openbot/team-client/agent-computer";
@@ -656,7 +657,7 @@ export interface MobileWorkspaceContextValue {
   /** The host deletes its access key. The vault stays in the manager. */
   disconnectPasswordManager: (manager: PasswordManagerId, serverId: string) => Promise<PasswordManagerStatus>;
   /** The host's Rooms account. Only an owner or admin can use it. */
-  roomsRequest: (input: RoomsRequest, serverId: string) => Promise<RoomsResult>;
+  roomsRequest: (input: RoomsRequest, serverId: string, profile?: IntegrationProfile) => Promise<RoomsResult>;
   agentComputer: AgentComputerPort;
   loadVault: (serverId: string) => Promise<VaultState>;
   /** The current two-step code of each login with a key. The key stays on the host. */
@@ -792,7 +793,7 @@ export interface MobileWorkspaceContextValue {
    */
   canManageMcpServers: (serverId: string) => boolean;
   /** The MCP servers that the host gives its agents. Each change answers with the whole list. */
-  brainRequest: (input: BrainRequest, serverId: string) => Promise<BrainResponse>;
+  brainRequest: (input: BrainRequest, serverId: string, profile?: IntegrationProfile) => Promise<BrainResponse>;
   listMcpServers: (serverId: string) => Promise<McpServerConfig[]>;
   /** An empty id adds a server. */
   saveMcpServer: (config: McpServerConfig, serverId: string) => Promise<McpServerConfig[]>;
@@ -1107,6 +1108,7 @@ export interface MobileWorkspaceContextValue {
   /** Searches file names in the server's agent chats. An empty query lists the newest files. */
   searchFiles: (query: string, serverId: string, cursor?: string) => Promise<ConversationFileSearchPage>;
   /** True when the host advertises `agent-tasks-v1`. A member who can message an agent can use its tasks. */
+  canUsePokebotsIntegrations: (serverId: string) => boolean;
   canUseRooms: (serverId: string) => boolean;
   canUseBrain: (serverId: string) => boolean;
   /** True when the host advertises agent-tasks-v1. */
@@ -1295,6 +1297,7 @@ export type MobileWorkspaceCapabilityCheck =
   | "canChooseNewAgentModel"
   | "canInstallAgentTemplate"
   | "canSearchFiles"
+  | "canUsePokebotsIntegrations"
   | "canUseRooms"
   | "canUseBrain"
   | "canUseTasks"

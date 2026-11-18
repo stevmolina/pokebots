@@ -12,6 +12,7 @@ const stateSchema = z.object({
   repository: z.string(),
   task: z.string(),
   machine: z.string().optional(),
+  accountScoped: z.boolean().optional(),
   deadline: z.number().optional(),
   phase: z.enum(["starting", "running", "paused", "stopped", "blocked", "completed"]),
 });
@@ -22,9 +23,15 @@ const machineSchema = z.object({
 });
 const shellQuote = (value: string) => `'${value.replaceAll("'", "'\\''")}'`;
 
+export interface ScopedCodingComputer {
+  memberId: string;
+  port: CodingComputerPort;
+}
+
 /** Owns local job registration, serialized remote controls and deadline timers. No credentials persist here. */
 export class CodingJobs {
   #owner: string | null = null;
+  readonly #accounts = new Map<string, ScopedCodingComputer>();
   readonly #machineLock = Semaphore.makeUnsafe(1);
   readonly #locks = new Map<string, ReturnType<typeof Semaphore.makeUnsafe>>();
   readonly #timers = new Map<string, ReturnType<typeof setTimeout>>();
@@ -64,15 +71,33 @@ export class CodingJobs {
     taskId: string,
     repository: string,
     task: string,
+    context = "openbot-coding-jobs",
+    account?: ScopedCodingComputer,
   ) {
     if (this.#owner && this.#owner !== taskId)
       return yield* Effect.fail(new CodingComputerFailed({ cause: "Another coding job owns Agent Computer" }));
-    this.#owner = taskId;
     yield* Effect.try({
-      try: () => this.#save(workspace, { taskId, repository, task, context: "openbot-coding-jobs", phase: "starting" }),
+      try: () =>
+        this.#save(workspace, {
+          taskId,
+          repository,
+          task,
+          context,
+          phase: "starting",
+          ...(account ? { accountScoped: true } : {}),
+        }),
       catch: (cause) => new CodingComputerFailed({ cause }),
     });
-    return yield* this.control(agentId, workspace, taskId, "resume");
+    this.#owner = taskId;
+    if (account) this.#accounts.set(taskId, account);
+    return yield* this.control(agentId, workspace, taskId, "resume").pipe(
+      Effect.onError(() =>
+        Effect.sync(() => {
+          this.#accounts.delete(taskId);
+          if (this.#owner === taskId) this.#owner = null;
+        }),
+      ),
+    );
   });
 
   readonly control = Effect.fn("CodingJobs.control")(function* (
@@ -104,7 +129,8 @@ export class CodingJobs {
           }
           clearTimeout(this.#timers.get(taskId));
           this.#timers.delete(taskId);
-          const started = yield* this.computer.start(job.context);
+          const computer = yield* this.#computerFor(job);
+          const started = yield* computer.start(job.context);
           const machine = machineSchema.safeParse(started).data;
           if (!machine)
             return yield* Effect.fail(
@@ -135,18 +161,21 @@ export class CodingJobs {
             action === "resume"
               ? `mkdir -p ${shellQuote(directory)} && cd ${shellQuote(directory)} && printf %s ${shellQuote(payload)} | base64 -d > job.json && printf %s ${shellQuote(runner)} | base64 -d > runner.cjs && printf %s ${shellQuote(JSON.stringify({ action, deadline: job.deadline }))} > control.next && mv control.next control.json && (nohup node runner.cjs >> runner.log 2>&1 < /dev/null &) && node -e ${shellQuote(probe)}`
               : `cd ${shellQuote(directory)} && printf %s ${shellQuote(JSON.stringify({ action }))} > control.next && mv control.next control.json && node -e ${shellQuote(probe)}`;
-          const response = yield* this.computer.bash(machine.id, command, 20);
+          const response = yield* computer.bash(machine.id, command, 20);
           const checkpoint = readCheckpoint(response);
           if (!checkpoint || !expected.includes(checkpoint.phase))
             return yield* Effect.fail(new CodingComputerFailed({ cause: "Remote checkpoint was not confirmed" }));
           job.phase = action === "resume" ? "running" : action === "stop" ? "stopped" : "paused";
           if (checkpoint.phase === "completed" || checkpoint.phase === "blocked") job.phase = checkpoint.phase;
-          if (action !== "resume" || job.phase !== "running") yield* this.computer.stop(machine.id);
+          if (action !== "resume" || job.phase !== "running") yield* computer.stop(machine.id);
           yield* Effect.try({
             try: () => this.#save(workspace, job),
             catch: (cause) => new CodingComputerFailed({ cause }),
           });
-          if (job.phase === "completed" || job.phase === "stopped" || job.phase === "blocked") this.#owner = null;
+          if (job.phase === "completed" || job.phase === "stopped" || job.phase === "blocked") {
+            this.#owner = null;
+            if (job.phase !== "blocked") this.#accounts.delete(taskId);
+          }
           if (action === "resume" && job.phase === "running") {
             this.#schedule(agentId, workspace, job);
           }
@@ -156,12 +185,24 @@ export class CodingJobs {
     );
   });
 
+  #computerFor(job: Job): Effect.Effect<CodingComputerPort, CodingComputerFailed> {
+    if (!job.accountScoped && !this.#accounts.has(job.taskId)) return Effect.succeed(this.computer);
+    const account = this.#accounts.get(job.taskId);
+    return account
+      ? Effect.succeed(account.port)
+      : Effect.fail(new CodingComputerFailed({ cause: "The coding job account is no longer authorized on this host" }));
+  }
+
   #schedule(agentId: string, workspace: string, job: Job) {
     this.#timers.set(
       job.taskId,
       setTimeout(
         () => {
-          void runCauseEffect(this.#tick(agentId, workspace, job.taskId)).catch(() => this.failed(agentId, job.taskId));
+          this.#timers.delete(job.taskId);
+          void runCauseEffect(this.#tick(agentId, workspace, job.taskId)).catch(() => {
+            if (this.#accounts.delete(job.taskId) && this.#owner === job.taskId) this.#owner = null;
+            this.failed(agentId, job.taskId);
+          });
         },
         Math.max(0, Math.min(10_000, (job.deadline ?? Date.now()) - Date.now())),
       ),
@@ -184,7 +225,8 @@ export class CodingJobs {
       return;
     }
     const command = `cd ${shellQuote(this.#remote(job))} && node -e ${shellQuote("process.stdout.write('OPENBOT_CODING_CHECKPOINT='+require('fs').readFileSync('checkpoint.json','utf8')+'\\n')")}`;
-    const response = yield* this.computer.bash(job.machine, command, 10);
+    const computer = yield* this.#computerFor(job);
+    const response = yield* computer.bash(job.machine, command, 10);
     const checkpoint = readCheckpoint(response);
     if (!checkpoint) return yield* Effect.fail(new CodingComputerFailed({ cause: "Remote checkpoint unavailable" }));
     if (["completed", "blocked", "paused", "stopped"].includes(checkpoint.phase)) {
@@ -199,11 +241,14 @@ export class CodingJobs {
     agentId: string,
     workspace: string,
     taskId: string,
+    memberId?: string,
   ) {
     const job = yield* Effect.try({
       try: () => this.#read(workspace, taskId),
       catch: (cause) => new CodingComputerFailed({ cause }),
     });
+    const account = this.#accounts.get(taskId);
+    if (job && (account || job.accountScoped) && (!account || account.memberId !== memberId)) return null;
     if (job && (job.phase === "paused" || job.phase === "blocked" || job.phase === "starting"))
       return yield* this.control(agentId, workspace, taskId, "resume");
     return null;
@@ -230,6 +275,10 @@ export class CodingJobs {
         catch: (cause) => new CodingComputerFailed({ cause }),
       });
       for (const job of jobs) {
+        if (job.accountScoped) {
+          if (job.phase === "running" || job.phase === "starting") this.failed(agent.id, job.taskId);
+          continue;
+        }
         if (job.phase === "paused") {
           if (!this.#owner) this.#owner = job.taskId;
           continue;
@@ -246,6 +295,7 @@ export class CodingJobs {
   dispose() {
     for (const timer of this.#timers.values()) clearTimeout(timer);
     this.#timers.clear();
+    this.#accounts.clear();
   }
 }
 

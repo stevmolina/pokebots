@@ -1,4 +1,8 @@
-import type { AgentComputerStatus, ComputerManagementInput } from "@openbot/contracts/ipc";
+import type {
+  AgentComputerAccountAllowance,
+  AgentComputerStatus,
+  ComputerManagementInput,
+} from "@openbot/contracts/ipc";
 import type { AgentComputerPort } from "@openbot/team-client/agent-computer";
 import type { CloudComputer } from "@openbot/ui/features/servers/CloudComputerList";
 import { AgentComputerPanel } from "@openbot/ui/features/settings/AgentComputerPanel";
@@ -27,6 +31,7 @@ export function ServerCloudComputersPanel(props: {
   const { t, errorMessage } = useText();
   const api = () => props.api;
   const [screenshot, setScreenshot] = createSignal<string | null>(null);
+  const [allowance, setAllowance] = createSignal<AgentComputerAccountAllowance | null>(null);
   const [status, setStatus] = createSignal<AgentComputerStatus | null>(null);
   const [statusError, setStatusError] = createSignal<string | null>(null);
   const [machines, setMachines] = createSignal<readonly CloudComputer[] | null>(null);
@@ -67,6 +72,15 @@ export function ServerCloudComputersPanel(props: {
     else setMachines(null);
   }
 
+  async function loadAllowance(serverId: string, current: number): Promise<void> {
+    try {
+      const value = await api().allowance?.(serverId);
+      if (current === generation) setAllowance(value ?? null);
+    } catch {
+      if (current === generation) setAllowance(null);
+    }
+  }
+
   createEffect(
     () => ({ serverId: props.serverId, api: props.api }),
     ({ serverId, api }) => {
@@ -74,6 +88,8 @@ export function ServerCloudComputersPanel(props: {
       setBusy(null);
       setScreenshot(null);
       setStatus(null);
+      setAllowance(null);
+      void loadAllowance(serverId, current);
       setMachines(null);
       setStatusError(null);
       setMachinesError(null);
@@ -105,7 +121,8 @@ export function ServerCloudComputersPanel(props: {
     const current = ++generation;
     setBusy("refresh");
     try {
-      await loadMachines(props.serverId, current);
+      await loadAllowance(props.serverId, current);
+      if (status()?.connected) await loadMachines(props.serverId, current);
     } finally {
       if (current === generation) setBusy(null);
     }
@@ -135,6 +152,7 @@ export function ServerCloudComputersPanel(props: {
       onManage={props.management ? manage : undefined}
       screenshot={screenshot()}
       status={status()}
+      allowance={allowance()}
       statusError={statusError()}
       machines={machines()}
       machinesError={machinesError()}

@@ -11,6 +11,10 @@ export const messages = defineMessages("mobile.server", {
   "mobile.server.computers.destroyDescription":
     "This permanently deletes the computer and all its files. Stop it to keep its data.",
 
+  "mobile.server.cloudComputers.allowance": {
+    one: "{count} minute left. Resets at {time}.",
+    other: "{count} minutes left. Resets at {time}.",
+  },
   "mobile.server.cloudComputers.title": "Cloud computers",
   "mobile.server.cloudComputers.description":
     "Connect this server to Agent Computer. The host encrypts the API key. Running computers keep running after you disconnect.",

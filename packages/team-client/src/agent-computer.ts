@@ -1,19 +1,23 @@
 import {
+  type AgentComputerAccountAllowance,
   type AgentComputerMachineList,
   type AgentComputerStatus,
   type ComputerManagementInput,
   type ComputerManagementResult,
+  decodeAgentComputerAccountAllowance,
   decodeAgentComputerMachineList,
   decodeAgentComputerStatus,
 } from "@openbot/contracts/ipc";
 import { isDynamicRecord } from "@openbot/contracts/runtime-values";
 import { AGENT_COMPUTER_ROUTES } from "@openbot/contracts/team-protocol/agent-computer-v1";
 import { COMPUTER_MANAGEMENT_ROUTE } from "@openbot/contracts/team-protocol/computer-management-v1";
+import { POKEBOTS_INTEGRATIONS_ROUTES } from "@openbot/contracts/team-protocol/pokebots-integrations-v1";
 import type { TeamApiRequest } from "./team-api-requests";
 
 /** Human-only account controls. The transport supplies authentication and capability checks. */
 export interface AgentComputerPort {
   manage(input: ComputerManagementInput, serverId: string): Promise<ComputerManagementResult>;
+  allowance?(serverId: string): Promise<AgentComputerAccountAllowance | null>;
   status(serverId: string): Promise<AgentComputerStatus>;
   connect(apiKey: string, serverId: string): Promise<AgentComputerStatus>;
   test(serverId: string): Promise<AgentComputerStatus>;
@@ -21,10 +25,17 @@ export interface AgentComputerPort {
   machines(serverId: string): Promise<AgentComputerMachineList>;
 }
 
-export function createAgentComputerPort(request: (serverId: string) => TeamApiRequest): AgentComputerPort {
+export function createAgentComputerPort(
+  request: (serverId: string) => TeamApiRequest,
+  usesAccount?: (serverId: string) => boolean,
+): AgentComputerPort {
   const status = (serverId: string, path: string, body: { apiKey: string } | Record<string, never> = {}) =>
     request(serverId)("POST", path, decodeAgentComputerStatus, body);
   return {
+    allowance: (id) =>
+      usesAccount?.(id)
+        ? request(id)("POST", POKEBOTS_INTEGRATIONS_ROUTES.computerAllowance, decodeAgentComputerAccountAllowance, {})
+        : Promise.resolve(null),
     manage: (input, id) =>
       request(id)(
         "POST",

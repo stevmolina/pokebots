@@ -226,6 +226,7 @@ import { runTeamEffect } from "@openbot/team-client";
 import { bytesToBase64 } from "@openbot/team-client/base64";
 import { createRemoteBrowserView, type RemoteBrowserView } from "@openbot/team-client/browser-view";
 import { verifyEd25519Base64Url } from "@openbot/team-client/ed25519";
+import { isIntegrationOperation } from "@openbot/team-client/integration-authorization";
 import {
   RemoteDirectoryError,
   RemoteTeamDirectoryClient,
@@ -730,6 +731,8 @@ export function createWebWorkspaceRuntime(
   });
   let sessionsEnded = false;
   const sessionActions = {
+    requestIntegrationGrant: (id: string, sessionId: string) =>
+      runTeamEffect(directory.requestIntegrationGrant(id, sessionId)),
     getBootstrap: async (id: string, key: string, sessionId: string | null) => {
       try {
         return await runTeamEffect(directory.createBootstrap(id, key, sessionId));
@@ -973,11 +976,11 @@ export function createWebWorkspaceRuntime(
     if (disposed || generation !== current) throw new Error(currentText().t("webClient.error.hostChanged"));
     const membershipRead = method === "GET" && path === TEAM_API_ROUTES.me;
     // An action can be forbidden while membership remains valid. Confirm access before clearing drafts.
-    if (result.status === 403 && !membershipRead) {
+    if (result.status === 403 && !membershipRead && !isIntegrationOperation(path)) {
       await request("GET", TEAM_API_ROUTES.me);
       if (disposed || generation !== current) throw new Error(currentText().t("webClient.error.hostChanged"));
     }
-    if (result.status === 401 || (result.status === 403 && membershipRead)) {
+    if ((result.status === 401 && !isIntegrationOperation(path)) || (result.status === 403 && membershipRead)) {
       const error = new WebHostConnectionError(
         result.status === 401 ? "authentication_required" : "access_ended",
         referenceFrom("http", result.status),

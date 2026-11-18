@@ -25,7 +25,8 @@ export function serverSupportsCapability(
   capability: TeamCurrentCapability,
 ): boolean {
   if (
-    (capability === "rooms-v1" ||
+    (capability === "pokebots-integrations-v1" ||
+      capability === "rooms-v1" ||
       capability === "brain-v1" ||
       capability === "remote-desktop-setup" ||
       capability === "channel-chats-v1" ||

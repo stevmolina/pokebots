@@ -29,6 +29,7 @@ export function createMockAgentComputer(): OpenBotDesktopApi["agentComputer"] {
   ];
   const registry = machines();
   return {
+    allowance: async () => null,
     manage: async (input) => {
       if (input.operation === "start") {
         const machine = registry.find((row) => row.context === input.target);

@@ -1,4 +1,4 @@
-import { randomUUID } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { basename } from "node:path";
 import { attachmentMimeTypeForName } from "@openbot/contracts/attachment-files";
@@ -84,6 +84,7 @@ import { handleAgentComputerTool, isAgentComputerTool } from "../agent-computer/
 import type { AgentTables } from "../agent-data/agent-tables";
 import type { AgentStore } from "../agent-store";
 import type { AgentTasks } from "../agent-tasks/agent-tasks";
+import { codingComputer } from "../agent-tasks/coding-computer";
 import type { AgentWaits } from "../agent-waits/agent-waits";
 import { attachmentCall, attachmentFailure } from "../attachment-effects";
 import { repairBrowserToolInput } from "../browser-tool-input";
@@ -91,6 +92,7 @@ import { OPENBOT_BROWSER_NAMESPACE } from "../browser-tools";
 import type { ChannelService } from "../channel-service";
 import type { CrmHandle } from "../crm/crm";
 import type { ProviderSession } from "../database/provider-sessions";
+import type { IntegrationCredential } from "../integration-credential";
 import type { MailboxStore } from "../mailbox-store";
 import { agentMcpServers, codexDeferredMcpServers, openCodeMcpServers } from "../mcp-provider-shapes";
 import { type MessagingThreads, PLATFORM_NAMES } from "../messaging/messaging-threads";
@@ -542,6 +544,7 @@ export interface OpenBotToolRouterOptions {
   githubConnected?: (() => boolean) | undefined;
   /** The Agent Computer REST API, for the `computer_*` tools; null where nothing holds a key. */
   agentComputer?: AgentComputerApi | null | undefined;
+  agentComputerCredential?: ((memberId: string) => IntegrationCredential<"computer"> | undefined) | undefined;
   /** This build's version and system for `send_feedback`; null where this process does not know them. */
   feedbackFacts?: FeedbackFacts | null | undefined;
   /** Sends approved `send_feedback` text; null where this process has no account service. */
@@ -608,6 +611,7 @@ export class OpenBotToolRouter {
   readonly #marketplaceAppServer: (appId: string) => MarketplaceAppServer | null;
   readonly #githubConnected: () => boolean;
   readonly #agentComputer: AgentComputerApi | null;
+  readonly #agentComputerCredential: (memberId: string) => IntegrationCredential<"computer"> | undefined;
   readonly #feedbackFacts: FeedbackFacts | null;
   readonly #feedback: AgentFeedback | null;
   readonly #feedbackWithdrawal: FeedbackWithdrawal | null;
@@ -678,6 +682,7 @@ export class OpenBotToolRouter {
     this.#marketplaceAppServer = options.marketplaceAppServer ?? (() => null);
     this.#githubConnected = options.githubConnected ?? (() => false);
     this.#agentComputer = options.agentComputer ?? null;
+    this.#agentComputerCredential = options.agentComputerCredential ?? (() => undefined);
     this.#feedbackFacts = options.feedbackFacts ?? null;
     this.#feedback = options.feedback ?? null;
     this.#feedbackWithdrawal = options.feedbackWithdrawal ?? null;
@@ -2550,7 +2555,13 @@ export class OpenBotToolRouter {
     const waitResult = this.#waits.handleTool(params, caller);
     if (waitResult) return waitResult;
 
-    const taskResult = yield* this.#tasks.handleTool(params, caller);
+    const taskResult = yield* this.#tasks.handleTool(params, {
+      ...caller,
+      computer: () => {
+        const account = this.#computerAccount(senderAgentId, params.turnId);
+        return account && { memberId: account.memberId, port: codingComputer(account.api) };
+      },
+    });
     if (taskResult) return taskResult;
 
     const tableResult = yield* handleDataTool(params.tool, params.arguments, senderAgentId, this.#tables);
@@ -3029,7 +3040,16 @@ export class OpenBotToolRouter {
     if (!agent || !api || !isAgentComputerTool(params.tool))
       return openBotToolFailure(sourceText("error.agent.toolRequestInvalid"));
     const threadId = this.#conversation.publicThreadId(agent.id, params.threadId);
-    const result = yield* handleAgentComputerTool(api, {
+    const account = this.#computerAccount(agent.id, params.turnId);
+    const result = yield* handleAgentComputerTool(account?.api ?? api, {
+      ...(account
+        ? {
+            accountScoped: true,
+            idempotencyKey: createHash("sha256")
+              .update(JSON.stringify([agent.id, params.threadId, params.turnId, params.callId]))
+              .digest("hex"),
+          }
+        : {}),
       tool: params.tool,
       arguments: params.arguments,
       workspacePath: agent.workspacePath,
@@ -3244,6 +3264,13 @@ export class OpenBotToolRouter {
       ids.add(this.#mailbox.senderMember(delivery.messageId)?.id ?? SIGNED_OUT_CHANNEL_MEMBER_ID);
     }
     return [...ids];
+  }
+
+  #computerAccount(agentId: string, turnId: string): { api: AgentComputerApi; memberId: string } | undefined {
+    const [memberId, another] = this.#turnRequesters(agentId, turnId);
+    if (!memberId || another || !this.#agentComputer) return undefined;
+    const credential = this.#agentComputerCredential(memberId);
+    return credential ? { api: this.#agentComputer.forAccount(credential), memberId } : undefined;
   }
 
   /** Whether a team member on another computer sent a message of this turn. */

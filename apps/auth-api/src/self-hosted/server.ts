@@ -210,12 +210,16 @@ async function main(): Promise<void> {
       if (new URL(rawRequest.url).pathname === "/health/ready") {
         try {
           d1Db.prepare("SELECT 1").get();
-          return Response.json({
-            ready: true,
-            revision: existsSync("/app/.source-commit")
-              ? readFileSync("/app/.source-commit", "utf8").trim()
-              : process.env.SOURCE_COMMIT || "development",
-          });
+          return Response.json(
+            {
+              ready: true,
+              revision: existsSync("/app/.source-commit")
+                ? readFileSync("/app/.source-commit", "utf8").trim()
+                : process.env.SOURCE_COMMIT || "development",
+              pokebotsIntegrations: Boolean(bindings.POKEBOTS_INTEGRATION_PRIVATE_KEY?.trim()),
+            },
+            { headers: { "Cache-Control": "no-store" } },
+          );
         } catch {
           return Response.json({ ready: false }, { status: 503 });
         }

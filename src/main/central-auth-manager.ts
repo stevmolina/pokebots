@@ -51,6 +51,7 @@ import type { ServerAppearance } from "@openbot/contracts/team-protocol/host-app
 import { workosSignInErrorKey } from "@openbot/contracts/workos-sign-in";
 import { sourceText } from "@openbot/i18n/source";
 import { createOpenBotLogger, toLogValue } from "@openbot/logging";
+import { decodeIntegrationGrant } from "@openbot/team-client/integration-authorization";
 import { referenceFrom, safeReference } from "@openbot/user-errors";
 import { Deferred, Duration, Effect, Exit, type Layer, Result, Schema, Semaphore } from "effect";
 import { createLocalJWKSet, jwtVerify } from "jose";
@@ -81,6 +82,7 @@ import {
   type RemoteMemberRecord,
 } from "./central-auth-records";
 import { awaitCompanySignIn, type CompanySignInBrowser, CompanySignInBrowserError } from "./company-sign-in-browser";
+import { decodeIntegrationBearer, type IntegrationTokenRequest } from "./integration-credentials";
 import type { NotificationRelayRequest } from "./push-notifications";
 
 interface CentralAuthEvents {
@@ -239,6 +241,7 @@ export class CentralAuthManager extends EventEmitter<CentralAuthEvents> {
   #companySignInCancel: Deferred.Deferred<void> | null = null;
   /** Whether this account service uses WorkOS. Null until the first probe. A failed probe stays false. */
   #workosAccount: boolean | null = null;
+  #integrationAccountsAvailable = false;
   #companySignInTestCancel: Deferred.Deferred<void> | null = null;
   #unavailableRetryTimer: ReturnType<typeof setTimeout> | null = null;
   #unavailableRetryFailures = 0;
@@ -359,6 +362,20 @@ export class CentralAuthManager extends EventEmitter<CentralAuthEvents> {
   resolveApiUrl(path: string): string {
     return new URL(path, this.#options.apiUrl).toString();
   }
+
+  integrationAccountsAvailable(): boolean {
+    return this.#integrationAccountsAvailable;
+  }
+
+  readonly refreshIntegrationAvailability = Effect.fn("CentralAuth.refreshIntegrationAvailability")(function* (
+    this: CentralAuthManager,
+  ) {
+    if (new URL(this.#options.apiUrl).origin !== "https://api.pokebots.xyz") return;
+    const result = yield* this.#owned(
+      this.#requestEffect("/health/ready", { method: "GET", redirect: "error" }, decodeRecordHealth, 3_000),
+    ).pipe(Effect.result);
+    if (Result.isSuccess(result)) this.#integrationAccountsAvailable = result.success.pokebotsIntegrations === true;
+  }).bind(this);
 
   requestAuthorized<T>(
     path: string,
@@ -2402,14 +2419,69 @@ export class CentralAuthManager extends EventEmitter<CentralAuthEvents> {
     }
   });
 
+  readonly requestIntegrationGrant = Effect.fn("CentralAuth.requestIntegrationGrant")(function* (
+    this: CentralAuthManager,
+    hostId: string,
+    sessionId: string,
+  ) {
+    const session = this.#sessionToken;
+    const unavailable = () =>
+      new CentralAuthOperationError({ cause: new Error(sourceText("error.auth.integrationTokensUnavailable")) });
+    if (!session) return yield* unavailable();
+    const grant = yield* this.#owned(
+      this.#authorizedRequestEffect(
+        "/v1/me/integrations/token",
+        {
+          method: "POST",
+          redirect: "error",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ action: "grant", remoteSessionId: sessionId }),
+        },
+        (value) => decodeIntegrationGrant(value, hostId, sessionId),
+        undefined,
+        session,
+      ),
+    ).pipe(Effect.mapError(unavailable));
+    if (this.#sessionToken !== session) return yield* unavailable();
+    return grant;
+  }).bind(this);
+
+  readonly requestIntegrationBearer = Effect.fn("CentralAuth.requestIntegrationBearer")(function* (
+    this: CentralAuthManager,
+    userId: string,
+    { audience, profile }: IntegrationTokenRequest,
+  ) {
+    const session = this.#sessionToken;
+    const unavailable = () => new Error(sourceText("error.auth.integrationTokensUnavailable"));
+    if (!session || this.#state.status !== "signed_in" || this.#state.user.id !== userId)
+      return yield* Effect.fail(unavailable());
+    const bearer = yield* this.#owned(
+      this.#authorizedRequestEffect(
+        "/v1/me/integrations/token",
+        {
+          method: "POST",
+          redirect: "error",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ audience, profile }),
+        },
+        decodeIntegrationBearer,
+        undefined,
+        session,
+      ),
+    ).pipe(Effect.mapError(unavailable));
+    if (this.#sessionToken !== session) return yield* Effect.fail(unavailable());
+    return bearer;
+  }).bind(this);
+
   readonly #authorizedRequestEffect = Effect.fn("CentralAuth.authorizedRequest")(function* <T>(
     this: CentralAuthManager,
     path: string,
     init: RequestInit,
     decoder: (value: unknown) => T,
     timeoutMs?: number,
+    expectedSession?: string,
   ): Effect.fn.Return<T, CentralAuthOperationError, CentralAuthTransport> {
-    if (!this.#sessionToken)
+    if (!this.#sessionToken || (expectedSession !== undefined && this.#sessionToken !== expectedSession))
       return yield* new CentralAuthOperationError({
         cause: new AuthApiError(401, "unauthorized", sourceText("error.auth.signInRequired")),
       });

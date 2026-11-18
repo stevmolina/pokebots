@@ -54,6 +54,7 @@ import {
   HOSTED_UPDATE_TRIGGER,
   HostedUpdateAdapter,
 } from "./hosted-update-adapter";
+import { JoinedIntegrationAccess } from "./joined-integration-access";
 import { LicenseDesktopService } from "./license-service";
 import { LocalSignInWindows } from "./local-sign-in-window";
 import { localSkillLearner } from "./local-skill-learner";
@@ -321,6 +322,7 @@ import {
   setAboveAppsXWayland,
   usesX11Windows,
 } from "./linux-wayland-output";
+import { currentIntegrationCredential } from "./local-integration-credential";
 import { localRoutineFeedDocument } from "./local-routine-calendar";
 import {
   formatLocalServerMembersRequest,
@@ -1359,6 +1361,11 @@ export async function createApplicationServices({
   void Effect.runPromise(centralAuthInitialization).catch((error) =>
     logger.warn("The account did not initialize.", toLogValue(error)),
   );
+  const refreshIntegrationAvailability = () => void Effect.runPromise(centralAuth.refreshIntegrationAvailability());
+  refreshIntegrationAvailability();
+  const integrationTimer = setInterval(refreshIntegrationAvailability, 60_000);
+  integrationTimer.unref();
+  teardown.push(TEARDOWN_ORDER.centralAuth, "integration availability refresh", () => clearInterval(integrationTimer));
 
   let profileRefreshActive = true;
   let profileRefreshing = false;
@@ -2630,6 +2637,13 @@ export async function createApplicationServices({
     vaultItems: vault.items,
     linkWallet: linkAccount,
     agentComputerKey: () => agentComputer.key(),
+    agentComputerCredential: (memberId) => {
+      if (host.conversationSender()?.id === memberId) return currentIntegrationCredential(centralAuth, "computer");
+      const member = teamStore.memberAccounts().find((candidate) => candidate.memberId === memberId);
+      return member && joinedIntegrationAccess && centralAuth.integrationAccountsAvailable()
+        ? joinedIntegrationAccess.credentialForMember(member, { audience: "computer" })
+        : undefined;
+    },
     agentApiKeys,
     localSkillTools: () => localSkillTools(skills),
     browserProfiles: () => agentBrowserProfiles,
@@ -3718,6 +3732,10 @@ export async function createApplicationServices({
   // start gives it to Sunshine again. So it stays in memory: the remote desktop also starts when the
   // system keyring or the macOS Keychain is not available.
   const remoteDesktopRuntimeCredentials = { username: "openbot", password: randomBytes(32).toString("base64url") };
+  const joinedIntegrationAccess =
+    new URL(centralAuthApiUrl).origin === "https://api.pokebots.xyz"
+      ? new JoinedIntegrationAccess(teamStore, centralAuth, centralAuthApiUrl, accountServiceFetch)
+      : null;
   const host = new HostService({
     appVersion: app.getVersion(),
     store: teamStore,
@@ -3753,6 +3771,16 @@ export async function createApplicationServices({
     // Present, so the host advertises `bitwarden-connector-v1`. An owner or admin connects it with an
     // API key and the master password: a session key from their computer cannot open this vault.
     bitwardenConnector,
+    ...(joinedIntegrationAccess
+      ? {
+          pokebotsIntegrations: {
+            access: joinedIntegrationAccess,
+            brain,
+            rooms,
+            available: () => centralAuth.integrationAccountsAvailable(),
+          },
+        }
+      : {}),
     // Rooms uses the host's encrypted MCP account and is restricted to owners and admins.
     rooms,
     // Present, so the host advertises `agent-computer-v1`. An owner or admin connects it with an API key.
@@ -4320,6 +4348,7 @@ export async function createApplicationServices({
         listHosts: () => centralAuth.listRemoteHosts(),
         startSession: (hostId) => centralAuth.startRemoteSession(hostId),
         issueTicket: (sessionId, clientPublicKey) => centralAuth.issueRemoteSessionTicket(sessionId, clientPublicKey),
+        requestIntegrationGrant: (hostId, sessionId) => centralAuth.requestIntegrationGrant(hostId, sessionId),
         endSession: (sessionId) => centralAuth.endRemoteSession(sessionId),
         createInvite: (hostId, input) => centralAuth.createRemoteInvite(hostId, input),
         listInvites: (hostId) => centralAuth.listRemoteInvites(hostId),

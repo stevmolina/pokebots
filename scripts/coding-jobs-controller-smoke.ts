@@ -87,6 +87,38 @@ try {
   pid = undefined;
   recovered.dispose();
   assert.equal(failures, 0);
+
+  const legacyPort: CodingComputerPort = {
+    start: () => Effect.die("A scoped job used the host key"),
+    bash: () => Effect.die("A scoped job used the host key"),
+    stop: () => Effect.die("A scoped job used the host key"),
+  };
+  const scoped = new CodingJobs(legacyPort, () => failures++);
+  try {
+    await Effect.runPromise(
+      scoped.start("agent", workspace, "job-scoped", "example/project", "Fixture task", "job-scoped", {
+        memberId: "account-member",
+        port,
+      }),
+    );
+    pid = JSON.parse(await readFile(join(root, "openbot-coding-jobs", "job-scoped", "checkpoint.json"), "utf8")).pid;
+    await Effect.runPromise(scoped.control("agent", workspace, "job-scoped", "pause"));
+    const operationsBeforeWrongMember = operations.length;
+    assert.equal(await Effect.runPromise(scoped.resumePaused("agent", workspace, "job-scoped", "other-member")), null);
+    assert.equal(operations.length, operationsBeforeWrongMember);
+    const restarted = new CodingJobs(legacyPort, () => failures++);
+    await Effect.runPromise(restarted.recover([{ id: "agent", workspacePath: workspace }]));
+    assert.equal(
+      await Effect.runPromise(restarted.resumePaused("agent", workspace, "job-scoped", "account-member")),
+      null,
+    );
+    restarted.dispose();
+    await Effect.runPromise(scoped.resumePaused("agent", workspace, "job-scoped", "account-member"));
+    await Effect.runPromise(scoped.control("agent", workspace, "job-scoped", "stop"));
+    pid = undefined;
+  } finally {
+    scoped.dispose();
+  }
   const out = resolve(import.meta.dirname, "../.openbot-build/coding-jobs-controller-smoke");
   await mkdir(out, { recursive: true });
   const report = {
@@ -100,6 +132,7 @@ try {
       "same PID resume",
       "native Stop confirmation",
       "refused Stop never reports stopped or pauses the machine",
+      "an account job cannot resume under a different account or use the host key after restart",
     ],
     liveRemoteExecution: false,
   };

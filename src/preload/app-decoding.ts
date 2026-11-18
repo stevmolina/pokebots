@@ -180,6 +180,7 @@ export function decodeAppInfo(value: unknown): AppInfo {
     hourCycle,
     aboveAppsSupport,
     photoPicker,
+    pokebotsIntegrations,
   } = info;
   if (!isOneOf(["darwin", "win32", "linux"] as const, platform)) throw new Error("Invalid platform.");
   if (!isOneOf(["production", "dev", "preview"] as const, variant)) throw new Error("Invalid variant.");
@@ -203,6 +204,7 @@ export function decodeAppInfo(value: unknown): AppInfo {
     ...(softwareRendering === undefined ? {} : { softwareRendering }),
     ...(hourCycle === undefined ? {} : { hourCycle }),
     ...(aboveAppsSupport === undefined ? {} : { aboveAppsSupport }),
+    ...(isBoolean(pokebotsIntegrations) ? { pokebotsIntegrations } : {}),
     ...(photoPicker === undefined ? {} : { photoPicker }),
   };
 }

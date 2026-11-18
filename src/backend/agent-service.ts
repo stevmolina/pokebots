@@ -314,6 +314,7 @@ import type { ProviderSession } from "./database/provider-sessions";
 import { reportOriginalFailure } from "./effect-boundary";
 import { encodedModelId } from "./encoded-model-id";
 import type { HostMemory } from "./host-memory";
+import type { IntegrationCredential } from "./integration-credential";
 import type { SignInRegion } from "./kimi-region";
 import type { LinkWallet } from "./link-wallet";
 import { type MailboxStore, MESSAGING_LANE } from "./mailbox-store";
@@ -571,6 +572,7 @@ export interface AgentServiceOptions {
    * The built-in `computer_*` tools and coding jobs use it.
    */
   agentComputerKey?: () => string | null;
+  agentComputerCredential?: (memberId: string) => IntegrationCredential<"computer"> | undefined;
   /** The Link account of this computer, or `null`. Agents ask it for one-time cards. */
   linkWallet?: LinkWallet | null;
   /** Where the API keys that users enter through `request_api_key` are saved, or `null`. */
@@ -2072,6 +2074,7 @@ export class AgentService extends EventEmitter<AgentServiceEvents> {
       ...(options.marketplaceAppServer === undefined ? {} : { marketplaceAppServer: options.marketplaceAppServer }),
       githubConnected: () => Boolean(githubConnector?.mcpServer()),
       agentComputer,
+      agentComputerCredential: options.agentComputerCredential,
       feedbackFacts: options.feedbackFacts ?? null,
       feedback: options.feedback ?? null,
       feedbackWithdrawal: this.#feedbackWithdrawal,
@@ -6816,7 +6819,7 @@ export class AgentService extends EventEmitter<AgentServiceEvents> {
       : null;
     if (task)
       yield* this.#codingJobs
-        .resumePaused(agent.id, agent.workspacePath, task.taskId)
+        .resumePaused(agent.id, agent.workspacePath, task.taskId, sender?.id)
         .pipe(
           Effect.mapError(
             (failure) => new AgentLifecycleFailed({ operation: "resume remote coding job", cause: failure.cause }),

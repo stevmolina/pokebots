@@ -1,4 +1,31 @@
-import { isDynamicRecord, isString } from "./runtime-values";
+import { isDynamicRecord, isNumber, isString } from "./runtime-values";
+
+export interface AgentComputerAccountAllowance {
+  seconds_remaining: number;
+  minutes_remaining: number;
+  resets_at: string;
+}
+
+export function decodeAgentComputerAccountAllowance(value: unknown): AgentComputerAccountAllowance {
+  if (
+    !isDynamicRecord(value) ||
+    !isNumber(value.seconds_remaining) ||
+    !isNumber(value.minutes_remaining) ||
+    !Number.isSafeInteger(value.seconds_remaining) ||
+    value.seconds_remaining < 0 ||
+    !Number.isSafeInteger(value.minutes_remaining) ||
+    value.minutes_remaining < 0 ||
+    !isString(value.resets_at) ||
+    !Number.isFinite(Date.parse(value.resets_at))
+  ) {
+    throw new Error("Invalid Computer allowance.");
+  }
+  return {
+    seconds_remaining: value.seconds_remaining,
+    minutes_remaining: value.minutes_remaining,
+    resets_at: value.resets_at,
+  };
+}
 
 /**
  * The Agent Computer connection of a server: the cloud computers that its agents start

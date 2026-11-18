@@ -31,4 +31,9 @@ export const messages = {
   "common.scrollRight": "右へスクロール",
   "common.scrollUp": "上へスクロール",
   "common.scrollDown": "下へスクロール",
+  "common.integrationProfile": "アカウントプロフィール",
+  "common.integrationLinked": "連携アカウント",
+  "common.integrationNative": "Pokebots アカウント",
+  "common.integrationManual": "手動接続",
+  "common.integrationLink": "既存のアカウントを連携",
 } as const satisfies PartialTranslation<typeof source>;

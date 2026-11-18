@@ -33,7 +33,7 @@ import type { MailboxStore } from "../mailbox-store";
 import type { DynamicToolCallParams } from "../protocol";
 import { storedSync } from "../stored-state-effects";
 
-import type { CodingJobs } from "./coding-jobs";
+import type { CodingJobs, ScopedCodingComputer } from "./coding-jobs";
 import { RUN_CODING_TASK_TOOL, remoteCodingBrief, runCodingTaskToolSchema } from "./remote-coding-task";
 
 const logger = createOpenBotLogger("agent-tasks");
@@ -76,6 +76,7 @@ export interface AgentTasksHooks {
 /** Where `start_task` was called, as the tool router knows it. */
 export interface AgentTaskCaller {
   agentId: string;
+  computer?: () => ScopedCodingComputer | undefined;
   /** A channel, messaging or task turn: only the agent's own chat starts a task. */
   inExecutionThread: boolean;
 }
@@ -570,6 +571,7 @@ export class AgentTasks implements TaskLanes {
     const idempotencyKey = `start-task:${createHash("sha256")
       .update(JSON.stringify([caller.agentId, params.turnId, params.callId]))
       .digest("hex")}`;
+    const accountComputer = coding ? caller.computer?.() : undefined;
     const started = this.#mailbox.deliveryForKey(idempotencyKey);
     const startedTaskId = started ? this.#mailbox.taskIdForDelivery(started.delivery.id) : null;
     const startedTask = startedTaskId ? this.#store.task(startedTaskId) : null;
@@ -577,7 +579,7 @@ export class AgentTasks implements TaskLanes {
       const agent = this.#hooks.agent(caller.agentId);
       if (coding && this.#codingJobs && agent) {
         const resumed = yield* this.#codingJobs
-          .resumePaused(agent.id, agent.workspacePath, startedTask.taskId)
+          .resumePaused(agent.id, agent.workspacePath, startedTask.taskId, accountComputer?.memberId)
           .pipe(Effect.result);
         if (Result.isFailure(resumed)) return openBotToolFailure(sourceText("error.backend.taskStartFailed"));
       }
@@ -604,6 +606,9 @@ export class AgentTasks implements TaskLanes {
     // All of them close before the first yield, so no turn starts between the check and the close.
     for (const task of archived) this.#closeQuietly(task);
     const task = this.create(caller.agentId, input.title, "agent");
+    const context = accountComputer
+      ? `job-${createHash("sha256").update(task.taskId).digest("hex").slice(0, 28)}`
+      : "openbot-coding-jobs";
     if (archived.length > 0) yield* this.#hooks.archived(caller.agentId, archived);
     const queued = yield* this.#mailbox
       .enqueue({
@@ -611,7 +616,7 @@ export class AgentTasks implements TaskLanes {
         taskId: task.taskId,
         recipientAgentIds: [caller.agentId],
         text: coding
-          ? `${input.brief}\n\nJob directory: ~/openbot-coding-jobs/${encodeURIComponent(task.taskId)}`
+          ? `${remoteCodingBrief(coding.repository, coding.task, context)}\n\nJob directory: ~/openbot-coding-jobs/${encodeURIComponent(task.taskId)}`
           : input.brief,
         replyToMessageId: null,
         idempotencyKey,
@@ -634,7 +639,7 @@ export class AgentTasks implements TaskLanes {
       const agent = this.#hooks.agent(caller.agentId);
       if (!agent) return openBotToolFailure(sourceText("error.backend.taskStartFailed"));
       const started = yield* this.#codingJobs
-        .start(agent.id, agent.workspacePath, task.taskId, coding.repository, coding.task)
+        .start(agent.id, agent.workspacePath, task.taskId, coding.repository, coding.task, context, accountComputer)
         .pipe(Effect.result);
       if (Result.isFailure(started)) {
         this.failed(task.taskId, sourceText("error.backend.taskStartFailed"));

@@ -1,8 +1,10 @@
 import { type BrainRequest, decodeBrainResponse } from "@openbot/contracts/brain";
 import type { McpServerConfig } from "@openbot/contracts/ipc";
 import { sourceText } from "@openbot/i18n/source";
-import { Effect, Schema } from "effect";
+import { redactSecrets, registerSecretValue } from "@openbot/logging";
+import { Effect, Redacted, Schema } from "effect";
 import { z } from "zod";
+import type { IntegrationCredential } from "./integration-credential";
 import { readLimitedBody } from "./limited-body";
 import type { McpOAuth } from "./mcp-oauth-provider";
 
@@ -26,6 +28,12 @@ const paths = {
   sessions: "/sessions",
   session: "/sessions/show",
 } as const;
+type BrainServiceRequest = {
+  [Operation in BrainRequest["operation"]]: Omit<Extract<BrainRequest, { operation: Operation }>, "mcpServerId"> & {
+    mcpServerId?: string;
+  };
+}[BrainRequest["operation"]];
+
 const writes = new Set<BrainRequest["operation"]>(["addFile", "remember", "update", "forget"]);
 
 export function isBrainConnection(config: McpServerConfig): boolean {
@@ -49,15 +57,19 @@ export class BrainService {
   ) {}
 
   readonly request = Effect.fn("Brain.request")(
-    function* (this: BrainService, input: BrainRequest) {
-      const connection = this.options
-        .connections()
-        .find((row) => row.id === input.mcpServerId && isBrainConnection(row));
-      if (connection?.transport !== "http")
-        return yield* Effect.fail(new BrainError({ message: sourceText("error.brain.connect") }));
+    function* (this: BrainService, input: BrainServiceRequest, credential?: IntegrationCredential<"brain">) {
+      const connection = credential
+        ? undefined
+        : this.options.connections().find((row) => row.id === input.mcpServerId && isBrainConnection(row));
       const failure = () => new BrainError({ message: sourceText("error.brain.request") });
-      const token = yield* this.options.oauth.accessToken(connection.url).pipe(Effect.mapError(failure));
-      if (!token) return yield* Effect.fail(new BrainError({ message: sourceText("error.brain.connect") }));
+      const disconnected = () => new BrainError({ message: sourceText("error.brain.connect") });
+      const token = credential
+        ? Redacted.value(yield* credential.bearer.pipe(Effect.mapError(failure)))
+        : connection?.transport === "http"
+          ? yield* this.options.oauth.accessToken(connection.url).pipe(Effect.mapError(failure))
+          : null;
+      if (!token) return yield* Effect.fail(disconnected());
+      if (credential) registerSecretValue(token);
       const { operation, mcpServerId: _id, ...fields } = input;
       const url = new URL(`https://brain.mcpbox.dev/api/v1${paths[operation]}`);
       const write = writes.has(operation);
@@ -78,12 +90,12 @@ export class BrainService {
         });
       let response = yield* send(token);
       // Retry only authentication, once. Do not retry an ambiguous write failure.
-      if (response.status === 401) {
+      if (response.status === 401 && connection?.transport === "http") {
         yield* Effect.tryPromise({ try: () => response.body?.cancel() ?? Promise.resolve(), catch: failure });
         const refreshed = yield* this.options.oauth
           .refreshAccessToken(connection.url, token)
           .pipe(Effect.mapError(failure));
-        if (!refreshed) return yield* Effect.fail(new BrainError({ message: sourceText("error.brain.connect") }));
+        if (!refreshed) return yield* Effect.fail(disconnected());
         response = yield* send(refreshed);
       }
       if (!response.ok) {
@@ -93,7 +105,7 @@ export class BrainService {
       const text = yield* readLimitedBody(response, 8 * 1024 * 1024, failure);
       return yield* Effect.try({
         try: () => {
-          const value = JSON.parse(text.toString("utf8"));
+          const value = JSON.parse(credential ? redactSecrets(text.toString("utf8")) : text.toString("utf8"));
           const result = decodeBrainResponse(value);
           switch (operation) {
             case "brains":

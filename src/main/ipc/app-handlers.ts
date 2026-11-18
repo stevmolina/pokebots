@@ -152,6 +152,7 @@ export interface AppIpcDependencies {
   interfaceSize: InterfaceSizeService;
   initializeAgent: () => Promise<void>;
   appVariant: AppVariant;
+  pokebotsIntegrations?: boolean;
   analyticsCaptureUrl: string | null;
   analyticsInstallId: string | null;
   getMainWindow: () => BrowserWindow | null;
@@ -190,6 +191,7 @@ export function appIpcHandlers({
   interfaceSize,
   initializeAgent,
   appVariant,
+  pokebotsIntegrations,
   analyticsCaptureUrl,
   analyticsInstallId,
   getMainWindow,
@@ -222,6 +224,7 @@ export function appIpcHandlers({
           version,
           platform,
           variant: appVariant,
+          ...(pokebotsIntegrations ? { pokebotsIntegrations } : {}),
           ...(analyticsCaptureUrl ? { analyticsCaptureUrl } : {}),
           ...(analyticsInstallId ? { analyticsInstallId } : {}),
           ...(softwareRendering ? { softwareRendering } : {}),

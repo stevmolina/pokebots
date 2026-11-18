@@ -167,6 +167,12 @@ import { MESSAGE_PINS_CAPABILITY } from "@openbot/contracts/team-protocol/messag
 import { MODEL_STEERING_CAPABILITY, MODEL_STEERING_ROUTES } from "@openbot/contracts/team-protocol/model-steering-v1";
 import { ONEPASSWORD_CONNECTOR_CAPABILITY } from "@openbot/contracts/team-protocol/onepassword-connector-v1";
 import { PASSWORD_MANAGERS_CAPABILITY } from "@openbot/contracts/team-protocol/password-managers-v1";
+import {
+  integrationRequest,
+  POKEBOTS_BRAIN_ID,
+  POKEBOTS_INTEGRATIONS_CAPABILITY,
+  POKEBOTS_INTEGRATIONS_ROUTES,
+} from "@openbot/contracts/team-protocol/pokebots-integrations-v1";
 import { PROVIDER_ACCOUNT_MODELS_CAPABILITY } from "@openbot/contracts/team-protocol/provider-account-models-v1";
 import { PROVIDER_ACCOUNT_POOL_CAPABILITY } from "@openbot/contracts/team-protocol/provider-account-pool-v1";
 import { PROVIDER_ACCOUNTS_CAPABILITY } from "@openbot/contracts/team-protocol/provider-accounts-v1";
@@ -685,8 +691,9 @@ export function createHostRequestChecks(capabilities: ServerCapabilities): HostR
   const has = (serverId: string, capability: string) => hasCapability(capabilities, serverId, capability);
   return {
     canSearchFiles: (serverId) => has(serverId, CONVERSATION_FILE_SEARCH_CAPABILITY),
-    canUseRooms: (serverId) => has(serverId, ROOMS_CAPABILITY),
-    canUseBrain: (serverId) => has(serverId, BRAIN_CAPABILITY),
+    canUsePokebotsIntegrations: (serverId: string) => has(serverId, POKEBOTS_INTEGRATIONS_CAPABILITY),
+    canUseRooms: (serverId) => has(serverId, ROOMS_CAPABILITY) || has(serverId, POKEBOTS_INTEGRATIONS_CAPABILITY),
+    canUseBrain: (serverId) => has(serverId, BRAIN_CAPABILITY) || has(serverId, POKEBOTS_INTEGRATIONS_CAPABILITY),
     canUseTasks: (serverId) => has(serverId, AGENT_TASKS_CAPABILITY),
     canEditThreads: (serverId) => has(serverId, AGENT_THREADS_CAPABILITY),
     canReadThreads: (serverId) => has(serverId, AGENT_THREAD_READS_CAPABILITY),
@@ -890,20 +897,32 @@ export function createHostRequestActions({
   }
   const checks = createHostRequestChecks(capabilities);
   const actions: HostRequestActions = {
-    roomsRequest: (input, serverId) =>
-      capabilityApi(serverId, ROOMS_CAPABILITY, "rooms.unavailable")(
-        "POST",
-        ROOMS_ROUTE,
-        decodeRoomsResultFromHost,
-        input,
-      ),
+    roomsRequest: (input, serverId, profile) =>
+      checks.canUsePokebotsIntegrations(serverId)
+        ? capabilityApi(serverId, POKEBOTS_INTEGRATIONS_CAPABILITY, "rooms.unavailable")(
+            "POST",
+            POKEBOTS_INTEGRATIONS_ROUTES.rooms,
+            decodeRoomsResultFromHost,
+            integrationRequest(input, profile),
+          )
+        : capabilityApi(serverId, ROOMS_CAPABILITY, "rooms.unavailable")(
+            "POST",
+            ROOMS_ROUTE,
+            decodeRoomsResultFromHost,
+            input,
+          ),
     agentComputer: createAgentComputerPort(
       (serverId) => (method, path, decode, body) =>
         capabilityApi(
           serverId,
-          path === COMPUTER_MANAGEMENT_ROUTE ? COMPUTER_MANAGEMENT_CAPABILITY : AGENT_COMPUTER_CAPABILITY,
+          path === POKEBOTS_INTEGRATIONS_ROUTES.computerAllowance
+            ? POKEBOTS_INTEGRATIONS_CAPABILITY
+            : path === COMPUTER_MANAGEMENT_ROUTE
+              ? COMPUTER_MANAGEMENT_CAPABILITY
+              : AGENT_COMPUTER_CAPABILITY,
           "mobile.server.cloudComputers.unavailable",
         )(method, path, decode, body),
+      checks.canUsePokebotsIntegrations,
     ),
     // Async, so a host without the capability rejects the promise and does not throw at the call.
     restartServerItself: async (serverId) => runTeamRequest(requestHostRestart(restartAdmin(serverId))),
@@ -1112,8 +1131,20 @@ export function createHostRequestActions({
         capabilityApi(serverId, PROVIDERS_ADMIN_CAPABILITY, "mobile.server.providers.unsupported"),
         capabilities.get(serverId) ?? [],
       ),
-    brainRequest: (input, serverId) =>
-      capabilityApi(serverId, BRAIN_CAPABILITY, "error.brain.request")("POST", BRAIN_ROUTE, decodeBrainResponse, input),
+    brainRequest: (input, serverId, profile) =>
+      input.mcpServerId === POKEBOTS_BRAIN_ID
+        ? capabilityApi(serverId, POKEBOTS_INTEGRATIONS_CAPABILITY, "error.brain.request")(
+            "POST",
+            POKEBOTS_INTEGRATIONS_ROUTES.brain,
+            decodeBrainResponse,
+            integrationRequest(input, profile),
+          )
+        : capabilityApi(serverId, BRAIN_CAPABILITY, "error.brain.request")(
+            "POST",
+            BRAIN_ROUTE,
+            decodeBrainResponse,
+            input,
+          ),
     listMcpServers: async (serverId) => runTeamRequest(listMcpServers(mcpAdmin(serverId))),
     saveMcpServer: async (config, serverId) => runTeamRequest(saveMcpServer(mcpAdmin(serverId), { config })),
     removeMcpServer: async (mcpServerId, serverId) =>

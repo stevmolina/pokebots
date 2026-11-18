@@ -91,6 +91,11 @@ import { INSTANCE_TRANSFER_CAPABILITY } from "@openbot/contracts/team-protocol/i
 import { MCP_SIGN_IN_CAPABILITY } from "@openbot/contracts/team-protocol/mcp-sign-in-v1";
 import { MESSAGE_DELETE_CAPABILITY } from "@openbot/contracts/team-protocol/message-delete-v1";
 import { MESSAGE_PINS_CAPABILITY } from "@openbot/contracts/team-protocol/message-pins-v1";
+import {
+  integrationRequest,
+  POKEBOTS_INTEGRATIONS_CAPABILITY,
+  POKEBOTS_INTEGRATIONS_ROUTES,
+} from "@openbot/contracts/team-protocol/pokebots-integrations-v1";
 import { PROVIDER_ACCOUNTS_CAPABILITY } from "@openbot/contracts/team-protocol/provider-accounts-v1";
 import { ROOMS_CAPABILITY, ROOMS_ROUTE } from "@openbot/contracts/team-protocol/rooms-v1";
 import { ROUTINE_FLOW_STOP_CAPABILITY } from "@openbot/contracts/team-protocol/routine-flow-stop-v1";
@@ -216,6 +221,7 @@ import {
 } from "solid-js";
 import { queuedDeliveriesInOrder } from "../../queue-reconciliation";
 import { WebBrainPage } from "../brain/WebBrainPage";
+import { IntegrationProfiles } from "../integrations/IntegrationProfiles";
 import { decodeRoomsResultFromHost } from "./web-rooms";
 // Copying a selection with a formula in it gives its LaTeX source, as on desktop.
 import "katex/contrib/copy-tex";
@@ -1148,7 +1154,9 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
   function hostRequest(serverId?: string): TeamApiRequest {
     return hostAdmin(serverId).request;
   }
-  const cloudComputers = createAgentComputerPort(hostRequest);
+  const cloudComputers = createAgentComputerPort(hostRequest, () =>
+    workspace.state.capabilities.includes(POKEBOTS_INTEGRATIONS_CAPABILITY),
+  );
   // The events routes answer only an owner or admin. A member keeps the released routine routes.
   const eventsEnabled = () =>
     workspace.state.capabilities.includes(EVENTS_CAPABILITY) && canAdministerServer(workspace.state.host?.role);
@@ -3159,6 +3167,7 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
     shortcutPlatform: () => shortcutPlatform(),
   });
   /** As on desktop: the pages, the provider usage and the account switch of the chat sidebar. */
+  const builtInIntegrations = () => workspace.state.capabilities.includes(POKEBOTS_INTEGRATIONS_CAPABILITY);
   const sidebarPages = (): SidebarPages => ({
     current: sidebarPage(),
     pinned: layout.railPinned(),
@@ -3167,7 +3176,8 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
     onChats: () => showSidebarView("agents"),
     onRoutines: routinesSupported() ? () => showSidebarView("routines") : undefined,
     onRooms:
-      workspace.state.capabilities.includes(ROOMS_CAPABILITY) && canAdministerServer(workspace.state.host?.role)
+      builtInIntegrations() ||
+      (workspace.state.capabilities.includes(ROOMS_CAPABILITY) && canAdministerServer(workspace.state.host?.role))
         ? () => {
             const id = server()?.id;
             if (id) void openHostPage(id, "rooms", null);
@@ -3184,12 +3194,13 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
       if (id) void openHostPage(id, "schedule", button);
     },
     onWorkflows: workflowsRailAction(),
-    onBrain: workspace.state.capabilities.includes(BRAIN_CAPABILITY)
-      ? () => {
-          const id = server()?.id;
-          if (id) void openHostPage(id, "brain", null);
-        }
-      : undefined,
+    onBrain:
+      builtInIntegrations() || workspace.state.capabilities.includes(BRAIN_CAPABILITY)
+        ? () => {
+            const id = server()?.id;
+            if (id) void openHostPage(id, "brain", null);
+          }
+        : undefined,
     onLibrary: libraryRailAction(),
     onProviders: providersPageAction(),
     onCrm: crmPageAction(),
@@ -3505,18 +3516,44 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                       <Match when={page() === "rooms"}>
                         <Show when={page() === "rooms" ? server()?.id : undefined} keyed>
                           {(roomServerId) => (
-                            <RoomsPanel
-                              request={(input) =>
-                                hostRequest(roomServerId)("POST", ROOMS_ROUTE, decodeRoomsResultFromHost, input)
-                              }
-                              onConnect={openMarketplace}
-                            />
+                            <IntegrationProfiles
+                              builtIn={builtInIntegrations()}
+                              openUrl={(url) => window.open(url, "_blank", "noopener,noreferrer")}
+                            >
+                              {(account, controls) => (
+                                <RoomsPanel
+                                  accountControls={builtInIntegrations() ? controls : undefined}
+                                  request={(input) =>
+                                    account !== "manual"
+                                      ? hostRequest(roomServerId)(
+                                          "POST",
+                                          POKEBOTS_INTEGRATIONS_ROUTES.rooms,
+                                          decodeRoomsResultFromHost,
+                                          integrationRequest(input, account === "native" ? account : undefined),
+                                        )
+                                      : hostRequest(roomServerId)("POST", ROOMS_ROUTE, decodeRoomsResultFromHost, input)
+                                  }
+                                  onConnect={openMarketplace}
+                                />
+                              )}
+                            </IntegrationProfiles>
                           )}
                         </Show>
                       </Match>
-                      <Match when={page() === "brain" && workspace.state.capabilities.includes(BRAIN_CAPABILITY)}>
+                      <Match
+                        when={
+                          page() === "brain" &&
+                          (builtInIntegrations() || workspace.state.capabilities.includes(BRAIN_CAPABILITY))
+                        }
+                      >
                         <Show when={server()?.id} keyed>
-                          {(id) => <WebBrainPage request={hostRequest(id)} onConnect={openMarketplace} />}
+                          {(id) => (
+                            <WebBrainPage
+                              request={hostRequest(id)}
+                              onConnect={openMarketplace}
+                              builtIn={builtInIntegrations()}
+                            />
+                          )}
                         </Show>
                       </Match>
                       <Match when={page() === "library"}>

@@ -31,4 +31,9 @@ export const messages = {
   "common.scrollRight": "오른쪽으로 스크롤",
   "common.scrollUp": "위로 스크롤",
   "common.scrollDown": "아래로 스크롤",
+  "common.integrationProfile": "계정 프로필",
+  "common.integrationLinked": "연결된 계정",
+  "common.integrationNative": "Pokebots 계정",
+  "common.integrationManual": "수동 연결",
+  "common.integrationLink": "기존 계정 연결",
 } as const satisfies PartialTranslation<typeof source>;

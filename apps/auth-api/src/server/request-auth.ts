@@ -31,6 +31,8 @@ import { HostedSiteInputError } from "./hosted-site-contract";
 import { enforceHostedSiteReportRateLimit as enforceReportRateLimit } from "./hosted-site-request-policy";
 import { adoptUnlinkedHostedSites, resolveHostedSiteScope } from "./hosted-site-server";
 import { HostedSiteService } from "./hosted-site-service";
+import { finishIntegrationLink, startIntegrationLink } from "./integration-link";
+import { exchangeIntegrationGrant, issueIntegrationToken } from "./integration-token";
 import { JsonBodyError } from "./json-body";
 import { type ApnsRelaySender, sharedApnsSender } from "./live-activity-relay";
 import { MarketplaceQueryError } from "./marketplace-pagination";
@@ -87,6 +89,22 @@ export function requestAuthService(): AuthService {
         .usesCompanySignIn(email)
         .pipe(Effect.mapError(() => new AuthOperationError({ message: "Account operation failed." }))),
   });
+}
+
+export function requestIntegrationLinkStart(request: Request, userId: string, accountToken: string) {
+  return startIntegrationLink(request, userId, accountToken, requireWorkerBindings(env));
+}
+
+export function requestIntegrationLinkFinish(request: Request, userId: string, accountToken: string) {
+  return finishIntegrationLink(request, userId, accountToken, requireWorkerBindings(env));
+}
+
+export function requestIntegrationToken(request: Request, userId: string, accountToken: string) {
+  return issueIntegrationToken(request, userId, requireWorkerBindings(env), undefined, accountToken);
+}
+
+export function requestIntegrationExchange(request: Request, hostId: string) {
+  return exchangeIntegrationGrant(request, hostId, requestRemoteControlPlane(), requireWorkerBindings(env));
 }
 
 export function requestWorkosSignIn(): WorkosSignInService {

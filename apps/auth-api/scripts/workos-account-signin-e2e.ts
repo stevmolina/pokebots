@@ -3,7 +3,7 @@ import { strict as assert } from "node:assert";
 import { mkdir, mkdtemp, readdir, readFile, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { Effect, Schema } from "effect";
-import { exportJWK, generateKeyPair, SignJWT } from "jose";
+import { exportJWK, exportPKCS8, generateKeyPair, jwtVerify, SignJWT } from "jose";
 import { getPlatformProxy, unstable_splitSqlQuery } from "wrangler";
 import { openSelfHostedD1 } from "../src/self-hosted/d1-sqlite";
 import { openSelfHostedR2 } from "../src/self-hosted/r2-fs";
@@ -14,7 +14,9 @@ import { CompanySignInError, CompanySignInService } from "../src/server/company-
 import { randomToken, sha256 } from "../src/server/crypto";
 import { D1AuthRepository } from "../src/server/d1-auth-repository";
 import { runApiEffect } from "../src/server/effect-runtime";
-import { RemoteControlPlane } from "../src/server/remote-control-plane";
+import { finishIntegrationLink, integrationLinkClient, startIntegrationLink } from "../src/server/integration-link";
+import { exchangeIntegrationGrant, issueIntegrationToken } from "../src/server/integration-token";
+import { RemoteControlPlane, RemoteControlPlaneError } from "../src/server/remote-control-plane";
 import type { WorkerBindings } from "../src/server/types";
 import { WorkosOidc } from "../src/server/workos-oidc";
 import { WorkosSignInError, WorkosSignInService, workosSignInEnabled } from "../src/server/workos-sign-in";
@@ -205,11 +207,52 @@ const unused = () => {
   throw new Error("An unrelated service was used.");
 };
 function errorResponse(error: unknown): Response {
-  if (error instanceof WorkosSignInError || error instanceof AuthServiceError)
+  if (
+    error instanceof WorkosSignInError ||
+    error instanceof AuthServiceError ||
+    error instanceof RemoteControlPlaneError
+  )
     return Response.json({ error: { code: error.code, message: error.message } }, { status: error.status });
   return Response.json({ error: { code: "internal_error" } }, { status: 500 });
 }
+const integrationKeys = await generateKeyPair("RS256", { extractable: true });
+const integrationWorkosIssuer = "https://workos-integrations.example.test";
+const integrationBindings = {
+  DB: database,
+  POKEBOTS_INTEGRATION_WORKOS_ISSUER: integrationWorkosIssuer,
+  POKEBOTS_INTEGRATION_PRIVATE_KEY: (await exportPKCS8(integrationKeys.privateKey)).replaceAll("\n", "\\n"),
+};
+const linkOrigin = "https://app.pokebots.example.test";
+let linkProof = "";
+let expectedChallenge = "";
+let expectedResource = "";
+let linkExchanges = 0;
 const services: BrowserApiServices = {
+  integrationLinkStart: (request, userId, token) => startIntegrationLink(request, userId, token, integrationBindings),
+  integrationLinkFinish: (request, userId, token) =>
+    finishIntegrationLink(request, userId, token, integrationBindings, async (url, init) => {
+      if (String(url) === `${integrationWorkosIssuer}/oauth2/jwks`) return Response.json({ keys: [jwk] });
+      assert.equal(String(url), `${integrationWorkosIssuer}/oauth2/token`);
+      assert(init?.body instanceof URLSearchParams);
+      assert.equal(init.body.get("client_id"), `${linkOrigin}/integration-accounts/client.json`);
+      assert.equal(init.body.get("redirect_uri"), `${linkOrigin}/api/browser/integration-link/return`);
+      assert.equal(init.body.get("resource"), expectedResource);
+      assert.equal(init.body.get("grant_type"), "authorization_code");
+      assert.equal(await runApiEffect(sha256(init.body.get("code_verifier") ?? "")), expectedChallenge);
+      linkExchanges++;
+      return Response.json({ access_token: linkProof });
+    }),
+  integrationToken: (request, userId, accountToken) =>
+    issueIntegrationToken(
+      request,
+      userId,
+      integrationBindings,
+      async (url) => {
+        assert.equal(String(url), `${integrationWorkosIssuer}/oauth2/jwks`);
+        return Response.json({ keys: [jwk] });
+      },
+      accountToken,
+    ),
   auth: workosAuth,
   remote,
   workosSignIn: () => workos,
@@ -244,8 +287,18 @@ const app = Bun.serve({
   port: 0,
   async fetch(request) {
     const path = new URL(request.url).pathname;
+    if (path === "/integration-accounts/client.json") return integrationLinkClient(new Request(linkOrigin + path));
+    if (path.startsWith("/api/browser/integration-link/")) {
+      const url = new URL(request.url);
+      return handleBrowserApi(new Request(linkOrigin + url.pathname + url.search, request), services);
+    }
     if (path.startsWith("/api/browser/")) return handleBrowserApi(request, services);
     try {
+      const [, hostId] = /^\/v2\/remote\/hosts\/([^/]+)\/integrations\/token$/u.exec(path) ?? [];
+      if (hostId && request.method === "POST") {
+        const result = await runApiEffect(exchangeIntegrationGrant(request, hostId, remote, integrationBindings));
+        return Response.json(result);
+      }
       if (path === "/v1/auth/workos/start") {
         const input = Schema.decodeUnknownSync(startSchema)(await request.json());
         return Response.json(
@@ -300,7 +353,7 @@ interface WorkosTestRequest {
   deviceName?: string;
   platform?: string;
 }
-const post = (path: string, body: WorkosTestRequest) =>
+const post = (path: string, body: WorkosTestRequest | Record<string, string>) =>
   fetch(origin + path, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -473,7 +526,271 @@ try {
   assert(webCookie);
   const browserSessionToken = webCookie.split(";", 1)[0]?.slice("__Host-openbot-web=".length);
   assert(browserSessionToken);
-  assert.equal((await runApiEffect(emailAuth.authenticate(browserSessionToken)))?.email, "browser@example.test");
+  const browserUser = await runApiEffect(emailAuth.authenticate(browserSessionToken));
+  assert.equal(browserUser?.email, "browser@example.test");
+  const requestIntegration = (body: Record<string, string>, headers: Record<string, string> = {}) =>
+    fetch(`${origin}/api/browser/v1/me/integrations/token`, {
+      method: "POST",
+      headers: { ...browserHeaders, Cookie: `__Host-openbot-web=${browserSessionToken}`, ...headers },
+      body: JSON.stringify(body),
+    });
+  const integration = await requestIntegration({
+    audience: "rooms",
+    sub: "forged",
+    workos_sub: "forged",
+    workos_iss: "forged",
+  });
+  assert.equal(integration.status, 200);
+  assert.equal(integration.headers.get("Cache-Control"), "no-store");
+  const integrationResult = Schema.decodeUnknownSync(
+    Schema.Struct({ accessToken: Schema.String, expiresAt: Schema.Number }),
+  )(await integration.json());
+  const { payload } = await jwtVerify(integrationResult.accessToken, integrationKeys.publicKey, {
+    algorithms: ["RS256"],
+    issuer: "urn:pokebots:integrations",
+    audience: "rooms",
+    subject: `pokebots:${browserUser?.id}`,
+  });
+  assert.equal(payload.linked_workos_sub, undefined);
+  assert.equal(payload.linked_workos_iss, undefined);
+  assert.equal(payload.workos_sub, undefined);
+  assert.equal(payload.aud, "rooms");
+  assert.equal(payload.scope, "integration:use");
+  assert(typeof payload.exp === "number" && typeof payload.iat === "number");
+  assert.equal(payload.exp - payload.iat, 300);
+  assert.equal(integrationResult.expiresAt, payload.exp * 1000);
+  assert.equal((await requestIntegration({ audience: "computer", scope: "integration:link" })).status, 400);
+  assert.equal((await requestIntegration({ audience: "invalid" })).status, 400);
+  assert.equal((await requestIntegration({ audience: "brain" }, { Cookie: "" })).status, 401);
+  const deniedOrigin = await requestIntegration({ audience: "brain" }, { Origin: "https://other.example" });
+  assert.equal(deniedOrigin.status, 403);
+  checks.push(
+    "integration JWT signature, account and WorkOS claims, lifetime, no-store, audience, scope and browser access",
+  );
+  const signLinkProof = (subject: string, audience: string, issuer = integrationWorkosIssuer) =>
+    new SignJWT({ sub_profile: "user" })
+      .setProtectedHeader({ alg: "RS256", kid: jwk.kid })
+      .setIssuer(issuer)
+      .setSubject(subject)
+      .setAudience(audience)
+      .setExpirationTime("5m")
+      .sign(keys.privateKey);
+  const legacySubject = "user_RoomsTestAccount";
+  const legacyToken = await signLinkProof(legacySubject, "https://rooms.mcpbox.dev/mcp");
+  const legacyLink = { action: "link", audience: "rooms", workosAccessToken: legacyToken };
+  assert.equal((await requestIntegration({ ...legacyLink, audience: "brain" })).status, 400);
+  assert.equal(
+    (
+      await requestIntegration({
+        ...legacyLink,
+        workosAccessToken: await signLinkProof(legacySubject, "https://rooms.mcpbox.dev/mcp", provider.url.origin),
+      })
+    ).status,
+    400,
+  );
+  assert.equal((await requestIntegration(legacyLink)).status, 200);
+  assert.equal((await requestIntegration(legacyLink)).status, 200);
+  assert.equal(
+    (await requestIntegration(legacyLink, { Cookie: `__Host-openbot-web=${session.sessionToken}` })).status,
+    409,
+  );
+  assert.equal(
+    (
+      await requestIntegration({
+        ...legacyLink,
+        workosAccessToken: await signLinkProof("user_DifferentAccount", "https://rooms.mcpbox.dev/mcp"),
+      })
+    ).status,
+    409,
+  );
+  const browserCookie = (token: string) => `__Host-openbot-web=${token}`;
+  const requestLink = (audience: string, cookie = browserSessionToken, overrides: Record<string, string> = {}) =>
+    fetch(`${origin}/api/browser/integration-link/start`, {
+      method: "POST",
+      headers: { ...browserHeaders, Origin: linkOrigin, Cookie: browserCookie(cookie), ...overrides },
+      body: JSON.stringify({ audience }),
+    });
+  const startLink = async (audience: string, cookie?: string) => {
+    const response = await requestLink(audience, cookie);
+    assert.equal(response.status, 200);
+    const { authorizationUrl } = Schema.decodeUnknownSync(Schema.Struct({ authorizationUrl: Schema.String }))(
+      await response.json(),
+    );
+    const url = new URL(authorizationUrl);
+    assert.equal(url.origin + url.pathname, `${integrationWorkosIssuer}/oauth2/authorize`);
+    assert.equal(url.searchParams.get("response_type"), "code");
+    assert.equal(url.searchParams.get("code_challenge_method"), "S256");
+    assert.equal(url.searchParams.get("client_id"), `${linkOrigin}/integration-accounts/client.json`);
+    assert.equal(url.searchParams.get("redirect_uri"), `${linkOrigin}/api/browser/integration-link/return`);
+    expectedResource = `https://${audience}.mcpbox.dev/mcp`;
+    assert.equal(url.searchParams.get("resource"), expectedResource);
+    expectedChallenge = url.searchParams.get("code_challenge") ?? "";
+    assert.match(expectedChallenge, /^[A-Za-z0-9_-]{43}$/u);
+    return url.searchParams.get("state") ?? "";
+  };
+  const linkCallback = async (state: string, cookie: string, result: string, issuer = integrationWorkosIssuer) => {
+    const query = new URLSearchParams({ state, code: "local-authorization-code", iss: issuer });
+    const response = await fetch(`${origin}/api/browser/integration-link/return?${query}`, {
+      redirect: "manual",
+      headers: { Cookie: browserCookie(cookie), "Sec-Fetch-Site": "cross-site" },
+    });
+    assert.equal(response.status, 303);
+    assert.equal(response.headers.get("Location"), `${linkOrigin}/integration-accounts?result=${result}`);
+  };
+  const descriptor = await fetch(`${origin}/integration-accounts/client.json`).then((response) => response.json());
+  assert.deepEqual(descriptor, {
+    client_id: `${linkOrigin}/integration-accounts/client.json`,
+    client_name: "Pokebots",
+    redirect_uris: [`${linkOrigin}/api/browser/integration-link/return`],
+    grant_types: ["authorization_code"],
+    response_types: ["code"],
+    token_endpoint_auth_method: "none",
+  });
+  assert.equal((await requestLink("brain", "", {})).status, 401);
+  assert.equal((await requestLink("brain", undefined, { Origin: "https://other.example" })).status, 403);
+  assert.equal((await requestLink("brain", undefined, { "X-OpenBot-Browser": "" })).status, 403);
+  const brainState = await startLink("brain");
+  linkProof = await signLinkProof("user_BrainOAuth", expectedResource);
+  await linkCallback(randomToken(), browserSessionToken, "failed");
+  await linkCallback(brainState, session.sessionToken, "failed");
+  assert.equal(linkExchanges, 0);
+  await linkCallback(brainState, browserSessionToken, "linked");
+  await linkCallback(brainState, browserSessionToken, "failed");
+  assert.equal(linkExchanges, 1);
+  const expiredState = await startLink("brain");
+  await database
+    .prepare("UPDATE pokebots_integration_link_flows SET expires_at = 0 WHERE state_hash = ?")
+    .bind(await runApiEffect(sha256(expiredState)))
+    .run();
+  await linkCallback(expiredState, browserSessionToken, "failed");
+  assert.equal(linkExchanges, 1);
+  await linkCallback(await startLink("rooms"), browserSessionToken, "failed", "https://other.example");
+  assert.equal(linkExchanges, 1);
+  linkProof = await signLinkProof(legacySubject, "https://brain.mcpbox.dev/mcp");
+  await linkCallback(await startLink("rooms"), browserSessionToken, "failed");
+  linkProof = await signLinkProof(legacySubject, "https://rooms.mcpbox.dev/mcp", "https://other.example");
+  await linkCallback(await startLink("rooms"), browserSessionToken, "failed");
+  linkProof = await signLinkProof("user_OtherRooms", "https://rooms.mcpbox.dev/mcp");
+  await linkCallback(await startLink("rooms"), browserSessionToken, "failed");
+  linkProof = legacyToken;
+  await linkCallback(await startLink("rooms", session.sessionToken), session.sessionToken, "failed");
+  checks.push(
+    "Browser integration linking checks CSRF, pending ownership, PKCE, replay, issuer, audience and existing owner",
+  );
+  const readIntegration = async (requestBody: Record<string, string>, audience: string) => {
+    const response = await requestIntegration(requestBody);
+    assert.equal(response.status, 200);
+    const result = Schema.decodeUnknownSync(Schema.Struct({ accessToken: Schema.String }))(await response.json());
+    return (await jwtVerify(result.accessToken, integrationKeys.publicKey, { audience })).payload;
+  };
+  const linked = await readIntegration({ audience: "rooms" }, "rooms");
+  assert.equal(linked.linked_workos_sub, legacySubject);
+  assert.equal(linked.linked_workos_iss, integrationWorkosIssuer);
+  assert.equal((await readIntegration({ audience: "rooms", profile: "native" }, "rooms")).linked_workos_sub, undefined);
+  assert.equal((await readIntegration({ audience: "brain" }, "brain")).linked_workos_sub, "user_BrainOAuth");
+  checks.push(
+    "links only with a valid legacy service sign-in, rejects cross-audience proof and rebinding, preserves the native principal",
+  );
+  assert(browserUser);
+  const registerHost = (hostId: string) =>
+    runApiEffect(remote.registerHost(browserUser, { hostId, name: hostId, ownerMembershipId: crypto.randomUUID() }));
+  const host = await registerHost(crypto.randomUUID());
+  const otherHost = await registerHost(crypto.randomUUID());
+  assert(host.machineToken && otherHost.machineToken);
+  const browserHash = await runApiEffect(sha256(browserSessionToken));
+  const joined = await runApiEffect(remote.startSession(browserUser.id, host.hostId, browserHash));
+  const grantInput = { action: "grant", remoteSessionId: joined.sessionId };
+  const requestWithToken = (token: string) => requestIntegration(grantInput, { Cookie: `__Host-openbot-web=${token}` });
+  assert.equal((await requestWithToken(session.sessionToken)).status, 403);
+
+  const siblingToken = randomToken();
+  const siblingHash = await runApiEffect(sha256(siblingToken));
+  await database
+    .prepare(
+      `INSERT INTO auth_sessions (id, user_id, token_hash, expires_at, created_at, last_used_at)
+     VALUES (?, ?, ?, ?, ?, ?)`,
+    )
+    .bind(crypto.randomUUID(), browserUser.id, siblingHash, now + 60000, now, now)
+    .run();
+  assert.equal((await requestWithToken(siblingToken)).status, 403);
+
+  const remainingDeadline = Date.now() + 120000;
+  await database
+    .prepare("UPDATE remote_sessions SET expires_at = ? WHERE session_id = ?")
+    .bind(remainingDeadline, joined.sessionId)
+    .run();
+  const grantResponse = await requestIntegration(grantInput);
+  assert.equal(grantResponse.status, 200);
+  assert.equal(grantResponse.headers.get("Cache-Control"), "no-store");
+  const rawGrant = await grantResponse.json();
+  assert(rawGrant && typeof rawGrant === "object");
+  assert.deepEqual(Object.keys(rawGrant).sort(), ["expiresAt", "grant", "hostId", "sessionId"]);
+  const delegated = Schema.decodeUnknownSync(
+    Schema.Struct({
+      grant: Schema.String,
+      expiresAt: Schema.Number,
+      hostId: Schema.String,
+      sessionId: Schema.String,
+    }),
+  )(rawGrant);
+  assert.equal(delegated.hostId, host.hostId);
+  assert.equal(delegated.sessionId, joined.sessionId);
+  assert.equal(delegated.expiresAt, remainingDeadline);
+  const redeem = (targetHost: string, machineToken: string, profile?: string) =>
+    post(`/v2/remote/hosts/${targetHost}/integrations/token`, {
+      machineToken,
+      grant: delegated.grant,
+      audience: "rooms",
+      ...(profile ? { profile } : {}),
+    });
+  assert.equal((await redeem(otherHost.hostId, otherHost.machineToken)).status, 403);
+  assert.equal((await redeem(host.hostId, otherHost.machineToken)).status, 401);
+  for (const profile of [undefined, "native"]) {
+    const exchange = await redeem(host.hostId, host.machineToken, profile);
+    assert.equal(exchange.status, 200);
+    const issued = Schema.decodeUnknownSync(
+      Schema.Struct({
+        accessToken: Schema.String,
+        expiresAt: Schema.Number,
+        grantExpiresAt: Schema.Number,
+        sessionId: Schema.String,
+        userId: Schema.String,
+      }),
+    )(await exchange.json());
+    assert.equal(issued.userId, browserUser.id);
+    assert.equal(issued.sessionId, joined.sessionId);
+    assert.equal(issued.expiresAt, Math.floor(remainingDeadline / 1000) * 1000);
+    assert.equal(issued.grantExpiresAt, delegated.expiresAt);
+    const { payload: claims } = await jwtVerify(issued.accessToken, integrationKeys.publicKey, { audience: "rooms" });
+    assert.equal(claims.linked_workos_sub, profile === "native" ? undefined : legacySubject);
+  }
+  await database
+    .prepare("UPDATE remote_hosts SET auth_epoch = auth_epoch + 1 WHERE host_id = ?")
+    .bind(host.hostId)
+    .run();
+  assert.equal((await redeem(host.hostId, host.machineToken)).status, 403);
+  await database
+    .prepare("UPDATE remote_hosts SET auth_epoch = auth_epoch - 1 WHERE host_id = ?")
+    .bind(host.hostId)
+    .run();
+  await database.prepare("UPDATE auth_sessions SET revoked_at = ? WHERE token_hash = ?").bind(now, browserHash).run();
+  assert.equal((await redeem(host.hostId, host.machineToken)).status, 403);
+  await database.prepare("UPDATE auth_sessions SET revoked_at = NULL WHERE token_hash = ?").bind(browserHash).run();
+  await database
+    .prepare("UPDATE remote_memberships SET status = 'revoked' WHERE membership_id = ?")
+    .bind(host.membershipId)
+    .run();
+  assert.equal((await redeem(host.hostId, host.machineToken)).status, 403);
+  await database
+    .prepare("UPDATE remote_memberships SET status = 'active' WHERE membership_id = ?")
+    .bind(host.membershipId)
+    .run();
+  await database.prepare("UPDATE pokebots_integration_grants SET expires_at = ?").bind(Date.now()).run();
+  assert.equal((await redeem(host.hostId, host.machineToken)).status, 403);
+  checks.push(
+    "joined-server grant blocks other accounts, devices and hosts, checks host epoch and revocation, caps JWT expiry",
+  );
+
   const replay = await fetch(browserCallback.target, { headers: { Cookie: flowPair }, redirect: "manual" });
   assert(replay.headers.get("Location")?.includes("workosSignInError"));
   assert.equal(

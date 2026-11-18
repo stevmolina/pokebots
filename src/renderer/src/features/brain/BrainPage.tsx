@@ -1,6 +1,12 @@
 import { BRAIN_CAPABILITY } from "@openbot/contracts/brain";
+import {
+  POKEBOTS_BRAIN_ID,
+  POKEBOTS_INTEGRATIONS_CAPABILITY,
+} from "@openbot/contracts/team-protocol/pokebots-integrations-v1";
 import { BrainPanel } from "@openbot/ui/features/brain/BrainPanel";
 import { createEffect, createSignal, Show } from "solid-js";
+import { IntegrationProfiles } from "../integrations/IntegrationProfiles";
+import { useLocalIntegrations } from "../integrations/local-integrations";
 import { serverSupportsCapability } from "../servers/server-capabilities";
 import { useServers } from "../servers/servers-context";
 import { useSettings } from "../settings/settings-context";
@@ -9,15 +15,20 @@ import { brainPort } from "./brain-port";
 export function BrainPage(props: { serverId: string }) {
   const { servers } = useServers();
   const settings = useSettings();
+  const localIntegrations = useLocalIntegrations();
   const [connection, setConnection] = createSignal<string | null>(null);
-  const supported = () => {
-    const server = servers().find((row) => row.id === props.serverId);
-    return server?.kind === "local" || (server && serverSupportsCapability(server, BRAIN_CAPABILITY));
-  };
+  const server = () => servers().find((row) => row.id === props.serverId);
+  const local = () => server()?.kind === "local";
+  const builtIn = () =>
+    local()
+      ? localIntegrations()
+      : server()?.kind === "remote" && serverSupportsCapability(server(), POKEBOTS_INTEGRATIONS_CAPABILITY);
+  const supported = () => local() || builtIn() || serverSupportsCapability(server(), BRAIN_CAPABILITY);
   createEffect(
-    () => props.serverId,
-    (serverId) => {
+    () => ({ serverId: props.serverId, manual: local() || (!builtIn() && supported()) }),
+    ({ serverId, manual }) => {
       setConnection(null);
+      if (!manual) return;
       let current = true;
       void brainPort()
         .agent.listMcpServers(serverId)
@@ -42,33 +53,32 @@ export function BrainPage(props: { serverId: string }) {
       };
     },
   );
+  const openUrl = (url: string) => void brainPort().openUrl(url);
   return (
-    <Show when={supported()}>
-      <Show when={props.serverId} keyed>
-        {(serverId) => (
-          <Show
-            when={connection()}
-            keyed
-            fallback={
+    <Show when={supported() && props.serverId} keyed>
+      {(serverId) => (
+        <IntegrationProfiles builtIn={builtIn()} manual={local() && connection() !== null} openUrl={openUrl}>
+          {(account, controls) => {
+            const id = () => (account === "manual" ? connection() : POKEBOTS_BRAIN_ID);
+            const panel = (connectionId: string | null) => (
               <BrainPanel
-                connectionId={null}
-                request={(input) => brainPort().brain.request(input, serverId)}
+                connectionId={connectionId}
+                accountControls={controls}
+                request={(input) =>
+                  brainPort().brain.request(account === "native" ? { ...input, profile: account } : input, serverId)
+                }
                 onConnect={() => settings.setSkillsMarketplaceOpen(true)}
-                onOpenLink={(url) => void brainPort().openUrl(url)}
+                onOpenLink={openUrl}
               />
-            }
-          >
-            {(id) => (
-              <BrainPanel
-                connectionId={id}
-                request={(input) => brainPort().brain.request(input, serverId)}
-                onConnect={() => settings.setSkillsMarketplaceOpen(true)}
-                onOpenLink={(url) => void brainPort().openUrl(url)}
-              />
-            )}
-          </Show>
-        )}
-      </Show>
+            );
+            return (
+              <Show when={id()} keyed fallback={panel(null)}>
+                {panel}
+              </Show>
+            );
+          }}
+        </IntegrationProfiles>
+      )}
     </Show>
   );
 }

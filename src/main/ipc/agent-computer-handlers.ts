@@ -1,4 +1,5 @@
 import {
+  decodeAgentComputerAllowanceFromHost,
   decodeAgentComputerMachineListFromHost,
   decodeAgentComputerStatusFromHost,
   decodeComputerManagementResultFromHost,
@@ -7,18 +8,28 @@ import {
 // and list its machines. Each endpoint goes to this computer's service or to a joined server's
 // `agent-computer-v1` routes.
 
-import { AGENT_COMPUTER_KEY_INPUT_LIMIT, decodeComputerManagementInput } from "@openbot/contracts/ipc";
+import {
+  AGENT_COMPUTER_KEY_INPUT_LIMIT,
+  decodeAgentComputerAccountAllowance,
+  decodeComputerManagementInput,
+} from "@openbot/contracts/ipc";
 import { AGENT_COMPUTER_CAPABILITY, AGENT_COMPUTER_ROUTES } from "@openbot/contracts/team-protocol/agent-computer-v1";
 import {
   COMPUTER_MANAGEMENT_CAPABILITY,
   COMPUTER_MANAGEMENT_ROUTE,
 } from "@openbot/contracts/team-protocol/computer-management-v1";
 import type { TeamCurrentCapability } from "@openbot/contracts/team-protocol/current";
+import {
+  POKEBOTS_INTEGRATIONS_CAPABILITY,
+  POKEBOTS_INTEGRATIONS_ROUTES,
+} from "@openbot/contracts/team-protocol/pokebots-integrations-v1";
 import { sourceText } from "@openbot/i18n/source";
 import { registerSecretValue } from "@openbot/logging";
-import type { Effect } from "effect";
+import { Effect } from "effect";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import type { AgentComputerService } from "../agent-computer-service";
+import type { CentralAuthManager } from "../central-auth-manager";
+import { currentIntegrationCredential } from "../local-integration-credential";
 import type { ResponseDecoder } from "../remote-host-decoding";
 import type { RemoteRequestInit } from "../remote-server-client";
 import type { RemoteWorkflowError } from "../remote-service-effects";
@@ -27,7 +38,11 @@ import { scopedHandler, scopedQueryHandler } from "./scoped-handler";
 import { stringPayload } from "./validation";
 
 export interface AgentComputerIpcDependencies {
-  agentComputer: Pick<AgentComputerService, "status" | "connect" | "test" | "disconnect" | "machines" | "manage">;
+  centralAuth: CentralAuthManager;
+  agentComputer: Pick<
+    AgentComputerService,
+    "api" | "status" | "connect" | "test" | "disconnect" | "machines" | "manage"
+  >;
   remoteServers: {
     supportsCapability(serverId: string, capability: TeamCurrentCapability): boolean;
     request<T>(
@@ -43,6 +58,7 @@ const decodeKey = stringPayload("apiKey", AGENT_COMPUTER_KEY_INPUT_LIMIT);
 
 export function agentComputerIpcHandlers({
   agentComputer,
+  centralAuth,
   remoteServers,
 }: AgentComputerIpcDependencies): Pick<IpcGroupHandlers, "agentComputer"> {
   function post<T>(serverId: string, path: string, decoder: ResponseDecoder<T>, body: Record<string, string> = {}) {
@@ -53,6 +69,33 @@ export function agentComputerIpcHandlers({
 
   return {
     agentComputer: {
+      allowance: scopedQueryHandler({
+        local: () => {
+          const credential = currentIntegrationCredential(centralAuth, "computer");
+          return credential
+            ? runCauseEffect(
+                agentComputer.api
+                  .forAccount(credential)
+                  .allowance()
+                  .pipe(
+                    Effect.map(decodeAgentComputerAccountAllowance),
+                    Effect.mapError((failure) => ({ cause: new Error(failure.message) })),
+                  ),
+              )
+            : null;
+        },
+        remote: (serverId) =>
+          remoteServers.supportsCapability(serverId, POKEBOTS_INTEGRATIONS_CAPABILITY)
+            ? runCauseEffect(
+                remoteServers.request(
+                  serverId,
+                  POKEBOTS_INTEGRATIONS_ROUTES.computerAllowance,
+                  decodeAgentComputerAllowanceFromHost,
+                  { method: "POST", body: {} },
+                ),
+              )
+            : null,
+      }),
       manage: scopedHandler(decodeComputerManagementInput, {
         local: (input) => runCauseEffect(agentComputer.manage(input)),
         remote: (input, serverId) => {

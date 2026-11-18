@@ -160,7 +160,7 @@ export interface WebHostNotificationSettings {
 export function createWebHostConnections(options: {
   accountId: string;
   channel: BroadcastChannel;
-  actions: Pick<RemoteTeamPeerActions, "getBootstrap" | "endSession">;
+  actions: Pick<RemoteTeamPeerActions, "getBootstrap" | "endSession" | "requestIntegrationGrant">;
   createPeer: typeof createRemoteTeamPeer;
   /**
    * The opened host's peer options apart from `waitForHost`, so a status connection can become it. A
@@ -239,6 +239,9 @@ export function createWebHostConnections(options: {
     const actions: PeerActions = {
       current: {
         getBootstrap: options.actions.getBootstrap,
+        ...(options.actions.requestIntegrationGrant && {
+          requestIntegrationGrant: options.actions.requestIntegrationGrant,
+        }),
         endSession(sessionId) {
           const ending = options.actions.endSession(sessionId);
           entry.endingSessions.add(ending);

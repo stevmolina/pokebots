@@ -1,4 +1,5 @@
 import type { BrainRequest, BrainResponse } from "@openbot/contracts/brain";
+import { POKEBOTS_BRAIN_ID } from "@openbot/contracts/team-protocol/pokebots-integrations-v1";
 import * as DocumentPicker from "expo-document-picker";
 import { File } from "expo-file-system";
 import { router, Stack, useFocusEffect, useLocalSearchParams } from "expo-router";
@@ -7,12 +8,40 @@ import { useCallback, useRef, useState } from "react";
 import { Linking, View } from "react-native";
 import { SettingsContent, SettingsRow, SettingsSection } from "@/features/settings/components/settings-content";
 import { useMobileWorkspace } from "@/features/workspace/context/mobile-workspace-context";
+import { IntegrationProfiles } from "@/shared/components/integration-profiles";
 import { SheetFormField } from "@/shared/components/sheet-form-field";
 import { useText } from "@/shared/lib/text";
 
 export function BrainScreen() {
   const { serverId } = useLocalSearchParams<{ serverId: string }>();
+  const { canUsePokebotsIntegrations } = useMobileWorkspace();
+  const [native, onSelect] = useState(false);
+  const builtIn = canUsePokebotsIntegrations(serverId);
+  const profile = builtIn && native ? "native" : undefined;
+  return (
+    <BrainAccountScreen
+      key={JSON.stringify([serverId, builtIn, profile])}
+      serverId={serverId}
+      builtIn={builtIn}
+      native={profile === "native"}
+      onSelect={onSelect}
+    />
+  );
+}
+
+function BrainAccountScreen({
+  serverId,
+  builtIn,
+  native,
+  onSelect,
+}: {
+  serverId: string;
+  builtIn: boolean;
+  native: boolean;
+  onSelect: (native: boolean) => void;
+}) {
   const workspace = useMobileWorkspace();
+  const profile = native ? "native" : undefined;
   const { t, errorMessage } = useText();
   const [state, setState] = useState<{
     connection: string;
@@ -60,24 +89,28 @@ export function BrainScreen() {
         busy: false,
       }));
       let alive = true;
-      void workspace
-        .listMcpServers(serverId)
-        .then((rows) => {
-          const row = rows.find((item) => {
-            if (item.transport !== "http") return false;
-            try {
-              const url = new URL(item.url);
-              return url.origin === "https://brain.mcpbox.dev" && url.pathname === "/mcp";
-            } catch {
-              return false;
-            }
-          });
-          if (!row || !alive) return;
-          return workspace.brainRequest({ operation: "brains", mcpServerId: row.id }, serverId).then((data) => {
+      const connectionId = async () => {
+        if (builtIn) return POKEBOTS_BRAIN_ID;
+        const rows = await workspace.listMcpServers(serverId);
+        const row = rows.find((item) => {
+          if (item.transport !== "http") return false;
+          try {
+            const url = new URL(item.url);
+            return url.origin === "https://brain.mcpbox.dev" && url.pathname === "/mcp";
+          } catch {
+            return false;
+          }
+        });
+        return row?.id;
+      };
+      void connectionId()
+        .then((id) => {
+          if (!id || !alive) return;
+          return workspace.brainRequest({ operation: "brains", mcpServerId: id }, serverId, profile).then((data) => {
             if (alive)
               setState((previous) => ({
                 ...previous,
-                connection: row.id,
+                connection: id,
                 brains: data.brains ?? [],
                 brain: data.brains?.[0]?.id ?? "",
               }));
@@ -90,13 +123,13 @@ export function BrainScreen() {
         alive = false;
         generation.current++;
       };
-    }, [serverId, supported, workspace.listMcpServers, workspace.brainRequest, errorMessage, t]),
+    }, [serverId, supported, builtIn, profile, workspace.listMcpServers, workspace.brainRequest, errorMessage, t]),
   );
   async function run(input: BrainRequest, target: "data" | "detail" | "result" = "data") {
     const current = ++generation.current;
     setState((previous) => ({ ...previous, busy: true, error: "" }));
     try {
-      const data = await workspace.brainRequest(input, serverId);
+      const data = await workspace.brainRequest(input, serverId, profile);
       if (current === generation.current)
         setState((previous) => ({
           ...previous,
@@ -140,12 +173,15 @@ export function BrainScreen() {
   return (
     <SettingsContent>
       <Stack.Screen options={{ title: t("mobile.brain.title") }} />
+      {builtIn ? <IntegrationProfiles native={native} onSelect={onSelect} /> : null}
       {!supported || !state.connection ? (
-        <SettingsSection>
-          <SettingsRow onPress={connect}>
-            <Typography>{t("mobile.brain.connect")}</Typography>
-          </SettingsRow>
-        </SettingsSection>
+        builtIn ? null : (
+          <SettingsSection>
+            <SettingsRow onPress={connect}>
+              <Typography>{t("mobile.brain.connect")}</Typography>
+            </SettingsRow>
+          </SettingsSection>
+        )
       ) : (
         <>
           <SettingsSection>

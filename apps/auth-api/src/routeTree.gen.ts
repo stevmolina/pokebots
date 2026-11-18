@@ -21,6 +21,7 @@ import { Route as ClaRouteImport } from './routes/cla'
 import { Route as CommercialLicenseRouteImport } from './routes/commercial-license'
 import { Route as CommerciallicenseRouteImport } from './routes/commerciallicense'
 import { Route as DpaRouteImport } from './routes/dpa'
+import { Route as IntegrationAccountsRouteImport } from './routes/integration-accounts'
 import { Route as JoinRouteImport } from './routes/join'
 import { Route as LlmsDottxtRouteImport } from './routes/llms[.]txt'
 import { Route as PrivacyRouteImport } from './routes/privacy'
@@ -52,6 +53,7 @@ import { Route as GuidesRssDotxmlRouteImport } from './routes/guides/rss[.]xml'
 import { Route as HealthHostingRouteImport } from './routes/health/hosting'
 import { Route as HealthLiveRouteImport } from './routes/health/live'
 import { Route as HealthReadyRouteImport } from './routes/health/ready'
+import { Route as IntegrationAccountsClientDotjsonRouteImport } from './routes/integration-accounts_.client[.]json'
 import { Route as MarketplaceIndexRouteImport } from './routes/marketplace/index'
 import { Route as MarketplaceAppsRouteImport } from './routes/marketplace/apps'
 import { Route as NewsIndexRouteImport } from './routes/news/index'
@@ -141,6 +143,7 @@ import { Route as V1MeBillingIndexRouteImport } from './routes/v1/me/billing/ind
 import { Route as V1MeBillingDetailsRouteImport } from './routes/v1/me/billing/details'
 import { Route as V1MeBillingPortalRouteImport } from './routes/v1/me/billing/portal'
 import { Route as V1MeBillingStorageRouteImport } from './routes/v1/me/billing/storage'
+import { Route as V1MeIntegrationsTokenRouteImport } from './routes/v1/me/integrations/token'
 import { Route as V1MeLicenseIndexRouteImport } from './routes/v1/me/license/index'
 import { Route as V1MeLicenseCheckoutRouteImport } from './routes/v1/me/license/checkout'
 import { Route as V1MeLicensePlanRouteImport } from './routes/v1/me/license/plan'
@@ -224,6 +227,7 @@ import { Route as V1SkillsSkillIdVersionsVersionIdContentRouteImport } from './r
 import { Route as V2RemoteHostsHostIdCompanySignInIndexRouteImport } from './routes/v2/remote/hosts/$hostId/company-sign-in/index'
 import { Route as V2RemoteHostsHostIdCompanySignInScimTokenRouteImport } from './routes/v2/remote/hosts/$hostId/company-sign-in/scim-token'
 import { Route as V2RemoteHostsHostIdCompanySignInTestRouteImport } from './routes/v2/remote/hosts/$hostId/company-sign-in/test'
+import { Route as V2RemoteHostsHostIdIntegrationsTokenRouteImport } from './routes/v2/remote/hosts/$hostId/integrations/token'
 import { Route as V2RemoteHostsHostIdMembersIndexRouteImport } from './routes/v2/remote/hosts/$hostId/members/index'
 import { Route as V2RemoteHostsHostIdMembersMembershipIdRouteImport } from './routes/v2/remote/hosts/$hostId/members/$membershipId'
 
@@ -281,6 +285,11 @@ const CommerciallicenseRoute = CommerciallicenseRouteImport.update({
 const DpaRoute = DpaRouteImport.update({
   id: '/dpa',
   path: '/dpa',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IntegrationAccountsRoute = IntegrationAccountsRouteImport.update({
+  id: '/integration-accounts',
+  path: '/integration-accounts',
   getParentRoute: () => rootRouteImport,
 } as any)
 const JoinRoute = JoinRouteImport.update({
@@ -439,6 +448,12 @@ const HealthReadyRoute = HealthReadyRouteImport.update({
   path: '/health/ready',
   getParentRoute: () => rootRouteImport,
 } as any)
+const IntegrationAccountsClientDotjsonRoute =
+  IntegrationAccountsClientDotjsonRouteImport.update({
+    id: '/integration-accounts_/client.json',
+    path: '/integration-accounts/client.json',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const MarketplaceIndexRoute = MarketplaceIndexRouteImport.update({
   id: '/marketplace/',
   path: '/marketplace/',
@@ -890,6 +905,11 @@ const V1MeBillingPortalRoute = V1MeBillingPortalRouteImport.update({
 const V1MeBillingStorageRoute = V1MeBillingStorageRouteImport.update({
   id: '/billing/storage',
   path: '/billing/storage',
+  getParentRoute: () => V1MeRoute,
+} as any)
+const V1MeIntegrationsTokenRoute = V1MeIntegrationsTokenRouteImport.update({
+  id: '/integrations/token',
+  path: '/integrations/token',
   getParentRoute: () => V1MeRoute,
 } as any)
 const V1MeLicenseIndexRoute = V1MeLicenseIndexRouteImport.update({
@@ -1366,6 +1386,12 @@ const V2RemoteHostsHostIdCompanySignInTestRoute =
     path: '/v2/remote/hosts/$hostId/company-sign-in/test',
     getParentRoute: () => rootRouteImport,
   } as any)
+const V2RemoteHostsHostIdIntegrationsTokenRoute =
+  V2RemoteHostsHostIdIntegrationsTokenRouteImport.update({
+    id: '/v2/remote/hosts/$hostId/integrations/token',
+    path: '/v2/remote/hosts/$hostId/integrations/token',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const V2RemoteHostsHostIdMembersIndexRoute =
   V2RemoteHostsHostIdMembersIndexRouteImport.update({
     id: '/v2/remote/hosts/$hostId/members/',
@@ -1389,6 +1415,7 @@ export interface FileRoutesByFullPath {
   '/commercial-license': typeof CommercialLicenseRoute
   '/commerciallicense': typeof CommerciallicenseRoute
   '/dpa': typeof DpaRoute
+  '/integration-accounts': typeof IntegrationAccountsRoute
   '/join': typeof JoinRoute
   '/llms.txt': typeof LlmsDottxtRoute
   '/privacy': typeof PrivacyRoute
@@ -1415,6 +1442,7 @@ export interface FileRoutesByFullPath {
   '/health/hosting': typeof HealthHostingRoute
   '/health/live': typeof HealthLiveRoute
   '/health/ready': typeof HealthReadyRoute
+  '/integration-accounts/client.json': typeof IntegrationAccountsClientDotjsonRoute
   '/marketplace/apps': typeof MarketplaceAppsRoute
   '/news/$slug': typeof NewsSlugRoute
   '/news/openbot-vs-grokbot': typeof NewsOpenbotVsGrokbotRoute
@@ -1505,6 +1533,7 @@ export interface FileRoutesByFullPath {
   '/v1/me/billing/details': typeof V1MeBillingDetailsRoute
   '/v1/me/billing/portal': typeof V1MeBillingPortalRoute
   '/v1/me/billing/storage': typeof V1MeBillingStorageRoute
+  '/v1/me/integrations/token': typeof V1MeIntegrationsTokenRoute
   '/v1/me/license/checkout': typeof V1MeLicenseCheckoutRoute
   '/v1/me/license/plan': typeof V1MeLicensePlanRoute
   '/v1/me/license/renewal': typeof V1MeLicenseRenewalRoute
@@ -1590,6 +1619,7 @@ export interface FileRoutesByFullPath {
   '/v1/skills/$skillId/versions/$versionId/content': typeof V1SkillsSkillIdVersionsVersionIdContentRoute
   '/v2/remote/hosts/$hostId/company-sign-in/scim-token': typeof V2RemoteHostsHostIdCompanySignInScimTokenRoute
   '/v2/remote/hosts/$hostId/company-sign-in/test': typeof V2RemoteHostsHostIdCompanySignInTestRoute
+  '/v2/remote/hosts/$hostId/integrations/token': typeof V2RemoteHostsHostIdIntegrationsTokenRoute
   '/v2/remote/hosts/$hostId/members/$membershipId': typeof V2RemoteHostsHostIdMembersMembershipIdRoute
   '/v2/remote/hosts/$hostId/company-sign-in/': typeof V2RemoteHostsHostIdCompanySignInIndexRoute
   '/v2/remote/hosts/$hostId/members/': typeof V2RemoteHostsHostIdMembersIndexRoute
@@ -1604,6 +1634,7 @@ export interface FileRoutesByTo {
   '/commercial-license': typeof CommercialLicenseRoute
   '/commerciallicense': typeof CommerciallicenseRoute
   '/dpa': typeof DpaRoute
+  '/integration-accounts': typeof IntegrationAccountsRoute
   '/join': typeof JoinRoute
   '/llms.txt': typeof LlmsDottxtRoute
   '/privacy': typeof PrivacyRoute
@@ -1630,6 +1661,7 @@ export interface FileRoutesByTo {
   '/health/hosting': typeof HealthHostingRoute
   '/health/live': typeof HealthLiveRoute
   '/health/ready': typeof HealthReadyRoute
+  '/integration-accounts/client.json': typeof IntegrationAccountsClientDotjsonRoute
   '/marketplace/apps': typeof MarketplaceAppsRoute
   '/news/$slug': typeof NewsSlugRoute
   '/news/openbot-vs-grokbot': typeof NewsOpenbotVsGrokbotRoute
@@ -1720,6 +1752,7 @@ export interface FileRoutesByTo {
   '/v1/me/billing/details': typeof V1MeBillingDetailsRoute
   '/v1/me/billing/portal': typeof V1MeBillingPortalRoute
   '/v1/me/billing/storage': typeof V1MeBillingStorageRoute
+  '/v1/me/integrations/token': typeof V1MeIntegrationsTokenRoute
   '/v1/me/license/checkout': typeof V1MeLicenseCheckoutRoute
   '/v1/me/license/plan': typeof V1MeLicensePlanRoute
   '/v1/me/license/renewal': typeof V1MeLicenseRenewalRoute
@@ -1805,6 +1838,7 @@ export interface FileRoutesByTo {
   '/v1/skills/$skillId/versions/$versionId/content': typeof V1SkillsSkillIdVersionsVersionIdContentRoute
   '/v2/remote/hosts/$hostId/company-sign-in/scim-token': typeof V2RemoteHostsHostIdCompanySignInScimTokenRoute
   '/v2/remote/hosts/$hostId/company-sign-in/test': typeof V2RemoteHostsHostIdCompanySignInTestRoute
+  '/v2/remote/hosts/$hostId/integrations/token': typeof V2RemoteHostsHostIdIntegrationsTokenRoute
   '/v2/remote/hosts/$hostId/members/$membershipId': typeof V2RemoteHostsHostIdMembersMembershipIdRoute
   '/v2/remote/hosts/$hostId/company-sign-in': typeof V2RemoteHostsHostIdCompanySignInIndexRoute
   '/v2/remote/hosts/$hostId/members': typeof V2RemoteHostsHostIdMembersIndexRoute
@@ -1823,6 +1857,7 @@ export interface FileRoutesById {
   '/commercial-license': typeof CommercialLicenseRoute
   '/commerciallicense': typeof CommerciallicenseRoute
   '/dpa': typeof DpaRoute
+  '/integration-accounts': typeof IntegrationAccountsRoute
   '/join': typeof JoinRoute
   '/llms.txt': typeof LlmsDottxtRoute
   '/privacy': typeof PrivacyRoute
@@ -1849,6 +1884,7 @@ export interface FileRoutesById {
   '/health/hosting': typeof HealthHostingRoute
   '/health/live': typeof HealthLiveRoute
   '/health/ready': typeof HealthReadyRoute
+  '/integration-accounts_/client.json': typeof IntegrationAccountsClientDotjsonRoute
   '/marketplace/apps': typeof MarketplaceAppsRoute
   '/news/$slug': typeof NewsSlugRoute
   '/news/openbot-vs-grokbot': typeof NewsOpenbotVsGrokbotRoute
@@ -1940,6 +1976,7 @@ export interface FileRoutesById {
   '/v1/me/billing/details': typeof V1MeBillingDetailsRoute
   '/v1/me/billing/portal': typeof V1MeBillingPortalRoute
   '/v1/me/billing/storage': typeof V1MeBillingStorageRoute
+  '/v1/me/integrations/token': typeof V1MeIntegrationsTokenRoute
   '/v1/me/license/checkout': typeof V1MeLicenseCheckoutRoute
   '/v1/me/license/plan': typeof V1MeLicensePlanRoute
   '/v1/me/license/renewal': typeof V1MeLicenseRenewalRoute
@@ -2025,6 +2062,7 @@ export interface FileRoutesById {
   '/v1/skills/$skillId/versions/$versionId/content': typeof V1SkillsSkillIdVersionsVersionIdContentRoute
   '/v2/remote/hosts/$hostId/company-sign-in/scim-token': typeof V2RemoteHostsHostIdCompanySignInScimTokenRoute
   '/v2/remote/hosts/$hostId/company-sign-in/test': typeof V2RemoteHostsHostIdCompanySignInTestRoute
+  '/v2/remote/hosts/$hostId/integrations/token': typeof V2RemoteHostsHostIdIntegrationsTokenRoute
   '/v2/remote/hosts/$hostId/members/$membershipId': typeof V2RemoteHostsHostIdMembersMembershipIdRoute
   '/v2/remote/hosts/$hostId/company-sign-in/': typeof V2RemoteHostsHostIdCompanySignInIndexRoute
   '/v2/remote/hosts/$hostId/members/': typeof V2RemoteHostsHostIdMembersIndexRoute
@@ -2041,6 +2079,7 @@ export interface FileRouteTypes {
     | '/commercial-license'
     | '/commerciallicense'
     | '/dpa'
+    | '/integration-accounts'
     | '/join'
     | '/llms.txt'
     | '/privacy'
@@ -2067,6 +2106,7 @@ export interface FileRouteTypes {
     | '/health/hosting'
     | '/health/live'
     | '/health/ready'
+    | '/integration-accounts/client.json'
     | '/marketplace/apps'
     | '/news/$slug'
     | '/news/openbot-vs-grokbot'
@@ -2157,6 +2197,7 @@ export interface FileRouteTypes {
     | '/v1/me/billing/details'
     | '/v1/me/billing/portal'
     | '/v1/me/billing/storage'
+    | '/v1/me/integrations/token'
     | '/v1/me/license/checkout'
     | '/v1/me/license/plan'
     | '/v1/me/license/renewal'
@@ -2242,6 +2283,7 @@ export interface FileRouteTypes {
     | '/v1/skills/$skillId/versions/$versionId/content'
     | '/v2/remote/hosts/$hostId/company-sign-in/scim-token'
     | '/v2/remote/hosts/$hostId/company-sign-in/test'
+    | '/v2/remote/hosts/$hostId/integrations/token'
     | '/v2/remote/hosts/$hostId/members/$membershipId'
     | '/v2/remote/hosts/$hostId/company-sign-in/'
     | '/v2/remote/hosts/$hostId/members/'
@@ -2256,6 +2298,7 @@ export interface FileRouteTypes {
     | '/commercial-license'
     | '/commerciallicense'
     | '/dpa'
+    | '/integration-accounts'
     | '/join'
     | '/llms.txt'
     | '/privacy'
@@ -2282,6 +2325,7 @@ export interface FileRouteTypes {
     | '/health/hosting'
     | '/health/live'
     | '/health/ready'
+    | '/integration-accounts/client.json'
     | '/marketplace/apps'
     | '/news/$slug'
     | '/news/openbot-vs-grokbot'
@@ -2372,6 +2416,7 @@ export interface FileRouteTypes {
     | '/v1/me/billing/details'
     | '/v1/me/billing/portal'
     | '/v1/me/billing/storage'
+    | '/v1/me/integrations/token'
     | '/v1/me/license/checkout'
     | '/v1/me/license/plan'
     | '/v1/me/license/renewal'
@@ -2457,6 +2502,7 @@ export interface FileRouteTypes {
     | '/v1/skills/$skillId/versions/$versionId/content'
     | '/v2/remote/hosts/$hostId/company-sign-in/scim-token'
     | '/v2/remote/hosts/$hostId/company-sign-in/test'
+    | '/v2/remote/hosts/$hostId/integrations/token'
     | '/v2/remote/hosts/$hostId/members/$membershipId'
     | '/v2/remote/hosts/$hostId/company-sign-in'
     | '/v2/remote/hosts/$hostId/members'
@@ -2474,6 +2520,7 @@ export interface FileRouteTypes {
     | '/commercial-license'
     | '/commerciallicense'
     | '/dpa'
+    | '/integration-accounts'
     | '/join'
     | '/llms.txt'
     | '/privacy'
@@ -2500,6 +2547,7 @@ export interface FileRouteTypes {
     | '/health/hosting'
     | '/health/live'
     | '/health/ready'
+    | '/integration-accounts_/client.json'
     | '/marketplace/apps'
     | '/news/$slug'
     | '/news/openbot-vs-grokbot'
@@ -2591,6 +2639,7 @@ export interface FileRouteTypes {
     | '/v1/me/billing/details'
     | '/v1/me/billing/portal'
     | '/v1/me/billing/storage'
+    | '/v1/me/integrations/token'
     | '/v1/me/license/checkout'
     | '/v1/me/license/plan'
     | '/v1/me/license/renewal'
@@ -2676,6 +2725,7 @@ export interface FileRouteTypes {
     | '/v1/skills/$skillId/versions/$versionId/content'
     | '/v2/remote/hosts/$hostId/company-sign-in/scim-token'
     | '/v2/remote/hosts/$hostId/company-sign-in/test'
+    | '/v2/remote/hosts/$hostId/integrations/token'
     | '/v2/remote/hosts/$hostId/members/$membershipId'
     | '/v2/remote/hosts/$hostId/company-sign-in/'
     | '/v2/remote/hosts/$hostId/members/'
@@ -2694,6 +2744,7 @@ export interface RootRouteChildren {
   CommercialLicenseRoute: typeof CommercialLicenseRoute
   CommerciallicenseRoute: typeof CommerciallicenseRoute
   DpaRoute: typeof DpaRoute
+  IntegrationAccountsRoute: typeof IntegrationAccountsRoute
   JoinRoute: typeof JoinRoute
   LlmsDottxtRoute: typeof LlmsDottxtRoute
   PrivacyRoute: typeof PrivacyRoute
@@ -2715,6 +2766,7 @@ export interface RootRouteChildren {
   HealthHostingRoute: typeof HealthHostingRoute
   HealthLiveRoute: typeof HealthLiveRoute
   HealthReadyRoute: typeof HealthReadyRoute
+  IntegrationAccountsClientDotjsonRoute: typeof IntegrationAccountsClientDotjsonRoute
   MarketplaceAppsRoute: typeof MarketplaceAppsRoute
   NewsSlugRoute: typeof NewsSlugRoute
   NewsOpenbotVsGrokbotRoute: typeof NewsOpenbotVsGrokbotRoute
@@ -2854,6 +2906,7 @@ export interface RootRouteChildren {
   V1MarketplaceAgentsAdminVerifiedAgentIdRoute: typeof V1MarketplaceAgentsAdminVerifiedAgentIdRoute
   V2RemoteHostsHostIdCompanySignInScimTokenRoute: typeof V2RemoteHostsHostIdCompanySignInScimTokenRoute
   V2RemoteHostsHostIdCompanySignInTestRoute: typeof V2RemoteHostsHostIdCompanySignInTestRoute
+  V2RemoteHostsHostIdIntegrationsTokenRoute: typeof V2RemoteHostsHostIdIntegrationsTokenRoute
   V2RemoteHostsHostIdMembersMembershipIdRoute: typeof V2RemoteHostsHostIdMembersMembershipIdRoute
   V2RemoteHostsHostIdCompanySignInIndexRoute: typeof V2RemoteHostsHostIdCompanySignInIndexRoute
   V2RemoteHostsHostIdMembersIndexRoute: typeof V2RemoteHostsHostIdMembersIndexRoute
@@ -2943,6 +2996,13 @@ declare module '@tanstack/solid-router' {
       path: '/dpa'
       fullPath: '/dpa'
       preLoaderRoute: typeof DpaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/integration-accounts': {
+      id: '/integration-accounts'
+      path: '/integration-accounts'
+      fullPath: '/integration-accounts'
+      preLoaderRoute: typeof IntegrationAccountsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/join': {
@@ -3160,6 +3220,13 @@ declare module '@tanstack/solid-router' {
       path: '/health/ready'
       fullPath: '/health/ready'
       preLoaderRoute: typeof HealthReadyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/integration-accounts_/client.json': {
+      id: '/integration-accounts_/client.json'
+      path: '/integration-accounts/client.json'
+      fullPath: '/integration-accounts/client.json'
+      preLoaderRoute: typeof IntegrationAccountsClientDotjsonRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/marketplace/': {
@@ -3785,6 +3852,13 @@ declare module '@tanstack/solid-router' {
       preLoaderRoute: typeof V1MeBillingStorageRouteImport
       parentRoute: typeof V1MeRoute
     }
+    '/v1/me/integrations/token': {
+      id: '/v1/me/integrations/token'
+      path: '/integrations/token'
+      fullPath: '/v1/me/integrations/token'
+      preLoaderRoute: typeof V1MeIntegrationsTokenRouteImport
+      parentRoute: typeof V1MeRoute
+    }
     '/v1/me/license/': {
       id: '/v1/me/license/'
       path: '/license'
@@ -4366,6 +4440,13 @@ declare module '@tanstack/solid-router' {
       preLoaderRoute: typeof V2RemoteHostsHostIdCompanySignInTestRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/v2/remote/hosts/$hostId/integrations/token': {
+      id: '/v2/remote/hosts/$hostId/integrations/token'
+      path: '/v2/remote/hosts/$hostId/integrations/token'
+      fullPath: '/v2/remote/hosts/$hostId/integrations/token'
+      preLoaderRoute: typeof V2RemoteHostsHostIdIntegrationsTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/v2/remote/hosts/$hostId/members/': {
       id: '/v2/remote/hosts/$hostId/members/'
       path: '/v2/remote/hosts/$hostId/members'
@@ -4463,6 +4544,7 @@ interface V1MeRouteChildren {
   V1MeBillingDetailsRoute: typeof V1MeBillingDetailsRoute
   V1MeBillingPortalRoute: typeof V1MeBillingPortalRoute
   V1MeBillingStorageRoute: typeof V1MeBillingStorageRoute
+  V1MeIntegrationsTokenRoute: typeof V1MeIntegrationsTokenRoute
   V1MeLicenseCheckoutRoute: typeof V1MeLicenseCheckoutRoute
   V1MeLicensePlanRoute: typeof V1MeLicensePlanRoute
   V1MeLicenseRenewalRoute: typeof V1MeLicenseRenewalRoute
@@ -4479,6 +4561,7 @@ const V1MeRouteChildren: V1MeRouteChildren = {
   V1MeBillingDetailsRoute: V1MeBillingDetailsRoute,
   V1MeBillingPortalRoute: V1MeBillingPortalRoute,
   V1MeBillingStorageRoute: V1MeBillingStorageRoute,
+  V1MeIntegrationsTokenRoute: V1MeIntegrationsTokenRoute,
   V1MeLicenseCheckoutRoute: V1MeLicenseCheckoutRoute,
   V1MeLicensePlanRoute: V1MeLicensePlanRoute,
   V1MeLicenseRenewalRoute: V1MeLicenseRenewalRoute,
@@ -4619,6 +4702,7 @@ const rootRouteChildren: RootRouteChildren = {
   CommercialLicenseRoute: CommercialLicenseRoute,
   CommerciallicenseRoute: CommerciallicenseRoute,
   DpaRoute: DpaRoute,
+  IntegrationAccountsRoute: IntegrationAccountsRoute,
   JoinRoute: JoinRoute,
   LlmsDottxtRoute: LlmsDottxtRoute,
   PrivacyRoute: PrivacyRoute,
@@ -4641,6 +4725,7 @@ const rootRouteChildren: RootRouteChildren = {
   HealthHostingRoute: HealthHostingRoute,
   HealthLiveRoute: HealthLiveRoute,
   HealthReadyRoute: HealthReadyRoute,
+  IntegrationAccountsClientDotjsonRoute: IntegrationAccountsClientDotjsonRoute,
   MarketplaceAppsRoute: MarketplaceAppsRoute,
   NewsSlugRoute: NewsSlugRoute,
   NewsOpenbotVsGrokbotRoute: NewsOpenbotVsGrokbotRoute,
@@ -4792,6 +4877,8 @@ const rootRouteChildren: RootRouteChildren = {
     V2RemoteHostsHostIdCompanySignInScimTokenRoute,
   V2RemoteHostsHostIdCompanySignInTestRoute:
     V2RemoteHostsHostIdCompanySignInTestRoute,
+  V2RemoteHostsHostIdIntegrationsTokenRoute:
+    V2RemoteHostsHostIdIntegrationsTokenRoute,
   V2RemoteHostsHostIdMembersMembershipIdRoute:
     V2RemoteHostsHostIdMembersMembershipIdRoute,
   V2RemoteHostsHostIdCompanySignInIndexRoute:

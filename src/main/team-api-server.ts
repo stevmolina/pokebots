@@ -226,6 +226,7 @@ import { MESSAGE_PINS_CAPABILITY } from "@openbot/contracts/team-protocol/messag
 import { MISTRAL_CODE_SIGN_IN_CAPABILITY } from "@openbot/contracts/team-protocol/mistral-code-sign-in-v1";
 import { MODEL_STEERING_CAPABILITY } from "@openbot/contracts/team-protocol/model-steering-v1";
 import { type OptionalTeamEvent, optionalTeamEvent } from "@openbot/contracts/team-protocol/optional-events";
+import { POKEBOTS_INTEGRATIONS_CAPABILITY } from "@openbot/contracts/team-protocol/pokebots-integrations-v1";
 import { PROVIDER_ACCOUNT_CODE_CAPABILITY } from "@openbot/contracts/team-protocol/provider-account-code-v1";
 import { PROVIDER_ACCOUNT_KEYS_CAPABILITY } from "@openbot/contracts/team-protocol/provider-account-keys-v1";
 import { PROVIDER_ACCOUNT_MODELS_CAPABILITY } from "@openbot/contracts/team-protocol/provider-account-models-v1";
@@ -422,6 +423,7 @@ import { routeOnePasswordConnector } from "./team-api/route-onepassword-connecto
 import { routePasswordManagers } from "./team-api/route-password-managers";
 import { routePendingApproval } from "./team-api/route-pending-approval";
 import { routePhoneFeedback } from "./team-api/route-phone-feedback";
+import { routePokebotsIntegrations } from "./team-api/route-pokebots-integrations";
 import { routePromptCacheTtl } from "./team-api/route-prompt-cache-ttl";
 import {
   routeProviderAccountCode,
@@ -1290,6 +1292,7 @@ export class TeamApiServer {
       if ((await routeWhatsAppStatusReactions(context, this.#options.connectors)) === "handled") return;
       if ((await routeOnePasswordConnector(context, this.#options.onePasswordConnector)) === "handled") return;
       if ((await routeBitwardenConnector(context, this.#options.bitwardenConnector)) === "handled") return;
+      if ((await routePokebotsIntegrations(context, this.#options.pokebotsIntegrations)) === "handled") return;
       if ((await routeRooms(context, this.#options.rooms)) === "handled") return;
       if ((await routeAgentComputer(context, this.#options.agentComputer)) === "handled") return;
       if ((await routePasswordManagers(context, this.#options.passwordManagers)) === "handled") return;
@@ -2721,6 +2724,10 @@ export class TeamApiServer {
           if (capability === WHATSAPP_STATUS_REACTIONS_CAPABILITY) return this.#options.connectors !== undefined;
           if (capability === ONEPASSWORD_CONNECTOR_CAPABILITY) return this.#options.onePasswordConnector !== undefined;
           if (capability === BITWARDEN_CONNECTOR_CAPABILITY) return this.#options.bitwardenConnector !== undefined;
+          if (capability === POKEBOTS_INTEGRATIONS_CAPABILITY) {
+            const integration = this.#options.pokebotsIntegrations;
+            return integration !== undefined && integration.available?.() !== false;
+          }
           if (capability === ROOMS_CAPABILITY) return this.#options.rooms !== undefined;
           if (capability === COMPUTER_MANAGEMENT_CAPABILITY || capability === AGENT_COMPUTER_CAPABILITY)
             return this.#options.agentComputer !== undefined;
