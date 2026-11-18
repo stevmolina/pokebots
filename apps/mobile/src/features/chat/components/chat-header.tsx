@@ -87,13 +87,11 @@ export const ChatHeader = memo(function ChatHeader({
   const barTop = useBarTop();
   const splitShown = useSplitLayout() !== null;
   const warning = useThemeColor("warning");
-  // The calm look: the name opens the agent's info, and the sessions move into the More menu.
   const calm = useCalmLook();
-  // A side thread passes its own actions menu, which has no room for Sessions: there the name keeps
-  // opening the sessions, as in the current look.
+  // Keep Sessions in More on the calm agent chat. A side thread has its own More actions.
   const sessionsInMore = calm && actionsMenu === undefined;
   const sessionsMenu = sessionsInMore ? threadMenu : undefined;
-  const pillMenu = sessionsInMore ? undefined : threadMenu;
+  const pillMenu = threadMenu;
   const sessionsAttention = sessionsMenu?.attention ?? 0;
   const disconnected = useMobileWorkspaceSelector(
     (current) => !current.servers.some((server) => server.id === target.serverId && showsOnline(server)),
@@ -278,6 +276,7 @@ export const ChatHeader = memo(function ChatHeader({
   const titlePill = (
     <GlassView
       glassEffectStyle={liquidGlassAvailable ? "regular" : "none"}
+      isInteractive={liquidGlassAvailable && !accessibilityHidden}
       style={{
         alignItems: "center",
         alignSelf: "stretch",
@@ -434,7 +433,7 @@ export const ChatHeader = memo(function ChatHeader({
         {verticalBar || centerTitle ? (
           <View
             className="absolute z-20 flex-row"
-            pointerEvents="box-none"
+            pointerEvents={accessibilityHidden ? "none" : "box-none"}
             accessibilityElementsHidden={accessibilityHidden}
             importantForAccessibility={accessibilityHidden ? "no-hide-descendants" : "auto"}
             style={{

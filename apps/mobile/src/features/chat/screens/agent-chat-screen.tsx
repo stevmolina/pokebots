@@ -1,15 +1,21 @@
-import { useFocusEffect, useLocalSearchParams } from "expo-router";
+import { isAgentTaskOpen } from "@openbot/team-client/agent-tasks";
+import { router, useFocusEffect, useIsFocused, useLocalSearchParams } from "expo-router";
 import { Typography } from "heroui-native";
 import { useThemeColor } from "heroui-native/hooks";
 import ArrowLeft from "lucide-react-native/icons/arrow-left";
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Pressable, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { MobileChatView } from "@/features/chat/components/agent-chat-view";
 import { useLeaveChat } from "@/features/chat/components/use-leave-chat";
+import { mainSession, setMainSession } from "@/features/chat/model/main-session";
 import { noteChatOpened } from "@/features/quick-actions/model/recent-agents";
-import { useMobileWorkspaceSelector } from "@/features/workspace/context/mobile-workspace-context";
+import {
+  type MobileAgent,
+  useMobileWorkspaceReader,
+  useMobileWorkspaceSelector,
+} from "@/features/workspace/context/mobile-workspace-context";
 import { haptics } from "@/shared/lib/haptics";
 import { useText } from "@/shared/lib/text";
 import { MIRROR_IN_RTL } from "@/shared/lib/text-direction";
@@ -42,7 +48,7 @@ export function AgentChatScreen() {
 
   if (agent) {
     return (
-      <MobileChatView
+      <AgentChatVisit
         // A new message, such as the source of a branch, opens the chat again at that message.
         key={`${agent.serverId}:${agent.id}:${resolvedMessageId ?? ""}:${focusAt ?? ""}`}
         agent={agent}
@@ -75,5 +81,80 @@ export function AgentChatScreen() {
         <Typography.Paragraph weight="semibold">{t("mobile.chat.agentUnavailable.goBack")}</Typography.Paragraph>
       </Pressable>
     </View>
+  );
+}
+
+const SESSION_LOOKUP_MS = 1_500;
+
+function AgentChatVisit({
+  agent,
+  focusMessageId,
+  onLeave,
+}: {
+  agent: MobileAgent;
+  focusMessageId?: string;
+  onLeave: () => void;
+}) {
+  const { id: agentId, serverId } = agent;
+  const focused = useIsFocused();
+  const workspace = useMobileWorkspaceReader();
+  const canLoadTasks = useMobileWorkspaceSelector(
+    (current) =>
+      current.servers.some((server) => server.id === serverId && server.state === "online") &&
+      current.canUseTasks(serverId),
+  );
+  const [savedTask] = useState(() => (focusMessageId ? null : mainSession(serverId, agentId)));
+  const [entry, setEntry] = useState<"resolve" | "thread" | "return" | "chat">(savedTask ? "resolve" : "chat");
+
+  useEffect(() => {
+    // Keep the chat unmounted under the saved thread. Back opens it once.
+    if (entry === "thread" && !focused) setEntry("return");
+    if (entry === "return" && focused) setEntry("chat");
+    if (entry !== "resolve" || !focused || !savedTask) return;
+    if (!canLoadTasks) {
+      setEntry("chat");
+      return;
+    }
+
+    let waiting = true;
+    const showChat = () => {
+      waiting = false;
+      setEntry("chat");
+    };
+    const timer = setTimeout(showChat, SESSION_LOOKUP_MS);
+    workspace()
+      .loadAgentTasks(agentId, serverId)
+      .then(
+        ({ tasks }) => {
+          if (!waiting) return;
+          clearTimeout(timer);
+          if (mainSession(serverId, agentId) !== savedTask) {
+            showChat();
+            return;
+          }
+          if (!tasks.some((task) => task.id === savedTask && isAgentTaskOpen(task))) {
+            setMainSession(serverId, agentId, null);
+            showChat();
+            return;
+          }
+          waiting = false;
+          setEntry("thread");
+          router.push({ pathname: "/task/[taskId]", params: { agentId, serverId, taskId: savedTask } });
+        },
+        () => {
+          clearTimeout(timer);
+          if (waiting) showChat();
+        },
+      );
+    return () => {
+      waiting = false;
+      clearTimeout(timer);
+    };
+  }, [agentId, canLoadTasks, entry, focused, savedTask, serverId, workspace]);
+
+  return entry === "chat" ? (
+    <MobileChatView agent={agent} focusMessageId={focusMessageId} onLeave={onLeave} />
+  ) : (
+    <View className="flex-1 bg-background" />
   );
 }
