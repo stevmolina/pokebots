@@ -54,6 +54,7 @@ import {
   HOSTED_UPDATE_TRIGGER,
   HostedUpdateAdapter,
 } from "./hosted-update-adapter";
+import { JoinedIntegrationAccess } from "./joined-integration-access";
 import { LicenseDesktopService } from "./license-service";
 import { LocalSignInWindows } from "./local-sign-in-window";
 import { localSkillLearner } from "./local-skill-learner";
@@ -3718,6 +3719,10 @@ export async function createApplicationServices({
   // start gives it to Sunshine again. So it stays in memory: the remote desktop also starts when the
   // system keyring or the macOS Keychain is not available.
   const remoteDesktopRuntimeCredentials = { username: "openbot", password: randomBytes(32).toString("base64url") };
+  const joinedIntegrationAccess =
+    new URL(centralAuthApiUrl).origin === "https://api.pokebots.xyz"
+      ? new JoinedIntegrationAccess(teamStore, centralAuth, centralAuthApiUrl, accountServiceFetch)
+      : null;
   const host = new HostService({
     appVersion: app.getVersion(),
     store: teamStore,
@@ -3753,6 +3758,7 @@ export async function createApplicationServices({
     // Present, so the host advertises `bitwarden-connector-v1`. An owner or admin connects it with an
     // API key and the master password: a session key from their computer cannot open this vault.
     bitwardenConnector,
+    ...(joinedIntegrationAccess ? { pokebotsIntegrations: { access: joinedIntegrationAccess, brain, rooms } } : {}),
     // Rooms uses the host's encrypted MCP account and is restricted to owners and admins.
     rooms,
     // Present, so the host advertises `agent-computer-v1`. An owner or admin connects it with an API key.

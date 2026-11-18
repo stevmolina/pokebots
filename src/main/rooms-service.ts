@@ -59,7 +59,7 @@ export class RoomsService {
   constructor(
     private readonly oauth: Pick<McpOAuthAuthority, "accessToken" | "refreshAccessToken">,
     private readonly baseUrl = "https://rooms.mcpbox.dev/api/v1",
-    private readonly fetcher = fetch,
+    private readonly fetcher: (input: string, init: RequestInit) => Promise<Response> = fetch,
   ) {}
 
   readonly execute = Effect.fn("RoomsService.execute")(function* (

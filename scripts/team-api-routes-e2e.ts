@@ -1,7 +1,13 @@
 import { BRAIN_CAPABILITY, BRAIN_ROUTE } from "@openbot/contracts/brain";
 import type { McpServerConfig } from "@openbot/contracts/ipc";
+import {
+  POKEBOTS_BRAIN_ID,
+  POKEBOTS_INTEGRATIONS_CAPABILITY,
+  POKEBOTS_INTEGRATIONS_ROUTES,
+} from "@openbot/contracts/team-protocol/pokebots-integrations-v1";
 import { ROOMS_CAPABILITY, ROOMS_ROUTE } from "@openbot/contracts/team-protocol/rooms-v1";
 import { BrainService } from "../src/backend/brain-service";
+import { JoinedIntegrationAccess } from "../src/main/joined-integration-access";
 import { RoomsService } from "../src/main/rooms-service";
 // Drives the real `TeamApiServer` on a loopback port over HTTP, as a remote client does. The team
 // store and the direct-message store are the real ones on temporary files. The agent service, the
@@ -446,7 +452,7 @@ import { sourceText } from "@openbot/i18n/source";
 import { createOpenBotLogger } from "@openbot/logging";
 import { createAgentComputerPort } from "@openbot/team-client/agent-computer";
 import { RoutineInputError } from "@openbot/team-client/routine-schedule";
-import { Effect } from "effect";
+import { Effect, Result } from "effect";
 import { strToU8, unzipSync, zipSync } from "fflate";
 import { ForbiddenAttentionAnswer, InactiveAttentionRequest } from "../src/backend/agent/inactive-attention-request";
 import { SteerUnsupportedError } from "../src/backend/agent/queue-controls";
@@ -2490,6 +2496,14 @@ async function runRouteChecks() {
     accessToken: () => Effect.succeed(null),
     refreshAccessToken: () => Effect.succeed(null),
   });
+  const joinedRooms = new RoomsService(
+    { accessToken: () => Effect.succeed(null), refreshAccessToken: () => Effect.succeed(null) },
+    "https://rooms.example",
+    async (_input, init) =>
+      new Headers(init?.headers).get("Authorization") === "Bearer fixture-integration-bearer"
+        ? Response.json({ rooms: [] })
+        : new Response(null, { status: 401 }),
+  );
   const brainConnection: McpServerConfig = {
     id: "brain-e2e",
     name: "Second Brain",
@@ -2512,7 +2526,31 @@ async function runRouteChecks() {
       return Response.json({ brains: [{ id: "example/notes", repo: "example/notes" }] });
     },
   });
+  let integrationUser = "account-bob";
+  let integrationSession = "joined-integration-session";
+  let integrationExchanges = 0;
+  const integrationAccess = new JoinedIntegrationAccess(
+    store,
+    { hostSiteCredential: (hostId) => ({ hostId, machineToken: "fixture-machine-token" }) },
+    "https://accounts.example",
+    async (_input, init) => {
+      const exchange = JSON.parse(String(init.body));
+      integrationExchanges++;
+      return Response.json({
+        accessToken: exchange.audience === "computer" ? FIXTURE_KEY : "fixture-integration-bearer",
+        expiresAt: Date.now() + 60_000,
+        userId: integrationUser,
+        sessionId: integrationSession,
+      });
+    },
+  );
   server = new TeamApiServer({
+    pokebotsIntegrations: {
+      access: integrationAccess,
+      brain,
+      rooms: joinedRooms,
+      computerBaseUrl: computerFixture.baseUrl,
+    },
     rooms,
     brain,
     mcpServers: {
@@ -3449,6 +3487,105 @@ async function runRouteChecks() {
     errorIs(fourth, 400, sourceText("error.team.memberLimit", { limit: 3 })) && store.listMembers().length === 3,
     summary(fourth),
   );
+
+  {
+    const brainCallsBefore = brainCalls;
+    const routes = POKEBOTS_INTEGRATIONS_ROUTES;
+    const use = { protocol: TEAM_PROTOCOL_V9, capabilities: [POKEBOTS_INTEGRATIONS_CAPABILITY] };
+    const advertised = await call("GET", TEAM_API_ROUTES.compatibility, use);
+    const older = await call("GET", TEAM_API_ROUTES.compatibility, { protocol: 8 });
+    check(
+      "joined integrations are advertised to protocol 9",
+      list(field(advertised.body, "capabilities")).includes(POKEBOTS_INTEGRATIONS_CAPABILITY) &&
+        !list(field(older.body, "capabilities")).includes(POKEBOTS_INTEGRATIONS_CAPABILITY),
+      { current: advertised.status, older: older.status },
+    );
+
+    const remote = store.openRemoteSession({
+      sessionId: integrationSession,
+      membershipId: bobId,
+      userId: integrationUser,
+      role: "member",
+    });
+    const options = { ...use, token: remote.sessionToken, headers: { "X-OpenBot-WebRTC-Session": integrationSession } };
+    const legacyId = store.authenticateSession(bobToken)?.sessionId ?? "";
+    const grant = { grant: "a".repeat(43) };
+    const legacy = await call("POST", routes.authorize, {
+      ...use,
+      token: bobToken,
+      headers: { "X-OpenBot-WebRTC-Session": legacyId },
+      json: grant,
+    });
+    const withoutGrant = await call("POST", routes.rooms, { ...options, json: { request: { kind: "list" } } });
+    check(
+      "legacy sessions and joined members without a grant cannot use integrations",
+      legacy.status === 403 && withoutGrant.status === 403 && integrationExchanges === 0,
+      { legacy: legacy.status, withoutGrant: withoutGrant.status },
+    );
+    integrationUser = "different-account";
+    const wrongUser = await call("POST", routes.authorize, { ...options, json: grant });
+    integrationUser = "account-bob";
+    const actualSession = integrationSession;
+    integrationSession = "different-session";
+    const wrongSession = await call("POST", routes.authorize, { ...options, json: grant });
+    integrationSession = actualSession;
+    const authorized = await call("POST", routes.authorize, { ...options, json: grant });
+    const brainReply = await call("POST", routes.brain, {
+      ...options,
+      json: { request: { operation: "brains", mcpServerId: POKEBOTS_BRAIN_ID }, profile: "native" },
+    });
+    check(
+      "Brain accepts a joined member grant only after exchange verifies account and session",
+      wrongUser.status === 403 &&
+        wrongSession.status === 403 &&
+        authorized.status === 200 &&
+        typeof field(authorized.body, "expiresAt") === "number" &&
+        !authorized.text.includes("fixture-") &&
+        brainReply.status === 200 &&
+        brainCalls === brainCallsBefore + 1,
+      {
+        wrongUser: wrongUser.status,
+        wrongSession: wrongSession.status,
+        authorized: authorized.status,
+        brain: brainReply.status,
+      },
+    );
+
+    const roomsReply = await call("POST", routes.rooms, { ...options, json: { request: { kind: "list" } } });
+    const allowance = await call("POST", routes.computerAllowance, { ...options, json: {} });
+    check(
+      "a joined member reads Rooms and Computer allowance with audience-specific credentials",
+      roomsReply.status === 200 &&
+        field(roomsReply.body, "connected") === true &&
+        allowance.status === 200 &&
+        isDeepStrictEqual(allowance.body, {
+          seconds_remaining: null,
+          minutes_remaining: null,
+          resets_at: null,
+        }),
+      { rooms: roomsReply.status, allowance: allowance.status },
+    );
+
+    const actor = { memberId: bobId, accountId: integrationUser };
+    const credential = integrationAccess.credentialForMember(actor, { audience: "brain" });
+    const wrongActor = integrationAccess.credentialForMember(
+      { ...actor, accountId: "different-account" },
+      { audience: "brain" },
+    );
+    const wrongActorResult = await Effect.runPromise(Effect.result(wrongActor.bearer));
+    const actorResult = await Effect.runPromise(Effect.result(credential.bearer));
+    await runCauseEffect(store.revokeSession(actualSession));
+    const revokedActorResult = await Effect.runPromise(Effect.result(credential.bearer));
+    const revoked = await call("POST", routes.computerAllowance, { ...options, json: {} });
+    check(
+      "a runtime credential needs a matching account and stops working when the session is revoked",
+      Result.isFailure(wrongActorResult) &&
+        Result.isSuccess(actorResult) &&
+        Result.isFailure(revokedActorResult) &&
+        revoked.status === 401,
+      { revoked: revoked.status },
+    );
+  }
 
   if (process.argv.includes("--computers-only")) return;
 

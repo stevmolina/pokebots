@@ -135,6 +135,7 @@ interface HostServiceOptions {
   onePasswordConnector?: ForwardedApiOptions["onePasswordConnector"];
   bitwardenConnector?: ForwardedApiOptions["bitwardenConnector"];
   rooms?: ForwardedApiOptions["rooms"];
+  pokebotsIntegrations?: ForwardedApiOptions["pokebotsIntegrations"];
   agentComputer?: ForwardedApiOptions["agentComputer"];
   passwordManagers?: ForwardedApiOptions["passwordManagers"];
   vault?: ForwardedApiOptions["vault"];
@@ -510,6 +511,7 @@ export class HostService extends EventEmitter<HostEvents> {
       ...(options.onePasswordConnector === undefined ? {} : { onePasswordConnector: options.onePasswordConnector }),
       ...(options.bitwardenConnector === undefined ? {} : { bitwardenConnector: options.bitwardenConnector }),
       ...(options.rooms === undefined ? {} : { rooms: options.rooms }),
+      ...(options.pokebotsIntegrations ? { pokebotsIntegrations: options.pokebotsIntegrations } : {}),
       ...(options.agentComputer === undefined ? {} : { agentComputer: options.agentComputer }),
       ...(options.passwordManagers === undefined ? {} : { passwordManagers: options.passwordManagers }),
       ...(options.vault === undefined ? {} : { vault: options.vault }),

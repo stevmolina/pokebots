@@ -1,6 +1,6 @@
 // Optional protocol 9 routes for the signed-in Pokebots account.
 
-import { adminRoute, count, fields, type OptionalRouteCodec, oneOf, string } from "./admin-wire";
+import { adminRoute, count, fields, nullable, type OptionalRouteCodec, oneOf, string } from "./admin-wire";
 import { BRAIN_CODECS } from "./brain-v1";
 import { ROOMS_CODECS, ROOMS_ROUTE } from "./rooms-v1";
 
@@ -36,6 +36,13 @@ export const POKEBOTS_INTEGRATIONS_CODECS: ReadonlyMap<string, OptionalRouteCode
   ],
   [
     POKEBOTS_INTEGRATIONS_ROUTES.computerAllowance,
-    adminRoute(fields({}), fields({ seconds_remaining: count, minutes_remaining: count, resets_at: string(30) })),
+    adminRoute(
+      fields({}),
+      fields({
+        seconds_remaining: nullable(count),
+        minutes_remaining: nullable(count),
+        resets_at: nullable(string(30)),
+      }),
+    ),
   ],
 ]);

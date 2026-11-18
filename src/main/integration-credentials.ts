@@ -51,10 +51,21 @@ export function localIntegrationCredential<Audience extends IntegrationAudience>
 export function joinedIntegrationCredential<Audience extends IntegrationAudience>(
   accountApiUrl: string,
   request: JoinedIntegrationTokenRequest<Audience>,
-  fetcher = fetch,
+  fetcher: (input: URL, init: RequestInit) => Promise<Response> = fetch,
 ): IntegrationCredential<Audience> {
+  return {
+    audience: request.audience,
+    bearer: exchangeJoinedIntegrationToken(accountApiUrl, request, fetcher).pipe(Effect.map((reply) => reply.bearer)),
+  };
+}
+
+export function exchangeJoinedIntegrationToken(
+  accountApiUrl: string,
+  request: JoinedIntegrationTokenRequest,
+  fetcher: (input: URL, init: RequestInit) => Promise<Response> = fetch,
+) {
   const { audience, profile, hostId, machineToken, grant, userId, sessionId } = request;
-  const bearer = Effect.fn("IntegrationCredential.exchange")(function* () {
+  return Effect.fn("IntegrationCredential.exchange")(function* () {
     registerSecretValue(machineToken);
     registerSecretValue(grant);
     const response = yield* Effect.tryPromise({
@@ -77,10 +88,9 @@ export function joinedIntegrationCredential<Audience extends IntegrationAudience
       try: () => {
         const reply = joinedReply.safeParse(JSON.parse(bytes.toString("utf8")));
         if (!reply.success || reply.data.userId !== userId || reply.data.sessionId !== sessionId) throw unavailable();
-        return decodeIntegrationBearer(reply.data);
+        return { bearer: decodeIntegrationBearer(reply.data), expiresAt: reply.data.expiresAt };
       },
       catch: unavailable,
     });
-  });
-  return { audience, bearer: bearer() };
+  })();
 }
