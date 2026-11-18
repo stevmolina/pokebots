@@ -653,6 +653,7 @@ try {
       Schema.Struct({
         accessToken: Schema.String,
         expiresAt: Schema.Number,
+        grantExpiresAt: Schema.Number,
         sessionId: Schema.String,
         userId: Schema.String,
       }),
@@ -660,6 +661,7 @@ try {
     assert.equal(issued.userId, browserUser.id);
     assert.equal(issued.sessionId, joined.sessionId);
     assert.equal(issued.expiresAt, Math.floor(remainingDeadline / 1000) * 1000);
+    assert.equal(issued.grantExpiresAt, delegated.expiresAt);
     const { payload: claims } = await jwtVerify(issued.accessToken, integrationKeys.publicKey, { audience: "rooms" });
     assert.equal(claims.linked_workos_sub, profile === "native" ? undefined : legacySubject);
   }

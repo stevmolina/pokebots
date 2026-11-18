@@ -104,7 +104,7 @@ export const exchangeIntegrationGrant = Effect.fn("IntegrationToken.exchangeGran
   });
   if (!session) return yield* invalidGrant();
   const token = yield* signToken(session.userId, audience, profile, bindings, session.expiresAt);
-  return { ...token, userId: session.userId, sessionId: session.sessionId };
+  return { ...token, userId: session.userId, sessionId: session.sessionId, grantExpiresAt: session.expiresAt };
 });
 
 const integrations = {

@@ -1127,7 +1127,6 @@ export class TeamStore {
           !this.#activeIntegrationSession(session)
         )
           return null;
-        // The exchange returns the bearer expiry, which never exceeds the grant expiry.
         const expiry = Math.min(expiresAt, Date.parse(session.sessionExpiresAt));
         if (expiry <= Date.now()) return null;
         if (session.integrationGrant) clearTimeout(session.integrationGrant.timer);

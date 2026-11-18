@@ -464,5 +464,14 @@ The receiver verifies signature, issuer, audience, expiry, and scope before
 using its existing permissions. Ending the Pokebots session stops issuance.
 Issued tokens expire after five minutes.
 
-The account service stores the identity link. It does not store integration
-credentials, chats, or files.
+For a joined server, send `{ "action": "grant", "remoteSessionId": "<session ID>" }`
+to the same signed-in endpoint. The client passes the opaque grant over the
+authenticated Team API session. The account service stores only its hash, for
+at most one hour. The host exchanges the grant and its machine token at
+`POST /v2/remote/hosts/:hostId/integrations/token`. Each exchange verifies the
+original account session and current membership. The response has a
+five-minute service token, its expiry, and a separate grant expiry. Session
+and membership deadlines can shorten both lifetimes.
+
+The account service stores identity links and grant metadata. Chats and files
+stay on the host.

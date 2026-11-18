@@ -6819,7 +6819,7 @@ export class AgentService extends EventEmitter<AgentServiceEvents> {
       : null;
     if (task)
       yield* this.#codingJobs
-        .resumePaused(agent.id, agent.workspacePath, task.taskId)
+        .resumePaused(agent.id, agent.workspacePath, task.taskId, sender?.id)
         .pipe(
           Effect.mapError(
             (failure) => new AgentLifecycleFailed({ operation: "resume remote coding job", cause: failure.cause }),

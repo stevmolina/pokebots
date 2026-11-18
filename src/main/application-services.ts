@@ -2633,8 +2633,11 @@ export async function createApplicationServices({
     linkWallet: linkAccount,
     agentComputerKey: () => agentComputer.key(),
     agentComputerCredential: (memberId) => {
-      if (host.conversationSender()?.id !== memberId) return undefined;
-      return currentIntegrationCredential(centralAuth, "computer");
+      if (host.conversationSender()?.id === memberId) return currentIntegrationCredential(centralAuth, "computer");
+      const member = teamStore.memberAccounts().find((candidate) => candidate.memberId === memberId);
+      return member && joinedIntegrationAccess
+        ? joinedIntegrationAccess.credentialForMember(member, { audience: "computer" })
+        : undefined;
     },
     agentApiKeys,
     localSkillTools: () => localSkillTools(skills),

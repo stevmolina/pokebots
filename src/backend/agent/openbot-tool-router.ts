@@ -84,6 +84,7 @@ import { handleAgentComputerTool, isAgentComputerTool } from "../agent-computer/
 import type { AgentTables } from "../agent-data/agent-tables";
 import type { AgentStore } from "../agent-store";
 import type { AgentTasks } from "../agent-tasks/agent-tasks";
+import { codingComputer } from "../agent-tasks/coding-computer";
 import type { AgentWaits } from "../agent-waits/agent-waits";
 import { attachmentCall, attachmentFailure } from "../attachment-effects";
 import { repairBrowserToolInput } from "../browser-tool-input";
@@ -2554,7 +2555,13 @@ export class OpenBotToolRouter {
     const waitResult = this.#waits.handleTool(params, caller);
     if (waitResult) return waitResult;
 
-    const taskResult = yield* this.#tasks.handleTool(params, caller);
+    const taskResult = yield* this.#tasks.handleTool(params, {
+      ...caller,
+      computer: () => {
+        const account = this.#computerAccount(senderAgentId, params.turnId);
+        return account && { memberId: account.memberId, port: codingComputer(account.api) };
+      },
+    });
     if (taskResult) return taskResult;
 
     const tableResult = yield* handleDataTool(params.tool, params.arguments, senderAgentId, this.#tables);
@@ -3033,10 +3040,9 @@ export class OpenBotToolRouter {
     if (!agent || !api || !isAgentComputerTool(params.tool))
       return openBotToolFailure(sourceText("error.agent.toolRequestInvalid"));
     const threadId = this.#conversation.publicThreadId(agent.id, params.threadId);
-    const [requester, another] = this.#turnRequesters(agent.id, params.turnId);
-    const credential = requester && !another ? this.#agentComputerCredential(requester) : undefined;
-    const result = yield* handleAgentComputerTool(credential ? api.forAccount(credential) : api, {
-      ...(credential
+    const account = this.#computerAccount(agent.id, params.turnId);
+    const result = yield* handleAgentComputerTool(account?.api ?? api, {
+      ...(account
         ? {
             accountScoped: true,
             idempotencyKey: createHash("sha256")
@@ -3258,6 +3264,13 @@ export class OpenBotToolRouter {
       ids.add(this.#mailbox.senderMember(delivery.messageId)?.id ?? SIGNED_OUT_CHANNEL_MEMBER_ID);
     }
     return [...ids];
+  }
+
+  #computerAccount(agentId: string, turnId: string): { api: AgentComputerApi; memberId: string } | undefined {
+    const [memberId, another] = this.#turnRequesters(agentId, turnId);
+    if (!memberId || another || !this.#agentComputer) return undefined;
+    const credential = this.#agentComputerCredential(memberId);
+    return credential ? { api: this.#agentComputer.forAccount(credential), memberId } : undefined;
   }
 
   /** Whether a team member on another computer sent a message of this turn. */

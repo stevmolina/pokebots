@@ -34,7 +34,7 @@ export class JoinedIntegrationAccess {
       { ...machine, userId: pending.userId, sessionId, grant, audience: "brain", profile: "native" },
       this.fetcher,
     );
-    const expiresAt = pending.save(grant, proof.expiresAt);
+    const expiresAt = pending.save(grant, proof.grantExpiresAt);
     if (!expiresAt) return yield* Effect.fail(unavailable());
     return { expiresAt };
   });
@@ -75,7 +75,11 @@ export class JoinedIntegrationAccess {
         );
         const bearer = yield* credential.bearer;
         const current = lookup();
-        if (current?.sessionId !== actor.sessionId || current.grant !== actor.grant || current.hostId !== actor.hostId)
+        if (
+          current?.sessionId !== actor.sessionId ||
+          current.hostId !== actor.hostId ||
+          current.userId !== actor.userId
+        )
           return yield* Effect.fail(unavailable());
         return bearer;
       }),

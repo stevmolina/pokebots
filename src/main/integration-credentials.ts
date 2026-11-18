@@ -29,7 +29,11 @@ const tokenReply = z.object({
     .regex(/^[A-Za-z0-9._~+/-]+=*$/u),
   expiresAt: z.number().int(),
 });
-const joinedReply = tokenReply.extend({ userId: z.string(), sessionId: z.string() });
+const joinedReply = tokenReply.extend({
+  userId: z.string(),
+  sessionId: z.string(),
+  grantExpiresAt: z.number().int().optional(),
+});
 const unavailable = () => new Error(sourceText("error.auth.integrationTokensUnavailable"));
 
 export function decodeIntegrationBearer(value: unknown): Redacted.Redacted<string> {
@@ -88,7 +92,10 @@ export function exchangeJoinedIntegrationToken(
       try: () => {
         const reply = joinedReply.safeParse(JSON.parse(bytes.toString("utf8")));
         if (!reply.success || reply.data.userId !== userId || reply.data.sessionId !== sessionId) throw unavailable();
-        return { bearer: decodeIntegrationBearer(reply.data), expiresAt: reply.data.expiresAt };
+        return {
+          bearer: decodeIntegrationBearer(reply.data),
+          grantExpiresAt: reply.data.grantExpiresAt ?? reply.data.expiresAt,
+        };
       },
       catch: unavailable,
     });

@@ -2529,6 +2529,7 @@ async function runRouteChecks() {
   let integrationUser = "account-bob";
   let integrationSession = "joined-integration-session";
   let integrationExchanges = 0;
+  const integrationGrantExpiry = Date.now() + 30 * 60_000;
   const integrationAccess = new JoinedIntegrationAccess(
     store,
     { hostSiteCredential: (hostId) => ({ hostId, machineToken: "fixture-machine-token" }) },
@@ -2539,6 +2540,7 @@ async function runRouteChecks() {
       return Response.json({
         accessToken: exchange.audience === "computer" ? FIXTURE_KEY : "fixture-integration-bearer",
         expiresAt: Date.now() + 60_000,
+        grantExpiresAt: integrationGrantExpiry,
         userId: integrationUser,
         sessionId: integrationSession,
       });
@@ -3539,7 +3541,7 @@ async function runRouteChecks() {
       wrongUser.status === 403 &&
         wrongSession.status === 403 &&
         authorized.status === 200 &&
-        typeof field(authorized.body, "expiresAt") === "number" &&
+        field(authorized.body, "expiresAt") === integrationGrantExpiry &&
         !authorized.text.includes("fixture-") &&
         brainReply.status === 200 &&
         brainCalls === brainCallsBefore + 1,
