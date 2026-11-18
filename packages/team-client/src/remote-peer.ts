@@ -35,6 +35,10 @@ import {
 } from "@openbot/contracts/team-protocol/compact-rpc-v1";
 import type { LiveVoiceEvent } from "@openbot/contracts/team-protocol/live-voice-v1";
 import { optionalTeamEvent, optionalTeamEventToCurrent } from "@openbot/contracts/team-protocol/optional-events";
+import {
+  POKEBOTS_INTEGRATIONS_CAPABILITY,
+  POKEBOTS_INTEGRATIONS_ROUTES,
+} from "@openbot/contracts/team-protocol/pokebots-integrations-v1";
 import { teamSideRouteCodec } from "@openbot/contracts/team-protocol/side-routes";
 import { addSkillSuggestionNames } from "@openbot/contracts/team-protocol/skill-learning-v1";
 import { addUiBlockAutoAnswers } from "@openbot/contracts/team-protocol/ui-block-auto-answer-v1";
@@ -50,6 +54,7 @@ import { Context, Deferred, Effect, Exit, Layer, ManagedRuntime, Result, Schema,
 import { base64ToBytes, base64UrlToBytes, bytesToBase64Url } from "./base64";
 import { canInflateResponses, capabilityListKey, inflateRpcBody } from "./compact-rpc";
 import { createEd25519Identity, type Ed25519Identity, signEd25519, verifyEd25519Pem } from "./ed25519";
+import { IntegrationAuthorization, isIntegrationOperation } from "./integration-authorization";
 
 /** `reference` is the code a user can copy, such as `signal/host_busy`. It never holds server text. */
 class RemotePeerError extends Schema.TaggedError<RemotePeerError>()("RemotePeerError", {
@@ -360,6 +365,7 @@ export interface RemoteTeamPeerActions {
     clientPublicKey: string,
     existingSessionId: string | null,
   ) => Promise<RemoteTeamBootstrapPayload>;
+  requestIntegrationGrant?: (hostId: string, sessionId: string) => Promise<string>;
   endSession: (sessionId: string) => Promise<void>;
   onConnectionUpdate: (update: RemoteTeamConnectionUpdate) => Promise<void>;
   /** Hears connection steps. Optional, and never affects the connection. */
@@ -469,6 +475,7 @@ interface PeerState {
   remoteCandidates: Set<string>;
   hostProtocol: number | undefined;
   /** The features advertised by this connection's validated compatibility response. */
+  integrationAuthorization: IntegrationAuthorization;
   hostCapabilities: readonly string[] | undefined;
   /** The compatibility read in flight. A request waits for it when the host protocol is not known. */
   hostProtocolRead?: Deferred.Deferred<void>;
@@ -1259,6 +1266,7 @@ export function createRemoteTeamPeer(
         localCandidates: new Set(),
         remoteCandidates: new Set(),
         hostProtocol: hostProtocols.get(hostId),
+        integrationAuthorization: new IntegrationAuthorization(),
         hostCapabilities: undefined,
         iceRestarts: 0,
         iceRestartSentAt: null,
@@ -2124,7 +2132,8 @@ export function createRemoteTeamPeer(
     timeoutMs = REQUEST_TIMEOUT_MS,
     largeDownload?: RemoteLargeDownload,
     download?: RemoteDownloadWatch,
-  ) {
+    authorizationPeer?: PeerState,
+  ): Effect.Effect<{ status: number; body: TeamProtocolV2Json }, RemotePeerError | FileTransferError> {
     return Effect.fn("RemotePeer.request")(function* () {
       const state = peer;
       if (!state || !isPeerOnline(state)) {
@@ -2137,6 +2146,40 @@ export function createRemoteTeamPeer(
       // A read sent with the compatibility read must not go out with the bootstrap capabilities.
       else if (state.hostProtocol === undefined && state.hostProtocolRead)
         yield* Deferred.await(state.hostProtocolRead);
+      const authFailure = () =>
+        referenced(sourceText("error.auth.integrationTokensUnavailable"), "remote/integration_authorization");
+      const integration = isIntegrationOperation(path);
+      const supported = state.hostCapabilities?.includes(POKEBOTS_INTEGRATIONS_CAPABILITY);
+      if (path === POKEBOTS_INTEGRATIONS_ROUTES.authorize && (!supported || authorizationPeer !== state))
+        return yield* authFailure();
+
+      const requestGrant = actions.current.requestIntegrationGrant;
+      if (
+        supported &&
+        requestGrant &&
+        (integration || (!authorizationPeer && !checksConnection && state.integrationAuthorization.due))
+      ) {
+        const authorize = state.integrationAuthorization.ensure(
+          Effect.gen(function* () {
+            if (peer !== state || !state.authenticated) return yield* authFailure();
+            const grant = yield* peerCall(() => requestGrant(state.hostId, state.sessionId));
+            return yield* requestEffect(
+              "POST",
+              POKEBOTS_INTEGRATIONS_ROUTES.authorize,
+              { grant },
+              undefined,
+              undefined,
+              undefined,
+              undefined,
+              undefined,
+              state,
+            );
+          }),
+        );
+        if (integration) yield* authorize.pipe(Effect.mapError(authFailure));
+        else yield* Effect.forkIn(authorize.pipe(Effect.ignore), workScope, { startImmediately: true });
+      } else if (integration) return yield* authFailure();
+
       const delivery = upload && onUploadProgress ? trackUploadDelivery(state, onUploadProgress) : null;
       const releaseDownload =
         largeDownload === undefined

@@ -4,6 +4,10 @@ import type { AgentEvent, TeamRealtimeEvent } from "@openbot/contracts/ipc";
 import { isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
 import { teamCapabilitiesForProtocol } from "@openbot/contracts/team-protocol/current";
 import { optionalTeamEvent, optionalTeamEventToCurrent } from "@openbot/contracts/team-protocol/optional-events";
+import {
+  POKEBOTS_INTEGRATIONS_CAPABILITY,
+  POKEBOTS_INTEGRATIONS_ROUTES,
+} from "@openbot/contracts/team-protocol/pokebots-integrations-v1";
 import { teamSideRouteCodec } from "@openbot/contracts/team-protocol/side-routes";
 import { addSkillSuggestionNames } from "@openbot/contracts/team-protocol/skill-learning-v1";
 import {
@@ -27,6 +31,7 @@ import {
 import { decodeTeamProtocolSupportV9, TEAM_PROTOCOL_V9 } from "@openbot/contracts/team-protocol/v9";
 import { decodeTeamProtocolV9WebRtcHttpResponse } from "@openbot/contracts/team-protocol/v9-webrtc-adapter";
 import { sourceText } from "@openbot/i18n/source";
+import { IntegrationAuthorization, isIntegrationOperation } from "@openbot/team-client/integration-authorization";
 import { remoteWorkspaceReadTimeout, startRemoteRequestDeadline } from "@openbot/team-client/remote-recovery";
 import { type RemoteRequestProfile, startRemoteRequest } from "@openbot/team-client/sync-profile";
 import { Context, Deferred, Effect, Fiber, Layer, Result, Schema } from "effect";
@@ -89,6 +94,7 @@ interface TeamWebRtcClientTransportOptions {
     sessionId: string,
     clientPublicKey: string,
   ) => Effect.Effect<RemoteConnectionBootstrap, CentralAuthOperationError>;
+  requestIntegrationGrant?: (hostId: string, sessionId: string) => Effect.Effect<string, CentralAuthOperationError>;
   endSession: (sessionId: string) => Effect.Effect<void, CentralAuthOperationError>;
   createInvite: (
     hostId: string,
@@ -135,6 +141,7 @@ interface TeamWebRtcClientTransportOptions {
 }
 
 interface ActiveHost {
+  integrationAuthorization: IntegrationAuthorization;
   sessionId: string;
   expiresAt: number;
   principalId: string;
@@ -492,6 +499,7 @@ export class TeamWebRtcClientTransport extends EventEmitter<TeamWebRtcClientTran
       /** Gets the bytes of a binary body that the host confirmed. */
       uploadProgress?: ((sent: number, total: number) => void) | undefined;
     } = {},
+    authorizationPeer?: ActiveHost,
   ): Effect.fn.Return<
     {
       status: number;
@@ -504,7 +512,7 @@ export class TeamWebRtcClientTransport extends EventEmitter<TeamWebRtcClientTran
     let profile: RemoteRequestProfile | null = null;
     return yield* this.#owned(
       Effect.gen({ self: this }, function* () {
-        yield* this.#ensureConnected(hostId);
+        if (!authorizationPeer) yield* this.#ensureConnected(hostId);
         const method = (init.method ?? "GET").toUpperCase();
         const timeoutMs = init.timeoutMs ?? remoteWorkspaceReadTimeout(method, path);
         const startedAt = Date.now();
@@ -512,6 +520,50 @@ export class TeamWebRtcClientTransport extends EventEmitter<TeamWebRtcClientTran
         // capability list. A v7 route that needs a v7 capability then refuses a request that the
         // user sent before the `connected` handler read the compatibility report.
         if (path !== "/v1/compatibility") yield* this.#learnHostProtocol(hostId, timeoutMs);
+        const active = this.#active.get(hostId);
+        const integration = isIntegrationOperation(path);
+        const authorizing = path === POKEBOTS_INTEGRATIONS_ROUTES.authorize;
+        const supported = this.#hostCapabilities.get(hostId)?.includes(POKEBOTS_INTEGRATIONS_CAPABILITY);
+        const authFailure = () =>
+          new RemoteWorkflowError({
+            cause: new TeamWebRtcRequestError(
+              401,
+              "integration_authorization",
+              sourceText("error.auth.integrationTokensUnavailable"),
+            ),
+          });
+        if (authorizing && (!supported || !authorizationPeer || authorizationPeer !== active))
+          return yield* authFailure();
+        const requestGrant = this.#options.requestIntegrationGrant;
+        if (
+          supported &&
+          requestGrant &&
+          active?.sessionId &&
+          (integration || (!authorizing && path !== "/v1/compatibility" && active.integrationAuthorization.due))
+        ) {
+          const authorize = active.integrationAuthorization
+            .ensure(
+              Effect.gen({ self: this }, function* () {
+                if (!active.connected || this.#active.get(hostId) !== active) return yield* authFailure();
+                const grant = yield* requestGrant(hostId, active.sessionId);
+                return yield* this.requestResponse(
+                  hostId,
+                  POKEBOTS_INTEGRATIONS_ROUTES.authorize,
+                  {
+                    method: "POST",
+                    body: { grant },
+                  },
+                  active,
+                );
+              }),
+            )
+            .pipe(Effect.mapError(authFailure));
+          if (integration) yield* authorize;
+          else yield* Effect.forkDetach(this.#owned(authorize).pipe(Effect.ignore), { startImmediately: true });
+        } else if (integration) return yield* authFailure();
+        if ((integration || authorizing) && (!active?.connected || this.#active.get(hostId) !== active))
+          return yield* authFailure();
+
         // The protocol read uses part of the request deadline. It does not add to it.
         const remainingMs = timeoutMs === undefined ? undefined : timeoutMs - (Date.now() - startedAt);
         if (remainingMs !== undefined && remainingMs <= 0) {
@@ -569,14 +621,21 @@ export class TeamWebRtcClientTransport extends EventEmitter<TeamWebRtcClientTran
         // that the host closed. Connect again and send the same frame once. An upload stays on the
         // connection that carried its body. Only the connection that refused the frame is marked
         // lost: a request that fails late must not drop the connection another request just made.
-        profile = startRemoteRequest(method, path, frame);
+        if (!authorizing) profile = startRemoteRequest(method, path, frame);
         const refusedBy = this.#active.get(hostId);
         // The host sends the file before the answer that names it. A stopped request refuses the file.
         const progress = init.fileProgress;
         const watch = progress ? this.#files.watchIncoming(hostId, progress.size, progress.onProgress) : null;
-        const envelope = yield* this.#exchange(hostId, requestId, frame, profile, remainingMs).pipe(
+        const envelope = yield* this.#exchange(
+          hostId,
+          requestId,
+          frame,
+          profile,
+          remainingMs,
+          integration || authorizing ? active : undefined,
+        ).pipe(
           Effect.catchIf(
-            (error) => !bodyTransferId && isClosedChannelError(error.cause),
+            (error) => !integration && !authorizing && !bodyTransferId && isClosedChannelError(error.cause),
             () =>
               Effect.gen({ self: this }, function* () {
                 if (refusedBy?.connected && this.#active.get(hostId) === refusedBy) this.#onDisconnected(hostId);
@@ -637,7 +696,12 @@ export class TeamWebRtcClientTransport extends EventEmitter<TeamWebRtcClientTran
             );
         // The frozen response codec leaves the skill name of a skill question out; the wire body has it.
         if (this.#sendsSkillSuggestionNames(hostId)) addSkillSuggestionNames(body, envelope.body);
-        if (method === "GET" && path === "/v1/compatibility" && status === 200) {
+        if (
+          method === "GET" &&
+          path === "/v1/compatibility" &&
+          status === 200 &&
+          this.#active.get(hostId) === refusedBy
+        ) {
           const support = yield* remoteDecode(() => decodeTeamProtocolSupportV9(body));
           this.#hostProtocols.set(hostId, support.protocol.maximum);
           this.#hostCapabilities.set(hostId, support.capabilities);
@@ -682,6 +746,7 @@ export class TeamWebRtcClientTransport extends EventEmitter<TeamWebRtcClientTran
     frame: string,
     profile: RemoteRequestProfile | null,
     timeoutMs = TEAM_WEBRTC_REMOTE_REQUEST_TIMEOUT_MILLISECONDS,
+    expectedPeer?: ActiveHost,
   ): Effect.fn.Return<TeamProtocolV2Json, RemoteWorkflowError, TeamClientBridge> {
     const result = Deferred.makeUnsafe<TeamProtocolV2Json, RemoteWorkflowError>();
     {
@@ -714,7 +779,20 @@ export class TeamWebRtcClientTransport extends EventEmitter<TeamWebRtcClientTran
     return yield* Effect.gen({ self: this }, function* () {
       const sending = yield* Effect.forkChild(
         Effect.gen({ self: this }, function* () {
-          const sent = yield* TeamClientBridge.use((bridge) => bridge.send(hostId, "rpc", frame)).pipe(Effect.result);
+          const sent = yield* TeamClientBridge.use((bridge) =>
+            Effect.suspend(() => {
+              if (
+                expectedPeer &&
+                (!expectedPeer.connected ||
+                  this.#active.get(hostId) !== expectedPeer ||
+                  expectedPeer.principalId !== this.#options.getPrincipalId())
+              )
+                return Effect.fail(
+                  new RemoteWorkflowError({ cause: new Error(sourceText("error.remote.connectionCancelled")) }),
+                );
+              return bridge.send(hostId, "rpc", frame);
+            }),
+          ).pipe(Effect.result);
           if (Result.isFailure(sent)) {
             const error = sent.failure.cause;
             const pending = this.#pending.get(requestId);
@@ -894,6 +972,7 @@ export class TeamWebRtcClientTransport extends EventEmitter<TeamWebRtcClientTran
     if (this.#stopping)
       return yield* new RemoteWorkflowError({ cause: new Error(sourceText("error.remote.connectionCancelled")) });
     const active: ActiveHost = {
+      integrationAuthorization: new IntegrationAuthorization(),
       sessionId: current?.sessionId ?? "",
       expiresAt: current?.expiresAt ?? 0,
       principalId,

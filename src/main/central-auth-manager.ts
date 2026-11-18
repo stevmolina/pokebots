@@ -51,6 +51,7 @@ import type { ServerAppearance } from "@openbot/contracts/team-protocol/host-app
 import { workosSignInErrorKey } from "@openbot/contracts/workos-sign-in";
 import { sourceText } from "@openbot/i18n/source";
 import { createOpenBotLogger, toLogValue } from "@openbot/logging";
+import { decodeIntegrationGrant } from "@openbot/team-client/integration-authorization";
 import { referenceFrom, safeReference } from "@openbot/user-errors";
 import { Deferred, Duration, Effect, Exit, type Layer, Result, Schema, Semaphore } from "effect";
 import { createLocalJWKSet, jwtVerify } from "jose";
@@ -2402,6 +2403,33 @@ export class CentralAuthManager extends EventEmitter<CentralAuthEvents> {
       retryIndex += 1;
     }
   });
+
+  readonly requestIntegrationGrant = Effect.fn("CentralAuth.requestIntegrationGrant")(function* (
+    this: CentralAuthManager,
+    hostId: string,
+    sessionId: string,
+  ) {
+    const session = this.#sessionToken;
+    const unavailable = () =>
+      new CentralAuthOperationError({ cause: new Error(sourceText("error.auth.integrationTokensUnavailable")) });
+    if (!session) return yield* unavailable();
+    const grant = yield* this.#owned(
+      this.#authorizedRequestEffect(
+        "/v1/me/integrations/token",
+        {
+          method: "POST",
+          redirect: "error",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ action: "grant", remoteSessionId: sessionId }),
+        },
+        (value) => decodeIntegrationGrant(value, hostId, sessionId),
+        undefined,
+        session,
+      ),
+    ).pipe(Effect.mapError(unavailable));
+    if (this.#sessionToken !== session) return yield* unavailable();
+    return grant;
+  }).bind(this);
 
   readonly requestIntegrationBearer = Effect.fn("CentralAuth.requestIntegrationBearer")(function* (
     this: CentralAuthManager,
