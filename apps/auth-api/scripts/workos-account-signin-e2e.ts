@@ -3,7 +3,7 @@ import { strict as assert } from "node:assert";
 import { mkdir, mkdtemp, readdir, readFile, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { Effect, Schema } from "effect";
-import { exportJWK, generateKeyPair, SignJWT } from "jose";
+import { exportJWK, exportPKCS8, generateKeyPair, jwtVerify, SignJWT } from "jose";
 import { getPlatformProxy, unstable_splitSqlQuery } from "wrangler";
 import { openSelfHostedD1 } from "../src/self-hosted/d1-sqlite";
 import { openSelfHostedR2 } from "../src/self-hosted/r2-fs";
@@ -14,6 +14,7 @@ import { CompanySignInError, CompanySignInService } from "../src/server/company-
 import { randomToken, sha256 } from "../src/server/crypto";
 import { D1AuthRepository } from "../src/server/d1-auth-repository";
 import { runApiEffect } from "../src/server/effect-runtime";
+import { issueIntegrationToken } from "../src/server/integration-token";
 import { RemoteControlPlane } from "../src/server/remote-control-plane";
 import type { WorkerBindings } from "../src/server/types";
 import { WorkosOidc } from "../src/server/workos-oidc";
@@ -209,7 +210,13 @@ function errorResponse(error: unknown): Response {
     return Response.json({ error: { code: error.code, message: error.message } }, { status: error.status });
   return Response.json({ error: { code: "internal_error" } }, { status: 500 });
 }
+const integrationKeys = await generateKeyPair("RS256", { extractable: true });
+const integrationBindings = {
+  DB: database,
+  POKEBOTS_INTEGRATION_PRIVATE_KEY: (await exportPKCS8(integrationKeys.privateKey)).replaceAll("\n", "\\n"),
+};
 const services: BrowserApiServices = {
+  integrationToken: (request, userId) => issueIntegrationToken(request, userId, integrationBindings),
   auth: workosAuth,
   remote,
   workosSignIn: () => workos,
@@ -473,7 +480,50 @@ try {
   assert(webCookie);
   const browserSessionToken = webCookie.split(";", 1)[0]?.slice("__Host-openbot-web=".length);
   assert(browserSessionToken);
-  assert.equal((await runApiEffect(emailAuth.authenticate(browserSessionToken)))?.email, "browser@example.test");
+  const browserUser = await runApiEffect(emailAuth.authenticate(browserSessionToken));
+  assert.equal(browserUser?.email, "browser@example.test");
+  const requestIntegration = (body: Record<string, string>, headers: Record<string, string> = {}) =>
+    fetch(`${origin}/api/browser/v1/me/integrations/token`, {
+      method: "POST",
+      headers: { ...browserHeaders, Cookie: `__Host-openbot-web=${browserSessionToken}`, ...headers },
+      body: JSON.stringify(body),
+    });
+  const integration = await requestIntegration({
+    audience: "rooms",
+    sub: "forged",
+    workos_sub: "forged",
+    workos_iss: "forged",
+  });
+  assert.equal(integration.status, 200);
+  assert.equal(integration.headers.get("Cache-Control"), "no-store");
+  const integrationResult = Schema.decodeUnknownSync(
+    Schema.Struct({ accessToken: Schema.String, expiresAt: Schema.Number }),
+  )(await integration.json());
+  const { payload } = await jwtVerify(integrationResult.accessToken, integrationKeys.publicKey, {
+    algorithms: ["RS256"],
+    issuer: "urn:pokebots:integrations",
+    audience: "rooms",
+    subject: `pokebots:${browserUser?.id}`,
+  });
+  const identity = await database
+    .prepare("SELECT issuer, subject FROM workos_sign_in_identities WHERE user_id = ?")
+    .bind(browserUser?.id)
+    .first<{ issuer: string; subject: string }>();
+  assert(identity);
+  assert.equal(payload.workos_iss === identity.issuer && payload.workos_sub === identity.subject, true);
+  assert.equal(payload.aud, "rooms");
+  assert.equal(payload.scope, "integration:use");
+  assert(typeof payload.exp === "number" && typeof payload.iat === "number");
+  assert.equal(payload.exp - payload.iat, 300);
+  assert.equal(integrationResult.expiresAt, payload.exp * 1000);
+  assert.equal((await requestIntegration({ audience: "computer", scope: "integration:link" })).status, 400);
+  assert.equal((await requestIntegration({ audience: "invalid" })).status, 400);
+  assert.equal((await requestIntegration({ audience: "brain" }, { Cookie: "" })).status, 401);
+  const deniedOrigin = await requestIntegration({ audience: "brain" }, { Origin: "https://other.example" });
+  assert.equal(deniedOrigin.status, 403);
+  checks.push(
+    "integration JWT signature, account and WorkOS claims, lifetime, no-store, audience, scope and browser access",
+  );
   const replay = await fetch(browserCallback.target, { headers: { Cookie: flowPair }, redirect: "manual" });
   assert(replay.headers.get("Location")?.includes("workosSignInError"));
   assert.equal(
