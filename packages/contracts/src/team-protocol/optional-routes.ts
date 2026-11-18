@@ -107,6 +107,7 @@ import { ONEPASSWORD_CONNECTOR_CODECS } from "./onepassword-connector-v1";
 import { PASSWORD_MANAGERS_CODECS } from "./password-managers-v1";
 import { PENDING_APPROVAL_CODECS } from "./pending-approval-v1";
 import { PHONE_FEEDBACK_CODECS } from "./phone-feedback-v1";
+import { POKEBOTS_INTEGRATIONS_CODECS } from "./pokebots-integrations-v1";
 import { PROMPT_CACHE_TTL_CODECS } from "./prompt-cache-ttl-v1";
 import { PROVIDER_ACCOUNT_CODE_CODECS } from "./provider-account-code-v1";
 import { PROVIDER_ACCOUNT_KEYS_CODECS } from "./provider-account-keys-v1";
@@ -297,6 +298,7 @@ const CODECS: ReadonlyMap<string, OptionalRouteCodec> = new Map([
   ...AGENT_COMPUTER_CODECS,
   ...COMPUTER_MANAGEMENT_CODECS,
   ...ROOMS_CODECS,
+  ...POKEBOTS_INTEGRATIONS_CODECS,
   ...BROWSER_COLOR_SCHEME_CODECS,
   ...AGENT_ACCESS_CODECS,
   ...MCP_ACCESS_CODECS,

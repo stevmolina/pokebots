@@ -333,6 +333,7 @@
     "./team-protocol/v9": "./src/team-protocol/v9.ts",
     "./team-protocol/v9-webrtc-adapter": "./src/team-protocol/v9-webrtc-adapter.ts",
     "./rooms": "./src/rooms.ts",
+    "./team-protocol/pokebots-integrations-v1": "./src/team-protocol/pokebots-integrations-v1.ts",
     "./team-protocol/rooms-v1": "./src/team-protocol/rooms-v1.ts",
     "./brain": "./src/brain.ts"
   },
