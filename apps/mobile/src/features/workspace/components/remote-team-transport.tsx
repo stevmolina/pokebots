@@ -454,6 +454,8 @@ export const RemoteTeamTransport = memo(
           handle.close();
         }
       },
+      requestIntegrationGrant: (hostId: string, sessionId: string) =>
+        runTeamEffect(latest.current.props.directory.requestIntegrationGrant(hostId, sessionId)),
       endSession: (sessionId: string) => runTeamEffect(latest.current.props.directory.endSession(sessionId)),
       getBootstrap: async (hostId: string, clientPublicKey: string, existingSessionId: string | null) => {
         const { directory } = latest.current.props;

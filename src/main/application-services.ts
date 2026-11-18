@@ -4320,6 +4320,7 @@ export async function createApplicationServices({
         listHosts: () => centralAuth.listRemoteHosts(),
         startSession: (hostId) => centralAuth.startRemoteSession(hostId),
         issueTicket: (sessionId, clientPublicKey) => centralAuth.issueRemoteSessionTicket(sessionId, clientPublicKey),
+        requestIntegrationGrant: (hostId, sessionId) => centralAuth.requestIntegrationGrant(hostId, sessionId),
         endSession: (sessionId) => centralAuth.endRemoteSession(sessionId),
         createInvite: (hostId, input) => centralAuth.createRemoteInvite(hostId, input),
         listInvites: (hostId) => centralAuth.listRemoteInvites(hostId),
