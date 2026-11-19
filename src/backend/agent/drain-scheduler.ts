@@ -104,6 +104,8 @@ export interface DrainHooks {
    */
   redactMcp(text: string): string;
   mayRunAgentTask(delivery: DeliveryContext): boolean;
+  backgroundLaunchStopping(threadId: string): boolean;
+  interruptStoppedLaunch(delivery: DeliveryContext, threadId: string, turnId: string): Effect.Effect<void>;
   postAgentTaskResult(delivery: DeliveryContext, text: string): void;
   /** The tabs and threads of this agent, as the tags of a delivered message name them. */
   /** `threadId` is the public thread that gets the prompt. */
@@ -255,6 +257,7 @@ export class DrainScheduler {
    */
   readonly #requeuedAtLimit = new Set<string>();
   readonly #settingsHolds = new Map<string, number>();
+  readonly #unconfirmedStarts = new Set<NodeJS.Timeout>();
   /**
    * Lanes whose last start found the provider in a turn of its own, by lane key. OpenBot's snapshot
    * can show no turn then, so without this the drain asked again at once, with no end. The next
@@ -448,7 +451,9 @@ export class DrainScheduler {
       return "channel-turn";
     const ownTaskId = laneTaskId(lane);
     if (ownTaskId !== null) {
-      if (this.#tasks.threadId(ownTaskId) === null) return "task-closed";
+      const threadId = this.#tasks.threadId(ownTaskId);
+      if (threadId === null) return "task-closed";
+      if (this.#hooks.backgroundLaunchStopping(threadId)) return "provider-turn";
       const running = this.#tasks
         .openTaskIds(agentId)
         .filter((other) => other !== ownTaskId && this.#laneRunning({ agentId, taskId: other })).length;
@@ -683,12 +688,6 @@ export class DrainScheduler {
     return completions.length > 0 ? Effect.all(completions, { discard: true }) : undefined;
   }
 
-  /** Waits for a specific task's drain to finish starting its provider turn. */
-  taskStart(agentId: string, taskId: string): Effect.Effect<void, DeliveryStartFailed> | undefined {
-    const start = this.#drainTasks.get(laneKey({ agentId, taskId }));
-    return start && Deferred.await(start);
-  }
-
   forgetAgent(agentId: string): void {
     const ofAgent = (key: string) => laneOf(key).agentId === agentId;
     for (const keys of [this.#drainingLanes, this.#scheduledDrains, this.#slotWaiters, this.#providerTurnHolds])
@@ -704,6 +703,8 @@ export class DrainScheduler {
 
   dispose(): void {
     this.#startRetry.dispose();
+    for (const timer of this.#unconfirmedStarts) clearTimeout(timer);
+    this.#unconfirmedStarts.clear();
     this.#busyRetries.clear();
     this.#drainingLanes.clear();
     this.#scheduledDrains.clear();
@@ -879,6 +880,12 @@ export class DrainScheduler {
     planNote?: string,
   ) {
     const { delivery } = context;
+    const stopRequested = () =>
+      context.agentTaskRequest !== undefined && this.#mailbox.agentTaskStopRequested(delivery.id);
+    if (stopRequested()) return;
+    const requireLaunchNotStopped = () => {
+      if (stopRequested()) throw new Error(sourceText("status.agent.agentTaskStopped"));
+    };
     const channelDelivery = this.#channels ? this.#channels.store.assignmentForDelivery(delivery.id) !== null : false;
     const messagingDelivery = this.#messaging?.ownsDelivery(delivery.id) ?? false;
     const taskId = this.#mailbox.taskIdForDelivery(delivery.id);
@@ -977,6 +984,7 @@ export class DrainScheduler {
       );
       const messaging = this.#messaging;
       const channels = this.#channels;
+      yield* drainStep(requireLaunchNotStopped);
       const taskThreadId = taskId === null ? null : this.#tasks.threadId(taskId);
       const execution: { threadId: string; text?: string } | null | undefined =
         taskId !== null
@@ -1031,6 +1039,7 @@ export class DrainScheduler {
       let threadId =
         routineThreadId ??
         (yield* this.#threads.ensureThread(agent, client, execution?.threadId).pipe(toDeliveryStartFailed));
+      yield* drainStep(requireLaunchNotStopped);
       const snapshot = this.#conversation.ensureSnapshot(agent.id, threadId);
       // A turn started on this thread while the provider and the thread were prepared. The user
       // cannot see that race, so the delivery goes back to the head of the queue rather than
@@ -1149,6 +1158,7 @@ export class DrainScheduler {
               providerThreadId,
               "turn/start",
               () => {
+                requireLaunchNotStopped();
                 if (context.agentTaskRequest && !this.#hooks.mayRunAgentTask(context))
                   throw new Error(sourceText("error.team.agentNotFound"));
                 const currentAgent = this.#store.list().find((current) => current.id === agent.id) ?? agent;
@@ -1166,7 +1176,10 @@ export class DrainScheduler {
                   // A teammate message that wants no answer tells the model to write nothing, so an empty
                   // turn is the expected result and not a provider that swallowed its error.
                   answerOptional:
-                    delivery.sender.kind === "agent" && delivery.expectsReply === false && !delivery.replyToMessageId,
+                    !context.agentTaskRequest &&
+                    delivery.sender.kind === "agent" &&
+                    delivery.expectsReply === false &&
+                    !delivery.replyToMessageId,
                   input: inputForThread(providerThreadId),
                   cwd: agent.workspacePath,
                   runtimeWorkspaceRoots: workspaceWritableRoots(currentAgent, this.#store.sharedRoot),
@@ -1191,7 +1204,7 @@ export class DrainScheduler {
       else {
         // Codex compacts this thread, so the input did not reach it. The messages keep their place
         // and wait for the compaction turn to end.
-        if (!routineThreadId && isCodexCompactionRefusal(firstStart.failure.cause)) {
+        if (!stopRequested() && !routineThreadId && isCodexCompactionRefusal(firstStart.failure.cause)) {
           for (const item of batch) yield* this.#mailbox.restoreQueued(item.delivery.id).pipe(toDeliveryStartFailed);
           this.#compaction.holdForRefusal(agent.id, threadId, client);
           this.#mailboxSync.emitQueue(agent.id);
@@ -1225,6 +1238,8 @@ export class DrainScheduler {
       });
       for (const item of batch)
         yield* this.#mailbox.markRunning(item.delivery.id, response.turn.id).pipe(toDeliveryStartFailed);
+      if (taskThreadId && stopRequested())
+        yield* this.#hooks.interruptStoppedLaunch(context, taskThreadId, response.turn.id);
       if (this.#channels)
         yield* this.#channels.accepted(delivery.id, threadId, response.turn.id).pipe(toDeliveryStartFailed);
       if (messagingDelivery) this.#messaging?.accepted(delivery.id, threadId);
@@ -1279,6 +1294,24 @@ export class DrainScheduler {
             );
             return;
           }
+          if (stopRequested() && !isRequestTimeout(error, "turn/start")) {
+            const current = this.#mailbox.getDelivery(delivery.id)?.delivery;
+            if (current?.turnId) {
+              turnMayRun = current.status === "running";
+              return;
+            }
+            if (current?.status === "starting") {
+              yield* this.#mailbox.finishAgentTaskStop(delivery.id).pipe(toDeliveryStartFailed);
+              this.#hooks.postAgentTaskResult(context, sourceText("status.agent.agentTaskStopped"));
+            }
+            for (const { delivery: companion } of batch) {
+              if (companion.id !== delivery.id)
+                yield* this.#mailbox.restoreQueued(companion.id).pipe(toDeliveryStartFailed);
+            }
+            this.#mailboxSync.emitQueue(delivery.recipientAgentId);
+            this.scheduleDrain(delivery.recipientAgentId);
+            return;
+          }
           // The provider started a turn of its own after the check above, or the start found the
           // agent's provider signed out. Nothing ran, and `mayDrain` holds the messages until that turn
           // ends or the provider is signed in again.
@@ -1326,11 +1359,13 @@ export class DrainScheduler {
             // The wait has a limit: a turn that never starts would keep these messages starting, and
             // the agent's queue would stop with no notice.
             const ids = batch.map(({ delivery: item }) => item.id);
-            yield* Effect.forkDetach(
-              this.#settleUnstarted(delivery.recipientAgentId, ids, releaseReservation, routineThreadId).pipe(
-                Effect.delay(TURN_START_GRACE_MS),
-              ),
-            );
+            const timer = setTimeout(() => {
+              this.#unconfirmedStarts.delete(timer);
+              Effect.runFork(
+                this.#settleUnstarted(delivery.recipientAgentId, ids, releaseReservation, routineThreadId),
+              );
+            }, TURN_START_GRACE_MS).unref();
+            this.#unconfirmedStarts.add(timer);
             return;
           }
           const detail = this.#hooks.redactMcp(error instanceof Error ? error.message : String(error));
@@ -1532,6 +1567,15 @@ export class DrainScheduler {
       routineThreadId: string | null,
     ) {
       if (this.#hooks.isStopping()) return;
+      // Keep an uncertain launch and its batch in this lane until its provider confirms it.
+      // A late turn must take the original delivery so its stop cannot reach a different turn.
+      if (
+        deliveryIds.some(
+          (id) =>
+            this.#mailbox.agentTaskStopRequested(id) && this.#mailbox.getDelivery(id)?.delivery.status === "starting",
+        )
+      )
+        return;
       let settled = false;
       for (const id of deliveryIds) {
         const current = this.#mailbox.getDelivery(id)?.delivery;

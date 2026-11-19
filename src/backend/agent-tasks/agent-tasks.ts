@@ -97,6 +97,7 @@ export interface AgentTaskCaller {
   agentId: string;
   computer?: () => ScopedCodingComputer | undefined;
   requesterIds?: () => string[];
+  fromExternalChat?: () => boolean;
   /** A channel, messaging or task turn: only the agent's own chat starts a task. */
   inExecutionThread: boolean;
 }
@@ -465,6 +466,10 @@ export class AgentTasks implements TaskLanes {
     this.#stoppedTurns.set(taskId, turnId);
   }
 
+  clearStopped(taskId: string, turnId: string): void {
+    if (this.stoppedTurn(taskId) === turnId) this.#stoppedTurns.delete(taskId);
+  }
+
   stoppedTurn(taskId: string): string | null {
     return this.#stoppedTurns.get(taskId) ?? null;
   }
@@ -682,7 +687,7 @@ export class AgentTasks implements TaskLanes {
   readonly #start = Effect.fn("AgentTasks.start")(function* (
     this: AgentTasks,
     params: DynamicToolCallParams,
-    caller: Pick<AgentTaskCaller, "agentId" | "computer" | "requesterIds">,
+    caller: Pick<AgentTaskCaller, "agentId" | "computer" | "requesterIds" | "fromExternalChat">,
     input: z.infer<typeof startTaskToolSchema>,
     coding: z.infer<typeof runCodingTaskToolSchema> | null,
     launch?: { targetId: string; request: AgentTaskRequest },
@@ -697,6 +702,7 @@ export class AgentTasks implements TaskLanes {
       .digest("hex")}`;
     const accountComputer = coding ? caller.computer?.() : undefined;
     const taskRequesterIds = launch ? undefined : caller.requesterIds?.();
+    const taskFromExternalChat = !launch && caller.fromExternalChat?.() === true;
     const started = this.#mailbox.deliveryForKey(idempotencyKey);
     const startedTaskId = started ? this.#mailbox.taskIdForDelivery(started.delivery.id) : null;
     const startedTask = startedTaskId ? this.#store.task(startedTaskId) : null;
@@ -746,7 +752,9 @@ export class AgentTasks implements TaskLanes {
           ? `${remoteCodingBrief(coding.repository, coding.task, context)}\n\nJob directory: ~/openbot-coding-jobs/${encodeURIComponent(task.taskId)}`
           : input.brief,
         replyToMessageId: null,
-        ...(launch ? { agentTaskRequest: launch.request, expectsReply: false } : { taskRequesterIds }),
+        ...(launch
+          ? { agentTaskRequest: launch.request, expectsReply: false }
+          : { taskRequesterIds, taskFromExternalChat }),
         idempotencyKey,
       })
       .pipe(

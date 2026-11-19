@@ -3,7 +3,7 @@ import { randomUUID } from "node:crypto";
 import { EventEmitter } from "node:events";
 import { type DynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
 import { sourceText } from "@openbot/i18n/source";
-import { Effect, Fiber, Schema } from "effect";
+import { Deferred, Effect, Fiber, Schema } from "effect";
 import { isTurnContextBlock } from "./agent/developer-instructions";
 import { LOG_TIMESTAMP_PREFIX } from "./agent/provider-diagnostics";
 import { TurnContext } from "./agent/turn-context";
@@ -133,6 +133,7 @@ export class CodexAppServerClient extends EventEmitter<ClientEvents> {
    * not have saved the blocks of that turn, so the next turn sends them again.
    */
   readonly #openTurns = new Set<string>();
+  readonly #threadUnloads = new Map<string, Deferred.Deferred<void, ProviderClientOperationError>>();
   /** The turn of each thread that showed the sandbox warning, so that a turn shows it once. */
   readonly #sandboxWarnings = new Map<string, string>();
   #process: ChildProcessWithoutNullStreams | null = null;
@@ -254,10 +255,12 @@ export class CodexAppServerClient extends EventEmitter<ClientEvents> {
     this.#cancelToolRequests();
     this.#process = null;
     this.#resendOpenTurns();
+    const unloads = this.#takeThreadUnloads();
     for (const pending of this.#pending.values()) pending.reject(new Error("Codex App Server stopped."));
     this.#pending.clear();
     child.stdin.end();
     yield* endProcessTree(child).pipe(Effect.orDie);
+    for (const unloaded of unloads) Deferred.doneUnsafe(unloaded, Effect.void);
   }, Effect.uninterruptible);
 
   /**
@@ -279,10 +282,31 @@ export class CodexAppServerClient extends EventEmitter<ClientEvents> {
     this: CodexAppServerClient,
     threadId: string,
     resumes = false,
+    waitForUnload = false,
   ) {
     if (!resumes) this.#turnContext.forget(threadId);
-    if (!this.running) return;
-    yield* this.request("thread/unsubscribe", { threadId }, decodeRecordResponse);
+    const child = this.#process;
+    if (!child || !this.running) return;
+    const unsubscribe = this.request("thread/unsubscribe", { threadId }, decodeRecordResponse);
+    if (!waitForUnload) {
+      yield* unsubscribe;
+      return;
+    }
+    const waiting = this.#threadUnloads.get(threadId);
+    if (waiting) return yield* Deferred.await(waiting);
+    const unloaded = Deferred.makeUnsafe<void, ProviderClientOperationError>();
+    // Register before unsubscribe: a provider can unload the thread before it sends the response.
+    this.#threadUnloads.set(threadId, unloaded);
+    yield* unsubscribe.pipe(
+      Effect.tap((reply) => (reply.status === "notLoaded" ? Deferred.succeed(unloaded, undefined) : Effect.void)),
+      Effect.catch((failure) => (this.#process === child ? Deferred.fail(unloaded, failure) : Effect.void)),
+      Effect.andThen(Deferred.await(unloaded)),
+      Effect.ensuring(
+        Effect.sync(() => {
+          if (this.#threadUnloads.get(threadId) === unloaded) this.#threadUnloads.delete(threadId);
+        }),
+      ),
+    );
   });
 
   /**
@@ -609,6 +633,10 @@ export class CodexAppServerClient extends EventEmitter<ClientEvents> {
           params: message.params,
         });
       } else {
+        if (message.method === "thread/closed" && isRecord(message.params) && isString(message.params.threadId)) {
+          const unloaded = this.#threadUnloads.get(message.params.threadId);
+          if (unloaded) Deferred.doneUnsafe(unloaded, Effect.void);
+        }
         if (
           message.method === "turn/completed" &&
           isRecord(message.params) &&
@@ -686,14 +714,30 @@ export class CodexAppServerClient extends EventEmitter<ClientEvents> {
     this.#cancelToolRequests();
     this.#process = null;
     this.#resendOpenTurns();
+    const unloads = this.#takeThreadUnloads();
 
     for (const pending of this.#pending.values()) {
       pending.reject(error);
     }
     this.#pending.clear();
 
-    this.#ending = Effect.runFork(endProcessTree(child).pipe(Effect.orDie));
+    this.#ending = Effect.runFork(
+      endProcessTree(child).pipe(
+        Effect.tap(() =>
+          Effect.sync(() => {
+            for (const unloaded of unloads) Deferred.doneUnsafe(unloaded, Effect.void);
+          }),
+        ),
+        Effect.orDie,
+      ),
+    );
     if (!this.#stopping) this.emit("exit", error);
+  }
+
+  #takeThreadUnloads(): Deferred.Deferred<void, ProviderClientOperationError>[] {
+    const unloads = [...this.#threadUnloads.values()];
+    this.#threadUnloads.clear();
+    return unloads;
   }
 }
 

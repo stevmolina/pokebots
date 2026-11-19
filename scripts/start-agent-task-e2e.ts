@@ -36,6 +36,7 @@ const root = await mkdtemp(join(tmpdir(), "openbot-start-agent-task-"));
 const userData = join(root, "user-data");
 const home = join(root, "home");
 const fakeCodex = join(root, "codex");
+const fakeOpencode = join(root, "opencode");
 const fakeLog = join(root, "codex.jsonl");
 const holdNextThread = join(root, "hold-next-thread");
 await mkdir(home);
@@ -143,6 +144,8 @@ const config = { config: { mcp_servers: {} }, layers: [] };
 const waiting = new Map();
 const held = new Map();
 const backgroundWork = new Map();
+const unloadGates = new Map();
+const historyGates = new Map();
 const workspaces = new Map();
 let threads = 0;
 let turns = 0;
@@ -197,10 +200,24 @@ read.on("line", (line) => {
     }
     case "thread/unsubscribe": {
       const cancel = backgroundWork.get(params.threadId);
-      if (cancel) cancel();
-      return respond({ status: "Unsubscribed" });
+      const close = () => {
+        if (cancel) cancel();
+        write({ method: "thread/closed", params: { threadId: params.threadId } });
+      };
+      respond({ status: "unsubscribed" });
+      const tag = unloadGates.get(params.threadId);
+      if (!tag) return close();
+      log({ tag: tag + "-UNSUBSCRIBE", threadId: params.threadId, turnId: "" });
+      return afterRelease(join(${JSON.stringify(root)}, "unload-" + tag), close);
     }
-    case "thread/turns/list":
+    case "thread/turns/list": {
+      const tag = historyGates.get(params.threadId);
+      if (!tag) return respond({ data: [], nextCursor: null });
+      historyGates.delete(params.threadId);
+      log({ tag: tag + "-HISTORY", threadId: params.threadId, turnId: "" });
+      return afterRelease(join(${JSON.stringify(root)}, "history-" + tag), () =>
+        respond({ data: [], nextCursor: null }));
+    }
     case "thread/items/list": return respond({ data: [], nextCursor: null });
     case "thread/resume":
     case "thread/read": return respond({ thread: { id: params.threadId, turns: [] } });
@@ -208,6 +225,13 @@ read.on("line", (line) => {
       const { threadId } = params;
       const turnId = "turn-" + process.pid + "-" + (++turns);
       const text = (params.input || []).map((item) => item.text || "").join("\\n");
+      const late = /^LATE ([A-Z-]+)$/m.exec(text);
+      if (late) {
+        const tag = late[1];
+        log({ tag, threadId, turnId });
+        return afterRelease(join(${JSON.stringify(root)}, "release-" + tag), () =>
+          write({ method: "turn/started", params: { threadId, turn: { id: turnId } } }));
+      }
       respond({ turn: { id: turnId, status: "inProgress", items: [] } });
       write({ method: "turn/started", params: { threadId, turn: { id: turnId } } });
       const call = [...text.matchAll(/<<CALL([^\\n]+)CALL>>/g)].at(-1);
@@ -236,11 +260,27 @@ read.on("line", (line) => {
         } });
         report("running", null);
         finish(threadId, turnId, null);
+        if (tag === "BACKGROUND-ACTIVE" || tag === "BACKGROUND-HANDOFF") unloadGates.set(threadId, tag);
         const cancel = afterRelease(file, () => {
           backgroundWork.delete(threadId);
           report("completed", new Date().toISOString());
           const nextTurn = "turn-" + process.pid + "-" + (++turns);
           write({ method: "turn/started", params: { threadId, turn: { id: nextTurn }, unprompted: true } });
+          if (tag === "BACKGROUND-ACTIVE") {
+            log({ tag: tag + "-REPORT", threadId, turnId: nextTurn });
+            return;
+          }
+          if (tag === "BACKGROUND-HANDOFF") {
+            historyGates.set(threadId, tag);
+            write({ method: "item/completed", params: { threadId, turnId: nextTurn, item: {
+              type: "commandExecution", id: "check-" + nextTurn, command: "fixture step",
+              cwd: workspaces.get(threadId), status: "completed", exitCode: 0, aggregatedOutput: "done",
+            } } });
+            write({ method: "error", params: { threadId, turnId: nextTurn, willRetry: false, error: {
+              message: "You've hit your usage limit. Try again later.", codexErrorInfo: "usageLimitExceeded",
+            } } });
+            return finish(threadId, nextTurn, null, "failed");
+          }
           const id = "tool-" + nextTurn;
           waiting.set(id, { tag: tag + "-TOOLS", threadId, turnId: nextTurn, answer: "RESULT " + tag });
           write({ id, method: "item/tool/call", params: {
@@ -264,6 +304,7 @@ read.on("line", (line) => {
       });
     }
     case "turn/interrupt": {
+      log({ tag: "INTERRUPT", threadId: params.threadId, turnId: params.turnId });
       respond({});
       return finish(params.threadId, params.turnId, null, "interrupted");
     }
@@ -279,6 +320,40 @@ read.on("line", (line) => {
 });
 `;
 await writeFile(fakeCodex, FAKE_CODEX, { mode: 0o755 });
+await writeFile(
+  fakeOpencode,
+  `#!/usr/bin/env node
+const { createInterface } = require("node:readline");
+if (process.argv.includes("--version")) {
+  process.stdout.write("2.2.7\\n");
+  process.exit(0);
+}
+const model = "opencode/big-pickle";
+let count = 0;
+const write = (frame) => process.stdout.write(JSON.stringify({ jsonrpc: "2.0", ...frame }) + "\\n");
+createInterface({ input: process.stdin }).on("line", (line) => {
+  const { id, method, params } = JSON.parse(line);
+  if (id === undefined) return;
+  const respond = (result) => write({ id, result });
+  if (method === "initialize")
+    return respond({ protocolVersion: 1, agentCapabilities: { loadSession: true }, authMethods: [] });
+  if (method === "session/new" || method === "session/load")
+    return respond({
+      sessionId: params.sessionId ?? "s-" + process.pid + "-" + (++count),
+      models: { availableModels: [{ modelId: model, name: "Big Pickle" }], currentModelId: model },
+    });
+  if (method === "session/prompt") {
+    const text = params.prompt.map((part) => part.text ?? "").join("\\n");
+    if (!text.includes("EMPTY-ACP")) write({ method: "session/update", params: {
+      sessionId: params.sessionId, update: { sessionUpdate: "agent_message_chunk", content: { type: "text", text: "Ready." } }
+    } });
+    return respond({ stopReason: "end_turn" });
+  }
+  return respond({});
+});
+`,
+  { mode: 0o755 },
+);
 
 const database = new OpenBotDatabase(userData);
 const store = new AgentStore(userData, home, database);
@@ -297,7 +372,9 @@ const agents = new AgentService({
   browser: agentBrowser,
   sidebarLayout,
   preferredProvider: "codex",
-  offProviders: AGENT_PROVIDERS.filter((provider) => provider !== "codex"),
+  requestTimeoutMs: 2500,
+  bundledExecutables: { opencode: fakeOpencode },
+  offProviders: AGENT_PROVIDERS.filter((provider) => provider !== "codex" && provider !== "opencode"),
   memoryReviewInterval: () => 0,
   hostTurnLimits: { turnLimit: () => "unlimited", agentTaskLimit: () => taskLimit },
   approvalAutomation: {
@@ -376,16 +453,17 @@ const fixtureEntry = z.object({
   result: z.object({ success: z.boolean(), contentItems: z.array(z.object({ text: z.string() })) }).optional(),
 });
 
+async function fixtureEntries() {
+  const log = await readFile(fakeLog, "utf8").catch(() => "");
+  return log
+    .trim()
+    .split("\n")
+    .filter(Boolean)
+    .map((line) => fixtureEntry.parse(JSON.parse(line)));
+}
+
 async function fixtureLog(tag: string) {
-  return waitFor(tag, async () => {
-    const log = await readFile(fakeLog, "utf8").catch(() => "");
-    return log
-      .trim()
-      .split("\n")
-      .filter(Boolean)
-      .map((line) => fixtureEntry.parse(JSON.parse(line)))
-      .find((entry) => entry.tag === tag);
-  });
+  return waitFor(tag, async () => (await fixtureEntries()).find((entry) => entry.tag === tag));
 }
 
 type TaskToolArguments = z.input<
@@ -405,18 +483,19 @@ try {
   await runCauseEffect(agents.initialize());
   port = await runCauseEffect(server.start());
 
-  const create = (name: string) =>
+  const create = (name: string, provider: "codex" | "opencode" = "codex") =>
     runCauseEffect(
       agents.createAgentProfile({
         name,
         description: name,
         avatarSeed: name.toLowerCase(),
         avatarHue: null,
-        provider: "codex",
+        provider,
       }),
     );
   const caller = await create("Caller");
   const target = await create("Target");
+  const acpTarget = await create("ACP", "opencode");
   const ownerToken = await login(owner);
   const invite = await runCauseEffect(team.createInvite("member"));
   await call(TEAM_API_ROUTES.join.server, 201, undefined, { inviteToken: invite.token, ...member });
@@ -425,7 +504,7 @@ try {
   const access = (level: "none" | "view" | "chat") =>
     call(AGENT_ACCESS_ROUTES.set, 200, ownerToken, {
       revision: revision++,
-      everyone: { [caller.id]: "chat", [target.id]: level },
+      everyone: { [caller.id]: "chat", [target.id]: level, [acpTarget.id]: "chat" },
       roles: [],
     });
   await access("chat");
@@ -462,9 +541,17 @@ try {
     assert.equal(result.agentId, targetId ?? caller.id);
     return result;
   };
-  const stop = async (tag: string, threadId: string, sourceTaskId?: string) => {
+  const stopReply = async (tag: string, threadId: string, sourceTaskId?: string) => {
     await send(caller.id, command(tag, "stop_agent_task", { threadId }), sourceTaskId);
-    return (await fixtureLog(tag)).result?.success;
+    return (await fixtureLog(tag)).result;
+  };
+  const stop = async (tag: string, threadId: string, sourceTaskId?: string) =>
+    (await stopReply(tag, threadId, sourceTaskId))?.success;
+  const stopStatus = async (tag: string, threadId: string) => {
+    const reply = await stopReply(tag, threadId);
+    assert.equal(reply?.success, true);
+    return z.object({ status: z.enum(["stopping", "stopped"]) }).parse(JSON.parse(reply?.contentItems[0]?.text ?? ""))
+      .status;
   };
 
   await writeFile(join(root, "release-SELF"), "");
@@ -508,8 +595,40 @@ try {
 
   const queued = await start("queued", "HOLD QUEUED", target.id);
   assert.equal((await task(target.id, queued.threadId))?.state, "queued");
-  assert.equal(await stop("stop-queued", queued.threadId), true);
+  const closedQueued = await start("closed-queued", "HOLD CLOSED-QUEUED", target.id);
+  assert.equal((await task(target.id, closedQueued.threadId))?.state, "queued");
+  await call(AGENT_TASKS_ROUTES.close, 200, token, { agentId: target.id, taskId: closedQueued.threadId });
+  const closedDelivery = mailbox.launchedTaskDelivery(closedQueued.threadId)?.delivery;
+  assert.equal(closedDelivery?.status, "cancelled");
+  assert.equal(mailbox.taskIdForDelivery(closedDelivery?.id ?? ""), closedQueued.threadId);
+  assert.ok(!(await chat(target.id)).messages.some(({ text }) => text === "HOLD CLOSED-QUEUED"));
+  report.checks.queuedCloseIsolated = true;
+
+  const saveConversation = database.persistConversationChanges.bind(database);
+  let failedWrite = false;
+  database.persistConversationChanges = (input) => {
+    if (!failedWrite && input.eventType === "thread.agent-task-result") {
+      failedWrite = true;
+      throw new Error("Fixture failed the stopped result write.");
+    }
+    return saveConversation(input);
+  };
+  assert.equal(await stopStatus("stop-queued", queued.threadId), "stopping");
+  assert.ok(failedWrite);
+  assert.equal(mailbox.launchedTaskDelivery(queued.threadId)?.delivery.status, "cancelled");
   assert.equal((await task(target.id, queued.threadId))?.queuedMessages.length, 0);
+  const queuedOrigin = (await fixtureLog("queued")).turnId;
+  const launchResults = async (turnId: string) =>
+    (await chat(caller.id)).messages.filter((message) => message.source === "agent" && message.turnId === turnId);
+  assert.deepEqual(await launchResults(queuedOrigin), []);
+  assert.equal(await stopStatus("retry-queued-result", queued.threadId), "stopped");
+  assert.equal(await stopStatus("repeat-queued-stop", queued.threadId), "stopped");
+  assert.deepEqual(
+    (await launchResults(queuedOrigin)).map(({ text }) => text),
+    [sourceText("status.agent.agentTaskStopped")],
+  );
+  database.persistConversationChanges = saveConversation;
+  report.checks.stoppedResultRetry = true;
   assert.equal(await stop("wrong-chat", first.threadId, side.id), false);
   assert.equal(await stop("stop-first", first.threadId), true);
   await waitFor("first interrupted", async () =>
@@ -561,6 +680,41 @@ try {
   report.checks.legacyRequesterPermissions = true;
   await access("chat");
 
+  const externalToolRefusal = /Use this tool in an OpenBot agent chat or side thread/;
+  await runCauseEffect(
+    mailbox.enqueue({
+      sender: { kind: "agent", agentId: target.id },
+      recipientAgentIds: [caller.id],
+      expectsReply: false,
+      messagingReturn: {
+        linkId: "external-fixture",
+        authorId: "external-user",
+        authorName: "External user",
+        platformMessageId: "external-message",
+      },
+      text: command("external-parent", "start_task", {
+        title: "External legacy task",
+        brief: command("external-child", "start_task", {
+          title: "Nested external legacy task",
+          brief: command("external-denied", "start_agent_task", { brief: "HOLD EXTERNAL-DENIED", agentId: target.id }),
+        }),
+      }),
+    }),
+  );
+  await send(caller.id, "Dispatch the queued external fixture.");
+  assert.equal((await fixtureLog("external-parent")).result?.success, true);
+  assert.equal((await fixtureLog("external-child")).result?.success, true);
+  const externalDenied = (await fixtureLog("external-denied")).result;
+  assert.equal(externalDenied?.success, false);
+  assert.match(externalDenied?.contentItems[0]?.text ?? "", externalToolRefusal);
+  await legacyStart(
+    "local-legacy",
+    command("local-allowed", "start_agent_task", { brief: "RUN LOCAL-ALLOWED", agentId: target.id }),
+  );
+  assert.equal((await fixtureLog("local-allowed")).result?.success, true);
+  await fixtureLog("LOCAL-ALLOWED");
+  report.checks.externalLegacyProvenance = true;
+
   const waitForBackground = (threadId: string) =>
     waitFor("background work without an active turn", async () => {
       const snapshot = await chat(target.id, threadId);
@@ -572,14 +726,17 @@ try {
   const background = await start("background", "BACKGROUND BACKGROUND", target.id);
   await waitForBackground(background.threadId);
   const backgroundRequest = (await fixtureLog("background")).turnId;
-  const launchResults = async (turnId: string) =>
-    (await chat(caller.id)).messages.filter((message) => message.source === "agent" && message.turnId === turnId);
   assert.deepEqual(await launchResults(backgroundRequest), []);
   await writeFile(join(root, "release-BACKGROUND"), "");
   const backgroundResult = await resultIn("RESULT BACKGROUND");
   assert.equal(backgroundResult.turnId, backgroundRequest);
   assert.equal(backgroundResult.senderAgentId, target.id);
   assert.equal((await launchResults(backgroundRequest)).length, 1);
+  assert.equal(await stop("stop-completed-background", background.threadId), false);
+  assert.deepEqual(
+    (await launchResults(backgroundRequest)).map(({ text }) => text),
+    ["RESULT BACKGROUND"],
+  );
   assert.match((await fixtureLog("BACKGROUND-TOOLS")).result?.contentItems[0]?.text ?? "", /cannot read workflows/);
   report.checks.backgroundFinalResult = true;
 
@@ -591,15 +748,46 @@ try {
 
   const backgroundStop = await start("background-stop", "BACKGROUND BACKGROUND-STOP", target.id);
   await waitForBackground(backgroundStop.threadId);
-  assert.equal(await stop("stop-background", backgroundStop.threadId), true);
+  assert.equal(await stopStatus("stop-background", backgroundStop.threadId), "stopping");
   assert.equal((await fixtureLog("BACKGROUND-STOP-STOPPED")).threadId, (await fixtureLog("BACKGROUND-STOP")).threadId);
   const backgroundStopRequest = (await fixtureLog("background-stop")).turnId;
+  await waitFor("the stopped background result", async () =>
+    (await launchResults(backgroundStopRequest)).find(
+      ({ text }) => text === sourceText("status.agent.agentTaskStopped"),
+    ),
+  );
   assert.deepEqual(
     (await launchResults(backgroundStopRequest)).map(({ text }) => text),
     [sourceText("status.agent.agentTaskStopped")],
   );
   assert.equal((await chat(target.id)).activeTurnId, targetMain.turnId);
   report.checks.backgroundCancellationIsolated = true;
+
+  const activeBackground = await start("active-background", "BACKGROUND BACKGROUND-ACTIVE", target.id);
+  await waitForBackground(activeBackground.threadId);
+  await writeFile(join(root, "release-BACKGROUND-ACTIVE"), "");
+  const activeReport = await fixtureLog("BACKGROUND-ACTIVE-REPORT");
+  await waitFor("provider report runs", async () =>
+    (await chat(target.id, activeBackground.threadId)).activeTurnId === activeReport.turnId ? true : undefined,
+  );
+  assert.equal(await stopStatus("stop-active-background", activeBackground.threadId), "stopping");
+  await fixtureLog("BACKGROUND-ACTIVE-UNSUBSCRIBE");
+  assert.ok(
+    (await fixtureEntries()).some(
+      ({ tag, turnId, threadId }) =>
+        tag === "INTERRUPT" && turnId === activeReport.turnId && threadId === activeReport.threadId,
+    ),
+  );
+  const activeOrigin = (await fixtureLog("active-background")).turnId;
+  assert.deepEqual(await launchResults(activeOrigin), []);
+  assert.equal(await stopStatus("repeat-active-background", activeBackground.threadId), "stopping");
+  await writeFile(join(root, "unload-BACKGROUND-ACTIVE"), "");
+  await waitFor("the active background stop result", async () =>
+    (await launchResults(activeOrigin)).find(({ text }) => text === sourceText("status.agent.agentTaskStopped")),
+  );
+  assert.equal((await launchResults(activeOrigin)).length, 1);
+  assert.equal((await chat(target.id)).activeTurnId, targetMain.turnId);
+  report.checks.backgroundStopWaitsForUnload = true;
 
   const failed = await start("failed", "FAIL FAILED", target.id);
   const failedResult = await resultIn(sourceText("status.agent.agentTaskFailed"));
@@ -629,12 +817,51 @@ try {
   );
   assert.equal(stoppedPlan.senderAgentId, caller.id);
   assert.equal((await chat(caller.id, planHolder.threadId)).activeTurnId, planHolderWork.turnId);
+  assert.equal(mailbox.launchedTaskDelivery(plan.threadId)?.delivery.status, "cancelled");
   taskLimit = 2;
   await writeFile(join(root, "release-PLAN-HOLDER"), "");
   await resultIn("RESULT PLAN-HOLDER");
   assert.equal((await chat(caller.id, plan.threadId)).activeTurnId, null);
   assert.equal(resumedPlan, false);
   report.checks.queuedPlanCancellation = true;
+
+  await writeFile(holdNextThread, "PRESTART-THREAD");
+  const prestart = await start("prestart", "RUN PRESTART", target.id);
+  await fixtureLog("PRESTART-THREAD");
+  assert.equal(await stopStatus("stop-prestart", prestart.threadId), "stopping");
+  await writeFile(join(root, "release-PRESTART-THREAD"), "");
+  await waitFor("the pre-start cancellation", async () =>
+    mailbox.launchedTaskDelivery(prestart.threadId)?.delivery.status === "cancelled" ? true : undefined,
+  );
+  assert.ok(!(await fixtureEntries()).some(({ tag }) => tag === "PRESTART"));
+  report.checks.stopBeforeSubmission = true;
+
+  const unconfirmed = new Set<string>();
+  agents.on("failure", ({ code, agentId }) => {
+    if (code === "delivery_start_unconfirmed" && agentId) unconfirmed.add(agentId);
+  });
+  const late = await start("late", "LATE LATE", target.id);
+  const lateWork = await fixtureLog("LATE");
+  await waitFor("the provider start timeout", async () => (unconfirmed.has(target.id) ? true : undefined));
+  assert.equal(mailbox.launchedTaskDelivery(late.threadId)?.delivery.status, "starting");
+  assert.equal(await stopStatus("stop-late", late.threadId), "stopping");
+  await writeFile(join(root, "release-LATE"), "");
+  await waitFor("the interrupted late launch", async () =>
+    mailbox.launchedTaskDelivery(late.threadId)?.delivery.status === "interrupted" ? true : undefined,
+  );
+  const interrupts = (await fixtureEntries()).filter(
+    ({ tag, threadId }) => tag === "INTERRUPT" && threadId === lateWork.threadId,
+  );
+  assert.deepEqual(
+    interrupts.map(({ turnId }) => turnId),
+    [lateWork.turnId],
+  );
+  const lateOrigin = (await fixtureLog("late")).turnId;
+  await waitFor("the late launch stop result", async () =>
+    (await launchResults(lateOrigin)).find(({ text }) => text === sourceText("status.agent.agentTaskStopped")),
+  );
+  assert.equal((await chat(target.id)).activeTurnId, targetMain.turnId);
+  report.checks.lateStartCancellation = true;
 
   await writeFile(holdNextThread, "POLICY-THREAD");
   await start("policy", "RUN POLICY", target.id);
@@ -655,6 +882,30 @@ try {
   await resultIn("RESULT SANDBOX");
   report.checks.currentSandboxPolicy = true;
 
+  const empty = await start("empty-acp", "EMPTY-ACP", acpTarget.id);
+  const emptyReason = sourceText("error.provider.opencodeNoAnswer");
+  const emptyResult = await resultIn(emptyReason);
+  assert.equal(emptyResult.turnId, (await fixtureLog("empty-acp")).turnId);
+  assert.equal(mailbox.launchedTaskDelivery(empty.threadId)?.delivery.status, "failed");
+  assert.equal(mailbox.launchedTaskDelivery(empty.threadId)?.delivery.error, emptyReason);
+  assert.equal((await task(acpTarget.id, empty.threadId))?.outcome, "failed");
+  const notice = await runCauseEffect(
+    mailbox.enqueue({
+      sender: { kind: "agent", agentId: caller.id },
+      recipientAgentIds: [acpTarget.id],
+      text: "EMPTY-ACP: ordinary no-reply notice",
+      expectsReply: false,
+    }),
+  );
+  await send(acpTarget.id, "Dispatch the queued notice.");
+  await waitFor("the empty no-reply notice completes", async () =>
+    mailbox.deliveryForMessage(notice.messageId, acpTarget.id)?.delivery.status === "completed" ? true : undefined,
+  );
+  report.checks.acpEmptyLaunchFails = true;
+
+  const backgroundHandoff = await start("background-handoff", "BACKGROUND BACKGROUND-HANDOFF", target.id);
+  await waitForBackground(backgroundHandoff.threadId);
+
   await runCauseEffect(agents.updateAgent({ agentId: caller.id, computerUse: false }));
   await send(caller.id, command("host-limit", "start_agent_task", { brief: "HOLD DENIED", agentId: target.id }));
   assert.equal((await fixtureLog("host-limit")).result?.success, false);
@@ -669,6 +920,27 @@ try {
 
   await writeFile(join(root, "release-TARGET-MAIN"), "");
   await waitFor("target main idle", async () => ((await chat(target.id)).activeTurnId === null ? true : undefined));
+  let handoffLimitReached = false;
+  agents.on("event", (event) => {
+    if (event.type === "usage-limit-reached") handoffLimitReached = true;
+  });
+  await writeFile(join(root, "release-BACKGROUND-HANDOFF"), "");
+  await fixtureLog("BACKGROUND-HANDOFF-HISTORY");
+  assert.equal(await stopStatus("stop-background-handoff", backgroundHandoff.threadId), "stopping");
+  await fixtureLog("BACKGROUND-HANDOFF-UNSUBSCRIBE");
+  const handoffOrigin = (await fixtureLog("background-handoff")).turnId;
+  assert.deepEqual(await launchResults(handoffOrigin), []);
+  await writeFile(join(root, "history-BACKGROUND-HANDOFF"), "");
+  await waitFor("the report handoff settles", async () => (handoffLimitReached ? true : undefined));
+  assert.equal(mailbox.launchedTaskDelivery(backgroundHandoff.threadId)?.delivery.status, "completed");
+  await writeFile(join(root, "unload-BACKGROUND-HANDOFF"), "");
+  await waitFor("the handoff stop result", async () =>
+    (await launchResults(handoffOrigin)).find(({ text }) => text === sourceText("status.agent.agentTaskStopped")),
+  );
+  assert.equal(mailbox.launchedTaskDelivery(backgroundHandoff.threadId)?.delivery.status, "cancelled");
+  assert.equal((await launchResults(handoffOrigin)).length, 1);
+  assert.equal((await fixtureEntries()).filter(({ tag }) => tag === "BACKGROUND-HANDOFF").length, 1);
+  report.checks.backgroundHandoffCancellation = true;
   report.passed = true;
 } catch (error) {
   report.error = error instanceof Error ? (error.stack ?? error.message) : String(error);

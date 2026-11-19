@@ -1482,7 +1482,11 @@ export class AgentService extends EventEmitter<AgentServiceEvents> {
         this.#threads.releaseIdleSession(
           threadId,
           client,
-          (agentId) => this.#stopping || this.#runsTurn(agentId) || this.#attention.hasAttentionFor(agentId),
+          (agentId) =>
+            this.#stopping ||
+            this.#runsTurn(agentId) ||
+            this.#attention.hasAttentionFor(agentId) ||
+            this.#turn.holdsBackgroundLaunch(agentId, threadId),
         ),
     });
     this.#boot = new BootRecovery({
@@ -1816,6 +1820,9 @@ export class AgentService extends EventEmitter<AgentServiceEvents> {
           delivery.sender.kind === "agent" &&
           agentTaskRequest !== undefined &&
           this.#tasks.canLaunch(delivery.sender.agentId, delivery.recipientAgentId, agentTaskRequest.requesterIds),
+        backgroundLaunchStopping: (threadId) => this.#turn.backgroundLaunchStopping(threadId),
+        interruptStoppedLaunch: (delivery, threadId, turnId) =>
+          this.#interruptStoppedLaunch(delivery, threadId, turnId),
         postAgentTaskResult: (delivery, text) => this.#postAgentTaskResult(delivery, text),
         tagReferences: (agentId, threadId) => this.#tagReferences(agentId, threadId),
         isStopping: () => this.#stopping,
@@ -1995,6 +2002,8 @@ export class AgentService extends EventEmitter<AgentServiceEvents> {
         taskOpen: (taskId) => this.#tasks.threadId(taskId) !== null,
         taskFailed: (taskId, message) => this.#tasks.failed(taskId, this.#mcp.redact(message)),
         postAgentTaskResult: (delivery, text) => this.#postAgentTaskResult(delivery, text),
+        interruptStoppedLaunch: (delivery, threadId, turnId) =>
+          this.#interruptStoppedLaunch(delivery, threadId, turnId),
       },
     });
     this.#removal = new AgentRemoval({
@@ -4582,11 +4591,13 @@ export class AgentService extends EventEmitter<AgentServiceEvents> {
     });
   }
 
-  #postAgentTaskResult(context: DeliveryContext, text: string): void {
+  #postAgentTaskResult(context: DeliveryContext, text: string): boolean {
     try {
       this.#tasks.postLaunchResult(context, this.#mcp.redact(text));
+      return true;
     } catch (error) {
       this.#emitError("agent_task_result_failed", error, context.delivery.recipientAgentId);
+      return false;
     }
   }
 
@@ -6500,41 +6511,70 @@ export class AgentService extends EventEmitter<AgentServiceEvents> {
     const taskId = this.#tasks.taskForThread(threadId);
     if (!taskId) return false;
     let current = this.#mailbox.getDelivery(deliveryId);
-    if (current?.delivery.status === "starting") {
-      const starting = this.#drain.taskStart(agentId, taskId);
-      if (starting) yield* starting.pipe(Effect.ignore);
-      current = this.#mailbox.getDelivery(deliveryId);
+    if (!current) return false;
+    if (current.delivery.status === "completed") {
+      return yield* this.#turn.stopBackgroundLaunch(threadId, deliveryId);
     }
-    if (
-      current &&
-      (current.delivery.status === "queued" ||
-        (current.delivery.status === "running" && current.planContinuation?.queued))
-    ) {
+    // Record the stop before the provider can accept or retry a start. The delivery keeps its
+    // lane until the provider confirms an uncertain start or the start is settled.
+    yield* this.#mailbox
+      .requestAgentTaskStop(deliveryId)
+      .pipe(
+        Effect.mapError((failure) => new AgentLifecycleFailed({ operation: "record task stop", cause: failure.cause })),
+      );
+    current = this.#mailbox.getDelivery(deliveryId);
+    if (!current) return false;
+    const status = current.delivery.status;
+    if (status === "completed") return yield* this.#turn.stopBackgroundLaunch(threadId, deliveryId);
+    if (status === "queued" || (status === "running" && current.planContinuation?.queued)) {
       yield* this.cancelQueuedMessage(agentId, deliveryId);
       if (current.planContinuation?.queued) yield* this.#drain.endPlanContinuation(agentId, taskId);
-      this.#postAgentTaskResult(current, sourceText("status.agent.agentTaskStopped"));
-      return true;
+    } else if (status === "running" || status === "starting") {
+      if (current.delivery.turnId) yield* this.#interruptStoppedLaunch(current, threadId, current.delivery.turnId);
+      return "stopping" as const;
+    } else if (
+      status !== "cancelled" &&
+      !(status === "interrupted" && this.#mailbox.agentTaskStopRequested(deliveryId))
+    ) {
+      return false;
     }
-    if (!current) return true;
-    if (current.delivery.status === "completed") {
-      const stopped = yield* Effect.acquireUseRelease(
-        Effect.sync(() => this.#drain.holdSessionSettings(agentId)),
-        () => this.#turn.stopBackgroundLaunch(threadId, deliveryId),
-        (release) => Effect.sync(release),
-      ).pipe(
-        Effect.mapError(
-          (failure) => new AgentLifecycleFailed({ operation: "stop background task", cause: failure.cause }),
-        ),
-      );
-      return stopped ?? true;
-    }
-    const turnId = current.delivery.turnId;
-    if (!turnId) return current.delivery.status !== "starting";
-    if (current.delivery.status !== "running" && current.delivery.status !== "starting") return true;
-    const active = () => this.#conversation.loadedExecutionSnapshot(threadId)?.activeTurnId === turnId;
-    if (!active()) return false;
+    // A failed write leaves the terminal delivery available for another stop. The result ID
+    // also makes a retry safe when the first write succeeded.
+    return this.#postAgentTaskResult(current, sourceText("status.agent.agentTaskStopped"))
+      ? ("stopped" as const)
+      : ("stopping" as const);
+  }, Effect.uninterruptible).bind(this);
+
+  readonly #interruptStoppedLaunch = Effect.fn("AgentService.interruptStoppedLaunch")(function* (
+    this: AgentService,
+    context: DeliveryContext,
+    threadId: string,
+    turnId: string,
+  ) {
+    const { id, recipientAgentId: agentId } = context.delivery;
+    const taskId = this.#tasks.taskForThread(threadId);
+    if (!taskId || this.#tasks.stoppedTurn(taskId) === turnId) return;
+    const active = () =>
+      this.#conversation.loadedExecutionSnapshot(threadId)?.activeTurnId === turnId &&
+      this.#mailbox.getDelivery(id)?.delivery.turnId === turnId &&
+      !this.#turn.hasEnded(turnId);
+    if (!active()) return;
     this.#tasks.markStopped(taskId, turnId);
-    return yield* this.#interruptTurn(agentId, turnId, threadId, active);
+    yield* this.#interruptTurn(agentId, turnId, threadId, active).pipe(
+      Effect.catch((failure) =>
+        Effect.sync(() => {
+          this.#tasks.clearStopped(taskId, turnId);
+          this.#emitError("agent_task_stop_failed", failure.cause, agentId);
+          return false;
+        }),
+      ),
+      Effect.tap((interrupted) =>
+        Effect.sync(() => {
+          if (!interrupted) this.#tasks.clearStopped(taskId, turnId);
+        }),
+      ),
+      Effect.asVoid,
+    );
   }, Effect.uninterruptible).bind(this);
 
   /** Stops the task and closes it. A closed task takes no message until it opens again. */

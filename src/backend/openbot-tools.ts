@@ -673,7 +673,8 @@ export const OPENBOT_TOOL_DEFINITIONS: readonly OpenBotToolDefinition[] = [
   },
   {
     name: STOP_AGENT_TASK_TOOL,
-    description: "Stop the run that openbot.start_agent_task launched from this chat. Pass its returned threadId.",
+    description:
+      "Stop the run that openbot.start_agent_task launched from this chat. Pass its returned threadId. A stopping status means OpenBot still waits for the provider or for result delivery.",
     shape: stopAgentTaskToolSchema.shape,
   },
   ...MEMORY_RECALL_TOOL_DEFINITIONS,

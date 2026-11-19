@@ -475,7 +475,11 @@ export interface OpenBotToolRouterHooks {
   runsTurn(agentId: string): boolean;
   /** `false` when the turn no longer runs or `mayStop` refuses, so no stop was sent. */
   interrupt(agentId: string, turnId: string, mayStop: () => boolean): Effect.Effect<boolean, ToolOperationFailed>;
-  stopLaunchedTask(agentId: string, threadId: string, deliveryId: string): Effect.Effect<boolean, ToolOperationFailed>;
+  stopLaunchedTask(
+    agentId: string,
+    threadId: string,
+    deliveryId: string,
+  ): Effect.Effect<"stopped" | "stopping" | false, ToolOperationFailed>;
   /** Epoch milliseconds from the turn lifecycle; null when this process has not seen the event. */
   turnActivity(agentId: string, turnId: string | null): { startedAt: number | null; lastEventAt: number | null };
   /**
@@ -2567,6 +2571,7 @@ export class OpenBotToolRouter {
     const taskResult = yield* this.#tasks.handleTool(params, {
       ...caller,
       requesterIds: () => this.#turnRequesters(senderAgentId, params.turnId),
+      fromExternalChat: () => this.#servesExternalChat(senderAgentId, params.turnId, params.threadId),
       computer: () => {
         const account = this.#computerAccount(senderAgentId, params.turnId);
         return account && { memberId: account.memberId, port: codingComputer(account.api) };
@@ -3297,7 +3302,7 @@ export class OpenBotToolRouter {
     if (
       !origin ||
       this.#channels.store.channelForThread(threadId) ||
-      this.#mailbox.turnServesExternalChat(agentId, params.turnId) ||
+      this.#servesExternalChat(agentId, params.turnId, threadId) ||
       (this.#conversation.isExecutionThread(threadId) && taskId === null)
     )
       return openBotToolFailure("Use this tool in an OpenBot agent chat or side thread.");
@@ -3321,8 +3326,18 @@ export class OpenBotToolRouter {
       .pipe(Effect.result);
     if (Result.isFailure(stopped) || !stopped.success)
       return openBotToolFailure(sourceText("error.backend.threadStillRunning"));
-    return openBotToolResult({ threadId: parsed.data.threadId, status: "stopped" });
+    return openBotToolResult({ threadId: parsed.data.threadId, status: stopped.success });
   }, Effect.uninterruptible);
+
+  #servesExternalChat(agentId: string, turnId: string, threadId: string): boolean {
+    const publicThreadId = this.#conversation.publicThreadId(agentId, threadId);
+    const taskId = this.#tasks.taskForThread(publicThreadId);
+    return (
+      Boolean(this.#messaging.store.linkForThread(publicThreadId)) ||
+      (taskId !== null && this.#mailbox.taskServesExternalChat(taskId)) ||
+      this.#mailbox.turnServesExternalChat(agentId, turnId)
+    );
+  }
 
   #computerAccount(agentId: string, turnId: string): { api: AgentComputerApi; memberId: string } | undefined {
     const [memberId, another] = this.#turnRequesters(agentId, turnId);
