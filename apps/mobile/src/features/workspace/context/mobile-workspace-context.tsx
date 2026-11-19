@@ -48,6 +48,7 @@ import {
 } from "@openbot/contracts/team-protocol/current";
 import { EVENTS_CAPABILITY } from "@openbot/contracts/team-protocol/events-v1";
 import { FOCUS_USE_CAPABILITY, FOCUS_USE_ROUTES } from "@openbot/contracts/team-protocol/focus-use-v1";
+import { HOME_AGENT_RULES_CAPABILITY } from "@openbot/contracts/team-protocol/home-agent-rules-v1";
 import { HOST_ADMIN_CAPABILITY } from "@openbot/contracts/team-protocol/host-admin-v1";
 import { HOST_APPEARANCE_CAPABILITY } from "@openbot/contracts/team-protocol/host-appearance-v1";
 import { HOST_KEY_ROTATION_CAPABILITY } from "@openbot/contracts/team-protocol/host-key-rotation-v1";
@@ -2712,6 +2713,9 @@ export function MobileWorkspaceProvider({ children }: PropsWithChildren) {
         canManageAgentMemoryLimit: (serverId) => administers(serverId, AGENT_MEMORY_LIMIT_CAPABILITY),
         canManageMemoryReview: (serverId) => administers(serverId, MEMORY_REVIEW_CAPABILITY),
         canManageSkillLearning: (serverId) => administers(serverId, SKILL_LEARNING_CAPABILITY),
+        canManageHomeAgentRules: (serverId) =>
+          servers.find((candidate) => candidate.id === serverId)?.role === "owner" &&
+          administers(serverId, HOME_AGENT_RULES_CAPABILITY),
         canManageBrowsingMemory: (serverId) => administers(serverId, BROWSING_MEMORY_CAPABILITY),
         canManageServerPersonality: (serverId) => administers(serverId, HOST_PERSONALITY_CAPABILITY),
         servesServerPersonality: (serverId) => {

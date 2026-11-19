@@ -331,6 +331,27 @@ There is no Undo control. Revisions are never deleted and a revision reaches onl
 made it, so the user asks the agent to undo the change: the guidance tells it to read the revision
 before with `read_local_skill` and publish its files with `revise_skill`.
 
+## Host rules and skills
+
+In Server Settings > Agent defaults, the host owner can select `agents.md` and `proof.md` from
+`~/.agents/rules` on the computer that runs the agents. OpenBot starts with this setting off.
+Use the operating-system account that runs the host when syncing the folder to a joined server.
+The setting stores the switch and selected file names on each host. The desktop, web, and mobile
+clients receive the names and availability flags. Joined clients need a host with
+`home-agent-rules-v1`.
+
+OpenBot adds the selected rules when it builds a provider prompt. It skips rules that the
+provider already loads from those same files. Codex can load them through a trusted session hook.
+Claude can load them through the existing Claude Code user setup. Grok can load them through its
+own rules directory or Claude compatibility. Those native settings operate independently of
+OpenBot's opt-in. Turn the switch off to stop OpenBot from supplying the rules in future prompts.
+Provider sessions can retain the instructions they received earlier.
+
+Providers that discover `~/.agents/skills` use that folder directly. Claude's existing home-skill
+plugin links skills when its user setup is on, and skips names Claude already loads. OpenBot lists
+home skills for providers that need their locations in the instructions. Keep rules and skills in
+the host home folder so edits reach future sessions without an app update.
+
 ## Idle provider sessions
 
 A loaded provider session holds processes: the CLI, its MCP servers and its background terminals.

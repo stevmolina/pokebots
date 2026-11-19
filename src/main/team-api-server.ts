@@ -205,6 +205,7 @@ import { CUSTOM_PROVIDER_HARNESS_CAPABILITY } from "@openbot/contracts/team-prot
 import { FOCUS_USE_INTERVAL_MS } from "@openbot/contracts/team-protocol/focus-use-v1";
 import { GITHUB_SKILLS_CAPABILITY } from "@openbot/contracts/team-protocol/github-skills-v1";
 import { HERMES_IMPORT_CAPABILITY } from "@openbot/contracts/team-protocol/hermes-import-v1";
+import { HOME_AGENT_RULES_CAPABILITY } from "@openbot/contracts/team-protocol/home-agent-rules-v1";
 import {
   HOST_APPEARANCE_CAPABILITY,
   HOST_APPEARANCE_EVENT,
@@ -410,6 +411,7 @@ import { routeFiles } from "./team-api/route-files";
 import { routeFocusUse } from "./team-api/route-focus-use";
 import { routeGithubSkills } from "./team-api/route-github-skills";
 import { routeHermesImport } from "./team-api/route-hermes-import";
+import { routeHomeAgentRules } from "./team-api/route-home-agent-rules";
 import { routeHostAdmin } from "./team-api/route-host-admin";
 import { routeHostAppearance } from "./team-api/route-host-appearance";
 import { routeHostKeyRotation } from "./team-api/route-host-key-rotation";
@@ -1445,6 +1447,7 @@ export class TeamApiServer {
       if ((await routeBrowsingMemory(context, this.#options.admin)) === "handled") return;
       if ((await routePromptCacheTtl(context, this.#options.admin)) === "handled") return;
       if ((await routeClaudeUserSetup(context, this.#options.admin)) === "handled") return;
+      if ((await routeHomeAgentRules(context, this.#options.admin)) === "handled") return;
       if ((await routeClaudeAiTools(context, this.#options.admin)) === "handled") return;
       if ((await routeClaudeCompactWindow(context, this.#options.admin)) === "handled") return;
       if ((await routeProviderEnvironment(context, this.#options.admin)) === "handled") return;
@@ -3082,6 +3085,7 @@ export class TeamApiServer {
         if (capability === BROWSING_MEMORY_CAPABILITY) return this.#options.admin?.browsingMemory !== undefined;
         if (capability === PROMPT_CACHE_TTL_CAPABILITY) return this.#options.admin?.promptCacheTtl !== undefined;
         if (capability === CLAUDE_USER_SETUP_CAPABILITY) return this.#options.admin?.claudeUserSetup !== undefined;
+        if (capability === HOME_AGENT_RULES_CAPABILITY) return this.#options.admin?.homeAgentRules !== undefined;
         if (capability === CLAUDE_AI_TOOLS_CAPABILITY) return this.#options.admin?.claudeAiTools !== undefined;
         if (capability === CLAUDE_COMPACT_WINDOW_CAPABILITY)
           return this.#options.admin?.claudeCompactWindow !== undefined;

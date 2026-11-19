@@ -395,6 +395,7 @@ import type { GitHubConnectorRepositories, GitHubConnectorStatus } from "./ipc-g
 import type { GithubSkillSource } from "./ipc-github-skills";
 import type { ApplyHermesImportInput, HermesImportPreview } from "./ipc-hermes-import";
 import type { HiddenAgentsSnapshot, SetAgentHiddenInput } from "./ipc-hidden-agents";
+import type { HomeAgentRulesPreference, HomeAgentRulesSetting } from "./ipc-home-agent-rules";
 import type { HostAnalytics, HostAnalyticsInput } from "./ipc-host-analytics";
 import type { HostPersonality } from "./ipc-host-personality";
 import type { HostReleaseStatus } from "./ipc-host-release";
@@ -1535,6 +1536,12 @@ export const IPC_ENDPOINTS = {
     getClaudeUserSetup: scopedQuery<ClaudeUserSetupSetting, "required">()("host-admin:get-claude-user-setup"),
     setClaudeUserSetup: scopedRequest<boolean, ClaudeUserSetupSetting, "required">()(
       "host-admin:set-claude-user-setup",
+    ),
+    // Whether the server includes selected `~/.agents/rules` files across providers
+    // (`home-agent-rules-v1`). Off by default. The host owner sets it.
+    getHomeAgentRules: scopedQuery<HomeAgentRulesSetting, "required">()("host-admin:get-home-agent-rules"),
+    setHomeAgentRules: scopedRequest<HomeAgentRulesPreference, HomeAgentRulesSetting, "required">()(
+      "host-admin:set-home-agent-rules",
     ),
     // Whether the Claude agents of the server get the Artifact tools and the claude.ai connectors of
     // the host's Claude Code sign-in (`claude-ai-tools-v1`). An owner or admin sets it.

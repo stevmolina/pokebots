@@ -4,12 +4,15 @@ import {
   type BrowserProfileSummary,
   type BrowserProxyComputer,
   type BrowserProxySummary,
+  type HomeAgentRuleFile,
+  type HomeAgentRulesPreference,
   type HostStatus,
   type HostUpdateStatus,
   nextBrowserProfileHue,
   parseBrowserProxyAddress,
   type ServerAuditEntry,
 } from "@openbot/contracts/ipc";
+import { HOME_AGENT_RULES_CAPABILITY } from "@openbot/contracts/team-protocol/home-agent-rules-v1";
 import { sourceText } from "@openbot/i18n/source";
 import { Toaster } from "@openbot/ui";
 import { createSignal, createStore } from "solid-js";
@@ -69,6 +72,44 @@ const meta = {
 
 export default meta;
 type Story = StoryObj<typeof meta>;
+
+function hostRulesStory(capabilities: string[]): Story {
+  return {
+    args: {
+      server: {
+        ...remoteServer,
+        compatibility: {
+          localAppVersion: "0.0.0-story",
+          hostAppVersion: "0.0.0-story",
+          localProtocol: { minimum: 1, maximum: 10 },
+          hostProtocol: { minimum: 1, maximum: 10 },
+          negotiatedProtocol: 10,
+          capabilities,
+        },
+      },
+      initialSection: "agents",
+      hostTurnLimits: {},
+    },
+    render: (args) => {
+      const [preference, setPreference] = createSignal<HomeAgentRulesPreference>({ enabled: false, files: [] });
+      const availableFiles: HomeAgentRuleFile[] = ["agents.md", "proof.md"];
+      return (
+        <ServerSettingsStory
+          settings={{
+            ...args,
+            homeAgentRules: {
+              getHomeAgentRules: async () => ({ ...preference(), availableFiles }),
+              setHomeAgentRules: async (value) => ({ ...setPreference(value), availableFiles }),
+            },
+          }}
+        />
+      );
+    },
+  };
+}
+
+export const JoinedHostRules = hostRulesStory(["host-turn-limits-v1", HOME_AGENT_RULES_CAPABILITY]);
+export const JoinedHostBeforeHostRules = hostRulesStory(["host-turn-limits-v1"]);
 
 export const LocalFirstSetup: Story = {
   args: {

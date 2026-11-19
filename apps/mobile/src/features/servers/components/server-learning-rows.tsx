@@ -1,4 +1,9 @@
-import { isSkillLearningMode, RESPONSE_STYLES, type ResponseStyle } from "@openbot/contracts/ipc";
+import {
+  HOME_AGENT_RULE_FILES,
+  isSkillLearningMode,
+  RESPONSE_STYLES,
+  type ResponseStyle,
+} from "@openbot/contracts/ipc";
 import { type QueryKey, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Typography } from "heroui-native";
 import BookOpen from "lucide-react-native/icons/book-open";
@@ -279,6 +284,59 @@ export function ServerBrowsingMemoryRow({ serverId }: { serverId: string }) {
           }}
         />
       </SettingsRow>
+    </SettingsSection>
+  );
+}
+
+export function ServerHomeAgentRulesRows({ serverId }: { serverId: string }) {
+  const { t } = useText();
+  const { theme } = useUniwind();
+  const { loadHomeAgentRules, setHomeAgentRules } = useMobileWorkspaceActions();
+  const setting = useHostSetting(
+    queryKeys.homeAgentRules(useQueryScope(), serverId),
+    () => loadHomeAgentRules(serverId),
+    t("mobile.server.settings.homeAgentRulesLoadFailed"),
+    t("mobile.server.settings.homeAgentRulesSaveFailed"),
+  );
+  const current = setting.value;
+  const enableLabel = t("mobile.server.settings.homeAgentRulesEnable");
+  return (
+    <SettingsSection
+      title={t("mobile.server.settings.homeAgentRules")}
+      footer={setting.error ?? t("mobile.server.settings.homeAgentRulesDescription")}
+    >
+      <SettingsRow>
+        <SettingsSwitch
+          value={current?.enabled ?? false}
+          disabled={!current || setting.saving}
+          label={enableLabel}
+          dark={theme === "dark"}
+          onValueChange={(enabled) => {
+            if (current && enabled !== current.enabled)
+              setting.save(() => setHomeAgentRules({ enabled, files: current.files }, serverId));
+          }}
+        />
+      </SettingsRow>
+      {current
+        ? HOME_AGENT_RULE_FILES.map((file) => {
+            const available = current.availableFiles.includes(file);
+            const selected = current.files.includes(file);
+            return (
+              <SettingsRow key={file}>
+                <SettingsSwitch
+                  value={selected}
+                  disabled={setting.saving || (!available && !selected)}
+                  label={available ? file : t("mobile.server.settings.homeAgentRulesMissing", { file })}
+                  dark={theme === "dark"}
+                  onValueChange={(include) => {
+                    const files = include ? [...current.files, file] : current.files.filter((name) => name !== file);
+                    setting.save(() => setHomeAgentRules({ enabled: current.enabled, files }, serverId));
+                  }}
+                />
+              </SettingsRow>
+            );
+          })
+        : null}
     </SettingsSection>
   );
 }

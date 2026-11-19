@@ -85,6 +85,7 @@ import { type CompanySignInCalls, createServerCompanySignInSection } from "./Ser
 import { ServerCrmSetting } from "./ServerCrmSetting";
 import { ServerDesktopPanel } from "./ServerDesktopPanel";
 import { createServerGeneralSection } from "./ServerGeneralSection";
+import type { HostHomeAgentRulesCalls } from "./ServerHomeAgentRulesSetting";
 import {
   type HermesFolderPlace,
   type ServerImportDetail,
@@ -246,6 +247,7 @@ export interface ServerSettingsModalProps {
    * only for the local server or a remote host with `claude-user-setup-v1` that this member
    * administers.
    */
+  homeAgentRules?: HostHomeAgentRulesCalls | undefined;
   claudeUserSetup?: HostClaudeUserSetupOptions | undefined;
   /**
    * The Claude provider page shows "Use claude.ai tools" only when a caller supplies this, and only
@@ -405,6 +407,7 @@ const SECTION_ROWS: Partial<Record<Section, readonly AppTextKey[]>> = {
     "server.settings.timezone",
     "server.settings.turnLimit",
     "server.settings.agentTaskLimit",
+    "server.settings.homeAgentRules",
     "agentSettings.automation.title",
     "agentSettings.agentNewChat.title",
     "agentSettings.quickAcknowledgement.title",

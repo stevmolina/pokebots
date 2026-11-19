@@ -668,7 +668,7 @@ export const OPENBOT_TOOL_DEFINITIONS: readonly OpenBotToolDefinition[] = [
   {
     name: START_AGENT_TASK_TOOL,
     description:
-      "Launch independent work in a fresh side thread of an agent on this host. Omit agentId to use yourself. Give a complete brief because the new thread starts without this chat's history. Returns threadId as soon as the task is queued. OpenBot posts the result in the chat that launched it. Use it for independent work the user requested and continue or end this turn while the task runs.",
+      "Launch independent work in a fresh side thread of an agent on this host. Omit agentId to use yourself. Give a complete brief because the new thread starts without this chat's history. Include the requested checks and evidence in the brief. Returns threadId as soon as the task is queued. OpenBot posts the result in the chat that launched it. Use it for independent work the user requested and continue or end this turn while the task runs.",
     shape: startAgentTaskToolSchema.shape,
   },
   {

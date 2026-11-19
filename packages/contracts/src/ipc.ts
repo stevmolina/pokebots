@@ -64,6 +64,7 @@ export * from "./ipc-github-connector";
 export * from "./ipc-github-skills";
 export * from "./ipc-hermes-import";
 export * from "./ipc-hidden-agents";
+export * from "./ipc-home-agent-rules";
 export * from "./ipc-host-analytics";
 export * from "./ipc-host-personality";
 export * from "./ipc-host-release";

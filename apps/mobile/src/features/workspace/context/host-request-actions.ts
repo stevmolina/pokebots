@@ -145,6 +145,7 @@ import {
   TEAM_ZIP_ATTACHMENTS_CAPABILITY,
 } from "@openbot/contracts/team-protocol/current";
 import { EVENTS_CAPABILITY } from "@openbot/contracts/team-protocol/events-v1";
+import { HOME_AGENT_RULES_CAPABILITY } from "@openbot/contracts/team-protocol/home-agent-rules-v1";
 import { HOST_MEMBER_UPDATE_CAPABILITY } from "@openbot/contracts/team-protocol/host-member-update-v1";
 import { HOST_PERSONALITY_CAPABILITY } from "@openbot/contracts/team-protocol/host-personality-v1";
 import { HOST_RELEASE_CAPABILITY } from "@openbot/contracts/team-protocol/host-release-v1";
@@ -253,6 +254,7 @@ import {
   getHostAgentMemoryLimit,
   getHostAuditLog,
   getHostBrowsingMemory,
+  getHostHomeAgentRules,
   getHostMcpAccess,
   getHostMemoryReview,
   getHostPersonality,
@@ -316,6 +318,7 @@ import {
   setHostAgentMemoryLimit,
   setHostBrowserProfileProxy,
   setHostBrowsingMemory,
+  setHostHomeAgentRules,
   setHostMcpAccess,
   setHostMemoryReview,
   setHostPersonality,
@@ -530,6 +533,8 @@ type HostRequestActions = Pick<
   | "setMemoryReview"
   | "loadSkillLearning"
   | "setSkillLearning"
+  | "loadHomeAgentRules"
+  | "setHomeAgentRules"
   | "loadBrowsingMemory"
   | "setBrowsingMemory"
   | "loadServerPersonality"
@@ -849,6 +854,8 @@ export function createHostRequestActions({
     capabilityApi(serverId, MEMORY_REVIEW_CAPABILITY, "mobile.server.settings.learningUnsupported");
   const skillLearningAdmin = (serverId: string) =>
     capabilityApi(serverId, SKILL_LEARNING_CAPABILITY, "mobile.server.settings.learningUnsupported");
+  const homeAgentRulesAdmin = (serverId: string) =>
+    capabilityApi(serverId, HOME_AGENT_RULES_CAPABILITY, "error.team.homeAgentRulesUnsupported");
   const browsingMemoryAdmin = (serverId: string) =>
     capabilityApi(serverId, BROWSING_MEMORY_CAPABILITY, "mobile.server.settings.learningUnsupported");
   /** Any member reads the personality; the host lets only an owner or admin set it. */
@@ -965,6 +972,9 @@ export function createHostRequestActions({
     loadSkillLearning: async (serverId) => runTeamRequest(getHostSkillLearning(skillLearningAdmin(serverId))),
     setSkillLearning: async (mode, serverId) =>
       runTeamRequest(setHostSkillLearning(skillLearningAdmin(serverId), mode)),
+    loadHomeAgentRules: async (serverId) => runTeamRequest(getHostHomeAgentRules(homeAgentRulesAdmin(serverId))),
+    setHomeAgentRules: async (preference, serverId) =>
+      runTeamRequest(setHostHomeAgentRules(homeAgentRulesAdmin(serverId), preference)),
     loadBrowsingMemory: async (serverId) => runTeamRequest(getHostBrowsingMemory(browsingMemoryAdmin(serverId))),
     setBrowsingMemory: async (enabled, serverId) =>
       runTeamRequest(setHostBrowsingMemory(browsingMemoryAdmin(serverId), enabled)),

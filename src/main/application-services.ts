@@ -309,6 +309,7 @@ import { githubSkillSource } from "./github-skill-source";
 import { hermesRoot } from "./hermes-import-reader";
 import { HermesImportService } from "./hermes-import-service";
 import { HermesInstaller } from "./hermes-installer";
+import { createHomeAgentRulesControl, type HomeAgentRulesControl } from "./home-agent-rules-preference-store";
 import { HostEventsRuntime } from "./host-events-runtime";
 import {
   agentWebhookRoutineWriter,
@@ -560,6 +561,7 @@ const HOST_TURN_LIMITS_PREFERENCE_FILE = "openbot-host-turn-limits-v1.json";
 const SERVER_PERSONALITY_PREFERENCE_FILE = "openbot-server-personality-v1.json";
 const PROMPT_CACHE_TTL_PREFERENCE_FILE = "openbot-prompt-cache-ttl-v1.json";
 const CLAUDE_USER_SETUP_PREFERENCE_FILE = "openbot-claude-user-setup-v1.json";
+const HOME_AGENT_RULES_PREFERENCE_FILE = "openbot-home-agent-rules-v1.json";
 const CLAUDE_AI_TOOLS_PREFERENCE_FILE = "openbot-claude-ai-tools-v1.json";
 const CRM_PREFERENCE_FILE = "openbot-crm-v1.json";
 const CLAUDE_COMPACT_WINDOW_PREFERENCE_FILE = "openbot-claude-compact-window-v1.json";
@@ -840,6 +842,7 @@ export interface ApplicationServices {
   serverPersonality: ServerPersonalityPreferenceStore;
   promptCacheTtl: PromptCacheTtlPreferenceStore;
   claudeUserSetup: ClaudeUserSetupControl;
+  homeAgentRules: HomeAgentRulesControl;
   claudeAiTools: ClaudeAiToolsControl;
   claudeCompactWindow: ClaudeCompactWindowControl;
   providerEnvironment: ProviderEnvironmentControl;
@@ -1669,6 +1672,7 @@ export async function createApplicationServices({
   const claudeUserSetup = createClaudeUserSetupPreferenceStore(
     join(app.getPath("userData"), CLAUDE_USER_SETUP_PREFERENCE_FILE),
   );
+  const homeAgentRules = createHomeAgentRulesControl(join(app.getPath("userData"), HOME_AGENT_RULES_PREFERENCE_FILE));
   const claudeAiTools = createClaudeAiToolsPreferenceStore(
     join(app.getPath("userData"), CLAUDE_AI_TOOLS_PREFERENCE_FILE),
   );
@@ -1720,6 +1724,7 @@ export async function createApplicationServices({
       serverPersonality.load(),
       promptCacheTtl.load(),
       claudeUserSetup.load(),
+      homeAgentRules.load(),
       claudeAiTools.load(),
       crmPreference.load(),
       claudeCompactWindow.load(),
@@ -2548,6 +2553,7 @@ export async function createApplicationServices({
     // Only a dev build leads with the OpenCode development model; a packaged app keeps the
     // built-in default.
     developmentDefaults: appVariant === "dev",
+    homeAgentRules: homeAgentRules.preference,
     credentials: {
       apiKey: (provider) => providerCredentials.get(provider),
       accountKeys: {
@@ -3940,6 +3946,7 @@ export async function createApplicationServices({
       browsingMemory,
       promptCacheTtl,
       claudeUserSetup: claudeUserSetupSetting,
+      homeAgentRules,
       claudeAiTools: claudeAiToolsSetting,
       claudeCompactWindow: claudeCompactWindowSetting,
       providerEnvironment: providerEnvironmentSetting,
@@ -5127,6 +5134,7 @@ export async function createApplicationServices({
     serverPersonality,
     promptCacheTtl,
     claudeUserSetup: claudeUserSetupSetting,
+    homeAgentRules,
     claudeAiTools: claudeAiToolsSetting,
     claudeCompactWindow: claudeCompactWindowSetting,
     providerEnvironment: providerEnvironmentSetting,

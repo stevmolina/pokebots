@@ -1,7 +1,7 @@
 // Runs the real host and Team API on a temporary profile. A Codex app-server fixture calls tools
 // and holds turns until the test releases or stops them. Run: bun scripts/start-agent-task-e2e.ts.
 import assert from "node:assert/strict";
-import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, symlink, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { AGENT_PROVIDERS, isAgentTask, isAgentTasksSnapshot, isConversationSnapshot } from "@openbot/contracts/ipc";
@@ -11,6 +11,11 @@ import { TEAM_APP_VERSION_HEADER, TEAM_PROTOCOL_VERSION_HEADER } from "@openbot/
 import { AGENT_ACCESS_ROUTES } from "@openbot/contracts/team-protocol/agent-access-v1";
 import { AGENT_TASKS_ROUTES } from "@openbot/contracts/team-protocol/agent-tasks-v1";
 import { teamCapabilitiesForProtocol, teamCapabilityHeaders } from "@openbot/contracts/team-protocol/current";
+import {
+  decodeHomeAgentRulesResponse,
+  HOME_AGENT_RULES_CAPABILITY,
+  HOME_AGENT_RULES_ROUTES,
+} from "@openbot/contracts/team-protocol/home-agent-rules-v1";
 import { teamHttpCodec } from "@openbot/contracts/team-protocol/http-codecs";
 import { decodeTeamProtocolV2Json, type TeamProtocolV2Json } from "@openbot/contracts/team-protocol/v2";
 import { TEAM_PROTOCOL_V10 } from "@openbot/contracts/team-protocol/v10";
@@ -28,14 +33,45 @@ import type { TeamApiBrowser } from "../src/main/team-api/dependencies";
 
 const OUT = resolve(import.meta.dirname, "../.openbot-build/start-agent-task-e2e");
 const HOST_VERSION = "0.0.0-e2e";
-const root = await mkdtemp(join(tmpdir(), "openbot-start-agent-task-"));
+const fixtureRoot = process.env.OPENBOT_START_AGENT_TASK_FIXTURE_ROOT;
+if (!fixtureRoot) {
+  const root = await mkdtemp(join(tmpdir(), "openbot-start-agent-task-"));
+  const home = join(root, "home");
+  try {
+    // Bun resolves os.homedir() at startup. The host and provider adapters must see the fixture home.
+    const child = Bun.spawn([process.execPath, import.meta.path], {
+      env: { ...process.env, HOME: home, USERPROFILE: home, OPENBOT_START_AGENT_TASK_FIXTURE_ROOT: root },
+      stdin: "inherit",
+      stdout: "inherit",
+      stderr: "inherit",
+    });
+    process.exitCode = await child.exited;
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+  process.exit(process.exitCode ?? 0);
+}
+const root = fixtureRoot;
 const userData = join(root, "user-data");
 const home = join(root, "home");
 const fakeCodex = join(root, "codex");
 const fakeOpencode = join(root, "opencode");
 const fakeLog = join(root, "codex.jsonl");
 const holdNextThread = join(root, "hold-next-thread");
-await mkdir(home);
+const rulesDirectory = join(home, ".agents", "rules");
+const ruleHook = join(home, ".agents", "hooks", "rules-session.py");
+const trustedHook = join(root, "trust-rule-hook");
+const proofMarker = "SYNTHETIC PROOF RULE";
+const agentMarker = "SYNTHETIC DELEGATION RULE";
+const fixtureCredential = "sk-ant-synthetic-fixture-token";
+const proofFile = `${proofMarker}\nAuthorization: Bearer ${fixtureCredential}`;
+const workerProof = "Fixture check passed. PR https://example.test/pull/1";
+await mkdir(rulesDirectory, { recursive: true });
+await mkdir(join(home, ".agents", "hooks"), { recursive: true });
+await writeFile(ruleHook, "# Synthetic hook metadata fixture.");
+await writeFile(join(rulesDirectory, "proof.md"), proofFile);
+await writeFile(join(rulesDirectory, "agents.md"), agentMarker);
+await writeFile(join(rulesDirectory, "other.md"), "SYNTHETIC UNSELECTED FILE");
 process.env.CODEX_HOME = join(home, ".codex");
 process.env.OPENBOT_CODEX_PATH = fakeCodex;
 
@@ -71,6 +107,7 @@ plugin({
 const { TeamApiServer } = await import("../src/main/team-api-server");
 const { AGENT_ACCESS_FILE, AgentAccessStore } = await import("../src/main/agent-access-store");
 const { TeamStore } = await import("../src/main/team-store");
+const { createHomeAgentRulesControl } = await import("../src/main/home-agent-rules-preference-store");
 
 const { AgentService } = await import("../src/backend/agent-service");
 const { AgentStore } = await import("../src/backend/agent-store");
@@ -144,6 +181,8 @@ const backgroundWork = new Map();
 const unloadGates = new Map();
 const historyGates = new Map();
 const workspaces = new Map();
+const rules = new Map();
+const redactedRules = new Map();
 let threads = 0;
 let turns = 0;
 const afterRelease = (file, done) => {
@@ -180,11 +219,25 @@ read.on("line", (line) => {
     case "model/list": return respond({ data: [{ model: "gpt-6-luna", displayName: "GPT-6 Luna" }] });
     case "plugin/list": return respond({ marketplaces: [] });
     case "config/read": return respond(config);
+    case "hooks/list": return respond({ data: [{ hooks: [{
+      command: ${JSON.stringify(`python3 '${ruleHook}' codex`)},
+      source: "user",
+      eventName: "sessionStart",
+      handlerType: "command",
+      enabled: true,
+      trustStatus: existsSync(${JSON.stringify(trustedHook)}) ? "trusted" : "untrusted",
+      matcher: null,
+    }] }] });
     case "config/batchWrite": return respond({});
     case "thread/name/set": return respond({});
     case "thread/start": {
       const id = "thread-" + process.pid + "-" + (++threads);
       workspaces.set(id, params.cwd);
+      rules.set(id, (params.developerInstructions || "").split("\\n")
+        .filter((line) => line.startsWith("SYNTHETIC ")));
+      const instructions = params.developerInstructions || "";
+      redactedRules.set(id,
+        instructions.includes("[redacted]") && !instructions.includes(${JSON.stringify(fixtureCredential)}));
       const gate = ${JSON.stringify(holdNextThread)};
       if (existsSync(gate)) {
         const tag = readFileSync(gate, "utf8");
@@ -216,12 +269,14 @@ read.on("line", (line) => {
         respond({ data: [], nextCursor: null }));
     }
     case "thread/items/list": return respond({ data: [], nextCursor: null });
+    case "thread/archive": return respond({});
     case "thread/resume":
     case "thread/read": return respond({ thread: { id: params.threadId, turns: [] } });
     case "turn/start": {
       const { threadId } = params;
       const turnId = "turn-" + process.pid + "-" + (++turns);
       const text = (params.input || []).map((item) => item.text || "").join("\\n");
+      const currentText = text.split("\\n--- current message ---\\n").at(-1);
       const late = /^LATE ([A-Z-]+)$/m.exec(text);
       if (late) {
         const tag = late[1];
@@ -231,7 +286,7 @@ read.on("line", (line) => {
       }
       respond({ turn: { id: turnId, status: "inProgress", items: [] } });
       write({ method: "turn/started", params: { threadId, turn: { id: turnId } } });
-      const call = [...text.matchAll(/<<CALL([^\\n]+)CALL>>/g)].at(-1);
+      const call = [...currentText.matchAll(/<<CALL([^\\n]+)CALL>>/g)].at(-1);
       if (call) {
         const { tag, tool, args } = JSON.parse(call[1]);
         const id = "tool-" + turnId;
@@ -241,11 +296,11 @@ read.on("line", (line) => {
           arguments: { name: "openbot." + tool, arguments: args },
         } });
       }
-      const work = [...text.matchAll(/^(RUN|HOLD|FAIL|PLAN|BACKGROUND) ([A-Z-]+)$/gm)].at(-1);
+      const work = [...currentText.matchAll(/^(RUN|HOLD|FAIL|PLAN|BACKGROUND) ([A-Z-]+)$/gm)].at(-1);
       if (!work) return setImmediate(() => finish(threadId, turnId, "Ready."));
       const [_, mode, tag] = work;
       log({ tag, threadId, turnId, text, model: params.model, cwd: workspaces.get(threadId),
-        sandbox: params.sandboxPolicy?.type });
+        sandbox: params.sandboxPolicy?.type, rules: rules.get(threadId), redactedRules: redactedRules.get(threadId) });
       if (mode === "RUN") return setImmediate(() => finish(threadId, turnId, "RESULT " + tag));
       if (mode === "FAIL") return setImmediate(() => finish(threadId, turnId, null, "failed"));
       const file = join(${JSON.stringify(root)}, "release-" + tag);
@@ -297,7 +352,7 @@ read.on("line", (line) => {
         if (mode === "PLAN") write({ method: "turn/plan/updated", params: {
           threadId, turnId, plan: [{ step: "Finish the remaining work", status: "pending" }],
         } });
-        finish(threadId, turnId, "RESULT " + tag);
+        finish(threadId, turnId, tag === "PROOF-WORKER" ? ${JSON.stringify(workerProof)} : "RESULT " + tag);
       });
     }
     case "turn/interrupt": {
@@ -341,8 +396,11 @@ createInterface({ input: process.stdin }).on("line", (line) => {
     });
   if (method === "session/prompt") {
     const text = params.prompt.map((part) => part.text ?? "").join("\\n");
+    const answer = text.includes("CHECK ACP HOST RULES")
+      ? "ACP received proof rule: " + text.includes(${JSON.stringify(proofMarker)})
+      : "Ready.";
     if (!text.includes("EMPTY-ACP")) write({ method: "session/update", params: {
-      sessionId: params.sessionId, update: { sessionUpdate: "agent_message_chunk", content: { type: "text", text: "Ready." } }
+      sessionId: params.sessionId, update: { sessionUpdate: "agent_message_chunk", content: { type: "text", text: answer } }
     } });
     return respond({ stopReason: "end_turn" });
   }
@@ -352,6 +410,8 @@ createInterface({ input: process.stdin }).on("line", (line) => {
   { mode: 0o755 },
 );
 
+const preferencePath = join(userData, "host-rules.json");
+const homeAgentRules = createHomeAgentRulesControl(preferencePath, home);
 const database = new OpenBotDatabase(userData);
 const store = new AgentStore(userData, home, database);
 const mailbox = new MailboxStore(userData, store.sharedRoot, database);
@@ -369,6 +429,7 @@ const agents = new AgentService({
   browser: agentBrowser,
   sidebarLayout,
   preferredProvider: "codex",
+  homeAgentRules: homeAgentRules.preference,
   requestTimeoutMs: 2500,
   bundledExecutables: { opencode: fakeOpencode },
   offProviders: AGENT_PROVIDERS.filter((provider) => provider !== "codex" && provider !== "opencode"),
@@ -394,6 +455,7 @@ const server = new TeamApiServer({
   hiddenAgents: agents,
   agentAccess,
   agentTasks: agents,
+  admin: { homeAgentRules },
 });
 
 const report: { passed: boolean; checks: Record<string, string | boolean>; error?: string } = {
@@ -406,13 +468,14 @@ async function call(
   expected: number,
   token?: string,
   body?: TeamProtocolV2Json,
+  protocol: number = TEAM_PROTOCOL_V10,
 ): Promise<TeamProtocolV2Json> {
   const response = await fetch(`http://127.0.0.1:${port}${path}`, {
     method: body === undefined ? "GET" : "POST",
     headers: {
-      [TEAM_PROTOCOL_VERSION_HEADER]: String(TEAM_PROTOCOL_V10),
+      [TEAM_PROTOCOL_VERSION_HEADER]: String(protocol),
       [TEAM_APP_VERSION_HEADER]: HOST_VERSION,
-      ...teamCapabilityHeaders(TEAM_PROTOCOL_V10, teamCapabilitiesForProtocol(TEAM_PROTOCOL_V10)),
+      ...teamCapabilityHeaders(protocol, teamCapabilitiesForProtocol(protocol)),
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
       "Content-Type": "application/json",
     },
@@ -446,6 +509,8 @@ const fixtureEntry = z.object({
   text: z.string().optional(),
   model: z.string().optional(),
   sandbox: z.string().optional(),
+  rules: z.array(z.string()).optional(),
+  redactedRules: z.boolean().optional(),
   cwd: z.string().optional(),
   result: z.object({ success: z.boolean(), contentItems: z.array(z.object({ text: z.string() })) }).optional(),
 });
@@ -473,6 +538,7 @@ const launchInfo = z.object({ threadId: z.string(), agentId: z.string() });
 const failures: unknown[] = [];
 try {
   await mkdir(userData);
+  await runCauseEffect(homeAgentRules.load());
   await runCauseEffect(team.initialize());
   await runCauseEffect(team.configure("Task E2E Host", owner.username, owner.password));
   assert.equal(await runCauseEffect(agentAccess.load()), true);
@@ -550,6 +616,91 @@ try {
     return z.object({ status: z.enum(["stopping", "stopped"]) }).parse(JSON.parse(reply?.contentItems[0]?.text ?? ""))
       .status;
   };
+
+  const { settings: rulesSettings, update: updateRules } = HOME_AGENT_RULES_ROUTES;
+  const readRules = async () => decodeHomeAgentRulesResponse(await call(rulesSettings, 200, ownerToken, {}));
+  assert.deepEqual(await readRules(), { enabled: false, files: [], availableFiles: ["agents.md", "proof.md"] });
+  const compatibility = await call(TEAM_API_ROUTES.compatibility, 200);
+  const legacyCompatibility = await call(TEAM_API_ROUTES.compatibility, 200, undefined, undefined, 9);
+  assert.ok(isDynamicRecord(compatibility) && Array.isArray(compatibility.capabilities));
+  assert.ok(compatibility.capabilities.includes(HOME_AGENT_RULES_CAPABILITY));
+  assert.ok(isDynamicRecord(legacyCompatibility) && Array.isArray(legacyCompatibility.capabilities));
+  assert.ok(!legacyCompatibility.capabilities.includes(HOME_AGENT_RULES_CAPABILITY));
+  await call(rulesSettings, 400, ownerToken, {}, 9);
+  await call(rulesSettings, 401, undefined, {});
+  const adminCredentials = { username: "test-admin", password: "e2e-admin-password" };
+  const adminInvite = await runCauseEffect(team.createInvite("admin"));
+  await call(TEAM_API_ROUTES.join.server, 201, undefined, { inviteToken: adminInvite.token, ...adminCredentials });
+  const adminToken = await login(adminCredentials);
+  for (const denied of [token, adminToken]) {
+    await call(rulesSettings, 403, denied, {});
+    await call(updateRules, 403, denied, { enabled: true, files: ["proof.md"] });
+  }
+  await call(updateRules, 400, ownerToken, { enabled: true, files: ["../proof.md"] });
+  await call(updateRules, 400, ownerToken, { enabled: true, files: ["other.md"] });
+  assert.equal((await readRules()).enabled, false);
+  report.checks.hostRulesCapabilityAndOwnerOnly = true;
+
+  await send(caller.id, "RUN RULES-OFF");
+  assert.deepEqual((await fixtureLog("RULES-OFF")).rules, []);
+  const selected = await call(updateRules, 200, ownerToken, { enabled: true, files: ["proof.md"] });
+  assert.deepEqual(selected, { enabled: true, files: ["proof.md"], availableFiles: ["agents.md", "proof.md"] });
+  const reloaded = createHomeAgentRulesControl(preferencePath, home);
+  await runCauseEffect(reloaded.load());
+  assert.deepEqual(reloaded.preference(), { enabled: true, files: ["proof.md"] });
+  await send(caller.id, "RUN RULES-SELECTED");
+  const optedIn = await fixtureLog("RULES-SELECTED");
+  assert.deepEqual(optedIn.rules, [proofMarker]);
+  assert.equal(optedIn.redactedRules, true);
+  assert.notEqual(optedIn.threadId, (await fixtureLog("RULES-OFF")).threadId);
+
+  await writeFile(trustedHook, "");
+  await send(caller.id, "RUN RULES-NATIVE");
+  assert.deepEqual((await fixtureLog("RULES-NATIVE")).rules, []);
+  await rm(trustedHook);
+  await rm(join(rulesDirectory, "proof.md"));
+  await symlink(join(rulesDirectory, "other.md"), join(rulesDirectory, "proof.md"));
+  assert.deepEqual((await readRules()).availableFiles, ["agents.md"]);
+  await send(caller.id, "RUN RULES-SYMLINK");
+  assert.deepEqual((await fixtureLog("RULES-SYMLINK")).rules, []);
+  await rm(join(rulesDirectory, "proof.md"));
+  await writeFile(join(rulesDirectory, "proof.md"), proofFile);
+  await call(updateRules, 200, ownerToken, { enabled: true, files: ["agents.md", "proof.md"] });
+
+  const proofTask = await start("synthetic-proof-worker", "HOLD PROOF-WORKER", target.id);
+  assert.deepEqual((await fixtureLog("PROOF-WORKER")).rules, [agentMarker, proofMarker]);
+  await send(caller.id, "RUN WHILE-WORKER-RUNS");
+  assert.deepEqual((await fixtureLog("WHILE-WORKER-RUNS")).rules, [agentMarker, proofMarker]);
+  const launchingChat = await waitFor("a reply while the worker runs", async () => {
+    const snapshot = await chat(caller.id);
+    return snapshot.messages.some(({ text }) => text === "RESULT WHILE-WORKER-RUNS") ? snapshot : undefined;
+  });
+  assert.ok(!launchingChat.messages.some(({ text }) => text === workerProof));
+  await writeFile(join(root, "release-PROOF-WORKER"), "");
+  const proofResult = await resultIn(workerProof);
+  assert.ok(
+    launchingChat.messages.some(
+      ({ id, turnId, text }) =>
+        id === proofResult.replyToMessageId && turnId === proofResult.turnId && text.includes("synthetic-proof-worker"),
+    ),
+  );
+  assert.ok((await chat(target.id, proofTask.threadId)).messages.some(({ text }) => text === workerProof));
+  async function checkAcpRules(included: boolean) {
+    await send(acpTarget.id, "CHECK ACP HOST RULES");
+    await waitFor("the ACP host rules result", async () =>
+      (await chat(acpTarget.id)).messages.find(({ text }) => text === `ACP received proof rule: ${included}`),
+    );
+  }
+  await checkAcpRules(true);
+  await call(updateRules, 200, ownerToken, { enabled: false, files: ["agents.md", "proof.md"] });
+  await send(caller.id, "RUN RULES-DISABLED");
+  assert.deepEqual((await fixtureLog("RULES-DISABLED")).rules, []);
+  await checkAcpRules(false);
+  report.checks.acpReadsNewSelectionOnNextTurn = true;
+  report.checks.hostRulesKnownSecretRedacted = true;
+  report.checks.hostRulesSelectionPersistenceAndNativeDeduplication = true;
+  report.checks.hostRulesSymlinkRefusedAndOptOut = true;
+  report.checks.delegatedProofReturnedWhileLaunchingChatStayedUsable = true;
 
   await writeFile(join(root, "release-SELF"), "");
   const self = await start("self", "HOLD SELF");
@@ -953,11 +1104,5 @@ try {
   process.stdout.write(`${evidence}\n`);
 } catch (error) {
   failures.push(error);
-} finally {
-  try {
-    await rm(root, { recursive: true, force: true });
-  } catch (error) {
-    failures.push(error);
-  }
 }
 if (failures.length > 0) throw failures[0];
