@@ -244,6 +244,8 @@ interface WebWorkspaceState {
   hostRestart: { state: "waiting" | "restarting"; version: string | null } | null;
   /** The state of each host that this tab has not opened, from its status connection. */
   hostStates: Record<string, WebHostState>;
+  /** The latest known agent summaries for each host, kept live by background connections. */
+  hostAgents: Record<string, ClientAgentSummary[]>;
   /** The last connection found that the host speaks no protocol this build speaks. */
   incompatibility: {
     hostId: string;
@@ -340,6 +342,7 @@ export function createWebWorkspace(
     models: [],
     hostRestart: null,
     hostStates: {},
+    hostAgents: {},
     incompatibility: null,
     hostsLoaded: false,
     hostsLoading: false,
@@ -550,6 +553,12 @@ export function createWebWorkspace(
         if (!disposed)
           setState((draft) => {
             draft.hostStates[id] = hostState;
+          });
+      },
+      hostAgentsChanged(id, agents) {
+        if (!disposed)
+          setState((draft) => {
+            draft.hostAgents[id] = agents;
           });
       },
       hostSessionRevoked: () => void retryHosts(),
@@ -1380,13 +1389,13 @@ export function createWebWorkspace(
     acceptedInvite = null;
   }
   /** With `takeOver`, the tab that has the host open gives it to this tab. */
-  async function connect(host: RemoteTeamHost, takeOver = false) {
+  async function connect(host: RemoteTeamHost, takeOver = false, targetAgentId?: string | null) {
     recoveryBlocked = false;
     recovery.dispose();
     recovery = makeRecovery();
     if (!connectionPromise || connectionPromise.hostId !== host.hostId) hostLifecycle.endSleep();
     try {
-      await attemptConnection(host, true, takeOver);
+      await attemptConnection(host, true, takeOver, targetAgentId);
     } catch (error) {
       if (!disposed && hostId === host.hostId) noteConnectionFailure(error);
       if (!disposed && hostId === host.hostId && state.recovery?.phase !== "suspended") recover();
@@ -1397,29 +1406,98 @@ export function createWebWorkspace(
     const host = state.host;
     if (host && state.otherTab) await connect(host, true);
   }
-  function attemptConnection(host: RemoteTeamHost, opened = false, takeOver = false): Promise<void> {
+  function attemptConnection(
+    host: RemoteTeamHost,
+    opened = false,
+    takeOver = false,
+    targetAgentId?: string | null,
+  ): Promise<void> {
     if (connectionPromise?.hostId === host.hostId) return connectionPromise.promise;
-    const promise = connectWorkspace(host, opened, takeOver).finally(() => {
+    const promise = connectWorkspace(host, opened, takeOver, targetAgentId).finally(() => {
       if (connectionPromise?.promise === promise) connectionPromise = null;
     });
     connectionPromise = { hostId: host.hostId, opened, promise };
     return promise;
   }
-  async function connectWorkspace(host: RemoteTeamHost, opened: boolean, takeOver: boolean) {
+  const hostSnapshots = new Map<
+    string,
+    {
+      agents: typeof state.agents;
+      selectedId: string | null;
+      conversations: typeof state.conversations;
+      models: typeof state.models;
+      agentStatus: typeof state.agentStatus;
+      capabilities: typeof state.capabilities;
+      sidebarLayout: typeof state.sidebarLayout;
+      userHiddenAgents: typeof state.userHiddenAgents;
+      agentColors: typeof state.agentColors;
+      reads: typeof state.reads;
+      chatColors: typeof state.chatColors;
+      memberId: typeof state.memberId;
+      queues: typeof state.queues;
+      hiddenIds: typeof state.hiddenIds;
+    }
+  >();
+  async function connectWorkspace(
+    host: RemoteTeamHost,
+    opened: boolean,
+    takeOver: boolean,
+    targetAgentId?: string | null,
+  ) {
     const current = ++generation;
-    const sameHost = hostId === host.hostId;
+    const previousHostId = hostId;
+    const sameHost = previousHostId === host.hostId;
+    if (!sameHost && previousHostId && state.workspaceLoaded && state.agents.length > 0) {
+      const savedConversations: typeof state.conversations = {};
+      for (const [id, conv] of Object.entries(state.conversations)) {
+        savedConversations[id] = {
+          page: conv.page,
+          draft: conv.draft,
+          attachments: [...conv.attachments],
+          loading: false,
+        };
+      }
+      hostSnapshots.set(previousHostId, {
+        agents: [...state.agents],
+        selectedId,
+        conversations: savedConversations,
+        models: [...state.models],
+        agentStatus: state.agentStatus,
+        capabilities: [...state.capabilities],
+        sidebarLayout: state.sidebarLayout,
+        userHiddenAgents: [...state.userHiddenAgents],
+        agentColors: [...state.agentColors],
+        reads: { ...state.reads },
+        chatColors: {
+          agents: [...state.chatColors.agents],
+          members: [...state.chatColors.members],
+        },
+        memberId: state.memberId,
+        queues: { ...state.queues },
+        hiddenIds: [...state.hiddenIds],
+      });
+    }
+    const cached = !sameHost ? hostSnapshots.get(host.hostId) : undefined;
     // A hosted server that sleeps or wakes keeps the workspace visible, so each retry keeps its agents and the selection.
     const keepWorkspace = sameHost && state.workspaceLoaded;
     // A new page shows the frame of the last load while it connects (`remote-workspace-frame`).
-    const savedFrame = keepWorkspace ? null : readRemoteWorkspaceFrame(props.accountId, host.hostId);
+    const savedFrame = keepWorkspace || cached ? null : readRemoteWorkspaceFrame(props.accountId, host.hostId);
     const frame = savedFrame?.agents.length ? savedFrame : null;
-    const frameSelected = frame?.agents.find((agent) => agent.id === frame.selectedAgentId) ?? frame?.agents[0];
-    const previousSelected = (sameHost ? selectedId : null) ?? frameSelected?.id ?? null;
+    const frameSelected =
+      (targetAgentId ? frame?.agents.find((agent) => agent.id === targetAgentId) : undefined) ??
+      frame?.agents.find((agent) => agent.id === frame.selectedAgentId) ??
+      frame?.agents[0];
+    const cachedSelected =
+      (targetAgentId ? cached?.agents.find((agent) => agent.id === targetAgentId) : undefined) ??
+      cached?.agents.find((agent) => agent.id === cached.selectedId) ??
+      cached?.agents[0];
+    const previousSelected =
+      targetAgentId ?? (sameHost ? selectedId : null) ?? cachedSelected?.id ?? frameSelected?.id ?? null;
     const recentAgentIds = frame?.recentAgentIds ?? [];
     hostId = host.hostId;
     writeWebServerSelection(props.accountId, host.hostId);
     writeWebServerSelectionHost(props.accountId, host);
-    if (!keepWorkspace) selectedId = null;
+    if (!keepWorkspace) selectedId = cachedSelected?.id ?? null;
     if (!sameHost) hostLifecycle.endSleep();
     setState((draft) => {
       draft.host = host;
@@ -1428,27 +1506,77 @@ export function createWebWorkspace(
       if (!sameHost) draft.connectionError = null;
       if (!sameHost) draft.hostOffline = false;
       if (!sameHost) draft.otherTab = false;
-      if (!sameHost) {
-        draft.workspaceLoaded = false;
-        draft.synced = false;
-        draft.agentStatus = null;
-        draft.models = [];
-      }
-      draft.status = "connecting";
-      draft.hostRestart = null;
-      draft.memberId = sameHost ? draft.memberId : null;
-      if (!keepWorkspace) {
-        draft.agents = [];
-        draft.agentsLoaded = false;
+      if (cached) {
+        draft.workspaceLoaded = true;
+        draft.synced = true;
+        draft.status = "online";
+        draft.agentStatus = cached.agentStatus;
+        draft.models = cached.models;
+        draft.memberId = cached.memberId;
+        draft.agents = cached.agents;
+        draft.agentsLoaded = true;
         draft.agentsFromFrame = false;
         draft.frameChannels = [];
-        draft.selectedId = null;
+        draft.selectedId = cachedSelected?.id ?? null;
+        draft.conversations = cached.conversations;
+        if (cachedSelected && !draft.conversations[cachedSelected.id]?.page) {
+          const cachedPage = readCachedConversationPage(props.accountId, host.hostId, cachedSelected.id);
+          draft.conversations[cachedSelected.id] = {
+            page: cachedPage,
+            draft: draft.conversations[cachedSelected.id]?.draft ?? "",
+            attachments: draft.conversations[cachedSelected.id]?.attachments ?? [],
+            loading: !cachedPage,
+          };
+        }
+        draft.queues = cached.queues;
+        draft.hiddenIds = cached.hiddenIds;
+        draft.sidebarLayout = cached.sidebarLayout;
+        draft.userHiddenAgents = cached.userHiddenAgents;
+        draft.agentColors = cached.agentColors;
+        draft.reads = cached.reads;
+        draft.chatColors = cached.chatColors;
+        draft.capabilities = cached.capabilities;
+        draft.progress = {};
+        draft.browserTabs = [];
+        draft.activeBrowserTabId = null;
+        draft.duplicatingAgentIds = [];
+        draft.presence = null;
+      } else {
+        if (!sameHost) {
+          draft.workspaceLoaded = false;
+          draft.synced = false;
+          draft.agentStatus = null;
+          draft.models = [];
+        }
+        draft.status = "connecting";
+        draft.memberId = sameHost ? draft.memberId : null;
+        if (!keepWorkspace) {
+          draft.agents = [];
+          draft.agentsLoaded = false;
+          draft.agentsFromFrame = false;
+          draft.frameChannels = [];
+          draft.selectedId = null;
+        }
+        if (!sameHost) {
+          draft.conversations = {};
+          draft.queues = {};
+          draft.hiddenIds = [];
+        }
+        if (!keepWorkspace) {
+          draft.progress = {};
+          draft.browserTabs = [];
+          draft.activeBrowserTabId = null;
+          draft.sidebarLayout = defaultSidebarLayout();
+          draft.userHiddenAgents = [];
+          draft.agentColors = [];
+          draft.reads = {};
+          draft.chatColors = { agents: [], members: [] };
+          draft.duplicatingAgentIds = [];
+          draft.capabilities = [];
+          draft.presence = null;
+        }
       }
-      if (!sameHost) {
-        draft.conversations = {};
-        draft.queues = {};
-        draft.hiddenIds = [];
-      }
+      draft.hostRestart = null;
       draft.approvals = [];
       draft.contextStates = {};
       draft.backgroundWork = {};
@@ -1456,19 +1584,6 @@ export function createWebWorkspace(
       draft.prompts = [];
       draft.takeovers = [];
       draft.browserControlState = { sessions: [] };
-      if (!keepWorkspace) {
-        draft.progress = {};
-        draft.browserTabs = [];
-        draft.activeBrowserTabId = null;
-        draft.sidebarLayout = defaultSidebarLayout();
-        draft.userHiddenAgents = [];
-        draft.agentColors = [];
-        draft.reads = {};
-        draft.chatColors = { agents: [], members: [] };
-        draft.duplicatingAgentIds = [];
-        draft.capabilities = [];
-        draft.presence = null;
-      }
       draft.error = null;
       draft.incompatibility = null;
     });
@@ -1519,7 +1634,13 @@ export function createWebWorkspace(
           );
           if (frameSelected) {
             draft.selectedId = frameSelected.id;
-            draft.conversations[frameSelected.id] ??= { page: null, draft: "", attachments: [], loading: true };
+            const cachedPage = readCachedConversationPage(props.accountId, host.hostId, frameSelected.id);
+            draft.conversations[frameSelected.id] ??= {
+              page: cachedPage,
+              draft: "",
+              attachments: [],
+              loading: !cachedPage,
+            };
           }
         });
         markRemoteSync("workspace-frame");
@@ -1544,6 +1665,7 @@ export function createWebWorkspace(
         if (unblocked) draft.recovery = null;
         draft.capabilities = capabilities;
         draft.agents = agents;
+        draft.hostAgents[host.hostId] = agents;
         draft.agentsLoaded = true;
         draft.agentsFromFrame = false;
         draft.workspaceLoaded = true;

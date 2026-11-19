@@ -220,10 +220,13 @@ import {
   Switch,
   untrack,
 } from "solid-js";
+import { toAgentProfile } from "../../app-message-projection";
 import { queuedDeliveriesInOrder } from "../../queue-reconciliation";
 import { WebBrainPage } from "../brain/WebBrainPage";
 import { backgroundWorkKey } from "../conversation/background-work-key";
 import { IntegrationProfiles } from "../integrations/IntegrationProfiles";
+import { mergeAllMachinesSidebar } from "../servers/all-machines-sidebar";
+import { readRemoteWorkspaceFrame } from "../servers/remote-workspace-frame";
 import { decodeRoomsResultFromHost } from "./web-rooms";
 // Copying a selection with a formula in it gives its LaTeX source, as on desktop.
 import "katex/contrib/copy-tex";
@@ -251,10 +254,10 @@ import { WorkspaceFrame } from "../../WorkspaceFrame";
 import {
   ChannelCreateOverlay,
   GlobalSearchOverlay,
-  NewInstancePickerOverlay,
   JoinServerOverlay,
   MarketplaceAppConnectOverlay,
   MarketplaceOverlay,
+  NewInstancePickerOverlay,
   ServerSettingsOverlay,
   SharedAgentInstallOverlay,
 } from "../../WorkspaceOverlayViews";
@@ -3085,16 +3088,55 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
   }
   /** The host a switch left, so the provider step of a new server can go back to it. */
   const [previousHostId, setPreviousHostId] = createSignal<string | null>(null);
-  function selectServer(id: string) {
+  /** Show bots from every connected server in one unified sidebar by default when multiple servers exist. */
+  const [allMachinesActive, setAllMachinesActive] = createSignal(true);
+  const allMachinesOn = () => allMachinesActive() && servers().length > 1;
+  const allMachinesSidebar = createMemo(() => {
+    if (!allMachinesOn()) return undefined;
+    const activeHostId = workspace.state.host?.hostId ?? "";
+    const hidden = new Set(workspace.state.userHiddenAgents.map((entry) => entry.agentId));
+    const sources = servers().map((srv) => {
+      if (srv.id === activeHostId) {
+        return {
+          serverId: srv.id,
+          agents: workspace.profiles().filter((agent) => !hidden.has(agent.id)),
+          agentStates: Object.fromEntries(
+            Object.entries(sidebarAgentStates()).filter(([agentId]) => !hidden.has(agentId)),
+          ),
+          agentMoods: sidebarAgentMoods(),
+          layout: workspace.state.sidebarLayout,
+        };
+      }
+      const liveAgents = workspace.state.hostAgents[srv.id];
+      const frame = liveAgents ? null : readRemoteWorkspaceFrame(props.accountId, srv.id);
+      const rawAgents = liveAgents ?? frame?.agents ?? [];
+      return {
+        serverId: srv.id,
+        agents: rawAgents.map((agent) => {
+          const profile = toAgentProfile(agent);
+          return liveAgents ? profile : { ...profile, preview: "" };
+        }),
+        agentStates: {},
+        agentMoods: {},
+        layout: frame?.sidebarLayout ?? null,
+      };
+    });
+    return mergeAllMachinesSidebar({
+      sources,
+      activeServerId: activeHostId,
+      filter: null,
+    });
+  });
+  function selectServer(id: string, targetAgentId?: string | null) {
     if (workspace.state.host?.hostId !== id) chatHistory.userOpensServer(id);
-    void connectServer(id);
+    void connectServer(id, targetAgentId);
   }
-  async function connectServer(id: string): Promise<void> {
+  async function connectServer(id: string, targetAgentId?: string | null): Promise<void> {
     const host = workspace.state.hosts.find((item) => item.hostId === id);
     if (!host) return;
     const current = workspace.state.host?.hostId;
     if (current && current !== id) setPreviousHostId(current);
-    await workspace.connect(host);
+    await workspace.connect(host, false, targetAgentId);
   }
   /** Opens the chat of a browser history entry. False when its chat or its server is gone. */
   function openHistoryChat(entry: WebChatHistoryEntry): boolean {
@@ -3749,24 +3791,74 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                       servers: servers(),
                       view: layout.serverView(),
                       onViewChange: layout.setServerView,
-                      onSelect: selectServer,
+                      onSelect: (id) => {
+                        setAllMachinesActive(false);
+                        selectServer(id);
+                      },
+                      allMachines:
+                        servers().length > 1
+                          ? { active: allMachinesOn(), onSelect: () => setAllMachinesActive(true) }
+                          : undefined,
                       onAdd: () => hostedServers.openAddServer("server_rail"),
                       addCreatesServer: hostedServers.available(),
                       ...serverActionCallbacks,
                     }}
-                    agents={workspace.profiles()}
+                    allMachines={(() => {
+                      const view = allMachinesSidebar();
+                      if (!view) return undefined;
+                      return {
+                        machines: servers().map((srv) => ({
+                          id: srv.id,
+                          name: srv.name,
+                          logoUrl: srv.logoUrl ?? null,
+                          state:
+                            srv.state === "online" ? "online" : srv.state === "connecting" ? "connecting" : "offline",
+                          current: srv.id === workspace.state.host?.hostId,
+                          thisComputer: false,
+                          agents: { status: "ready" as const, agents: [] },
+                        })),
+                        activeServerId: workspace.state.host?.hostId ?? "",
+                        filter: null,
+                        onFilterChange: (serverId) => {
+                          if (serverId === null) setAllMachinesActive(true);
+                          else {
+                            setAllMachinesActive(false);
+                            selectServer(serverId);
+                          }
+                        },
+                        attention: view.attention,
+                        agentServers: view.agentServers,
+                        sectionServers: view.sectionServers,
+                        onOpenAgent: (serverId, agentId) => {
+                          setMobilePane("conversation");
+                          if (serverId !== workspace.state.host?.hostId) {
+                            selectServer(serverId, agentId);
+                          } else {
+                            void select(agentId);
+                          }
+                        },
+                        onRetry: (serverId) => selectServer(serverId),
+                        onCreateAgent: (serverId) => {
+                          if (serverId !== workspace.state.host?.hostId) selectServer(serverId);
+                          startCreate();
+                        },
+                      };
+                    })()}
+                    agents={allMachinesSidebar()?.agents ?? workspace.profiles()}
                     activeAgentId={tasksOpen() || channelOpen() ? "" : (workspace.state.selectedId ?? "")}
                     agentThreads={sidebarThreads()}
                     people={[]}
                     directThreads={[]}
                     activeDirectMemberId={null}
-                    agentStates={sidebarAgentStates()}
+                    agentStates={allMachinesSidebar()?.agentStates ?? sidebarAgentStates()}
                     channelWaits={sidebarChannelWaitStates()}
                     channelPreviewsPending={!channels.state.listed}
-                    agentMoods={sidebarAgentMoods()}
-                    layout={workspace.state.sidebarLayout}
+                    agentMoods={allMachinesSidebar()?.agentMoods ?? sidebarAgentMoods()}
+                    layout={allMachinesSidebar()?.layout ?? workspace.state.sidebarLayout}
                     layoutMutable={
-                      workspace.state.status === "online" && workspace.state.capabilities.includes("sidebar-layout")
+                      !allMachinesOn() &&
+                      workspace.state.status === "online" &&
+                      workspace.state.capabilities.includes("sidebar-layout")
                     }
                     foldersSupported={
                       workspace.state.status === "online" && workspace.state.capabilities.includes("sidebar-folders-v1")
@@ -3791,7 +3883,12 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                     onReorderPeople={() => {}}
                     onSelectAgent={(id) => {
                       setMobilePane("conversation");
-                      void select(id);
+                      const ref = allMachinesSidebar()?.agentServers.get(id);
+                      if (ref && ref.serverId !== workspace.state.host?.hostId) {
+                        selectServer(ref.serverId, ref.agentId);
+                      } else {
+                        void select(ref?.agentId ?? id);
+                      }
                     }}
                     onPrefetchAgent={workspace.prefetch}
                     onSelectPerson={() => {}}
@@ -4171,7 +4268,12 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                     onOpenChange={setSearchOpen}
                     onSelectAgent={(id) => {
                       setMobilePane("conversation");
-                      void select(id);
+                      const ref = allMachinesSidebar()?.agentServers.get(id);
+                      if (ref && ref.serverId !== workspace.state.host?.hostId) {
+                        selectServer(ref.serverId, ref.agentId);
+                      } else {
+                        void select(ref?.agentId ?? id);
+                      }
                     }}
                     onSelectChannel={openChannel}
                     onSelectMessage={openSearchHit}
