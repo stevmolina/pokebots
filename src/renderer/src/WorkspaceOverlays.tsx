@@ -24,11 +24,13 @@ import { RestartServerDialog } from "@openbot/ui/features/servers/RestartServerD
 import type { HostedSiteDeleteResult } from "@openbot/ui/features/settings/stores/hosted-sites-store";
 import { sidebarAgentOrder } from "@openbot/ui/features/sidebar/sidebar-agent-order";
 import { currentText } from "@openbot/ui/text";
-import { createEffect, createMemo, Loading, onSettled, Show, untrack } from "solid-js";
+import { createEffect, createMemo, createSignal, Loading, onSettled, Show, untrack } from "solid-js";
 import { actionToast } from "./action-toast";
 import { desktopAnalytics } from "./analytics";
 import { appPort } from "./app-port";
 import { useAuth } from "./features/account/account-context";
+import { useAgentTasks } from "./features/agent-tasks/agent-tasks-context";
+import { useAgentThreads } from "./features/agent-threads/agent-threads-context";
 import { useAgents } from "./features/agents/agents-context";
 import { desktopBrowserProfileCalls } from "./features/browser/browser-profiles-port";
 import { createBrowserProfilesStore } from "./features/browser/stores/browser-profiles-store";
@@ -70,7 +72,7 @@ import type { HostProviderSettings } from "./features/settings/ProviderSettingsS
 import { useSettings } from "./features/settings/settings-context";
 import { settingsPort } from "./features/settings/settings-port";
 import { AppShortcuts } from "./features/shortcuts/AppShortcuts";
-import { onShortcutCommand } from "./features/shortcuts/shortcut-commands";
+import { onShortcutCommand, runShortcutCommand } from "./features/shortcuts/shortcut-commands";
 import { shortcutPlatform } from "./features/shortcuts/shortcut-platform";
 import { useSidebar } from "./features/sidebar/sidebar-context";
 import { codexLiveAccess as codexLiveAccessOf } from "./features/speech/codex-live-access";
@@ -93,6 +95,7 @@ import {
   JoinServerOverlay,
   MarketplaceAppConnectOverlay,
   MarketplaceOverlay,
+  NewInstancePickerOverlay,
   ServerSettingsOverlay,
   SharedAgentInstallOverlay,
 } from "./WorkspaceOverlayViews";
@@ -138,7 +141,7 @@ export function WorkspaceOverlays(props: AccountProps) {
       <RestartServer />
       <ServerSettings />
       <AppSettings account={props.account} />
-      <GlobalMessageSearch />
+      <WorkspacePickers />
       <DesktopShortcuts />
       <RemoteDesktop />
       <ChannelCreateOverlay />
@@ -1245,8 +1248,8 @@ function AppSettings(props: AccountProps) {
   );
 }
 
-/** Search across the agents, channels, conversations, routines and commands of the active server. */
-function GlobalMessageSearch() {
+/** The search and new instance pickers share the active server’s bot list. */
+function WorkspacePickers() {
   const { agentList, userHiddenAgentIds } = useAgents();
   const { sidebarLayout, pinnedSidebarItems } = useSidebar();
   // In sidebar order, so that ⌘1-9 opens the agents the user put at the top.
@@ -1260,23 +1263,48 @@ function GlobalMessageSearch() {
   const { globalSearchOpen, searchGlobalMessages, setGlobalSearchVisibility, selectAgent, selectGlobalSearchMessage } =
     useNavigation();
   const sources = useGlobalSearchSources(globalSearchOpen);
+  const platform = usePlatform();
+  const tasks = useAgentTasks();
+  const threads = useAgentThreads();
+  const [instanceOpen, setInstanceOpen] = createSignal(false);
+  onSettled(() =>
+    onShortcutCommand("newInstance", () => {
+      if (platform.chatWindow || !tasks.available()) return false;
+      setInstanceOpen(true);
+      return true;
+    }),
+  );
 
   return (
-    <GlobalSearchOverlay
-      open={globalSearchOpen()}
-      agents={agents()}
-      channels={sources.channels()}
-      routines={sources.routines()}
-      routinesLoading={sources.routinesLoading()}
-      actions={sources.actions()}
-      onSearchMessages={searchGlobalMessages}
-      onSearchFiles={sources.searchFiles()}
-      onOpenChange={setGlobalSearchVisibility}
-      onSelectAgent={selectAgent}
-      onSelectChannel={sources.openChannel}
-      onSelectMessage={selectGlobalSearchMessage}
-      onSelectRoutine={sources.selectRoutine}
-    />
+    <>
+      <GlobalSearchOverlay
+        open={globalSearchOpen()}
+        agents={agents()}
+        channels={sources.channels()}
+        routines={sources.routines()}
+        routinesLoading={sources.routinesLoading()}
+        actions={sources.actions()}
+        onSearchMessages={searchGlobalMessages}
+        onSearchFiles={sources.searchFiles()}
+        onOpenChange={setGlobalSearchVisibility}
+        onSelectAgent={selectAgent}
+        onSelectChannel={sources.openChannel}
+        onSelectMessage={selectGlobalSearchMessage}
+        onSelectRoutine={sources.selectRoutine}
+      />
+      <NewInstancePickerOverlay
+        open={instanceOpen()}
+        agents={agents()}
+        onOpenChange={setInstanceOpen}
+        onSelectAgent={(agentId) => {
+          if (selectAgent(agentId)) threads.startNew(agentId);
+        }}
+        onNewBot={() => {
+          setInstanceOpen(false);
+          runShortcutCommand("newChat");
+        }}
+      />
+    </>
   );
 }
 
