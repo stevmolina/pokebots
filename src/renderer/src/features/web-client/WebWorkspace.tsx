@@ -1048,7 +1048,7 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
   /** The hidden agents that the host stops: they get no mention and no channel work. */
   const pausedAgentIds = createMemo(() => (hiddenAgentsWork() ? noAgentIds : hiddenAgentIds()));
   // In sidebar order, so that ⌘1-9 opens the agents the user put at the top.
-  const searchAgents = createMemo(() =>
+  const activeMachineAgents = createMemo(() =>
     sidebarAgentOrder(workspace.profiles(), {
       layout: workspace.state.sidebarLayout,
       pinnedItems: workspace.preferences.pinnedSidebarItems(),
@@ -1283,7 +1283,7 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
         return;
       }
       setSearchRoutinesLoading(true);
-      const agents = untrack(searchAgents);
+      const agents = untrack(activeMachineAgents);
       const names = new Map(agents.map((agent) => [agent.id, agent.name]));
       void Effect.runPromise(
         Effect.forEach(agents, (agent) => Effect.promise(() => api.listRoutines(agent.id).catch(() => [])), {
@@ -3127,6 +3127,16 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
       filter: null,
     });
   });
+  const searchAgents = () => allMachinesSidebar()?.agents ?? activeMachineAgents();
+  function openSidebarAgent(id: string): void {
+    setMobilePane("conversation");
+    const ref = allMachinesSidebar()?.agentServers.get(id);
+    if (ref && ref.serverId !== workspace.state.host?.hostId) {
+      selectServer(ref.serverId, ref.agentId);
+    } else {
+      void select(ref?.agentId ?? id);
+    }
+  }
   function selectServer(id: string, targetAgentId?: string | null) {
     if (workspace.state.host?.hostId !== id) chatHistory.userOpensServer(id);
     void connectServer(id, targetAgentId);
@@ -3881,15 +3891,7 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                     onUnpin={workspace.preferences.unpinSidebarItem}
                     onReorderPinned={workspace.preferences.reorderPinnedSidebarItems}
                     onReorderPeople={() => {}}
-                    onSelectAgent={(id) => {
-                      setMobilePane("conversation");
-                      const ref = allMachinesSidebar()?.agentServers.get(id);
-                      if (ref && ref.serverId !== workspace.state.host?.hostId) {
-                        selectServer(ref.serverId, ref.agentId);
-                      } else {
-                        void select(ref?.agentId ?? id);
-                      }
-                    }}
+                    onSelectAgent={openSidebarAgent}
                     onPrefetchAgent={workspace.prefetch}
                     onSelectPerson={() => {}}
                     onCreateAgent={startCreate}
@@ -3967,8 +3969,7 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                         onSearchFiles={fileSearch()}
                         onSelectAgent={(id) => {
                           closePhoneSearch();
-                          setMobilePane("conversation");
-                          void select(id);
+                          openSidebarAgent(id);
                         }}
                         onSelectChannel={(id) => {
                           closePhoneSearch();
@@ -4266,21 +4267,13 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                     routinesLoading={searchRoutinesLoading()}
                     onSelectRoutine={selectSearchRoutine}
                     onOpenChange={setSearchOpen}
-                    onSelectAgent={(id) => {
-                      setMobilePane("conversation");
-                      const ref = allMachinesSidebar()?.agentServers.get(id);
-                      if (ref && ref.serverId !== workspace.state.host?.hostId) {
-                        selectServer(ref.serverId, ref.agentId);
-                      } else {
-                        void select(ref?.agentId ?? id);
-                      }
-                    }}
+                    onSelectAgent={openSidebarAgent}
                     onSelectChannel={openChannel}
                     onSelectMessage={openSearchHit}
                   />
                   <NewInstancePickerOverlay
                     open={newInstanceOpen()}
-                    agents={searchAgents()}
+                    agents={activeMachineAgents()}
                     onOpenChange={setNewInstanceOpen}
                     onSelectAgent={(agentId) => {
                       setMobilePane("conversation");
