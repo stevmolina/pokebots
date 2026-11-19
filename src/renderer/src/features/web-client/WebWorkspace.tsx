@@ -3364,10 +3364,6 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                       loading={frameConnecting() || conversationLoading()}
                       immediate={frameConnecting()}
                       error={conversationError()}
-                      onRetry={() => {
-                        const id = workspace.state.selectedId;
-                        if (id) void workspace.select(id);
-                      }}
                     >
                       {frameNotice()}
                     </ConversationLoadNotice>
@@ -4415,6 +4411,11 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                   missingMessageReferences={view.missingMessageReferences()}
                   unreadCount={shownReadState().unreadCount}
                   firstUnreadMessageId={shownReadState().firstUnread}
+                  historyLoadError={conversationError()}
+                  onRetryHistory={() => {
+                    const id = workspace.state.selectedId;
+                    if (id) void workspace.select(id);
+                  }}
                   loaded={Boolean(workspace.conversation()?.page)}
                   hasOlder={workspace.conversation()?.page?.pageInfo.hasOlder}
                   unloadedHistory={unloadedHistory(workspace.conversation()?.page?.pageInfo)}

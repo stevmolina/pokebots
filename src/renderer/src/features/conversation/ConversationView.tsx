@@ -1,6 +1,6 @@
 import { agentProviderDescriptor, isKnownAgentProvider } from "@openbot/contracts/agent-providers";
 import { DEFAULT_AGENT_ACCESS } from "@openbot/contracts/ipc";
-import { ConfirmDialog } from "@openbot/ui";
+import { Button, ConfirmDialog } from "@openbot/ui";
 import { AgentFolderDropOverlay, createAgentFolders } from "@openbot/ui/features/conversation/AgentFolders";
 import { MessageSelectionActions } from "@openbot/ui/features/conversation/SelectionActions";
 import { useText } from "@openbot/ui/text";
@@ -140,6 +140,16 @@ export function ConversationView(props: ConversationProps) {
         {/* A side thread covers the agent's own chat and its message box. They stay mounted, so the way
             back keeps their rows and scroll position and does not build the chat again. */}
         <ConversationTimeline />
+        <Show when={!sideThreadOpen() && props.onRetryHistory && props.historyLoadError}>
+          {(error) => (
+            <div class="conversation-history-status" role="status">
+              <span>{error()}</span>
+              <Button type="button" variant="ghost" size="xs" onClick={() => props.onRetryHistory?.()}>
+                {t("common.retry")}
+              </Button>
+            </div>
+          )}
+        </Show>
         <ConversationComposer />
         <Show when={sideThreadOpen()}>
           <ConversationThread />

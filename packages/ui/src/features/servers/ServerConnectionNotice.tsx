@@ -75,8 +75,6 @@ export interface ServerConnectionNoticeProps {
   screen?: boolean;
   /** Puts recovery controls in the loading screen that already covers this notice. */
   onLoadingNotice?: (notice: JSX.Element) => void;
-  /** Removes Details, for a notice that is not about the server connection. */
-  hideDetails?: boolean;
   onRetry: () => void;
   onManage?: () => void;
   /** The offer of a hosted server, for the user's own computer that is offline. */
@@ -188,11 +186,9 @@ export function ServerConnectionNotice(props: ServerConnectionNoticeProps) {
     </Show>
   );
   const detailsButton = (size: "default" | "sm") => (
-    <Show when={!props.hideDetails}>
-      <Button variant="ghost" size={size} onClick={() => setDetailsOpen(true)}>
-        {t("server.connection.details")}
-      </Button>
-    </Show>
+    <Button variant="ghost" size={size} onClick={() => setDetailsOpen(true)}>
+      {t("server.connection.details")}
+    </Button>
   );
   const actions = () => (
     <>
@@ -326,7 +322,7 @@ export interface ConversationLoadNoticeProps {
   name: string;
   /** The first page of the history is loading. */
   loading: boolean;
-  /** Why the history did not load. The notice then shows Retry. */
+  /** Why the history did not load, if loading failed. */
   error: string | null;
   /**
    * The wait is sure to be long, such as the first load of a saved frame: the screen shows at once,
@@ -335,12 +331,11 @@ export interface ConversationLoadNoticeProps {
   immediate?: boolean;
   /** Server recovery controls shown in this conversation loading screen. */
   children?: JSX.Element;
-  onRetry: () => void;
 }
 
 /**
  * While an agent's history loads for the first time, the lilac plush of the app loading screen covers
- * the chat and watches its balls, and the screen fades when the history is ready. A failed load shows the notice with Retry.
+ * the chat and watches its balls, and the screen fades when the history is ready or loading fails.
  */
 export function ConversationLoadNotice(props: ConversationLoadNoticeProps) {
   const { t } = useText();
@@ -377,34 +372,20 @@ export function ConversationLoadNotice(props: ConversationLoadNoticeProps) {
     return () => clearTimeout(timer);
   });
   return (
-    <>
-      <Show when={screen()} keyed>
-        {(key) => (
-          <AppLoadingScreen
-            scene="thinking"
-            immediate={immediate}
-            ready={key === exiting()}
-            label={t("server.connection.loading", { name: props.name })}
-            title={t("server.connection.loading", { name: props.name })}
-            onExited={() => setScreen((current) => (current === key ? null : current))}
-          >
-            {props.children}
-          </AppLoadingScreen>
-        )}
-      </Show>
-      <Show when={props.error}>
-        {(error) => (
-          <ServerConnectionNotice
-            name={props.name}
-            phase="blocked"
-            initial={false}
-            detail={error()}
-            hideDetails
-            onRetry={props.onRetry}
-          />
-        )}
-      </Show>
-    </>
+    <Show when={screen()} keyed>
+      {(key) => (
+        <AppLoadingScreen
+          scene="thinking"
+          immediate={immediate}
+          ready={key === exiting()}
+          label={t("server.connection.loading", { name: props.name })}
+          title={t("server.connection.loading", { name: props.name })}
+          onExited={() => setScreen((current) => (current === key ? null : current))}
+        >
+          {props.children}
+        </AppLoadingScreen>
+      )}
+    </Show>
   );
 }
 

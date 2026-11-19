@@ -152,6 +152,9 @@ export interface ConversationProps {
   contextState?: AgentContextState | undefined;
   runtime?: ConversationRuntime | undefined;
   notice?: JSX.Element | undefined;
+  /** A history refresh failure. The loaded messages stay visible. */
+  historyLoadError?: string | null | undefined;
+  onRetryHistory?: (() => void) | undefined;
   onOpenUsage?: ((trigger: HTMLButtonElement) => void) | undefined;
   onOpenMarketplace?: (() => void) | undefined;
   /**
