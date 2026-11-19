@@ -107,6 +107,7 @@
 }
 
 .agent-sessions-row {
+  --session-menu-margin: var(--openbot-space-1-5);
   border-radius: var(--openbot-radius-md);
   display: flex;
   min-height: 40px;
@@ -131,6 +132,11 @@
   cursor: pointer;
   font-size: var(--openbot-text-md);
   text-align: start;
+}
+
+/* Reserve the menu width for dated rows that have no menu. */
+.agent-sessions-row:is([data-kind="main"], [data-archived]) .agent-sessions-open.ui-button {
+  padding-inline-end: calc(var(--openbot-space-3) + var(--openbot-control-md) + var(--session-menu-margin));
 }
 
 .agent-sessions-title {
@@ -171,7 +177,7 @@
 /* The row menu shows on hover and focus, so the card stays quiet. Touch keeps it in view. */
 .agent-sessions-row-menu.ui-button {
   flex: none;
-  margin-inline-end: var(--openbot-space-1-5);
+  margin-inline-end: var(--session-menu-margin);
   color: var(--openbot-text-muted);
 }
 
