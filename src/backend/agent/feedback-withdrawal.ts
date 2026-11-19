@@ -1,4 +1,9 @@
-import { feedbackSentIssue, feedbackSentItemType, feedbackWithdrawnItemType } from "@openbot/contracts/feedback";
+import {
+  FEEDBACK_REPOSITORY,
+  feedbackSentIssue,
+  feedbackSentItemType,
+  feedbackWithdrawnItemType,
+} from "@openbot/contracts/feedback";
 import type { ConversationMessage, WithdrawFeedbackInput } from "@openbot/contracts/ipc";
 import { sourceText } from "@openbot/i18n/source";
 import { createOpenBotLogger, toLogValue } from "@openbot/logging";
@@ -62,7 +67,7 @@ export class FeedbackWithdrawal {
     const issue = target && feedbackSentIssue(target.message);
     if (!target || !issue) return { status: "notFound" };
     if (issue.withdrawn) return { status: "withdrawn" };
-    return yield* this.withdraw(input.agentId, target.threadId, issue.number, target);
+    return yield* this.withdraw(input.agentId, target.threadId, issue, target);
   });
 
   /**
@@ -73,9 +78,11 @@ export class FeedbackWithdrawal {
     this: FeedbackWithdrawal,
     agentId: string,
     threadId: string,
-    number: number,
+    issue: { number: number; repository: string },
     card?: CardTarget,
   ): Effect.fn.Return<FeedbackWithdrawResult, ToolOperationFailed> {
+    const { repository, number } = issue;
+    if (repository !== FEEDBACK_REPOSITORY) return { status: "unavailable" };
     if (!this.#feedback) return { status: "signedOut" };
     const result = yield* this.#feedback.withdraw(number);
     if (result.status === "withdrawn")
@@ -120,7 +127,8 @@ export class FeedbackWithdrawal {
     if (loaded)
       snapshot.messages = snapshot.messages.map((message) => {
         const issue = feedbackSentIssue(message);
-        if (!issue || issue.withdrawn || issue.number !== number) return message;
+        if (!issue || issue.withdrawn || issue.number !== number || issue.repository !== FEEDBACK_REPOSITORY)
+          return message;
         const next = removed(message);
         changed.push(next);
         return next;

@@ -10,10 +10,10 @@ import { isDynamicRecord, isOneOf, isString } from "./runtime-values";
  * user reads a prefilled form and submits it in the browser. `parseFeedback` is the feedback that the
  * app sends, which the account Worker opens as an issue with the same sections.
  */
-const ISSUE_FORM = "https://github.com/nightly-labs/openbot/issues/new?template=";
-
 /** The repository that gets the feedback, as `owner/name`. */
-export const FEEDBACK_REPOSITORY = "nightly-labs/openbot";
+export const LEGACY_FEEDBACK_REPOSITORY = "nightly-labs/openbot";
+export const FEEDBACK_REPOSITORY = LEGACY_FEEDBACK_REPOSITORY;
+const ISSUE_FORM = `https://github.com/${FEEDBACK_REPOSITORY}/issues/new?template=`;
 
 /** A bug report (`bug_report.yml`) or a feature idea (`feature_request.yml`). */
 export const FEEDBACK_KINDS = ["bug", "idea"] as const;
@@ -633,21 +633,23 @@ export interface FeedbackIssue {
 /** The issue of a thank-you card, and whether the user took the report back. */
 export interface FeedbackCardIssue extends FeedbackIssue {
   readonly withdrawn: boolean;
+  readonly repository: string;
 }
 
-function feedbackItemType(prefix: string, number: number): string {
+function feedbackItemType(prefix: string, number: number, repository: string): string {
   if (!Number.isSafeInteger(number) || number < 1) throw new Error("A valid issue number is required.");
-  return `${prefix}${number}`;
+  const scope = repository === LEGACY_FEEDBACK_REPOSITORY ? "" : `${repository}:`;
+  return `${prefix}${scope}${number}`;
 }
 
 /** The item type of the chat card that thanks the user for sent feedback. It holds the issue number. */
-export function feedbackSentItemType(number: number): string {
-  return feedbackItemType(FEEDBACK_SENT_ITEM_TYPE_PREFIX, number);
+export function feedbackSentItemType(number: number, repository = FEEDBACK_REPOSITORY): string {
+  return feedbackItemType(FEEDBACK_SENT_ITEM_TYPE_PREFIX, number, repository);
 }
 
 /** The item type of a thank-you card whose report the user took off GitHub. */
-export function feedbackWithdrawnItemType(number: number): string {
-  return feedbackItemType(FEEDBACK_WITHDRAWN_ITEM_TYPE_PREFIX, number);
+export function feedbackWithdrawnItemType(number: number, repository = FEEDBACK_REPOSITORY): string {
+  return feedbackItemType(FEEDBACK_WITHDRAWN_ITEM_TYPE_PREFIX, number, repository);
 }
 
 /** The issue of a thank-you card, or null for any other message. The URL comes from the number only. */
@@ -656,11 +658,14 @@ export function feedbackSentIssue(message: ConversationMessage): FeedbackCardIss
   const itemType = message.itemType ?? "";
   const withdrawn = itemType.startsWith(FEEDBACK_WITHDRAWN_ITEM_TYPE_PREFIX);
   if (!withdrawn && !itemType.startsWith(FEEDBACK_SENT_ITEM_TYPE_PREFIX)) return null;
-  const digits = itemType.slice(
+  const suffix = itemType.slice(
     (withdrawn ? FEEDBACK_WITHDRAWN_ITEM_TYPE_PREFIX : FEEDBACK_SENT_ITEM_TYPE_PREFIX).length,
   );
-  if (!/^[1-9][0-9]{0,15}$/u.test(digits)) return null;
+  const match = /^(?:([\w.-]+\/[\w.-]+):)?([1-9][0-9]{0,15})$/u.exec(suffix);
+  if (!match) return null;
+  const repository = match[1] ?? LEGACY_FEEDBACK_REPOSITORY;
+  const digits = match[2];
   const number = Number(digits);
   if (!Number.isSafeInteger(number)) return null;
-  return { number, url: `https://github.com/${FEEDBACK_REPOSITORY}/issues/${number}`, withdrawn };
+  return { number, url: `https://github.com/${repository}/issues/${number}`, withdrawn, repository };
 }

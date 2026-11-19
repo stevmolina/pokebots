@@ -1,5 +1,6 @@
 import {
   bugReportPlatform,
+  FEEDBACK_REPOSITORY,
   type FeedbackFacts,
   type FeedbackHost,
   type SimilarFeedbackIssue,
@@ -70,7 +71,11 @@ export function feedbackSender(auth: FeedbackAuth): AgentFeedback {
         : auth
             .requestAuthorized(
               "/v1/feedback/similar",
-              { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ title }) },
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ title, repository: FEEDBACK_REPOSITORY }),
+              },
               similarIssues,
             )
             .pipe(
@@ -90,7 +95,7 @@ export function feedbackSender(auth: FeedbackAuth): AgentFeedback {
             {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(feedback),
+              body: JSON.stringify({ ...feedback, repository: FEEDBACK_REPOSITORY }),
             },
             (value) => {
               const issue = decodeRecord(value, "Feedback");
@@ -125,7 +130,7 @@ export function feedbackSender(auth: FeedbackAuth): AgentFeedback {
             {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ number }),
+              body: JSON.stringify({ number, repository: FEEDBACK_REPOSITORY }),
             },
             (value) => {
               decodeRecord(value, "Withdrawn feedback");

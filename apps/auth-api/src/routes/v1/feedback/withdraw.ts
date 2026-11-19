@@ -8,9 +8,10 @@ import {
   enforceFeedbackWithdrawRateLimit,
   githubInstallationTokensErrorResponse,
   json,
+  matchesFeedbackRepository,
+  requestFeedbackGitHub,
   requestFeedbackOwner,
   requestFeedbackWithdrawnRepository,
-  requestGitHubInstallationTokens,
   requestUser,
 } from "../../../server/request-auth";
 
@@ -27,12 +28,14 @@ export const Route = createFileRoute("/v1/feedback/withdraw")({
           Effect.gen(function* () {
             const user = yield* requestUser(request);
             if (!user) return apiError(401, "unauthorized", "Sign in is required.");
-            const { number } = yield* readJsonObject(request);
+            const { number, repository } = yield* readJsonObject(request);
             if (typeof number !== "number" || !Number.isSafeInteger(number) || number < 1)
               return apiError(400, "invalid_feedback", "The issue number is invalid.");
+            if (!matchesFeedbackRepository(repository))
+              return apiError(503, "feedback_withdraw_unavailable", "This service cannot remove this report.");
             yield* enforceFeedbackWithdrawRateLimit(user.id);
             const owner = yield* requestFeedbackOwner(user.id);
-            const removed = yield* requestGitHubInstallationTokens().withdrawFeedback(
+            const removed = yield* requestFeedbackGitHub().withdrawFeedback(
               FEEDBACK_REPOSITORY,
               number,
               owner.sentBy,

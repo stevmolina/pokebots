@@ -14,8 +14,9 @@ import {
   enforceFeedbackRateLimit,
   githubInstallationTokensErrorResponse,
   json,
+  matchesFeedbackRepository,
+  requestFeedbackGitHub,
   requestFeedbackOwner,
-  requestGitHubInstallationTokens,
   requestUser,
   uncountFeedback,
 } from "../../server/request-auth";
@@ -24,7 +25,7 @@ import {
 const FEEDBACK_BODY_LIMIT = 64 * 1024;
 
 /**
- * Opens a bug report or a feature idea from the app as an issue by `openbotgit[bot]`, so that a user
+ * Opens a bug report or a feature idea from the app as an issue by the feedback app, so that a user
  * with no GitHub account can send feedback. Only a signed-in account can send, a few times a day.
  * With `sameAs`, the report is a comment on that open issue instead. The issue names no account, and the Worker does not store
  * or log the text: GitHub keeps it, in public. An owner mark at the end lets only this account withdraw it.
@@ -43,7 +44,10 @@ export const Route = createFileRoute("/v1/feedback")({
           Effect.gen(function* () {
             const user = yield* requestUser(request);
             if (!user) return apiError(401, "unauthorized", "Sign in is required.");
-            const feedback = parseFeedback(yield* readJsonObject(request, FEEDBACK_BODY_LIMIT));
+            const body = yield* readJsonObject(request, FEEDBACK_BODY_LIMIT);
+            if (!matchesFeedbackRepository(body.repository))
+              return apiError(503, "feedback_unavailable", "This service cannot send to this feedback repository.");
+            const feedback = parseFeedback(body);
             if (!feedback) return apiError(400, "invalid_feedback", "The feedback is invalid.");
             if (feedbackLacksPhone(feedback))
               return apiError(
@@ -51,7 +55,7 @@ export const Route = createFileRoute("/v1/feedback")({
                 "feedback_needs_phone",
                 "A report about the phone app needs the phone's version, system and support log.",
               );
-            const github = requestGitHubInstallationTokens();
+            const github = requestFeedbackGitHub();
             // The mark lets this account take the report back later. See `/v1/feedback/withdraw`.
             const owner = yield* requestFeedbackOwner(user.id);
             const report = feedbackIssue(feedback);

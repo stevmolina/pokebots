@@ -254,6 +254,37 @@ for (const file of WEB_ICON_FILES) {
 check((await readdir(workerOut)).length === 0, "The brand layer wrote into an output folder without a web app.");
 const web = { manifest: JSON.parse(manifest), icons: webIcons };
 
+const feedbackPath = "packages/contracts/src/feedback.ts";
+const feedbackSource = await readFile(join(ROOT, feedbackPath), "utf8");
+const brandedFeedback = plugin.transform.call(pluginContext, feedbackSource, join(ROOT, feedbackPath));
+if (!brandedFeedback) throw new Error("The feedback module did not get a brand transform.");
+await cp(join(ROOT, "packages/contracts/src/runtime-values.ts"), join(OUT, "runtime-values.ts"));
+await writeFile(join(OUT, "feedback.ts"), brandedFeedback.code);
+const feedback: typeof import("../packages/contracts/src/feedback") = await import(
+  pathToFileURL(join(OUT, "feedback.ts")).href
+);
+const formPath = new URL(feedback.featureRequestFormUrl({ title: "Synthetic brand check" })).pathname;
+check(formPath === "/stevmolina/pokebots/issues/new", "The feedback form does not open the Pokebots repository.");
+const card = (itemType: string) =>
+  feedback.feedbackSentIssue({
+    id: "synthetic",
+    text: "",
+    createdAt: "",
+    author: "system",
+    source: "system",
+    status: "completed",
+    itemType,
+  });
+const legacyIssue = card("feedback-sent:42");
+const sentIssue = card(feedback.feedbackSentItemType(42));
+const withdrawnIssue = card(feedback.feedbackWithdrawnItemType(42));
+check(legacyIssue?.repository === "nightly-labs/openbot", "An existing feedback card changed repositories.");
+check(sentIssue?.url === "https://github.com/stevmolina/pokebots/issues/42", "A new card links to the wrong issue.");
+check(
+  withdrawnIssue?.repository === sentIssue?.repository && withdrawnIssue?.withdrawn === true,
+  "A withdrawn card lost its state.",
+);
+
 const report = {
   passed: failures.length === 0,
   failures,
@@ -274,6 +305,7 @@ const report = {
   literals: literalResults,
   outsideCatalogs,
   releaseNotes,
+  feedback: { formPath, legacyIssue, sentIssue, withdrawnIssue },
   accountDefaults,
   html,
   web,

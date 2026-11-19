@@ -124,6 +124,14 @@ interface LiteralRule {
  */
 export const LITERAL_RULES: readonly LiteralRule[] = [
   {
+    file: "packages/contracts/src/feedback.ts",
+    find: "export const FEEDBACK_REPOSITORY = LEGACY_FEEDBACK_REPOSITORY;",
+    replace: (name) =>
+      name === "Pokebots"
+        ? 'export const FEEDBACK_REPOSITORY = "stevmolina/pokebots";'
+        : "export const FEEDBACK_REPOSITORY = LEGACY_FEEDBACK_REPOSITORY;",
+  },
+  {
     file: "apps/auth-api/src/lib/site-metadata.ts",
     find: 'export const OPENBOT_SITE_URL = "https://openbot.run/";',
     replace: (name) =>
