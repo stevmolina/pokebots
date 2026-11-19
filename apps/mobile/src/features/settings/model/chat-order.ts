@@ -9,7 +9,7 @@ const key = "openbot.mobile.chatOrder.v1";
  * or to the other devices. The default is the desktop default.
  */
 export const useChatOrderPreference = create<{ order: MobileChatOrder; ready: boolean }>(() => ({
-  order: "unread-group",
+  order: "recent",
   ready: false,
 }));
 

@@ -38,8 +38,8 @@ type MobileChatItem = Extract<MobileSidebarItem, { kind: "agent" | "channel" }>;
  * each order, and none of them changes the saved `agentOrder`. The phone keeps the choice; it is not
  * synced.
  * - `manual`: the saved order of the layout.
- * - `recent`: each section shows its chats by last activity, the most recent first. Chats do not move
- *   in the list by drag in this order, because the order is not manual.
+ * - `recent`: each section shows its unread chats first, then the others, both by last activity
+ *   (most recent first). Chats do not move in the list by drag in this order, because the order is not manual.
  * - `unread-group`: unread chats leave their section for an "Unread" group under "Needs you", and go
  *   back to their place when they are read.
  * - `unread-first`: each section shows its unread chats first, then the others, both by last

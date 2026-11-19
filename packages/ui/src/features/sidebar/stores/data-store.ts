@@ -240,13 +240,13 @@ export function createSidebarDataStore(deps: {
    * while the pointer is there, so that a row does not move away under the pointer when the user reads
    * it. When the pointer leaves the list, the read chat goes back to its section. Without this, a chat
    * that the user reads and keeps open stays in the unread set until the user opens another chat. The
-   * manual and recent activity orders have none.
+   * manual order has none.
    *
    * The key is a string and holds still during a drag, for the same reasons as `waitingKey`.
    */
   let heldUnreadKey = "";
   const unreadKey = createMemo(() => {
-    if (chatOrder() === "manual" || chatOrder() === "recent") {
+    if (chatOrder() === "manual") {
       heldUnreadKey = "";
       return "";
     }
@@ -364,15 +364,14 @@ export function createSidebarDataStore(deps: {
     return [...items].sort((left, right) => (activity.get(right.id) ?? 0) - (activity.get(left.id) ?? 0));
   };
   /**
-   * The chats in the sections. In the "recent activity" order, each section shows its chats by their
-   * last activity. In the "unread first" order, each section shows its unread chats first and then the
-   * others, both by their last activity. The saved `agentOrder` does not change.
+   * The chats in the sections. In both "recent activity" and "unread first" orders, each section
+   * shows its unread chats first and then the others, both by their last activity. The saved
+   * `agentOrder` does not change.
    */
   const filteredChats = createChatItems(
     () => ({ channels: filteredChannels(), agents: filteredAgents() }),
     (items) => {
-      if (chatOrder() === "recent") return byRecent(items);
-      if (chatOrder() !== "unread-first") return items;
+      if (chatOrder() !== "recent" && chatOrder() !== "unread-first") return items;
       const recent = byRecent(items);
       return [
         ...recent.filter((item) => unreadIds().has(item.id)),

@@ -79,15 +79,15 @@ function readRailPinChoices(): RailPinChoices {
 }
 
 /**
- * The saved chat order of the sidebar. Without a choice, unread chats show in a group of their own.
- * Blocked storage or an unknown value reads as no choice.
+ * The saved chat order of the sidebar. Without a choice, chats sort by recent activity with unread
+ * chats on top of each section. Blocked storage or an unknown value reads as no choice.
  */
 function readSidebarChatOrder(): SidebarChatOrder {
   try {
     const saved = window.localStorage.getItem(SIDEBAR_CHAT_ORDER_STORAGE_KEY);
-    return SIDEBAR_CHAT_ORDERS.find((order) => order === saved) ?? "unread-group";
+    return SIDEBAR_CHAT_ORDERS.find((order) => order === saved) ?? "recent";
   } catch {
-    return "unread-group";
+    return "recent";
   }
 }
 
