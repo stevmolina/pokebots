@@ -304,7 +304,12 @@ import type { AgentStore } from "./agent-store";
 import { type AgentTaskBranchFailed, AgentTasks } from "./agent-tasks/agent-tasks";
 import { codingComputer } from "./agent-tasks/coding-computer";
 import { CodingJobs } from "./agent-tasks/coding-jobs";
-import { buildTaskTitlePrompt, parseGeneratedTaskTitle } from "./agent-tasks/task-title";
+import {
+  buildTaskTitlePrompt,
+  looksLikeRawTaskTitle,
+  parseGeneratedTaskTitle,
+  taskTitle,
+} from "./agent-tasks/task-title";
 import { type AgentThreadRecord, AgentThreadStore } from "./agent-threads/agent-thread-store";
 import { AgentWaitStore } from "./agent-waits/agent-wait-store";
 import { AgentWaits } from "./agent-waits/agent-waits";
@@ -5595,6 +5600,7 @@ export class AgentService extends EventEmitter<AgentServiceEvents> {
       this.#channelRoutines.reconcileAll();
       this.#routineTimer.arm();
     });
+    Effect.runFork(this.#backfillTaskTitles().pipe(Effect.forkIn(this.#scope)));
   }).bind(this);
 
   setPreferredProvider(
@@ -6817,6 +6823,26 @@ export class AgentService extends EventEmitter<AgentServiceEvents> {
     if (task.titleSource !== "auto" || !promptText.trim()) return;
     Effect.runFork(this.#generateTaskTitle(task, promptText).pipe(Effect.forkIn(this.#scope)));
   }
+
+  /** Retitles recent auto-titled sessions whose titles still look like raw first messages. */
+  readonly #backfillTaskTitles = Effect.fn("AgentService.backfillTaskTitles")(function* (
+    this: AgentService,
+  ): Effect.fn.Return<void> {
+    yield* Effect.sleep("10 seconds");
+    if (this.#stopping) return;
+    const candidates: AgentThreadRecord[] = [];
+    for (const agent of this.#store.list()) {
+      for (const thread of this.#tasks.listAutoTitled(agent.id, 15)) {
+        if (looksLikeRawTaskTitle(thread.title)) candidates.push(thread);
+      }
+    }
+    for (const thread of candidates) {
+      if (this.#stopping) return;
+      const cleaned = taskTitle(thread.title);
+      if (cleaned && cleaned !== thread.title) this.#tasks.retitleAuto(thread.taskId, cleaned);
+      yield* this.#generateTaskTitle(thread, thread.title);
+    }
+  }).bind(this);
 
   readonly #generateTaskTitle = Effect.fn("AgentService.generateTaskTitle")(function* (
     this: AgentService,

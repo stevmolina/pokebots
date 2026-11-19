@@ -296,6 +296,14 @@ export class AgentTasks implements TaskLanes {
     return true;
   }
 
+  /** Recent auto-titled threads for an agent, used to backfill raw first-message titles on startup. */
+  listAutoTitled(agentId: string, limit: number): readonly AgentThreadRecord[] {
+    return this.#store
+      .list(agentId)
+      .filter((task) => task.titleSource === "auto")
+      .slice(0, limit);
+  }
+
   /** The thread belongs to a routine: each run of the routine starts a new session in it. */
   isRoutineThread(taskId: string): boolean {
     return (this.#store.task(taskId)?.routineId ?? null) !== null;

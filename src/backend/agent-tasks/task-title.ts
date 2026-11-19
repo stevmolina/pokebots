@@ -70,3 +70,14 @@ export function parseGeneratedTaskTitle(raw: string): string | null {
   if (!cleaned) return null;
   return truncateTitle(cleaned);
 }
+
+/** True when an auto-generated title still looks like a raw first message rather than a short AI title. */
+export function looksLikeRawTaskTitle(title: string): boolean {
+  const trimmed = title.trim();
+  if (!trimmed) return false;
+  if (taskTitle(trimmed) !== trimmed) return true;
+  if (/[`*_[\]]|https?:\/\//i.test(trimmed)) return true;
+  if (trimmed.endsWith("…") || trimmed.endsWith("...")) return true;
+  if (trimmed.length > 52) return true;
+  return trimmed.split(/\s+/).length > 7;
+}

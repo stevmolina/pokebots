@@ -1,6 +1,6 @@
 import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
 import { describe, expect, test } from "vitest";
-import { buildTaskTitlePrompt, parseGeneratedTaskTitle, taskTitle } from "./task-title";
+import { buildTaskTitlePrompt, looksLikeRawTaskTitle, parseGeneratedTaskTitle, taskTitle } from "./task-title";
 
 describe("taskTitle", () => {
   test("strips markdown links and bold formatting from the first line", () => {
@@ -43,5 +43,20 @@ describe("parseGeneratedTaskTitle", () => {
   test("returns null for empty or unusable output", () => {
     expect(parseGeneratedTaskTitle("   \n  ")).toBeNull();
     expect(parseGeneratedTaskTitle('""...')).toBeNull();
+  });
+});
+
+describe("looksLikeRawTaskTitle", () => {
+  test("detects raw first-message titles with markdown, links, truncation, or many words", () => {
+    expect(looksLikeRawTaskTitle("**File:** [Screen Recording.mov](/tmp/a.mov)")).toBe(true);
+    expect(looksLikeRawTaskTitle("Check https://pokebots.xyz right now")).toBe(true);
+    expect(looksLikeRawTaskTitle("This title was truncated because it was too long…")).toBe(true);
+    expect(looksLikeRawTaskTitle("I want a better way to put names into the sessions")).toBe(true);
+  });
+
+  test("returns false for concise AI-generated titles", () => {
+    expect(looksLikeRawTaskTitle("Fix Mobile Header Layout")).toBe(false);
+    expect(looksLikeRawTaskTitle("Session Auto-Titling")).toBe(false);
+    expect(looksLikeRawTaskTitle("")).toBe(false);
   });
 });
