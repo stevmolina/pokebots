@@ -99,7 +99,11 @@ export function SidebarProfileMenu(props: {
         <Show when={!props.compact}>
           <span class="sidebar-footer-meta">
             <span class="sidebar-footer-name">{name()}</span>
-            <span class="sidebar-footer-sub">{active()?.name ?? sidebar.serverName}</span>
+            <span class="sidebar-footer-sub">
+              {sidebar.machineChips && sidebar.machineChips.chosen === null
+                ? t("files.type.all")
+                : (active()?.name ?? sidebar.serverName)}
+            </span>
           </span>
         </Show>
       </DropdownMenu.Trigger>
@@ -127,30 +131,87 @@ export function SidebarProfileMenu(props: {
             {(menu) => (
               <>
                 <DropdownMenu.Separator />
-                <div class="ui-menu-label" aria-hidden="true">
-                  {t("sidebar.footer.machines")}
+                <div class="sidebar-footer-machines-header">
+                  <span class="ui-menu-label" aria-hidden="true">
+                    {t("sidebar.footer.machines")}
+                  </span>
+                  <Show when={menu().onAdd}>
+                    {(add) => (
+                      <DropdownMenu.Item
+                        class="sidebar-footer-machines-add"
+                        aria-label={t("sidebar.footer.addMachine")}
+                        title={t("sidebar.footer.addMachine")}
+                        onSelectAfterClose={() => add()()}
+                      >
+                        <Plus class="size-3.5" aria-hidden="true" />
+                      </DropdownMenu.Item>
+                    )}
+                  </Show>
                 </div>
-                <For each={menu().servers} keyed={(server) => server.id}>
-                  {(server) => (
-                    <DropdownMenu.Item onSelectAfterClose={() => menu().onSelect(server().id)}>
-                      <span class="server-menu-mark" aria-hidden="true">
-                        <ServerMark server={server()} />
-                      </span>
-                      <span class="sidebar-footer-menu-label">{server().name}</span>
-                      <Show when={server().active}>
-                        <Check class="ui-menu-trailing size-4" aria-hidden="true" />
-                      </Show>
-                    </DropdownMenu.Item>
-                  )}
-                </For>
-                <Show when={menu().onAdd}>
-                  {(add) => (
-                    <DropdownMenu.Item onSelectAfterClose={() => add()()}>
-                      <Plus class="agent-context-icon size-4" aria-hidden="true" />
-                      <span>{t("sidebar.footer.addMachine")}</span>
-                    </DropdownMenu.Item>
-                  )}
-                </Show>
+                <div class="sidebar-footer-machines-grid">
+                  <Show when={menu().servers.length > 1 && sidebar.machineChips}>
+                    {(chips) => {
+                      const allSelected = () => chips().chosen === null;
+                      return (
+                        <DropdownMenu.Item
+                          class="sidebar-footer-machine-tile"
+                          data-active={allSelected() ? "" : undefined}
+                          onSelectAfterClose={() => chips().onChoose(null)}
+                        >
+                          <span class="sidebar-footer-machine-icon" aria-hidden="true">
+                            <LayoutGrid class="size-3.5" />
+                          </span>
+                          <span class="sidebar-footer-menu-label">{t("files.type.all")}</span>
+                          <Show when={allSelected()}>
+                            <Check class="sidebar-footer-machine-check size-3.5" aria-hidden="true" />
+                          </Show>
+                        </DropdownMenu.Item>
+                      );
+                    }}
+                  </Show>
+                  <For each={menu().servers} keyed={(server) => server.id}>
+                    {(server) => {
+                      const allSelected = () => sidebar.machineChips?.chosen === null;
+                      const selected = () => !allSelected() && server().active;
+                      const isOnline = () => server().state === "online";
+                      return (
+                        <DropdownMenu.Item
+                          class="sidebar-footer-machine-tile"
+                          data-active={selected() ? "" : undefined}
+                          title={server().name}
+                          onSelectAfterClose={() => {
+                            if (sidebar.machineChips) sidebar.machineChips.onChoose(server().id);
+                            else menu().onSelect(server().id);
+                          }}
+                        >
+                          <span class="sidebar-footer-machine-icon" aria-hidden="true">
+                            <svg
+                              aria-hidden="true"
+                              width="13"
+                              height="13"
+                              viewBox="0 0 16 16"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="1.5"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            >
+                              <rect x="2" y="2.5" width="12" height="4.5" rx="1.2" />
+                              <rect x="2" y="9" width="12" height="4.5" rx="1.2" />
+                              <circle cx="4.5" cy="4.75" r="0.6" fill="currentColor" stroke="none" />
+                              <circle cx="4.5" cy="11.25" r="0.6" fill="currentColor" stroke="none" />
+                            </svg>
+                            <span class="sidebar-footer-machine-dot" data-online={isOnline() ? "" : undefined} />
+                          </span>
+                          <span class="sidebar-footer-menu-label">{server().name}</span>
+                          <Show when={selected()}>
+                            <Check class="sidebar-footer-machine-check size-3.5" aria-hidden="true" />
+                          </Show>
+                        </DropdownMenu.Item>
+                      );
+                    }}
+                  </For>
+                </div>
               </>
             )}
           </Show>

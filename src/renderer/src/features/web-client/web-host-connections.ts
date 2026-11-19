@@ -41,11 +41,12 @@ type Peer = ReturnType<typeof createRemoteTeamPeer>;
 type PeerActions = Parameters<typeof createRemoteTeamPeer>[0];
 
 /** A live status connection that the opened host takes over, with the host's tab lock. */
-interface WebHostHandover {
+export interface WebHostHandover {
   peer: Peer;
   /** Set `current` to the opened host's actions: the status connection no longer hears the peer. */
   actions: PeerActions;
   releaseLock: () => void;
+  capabilities: readonly string[];
 }
 
 /** A host request that failed. `reference` names the status or the transport failure. */
@@ -110,6 +111,13 @@ export interface WebHostConnections {
    * no new session or path. Returns null when the host has no online status connection. Call before `select`.
    */
   handOver(hostId: string): WebHostHandover | null;
+  /**
+   * Returns a live opened-host connection back to the warm background pool instead of closing it.
+   * Returns true if accepted into the pool (caller should NOT retire/close it).
+   */
+  returnHandover(hostId: string, handover: WebHostHandover, agents?: readonly ClientAgentSummary[]): boolean;
+  /** Latest known agent summaries for every background host. */
+  agentsByHost(): Record<string, ClientAgentSummary[]>;
   /** Whether this tab holds the lock of the opened host. Only then does it speak for that host. */
   holdSelected(hostId: string, held: boolean): void;
   /** The state of the opened host, for the other tabs. */
@@ -174,6 +182,8 @@ export function createWebHostConnections(options: {
   onSessionRevoked(): void;
   /** An event of a host this tab has not opened, with the host's agents, for a notification. */
   onNotice?(hostId: string, event: WebHostNotice, agents: ClientAgentSummary[]): void;
+  /** Called whenever a background host's agent summary list updates. */
+  onAgentsChanged?(hostId: string, agents: ClientAgentSummary[]): void;
 }): WebHostConnections {
   const { channel } = options;
   const entries = new Map<string, HostEntry>();
@@ -253,7 +263,12 @@ export function createWebHostConnections(options: {
         async onConnectionUpdate(update) {
           if (entries.get(host.hostId) !== entry) return;
           // A resync can follow lost events, an `agents-changed` among them.
-          if (update.state === "online" && update.resync && !entry.incompatible && options.onNotice)
+          if (
+            update.state === "online" &&
+            update.resync &&
+            !entry.incompatible &&
+            (options.onNotice || options.onAgentsChanged)
+          )
             void readAgents(entry);
           // Signal holds the attempt until the host connects. The attempt continues, so the recovery
           // reports no state for this wait.
@@ -269,6 +284,7 @@ export function createWebHostConnections(options: {
           if (event.type === "agents-changed") {
             entry.agents = event.agents;
             entry.agentsRevision += 1;
+            options.onAgentsChanged?.(host.hostId, entry.agents);
           } else if (isWebHostNotice(event)) options.onNotice?.(host.hostId, event, entry.agents);
         },
       },
@@ -323,7 +339,7 @@ export function createWebHostConnections(options: {
           recovery.suspend();
         } else {
           entry.capabilities = support.capabilities;
-          if (options.onNotice) void readAgents(entry);
+          if (options.onNotice || options.onAgentsChanged) void readAgents(entry);
         }
       },
       () => undefined,
@@ -381,6 +397,7 @@ export function createWebHostConnections(options: {
       // An `agents-changed` that arrived during the read is newer than the read.
       if (entry.agentsRevision !== revision) return;
       entry.agents = guardedListDecoder(isClientAgentSummary, "teammates")(response.body);
+      options.onAgentsChanged?.(entry.host.hostId, entry.agents);
     } catch {
       // As above: the status does not depend on the list.
     }
@@ -458,8 +475,8 @@ export function createWebHostConnections(options: {
       selected = hostId === null ? null : { hostId, state: "connecting", held: false };
       if (hostId !== null) await stop(hostId);
       if (previous !== hostId) {
-        // Its status connection reports again once it holds the lock.
-        if (previous) {
+        // Its status connection reports again once it holds the lock, unless it was returned warm.
+        if (previous && !entries.has(previous)) {
           states.delete(previous);
           options.onState(previous, "unknown");
         }
@@ -475,7 +492,78 @@ export function createWebHostConnections(options: {
       entries.delete(hostId);
       entry.stop.abort();
       entry.recovery?.dispose();
-      return { peer, actions, releaseLock };
+      return { peer, actions, releaseLock, capabilities: entry.capabilities };
+    },
+    returnHandover(hostId, handover, agents) {
+      if (disposed || entries.has(hostId)) return false;
+      const host = hosts.find((item) => item.hostId === hostId);
+      if (!host) return false;
+      const entry: HostEntry = {
+        host,
+        stop: new AbortController(),
+        releaseLock: handover.releaseLock,
+        peer: handover.peer,
+        actions: handover.actions,
+        recovery: null,
+        connecting: null,
+        endingSessions: new Set(),
+        incompatible: false,
+        capabilities: handover.capabilities,
+        agents: agents ? [...agents] : [],
+        agentsRevision: 0,
+      };
+      const failed = (message: string | null | undefined, reference: string | undefined) =>
+        new WebHostRequestError(message ?? currentText().t("webClient.error.connectionUnavailable"), reference ?? null);
+      handover.actions.current = {
+        getBootstrap: options.actions.getBootstrap,
+        ...(options.actions.requestIntegrationGrant && {
+          requestIntegrationGrant: options.actions.requestIntegrationGrant,
+        }),
+        endSession(sessionId) {
+          const ending = options.actions.endSession(sessionId);
+          entry.endingSessions.add(ending);
+          void ending.then(
+            () => entry.endingSessions.delete(ending),
+            () => entry.endingSessions.delete(ending),
+          );
+          return ending;
+        },
+        async onConnectionUpdate(update) {
+          if (entries.get(host.hostId) !== entry) return;
+          if (
+            update.state === "online" &&
+            update.resync &&
+            !entry.incompatible &&
+            (options.onNotice || options.onAgentsChanged)
+          )
+            void readAgents(entry);
+          if (update.hostOffline) setState(host.hostId, "offline");
+          if (update.state !== "offline") return;
+          if (update.code === "session_revoked") options.onSessionRevoked();
+          if (update.code === "protocol_error") entry.recovery?.suspend(failed(update.message, update.reference));
+          else entry.recovery?.offline(failed(update.message, update.reference));
+        },
+        async onTeamEvent(_hostId, event) {
+          if (entries.get(host.hostId) !== entry) return;
+          if (event.type === "agents-changed") {
+            entry.agents = event.agents;
+            entry.agentsRevision += 1;
+            options.onAgentsChanged?.(host.hostId, entry.agents);
+          } else if (isWebHostNotice(event)) options.onNotice?.(host.hostId, event, entry.agents);
+        },
+      };
+      entries.set(hostId, entry);
+      setState(hostId, "online");
+      if (entry.agents.length > 0) options.onAgentsChanged?.(hostId, entry.agents);
+      else if (options.onNotice || options.onAgentsChanged) void readAgents(entry);
+      return true;
+    },
+    agentsByHost() {
+      const result: Record<string, ClientAgentSummary[]> = {};
+      for (const [hostId, entry] of entries) {
+        if (entry.agents.length > 0) result[hostId] = entry.agents;
+      }
+      return result;
     },
     holdSelected(hostId, held) {
       if (selected?.hostId !== hostId || selected.held === held) return;

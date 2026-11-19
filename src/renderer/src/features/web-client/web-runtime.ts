@@ -1332,7 +1332,10 @@ export function createWebWorkspaceRuntime(
       if (switchingHost) await discardCompletedDrafts();
       await releaseLiveView();
       browserView.disconnect();
+      let warmHandoverCapabilities: readonly string[] | null = null;
       if (switchingHost) {
+        const previousHostId = lockedHostId;
+        const previousCapabilities = [...capabilities];
         const previous = { peer, actions: peerActions, releaseLock: releaseHostLock };
         releaseHostLock = null;
         lockedHostId = null;
@@ -1343,8 +1346,18 @@ export function createWebWorkspaceRuntime(
           handover.actions.current = openedActions;
           handover.peer.setWaitForHost(true);
           ({ peer, actions: peerActions } = handover);
+          warmHandoverCapabilities = handover.capabilities;
         } else ({ peer, actions: peerActions } = createOpenedPeer());
-        retire(previous.peer, previous.actions, previous.releaseLock);
+        const returnedWarm =
+          previousHostId && previous.releaseLock && previousCapabilities.length > 0
+            ? (hosts?.returnHandover(previousHostId, {
+                peer: previous.peer,
+                actions: previous.actions,
+                releaseLock: previous.releaseLock,
+                capabilities: previousCapabilities,
+              }) ?? false)
+            : false;
+        if (!returnedWarm) retire(previous.peer, previous.actions, previous.releaseLock);
         await hosts?.select(host.hostId);
         const release =
           handover?.releaseLock ??
@@ -1378,6 +1391,13 @@ export function createWebWorkspaceRuntime(
           currentText().t("webClient.error.connectionUnavailable"),
           result.ok ? null : (result.reference ?? null),
         );
+      if (warmHandoverCapabilities) {
+        capabilities = [...warmHandoverCapabilities];
+        saveHint(() => localStorage.setItem(hostCapabilitiesKey(accountId, host.hostId), JSON.stringify(capabilities)));
+        early?.start();
+        if (retryDraftCleanup) await discardCompletedDrafts(host.hostId);
+        return capabilities;
+      }
       const knownProtocol = savedHostProtocol(accountId, host.hostId);
       // Read before the compatibility answer replaces it: the early reads used it.
       const knownCompactRpc = savedCompactRpc(accountId, host.hostId);
