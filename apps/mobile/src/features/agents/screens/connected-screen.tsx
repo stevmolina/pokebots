@@ -542,14 +542,14 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
   const sidebar = sidebarByServer[activeServer.id];
   // A waiting agent leaves its section for "Needs you". A pinned agent stays in its tile, which shows the same badge.
   const waitingAgentIds = useWaitingAgentIds();
-  // This phone's own choice. "Recent activity" sorts each section by last activity. "Unread in a group"
-  // takes the unread chats out of their sections, under "Needs you"; "Unread first in folders" puts them
-  // first in each section. None of them changes the layout.
+  // This phone's own choice. "Recent activity" sorts each section by last activity with unread chats
+  // on top. "Unread in a group" takes the unread chats out of their sections, under "Needs you";
+  // "Unread first in folders" puts them first in each section. None of them changes the layout.
   const chatOrder = useChatOrderPreference((state) => state.order);
-  // The manual and recent orders do not read the unread state, so a read does not build the list again.
+  // The manual order does not read the unread state, so a read does not build the list again.
   const unreadChatIds = useMemo(
     () =>
-      chatOrder === "manual" || chatOrder === "recent"
+      chatOrder === "manual"
         ? NO_CHAT_IDS
         : new Set<string>([
             ...unreadAgentIds,
@@ -582,7 +582,7 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
         : []),
       ...mobileSidebarItems(layout, listedAgents, listedChannels, undefined, t, {
         recent: chatOrder === "recent",
-        unreadFirst: chatOrder === "unread-first" ? unread : null,
+        unreadFirst: chatOrder === "recent" || chatOrder === "unread-first" ? unread : null,
         aside: grouped ? unread : null,
       }),
     ];

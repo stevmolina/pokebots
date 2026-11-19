@@ -72,8 +72,8 @@ export const SIDEBAR_DOCK_DONE_ID = "dock:done";
  * How the list orders the chats in the sections. Pins and "Needs you" come first in each order, and
  * none of them changes the saved `agentOrder`.
  * - `manual`: the saved order of the layout.
- * - `recent`: each section shows its chats by last activity, the most recent first. Chats do not
- *   drag in this order, because the order is not manual.
+ * - `recent`: each section shows its unread chats first, then the others, both by last activity
+ *   (most recent first). Chats do not drag in this order, because the order is not manual.
  * - `unread-group`: unread chats leave their section for an "Unread" group under "Needs you", and go
  *   back to their place when they are read.
  * - `unread-first`: each section shows its unread chats first, then the others, both by last
