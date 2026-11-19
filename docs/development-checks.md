@@ -22,9 +22,8 @@ exceeded the memory budget for development jobs, stalled, and froze the machine.
 
 `bun run check:paths <paths>` therefore uses `biome.agent.json`: the root configuration, which it
 extends, with those five rules off. Formatting, import sorting, the other rules, the overrides and
-the GritQL plugins still run. The pre-commit hook (`check:staged`) and CI (`lint`) keep all five
-rules, so a finding still stops the commit. The file sits at the root because Biome resolves the
-plugin paths it inherits relative to the extending file.
+the GritQL plugins still run. CI (`lint`) keeps all five rules and reports its findings on GitHub.
+The file sits at the root because Biome resolves inherited plugin paths relative to that file.
 
 The aggregate typecheck selects `typecheck:*`. Mobile was previously named only `mobile:typecheck`
 and was omitted. It now has `typecheck:mobile`; the old name remains an alias for CI. Mobile uses
@@ -79,55 +78,31 @@ that does not exist, and on a `#anchor` that the target file has no heading or `
 anchors the way GitHub does. It does not check web links or links to other file types. When you move
 a section to another file, such as one in `docs/architecture/`, update each link to its anchor.
 
-The pre-commit hook in `.githooks/pre-commit` runs `check:staged`, then `check:ui` and
-`scripts/staged-typecheck.ts`. The last two run only when the commit stages code, style, GritQL,
-`tsconfig*.json`, `package.json`, `biome.json`, `apps/mobile/app.json` or `bun.lock` files, so a commit
-of only text or data JSON is fast.
-
-`scripts/staged-typecheck.ts` reads the root `typecheck:*` scripts and selects each project that can
-see a staged file: the file is under a fixed part of the project's tsconfig `include`, in its
-workspace package, in a workspace package that it depends on (also through other workspace
-packages), or in a folder that it imports through a relative path. That last list is in the script:
-`scripts` imports mobile and account Worker modules, the account Worker imports the site router, a
-renderer story imports a preload helper, and `.storybook/preview.tsx` imports the renderer.
-A root `tsconfig*.json`, `package.json` or `bun.lock` selects all projects. A mobile codegen input,
-such as `app.json` or the brand CSS, selects mobile. `biome.json` and GritQL files select no project:
-TypeScript does not read them. The script runs the projects one at a time and reports each one that
-fails. `--dry-run` prints each selected script with the path that selected it; paths after the flag
-replace the index. A JSON file that a module imports, such as a Team API fixture, does not start a
-type check in the hook; CI checks it.
+GitHub runs lint, UI checks, type checks and tests in CI. Commits and pushes run no repository
+hooks. The desktop test suite includes the database schema parity test.
 
 `apps/mobile` `typecheck` calls `scripts/mobile-codegen.ts`. It runs `codegen` only when a hash of
 the codegen inputs and of the route file names differs from `.expo/codegen-inputs.sha256`, or when
 an output is missing. File times do not decide: a checkout changes them, and Uniwind does not write a
 file whose content is the same.
 
-In CI, `check:desktop:static` (the UI check, lint, desktop typecheck, build and preload check) takes
-about a minute, and each other typecheck takes a few seconds. When `openbot-database-schema.ts`, `channel-schema.ts`, `mcp-schema.ts`, the parity test or
-`openbot-database-schema-history.json` is staged, the hook also runs `src/backend/openbot-database-schema-parity.test.ts`.
-
-`check:staged` lets Biome fix the working-tree copy of each staged file, and the hook then stages
-those files again. It stages again only the files that have no unstaged changes; otherwise the commit
-would also take the author's unstaged edits. When Biome changes a file that is only partly staged,
-the hook stops the commit and names the file.
-
-One project typecheck, such as `typecheck:node` or `typecheck:renderer`, takes under 10 seconds and
-less than 1.5 GB of memory. The load that the check rules prevent comes from the aggregate command,
-which starts all projects at the same time. The hook used it until it selected projects: about
-33 CPU-seconds and 8 GB of memory for each commit of code.
+In CI, `check:desktop:static` checks the UI, runs lint and desktop type checks, builds the app,
+and checks the preload. One project type check, such as `typecheck:node` or
+`typecheck:renderer`, takes under 10 seconds and less than 1.5 GB of memory. The aggregate
+`bun run typecheck` command starts all projects at once and can use about 8 GB.
 
 The source of truth for CI is [.github/workflows/ci.yml](../.github/workflows/ci.yml).
 Its main jobs are:
 
 | Job | Runner | Commands |
 | --- | --- | --- |
-| Check | `ubuntu-latest` | `bun run knip:check`, `bun run check:assets`, `bun run check:doc-links`, `bun run check:desktop:static`, then `bun run i18n:check`, `bun run types:ratchet`, `bun run check:agent-context` and `bun scripts/whats-new-translations.ts` in parallel |
+| Check | `ubuntu-latest` | `bun run knip:check`, `bun run check:assets`, `bun run check:doc-links`, `bun run check:desktop:static`, then `bun run i18n:check`, `bun run types:ratchet`, `bun run check:agent-context`, `bun run check:migrations` and `bun scripts/whats-new-translations.ts` in parallel |
 | Browser smoke | `ubuntu-latest` | `xvfb-run -a bun run test:browser`, then `xvfb-run -a bun run test:browser-agent-session` |
 | Tests (desktop 1/2, 2/2) | `ubuntu-latest` | `bun run test:desktop -- --shard=<n>/2` |
 | Signal E2E | `ubuntu-latest` | `bun run test:signal`, when `remote/` or `scripts/` changes |
 | Local scripts CLI E2E | `ubuntu-latest` | `bun run test:automation-cli` |
 | Team API routes E2E | `ubuntu-latest` | `bun run test:team-api-routes`, when desktop code changes |
-| Team API and reverse actions E2E | `ubuntu-latest` | `test:team-legacy-clients`, `test:team-session-revoke`, `test:sign-in-relay-paste`, `test:server-mute`, `test:routine-pause-resume`, `test:agent-hide-restore`, `test:messaging-pause-resume`, `test:messaging-discord-access`, `test:messaging-discord-embeds`, `test:messaging-place-history`, `test:messaging-slack-ping-reply`, `test:turn-input`, `test:provider-update-busy`, `test:provider-update-after-app-upgrade`, `test:provider-runtime-remove`, `test:provider-exit-session`, `test:acp-subagents`, `test:codex-subagent-steps`, `test:subagent-status`, `test:codex-hung-app-server`, `test:codex-missing-rollout`, `test:codex-idle-thread-release`, `test:zip-attachments`, `test:mp4-attachments`, `test:svg-attachments`, `test:any-file-attachments`, `test:channel-notifications`, `test:memory-review` and `test:skill-revision`, each with `bun run` in its own step, when the `desktop` lane runs |
+| Team API and reverse actions E2E | `ubuntu-latest` | `test:team-legacy-clients`, `test:team-protocol-v10`, `test:team-webrtc-wire-parity`, `test:remote-viewer-proxy`, `test:server-safe-mode`, `test:team-session-revoke`, `test:sign-in-relay-paste`, `test:server-mute`, `test:routine-pause-resume`, `test:agent-hide-restore`, `test:messaging-pause-resume`, `test:messaging-discord-access`, `test:messaging-discord-embeds`, `test:messaging-place-history`, `test:messaging-slack-ping-reply`, `test:turn-input`, `test:provider-update-busy`, `test:provider-update-after-app-upgrade`, `test:provider-runtime-remove`, `test:provider-exit-session`, `test:acp-subagents`, `test:codex-subagent-steps`, `test:subagent-status`, `test:codex-hung-app-server`, `test:codex-missing-rollout`, `test:codex-idle-thread-release`, `test:zip-attachments`, `test:mp4-attachments`, `test:svg-attachments`, `test:any-file-attachments`, `test:channel-notifications`, `test:memory-review` and `test:skill-revision`, each with `bun run` in its own step, when the `desktop` lane runs |
 | Provider fakes E2E | `ubuntu-latest` | `test:custom-agents`, `test:custom-agents:login-path`, `test:acp-directories`, `test:acp-flavors`, `test:acp-turn-stall`, `test:agent-database-host-start`, `test:acp-mcp-names`, `test:provider-conformance`, `test:opencode-expired-key`, `test:opencode-downgraded-session`, `test:cline-free-models`, `test:cline-plan-limit-failover` and `test:provider-transcript-replay`, each with `bun run` in its own step, when the `desktop` lane runs. The fake agents are in `scripts/provider-fakes/`; the replayed transcripts of released CLIs are in `scripts/provider-fakes/transcripts/`, and `bun scripts/record-provider-transcript.ts` records a new one |
 | Surfaces | `ubuntu-latest` | Parallel groups described below, then `bun run remote:check:compose` |
 | API | `ubuntu-latest` | `bun run check:api`, including the local WorkOS provider and account-session E2E checks, then, for a pull request from this repository, upload `apps/auth-api/dist` |
@@ -425,6 +400,15 @@ skills, or connected vault, so the counts measure only OpenBot's own text:
 The script writes the counts to `.openbot-build/agent-context-budget/report.json`. It does not
 measure the schemas that the Claude Agent SDK makes from the Zod shapes of Claude's visible tools.
 CI runs it in the `check` job.
+
+### Frozen migrations
+
+`bun run check:migrations` compares `src/backend/migrations/` with the newest `v*` tag on origin.
+CI checks out one commit and no tags, so the script fetches only that tag commit (`--depth=1`).
+`--tag <tag>` compares with another tag. The rules and the fix for a released bug are in
+[src/backend/AGENTS.md](../src/backend/AGENTS.md#frozen-migrations); the rule fixtures are in
+`scripts/check-frozen-migrations.test.ts`. A tag from before the folder (v0.72.0 and earlier) has
+no frozen files, so only the rules on the current folder apply.
 
 ### Plugin cost
 

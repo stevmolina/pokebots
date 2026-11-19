@@ -23,6 +23,7 @@ import EyeOff from "lucide-react-native/icons/eye-off";
 import File from "lucide-react-native/icons/file";
 import Folder from "lucide-react-native/icons/folder";
 import FolderPlus from "lucide-react-native/icons/folder-plus";
+import GitBranch from "lucide-react-native/icons/git-branch";
 import Globe from "lucide-react-native/icons/globe";
 import Info from "lucide-react-native/icons/info";
 import LayoutGrid from "lucide-react-native/icons/layout-grid";
@@ -32,6 +33,7 @@ import ListChecks from "lucide-react-native/icons/list-checks";
 import LogOut from "lucide-react-native/icons/log-out";
 import MailBadge from "lucide-react-native/icons/mail-badge";
 import MailOpen from "lucide-react-native/icons/mail-open";
+import MessageCircleQuestionMark from "lucide-react-native/icons/message-circle-question-mark";
 import MessagesSquare from "lucide-react-native/icons/messages-square";
 import MousePointerClick from "lucide-react-native/icons/mouse-pointer-click";
 import Pencil from "lucide-react-native/icons/pencil";
@@ -71,6 +73,7 @@ const ICONS: Partial<Record<string, LucideIcon>> = {
   archivebox: Archive,
   "arrow.clockwise": RotateCw,
   "arrow.down": ArrowDown,
+  "arrow.triangle.branch": GitBranch,
   "arrow.up": ArrowUp,
   "arrow.up.arrow.down": ArrowUpDown,
   bell: Bell,
@@ -107,6 +110,7 @@ const ICONS: Partial<Record<string, LucideIcon>> = {
   play: Play,
   plus: Plus,
   "plus.square.on.square": CopyPlus,
+  "questionmark.bubble": MessageCircleQuestionMark,
   "rectangle.portrait.and.arrow.right": LogOut,
   "square.and.arrow.up": Share,
   scope: Crosshair,

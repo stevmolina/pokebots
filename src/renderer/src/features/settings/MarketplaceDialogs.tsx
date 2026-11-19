@@ -110,6 +110,7 @@ export function MarketplaceDialogs(props: {
             hostName={props.hostName}
             signInHostName={props.relay ? props.hostName : undefined}
             onCancelSignIn={props.controller.cancelSignIn}
+            onCopySignInLink={props.hostName ? undefined : props.controller.copySignInLink()}
             signInExtra={
               /* A joined server's sign-in page shows in the server's own tab. A relayed page opens in
                  this computer's browser; the paste field is the way back when the browser cannot reach

@@ -16,7 +16,7 @@ have more than one group:
 
 `bun run release:patch`, `release:minor` and `release:major` move the items of every file into the
 new version section of `CHANGELOG.md`, in the order that the pull requests merged, and delete the
-files. The pre-commit hook and the Changelog workflow check each file. A pull request with no change
+files. The Changelog workflow checks each file. A pull request with no change
 that a user can see gets the `no-changelog` label.
 
 The notes of the iPhone app go in [`apps/mobile/changelog.d/`](../apps/mobile/changelog.d/README.md).

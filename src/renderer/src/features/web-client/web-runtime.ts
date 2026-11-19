@@ -100,7 +100,13 @@ import {
 import { guardedListDecoder, optionalHistoryExtent, requiredString } from "@openbot/contracts/ipc-decoding";
 import { isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
 import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
+import {
+  AGENT_ACTIVE_QUEUES_ROUTES,
+  type AgentActiveQueues,
+  decodeAgentActiveQueues,
+} from "@openbot/contracts/team-protocol/agent-active-queues-v1";
 import { AGENT_COLORS_CAPABILITY } from "@openbot/contracts/team-protocol/agent-colors-v1";
+import { AGENT_CREATE_OPERATION_CAPABILITY } from "@openbot/contracts/team-protocol/agent-create-operation-v1";
 import {
   AGENT_FAST_MODE_CAPABILITY,
   AGENT_FAST_MODE_ROUTES,
@@ -148,6 +154,7 @@ import {
   decodeBrowserViewInputValue,
   TEAM_BROWSER_VIEW_CLIPBOARD_CAPABILITY,
   TEAM_BROWSER_VIEW_FRAME_POINT_CAPABILITY,
+  TEAM_BROWSER_VIEW_PAGE_COPY_CAPABILITY,
 } from "@openbot/contracts/team-protocol/browser-view-v1";
 import {
   CHANNEL_PICTURE_CAPABILITY,
@@ -173,6 +180,7 @@ import {
 import {
   CLAUDE_ARTIFACT_REQUEST_CAPABILITY,
   TEAM_BROWSER_NAVIGATION_CAPABILITY,
+  TEAM_WEB_CLIENT_PROTOCOL,
 } from "@openbot/contracts/team-protocol/current";
 import { FOCUS_USE_ROUTES } from "@openbot/contracts/team-protocol/focus-use-v1";
 import { MESSAGE_DELETE_CAPABILITY, MESSAGE_DELETE_ROUTES } from "@openbot/contracts/team-protocol/message-delete-v1";
@@ -203,6 +211,12 @@ import {
 import { ROUTINE_FLOWS_CAPABILITY } from "@openbot/contracts/team-protocol/routine-flows-v1";
 import { ROUTINES_ONCE_CAPABILITY } from "@openbot/contracts/team-protocol/routines-once-v1";
 import {
+  decodeServerSafeModeReason,
+  SERVER_SAFE_MODE_CAPABILITY,
+  SERVER_SAFE_MODE_ROUTES,
+  type ServerSafeModeReason,
+} from "@openbot/contracts/team-protocol/server-safe-mode-v1";
+import {
   SIDEBAR_FOLDERS_CAPABILITY,
   SIDEBAR_FOLDERS_ROUTES,
 } from "@openbot/contracts/team-protocol/sidebar-folders-v1";
@@ -213,10 +227,8 @@ import {
   THREAD_MESSAGE_SEARCH_ROUTES,
 } from "@openbot/contracts/team-protocol/thread-message-search-v1";
 import { USAGE_CREDITS_CAPABILITY, USAGE_CREDITS_ROUTES } from "@openbot/contracts/team-protocol/usage-credits-v1";
-import { type TeamProtocolSupportV1, teamProtocolUpdateDirection } from "@openbot/contracts/team-protocol/v1";
+import type { TeamProtocolSupportV1 } from "@openbot/contracts/team-protocol/v1";
 import { TEAM_PROTOCOL_V2_MAX_FILE_BYTES, type TeamProtocolV2Json } from "@openbot/contracts/team-protocol/v2";
-import { TEAM_PROTOCOL_V3 } from "@openbot/contracts/team-protocol/v3";
-import { decodeTeamProtocolSupportV9 } from "@openbot/contracts/team-protocol/v9";
 import {
   WORKSPACE_DIRECTORY_CAPABILITY,
   WORKSPACE_DIRECTORY_ROUTES,
@@ -245,6 +257,7 @@ import {
   type RemoteTeamPeerActions,
 } from "@openbot/team-client/remote-peer";
 import { remoteWorkspaceReadTimeout } from "@openbot/team-client/remote-recovery";
+import { retryOperationIds } from "@openbot/team-client/retry-operation-id";
 import {
   listAgentNotificationLevels,
   listHiddenAgents,
@@ -280,10 +293,12 @@ import {
 } from "@openbot/team-client/team-api-requests";
 import type { BrowserViewRuntime } from "@openbot/ui/features/browser/BrowserLiveView";
 import { currentText } from "@openbot/ui/text";
+import { toast } from "@openbot/ui/toast";
 import { referenceFrom } from "@openbot/user-errors";
 import { Effect } from "effect";
 import type { ServerAdminPort } from "../servers/servers-port";
 import { createFirstScreenHold } from "./web-first-screen";
+import { readWebHostCompatibility } from "./web-host-compatibility";
 import {
   createWebHostConnections,
   type WebHostConnections,
@@ -452,6 +467,8 @@ export interface WebWorkspaceRuntime {
   /** Sends which agent this member is writing to, or `null`. It does nothing while the host is offline. */
   setTyping(agentId: string | null, typing: boolean): void;
   queue(agentId: string): Promise<QueueSnapshot>;
+  /** The open work of the queues of these agents, on a host with `agent-active-queues-v1`. */
+  activeQueues(agentIds: string[]): Promise<AgentActiveQueues>;
   editQueue(input: EditQueuedMessageInput): Promise<QueueSnapshot>;
   cancelQueued(input: CancelQueuedMessageInput): Promise<void>;
   steerQueued(input: SteerQueuedMessageInput): Promise<void>;
@@ -463,6 +480,8 @@ export interface WebWorkspaceRuntime {
   cancelUpload(): Promise<void>;
   discard(attachmentId: string): Promise<void>;
   download(attachmentId: string): Promise<WebFile>;
+  /** A small copy of an image attachment (`attachment-preview-v1`), or the file when the host makes none. */
+  downloadPreview(attachmentId: string): Promise<WebFile>;
   /** A file under the host's shared folder. */
   sharedFile(path: string): Promise<WebFile>;
   /** A file in one agent's workspace on the host. */
@@ -573,14 +592,21 @@ export interface WebRuntimeEvents {
   hostNotice?(hostId: string, event: WebHostNotice, agents: ClientAgentSummary[]): void;
 }
 
-/** The host speaks no Team API protocol that this web build speaks. The workspace shows it in full. */
+/**
+ * The host speaks no Team API protocol that this web build speaks, or it is in safe mode
+ * (`server-safe-mode-v1`) and answers only with the reason. The workspace shows it in full.
+ */
 export class WebHostIncompatibleError extends Error {
-  readonly code: "client_update_required" | "host_update_required";
+  readonly code: "client_update_required" | "host_update_required" | "server_safe_mode";
   readonly hostAppVersion: string;
   readonly hostProtocol: TeamProtocolSupportV1["protocol"];
 
-  constructor(support: TeamProtocolSupportV1, code: WebHostIncompatibleError["code"]) {
-    super(currentText().t("webClient.error.incompatible"));
+  constructor(
+    support: TeamProtocolSupportV1,
+    code: WebHostIncompatibleError["code"],
+    message = currentText().t("webClient.error.incompatible"),
+  ) {
+    super(message);
     this.code = code;
     this.hostAppVersion = support.appVersion;
     this.hostProtocol = support.protocol;
@@ -602,6 +628,14 @@ export class WebHostConnectionError extends Error {
   }
 }
 
+/** The sentence for the reason of a host in safe mode. */
+function serverSafeModeText({ reason, appVersion }: ServerSafeModeReason): string {
+  return currentText().t(
+    reason === "newer_database" ? "error.team.serverSafeModeNewerDatabase" : "error.team.serverSafeModeStartFailed",
+    { version: appVersion },
+  );
+}
+
 interface WebConnectionDependencies {
   createPeer: typeof createRemoteTeamPeer;
   acquireHostLock: typeof acquireWebHostLock;
@@ -618,6 +652,31 @@ const USAGE_LIMIT_MOVE_FIELDS: ReadonlySet<string> = new Set([
   "providerAccountId",
   "leaveUsageLimit",
 ]);
+
+/**
+ * Puts the text that the host's page copied on this computer's clipboard. A browser that refuses a
+ * write this long after the click, such as Safari, gets a button: a click on it is a new action.
+ */
+function writePageCopy(text: string): void {
+  // Called in the click itself, which is the user action that Safari asks for. A page that is not
+  // secure has no clipboard, and the call throws at once.
+  const write = () => {
+    try {
+      return navigator.clipboard.writeText(text);
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+  void write().catch(() => {
+    const { t } = currentText();
+    toast(t("browser.liveView.pageCopied"), {
+      action: {
+        label: t("common.copy"),
+        onClick: () => void write().catch(() => toast.error(t("browser.liveView.copyFailed"))),
+      },
+    });
+  });
+}
 
 function hostProtocolKey(accountId: string, hostId: string): string {
   return `openbot.web.host-protocol:${accountId}:${hostId}`;
@@ -792,7 +851,14 @@ export function createWebWorkspaceRuntime(
   };
   function createOpenedPeer() {
     const actions = { current: openedActions };
-    return { peer: dependencies.createPeer(actions, { waitForHost: true, hostProtocols }), actions };
+    return {
+      peer: dependencies.createPeer(actions, {
+        waitForHost: true,
+        hostProtocols,
+        clientProtocol: TEAM_WEB_CLIENT_PROTOCOL,
+      }),
+      actions,
+    };
   }
   // Each host switch replaces the peer, so the old host's session can end while the new host connects.
   let { peer, actions: peerActions } = createOpenedPeer();
@@ -823,7 +889,7 @@ export function createWebWorkspaceRuntime(
         channel: hostChannel,
         actions: sessionActions,
         createPeer: dependencies.createPeer,
-        peerOptions: { hostProtocols },
+        peerOptions: { hostProtocols, clientProtocol: TEAM_WEB_CLIENT_PROTOCOL },
         acquireHostLock: dependencies.acquireHostLock,
         pinHostKey: (host) => pinWebHostKey(accountId, host),
         onState: (hostId, state) => events.hostState?.(hostId, state),
@@ -862,7 +928,10 @@ export function createWebWorkspaceRuntime(
   const firstScreen = createFirstScreenHold();
   let capabilities: string[] = [];
   let connectedHost: RemoteTeamHost | null = null;
-  const duplicateOperationIds = new Map<string, string>();
+  // A duplicate whose answer got lost sends its id again and gets the first copy.
+  const duplicateIds = retryOperationIds(() => crypto.randomUUID());
+  // A create whose answer got lost sends its id again and gets the first agent (`agent-create-operation-v1`).
+  const createOperationId = retryOperationIds(() => crypto.randomUUID());
   const completedDraftIdsByHost = new Map<string, Set<string>>();
   const draftCleanupRetryHosts = new Set<string>();
   // The host names a draft's preview with the desktop `openbot-attachment:` scheme, so a draft image
@@ -1199,6 +1268,12 @@ export function createWebWorkspaceRuntime(
     request,
     () => capabilities.includes(TEAM_BROWSER_VIEW_FRAME_POINT_CAPABILITY),
     () => capabilities.includes(TEAM_BROWSER_VIEW_CLIPBOARD_CAPABILITY),
+    () => ({
+      cursor: false,
+      contextMenu: false,
+      viewport: null,
+      pageCopy: capabilities.includes(TEAM_BROWSER_VIEW_PAGE_COPY_CAPABILITY),
+    }),
   );
   let liveView: RemoteBrowserView | null = null;
   let liveViewGeneration = 0;
@@ -1311,22 +1386,29 @@ export function createWebWorkspaceRuntime(
       const knownCapabilities = knownProtocol === undefined ? null : savedHostCapabilities(accountId, host.hostId);
       if (knownCapabilities) capabilities = knownCapabilities;
       if (knownProtocol !== undefined) early?.start();
-      const support = decodeTeamProtocolSupportV9(await request("GET", TEAM_API_ROUTES.compatibility));
+      const { support, negotiated } = await readWebHostCompatibility(() =>
+        request("GET", TEAM_API_ROUTES.compatibility),
+      );
       saveHint(() =>
         localStorage.setItem(hostCapabilitiesKey(accountId, host.hostId), JSON.stringify(support.capabilities)),
       );
       if (
         knownProtocol !== undefined &&
-        (support.protocol.maximum !== knownProtocol ||
+        (negotiated.protocol !== knownProtocol ||
           (knownCompactRpc && !support.capabilities.includes(COMPACT_RPC_CAPABILITY)) ||
           (knownCapabilities !== null && !sameCapabilities(knownCapabilities, support.capabilities)))
       )
         early?.drop();
-      const updateDirection = teamProtocolUpdateDirection(
-        { minimum: TEAM_PROTOCOL_V3, maximum: TEAM_PROTOCOL_V3 },
-        support.protocol,
-      );
-      if (updateDirection) throw new WebHostIncompatibleError(support, updateDirection);
+      if (negotiated.update) throw new WebHostIncompatibleError(support, negotiated.update);
+      if (support.capabilities.includes(SERVER_SAFE_MODE_CAPABILITY))
+        throw new WebHostIncompatibleError(
+          support,
+          "server_safe_mode",
+          await request("GET", SERVER_SAFE_MODE_ROUTES.reason).then(
+            (value) => serverSafeModeText(decodeServerSafeModeReason(value)),
+            () => currentText().t("error.team.serverSafeMode"),
+          ),
+        );
       capabilities = support.capabilities;
       if (retryDraftCleanup) await discardCompletedDrafts(host.hostId);
       return capabilities;
@@ -1357,6 +1439,9 @@ export function createWebWorkspaceRuntime(
             (reason) =>
               emitView({ type: "stopped", tabId, reason: reason || currentText().t("webClient.error.viewEnded") }),
             (copied) => emitView({ ...copied, tabId }),
+            (message) => {
+              if (message.type === "pageCopied") writePageCopy(message.text);
+            },
           ),
         );
         if (currentGeneration !== liveViewGeneration) {
@@ -1756,6 +1841,7 @@ export function createWebWorkspaceRuntime(
     stop: (id, turnId) =>
       Effect.runPromise(interruptAgentTurn(teamApi, id, turnId).pipe(Effect.mapError((error) => error.cause))),
     queue: (id) => teamApi("GET", TEAM_API_ROUTES.agent.queue(id), (value) => queueSnapshot(id, value)),
+    activeQueues: (agentIds) => teamApi("POST", AGENT_ACTIVE_QUEUES_ROUTES.list, decodeAgentActiveQueues, { agentIds }),
     editQueue: ({ agentId, ...edit }) =>
       teamApi("POST", TEAM_API_ROUTES.agent.queueEdit(agentId), (value) => queueSnapshot(agentId, value), edit),
     cancelQueued: (input) =>
@@ -1823,6 +1909,11 @@ export function createWebWorkspaceRuntime(
     },
     async download(id) {
       return decodeWebFile(await request("GET", TEAM_API_ROUTES.attachment(id), {}, undefined, WEB_FILE_DOWNLOAD));
+    },
+    async downloadPreview(id) {
+      return decodeWebFile(
+        await request("GET", TEAM_API_ROUTES.attachmentPreview(id), {}, undefined, WEB_FILE_DOWNLOAD),
+      );
     },
     async sharedFile(path) {
       const query = new URLSearchParams({ path });
@@ -1962,7 +2053,16 @@ export function createWebWorkspaceRuntime(
       // The released route does not carry the account either, so it goes on `provider-accounts-v1`
       // after it, as on the desktop.
       const { avatarColor, providerAccountId, ...profile } = input;
-      const value = await request("POST", TEAM_API_ROUTES.agents.all, { ...profile });
+      const operation = capabilities.includes(AGENT_CREATE_OPERATION_CAPABILITY)
+        ? createOperationId([lockedHostId, profile])
+        : null;
+      const value = await request("POST", TEAM_API_ROUTES.agents.all, {
+        ...profile,
+        ...(operation ? { operationId: operation.id } : {}),
+      }).catch((error: unknown) => {
+        operation?.failed();
+        throw error;
+      });
       if (!isClientAgentSummary(value)) throw new Error(currentText().t("error.remote.invalidData"));
       const agent: ClientAgentSummary = await withCreatedAgentAccount(value, providerAccountId);
       if (!avatarColor || !capabilities.includes(AGENT_COLORS_CAPABILITY)) return agent;
@@ -1977,13 +2077,17 @@ export function createWebWorkspaceRuntime(
     },
     async duplicateAgent(agentId) {
       if (!capabilities.includes("agent-duplication")) throw new Error(currentText().t("webClient.error.duplication"));
-      const operationKey = `${lockedHostId ?? ""}\0${agentId}`;
-      const operationId = duplicateOperationIds.get(operationKey) ?? crypto.randomUUID();
-      duplicateOperationIds.set(operationKey, operationId);
-      const value = await request("POST", TEAM_API_ROUTES.agent.duplicate(agentId), { operationId });
-      if (!isDynamicRecord(value) || !isClientAgentSummary(value.agent) || !isSidebarLayoutSnapshot(value.layout))
+      const duplicate = duplicateIds([lockedHostId, agentId]);
+      const value = await request("POST", TEAM_API_ROUTES.agent.duplicate(agentId), {
+        operationId: duplicate.id,
+      }).catch((error: unknown) => {
+        duplicate.failed();
+        throw error;
+      });
+      if (!isDynamicRecord(value) || !isClientAgentSummary(value.agent) || !isSidebarLayoutSnapshot(value.layout)) {
+        duplicate.failed();
         throw new Error(currentText().t("error.remote.invalidData"));
-      duplicateOperationIds.delete(operationKey);
+      }
       // The released route answers the layout without the parents of the folders. The copy exists, so a
       // failed read keeps that layout rather than failing the copy; the next layout event has the parents.
       const answered = value.layout;
@@ -2136,7 +2240,6 @@ export function createWebWorkspaceRuntime(
       generation += 1;
       firstScreen.clear();
       connectedHost = null;
-      duplicateOperationIds.clear();
       revokeLocalDraftPreviews([...localDraftPreviews.keys()]);
       try {
         await Promise.all([peer.dispose(), hosts?.dispose(), ...retiring]);

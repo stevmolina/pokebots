@@ -135,16 +135,17 @@ export function SettingsPageFrame(props: {
               reportMounts();
             }}
           />
-          <IconButton
+          {/* A plain X needs no tooltip, so this is a Button and not an IconButton. */}
+          <Button
             variant="ghost"
             size="icon-sm"
             class="settings-page-close"
-            label={t("common.close")}
+            aria-label={t("common.close")}
             data-cuelume-tap="close"
             onClick={() => props.onClose()}
           >
             <X aria-hidden="true" />
-          </IconButton>
+          </Button>
           <div
             class="settings-page-content"
             ref={(element) => {

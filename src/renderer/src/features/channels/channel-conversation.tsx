@@ -40,6 +40,7 @@ import {
   channelWorkers,
   channelWorkingTurns,
   firstUnreadChannelMessageId,
+  liveChannelPrompt,
   sentChannelMessageId,
   waitingChannelPrompt,
 } from "./channel-conversation-rows";
@@ -113,7 +114,7 @@ export function createChannelConversation(env: ChannelConversationEnvironment) {
     const current = page();
     if (!current) return [];
     const next = new Map<string, AgentMessage>();
-    const mappedRows = channelConversationRows(entries());
+    const mappedRows = channelConversationRows(entries(), current.tasks);
     const lastKnown = mappedRows.findLastIndex((mapped) => rowsById.has(mapped.id));
     const rows = mappedRows.map((mapped, index) => {
       const known = rowsById.get(mapped.id);
@@ -140,7 +141,10 @@ export function createChannelConversation(env: ChannelConversationEnvironment) {
   });
   const prompt = createMemo((): Extract<AgentEvent, { type: "prompt" }> | undefined => {
     const found = waiting();
-    if (!found) return undefined;
+    if (!found) {
+      const current = page();
+      return current ? liveChannelPrompt(current, threads(), env.prompts()) : undefined;
+    }
     const agentId = found.entry.author.id;
     return {
       type: "prompt",
@@ -353,7 +357,7 @@ export function createChannelConversation(env: ChannelConversationEnvironment) {
     },
     onLoadOlder: () => void channels.loadOlder(),
     onAnswerPrompt: (answers: Record<string, string[]>, options?: PromptAnswerOptions) => {
-      const requestId = waiting()?.prompt.requestId;
+      const requestId = prompt()?.requestId;
       if (requestId === undefined) return Promise.resolve(false);
       return respond(() => channels.port().agent.respondToPrompt({ requestId, answers }), options);
     },

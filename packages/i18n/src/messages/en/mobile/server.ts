@@ -545,7 +545,6 @@ export const messages = defineMessages("mobile.server", {
   "mobile.server.route.provider": "Provider",
   "mobile.server.route.providerModels": "Models",
   "mobile.server.route.acpRegistry": "ACP registry",
-  "mobile.server.route.mcp": "MCP servers",
   "mobile.server.route.mcpServer": "MCP server",
   "mobile.server.members.rowLabel": "{name}, {role}",
   "mobile.server.members.you": "{name} (you)",
@@ -1029,6 +1028,8 @@ export const messages = defineMessages("mobile.server", {
     "Agents on {host} cannot sign in with your shared logins until you connect again.",
   "mobile.server.connectors.keeper.disconnectBody":
     "{host} ends its Keeper session. The folder and its logins stay in your Keeper vault.",
+  "mobile.server.connectors.protonPass.plan":
+    "Your Proton plan does not include the Proton Pass command-line tool. It needs a Proton plan that includes Pass Plus. Other paid plans, such as Mail Plus, do not include it. Change the plan of your account, then connect again.",
   // A password manager that the host connects through its CLI. {name} is the manager, such as
   // Proton Pass. {date} is a date, such as 5 Nov 2026.
   "mobile.server.connectors.passwordManager.unavailable": "{name} is not available on this server.",
@@ -1060,8 +1061,6 @@ export const messages = defineMessages("mobile.server", {
   "mobile.server.connectors.passwordManager.keyReadOnly": "Read only",
   "mobile.server.connectors.passwordManager.keyExpires": "Read only. Expires on {date}.",
   "mobile.server.connectors.passwordManager.keyExpired": "Expired on {date}",
-  "mobile.server.connectors.passwordManager.plan":
-    "The {name} command-line tool needs a paid plan. Change the plan of your account, then connect again.",
   "mobile.server.connectors.passwordManager.expiredTitle": "The {name} key expired",
   "mobile.server.connectors.passwordManager.expiredBody":
     "Agents on {host} cannot sign in with your shared logins until you connect again.",
@@ -1234,10 +1233,10 @@ export const messages = defineMessages("mobile.server", {
   "mobile.server.connectors.whatsapp.linkAgain": "Link again",
   "mobile.server.connectors.whatsapp.ownNumber": "Personal number",
   "mobile.server.connectors.whatsapp.ownNumberDescription":
-    "Only your “Message yourself” chat and the people you allow can write. Turn off for a number only for OpenBot.",
+    "Only your “Message yourself” chat and the people you allow can write. Other people get no reply. When it is off, OpenBot replies to unknown people with a code.",
   "mobile.server.connectors.whatsapp.workingMessage": "“Working on it…” message",
   "mobile.server.connectors.whatsapp.workingMessageDescription":
-    "OpenBot posts it while the agent works, then replaces it with the answer. Turn off to post only the answer.",
+    "OpenBot posts it while the agent works, then replaces it with the answer. A request that waits for an earlier request gets a waiting message too. Turn off to post only the answer.",
   "mobile.server.connectors.whatsapp.statusReactions": "Status reactions",
   "mobile.server.connectors.whatsapp.statusReactionsDescription":
     "OpenBot reacts with 👀 when a message arrives and with ✅ when the answer is ready. Turn off to send no reactions.",
@@ -1257,10 +1256,10 @@ export const messages = defineMessages("mobile.server", {
   "mobile.server.connectors.whatsapp.kindLabel": "Number",
   "mobile.server.connectors.whatsapp.kindPersonal": "My personal number",
   "mobile.server.connectors.whatsapp.kindPersonalDescription":
-    "OpenBot answers only your “Message yourself” chat and the people you allow.",
+    "OpenBot answers only your “Message yourself” chat and the people you allow. Other people get no reply.",
   "mobile.server.connectors.whatsapp.kindDedicated": "A number only for OpenBot",
   "mobile.server.connectors.whatsapp.kindDedicatedDescription":
-    "Unknown people get a code to give you. You approve them here.",
+    "OpenBot replies from this number to each unknown person, with a code to give you. You approve them here.",
   "mobile.server.connectors.whatsapp.phoneLabel": "Phone number",
   "mobile.server.connectors.whatsapp.phoneDescription": "With the country code, such as +44 7700 900123.",
   "mobile.server.connectors.whatsapp.phoneInvalid": "Type the phone number with its country code.",
@@ -1306,7 +1305,8 @@ export const messages = defineMessages("mobile.server", {
   "mobile.server.connectors.whatsapp.contactNameDescription": "Optional. Empty, the list shows the phone number.",
   "mobile.server.connectors.whatsapp.add": "Add",
   "mobile.server.connectors.whatsapp.groupTitle": "Add a group",
-  "mobile.server.connectors.whatsapp.groupDescription": "People in this group can give work to your agents.",
+  "mobile.server.connectors.whatsapp.groupDescription":
+    "People in this group can give work to your agents when they mention the number or reply to its messages.",
   "mobile.server.connectors.whatsapp.groupSearch": "Search groups",
   "mobile.server.connectors.whatsapp.groupsLoading": "Reading the groups…",
   "mobile.server.connectors.whatsapp.groupsLoadFailed": "OpenBot could not read the groups",
@@ -1423,12 +1423,14 @@ export const messages = defineMessages("mobile.server", {
   "mobile.server.providers.accountsOnComputer":
     "Each agent uses one account. Choose it in the agent's settings. Add an account in OpenBot on a computer.",
   "mobile.server.providers.addAccount": "Add account",
+  "mobile.server.providers.addAccountWithCode": "Add account with code",
   "mobile.server.providers.accountGone": "This account is no longer on this server.",
   "mobile.server.providers.accountFailed": "Could not change this account. Try again.",
   "mobile.server.providers.accountName": "Name",
   "mobile.server.providers.accountNameHint":
     "Only for you and the admins of this server. Leave it empty to show the email.",
   "mobile.server.providers.accountSignInAgain": "Sign in again",
+  "mobile.server.providers.accountSignInWithCode": "Log in with code",
   // An account that is an API key of the provider (`provider-account-keys-v1`), such as a Cursor account after the first.
   "mobile.server.providers.accountsKeyHint":
     "Each agent uses one account. Choose it in the agent's settings. A new account needs an API key of that account.",
@@ -1705,22 +1707,10 @@ export const messages = defineMessages("mobile.server", {
   "mobile.server.customProviders.removeTitle": "Remove {name}?",
   "mobile.server.customProviders.removeBody": "Agents on this server can no longer use its models.",
   "mobile.server.customProviders.removeFailed": "OpenBot could not remove this endpoint.",
-  "mobile.server.settings.mcp": "MCP servers",
-  "mobile.server.settings.mcpCount": { one: "{count} server", other: "{count} servers" },
   "mobile.server.mcp.unsupported": "Update OpenBot on this server to manage its MCP servers here.",
   "mobile.server.mcp.unavailable": "Connect to this server as an owner or admin to manage its MCP servers.",
   "mobile.server.mcp.accessUnsupported": "Update OpenBot on this server to choose who gets its MCP servers.",
-  "mobile.server.mcp.description":
-    "MCP servers give the agents of this server more tools. Claude and Codex agents get only the servers in this list.",
   "mobile.server.mcp.loading": "Loading MCP servers…",
-  "mobile.server.mcp.loadFailed": "Could not load the MCP servers.",
-  "mobile.server.mcp.empty": "No MCP servers yet.",
-  "mobile.server.mcp.retry": "Try again",
-  "mobile.server.mcp.add": "Add MCP server",
-  "mobile.server.mcp.rowLabel": "{name}, {status}",
-  "mobile.server.mcp.enabled": "On",
-  "mobile.server.mcp.disabled": "Off",
-  "mobile.server.mcp.signedIn": "Signed in",
   "mobile.server.mcp.gone": "This MCP server is no longer on this server.",
   "mobile.server.mcp.addTitle": "Add MCP server",
   "mobile.server.mcp.addConfirm": "Add",
@@ -2141,8 +2131,12 @@ export const messages = defineMessages("mobile.server", {
   "mobile.server.transfer.copyTo": "To",
   "mobile.server.transfer.copyNoAgents": "This server has no agents.",
   "mobile.server.transfer.copyNotMoved":
-    "Their channels and the Shared folder are copied too. API keys, sign-ins, connectors, and chat history are not copied. Set them up again on the other server.",
+    "Their channels, routine flows, workflows, and the Shared folder are copied too. API keys, sign-ins, connectors, and chat history are not copied. Set them up again on the other server.",
   "mobile.server.transfer.copySubmit": { one: "Copy {count} agent", other: "Copy {count} agents" },
+  "mobile.server.transfer.copyDuplicatesTitle": "Copy duplicate agents?",
+  "mobile.server.transfer.copyDuplicatesBody":
+    "{server} already has agents with these names: {names}. The copy adds a second agent for each one. Each copy is a separate agent with its own chats, files, and memories.",
+  "mobile.server.transfer.copyDuplicatesConfirm": "Copy duplicates",
   "mobile.server.transfer.copying": "Copying…",
   "mobile.server.transfer.copyFailed": "The copy did not finish.",
   "mobile.server.transfer.copied": {

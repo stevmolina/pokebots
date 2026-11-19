@@ -199,8 +199,7 @@ async function prepare(): Promise<void> {
           `Set the version to ${version} in \`apps/mobile/app.json\`, \`apps/mobile/package.json\` and \`bun.lock\`.`,
         ],
         surfaces: `mobile changelog and version only. \`/changelog\` does not show ${version} until a store makes it available.`,
-        verification:
-          "The pre-commit hook passed (Biome, release notes check, UI check, and the typecheck projects that `bun.lock` selects)",
+        verification: "`prepare-release.ts` validated the new release notes",
         next: "Upgrade safety: not audited by the menu. Run the `release-upgrade-safety` audit before the build.\n\nAfter merge: build with `bun run mobile:release` (2).",
       }),
     });
@@ -303,7 +302,7 @@ async function published(): Promise<void> {
         changed,
         surfaces:
           "`apps/auth-api` (mobile feature flags and newest versions), mobile changelog, Discord announcement. No release notes: this PR records a release.",
-        verification: `\`bun scripts/discord-mobile-release-announcement.ts check ${version}\` passes; the pre-commit hook passed`,
+        verification: `\`bun scripts/discord-mobile-release-announcement.ts check ${version}\` passes`,
       }),
     });
   });
@@ -359,7 +358,7 @@ async function skip(): Promise<void> {
             : `${name} will not ship ${entry.version}, because a newer version replaced it. \`/changelog\` shows it as skipped, and Discord gets no post.`,
         ],
         surfaces: "mobile changelog and `/changelog`. No release notes: this PR records a release.",
-        verification: "The pre-commit hook passed",
+        verification: "`skipPlan` validated the store and version before updating the changelog",
       }),
     });
   });

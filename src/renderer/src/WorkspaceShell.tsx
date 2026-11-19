@@ -375,7 +375,6 @@ export function WorkspaceShell(props: {
                   name={activeAgent()?.name ?? ""}
                   loading={!activeConversation()?.loaded && activeConversation()?.loading === true}
                   error={activeConversation()?.loadError ?? null}
-                  onRetry={retryConversationLoad}
                 />
               </Show>
               <Show when={scope.loaded() && scope.connection.panelsFailed}>
@@ -436,7 +435,7 @@ export function WorkspaceShell(props: {
             <Show when={activeDirectMember()}>{(member) => <WorkspaceDirectConversation member={member()} />}</Show>
           </Show>
           <Show when={agentChatOpen() && !chatHeld()}>
-            <WorkspaceConversation account={props.account} />
+            <WorkspaceConversation account={props.account} onRetryHistory={retryConversationLoad} />
           </Show>
           <Show when={middlePane() === "routines"}>
             <WorkspaceRoutineFlows />

@@ -1,7 +1,7 @@
 # `src/renderer`
 
-The UI stack sits on prerelease channels your training data does not cover: `solid-js@2.0.0-rc.18`
-with `@solidjs/signals` and `@solidjs/web` at the same RC, `@kobalte/core@2.0.0-alpha.0` (patched
+The UI stack sits on releases your training data does not cover: `solid-js@2.0.0` (stable)
+with `@solidjs/signals` and `@solidjs/web` at the same version, `@kobalte/core@2.0.0-alpha.0` (patched
 here), plus patched `lucide-solid` and `solid-sonner`. Read props in the compute function of a
 `createEffect`, not in its callback. The compiler makes a conditional prop (`a() && b`, `x.y ? a : b`)
 a getter that creates a memo, and a memo created in an effect callback throws
@@ -28,8 +28,7 @@ skills for the component patterns, not the imports.
 - `bun run storybook` verifies isolated components. CI builds it; do not run `build-storybook`.
 - `bun run check:ui` is the design-system guard for this directory: shared primitives over native
   controls, Kobalte and Lucide only inside `@openbot/ui`, and palette tokens instead of colour,
-  size, radius and transition literals. The pre-commit hook runs it on each commit that stages
-  code, so do not run it by hand — its budgets only ever go down. All of them sit at zero.
+  size, radius and transition literals. CI runs this check. Its budgets only go down. All of them sit at zero.
 - Nothing here imports `src/main`, `src/backend` or `src/preload`. `biome.json` rejects it by path,
   so reaching past the IPC contract fails `bun run lint` rather than review.
 - Never verify UI with `dist/`, a packaged `.app`, a production build, or an ad-hoc preview — those

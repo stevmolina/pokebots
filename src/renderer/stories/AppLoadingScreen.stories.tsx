@@ -50,7 +50,7 @@ export const Seeded: StoryObj<{ seed: number }> = {
 
 /** The history of an agent loads: the lilac plush watches its balls. */
 export const HistoryLoading: Story = {
-  render: () => <ConversationLoadNotice name="Research agent" loading error={null} onRetry={() => {}} />,
+  render: () => <ConversationLoadNotice name="Research agent" loading error={null} />,
 };
 
 export const StartingServer: Story = {
@@ -140,7 +140,7 @@ function CoveredFirstLoad(props: { conversation?: boolean }) {
         onRetry={() => setAttempts((count) => count + 1)}
       />
       <Show when={props.conversation} fallback={<AppLoadingScreen immediate>{content()}</AppLoadingScreen>}>
-        <ConversationLoadNotice name="Chief" loading immediate error={null} onRetry={() => {}}>
+        <ConversationLoadNotice name="Chief" loading immediate error={null}>
           {content()}
         </ConversationLoadNotice>
       </Show>

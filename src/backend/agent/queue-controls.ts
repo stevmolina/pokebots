@@ -335,6 +335,8 @@ export class QueueControls {
               snapshot,
               routineRun:
                 context.delivery.sender.kind === "routine" ? this.#routines.runForDelivery(input.deliveryId) : null,
+              workflowRunSource:
+                context.delivery.sender.kind === "routine" ? this.#routines.workflowRunSource(input.deliveryId) : null,
               wokenWaits: context.delivery.sender.kind === "routine" ? this.#routines.wokenWaits(input.deliveryId) : [],
               routineTimezone:
                 context.delivery.sender.kind === "routine"
@@ -373,7 +375,7 @@ export class QueueControls {
         this.#conversation.isExecutionThread(snapshot.threadId) &&
         !snapshot.messages.some((message) => message.id === input.deliveryId)
       ) {
-        snapshot.messages.push(promptMessage(context, { ...context.delivery, turnId }));
+        snapshot.messages.push({ ...promptMessage(context, { ...context.delivery, turnId }), steered: true });
         this.#mailboxSync.syncDeliveryMessage(snapshot, input.deliveryId);
       }
       this.#mailboxSync.syncMailboxMessages(snapshot);

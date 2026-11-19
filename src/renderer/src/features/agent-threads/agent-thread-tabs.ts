@@ -14,6 +14,7 @@ import {
   readThreadTabs,
   type ThreadTabsByServer,
   takePendingThreadDelete,
+  writeThreadsSeenThrough,
   writeThreadTabs,
 } from "./thread-tabs-storage";
 
@@ -389,6 +390,7 @@ export function createAgentThreadTabs(options: AgentThreadTabsOptions) {
   /** Removes the sessions state of a deleted agent. */
   function forgetAgent(agentId: string): void {
     forgetPendingThreadDeletes(serverId(), agentId);
+    writeThreadsSeenThrough(serverId(), agentId, null);
     setDraft(agentId, false);
     writeTabs(agentId, null);
   }

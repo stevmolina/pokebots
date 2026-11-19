@@ -565,6 +565,7 @@ function ServerSettings() {
   const { setPendingAgentSelection } = useServerSwitch();
   const { agentList, agentStatus } = useAgents();
   const { setupState, saveSetup } = useSetup();
+  const { setSkillsMarketplaceOpen, setPendingPluginSlug, setPendingPluginConnect } = useSettings();
   const {
     providerAdminServerId,
     providerRuntimeStatuses,
@@ -983,6 +984,17 @@ function ServerSettings() {
           sectionQuery={windowPage.serverSettingsQuery()}
           openFirstSectionRequest={windowPage.openFirstServerSectionRequest()}
           onFirstSectionOpened={() => windowPage.setServerSettingsQuery("")}
+          // The Marketplace shows the apps of the active server, so only its settings open it.
+          onOpenMarketplaceApps={
+            server().id === activeServer()?.id
+              ? () => {
+                  windowPage.setServerSettingsQuery("");
+                  setPendingPluginConnect(false);
+                  setPendingPluginSlug(null);
+                  setSkillsMarketplaceOpen(true);
+                }
+              : undefined
+          }
           restoreFocusTarget={serverSettingsRestoreTarget()}
           platform={platform.appInfo()?.platform ?? "darwin"}
           server={server()}

@@ -7,17 +7,13 @@ import { join, resolve } from "node:path";
 import { AGENT_PROVIDERS, isAgentTask, isAgentTasksSnapshot, isConversationSnapshot } from "@openbot/contracts/ipc";
 import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
 import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
-import {
-  TEAM_APP_VERSION_HEADER,
-  TEAM_CAPABILITIES_HEADER,
-  TEAM_PROTOCOL_VERSION_HEADER,
-} from "@openbot/contracts/team-protocol";
+import { TEAM_APP_VERSION_HEADER, TEAM_PROTOCOL_VERSION_HEADER } from "@openbot/contracts/team-protocol";
 import { AGENT_ACCESS_ROUTES } from "@openbot/contracts/team-protocol/agent-access-v1";
 import { AGENT_TASKS_ROUTES } from "@openbot/contracts/team-protocol/agent-tasks-v1";
-import { teamCapabilitiesForProtocol } from "@openbot/contracts/team-protocol/current";
+import { teamCapabilitiesForProtocol, teamCapabilityHeaders } from "@openbot/contracts/team-protocol/current";
 import { teamHttpCodec } from "@openbot/contracts/team-protocol/http-codecs";
 import { decodeTeamProtocolV2Json, type TeamProtocolV2Json } from "@openbot/contracts/team-protocol/v2";
-import { TEAM_PROTOCOL_V9 } from "@openbot/contracts/team-protocol/v9";
+import { TEAM_PROTOCOL_V10 } from "@openbot/contracts/team-protocol/v10";
 import { sourceText } from "@openbot/i18n/source";
 import { plugin } from "bun";
 import { Effect } from "effect";
@@ -117,6 +113,7 @@ const teamBrowser: TeamApiBrowser = {
   stopTeach: () => [],
   releaseUserControl: () => {},
   releaseUserControlHeldBy: () => {},
+  releaseUserControlRefused: () => {},
   close: unused,
   capturePreview: unused,
   setVisible: unused,
@@ -413,9 +410,9 @@ async function call(
   const response = await fetch(`http://127.0.0.1:${port}${path}`, {
     method: body === undefined ? "GET" : "POST",
     headers: {
-      [TEAM_PROTOCOL_VERSION_HEADER]: String(TEAM_PROTOCOL_V9),
+      [TEAM_PROTOCOL_VERSION_HEADER]: String(TEAM_PROTOCOL_V10),
       [TEAM_APP_VERSION_HEADER]: HOST_VERSION,
-      [TEAM_CAPABILITIES_HEADER]: teamCapabilitiesForProtocol(TEAM_PROTOCOL_V9).join(","),
+      ...teamCapabilityHeaders(TEAM_PROTOCOL_V10, teamCapabilitiesForProtocol(TEAM_PROTOCOL_V10)),
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
       "Content-Type": "application/json",
     },
@@ -513,7 +510,7 @@ try {
     const path = TEAM_API_ROUTES.agent.conversation(agentId);
     const snapshot = taskId
       ? await call(AGENT_TASKS_ROUTES.read, 200, token, { agentId, taskId })
-      : teamHttpCodec(TEAM_PROTOCOL_V9).decodeResponse("GET", path, 200, await call(path, 200, token));
+      : teamHttpCodec(TEAM_PROTOCOL_V10).decodeResponse("GET", path, 200, await call(path, 200, token));
     assert.ok(isConversationSnapshot(snapshot), JSON.stringify(snapshot));
     return snapshot;
   };

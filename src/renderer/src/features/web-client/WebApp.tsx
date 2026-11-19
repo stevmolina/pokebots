@@ -104,7 +104,11 @@ function writeSignedInHint(signedIn: boolean): void {
 }
 
 /** A sign-in refusal that the login form already shows. */
-class SignInIssueShown extends Error {}
+class SignInIssueShown extends Error {
+  constructor(readonly code: string) {
+    super();
+  }
+}
 
 /** The browser has no account session. The sign-in screen is the answer, not a service outage. */
 class SessionSignedOut extends Error {}
@@ -115,6 +119,19 @@ class CompanySignInRequired extends Error {
     super();
   }
 }
+
+/** Longer than the time that the account service gives an email send, as on desktop. */
+const EMAIL_START_TIMEOUT_MS = 35_000;
+
+/** The life of a sign-in code. After it, the account service has no send to answer for. */
+const EMAIL_START_KEY_LIFE_MS = 10 * 60_000;
+
+/** After these answers the email can still arrive, so the next request asks about the same send. */
+const UNCERTAIN_EMAIL_DELIVERY = new Set([
+  "email_delivery_pending",
+  "email_delivery_timeout",
+  "email_delivery_unknown",
+]);
 
 /**
  * The error code of a company sign-in that came back without a session, from
@@ -346,13 +363,21 @@ function WebAppContent(props: { createRuntime?: WebRuntimeFactory }) {
       | { email: string }
       | { challengeId: string | null; code: string; firstTouch?: FirstTouch }
       | Record<string, never>,
+    send?: { idempotencyKey: string; signal: AbortSignal },
   ) {
     const response = await accountFetch(`/api/browser/${path}`, {
       method: body ? "POST" : "GET",
       credentials: "same-origin",
       cache: "no-store",
-      headers: body ? { "Content-Type": "application/json", "X-OpenBot-Browser": "1" } : {},
+      headers: body
+        ? {
+            "Content-Type": "application/json",
+            "X-OpenBot-Browser": "1",
+            ...(send ? { "Idempotency-Key": send.idempotencyKey } : {}),
+          }
+        : {},
       ...(body ? { body: JSON.stringify(body) } : {}),
+      ...(send ? { signal: send.signal } : {}),
     });
     const value = await response.json();
     if (!response.ok) {
@@ -379,7 +404,7 @@ function WebAppContent(props: { createRuntime?: WebRuntimeFactory }) {
         setState((draft) => {
           draft.login = draft.login.status === "code_sent" ? { ...draft.login, issue } : { status: "error", issue };
         });
-        throw new SignInIssueShown();
+        throw new SignInIssueShown(issue.code);
       }
       if (response.status === 401 && path === "session") throw new SessionSignedOut();
       throw new Error(
@@ -479,6 +504,11 @@ function WebAppContent(props: { createRuntime?: WebRuntimeFactory }) {
         });
     }
   }
+  /**
+   * The send whose result is not known yet. A request for the same email uses its key again, so the
+   * account service answers for that send and does not send a second code.
+   */
+  let emailStart: { email: string; idempotencyKey: string; startedAt: number } | null = null;
   async function start(email: string) {
     if (Date.now() < state.resendAt) throw new Error(text.t("webClient.login.wait"));
     // A request for a code answers the analytics box and accepts the Terms of Service.
@@ -489,10 +519,43 @@ function WebAppContent(props: { createRuntime?: WebRuntimeFactory }) {
     }
     // The user waits for the code email, so the workspace code loads now, before it is needed.
     void loadWorkspace().catch(() => undefined);
-    const value = await signInRequest("email/start", { email }).catch((error: unknown) => {
-      if (error instanceof CompanySignInRequired) return error;
-      throw error;
-    });
+    const attempt =
+      emailStart?.email === email && Date.now() - emailStart.startedAt < EMAIL_START_KEY_LIFE_MS
+        ? emailStart
+        : { email, idempotencyKey: crypto.randomUUID(), startedAt: Date.now() };
+    emailStart = attempt;
+    // Without a time limit, a request that gets no answer keeps the form on "Sending code…".
+    const limit = new AbortController();
+    let timedOut = false;
+    // A refusal ends this send. An unknown result keeps its key for the next request.
+    let uncertain = false;
+    const timer = window.setTimeout(() => {
+      timedOut = true;
+      limit.abort();
+    }, EMAIL_START_TIMEOUT_MS);
+    const value = await request(
+      "email/start",
+      { email },
+      { idempotencyKey: attempt.idempotencyKey, signal: limit.signal },
+    )
+      .catch((error: unknown) => {
+        if (error instanceof CompanySignInRequired) return error;
+        if (error instanceof SignInIssueShown) {
+          uncertain = UNCERTAIN_EMAIL_DELIVERY.has(error.code);
+          return null;
+        }
+        if (!timedOut) throw error;
+        uncertain = true;
+        setState((draft) => {
+          draft.login = {
+            status: "error",
+            issue: { code: "email_delivery_timeout", message: sourceText("error.auth.deliveryTimeout") },
+          };
+        });
+        return null;
+      })
+      .finally(() => window.clearTimeout(timer));
+    if (emailStart === attempt && !uncertain) emailStart = null;
     if (value instanceof CompanySignInRequired) return openCompanySignIn(email, value.provider);
     if (value === null) return;
     if (!isDynamicRecord(value) || !isString(value.challengeId) || typeof value.resendAt !== "number")

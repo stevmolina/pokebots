@@ -3,7 +3,8 @@
 // answer before then, the card must stay open, and the next call for the same tab must wait on the
 // same card. Cursor asks for no progress and stops each call after 60 s (#10577), so a Vault request
 // card must also answer its call first, stay open, and send only the saved item's name as the late
-// answer. The browser host is a stub: no page, provider or account is used; the Vault is a temporary file.
+// answer. A secure fill that fails gives the page to the user and tells the agent only a fixed reason
+// (#10536). The browser host is a stub: no page, provider or account is used; the Vault is a temporary file.
 // `bun scripts/browser-takeover-deadline-e2e.ts`. Writes .openbot-build/browser-takeover-deadline-e2e/report.json.
 import assert from "node:assert/strict";
 import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
@@ -15,6 +16,7 @@ import { Effect } from "effect";
 import { AttentionRegistry } from "../src/backend/agent/attention-registry";
 import { vaultRequestFormSpec } from "../src/backend/agent/prompts";
 import { CodexAppServerClient } from "../src/backend/app-server-client";
+import { browserFailure } from "../src/backend/browser-effects";
 import type { PreparedBrowserSecret } from "../src/backend/browser-host";
 import { runCauseEffect } from "../src/backend/effect-boundary";
 import type { RequestId } from "../src/backend/protocol";
@@ -34,6 +36,7 @@ const DEADLINE_MS = 50;
 interface AgentAnswer {
   status?: string;
   next?: string;
+  secureInput?: string;
 }
 
 /** Records what OpenBot answers to the agent. The process never starts. */
@@ -79,6 +82,8 @@ const tabs: BrowserTab[] = [
 const events: AgentEvent[] = [];
 const browserLog: string[] = [];
 const submitted: string[] = [];
+/** When set, the fill fails with this error, as a page that the fill cannot complete. */
+let fillFailure: Error | undefined;
 
 function preparedSecret(): PreparedBrowserSecret {
   return {
@@ -87,10 +92,12 @@ function preparedSecret(): PreparedBrowserSecret {
     vaultFillable: false,
     withCode: false,
     submit: (secret) =>
-      Effect.sync(() => {
-        submitted.push(secret);
-        return "submitted" as const;
-      }),
+      fillFailure
+        ? Effect.fail(browserFailure(fillFailure))
+        : Effect.sync(() => {
+            submitted.push(secret);
+            return "submitted" as const;
+          }),
     cancel: () => {
       browserLog.push("secret-cancelled");
     },
@@ -390,6 +397,157 @@ try {
       await rm(root, { recursive: true, force: true });
     }
   });
+
+  /** Submits the card while the fill fails, then the user selects Done; returns the agent's answer. */
+  const failedFill = async (turnId: string, failure: Error) => {
+    fillFailure = failure;
+    const shown = count("browser-takeover-requested");
+    const pending = call("submit_secret", turnId);
+    await cardShown(shown);
+    const requestId = openCards()[0]?.requestId;
+    assert(requestId !== undefined);
+    await runCauseEffect(
+      registry.respondToBrowserSecret({ requestId, agentId: AGENT, decision: "submit", secret: SECRET }),
+    );
+    fillFailure = undefined;
+    assert.equal(count("browser-takeover-requested"), shown + 2, "the page did not go to the user");
+    assert.equal(openCards()[0]?.secret?.requiresReload, true, "the card does not say that the fill stopped");
+    await runCauseEffect(registry.respondToBrowserTakeover({ requestId, decision: "complete" }));
+    const answer = answerOf(await pending);
+    assert.equal(answer.status, "completed");
+    assert(!JSON.stringify(answer).includes(SECRET), "the agent got the secret");
+    return answer;
+  };
+
+  await step("a failed fill gives the page to the user and tells the agent the fixed reason", async () => {
+    const answer = await failedFill(
+      "turn-9",
+      new Error(
+        "Secure authentication could not be completed. Authentication submit button is not ready. Take over to check the page.",
+      ),
+    );
+    assert.equal(
+      answer.secureInput,
+      "OpenBot could not finish entering the value. Authentication submit button is not ready. The page went to the user.",
+    );
+    return answer;
+  });
+
+  await step("a failed fill with another error tells the agent no page text", async () => {
+    const answer = await failedFill("turn-10", new Error(`ERR_ABORTED loading https://example.test/?code=${SECRET}`));
+    assert.equal(answer.secureInput, "OpenBot could not finish entering the value. The page went to the user.");
+    return answer;
+  });
+
+  await step(
+    "a sign-in of another username than the only saved login gets the card, not that login (#12070)",
+    async () => {
+      const vaultFills: string[] = [];
+      const vaultEvents: AgentEvent[] = [];
+      let savedUsername: string | null = "a@example.test";
+      const vaultRegistry = new AttentionRegistry({
+        conversation: {
+          agentForThread: (threadId) => (threadId === THREAD ? AGENT : undefined),
+          publicThreadId: (_agentId, threadId) => threadId,
+          ensureSnapshot: () => snapshot,
+          emitConversation: () => {
+            snapshot.revision += 1;
+          },
+        },
+        browser: {
+          listTabs: () => tabs,
+          prepareSecret: () =>
+            Effect.sync(() => ({
+              ...preparedSecret(),
+              vaultFillable: true,
+              submit: (secret: string) =>
+                Effect.sync(() => {
+                  vaultFills.push(secret);
+                  return "submitted" as const;
+                }),
+            })),
+          beginTakeover: () => Effect.void,
+          endTakeover: () => {},
+        },
+        hostedSites: { prepareApproval: () => Effect.succeed(null), resolveApproval: () => Effect.void },
+        routines: { markNeedsAttention: () => {}, markRunningForTurn: () => {} },
+        emit: (event) => vaultEvents.push(event),
+        emitError: () => {},
+        emitRuntimeSnapshot: () => {},
+        lateAnswerTarget: () => ({}),
+        passwordVault: {
+          connected: () => true,
+          loginsFor: () =>
+            Effect.succeed([
+              { id: "openbot:a", title: "Account A", username: savedUsername, hasOneTimePassword: false },
+            ]),
+          secretFor: (loginId) => Effect.succeed(loginId === "openbot:a" ? VAULT_SECRET : null),
+        },
+      });
+      const cards = () => vaultEvents.filter((event) => event.type === "browser-takeover-requested").length;
+      const signIn = (username?: string) => {
+        const id = nextRequest++;
+        return runCauseEffect(
+          vaultRegistry.surfaceBrowserTakeover(client, {
+            id,
+            method: "item/tool/call",
+            params: {
+              threadId: THREAD,
+              turnId: `turn-vault-${id}`,
+              callId: `call-${id}`,
+              namespace: "openbot_browser",
+              tool: "submit_secret",
+              arguments: {
+                tabId: TAB,
+                method: "password",
+                targets: [{ kind: "css", selector: "#password" }],
+                submission: "click",
+                submitTarget: { kind: "css", selector: "#submit" },
+                ...(username === undefined ? {} : { username }),
+              },
+            },
+          }),
+        );
+      };
+      // Account B: the card opens, and the password of account A does not go in.
+      const shown = cards();
+      const other = signIn("b@example.test");
+      let answered = false;
+      void other.finally(() => {
+        answered = true;
+      });
+      while (cards() === shown && !answered) await new Promise((done) => setImmediate(done));
+      assert.deepEqual(vaultFills, [], "the password of the other account was filled");
+      const card = vaultRegistry.runtimeAttention().pendingBrowserTakeovers[0];
+      assert(card?.secret, "no password card for the other account");
+      assert.equal(card.vaultSkip, undefined, "the card names a vault reason for another account");
+      await runCauseEffect(
+        vaultRegistry.respondToBrowserSecret({
+          requestId: card.requestId,
+          agentId: AGENT,
+          decision: "submit",
+          secret: SECRET,
+        }),
+      );
+      const typed = answerOf(await other);
+      assert.equal(typed.status, "completed");
+      assert.deepEqual(vaultFills, [SECRET], "the card did not fill what the user typed");
+      // The same account, written in another case, and a call with no username: the saved login goes in.
+      const same = answerOf(await signIn(" A@Example.test"));
+      const unnamed = answerOf(await signIn());
+      assert.equal(same.status, "completed");
+      assert.equal(unnamed.status, "completed");
+      assert.deepEqual(vaultFills, [SECRET, VAULT_SECRET, VAULT_SECRET], "the saved login was not filled");
+      assert.equal(cards(), shown + 1, "a card opened for the saved account");
+      // A login saved with no username names no account, so it is filled as before.
+      savedUsername = null;
+      const noSavedUsername = answerOf(await signIn("b@example.test"));
+      assert.equal(noSavedUsername.status, "completed");
+      assert.equal(vaultFills.at(-1), VAULT_SECRET, "the login with no username was not filled");
+      assert.equal(cards(), shown + 1, "a card opened for the login with no username");
+      return { typed, same, unnamed, noSavedUsername };
+    },
+  );
 
   await writeFile(resolve(OUT, "report.json"), `${JSON.stringify({ ok: true, steps, browserLog }, null, 2)}\n`);
   process.stdout.write(`browser-takeover-deadline-e2e: ${steps.length} steps passed\n`);

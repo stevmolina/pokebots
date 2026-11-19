@@ -96,6 +96,7 @@ export const messages = {
     "Kein Mitglied dieses Kanals kann auf Anfrage komprimieren. Mitglieder, die es unterstützen, komprimieren ihren Kontext automatisch, wenn er fast voll ist.",
   "error.backend.channelArchived":
     "Stelle diesen Kanal wieder her, bevor du Nachrichten sendest oder Aufgaben änderst.",
+  "error.backend.channelArchiveRunning": "Stoppe die laufende Arbeit in diesem Kanal und lösche ihn dann.",
   "error.backend.channelReferenceUnavailable": "Die referenzierte Kanalnachricht ist nicht verfügbar.",
   "error.backend.channelTaskNotFound": "Kanalaufgabe nicht gefunden.",
   "error.backend.channelTaskComplete": "Diese Aufgabe ist bereits abgeschlossen.",
@@ -131,6 +132,8 @@ export const messages = {
   "error.backend.memoryGone": "Diese Erinnerung existiert nicht mehr.",
   "error.backend.routineGone": "Diese Routine existiert nicht mehr.",
   "error.backend.routineRunGone": "Dieser Routinelauf existiert nicht mehr.",
+  "error.backend.routineRunFailedNoReason":
+    "Der Lauf wurde mit einem Fehler beendet, aber ohne Grund. Öffne den Lauf, um zu sehen, was der Agent getan hat.",
   "error.backend.turnNotStarted": "Der Anbieter hat diesen Durchlauf nicht gestartet.",
   "error.backend.routineResultConnectionOff":
     "Diese Messaging-Verbindung ist aus oder entfernt. Wähle einen anderen Ort.",
@@ -276,6 +279,8 @@ export const messages = {
     "Dieser Agent kann nur eine begrenzte Anzahl von MCP-Servern nutzen. Um diesen Server zu nutzen, schalte einen MCP-Server aus, den der Agent nicht braucht.",
   "error.backend.mcpRegistrationRefused":
     "Der Anmeldeserver akzeptiert OpenBot noch nicht als Anwendung. Dein Konto ist nicht die Ursache. Verwende eine andere Verbindungsmethode, etwa einen lokalen MCP-Server.",
+  "error.backend.mcpRegistrationUnavailable":
+    "Der Anmeldeserver kann OpenBot nicht als Anwendung registrieren. Dein Konto ist nicht die Ursache. Speichere zum Verbinden diesen Server unter Marketplace, Apps und füge ihm dann eine Anmelde-App hinzu.",
   "error.backend.mcpSignInAbandonedGeneric": "Die Anmeldung wurde abgebrochen.",
   "error.backend.mcpSignInForgotten": "Die MCP-Anmeldung wurde während ihrer Ausführung verworfen.",
   "error.backend.mcpSignInAbandoned": "Die MCP-Anmeldung wurde abgebrochen.",
@@ -289,6 +294,7 @@ export const messages = {
     "Dieser Server verlangt eine Anmeldung, und OpenBot meldet sich nur über https an. Ändere die URL in {url}.",
   "error.backend.mcpSignInCancelled": "Die Anmeldung wurde abgebrochen.",
   "error.backend.mcpSignInTimedOut": "Die Anmeldung wurde im Browser nicht abgeschlossen.",
+  "error.backend.mcpSignInRefused": "Die Anmeldeseite hat den Zugriff abgelehnt. Melde dich erneut an.",
   "error.backend.mcpSignInResponseTimedOut": "Die Antwort auf die Anmeldung kam nicht rechtzeitig an.",
   "error.backend.mcpSignInMetadataUnreadable":
     "OpenBot konnte die Anmeldeinformationen dieses Servers nicht lesen. Prüfe die Serveradresse und versuche es erneut.",
@@ -296,9 +302,12 @@ export const messages = {
     "Der Anmeldeserver hat eine Antwort gesendet, die OpenBot nicht lesen kann. Wenn der Dienst dir einen API-Schlüssel oder ein Token gibt, füge ihn in den Einstellungen dieses Servers hinzu und teste die Verbindung erneut.",
   "error.backend.mcpServerExited":
     "Der Server wurde beendet, bevor er geantwortet hat. Führe den Befehl in einem Terminal aus, um seinen Fehler zu sehen.",
+  "error.backend.mcpServerExitedWithOutput": "Der Server wurde beendet, bevor er geantwortet hat. Er schrieb: {detail}",
   "error.backend.mcpServerFailedToStart": "Der Server ist nicht gestartet: {reason}",
   "error.backend.mcpServerStartAbandoned":
     "{provider} hat nicht mehr gewartet, bevor der Server gestartet ist. Seine Agenten erhalten die Tools dieses Servers daher nicht.",
+  "error.backend.mcpServerStoppedDuringCall":
+    "Der MCP-Server hat angehalten, bevor er auf diesen Aufruf geantwortet hat.",
   "error.backend.mcpToolSchemaRefused":
     "Sein Tool {tool} hat ein Eingabeformat, das dieser Anbieter nicht lesen kann. Agenten mit anderen Anbietern erhalten den Server weiterhin.",
   "error.backend.mcpServerSignInForProvider":

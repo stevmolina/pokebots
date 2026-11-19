@@ -19,7 +19,8 @@
    little shorter than a one-line bubble. As in a Grok Bot group chat, it is 24px. */
 .message-entry-with-author,
 .message-author-gutter,
-.chat-visual-with-author {
+.chat-visual-with-author,
+.question-prompt-with-author {
   --message-author-face-size: var(--openbot-space-6);
   --message-author-column: calc(var(--message-author-face-size) + var(--openbot-space-1));
 }
@@ -344,7 +345,9 @@
   --message-bubble-base: var(--openbot-bg-surface-raised);
 }
 
-.message-entry-agent .ui-bubble-variant-muted.message-bubble-colored {
+/* The agent dock draws an agent's bubble with no message row around it. */
+.message-entry-agent .ui-bubble-variant-muted.message-bubble-colored,
+.agent-dock-bubble.ui-bubble-variant-muted.message-bubble-colored {
   --message-bubble-base: var(--openbot-bg-surface);
 }
 
@@ -364,7 +367,8 @@
  * border.
  */
 .message-entry-user .ui-bubble.message-bubble-colored > .ui-bubble-content,
-.message-entry-agent .ui-bubble-variant-muted.message-bubble-colored > .ui-bubble-content {
+.message-entry-agent .ui-bubble-variant-muted.message-bubble-colored > .ui-bubble-content,
+.agent-dock-bubble.ui-bubble-variant-muted.message-bubble-colored > .ui-bubble-content {
   --message-surface-lift: 5%;
   --openbot-bg-canvas: color-mix(
     in srgb,
@@ -497,7 +501,8 @@
  */
 :is(
   .message-entry-user .ui-bubble.message-bubble-colored > .ui-bubble-content,
-  .message-entry-agent .ui-bubble-variant-muted.message-bubble-colored > .ui-bubble-content
+  .message-entry-agent .ui-bubble-variant-muted.message-bubble-colored > .ui-bubble-content,
+  .agent-dock-bubble.ui-bubble-variant-muted.message-bubble-colored > .ui-bubble-content
 ) :is(.attachment-file-visual, .attachment-reference-visual):not(.message-attachment[data-media] *) {
   background: linear-gradient(var(--file-reference-soft) 0 0), var(--message-plain-control);
 }
@@ -1394,6 +1399,18 @@ button.chat-action-target:active,
   color: var(--openbot-text-primary);
 }
 
+/* Why a routine run failed, under its centred marker, in the marker's muted text. A provider error
+   has no length limit, so the chat shows 3 lines; the title and the run history have all of it. */
+.chat-action-marker-reason {
+  display: -webkit-box;
+  max-width: 100%;
+  margin: 0;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
 /* The open text of an agent message reads as a chat message under its centred marker. */
 .chat-action-message-text {
   align-self: stretch;
@@ -1570,9 +1587,7 @@ button.chat-action-target:active,
 }
 
 .message-entry-agent
-  .ui-bubble-variant-ghost:has(
-    :is(.image-generation, .media-generation, .image-gallery, .message-code-block, .message-data-table-scroll)
-  )
+  .ui-bubble-variant-ghost:has(:is(.image-generation, .media-generation, .image-gallery))
   > .ui-bubble-content {
   width: 100%;
 }

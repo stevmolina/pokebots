@@ -30,8 +30,11 @@ const SECRET_LABEL = `[A-Za-z0-9_.-]{0,64}(?:password|passwd|passphrase|secret|t
 // words, so they only count inside an `Authorization` header: without that
 // context `Token validation failed` became `[redacted] failed` and
 // `Basic authentication unavailable` lost its subject.
+// Inside the header, any scheme word counts: Discord sends `Bot <token>`, and other APIs send
+// `ApiKey`, `OAuth`, `SSWS` or `Negotiate`. With a fixed list, the assignment rule below took only
+// the scheme word and kept the token after it.
 const BEARER_SECRET = /Bearer\s+[A-Za-z0-9._~+/=-]{8,}/giu;
-const AUTH_HEADER_SECRET = /(authorization["']?\s*[=:]+\s*)(?:Bearer|Basic|Digest|Token)\s+[A-Za-z0-9._~+/=-]{8,}/giu;
+const AUTH_HEADER_SECRET = /(authorization["']?\s*[=:]+\s*)[A-Za-z][A-Za-z0-9_-]{0,31}\s+[A-Za-z0-9._~+/=-]{8,}/giu;
 // Quotes are optional on both sides and around the separator, so a serialized
 // payload (`{"apiKey":"…"}`) redacts the same as a shell line (`apiKey=…`).
 // A quoted value is consumed whole; an unquoted one stops at the first
@@ -50,9 +53,15 @@ const CREDENTIAL_ASSIGNMENT = new RegExp(
 // part of a diagnostic that names what failed.
 // `npm_`, `hf_` and `gsk_` also start ordinary names such as `npm_config_user_agent`, so their
 // value must be one long alphanumeric run, as the vendors issue them. `ASIA` is a word, so only the
-// exact shape of an AWS key ID counts.
+// exact shape of an AWS key ID counts. `ya29.` is a Google OAuth access token and `GOCSPX-` a Google
+// OAuth client secret. A Telegram bot token is the bot ID, a colon and 35 characters, also after
+// `bot` in an API URL path.
 const KNOWN_SECRET_PREFIXES =
-  /(?<![A-Za-z0-9_-])(?:(?:sk-ant|sk-|sk_|xai-|ghp_|gho_|ghu_|ghr_|ghs_|github_pat_|AKIA|xox[abeoprs]-|xapp-|glpat-|rk_live_|cmk_|rk_test_)[A-Za-z0-9._-]{8,}|whsec_[A-Za-z0-9+/=._-]{8,}|AIza[A-Za-z0-9_-]{30,}|(?:npm|hf|gsk)_[A-Za-z0-9]{30,}|ASIA[A-Z0-9]{16}(?![A-Za-z0-9]))/g;
+  /(?<![A-Za-z0-9_-])(?:(?:sk-ant|sk-|sk_|xai-|ghp_|gho_|ghu_|ghr_|ghs_|github_pat_|AKIA|xox[abeoprs]-|xapp-|glpat-|rk_live_|cmk_|rk_test_)[A-Za-z0-9._-]{8,}|whsec_[A-Za-z0-9+/=._-]{8,}|AIza[A-Za-z0-9_-]{30,}|(?:npm|hf|gsk)_[A-Za-z0-9]{30,}|ASIA[A-Z0-9]{16}(?![A-Za-z0-9])|ya29\.[A-Za-z0-9_-]{20,}|GOCSPX-[A-Za-z0-9_-]{20,}|(?:bot)?\d{6,12}:[A-Za-z0-9_-]{35}(?![A-Za-z0-9_-]))/g;
+// An incoming webhook address is itself the credential: whoever has it can post to the channel. The
+// service and the path prefix stay, so the log still names where the post went.
+const WEBHOOK_URL_SECRET =
+  /(https:\/\/(?:hooks\.slack\.com\/(?:services|workflows|triggers)\/|(?:(?:canary|ptb)\.)?discord(?:app)?\.com\/api\/(?:v\d+\/)?webhooks\/))(?!\[redacted\])[^\s"'<>?#)\]]+/giu;
 // A JSON Web Token: a header and a payload that both start as a JSON object, then the signature.
 const JSON_WEB_TOKEN = /(?<![A-Za-z0-9_-])eyJ[A-Za-z0-9_-]{8,}\.eyJ[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]*/g;
 // A PEM private key, with its body. A key that the text cuts off before its END line is removed to
@@ -74,6 +83,11 @@ const COOKIE_HEADER =
 // or a template is not taken for a secret. The search for the digit is bounded, so a line of
 // repeated `?key=` with no digit does not scan the rest of the line once each.
 const QUERY_SECRET = /([?&](?:key|code|ticket|sig)=)(?!\[redacted\])(?=[^&#\s"'<>)\]]{0,256}\d)[^&#\s"'<>)\]]{8,}/giu;
+// The password of a URL such as `postgres://admin:password@db.example.com`. The user name and the
+// host stay. The email rule hides it only as a part of an address, and `redactSecrets` and
+// `redactPostText` do not have that rule. Each run is bounded and cannot hold an `@`, so a long
+// line cannot backtrack far.
+const URL_PASSWORD = /(\b[a-z][a-z0-9+.-]{0,31}:\/\/[^\s:/?#@[\]"'<>]{0,256}:)[^\s/?#@"'<>]{1,256}(?=@)/giu;
 // Bounded for the same reason as the label above, and more sharply: with `+`
 // on the local part, every character of a long payload consumed the rest of
 // the run looking for an `@` and then backtracked over all of it.
@@ -180,11 +194,21 @@ export function redactText(value: string): string {
 /**
  * `redactText` without the email rule, for text that goes back to the agent that the user gave it
  * to: its memories and its own chat history. An address there is user data that the agent needs to
- * do its task, not a secret, and the provider already received it with the original message. Logs,
- * diagnostics, and text sent to other people or services, such as chat apps, keep `redactText`.
+ * do its task, not a secret, and the provider already received it with the original message. Logs
+ * and diagnostics keep `redactText`, and a chat app post uses `redactPostText`.
  */
 export function redactSecrets(value: string): string {
   return redact(value, false, true);
+}
+
+/**
+ * `redactText` without the email rule, for what an agent posts in a chat app, such as its WhatsApp
+ * answer. The agent wrote the address for the people in that chat, often because the user asked for
+ * it, so it stays. The post leaves this computer, so the rest of a line past the scan bound is still
+ * dropped, as `redactText` does.
+ */
+export function redactPostText(value: string): string {
+  return redact(value, false);
 }
 
 function redact(value: string, emails: boolean, keepUnscanned = false): string {
@@ -252,6 +276,8 @@ function applyTextRules(value: string, emails: boolean): string {
     // After the assignment rule: its value runs over `&`, and a query value redacted first would
     // leave a `]` behind it.
     .replace(QUERY_SECRET, "$1[redacted]")
+    .replace(URL_PASSWORD, "$1[redacted]")
+    .replace(WEBHOOK_URL_SECRET, "$1[redacted]")
     .replace(KNOWN_SECRET_PREFIXES, "[redacted]")
     .replace(JSON_WEB_TOKEN, "[redacted]");
   return emails ? redacted.replace(EMAIL, "[redacted-email]") : redacted;
@@ -533,13 +559,18 @@ function convertValue<T>(value: T, seen: Set<object>, emails: boolean, depth = 0
     } catch {
       return UNSERIALIZABLE;
     }
+    // An environment list such as `[{ name: "OPENAI_API_KEY", value: "…" }]`, the shape ACP and MCP
+    // send, keeps the label in one field and the secret in another. The key rule saw only `value`.
+    const secretPair = entries.some(
+      ([key, entry]) => (key === "name" || key === "key") && typeof entry === "string" && SECRET_KEY.test(entry),
+    );
     return Object.fromEntries(
       entries.map(([key, entry]): [string, LogValue] => [
         // A key is as caller-controlled as a value: a payload keyed by an
         // email address, or by the header that failed, leaks through a rule
         // that only looks at values.
         redact(key, emails),
-        convertEntry(key, entry, seen, emails, depth),
+        secretPair && key === "value" ? "[redacted]" : convertEntry(key, entry, seen, emails, depth),
       ]),
     );
   }

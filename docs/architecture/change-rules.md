@@ -68,7 +68,7 @@ safe to replay. Keep domain retry and recovery rules at their existing owners.
    domains it renders and nothing else; `WorkspaceShell` reads only what decides *which* pane
    renders, and passes a value down as a prop when two of them would otherwise derive it twice. A
    component that assembles another one's props is how the god controller grew back last time.
-9. Do not add temporary compatibility paths without a removal condition and a test for that condition. Released Team API protocol adapters are permanent by default and follow the policy below.
+9. Do not add temporary compatibility paths without a removal condition and a test for that condition. Team API protocol adapters stay while a release in the support window speaks their protocol (root `AGENTS.md`, `packages/contracts/AGENTS.md`).
 10. Log through `@openbot/logging` (`ts-log` Logger), never bare `console.*` - Biome's `noConsole`
     enforces this in `src`, `scripts` and `packages`. The remote-desktop build recipe scripts that the
     `noConsole` override in `biome.json` excludes are exempt. The `Require a recipe version bump` step
@@ -119,8 +119,8 @@ safe to replay. Keep domain retry and recovery rules at their existing owners.
     snapshot document only through `describeTarget`.
 
 SQLite migration history starts at the frozen version 8 compatibility baseline. Keep the baseline
-schema unchanged, append every later migration in numeric order, and update the separate latest
-schema used for new databases. Never remove or rewrite a migration that may have shipped.
+schema unchanged and append every later migration in numeric order. A new database runs the same
+migrations from the baseline. Never remove or rewrite a migration that may have shipped.
 
 At startup, chat recovery reads all saved provider sessions for each thread, including inactive
 sessions from an upgrade or a provider change. It uses each session's provider and merges the
@@ -129,10 +129,8 @@ the saved messages, and can be tried again when the provider connects or the app
 
 ## Required verification
 
-Run the narrowest relevant test and lint the changed files. The pre-commit hook runs `check:staged`,
-`check:ui`, and the typecheck of each project that a staged file affects, and CI runs the remaining checks. See [AGENTS.md, Checks](../../AGENTS.md#checks)
-for the local rules, and [check design notes](../development-checks.md#check-coverage) for what each CI
-job covers.
+Run the narrowest relevant test and lint the changed files. See [AGENTS.md, Checks](../../AGENTS.md#checks)
+for the local rules and [check design notes](../development-checks.md#check-coverage) for CI coverage.
 
 The Storybook CI job builds all stories with `OPENBOT_STORYBOOK_CHECK=true`. This skips Solid's
 automatic prop documentation analysis. The job checks compilation and does not publish its output.

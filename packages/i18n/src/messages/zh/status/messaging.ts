@@ -5,7 +5,7 @@ export const messages = {
   // Text that OpenBot posts in a Slack conversation. Slack users read it. It names no agent: in
   // Slack, every answer comes from OpenBot.
   "status.messaging.working": "正在处理…",
-  "status.messaging.queued": "等待中：OpenBot 正在处理另一个请求，回答会发到这里。",
+  "status.messaging.queued": "等待中：之前的请求尚未完成，回答会发到这里。",
   "status.messaging.busy": "等待中的请求太多，请稍后再试。",
   "status.messaging.failed": "OpenBot 未能完成该请求，详情请见 OpenBot 主机。",
   "status.messaging.noAnswer": "OpenBot 已完成，但没有书面回答。",
@@ -14,6 +14,7 @@ export const messages = {
   "status.messaging.stopped": "已停止。",
   "status.messaging.stop": "停止",
   "status.messaging.approvalTitle": "OpenBot 请求批准以继续。",
+  "status.messaging.approvalTitleTeammate": "团队成员 {agent} 请求批准以继续。",
   "status.messaging.approvalCommand": "运行命令",
   "status.messaging.approvalFileChange": "修改文件",
   "status.messaging.approvalPermissions": "获取更多权限",

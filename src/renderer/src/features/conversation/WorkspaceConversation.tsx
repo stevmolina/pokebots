@@ -36,7 +36,7 @@ import { useAgentThreads } from "../agent-threads/agent-threads-context";
 import { conversationThreads } from "../agent-threads/conversation-threads";
 import { createThreadActivity } from "../agent-threads/thread-activity";
 import { attentionKey } from "../agents/agent-runtime-snapshot";
-import { agentThreadAttention } from "../agents/agent-thread-attention";
+import { agentTakeoverTabIds, agentThreadAttention } from "../agents/agent-thread-attention";
 import { useAgents } from "../agents/agents-context";
 import { agentsPort } from "../agents/agents-port";
 import { withHostAccountUsage } from "../agents/host-provider-accounts";
@@ -61,6 +61,7 @@ import { isReaderAuthor } from "../team/reader-identity";
 import { usePresence } from "../team/team-context";
 import { useUsage } from "../usage/usage-context";
 import { useWindowPage } from "../window/window-page-context";
+import { backgroundWorkKey } from "./background-work-key";
 import { Conversation } from "./Conversation";
 import { useConversation } from "./conversation-context";
 import { useConversationController } from "./conversation-controller-context";
@@ -86,7 +87,7 @@ import { trackUsageLimitShown, usageLimitAskFrom } from "./usage-limit-ask";
  * rather than captured once.
  */
 
-export function WorkspaceConversation(props: { account: () => CentralAuthUser }) {
+export function WorkspaceConversation(props: { account: () => CentralAuthUser; onRetryHistory: () => void }) {
   const scopeIsCurrent = createScopeGuard();
   const serverScope = useServerScope();
   const platform = usePlatform();
@@ -170,6 +171,8 @@ export function WorkspaceConversation(props: { account: () => CentralAuthUser })
     updateQueuedMessage,
     reorderQueue,
     stopActiveTurn,
+    stoppableSubagentTurn,
+    backgroundWork,
     usageLimits,
     usageLimitedModels,
     waitedUsageLimits,
@@ -215,7 +218,7 @@ export function WorkspaceConversation(props: { account: () => CentralAuthUser })
   // active agent's provider and model and cleared on a switch, because a second request would hit
   // the provider's rate-limit endpoint for a card the user may never see.
   const auth = useAuth();
-  const { teamPresence, currentTeamMember } = usePresence();
+  const { teamPresence, readerMemberId } = usePresence();
   const { selectAgent, openAgentThread, openAgentMessage, messageFocusRequest, globalSearchOpen } = useNavigation();
   const channels = useChannels();
   const conversationController = useConversationController();
@@ -241,6 +244,13 @@ export function WorkspaceConversation(props: { account: () => CentralAuthUser })
       usageLimits: usageLimits(),
     }),
   );
+  /** The browser takeovers that wait on the server. */
+  const pendingTakeovers = createMemo(() =>
+    Object.values(pendingPrompts()).flatMap((event) =>
+      event?.type === "browser-takeover-requested" ? [event.request] : [],
+    ),
+  );
+  const agentTakeoverTabs = createMemo(() => agentTakeoverTabIds(agentList(), pendingTakeovers()));
 
   const activeApproval = createMemo(() => {
     const agent = activeAgent();
@@ -426,7 +436,7 @@ export function WorkspaceConversation(props: { account: () => CentralAuthUser })
   const isOwnSender = (senderId: string) => {
     const state = auth.centralAuth();
     return isReaderAuthor(senderId, {
-      memberId: currentTeamMember()?.id ?? null,
+      memberId: readerMemberId(),
       accountUserId: state.status === "signed_in" ? state.user.id : null,
       onOwnComputer: activeServer()?.kind === "local",
     });
@@ -468,9 +478,7 @@ export function WorkspaceConversation(props: { account: () => CentralAuthUser })
       tabs: agentThreads,
       approvals: approvals(),
       prompts: Object.values(pendingPrompts()).filter((event) => event?.type === "prompt"),
-      takeovers: Object.values(pendingPrompts()).flatMap((event) =>
-        event?.type === "browser-takeover-requested" ? [event.request] : [],
-      ),
+      takeovers: pendingTakeovers(),
       newThreadTitle: t("conversation.sessions.new"),
       mainTitle: t("conversation.sessions.main"),
       mainStatus: () => threadActivity.threadStatus(agent.id, MAIN_THREAD_ID),
@@ -634,6 +642,8 @@ export function WorkspaceConversation(props: { account: () => CentralAuthUser })
         firstUnreadMessageId={
           activeAgent() ? (conversations[activeAgent()?.id ?? ""]?.read?.firstUnreadMessageId ?? null) : null
         }
+        historyLoadError={conversations[activeAgent()?.id ?? ""]?.loadError}
+        onRetryHistory={props.onRetryHistory}
         loaded={activeAgent() ? conversations[activeAgent()?.id ?? ""]?.loaded === true : false}
         hasOlder={
           activeServerSupportsCapability("conversation-pagination") && activeAgent()
@@ -654,6 +664,7 @@ export function WorkspaceConversation(props: { account: () => CentralAuthUser })
         responseStyle={responseStyle()}
         presence={teamPresence()}
         currentUserEmail={props.account().email}
+        currentUserChatColor={props.account().chatColor}
         isOwnSender={isOwnSender}
         // The browser and the remote desktop show in the main window only.
         browserEnabled={
@@ -673,9 +684,14 @@ export function WorkspaceConversation(props: { account: () => CentralAuthUser })
         providerFailed={usageLimitsShown() ? providerFailed : undefined}
         browserTakeover={activeBrowserTakeover()}
         activeTurnId={activeAgent() ? activeTurns()[activeAgent()?.id ?? ""] : null}
+        subagentTurnId={stoppableSubagentTurn(activeAgent())}
         activityDetail={activeAgent() ? turnProgress()[activeAgent()?.id ?? ""]?.detail : undefined}
         activityRunning={activeAgent() ? turnProgress()[activeAgent()?.id ?? ""]?.running : undefined}
         activityKind={activeAgent() ? turnProgress()[activeAgent()?.id ?? ""]?.activity : undefined}
+        backgroundWorkSince={(taskId) => {
+          const agentId = activeAgent()?.id;
+          return agentId ? backgroundWork()[backgroundWorkKey(agentId, taskId)] : undefined;
+        }}
         turnStepLines={turnStepLines()}
         skillsMarketplaceOpen={skillsMarketplaceOpen()}
         mcpSettingsOpen={skillsMarketplaceOpen() || pendingAppConnect() !== null}
@@ -692,6 +708,7 @@ export function WorkspaceConversation(props: { account: () => CentralAuthUser })
         messageFocusRequest={messageFocusRequest()}
         onSelectAgent={selectAgent}
         agentWaits={agentWaits()}
+        agentTakeoverTabIds={agentTakeoverTabs()}
         onUpdateAgent={updateConversationAgent}
         onSetAgentAvatar={setAgentAvatar}
         onSendMessage={sendMessage}

@@ -77,8 +77,9 @@ export interface AppServerRequest {
    */
   detachAfterMs?: number;
   /**
-   * In process only, never on the wire. A Codex subagent sent it, and OpenBot runs it in the chat and
-   * turn of the parent agent. Its call still waits in the subagent's own turn (#9727).
+   * In process only, never on the wire. A Codex subagent or an OpenCode subagent sent it, and OpenBot
+   * runs it in the chat and turn of the parent agent. Its call still waits in the subagent's own turn
+   * (#9727), or in OpenCode's background subagent after the parent's turn ends (#10657).
    */
   subagent?: true;
   /**
@@ -94,6 +95,13 @@ export interface AppServerRequest {
 
 /** The account type of Claude's own sign-in when it runs on the saved key, with no claude.ai account. */
 export const CLAUDE_API_KEY_ACCOUNT_TYPE = "claude-api-key";
+
+/**
+ * The account type of a Claude sign-in when the CLI uses an Anthropic API key that OpenBot did not give
+ * it: an `apiKeyHelper`, or a key in the user's environment or Claude settings. Anthropic bills the key,
+ * not the Claude plan, so the account row says so (#10192).
+ */
+export const CLAUDE_CLI_API_KEY_ACCOUNT_TYPE = "claude-cli-api-key";
 
 /**
  * The account of a Codex whose selected model provider does not use an OpenAI login

@@ -137,6 +137,7 @@
     "./features/conversation/VoicePlayer": "./src/features/conversation/VoicePlayer.tsx",
     "./features/conversation/branch-points": "./src/features/conversation/branch-points.ts",
     "./features/conversation/threads/AgentSessions": "./src/features/conversation/threads/AgentSessions.tsx",
+    "./features/conversation/chat-grouping": "./src/features/conversation/chat-grouping.ts",
     "./features/conversation/threads/AgentThreadView": "./src/features/conversation/threads/AgentThreadView.tsx",
     "./features/conversation/threads/BranchDivider": "./src/features/conversation/threads/BranchDivider.tsx",
     "./features/conversation/threads/ThreadMenu": "./src/features/conversation/threads/ThreadMenu.tsx",
@@ -401,6 +402,7 @@
     "./features/sidebar/sidebar-views.css": "./src/features/sidebar/sidebar-views.css",
     "./features/sidebar/sidebar-lanes.css": "./src/features/sidebar/sidebar-lanes.css",
     "./features/sidebar/sidebar-working-badge.css": "./src/features/sidebar/sidebar-working-badge.css",
+    "./features/sidebar/sidebar-filter.css": "./src/features/sidebar/sidebar-filter.css",
     "./features/sidebar/sidebar-felt-badges.css": "./src/features/sidebar/sidebar-felt-badges.css",
     "./features/sidebar/sidebar-chat.css": "./src/features/sidebar/sidebar-chat.css",
     "./features/sidebar/sidebar-pages": "./src/features/sidebar/sidebar-pages.ts",
@@ -410,6 +412,7 @@
     "./features/sidebar/SidebarPill": "./src/features/sidebar/SidebarPill.tsx",
     "./features/sidebar/SidebarUsage": "./src/features/sidebar/SidebarUsage.tsx",
     "./features/sidebar/sidebar-tooltips.css": "./src/features/sidebar/sidebar-tooltips.css",
+    "./features/sidebar/sidebar-threads.css": "./src/features/sidebar/sidebar-threads.css",
     "./features/sidebar/createSidebarDragEngine": "./src/features/sidebar/createSidebarDragEngine.ts",
     "./features/sidebar/duplicate-section": "./src/features/sidebar/duplicate-section.ts",
     "./features/sidebar/sidebar-agent-families": "./src/features/sidebar/sidebar-agent-families.ts",
@@ -431,9 +434,11 @@
     "./features/team/TeamPersonAvatar": "./src/features/team/TeamPersonAvatar.tsx",
     "./features/updates/HelpMenu": "./src/features/updates/HelpMenu.tsx",
     "./features/updates/restart-reasons": "./src/features/updates/restart-reasons.ts",
+    "./features/updates/UpdateRequiredScreen": "./src/features/updates/UpdateRequiredScreen.tsx",
     "./features/updates/update-status": "./src/features/updates/update-status.ts",
     "./features/updates/WhatsNewDialog": "./src/features/updates/WhatsNewDialog.tsx",
     "./features/updates/whats-new": "./src/features/updates/whats-new.ts",
+    "./features/updates/update-required.css": "./src/features/updates/update-required.css",
     "./features/updates/whats-new.css": "./src/features/updates/whats-new.css",
     "./features/window/PageHeader": "./src/features/window/PageHeader.tsx",
     "./features/window/page-header.css": "./src/features/window/page-header.css",
@@ -589,7 +594,7 @@
     "@openbot/telemetry": "workspace:*"
   },
   "peerDependencies": {
-    "solid-js": "2.0.0-rc.18",
+    "solid-js": "2.0.0",
     "@solidjs/web": "catalog:"
   }
 }

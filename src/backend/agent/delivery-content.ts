@@ -1,15 +1,18 @@
 import { createHash } from "node:crypto";
 import { join } from "node:path";
 import { expandAttachmentReferences } from "@openbot/contracts/attachment-references";
-import { expandChatTagReferences } from "@openbot/contracts/chat-tag-references";
+import { chatTagReferences, expandChatTagReferences } from "@openbot/contracts/chat-tag-references";
 import type {
   AgentSummary,
   AgentWait,
+  ConversationMessage,
   ConversationPlanStep,
   ConversationSnapshot,
   QueueDelivery,
   RoutineRun,
+  WorkflowRunSource,
 } from "@openbot/contracts/ipc";
+import { sourceText } from "@openbot/i18n/source";
 import { redactSecrets, redactText } from "@openbot/logging";
 import { wokenWaitsPromptText } from "../agent-waits/agent-waits";
 import { homeSkillRoot, homeSkillTagSlug } from "../home-skills";
@@ -45,15 +48,23 @@ export function visualReplyFileName(title: string): string {
   );
 }
 
-/** A digest, because each thread keeps its signature: the JSON itself would be a second copy of the history. */
-export function conversationContentSignature(snapshot: ConversationSnapshot): string {
-  const content = JSON.stringify({
-    agentId: snapshot.agentId,
-    threadId: snapshot.threadId,
-    activeTurnId: snapshot.activeTurnId,
-    messages: snapshot.messages,
+/**
+ * A digest, because each thread keeps its signature: the JSON itself would be a second copy of the history.
+ * It hashes the same text as `JSON.stringify` of the agent, thread, active turn and messages, in parts, so
+ * a caller that already has the JSON of each message gives it in `messageJson` and nothing is made twice.
+ */
+export function conversationContentSignature(
+  snapshot: ConversationSnapshot,
+  messageJson: (message: ConversationMessage) => string = (message) => JSON.stringify(message),
+): string {
+  const hash = createHash("sha256").update(
+    `{"agentId":${JSON.stringify(snapshot.agentId)},"threadId":${JSON.stringify(snapshot.threadId)},"activeTurnId":${JSON.stringify(snapshot.activeTurnId)},"messages":[`,
+  );
+  snapshot.messages.forEach((message, index) => {
+    if (index > 0) hash.update(",");
+    hash.update(messageJson(message));
   });
-  return createHash("sha256").update(content).digest("base64");
+  return hash.update("]}").digest("base64");
 }
 
 /**
@@ -78,6 +89,31 @@ export function routineStatusForDelivery({ status, error }: Pick<QueueDelivery, 
   }
 }
 
+/**
+ * The reason a run that fails keeps. A provider can end a turn as failed and send no error; the run
+ * then showed "Routine failed" with no reason anywhere (#11627). A run that failed already keeps the
+ * reason it has, so a run that failed before this change keeps its row and its finish time.
+ */
+export function failedRunReason(
+  error: string | null,
+  current: { status: string; error: string | null },
+): string | null {
+  if (error?.trim()) return error;
+  if (current.status === "failed") return current.error;
+  return sourceText("error.backend.routineRunFailedNoReason");
+}
+
+/** The run type that a workflow agent step's prompt gives, by how its workflow run began. */
+const WORKFLOW_RUN_KINDS: Record<WorkflowRunSource, string> = {
+  manual: "manual run",
+  schedule: "scheduled run",
+  webhook: "webhook run",
+  github: "GitHub event run",
+  discord: "Discord message run",
+  telegram: "Telegram message run",
+  slack: "Slack message run",
+};
+
 export type DeliveryInputItem =
   | { type: "text"; text: string }
   | { type: "localImage"; path: string }
@@ -88,6 +124,8 @@ export interface DeliveryPromptSources {
   /** The conversation the delivery joins. A user reply quotes the message it answers from it. */
   snapshot: ConversationSnapshot;
   routineRun: Pick<RoutineRun, "kind" | "source" | "agentId"> | null;
+  /** How the workflow run of a workflow agent step began. Such a delivery has no routine run. */
+  workflowRunSource?: WorkflowRunSource | null;
   /** The zone of a routine delivery's routine. The run time is also given on its clock. */
   routineTimezone?: string | undefined;
   /** The open waits that a routine run wakes. The run continues their requests. */
@@ -199,6 +237,21 @@ export const HANDOFF_START = "Continue this OpenBot conversation.";
 export const HANDOFF_END = "--- end previous transcript ---";
 /** Between a provider handoff and the prompt of the turn that takes it. */
 export const CURRENT_MESSAGE_SEPARATOR = "\n\n--- current message ---\n";
+
+const RESTARTED_RESULT_NOTE =
+  "OpenBot note, not from the teammate: OpenBot or its provider restarted while you worked with the result below, so your turn stopped before it ended. Continue with this result now. You can have done part of the work for it already: check the result of an action that you started before you do it again, and if you cannot tell, say so instead of doing it again. This note does not approve a risky action.";
+
+/**
+ * The input of a turn that starts again with a teammate's result after a restart stopped the turn that
+ * read it (#11857). The note goes in front as a handoff, so `teammatePrompts` still finds the teammate
+ * messages after it when the history is imported.
+ */
+export function restartedResultInput(input: readonly DeliveryInputItem[]): DeliveryInputItem[] {
+  const note = `${HANDOFF_START}\n\n${RESTARTED_RESULT_NOTE}\n\n${HANDOFF_END}${CURRENT_MESSAGE_SEPARATOR}`;
+  return input.map((item, index) =>
+    index === 0 && item.type === "text" ? { ...item, text: `${note}${item.text}` } : item,
+  );
+}
 const TEAMMATE_PROMPT = new RegExp(
   `^${TEAMMATE_HEADER} [^\\n]* \\(([^()\\s]+)\\)\\.\\nMessage ID: (\\S+)\\n(?:This replies to message: (\\S+)\\n)?`,
   "gm",
@@ -406,6 +459,8 @@ export function deliveryPromptInput(context: DeliveryContext, sources: DeliveryP
             "When something fails, find the cause and try other ways first. Status: blocked only when the sender or the user must act.",
             `${RESULT_FORMAT} When blocked, add Unblock: <the one action that unblocks the task>; when OpenBot has a plugin for the service and it is not in your tools, call openbot.suggest_marketplace_app, and that action is the next field of its result.`,
             "Never acknowledge without a Status line.",
+            // The turn ends quiet after the reply, so a question in the written answer is folded (#11012).
+            "The user does not see your written answer to this request. When only the user can give what you need, call openbot.ask_user (Claude: AskUserQuestion) and wait; never ask the user in a written answer.",
           ];
     text = [
       `${TEAMMATE_HEADER} ${senderName} (${senderAgentId}).`,
@@ -426,7 +481,14 @@ export function deliveryPromptInput(context: DeliveryContext, sources: DeliveryP
   if (delivery.sender.kind === "routine") {
     const run = sources.routineRun;
     const testRun = run !== null && !quietRoutineRun(run);
-    const runKind = testRun ? "manual Test run" : run?.source ? `${run.source} run` : "scheduled run";
+    const runKind = testRun
+      ? "manual Test run"
+      : run?.source
+        ? `${run.source} run`
+        : // A workflow step that a person or an event started must not read as scheduled (#12452).
+          run === null && sources.workflowRunSource
+          ? WORKFLOW_RUN_KINDS[sources.workflowRunSource]
+          : "scheduled run";
     // A routine whose task says to stop when it is done pauses itself; without this, each run reports
     // the same result again (#8963). A pause keeps the routine, so the user can turn it on again. A Test
     // run must not change the routine, and update_routine does not find a webhook routine. A flow
@@ -449,16 +511,30 @@ export function deliveryPromptInput(context: DeliveryContext, sources: DeliveryP
         : ["Do not create, update, delete, or test routines during this run."]),
       "Perform the task below now. Do not answer only that the routine or monitoring is active.",
       "Nobody answers you during this run. Do all of the task in this turn: do not stop after a step to report progress or to ask whether to continue.",
+      // A run that waits for teammates reported a failure before their replies came (#10928).
+      `A request to a teammate is not a failure: finish the parts that do not need its reply, then end this turn. The reply starts a turn that continues this task. Do not call the ${ROUTINE_REPORT_FAILURE_TOOL} tool only because a reply has not come yet.`,
       "A task can tell you to remind the user or to send the user a message. When it names no other place, write that message as your final answer. OpenBot shows your final answer to the user in this chat. openbot.send_message sends to other agents, not to the user.",
       testRun
         ? "This is a manual Test run. Report the action and result even when a normal scheduled run would suppress a notification because there is no change."
         : `This is a ${runKind}. Follow the notification conditions in the routine task. When they give nothing to report, call the ${ROUTINE_NO_UPDATE_TOOL} tool instead of a written answer. A requested reminder or message is a report, also when there is no new information. Do not call ${ROUTINE_NO_UPDATE_TOOL} for it unless the notification conditions of the task say to send nothing.`,
+      // A run that the user paused or stopped on purpose was shown as "Routine failed" (#11578). A
+      // Test run and a local script run are requests to run now, also when the routine is paused, so
+      // they do not get this line.
+      ...(testRun || run?.source === "script"
+        ? []
+        : [
+            `A stop that the user asked for is not a failure. When the user paused this routine, or asked to stop or skip this run, and did not turn it on again, do not do the task and do not call the ${ROUTINE_REPORT_FAILURE_TOOL} tool: call the ${ROUTINE_NO_UPDATE_TOOL} tool instead of a written answer.`,
+          ]),
       `When the task could not be done, call the ${ROUTINE_REPORT_FAILURE_TOOL} tool with a short reason, then give your answer as usual.`,
       ROUTINE_TASK_START,
       displayText,
     ].join("\n");
     const waits = wokenWaitsPromptText(sources.wokenWaits ?? []);
     if (waits) text += `\n\n${waits}`;
+  }
+  if (delivery.sender.kind === "user" && sources.executionText === undefined) {
+    const note = taggedAgentsNote(delivery.text, delivery.recipientAgentId, agentNames);
+    if (note) text += `\n\n${note}`;
   }
   const skillSuggestion = pendingSkillSuggestionNote(
     delivery,
@@ -505,6 +581,32 @@ export function deliveryPromptInput(context: DeliveryContext, sources: DeliveryP
           : { type: "mention", name: attachment.name, path: attachment.path },
     ),
   ];
+}
+
+/**
+ * The agents that the user tags in a message to this agent's chat. A tag sends the message to the
+ * tagged agent only in a channel; here only this agent gets it. As the text "@Name" alone, the model
+ * often took the tag for a name and the tagged agent never got the request (#11305).
+ */
+function taggedAgentsNote(
+  text: string,
+  recipientAgentId: string,
+  agentNames: ReadonlyMap<string, string>,
+): string | null {
+  const ids = new Set(
+    chatTagReferences(text)
+      .filter((reference) => reference.kind === "agent" && reference.id !== recipientAgentId)
+      .map((reference) => reference.id),
+  );
+  const agents = [...ids].flatMap((id) => {
+    const name = agentNames.get(id);
+    return name === undefined ? [] : [`${name} (${id})`];
+  });
+  if (!agents.length) return null;
+  return [
+    `The user tagged these agents in this message: ${agents.join(", ")}. Only you received the message.`,
+    "When the user wants a tagged agent to do or know something, send that agent your own message with openbot.send_message, with its id in recipientAgentIds, and tell the user that you sent it. When the user only names the agent, send nothing.",
+  ].join(" ");
 }
 
 /**
@@ -628,15 +730,6 @@ function homeSkillTagName(id: string, name: string): string | undefined {
 
 export function agentNamesById(agents: AgentSummary[]): ReadonlyMap<string, string> {
   return new Map(agents.map((agent) => [agent.id, agent.name]));
-}
-
-export function lastUserPrompt(snapshot: ConversationSnapshot): string | null {
-  return (
-    [...snapshot.messages]
-      .reverse()
-      .find((message) => (message.author === "user" || message.source === "user") && message.text.trim())
-      ?.text.trim() ?? null
-  );
 }
 
 export function renderHandoffMessage(
