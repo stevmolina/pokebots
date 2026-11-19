@@ -322,7 +322,7 @@ import type { HostMemory } from "./host-memory";
 import type { IntegrationCredential } from "./integration-credential";
 import type { SignInRegion } from "./kimi-region";
 import type { LinkWallet } from "./link-wallet";
-import { type MailboxStore, MESSAGING_LANE } from "./mailbox-store";
+import { type DeliveryContext, type MailboxStore, MESSAGING_LANE } from "./mailbox-store";
 import { toMcpOperationError } from "./mcp-effects";
 import type { McpSignInOpener } from "./mcp-oauth-provider";
 import type { McpServerAudience } from "./mcp-provider-shapes";
@@ -865,6 +865,16 @@ export class AgentService extends EventEmitter<AgentServiceEvents> {
       hooks: {
         emit: (event) => this.#emit(event),
         agent: (agentId) => store.get(agentId),
+        ...(options.channelPersonAgentLevel ? { personAgentLevel: options.channelPersonAgentLevel } : {}),
+        autoApproves: (agentId) => options.approvalAutomation?.autoApproves(agentId) ?? false,
+        appendLaunchResult: (agentId, threadId, originMessageId, result) => {
+          // A deleted chat cannot receive a late result. The result ID makes repeat delivery safe.
+          const database = this.#store.database;
+          const known = database.readConversationMessages(agentId, threadId, [originMessageId, result.id]);
+          if (known.length !== 1 || known[0]?.id !== originMessageId) return;
+          if (database.deletedConversationMessageIds(threadId).has(result.id)) return;
+          this.#appendThreadMessage(agentId, threadId, result, "thread.agent-task-result");
+        },
         defaultTaskLimit: () => this.#defaultTaskLimit(),
         // Read late: the drain is built further down this constructor.
         hold: (agentId, taskId) => this.#drain.taskHold(agentId, taskId),
@@ -948,7 +958,7 @@ export class AgentService extends EventEmitter<AgentServiceEvents> {
         ),
       appendSystemMessage: (agentId, sideThreadId, message) =>
         sideThreadId
-          ? this.#appendSideThreadSystemMessage(agentId, sideThreadId, message, "thread.memory-reviewed")
+          ? this.#appendThreadMessage(agentId, sideThreadId, message, "thread.memory-reviewed")
           : this.#appendSystemMessage(agentId, message, "thread.memory-reviewed"),
       ...(reviewSkills ? { skills: reviewSkills } : {}),
       ...(options.skillLearning ? { skillLearning: options.skillLearning } : {}),
@@ -1538,7 +1548,11 @@ export class AgentService extends EventEmitter<AgentServiceEvents> {
         this.#threads.releaseIdleSession(
           threadId,
           client,
-          (agentId) => this.#stopping || this.#runsTurn(agentId) || this.#attention.hasAttentionFor(agentId),
+          (agentId) =>
+            this.#stopping ||
+            this.#runsTurn(agentId) ||
+            this.#attention.hasAttentionFor(agentId) ||
+            this.#turn.holdsBackgroundLaunch(agentId, threadId),
         ),
     });
     this.#boot = new BootRecovery({
@@ -1925,6 +1939,14 @@ export class AgentService extends EventEmitter<AgentServiceEvents> {
       hooks: {
         emitError: (code, error, agentId) => this.#emitError(code, error, agentId),
         redactMcp: (text) => this.#mcp.redact(text),
+        mayRunAgentTask: ({ delivery, agentTaskRequest }) =>
+          delivery.sender.kind === "agent" &&
+          agentTaskRequest !== undefined &&
+          this.#tasks.canLaunch(delivery.sender.agentId, delivery.recipientAgentId, agentTaskRequest.requesterIds),
+        backgroundLaunchStopping: (threadId) => this.#turn.backgroundLaunchStopping(threadId),
+        interruptStoppedLaunch: (delivery, threadId, turnId) =>
+          this.#interruptStoppedLaunch(delivery, threadId, turnId),
+        postAgentTaskResult: (delivery, text) => this.#postAgentTaskResult(delivery, text),
         tagReferences: (agentId, threadId) => this.#tagReferences(agentId, threadId),
         isStopping: () => this.#stopping,
         isDeleting: (agentId) => this.#removal.deleting().has(agentId),
@@ -2102,6 +2124,9 @@ export class AgentService extends EventEmitter<AgentServiceEvents> {
         isRoutineThread: (threadId) => this.#tasks.isRoutineThreadId(threadId),
         taskOpen: (taskId) => this.#tasks.threadId(taskId) !== null,
         taskFailed: (taskId, message) => this.#tasks.failed(taskId, this.#mcp.redact(message)),
+        postAgentTaskResult: (delivery, text) => this.#postAgentTaskResult(delivery, text),
+        interruptStoppedLaunch: (delivery, threadId, turnId) =>
+          this.#interruptStoppedLaunch(delivery, threadId, turnId),
       },
     });
     this.#removal = new AgentRemoval({
@@ -2304,6 +2329,8 @@ export class AgentService extends EventEmitter<AgentServiceEvents> {
         runsTurn: (agentId) => this.#runsTurn(agentId),
         interrupt: (agentId, turnId, mayStop) =>
           this.#interruptTurn(agentId, turnId, undefined, mayStop).pipe(toToolOperationFailed),
+        stopLaunchedTask: (agentId, threadId, deliveryId) =>
+          this.#stopLaunchedTask(agentId, threadId, deliveryId).pipe(toToolOperationFailed),
         turnActivity: (agentId, turnId) => ({
           startedAt: turnId ? this.#turn.turnStartedAt(turnId) : null,
           lastEventAt: this.#turn.lastEventAt(agentId),
@@ -4853,13 +4880,8 @@ export class AgentService extends EventEmitter<AgentServiceEvents> {
     });
   }
 
-  /** Appends a system line to one side thread of the agent, outside any turn. */
-  #appendSideThreadSystemMessage(
-    agentId: string,
-    threadId: string,
-    message: ConversationMessage,
-    eventType: string,
-  ): void {
+  /** Appends a message to one specific thread of the agent. */
+  #appendThreadMessage(agentId: string, threadId: string, message: ConversationMessage, eventType: string): void {
     const database = this.#store.database;
     this.#conversation.withThreadTransaction(agentId, threadId, ({ threadId: transactionThreadId, snapshot }) => {
       snapshot.messages.push(message);
@@ -4873,6 +4895,16 @@ export class AgentService extends EventEmitter<AgentServiceEvents> {
       });
       return { result: undefined, snapshot };
     });
+  }
+
+  #postAgentTaskResult(context: DeliveryContext, text: string): boolean {
+    try {
+      this.#tasks.postLaunchResult(context, this.#mcp.redact(text));
+      return true;
+    } catch (error) {
+      this.#emitError("agent_task_result_failed", error, context.delivery.recipientAgentId);
+      return false;
+    }
   }
 
   /**
@@ -6837,6 +6869,82 @@ export class AgentService extends EventEmitter<AgentServiceEvents> {
       );
     this.#tasks.changed(task.agentId);
   }).bind(this);
+
+  /** Stops only the delivery that launched this run, including when its lane is still starting. */
+  readonly #stopLaunchedTask = Effect.fn("AgentService.stopLaunchedTask")(function* (
+    this: AgentService,
+    agentId: string,
+    threadId: string,
+    deliveryId: string,
+  ) {
+    const taskId = this.#tasks.taskForThread(threadId);
+    if (!taskId) return false;
+    let current = this.#mailbox.getDelivery(deliveryId);
+    if (!current) return false;
+    if (current.delivery.status === "completed") {
+      return yield* this.#turn.stopBackgroundLaunch(threadId, deliveryId);
+    }
+    // Record the stop before the provider can accept or retry a start. The delivery keeps its
+    // lane until the provider confirms an uncertain start or the start is settled.
+    yield* this.#mailbox
+      .requestAgentTaskStop(deliveryId)
+      .pipe(
+        Effect.mapError((failure) => new AgentLifecycleFailed({ operation: "record task stop", cause: failure.cause })),
+      );
+    current = this.#mailbox.getDelivery(deliveryId);
+    if (!current) return false;
+    const status = current.delivery.status;
+    if (status === "completed") return yield* this.#turn.stopBackgroundLaunch(threadId, deliveryId);
+    if (status === "queued" || (status === "running" && current.planContinuation?.queued)) {
+      yield* this.cancelQueuedMessage(agentId, deliveryId);
+      if (current.planContinuation?.queued) yield* this.#drain.endPlanContinuation(agentId, taskId);
+    } else if (status === "running" || status === "starting") {
+      if (current.delivery.turnId) yield* this.#interruptStoppedLaunch(current, threadId, current.delivery.turnId);
+      return "stopping" as const;
+    } else if (
+      status !== "cancelled" &&
+      !(status === "interrupted" && this.#mailbox.agentTaskStopRequested(deliveryId))
+    ) {
+      return false;
+    }
+    // A failed write leaves the terminal delivery available for another stop. The result ID
+    // also makes a retry safe when the first write succeeded.
+    return this.#postAgentTaskResult(current, sourceText("status.agent.agentTaskStopped"))
+      ? ("stopped" as const)
+      : ("stopping" as const);
+  }, Effect.uninterruptible).bind(this);
+
+  readonly #interruptStoppedLaunch = Effect.fn("AgentService.interruptStoppedLaunch")(function* (
+    this: AgentService,
+    context: DeliveryContext,
+    threadId: string,
+    turnId: string,
+  ) {
+    const { id, recipientAgentId: agentId } = context.delivery;
+    const taskId = this.#tasks.taskForThread(threadId);
+    if (!taskId || this.#tasks.stoppedTurn(taskId) === turnId) return;
+    const active = () =>
+      this.#conversation.loadedExecutionSnapshot(threadId)?.activeTurnId === turnId &&
+      this.#mailbox.getDelivery(id)?.delivery.turnId === turnId &&
+      !this.#turn.hasEnded(turnId);
+    if (!active()) return;
+    this.#tasks.markStopped(taskId, turnId);
+    yield* this.#interruptTurn(agentId, turnId, threadId, active).pipe(
+      Effect.catch((failure) =>
+        Effect.sync(() => {
+          this.#tasks.clearStopped(taskId, turnId);
+          this.#emitError("agent_task_stop_failed", failure.cause, agentId);
+          return false;
+        }),
+      ),
+      Effect.tap((interrupted) =>
+        Effect.sync(() => {
+          if (!interrupted) this.#tasks.clearStopped(taskId, turnId);
+        }),
+      ),
+      Effect.asVoid,
+    );
+  }, Effect.uninterruptible).bind(this);
 
   /** Stops the task and closes it. A closed task takes no message until it opens again. */
   readonly closeTask = Effect.fn("AgentService.closeTask")(function* (

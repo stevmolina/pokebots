@@ -1786,17 +1786,19 @@ export class ThreadLifecycle {
       this: ThreadLifecycle,
       agent: AgentSummary,
       client: AgentClient,
+      threadId: string,
       method: string,
-      params: unknown,
+      params: () => unknown,
       decoder: ResponseDecoder<T>,
     ) {
-      const response = yield* Effect.result(client.request(method, params, decoder).pipe(toThreadOperationFailed));
+      const send = threadStep(params).pipe(
+        Effect.flatMap((value) => client.request(method, value, decoder).pipe(toThreadOperationFailed)),
+      );
+      const response = yield* Effect.result(send);
       if (Result.isSuccess(response)) return response.success;
       if (client.provider !== "codex" || !isArchivedThreadError(response.failure.cause)) return yield* response.failure;
-      const threadId = getString(params, "threadId");
-      if (!threadId) return yield* response.failure;
       yield* this.resumeThread(agent, client, threadId);
-      return yield* client.request(method, params, decoder).pipe(toThreadOperationFailed);
+      return yield* send;
     },
   );
 

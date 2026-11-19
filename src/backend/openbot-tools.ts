@@ -53,7 +53,14 @@ import { LOCAL_SKILL_TOOL_DEFINITIONS } from "./agent/skill-tools";
 import { readVideoToolShape } from "./agent/video-reader";
 import { CREATE_WEBHOOK_ROUTINE_TOOL, UPDATE_WEBHOOK_ROUTINE_TOOL } from "./agent/webhook-routine-tool";
 import { AGENT_COMPUTER_TOOL_DEFINITIONS } from "./agent-computer/agent-computer-tools";
-import { START_TASK_TOOL, startTaskToolSchema } from "./agent-tasks/agent-tasks";
+import {
+  START_AGENT_TASK_TOOL,
+  START_TASK_TOOL,
+  STOP_AGENT_TASK_TOOL,
+  startAgentTaskToolSchema,
+  startTaskToolSchema,
+  stopAgentTaskToolSchema,
+} from "./agent-tasks/agent-tasks";
 import { RUN_CODING_TASK_TOOL, runCodingTaskToolSchema } from "./agent-tasks/remote-coding-task";
 import {
   AWAIT_EVENT_TOOL,
@@ -657,6 +664,18 @@ export const OPENBOT_TOOL_DEFINITIONS: readonly OpenBotToolDefinition[] = [
     description:
       "Start a task: a separate conversation of yours that runs beside this chat, with its own context, progress and stop. Use it only for long, independent work that the user asked for and that need not block this chat. The brief is the task's first message: write everything the task needs, because it does not see this chat. The task result stays in the task; you do not receive it. You can start a task from your own chat, another task, a channel or a messaging conversation. All tasks share the agent's task limits.",
     shape: startTaskToolSchema.shape,
+  },
+  {
+    name: START_AGENT_TASK_TOOL,
+    description:
+      "Launch independent work in a fresh side thread of an agent on this host. Omit agentId to use yourself. Give a complete brief because the new thread starts without this chat's history. Returns threadId as soon as the task is queued. OpenBot posts the result in the chat that launched it. Use it for independent work the user requested and continue or end this turn while the task runs.",
+    shape: startAgentTaskToolSchema.shape,
+  },
+  {
+    name: STOP_AGENT_TASK_TOOL,
+    description:
+      "Stop the run that openbot.start_agent_task launched from this chat. Pass its returned threadId. A stopping status means OpenBot still waits for the provider or for result delivery.",
+    shape: stopAgentTaskToolSchema.shape,
   },
   ...MEMORY_RECALL_TOOL_DEFINITIONS,
   {

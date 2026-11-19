@@ -3,7 +3,9 @@ import { agentProviderDescriptor } from "@openbot/contracts/agent-providers";
 import { expandAttachmentReferences } from "@openbot/contracts/attachment-references";
 import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
 import {
+  AGENT_EXCHANGE_ITEM_TYPE,
   AGENT_TASK_QUEUED_PREVIEW,
+  type AgentAccessLevel,
   type AgentEvent,
   type AgentSummary,
   type AgentTask,
@@ -11,10 +13,13 @@ import {
   type AgentTaskHold,
   type AgentTasksSnapshot,
   type AttachmentSummary,
+  agentAccessRank,
+  agentComputerUseEnabled,
   agentTaskLimit,
   type BranchAgentTaskInput,
   type ConversationMessage,
   type ConversationSnapshot,
+  workspaceAccessEnforced,
 } from "@openbot/contracts/ipc";
 import { sourceText } from "@openbot/i18n/source";
 import { createOpenBotLogger } from "@openbot/logging";
@@ -30,7 +35,7 @@ import {
   copyBranchMessages,
   type ThreadListPosition,
 } from "../agent-threads/agent-thread-store";
-import type { MailboxStore } from "../mailbox-store";
+import type { AgentTaskRequest, DeliveryContext, MailboxStore } from "../mailbox-store";
 import type { DynamicToolCallParams } from "../protocol";
 import { storedSync } from "../stored-state-effects";
 
@@ -52,16 +57,29 @@ const AGENT_STARTED_UNFINISHED_TASKS = 8;
 const AGENT_STARTED_FINISHED_KEPT = 8;
 
 export const START_TASK_TOOL = "start_task";
+export const START_AGENT_TASK_TOOL = "start_agent_task";
+export const STOP_AGENT_TASK_TOOL = "stop_agent_task";
 
 export const startTaskToolSchema = z.strictObject({
   title: z.string().trim().min(1).max(INPUT_LIMITS.agentTaskTitle),
   brief: z.string().trim().min(1).max(INPUT_LIMITS.messageText),
 });
 
+const identifier = z.string().trim().min(1).max(INPUT_LIMITS.identifier);
+
+export const startAgentTaskToolSchema = z.strictObject({
+  brief: startTaskToolSchema.shape.brief,
+  agentId: identifier.optional(),
+});
+
+export const stopAgentTaskToolSchema = z.strictObject({ threadId: identifier });
+
 export interface AgentTasksHooks {
   emit(event: AgentEvent): void;
   /** The agent, for its provider and its task limit. */
   agent(agentId: string): AgentSummary | undefined;
+  personAgentLevel?(personId: string, agentId: string): AgentAccessLevel;
+  autoApproves?(agentId: string): boolean;
   /** The task limit of an agent that has no limit of its own on this host. */
   defaultTaskLimit(): number;
   /** Why the drain holds the next message of this task, as the drain names it, or null. Read late. */
@@ -72,12 +90,15 @@ export interface AgentTasksHooks {
   turnActive(agentId: string, threadId: string): boolean;
   /** OpenBot archived finished tasks of one agent: their memory reviews start, and a waiting task lane can start. */
   archived(agentId: string, tasks: readonly AgentThreadRecord[]): Effect.Effect<void>;
+  appendLaunchResult?(agentId: string, threadId: string, originMessageId: string, result: ConversationMessage): void;
 }
 
 /** Where `start_task` was called, as the tool router knows it. */
 export interface AgentTaskCaller {
   agentId: string;
   computer?: () => ScopedCodingComputer | undefined;
+  requesterIds?: () => string[];
+  fromExternalChat?: () => boolean;
   /** A channel, messaging or task turn: only the agent's own chat starts a task. */
   inExecutionThread: boolean;
 }
@@ -456,6 +477,10 @@ export class AgentTasks implements TaskLanes {
     this.#stoppedTurns.set(taskId, turnId);
   }
 
+  clearStopped(taskId: string, turnId: string): void {
+    if (this.stoppedTurn(taskId) === turnId) this.#stoppedTurns.delete(taskId);
+  }
+
   stoppedTurn(taskId: string): string | null {
     return this.#stoppedTurns.get(taskId) ?? null;
   }
@@ -539,6 +564,104 @@ export class AgentTasks implements TaskLanes {
     this.#store.deleteForAgent(agentId);
   }
 
+  /** A launch must respect the calling agent's host restrictions and each requester's chat access. */
+  canLaunch(callerId: string, targetId: string, requesterIds: readonly string[]): boolean {
+    const caller = this.#hooks.agent(callerId);
+    const target = this.#hooks.agent(targetId);
+    return (
+      caller !== undefined &&
+      target !== undefined &&
+      !(workspaceAccessEnforced(caller) && !workspaceAccessEnforced(target)) &&
+      !(!agentComputerUseEnabled(caller) && agentComputerUseEnabled(target)) &&
+      !(!this.#hooks.autoApproves?.(callerId) && this.#hooks.autoApproves?.(targetId)) &&
+      this.#canChat(callerId, requesterIds) &&
+      this.#canChat(targetId, requesterIds)
+    );
+  }
+
+  #canChat(agentId: string, requesterIds: readonly string[]): boolean {
+    return requesterIds.every(
+      (personId) =>
+        agentAccessRank(this.#hooks.personAgentLevel?.(personId, agentId) ?? "manage") >= agentAccessRank("chat"),
+    );
+  }
+
+  readonly launch = Effect.fn("AgentTasks.launch")(function* (
+    this: AgentTasks,
+    params: DynamicToolCallParams,
+    agentId: string,
+    input: z.infer<typeof startAgentTaskToolSchema>,
+    request: AgentTaskRequest,
+  ) {
+    return yield* this.#starts.withPermit(
+      this.#start(params, { agentId }, { title: taskTitle(input.brief), brief: input.brief }, null, {
+        targetId: input.agentId ?? agentId,
+        request,
+      }),
+    );
+  });
+
+  /** A thread ID only authorizes cancellation from the agent and chat that launched the brief. */
+  ownedLaunch(
+    threadId: string,
+    callerId: string,
+    originThreadId: string,
+    requesterIds: string[],
+  ): DeliveryContext | null {
+    const task = this.#store.taskForThread(threadId);
+    const launch = task && this.#mailbox.launchedTaskDelivery(task.taskId);
+    if (
+      !launch?.agentTaskRequest ||
+      launch.delivery.sender.kind !== "agent" ||
+      launch.delivery.sender.agentId !== callerId ||
+      launch.agentTaskRequest.threadId !== originThreadId ||
+      !this.#canChat(callerId, requesterIds) ||
+      !this.#canChat(launch.delivery.recipientAgentId, requesterIds)
+    )
+      return null;
+    return launch;
+  }
+
+  /** Posts the terminal result to the exact originating chat, including an archived side thread. */
+  postLaunchResult({ delivery, agentTaskRequest }: DeliveryContext, text: string): void {
+    if (delivery.sender.kind !== "agent" || !agentTaskRequest) return;
+    const callerId = delivery.sender.agentId;
+    const targetId = delivery.recipientAgentId;
+    const { threadId, turnId, messageId, requesterIds } = agentTaskRequest;
+    const caller = this.#hooks.agent(callerId);
+    if (!caller || !this.#hooks.agent(targetId)) return;
+    if (!this.#canChat(callerId, requesterIds) || !this.#canChat(targetId, requesterIds)) return;
+    if (caller.threadId !== threadId) {
+      if (this.#store.taskForThread(threadId)?.agentId !== callerId) return;
+      this.#conversation.registerTaskThread(callerId, threadId);
+    }
+    const id = `agent-task-result:${delivery.id}`;
+    const taskId = this.#mailbox.taskIdForDelivery(delivery.id);
+    this.#hooks.appendLaunchResult?.(callerId, threadId, messageId, {
+      id,
+      turnId,
+      author: "agent",
+      source: "agent",
+      status: "completed",
+      // Keep the result with the originating turn, before any later context reset.
+      createdAt: delivery.createdAt,
+      senderAgentId: targetId,
+      replyToMessageId: messageId,
+      itemType: AGENT_EXCHANGE_ITEM_TYPE,
+      exchange: {
+        direction: "incoming",
+        messageId: id,
+        senderAgentId: targetId,
+        recipientAgentIds: [callerId],
+        replyToMessageId: messageId,
+        expectsReply: false,
+        deliveries: [],
+        ...(taskId ? { senderTaskId: taskId } : {}),
+      },
+      text,
+    });
+  }
+
   /**
    * Answers `start_task`; null for every other tool. The brief is the task's first message, sent by
    * the agent to itself, so the task conversation shows the agent as its author. A retried call
@@ -575,17 +698,27 @@ export class AgentTasks implements TaskLanes {
   readonly #start = Effect.fn("AgentTasks.start")(function* (
     this: AgentTasks,
     params: DynamicToolCallParams,
-    caller: AgentTaskCaller,
+    caller: Pick<AgentTaskCaller, "agentId" | "computer" | "requesterIds" | "fromExternalChat">,
     input: z.infer<typeof startTaskToolSchema>,
     coding: z.infer<typeof runCodingTaskToolSchema> | null,
+    launch?: { targetId: string; request: AgentTaskRequest },
   ): Effect.fn.Return<OpenBotToolResponse> {
-    const idempotencyKey = `start-task:${createHash("sha256")
-      .update(JSON.stringify([caller.agentId, params.turnId, params.callId]))
+    const targetId = launch?.targetId ?? caller.agentId;
+    if (launch && !this.canLaunch(caller.agentId, targetId, launch.request.requesterIds))
+      return openBotToolFailure(sourceText("error.team.agentNotFound"));
+    const idempotencyKey = `${launch ? "start-agent-task" : "start-task"}:${createHash("sha256")
+      .update(
+        JSON.stringify([caller.agentId, params.turnId, params.callId, ...(launch ? [launch.request.threadId] : [])]),
+      )
       .digest("hex")}`;
     const accountComputer = coding ? caller.computer?.() : undefined;
+    const taskRequesterIds = launch ? undefined : caller.requesterIds?.();
+    const taskFromExternalChat = !launch && caller.fromExternalChat?.() === true;
     const started = this.#mailbox.deliveryForKey(idempotencyKey);
     const startedTaskId = started ? this.#mailbox.taskIdForDelivery(started.delivery.id) : null;
     const startedTask = startedTaskId ? this.#store.task(startedTaskId) : null;
+    if (launch && started && startedTask?.agentId !== targetId)
+      return openBotToolFailure(sourceText("error.backend.threadNotFound"));
     if (startedTask) {
       const agent = this.#hooks.agent(caller.agentId);
       if (coding && this.#codingJobs && agent) {
@@ -594,9 +727,9 @@ export class AgentTasks implements TaskLanes {
           .pipe(Effect.result);
         if (Result.isFailure(resumed)) return openBotToolFailure(sourceText("error.backend.taskStartFailed"));
       }
-      return startedTaskResult(startedTask);
+      return launch ? launchedTaskResult(startedTask) : startedTaskResult(startedTask);
     }
-    const open = this.#store.openTaskIds(caller.agentId).flatMap((taskId) => this.#store.task(taskId) ?? []);
+    const open = this.#store.openTaskIds(targetId).flatMap((taskId) => this.#store.task(taskId) ?? []);
     const finished = open.filter((task) => this.#finished(task));
     // A routine thread is the routine's own: its runs do not count as tasks that the agent started.
     const unfinishedTasks = open.filter((task) => task.routineId === null && !finished.includes(task)).length;
@@ -616,20 +749,23 @@ export class AgentTasks implements TaskLanes {
       return openBotToolFailure(sourceText("error.backend.threadOpenLimitReached", { count: INPUT_LIMITS.agentTasks }));
     // All of them close before the first yield, so no turn starts between the check and the close.
     for (const task of archived) this.#closeQuietly(task);
-    const task = this.create(caller.agentId, input.title, "agent");
+    const task = this.create(targetId, input.title, "agent");
     const context = accountComputer
       ? `job-${createHash("sha256").update(task.taskId).digest("hex").slice(0, 28)}`
       : "openbot-coding-jobs";
-    if (archived.length > 0) yield* this.#hooks.archived(caller.agentId, archived);
+    if (archived.length > 0) yield* this.#hooks.archived(targetId, archived);
     const queued = yield* this.#mailbox
       .enqueue({
         sender: { kind: "agent", agentId: caller.agentId },
         taskId: task.taskId,
-        recipientAgentIds: [caller.agentId],
+        recipientAgentIds: [targetId],
         text: coding
           ? `${remoteCodingBrief(coding.repository, coding.task, context)}\n\nJob directory: ~/openbot-coding-jobs/${encodeURIComponent(task.taskId)}`
           : input.brief,
         replyToMessageId: null,
+        ...(launch
+          ? { agentTaskRequest: launch.request, expectsReply: false }
+          : { taskRequesterIds, taskFromExternalChat }),
         idempotencyKey,
       })
       .pipe(
@@ -643,7 +779,7 @@ export class AgentTasks implements TaskLanes {
       );
     if (!queued) {
       this.discard(task);
-      if (archived.length > 0) this.changed(caller.agentId);
+      if (archived.length > 0) this.changed(targetId);
       return openBotToolFailure(sourceText("error.backend.taskStartFailed"));
     }
     if (coding && this.#codingJobs) {
@@ -657,9 +793,9 @@ export class AgentTasks implements TaskLanes {
         return openBotToolFailure(sourceText("error.backend.taskStartFailed"));
       }
     }
-    this.changed(caller.agentId);
-    this.#hooks.queued(caller.agentId);
-    return startedTaskResult(task);
+    this.changed(targetId);
+    this.#hooks.queued(targetId);
+    return launch ? launchedTaskResult(task) : startedTaskResult(task);
   });
 
   changed(agentId: string): void {
@@ -838,6 +974,15 @@ function startedTaskResult(task: AgentThreadRecord): OpenBotToolResponse {
     taskId: task.taskId,
     title: task.title,
     note: "The task runs in its own conversation beside this chat, and the user follows it in the task list. Its result stays in the task: you do not receive it here. Tell the user in one sentence that the task started, and continue with other work or end your turn.",
+  });
+}
+
+function launchedTaskResult(task: AgentThreadRecord): OpenBotToolResponse {
+  return openBotToolResult({
+    threadId: task.threadId,
+    agentId: task.agentId,
+    title: task.title,
+    note: "The task is queued in its own thread. Continue your work or end your turn. OpenBot posts the result in this chat. Use openbot.stop_agent_task with this threadId to stop it.",
   });
 }
 

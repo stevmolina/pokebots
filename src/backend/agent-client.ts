@@ -90,8 +90,13 @@ export interface AgentClient {
    * `resumes`: the next turn resumes this same provider session, which still holds the context that
    * its turns were sent. A client keeps what it knows of that context, so the turn does not send it
    * again. Otherwise the session ends, and the client forgets it.
+   * `waitForUnload`: wait for a provider that unloads asynchronously to confirm that it closed.
    */
-  releaseThread?(externalThreadId: string, resumes?: boolean): Effect.Effect<void, ProviderClientOperationError>;
+  releaseThread?(
+    externalThreadId: string,
+    resumes?: boolean,
+    waitForUnload?: boolean,
+  ): Effect.Effect<void, ProviderClientOperationError>;
   /**
    * Whether the session runs work that its release would end, such as a background terminal.
    * Optional, because a client without this check must keep its idle sessions loaded.

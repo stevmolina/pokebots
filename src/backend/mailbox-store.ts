@@ -69,6 +69,15 @@ const FAILED_REQUEST_KEY_PREFIX = "failed-request:";
 export const AUTO_RESULT_KEY_PREFIX = "auto-result:";
 /** The key of a teammate's result that went back to the queue after a restart (`requeueResultAfterRestart`). */
 const RESTARTED_RESULT_KEY_PREFIX = "restarted-result:";
+
+/** Host-only return address and member permissions for a brief sent by start_agent_task. */
+export interface AgentTaskRequest {
+  threadId: string;
+  turnId: string;
+  messageId: string;
+  requesterIds: string[];
+}
+
 /** A welcome in these states is still to come, so the queue reports it (`QueueSnapshot.welcome`). */
 const WELCOME_PENDING_STATUSES: ReadonlySet<QueueDeliveryStatus> = new Set(["queued", "starting", "running"]);
 /**
@@ -85,6 +94,11 @@ export interface MessagingOrigin {
 }
 
 interface StoredMessage {
+  agentTaskRequest?: AgentTaskRequest;
+  /** Requesters inherited by a task whose result stays in its own chat. */
+  taskRequesterIds?: string[];
+  /** The task brief came from an external conversation. This does not route the answer there. */
+  taskFromExternalChat?: true;
   channelId?: string | undefined;
   messaging?: MessagingOrigin;
   /**
@@ -164,6 +178,7 @@ interface PlanContinuationMarker {
 }
 
 interface StoredDelivery {
+  agentTaskStopRequested?: true;
   editId?: string | undefined;
   finishedEditOutcomes?: Record<string, StoredFinishedEdit> | undefined;
   id: string;
@@ -236,6 +251,9 @@ interface StoredReaction {
 }
 
 interface EnqueueInput {
+  agentTaskRequest?: AgentTaskRequest;
+  taskRequesterIds?: string[];
+  taskFromExternalChat?: boolean;
   /** This request asks Claude for one claude.ai artifact. */
   createArtifact?: boolean;
   channelId?: string;
@@ -276,6 +294,8 @@ export interface MailboxStoredFile {
 
 export interface DeliveryContext {
   delivery: QueueDelivery;
+  agentTaskRequest?: AgentTaskRequest;
+  taskRequesterIds?: string[];
   managedAttachments: Array<AttachmentSummary & { path: string }>;
   resumeAfterUsageLimit?: UsageLimitContinuation;
   planContinuation?: PlanContinuationMarker;
@@ -779,6 +799,9 @@ export class MailboxStore {
       const committedByDraftId = new Map(drafts.map((draft, index) => [draft.id, attachments[index]] as const));
       const messaging = input.messaging ?? this.#answerReturn(input, recipients);
       const message: StoredMessage = {
+        ...(input.agentTaskRequest ? { agentTaskRequest: input.agentTaskRequest } : {}),
+        ...(input.taskRequesterIds?.length ? { taskRequesterIds: input.taskRequesterIds } : {}),
+        ...(input.taskFromExternalChat ? { taskFromExternalChat: true } : {}),
         ...(input.channelId === undefined ? {} : { channelId: input.channelId }),
         ...(messaging ? { messaging } : {}),
         ...(input.messagingReturn ? { messagingReturn: input.messagingReturn } : {}),
@@ -1238,8 +1261,7 @@ export class MailboxStore {
       if (waitsForPlanContinuation(delivery)) return [];
       const message = this.#requireMessage(delivery.messageId);
       if (message.taskId !== taskId) return [];
-      if (options.teammateAnswers === false && message.sender.kind === "agent" && message.sender.agentId !== agentId)
-        return [];
+      if (options.teammateAnswers === false && isTaskAnswer(message, agentId)) return [];
       return [{ deliveryId: delivery.id, text: message.text, createdAt: message.createdAt }];
     });
   }
@@ -1611,9 +1633,7 @@ export class MailboxStore {
       const ids = new Set(
         this.#queuedFor(agentId).flatMap((delivery) => {
           const message = this.#requireMessage(delivery.messageId);
-          return message.taskId === taskId && message.sender.kind === "agent" && message.sender.agentId !== agentId
-            ? [message.id]
-            : [];
+          return message.taskId === taskId && isTaskAnswer(message, agentId) ? [message.id] : [];
         }),
       );
       if (ids.size === 0) return 0;
@@ -1860,7 +1880,7 @@ export class MailboxStore {
     const entries: ConversationIndexEntry[] = [];
     for (let position = index.messages.length - 1; position >= 0; position -= 1) {
       const message = index.messages[position];
-      if (!message || message.channelId || message.messaging) continue;
+      if (!message || message.channelId || message.messaging || message.agentTaskRequest) continue;
       const ownMessage = message.sender.kind === "agent" && message.sender.agentId === agentId;
       const deliveries = index.deliveriesByMessage.get(message.id) ?? [];
       // A task message runs in a side thread of its recipient. A teammate's answer to that thread
@@ -2102,7 +2122,7 @@ export class MailboxStore {
   }
 
   #mayStart(delivery: StoredDelivery): boolean {
-    return !this.#isHeldByEdit(delivery) && !this.#queueUpdates.has(delivery.id);
+    return !delivery.agentTaskStopRequested && !this.#isHeldByEdit(delivery) && !this.#queueUpdates.has(delivery.id);
   }
 
   /** The agents with a queued message that an edit holds now. */
@@ -2178,6 +2198,25 @@ export class MailboxStore {
   getDelivery(deliveryId: string): DeliveryContext | null {
     const delivery = this.#state.deliveries.find((candidate) => candidate.id === deliveryId);
     return delivery ? this.#context(delivery) : null;
+  }
+
+  /** The original brief of a launched task, even after its delivery ends. */
+  launchedTaskDelivery(taskId: string): DeliveryContext | null {
+    const request = this.#state.messages.find((message) => message.taskId === taskId && message.agentTaskRequest);
+    const delivery = request && this.#state.deliveries.find((item) => item.messageId === request.id);
+    return delivery ? this.#context(delivery) : null;
+  }
+
+  /** The requesters of the agent-authored brief, including during a provider-started turn. */
+  taskBriefRequesters(taskId: string): readonly string[] {
+    const brief = this.#state.messages.find(
+      (message) => message.taskId === taskId && (message.agentTaskRequest || message.taskRequesterIds),
+    );
+    return brief?.agentTaskRequest?.requesterIds ?? brief?.taskRequesterIds ?? [];
+  }
+
+  taskServesExternalChat(taskId: string): boolean {
+    return this.#state.messages.some((message) => message.taskId === taskId && message.taskFromExternalChat);
   }
 
   /**
@@ -2257,6 +2296,10 @@ export class MailboxStore {
   turnServesExternalChat(agentId: string, turnId: string): boolean {
     const sourceTurnIds = this.#sourceTurnIds();
     const messages = this.#messagesById();
+    const externalTasks = new Set(
+      this.#state.messages.filter((message) => message.taskFromExternalChat).map((message) => message.taskId),
+    );
+    externalTasks.delete(undefined);
     const seen = new Set<string>();
     const serves = (agent: string, turn: string, activeOnly: boolean): boolean => {
       const key = `${agent}:${turn}`;
@@ -2276,7 +2319,13 @@ export class MailboxStore {
           return false;
         const message = messages.get(delivery.messageId);
         if (!message) return false;
-        if (message.messaging || message.messagingReturn) return true;
+        if (
+          message.messaging ||
+          message.messagingReturn ||
+          externalTasks.has(message.taskId) ||
+          externalTasks.has(message.senderTaskId)
+        )
+          return true;
         // The turn that sent this request can be complete, so its deliveries count in any status.
         const sourceTurn = sourceTurnIds.get(message.id);
         return (
@@ -2821,6 +2870,26 @@ export class MailboxStore {
       return yield* new StoredStateFailure({ cause });
     }
   }, Effect.uninterruptible).bind(this);
+
+  agentTaskStopRequested(deliveryId: string): boolean {
+    return this.#state.deliveries.some((delivery) => delivery.id === deliveryId && delivery.agentTaskStopRequested);
+  }
+
+  requestAgentTaskStop(deliveryId: string): Effect.Effect<void, StoredStateFailure> {
+    if (this.agentTaskStopRequested(deliveryId)) return Effect.void;
+    return this.#updateDeliveryEffect(deliveryId, ["queued", "starting", "running"], {
+      agentTaskStopRequested: true,
+    });
+  }
+
+  /** The start was never submitted, or its background session has now ended. */
+  finishAgentTaskStop(deliveryId: string): Effect.Effect<void, StoredStateFailure> {
+    return this.#updateDeliveryEffect(deliveryId, ["starting", "completed"], {
+      status: "cancelled",
+      agentTaskStopRequested: true,
+      error: null,
+    });
+  }
 
   /** Whether the delivery is a teammate request outside a channel that its recipient has answered. */
   #answeredRequest(deliveryId: string): boolean {
@@ -3875,6 +3944,8 @@ export class MailboxStore {
     const message = this.#requireMessage(delivery.messageId, messages);
     return {
       delivery: this.#publicDelivery(delivery, positions, message),
+      ...(message.agentTaskRequest ? { agentTaskRequest: message.agentTaskRequest } : {}),
+      ...(message.taskRequesterIds ? { taskRequesterIds: message.taskRequesterIds } : {}),
       ...(delivery.resumeAfterUsageLimit ? { resumeAfterUsageLimit: delivery.resumeAfterUsageLimit } : {}),
       ...(delivery.planContinuation ? { planContinuation: delivery.planContinuation } : {}),
       ...(message.channelId ? { channelId: message.channelId } : {}),
@@ -4292,6 +4363,16 @@ function messageFiles(message: StoredMessage): StoredAttachment[] {
 function isStoredMessage(value: unknown): value is StoredMessage {
   return (
     isRecord(value) &&
+    (value.agentTaskRequest === undefined ||
+      (isRecord(value.agentTaskRequest) &&
+        isString(value.agentTaskRequest.threadId) &&
+        isString(value.agentTaskRequest.turnId) &&
+        isString(value.agentTaskRequest.messageId) &&
+        Array.isArray(value.agentTaskRequest.requesterIds) &&
+        value.agentTaskRequest.requesterIds.every(isString))) &&
+    (value.taskRequesterIds === undefined ||
+      (Array.isArray(value.taskRequesterIds) && value.taskRequesterIds.every(isString))) &&
+    (value.taskFromExternalChat === undefined || value.taskFromExternalChat === true) &&
     (value.channelId === undefined || isString(value.channelId)) &&
     (value.messaging === undefined || isMessagingOrigin(value.messaging)) &&
     (value.messagingReturn === undefined || isMessagingOrigin(value.messagingReturn)) &&
@@ -4325,6 +4406,7 @@ function isStoredDelivery(value: unknown): value is StoredDelivery {
     isString(value.id) &&
     isString(value.messageId) &&
     isString(value.recipientAgentId) &&
+    (value.agentTaskStopRequested === undefined || value.agentTaskStopRequested === true) &&
     (value.editId === undefined || isString(value.editId)) &&
     (value.finishedEditOutcomes === undefined || isFinishedEditOutcomes(value.finishedEditOutcomes)) &&
     (value.queueOrder === undefined || (isNumber(value.queueOrder) && Number.isFinite(value.queueOrder))) &&
@@ -4427,6 +4509,10 @@ function isChatMessageFromPerson(message: StoredMessage): boolean {
     message.messaging === undefined &&
     message.messagingReturn === undefined
   );
+}
+
+function isTaskAnswer(message: StoredMessage, agentId: string): boolean {
+  return !message.agentTaskRequest && message.sender.kind === "agent" && message.sender.agentId !== agentId;
 }
 
 /** An agent's answer to a request. A linked message that asks for a reply is a new request. */
