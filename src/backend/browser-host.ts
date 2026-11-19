@@ -102,7 +102,7 @@ import {
   socksExit,
 } from "./browser-profiles/browser-proxy-relay";
 import type { BrowserProxyConnection } from "./browser-profiles/browser-proxy-store";
-import { BrowserRecorder } from "./browser-recorder";
+import { BrowserRecorder, recordingFrameSize } from "./browser-recorder";
 import {
   BROWSER_PAGE_CRASH_KEPT,
   BROWSER_PAGE_CRASH_RELOADED,
@@ -179,7 +179,6 @@ import {
   parseBrowserToolArguments,
   parseBrowserToolCall,
 } from "./browser-tools";
-import { readClickTarget } from "./browser-user-click";
 import { runCauseEffect } from "./effect-boundary";
 import {
   BROWSER_STRING_MORE,
@@ -267,6 +266,14 @@ const OPEN_REDIRECT_READS = 2;
  * cannot finish, such as a command that a page dialog holds.
  */
 const TOOL_QUEUE_WAIT_MS = 120_000;
+/**
+ * How long a close waits for the earlier operations of its tab. A timed-out operation frees the tab in
+ * about 2 s after its deadline. An operation that a page that does not answer holds can wait for ever,
+ * and the close then removes the page under it (#11918).
+ */
+const CLOSE_QUEUE_WAIT_MS = 10_000;
+/** After that close, the time for the queued operations to end on the closed page. */
+const CLOSED_PAGE_DRAIN_MS = 2_000;
 /** The `keyCode` of `sendInputEvent` for a key whose `Input.key` name is different. */
 const FORWARDED_KEY_CODES: Partial<Record<string, string>> = { ArrowLeft: "Left", ArrowRight: "Right" };
 /**
@@ -285,6 +292,8 @@ export interface BrowserViewOptions {
   onCursor?: (cursor: BrowserViewCursor) => void;
   /** The page size, in CSS pixels, that the page keeps while the view is open. */
   viewport?: BrowserViewViewport;
+  /** Hears the text that the page itself copies. Not called while a secret is on the page. */
+  onPageCopy?: (text: string) => void;
 }
 
 /** A web address a member may copy from a menu. Other schemes and long addresses are left out. */
@@ -529,7 +538,7 @@ function runBrowserTool<Name extends BrowserToolName>(
 }
 
 const AGENT_CODE_CARD_FILL =
-  "Card fill is unavailable while a script from evaluate can still run in this page or in another open page of this site. Reload this page with navigate direction=reload, not with evaluate or by opening its address again, close or navigate each other tab where you ran evaluate on this site, take a fresh snapshot, and call fill_card again, or use request_takeover.";
+  "Card fill is unavailable while a script from evaluate can still run in this page or in another open page of this site. First close or navigate each other tab of this site, also a popup or opener tab where you did not run evaluate. A tab of another chat or agent can also block the fill, and list_tabs does not show it: when no other tab of this site is in list_tabs, ask the user to close the other tabs of this site. Then reload this page with navigate direction=reload, not with evaluate or by opening its address again, take a fresh snapshot, and call fill_card again, or use request_takeover.";
 
 /**
  * The origins of the documents in the page. A frame whose renderer is gone, for example after a crash,
@@ -654,8 +663,11 @@ export class BrowserHost {
   readonly #quitShortcut: (input: Input) => boolean;
   readonly #siteMemories: (agentId: string, hostname: string) => BrowserSiteMemory[];
   readonly #userBrowsing: BrowserUserBrowsing | null;
+  readonly #hideFromWindowSwitchers: (window: BaseWindow) => void;
   readonly #downloadsRoot: string;
   readonly #statePath: string;
+  /** The state path, or the fallback file while the state path holds the file of a newer release. */
+  #stateWritePath: string;
   readonly #tabs = new Map<string, BrowserHostTab>();
   readonly #closingTabDrains = new Map<string, Fiber.Fiber<void, BrowserOperationError>>();
   readonly #listeners = new Set<(...args: BrowserHostEvents["changed"]) => void>();
@@ -767,6 +779,11 @@ export class BrowserHost {
        * on. Omitted, nothing is recorded.
        */
       userBrowsing?: BrowserUserBrowsing;
+      /**
+       * Keeps the background window out of macOS window switchers, such as AltTab. The window of a local
+       * server is never shown, so its background window stays on screen while that server runs.
+       */
+      hideFromWindowSwitchers?: (window: BaseWindow) => void;
     } = {},
   ) {
     this.#window = window;
@@ -792,9 +809,11 @@ export class BrowserHost {
     this.#quitShortcut = options.quitShortcut ?? (() => false);
     this.#siteMemories = options.siteMemories ?? (() => []);
     this.#userBrowsing = options.userBrowsing ?? null;
+    this.#hideFromWindowSwitchers = options.hideFromWindowSwitchers ?? (() => {});
     this.#webPreferences = browserWebPreferences(options.pagePreload);
     this.#downloadsRoot = downloadsRoot;
     this.#statePath = statePath;
+    this.#stateWritePath = statePath;
     this.#session = session.fromPartition("persist:openbot-browser", { cache: true });
     this.#recorder = new BrowserRecorder(
       downloadsRoot,
@@ -830,7 +849,8 @@ export class BrowserHost {
     this: BrowserHost,
     agents: readonly BrowserTabOwner[] = [],
   ): Effect.fn.Return<void, BrowserOperationError> {
-    const state = yield* readBrowserState(this.#statePath);
+    const { state, writePath } = yield* readBrowserState(this.#statePath);
+    this.#stateWritePath = writePath;
     if (state.tabs.length === 0) return;
 
     const tabs: BrowserHostTab[] = [];
@@ -972,6 +992,7 @@ export class BrowserHost {
     return (
       // A preview capture is not a use. An unload that starts during one waits behind it on the queue.
       tab.pendingOperations > (tab.previewCapture ? 1 : 0) ||
+      tab.opening === true ||
       tab.viewInvalidations.size > 0 ||
       tab.recording ||
       tab.secret !== undefined ||
@@ -1249,8 +1270,14 @@ export class BrowserHost {
 
       const loadGeneration = tab.loadGeneration;
       yield* Effect.gen({ self: this }, function* () {
-        // The first load of a new tab has no deadline, as with `loadURL` alone.
-        yield* navigateAndWait(tab.contents, () => tab.contents.loadURL(normalizedUrl, browserLoadOptions()), null);
+        // The first load of a new tab has no deadline, as with `loadURL` alone. The idle unload must not
+        // close the page while this wait runs: the open would fail as a closed tab (#11475).
+        tab.opening = true;
+        yield* navigateAndWait(
+          tab.contents,
+          () => tab.contents.loadURL(normalizedUrl, browserLoadOptions()),
+          null,
+        ).pipe(Effect.ensuring(Effect.sync(() => (tab.opening = false))));
         if (focus) {
           this.#focusTab(tab);
           setImmediate(() => this.#focusTab(tab));
@@ -1534,11 +1561,28 @@ export class BrowserHost {
     tab.engine.releaseDialogs();
     const destroy = yield* Effect.forkIn(
       Effect.gen({ self: this }, function* () {
-        yield* Deferred.await(tab.queue);
+        const queueDrains = (milliseconds: number) =>
+          Deferred.await(tab.queue).pipe(Effect.timeoutOption(milliseconds), Effect.map(Option.isSome));
+        let drained = yield* queueDrains(CLOSE_QUEUE_WAIT_MS);
+        if (!drained) {
+          logger.warn("A browser tab closed before an earlier operation on it finished.", {
+            tabId,
+            host: logUrlHost(tab.requestedUrl),
+            pendingOperations: tab.pendingOperations,
+          });
+          // The commands that wait for the page end with it, and the operations still queued see a closed tab.
+          yield* browserSync(() => {
+            if (!tab.contents.isDestroyed()) tab.contents.close();
+          });
+          drained = yield* queueDrains(CLOSED_PAGE_DRAIN_MS);
+        }
         yield* Effect.all(childDrains, { concurrency: "unbounded", discard: true });
         const discarded = yield* Effect.exit(this.#recorder.discard(tabId, "tab-closed"));
         yield* tab.engine.destroy();
-        yield* Scope.close(tab.scope, Exit.void);
+        // The scope waits for the queued operations. Neither the close nor the host shutdown waits for one
+        // that never ends.
+        if (drained) yield* Scope.close(tab.scope, Exit.void);
+        else yield* Effect.forkDetach(Scope.close(tab.scope, Exit.void), { startImmediately: true });
         yield* browserSync(() => {
           if (!tab.contents.isDestroyed()) tab.contents.close();
         });
@@ -1691,6 +1735,15 @@ export class BrowserHost {
       )
         this.releaseUserControl(tabId);
     }
+  }
+
+  /**
+   * Releases each tab whose holder `refused` names, such as a member who may no longer see the tab
+   * after a change of the roles. A recording in the tab ends with it.
+   */
+  releaseUserControlRefused(refused: (tabId: string, holder: BrowserUserControlHolder) => boolean): void {
+    for (const [tabId, holder] of [...this.#userControlTabIds])
+      if (refused(tabId, holder)) this.releaseUserControl(tabId);
   }
 
   /**
@@ -2547,7 +2600,7 @@ export class BrowserHost {
     onEnded?: (reason: string) => void,
     options: BrowserViewOptions = {},
   ): Effect.fn.Return<() => Effect.Effect<void>, BrowserOperationError> {
-    const { onCursor, viewport } = options;
+    const { onCursor, viewport, onPageCopy } = options;
     const tab = yield* this.#requireTab(tabId);
     // The local window shows a protected tab during a takeover. A live view goes to another computer,
     // so the page loads again first: the secret leaves it, and the person signs in by hand. Without
@@ -2589,6 +2642,19 @@ export class BrowserHost {
           maxWidth: VIEW_FRAME_MAX_WIDTH,
           maxHeight: VIEW_FRAME_MAX_HEIGHT,
           ...(viewport ? { viewport } : {}),
+          ...(onPageCopy
+            ? {
+                onPageCopy: (text: string) => {
+                  if (
+                    !tab.secret?.submitted &&
+                    !tab.filledCard &&
+                    !tab.secretShown &&
+                    tab.captureGeneration === generation
+                  )
+                    onPageCopy(text);
+                },
+              }
+            : {}),
         },
         (frame) => {
           if (!tab.secret?.submitted && !tab.filledCard && !tab.secretShown && tab.captureGeneration === generation)
@@ -2844,9 +2910,22 @@ export class BrowserHost {
       Effect.gen({ self: this }, function* () {
         const tabId = args.tabId;
         yield* browserSync(() => this.#requireToolTab(params, tabId));
-        yield* this.#enqueue(tabId, (tab) => {
+        yield* this.#enqueue(tabId, (tab, keepQueueBlocked) => {
           this.#requireNoSecretDocument(tab, "Recording");
-          return this.#recorder.start(tabId, tab.contents);
+          return Effect.gen({ self: this }, function* () {
+            const frameSize = recordingFrameSize(tab.environment);
+            yield* this.#recorder.start(tabId, tab.contents, frameSize);
+            if (!frameSize) return;
+            // The first capture of a tab shows only the part of the page that fits the panel until
+            // the page size is applied again. The recording runs either way, so a failure is ignored.
+            yield* boundEngineOperation(
+              tab,
+              tab.engine.setEnvironment(tab.environment),
+              10_000,
+              "Browser environment change timed out.",
+              keepQueueBlocked,
+            ).pipe(Effect.ignore);
+          });
         });
         return textResult({ recording: true, tabId, limits: { durationMs: 300_000, bytes: 104_857_600 } });
       }),
@@ -3894,8 +3973,10 @@ export class BrowserHost {
       });
       if (!cancelled) this.#emitChanged();
     });
-    target.setPermissionRequestHandler((_webContents, permission, callback) =>
-      callback(isAllowedBrowserPermission(permission)),
+    target.setPermissionRequestHandler((webContents, permission, callback, details) =>
+      callback(
+        isAllowedBrowserPermission(permission) || this.#recorder.allowsTabCapture(webContents, permission, details),
+      ),
     );
     target.setPermissionCheckHandler((_webContents, permission) => isAllowedBrowserPermission(permission));
     target.on("will-download", (event, item, contents) => {
@@ -3939,9 +4020,23 @@ export class BrowserHost {
         item.cancel();
         stopped(DOWNLOAD_TOO_LARGE);
       });
-      item.once("done", () => {
+      item.once("done", (_doneEvent, state) => {
         this.#activeDownloads -= 1;
         this.#reservedDownloadPaths.delete(downloadPath);
+        // A cancelled download is one that the size limit stopped, which says so above, or one that the app
+        // stopped as it quit.
+        if (state === "interrupted") stopped("Download failed before the file was complete. Try again.");
+        if (state !== "completed") return;
+        // The click only starts the download, so the agent finds the saved file in its next snapshot.
+        // A network entry at info level does not show there, so this is a load entry. The path comes first and
+        // only once, so the length limit of an entry does not cut it.
+        if (!tab || tab.secret) return;
+        tab.diagnostics.add({
+          kind: "load",
+          level: "info",
+          message: `Download complete: saved at ${downloadPath} (${item.getReceivedBytes()} bytes)`,
+          ...diagnosticUrlField(item.getURL()),
+        });
       });
     });
   }
@@ -4395,7 +4490,10 @@ export class BrowserHost {
           const body = document.body ? getComputedStyle(document.body).backgroundColor : transparent;
           if (body !== transparent) return body;
           const root = getComputedStyle(document.documentElement).backgroundColor;
-          return root !== transparent ? root : "#0b0b0b";
+          if (root !== transparent) return root;
+          // A page without its own background draws on white, as in other browsers. The blank page
+          // between loads stays dark. A dark color-scheme page still paints its own dark canvas.
+          return location.href === "about:blank" ? "#0b0b0b" : "#ffffff";
         })()`,
           true,
         ),
@@ -4616,6 +4714,7 @@ export class BrowserHost {
    */
   #openBackgroundWindow(): BaseWindow {
     const background = createBackgroundWindow();
+    this.#hideFromWindowSwitchers(background);
     background.once("closed", () => {
       if (this.#backgroundWindow !== background) return;
       this.#backgroundWindow = null;
@@ -4909,23 +5008,47 @@ export class BrowserHost {
     contents.on("did-navigate-in-page", (_event, _url, isMainFrame) => {
       if (isMainFrame) recordPage();
     });
-    contents.on("input-event", (_event, input) => {
-      if (input.type !== "mouseDown" || !("x" in input) || !("y" in input)) return;
-      const { x, y } = input;
-      if (typeof x !== "number" || typeof y !== "number" || !records()) return;
+    // Each press gives this event, also a press in a frame of another process. The input event that
+    // follows in the same call comes only from the page's own view, so a press without it is in the
+    // pixels of that frame (#10912). A live view's press gives its point in the page's pixels.
+    let press: { x: number; y: number; inPage: boolean } | null = null;
+    contents.on("before-mouse-event", (_event, input) => {
+      if (input.type !== "mouseDown" || !records()) return;
+      // The place of the press, before the press can navigate the page.
       const place = stepPlace(tab.engine.scrubText(contents.getURL()));
       if (!place) return;
-      void readClickTarget(contents, x, y).then((target) => {
-        // The tab can change hands while the page answers.
-        if (target)
-          this.#recordUserStep(tab, {
-            kind: "click",
-            ...place,
-            ...target,
-            ...(target.name === undefined ? {} : { name: tab.engine.scrubText(target.name) }),
-          });
+      const zoom = contents.getZoomFactor() || 1;
+      const viewed = tab.engine.viewPress();
+      const current = viewed ? { ...viewed, inPage: true } : { x: input.x / zoom, y: input.y / zoom, inPage: false };
+      press = current;
+      setImmediate(() => {
+        if (press === current) press = null;
+        this.#recordClick(tab, place, current);
       });
     });
+    contents.on("input-event", (_event, input) => {
+      if (input.type === "mouseDown" && press) press.inPage = true;
+    });
+  }
+
+  /** Records the control under a press, in CSS pixels, as `#bindUserBrowsing` reads it. */
+  #recordClick(
+    tab: BrowserHostTab,
+    place: { host: string; path: string },
+    press: { x: number; y: number; inPage: boolean },
+  ): void {
+    if (tab.closing || tab.contents.isDestroyed()) return;
+    const record = Effect.map(tab.engine.clickTargetAt(press.x, press.y, press.inPage), (target) => {
+      // The tab can change hands while the page answers.
+      if (target)
+        this.#recordUserStep(tab, {
+          kind: "click",
+          ...place,
+          ...target,
+          ...(target.name === undefined ? {} : { name: tab.engine.scrubText(target.name) }),
+        });
+    });
+    Effect.runFork(record.pipe(Effect.forkIn(tab.scope, { startImmediately: true })));
   }
 
   #noteSiteVisit(tab: BrowserHostTab, url: string): void {
@@ -4996,7 +5119,9 @@ export class BrowserHost {
       })),
     };
     yield* this.#persistLock.withPermit(
-      writeJsonFileAtomically(this.#statePath, state).pipe(Effect.mapError((error) => browserFailure(error.cause))),
+      writeJsonFileAtomically(this.#stateWritePath, state).pipe(
+        Effect.mapError((error) => browserFailure(error.cause)),
+      ),
     );
   });
 }

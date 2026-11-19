@@ -1,11 +1,18 @@
 import { basename } from "node:path";
+import type { Readable } from "node:stream";
+import { StringDecoder } from "node:string_decoder";
+import { stripVTControlCharacters } from "node:util";
 import {
   Client as ModernClient,
   StreamableHTTPClientTransport as ModernHttpTransport,
 } from "@modelcontextprotocol/client";
 import { UnauthorizedError } from "@modelcontextprotocol/sdk/client/auth.js";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
-import { getDefaultEnvironment, StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
+import {
+  getDefaultEnvironment,
+  StdioClientTransport,
+  type StdioServerParameters,
+} from "@modelcontextprotocol/sdk/client/stdio.js";
 import { StreamableHTTPClientTransport, StreamableHTTPError } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 import {
   AccessDeniedError,
@@ -20,6 +27,7 @@ import type { McpServerConfig } from "@openbot/contracts/ipc";
 import { isDynamicRecord } from "@openbot/contracts/runtime-values";
 import { sourceText } from "@openbot/i18n/source";
 import { Effect, Result, Schema } from "effect";
+import { z } from "zod";
 import { causeHelpers } from "./effect-boundary";
 import {
   isLoopback,
@@ -348,7 +356,8 @@ function describeProbeFailure(
   // With no metadata, the SDK registers at a guessed address, and a token server answers that with
   // a status such as Laravel's 419, or 401. The sign-in never existed; the key is what it wants.
   if (signIn?.signInServerMissing()) return BEARER_KEY;
-  if (signIn && isRegistrationRefusal(error, signIn)) return REGISTRATION_REFUSED;
+  if (signIn && isRegistrationRefusal(error, signIn))
+    return signIn.registrationUnsupported() ? REGISTRATION_UNAVAILABLE : REGISTRATION_REFUSED;
   if (accountRefused) return sourceText("error.backend.mcpSignInAccountRefused");
   const status = httpStatus(error);
   if (signIn && status === 401) return sourceText("error.backend.mcpSignInNotAccepted");
@@ -469,8 +478,25 @@ const connectAndCountEffect = Effect.fnUntraced(function* (
   return yield* countOverEffect(timeoutMs, () => {
     const client = new Client(PROBE_CLIENT_INFO, { capabilities: {} });
     const transport = createTransport(server, signIn, onChallenge);
-    return { client, transport, connect: (signal) => client.connect(transport, { signal }) };
+    const lister: ProbeClient = {
+      listTools: (params, options) => client.request({ method: "tools/list", params }, LISTED_TOOLS_PAGE, options),
+      close: () => client.close(),
+    };
+    return { client: lister, transport, connect: (signal) => client.connect(transport, { signal }) };
   });
+});
+
+/**
+ * The part of a `tools/list` page that the probe reads.
+ *
+ * The SDK v1 `listTools` decodes each tool with a schema that refuses a property schema that is not
+ * an object, such as `"data": true`, which JSON Schema permits. One such tool failed the whole test
+ * and the server was not added (#11931). The provider reads the tool schemas itself, so the probe
+ * decodes only the names and the cursor. The SDK v2 client already accepts these schemas.
+ */
+const LISTED_TOOLS_PAGE = z.object({
+  tools: z.array(z.object({ name: z.string() })),
+  nextCursor: z.string().optional(),
 });
 
 /**
@@ -512,7 +538,7 @@ interface ProbeConnection {
 const countOverEffect = Effect.fnUntraced(function* (timeoutMs: number, open: () => ProbeConnection) {
   return yield* Effect.acquireUseRelease(
     Effect.try({ try: open, catch: (cause) => new McpProbeFailure({ cause }) }),
-    ({ client, connect }) =>
+    ({ client, transport, connect }) =>
       Effect.gen(function* () {
         yield* probeIo(connect);
         return yield* countToolsEffect(client);
@@ -521,10 +547,89 @@ const countOverEffect = Effect.fnUntraced(function* (timeoutMs: number, open: ()
           duration: timeoutMs,
           orElse: () => Effect.fail(new McpProbeFailure({ cause: new McpTimeout(timeoutMs) })),
         }),
+        Effect.catch((failure) => explainClosedEffect(failure, transport)),
       ),
     ({ client, transport }) => closeQuietlyEffect(client, transport),
   );
 });
+
+/** A closed stdio connection fails with what the server wrote to stderr before it stopped. */
+const explainClosedEffect = Effect.fnUntraced(function* (
+  failure: McpProbeFailure,
+  transport: Pick<Transport, "close">,
+): Effect.fn.Return<never, McpProbeFailure> {
+  if (!(transport instanceof TailedStdioTransport) || !isConnectionClosed(failure.cause))
+    return yield* Effect.fail(failure);
+  const output = yield* transport.output();
+  if (!output.text) return yield* Effect.fail(failure);
+  return yield* Effect.fail(new McpProbeFailure({ cause: new McpServerExit(output.text, output.cut) }));
+});
+
+/** How much of the end of a stdio server's stderr the panel shows. */
+const MCP_STDERR_SHOWN = 1_000;
+
+/**
+ * How much of the end is kept before the secrets are removed. Masking finds only whole values, so
+ * the shown part is cut after it: a value that this cut splits is at the start, which that cut drops.
+ */
+const MCP_STDERR_KEPT = 8_000;
+
+/** How long the last stderr lines can arrive after the connection closed. */
+const MCP_STDERR_SETTLE_MS = 250;
+
+/**
+ * `StdioClientTransport` that keeps the end of the server's stderr.
+ *
+ * The pipe is read all the time, so a server that writes much to stderr cannot fill the 64 KB
+ * buffer and stop before it answers. Only the end is kept: when the server stops, the end holds
+ * the reason, such as a variable that the terminal had and the launch did not (#10137).
+ */
+class TailedStdioTransport extends StdioClientTransport {
+  #output = "";
+  #cut = false;
+  #source: Readable | null = null;
+  readonly #ended: Promise<void>;
+
+  constructor(server: StdioServerParameters) {
+    super({ ...server, stderr: "pipe" });
+    // The SDK gives this stream before `start`, so no early line is lost.
+    const stream = this.stderr;
+    const decoder = new StringDecoder("utf8");
+    const keep = (text: string) => {
+      const output = this.#output + text;
+      this.#cut ||= output.length > MCP_STDERR_KEPT;
+      this.#output = output.slice(-MCP_STDERR_KEPT);
+    };
+    this.#ended = new Promise((resolve) => {
+      if (!stream) return resolve();
+      stream.on("pipe", (source: Readable) => {
+        this.#source = source;
+      });
+      stream.on("data", (chunk: Buffer) => keep(decoder.write(chunk)));
+      stream.once("end", () => {
+        keep(decoder.end());
+        resolve();
+      });
+      stream.once("close", () => resolve());
+      stream.on("error", () => resolve());
+    });
+  }
+
+  /** The kept stderr, after the stream ends or the short wait passes: a descendant can keep it open. */
+  output() {
+    return Effect.promise(() => this.#ended).pipe(
+      Effect.timeoutOption(MCP_STDERR_SETTLE_MS),
+      // Colour codes of a terminal logger are not text the panel can show.
+      Effect.map(() => ({ text: stripVTControlCharacters(this.#output).trim(), cut: this.#cut })),
+    );
+  }
+
+  /** A descendant that got stderr can keep it open after the server is killed: release this end. */
+  override async close() {
+    await super.close();
+    this.#source?.destroy();
+  }
+}
 
 interface ListedTools {
   count: number;
@@ -599,7 +704,7 @@ function createTransport(
       requestInit: { headers },
     });
   }
-  return new StdioClientTransport({
+  return new TailedStdioTransport({
     command: server.command ?? config.command,
     args: server.args,
     // The resolved directory, not the stored one: process creation does not expand a leading `~`,
@@ -613,10 +718,6 @@ function createTransport(
       ...getDefaultEnvironment(),
       ...mcpLaunchEnvironment(server),
     },
-    // Discarded, not piped. Nothing here reads that pipe, so a server that writes its startup log to
-    // stderr - which a Rust or Python server does with a blocking write - fills the 64 KB buffer and
-    // stops before it answers the handshake. The probe would report a timeout for a working server.
-    stderr: "ignore",
   });
 }
 
@@ -723,12 +824,35 @@ class McpTimeout extends Error {
   }
 }
 
+/** A stdio server that stopped before it answered, with the end of what it wrote to stderr. */
+class McpServerExit extends Error {
+  constructor(
+    readonly output: string,
+    /** Whether the server wrote more than `output`. */
+    readonly cut: boolean,
+  ) {
+    super("The MCP server stopped before it answered.");
+  }
+}
+
+/** The end of the server's stderr that the panel shows, with the secrets removed before the cut. */
+function serverOutput(error: McpServerExit, config: McpServerConfig): string {
+  const output = redactMcpSecrets(error.output, config).trim();
+  if (!error.cut && output.length <= MCP_STDERR_SHOWN) return output;
+  // A cut can split a character in two: its lone second half is dropped.
+  return `…${output.slice(-MCP_STDERR_SHOWN).replace(/^[\uDC00-\uDFFF]/u, "")}`;
+}
+
 /** The failure, in the words the panel shows. Secrets are removed before the text leaves here. */
 function describeMcpError(error: unknown, config: McpServerConfig): string {
   const described = describeMcpErrorText(error, config);
   // A bridge that never answers is the case the native connection replaces: say where to go.
   const bridgeUrl = mcpRemoteBridgeUrl(config);
-  if (bridgeUrl === null || !(error instanceof McpTimeout || isConnectionClosed(error))) return described;
+  if (
+    bridgeUrl === null ||
+    !(error instanceof McpTimeout || error instanceof McpServerExit || isConnectionClosed(error))
+  )
+    return described;
   return sourceText("error.backend.mcpRemoteBridge", { reason: described, url: bridgeUrl });
 }
 
@@ -738,6 +862,10 @@ function describeMcpErrorText(error: unknown, config: McpServerConfig): string {
     return sourceText("error.backend.mcpServerNoAnswer", { seconds: Math.round(error.timeoutMs / 1000) });
   // Only a sign-in reaches this: without an `authProvider` the transport reports the raw 401 below.
   if (error instanceof UnauthorizedError) return sourceText("error.backend.mcpSignInNotAccepted");
+  // What the server wrote before it stopped says why, also when the command works in a terminal
+  // (#10137). The probe secrets do not hold the configured values, so they are removed here.
+  if (error instanceof McpServerExit)
+    return sourceText("error.backend.mcpServerExitedWithOutput", { detail: serverOutput(error, config) });
   // The child exited before the handshake: the process failed to start, not the network.
   if (config.transport === "stdio" && isConnectionClosed(error)) return sourceText("error.backend.mcpServerExited");
   if (config.transport === "http") {
@@ -844,6 +972,12 @@ function isProtocolMismatch(error: Error, code: string | null): boolean {
  * registers only the MCP clients it approved. "Try again" and the API key cannot change it.
  */
 const REGISTRATION_REFUSED = sourceText("error.backend.mcpRegistrationRefused");
+
+/**
+ * The sign-in server has no registration at all, as Google's has (#8398). A sign-in app is then the
+ * only client it can accept, so the sentence names it: a local MCP server is not the way forward.
+ */
+const REGISTRATION_UNAVAILABLE = sourceText("error.backend.mcpRegistrationUnavailable");
 
 function isAccessRefusal(status: number | null): boolean {
   return status === 401 || status === 403;

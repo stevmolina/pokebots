@@ -2,7 +2,6 @@ import {
   type AgentBrowserProfile,
   agentAutomationAllowed,
   agentNotificationLevelMap,
-  assignedSkillCount,
   type BrowserProfileSummary,
   type BrowserProxyComputer,
   type BrowserProxySummary,
@@ -13,9 +12,11 @@ import {
   type ServerNotificationLevel,
   type StoredFileRow,
   type TestRoutineInput,
+  userAssignedSkills,
 } from "@openbot/contracts/ipc";
 import { fileTypeOf } from "@openbot/team-client/stored-files";
 import {
+  Blocks,
   BookMarked,
   Button,
   ChevronRight,
@@ -73,7 +74,7 @@ import { type AgentFilesOptions, AgentFilesSettings } from "../files/AgentFilesS
 import { filesPort } from "../files/files-port";
 import { createStorageUsage } from "../files/storage-usage";
 import { AgentMemoriesSettings } from "./AgentMemoriesSettings";
-import { AgentRoutinesSettings, type RoutineSelectionRequest } from "./AgentRoutinesSettings";
+import { AgentRoutinesSettings, type DetailLeaveGuard, type RoutineSelectionRequest } from "./AgentRoutinesSettings";
 import { AgentSkillsModal, type AgentSkillsMode, type SkillDetail } from "./AgentSkillsModal";
 import { conversationPort, type SharedTableCalls } from "./conversation-port";
 import type { AgentNotificationLevelCalls, ConversationRuntime } from "./conversation-runtime";
@@ -125,6 +126,8 @@ interface AgentSettingsPanelProps
   adminCalls?: ConversationRuntime["admin"] | undefined;
   onPublish?: (() => void) | undefined;
   onOpenUsage?: ((trigger: HTMLButtonElement) => void) | undefined;
+  /** Opens the Marketplace on Apps. Absent for a user who cannot manage the server's MCP servers. */
+  onOpenApps?: (() => void) | undefined;
   onWidthChange: (width: number) => void;
   /** The agent's sessions, at the top of the panel. Missing on a host without side threads. */
   sessions?: AgentSessionsProps | undefined;
@@ -620,7 +623,8 @@ export default function AgentSettingsPanel(props: AgentSettingsPanelProps) {
           ? await skillsPort().agent.listInstalledSkills(agentId)
           : await skillCalls().listInstalled(agentId);
       setDraft((state) => {
-        state.skills.count = assignedSkillCount(items);
+        // The same list as the skills dialog, so the row and the dialog show the same number.
+        state.skills.count = userAssignedSkills(items).length;
       });
     } catch {
       setDraft((state) => {
@@ -681,8 +685,15 @@ export default function AgentSettingsPanel(props: AgentSettingsPanelProps) {
   // A setting card opens the page of a link row here, and gives each other row to the shared panel.
   const settingReveal = createMemo(() => props.settingReveal);
   const [panelReveal, setPanelReveal] = createSignal<AgentSettingReveal | null>(null);
+  // The open detail page that can hold a card, such as to ask before it discards an edit.
+  let detailLeaveGuard: DetailLeaveGuard | null = null;
   createEffect(settingReveal, (request) => {
     if (!request) return;
+    props.onSettingRevealHandled?.(request.nonce);
+    const guard = detailLeaveGuard;
+    untrack(() => (guard ? guard(() => revealSetting(request)) : revealSetting(request)));
+  });
+  function revealSetting(request: AgentSettingReveal): void {
     const detail = revealDetail(request.settingId);
     setDraft((state) => {
       state.instructions.open = detail === "instructions";
@@ -694,8 +705,7 @@ export default function AgentSettingsPanel(props: AgentSettingsPanelProps) {
     // A detail page covers the panel, and its Back goes to the root list that holds its link row, so the
     // panel still moves to that page. The skills dialog opens over the page that the panel shows.
     setPanelReveal(detail === "skills" ? null : request);
-    props.onSettingRevealHandled?.(request.nonce);
-  });
+  }
   /** The page that a link row opens for the setting, when this agent shows that row. */
   function revealDetail(settingId: AgentSettingLinkId): "instructions" | "memories" | "skills" | "routines" | null {
     if (settingId === "agent.instructions" && props.instructionsFile) return "instructions";
@@ -1060,13 +1070,22 @@ export default function AgentSettingsPanel(props: AgentSettingsPanelProps) {
               </Show>
             </SettingsLinkGroup>
           </Show>
-          <Show when={props.onOpenUsage || props.onPublish}>
+          <Show when={props.onOpenUsage || props.onOpenApps || props.onPublish}>
             <SettingsLinkGroup inset title={t("agentSettings.groups.does")}>
               <Show when={props.onOpenUsage}>
                 <SettingsLinkRow
                   icon={<Gauge aria-hidden="true" />}
                   label={t("agentSettings.links.usage")}
                   onClick={(trigger) => props.onOpenUsage?.(trigger)}
+                />
+              </Show>
+              {/* Apps are the server's, not this agent's, so the row says that every agent gets them. */}
+              <Show when={props.onOpenApps}>
+                <SettingsLinkRow
+                  icon={<Blocks aria-hidden="true" />}
+                  label={t("agentSettings.links.apps")}
+                  value={t("agentSettings.links.appsScope")}
+                  onClick={() => props.onOpenApps?.()}
                 />
               </Show>
               <Show when={props.onPublish}>
@@ -1128,6 +1147,9 @@ export default function AgentSettingsPanel(props: AgentSettingsPanelProps) {
               setLocalRoutineRequest(null);
             }}
             onClose={props.onClose}
+            registerLeaveGuard={(guard) => {
+              detailLeaveGuard = guard;
+            }}
             selectionRequest={localRoutineRequest() ?? props.routineSelectionRequest}
             onSelectionRequestHandled={(nonce) => {
               if (localRoutineRequest()?.nonce === nonce) {
@@ -1138,6 +1160,7 @@ export default function AgentSettingsPanel(props: AgentSettingsPanelProps) {
             }}
             onOpenRun={props.onOpenRoutineRun}
             onOpenThread={props.onOpenRoutineThread}
+            agentName={props.agent.name}
           />
         </div>
       </Show>

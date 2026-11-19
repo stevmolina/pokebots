@@ -19,6 +19,7 @@ import {
   FEEDBACK_WITHDRAW_ROUTES,
 } from "@openbot/contracts/team-protocol/feedback-withdraw-v1";
 import { LIVE_VOICE_CAPABILITY } from "@openbot/contracts/team-protocol/live-voice-v1";
+import { ROUTINE_PAUSE_REASONS_CAPABILITY } from "@openbot/contracts/team-protocol/routine-pause-reasons-v1";
 import { ROUTINE_RESULTS_CAPABILITY } from "@openbot/contracts/team-protocol/routine-results-v1";
 import {
   decodeRoutineRunCommandResponse,
@@ -28,6 +29,7 @@ import {
 import { ROUTINES_ONCE_CAPABILITY } from "@openbot/contracts/team-protocol/routines-once-v1";
 import { decodeSideQuestionResponse, SIDE_QUESTION_ROUTES } from "@openbot/contracts/team-protocol/side-question-v1";
 import { SKILL_LEARNING_ROUTES } from "@openbot/contracts/team-protocol/skill-learning-v1";
+import { WEBHOOK_AGENT_SECRET_CAPABILITY } from "@openbot/contracts/team-protocol/webhook-agent-secret-v1";
 import { runTeamEffect } from "@openbot/team-client";
 import {
   deleteSharedTable,
@@ -80,6 +82,8 @@ function webHostAdmin(
   webhookSenderSecretEnabled?: () => boolean,
   routineRunPlaceEnabled?: () => boolean,
   routinesOnceEnabled?: () => boolean,
+  routinePauseReasonsEnabled?: () => boolean,
+  webhookAgentSecretEnabled?: () => boolean,
 ): NonNullable<ConversationRuntime["admin"]> {
   // `request()` names the connected host at call time, so a host switch reaches the new host.
   const eventRoutines = webEventRoutinesApi(
@@ -89,6 +93,8 @@ function webHostAdmin(
     () => webhookSenderSecretEnabled?.() === true,
     () => routineRunPlaceEnabled?.() === true,
     () => routinesOnceEnabled?.() === true,
+    () => routinePauseReasonsEnabled?.() === true,
+    () => webhookAgentSecretEnabled?.() === true,
   );
   return {
     get sessionSettings() {
@@ -173,6 +179,7 @@ export function createWebConversationRuntime(
   skillCatalog?: () => SkillCatalogCalls,
 ): ConversationRuntime {
   const routinesOnceEnabled = () => hasCapability?.(ROUTINES_ONCE_CAPABILITY) === true;
+  const routinePauseReasonsEnabled = () => hasCapability?.(ROUTINE_PAUSE_REASONS_CAPABILITY) === true;
   const webLiveVoice = useWebLiveVoice();
   const listeners = new Set<(event: AttachmentImportEvent) => void>();
   const attachmentMedia = createWebAttachmentMedia(remote, hostId);
@@ -504,6 +511,7 @@ export function createWebConversationRuntime(
             (...args) => adminRequest()(...args),
             () => routineRunPlaceEnabled?.() === true,
             routinesOnceEnabled,
+            routinePauseReasonsEnabled,
           ),
           onEvent: (listener) =>
             onHostEvent?.((event) => {
@@ -522,6 +530,9 @@ export function createWebConversationRuntime(
           webhookSenderSecretEnabled,
           routineRunPlaceEnabled,
           routinesOnceEnabled,
+          routinePauseReasonsEnabled,
+          // The same owner or admin gives the signing secret of an agent's webhook routine to that agent.
+          () => eventsEnabled?.() === true && hasCapability?.(WEBHOOK_AGENT_SECRET_CAPABILITY) === true,
         )
       : undefined,
   };

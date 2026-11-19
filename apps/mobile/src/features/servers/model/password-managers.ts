@@ -23,13 +23,14 @@ export const PASSWORD_MANAGER_TEXT = {
     description: "mobile.server.connectors.protonPass.description",
     keyHelp: "mobile.server.connectors.protonPass.keyHelp",
     keyPlaceholder: "mobile.server.connectors.protonPass.keyPlaceholder",
+    plan: "mobile.server.connectors.protonPass.plan",
   },
   keeper: {
     description: "mobile.server.connectors.keeper.description",
   },
 } as const satisfies Record<
   MobilePasswordManagerId,
-  { description: string; keyHelp?: string; keyPlaceholder?: string }
+  { description: string; keyHelp?: string; keyPlaceholder?: string; plan?: string }
 >;
 
 /**

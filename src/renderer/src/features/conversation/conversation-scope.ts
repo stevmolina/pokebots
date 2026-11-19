@@ -349,6 +349,7 @@ export function createConversationViewScope(props: ConversationProps) {
     attachmentAction,
     attachmentDownloads,
     openSharedFile,
+    openThreadFile,
     openWorkspaceFile,
     openWorkspaceFolder,
     openWorkspaceFolderEntry,
@@ -581,6 +582,8 @@ export function createConversationViewScope(props: ConversationProps) {
     browserAddress,
     setBrowserAddress,
     setComposerError: setScopedComposerError,
+    takeoverPageRequest: controller.browserTakeoverPageRequest,
+    setTakeoverPageRequest: controller.setBrowserTakeoverPageRequest,
     panels: {
       activeRightPanel,
       setActiveRightPanel,
@@ -600,6 +603,8 @@ export function createConversationViewScope(props: ConversationProps) {
     browserTakeoverResolution,
     respondToBrowserTakeover,
     openBrowserTakeoverTab,
+    openWaitingAgent,
+    canOpenBrowserTakeoverTab,
     localSignIn,
     activeBrowserControl,
     actingBrowserControl,
@@ -1126,6 +1131,15 @@ export function createConversationViewScope(props: ConversationProps) {
     // The branch shows first, so that its editor takes the request.
     flush();
     setThreadFocusRequest((current) => current + 1);
+  };
+  /** Opens a new thread, and its composer takes the focus, so the user can type at once. */
+  const startNewThread = () => {
+    const onNew = props.threads?.header.onNew;
+    if (!onNew) return;
+    onNew();
+    // The new thread shows first, so that its editor takes the request.
+    flush();
+    requestThreadFocus();
   };
   /** Dictates into the open side thread's draft. */
   const startThreadVoiceRecording = () => {
@@ -1655,7 +1669,8 @@ export function createConversationViewScope(props: ConversationProps) {
           importSounds.cancel(event.requestId);
           // A side thread has no upload chip, so no Retry: the files are not kept for one.
           conversationRuntime(props).agent.discardAttachmentImport?.(event.requestId);
-          actionToast.error(event.message);
+          const { t, errorMessage } = currentText();
+          actionToast.error(errorMessage(event.message, t("composer.upload.failed")));
         } else {
           // A cancelled import completes with no attachments.
           if (event.attachments.length > 0) importSounds.finished(event.requestId, "success");
@@ -1669,14 +1684,14 @@ export function createConversationViewScope(props: ConversationProps) {
         if (target) {
           importSounds.finished(event.requestId, "error");
           // The chip of the file shows the failure, with Retry. An import with no chip has the banner.
-          // Electron puts the IPC channel in front of the sentence; the chip shows only the sentence.
-          if (attachmentUploads.get(event.requestId)) {
-            const { t, errorMessage } = currentText();
-            attachmentUploads.fail(event.requestId, errorMessage(event.message, t("composer.upload.failed")));
-          } else
+          // Electron puts the IPC channel in front of the sentence; the chip and the banner show only the sentence.
+          const { t, errorMessage } = currentText();
+          const message = errorMessage(event.message, t("composer.upload.failed"));
+          if (attachmentUploads.get(event.requestId)) attachmentUploads.fail(event.requestId, message);
+          else
             setConversationErrors((current) => ({
               ...current,
-              [composerDraftKey(target)]: event.message,
+              [composerDraftKey(target)]: message,
             }));
         } else importSounds.cancel(event.requestId);
         // Only a chip offers Retry, so the files of an import with none are not kept for one.
@@ -1757,8 +1772,9 @@ export function createConversationViewScope(props: ConversationProps) {
       event.stopImmediatePropagation();
       void closeBrowserTab(tab.id);
     };
+    // The reaction picker opens in a portal, outside `.message-actions`, so a press in it is not outside.
     const closeMessageMenus = (event: MouseEvent) => {
-      if (event.target instanceof Element && event.target.closest(".message-actions")) return;
+      if (event.target instanceof Element && event.target.closest(".message-actions, .reaction-picker")) return;
       setOpenReactionMessageId(null);
       setExpandedEmojiMessageId(null);
     };
@@ -1943,7 +1959,8 @@ export function createConversationViewScope(props: ConversationProps) {
       request: props.messageFocusRequest,
       agentId: props.agent?.id,
       loaded: props.loaded,
-      messageIds: props.messages.map((message) => message.id).join("\u0000"),
+      // Without a request, the effect does nothing, so it does not read and join every message id.
+      messageIds: props.messageFocusRequest ? props.messages.map((message) => message.id).join("\u0000") : "",
       index: props.messageFocusRequest ? timelineIndexById().get(props.messageFocusRequest.messageId) : undefined,
     }),
     ({ request, agentId, loaded, index }) => {
@@ -2792,6 +2809,7 @@ export function createConversationViewScope(props: ConversationProps) {
     threadFocusRequest,
     requestThreadFocus,
     branchThread,
+    startNewThread,
     threadVoiceLiveText,
     threadVoiceOwned,
     replyJump,
@@ -2827,6 +2845,8 @@ export function createConversationViewScope(props: ConversationProps) {
     browserTakeoverTab,
     respondToBrowserTakeover,
     openBrowserTakeoverTab,
+    openWaitingAgent,
+    canOpenBrowserTakeoverTab,
     localSignIn,
     activeChatSearchIndex,
     agentActivity,
@@ -2956,6 +2976,7 @@ export function createConversationViewScope(props: ConversationProps) {
     downloadSidebarFile,
     downloadMessageImageFile,
     revealSidebarFile,
+    openThreadFile,
     openWorkspaceFile,
     openWorkspaceFolder,
     openWorkspaceFolderEntry,

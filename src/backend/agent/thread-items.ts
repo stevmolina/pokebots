@@ -147,6 +147,17 @@ function isForeignReasoningError(message: string): boolean {
 }
 
 /**
+ * Anthropic refuses a request whose history has a text block with no text or only blank space. A
+ * provider session can keep such a block, such as an assistant turn with only a tool call that a
+ * converter for Anthropic sends as an empty text. The session sends it again on each turn, so each
+ * later turn failed the same way and the chat showed the raw error (#12527). Only a new session,
+ * given the OpenBot transcript, recovers.
+ */
+function isBlankHistoryText(message: string): boolean {
+  return /\btext content blocks must (?:contain non-whitespace text|be non-empty)\b/i.test(message);
+}
+
+/**
  * Codex sends the Responses API `store: false` and an item ID for each history item. When the
  * history refers to an item that OpenAI did not keep, OpenAI answers 404 "Item with id ... not found.
  * Items are not persisted when `store` is set to false". Codex sends that history again on each turn,
@@ -172,6 +183,17 @@ function isCodexBareBadRequest(provider: AgentProvider, message: string): boolea
     provider === "codex" &&
     /^(?:[^{]*\b400 Bad Request:\s*)?\{\s*"detail"\s*:\s*"Bad Request"\s*\}(?:,\s*url:.*)?$/.test(message.trim())
   );
+}
+
+/**
+ * Codex sends the `input_audio` of a tool result to a model whose catalog entry lists audio input.
+ * GPT-6.2 Sol does not take it, and OpenAI answers 400 "Audio input is not available." or "Audio
+ * input is not supported for this request." Codex keeps the item in the session and sends it on each
+ * turn, so each later turn failed the same way, a text-only one too (#11728, openai/codex#62212). A
+ * new session, given the OpenBot transcript, has no audio.
+ */
+function isCodexRefusedAudio(provider: AgentProvider, message: string): boolean {
+  return provider === "codex" && /\bAudio input is not (?:available|supported)\b/i.test(message);
 }
 
 /**
@@ -274,9 +296,12 @@ function isClaudeContextOverflow(provider: AgentProvider, message: string): bool
 export function refusedSessionFailure(provider: AgentProvider, message: string): string | null {
   if (isForeignReasoningError(message))
     return sourceText("error.provider.foreignReasoning", { provider: providerLabel(provider) });
+  if (isBlankHistoryText(message))
+    return sourceText("error.provider.blankHistoryText", { provider: providerLabel(provider) });
   if (isCodexUnstoredItem(provider, message)) return sourceText("error.provider.codexHistoryItemMissing");
   if (isCodexBareBadRequest(provider, message))
     return sourceText("error.provider.codexRequestRefused", { provider: providerLabel(provider) });
+  if (isCodexRefusedAudio(provider, message)) return sourceText("error.provider.codexAudioRefused");
   if (isImageTooSmallDiagnostic(message))
     return sourceText("error.provider.imageTooSmall", { provider: providerLabel(provider) });
   if (isImageTooLargeDiagnostic(message))
@@ -482,7 +507,7 @@ const TOOL_RESULT_PROGRESS = sourceText("status.agent.toolResultReviewing");
  * it, a Claude item names it `mcp__openbot__<tool>`, and a `tool_call` bridge item names it in its
  * arguments. A tool of another MCP server with the same name is not OpenBot's.
  */
-function openBotTool(item: ThreadItem): string | null {
+export function openBotTool(item: ThreadItem): string | null {
   const bridged = bridgedToolName(item);
   if (bridged) return bridged.startsWith("openbot.") ? bridged.slice("openbot.".length) : null;
   if (item.type === "toolCall") return /^mcp__openbot__(.+)$/u.exec(getString(item, "name") ?? "")?.[1] ?? null;
@@ -596,12 +621,13 @@ function resultText(value: unknown, depth = 0): string | null {
  */
 const FAILURE_WINDOW = CONVERSATION_TRACE_TEXT_LIMIT * 16;
 
-/** Whether a tool step runs a shell command: a Codex command, a command tool, or Pi's `bash` tool. */
+/**
+ * Whether a tool step runs a shell command: a Codex command, a command tool, or Pi's `bash` tool, or
+ * its `powershell` tool on a Windows computer with no bash that runs (#11209).
+ */
 function isShellCommand(item: ThreadItem): boolean {
-  return (
-    toolUsage(item)?.kind === "command" ||
-    (item.type === "dynamicToolCall" && !getString(item, "namespace") && getString(item, "tool") === "bash")
-  );
+  const tool = item.type === "dynamicToolCall" && !getString(item, "namespace") ? getString(item, "tool") : undefined;
+  return toolUsage(item)?.kind === "command" || tool === "bash" || tool === "powershell";
 }
 
 /**

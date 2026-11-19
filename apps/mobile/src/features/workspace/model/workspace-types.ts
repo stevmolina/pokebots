@@ -41,6 +41,7 @@ import type {
   AnswerWhatsAppRequestInput,
   ApplyAgentImportInput,
   ApplyInstanceTransferInput,
+  AskSideQuestionInput,
   AvatarColor,
   AvatarHue,
   AvatarImageInput,
@@ -187,6 +188,7 @@ import type {
   WorkflowWebhookSecret,
 } from "@openbot/contracts/ipc";
 import type {
+  AgentWebhookSecret,
   EventActivity,
   EventRoutine,
   EventRoutineOwner,
@@ -808,6 +810,8 @@ export interface MobileWorkspaceContextValue {
   canRelayMcpSignIn: (serverId: string) => boolean;
   /** The host is not a Mac (`mac-apps-limit-v1`), so an app that drives Apple apps does not run there. */
   macAppsUnavailable: (serverId: string) => boolean;
+  /** The host reads an edited confirm preview (`ui-block-preview-edit-v1`), so the card can edit it. */
+  canEditUiBlockPreview: (serverId: string) => boolean;
   /** The relayed browser sign-ins of MCP servers on one host. Refuses a host without `sign-in-relay-v1`. */
   mcpSignInRelay: (serverId: string) => McpSignInRelay;
   /** The http servers that the host holds a sign-in for. Empty for a host without `mcp-sign-in-v1`. */
@@ -850,6 +854,8 @@ export interface MobileWorkspaceContextValue {
   canManageMissedRuns: (serverId: string) => boolean;
   /** An owner or admin of a host with `routine-results-v1`: an agent routine can send its answers on. */
   canManageRoutineResults: (serverId: string) => boolean;
+  /** An owner or admin of a host with `webhook-agent-secret-v1`: an agent can get its routine's secret. */
+  canGiveWebhookSecretToAgent: (serverId: string) => boolean;
   /** The host's enabled messaging connections, with the places that each one can post in. */
   loadRoutineResultOptions: (serverId: string) => Promise<RoutineResultConnectionOption[]>;
   loadRoutineResultDestination: (
@@ -867,6 +873,8 @@ export interface MobileWorkspaceContextValue {
   deleteEventRoutine: (input: EventRoutineRef, serverId: string) => Promise<void>;
   testEventRoutine: (input: EventRoutineRef, serverId: string) => Promise<void>;
   rotateEventRoutineSecret: (input: EventRoutineRef, serverId: string) => Promise<WebhookSecret>;
+  /** Gives a new signing secret to the routine's agent as an API key. The result has only the key name. */
+  giveEventRoutineSecretToAgent: (input: EventRoutineRef, serverId: string) => Promise<AgentWebhookSecret>;
   listEventActivity: (input: ListEventActivityInput, serverId: string) => Promise<EventActivity[]>;
   loadAgentModels: (serverId: string) => Promise<AgentModelOption[]>;
   loadAgentMemorySelection: (agentId: string, serverId: string) => Promise<AgentMemorySelectionState | null>;
@@ -1075,6 +1083,16 @@ export interface MobileWorkspaceContextValue {
    * messages stay. The host refuses while the chat or task works, or when its provider cannot compact.
    */
   compactContext: (agentId: string, serverId: string, taskId?: string) => Promise<void>;
+  /**
+   * True when the host advertises `chat-history-v1`: "Delete history" of an agent's own chat, and
+   * "New conversation", "Compact context" and "Delete history" of a channel.
+   */
+  canDeleteChatHistory: (serverId: string) => boolean;
+  /**
+   * Deletes the messages of the agent's own chat, and the agent forgets them. Side threads, profile,
+   * memories and workspace stay. Needs `manage` on the agent; the host refuses while the chat works.
+   */
+  deleteAgentHistory: (agentId: string, serverId: string) => Promise<void>;
   /** An owner or admin of an online host that serves `shared-tables-v1`. The host checks the role again. */
   canManageSharedTables: (serverId: string) => boolean;
   /** Every table that the agents of the host share. Owners and admins only. */
@@ -1113,6 +1131,8 @@ export interface MobileWorkspaceContextValue {
   canUseBrain: (serverId: string) => boolean;
   /** True when the host advertises agent-tasks-v1. */
   canUseTasks: (serverId: string) => boolean;
+  /** True when the host advertises `agent-queue-task-v1`: a queued message of the agent's chat can run in a new thread. */
+  canRunQueuedMessageAsTask: (serverId: string) => boolean;
   /** True when the host advertises `agent-threads-v1`: a member who can message an agent can rename and delete its threads. */
   canEditThreads: (serverId: string) => boolean;
   /** True when the host advertises `agent-thread-reads-v1`: the host keeps the person's read mark of each thread. */
@@ -1121,6 +1141,8 @@ export interface MobileWorkspaceContextValue {
   canAttachThreadFiles: (serverId: string) => boolean;
   /** True when the host advertises `message-pins-v1`: a member who can message an agent can pin its messages. */
   canPinMessages: (serverId: string) => boolean;
+  /** True when the host advertises `side-question-v1`: a member can ask about an agent's chat outside it. */
+  canAskSideQuestion: (serverId: string) => boolean;
   /** True when the host advertises `agent-thread-branches-v1`: a member who can message an agent can branch its chats. */
   canBranchThreads: (serverId: string) => boolean;
   /** True when the host advertises `workflows-v1`. The host shows each member the workflows of their agents. */
@@ -1173,6 +1195,11 @@ export interface MobileWorkspaceContextValue {
     input: { agentId: string; text: string; attachmentDraftIds?: string[]; clientMessageId: string },
     serverId: string,
   ) => Promise<AgentTask>;
+  /**
+   * Moves a message that waits in the queue of the agent's own chat into a new thread, where it
+   * starts beside the chat. Needs `canRunQueuedMessageAsTask`.
+   */
+  runQueuedMessageAsTask: (input: { agentId: string; deliveryId: string }, serverId: string) => Promise<AgentTask>;
   /** Steers the running turn of the task, or queues the message in the task. */
   sendAgentTaskMessage: (
     input: AgentTaskInput & { text: string; attachmentDraftIds?: string[]; clientMessageId: string },
@@ -1197,6 +1224,8 @@ export interface MobileWorkspaceContextValue {
   loadMessagePins: (agentId: string, serverId: string) => Promise<PinnedMessagesSnapshot>;
   /** Pins or unpins one message of the agent's chat or of one of its threads. Answers the new list. */
   setMessagePinned: (input: SetMessagePinnedInput, serverId: string) => Promise<PinnedMessagesSnapshot>;
+  /** Asks about an agent's chat outside it. The host keeps nothing, so the input carries the earlier turns. */
+  askSideQuestion: (input: AskSideQuestionInput, serverId: string) => Promise<string>;
   /** Answers a question of a task turn. The host finds the question by its request, on any thread. */
   respondToTaskPrompt: (input: RespondToPromptInput, serverId: string) => Promise<void>;
   loadConversation: (agentId: string, serverId?: string) => Promise<ConversationSnapshot>;
@@ -1294,6 +1323,7 @@ export type MobileWorkspaceCapabilityCheck =
   | "attachmentSupport"
   | "canStartNewChat"
   | "canCompactContext"
+  | "canDeleteChatHistory"
   | "canChooseNewAgentModel"
   | "canInstallAgentTemplate"
   | "canSearchFiles"
@@ -1301,10 +1331,12 @@ export type MobileWorkspaceCapabilityCheck =
   | "canUseRooms"
   | "canUseBrain"
   | "canUseTasks"
+  | "canRunQueuedMessageAsTask"
   | "canEditThreads"
   | "canReadThreads"
   | "canAttachThreadFiles"
   | "canPinMessages"
+  | "canAskSideQuestion"
   | "canBranchThreads"
   | "canUseWorkflows"
   | "canUseWorkflowGitHub"
@@ -1356,12 +1388,14 @@ type ServerCheckKey =
   | "canManageMcpServers"
   | "canRelayMcpSignIn"
   | "macAppsUnavailable"
+  | "canEditUiBlockPreview"
   | "canManageMcpAccess"
   | "canAddMarketplaceAgents"
   | "canUpdateMarketplaceAgents"
   | "canManageEvents"
   | "canManageMissedRuns"
   | "canManageRoutineResults"
+  | "canGiveWebhookSecretToAgent"
   | "canManageAgentSkills"
   | "canManageSharedTables"
   | "canManageAgentFolders"

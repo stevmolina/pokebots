@@ -59,6 +59,7 @@ export function serverSupportsCapability(
       capability === "vault-v1" ||
       capability === "crm-v1" ||
       capability === "mac-apps-limit-v1" ||
+      capability === "ui-block-preview-edit-v1" ||
       capability === "vault-v2" ||
       capability === "vault-v3" ||
       capability === "browser-secret-vault-v1" ||
@@ -194,6 +195,11 @@ export function serverSendsWebhookTests(server: ServerSummary | undefined): bool
 /** Whether a webhook routine can use a secret that the sender made: this computer, or a joined server with `webhook-sender-secret-v1`. */
 export function serverSetsWebhookSenderSecret(server: ServerSummary | undefined): boolean {
   return serverCanAdminister(server, "webhook-sender-secret-v1");
+}
+
+/** Whether a person can give the signing secret of an agent's webhook routine to that agent: this computer, or a joined server with `webhook-agent-secret-v1`. */
+export function serverGivesWebhookSecretToAgent(server: ServerSummary | undefined): boolean {
+  return serverCanAdminister(server, "webhook-agent-secret-v1");
 }
 
 /**

@@ -411,7 +411,6 @@ export const messages = {
   "mobile.server.route.providers": "プロバイダー",
   "mobile.server.route.provider": "プロバイダー",
   "mobile.server.route.providerModels": "モデル",
-  "mobile.server.route.mcp": "MCP サーバー",
   "mobile.server.route.mcpServer": "MCP サーバー",
   "mobile.server.members.rowLabel": "{name}、{role}",
   "mobile.server.members.you": "{name}（あなた）",
@@ -731,6 +730,8 @@ export const messages = {
     "もう一度接続するまで、{host} のエージェントは共有ログイン情報でサインインできません。",
   "mobile.server.connectors.keeper.disconnectBody":
     "{host} は Keeper のセッションを終了します。フォルダーとそのログイン情報は Keeper の保管庫に残ります。",
+  "mobile.server.connectors.protonPass.plan":
+    "ご利用の Proton プランには Proton Pass のコマンドラインツールが含まれていません。Pass Plus を含む Proton プランが必要です。Mail Plus などのほかの有料プランには含まれません。アカウントのプランを変更してから、もう一度接続してください。",
   "mobile.server.connectors.passwordManager.unavailable": "{name} はこのサーバーでは利用できません。",
   "mobile.server.connectors.passwordManager.howItWorks":
     "この電話で {name} にサインインしてください。その後 {host} が共有保管庫とその読み取り専用アクセスキーを作成し、そのキーだけを保持します。エージェントがパスワードを見ることはありません。",
@@ -760,8 +761,6 @@ export const messages = {
   "mobile.server.connectors.passwordManager.keyReadOnly": "読み取り専用",
   "mobile.server.connectors.passwordManager.keyExpires": "読み取り専用。{date} に期限切れになります。",
   "mobile.server.connectors.passwordManager.keyExpired": "{date} に期限切れ",
-  "mobile.server.connectors.passwordManager.plan":
-    "{name} のコマンドラインツールには有料プランが必要です。アカウントのプランを変更してから、もう一度接続してください。",
   "mobile.server.connectors.passwordManager.expiredTitle": "{name} のキーの期限が切れました",
   "mobile.server.connectors.passwordManager.expiredBody":
     "再接続するまで、{host} のエージェントは共有ログインでサインインできません。",
@@ -907,10 +906,10 @@ export const messages = {
   "mobile.server.connectors.whatsapp.linkAgain": "再リンク",
   "mobile.server.connectors.whatsapp.ownNumber": "個人の番号",
   "mobile.server.connectors.whatsapp.ownNumberDescription":
-    "あなたの「自分にメッセージ」チャットと、許可した人だけが書き込めます。OpenBot 専用の番号ではオフにしてください。",
+    "あなたの「自分にメッセージ」チャットと、許可した人だけが書き込めます。それ以外の人には返信しません。オフにすると、OpenBot は知らない人にコードを返信します。",
   "mobile.server.connectors.whatsapp.workingMessage": "「対応しています…」メッセージ",
   "mobile.server.connectors.whatsapp.workingMessageDescription":
-    "エージェントの作業中に OpenBot が送信し、その後、回答に置き換えます。回答だけを送信するにはオフにしてください。",
+    "エージェントの作業中に OpenBot が送信し、その後、回答に置き換えます。前のリクエストを待っているリクエストには、待機中のメッセージも送信します。回答だけを送信するにはオフにしてください。",
   "mobile.server.connectors.whatsapp.statusReactions": "ステータスのリアクション",
   "mobile.server.connectors.whatsapp.statusReactionsDescription":
     "メッセージが届くと OpenBot が 👀 で、回答の準備ができると ✅ でリアクションします。リアクションを送信しないにはオフにしてください。",
@@ -930,10 +929,10 @@ export const messages = {
   "mobile.server.connectors.whatsapp.kindLabel": "番号",
   "mobile.server.connectors.whatsapp.kindPersonal": "自分の個人番号",
   "mobile.server.connectors.whatsapp.kindPersonalDescription":
-    "OpenBot は、あなたの「自分にメッセージ」チャットと、許可した人にだけ回答します。",
+    "OpenBot は、あなたの「自分にメッセージ」チャットと、許可した人にだけ回答します。それ以外の人には返信しません。",
   "mobile.server.connectors.whatsapp.kindDedicated": "OpenBot 専用の番号",
   "mobile.server.connectors.whatsapp.kindDedicatedDescription":
-    "知らない人には、あなたに伝えるためのコードが届きます。ここでその人を承認します。",
+    "OpenBot はこの番号から、知らない人それぞれに、あなたに伝えるためのコードを返信します。ここでその人を承認します。",
   "mobile.server.connectors.whatsapp.phoneLabel": "電話番号",
   "mobile.server.connectors.whatsapp.phoneDescription": "国番号を含めて入力します（例: +44 7700 900123）。",
   "mobile.server.connectors.whatsapp.phoneInvalid": "電話番号を国番号付きで入力してください。",
@@ -984,7 +983,8 @@ export const messages = {
     "省略できます。空の場合、一覧には電話番号が表示されます。",
   "mobile.server.connectors.whatsapp.add": "追加",
   "mobile.server.connectors.whatsapp.groupTitle": "グループを追加",
-  "mobile.server.connectors.whatsapp.groupDescription": "このグループのメンバーは、エージェントに作業を依頼できます。",
+  "mobile.server.connectors.whatsapp.groupDescription":
+    "このグループのメンバーは、この番号をメンションするか、そのメッセージに返信すると、エージェントに作業を依頼できます。",
   "mobile.server.connectors.whatsapp.groupSearch": "グループを検索",
   "mobile.server.connectors.whatsapp.groupsLoading": "グループを読み込んでいます…",
   "mobile.server.connectors.whatsapp.groupsLoadFailed": "OpenBot はグループを読み込めませんでした",
@@ -1096,6 +1096,8 @@ export const messages = {
   "mobile.server.providers.status.ready": "インストール済み",
   "mobile.server.providers.status.notInstalled": "未インストール",
   "mobile.server.providers.status.checking": "確認中",
+  "mobile.server.providers.addAccountWithCode": "コードでアカウントを追加",
+  "mobile.server.providers.accountSignInWithCode": "コードでログイン",
   "mobile.server.providers.accountsKeyHint":
     "各エージェントは1つのアカウントを使います。エージェントの設定で選んでください。新しいアカウントには、そのアカウントの API キーが必要です。",
   "mobile.server.providers.accountChangeKey": "キーを変更",
@@ -1198,24 +1200,12 @@ export const messages = {
   "mobile.server.providers.defaultForNew": "新しいエージェントの既定",
   "mobile.server.providers.startsWith": "新しいエージェントは {name} で開始します。",
   "mobile.server.providers.connectFirst": "先に {name} を接続してください。",
-  "mobile.server.settings.mcp": "MCP サーバー",
-  "mobile.server.settings.mcpCount": { other: "{count} 台" },
   "mobile.server.mcp.unsupported": "ここで MCP サーバーを管理するには、このサーバーの OpenBot を更新してください。",
   "mobile.server.mcp.unavailable":
     "MCP サーバーを管理するには、オーナーまたは管理者としてこのサーバーに接続してください。",
   "mobile.server.mcp.accessUnsupported":
     "MCP サーバーを受け取る相手を選ぶには、このサーバーの OpenBot を更新してください。",
-  "mobile.server.mcp.description":
-    "MCP サーバーは、このサーバーのエージェントにツールを追加します。Claude と Codex のエージェントは、このリストのサーバーだけを使います。",
   "mobile.server.mcp.loading": "MCP サーバーを読み込み中…",
-  "mobile.server.mcp.loadFailed": "MCP サーバーを読み込めませんでした。",
-  "mobile.server.mcp.empty": "MCP サーバーはまだありません。",
-  "mobile.server.mcp.retry": "再試行",
-  "mobile.server.mcp.add": "MCP サーバーを追加",
-  "mobile.server.mcp.rowLabel": "{name}、{status}",
-  "mobile.server.mcp.enabled": "オン",
-  "mobile.server.mcp.disabled": "オフ",
-  "mobile.server.mcp.signedIn": "サインイン済み",
   "mobile.server.mcp.gone": "この MCP サーバーはもうこのサーバーにありません。",
   "mobile.server.mcp.addTitle": "MCP サーバーを追加",
   "mobile.server.mcp.addConfirm": "追加",
@@ -1646,8 +1636,12 @@ export const messages = {
   "mobile.server.transfer.copyTo": "コピー先",
   "mobile.server.transfer.copyNoAgents": "このサーバーにはエージェントがありません。",
   "mobile.server.transfer.copyNotMoved":
-    "エージェントのチャンネルと共有フォルダーもコピーされます。API キー、サインイン、コネクタ、チャット履歴はコピーされません。別のサーバーで設定し直してください。",
+    "エージェントのチャンネル、ルーティンフロー、ワークフロー、共有フォルダーもコピーされます。API キー、サインイン、コネクタ、チャット履歴はコピーされません。別のサーバーで設定し直してください。",
   "mobile.server.transfer.copySubmit": { other: "エージェント {count} 件をコピー" },
+  "mobile.server.transfer.copyDuplicatesTitle": "重複するエージェントをコピーしますか？",
+  "mobile.server.transfer.copyDuplicatesBody":
+    "{server} には次の名前のエージェントがすでにあります: {names}。コピーすると、それぞれ 2 つ目のエージェントが追加されます。各コピーは別のエージェントで、チャット、ファイル、メモリーはそれぞれ独立しています。",
+  "mobile.server.transfer.copyDuplicatesConfirm": "重複をコピー",
   "mobile.server.transfer.copying": "コピー中…",
   "mobile.server.transfer.copyFailed": "コピーが完了しませんでした。",
   "mobile.server.transfer.copied": { other: "エージェント {count} 件を {server} にコピーしました。" },

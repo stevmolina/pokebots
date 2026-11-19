@@ -1,6 +1,6 @@
 import { execFile, spawn } from "node:child_process";
 import { constants } from "node:fs";
-import { access, open, realpath, stat } from "node:fs/promises";
+import { access, lstat, open, realpath, stat } from "node:fs/promises";
 import { homedir } from "node:os";
 import { basename, delimiter, dirname, extname, isAbsolute, join, posix, resolve, win32 } from "node:path";
 import { promisify, stripVTControlCharacters } from "node:util";
@@ -1141,6 +1141,7 @@ function windowsFallbackPaths(
     paths.push(win32.join(userHome, ".opencode", "bin", "opencode.exe"));
     if (localAppData) paths.push(win32.join(localAppData, "Microsoft", "WinGet", "Links", "opencode.exe"));
   }
+  if (command === "kimi") paths.push(win32.join(userHome, ".kimi-code", "bin", "kimi.exe"));
   if (appData) paths.push(win32.join(appData, "npm", `${command}.cmd`));
   paths.push(
     win32.join(userHome, ".local", "bin", `${command}.exe`),
@@ -1346,6 +1347,8 @@ function posixFallbackPaths(
   if (command === "claude") paths.push(posix.join(userHome, ".claude", "local", "claude"));
   if (command === "opencode") paths.push(posix.join(userHome, ".opencode", "bin", "opencode"));
   if (command === "grok") paths.push(posix.join(userHome, ".grok", "bin", "grok"));
+  // Kimi Code's installer adds its folder to `PATH` only in `~/.bashrc` or `~/.zshrc` (#11790).
+  if (command === "kimi") paths.push(posix.join(userHome, ".kimi-code", "bin", "kimi"));
   paths.push(
     posix.join(userHome, ".npm-global", "bin", command),
     posix.join(userHome, ".volta", "bin", command),
@@ -1494,6 +1497,15 @@ const readCliVersion = Effect.fn("Cli.readVersion")(function* (
 export const isExecutable = Effect.fn("Cli.isExecutable")((path: string) =>
   providerCall(async () => {
     await access(path, process.platform === "win32" ? constants.F_OK : constants.X_OK);
-    return (await stat(path)).isFile();
+    return await stat(path).then(
+      (info) => info.isFile(),
+      async (error: unknown) => {
+        // A Microsoft Store install puts only an app execution alias in WindowsApps on the `PATH`
+        // (#10985). It is a link that `stat` refuses with `EACCES`, but it starts as a program, so
+        // the version read decides.
+        if (process.platform !== "win32" || !isDynamicRecord(error) || error.code !== "EACCES") throw error;
+        return (await lstat(path)).isSymbolicLink();
+      },
+    );
   }).pipe(Effect.match({ onSuccess: (file) => file, onFailure: () => false })),
 );

@@ -16,6 +16,8 @@ export const messages = defineMessages("status.provider", {
     "{provider} cannot connect to the model provider. It tries again: attempt {attempt}.",
   "status.provider.modelRetryServerError":
     "The model provider is busy or has an error. {provider} tries again: attempt {attempt}.",
+  "status.provider.modelRetryOutOfMemory":
+    "The model server ran out of memory for this chat. {provider} tries again: attempt {attempt}. A new chat needs less memory.",
   "status.provider.modelRetryRecovered": "The model provider answers again.",
   "status.provider.retryRecovered": "{provider} gets answers from its server again.",
   // Claude Code ran a fast mode turn at the standard speed, with the reason.
@@ -31,4 +33,7 @@ export const messages = defineMessages("status.provider", {
     "Claude answered at the standard speed. Fast mode is turned off in the Claude Code settings or by your organization.",
   "status.provider.claudeFastModeUnavailable":
     "Claude answered at the standard speed. Claude Code could not use fast mode for this turn.",
+  // A Claude sign-in whose CLI uses an API key from the Claude Code settings or the environment.
+  "status.provider.claudeOwnApiKey":
+    "Claude Code is set to use an Anthropic API key. Anthropic bills each request to the key's API credit, not to your Claude plan. To use your plan, remove the key from the Claude Code settings or the environment variables, then restart OpenBot.",
 });

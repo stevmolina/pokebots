@@ -419,7 +419,6 @@ export const messages = {
   "mobile.server.route.providers": "Proveedores",
   "mobile.server.route.provider": "Proveedor",
   "mobile.server.route.providerModels": "Modelos",
-  "mobile.server.route.mcp": "Servidores MCP",
   "mobile.server.route.mcpServer": "Servidor MCP",
   "mobile.server.members.rowLabel": "{name}, {role}",
   "mobile.server.members.you": "{name} (tú)",
@@ -744,6 +743,8 @@ export const messages = {
     "Los agentes de {host} no pueden iniciar sesión con tus credenciales compartidas hasta que vuelvas a conectar.",
   "mobile.server.connectors.keeper.disconnectBody":
     "{host} cierra su sesión de Keeper. La carpeta y sus credenciales se quedan en tu bóveda de Keeper.",
+  "mobile.server.connectors.protonPass.plan":
+    "Tu plan de Proton no incluye la herramienta de línea de comandos de Proton Pass. Necesita un plan de Proton que incluya Pass Plus. Otros planes de pago, como Mail Plus, no la incluyen. Cambia el plan de tu cuenta y vuelve a conectar.",
   "mobile.server.connectors.passwordManager.unavailable": "{name} no está disponible en este servidor.",
   "mobile.server.connectors.passwordManager.howItWorks":
     "Inicia sesión en {name} en este teléfono. Después, {host} crea una bóveda compartida y una clave de acceso de solo lectura para ella, y guarda solo esa clave. Los agentes nunca ven una contraseña.",
@@ -776,8 +777,6 @@ export const messages = {
   "mobile.server.connectors.passwordManager.keyReadOnly": "Solo lectura",
   "mobile.server.connectors.passwordManager.keyExpires": "Solo lectura. Caduca el {date}.",
   "mobile.server.connectors.passwordManager.keyExpired": "Caducó el {date}",
-  "mobile.server.connectors.passwordManager.plan":
-    "La herramienta de línea de comandos de {name} requiere un plan de pago. Cambia el plan de tu cuenta y vuelve a conectar.",
   "mobile.server.connectors.passwordManager.expiredTitle": "La clave de {name} caducó",
   "mobile.server.connectors.passwordManager.expiredBody":
     "Los agentes de {host} no pueden iniciar sesión con tus inicios de sesión compartidos hasta que vuelvas a conectar.",
@@ -948,10 +947,10 @@ export const messages = {
   "mobile.server.connectors.whatsapp.linkAgain": "Volver a vincular",
   "mobile.server.connectors.whatsapp.ownNumber": "Número personal",
   "mobile.server.connectors.whatsapp.ownNumberDescription":
-    "Solo pueden escribir tu chat «Envíate un mensaje» y las personas que permitas. Desactívalo para un número solo para OpenBot.",
+    "Solo pueden escribir tu chat «Envíate un mensaje» y las personas que permitas. Las demás no reciben respuesta. Si está desactivado, OpenBot responde a las personas desconocidas con un código.",
   "mobile.server.connectors.whatsapp.workingMessage": "Mensaje «Trabajando en ello…»",
   "mobile.server.connectors.whatsapp.workingMessageDescription":
-    "OpenBot lo envía mientras el agente trabaja y luego lo sustituye por la respuesta. Desactívalo para enviar solo la respuesta.",
+    "OpenBot lo envía mientras el agente trabaja y luego lo sustituye por la respuesta. Una solicitud que espera a otra anterior también recibe un mensaje de espera. Desactívalo para enviar solo la respuesta.",
   "mobile.server.connectors.whatsapp.statusReactions": "Reacciones de estado",
   "mobile.server.connectors.whatsapp.statusReactionsDescription":
     "OpenBot reacciona con 👀 cuando llega un mensaje y con ✅ cuando la respuesta está lista. Desactívalas para no enviar reacciones.",
@@ -971,10 +970,10 @@ export const messages = {
   "mobile.server.connectors.whatsapp.kindLabel": "Número",
   "mobile.server.connectors.whatsapp.kindPersonal": "Mi número personal",
   "mobile.server.connectors.whatsapp.kindPersonalDescription":
-    "OpenBot solo responde a tu chat «Envíate un mensaje» y a las personas que permitas.",
+    "OpenBot solo responde a tu chat «Envíate un mensaje» y a las personas que permitas. Las demás personas no reciben respuesta.",
   "mobile.server.connectors.whatsapp.kindDedicated": "Un número solo para OpenBot",
   "mobile.server.connectors.whatsapp.kindDedicatedDescription":
-    "Las personas desconocidas reciben un código para dártelo. Tú las apruebas aquí.",
+    "OpenBot responde desde este número a cada persona desconocida con un código para dártelo. Tú las apruebas aquí.",
   "mobile.server.connectors.whatsapp.phoneLabel": "Número de teléfono",
   "mobile.server.connectors.whatsapp.phoneDescription": "Con el código de país, por ejemplo +44 7700 900123.",
   "mobile.server.connectors.whatsapp.phoneInvalid": "Escribe el número de teléfono con su código de país.",
@@ -1027,7 +1026,7 @@ export const messages = {
   "mobile.server.connectors.whatsapp.add": "Añadir",
   "mobile.server.connectors.whatsapp.groupTitle": "Añadir un grupo",
   "mobile.server.connectors.whatsapp.groupDescription":
-    "Las personas de este grupo pueden asignar trabajo a tus agentes.",
+    "Las personas de este grupo pueden asignar trabajo a tus agentes cuando mencionan el número o responden a sus mensajes.",
   "mobile.server.connectors.whatsapp.groupSearch": "Buscar grupos",
   "mobile.server.connectors.whatsapp.groupsLoading": "Leyendo los grupos…",
   "mobile.server.connectors.whatsapp.groupsLoadFailed": "OpenBot no pudo leer los grupos",
@@ -1138,6 +1137,8 @@ export const messages = {
   "mobile.server.providers.status.ready": "Instalado",
   "mobile.server.providers.status.notInstalled": "Sin instalar",
   "mobile.server.providers.status.checking": "Comprobando",
+  "mobile.server.providers.addAccountWithCode": "Añadir cuenta con código",
+  "mobile.server.providers.accountSignInWithCode": "Usar código",
   "mobile.server.providers.accountsKeyHint":
     "Cada agente usa una cuenta. Elígela en los ajustes del agente. Una cuenta nueva necesita una clave de API de esa cuenta.",
   "mobile.server.providers.accountChangeKey": "Cambiar clave",
@@ -1240,24 +1241,12 @@ export const messages = {
   "mobile.server.providers.defaultForNew": "Predeterminado para agentes nuevos",
   "mobile.server.providers.startsWith": "Los agentes nuevos empiezan con {name}.",
   "mobile.server.providers.connectFirst": "Primero conecta {name}.",
-  "mobile.server.settings.mcp": "Servidores MCP",
-  "mobile.server.settings.mcpCount": { one: "{count} servidor", other: "{count} servidores" },
   "mobile.server.mcp.unsupported": "Actualiza OpenBot en este servidor para gestionar sus servidores MCP aquí.",
   "mobile.server.mcp.unavailable":
     "Conéctate a este servidor como propietario o administrador para gestionar sus servidores MCP.",
   "mobile.server.mcp.accessUnsupported":
     "Actualiza OpenBot en este servidor para elegir quién recibe sus servidores MCP.",
-  "mobile.server.mcp.description":
-    "Los servidores MCP dan más herramientas a los agentes de este servidor. Los agentes de Claude y Codex solo reciben los servidores de esta lista.",
   "mobile.server.mcp.loading": "Cargando servidores MCP…",
-  "mobile.server.mcp.loadFailed": "No se pudieron cargar los servidores MCP.",
-  "mobile.server.mcp.empty": "Aún no hay servidores MCP.",
-  "mobile.server.mcp.retry": "Reintentar",
-  "mobile.server.mcp.add": "Añadir servidor MCP",
-  "mobile.server.mcp.rowLabel": "{name}, {status}",
-  "mobile.server.mcp.enabled": "Activado",
-  "mobile.server.mcp.disabled": "Desactivado",
-  "mobile.server.mcp.signedIn": "Sesión iniciada",
   "mobile.server.mcp.gone": "Este servidor MCP ya no está en este servidor.",
   "mobile.server.mcp.addTitle": "Añadir servidor MCP",
   "mobile.server.mcp.addConfirm": "Añadir",
@@ -1686,8 +1675,12 @@ export const messages = {
   "mobile.server.transfer.copyTo": "A",
   "mobile.server.transfer.copyNoAgents": "Este servidor no tiene agentes.",
   "mobile.server.transfer.copyNotMoved":
-    "Sus canales y la carpeta compartida también se copian. Las claves de API, los inicios de sesión, los conectores y el historial de chats no se copian. Configúralos de nuevo en el otro servidor.",
+    "Sus canales, flujos de rutinas, flujos de trabajo y la carpeta compartida también se copian. Las claves de API, los inicios de sesión, los conectores y el historial de chats no se copian. Configúralos de nuevo en el otro servidor.",
   "mobile.server.transfer.copySubmit": { one: "Copiar {count} agente", other: "Copiar {count} agentes" },
+  "mobile.server.transfer.copyDuplicatesTitle": "¿Copiar agentes duplicados?",
+  "mobile.server.transfer.copyDuplicatesBody":
+    "{server} ya tiene agentes con estos nombres: {names}. La copia añade un segundo agente por cada uno. Cada copia es un agente independiente con sus propios chats, archivos y recuerdos.",
+  "mobile.server.transfer.copyDuplicatesConfirm": "Copiar duplicados",
   "mobile.server.transfer.copying": "Copiando…",
   "mobile.server.transfer.copyFailed": "La copia no terminó.",
   "mobile.server.transfer.copied": {

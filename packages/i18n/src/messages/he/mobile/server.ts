@@ -535,7 +535,6 @@ export const messages = {
   "mobile.server.route.provider": "ספק",
   "mobile.server.route.providerModels": "מודלים",
   "mobile.server.route.acpRegistry": "רישום ACP",
-  "mobile.server.route.mcp": "שרתי MCP",
   "mobile.server.route.mcpServer": "שרת MCP",
   "mobile.server.members.rowLabel": "{name}, {role}",
   "mobile.server.members.you": "{name} (אני)",
@@ -1028,6 +1027,8 @@ export const messages = {
     "סוכנים ב-{host} לא יכולים להתחבר עם פרטי הכניסה המשותפים עד להתחברות מחדש.",
   "mobile.server.connectors.keeper.disconnectBody":
     "{host} מסיים את הסשן שלו ב-Keeper. התיקייה ופרטי הכניסה שבה נשארים בכספת של Keeper.",
+  "mobile.server.connectors.protonPass.plan":
+    "המסלול שלך ב-Proton לא כולל את כלי שורת הפקודה של Proton Pass. נדרש מסלול Proton שכולל Pass Plus. מסלולים בתשלום אחרים, כמו Mail Plus, לא כוללים אותו. יש לשנות את מסלול החשבון ולהתחבר שוב.",
   // A password manager that the host connects through its CLI. {name} is the manager, such as
   // Proton Pass. {date} is a date, such as 5 Nov 2026.
   "mobile.server.connectors.passwordManager.unavailable": "{name} לא זמין בשרת הזה.",
@@ -1062,8 +1063,6 @@ export const messages = {
   "mobile.server.connectors.passwordManager.keyReadOnly": "קריאה בלבד",
   "mobile.server.connectors.passwordManager.keyExpires": "קריאה בלבד. תוקף עד {date}.",
   "mobile.server.connectors.passwordManager.keyExpired": "פג תוקף ב-{date}",
-  "mobile.server.connectors.passwordManager.plan":
-    "כלי שורת הפקודה של {name} דורש מסלול בתשלום. יש לשנות את מסלול החשבון ולהתחבר שוב.",
   "mobile.server.connectors.passwordManager.expiredTitle": "תוקף המפתח של {name} פג",
   "mobile.server.connectors.passwordManager.expiredBody":
     "סוכנים ב-{host} לא יוכלו להתחבר עם ההתחברויות המשותפות שלך עד להתחברות מחדש.",
@@ -1238,10 +1237,10 @@ export const messages = {
   "mobile.server.connectors.whatsapp.linkAgain": "קישור מחדש",
   "mobile.server.connectors.whatsapp.ownNumber": "מספר אישי",
   "mobile.server.connectors.whatsapp.ownNumberDescription":
-    "רק הצ'אט ״הודעה לעצמך״ שלך והאנשים שאישרת יכולים לכתוב. יש לכבות עבור מספר ששייך רק ל-OpenBot.",
+    "רק הצ'אט ״הודעה לעצמך״ שלך והאנשים שאישרת יכולים לכתוב. אנשים אחרים לא מקבלים תשובה. כשהאפשרות כבויה, OpenBot משיב לאנשים לא מוכרים עם קוד.",
   "mobile.server.connectors.whatsapp.workingMessage": "הודעת ״עובד על זה…״",
   "mobile.server.connectors.whatsapp.workingMessageDescription":
-    "OpenBot שולח אותה בזמן שהסוכן עובד, ואז מחליף אותה בתשובה. יש לכבות כדי לשלוח רק את התשובה.",
+    "OpenBot שולח אותה בזמן שהסוכן עובד, ואז מחליף אותה בתשובה. בקשה שממתינה לבקשה קודמת מקבלת גם הודעת המתנה. יש לכבות כדי לשלוח רק את התשובה.",
   "mobile.server.connectors.whatsapp.statusReactions": "תגובות סטטוס",
   "mobile.server.connectors.whatsapp.statusReactionsDescription":
     "OpenBot מגיב עם 👀 כשהודעה מגיעה ועם ✅ כשהתשובה מוכנה. יש לכבות כדי לא לשלוח תגובות.",
@@ -1260,10 +1259,10 @@ export const messages = {
   "mobile.server.connectors.whatsapp.kindLabel": "מספר",
   "mobile.server.connectors.whatsapp.kindPersonal": "המספר האישי שלי",
   "mobile.server.connectors.whatsapp.kindPersonalDescription":
-    "OpenBot עונה רק בצ'אט ״הודעה לעצמך״ שלך ולאנשים שאישרת.",
+    "OpenBot עונה רק בצ'אט ״הודעה לעצמך״ שלך ולאנשים שאישרת. אנשים אחרים לא מקבלים תשובה.",
   "mobile.server.connectors.whatsapp.kindDedicated": "מספר ששייך רק ל-OpenBot",
   "mobile.server.connectors.whatsapp.kindDedicatedDescription":
-    "אנשים לא מוכרים מקבלים קוד למסור לך. את האישור נותנים כאן.",
+    "OpenBot משיב מהמספר הזה לכל אדם לא מוכר עם קוד שיש למסור לך. את האישור נותנים כאן.",
   "mobile.server.connectors.whatsapp.phoneLabel": "מספר טלפון",
   "mobile.server.connectors.whatsapp.phoneDescription": "עם קידומת המדינה, למשל +44 7700 900123.",
   "mobile.server.connectors.whatsapp.phoneInvalid": "יש להקליד את מספר הטלפון עם קידומת המדינה.",
@@ -1308,7 +1307,8 @@ export const messages = {
   "mobile.server.connectors.whatsapp.contactNameDescription": "אופציונלי. אם השדה ריק, ברשימה יוצג מספר הטלפון.",
   "mobile.server.connectors.whatsapp.add": "הוספה",
   "mobile.server.connectors.whatsapp.groupTitle": "הוספת קבוצה",
-  "mobile.server.connectors.whatsapp.groupDescription": "אנשים בקבוצה הזו יכולים לתת עבודה לסוכנים שלך.",
+  "mobile.server.connectors.whatsapp.groupDescription":
+    "אנשים בקבוצה הזו יכולים לתת עבודה לסוכנים שלך כשהם מתייגים את המספר או עונים להודעות שלו.",
   "mobile.server.connectors.whatsapp.groupSearch": "חיפוש קבוצות",
   "mobile.server.connectors.whatsapp.groupsLoading": "קורא את הקבוצות…",
   "mobile.server.connectors.whatsapp.groupsLoadFailed": "OpenBot לא הצליח לקרוא את הקבוצות",
@@ -1424,11 +1424,13 @@ export const messages = {
   "mobile.server.providers.accountsOnComputer":
     "כל סוכן משתמש בחשבון אחד. את החשבון בוחרים בהגדרות הסוכן. חשבון מוסיפים ב-OpenBot במחשב.",
   "mobile.server.providers.addAccount": "הוספת חשבון",
+  "mobile.server.providers.addAccountWithCode": "הוספת חשבון עם קוד",
   "mobile.server.providers.accountGone": "החשבון הזה כבר לא נמצא בשרת הזה.",
   "mobile.server.providers.accountFailed": "לא ניתן לשנות את החשבון הזה. אפשר לנסות שוב.",
   "mobile.server.providers.accountName": "שם",
   "mobile.server.providers.accountNameHint": "מוצג רק לך ולמנהלי השרת הזה. אם השדה ריק, יוצג האימייל.",
   "mobile.server.providers.accountSignInAgain": "התחברות מחדש",
+  "mobile.server.providers.accountSignInWithCode": "התחברות עם קוד",
   "mobile.server.providers.accountsKeyHint":
     "כל סוכן משתמש בחשבון אחד. את החשבון בוחרים בהגדרות הסוכן. חשבון חדש צריך מפתח API של אותו חשבון.",
   "mobile.server.providers.accountChangeKey": "החלפת מפתח",
@@ -1695,22 +1697,10 @@ export const messages = {
   "mobile.server.customProviders.removeTitle": "להסיר את {name}?",
   "mobile.server.customProviders.removeBody": "סוכנים בשרת הזה לא יוכלו עוד להשתמש במודלים שלה.",
   "mobile.server.customProviders.removeFailed": "OpenBot לא הצליח להסיר את נקודת הקצה הזו.",
-  "mobile.server.settings.mcp": "שרתי MCP",
-  "mobile.server.settings.mcpCount": { one: "שרת אחד", two: "שני שרתים", other: "{count} שרתים" },
   "mobile.server.mcp.unsupported": "יש לעדכן את OpenBot בשרת הזה כדי לנהל כאן את שרתי ה-MCP שלו.",
   "mobile.server.mcp.unavailable": "יש להתחבר לשרת הזה כבעלים או כמנהל כדי לנהל את שרתי ה-MCP שלו.",
   "mobile.server.mcp.accessUnsupported": "יש לעדכן את OpenBot בשרת הזה כדי לבחור מי מקבל את שרתי ה-MCP שלו.",
-  "mobile.server.mcp.description":
-    "שרתי MCP נותנים לסוכנים של השרת הזה עוד כלים. סוכני Claude ו-Codex מקבלים רק את השרתים שברשימה הזו.",
   "mobile.server.mcp.loading": "טוען שרתי MCP…",
-  "mobile.server.mcp.loadFailed": "לא ניתן לטעון את שרתי ה-MCP.",
-  "mobile.server.mcp.empty": "עדיין אין שרתי MCP.",
-  "mobile.server.mcp.retry": "ניסיון חוזר",
-  "mobile.server.mcp.add": "הוספת שרת MCP",
-  "mobile.server.mcp.rowLabel": "{name}, {status}",
-  "mobile.server.mcp.enabled": "פועל",
-  "mobile.server.mcp.disabled": "כבוי",
-  "mobile.server.mcp.signedIn": "מחובר",
   "mobile.server.mcp.gone": "שרת ה-MCP הזה כבר לא נמצא בשרת הזה.",
   "mobile.server.mcp.addTitle": "הוספת שרת MCP",
   "mobile.server.mcp.addConfirm": "הוספה",
@@ -2132,12 +2122,16 @@ export const messages = {
   "mobile.server.transfer.copyTo": "אל",
   "mobile.server.transfer.copyNoAgents": "אין סוכנים בשרת הזה.",
   "mobile.server.transfer.copyNotMoved":
-    "גם הערוצים שלהם ותיקיית Shared מועתקים. מפתחות API, התחברויות, מחברים והיסטוריית צ׳אט לא מועתקים. יש להגדיר אותם מחדש בשרת השני.",
+    "גם הערוצים שלהם, זרימות השגרה, תהליכי העבודה ותיקיית Shared מועתקים. מפתחות API, התחברויות, מחברים והיסטוריית צ׳אט לא מועתקים. יש להגדיר אותם מחדש בשרת השני.",
   "mobile.server.transfer.copySubmit": {
     one: "העתקת סוכן אחד",
     two: "העתקת שני סוכנים",
     other: "העתקת {count} סוכנים",
   },
+  "mobile.server.transfer.copyDuplicatesTitle": "להעתיק סוכנים כפולים?",
+  "mobile.server.transfer.copyDuplicatesBody":
+    "ב-{server} כבר יש סוכנים בשמות האלה: {names}. ההעתקה מוסיפה סוכן שני לכל אחד מהם. כל עותק הוא סוכן נפרד עם צ'אטים, קבצים וזיכרונות משלו.",
+  "mobile.server.transfer.copyDuplicatesConfirm": "העתקת כפילויות",
   "mobile.server.transfer.copying": "מעתיק…",
   "mobile.server.transfer.copyFailed": "ההעתקה לא הסתיימה.",
   "mobile.server.transfer.copied": {

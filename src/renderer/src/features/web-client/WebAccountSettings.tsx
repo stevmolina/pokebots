@@ -46,6 +46,7 @@ import { webReportsEnabled } from "../../error-reports";
 import { useLayout } from "../../layout";
 import { currentDevicePlatform, setSendShortcutMode, useSendShortcutMode } from "../../send-shortcut-preference";
 import { ChatBackdropSetting } from "../settings/ChatBackdropSetting";
+import { MotionSwitches } from "../settings/MotionSwitches";
 import { connectionLogText } from "./connection-log";
 import type { WebAccountCalls } from "./web-account";
 import { sendWebAnalyticsChoice, setWebAnalyticsEnabled } from "./web-analytics";
@@ -372,6 +373,7 @@ export default function WebAccountSettings(props: WebAccountSettingsProps) {
                   <ChatBackdropSetting {...(modalElement ? { mount: modalElement } : {})} />
                 </ItemActions>
               </Item>
+              <MotionSwitches />
             </ItemGroup>
           </SettingsSection>
           {/* The choice is kept in this browser and holds for each server that serves live voice. */}

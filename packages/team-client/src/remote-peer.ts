@@ -12,21 +12,27 @@ import {
 import { ticketNamesSignalHome } from "@openbot/contracts/signal-protocol/ticket";
 import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
 import {
+  decodeTeamProtocolSupportExpanded,
   decodeTeamProtocolV2AuthFrame,
   decodeTeamProtocolV2EventFrame,
   decodeTeamProtocolV2Json,
   decodeTeamProtocolV2RpcFrame,
   decodeTeamProtocolV8CurrentEvent,
-  decodeTeamProtocolV9WebRtcHttpResponse,
+  decodeTeamProtocolV10WebRtcHttpResponse,
   encodeTeamProtocolV2Frame,
-  encodeTeamProtocolV8WebRtcHttpRequest,
+  encodeTeamProtocolV9WebRtcHttpRequest,
   TEAM_BOOTSTRAP_CAPABILITIES,
   TEAM_PROTOCOL_V2_CHANNELS,
   TEAM_PROTOCOL_V2_MAX_FILE_BYTES,
+  TEAM_PROTOCOL_V10,
+  TEAM_WEBRTC_CLIENT_PROTOCOL,
+  type TeamProtocolSupportV1,
   type TeamProtocolV2AuthFrame,
   type TeamProtocolV2Json,
   teamCapabilitiesForProtocol,
+  teamCapabilityLists,
   teamProtocolV2AuthenticationTranscript,
+  teamWebRtcClientProtocol,
 } from "@openbot/contracts/team-protocol";
 import {
   COMPACT_RPC_CAPABILITY,
@@ -47,7 +53,7 @@ import {
   type TeamProtocolV1CurrentEventControl,
   toWireTeamProtocolV1ClientEvent,
 } from "@openbot/contracts/team-protocol/v1-adapter";
-import { decodeTeamProtocolSupportV9, TEAM_PROTOCOL_V9 } from "@openbot/contracts/team-protocol/v9";
+import { TEAM_PROTOCOL_V9 } from "@openbot/contracts/team-protocol/v9";
 import { sourceText } from "@openbot/i18n/source";
 import { errorReference, referenceFrom } from "@openbot/user-errors/reference";
 import { Context, Deferred, Effect, Exit, Layer, ManagedRuntime, Result, Schema, Scope, Semaphore } from "effect";
@@ -626,11 +632,16 @@ export interface RemoteSignalRoute {
 /**
  * `waitForHost` asks Signal to hold an attempt while the host is offline, rather than fail it. The
  * consumer must handle the `hostOffline` update. `hostProtocols` can keep the protocols after the
- * peer ends; the default keeps them for the life of the peer.
+ * peer ends; the default keeps them for the life of the peer. `clientProtocol` is the range that this
+ * client speaks; the default is `TEAM_WEBRTC_CLIENT_PROTOCOL`.
  */
 export function createRemoteTeamPeer(
   actions: ActionsRef,
-  options: { waitForHost?: boolean; hostProtocols?: RemoteHostProtocols } = {},
+  options: {
+    waitForHost?: boolean;
+    hostProtocols?: RemoteHostProtocols;
+    clientProtocol?: TeamProtocolSupportV1["protocol"];
+  } = {},
 ) {
   const runtime = ManagedRuntime.make(RemotePeerIO.layer(actions));
   const workScope = Scope.makeUnsafe();
@@ -696,6 +707,7 @@ export function createRemoteTeamPeer(
   // A new peer of a known host sends the capabilities of its last protocol. With the bootstrap
   // capabilities, the host would hide the agents of the providers that protocol 7 does not know.
   const hostProtocols: RemoteHostProtocols = options.hostProtocols ?? new Map<string, number>();
+  const clientProtocol = options.clientProtocol ?? TEAM_WEBRTC_CLIENT_PROTOCOL;
   // The last `ready` of a host. A new connection to it opens its Signal socket while the ticket
   // request runs, and gathers ICE candidates before `ready`.
   let lastSignal: { hostId: string; signalUrl: string; iceServers: RTCIceServer[]; at: number } | null = null;
@@ -1880,8 +1892,10 @@ export function createRemoteTeamPeer(
   function resolveRpcAnswer(state: PeerState, pending: PendingRequest, status: number, body: TeamProtocolV2Json) {
     return Effect.fn("RemotePeer.resolveRpcAnswer")(function* () {
       if (pending.method === "GET" && pending.path === TEAM_API_ROUTES.compatibility && status === 200) {
-        const support = yield* peerDecode(() => decodeTeamProtocolSupportV9(body));
-        state.hostProtocol = support.protocol.maximum;
+        const support = yield* peerDecode(() => decodeTeamProtocolSupportExpanded(body));
+        // The highest protocol that both sides speak. A host that this client refuses keeps its maximum.
+        state.hostProtocol =
+          teamWebRtcClientProtocol(support.protocol, clientProtocol).protocol ?? support.protocol.maximum;
         state.hostCapabilities = support.capabilities;
         hostProtocols.set(state.hostId, state.hostProtocol);
         state.compactRpc = support.capabilities.includes(COMPACT_RPC_CAPABILITY);
@@ -1903,12 +1917,13 @@ export function createRemoteTeamPeer(
                 channelSeenSubtasks: true,
                 channelTaskWaits: true,
                 mcpManyServers: true,
+                routineResultsWhatsApp: true,
               }),
             )
           : yield* peerDecode(() =>
               withWireBlockExtensions(
                 state,
-                decodeTeamProtocolV9WebRtcHttpResponse(pending.method, pending.path, status, body),
+                decodeTeamProtocolV10WebRtcHttpResponse(pending.method, pending.path, status, body),
                 body,
               ),
             ),
@@ -2202,17 +2217,24 @@ export function createRemoteTeamPeer(
             : // A caller names a provider and model on agent creation only when the host advertises
               // `agent-create-model`, so the pair is kept whenever it is present.
               yield* peerDecode(() =>
-                encodeTeamProtocolV8WebRtcHttpRequest(method, path, body, {
+                encodeTeamProtocolV9WebRtcHttpRequest(method, path, body, {
                   preserveSemanticTags: true,
                   agentCreateModel: true,
                 }),
               );
         const requestId = createTeamRequestId((size) => crypto.getRandomValues(new Uint8Array(size)));
-        const listProtocol = checksConnection || !state.hostCapabilities ? undefined : state.hostProtocol;
+        // The first compatibility read of a connection sends the bootstrap list. A later one of protocol 10
+        // sends the protocol 10 lists, so the host answers with its full set. Pokebots: until the host list
+        // is known, a request sends the bootstrap list, so a kept compact-rpc-v1 list stays the right one.
+        const capabilityProtocol =
+          state.hostCapabilities &&
+          (!checksConnection || (state.hostProtocol !== undefined && state.hostProtocol >= TEAM_PROTOCOL_V10))
+            ? state.hostProtocol
+            : undefined;
         // The list that this request declares to the host. The snapshot request below depends on it.
-        const sentCapabilities = teamCapabilitiesForProtocol(listProtocol, state.hostCapabilities);
+        const sentCapabilities = teamCapabilitiesForProtocol(capabilityProtocol, state.hostCapabilities);
         // compact-rpc-v1: a list goes in full once on each connection, then by its key only.
-        const capabilitiesKey = state.compactRpc ? capabilityListKey(listProtocol) : null;
+        const capabilitiesKey = state.compactRpc ? capabilityListKey(capabilityProtocol) : null;
         const listSent = capabilitiesKey !== null && state.sentCapabilityKeys.has(capabilitiesKey);
         const payload = yield* peerDecode(() =>
           encodeTeamProtocolV2Frame({
@@ -2225,7 +2247,7 @@ export function createRemoteTeamPeer(
               path,
               body: payloadBody,
               ...(bodyTransferId && upload ? { bodyTransferId, contentType: upload.mimeType } : {}),
-              ...(listSent ? {} : { capabilities: [...sentCapabilities] }),
+              ...(listSent ? {} : teamCapabilityLists(capabilityProtocol, sentCapabilities)),
               ...(capabilitiesKey === null ? {} : { capabilitiesKey }),
               ...(state.compactRpc && canInflateResponses() ? { compressResponse: true } : {}),
             },

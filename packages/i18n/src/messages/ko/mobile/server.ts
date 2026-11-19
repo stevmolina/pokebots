@@ -404,7 +404,6 @@ export const messages = {
   "mobile.server.route.providers": "제공자",
   "mobile.server.route.provider": "제공자",
   "mobile.server.route.providerModels": "모델",
-  "mobile.server.route.mcp": "MCP 서버",
   "mobile.server.route.mcpServer": "MCP 서버",
   "mobile.server.members.rowLabel": "{name}, {role}",
   "mobile.server.members.you": "{name} (나)",
@@ -707,6 +706,8 @@ export const messages = {
     "다시 연결할 때까지 {host}의 에이전트가 공유 로그인 정보로 로그인할 수 없어요.",
   "mobile.server.connectors.keeper.disconnectBody":
     "{host}에서 Keeper 세션을 종료해요. 폴더와 그 안의 로그인 정보는 Keeper 보관함에 남아요.",
+  "mobile.server.connectors.protonPass.plan":
+    "사용 중인 Proton 플랜에는 Proton Pass 명령줄 도구가 포함되지 않아요. Pass Plus가 포함된 Proton 플랜이 필요해요. Mail Plus 같은 다른 유료 플랜에는 포함되지 않아요. 계정의 플랜을 변경한 다음 다시 연결하세요.",
   "mobile.server.connectors.passwordManager.unavailable": "이 서버에서는 {name}을(를) 사용할 수 없어요.",
   "mobile.server.connectors.passwordManager.howItWorks":
     "이 휴대폰에서 {name}에 로그인하세요. 그러면 {host}이(가) 공유 보관함과 그 보관함의 읽기 전용 액세스 키를 만들고, 그 키만 보관해요. 에이전트는 비밀번호를 볼 수 없어요.",
@@ -735,8 +736,6 @@ export const messages = {
   "mobile.server.connectors.passwordManager.keyReadOnly": "읽기 전용",
   "mobile.server.connectors.passwordManager.keyExpires": "읽기 전용. {date}에 만료돼요.",
   "mobile.server.connectors.passwordManager.keyExpired": "{date}에 만료됨",
-  "mobile.server.connectors.passwordManager.plan":
-    "{name} 명령줄 도구에는 유료 플랜이 필요해요. 계정의 플랜을 변경한 다음 다시 연결하세요.",
   "mobile.server.connectors.passwordManager.expiredTitle": "{name} 키가 만료되었어요",
   "mobile.server.connectors.passwordManager.expiredBody":
     "다시 연결할 때까지 {host}의 에이전트는 공유 로그인 항목으로 로그인할 수 없어요.",
@@ -890,10 +889,10 @@ export const messages = {
   "mobile.server.connectors.whatsapp.linkAgain": "다시 연결",
   "mobile.server.connectors.whatsapp.ownNumber": "개인 번호",
   "mobile.server.connectors.whatsapp.ownNumberDescription":
-    "“나에게 메시지 보내기” 채팅과 허용한 사람들만 메시지를 보낼 수 있어요. OpenBot 전용 번호라면 끄세요.",
+    "“나에게 메시지 보내기” 채팅과 허용한 사람들만 메시지를 보낼 수 있어요. 다른 사람에게는 답장하지 않아요. 끄면 OpenBot이 모르는 사람에게 코드를 답장해요.",
   "mobile.server.connectors.whatsapp.workingMessage": "“작업 중이에요…” 메시지",
   "mobile.server.connectors.whatsapp.workingMessageDescription":
-    "에이전트가 작업하는 동안 OpenBot이 보내고, 이후 답변으로 바꿔요. 답변만 보내려면 끄세요.",
+    "에이전트가 작업하는 동안 OpenBot이 보내고, 이후 답변으로 바꿔요. 이전 요청을 기다리는 요청에는 대기 메시지도 보내요. 답변만 보내려면 끄세요.",
   "mobile.server.connectors.whatsapp.statusReactions": "상태 반응",
   "mobile.server.connectors.whatsapp.statusReactionsDescription":
     "메시지가 도착하면 OpenBot이 👀로, 답변이 준비되면 ✅로 반응해요. 반응을 보내지 않으려면 끄세요.",
@@ -912,10 +911,10 @@ export const messages = {
   "mobile.server.connectors.whatsapp.kindLabel": "번호",
   "mobile.server.connectors.whatsapp.kindPersonal": "내 개인 번호",
   "mobile.server.connectors.whatsapp.kindPersonalDescription":
-    "OpenBot은 “나에게 메시지 보내기” 채팅과 허용한 사람들에게만 답해요.",
+    "OpenBot은 “나에게 메시지 보내기” 채팅과 허용한 사람들에게만 답해요. 다른 사람에게는 답장하지 않아요.",
   "mobile.server.connectors.whatsapp.kindDedicated": "OpenBot 전용 번호",
   "mobile.server.connectors.whatsapp.kindDedicatedDescription":
-    "모르는 사람은 나에게 알려 줄 코드를 받아요. 여기에서 승인하세요.",
+    "OpenBot이 이 번호로 모르는 사람마다 나에게 알려 줄 코드를 답장해요. 여기에서 승인하세요.",
   "mobile.server.connectors.whatsapp.phoneLabel": "전화번호",
   "mobile.server.connectors.whatsapp.phoneDescription": "+44 7700 900123처럼 국가 코드를 포함해 주세요.",
   "mobile.server.connectors.whatsapp.phoneInvalid": "국가 코드를 포함한 전화번호를 입력하세요.",
@@ -963,7 +962,8 @@ export const messages = {
   "mobile.server.connectors.whatsapp.contactNameDescription": "선택 사항이에요. 비워 두면 목록에 전화번호가 표시돼요.",
   "mobile.server.connectors.whatsapp.add": "추가",
   "mobile.server.connectors.whatsapp.groupTitle": "그룹 추가",
-  "mobile.server.connectors.whatsapp.groupDescription": "이 그룹의 사람들은 내 에이전트에게 작업을 맡길 수 있어요.",
+  "mobile.server.connectors.whatsapp.groupDescription":
+    "이 그룹의 사람들은 이 번호를 멘션하거나 이 번호의 메시지에 답장하면 내 에이전트에게 작업을 맡길 수 있어요.",
   "mobile.server.connectors.whatsapp.groupSearch": "그룹 검색",
   "mobile.server.connectors.whatsapp.groupsLoading": "그룹을 읽는 중이에요…",
   "mobile.server.connectors.whatsapp.groupsLoadFailed": "OpenBot이 그룹을 읽지 못했어요",
@@ -1072,6 +1072,8 @@ export const messages = {
   "mobile.server.providers.status.ready": "설치됨",
   "mobile.server.providers.status.notInstalled": "설치 안 됨",
   "mobile.server.providers.status.checking": "확인 중",
+  "mobile.server.providers.addAccountWithCode": "코드로 계정 추가",
+  "mobile.server.providers.accountSignInWithCode": "코드로 로그인",
   "mobile.server.providers.accountsKeyHint":
     "에이전트마다 계정 하나를 사용해요. 에이전트 설정에서 선택하세요. 새 계정에는 해당 계정의 API 키가 필요해요.",
   "mobile.server.providers.accountChangeKey": "키 변경",
@@ -1174,22 +1176,10 @@ export const messages = {
   "mobile.server.providers.defaultForNew": "새 에이전트 기본값",
   "mobile.server.providers.startsWith": "새 에이전트는 {name}(으)로 시작해요.",
   "mobile.server.providers.connectFirst": "먼저 {name}을(를) 연결하세요.",
-  "mobile.server.settings.mcp": "MCP 서버",
-  "mobile.server.settings.mcpCount": { other: "서버 {count}개" },
   "mobile.server.mcp.unsupported": "여기에서 MCP 서버를 관리하려면 이 서버의 OpenBot을 업데이트해 주세요.",
   "mobile.server.mcp.unavailable": "MCP 서버를 관리하려면 소유자나 관리자로 이 서버에 연결하세요.",
   "mobile.server.mcp.accessUnsupported": "MCP 서버를 받을 대상을 선택하려면 이 서버의 OpenBot을 업데이트해 주세요.",
-  "mobile.server.mcp.description":
-    "MCP 서버는 이 서버의 에이전트에게 더 많은 도구를 제공해요. Claude와 Codex 에이전트는 이 목록에 있는 서버만 사용해요.",
   "mobile.server.mcp.loading": "MCP 서버 불러오는 중…",
-  "mobile.server.mcp.loadFailed": "MCP 서버를 불러오지 못했어요.",
-  "mobile.server.mcp.empty": "아직 MCP 서버가 없어요.",
-  "mobile.server.mcp.retry": "다시 시도",
-  "mobile.server.mcp.add": "MCP 서버 추가",
-  "mobile.server.mcp.rowLabel": "{name}, {status}",
-  "mobile.server.mcp.enabled": "켜짐",
-  "mobile.server.mcp.disabled": "꺼짐",
-  "mobile.server.mcp.signedIn": "로그인됨",
   "mobile.server.mcp.gone": "이 MCP 서버는 더 이상 이 서버에 없어요.",
   "mobile.server.mcp.addTitle": "MCP 서버 추가",
   "mobile.server.mcp.addConfirm": "추가",
@@ -1607,8 +1597,12 @@ export const messages = {
   "mobile.server.transfer.copyTo": "받을 곳",
   "mobile.server.transfer.copyNoAgents": "이 서버에는 에이전트가 없어요.",
   "mobile.server.transfer.copyNotMoved":
-    "에이전트의 채널과 공유 폴더도 복사돼요. API 키, 로그인, 커넥터, 채팅 기록은 복사되지 않아요. 다른 서버에서 다시 설정하세요.",
+    "에이전트의 채널, 루틴 흐름, 워크플로, 공유 폴더도 복사돼요. API 키, 로그인, 커넥터, 채팅 기록은 복사되지 않아요. 다른 서버에서 다시 설정하세요.",
   "mobile.server.transfer.copySubmit": { other: "에이전트 {count}개 복사" },
+  "mobile.server.transfer.copyDuplicatesTitle": "중복된 에이전트를 복사할까요?",
+  "mobile.server.transfer.copyDuplicatesBody":
+    "{server}에 이미 같은 이름의 에이전트가 있어요: {names}. 복사하면 각각 에이전트가 하나 더 추가돼요. 사본은 채팅, 파일, 메모리가 따로 있는 별개의 에이전트예요.",
+  "mobile.server.transfer.copyDuplicatesConfirm": "중복 복사",
   "mobile.server.transfer.copying": "복사하는 중…",
   "mobile.server.transfer.copyFailed": "복사를 완료하지 못했어요.",
   "mobile.server.transfer.copied": { other: "에이전트 {count}개를 {server}에 복사했어요." },

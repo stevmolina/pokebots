@@ -4,7 +4,8 @@ export const messages = defineMessages("status.messaging", {
   // Text that OpenBot posts in a Slack conversation. Slack users read it. It names no agent: in
   // Slack, every answer comes from OpenBot.
   "status.messaging.working": "Working on it…",
-  "status.messaging.queued": "Waiting: OpenBot is working on another request. The answer comes here.",
+  // It names no product: WhatsApp posts it from the owner's own number, also in a group.
+  "status.messaging.queued": "Waiting for an earlier request to finish. The answer comes here.",
   "status.messaging.busy": "Too many requests are waiting. Try again later.",
   "status.messaging.failed": "OpenBot could not finish this request. The OpenBot host has the details.",
   "status.messaging.noAnswer": "OpenBot finished without a written answer.",
@@ -13,6 +14,7 @@ export const messages = defineMessages("status.messaging", {
   "status.messaging.stopped": "Stopped.",
   "status.messaging.stop": "Stop",
   "status.messaging.approvalTitle": "OpenBot asks for approval to continue.",
+  "status.messaging.approvalTitleTeammate": "Teammate {agent} asks for approval to continue.",
   "status.messaging.approvalCommand": "Run a command",
   "status.messaging.approvalFileChange": "Change files",
   "status.messaging.approvalPermissions": "Get more permissions",

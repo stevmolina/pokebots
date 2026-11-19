@@ -4,6 +4,7 @@ import { describe, expect, it, vi } from "vitest";
 import {
   createOpenBotLogger,
   type LogValue,
+  redactPostText,
   redactSecrets,
   redactText,
   redactValue,
@@ -186,6 +187,22 @@ describe("redactText", () => {
     expect(redactSecrets('{"jan@example.com":"Bearer abcdef123456"}')).toBe('{"jan@example.com":"[redacted]"}');
   });
 
+  // An agent's chat app answer keeps the address it wrote for the people there, never a secret.
+  it("keeps emails and redacts secrets in a chat app post", () => {
+    expect(redactPostText("Write to jan@example.com, password=hunter2")).toBe(
+      "Write to jan@example.com, password=[redacted]",
+    );
+    // Only the email rule hid a URL password before, as a part of an address.
+    expect(redactPostText("postgres://admin:s3cretpw@db.example.com/app")).toBe(
+      "postgres://admin:[redacted]@db.example.com/app",
+    );
+    expect(redactText("https://user:s3cretpw@db.example.com/x")).toBe("https://user:[redacted]@db.example.com/x");
+    expect(redactSecrets("redis://:s3cretpw@cache:6379")).toBe("redis://:[redacted]@cache:6379");
+    expect(redactPostText(`${"{} ".repeat(16)}{"headers":{"X-Tenant":"tenant-secret"}}`)).toContain(
+      "[redacted-unscanned]",
+    );
+  });
+
   it("redacts secrets inside a payload that arrives as one string", () => {
     expect(redactText('{"apiKey":"pk_live_9f2b3c4d5e"}')).not.toContain("pk_live_9f2b3c4d5e");
     expect(redactText('{"machineToken":"mt_abc123def456"}')).not.toContain("mt_abc123def456");
@@ -209,6 +226,34 @@ describe("redactText", () => {
   it("redacts scheme-prefixed authorization values and cookies", () => {
     expect(redactText("Authorization: Basic YWxhZGRpbjpvcGVuc2VzYW1l")).toBe("Authorization: [redacted]");
     expect(redactText("set-cookie: session=9f2b3c4d5e6f")).not.toContain("9f2b3c4d5e6f");
+  });
+
+  // The fixed scheme list kept the token after `Bot`, `ApiKey` or `Negotiate`.
+  it("redacts the token after any authorization scheme", () => {
+    expect(redactText(`Authorization: Bot ${run64(24)}.${run64(6)}.${run64(27)} sent`)).toBe(
+      "Authorization: [redacted] sent",
+    );
+    expect(redactText("authorization: ApiKey abcdef1234567890")).toBe("authorization: [redacted]");
+    expect(redactText("Proxy-Authorization: Negotiate YIIabcdef1234567890")).toBe("Proxy-Authorization: [redacted]");
+  });
+
+  it("redacts Google OAuth tokens, Telegram bot tokens and webhook addresses", () => {
+    expect(redactText(`token ya29.${run64(40)} expired`)).toBe("token [redacted] expired");
+    expect(redactText(`client GOCSPX-${run64(28)} refused`)).toBe("client [redacted] refused");
+    const telegram = `123456789:AA${run64(33)}`;
+    expect(redactText(`GET https://api.telegram.org/bot${telegram}/getMe failed`)).toBe(
+      "GET https://api.telegram.org/[redacted]/getMe failed",
+    );
+    expect(redactText(`token ${telegram} refused`)).toBe("token [redacted] refused");
+    const slack = redactText(`post https://hooks.slack.com/services/T01ABCDEF/B01ABCDEF/${run64(24)} failed`);
+    expect(slack).toBe("post https://hooks.slack.com/services/[redacted] failed");
+    expect(redactText(slack)).toBe(slack);
+    expect(redactText(`post https://discord.com/api/webhooks/123456789012345678/${run64(68)} failed`)).toBe(
+      "post https://discord.com/api/webhooks/[redacted] failed",
+    );
+    expect(redactText("see https://api.slack.com/messaging/webhooks and 12:30:45")).toBe(
+      "see https://api.slack.com/messaging/webhooks and 12:30:45",
+    );
   });
 
   it("leaves scheme words used as ordinary prose alone", () => {
@@ -419,6 +464,24 @@ describe("redactValue", () => {
     expect(redactValue({ headers: [{ name: "X-Api-Token", value: "abcdef123456" }] })).toEqual({
       headers: [{ name: "[redacted]", value: "[redacted]" }],
     });
+  });
+
+  // ACP and MCP send environment variables as a list of name and value pairs.
+  it("redacts the value of a pair whose name labels a secret", () => {
+    expect(
+      redactValue({
+        env: [
+          { name: "OPENAI_API_KEY", value: "opaque-value-123" },
+          { name: "LOG_LEVEL", value: "debug" },
+        ],
+      }),
+    ).toEqual({
+      env: [
+        { name: "OPENAI_API_KEY", value: "[redacted]" },
+        { name: "LOG_LEVEL", value: "debug" },
+      ],
+    });
+    expect(redactText('env [{"name":"GITHUB_TOKEN","value":"opaque-value-123"}]')).not.toContain("opaque-value-123");
   });
 
   it("leaves a headers count and the word in prose alone", () => {

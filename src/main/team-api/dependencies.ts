@@ -11,6 +11,7 @@ import type { AgentInstructionsFiles } from "../agent-instructions-files";
 import type { AgentMarketplaceService } from "../agent-marketplace-service";
 import type { AgentMemoryLimitSetting } from "../agent-memory-limit-preference-store";
 import type { AgentTemplateService } from "../agent-template-service";
+import type { PreviewFile } from "../attachment-previews";
 import type { listBackgroundProcesses, stopBackgroundProcess } from "../background-processes";
 import type { BrowserProfileService } from "../browser-profile-service";
 import type { BrowsingMemoryPreferenceStore } from "../browsing-memory-preference-store";
@@ -177,6 +178,7 @@ type TeamApiAgentMethods = Pick<
   | "listWorkspaceDirectory"
   | "sendMessage"
   | "listQueue"
+  | "listActiveQueues"
   | "acknowledgeFailedTurn"
   | "setMessageReaction"
   | "deleteConversationMessage"
@@ -351,7 +353,10 @@ export type TeamApiHostedSites = Pick<HostedSiteDesktopService, "listServerSites
 /** Its presence is what `#protocolSupport` advertises `agent-hidden-v1` on. Any member can use it. */
 export type TeamApiHiddenAgents = Pick<AgentService, "listHiddenAgents" | "setAgentHidden">;
 
-/** `routine-run-place-v1`: the routine records of each agent, of every trigger kind. */
+/**
+ * `routine-run-place-v1` and `routine-pause-reasons-v1`: the routine records of each agent, of every
+ * trigger kind.
+ */
 export type TeamApiRoutineRunPlaces = Pick<AgentService["routineRecords"], "list" | "get" | "save">;
 
 /**
@@ -480,6 +485,8 @@ export type TeamApiWorkflows = Pick<
   | "keepPicture"
   | "mediaProviders"
   | "mediaCredits"
+  | "mediaCatalog"
+  | "mediaPrice"
 > &
   Pick<HostEventsService, "rotateWorkflowSecret"> & {
     /**
@@ -670,6 +677,11 @@ interface TeamApiProviders {
 }
 
 export type TeamApiMailbox = Pick<MailboxStore, "resolveAttachment">;
+/** `attachment-preview-v1`: the file to send as the small copy of an image attachment (`AttachmentPreviews`). */
+export interface TeamApiAttachmentPreviews {
+  /** Null when the host has no copy and the file is too large to send as its own preview. */
+  file(attachmentId: string, source: PreviewFile): Effect.Effect<PreviewFile | null>;
+}
 export type TeamApiSidebarLayout = Pick<
   SidebarLayoutStore,
   "getSnapshot" | "mutate" | "removeAgent" | "placeDuplicateAfter" | "withProfileAssignment"
@@ -695,6 +707,7 @@ export type TeamApiBrowser = Pick<
   | "takeUserControl"
   | "releaseUserControl"
   | "releaseUserControlHeldBy"
+  | "releaseUserControlRefused"
   // A task that a person shows, behind `browser-teach-v1`.
   | "startTeach"
   | "stopTeach"
@@ -712,7 +725,13 @@ export type TeamApiBrowser = Pick<
 >;
 export type TeamApiBrowserView = Pick<
   BrowserViewGateway,
-  "handlesUpgrade" | "handleUpgrade" | "stop" | "createSession" | "closeMemberSession" | "revokeTeamSession"
+  | "handlesUpgrade"
+  | "handleUpgrade"
+  | "stop"
+  | "createSession"
+  | "closeMemberSession"
+  | "revokeTeamSession"
+  | "closeRefusedSessions"
 >;
 export type TeamApiRemoteScreen = Pick<
   RemoteScreenGateway,
@@ -831,6 +850,8 @@ export interface TeamApiOptions {
   skills?: Pick<SkillMarketplaceService, "listInstalledForChatTags"> | undefined;
   sidebarLayout?: TeamApiSidebarLayout | undefined;
   mailbox: TeamApiMailbox;
+  /** Present, so the host advertises `attachment-preview-v1` and serves small copies of its pictures. */
+  attachmentPreviews?: TeamApiAttachmentPreviews | undefined;
   browser: TeamApiBrowser;
   browserView?: TeamApiBrowserView | undefined;
   remoteScreen?: TeamApiRemoteScreen | undefined;

@@ -34,6 +34,7 @@ import {
   PROVIDER_MODEL_SOURCE_CAPABILITY,
   PROVIDER_MODEL_SOURCE_ROUTES,
 } from "@openbot/contracts/team-protocol/provider-model-source-v1";
+import { SKILL_PROBLEMS_CAPABILITY } from "@openbot/contracts/team-protocol/skill-problems-v1";
 import { V5_AGENT_MODEL } from "@openbot/contracts/team-protocol/v5-adapter";
 import { V6_AGENT_MODEL } from "@openbot/contracts/team-protocol/v6-adapter";
 import { WORKFLOWS_CAPABILITY } from "@openbot/contracts/team-protocol/workflows-v1";
@@ -276,7 +277,9 @@ export async function routeAgents(
       return json(200, await runCauseEffect(agents.getUsage(agentId)));
     }
     if (method === "GET" && action === "skills") {
-      return json(200, skills ? await runCauseEffect(skills.listInstalledForChatTags(agentId)) : []);
+      // An older client would offer a skill that has a problem as a usable one.
+      const problems = capabilities.has(SKILL_PROBLEMS_CAPABILITY);
+      return json(200, skills ? await runCauseEffect(skills.listInstalledForChatTags(agentId, { problems })) : []);
     }
     if (method === "PATCH" && !action) {
       const input = agentUpdate(await readJson(request), agentId);
@@ -291,7 +294,15 @@ export async function routeAgents(
     if (method === "DELETE" && !action) {
       if (!canAdministerServer(member.role))
         throw new HttpError(403, sourceText("error.team.membersCannotDeleteAgents"));
-      await runCauseEffect(agents.deleteAgent(agentId));
+      try {
+        await runCauseEffect(agents.deleteAgent(agentId));
+      } catch (error) {
+        // A busy agent, or a delete that runs, is a refusal the member can act on. The web client shows
+        // a refusal's text, but for a 500 only that the server could not complete the request (#7023).
+        if (error instanceof Error && DELETE_REFUSALS().includes(error.message))
+          throw new HttpError(409, error.message);
+        throw error;
+      }
       await runCauseEffect(sidebarLayout.removeAgent(agentId));
       if (libraryFolders) await runCauseEffect(libraryFolders.removeAgent(agentId));
       return empty(204);
@@ -435,3 +446,6 @@ function refusedPromptAnswer(error: unknown): never {
   if (error instanceof ForbiddenAttentionAnswer) throw new HttpError(403, error.message);
   return inactiveAsConflict(error);
 }
+
+/** The texts with which the agent service refuses a delete until the agent is idle. */
+const DELETE_REFUSALS = () => [sourceText("error.agent.stopBeforeDelete"), sourceText("error.agent.deletionBusy")];

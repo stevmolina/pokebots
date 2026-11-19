@@ -63,6 +63,16 @@ const PERMISSION_TIMEOUT_MS = 10_000;
 /** Part of the permission time, so a slow answer still leaves the check time to finish. */
 const WAYLAND_INPUT_CHECK_TIMEOUT_MS = 4_000;
 const WAYLAND_BACKEND_CHECK = "wayland_backend";
+/**
+ * The waits before each new check of a driver that did not start, did not answer, or stopped (#12347).
+ *
+ * Nothing else checks again on a server, where no window shows this computer's panel, so without
+ * them the agents kept no Computer Use until OpenBot restarted. The list ends, so a driver that keeps
+ * failing does not replace every agent's session again and again.
+ */
+const RECHECK_DELAYS_MS = [2_000, 5_000, 15_000, 30_000, 60_000] as const;
+/** A driver that stayed ready this long before it failed gets the full list of checks again. */
+const RECHECK_STABLE_MS = 5 * 60_000;
 
 /**
  * Embedded mode, which is what makes the grant OpenBot's own.
@@ -326,6 +336,16 @@ export class CuaDriverRuntime {
   readonly #tap: CuaDriverActionTap;
   /** What the last check read from the driver. See `waylandInputRefused`. */
   #waylandInputRefused = false;
+  /**
+   * macOS refused an Accessibility call although the check said that both grants are in place
+   * (#10658). The check cannot see this, so the answer stays until OpenBot restarts.
+   */
+  #restartRequired = false;
+  /** See `RECHECK_DELAYS_MS`. */
+  #recheckTimer: ReturnType<typeof setTimeout> | null = null;
+  #recheckAttempt = 0;
+  /** When the state last became `ready`, or null before it ever did. */
+  #readySince: number | null = null;
 
   constructor(options: CuaDriverRuntimeOptions) {
     this.#options = options;
@@ -340,6 +360,7 @@ export class CuaDriverRuntime {
           ? {}
           : { maxSocketPathLength: MAX_SOCKET_PATH_LENGTH[options.platform] }),
       });
+    this.#tap.onAccessibilityRefused(() => this.#requireRestart());
     this.#state = initialState(options.platform, options.supported, options.executable);
   }
 
@@ -494,6 +515,7 @@ export class CuaDriverRuntime {
   }
 
   stop(): Effect.Effect<void, CuaDriverFailure> {
+    this.#cancelRecheck();
     return this.#lifecycle.stop(() => this.#stop());
   }
 
@@ -546,7 +568,13 @@ export class CuaDriverRuntime {
     const granted = requiredPermissions(this.#options.platform).every((id) =>
       permissions.some((p) => p.id === id && p.granted),
     );
-    const state = this.#publish({ status: granted ? "ready" : "permissions-required", permissions, message: null });
+    const state = this.#publish(
+      !granted
+        ? { status: "permissions-required", permissions, message: null }
+        : this.#restartRequired
+          ? restartRequiredState(permissions)
+          : { status: "ready", permissions, message: null },
+    );
     // macOS keeps a "not granted" answer for the life of the process that asked (#7937), so this
     // daemon would not see a grant the user gives now. The next check starts a new one. The stop
     // comes after the publish, which has already taken the entry back from the agents.
@@ -570,6 +598,7 @@ export class CuaDriverRuntime {
     yield* Effect.gen({ self: this }, function* () {
       const state = yield* this.state();
       if (state.status !== "ready") yield* this.stop().pipe(Effect.catch(() => Effect.void));
+      if (state.status === "error") this.#scheduleRecheck();
     }).pipe(
       Effect.ensuring(
         Effect.sync(() => {
@@ -653,6 +682,7 @@ export class CuaDriverRuntime {
         permissions: ungranted(this.#options.platform),
         message: sourceText("status.computerUse.driverStopped"),
       });
+      this.#scheduleRecheck();
     });
 
     const ready = yield* Effect.result(
@@ -766,6 +796,58 @@ export class CuaDriverRuntime {
     return alias;
   });
 
+  /**
+   * Takes the tools back from the agents and asks the user to restart OpenBot.
+   *
+   * The upstream driver guide says that the host must be relaunched after its Accessibility grant
+   * changes. A new daemon is not enough: it is started by the same OpenBot process.
+   */
+  #requireRestart(): void {
+    if (this.#restartRequired) return;
+    this.#restartRequired = true;
+    this.#options.onDiagnostic?.("OpenBot: macOS refused Accessibility to Computer Use (AXError -25211).\n");
+    if (this.#state.status === "ready") this.#publish(restartRequiredState(this.#state.permissions));
+  }
+
+  /**
+   * Checks the driver again after the next wait of `RECHECK_DELAYS_MS`, for a driver in `error`.
+   *
+   * Only `error` is checked again: the other states below `ready` wait for the user, a grant or a
+   * restart, and a new check would not change them. A stop this process asks for cancels it.
+   */
+  #scheduleRecheck(): void {
+    if (this.#recheckTimer || this.#options.quitting?.()) return;
+    // Once for each stable run: a failed check publishes no `ready`, so it must not reset the list again.
+    if (this.#readySince !== null && Date.now() - this.#readySince >= RECHECK_STABLE_MS) {
+      this.#recheckAttempt = 0;
+      this.#readySince = null;
+    }
+    const delay = RECHECK_DELAYS_MS[this.#recheckAttempt];
+    if (delay === undefined) return;
+    this.#recheckAttempt += 1;
+    this.#recheckTimer = setTimeout(() => {
+      this.#recheckTimer = null;
+      if (this.#options.quitting?.()) return;
+      Effect.runFork(
+        this.state().pipe(
+          Effect.tap((state) =>
+            Effect.sync(() => {
+              if (state.status === "error") this.#scheduleRecheck();
+            }),
+          ),
+          Effect.catch(() => Effect.void),
+        ),
+      );
+    }, delay);
+    // A pending check must not keep OpenBot running.
+    this.#recheckTimer.unref?.();
+  }
+
+  #cancelRecheck(): void {
+    if (this.#recheckTimer) clearTimeout(this.#recheckTimer);
+    this.#recheckTimer = null;
+  }
+
   #announceMcpServer(): void {
     const config = this.mcpServerForProviders();
     const announced = config ? [config.command, ...config.args].join(" ") : "";
@@ -791,6 +873,7 @@ export class CuaDriverRuntime {
   #publish(state: ComputerUseState): ComputerUseState {
     if (sameState(this.#state, state)) return this.#state;
     this.#state = state;
+    if (state.status === "ready") this.#readySince = Date.now();
     for (const listener of this.#listeners) listener(state);
     this.#announceMcpServer();
     return state;
@@ -827,6 +910,11 @@ function initialState(platform: NodeJS.Platform, supported: boolean, executable:
     };
   }
   return { status: "permissions-required", permissions: ungranted(platform), message: null };
+}
+
+/** The panel writes its own steps for this status, so the state carries no message. */
+function restartRequiredState(permissions: readonly ComputerUsePermission[]): ComputerUseState {
+  return { status: "restart-required", permissions, message: null };
 }
 
 function requiredPermissions(platform: NodeJS.Platform): readonly MacPermissionId[] {

@@ -39,11 +39,15 @@ export const CONNECTOR_TITLE_KEYS = {
   keeper: "mobile.server.connectors.keeper.title",
 } as const satisfies Record<MobileConnectorId, MobileTextKey>;
 
-/** How a list shows a connector. `idle` is not set up; `unavailable` cannot be set up from a phone. */
-export type ConnectorStatus = "connected" | "attention" | "connecting" | "idle" | "unavailable" | "unknown";
+/**
+ * How a list shows a connector. `idle` is not set up; `unavailable` cannot be set up from a phone;
+ * `paused` is a messaging app whose places are all paused, which agents cannot use.
+ */
+export type ConnectorStatus = "connected" | "paused" | "attention" | "connecting" | "idle" | "unavailable" | "unknown";
 
 export const CONNECTOR_STATUS_KEYS = {
   connected: "mobile.server.connectors.statusConnected",
+  paused: "mobile.server.connectors.statusPaused",
   attention: "mobile.server.connectors.statusAttention",
   connecting: "mobile.server.connectors.statusConnecting",
   idle: "mobile.server.connectors.statusNotSetUp",
@@ -103,13 +107,18 @@ export function attentionCount(
   ).length;
 }
 
+/** As desktop `pausedChannelState`: an app whose places are all paused is not connected for agents. */
+function pausedOrConnected(connections: readonly MessagingConnection[]): ConnectorStatus {
+  return connections.every((connection) => connectionKind(connection) === "paused") ? "paused" : "connected";
+}
+
 export function messagingStatus(
   platform: ConnectorMessagingPlatform,
   connections: readonly MessagingConnection[],
   agents: readonly { id: string }[],
 ): ConnectorStatus {
   if (attentionCount(platform, connections, agents) > 0) return "attention";
-  return connections.length === 0 ? "idle" : "connected";
+  return connections.length === 0 ? "idle" : pausedOrConnected(connections);
 }
 
 /**
@@ -130,7 +139,7 @@ export function whatsappStatus(
   agents: readonly { id: string }[],
 ): ConnectorStatus {
   if (whatsappAttentionCount(connections, agents) > 0) return "attention";
-  return connections.length === 0 ? "idle" : "connected";
+  return connections.length === 0 ? "idle" : pausedOrConnected(connections);
 }
 
 /** A WhatsApp number in digits, as people write it. */

@@ -15,6 +15,8 @@ export const messages = {
     "{provider} ne peut pas se connecter au fournisseur du modèle. Nouvel essai : tentative {attempt}.",
   "status.provider.modelRetryServerError":
     "Le fournisseur du modèle est occupé ou en erreur. {provider} réessaie : tentative {attempt}.",
+  "status.provider.modelRetryOutOfMemory":
+    "Le serveur du modèle manque de mémoire pour cette conversation. {provider} réessaie : tentative {attempt}. Une nouvelle conversation demande moins de mémoire.",
   "status.provider.modelRetryRecovered": "Le fournisseur du modèle répond de nouveau.",
   "status.provider.retryRecovered": "{provider} reçoit de nouveau des réponses de son serveur.",
   "status.provider.claudeFastModeNeedsUsageCredits":
@@ -29,4 +31,6 @@ export const messages = {
     "Claude a répondu à la vitesse standard. Le mode rapide est désactivé dans les paramètres de Claude Code ou par votre organisation.",
   "status.provider.claudeFastModeUnavailable":
     "Claude a répondu à la vitesse standard. Claude Code n’a pas pu utiliser le mode rapide pour ce tour.",
+  "status.provider.claudeOwnApiKey":
+    "Claude Code est configuré pour utiliser une clé API Anthropic. Anthropic facture chaque requête sur le crédit API de la clé, et non sur votre forfait Claude. Pour utiliser votre forfait, retirez la clé des paramètres de Claude Code ou des variables d'environnement, puis redémarrez OpenBot.",
 } as const satisfies PartialTranslation<typeof source>;
