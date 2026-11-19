@@ -7,6 +7,7 @@ import { isOneOf } from "./runtime-values";
  */
 export const APP_SHORTCUT_COMMANDS = [
   "newChat",
+  "newInstance",
   "search",
   "shortcuts",
   "toggleSidebar",

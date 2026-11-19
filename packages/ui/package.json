@@ -465,6 +465,7 @@
     "./features/transfer/CopyAgentsDialog": "./src/features/transfer/CopyAgentsDialog.tsx",
     "./features/transfer/InstanceTransferView": "./src/features/transfer/InstanceTransferView.tsx",
     "./components/GlobalSearch": "./src/components/GlobalSearch.tsx",
+    "./components/NewInstancePicker": "./src/components/NewInstancePicker.tsx",
     "./components/global-search-model": "./src/components/global-search-model.ts",
     "./components/global-search-text": "./src/components/global-search-text.ts",
     "./components/ProviderCodeLoginDialog": "./src/components/ProviderCodeLoginDialog.tsx",

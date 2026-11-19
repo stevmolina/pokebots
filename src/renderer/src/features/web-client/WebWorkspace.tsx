@@ -251,6 +251,7 @@ import { WorkspaceFrame } from "../../WorkspaceFrame";
 import {
   ChannelCreateOverlay,
   GlobalSearchOverlay,
+  NewInstancePickerOverlay,
   JoinServerOverlay,
   MarketplaceAppConnectOverlay,
   MarketplaceOverlay,
@@ -1002,6 +1003,7 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
     openAccountSettings();
   }
   const [searchOpen, setSearchOpen] = createSignal(false);
+  const [newInstanceOpen, setNewInstanceOpen] = createSignal(false);
   /**
    * The phone search: its field is the pill of the bottom bar and its results replace the chat list.
    * `routines` is set when the Routines filter is chosen, so the routines load only then.
@@ -1058,6 +1060,12 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
   onSettled(() =>
     onShortcutCommand("search", () => {
       setSearchOpen(true);
+      return true;
+    }),
+  );
+  onSettled(() =>
+    onShortcutCommand("newInstance", () => {
+      setNewInstanceOpen((open) => !open);
       return true;
     }),
   );
@@ -4167,6 +4175,20 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                     }}
                     onSelectChannel={openChannel}
                     onSelectMessage={openSearchHit}
+                  />
+                  <NewInstancePickerOverlay
+                    open={newInstanceOpen()}
+                    agents={searchAgents()}
+                    onOpenChange={setNewInstanceOpen}
+                    onSelectAgent={(agentId) => {
+                      setMobilePane("conversation");
+                      void select(agentId);
+                      agentThreads()?.tabs.startNew(agentId);
+                    }}
+                    onNewBot={() => {
+                      setNewInstanceOpen(false);
+                      setCreating(true);
+                    }}
                   />
                 </>
               }

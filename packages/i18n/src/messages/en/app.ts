@@ -132,6 +132,7 @@ export const messages = defineMessages("app", {
   "app.shortcuts.group.browser": "Browser",
   "app.shortcuts.search": "Search everything",
   "app.shortcuts.newChat": "New chat",
+  "app.shortcuts.newInstance": "New instance on a bot",
   "app.shortcuts.previousChat": "Previous chat",
   "app.shortcuts.nextChat": "Next chat",
   "app.shortcuts.previousUnreadChat": "Previous unread chat",
