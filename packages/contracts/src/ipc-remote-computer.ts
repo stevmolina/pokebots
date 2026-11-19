@@ -13,6 +13,13 @@ export interface RemoteComputerServer {
   supported: boolean;
   /** The server is connected now. */
   connected: boolean;
+  /** The host can also give a terminal and file copy to its agents (`remote-computer-terminal-v1`). */
+  terminalSupported: boolean;
+  /**
+   * The user let those agents run commands on this computer and copy its files. It starts off, and it
+   * counts only while `enabled` is true: turning `enabled` off turns it off too.
+   */
+  terminalEnabled: boolean;
 }
 
 /** An agent on a joined server is using this computer now. */
@@ -35,7 +42,9 @@ function decodeServer(value: unknown): RemoteComputerServer {
     !isString(value.serverName) ||
     typeof value.enabled !== "boolean" ||
     typeof value.supported !== "boolean" ||
-    typeof value.connected !== "boolean"
+    typeof value.connected !== "boolean" ||
+    typeof value.terminalSupported !== "boolean" ||
+    typeof value.terminalEnabled !== "boolean"
   )
     throw new Error("Invalid remote computer server.");
   return {
@@ -44,6 +53,8 @@ function decodeServer(value: unknown): RemoteComputerServer {
     enabled: value.enabled,
     supported: value.supported,
     connected: value.connected,
+    terminalSupported: value.terminalSupported,
+    terminalEnabled: value.terminalEnabled,
   };
 }
 

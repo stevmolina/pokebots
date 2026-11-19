@@ -60,6 +60,20 @@ export function RemoteComputerSettings() {
     }
   }
 
+  async function setTerminal(server: RemoteComputerServer, enabled: boolean): Promise<void> {
+    if (busy()) return;
+    setBusy(server.serverId);
+    setError(null);
+    try {
+      const next = await computerUsePort().computerUse.setRemoteTerminal({ serverId: server.serverId, enabled });
+      if (!disposed) setServers(next);
+    } catch (cause) {
+      if (!disposed) setError(errorMessage(cause, t("computerUse.remote.error")));
+    } finally {
+      if (!disposed) setBusy(null);
+    }
+  }
+
   const state = (server: RemoteComputerServer) => {
     if (!server.supported && server.connected) return t("computerUse.remote.unsupported");
     if (!server.connected) return t("computerUse.remote.offline");
@@ -76,20 +90,42 @@ export function RemoteComputerSettings() {
         <ItemGroup class="settings-modal-card computer-use-card">
           <For each={servers()}>
             {(server) => (
-              <Item class="settings-modal-row computer-use-row">
-                <ItemContent>
-                  <ItemTitle>{server.serverName}</ItemTitle>
-                  <ItemDescription>{state(server)}</ItemDescription>
-                </ItemContent>
-                <ItemActions>
-                  <Switch
-                    aria-label={t("computerUse.remote.switchLabel", { server: server.serverName })}
-                    checked={server.enabled}
-                    disabled={busy() !== null || (!server.enabled && !server.supported)}
-                    onChange={(enabled: boolean) => void setEnabled(server, enabled)}
-                  />
-                </ItemActions>
-              </Item>
+              <>
+                <Item class="settings-modal-row computer-use-row">
+                  <ItemContent>
+                    <ItemTitle>{server.serverName}</ItemTitle>
+                    <ItemDescription>{state(server)}</ItemDescription>
+                  </ItemContent>
+                  <ItemActions>
+                    <Switch
+                      aria-label={t("computerUse.remote.switchLabel", { server: server.serverName })}
+                      checked={server.enabled}
+                      disabled={busy() !== null || (!server.enabled && !server.supported)}
+                      onChange={(enabled: boolean) => void setEnabled(server, enabled)}
+                    />
+                  </ItemActions>
+                </Item>
+                <Show when={server.enabled}>
+                  <Item class="settings-modal-row computer-use-row" data-terminal-row={server.serverId}>
+                    <ItemContent>
+                      <ItemTitle>{t("computerUse.remote.terminalLabel")}</ItemTitle>
+                      <ItemDescription>
+                        {server.terminalSupported
+                          ? t("computerUse.remote.terminalHint")
+                          : t("computerUse.remote.terminalUnsupported")}
+                      </ItemDescription>
+                    </ItemContent>
+                    <ItemActions>
+                      <Switch
+                        aria-label={t("computerUse.remote.terminalSwitchLabel", { server: server.serverName })}
+                        checked={server.terminalEnabled}
+                        disabled={busy() !== null || (!server.terminalEnabled && !server.terminalSupported)}
+                        onChange={(enabled: boolean) => void setTerminal(server, enabled)}
+                      />
+                    </ItemActions>
+                  </Item>
+                </Show>
+              </>
             )}
           </For>
         </ItemGroup>

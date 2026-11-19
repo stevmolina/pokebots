@@ -42,7 +42,15 @@ host.onChanged(() => {
 let enabled = true;
 let disabledByStop = false;
 const servers = (): RemoteComputerServer[] => [
-  { serverId: SERVER, serverName: "Dev host", enabled, supported: true, connected: true },
+  {
+    serverId: SERVER,
+    serverName: "Dev host",
+    enabled,
+    supported: true,
+    connected: true,
+    terminalSupported: true,
+    terminalEnabled: false,
+  },
 ];
 const driver: McpServerConfig = {
   id: "computer-use",

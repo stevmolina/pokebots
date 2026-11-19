@@ -924,6 +924,7 @@ const openbotApi: OpenBotDesktopApi = {
     highlightPlacement: decodeComputerUseHighlightPlacement,
     listRemoteServers: decodeRemoteComputerServers,
     setRemoteServer: decodeRemoteComputerServers,
+    setRemoteTerminal: decodeRemoteComputerServers,
     remoteServers: decodeRemoteComputerServers,
     getRemoteSessions: decodeRemoteComputerSessions,
     stopRemoteSession: decodeVoid,

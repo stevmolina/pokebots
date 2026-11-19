@@ -1216,8 +1216,10 @@ export class OpenBotToolRouter {
       })
       .pipe(Effect.catch(() => Effect.succeed("cancel" as const)));
     if (decision !== "accept") return openBotToolFailure(sourceText("error.agent.mcpToolDeclined"));
+    const current = findAgentMcpTool(servers.forAgent(agentId), call.name);
+    if (current?.config.id !== found.config.id) return openBotToolFailure(sourceText("error.agent.mcpToolDeclined"));
     // Stop cancels the call, as it cancels the provider's own MCP call.
-    const outcome = yield* Effect.result(servers.callTool(found.config, found.tool, call.arguments)).pipe(
+    const outcome = yield* Effect.result(servers.callTool(current.config, current.tool, call.arguments)).pipe(
       Effect.raceFirst(requestAborted(request.signal)),
     );
     if (Result.isFailure(outcome))

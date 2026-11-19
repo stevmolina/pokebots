@@ -102,6 +102,7 @@ import { INSTANCE_TRANSFER_ROUTES } from "@openbot/contracts/team-protocol/insta
 import type { LiveVoiceEvent } from "@openbot/contracts/team-protocol/live-voice-v1";
 import type { MachineAlertEvent } from "@openbot/contracts/team-protocol/machine-resources-v1";
 import { PROVIDER_MODEL_SOURCE_CAPABILITY } from "@openbot/contracts/team-protocol/provider-model-source-v1";
+import { REMOTE_COMPUTER_TERMINAL_CAPABILITY } from "@openbot/contracts/team-protocol/remote-computer-terminal-v1";
 import {
   REMOTE_COMPUTER_USE_CAPABILITY,
   type RemoteComputerCallEvent,
@@ -995,8 +996,25 @@ export class RemoteServerManager extends EventEmitter<RemoteServerEvents> {
         enabled: this.#store.sharesComputer(server.id),
         supported: this.supportsCapability(server.id, REMOTE_COMPUTER_USE_CAPABILITY),
         connected: this.#connections.stateFor(server.id) === "online",
+        terminalSupported: this.supportsCapability(server.id, REMOTE_COMPUTER_TERMINAL_CAPABILITY),
+        terminalEnabled: this.#store.sharesComputer(server.id) && this.#store.sharesTerminal(server.id),
       }));
   }
+
+  /** The agents of this server may run commands here and copy files, only while the main switch is on. */
+  readonly setRemoteComputerTerminal = Effect.fn("RemoteManager.setRemoteComputerTerminal")(
+    function* (
+      this: RemoteServerManager,
+      serverId: string,
+      enabled: boolean,
+    ): Effect.fn.Return<void, RemoteWorkflowError> {
+      if (serverId === LOCAL_SERVER_ID)
+        return yield* new RemoteWorkflowError({ cause: new Error(sourceText("error.team.agentSettingsUnsupported")) });
+      yield* this.#store.setTerminalSharing(serverId, enabled);
+      this.#emitChanged();
+    },
+    (operation) => this.#owned(operation),
+  ).bind(this);
 
   readonly setRemoteComputerServer = Effect.fn("RemoteManager.setRemoteComputerServer")(
     function* (

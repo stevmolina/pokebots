@@ -2241,7 +2241,13 @@ export async function createApplicationServices({
   // Hermes turn that starts then fails as a whole.
   teardown.push(TEARDOWN_ORDER.cuaDriver, "the Computer Use driver", () => runCauseEffect(cuaDriver.stop()));
   // The host end of `remote-computer-use-v1`: members' own computers, offered to their agents.
-  const remoteComputers = new RemoteComputerHost();
+  // A file that an agent copies from its member's computer lands in the agent's own workspace.
+  const remoteComputers = new RemoteComputerHost({
+    downloadDirectory: (agentId) => {
+      const workspace = service.listAgents().find((agent) => agent.id === agentId)?.workspacePath;
+      return workspace ? join(workspace, "from-mac") : null;
+    },
+  });
   teardown.push(TEARDOWN_ORDER.remoteComputers, "members' computers", () => runCauseEffect(remoteComputers.stop()));
   /*
    * The rim OpenBot draws over the window an agent works in.

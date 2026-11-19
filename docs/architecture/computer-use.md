@@ -265,6 +265,45 @@ reaches the member's own agents, such as a linked chat or a webhook, as with loc
 setting says so. The answer of a call travels to the host and, as a tool result, to that agent's
 provider. The app refuses tools that change the driver itself by name; the boundary is the switch.
 
+### Terminal and file copy on that computer
+
+`remote-computer-terminal-v1` adds no route and no event. It widens what `remote-computer-use-v1`
+carries, so it has its own capability: a host that advertises it also gives the agents tools that the
+desktop app lists in its answer to `list-tools`. The app lists and runs them only for a server whose
+second switch is on (`remoteTerminalServerIds` in `servers.json`, off by default, and removed when
+the main switch goes off, on Stop, or when the server is left), only while the main switch,
+the connection and the host's capability are all there, and only on macOS and Linux. It needs no Computer
+Use grants: without them the app offers the computer for the terminal tools alone.
+
+- **`openbot_run_command`** (answered by `RemoteComputerTerminal`, not the driver). Runs `$SHELL -l -c`
+  as the user, in the home folder unless `cwd` is set, with a time limit (60 s, at most 170 s) and its
+  own process group. The process gets a small environment (`HOME`, `USER`, `PATH`, `LANG` and a few
+  more, `TERM=dumb`), never the app's environment, which can hold OpenBot's keys. The answer has the
+  exit code, `stdout` and `stderr`; each stream keeps its first 20,000 and last 30,000 characters
+  after control characters are removed, so the reply fits the host's 1 MiB body. At most four commands
+  run at once.
+  On macOS the shell is a child of this app, so macOS may apply this app's privacy grants (Files and
+  Folders, Full Disk Access) to the command; this has not been checked.
+- **`openbot_read_file_chunk`**. Up to 393,216 raw bytes of one file, as base64, with its size and
+  modification time. Only a regular file of at most 2 GiB.
+- **`openbot_fetch_file`** (made by `RemoteComputerHost`, only when the computer lists the chunk tool
+  and the agent has a folder). Reads the chunks, three at a time, and writes a new file in the agent's
+  `from-mac` folder inside its workspace. It never replaces a file (`wx`, then `name (2).ext`), takes
+  only the base name of `file_name`, stops when the size or modification time changes mid-copy,
+  deletes a partial file, and answers with the path, size and SHA-256.
+- **Control.** Each call is one more call of the session of that server, so the sessions list shows it
+  and Stop ends it: Stop aborts the running calls, which kills the command's process group, and turns
+  both switches off. Turning only the second switch off aborts the running terminal calls and refuses
+  the next one. A driver tool never takes the name of a terminal tool. The log line of a call carries
+  the command with secrets redacted (`redactText`).
+- **Who can use it.** The host rules of `remote-computer-use-v1` are unchanged: only a server where the
+  member is the only enabled member, and only that member's agents, through `my_computer.<tool>`. A
+  call that an Antigravity agent makes through `openbot.tool_call` takes the same entry and the same
+  checks. Anyone who controls the host, or text that reaches those agents, can run commands as the
+  user on that computer while the switch is on. The setting says so.
+
+`scripts/remote-computer-terminal-e2e.ts` drives the host, the app client and the terminal together.
+
 ## Remote desktop permission checks and live tests
 
 `RemoteScreenGateway` owns setup checks and live-test session ownership. The optional

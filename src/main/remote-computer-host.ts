@@ -1,5 +1,7 @@
-import { createHmac, randomBytes, randomUUID, timingSafeEqual } from "node:crypto";
+import { createHash, createHmac, randomBytes, randomUUID, timingSafeEqual } from "node:crypto";
+import { lstat, mkdir, open, unlink } from "node:fs/promises";
 import { createServer, type Server as HttpServer, type IncomingMessage, type ServerResponse } from "node:http";
+import { basename, join } from "node:path";
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import {
@@ -11,7 +13,13 @@ import {
   ListToolsResultSchema,
 } from "@modelcontextprotocol/sdk/types.js";
 import type { McpServerConfig } from "@openbot/contracts/ipc";
-import { isString } from "@openbot/contracts/runtime-values";
+import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
+import {
+  REMOTE_TERMINAL_CHUNK_BYTES,
+  REMOTE_TERMINAL_FETCH_TOOL,
+  REMOTE_TERMINAL_MAX_FILE_BYTES,
+  REMOTE_TERMINAL_READ_TOOL,
+} from "@openbot/contracts/team-protocol/remote-computer-terminal-v1";
 import {
   REMOTE_COMPUTER_ARGUMENTS_MAX_LENGTH,
   REMOTE_COMPUTER_CALL_EVENT,
@@ -48,6 +56,10 @@ const MAX_PENDING_CALLS = 8;
 /** How long the tool list of a computer is kept, so a new provider session does not ask the computer again. */
 const TOOL_LIST_TTL_MS = 60_000;
 const MAX_BODY_BYTES = 1_000_000;
+/** Chunk requests of one file copy that are open at the same time. The computer takes at most 8 calls. */
+const FETCH_PARALLEL_CHUNKS = 3;
+/** Copies one file may take at most this long, so a stuck one frees its slots. */
+const FETCH_TIMEOUT_MS = 30 * 60_000;
 /** The MCP server name of a member's first computer. A second one gets `_2`, and so on. */
 const ENTRY_NAME = "my_computer";
 
@@ -113,8 +125,12 @@ export class RemoteComputerHost {
   #emitted = "[]";
   readonly #now: () => number;
 
-  constructor(options: { now?: () => number } = {}) {
+  /** The folder on this host where a file copied from a member's computer lands, for one agent. Null: none. */
+  readonly #downloadDirectory: (agentId: string) => string | null;
+
+  constructor(options: { now?: () => number; downloadDirectory?: (agentId: string) => string | null } = {}) {
     this.#now = options.now ?? Date.now;
+    this.#downloadDirectory = options.downloadDirectory ?? (() => null);
   }
 
   /** The Team API server starts. Until then no computer can say it is available. */
@@ -438,23 +454,36 @@ export class RemoteComputerHost {
         instructions:
           `These tools use Computer Use on ${computer ? `"${computer.name}"` : "a computer"}, the computer of ` +
           "the person who owns this agent, and not on the server that runs the agent. They see and control " +
-          "that computer's screen.",
+          "that computer's screen. Some computers also offer `openbot_run_command`, which runs a shell command " +
+          "as the user on that computer, and `openbot_fetch_file`, which copies one file from that computer to a " +
+          "folder on this server and gives its path here.",
       },
     );
     mcp.setRequestHandler(ListToolsRequestSchema, (_request, extra) =>
       computer
-        ? runCauseEffect(this.#listTools(computer, AbortSignal.any([closed.signal, extra.signal])))
+        ? runCauseEffect(
+            this.#listTools(computer, AbortSignal.any([closed.signal, extra.signal])).pipe(
+              Effect.map((result) => this.#withFetchTool(result, target.agentId)),
+            ),
+          )
         : Promise.resolve<ListToolsResult>({ tools: [] }),
     );
     mcp.setRequestHandler(CallToolRequestSchema, ({ params }, extra) =>
       runCauseEffect(
         (computer
-          ? this.#callTool(
-              computer,
-              params.name,
-              params.arguments ?? {},
-              AbortSignal.any([closed.signal, extra.signal]),
-            )
+          ? params.name === REMOTE_TERMINAL_FETCH_TOOL
+            ? this.#fetchFile(
+                computer,
+                target.agentId,
+                params.arguments ?? {},
+                AbortSignal.any([closed.signal, extra.signal]),
+              )
+            : this.#callTool(
+                computer,
+                params.name,
+                params.arguments ?? {},
+                AbortSignal.any([closed.signal, extra.signal]),
+              )
           : Effect.fail(new RemoteComputerError({ cause: new Error("The computer is not available now.") }))
         ).pipe(
           Effect.catch(({ cause }) =>
@@ -518,6 +547,106 @@ export class RemoteComputerHost {
       return yield* new RemoteComputerError({ cause: new Error("The computer sent a tool result that is not valid.") });
     return parsed.data;
   });
+
+  /**
+   * The tool list plus `openbot_fetch_file`, made here from the computer's chunk tool. Only a computer
+   * that lists the chunk tool gets it, and only an agent that has a folder here to receive the file.
+   */
+  #withFetchTool(result: ListToolsResult, agentId: string): ListToolsResult {
+    if (!result.tools.some((tool) => tool.name === REMOTE_TERMINAL_READ_TOOL)) return result;
+    if (this.#downloadDirectory(agentId) === null) return result;
+    return {
+      ...result,
+      tools: [
+        ...result.tools,
+        {
+          name: REMOTE_TERMINAL_FETCH_TOOL,
+          description:
+            "Copy one file from this computer to a folder on the server that runs this agent. It reads the whole " +
+            "file in pieces and answers with the path on the server, the size and the SHA-256. It never replaces " +
+            "an existing file.",
+          inputSchema: {
+            type: "object",
+            properties: {
+              path: { type: "string", description: "The file on this computer. Absolute, or starting with `~`." },
+              file_name: { type: "string", description: "The name to save as. Default: the file's own name." },
+            },
+            required: ["path"],
+          },
+        },
+      ],
+    };
+  }
+
+  readonly #fetchFile = Effect.fn("RemoteComputerHost.fetchFile")(function* (
+    this: RemoteComputerHost,
+    computer: Computer,
+    agentId: string,
+    input: unknown,
+    signal: AbortSignal,
+  ): Effect.fn.Return<CallToolResult, RemoteComputerError> {
+    const directory = this.#downloadDirectory(agentId);
+    const list = this.#toolListed(computer, REMOTE_TERMINAL_READ_TOOL);
+    if (directory === null || !list)
+      return yield* new RemoteComputerError({ cause: new Error("This computer does not offer file copies now.") });
+    if (!isDynamicRecord(input) || typeof input.path !== "string" || input.path.length === 0)
+      return yield* new RemoteComputerError({ cause: new Error("`path` must be a string.") });
+    const requestedName = input.file_name;
+    if (requestedName !== undefined && typeof requestedName !== "string")
+      return yield* new RemoteComputerError({ cause: new Error("`file_name` must be a string.") });
+    const path = input.path;
+    // One cancel for the whole copy: the provider's, and a time limit.
+    const stop = new AbortController();
+    const abort = () => stop.abort();
+    signal.addEventListener("abort", abort, { once: true });
+    const timer = setTimeout(abort, FETCH_TIMEOUT_MS);
+    timer.unref?.();
+    const copy = remoteComputerCall(() =>
+      copyFile({
+        directory,
+        path,
+        requestedName,
+        signal: stop.signal,
+        abort,
+        chunk: (offset) => this.#chunk(computer, path, offset, stop.signal),
+      }),
+    );
+    return yield* copy.pipe(
+      Effect.ensuring(
+        Effect.sync(() => {
+          clearTimeout(timer);
+          signal.removeEventListener("abort", abort);
+        }),
+      ),
+    );
+  });
+
+  /** Whether the computer's last tool list has `name`. A list is read before any call that needs one. */
+  #toolListed(computer: Computer, name: string): boolean {
+    return computer.tools?.result.tools.some((tool) => tool.name === name) ?? false;
+  }
+
+  /** One chunk, read from the computer through the usual call route. */
+  async #chunk(computer: Computer, path: string, offset: number, signal: AbortSignal): Promise<FileChunk> {
+    const result = await runCauseEffect(
+      this.#callTool(
+        computer,
+        REMOTE_TERMINAL_READ_TOOL,
+        { path, offset, length: REMOTE_TERMINAL_CHUNK_BYTES },
+        signal,
+      ),
+    );
+    const first = result.content[0];
+    const text = first?.type === "text" ? first.text : "";
+    if (result.isError) throw new Error(text || "The computer could not read the file.");
+    let value: unknown;
+    try {
+      value = JSON.parse(text);
+    } catch {
+      throw new Error("The computer sent a file chunk that is not valid.");
+    }
+    return parseChunk(value, offset);
+  }
 
   readonly #call = Effect.fn("RemoteComputerHost.call")(function* (
     this: RemoteComputerHost,
@@ -588,4 +717,129 @@ function computerName(value: string): string {
     .trim()
     .slice(0, 64);
   return cleaned || "Computer";
+}
+
+interface FileChunk {
+  size: number;
+  mtimeMs: number;
+  length: number;
+  eof: boolean;
+  data: Buffer;
+}
+
+function parseChunk(value: unknown, offset: number): FileChunk {
+  if (
+    !isDynamicRecord(value) ||
+    typeof value.size !== "number" ||
+    typeof value.mtime_ms !== "number" ||
+    typeof value.length !== "number" ||
+    typeof value.eof !== "boolean" ||
+    typeof value.data_base64 !== "string" ||
+    value.offset !== offset ||
+    !Number.isSafeInteger(value.size) ||
+    value.size < 0
+  )
+    throw new Error("The computer sent a file chunk that is not valid.");
+  const data = Buffer.from(value.data_base64, "base64");
+  // A chunk is full unless it reaches the end of the file; a short one would leave a gap of zeros.
+  const expected = Math.max(0, Math.min(REMOTE_TERMINAL_CHUNK_BYTES, value.size - offset));
+  if (data.length !== value.length || value.length !== expected)
+    throw new Error("The computer sent a file chunk that is not valid.");
+  return { size: value.size, mtimeMs: value.mtime_ms, length: value.length, eof: value.eof, data };
+}
+
+/** A file name that cannot leave the folder: no path, no control characters, not empty or hidden-dot only. */
+function safeFileName(value: string): string {
+  const name = basename(value.replace(/\\/gu, "/"))
+    .replace(/\p{Cc}/gu, "")
+    .replace(/[<>:"|?*]/gu, "_")
+    .trim()
+    .slice(0, 200);
+  return name === "" || name === "." || name === ".." ? "file-from-computer" : name;
+}
+
+/**
+ * Copies one file in chunks to a new file in `directory`, never over an existing one. A few chunks
+ * are read at the same time and written at their own place. The copy fails when the file changes on
+ * the computer while it is read, and a failed copy leaves no partial file.
+ */
+async function copyFile(input: {
+  directory: string;
+  path: string;
+  requestedName: string | undefined;
+  signal: AbortSignal;
+  chunk: (offset: number) => Promise<FileChunk>;
+  /** Stops every chunk request of this copy. */
+  abort: () => void;
+}): Promise<CallToolResult> {
+  const { directory, path, signal, chunk, abort } = input;
+  await mkdir(directory, { recursive: true });
+  // A link in the place of the folder would send the file somewhere else.
+  if (!(await lstat(directory)).isDirectory()) throw new Error("The folder for copied files is not a plain folder.");
+  const first = await chunk(0);
+  if (first.size > REMOTE_TERMINAL_MAX_FILE_BYTES) throw new Error("The file is too large to copy.");
+  if (first.length === 0 && first.size > 0)
+    throw new Error("The computer sent an empty chunk before the end of the file.");
+  const baseName = safeFileName(input.requestedName ?? path);
+  let target = "";
+  let handle: Awaited<ReturnType<typeof open>> | null = null;
+  for (let attempt = 0; attempt < 100 && handle === null; attempt++) {
+    const dot = baseName.lastIndexOf(".");
+    const name =
+      attempt === 0
+        ? baseName
+        : dot > 0
+          ? `${baseName.slice(0, dot)} (${attempt + 1})${baseName.slice(dot)}`
+          : `${baseName} (${attempt + 1})`;
+    target = join(directory, name);
+    try {
+      handle = await open(target, "wx", 0o600);
+    } catch (error) {
+      if (!(isDynamicRecord(error) && error.code === "EEXIST")) throw error;
+    }
+  }
+  if (handle === null) throw new Error("A free file name could not be found.");
+  const file = handle;
+  try {
+    await file.write(first.data, 0, first.data.length, 0);
+    const offsets: number[] = [];
+    for (let offset = first.length; offset < first.size; offset += REMOTE_TERMINAL_CHUNK_BYTES) offsets.push(offset);
+    let next = 0;
+    const worker = async (): Promise<void> => {
+      while (next < offsets.length) {
+        if (signal.aborted) throw new Error("The copy was cancelled.");
+        const offset = offsets[next++];
+        if (offset === undefined) return;
+        const piece = await chunk(offset);
+        if (piece.size !== first.size || piece.mtimeMs !== first.mtimeMs)
+          throw new Error("The file changed on the computer while it was copied.");
+        if (piece.length === 0) throw new Error("The computer sent an empty chunk before the end of the file.");
+        await file.write(piece.data, 0, piece.data.length, offset);
+      }
+    };
+    await Promise.all(Array.from({ length: Math.min(FETCH_PARALLEL_CHUNKS, offsets.length) }, worker));
+    const bytes = (await file.stat()).size;
+    if (bytes !== first.size) throw new Error("The copy has a different size than the file.");
+    await file.close();
+    const digest = createHash("sha256");
+    const reader = await open(target, "r");
+    try {
+      const buffer = Buffer.alloc(1024 * 1024);
+      for (;;) {
+        const { bytesRead } = await reader.read(buffer, 0, buffer.length, null);
+        if (bytesRead === 0) break;
+        digest.update(buffer.subarray(0, bytesRead));
+      }
+    } finally {
+      await reader.close();
+    }
+    const report = { saved_to: target, bytes, sha256: digest.digest("hex"), source_path: path };
+    return { content: [{ type: "text", text: JSON.stringify(report) }] };
+  } catch (error) {
+    // The other chunk requests stop asking the computer, then the partial file goes.
+    abort();
+    await file.close().catch(() => undefined);
+    await unlink(target).catch(() => undefined);
+    throw error;
+  }
 }

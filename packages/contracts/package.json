@@ -292,6 +292,7 @@
     "./team-protocol/host-member-update-v1": "./src/team-protocol/host-member-update-v1.ts",
     "./team-protocol/focus-use-v1": "./src/team-protocol/focus-use-v1.ts",
     "./team-protocol/computer-activity-v1": "./src/team-protocol/computer-activity-v1.ts",
+    "./team-protocol/remote-computer-terminal-v1": "./src/team-protocol/remote-computer-terminal-v1.ts",
     "./team-protocol/remote-computer-use-v1": "./src/team-protocol/remote-computer-use-v1.ts",
     "./team-protocol/computer-management-v1": "./src/team-protocol/computer-management-v1.ts",
     "./team-protocol/agent-computer-v1": "./src/team-protocol/agent-computer-v1.ts",

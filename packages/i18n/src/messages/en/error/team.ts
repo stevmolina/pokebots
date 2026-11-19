@@ -205,4 +205,5 @@ export const messages = defineMessages("error.team", {
   "error.team.providerUseUnsupported": "Turning providers on and off is not supported by this connection.",
   "error.team.providerUseInvalid": "This provider does not have an on/off switch.",
   "error.team.remoteComputerCallNotFound": "This computer request ended or belongs to another session.",
+  "error.team.remoteTerminalNeedsComputer": "Turn on Computer Use for this server first.",
 });

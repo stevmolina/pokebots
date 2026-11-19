@@ -515,7 +515,15 @@ export function createMockOpenBot(options: MockOpenBotOptions = {}): MockOpenBot
     },
   ];
   let remoteComputerServers: RemoteComputerServer[] = [
-    { serverId: "server-team", serverName: "Team server", enabled: false, supported: true, connected: true },
+    {
+      serverId: "server-team",
+      serverName: "Team server",
+      enabled: false,
+      supported: true,
+      connected: true,
+      terminalSupported: true,
+      terminalEnabled: false,
+    },
   ];
   const computerUseState = (): ComputerUseState => {
     const permissions = (["screen-recording", "accessibility"] as const).map((id) => ({
@@ -1529,7 +1537,16 @@ export function createMockOpenBot(options: MockOpenBotOptions = {}): MockOpenBot
       listRemoteServers: async () => clone(remoteComputerServers),
       setRemoteServer: async ({ serverId, enabled }) => {
         remoteComputerServers = remoteComputerServers.map((server) =>
-          server.serverId === serverId ? { ...server, enabled } : server,
+          // Turning the main switch off turns the terminal off, as the real app does.
+          server.serverId === serverId
+            ? { ...server, enabled, terminalEnabled: enabled && server.terminalEnabled }
+            : server,
+        );
+        return clone(remoteComputerServers);
+      },
+      setRemoteTerminal: async ({ serverId, enabled }) => {
+        remoteComputerServers = remoteComputerServers.map((server) =>
+          server.serverId === serverId ? { ...server, terminalEnabled: enabled && server.enabled } : server,
         );
         return clone(remoteComputerServers);
       },

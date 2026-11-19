@@ -94,6 +94,10 @@ export interface StoredRemoteServers {
   // The joined servers whose agents may use Computer Use on this computer (`remote-computer-use-v1`).
   // An older build drops this key on its next write; that turns it off, never on.
   remoteComputerServerIds: string[];
+  // The joined servers whose agents may also run commands on this computer and copy its files
+  // (`remote-computer-terminal-v1`). Counts only for a server that is also in `remoteComputerServerIds`.
+  // An older build drops this key on its next write; that turns it off, never on.
+  remoteTerminalServerIds: string[];
   // Entries kept verbatim for whoever can read them, each with the slot it occupied. In memory only:
   // `serializeStoredRemoteServers` puts them back in `servers`, because a key of its own would be
   // invisible to the older build that is the whole reason for keeping them -- and puts them back
@@ -116,6 +120,7 @@ export function emptyStoredRemoteServers(): StoredRemoteServers {
     serverNotifications: {},
     browserEgressServerIds: [],
     remoteComputerServerIds: [],
+    remoteTerminalServerIds: [],
     unreadableServers: [],
     unreadableActiveServerId: null,
   };
@@ -165,6 +170,9 @@ export function readStoredRemoteServers(value: unknown): StoredRemoteServers | n
     remoteComputerServerIds: Array.isArray(value.remoteComputerServerIds)
       ? value.remoteComputerServerIds.filter(isString)
       : [],
+    remoteTerminalServerIds: Array.isArray(value.remoteTerminalServerIds)
+      ? value.remoteTerminalServerIds.filter(isString)
+      : [],
     unreadableServers,
     unreadableActiveServerId: !selectable && preservedActive ? value.activeServerId : null,
   };
@@ -195,6 +203,7 @@ export function serializeStoredRemoteServers(state: StoredRemoteServers): {
   serverNotifications: Record<string, StoredServerNotifications>;
   browserEgressServerIds: string[];
   remoteComputerServerIds: string[];
+  remoteTerminalServerIds: string[];
 } {
   const readableIds = new Set(state.servers.map((server) => server.id));
   // A preserved entry whose id a readable server now holds is written where that server sits, so the
@@ -231,6 +240,7 @@ export function serializeStoredRemoteServers(state: StoredRemoteServers): {
     serverNotifications: state.serverNotifications,
     browserEgressServerIds: state.browserEgressServerIds,
     remoteComputerServerIds: state.remoteComputerServerIds,
+    remoteTerminalServerIds: state.remoteTerminalServerIds,
   };
 }
 

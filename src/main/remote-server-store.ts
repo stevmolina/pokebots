@@ -285,6 +285,7 @@ export class RemoteServerStore implements RemoteServerDirectory {
     this.#state.browserEgressServerIds = this.#state.browserEgressServerIds.filter((id) => id !== serverId);
     // Nor its agents this computer.
     this.#state.remoteComputerServerIds = this.#state.remoteComputerServerIds.filter((id) => id !== serverId);
+    this.#state.remoteTerminalServerIds = this.#state.remoteTerminalServerIds.filter((id) => id !== serverId);
     if (this.#state.activeServerId === serverId) this.setActiveServerId(LOCAL_SERVER_ID);
     yield* this.persist();
   });
@@ -460,8 +461,47 @@ export class RemoteServerStore implements RemoteServerDirectory {
             return yield* new RemoteWorkflowError({ cause: new Error(sourceText("error.remote.serverNotFound")) });
           const remoteComputerServerIds = this.#state.remoteComputerServerIds.filter((id) => id !== serverId);
           if (sharing) remoteComputerServerIds.push(serverId);
-          yield* this.#writeSnapshot({ ...structuredClone(this.#state), remoteComputerServerIds });
+          // Turning the main switch off, or Stop, turns the terminal off with it: turning the main
+          // switch on again never brings back commands that the user allowed before.
+          const remoteTerminalServerIds = sharing
+            ? [...this.#state.remoteTerminalServerIds]
+            : this.#state.remoteTerminalServerIds.filter((id) => id !== serverId);
+          yield* this.#writeSnapshot({
+            ...structuredClone(this.#state),
+            remoteComputerServerIds,
+            remoteTerminalServerIds,
+          });
           this.#state.remoteComputerServerIds = remoteComputerServerIds;
+          this.#state.remoteTerminalServerIds = remoteTerminalServerIds;
+        }),
+      ),
+    );
+  });
+
+  /** Whether the agents of a joined server may run commands on this computer and copy its files. */
+  sharesTerminal(serverId: string): boolean {
+    return this.#state.remoteTerminalServerIds.includes(serverId);
+  }
+
+  /** Allowed only for a server whose main switch is on; off is always accepted. */
+  readonly setTerminalSharing = Effect.fn("RemoteStore.setTerminalSharing")(function* (
+    this: RemoteServerStore,
+    serverId: string,
+    sharing: boolean,
+  ): Effect.fn.Return<void, RemoteWorkflowError> {
+    yield* this.#writes.withPermit(
+      Effect.uninterruptible(
+        Effect.gen({ self: this }, function* () {
+          if (!this.has(serverId))
+            return yield* new RemoteWorkflowError({ cause: new Error(sourceText("error.remote.serverNotFound")) });
+          if (sharing && !this.sharesComputer(serverId))
+            return yield* new RemoteWorkflowError({
+              cause: new Error(sourceText("error.team.remoteTerminalNeedsComputer")),
+            });
+          const remoteTerminalServerIds = this.#state.remoteTerminalServerIds.filter((id) => id !== serverId);
+          if (sharing) remoteTerminalServerIds.push(serverId);
+          yield* this.#writeSnapshot({ ...structuredClone(this.#state), remoteTerminalServerIds });
+          this.#state.remoteTerminalServerIds = remoteTerminalServerIds;
         }),
       ),
     );
@@ -501,6 +541,7 @@ export class RemoteServerStore implements RemoteServerDirectory {
             serverNotifications: structuredClone(this.#state.serverNotifications),
             browserEgressServerIds: [...this.#state.browserEgressServerIds],
             remoteComputerServerIds: [...this.#state.remoteComputerServerIds],
+            remoteTerminalServerIds: [...this.#state.remoteTerminalServerIds],
           }),
         ),
       ),

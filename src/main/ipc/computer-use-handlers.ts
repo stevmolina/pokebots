@@ -24,9 +24,12 @@ export interface ComputerUseIpcDependencies {
     "show" | "close" | "permissionApp" | "startDrag" | "reveal"
   >;
   /** The switches of the joined servers. Null where this app joins no server. */
-  remoteServers: Pick<RemoteServerManager, "remoteComputerServers" | "setRemoteComputerServer"> | null;
+  remoteServers: Pick<
+    RemoteServerManager,
+    "remoteComputerServers" | "setRemoteComputerServer" | "setRemoteComputerTerminal"
+  > | null;
   /** The agents of joined servers that use this computer now. Null on a server. */
-  remoteComputers: Pick<RemoteComputerClient, "sessions" | "stop" | "resume"> | null;
+  remoteComputers: Pick<RemoteComputerClient, "sessions" | "stop" | "resume" | "reconcile"> | null;
 }
 
 /**
@@ -82,6 +85,14 @@ export function computerUseIpcHandlers({
         await runCauseEffect(remoteServers.setRemoteComputerServer(serverId, enabled));
         // The user's own switch is the newest answer, also after a Stop whose write failed.
         if (enabled) remoteComputers.resume(serverId);
+        return servers();
+      }),
+      // Commands and file copies for the agents of one server. The manager keeps it off unless the
+      // server's main switch is on; it needs the host's `remote-computer-terminal-v1` to take effect.
+      setRemoteTerminal: payloadHandler(parseSetRemoteComputerServerInput, async ({ serverId, enabled }) => {
+        if (!remoteServers || !remoteComputers) throw new Error(sourceText("error.team.agentSettingsUnsupported"));
+        await runCauseEffect(remoteServers.setRemoteComputerTerminal(serverId, enabled));
+        remoteComputers.reconcile();
         return servers();
       }),
       getRemoteSessions: handler(async () => remoteComputers?.sessions() ?? []),
