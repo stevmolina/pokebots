@@ -9,7 +9,8 @@ import {
   enforceFeedbackSearchRateLimit,
   githubInstallationTokensErrorResponse,
   json,
-  requestGitHubInstallationTokens,
+  matchesFeedbackRepository,
+  requestFeedbackGitHub,
   requestUser,
 } from "../../../server/request-auth";
 
@@ -26,14 +27,12 @@ export const Route = createFileRoute("/v1/feedback/similar")({
           Effect.gen(function* () {
             const user = yield* requestUser(request);
             if (!user) return apiError(401, "unauthorized", "Sign in is required.");
-            const { title } = yield* readJsonObject(request);
+            const { title, repository } = yield* readJsonObject(request);
             if (!isString(title) || !title.trim() || title.length > FEEDBACK_LIMITS.title)
               return apiError(400, "invalid_feedback", "The title is invalid.");
+            if (!matchesFeedbackRepository(repository)) return json({ issues: [] });
             yield* enforceFeedbackSearchRateLimit(user.id);
-            const issues = yield* requestGitHubInstallationTokens().searchIssues(
-              FEEDBACK_REPOSITORY,
-              feedbackSearchTerms(title),
-            );
+            const issues = yield* requestFeedbackGitHub().searchIssues(FEEDBACK_REPOSITORY, feedbackSearchTerms(title));
             return json({ issues });
           }),
           githubInstallationTokensErrorResponse,

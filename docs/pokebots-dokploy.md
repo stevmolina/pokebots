@@ -103,3 +103,20 @@ For daily backups, stop the service. Copy the database together
 with all R2 directories. Copying only `pokebots.sqlite` while WAL writes run is not a backup.
 Object bodies use immutable filenames and metadata in SQLite. An interrupted write can leave
 an unreferenced file. Startup removes only unreferenced UUID files from the object directory.
+
+## Feedback GitHub App
+
+The Pokebots build uses `stevmolina/pokebots` for feedback. In Dokploy, set
+`FEEDBACK_GITHUB_APP_CLIENT_ID` and `FEEDBACK_GITHUB_APP_PRIVATE_KEY` for the
+dedicated GitHub App. The service needs a PKCS #8 PEM. Convert GitHub's
+downloaded key with `openssl pkcs8 -topk8 -nocrypt` in a secure input pipeline.
+
+Give the private app repository Issues read and write. Disable webhooks.
+Install it on selected repositories only: `stevmolina/pokebots` and a private
+issue archive under `stevmolina`. Set `FEEDBACK_WITHDRAWN_REPOSITORY` to that
+archive's full name. The app uses the archive to move withdrawn issues with
+their edit history. It deletes an account's duplicate comments in place.
+
+Keep the feedback signing key stable while reports can still be withdrawn.
+Its value also signs the ownership marks on submitted feedback. The shared
+GitHub integration continues to use the existing `GITHUB_APP_*` settings.

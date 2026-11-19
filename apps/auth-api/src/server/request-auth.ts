@@ -1,5 +1,5 @@
 import { env, waitUntil } from "cloudflare:workers";
-import { FEEDBACK_REPOSITORY } from "@openbot/contracts/feedback";
+import { FEEDBACK_REPOSITORY, LEGACY_FEEDBACK_REPOSITORY } from "@openbot/contracts/feedback";
 import { HOSTING_DEVELOPER_KEY_HEADER } from "@openbot/contracts/hosted-servers";
 import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
 import { Effect } from "effect";
@@ -267,9 +267,41 @@ export const enforceFeedbackSearchRateLimit = Effect.fn("GitHub.enforceFeedbackS
   }
 });
 
+const usesDedicatedFeedbackApp = String(FEEDBACK_REPOSITORY) !== LEGACY_FEEDBACK_REPOSITORY;
+let feedbackGitHub: { clientId: string; privateKey: string; service: GitHubInstallationTokens } | null = null;
+
+export function matchesFeedbackRepository(repository: unknown): boolean {
+  return (repository ?? LEGACY_FEEDBACK_REPOSITORY) === FEEDBACK_REPOSITORY;
+}
+
+export function requestFeedbackGitHub(): GitHubInstallationTokens {
+  if (!usesDedicatedFeedbackApp) return requestGitHubInstallationTokens();
+  const bindings = requireWorkerBindings(env);
+  const clientId = bindings.FEEDBACK_GITHUB_APP_CLIENT_ID?.trim();
+  const privateKey = bindings.FEEDBACK_GITHUB_APP_PRIVATE_KEY?.trim();
+  if (!clientId || !privateKey)
+    throw new GitHubInstallationTokensError(503, "feedback_unavailable", "Feedback is not available.");
+  if (feedbackGitHub?.clientId !== clientId || feedbackGitHub.privateKey !== privateKey) {
+    feedbackGitHub = {
+      clientId,
+      privateKey,
+      service: new GitHubInstallationTokens({
+        clientId,
+        privateKey,
+        useAppFeedbackAuthor: true,
+        fetch: (input, init) => fetch(input, init),
+      }),
+    };
+  }
+  return feedbackGitHub.service;
+}
+
 /** The marks that prove which reports one account sent. See `feedbackOwner`. */
 export function requestFeedbackOwner(userId: string) {
-  const privateKey = requireWorkerBindings(env).GITHUB_APP_PRIVATE_KEY?.trim();
+  const bindings = requireWorkerBindings(env);
+  const privateKey = (
+    usesDedicatedFeedbackApp ? bindings.FEEDBACK_GITHUB_APP_PRIVATE_KEY : bindings.GITHUB_APP_PRIVATE_KEY
+  )?.trim();
   if (!privateKey)
     return Effect.fail(
       new GitHubInstallationTokensError(503, "github_app_unavailable", "The OpenBot GitHub App is not configured."),

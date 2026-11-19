@@ -1,4 +1,9 @@
-import { feedbackSentIssue, feedbackSentItemType, feedbackWithdrawnItemType } from "@openbot/contracts/feedback";
+import {
+  FEEDBACK_REPOSITORY,
+  feedbackSentIssue,
+  feedbackSentItemType,
+  feedbackWithdrawnItemType,
+} from "@openbot/contracts/feedback";
 import type { ConversationMessage, WithdrawFeedbackInput } from "@openbot/contracts/ipc";
 import { sourceText } from "@openbot/i18n/source";
 import { createOpenBotLogger, toLogValue } from "@openbot/logging";
@@ -62,6 +67,7 @@ export class FeedbackWithdrawal {
     const issue = target && feedbackSentIssue(target.message);
     if (!target || !issue) return { status: "notFound" };
     if (issue.withdrawn) return { status: "withdrawn" };
+    if (issue.repository !== FEEDBACK_REPOSITORY) return { status: "unavailable" };
     return yield* this.withdraw(input.agentId, target.threadId, issue.number, target);
   });
 
@@ -120,7 +126,8 @@ export class FeedbackWithdrawal {
     if (loaded)
       snapshot.messages = snapshot.messages.map((message) => {
         const issue = feedbackSentIssue(message);
-        if (!issue || issue.withdrawn || issue.number !== number) return message;
+        if (!issue || issue.withdrawn || issue.number !== number || issue.repository !== FEEDBACK_REPOSITORY)
+          return message;
         const next = removed(message);
         changed.push(next);
         return next;

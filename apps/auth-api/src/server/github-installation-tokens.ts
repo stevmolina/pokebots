@@ -48,6 +48,7 @@ export interface GitHubInstallationTokensOptions {
   /** Wraps the global `fetch`, as `(input, init) => fetch(input, init)`: workerd refuses a bare method reference. */
   fetch: GitHubFetch;
   now?: () => number;
+  useAppFeedbackAuthor?: boolean;
 }
 
 export class GitHubInstallationTokensError extends Schema.TaggedError<GitHubInstallationTokensError>()(
@@ -70,7 +71,7 @@ const MAX_REPOSITORIES_PER_TOKEN = 500;
 /** The installation permissions that a bot token never gets. See the class comment. */
 const USER_ONLY_PERMISSIONS: ReadonlySet<string> = new Set(["administration"]);
 
-const appSchema = Schema.Struct({ id: Schema.Number });
+const appSchema = Schema.Struct({ id: Schema.Number, slug: Schema.optional(Schema.String) });
 const installationsSchema = Schema.Struct({
   installations: Schema.Array(
     Schema.Struct({
@@ -133,7 +134,7 @@ const feedbackIssueSchema = Schema.Struct({
 const feedbackCommentsSchema = Schema.Array(
   Schema.Struct({ id: Schema.Number, body: Schema.optional(Schema.NullOr(Schema.String)), user: authorSchema }),
 );
-const repositoryNodeSchema = Schema.Struct({ node_id: Schema.String });
+const repositoryNodeSchema = Schema.Struct({ node_id: Schema.String, private: Schema.Boolean });
 const graphqlSchema = Schema.Struct({ errors: Schema.optional(Schema.Array(Schema.Unknown)) });
 /** The comments of one issue that a withdrawal reads: a Worker request has a limited count of subrequests. */
 const MAX_COMMENT_PAGES = 10;
@@ -207,6 +208,7 @@ export class GitHubInstallationTokens {
   readonly #now: () => number;
   #key: CryptoKey | null = null;
   #appId: number | null = null;
+  #feedbackAuthor: string | null = null;
   readonly #repositoryInstallations = new Map<string, number>();
 
   constructor(options: GitHubInstallationTokensOptions) {
@@ -300,6 +302,7 @@ export class GitHubInstallationTokens {
     comment: string,
   ): Effect.fn.Return<GitHubIssue, GitHubInstallationTokensError> {
     const token = yield* this.#repositoryToken(repository, WRITE_ISSUES);
+    const author = yield* this.#feedbackAppSlug();
     const target = yield* this.#send(
       `/repos/${repository}/issues/${number}`,
       token,
@@ -311,7 +314,7 @@ export class GitHubInstallationTokens {
       target?.state !== "open" ||
       target.locked ||
       target.pull_request !== undefined ||
-      target.user?.login !== `${FEEDBACK_APP}[bot]`
+      target.user?.login !== `${author}[bot]`
     )
       return yield* new GitHubInstallationTokensError(409, "issue_not_open", "The issue is not open.");
     yield* this.#post(`/repos/${repository}/issues/${number}/comments`, token, { body: comment }, commentSchema);
@@ -333,6 +336,7 @@ export class GitHubInstallationTokens {
     privateRepository: string | null,
   ): Effect.fn.Return<WithdrawnFeedback, GitHubInstallationTokensError> {
     const token = yield* this.#repositoryToken(repository, WRITE_ISSUES);
+    const author = yield* this.#feedbackAppSlug();
     // A moved issue redirects to its new place. The token reads only this repository and public ones,
     // so a deleted issue, or one that moved to a private repository, answers 404.
     const issue = yield* this.#send(
@@ -353,7 +357,7 @@ export class GitHubInstallationTokens {
       );
     }
     if (issue.pull_request !== undefined) return yield* notSentBy();
-    if (issue.user?.login === `${FEEDBACK_APP}[bot]` && (yield* sentBy(issue.body ?? ""))) {
+    if (issue.user?.login === `${author}[bot]` && (yield* sentBy(issue.body ?? ""))) {
       if (!privateRepository)
         return yield* new GitHubInstallationTokensError(
           503,
@@ -363,6 +367,12 @@ export class GitHubInstallationTokens {
       // GitHub moves an issue only with a token for both repositories.
       const both = yield* this.#repositoryToken(repository, WRITE_ISSUES, [privateRepository]);
       const target = yield* this.#get(`/repos/${privateRepository}`, both, repositoryNodeSchema);
+      if (!target.private)
+        return yield* new GitHubInstallationTokensError(
+          503,
+          "feedback_withdraw_unavailable",
+          "A sent issue cannot be removed now.",
+        );
       const moved = yield* this.#post(
         "/graphql",
         both,
@@ -385,7 +395,7 @@ export class GitHubInstallationTokens {
         feedbackCommentsSchema,
       );
       for (const comment of comments)
-        if (comment.user?.login === `${FEEDBACK_APP}[bot]` && (yield* sentBy(comment.body ?? ""))) own.push(comment.id);
+        if (comment.user?.login === `${author}[bot]` && (yield* sentBy(comment.body ?? ""))) own.push(comment.id);
       if (comments.length < PAGE_SIZE) break;
     }
     if (own.length === 0) return yield* notSentBy();
@@ -409,8 +419,9 @@ export class GitHubInstallationTokens {
   ): Effect.fn.Return<GitHubSimilarIssue[], GitHubInstallationTokensError> {
     if (terms.length === 0) return [];
     const token = yield* this.#repositoryToken(repository, READ_ISSUES);
+    const author = yield* this.#feedbackAppSlug();
     const query = new URLSearchParams({
-      q: `repo:${repository} is:issue is:open author:app/${FEEDBACK_APP} in:title ${terms.join(" OR ")}`,
+      q: `repo:${repository} is:issue is:open author:app/${author} in:title ${terms.join(" OR ")}`,
       per_page: String(SIMILAR_ISSUES),
     });
     const found = yield* this.#get(`/search/issues?${query.toString()}`, token, searchSchema);
@@ -422,6 +433,18 @@ export class GitHubInstallationTokens {
         url: item.html_url,
         summary: issueSummary(item.body),
       }));
+  }).bind(this);
+
+  readonly #feedbackAppSlug = Effect.fn("GitHubInstallationTokens.feedbackAppSlug")(function* (
+    this: GitHubInstallationTokens,
+  ) {
+    if (!this.#options.useAppFeedbackAuthor) return FEEDBACK_APP;
+    if (this.#feedbackAuthor) return this.#feedbackAuthor;
+    const app = yield* this.#get("/app", APP, appSchema);
+    if (!app.slug || !/^[a-z0-9-]+$/u.test(app.slug))
+      return yield* new GitHubInstallationTokensError(503, "feedback_unavailable", "Feedback is not available.");
+    this.#feedbackAuthor = app.slug;
+    return app.slug;
   }).bind(this);
 
   /**

@@ -156,6 +156,8 @@ export interface WorkerBindings {
   POKEBOTS_INTEGRATION_PRIVATE_KEY?: string;
   POKEBOTS_INTEGRATION_WORKOS_ISSUER?: string;
   GITHUB_APP_PRIVATE_KEY?: string;
+  FEEDBACK_GITHUB_APP_CLIENT_ID?: string;
+  FEEDBACK_GITHUB_APP_PRIVATE_KEY?: string;
   /**
    * The private repository, as `owner/name`, where a withdrawn feedback issue moves. The OpenBot
    * GitHub App needs issue write access to it. Empty, an issue cannot be withdrawn; a comment can.
