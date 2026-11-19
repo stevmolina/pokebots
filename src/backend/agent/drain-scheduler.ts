@@ -1142,39 +1142,41 @@ export class DrainScheduler {
           // between, and an endpoint removed during that wait finds the process still running. The
           // retry below calls this as well, so the recovered thread is checked too.
           yield* drainStep(requireServedModel);
-          if (context.agentTaskRequest && !this.#hooks.mayRunAgentTask(context))
-            return yield* new DeliveryStartFailed({ cause: new Error(sourceText("error.team.agentNotFound")) });
           return yield* this.#threads
             .requestWithArchivedThreadRecovery(
               agent,
               client,
+              providerThreadId,
               "turn/start",
-              {
-                threadId: providerThreadId,
-                model: agent.model,
-                effort: agent.reasoningEffort,
-                sessionSettings: sessionSettingsOverrides(
-                  this.#store.list().find((current) => current.id === agent.id) ?? agent,
-                ),
-                clientUserMessageId: delivery.id,
-                createArtifact: batch.some((item) => item.delivery.createArtifact === true),
-                // The delivery stays the same; a continuation must not overwrite the first turn's items.
-                ...((context.resumeAfterUsageLimit || planNote !== undefined) && client.provider !== "codex"
-                  ? { clientTurnId: randomUUID() }
-                  : {}),
-                // A teammate message that wants no answer tells the model to write nothing, so an empty
-                // turn is the expected result and not a provider that swallowed its error.
-                answerOptional:
-                  delivery.sender.kind === "agent" && delivery.expectsReply === false && !delivery.replyToMessageId,
-                input: inputForThread(providerThreadId),
-                cwd: agent.workspacePath,
-                runtimeWorkspaceRoots: workspaceWritableRoots(agent, this.#store.sharedRoot),
-                approvalPolicy: "on-request",
-                approvalsReviewer: "user",
-                sandboxPolicy: codexSandboxPolicy(agent, this.#store.sharedRoot),
-                ...(client.provider === "codex" || client.provider === "claude"
-                  ? this.#serviceTier(agent, client.provider)
-                  : {}),
+              () => {
+                if (context.agentTaskRequest && !this.#hooks.mayRunAgentTask(context))
+                  throw new Error(sourceText("error.team.agentNotFound"));
+                const currentAgent = this.#store.list().find((current) => current.id === agent.id) ?? agent;
+                return {
+                  threadId: providerThreadId,
+                  model: agent.model,
+                  effort: agent.reasoningEffort,
+                  sessionSettings: sessionSettingsOverrides(currentAgent),
+                  clientUserMessageId: delivery.id,
+                  createArtifact: batch.some((item) => item.delivery.createArtifact === true),
+                  // The delivery stays the same; a continuation must not overwrite the first turn's items.
+                  ...((context.resumeAfterUsageLimit || planNote !== undefined) && client.provider !== "codex"
+                    ? { clientTurnId: randomUUID() }
+                    : {}),
+                  // A teammate message that wants no answer tells the model to write nothing, so an empty
+                  // turn is the expected result and not a provider that swallowed its error.
+                  answerOptional:
+                    delivery.sender.kind === "agent" && delivery.expectsReply === false && !delivery.replyToMessageId,
+                  input: inputForThread(providerThreadId),
+                  cwd: agent.workspacePath,
+                  runtimeWorkspaceRoots: workspaceWritableRoots(currentAgent, this.#store.sharedRoot),
+                  approvalPolicy: "on-request",
+                  approvalsReviewer: "user",
+                  sandboxPolicy: codexSandboxPolicy(currentAgent, this.#store.sharedRoot),
+                  ...(client.provider === "codex" || client.provider === "claude"
+                    ? this.#serviceTier(agent, client.provider)
+                    : {}),
+                };
               },
               decodeTurnResponse,
             )

@@ -96,6 +96,7 @@ export interface AgentTasksHooks {
 export interface AgentTaskCaller {
   agentId: string;
   computer?: () => ScopedCodingComputer | undefined;
+  requesterIds?: () => string[];
   /** A channel, messaging or task turn: only the agent's own chat starts a task. */
   inExecutionThread: boolean;
 }
@@ -611,8 +612,10 @@ export class AgentTasks implements TaskLanes {
     const callerId = delivery.sender.agentId;
     const targetId = delivery.recipientAgentId;
     const { threadId, turnId, messageId, requesterIds } = agentTaskRequest;
-    if (!this.canLaunch(callerId, targetId, requesterIds)) return;
-    if (this.#hooks.agent(callerId)?.threadId !== threadId) {
+    const caller = this.#hooks.agent(callerId);
+    if (!caller || !this.#hooks.agent(targetId)) return;
+    if (!this.#canChat(callerId, requesterIds) || !this.#canChat(targetId, requesterIds)) return;
+    if (caller.threadId !== threadId) {
       if (this.#store.taskForThread(threadId)?.agentId !== callerId) return;
       this.#conversation.registerTaskThread(callerId, threadId);
     }
@@ -679,7 +682,7 @@ export class AgentTasks implements TaskLanes {
   readonly #start = Effect.fn("AgentTasks.start")(function* (
     this: AgentTasks,
     params: DynamicToolCallParams,
-    caller: Pick<AgentTaskCaller, "agentId" | "computer">,
+    caller: Pick<AgentTaskCaller, "agentId" | "computer" | "requesterIds">,
     input: z.infer<typeof startTaskToolSchema>,
     coding: z.infer<typeof runCodingTaskToolSchema> | null,
     launch?: { targetId: string; request: AgentTaskRequest },
@@ -693,6 +696,7 @@ export class AgentTasks implements TaskLanes {
       )
       .digest("hex")}`;
     const accountComputer = coding ? caller.computer?.() : undefined;
+    const taskRequesterIds = launch ? undefined : caller.requesterIds?.();
     const started = this.#mailbox.deliveryForKey(idempotencyKey);
     const startedTaskId = started ? this.#mailbox.taskIdForDelivery(started.delivery.id) : null;
     const startedTask = startedTaskId ? this.#store.task(startedTaskId) : null;
@@ -742,7 +746,7 @@ export class AgentTasks implements TaskLanes {
           ? `${remoteCodingBrief(coding.repository, coding.task, context)}\n\nJob directory: ~/openbot-coding-jobs/${encodeURIComponent(task.taskId)}`
           : input.brief,
         replyToMessageId: null,
-        ...(launch ? { agentTaskRequest: launch.request, expectsReply: false } : {}),
+        ...(launch ? { agentTaskRequest: launch.request, expectsReply: false } : { taskRequesterIds }),
         idempotencyKey,
       })
       .pipe(

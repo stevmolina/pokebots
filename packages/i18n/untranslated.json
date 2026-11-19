@@ -4632,6 +4632,7 @@
   "sitePage.teams.setups.managed.title": ["ar", "de", "es", "fr", "it", "ja", "ko", "nl", "ru", "tr", "zh"],
   "sitePage.teams.setups.question": ["ar", "de", "es", "fr", "it", "ja", "ko", "nl", "ru", "tr", "zh"],
   "sitePage.teams.title": ["ar", "de", "es", "fr", "it", "ja", "ko", "nl", "ru", "tr", "zh"],
+  "status.agent.agentTaskFailed": ["ar", "de", "es", "fr", "he", "it", "ja", "ko", "nl", "pl", "pt", "ru", "tr", "zh"],
   "status.agent.agentTaskNoResult": [
     "ar",
     "de",

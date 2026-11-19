@@ -460,6 +460,11 @@ export class TurnLifecycle {
    * ends during a turn is left out: that turn can read its report.
    */
   readonly #unreadReports = new Map<string, Map<string, string>>();
+  /** A launched task's delivery has settled, but its background subagents still owe it a result. */
+  readonly #backgroundLaunches = new Map<
+    string,
+    { delivery: DeliveryContext; turns: Set<string>; providerThreadId: string; client: AgentClient }
+  >();
   /** The drain's start of each starting delivery, until its turn starts. */
   readonly #deliveryStarts = new Map<string, DeliveryStart>();
   /** The timing of each finished turn, until host analytics takes it. */
@@ -513,7 +518,7 @@ export class TurnLifecycle {
    */
   readonly #endedTurns = new Set<string>();
   /** Turns whose normal end runs now. A Stop must not settle one of them as an orphan (#2214). */
-  readonly #completingTurns = new Set<string>();
+  readonly #completingTurns = new Map<string, Deferred.Deferred<void>>();
   /**
    * The time of the last provider notification for each agent: a delta, a tool item, a usage
    * update. It is the only clock that moves while a turn works, and it is lost on restart.
@@ -572,9 +577,32 @@ export class TurnLifecycle {
     this.#failedTurns.delete(agentId);
     this.#subagentTurns.delete(agentId);
     this.#lastEventAt.delete(agentId);
+    for (const [threadId, launch] of this.#backgroundLaunches)
+      if (launch.delivery.delivery.recipientAgentId === agentId) this.#backgroundLaunches.delete(threadId);
     for (const [childId, parent] of this.#codexChildren)
       if (parent.agentId === agentId) this.#codexChildren.delete(childId);
   }
+
+  /** Stops the provider session of a launch waiting for its background work, if it has no other turn. */
+  readonly stopBackgroundLaunch = Effect.fn("TurnLifecycle.stopBackgroundLaunch")(function* (
+    this: TurnLifecycle,
+    threadId: string,
+    deliveryId: string,
+  ) {
+    const launch = this.#backgroundLaunches.get(threadId);
+    if (launch?.delivery.delivery.id !== deliveryId) return null;
+    const { client, providerThreadId, turns } = launch;
+    const active = this.#conversation.loadedExecutionSnapshot(threadId)?.activeTurnId;
+    const running = active ? this.#runningTurns.get(active) : undefined;
+    if (active && (!running?.unprompted || ![...running.reports.values()].some((turn) => turns.has(turn))))
+      return false;
+    if (!client.releaseThread || this.#conversation.loadedClientFor(providerThreadId) !== client) return false;
+    yield* client.releaseThread(providerThreadId, true).pipe(toTurnOperationFailed);
+    this.#conversation.unloadThread(providerThreadId);
+    this.#backgroundLaunches.delete(threadId);
+    this.#hooks.postAgentTaskResult(launch.delivery, sourceText("status.agent.agentTaskStopped"));
+    return true;
+  }, Effect.uninterruptible);
 
   deliveriesStarting(deliveryIds: readonly string[], start: DeliveryStart): void {
     for (const id of deliveryIds) keepBounded(this.#deliveryStarts, id, start);
@@ -656,6 +684,7 @@ export class TurnLifecycle {
     this.#capacityNotices.clear();
     this.#limitedTurns.clear();
     this.#unreadReports.clear();
+    this.#backgroundLaunches.clear();
     this.#failoverTurns.clear();
     this.#failoverRetries.clear();
     this.#runningTurns.clear();
@@ -1905,7 +1934,15 @@ export class TurnLifecycle {
       const running = this.#runningTurns.get(turnId);
       this.#runningTurns.delete(turnId);
       this.#markEnded(turnId);
-      this.#completingTurns.add(turnId);
+      this.#completingTurns.set(turnId, Deferred.makeUnsafe<void>());
+      const startingSnapshot = this.#subagentTurns.get(agentId)?.has(turnId)
+        ? this.#conversation.loadedExecutionSnapshot(this.#conversation.publicThreadId(agentId, threadId))
+        : undefined;
+      const startedBackgroundWork = startingSnapshot?.messages.some(
+        (message) =>
+          message.id === `${turnId}:subagents` &&
+          message.subagents?.some((item) => item.background && item.status === "running"),
+      );
       // A turn that runs again below starts a new trace, so each path takes this one.
       const trace = this.#traces.take(turnId, new Date().toISOString());
       const noUpdateCalled = this.#noUpdateTurns.delete(turnId);
@@ -1949,6 +1986,11 @@ export class TurnLifecycle {
       yield* this.#images.waitForOperations(threadId, turnId);
       const association = this.#turnAssociations.get(turnId);
       if (association) yield* Deferred.await(association).pipe(Effect.catch(() => Effect.void));
+      // A quick report can finish before the turn that started it settles its delivery.
+      for (const earlier of new Set(running?.reports.values())) {
+        const settlement = this.#completingTurns.get(earlier);
+        if (settlement) yield* Deferred.await(settlement);
+      }
       const memoryChanges = this.#memories.finishTurn(turnId, status).get(agentId) ?? [];
       const workspace = this.#store.list().find((entry) => entry.id === agentId)?.workspacePath;
       const instructionsChange = yield* this.#instructions.finishTurn(agentId, turnId, workspace);
@@ -2151,6 +2193,8 @@ export class TurnLifecycle {
       // Only this loop reads the map, so the finished turn's items go, or it holds every item ever seen.
       for (const [itemId, itemTurnId] of this.#itemTurns) if (itemTurnId === turnId) this.#itemTurns.delete(itemId);
       if (resumed) {
+        if (snapshot.threadId && resumed.deliveries.some(({ agentTaskRequest }) => agentTaskRequest))
+          this.#backgroundLaunches.delete(snapshot.threadId);
         // The steps that the refused turn ran go with the reports, so the backup does not repeat them.
         const steps = running?.acted ? (yield* continuedWork).workSteps : "";
         if (steps)
@@ -2307,8 +2351,16 @@ export class TurnLifecycle {
           agentId,
           laneTaskId ?? (this.#laneForThread(agentId, threadId) === MESSAGING_LANE ? MESSAGING_LANE : null),
         );
+      const terminal = outcome === "failed" ? "failed" : outcome === "interrupted" ? "interrupted" : "completed";
+      const launchResult =
+        terminal === "failed"
+          ? (failure ?? sourceText("status.agent.agentTaskFailed"))
+          : terminal === "interrupted"
+            ? sourceText("status.agent.agentTaskStopped")
+            : (latestAssistant?.text ?? sourceText("status.agent.agentTaskNoResult"));
+      const worksInBackground = subagents?.subagents?.some((item) => item.background && item.status === "running");
+      const launchThreadId = snapshot.threadId;
       if (deliveries.length > 0) {
-        const terminal = outcome === "failed" ? "failed" : outcome === "interrupted" ? "interrupted" : "completed";
         for (const delivery of deliveries) {
           this.#refusedRetries.delete(delivery.delivery.id);
           this.#failoverRetries.delete(delivery.delivery.id);
@@ -2328,13 +2380,16 @@ export class TurnLifecycle {
                 : null;
           yield* this.#mailbox.markTerminal(delivery.delivery.id, terminal, reason).pipe(toTurnOperationFailed);
           this.#mailboxSync.syncDeliveryMessage(snapshot, delivery.delivery.id);
-          if (delivery.agentTaskRequest)
-            this.#hooks.postAgentTaskResult(
-              delivery,
-              terminal === "completed"
-                ? (latestAssistant?.text ?? sourceText("status.agent.agentTaskNoResult"))
-                : (reason ?? sourceText("status.agent.agentTaskStopped")),
-            );
+          if (delivery.agentTaskRequest) {
+            if (launchThreadId && terminal === "completed" && running && (startedBackgroundWork || worksInBackground))
+              this.#backgroundLaunches.set(launchThreadId, {
+                delivery,
+                turns: new Set([turnId]),
+                providerThreadId: threadId,
+                client: running.client,
+              });
+            else this.#hooks.postAgentTaskResult(delivery, launchResult);
+          }
         }
         // A turn can start with the answers of several teammates. `#relayAgentResult` skips each one
         // that wants no answer, so only a teammate that asked for a result gets one.
@@ -2358,6 +2413,22 @@ export class TurnLifecycle {
         // this end can release them, and the failure note above.
         for (const { delivery } of deliveries) {
           if (delivery.sender.kind === "agent") this.#hooks.scheduleDrain(delivery.sender.agentId);
+        }
+      }
+      if (launchThreadId && running?.unprompted && deliveries.length === 0) {
+        const launch = this.#backgroundLaunches.get(launchThreadId);
+        if (launch && [...running.reports.values()].some((earlier) => launch.turns.has(earlier))) {
+          if (startedBackgroundWork || worksInBackground) launch.turns.add(turnId);
+          const stillWorking = snapshot.messages.some(
+            (message) =>
+              message.turnId !== undefined &&
+              launch.turns.has(message.turnId) &&
+              message.subagents?.some((item) => item.background && item.status === "running"),
+          );
+          if (terminal !== "completed" || (!startedBackgroundWork && !stillWorking)) {
+            this.#backgroundLaunches.delete(launchThreadId);
+            this.#hooks.postAgentTaskResult(launch.delivery, launchResult);
+          }
         }
       }
       if (latestAssistant && !markerAnswer && !this.#conversation.isExecutionThread(snapshot.threadId)) {
@@ -2444,6 +2515,8 @@ export class TurnLifecycle {
         Effect.ensuring(
           Effect.andThen(
             Effect.sync(() => {
+              const settlement = this.#completingTurns.get(turnId);
+              if (settlement) Deferred.doneUnsafe(settlement, Effect.void);
               this.#completingTurns.delete(turnId);
               this.#quietChannelTurns.delete(turnId);
             }),
@@ -2985,21 +3058,21 @@ export class TurnLifecycle {
       this.#itemTurns.set(id, turnId);
     }
     const previous = message.subagents;
-    if (
-      ![...this.#runningTurns.values()].some(
-        (running) =>
-          running.agentId === agentId &&
-          this.#conversation.publicThreadId(agentId, running.threadId) === snapshot.threadId,
+    const running = [...this.#runningTurns.values()].find(
+      (turn) =>
+        turn.agentId === agentId && this.#conversation.publicThreadId(agentId, turn.threadId) === snapshot.threadId,
+    );
+    const launch = this.#backgroundLaunches.get(snapshot.threadId ?? "");
+    const key = `${agentId}\u0000${snapshot.threadId}`;
+    for (const subagent of subagents) {
+      if (
+        !subagent.background ||
+        subagent.status === "running" ||
+        previous?.find((candidate) => candidate.id === subagent.id)?.status !== "running"
       )
-    ) {
-      const key = `${agentId}\u0000${snapshot.threadId}`;
-      for (const subagent of subagents)
-        if (
-          subagent.background &&
-          subagent.status !== "running" &&
-          previous?.find((candidate) => candidate.id === subagent.id)?.status === "running"
-        )
-          this.#unreadReports.set(key, (this.#unreadReports.get(key) ?? new Map()).set(subagent.id, turnId));
+        continue;
+      if (!running) this.#unreadReports.set(key, (this.#unreadReports.get(key) ?? new Map()).set(subagent.id, turnId));
+      else if (running.unprompted && launch?.turns.has(turnId)) running.reports.set(subagent.id, turnId);
     }
     message.itemType = CONVERSATION_SUBAGENTS_ITEM_TYPE;
     message.text = conversationSubagentsText(subagents);

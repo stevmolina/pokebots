@@ -18,6 +18,7 @@ import { teamCapabilitiesForProtocol } from "@openbot/contracts/team-protocol/cu
 import { teamHttpCodec } from "@openbot/contracts/team-protocol/http-codecs";
 import { decodeTeamProtocolV2Json, type TeamProtocolV2Json } from "@openbot/contracts/team-protocol/v2";
 import { TEAM_PROTOCOL_V9 } from "@openbot/contracts/team-protocol/v9";
+import { sourceText } from "@openbot/i18n/source";
 import { plugin } from "bun";
 import { Effect } from "effect";
 import { z } from "zod";
@@ -36,6 +37,7 @@ const userData = join(root, "user-data");
 const home = join(root, "home");
 const fakeCodex = join(root, "codex");
 const fakeLog = join(root, "codex.jsonl");
+const holdNextThread = join(root, "hold-next-thread");
 await mkdir(home);
 process.env.CODEX_HOME = join(home, ".codex");
 process.env.OPENBOT_CODEX_PATH = fakeCodex;
@@ -128,7 +130,7 @@ const teamBrowser: TeamApiBrowser = {
 
 // Session and turn IDs are unique across providers. The fixture logs each input and each tool reply.
 const FAKE_CODEX = `#!/usr/bin/env node
-const { appendFileSync, watchFile, unwatchFile } = require("node:fs");
+const { appendFileSync, existsSync, readFileSync, unlinkSync, watchFile, unwatchFile } = require("node:fs");
 const { createInterface } = require("node:readline");
 const { join } = require("node:path");
 if (process.argv.includes("--version")) {
@@ -140,9 +142,22 @@ const write = (message) => process.stdout.write(JSON.stringify(message) + "\\n")
 const config = { config: { mcp_servers: {} }, layers: [] };
 const waiting = new Map();
 const held = new Map();
+const backgroundWork = new Map();
 const workspaces = new Map();
 let threads = 0;
 let turns = 0;
+const afterRelease = (file, done) => {
+  let completed = false;
+  const release = () => {
+    if (completed || !existsSync(file)) return;
+    completed = true;
+    unwatchFile(file, release);
+    done();
+  };
+  watchFile(file, { interval: 50 }, release);
+  queueMicrotask(release);
+  return () => unwatchFile(file, release);
+};
 const finish = (threadId, turnId, text, status = "completed") => {
   const file = held.get(turnId);
   if (file) unwatchFile(file);
@@ -170,9 +185,21 @@ read.on("line", (line) => {
     case "thread/start": {
       const id = "thread-" + process.pid + "-" + (++threads);
       workspaces.set(id, params.cwd);
+      const gate = ${JSON.stringify(holdNextThread)};
+      if (existsSync(gate)) {
+        const tag = readFileSync(gate, "utf8");
+        unlinkSync(gate);
+        log({ tag, threadId: id, turnId: "" });
+        return afterRelease(join(${JSON.stringify(root)}, "release-" + tag), () =>
+          respond({ thread: { id, turns: [] } }));
+      }
       return respond({ thread: { id, turns: [] } });
     }
-    case "thread/unsubscribe": return respond({ status: "Unsubscribed" });
+    case "thread/unsubscribe": {
+      const cancel = backgroundWork.get(params.threadId);
+      if (cancel) cancel();
+      return respond({ status: "Unsubscribed" });
+    }
     case "thread/turns/list":
     case "thread/items/list": return respond({ data: [], nextCursor: null });
     case "thread/resume":
@@ -193,15 +220,47 @@ read.on("line", (line) => {
           arguments: { name: "openbot." + tool, arguments: args },
         } });
       }
-      const work = [...text.matchAll(/^(RUN|HOLD) ([A-Z-]+)$/gm)].at(-1);
+      const work = [...text.matchAll(/^(RUN|HOLD|FAIL|PLAN|BACKGROUND) ([A-Z-]+)$/gm)].at(-1);
       if (!work) return setImmediate(() => finish(threadId, turnId, "Ready."));
       const [_, mode, tag] = work;
-      log({ tag, threadId, turnId, text, model: params.model, cwd: workspaces.get(threadId) });
+      log({ tag, threadId, turnId, text, model: params.model, cwd: workspaces.get(threadId),
+        sandbox: params.sandboxPolicy?.type });
       if (mode === "RUN") return setImmediate(() => finish(threadId, turnId, "RESULT " + tag));
+      if (mode === "FAIL") return setImmediate(() => finish(threadId, turnId, null, "failed"));
       const file = join(${JSON.stringify(root)}, "release-" + tag);
+      if (mode === "BACKGROUND") {
+        const startedAt = new Date().toISOString();
+        const report = (status, endedAt) => write({ method: "turn/subagents/updated", params: {
+          threadId, turnId, subagents: [{ id: tag, title: tag, status, startedAt, endedAt,
+            steps: [], background: true, agentType: null, prompt: null, error: null }],
+        } });
+        report("running", null);
+        finish(threadId, turnId, null);
+        const cancel = afterRelease(file, () => {
+          backgroundWork.delete(threadId);
+          report("completed", new Date().toISOString());
+          const nextTurn = "turn-" + process.pid + "-" + (++turns);
+          write({ method: "turn/started", params: { threadId, turn: { id: nextTurn }, unprompted: true } });
+          const id = "tool-" + nextTurn;
+          waiting.set(id, { tag: tag + "-TOOLS", threadId, turnId: nextTurn, answer: "RESULT " + tag });
+          write({ id, method: "item/tool/call", params: {
+            threadId, turnId: nextTurn, callId: id, namespace: "openbot", tool: "tool_call",
+            arguments: { name: "openbot.list_workflows", arguments: {} },
+          } });
+        });
+        return backgroundWork.set(threadId, () => {
+          cancel();
+          backgroundWork.delete(threadId);
+          report("stopped", new Date().toISOString());
+          log({ tag: tag + "-STOPPED", threadId, turnId });
+        });
+      }
       held.set(turnId, file);
-      return watchFile(file, { interval: 50 }, (now) => {
-        if (now.nlink) finish(threadId, turnId, "RESULT " + tag);
+      return afterRelease(file, () => {
+        if (mode === "PLAN") write({ method: "turn/plan/updated", params: {
+          threadId, turnId, plan: [{ step: "Finish the remaining work", status: "pending" }],
+        } });
+        finish(threadId, turnId, "RESULT " + tag);
       });
     }
     case "turn/interrupt": {
@@ -213,7 +272,7 @@ read.on("line", (line) => {
       if (turn) {
         waiting.delete(message.id);
         log({ tag: turn.tag, threadId: turn.threadId, turnId: turn.turnId, result: message.result });
-        finish(turn.threadId, turn.turnId, "Tool call ended.");
+        finish(turn.threadId, turn.turnId, turn.answer ?? "Tool call ended.");
       } else if (message.id !== undefined) write({ id: message.id, error: { code: -32601, message: "Method not found" } });
     }
   }
@@ -229,6 +288,8 @@ const team = new TeamStore(join(userData, "team.json"));
 const agentAccess = new AgentAccessStore(join(userData, AGENT_ACCESS_FILE));
 const owner = { username: "test-owner", password: "e2e-owner-password" };
 const member = { username: "test-member", password: "e2e-member-password" };
+let taskLimit = 2;
+const autoApproving = new Set<string>();
 
 const agents = new AgentService({
   store,
@@ -238,7 +299,11 @@ const agents = new AgentService({
   preferredProvider: "codex",
   offProviders: AGENT_PROVIDERS.filter((provider) => provider !== "codex"),
   memoryReviewInterval: () => 0,
-  hostTurnLimits: { turnLimit: () => "unlimited", agentTaskLimit: () => 2 },
+  hostTurnLimits: { turnLimit: () => "unlimited", agentTaskLimit: () => taskLimit },
+  approvalAutomation: {
+    autoApproves: (id) => autoApproving.has(id),
+    set: () => Effect.succeed({ defaultAutoApprove: false, autoApproveOverrides: {} }),
+  },
   channelPersonAgentLevel: (personId, agentId) => {
     const person = team.getMember(personId);
     return person && !person.disabled ? server.agentLevel(person, agentId) : "none";
@@ -306,6 +371,7 @@ const fixtureEntry = z.object({
   turnId: z.string(),
   text: z.string().optional(),
   model: z.string().optional(),
+  sandbox: z.string().optional(),
   cwd: z.string().optional(),
   result: z.object({ success: z.boolean(), contentItems: z.array(z.object({ text: z.string() })) }).optional(),
 });
@@ -325,10 +391,11 @@ async function fixtureLog(tag: string) {
 type TaskToolArguments = z.input<
   typeof startAgentTaskToolSchema | typeof startTaskToolSchema | typeof stopAgentTaskToolSchema
 >;
-const command = (tag: string, tool: string, args: TaskToolArguments) =>
+const command = (tag: string, tool: string, args: TaskToolArguments | Record<string, never>) =>
   `<<CALL${JSON.stringify({ tag, tool, args })}CALL>>`;
 const launchInfo = z.object({ threadId: z.string(), agentId: z.string() });
 
+const failures: unknown[] = [];
 try {
   await mkdir(userData);
   await runCauseEffect(team.initialize());
@@ -375,11 +442,13 @@ try {
     taskId
       ? call(AGENT_TASKS_ROUTES.send, 202, token, { agentId, taskId, text })
       : call(TEAM_API_ROUTES.agent.messages(agentId), 202, token, { text, attachmentDraftIds: [] });
-  const task = async (agentId: string, taskId: string) => {
-    const snapshot = await call(AGENT_TASKS_ROUTES.list, 200, token, { agentId });
+  const tasks = async (agentId: string, reader = token) => {
+    const snapshot = await call(AGENT_TASKS_ROUTES.list, 200, reader, { agentId });
     assert.ok(isAgentTasksSnapshot(snapshot));
-    return snapshot.tasks.find(({ id }) => id === taskId);
+    return snapshot.tasks;
   };
+  const task = async (agentId: string, taskId: string) => (await tasks(agentId)).find(({ id }) => id === taskId);
+  const targetTaskIds = async () => (await tasks(target.id, ownerToken)).map(({ id }) => id).sort();
   const resultIn = (result: string, taskId?: string) =>
     waitFor(result, async () => {
       const snapshot = await chat(caller.id, taskId);
@@ -398,7 +467,8 @@ try {
     return (await fixtureLog(tag)).result?.success;
   };
 
-  const self = await start("self", "RUN SELF");
+  await writeFile(join(root, "release-SELF"), "");
+  const self = await start("self", "HOLD SELF");
   const selfWork = await fixtureLog("SELF");
   const selfResult = await resultIn("RESULT SELF");
   const selfThread = await chat(caller.id, self.threadId);
@@ -412,9 +482,10 @@ try {
   assert.notEqual(selfWork.threadId, (await fixtureLog("self")).threadId);
   assert.equal(selfWork.cwd, caller.workspacePath);
   assert.equal(selfWork.model, caller.model);
-  assert.ok(selfThread.messages.some(({ text }) => text === "RUN SELF"));
+  assert.ok(selfThread.messages.some(({ text }) => text === "HOLD SELF"));
   assert.ok(!selfWork.text?.includes("<<CALL"));
   report.checks.selfThread = self.threadId;
+  report.checks.preexistingRelease = true;
 
   const side = await call(AGENT_TASKS_ROUTES.start, 200, token, { agentId: caller.id, text: "Side chat" });
   assert.ok(isAgentTask(side));
@@ -460,28 +531,136 @@ try {
   assert.ok(!(await chat(target.id)).messages.some(({ text }) => text.includes("HOLD SECOND")));
   report.checks.exactArchivedSideChat = side.id;
 
+  const beforeDenied = await targetTaskIds();
   for (const level of ["none", "view"] as const) {
     await access(level);
     await send(caller.id, command(level, "start_agent_task", { brief: "HOLD DENIED", agentId: target.id }));
     assert.equal((await fixtureLog(level)).result?.success, false);
+    assert.deepEqual(await targetTaskIds(), beforeDenied);
   }
-  await access("chat");
-  assert.ok(
-    !(await call(AGENT_TASKS_ROUTES.list, 200, token, { agentId: target.id }).then(
-      (snapshot) => isAgentTasksSnapshot(snapshot) && snapshot.tasks.some(({ title }) => title === "HOLD DENIED"),
-    )),
-  );
   report.checks.joinedMemberPermissions = true;
+
+  const legacyStart = async (tag: string, brief: string) => {
+    await send(caller.id, command(tag, "start_task", { title: "Legacy task", brief }));
+    const reply = (await fixtureLog(tag)).result;
+    assert.equal(reply?.success, true);
+    return z.object({ taskId: z.string() }).parse(JSON.parse(reply?.contentItems[0]?.text ?? "")).taskId;
+  };
+  await legacyStart(
+    "legacy-parent",
+    command("legacy-child", "start_task", {
+      title: "Nested legacy task",
+      brief: command("legacy-denied", "start_agent_task", { brief: "HOLD DENIED", agentId: target.id }),
+    }),
+  );
+  assert.equal((await fixtureLog("legacy-child")).result?.success, true);
+  assert.equal((await fixtureLog("legacy-denied")).result?.success, false);
+  assert.deepEqual(await targetTaskIds(), beforeDenied);
+  await legacyStart("legacy-remote", command("legacy-workflows", "list_workflows", {}));
+  assert.match((await fixtureLog("legacy-workflows")).result?.contentItems[0]?.text ?? "", /cannot read workflows/);
+  report.checks.legacyRequesterPermissions = true;
+  await access("chat");
+
+  const waitForBackground = (threadId: string) =>
+    waitFor("background work without an active turn", async () => {
+      const snapshot = await chat(target.id, threadId);
+      return snapshot.activeTurnId === null &&
+        snapshot.messages.some(({ subagents }) => subagents?.some(({ status }) => status === "running"))
+        ? true
+        : undefined;
+    });
+  const background = await start("background", "BACKGROUND BACKGROUND", target.id);
+  await waitForBackground(background.threadId);
+  const backgroundRequest = (await fixtureLog("background")).turnId;
+  const launchResults = async (turnId: string) =>
+    (await chat(caller.id)).messages.filter((message) => message.source === "agent" && message.turnId === turnId);
+  assert.deepEqual(await launchResults(backgroundRequest), []);
+  await writeFile(join(root, "release-BACKGROUND"), "");
+  const backgroundResult = await resultIn("RESULT BACKGROUND");
+  assert.equal(backgroundResult.turnId, backgroundRequest);
+  assert.equal(backgroundResult.senderAgentId, target.id);
+  assert.equal((await launchResults(backgroundRequest)).length, 1);
+  assert.match((await fixtureLog("BACKGROUND-TOOLS")).result?.contentItems[0]?.text ?? "", /cannot read workflows/);
+  report.checks.backgroundFinalResult = true;
+
+  await writeFile(join(root, "release-BACKGROUND-FAST"), "");
+  await start("background-fast", "BACKGROUND BACKGROUND-FAST", target.id);
+  const fastResult = await resultIn("RESULT BACKGROUND-FAST");
+  assert.equal(fastResult.turnId, (await fixtureLog("background-fast")).turnId);
+  report.checks.fastBackgroundFinalResult = true;
+
+  const backgroundStop = await start("background-stop", "BACKGROUND BACKGROUND-STOP", target.id);
+  await waitForBackground(backgroundStop.threadId);
+  assert.equal(await stop("stop-background", backgroundStop.threadId), true);
+  assert.equal((await fixtureLog("BACKGROUND-STOP-STOPPED")).threadId, (await fixtureLog("BACKGROUND-STOP")).threadId);
+  const backgroundStopRequest = (await fixtureLog("background-stop")).turnId;
+  assert.deepEqual(
+    (await launchResults(backgroundStopRequest)).map(({ text }) => text),
+    [sourceText("status.agent.agentTaskStopped")],
+  );
+  assert.equal((await chat(target.id)).activeTurnId, targetMain.turnId);
+  report.checks.backgroundCancellationIsolated = true;
+
+  const failed = await start("failed", "FAIL FAILED", target.id);
+  const failedResult = await resultIn(sourceText("status.agent.agentTaskFailed"));
+  assert.equal(failedResult.turnId, (await fixtureLog("failed")).turnId);
+  assert.equal((await task(target.id, failed.threadId))?.outcome, "failed");
+  report.checks.reasonlessFailure = true;
+
+  const planHolder = await start("plan-holder", "HOLD PLAN-HOLDER");
+  const planHolderWork = await fixtureLog("PLAN-HOLDER");
+  const plan = await start("plan", "PLAN PLAN");
+  const plannedTurnRequest = (await fixtureLog("plan")).turnId;
+  const plannedTurn = await fixtureLog("PLAN");
+  let resumedPlan = false;
+  agents.on("event", (event) => {
+    if (event.type !== "agent-task-conversation" || event.taskId !== plan.threadId) return;
+    if (event.snapshot.messages.some(({ id }) => id === `${plannedTurn.turnId}:plan-continuation`)) taskLimit = 1;
+    const active = event.snapshot.activeTurnId;
+    if (active && active !== plannedTurn.turnId) resumedPlan = true;
+  });
+  await writeFile(join(root, "release-PLAN"), "");
+  await waitFor("plan continuation held between turns", async () =>
+    taskLimit === 1 && (await chat(caller.id, plan.threadId)).activeTurnId === null ? true : undefined,
+  );
+  assert.equal(await stop("stop-plan", plan.threadId), true);
+  const stoppedPlan = await waitFor("plan stop result", async () =>
+    (await launchResults(plannedTurnRequest)).find(({ text }) => text === sourceText("status.agent.agentTaskStopped")),
+  );
+  assert.equal(stoppedPlan.senderAgentId, caller.id);
+  assert.equal((await chat(caller.id, planHolder.threadId)).activeTurnId, planHolderWork.turnId);
+  taskLimit = 2;
+  await writeFile(join(root, "release-PLAN-HOLDER"), "");
+  await resultIn("RESULT PLAN-HOLDER");
+  assert.equal((await chat(caller.id, plan.threadId)).activeTurnId, null);
+  assert.equal(resumedPlan, false);
+  report.checks.queuedPlanCancellation = true;
+
+  await writeFile(holdNextThread, "POLICY-THREAD");
+  await start("policy", "RUN POLICY", target.id);
+  await fixtureLog("POLICY-THREAD");
+  autoApproving.add(target.id);
+  await writeFile(join(root, "release-POLICY-THREAD"), "");
+  const policyResult = await resultIn(sourceText("error.team.agentNotFound"));
+  assert.equal(policyResult.turnId, (await fixtureLog("policy")).turnId);
+  autoApproving.delete(target.id);
+  report.checks.changedEligibilityReported = true;
+
+  await writeFile(holdNextThread, "SANDBOX-THREAD");
+  await start("sandbox", "RUN SANDBOX", target.id);
+  await fixtureLog("SANDBOX-THREAD");
+  await runCauseEffect(agents.updateAgent({ agentId: target.id, access: "workspace" }));
+  await writeFile(join(root, "release-SANDBOX-THREAD"), "");
+  assert.equal((await fixtureLog("SANDBOX")).sandbox, "workspaceWrite");
+  await resultIn("RESULT SANDBOX");
+  report.checks.currentSandboxPolicy = true;
 
   await runCauseEffect(agents.updateAgent({ agentId: caller.id, computerUse: false }));
   await send(caller.id, command("host-limit", "start_agent_task", { brief: "HOLD DENIED", agentId: target.id }));
   assert.equal((await fixtureLog("host-limit")).result?.success, false);
   report.checks.hostPermissionLimit = true;
 
-  await send(caller.id, command("legacy", "start_task", { title: "Legacy task", brief: "RUN LEGACY" }));
-  const legacy = (await fixtureLog("legacy")).result;
-  assert.equal(legacy?.success, true);
-  const { taskId: legacyId } = z.object({ taskId: z.string() }).parse(JSON.parse(legacy?.contentItems[0]?.text ?? ""));
+  const legacyId = await legacyStart("legacy", "RUN LEGACY");
   await waitFor("legacy task result", async () =>
     (await chat(caller.id, legacyId)).messages.find(({ text }) => text === "RESULT LEGACY"),
   );
@@ -493,8 +672,9 @@ try {
   report.passed = true;
 } catch (error) {
   report.error = error instanceof Error ? (error.stack ?? error.message) : String(error);
-  throw error;
-} finally {
+  failures.push(error);
+}
+try {
   await runCauseEffect(server.stop()).catch(() => undefined);
   await runCauseEffect(agents.stop()).catch(() => undefined);
   database.close();
@@ -502,5 +682,13 @@ try {
   const evidence = JSON.stringify(report, null, 2);
   await writeFile(join(OUT, "report.json"), `${evidence}\n`);
   process.stdout.write(`${evidence}\n`);
-  await rm(root, { recursive: true, force: true });
+} catch (error) {
+  failures.push(error);
+} finally {
+  try {
+    await rm(root, { recursive: true, force: true });
+  } catch (error) {
+    failures.push(error);
+  }
 }
+if (failures.length > 0) throw failures[0];

@@ -6505,12 +6505,29 @@ export class AgentService extends EventEmitter<AgentServiceEvents> {
       if (starting) yield* starting.pipe(Effect.ignore);
       current = this.#mailbox.getDelivery(deliveryId);
     }
-    if (current?.delivery.status === "queued") {
+    if (
+      current &&
+      (current.delivery.status === "queued" ||
+        (current.delivery.status === "running" && current.planContinuation?.queued))
+    ) {
       yield* this.cancelQueuedMessage(agentId, deliveryId);
+      if (current.planContinuation?.queued) yield* this.#drain.endPlanContinuation(agentId, taskId);
       this.#postAgentTaskResult(current, sourceText("status.agent.agentTaskStopped"));
       return true;
     }
     if (!current) return true;
+    if (current.delivery.status === "completed") {
+      const stopped = yield* Effect.acquireUseRelease(
+        Effect.sync(() => this.#drain.holdSessionSettings(agentId)),
+        () => this.#turn.stopBackgroundLaunch(threadId, deliveryId),
+        (release) => Effect.sync(release),
+      ).pipe(
+        Effect.mapError(
+          (failure) => new AgentLifecycleFailed({ operation: "stop background task", cause: failure.cause }),
+        ),
+      );
+      return stopped ?? true;
+    }
     const turnId = current.delivery.turnId;
     if (!turnId) return current.delivery.status !== "starting";
     if (current.delivery.status !== "running" && current.delivery.status !== "starting") return true;

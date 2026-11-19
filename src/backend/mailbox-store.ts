@@ -91,6 +91,8 @@ export interface MessagingOrigin {
 
 interface StoredMessage {
   agentTaskRequest?: AgentTaskRequest;
+  /** Requesters inherited by a task whose result stays in its own chat. */
+  taskRequesterIds?: string[];
   channelId?: string | undefined;
   messaging?: MessagingOrigin;
   /**
@@ -220,6 +222,7 @@ interface StoredReaction {
 
 interface EnqueueInput {
   agentTaskRequest?: AgentTaskRequest;
+  taskRequesterIds?: string[];
   /** This request asks Claude for one claude.ai artifact. */
   createArtifact?: boolean;
   channelId?: string;
@@ -261,6 +264,7 @@ export interface MailboxStoredFile {
 export interface DeliveryContext {
   delivery: QueueDelivery;
   agentTaskRequest?: AgentTaskRequest;
+  taskRequesterIds?: string[];
   managedAttachments: Array<AttachmentSummary & { path: string }>;
   resumeAfterUsageLimit?: UsageLimitContinuation;
   planContinuation?: PlanContinuationMarker;
@@ -741,6 +745,7 @@ export class MailboxStore {
       const messaging = input.messaging ?? this.#answerReturn(input, recipients);
       const message: StoredMessage = {
         ...(input.agentTaskRequest ? { agentTaskRequest: input.agentTaskRequest } : {}),
+        ...(input.taskRequesterIds?.length ? { taskRequesterIds: input.taskRequesterIds } : {}),
         ...(input.channelId === undefined ? {} : { channelId: input.channelId }),
         ...(messaging ? { messaging } : {}),
         ...(input.messagingReturn ? { messagingReturn: input.messagingReturn } : {}),
@@ -2033,6 +2038,14 @@ export class MailboxStore {
     const request = this.#state.messages.find((message) => message.taskId === taskId && message.agentTaskRequest);
     const delivery = request && this.#state.deliveries.find((item) => item.messageId === request.id);
     return delivery ? this.#context(delivery) : null;
+  }
+
+  /** The requesters of the agent-authored brief, including during a provider-started turn. */
+  taskBriefRequesters(taskId: string): readonly string[] {
+    const brief = this.#state.messages.find(
+      (message) => message.taskId === taskId && (message.agentTaskRequest || message.taskRequesterIds),
+    );
+    return brief?.agentTaskRequest?.requesterIds ?? brief?.taskRequesterIds ?? [];
   }
 
   /**
@@ -3584,6 +3597,7 @@ export class MailboxStore {
     return {
       delivery: this.#publicDelivery(delivery, positions, message),
       ...(message.agentTaskRequest ? { agentTaskRequest: message.agentTaskRequest } : {}),
+      ...(message.taskRequesterIds ? { taskRequesterIds: message.taskRequesterIds } : {}),
       ...(delivery.resumeAfterUsageLimit ? { resumeAfterUsageLimit: delivery.resumeAfterUsageLimit } : {}),
       ...(delivery.planContinuation ? { planContinuation: delivery.planContinuation } : {}),
       ...(message.channelId ? { channelId: message.channelId } : {}),
@@ -4000,6 +4014,8 @@ function isStoredMessage(value: unknown): value is StoredMessage {
         isString(value.agentTaskRequest.messageId) &&
         Array.isArray(value.agentTaskRequest.requesterIds) &&
         value.agentTaskRequest.requesterIds.every(isString))) &&
+    (value.taskRequesterIds === undefined ||
+      (Array.isArray(value.taskRequesterIds) && value.taskRequesterIds.every(isString))) &&
     (value.channelId === undefined || isString(value.channelId)) &&
     (value.messaging === undefined || isMessagingOrigin(value.messaging)) &&
     (value.messagingReturn === undefined || isMessagingOrigin(value.messagingReturn)) &&

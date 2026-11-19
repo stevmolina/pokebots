@@ -2566,6 +2566,7 @@ export class OpenBotToolRouter {
 
     const taskResult = yield* this.#tasks.handleTool(params, {
       ...caller,
+      requesterIds: () => this.#turnRequesters(senderAgentId, params.turnId),
       computer: () => {
         const account = this.#computerAccount(senderAgentId, params.turnId);
         return account && { memberId: account.memberId, port: codingComputer(account.api) };
@@ -3263,13 +3264,18 @@ export class OpenBotToolRouter {
 
   /**
    * The people who sent the messages of this turn, as their `senderMember` ids. A message with no
-   * sender is from a person on this computer who is signed out. A launched task carries the IDs
-   * from the turn that launched it so the account tools still use the requester's permissions.
+   * sender is from a person on this computer who is signed out. Agent-started tasks also carry
+   * the requesters of the turn that started them.
    */
   #turnRequesters(agentId: string, turnId: string): string[] {
-    const ids = new Set<string>();
-    for (const { delivery, agentTaskRequest } of this.#mailbox.findDeliveriesByTurn(agentId, turnId)) {
-      for (const id of agentTaskRequest?.requesterIds ?? []) ids.add(id);
+    const threadId = this.#conversation.snapshotWithTurn(agentId, turnId)?.threadId;
+    const taskId = threadId ? this.#tasks.taskForThread(threadId) : null;
+    const ids = new Set(taskId ? this.#mailbox.taskBriefRequesters(taskId) : []);
+    for (const { delivery, agentTaskRequest, taskRequesterIds } of this.#mailbox.findDeliveriesByTurn(
+      agentId,
+      turnId,
+    )) {
+      for (const id of agentTaskRequest?.requesterIds ?? taskRequesterIds ?? []) ids.add(id);
       if (delivery.sender.kind !== "user") continue;
       ids.add(this.#mailbox.senderMember(delivery.messageId)?.id ?? SIGNED_OUT_CHANNEL_MEMBER_ID);
     }
@@ -3327,13 +3333,9 @@ export class OpenBotToolRouter {
 
   /** Whether a team member on another computer sent a message of this turn. */
   #fromRemoteMember(agentId: string, turnId: string): boolean {
-    return this.#mailbox
-      .findDeliveriesByTurn(agentId, turnId)
-      .some(
-        ({ delivery, agentTaskRequest }) =>
-          this.#remoteMember(delivery.messageId) ||
-          agentTaskRequest?.requesterIds.some((id) => this.#channels.hooks.remotePerson?.(id)),
-      );
+    return this.#turnRequesters(agentId, turnId).some(
+      (id) => id !== SIGNED_OUT_CHANNEL_MEMBER_ID && this.#channels.hooks.remotePerson?.(id),
+    );
   }
 
   /** Adds the note that an agent changed the Vault. `text` names the item, never a secret. */
