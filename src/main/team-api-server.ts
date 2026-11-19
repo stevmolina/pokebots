@@ -244,6 +244,7 @@ import {
   TEAM_REASONING_EFFORTS_CAPABILITY,
   withLegacyReasoningEfforts,
 } from "@openbot/contracts/team-protocol/reasoning-efforts-v1";
+import { REMOTE_COMPUTER_TERMINAL_CAPABILITY } from "@openbot/contracts/team-protocol/remote-computer-terminal-v1";
 import {
   REMOTE_COMPUTER_USE_CAPABILITY,
   type RemoteComputerCallEvent,
@@ -3035,6 +3036,8 @@ export class TeamApiServer {
         if (capability === BROWSER_EGRESS_CAPABILITY) return this.#options.browserProfiles !== undefined;
         // The host gives a member's computer to that member's agents as an MCP entry.
         if (capability === REMOTE_COMPUTER_USE_CAPABILITY) return this.#options.remoteComputers !== undefined;
+        // The same host also hands those agents the terminal and file tools that the computer lists.
+        if (capability === REMOTE_COMPUTER_TERMINAL_CAPABILITY) return this.#options.remoteComputers !== undefined;
         if (capability === SKILLS_ADMIN_CAPABILITY) return this.#options.admin?.skills !== undefined;
         if (capability === GITHUB_SKILLS_CAPABILITY) return this.#options.admin?.skills !== undefined;
         if (capability === SKILLS_EVENTS_CAPABILITY) return this.#options.skills !== undefined;

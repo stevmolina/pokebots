@@ -14,9 +14,16 @@ import {
   REMOTE_COMPUTER_USE_ROUTES,
   type RemoteComputerCallEvent,
 } from "@openbot/contracts/team-protocol/remote-computer-use-v1";
-import { createOpenBotLogger, toLogValue } from "@openbot/logging";
+import { createOpenBotLogger, redactText, toLogValue } from "@openbot/logging";
 import { Cause, Effect, Schema } from "effect";
 import { causeHelpers } from "../backend/effect-boundary";
+import {
+  describeTerminalCall,
+  RemoteComputerTerminal,
+  TERMINAL_TOOL_NAMES,
+  terminalAvailableHere,
+  terminalTools,
+} from "./remote-computer-terminal";
 import type { RemoteWorkflowError } from "./remote-service-effects";
 
 // The desktop end of `remote-computer-use-v1`: the agents of a joined server use Computer Use on this
@@ -27,6 +34,11 @@ import type { RemoteWorkflowError } from "./remote-service-effects";
 // `remote-computer-call` from that host runs on this computer's driver, through one MCP connection
 // of OpenBot's own, and the answer goes back on the reply route. A call from a server whose switch
 // is off is refused here too, so a host cannot use a computer that the user did not offer.
+//
+// A server whose terminal switch is also on (`remote-computer-terminal-v1`) gets two more tools, answered
+// by `RemoteComputerTerminal` and not by the driver: run one shell command, and read one chunk of a
+// file. They are listed and run only while that switch, the main switch and the host's capability
+// are all there. A running command ends when the switch goes off, on Stop, or when the call is cancelled.
 //
 // What the user sees: OpenBot's own agent cursor and rim, because the calls go through the same tap
 // as a local agent's, and the sessions list below, which the window shows with a Stop button.
@@ -83,6 +95,8 @@ export interface RemoteComputerClientOptions {
   /** This computer's Computer Use entry while the driver runs with its grants, or null. */
   driver: () => McpServerConfig | null;
   computerName: () => string;
+  /** Answers the terminal tools. Tests give their own. */
+  terminal?: RemoteComputerTerminal;
   /** A screenshot as JPEG at the same size, in base64, or null when it cannot be read. */
   toJpeg: (data: string, mimeType: string, quality: number) => string | null;
   now?: () => number;
@@ -94,6 +108,8 @@ interface Session {
   lastCallAt: number;
   running: number;
   readonly calls: Set<AbortController>;
+  /** The calls of the terminal tools, which also end when the terminal switch goes off. */
+  readonly terminalCalls: Set<AbortController>;
 }
 
 interface Connection {
@@ -106,6 +122,7 @@ interface Connection {
 export class RemoteComputerClient {
   readonly #options: RemoteComputerClientOptions;
   readonly #now: () => number;
+  readonly #terminal: RemoteComputerTerminal;
   /** The servers that were last told that this computer is available. */
   readonly #announced = new Set<string>();
   readonly #sessions = new Map<string, Session>();
@@ -123,6 +140,7 @@ export class RemoteComputerClient {
   constructor(options: RemoteComputerClientOptions) {
     this.#options = options;
     this.#now = options.now ?? Date.now;
+    this.#terminal = options.terminal ?? new RemoteComputerTerminal();
   }
 
   start(): void {
@@ -144,6 +162,12 @@ export class RemoteComputerClient {
         .map((server) => server.serverId),
     );
     for (const serverId of [...this.#sessions.keys()]) if (!enabled.has(serverId)) this.#endSession(serverId);
+    // A server whose terminal switch went off keeps its session, but its running commands end now.
+    for (const [serverId, session] of this.#sessions) {
+      if (this.#terminalAllowed(serverId)) continue;
+      for (const controller of session.terminalCalls) controller.abort();
+      session.terminalCalls.clear();
+    }
     for (const serverId of [...this.#stopped]) if (!enabled.has(serverId)) this.#stopped.delete(serverId);
     if (!this.#options.driver()) this.#closeConnection();
   };
@@ -240,6 +264,13 @@ export class RemoteComputerClient {
     return server?.enabled && server.supported && server.connected ? server : null;
   }
 
+  /** Whether `serverId` may also run commands here and copy files now. */
+  #terminalAllowed(serverId: string): boolean {
+    if (!terminalAvailableHere()) return false;
+    const server = this.#allowed(serverId);
+    return server?.terminalSupported === true && server.terminalEnabled;
+  }
+
   #announce(repeat: boolean): void {
     const computerName = this.#options.computerName();
     const driverReady = this.#options.driver() !== null;
@@ -282,8 +313,10 @@ export class RemoteComputerClient {
     if (!server) return yield* reply(false, "This computer does not let the agents of this server use it now.");
     const controller = new AbortController();
     const session = this.#begin(serverId, server.serverName, controller);
+    const terminalCall = event.operation === "call-tool" && TERMINAL_TOOL_NAMES.has(event.tool);
+    if (terminalCall) session.terminalCalls.add(controller);
     // Every end gets an answer, a defect included, so the agent never waits for the host's timeout.
-    const outcome = yield* this.#run(event, controller.signal).pipe(
+    const outcome = yield* this.#run(serverId, event, controller.signal).pipe(
       Effect.map((value) => ({ ok: true as const, value })),
       Effect.catchCause((cause) => {
         const failure = Cause.squash(cause);
@@ -295,6 +328,7 @@ export class RemoteComputerClient {
       }),
       Effect.ensuring(Effect.sync(() => this.#finish(session, controller))),
     );
+    session.terminalCalls.delete(controller);
     // Stop ends the session: a call that was running then gets no result.
     if (controller.signal.aborted) return yield* reply(false, "The user stopped agents from using this computer.");
     if (!outcome.ok) return yield* reply(false, outcome.value.slice(0, 2_000));
@@ -307,13 +341,17 @@ export class RemoteComputerClient {
   /** The JSON text of the answer, small enough for the reply route. */
   readonly #run = Effect.fn("RemoteComputerClient.run")(function* (
     this: RemoteComputerClient,
+    serverId: string,
     event: RemoteComputerCallEvent,
     signal: AbortSignal,
   ): Effect.fn.Return<string, RemoteComputerClientError> {
+    if (event.operation === "call-tool" && TERMINAL_TOOL_NAMES.has(event.tool))
+      return yield* this.#runTerminal(serverId, event, signal);
     const connection = yield* this.#connect();
     const options = { signal, timeout: CALL_TIMEOUT_MS };
     if (event.operation === "list-tools") {
-      const tools = yield* this.#tools(connection, signal);
+      const driverTools = yield* this.#tools(connection, signal);
+      const tools = this.#terminalAllowed(serverId) ? [...driverTools, ...terminalTools()] : driverTools;
       const result: ListToolsResult = { tools };
       return JSON.stringify(result);
     }
@@ -351,12 +389,42 @@ export class RemoteComputerClient {
     return yield* this.#fit(result);
   });
 
+  /** One terminal tool, only while the terminal switch of that server is on. */
+  readonly #runTerminal = Effect.fn("RemoteComputerClient.runTerminal")(function* (
+    this: RemoteComputerClient,
+    serverId: string,
+    event: Extract<RemoteComputerCallEvent, { operation: "call-tool" }>,
+    signal: AbortSignal,
+  ): Effect.fn.Return<string, RemoteComputerClientError> {
+    if (!this.#terminalAllowed(serverId))
+      return yield* new RemoteComputerClientError({
+        cause: new Error("This computer does not let the agents of this server run commands or copy files."),
+      });
+    let input: unknown;
+    try {
+      input = JSON.parse(event.arguments);
+    } catch {
+      return yield* new RemoteComputerClientError({ cause: new Error("The tool arguments are not JSON.") });
+    }
+    if (!isDynamicRecord(input))
+      return yield* new RemoteComputerClientError({ cause: new Error("The tool arguments are not an object.") });
+    logger.info("An agent on a joined server uses the terminal of this computer.", {
+      tool: event.tool,
+      request: redactText(describeTerminalCall(event.tool, input)),
+    });
+    const result = yield* clientCall(() => this.#terminal.call(event.tool, input, signal));
+    return yield* this.#fit(result);
+  });
+
   /** The tool list without the blocked tools, read once for each connection. */
   #tools(connection: Connection, signal: AbortSignal): Effect.Effect<Tool[], RemoteComputerClientError> {
     if (connection.tools) return Effect.succeed(connection.tools);
     return clientCall(() => connection.client.listTools(undefined, { signal, timeout: CALL_TIMEOUT_MS })).pipe(
       Effect.map((result) => {
-        const tools = result.tools.filter((tool) => !BLOCKED_TOOLS.has(tool.name));
+        // A driver tool never takes the name of a terminal tool, so a name has one owner.
+        const tools = result.tools.filter(
+          (tool) => !BLOCKED_TOOLS.has(tool.name) && !TERMINAL_TOOL_NAMES.has(tool.name),
+        );
         connection.tools = tools;
         return tools;
       }),
@@ -470,7 +538,7 @@ export class RemoteComputerClient {
     let session = this.#sessions.get(serverId);
     const started = !session;
     if (!session) {
-      session = { serverName, startedAt: now, lastCallAt: now, running: 0, calls: new Set() };
+      session = { serverName, startedAt: now, lastCallAt: now, running: 0, calls: new Set(), terminalCalls: new Set() };
       this.#sessions.set(serverId, session);
     }
     session.serverName = serverName;
@@ -496,6 +564,7 @@ export class RemoteComputerClient {
     this.#sessions.delete(serverId);
     for (const controller of session.calls) controller.abort();
     session.calls.clear();
+    session.terminalCalls.clear();
     this.#emitSessions();
   }
 

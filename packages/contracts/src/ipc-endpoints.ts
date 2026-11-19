@@ -1143,6 +1143,9 @@ export const IPC_ENDPOINTS = {
     // stored on this computer and starts off.
     listRemoteServers: request<undefined, RemoteComputerServer[]>()("computer-use:list-remote-servers"),
     setRemoteServer: request<SetRemoteComputerServerInput, RemoteComputerServer[]>()("computer-use:set-remote-server"),
+    setRemoteTerminal: request<SetRemoteComputerServerInput, RemoteComputerServer[]>()(
+      "computer-use:set-remote-terminal",
+    ),
     remoteServers: event<RemoteComputerServer[]>()("computer-use:remote-servers"),
     // The servers whose agents use this computer now. Stop turns the switch of that server off.
     getRemoteSessions: request<undefined, RemoteComputerSession[]>()("computer-use:get-remote-sessions"),

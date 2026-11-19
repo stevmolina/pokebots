@@ -177,6 +177,7 @@ import { WEB_PUSH_NOTIFICATIONS_CAPABILITY } from "./push-notifications-web-v1";
 import { TEAM_QUEUE_EDIT_CAPABILITY } from "./queue-edit-v1";
 import { QUIET_TURN_CAPABILITY } from "./quiet-turn-v1";
 import { TEAM_REASONING_EFFORTS_CAPABILITY } from "./reasoning-efforts-v1";
+import { REMOTE_COMPUTER_TERMINAL_CAPABILITY } from "./remote-computer-terminal-v1";
 import { REMOTE_COMPUTER_USE_CAPABILITY } from "./remote-computer-use-v1";
 import { ROOMS_CAPABILITY } from "./rooms-v1";
 import { ROUTINE_FLOW_STOP_CAPABILITY } from "./routine-flow-stop-v1";
@@ -461,6 +462,7 @@ export {
   PUSH_NOTIFICATION_THREADS_CAPABILITY,
   PUSH_NOTIFICATIONS_CAPABILITY,
   QUIET_TURN_CAPABILITY,
+  REMOTE_COMPUTER_TERMINAL_CAPABILITY,
   REMOTE_COMPUTER_USE_CAPABILITY,
   ROOMS_CAPABILITY,
   ROUTINE_FLOW_STOP_CAPABILITY,
@@ -852,6 +854,7 @@ const TEAM_CAPABILITY_REGISTRY = [
   [BROWSER_COLOR_SCHEME_CAPABILITY, POKEBOTS],
   [COMPACT_RPC_CAPABILITY, POKEBOTS],
   [AGENT_TASK_SUBAGENTS_CAPABILITY, POKEBOTS],
+  [REMOTE_COMPUTER_TERMINAL_CAPABILITY, POKEBOTS],
 ] as const satisfies readonly (readonly [string, TeamCapabilityPlacement])[];
 
 export const TEAM_CURRENT_CAPABILITIES = TEAM_CAPABILITY_REGISTRY.map(([capability]) => capability);

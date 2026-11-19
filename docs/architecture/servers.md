@@ -878,6 +878,11 @@ request only. A host advertises it when it can give tools to its agents (`remote
 `TeamApiOptions`), and the capability is v9 only. Both routes are in `PASSIVE_ROUTES`. See
 [Computer Use](computer-use.md#a-members-own-computer-for-agents-on-a-server).
 
+`remote-computer-terminal-v1` adds no route or event. A host that advertises it hands its agents the
+command and file tools that the computer lists (`openbot_run_command`, `openbot_read_file_chunk`) and makes
+`openbot_fetch_file` itself. The app lists them only for a server whose terminal switch is on, and only for
+a host that advertises the capability. See [Computer Use](computer-use.md#terminal-and-file-copy-on-that-computer).
+
 ### Computer activity
 
 `computer-activity-v1` adds `POST /v1/client/activity` with `{ idleSeconds }`, the whole seconds since

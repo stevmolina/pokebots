@@ -55,4 +55,10 @@ export const messages = defineMessages("computerUse", {
   "computerUse.remote.error": "OpenBot could not change this setting.",
   "computerUse.remote.inUse": "An agent on {server} is using this computer",
   "computerUse.remote.stop": "Stop",
+  // Commands and file copies for those agents. A second switch, off until the user turns it on.
+  "computerUse.remote.terminalLabel": "Also let them run commands and copy files here",
+  "computerUse.remote.terminalSwitchLabel": "Let agents on {server} run commands and copy files on this computer",
+  "computerUse.remote.terminalHint":
+    "They run as you, with your files and logins. Each use shows in this window, and Stop ends it. It turns off when the first switch turns off.",
+  "computerUse.remote.terminalUnsupported": "This server needs an update to run commands here",
 });
