@@ -26,8 +26,11 @@ export const REMOTE_TERMINAL_FETCH_TOOL = "openbot_fetch_file";
 export const REMOTE_TERMINAL_CHUNK_BYTES = 393_216;
 /** The longest command, in UTF-16 units. */
 export const REMOTE_TERMINAL_COMMAND_MAX_LENGTH = 30_000;
-/** The longest time a command may run, in seconds. */
-export const REMOTE_TERMINAL_MAX_TIMEOUT_SECONDS = 600;
+/**
+ * The longest time a command may run, in seconds. A host stops waiting for any call after 180 s and
+ * the protocol has no cancel message, so a longer command would go on running with no one to hear it.
+ */
+export const REMOTE_TERMINAL_MAX_TIMEOUT_SECONDS = 170;
 /** The default time a command may run, in seconds. */
 export const REMOTE_TERMINAL_DEFAULT_TIMEOUT_SECONDS = 60;
 /** The largest file that the host copies, in bytes. */

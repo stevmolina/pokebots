@@ -276,12 +276,14 @@ the connection and the host's capability are all there, and only on macOS and Li
 Use grants: without them the app offers the computer for the terminal tools alone.
 
 - **`openbot_run_command`** (answered by `RemoteComputerTerminal`, not the driver). Runs `$SHELL -l -c`
-  as the user, in the home folder unless `cwd` is set, with a time limit (60 s, at most 600 s) and its
+  as the user, in the home folder unless `cwd` is set, with a time limit (60 s, at most 170 s) and its
   own process group. The process gets a small environment (`HOME`, `USER`, `PATH`, `LANG` and a few
   more, `TERM=dumb`), never the app's environment, which can hold OpenBot's keys. The answer has the
-  exit code, `stdout` and `stderr`; each stream keeps its first 40,000 and last 60,000 characters
+  exit code, `stdout` and `stderr`; each stream keeps its first 20,000 and last 30,000 characters
   after control characters are removed, so the reply fits the host's 1 MiB body. At most four commands
   run at once.
+  On macOS the shell is a child of this app, so macOS may apply this app's privacy grants (Files and
+  Folders, Full Disk Access) to the command; this has not been checked.
 - **`openbot_read_file_chunk`**. Up to 393,216 raw bytes of one file, as base64, with its size and
   modification time. Only a regular file of at most 2 GiB.
 - **`openbot_fetch_file`** (made by `RemoteComputerHost`, only when the computer lists the chunk tool

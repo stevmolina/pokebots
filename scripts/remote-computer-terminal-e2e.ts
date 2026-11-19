@@ -14,9 +14,10 @@
 // `bun scripts/remote-computer-terminal-e2e.ts`. Writes
 // .openbot-build/remote-computer-terminal-e2e/report.json.
 import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
 import { createHash, randomBytes } from "node:crypto";
 import { readFileSync } from "node:fs";
-import { mkdir, mkdtemp, readdir, readFile, realpath, rm, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readdir, readFile, realpath, rename, rm, symlink, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
@@ -34,7 +35,7 @@ import { OpenBotDatabase } from "../src/backend/openbot-database";
 import { NO_PROVIDER_CREDENTIALS } from "../src/backend/provider-drivers";
 import { RemoteComputerClient } from "../src/main/remote-computer-client";
 import { RemoteComputerHost } from "../src/main/remote-computer-host";
-import { RemoteComputerTerminal } from "../src/main/remote-computer-terminal";
+import { describeTerminalCall, RemoteComputerTerminal } from "../src/main/remote-computer-terminal";
 
 const OUT = resolve(import.meta.dirname, "../.openbot-build/remote-computer-terminal-e2e");
 const MEMBER = "member-1";
@@ -247,11 +248,25 @@ try {
 
   const big = JSON.parse((await run({ command: "yes abcdefghij | head -c 600000" })).text) as { stdout: string };
   assert.match(big.stdout, /characters omitted/u);
-  assert.ok(big.stdout.length < 101_000);
+  assert.ok(big.stdout.length < 51_000);
   // The worst case for the reply size: every character is escaped twice on the wire.
   const quotes = await run({ command: "head -c 400000 /dev/zero | tr '\\000' '\"'" });
   assert.equal(quotes.success, true);
   pass("a huge output keeps its start and end and still fits the reply");
+
+  const both = await run({
+    command: "head -c 400000 /dev/zero | tr '\\000' '\"'; head -c 400000 /dev/zero | tr '\\000' '\"' >&2",
+  });
+  assert.equal(both.success, true, `two streams full of quotes still fit the reply: ${both.text.slice(0, 300)}`);
+  const tooLong = await run({ command: "echo hi", timeout_seconds: 171 });
+  assert.equal(tooLong.success, false, "a time limit above what the host waits for is refused");
+  const grandchildFile = join(macHome, "pid-grandchild");
+  await run({ command: `sleep 60 & echo $! > '${grandchildFile}'; wait`, timeout_seconds: 1 });
+  const grandchild = await waitForPid(grandchildFile);
+  await waitFor(() => !alive(grandchild));
+  pass(
+    "both streams full of quotes fit, a limit above 170 s is refused, and a timeout also ends the command's children",
+  );
 
   // 5. A file copy. The agent ends with the file on the disk of the host.
   const fetchRecord = async (args: DynamicRecord) => mcp.callTool({ name: "openbot_fetch_file", arguments: args });
@@ -281,11 +296,43 @@ try {
     "a second copy gets a new name, an empty file works, a file name cannot leave the folder, a folder or missing file fails",
   );
 
+  // 5b. A named pipe must not freeze the app, and a link in place of the folder must not redirect a copy.
+  execFileSync("mkfifo", [join(macHome, "pipe")]);
+  const started = Date.now();
+  const pipeRead = await mcp.callTool({ name: "openbot_read_file_chunk", arguments: { path: "~/pipe" } });
+  assert.equal(pipeRead.isError, true);
+  assert.ok(Date.now() - started < 5_000, "a named pipe is refused at once, not opened");
+  const outside = join(root, "outside");
+  await mkdir(outside);
+  await rename(join(workspace, "from-mac"), join(workspace, "from-mac-real"));
+  await symlink(outside, join(workspace, "from-mac"));
+  const redirected = await fetchRecord({ path: "~/note.txt" });
+  assert.equal(redirected.isError, true);
+  assert.deepEqual(await readdir(outside), []);
+  await rm(join(workspace, "from-mac"));
+  await rename(join(workspace, "from-mac-real"), join(workspace, "from-mac"));
+  pass("a named pipe is refused without blocking, and a link where the copy folder should be sends nothing outside");
+
   // 6. A secret in a command never reaches the log line.
   const logged = redactText(
     "curl -H 'Authorization: Bearer sk-live-abcdefghijklmnopqrstuvwx' OPENAI_API_KEY=sk-abcdefghijklmnopqrstuvwxyz123456",
   );
   assert.ok(!logged.includes("abcdefghijklmnopqrstuvwx"));
+  const line = describeTerminalCall(
+    "openbot_run_command",
+    {
+      command: `${"x".repeat(170)} sk-live-abcdefghijklmnopqrstuvwx mysql -pHunter2 PGPASSWORD=abc curl -u bob:hunter2`,
+    },
+    redactText,
+  );
+  for (const secret of ["abcdefghijklmn", "Hunter2", "PGPASSWORD=abc", "bob:hunter2"])
+    assert.ok(!line.includes(secret), `the log line hides ${secret}`);
+  const late = describeTerminalCall(
+    "openbot_run_command",
+    { command: `${"y".repeat(60)} mysql -pHunter2 PGPASSWORD=abc curl -u bob:hunter2` },
+    redactText,
+  );
+  assert.ok(!/Hunter2|hunter2|PGPASSWORD=abc/u.test(late));
   pass("the redaction that the log line uses hides keys and bearers in a command");
 
   // 6b. Terminal only: no Computer Use grants on the Mac, so the driver is not ready.

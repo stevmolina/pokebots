@@ -419,7 +419,7 @@ export class RemoteComputerClient {
       return yield* new RemoteComputerClientError({ cause: new Error("The tool arguments are not an object.") });
     logger.info("An agent on a joined server uses the terminal of this computer.", {
       tool: event.tool,
-      request: redactText(describeTerminalCall(event.tool, input)),
+      request: describeTerminalCall(event.tool, input, redactText),
     });
     const result = yield* clientCall(() => this.#terminal.call(event.tool, input, signal));
     return yield* this.#fit(result);

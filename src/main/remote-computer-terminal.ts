@@ -1,5 +1,5 @@
 import { spawn } from "node:child_process";
-import { existsSync } from "node:fs";
+import { constants, existsSync } from "node:fs";
 import { open, realpath, stat } from "node:fs/promises";
 import { homedir } from "node:os";
 import { isAbsolute, join, resolve } from "node:path";
@@ -34,8 +34,8 @@ export function terminalAvailableHere(platform: NodeJS.Platform = process.platfo
 }
 
 const MAX_RUNNING = 4;
-const HEAD_CHARS = 40_000;
-const TAIL_CHARS = 60_000;
+const HEAD_CHARS = 20_000;
+const TAIL_CHARS = 30_000;
 const KILL_GRACE_MS = 2_000;
 const PIPE_GRACE_MS = 500;
 /** What survives of the app's own environment. The login shell adds the rest. */
@@ -51,7 +51,8 @@ export function terminalTools(): Tool[] {
       description:
         "Run one shell command on this computer, as its user, in a login shell. It starts in the home folder " +
         "unless `cwd` is set. The answer has the exit code, stdout and stderr; long output keeps its start and " +
-        "its end. A command that is still running at the time limit is stopped.",
+        `its end. A command still running at the time limit is stopped, and the limit is at most ${REMOTE_TERMINAL_MAX_TIMEOUT_SECONDS} seconds: ` +
+        "for longer work, start it in the background and read its output file later.",
       inputSchema: {
         type: "object",
         properties: {
@@ -260,7 +261,10 @@ export class RemoteComputerTerminal {
     }
     let handle: Awaited<ReturnType<typeof open>> | null = null;
     try {
-      handle = await open(resolved, "r");
+      // A named pipe or a device would block a thread of this app forever when opened, so only a
+      // regular file is opened, and without waiting for a writer.
+      if (!(await stat(resolved)).isFile()) return failure(`"${resolved}" is not a file.`);
+      handle = await open(resolved, constants.O_RDONLY | constants.O_NONBLOCK);
       const info = await handle.stat();
       if (!info.isFile()) return failure(`"${resolved}" is not a file.`);
       if (info.size > REMOTE_TERMINAL_MAX_FILE_BYTES) return failure("The file is too large to copy.");
@@ -354,10 +358,25 @@ function failure(message: string): CallToolResult {
   return { isError: true, content: [{ type: "text", text: message }] };
 }
 
-/** For the log: the tool and what it was asked to do, without the command's secrets being decided here. */
-export function describeTerminalCall(tool: string, input: unknown): string {
+/**
+ * For the log: the tool and what it was asked to do. The caller redacts the result with `redactText`
+ * first and cuts it after, so a key that straddles the cut is still hidden. Password flags and
+ * variables that no pattern knows are masked here.
+ */
+export function describeTerminalCall(tool: string, input: unknown, redact: (text: string) => string): string {
   if (!isDynamicRecord(input)) return tool;
-  if (tool === REMOTE_TERMINAL_RUN_TOOL && typeof input.command === "string") return input.command.slice(0, 200);
-  if (typeof input.path === "string") return input.path.slice(0, 200);
+  if (tool === REMOTE_TERMINAL_RUN_TOOL && typeof input.command === "string")
+    return cut(maskPasswords(redact(input.command)));
+  if (typeof input.path === "string") return cut(redact(input.path));
   return tool;
+}
+
+function cut(text: string): string {
+  return text.slice(0, 200);
+}
+
+function maskPasswords(text: string): string {
+  return text
+    .replace(/\b(\w*(?:PASSWORD|PASSWD|SECRET|TOKEN|API_?KEY)\w*)=\S+/giu, "$1=[redacted]")
+    .replace(/(--(?:password|passwd|token|secret)[= ]|sshpass\s+-p\s*|\s-u\s+[^\s:]+:|\s-p)\S+/giu, "$1[redacted]");
 }

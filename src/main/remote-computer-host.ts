@@ -1,5 +1,5 @@
 import { createHash, createHmac, randomBytes, randomUUID, timingSafeEqual } from "node:crypto";
-import { mkdir, open, unlink } from "node:fs/promises";
+import { lstat, mkdir, open, unlink } from "node:fs/promises";
 import { createServer, type Server as HttpServer, type IncomingMessage, type ServerResponse } from "node:http";
 import { basename, join } from "node:path";
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
@@ -607,6 +607,7 @@ export class RemoteComputerHost {
         path,
         requestedName,
         signal: stop.signal,
+        abort,
         chunk: (offset) => this.#chunk(computer, path, offset, stop.signal),
       }),
     );
@@ -740,7 +741,10 @@ function parseChunk(value: unknown, offset: number): FileChunk {
   )
     throw new Error("The computer sent a file chunk that is not valid.");
   const data = Buffer.from(value.data_base64, "base64");
-  if (data.length !== value.length) throw new Error("The computer sent a file chunk that is not valid.");
+  // A chunk is full unless it reaches the end of the file; a short one would leave a gap of zeros.
+  const expected = Math.max(0, Math.min(REMOTE_TERMINAL_CHUNK_BYTES, value.size - offset));
+  if (data.length !== value.length || value.length !== expected)
+    throw new Error("The computer sent a file chunk that is not valid.");
   return { size: value.size, mtimeMs: value.mtime_ms, length: value.length, eof: value.eof, data };
 }
 
@@ -765,9 +769,13 @@ async function copyFile(input: {
   requestedName: string | undefined;
   signal: AbortSignal;
   chunk: (offset: number) => Promise<FileChunk>;
+  /** Stops every chunk request of this copy. */
+  abort: () => void;
 }): Promise<CallToolResult> {
-  const { directory, path, signal, chunk } = input;
+  const { directory, path, signal, chunk, abort } = input;
   await mkdir(directory, { recursive: true });
+  // A link in the place of the folder would send the file somewhere else.
+  if (!(await lstat(directory)).isDirectory()) throw new Error("The folder for copied files is not a plain folder.");
   const first = await chunk(0);
   if (first.size > REMOTE_TERMINAL_MAX_FILE_BYTES) throw new Error("The file is too large to copy.");
   if (first.length === 0 && first.size > 0)
@@ -828,6 +836,8 @@ async function copyFile(input: {
     const report = { saved_to: target, bytes, sha256: digest.digest("hex"), source_path: path };
     return { content: [{ type: "text", text: JSON.stringify(report) }] };
   } catch (error) {
+    // The other chunk requests stop asking the computer, then the partial file goes.
+    abort();
     await file.close().catch(() => undefined);
     await unlink(target).catch(() => undefined);
     throw error;
