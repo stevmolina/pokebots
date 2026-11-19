@@ -97,6 +97,7 @@ import {
   readSavedAgentPicture,
   saveAgentPicture,
 } from "./web-agent-pictures";
+import { readCachedConversationPage, writeCachedConversationPage } from "./web-conversation-cache";
 import type { WebHostNotice } from "./web-host-connections";
 import { createWebHostLifecycle } from "./web-host-lifecycle";
 import { WebHostOtherTabError, type WebHostState } from "./web-host-lock";
@@ -1751,6 +1752,7 @@ export function createWebWorkspace(
       const page = await runtime.conversation(id, before);
       if (disposed || current !== generation) return;
       if (page.agentId !== id) throw new Error(currentText().t("webClient.error.otherConversation"));
+      if (!older && state.host) writeCachedConversationPage(props.accountId, state.host.hostId, id, page);
       setState((draft) => {
         const item = draft.conversations[id];
         if (!item) return;
@@ -2015,13 +2017,21 @@ export function createWebWorkspace(
         if (closed) trimToLatestPage(closed);
       }
       draft.selectedId = id;
+      const existing = draft.conversations[id];
+      const cachedPage =
+        !existing?.page && state.host ? readCachedConversationPage(props.accountId, state.host.hostId, id) : null;
       draft.conversations[id] ??= {
-        page: null,
+        page: cachedPage,
         draft: "",
         attachments: [],
-        loading: true,
+        loading: !cachedPage,
+        ...(cachedPage ? { trimmed: true } : {}),
       };
-      draft.conversations[id].loading = true;
+      if (cachedPage && !draft.conversations[id].page) {
+        draft.conversations[id].page = cachedPage;
+        draft.conversations[id].trimmed = true;
+      }
+      draft.conversations[id].loading = !draft.conversations[id].page;
       draft.conversations[id].error = null;
     });
     try {
