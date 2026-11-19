@@ -86,7 +86,7 @@ import { trackUsageLimitShown, usageLimitAskFrom } from "./usage-limit-ask";
  * rather than captured once.
  */
 
-export function WorkspaceConversation(props: { account: () => CentralAuthUser }) {
+export function WorkspaceConversation(props: { account: () => CentralAuthUser; onRetryHistory: () => void }) {
   const scopeIsCurrent = createScopeGuard();
   const serverScope = useServerScope();
   const platform = usePlatform();
@@ -634,6 +634,8 @@ export function WorkspaceConversation(props: { account: () => CentralAuthUser })
         firstUnreadMessageId={
           activeAgent() ? (conversations[activeAgent()?.id ?? ""]?.read?.firstUnreadMessageId ?? null) : null
         }
+        historyLoadError={conversations[activeAgent()?.id ?? ""]?.loadError}
+        onRetryHistory={props.onRetryHistory}
         loaded={activeAgent() ? conversations[activeAgent()?.id ?? ""]?.loaded === true : false}
         hasOlder={
           activeServerSupportsCapability("conversation-pagination") && activeAgent()

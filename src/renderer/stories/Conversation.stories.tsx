@@ -1353,6 +1353,23 @@ type Story = StoryObj<typeof meta>;
 
 export const RichConversation: Story = {};
 
+export const HistoryLoadFailure: Story = {
+  render: (storyArgs) => {
+    const [failed, setFailed] = createSignal(true);
+    return (
+      <MockedConversation
+        args={{
+          ...storyArgs,
+          get historyLoadError() {
+            return failed() ? currentText().t("server.connection.conversationFailed") : null;
+          },
+          onRetryHistory: () => setFailed(false),
+        }}
+      />
+    );
+  },
+};
+
 const contextStoryAgent = requireFixture(args.agent, "Context story agent");
 
 /** The real conversation composer receives the same numeric snapshot as the desktop host. */
