@@ -294,6 +294,7 @@ export interface TurnHooks {
   taskOpen(taskId: string): boolean;
   /** The error of a task turn. It shows in the task's panel, not in the agent's own chat. */
   taskFailed(taskId: string, message: string): void;
+  postAgentTaskResult(delivery: DeliveryContext, text: string): void;
   /**
    * A turn of the agent's own chat (`sideThreadId` null) or of its side thread ended. `counts` is true
    * for a completed turn that a person started, and `memoryCommitted` when the agent changed its
@@ -2327,6 +2328,13 @@ export class TurnLifecycle {
                 : null;
           yield* this.#mailbox.markTerminal(delivery.delivery.id, terminal, reason).pipe(toTurnOperationFailed);
           this.#mailboxSync.syncDeliveryMessage(snapshot, delivery.delivery.id);
+          if (delivery.agentTaskRequest)
+            this.#hooks.postAgentTaskResult(
+              delivery,
+              terminal === "completed"
+                ? (latestAssistant?.text ?? sourceText("status.agent.agentTaskNoResult"))
+                : (reason ?? sourceText("status.agent.agentTaskStopped")),
+            );
         }
         // A turn can start with the answers of several teammates. `#relayAgentResult` skips each one
         // that wants no answer, so only a teammate that asked for a result gets one.

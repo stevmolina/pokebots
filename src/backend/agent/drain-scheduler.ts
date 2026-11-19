@@ -103,6 +103,8 @@ export interface DrainHooks {
    * generic redaction: it does not know which values this machine's MCP servers were given.
    */
   redactMcp(text: string): string;
+  mayRunAgentTask(delivery: DeliveryContext): boolean;
+  postAgentTaskResult(delivery: DeliveryContext, text: string): void;
   /** The tabs and threads of this agent, as the tags of a delivered message name them. */
   /** `threadId` is the public thread that gets the prompt. */
   tagReferences(agentId: string, threadId: string | null): TagReferenceSource;
@@ -681,6 +683,12 @@ export class DrainScheduler {
     return completions.length > 0 ? Effect.all(completions, { discard: true }) : undefined;
   }
 
+  /** Waits for a specific task's drain to finish starting its provider turn. */
+  taskStart(agentId: string, taskId: string): Effect.Effect<void, DeliveryStartFailed> | undefined {
+    const start = this.#drainTasks.get(laneKey({ agentId, taskId }));
+    return start && Deferred.await(start);
+  }
+
   forgetAgent(agentId: string): void {
     const ofAgent = (key: string) => laneOf(key).agentId === agentId;
     for (const keys of [this.#drainingLanes, this.#scheduledDrains, this.#slotWaiters, this.#providerTurnHolds])
@@ -1134,6 +1142,8 @@ export class DrainScheduler {
           // between, and an endpoint removed during that wait finds the process still running. The
           // retry below calls this as well, so the recovered thread is checked too.
           yield* drainStep(requireServedModel);
+          if (context.agentTaskRequest && !this.#hooks.mayRunAgentTask(context))
+            return yield* new DeliveryStartFailed({ cause: new Error(sourceText("error.team.agentNotFound")) });
           return yield* this.#threads
             .requestWithArchivedThreadRecovery(
               agent,
@@ -1357,6 +1367,7 @@ export class DrainScheduler {
             }
           }
           yield* this.#mailbox.markTerminal(delivery.id, "failed", reason).pipe(toDeliveryStartFailed);
+          if (context.agentTaskRequest) this.#hooks.postAgentTaskResult(context, reason);
           // The provider did not read the answers that were to start with it, so they wait for the next turn.
           for (const { delivery: companion } of batch) {
             if (companion.id !== delivery.id)

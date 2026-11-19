@@ -83,7 +83,13 @@ import type { AgentComputerApi } from "../agent-computer/agent-computer-api";
 import { handleAgentComputerTool, isAgentComputerTool } from "../agent-computer/agent-computer-tools";
 import type { AgentTables } from "../agent-data/agent-tables";
 import type { AgentStore } from "../agent-store";
-import type { AgentTasks } from "../agent-tasks/agent-tasks";
+import {
+  type AgentTasks,
+  START_AGENT_TASK_TOOL,
+  STOP_AGENT_TASK_TOOL,
+  startAgentTaskToolSchema,
+  stopAgentTaskToolSchema,
+} from "../agent-tasks/agent-tasks";
 import { codingComputer } from "../agent-tasks/coding-computer";
 import type { AgentWaits } from "../agent-waits/agent-waits";
 import { attachmentCall, attachmentFailure } from "../attachment-effects";
@@ -469,6 +475,7 @@ export interface OpenBotToolRouterHooks {
   runsTurn(agentId: string): boolean;
   /** `false` when the turn no longer runs or `mayStop` refuses, so no stop was sent. */
   interrupt(agentId: string, turnId: string, mayStop: () => boolean): Effect.Effect<boolean, ToolOperationFailed>;
+  stopLaunchedTask(agentId: string, threadId: string, deliveryId: string): Effect.Effect<boolean, ToolOperationFailed>;
   /** Epoch milliseconds from the turn lifecycle; null when this process has not seen the event. */
   turnActivity(agentId: string, turnId: string | null): { startedAt: number | null; lastEventAt: number | null };
   /**
@@ -2050,6 +2057,8 @@ export class OpenBotToolRouter {
     }
 
     const executionThreadId = this.#conversation.publicThreadId(senderAgentId, params.threadId);
+    if (params.tool === START_AGENT_TASK_TOOL || params.tool === STOP_AGENT_TASK_TOOL)
+      return yield* this.#agentTaskTool(params, senderAgentId, executionThreadId);
     // Any agent can post on its own initiative, such as a routine that reports to a Discord channel,
     // and read a place that it names, such as a routine that summarizes a WhatsApp chat.
     if (isMessagingOutboundCall(params.tool, params.arguments))
@@ -3254,17 +3263,60 @@ export class OpenBotToolRouter {
 
   /**
    * The people who sent the messages of this turn, as their `senderMember` ids. A message with no
-   * sender is from a person on this computer who is signed out. A turn with no person's message, such
-   * as a routine run, has none.
+   * sender is from a person on this computer who is signed out. A launched task carries the IDs
+   * from the turn that launched it so the account tools still use the requester's permissions.
    */
   #turnRequesters(agentId: string, turnId: string): string[] {
     const ids = new Set<string>();
-    for (const { delivery } of this.#mailbox.findDeliveriesByTurn(agentId, turnId)) {
+    for (const { delivery, agentTaskRequest } of this.#mailbox.findDeliveriesByTurn(agentId, turnId)) {
+      for (const id of agentTaskRequest?.requesterIds ?? []) ids.add(id);
       if (delivery.sender.kind !== "user") continue;
       ids.add(this.#mailbox.senderMember(delivery.messageId)?.id ?? SIGNED_OUT_CHANNEL_MEMBER_ID);
     }
     return [...ids];
   }
+
+  readonly #agentTaskTool = Effect.fn("OpenBotToolRouter.agentTaskTool")(function* (
+    this: OpenBotToolRouter,
+    params: DynamicToolCallParams,
+    agentId: string,
+    threadId: string,
+  ) {
+    const taskId = this.#tasks.taskForThread(threadId);
+    const deliveries = this.#mailbox
+      .findDeliveriesByTurn(agentId, params.turnId)
+      .filter(({ delivery }) => this.#mailbox.taskIdForDelivery(delivery.id) === taskId);
+    const origin = deliveries[0]?.delivery;
+    // Channel and external messages have their own return paths. This tool returns to an agent chat.
+    if (
+      !origin ||
+      this.#channels.store.channelForThread(threadId) ||
+      this.#mailbox.turnServesExternalChat(agentId, params.turnId) ||
+      (this.#conversation.isExecutionThread(threadId) && taskId === null)
+    )
+      return openBotToolFailure("Use this tool in an OpenBot agent chat or side thread.");
+    const requesterIds = this.#turnRequesters(agentId, params.turnId);
+    if (params.tool === START_AGENT_TASK_TOOL) {
+      const parsed = startAgentTaskToolSchema.safeParse(params.arguments);
+      if (!parsed.success) return openBotToolFailure("Give a non-empty brief and an optional agentId.");
+      return yield* this.#tasks.launch(params, agentId, parsed.data, {
+        threadId,
+        turnId: params.turnId,
+        messageId: origin.id,
+        requesterIds,
+      });
+    }
+    const parsed = stopAgentTaskToolSchema.safeParse(params.arguments);
+    if (!parsed.success) return openBotToolFailure("Give the threadId returned by openbot.start_agent_task.");
+    const launch = this.#tasks.ownedLaunch(parsed.data.threadId, agentId, threadId, requesterIds);
+    if (!launch) return openBotToolFailure(sourceText("error.backend.threadNotFound"));
+    const stopped = yield* this.#hooks
+      .stopLaunchedTask(launch.delivery.recipientAgentId, parsed.data.threadId, launch.delivery.id)
+      .pipe(Effect.result);
+    if (Result.isFailure(stopped) || !stopped.success)
+      return openBotToolFailure(sourceText("error.backend.threadStillRunning"));
+    return openBotToolResult({ threadId: parsed.data.threadId, status: "stopped" });
+  }, Effect.uninterruptible);
 
   #computerAccount(agentId: string, turnId: string): { api: AgentComputerApi; memberId: string } | undefined {
     const [memberId, another] = this.#turnRequesters(agentId, turnId);
@@ -3277,7 +3329,11 @@ export class OpenBotToolRouter {
   #fromRemoteMember(agentId: string, turnId: string): boolean {
     return this.#mailbox
       .findDeliveriesByTurn(agentId, turnId)
-      .some(({ delivery }) => this.#remoteMember(delivery.messageId));
+      .some(
+        ({ delivery, agentTaskRequest }) =>
+          this.#remoteMember(delivery.messageId) ||
+          agentTaskRequest?.requesterIds.some((id) => this.#channels.hooks.remotePerson?.(id)),
+      );
   }
 
   /** Adds the note that an agent changed the Vault. `text` names the item, never a secret. */

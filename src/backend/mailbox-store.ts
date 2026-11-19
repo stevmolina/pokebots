@@ -65,6 +65,15 @@ const FAILED_REQUEST_REASON_LIMIT = 2_000;
 const FAILED_REQUEST_KEY_PREFIX = "failed-request:";
 /** The key of the result that OpenBot relays when a requested turn ends. Stored keys use it. */
 export const AUTO_RESULT_KEY_PREFIX = "auto-result:";
+
+/** Host-only return address and member permissions for a brief sent by start_agent_task. */
+export interface AgentTaskRequest {
+  threadId: string;
+  turnId: string;
+  messageId: string;
+  requesterIds: string[];
+}
+
 /** A welcome in these states is still to come, so the queue reports it (`QueueSnapshot.welcome`). */
 const WELCOME_PENDING_STATUSES: ReadonlySet<QueueDeliveryStatus> = new Set(["queued", "starting", "running"]);
 /**
@@ -81,6 +90,7 @@ export interface MessagingOrigin {
 }
 
 interface StoredMessage {
+  agentTaskRequest?: AgentTaskRequest;
   channelId?: string | undefined;
   messaging?: MessagingOrigin;
   /**
@@ -209,6 +219,7 @@ interface StoredReaction {
 }
 
 interface EnqueueInput {
+  agentTaskRequest?: AgentTaskRequest;
   /** This request asks Claude for one claude.ai artifact. */
   createArtifact?: boolean;
   channelId?: string;
@@ -249,6 +260,7 @@ export interface MailboxStoredFile {
 
 export interface DeliveryContext {
   delivery: QueueDelivery;
+  agentTaskRequest?: AgentTaskRequest;
   managedAttachments: Array<AttachmentSummary & { path: string }>;
   resumeAfterUsageLimit?: UsageLimitContinuation;
   planContinuation?: PlanContinuationMarker;
@@ -728,6 +740,7 @@ export class MailboxStore {
       const committedByDraftId = new Map(drafts.map((draft, index) => [draft.id, attachments[index]] as const));
       const messaging = input.messaging ?? this.#answerReturn(input, recipients);
       const message: StoredMessage = {
+        ...(input.agentTaskRequest ? { agentTaskRequest: input.agentTaskRequest } : {}),
         ...(input.channelId === undefined ? {} : { channelId: input.channelId }),
         ...(messaging ? { messaging } : {}),
         ...(input.messagingReturn ? { messagingReturn: input.messagingReturn } : {}),
@@ -1581,7 +1594,7 @@ export class MailboxStore {
     let completedCount = 0;
     for (let index = this.#state.messages.length - 1; index >= 0; index -= 1) {
       const message = this.#state.messages[index];
-      if (!message || message.channelId || message.messaging) continue;
+      if (!message || message.channelId || message.messaging || message.agentTaskRequest) continue;
       const ownMessage = message.sender.kind === "agent" && message.sender.agentId === agentId;
       // A task message runs in a side thread of its recipient. A teammate's answer to that thread
       // still shows in the teammate's own chat; the brief of a thread the agent started does not.
@@ -2012,6 +2025,13 @@ export class MailboxStore {
 
   getDelivery(deliveryId: string): DeliveryContext | null {
     const delivery = this.#state.deliveries.find((candidate) => candidate.id === deliveryId);
+    return delivery ? this.#context(delivery) : null;
+  }
+
+  /** The original brief of a launched task, even after its delivery ends. */
+  launchedTaskDelivery(taskId: string): DeliveryContext | null {
+    const request = this.#state.messages.find((message) => message.taskId === taskId && message.agentTaskRequest);
+    const delivery = request && this.#state.deliveries.find((item) => item.messageId === request.id);
     return delivery ? this.#context(delivery) : null;
   }
 
@@ -3563,6 +3583,7 @@ export class MailboxStore {
     const message = this.#requireMessage(delivery.messageId, messages);
     return {
       delivery: this.#publicDelivery(delivery, positions, message),
+      ...(message.agentTaskRequest ? { agentTaskRequest: message.agentTaskRequest } : {}),
       ...(delivery.resumeAfterUsageLimit ? { resumeAfterUsageLimit: delivery.resumeAfterUsageLimit } : {}),
       ...(delivery.planContinuation ? { planContinuation: delivery.planContinuation } : {}),
       ...(message.channelId ? { channelId: message.channelId } : {}),
@@ -3972,6 +3993,13 @@ function messageFiles(message: StoredMessage): StoredAttachment[] {
 function isStoredMessage(value: unknown): value is StoredMessage {
   return (
     isRecord(value) &&
+    (value.agentTaskRequest === undefined ||
+      (isRecord(value.agentTaskRequest) &&
+        isString(value.agentTaskRequest.threadId) &&
+        isString(value.agentTaskRequest.turnId) &&
+        isString(value.agentTaskRequest.messageId) &&
+        Array.isArray(value.agentTaskRequest.requesterIds) &&
+        value.agentTaskRequest.requesterIds.every(isString))) &&
     (value.channelId === undefined || isString(value.channelId)) &&
     (value.messaging === undefined || isMessagingOrigin(value.messaging)) &&
     (value.messagingReturn === undefined || isMessagingOrigin(value.messagingReturn)) &&
