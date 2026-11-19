@@ -39,6 +39,8 @@ export interface AgentClient {
    * instructions, and the provider's cached prefix with them.
    */
   readonly turnContext?: boolean;
+  /** Home rule directories the provider already loads with its active configuration. */
+  readonly nativeHomeRuleDirectories?: (cwd: string) => Effect.Effect<readonly string[]>;
   /**
    * True when the client gives the model the `note` of an `item/tool/requestUserInput` result, such
    * as the note that the user wrote a new message instead of answering. Optional, because Codex sends

@@ -80,6 +80,10 @@ import {
 } from "@openbot/contracts/team-protocol/current";
 import { DISCORD_ACCESS_CAPABILITY } from "@openbot/contracts/team-protocol/discord-access-v1";
 import { EVENTS_CAPABILITY } from "@openbot/contracts/team-protocol/events-v1";
+import {
+  decodeHomeAgentRulesResponse,
+  HOME_AGENT_RULES_ROUTES,
+} from "@openbot/contracts/team-protocol/home-agent-rules-v1";
 import { HOST_PERSONALITY_CAPABILITY } from "@openbot/contracts/team-protocol/host-personality-v1";
 import { HOST_RELEASE_CAPABILITY } from "@openbot/contracts/team-protocol/host-release-v1";
 import { HOST_RESTART_CAPABILITY } from "@openbot/contracts/team-protocol/host-restart-v1";
@@ -310,6 +314,7 @@ import { saveRemoteFrameChannels } from "../servers/remote-workspace-frame";
 import type { HostAgentDefaultsCalls } from "../servers/ServerAgentsSection";
 import type { HostServerAuditCalls } from "../servers/ServerAuditSection";
 import type { HostBrowsingMemoryCalls } from "../servers/ServerBrowsingMemorySetting";
+import type { HostHomeAgentRulesCalls } from "../servers/ServerHomeAgentRulesSetting";
 import type { HostMemoryLimitCalls } from "../servers/ServerMemoryLimitSetting";
 import type { HostMemoryReviewCalls } from "../servers/ServerMemoryReviewSetting";
 import type { HostAgentAccessCalls } from "../servers/ServerRolesSection";
@@ -1961,6 +1966,15 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
       runTeamEffect(getHostPromptCacheTtl(hostRequest(serverId)).pipe(Effect.mapError((error) => error.cause))),
     setPromptCacheTtl: async (ttl, serverId) =>
       runTeamEffect(setHostPromptCacheTtl(hostRequest(serverId), ttl).pipe(Effect.mapError((error) => error.cause))),
+  };
+  const hostHomeAgentRulesCalls: HostHomeAgentRulesCalls = {
+    getHomeAgentRules: (serverId) =>
+      hostRequest(serverId)("POST", HOME_AGENT_RULES_ROUTES.settings, decodeHomeAgentRulesResponse, {}),
+    setHomeAgentRules: (preference, serverId) =>
+      hostRequest(serverId)("POST", HOME_AGENT_RULES_ROUTES.update, decodeHomeAgentRulesResponse, {
+        enabled: preference.enabled,
+        files: preference.files,
+      }),
   };
   const hostClaudeUserSetupCalls: HostClaudeUserSetupCalls = {
     getClaudeUserSetup: (serverId) =>
@@ -4176,6 +4190,7 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                         skillLearning={{ calls: hostSkillLearningCalls }}
                         browsingMemory={{ calls: hostBrowsingMemoryCalls }}
                         hostPromptCacheTtl={{ calls: hostPromptCacheTtlCalls }}
+                        homeAgentRules={hostHomeAgentRulesCalls}
                         claudeUserSetup={{ calls: hostClaudeUserSetupCalls }}
                         claudeAiTools={{ calls: hostClaudeAiToolsCalls }}
                         claudeCompactWindow={{ calls: hostClaudeCompactWindowCalls }}

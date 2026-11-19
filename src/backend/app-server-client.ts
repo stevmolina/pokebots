@@ -1,6 +1,9 @@
 import { type ChildProcessWithoutNullStreams, spawn } from "node:child_process";
 import { randomUUID } from "node:crypto";
 import { EventEmitter } from "node:events";
+import { access } from "node:fs/promises";
+import { homedir } from "node:os";
+import { join } from "node:path";
 import { agentProviderName } from "@openbot/contracts/ipc";
 import { type DynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
 import { sourceText } from "@openbot/i18n/source";
@@ -172,6 +175,28 @@ export class CodexAppServerClient extends EventEmitter<ClientEvents> {
    * new session, which writes the full conversation to the cache again.
    */
   readonly turnContext = true;
+  readonly nativeHomeRuleDirectories = Effect.fn("CodexAppServer.nativeHomeRuleDirectories")(function* (
+    this: CodexAppServerClient,
+    cwd: string,
+  ) {
+    const agents = join(homedir(), ".agents");
+    const script = join(agents, "hooks", "rules-session.py");
+    const exists = yield* Effect.tryPromise(() => access(script)).pipe(
+      Effect.as(true),
+      Effect.orElseSucceed(() => false),
+    );
+    if (!exists) return [];
+    // Use the running account's effective hook metadata, including its trust state. Older
+    // app-servers have no hooks/list and take the host fallback.
+    const loadsRules = yield* this.request(
+      "hooks/list",
+      { cwds: [cwd] },
+      (value) => hasTrustedRulesHook(value, script),
+      1_000,
+    ).pipe(Effect.orElseSucceed(() => false));
+    return loadsRules ? [join(agents, "rules")] : [];
+  }).bind(this);
+
   readonly modelAddressVariable?: string;
   /**
    * Kept by thread across process restarts: a resumed thread holds the blocks that it was sent.
@@ -1166,6 +1191,27 @@ interface HistoryTurnPage {
 interface HistoryItemPage {
   data: Array<{ turnId: string; item: ThreadItem }>;
   nextCursor: string | null;
+}
+
+/** The shared-folder installer's unfiltered Codex session hook loads the same rule files. */
+function hasTrustedRulesHook(value: unknown, script: string): boolean {
+  if (!isRecord(value) || !Array.isArray(value.data)) return false;
+  return value.data.some(
+    (row) =>
+      isRecord(row) &&
+      Array.isArray(row.hooks) &&
+      row.hooks.some(
+        (hook) =>
+          isRecord(hook) &&
+          hook.source === "user" &&
+          hook.eventName === "sessionStart" &&
+          hook.handlerType === "command" &&
+          hook.enabled === true &&
+          hook.trustStatus === "trusted" &&
+          hook.matcher === null &&
+          hook.command === `python3 '${script}' codex`,
+      ),
+  );
 }
 
 /** The environment of the Codex process. Windows compares variable names without case. */

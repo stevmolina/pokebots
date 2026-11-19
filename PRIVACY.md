@@ -134,6 +134,10 @@ except a side thread of the same agent that the agent names by its task id.
 A user can tag a browser tab or a side thread of the agent in a message. When OpenBot delivers the
 message, it sends the provider the tab's title and address, or the thread's title, state, and the start
 of its last answer. Card numbers and known secrets are removed first.
+When the host owner enables Host rules, OpenBot sends selected rule text from the host's
+`~/.agents/rules` folder to the providers its agents use. The Team API sends only the file names
+and setting flags. Keep credentials out of rule files. Providers can retain text they already
+received after the owner turns this setting off.
 "Use claude.ai tools" (Settings > Providers > Claude, off by default) lets the Claude agents of a server use
 the Artifact tools and the claude.ai connectors of the Claude account that the server's Claude Code is signed in to.
 When it is on, an agent can send content that it chooses to that claude.ai account, as a published page, or to a

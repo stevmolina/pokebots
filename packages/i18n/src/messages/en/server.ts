@@ -483,6 +483,12 @@ export const messages = defineMessages("server", {
   "server.settings.skillLearningOff": "Off",
   "server.settings.skillLearningLoadFailed": "Could not load the skill learning setting.",
   "server.settings.browsingMemory": "Learn from my browsing",
+  "server.settings.homeAgentRules": "Host rules",
+  "server.settings.homeAgentRulesEnable": "Use selected host rules",
+  "server.settings.homeAgentRulesDescription":
+    "OpenBot sends selected files from ~/.agents/rules on this server to the providers used by its agents. Enable only files you want these agents to read.",
+  "server.settings.homeAgentRulesMissing": "File unavailable on this server.",
+  "server.settings.homeAgentRulesLoadFailed": "Could not load host rules.",
   "server.settings.browsingMemoryDescription":
     "When you control an agent's browser, the agent learns how sites work from the pages and buttons you use. Typed text is not kept.",
   "server.settings.browsingMemoryLoadFailed": "Could not load the browsing setting.",

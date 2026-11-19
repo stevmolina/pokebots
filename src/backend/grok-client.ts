@@ -18,6 +18,19 @@ import { type AccountRateLimitsReadResult, getRecord, getString, isRecord } from
 import { providerCall } from "./provider-client-effects";
 
 export class GrokAgentClient extends AcpAgentClient {
+  readonly #agentEnvironment: (() => Readonly<Record<string, string>>) | undefined;
+
+  nativeHomeRuleDirectories(): Effect.Effect<readonly string[]> {
+    return Effect.sync(() => {
+      const env = { ...process.env, ...this.#agentEnvironment?.() };
+      const home = homedir();
+      const grokHome = grokHomeDirectory(env, home);
+      const directories = [join(grokHome, "rules")];
+      if (loadsGrokClaudeRules(env, grokHome)) directories.push(join(home, ".claude", "rules"));
+      return directories;
+    });
+  }
+
   constructor(
     cli: GrokCliInfo,
     requestTimeoutMs = 30_000,
@@ -82,6 +95,7 @@ export class GrokAgentClient extends AcpAgentClient {
         providerCall(() => connection.extMethod("_x.ai/billing", {})).pipe(Effect.map(grokRateLimits)),
       steer,
     });
+    this.#agentEnvironment = agentEnvironment;
   }
 }
 
@@ -193,6 +207,16 @@ function readOptionalFile(file: string): string | null {
     if (isMissingFileError(error)) return null;
     throw error;
   }
+}
+
+/** Grok reads Claude rules by default, independently of its Claude skills switch. */
+function loadsGrokClaudeRules(env: NodeJS.ProcessEnv, grokHome: string): boolean {
+  const override = env.GROK_CLAUDE_RULES_ENABLED?.trim().toLowerCase();
+  if (override) return ["1", "true", "yes", "on"].includes(override);
+  const layers = grokConfigLayers(env, grokHome);
+  if (!layers) return false;
+  const setting = layers.findLast((layer) => hasConfigKey(layer, "compat.claude.rules"));
+  return setting ? getRecord(getRecord(setting, "compat"), "claude")?.rules === true : true;
 }
 
 /** Whether a config layer sets a dotted key, such as `features.turn_summary`. */

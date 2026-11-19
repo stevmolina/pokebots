@@ -861,6 +861,13 @@ const CLAUDE_LISTED_MODELS = new Set<string>();
 export class ClaudeAgentClient extends EventEmitter<ClientEvents> {
   readonly contextCompaction = "native";
   readonly turnContext = true;
+  nativeHomeRuleDirectories(): Effect.Effect<readonly string[]> {
+    return Effect.sync(() => {
+      if (!this.#userSetup()) return [];
+      const config = this.#agentEnvironment?.().CLAUDE_CONFIG_DIR ?? process.env.CLAUDE_CONFIG_DIR;
+      return [join(config ?? join(homedir(), ".claude"), "rules")];
+    });
+  }
   readonly userInputNote = true;
   #queryRestarts = 0;
   readonly provider: AgentProvider = "claude";

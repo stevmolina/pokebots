@@ -135,6 +135,7 @@ export const messages = defineMessages("error.team", {
   "error.team.skillLearningUnsupported": "Skill learning is not supported by this connection.",
   "error.team.browsingMemoryUnsupported": "Learning from browsing is not supported by this connection.",
   "error.team.promptCacheTtlUnsupported": "The prompt cache time is not supported by this connection.",
+  "error.team.homeAgentRulesUnsupported": "This server does not support host agent rules.",
   "error.team.claudeUserSetupUnsupported": "This connection does not support the Claude Code setup switch.",
   "error.team.claudeAiToolsUnsupported": "This connection does not support the claude.ai tools switch.",
   "error.team.claudeCompactWindowUnsupported": "This connection does not support the Claude compaction size.",

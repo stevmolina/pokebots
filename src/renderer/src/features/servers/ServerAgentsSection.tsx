@@ -7,6 +7,7 @@ import {
   type OpenBotDesktopApi,
   type UpdateAgentDefaultsInput,
 } from "@openbot/contracts/ipc";
+import { HOME_AGENT_RULES_CAPABILITY } from "@openbot/contracts/team-protocol/home-agent-rules-v1";
 import { Alert, AlertContent, AlertDescription, ItemGroup, SettingsSection } from "@openbot/ui";
 import type { RoleAgent } from "@openbot/ui/features/servers/ServerRoles";
 import {
@@ -18,9 +19,10 @@ import { currentText, useText } from "@openbot/ui/text";
 import type { JSX } from "@solidjs/web";
 import { createEffect, createStore, onSettled, Show, untrack } from "solid-js";
 import { actionToast } from "../../action-toast";
+import { ServerHomeAgentRulesSetting } from "./ServerHomeAgentRulesSetting";
 import { ServerTimezoneSetting } from "./ServerTimezoneSetting";
 import { ServerTurnLimitsSetting } from "./ServerTurnLimitsSetting";
-import { serverCanAdminister, serverHasAgentDefaults } from "./server-capabilities";
+import { serverCanAdminister, serverHasAgentDefaults, serverSupportsCapability } from "./server-capabilities";
 import type { ServerSettingsSectionHost } from "./server-settings-section";
 
 /** The agent default calls of one server's host. The desktop reaches them through main. */
@@ -113,7 +115,14 @@ export function createServerAgentsSection(
     serverCanAdminister(props.server, "host-timezone-v1") && actionsAvailable() ? props.hostTimezone : undefined;
   const turnLimits = () =>
     serverCanAdminister(props.server, "host-turn-limits-v1") && actionsAvailable() ? props.hostTurnLimits : undefined;
-  const available = () => defaultsAvailable() || Boolean(timezone() || turnLimits());
+  const homeRules = () => {
+    const server = props.server;
+    if (!props.homeAgentRules || !actionsAvailable()) return undefined;
+    if (local() || (server.role === "owner" && serverSupportsCapability(server, HOME_AGENT_RULES_CAPABILITY)))
+      return server.id;
+    return undefined;
+  };
+  const available = () => defaultsAvailable() || Boolean(timezone() || turnLimits() || homeRules());
 
   function load(serverId: string): void {
     const options = props.agentDefaults;
@@ -271,6 +280,13 @@ export function createServerAgentsSection(
               </Show>
             </ItemGroup>
           </SettingsSection>
+        </Show>
+        <Show when={!state.setting && props.open && visible() && homeRules()} keyed>
+          {(serverId) => (
+            <Show when={props.homeAgentRules}>
+              {(calls) => <ServerHomeAgentRulesSetting calls={calls()} serverId={serverId} />}
+            </Show>
+          )}
         </Show>
         <Show when={defaultsAvailable()}>
           <AgentDefaults />

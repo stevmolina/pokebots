@@ -94,6 +94,7 @@ import type { BitwardenConnectorService } from "../bitwarden-connector-service";
 import type { BrowserViewGateway } from "../browser-view-gateway";
 import type { GitHubConnectorService } from "../github-connector-service";
 import type { HermesImportService } from "../hermes-import-service";
+import type { HomeAgentRulesControl } from "../home-agent-rules-preference-store";
 import type { HostedSiteDesktopService } from "../hosted-site-service";
 import type { InstanceTransferService } from "../instance-transfer-service";
 import type { McpToolRuntimePreparation } from "../ipc/mcp-server-handlers";
@@ -615,6 +616,7 @@ export interface TeamApiAdmin {
   promptCacheTtl?: Pick<PromptCacheTtlPreferenceStore, "get" | "set">;
   /** `claude-user-setup-v1`: whether this computer's Claude agents load the Claude Code setup of its user. */
   claudeUserSetup?: ClaudeUserSetupControl;
+  homeAgentRules?: HomeAgentRulesControl;
   /** `claude-ai-tools-v1`: whether this computer's Claude agents get the claude.ai tools of its Claude sign-in. */
   claudeAiTools?: ClaudeAiToolsControl;
   /** `claude-compact-window-v1`: the size at which Claude Code compacts the chats of this computer's agents. */
