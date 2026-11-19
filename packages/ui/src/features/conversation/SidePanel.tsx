@@ -434,7 +434,7 @@ function SidePanelTabRow(
     ...threads().map((thread) => ({
       value: `${THREAD_VALUE}${thread.id}`,
       label: thread.title,
-      icon: () => <ThreadTabIcon status={thread.status} unread={thread.unread} />,
+      icon: () => <ThreadTabIcon status={thread.status} unread={thread.unread} title={thread.title} />,
       select: () => props.threads?.onSelect(thread.id),
     })),
     ...files().map((file) => ({
@@ -725,7 +725,7 @@ function SidePanelTabRow(
                   onKeyDown={(event) => onTabKeyDown(event, value(), close)}
                 >
                   <span class="side-panel-tab-glyph">
-                    <ThreadTabIcon status={thread().status} unread={thread().unread} />
+                    <ThreadTabIcon status={thread().status} unread={thread().unread} title={thread().title} />
                   </span>
                   <span class="side-panel-tab-label">{thread().title}</span>
                   <ThreadStatusText status={thread().status} unread={thread().unread} />
