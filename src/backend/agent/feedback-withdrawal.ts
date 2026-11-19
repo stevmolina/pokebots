@@ -67,8 +67,7 @@ export class FeedbackWithdrawal {
     const issue = target && feedbackSentIssue(target.message);
     if (!target || !issue) return { status: "notFound" };
     if (issue.withdrawn) return { status: "withdrawn" };
-    if (issue.repository !== FEEDBACK_REPOSITORY) return { status: "unavailable" };
-    return yield* this.withdraw(input.agentId, target.threadId, issue.number, target);
+    return yield* this.withdraw(input.agentId, target.threadId, issue, target);
   });
 
   /**
@@ -79,9 +78,11 @@ export class FeedbackWithdrawal {
     this: FeedbackWithdrawal,
     agentId: string,
     threadId: string,
-    number: number,
+    issue: { number: number; repository: string },
     card?: CardTarget,
   ): Effect.fn.Return<FeedbackWithdrawResult, ToolOperationFailed> {
+    const { repository, number } = issue;
+    if (repository !== FEEDBACK_REPOSITORY) return { status: "unavailable" };
     if (!this.#feedback) return { status: "signedOut" };
     const result = yield* this.#feedback.withdraw(number);
     if (result.status === "withdrawn")

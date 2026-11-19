@@ -857,7 +857,13 @@ export const OPENBOT_TOOL_DEFINITIONS: readonly OpenBotToolDefinition[] = [
     name: "withdraw_feedback",
     description:
       "Remove a report that the user sent from GitHub, when they ask. The user approves first. To correct one, remove it, then send it again.",
-    shape: { issue: z.number().int().min(1).describe("Its issue number.") },
+    shape: {
+      issue: z.number().int().min(1).describe("Its issue number."),
+      repository: z
+        .string()
+        .optional()
+        .describe("The exact owner/name from the report's GitHub link. Required for Pokebots reports."),
+    },
   },
   {
     name: "react_to_user_message",

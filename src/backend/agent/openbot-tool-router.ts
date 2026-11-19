@@ -17,6 +17,7 @@ import {
   bugReportProviderFacts,
   FEATURE_REQUEST_TYPES,
   FEEDBACK_LIMITS,
+  FEEDBACK_REPOSITORY,
   FEEDBACK_SURFACES,
   type Feedback,
   type FeedbackFacts,
@@ -26,6 +27,7 @@ import {
   feedbackNeedsPhone,
   feedbackPreview,
   feedbackSentItemType,
+  LEGACY_FEEDBACK_REPOSITORY,
   mobileBugReportFormUrl,
   parseFeedback,
   type SimilarFeedbackIssue,
@@ -1663,6 +1665,12 @@ export class OpenBotToolRouter {
   ): Effect.fn.Return<OpenBotToolResponse, ToolOperationFailed> {
     const issue = isRecord(params.arguments) ? params.arguments.issue : undefined;
     if (!isIssueNumber(issue)) return openBotToolFailure("issue must be the number of a sent report.");
+    const repository = isRecord(params.arguments) ? params.arguments.repository : undefined;
+    const targetRepository = repository ?? LEGACY_FEEDBACK_REPOSITORY;
+    if (targetRepository !== FEEDBACK_REPOSITORY)
+      return openBotToolFailure(
+        `Ask for the report's GitHub link. This account service can only remove reports in ${FEEDBACK_REPOSITORY}.`,
+      );
     const withdrawal = this.#feedbackWithdrawal;
     if (!withdrawal || !this.#feedback?.signedIn())
       return openBotToolFailure(
@@ -1682,7 +1690,7 @@ export class OpenBotToolRouter {
         threadId,
         turnId: params.turnId,
         kind: "permissions",
-        command: sourceText("status.agent.feedbackWithdrawCommand", { issue: String(issue) }),
+        command: `${sourceText("status.agent.feedbackWithdrawCommand", { issue: String(issue) })} (${targetRepository})`,
         cwd: null,
         reason: sourceText("status.agent.feedbackWithdrawReason"),
         grantRoot: null,
@@ -1701,7 +1709,7 @@ export class OpenBotToolRouter {
         status: "declined",
         next: "The user selected Not now. The report is still on GitHub. Do not remove it another way.",
       });
-    const result = yield* withdrawal.withdraw(senderAgentId, threadId, issue);
+    const result = yield* withdrawal.withdraw(senderAgentId, threadId, { number: issue, repository: targetRepository });
     switch (result.status) {
       case "withdrawn":
         return openBotToolResult({
