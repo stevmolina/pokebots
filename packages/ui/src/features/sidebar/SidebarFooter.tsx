@@ -100,8 +100,8 @@ export function SidebarProfileMenu(props: {
           <span class="sidebar-footer-meta">
             <span class="sidebar-footer-name">{name()}</span>
             <span class="sidebar-footer-sub">
-              {sidebar.machineChips && sidebar.machineChips.chosen === null
-                ? t("files.type.all")
+              {sidebar.serverMenu?.allMachines?.active || (sidebar.machineChips && sidebar.machineChips.chosen === null)
+                ? t("server.allMachines.title")
                 : (active()?.name ?? sidebar.serverName)}
             </span>
           </span>
@@ -149,14 +149,18 @@ export function SidebarProfileMenu(props: {
                   </Show>
                 </div>
                 <div class="sidebar-footer-machines-grid">
-                  <Show when={menu().servers.length > 1 && sidebar.machineChips}>
-                    {(chips) => {
-                      const allSelected = () => chips().chosen === null;
+                  <Show when={menu().servers.length > 1 && (menu().allMachines || sidebar.machineChips)}>
+                    {(() => {
+                      const allSelected = () =>
+                        menu().allMachines?.active === true || sidebar.machineChips?.chosen === null;
                       return (
                         <DropdownMenu.Item
                           class="sidebar-footer-machine-tile"
                           data-active={allSelected() ? "" : undefined}
-                          onSelectAfterClose={() => chips().onChoose(null)}
+                          onSelectAfterClose={() => {
+                            if (menu().allMachines) menu().allMachines?.onSelect();
+                            else sidebar.machineChips?.onChoose(null);
+                          }}
                         >
                           <span class="sidebar-footer-machine-icon" aria-hidden="true">
                             <LayoutGrid class="size-3.5" />
@@ -167,11 +171,12 @@ export function SidebarProfileMenu(props: {
                           </Show>
                         </DropdownMenu.Item>
                       );
-                    }}
+                    })()}
                   </Show>
                   <For each={menu().servers} keyed={(server) => server.id}>
                     {(server) => {
-                      const allSelected = () => sidebar.machineChips?.chosen === null;
+                      const allSelected = () =>
+                        menu().allMachines?.active === true || sidebar.machineChips?.chosen === null;
                       const selected = () => !allSelected() && server().active;
                       const isOnline = () => server().state === "online";
                       return (

@@ -526,6 +526,7 @@ export interface WebWorkspaceRuntime {
    * answered on its connection.
    */
   hostCapabilities?: (hostId: string) => readonly string[] | null;
+  hostAgentsByHost?: () => Record<string, ClientAgentSummary[]>;
   /**
    * Posts one Web Push registration request (`push-notifications-web-v1`) to a host: the open host, or a
    * host with a status connection. Rejects while the host has no connection.
@@ -584,6 +585,7 @@ export interface WebRuntimeEvents {
   accountChanged(): Promise<void>;
   /** The state of a host this tab has not opened. */
   hostState?(hostId: string, state: WebHostState): void;
+  hostAgentsChanged?(hostId: string, agents: ClientAgentSummary[]): void;
   /** A host that this tab has not opened revoked its session. */
   hostSessionRevoked?(): void;
   /** Another tab took the host that this tab has open. The runtime closes it after this call. */
@@ -893,6 +895,7 @@ export function createWebWorkspaceRuntime(
         acquireHostLock: dependencies.acquireHostLock,
         pinHostKey: (host) => pinWebHostKey(accountId, host),
         onState: (hostId, state) => events.hostState?.(hostId, state),
+        onAgentsChanged: (hostId, agents) => events.hostAgentsChanged?.(hostId, agents),
         onSessionRevoked: () => events.hostSessionRevoked?.(),
         // Without a listener, the status connections read no agent list.
         ...(events.hostNotice
@@ -1985,6 +1988,9 @@ export function createWebWorkspaceRuntime(
     hostCapabilities(hostId) {
       if (hostId !== lockedHostId) return hosts?.capabilities(hostId) ?? null;
       return connectedHost?.hostId === hostId && capabilities.length > 0 ? capabilities : null;
+    },
+    hostAgentsByHost() {
+      return hosts?.agentsByHost() ?? {};
     },
     async postHostWebPush(hostId, path, body) {
       if (hostId !== lockedHostId) {
