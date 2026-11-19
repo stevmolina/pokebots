@@ -1276,7 +1276,24 @@
   min-width: 0;
 }
 
+.sidebar-footer-update[data-has-update="true"] {
+  color: var(--openbot-accent, var(--openbot-text-primary));
+}
+
+.sidebar-footer-update-dot {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--openbot-accent, #22c55e);
+  box-shadow: 0 0 0 1.5px var(--openbot-sidebar-bg, var(--openbot-bg-secondary));
+  pointer-events: none;
+}
+
 .sidebar-footer-round {
+  position: relative;
   display: grid;
   width: var(--sidebar-pill-button);
   height: var(--sidebar-pill-button);

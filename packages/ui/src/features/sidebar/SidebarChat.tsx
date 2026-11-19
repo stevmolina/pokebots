@@ -43,7 +43,7 @@ import {
 import { SidebarChatRow } from "./SidebarChatRow";
 import { SidebarEmptyState } from "./SidebarEmptyState";
 import { SidebarFeaturedAgent } from "./SidebarFeaturedAgent";
-import { SidebarFooter, SidebarProfileMenu } from "./SidebarFooter";
+import { SidebarFooter, SidebarProfileMenu, UpdateAppButton } from "./SidebarFooter";
 import { SidebarMachineChips, SidebarMachineNotices } from "./SidebarMachineFilter";
 import { SidebarPill } from "./SidebarPill";
 import { SidebarPinnedGroup } from "./SidebarPinnedGroup";
@@ -518,6 +518,7 @@ export function SidebarChat(chatProps: { pages: SidebarPages }) {
               customAgentUsage={chatProps.pages.customAgentUsage}
               onOpen={chatProps.pages.onUsage}
             />
+            <UpdateAppButton pages={chatProps.pages} />
             <SidebarPill pages={chatProps.pages} vertical />
           </div>
         </>
@@ -531,7 +532,6 @@ export function SidebarChat(chatProps: { pages: SidebarPages }) {
       <SidebarChatList onTitleHiddenChange={setTitleHidden} />
       <div class="sidebar-chat-footer">{props.footer}</div>
       <div class="sidebar-chat-bottom">
-        {/* Three quiet buttons: profile and machines, providers, and apps. */}
         <SidebarFooter pages={chatProps.pages} />
       </div>
     </Show>

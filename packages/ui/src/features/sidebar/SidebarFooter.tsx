@@ -15,6 +15,7 @@ import {
   ChevronRight,
   CircleQuestionMark,
   Compass,
+  Download,
   DropdownMenu,
   Gauge,
   LayoutGrid,
@@ -24,9 +25,11 @@ import {
   Monitor,
   MotionTooltip,
   Plus,
+  RefreshCw,
   Settings,
   Smartphone,
   Sparkles,
+  Spinner,
   Store,
   UserAvatar,
   UserPlus,
@@ -394,12 +397,47 @@ export function ConnectAppsButton(props: { pages: SidebarPages; class?: string }
   );
 }
 
+/**
+ * Manual app update button in the sidebar footer. Lets the user check for, download, or restart to
+ * install an update on demand instead of restarting automatically.
+ */
+export function UpdateAppButton(props: { pages: SidebarPages; class?: string }) {
+  return (
+    <Show when={props.pages.update}>
+      {(update) => (
+        <MotionTooltip content={update().label}>
+          <Button
+            variant="ghost"
+            type="button"
+            class={["sidebar-footer-round sidebar-footer-update no-drag", props.class]}
+            data-has-update={update().hasUpdate ? "true" : undefined}
+            aria-label={update().label}
+            aria-busy={update().busy ? "true" : undefined}
+            disabled={update().disabled || update().busy}
+            onClick={() => update().onAction()}
+          >
+            <Show when={!update().busy} fallback={<Spinner size="sm" aria-hidden="true" />}>
+              <Show when={update().phase === "available"} fallback={<RefreshCw aria-hidden="true" />}>
+                <Download aria-hidden="true" />
+              </Show>
+            </Show>
+            <Show when={update().hasUpdate && !update().busy}>
+              <span class="sidebar-footer-update-dot" aria-hidden="true" />
+            </Show>
+          </Button>
+        </MotionTooltip>
+      )}
+    </Show>
+  );
+}
+
 export function SidebarFooter(props: { pages: SidebarPages }) {
   const { t } = useText();
   return (
     <div class="sidebar-footer" role="toolbar" aria-label={t("sidebar.footer.label")}>
       <SidebarProfileMenu pages={props.pages} />
       <div class="sidebar-footer-actions">
+        <UpdateAppButton pages={props.pages} />
         <ConnectAppsButton pages={props.pages} />
       </div>
     </div>

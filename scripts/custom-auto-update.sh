@@ -9,19 +9,21 @@
 #      commits change only files that are not in the app (docs, mobile, account service, CI).
 #   2. Build the newest commit in its own worktree with `scripts/custom-build-install.sh --no-install`.
 #      When `main` moved during the build, build the newest commit again (3 builds at most).
-#   3. Wait until no local agent works, for 10 minutes at most.
-#   4. Quit the app, copy it to `~/OpenBot/backups/` (the 3 newest copies stay), install the new app,
-#      and open it. When the new app does not stay up, put the copy back.
-#   5. Write `status.json` and show a macOS notification.
+#   3. Stage the build for approval. An approved build waits for local agents for up to 10 minutes.
+#   4. Quit the app, back it up, install the approved build, and open it. Restore the backup if
+#      the new app does not stay up.
+#   5. Record the result in `status.json` and the log.
 #
 # State, the build worktree and the log are in ~/.local/state/pokebots-autoupdate/.
-# A failed build is not tried again until `main` moves. `--force` builds and installs the newest
-# commit even when it is installed already.
+# A failed build is not tried again until `main` moves. `--force` rebuilds the latest commit.
+# `--apply` installs an already staged commit when bootstrapping the sidebar button.
 set -euo pipefail
 
 main() {
   local force=0
   [[ "${1:-}" == "--force" ]] && force=1
+  local apply=0
+  [[ "${1:-}" == "--apply" ]] && apply=1
 
   state="$HOME/.local/state/pokebots-autoupdate"
   # OPENBOT_CUSTOM_REPO is the name that jobs installed before the rename to Pokebots set.
@@ -41,6 +43,31 @@ main() {
   setup_path
   take_lock || exit 0
   say "Run started (pid $$)."
+  touch "$state/manual-updates"
+
+  local staged approved
+  staged="$(cat "$state/staged-commit" 2>/dev/null || true)"
+  approved="$(cat "$state/approved-commit" 2>/dev/null || true)"
+  if [[ "$staged" =~ ^[0-9a-f]{40}$ ]] && [[ "$apply" == 1 || "$approved" == "$staged" ]]; then
+    if [[ "$(git -C "$worktree" rev-parse HEAD 2>/dev/null || true)" != "$staged" ]]; then
+      say "The staged commit is missing. The next check can rebuild it."
+      rm -f "$state/staged-commit" "$state/approved-commit"
+      return 1
+    fi
+    wait_for_idle_agents
+    # Clear the offer before installing so an interrupted install cannot restart the app again.
+    rm -f "$state/staged-commit" "$state/approved-commit"
+    install_app "$staged"
+    return
+  fi
+
+  if [[ "$apply" == 1 ]]; then
+    say "No build is ready to install."
+    return 1
+  fi
+
+  # Keep the offered build stable across checks and a concurrent approval.
+  if [[ "$force" == 0 && "$staged" =~ ^[0-9a-f]{40}$ ]]; then return 0; fi
 
   fetch_main
   local newest installed failed
@@ -64,6 +91,7 @@ main() {
     fi
   fi
 
+  rm -f "$state/staged-commit" "$state/approved-commit"
   local built=""
   for _ in 1 2 3; do
     write_status building "$newest" "Building $(describe "$newest")."
@@ -81,9 +109,11 @@ main() {
     say "main moved to $(short "$newest") during the build. Building the newest commit."
   done
 
-  wait_for_idle_agents
-  install_app "$built"
   refresh_own_copy
+  write_status ready "$built" "Ready to install $(describe "$built")."
+  printf '%s\n' "$built" >"$state/staged-commit.new"
+  mv "$state/staged-commit.new" "$state/staged-commit"
+
 }
 
 setup_path() {

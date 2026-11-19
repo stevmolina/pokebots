@@ -102,4 +102,15 @@ export interface SidebarPages {
   onSignOut?: (() => void) | undefined;
   /** Whether ⌘, opens Settings here, so the Settings item names the key. The web client has no such key. */
   settingsShortcut?: boolean | undefined;
+  /** Manual app update trigger shown in the sidebar footer. */
+  update?:
+    | {
+        phase: "idle" | "checking" | "available" | "downloading" | "ready" | "installing" | "error";
+        busy: boolean;
+        hasUpdate: boolean;
+        label: string;
+        disabled?: boolean | undefined;
+        onAction: () => void;
+      }
+    | undefined;
 }
