@@ -108,6 +108,7 @@ export const messages = {
   "app.settingsPage.searchPlaceholder": "Поиск в настройках…",
   "app.settingsPage.results": "Результаты поиска в настройках",
   "app.settingsPage.noResults": "Подходящих настроек нет.",
+  "app.settingsPage.marketplaceApps": "Подключения и серверы MCP",
   "app.settingsPage.resultCount": {
     one: "{count} подходящая настройка.",
     few: "{count} подходящие настройки.",

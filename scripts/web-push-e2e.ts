@@ -313,6 +313,7 @@ const teamBrowser: TeamApiBrowser = {
   startTeach: unused,
   stopTeach: () => [],
   releaseUserControl: () => {},
+  releaseUserControlRefused: () => {},
   releaseUserControlHeldBy: () => {},
   close: unused,
   capturePreview: unused,

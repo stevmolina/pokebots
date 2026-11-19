@@ -66,6 +66,7 @@ export function AgentDockSurface() {
   const { t, errorMessage } = useText();
   const [presentation, setPresentation] = createSignal<AgentDockPresentation | null>(null);
   const [closeRequest, setCloseRequest] = createSignal(0);
+  const [blurRequest, setBlurRequest] = createSignal(0);
   const [tucked, setTuckedSignal] = createSignal(false);
   /** The dock came out by itself, not under the pointer. */
   const [calmReveal, setCalmReveal] = createSignal(false);
@@ -105,7 +106,8 @@ export function AgentDockSurface() {
   /** The server of the counts. The first presentation of a server only records them. */
   let countedServer: string | null = null;
   let tuckTimer: ReturnType<typeof setTimeout> | undefined;
-  let sent = { interactive: false, keyboard: false };
+  /** Null until the first send: a reloaded page cannot know what the window takes (#11606). */
+  let sent: { interactive: boolean; keyboard: boolean } | null = null;
   /** The dock parts at rest, or null while the dock moves. */
   let dockShape: readonly AgentDockShapeRect[] | null = null;
   let sentShape = "";
@@ -276,7 +278,7 @@ export function AgentDockSurface() {
   const sync = () => {
     updateTuck();
     const next = { interactive: pointerIn, keyboard: chatOpen || menuOpen() };
-    if (next.interactive === sent.interactive && next.keyboard === sent.keyboard) return;
+    if (next.interactive === sent?.interactive && next.keyboard === sent.keyboard) return;
     sent = next;
     void agentDockPort()
       .agentDock.setInteractive(next)
@@ -309,7 +311,8 @@ export function AgentDockSurface() {
       pointerIn = false;
       sync();
     };
-    const onBlur = () => setCloseRequest((value) => value + 1);
+    // A chat that the user keeps open stays when a clipboard overlay or another window takes the focus.
+    const onBlur = () => setBlurRequest((value) => value + 1);
     // A menu opens and closes in a portal on the body.
     const menus = new MutationObserver(() => {
       sync();
@@ -472,6 +475,7 @@ export function AgentDockSurface() {
             availableChannels={availableChannels()}
             chat={chat}
             closeRequest={closeRequest()}
+            blurRequest={blurRequest()}
             voice={voice}
             side={presentation()?.edge ?? "right"}
             tucked={tucked()}

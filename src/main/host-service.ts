@@ -43,6 +43,7 @@ import type {
 } from "@openbot/contracts/ipc";
 import {
   type AgentAccessLevel,
+  canAdministerServer,
   conversationMessageSender,
   DEFAULT_REMOTE_CONTROL_POLICY,
   isAvatarColor,
@@ -179,6 +180,7 @@ interface HostServiceOptions {
   skills: NonNullable<ForwardedApiOptions["skills"]>;
   sidebarLayout: NonNullable<ForwardedApiOptions["sidebarLayout"]>;
   mailbox: ForwardedApiOptions["mailbox"];
+  attachmentPreviews?: ForwardedApiOptions["attachmentPreviews"];
   browser: ForwardedApiOptions["browser"];
   chat?: TeamChatStore;
   /**
@@ -560,6 +562,7 @@ export class HostService extends EventEmitter<HostEvents> {
       skills: options.skills,
       sidebarLayout: options.sidebarLayout,
       mailbox: options.mailbox,
+      ...(options.attachmentPreviews === undefined ? {} : { attachmentPreviews: options.attachmentPreviews }),
       browser: options.browser,
       browserView: this.#browserView,
       remoteScreen: this.#remoteScreen,
@@ -2246,14 +2249,26 @@ export class HostService extends EventEmitter<HostEvents> {
 
   /**
    * Whether an active member who is not an owner or admin can see `agentId`. Such a member reads the
-   * agent's chat and can add a routine to it, so the CRM tools refuse the agent.
+   * agent's chat and can add a routine to it, so the CRM tools refuse the agent. A computer with no
+   * team server has no members, so the CRM tools work there (#12475).
    */
   agentVisibleToMembers(agentId: string): boolean {
+    if (!this.#options.store.configured) return false;
     return this.#options.store
       .listMembers()
       .some(
         (member) => member.role === "member" && !member.disabled && this.#api.agentLevel(member, agentId) !== "none",
       );
+  }
+
+  /**
+   * Whether `personId` can change the server settings: this computer's user, or an active owner or
+   * admin of the team.
+   */
+  personCanAdminister(personId: string): boolean {
+    if (!this.channelPersonIsRemote(personId)) return true;
+    const member = this.#options.store.getMember(personId);
+    return member !== null && !member.disabled && canAdministerServer(member.role);
   }
 
   /**

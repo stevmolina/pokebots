@@ -109,6 +109,11 @@ export function ConversationsSettingsScreen() {
           disabled={!chatSwipe.ready}
           options={[
             {
+              value: "question",
+              label: t("mobile.settings.conversations.swipeQuestion"),
+              picture: (play) => <SwipePicture target="question" play={play} />,
+            },
+            {
               value: "threads",
               label: t("mobile.settings.conversations.swipeThreads"),
               picture: (play) => <SwipePicture target="threads" play={play} />,
@@ -117,6 +122,11 @@ export function ConversationsSettingsScreen() {
               value: "browser",
               label: t("mobile.settings.conversations.swipeBrowser"),
               picture: (play) => <SwipePicture target="browser" play={play} />,
+            },
+            {
+              value: "off",
+              label: t("mobile.settings.conversations.swipeOff"),
+              picture: (play) => <SwipePicture target="off" play={play} />,
             },
           ]}
           onChange={(next) => save("swipe", saveChatSwipePreference(next))}

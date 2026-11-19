@@ -224,10 +224,7 @@ export function PasswordManagerConnectorPage({
   );
   /** The known failures have their own text. Another failure shows the host's sentence. */
   const statusFailure = (): string | null => {
-    if (status.errorCode === "plan")
-      return canUseAccount
-        ? t("mobile.server.connectors.keeper.plan")
-        : t("mobile.server.connectors.passwordManager.plan", { name });
+    if (status.errorCode === "plan") return keyText ? t(keyText.plan) : t("mobile.server.connectors.keeper.plan");
     if (status.errorCode === "extra-password") return t("mobile.server.connectors.passwordManager.extraPasswordWrong");
     // A wrong code shows under its field.
     if (status.errorCode === "code") return null;

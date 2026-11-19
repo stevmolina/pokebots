@@ -40,7 +40,11 @@ import type {
 import { decodeRecord } from "@openbot/contracts/ipc-decoding";
 import { isString } from "@openbot/contracts/runtime-values";
 import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
-import { type TeamCurrentCapability, teamCapabilitiesForProtocol } from "@openbot/contracts/team-protocol/current";
+import {
+  supportsTeamCapability,
+  type TeamCurrentCapability,
+  teamCapabilitiesForProtocol,
+} from "@openbot/contracts/team-protocol/current";
 import { TEAM_PROTOCOL_V1_WEBSOCKET } from "@openbot/contracts/team-protocol/v1";
 import {
   encodeTeamProtocolV1CurrentClientEvent,
@@ -792,7 +796,7 @@ export class RemoteEventStream {
   /** Whether the `agent-event-scope` message of this server names `capability`. */
   #advertises(serverId: string, capability: TeamCurrentCapability): boolean {
     if (!this.#appVersion) return false;
-    return this.#negotiatedCapabilities(serverId).includes(capability);
+    return supportsTeamCapability(this.#negotiatedCapabilities(serverId), capability);
   }
 
   /** What this client names to the host: what both ends know, within the host limit. */
@@ -801,8 +805,10 @@ export class RemoteEventStream {
     return teamCapabilitiesForProtocol(compatibility?.negotiatedProtocol, compatibility?.capabilities);
   }
 
+  /** Whether the host serves `capability`. A protocol 10 host's compatibility is already expanded. */
   #supportsCapability(serverId: string, capability: TeamCurrentCapability): boolean {
-    return this.#connections.compatibilityFor(serverId)?.capabilities.includes(capability) ?? false;
+    const capabilities = this.#connections.compatibilityFor(serverId)?.capabilities;
+    return capabilities ? supportsTeamCapability(capabilities, capability) : false;
   }
 
   // The pre-`appVersion` hosts predate capability negotiation, so the subprotocol they accepted is

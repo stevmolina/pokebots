@@ -95,6 +95,7 @@ export const messages = {
   "error.backend.channelCompactNotSupported":
     "Ningún miembro de este canal puede compactar a petición. Los miembros que lo admiten compactan su contexto automáticamente cuando está casi lleno.",
   "error.backend.channelArchived": "Restaura este canal antes de enviar mensajes o cambiar tareas.",
+  "error.backend.channelArchiveRunning": "Detén el trabajo en curso en este canal y luego elimínalo.",
   "error.backend.channelReferenceUnavailable": "El mensaje del canal al que se hace referencia no está disponible.",
   "error.backend.channelTaskNotFound": "No se encontró la tarea del canal.",
   "error.backend.channelTaskComplete": "Esta tarea ya está completada.",
@@ -129,6 +130,8 @@ export const messages = {
   "error.backend.memoryGone": "Este recuerdo ya no existe.",
   "error.backend.routineGone": "Esta rutina ya no existe.",
   "error.backend.routineRunGone": "Esta ejecución de la rutina ya no existe.",
+  "error.backend.routineRunFailedNoReason":
+    "La ejecución se detuvo con un error, pero no llegó ningún motivo. Abre la ejecución para ver qué hizo el agente.",
   "error.backend.turnNotStarted": "El proveedor no inició este turno.",
   "error.backend.routineResultConnectionOff":
     "Esta conexión de mensajería está desactivada o eliminada. Elige otro lugar.",
@@ -265,6 +268,8 @@ export const messages = {
     "Este agente solo puede usar un número limitado de servidores MCP. Para usar este servidor, desactiva un servidor MCP que el agente no necesite.",
   "error.backend.mcpRegistrationRefused":
     "El servidor de inicio de sesión aún no acepta OpenBot como aplicación. Tu cuenta no es la causa. Usa otra forma de conexión, como un servidor MCP local.",
+  "error.backend.mcpRegistrationUnavailable":
+    "El servidor de inicio de sesión no puede registrar OpenBot como aplicación. Tu cuenta no es la causa. Para conectar, guarda este servidor en Marketplace, Apps, y después añádele una app de inicio de sesión.",
   "error.backend.mcpSignInAbandonedGeneric": "Se abandonó el inicio de sesión.",
   "error.backend.mcpSignInForgotten": "Se olvidó el inicio de sesión de MCP mientras estaba en curso.",
   "error.backend.mcpSignInAbandoned": "Se abandonó el inicio de sesión de MCP.",
@@ -278,6 +283,7 @@ export const messages = {
     "Este servidor pide un inicio de sesión, y OpenBot solo inicia sesión por https. Cambia la URL a {url}.",
   "error.backend.mcpSignInCancelled": "Se canceló el inicio de sesión.",
   "error.backend.mcpSignInTimedOut": "El inicio de sesión no se completó en el navegador.",
+  "error.backend.mcpSignInRefused": "La página de inicio de sesión rechazó el acceso. Inicia sesión de nuevo.",
   "error.backend.mcpSignInResponseTimedOut": "La respuesta del inicio de sesión no llegó a tiempo.",
   "error.backend.mcpSignInMetadataUnreadable":
     "OpenBot no pudo leer la información de inicio de sesión de este servidor. Revisa la dirección del servidor y vuelve a intentarlo.",
@@ -285,9 +291,11 @@ export const messages = {
     "El servidor de inicio de sesión envió una respuesta que OpenBot no puede leer. Si el servicio te da una clave de API o un token, añádelo en la configuración de este servidor y vuelve a probar la conexión.",
   "error.backend.mcpServerExited":
     "El servidor se detuvo antes de responder. Ejecuta el comando en una terminal para ver su error.",
+  "error.backend.mcpServerExitedWithOutput": "El servidor se detuvo antes de responder. Escribió: {detail}",
   "error.backend.mcpServerFailedToStart": "El servidor no se inició: {reason}",
   "error.backend.mcpServerStartAbandoned":
     "{provider} dejó de esperar antes de que el servidor se iniciara, así que sus agentes no reciben las herramientas de este servidor.",
+  "error.backend.mcpServerStoppedDuringCall": "El servidor MCP se detuvo antes de responder a esta llamada.",
   "error.backend.mcpToolSchemaRefused":
     "Su herramienta {tool} tiene un formato de entrada que este proveedor no puede leer. Los agentes con otros proveedores siguen recibiendo el servidor.",
   "error.backend.mcpServerSignInForProvider":

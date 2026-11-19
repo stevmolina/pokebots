@@ -52,8 +52,10 @@ function ThreadMenuList(props: ThreadHeaderProps) {
 }
 
 /** The "More" button at the end of the header. */
-function ThreadMenuTrigger() {
+function ThreadMenuTrigger(props: Pick<ThreadHeaderProps, "sessions" | "activeId">) {
   const { t } = useText();
+  // A session with unread replies, other than the open one: the button shows the dot of the thread list.
+  const unreadInMenu = () => props.sessions.some((thread) => (thread.unread ?? 0) > 0 && thread.id !== props.activeId);
   return (
     <DropdownMenu.Trigger
       class={buttonVariants({
@@ -62,9 +64,13 @@ function ThreadMenuTrigger() {
         class: "agent-threads-icon-button agent-threads-menu-button agent-threads-phone-more no-drag",
       })}
       aria-label={t("agent.dock.more")}
+      aria-description={unreadInMenu() ? t("conversation.threads.allUnread") : undefined}
       title={t("agent.dock.more")}
     >
       <Ellipsis aria-hidden="true" />
+      <Show when={unreadInMenu()}>
+        <span class="agent-threads-menu-unread" aria-hidden="true" />
+      </Show>
     </DropdownMenu.Trigger>
   );
 }
@@ -149,7 +155,7 @@ export function ThreadMenu(props: ThreadHeaderProps) {
         overflowPadding={0}
         getAnchorRect={screenBottomEdge}
       >
-        <ThreadMenuTrigger />
+        <ThreadMenuTrigger sessions={props.sessions} activeId={props.activeId} />
         <DropdownMenu.Portal>
           <DropdownMenu.Content class="agent-threads-menu agent-threads-sheet">
             <span class="agent-threads-sheet-handle" aria-hidden="true" />
