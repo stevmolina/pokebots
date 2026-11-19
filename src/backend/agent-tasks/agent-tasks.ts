@@ -41,6 +41,7 @@ import { storedSync } from "../stored-state-effects";
 
 import type { CodingJobs, ScopedCodingComputer } from "./coding-jobs";
 import { RUN_CODING_TASK_TOOL, remoteCodingBrief, runCodingTaskToolSchema } from "./remote-coding-task";
+import { taskTitle } from "./task-title";
 
 const logger = createOpenBotLogger("agent-tasks");
 
@@ -284,6 +285,15 @@ export class AgentTasks implements TaskLanes {
     this.#store.retitle(thread.threadId, title);
     this.changed(thread.agentId);
     return this.#store.task(thread.taskId) ?? thread;
+  }
+
+  /** Replaces an auto-generated title with a better one (e.g. from background AI), unless renamed by the user. */
+  retitleAuto(taskId: string, title: string): boolean {
+    const task = this.#store.task(taskId);
+    if (task?.titleSource !== "auto" || task.title === title) return false;
+    this.#store.retitle(task.threadId, title);
+    this.changed(task.agentId);
+    return true;
   }
 
   /** The thread belongs to a routine: each run of the routine starts a new session in it. */
@@ -984,16 +994,6 @@ function launchedTaskResult(task: AgentThreadRecord): OpenBotToolResponse {
     title: task.title,
     note: "The task is queued in its own thread. Continue your work or end your turn. OpenBot posts the result in this chat. Use openbot.stop_agent_task with this threadId to stop it.",
   });
-}
-
-/** The first line of the text, cut to the title limit. An attachment reference shows as its file name. */
-function taskTitle(text: string): string {
-  const line =
-    expandAttachmentReferences(text)
-      .split("\n")
-      .map((part) => part.trim())
-      .find((part) => part.length > 0) ?? "";
-  return line.length > INPUT_LIMITS.agentTaskTitle ? `${line.slice(0, INPUT_LIMITS.agentTaskTitle - 1)}…` : line;
 }
 
 /** The drain names more reasons than the user needs: the ones a task cannot change become "agent-busy". */

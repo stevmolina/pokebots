@@ -215,7 +215,7 @@ export function workflowUsageObserver(
  * has its own id, so its counters never meet those of the agent's turns.
  */
 export function sideSessionUsageObserver(
-  kind: "memory-review" | "web-search" | "voice-summary",
+  kind: "memory-review" | "web-search" | "voice-summary" | "task-title",
   usage: AgentUsage,
   agentId: string,
   provider: ProviderSession["provider"],
