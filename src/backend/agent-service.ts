@@ -139,6 +139,7 @@ import {
   type AgentModelChoice,
   agentAutomationAllowed,
   agentBrowserProfile,
+  agentComputerUseEnabled,
   agentNewChatAllowed,
   agentTaskLimit,
   type BusyMessageMode,
@@ -344,6 +345,7 @@ import {
 } from "./protocol";
 import { NO_PROVIDER_CREDENTIALS, type ProviderClientContext, requireProviderDriver } from "./provider-drivers";
 import { providerHistoryPersistence } from "./provider-history-persistence";
+import { remoteComputerMcpServerAgentId } from "./remote-computer-mcp";
 import { recordAgentRestartActivity } from "./restart-activity";
 import type { RoutineFlowTools } from "./routine-flows/routine-flow-tools";
 import { RoutineRecords } from "./routine-records";
@@ -2229,20 +2231,24 @@ export class AgentService extends EventEmitter<AgentServiceEvents> {
       ...(options.videoReader === undefined ? {} : { videoReader: options.videoReader }),
       ...(options.fitImage === undefined ? {} : { fitImage: options.fitImage }),
       // The saved rows that the agent gets, and the GitHub connection, whose bearer the gateway gets
-      // from the main process (#12035). Computer Use is left out: OpenBot gives its tools another way.
+      // from the main process (#12035). A remote computer entry belongs to one agent.
+      // OpenBot gives local Computer Use tools another way.
       // `mcpFallbackRunsServer` leaves out a stdio server of a Workspace only agent.
       mcpServers: mcpServersFromGateway(
         this.#mcp,
         options.prepareMcpTest,
         (agentId) => {
           // An agent that is not found gets only the http rows, as a Workspace only agent does.
-          const agent = this.#store.get(agentId) ?? { access: "workspace" };
+          const agent = this.#store.get(agentId);
+          const computerUse = agent !== null && agent !== undefined && agentComputerUseEnabled(agent);
           const saved = new Set(this.#mcp.list().map((config) => config.id));
           return this.enabledMcpServers(agentId).filter(
             (config) =>
               (config.id === GITHUB_CONNECTOR_MCP_SERVER_ID ||
-                (saved.has(config.id) && !isReservedMcpServerName(config.name))) &&
-              mcpFallbackRunsServer(config, agent),
+                (saved.has(config.id)
+                  ? !isReservedMcpServerName(config.name)
+                  : computerUse && remoteComputerMcpServerAgentId(config.id) === agentId)) &&
+              mcpFallbackRunsServer(config, agent ?? { access: "workspace" }),
           );
         },
         (mcpServerId, agentId) => this.#mcpAgentAccess?.(mcpServerId, agentId) ?? true,
