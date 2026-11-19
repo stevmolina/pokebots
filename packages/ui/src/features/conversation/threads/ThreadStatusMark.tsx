@@ -1,10 +1,30 @@
 import type { AppTextKey } from "@openbot/i18n";
-import { Clock3, Hourglass, MessageSquareText, X } from "@openbot/ui";
+import {
+  BookOpen,
+  BriefcaseBusiness,
+  Bug,
+  CalendarClock,
+  ChartNoAxesColumnIncreasing,
+  Clock3,
+  Code,
+  FileText,
+  Globe2,
+  Hourglass,
+  Mail,
+  Megaphone,
+  MessageSquareText,
+  Palette,
+  Search,
+  Sparkles,
+  UsersRound,
+  X,
+} from "@openbot/ui";
 import { TypingDots } from "@openbot/ui/components/TypingDots";
 import { SidebarWaitIcon } from "@openbot/ui/features/sidebar/SidebarAgentIndicator";
 import type { SidebarWaitReason } from "@openbot/ui/features/sidebar/sidebar-types";
 import { type TextValue, useText } from "@openbot/ui/text";
 import { Show } from "solid-js";
+import { pickThreadTopicIcon, type ThreadTopicIconKind } from "./thread-topic-icon";
 import type { ThreadStatus } from "./thread-types";
 
 const WAIT_TEXT = {
@@ -108,14 +128,53 @@ function StatusIcon(props: { status: ThreadMark }) {
   );
 }
 
+function ThreadTopicIcon(props: { kind: ThreadTopicIconKind }) {
+  switch (props.kind) {
+    case "bug":
+      return <Bug aria-hidden="true" />;
+    case "chart":
+      return <ChartNoAxesColumnIncreasing aria-hidden="true" />;
+    case "launch":
+      return <Megaphone aria-hidden="true" />;
+    case "users":
+      return <UsersRound aria-hidden="true" />;
+    case "search":
+      return <Search aria-hidden="true" />;
+    case "design":
+      return <Palette aria-hidden="true" />;
+    case "code":
+      return <Code aria-hidden="true" />;
+    case "mail":
+      return <Mail aria-hidden="true" />;
+    case "plan":
+      return <CalendarClock aria-hidden="true" />;
+    case "sales":
+      return <BriefcaseBusiness aria-hidden="true" />;
+    case "web":
+      return <Globe2 aria-hidden="true" />;
+    case "book":
+      return <BookOpen aria-hidden="true" />;
+    case "idea":
+      return <Sparkles aria-hidden="true" />;
+    case "document":
+      return <FileText aria-hidden="true" />;
+    default:
+      return <MessageSquareText aria-hidden="true" />;
+  }
+}
+
 /**
  * The icon slot of a thread tab, in the chat header and in the side panel: the badge of the thread's
- * state, the unread dot, or a small thread icon.
+ * state, the unread dot, or a topic-matched thread icon when idle.
  */
-export function ThreadTabIcon(props: { status: ThreadStatus; unread?: number | undefined }) {
+export function ThreadTabIcon(props: {
+  status: ThreadStatus;
+  unread?: number | undefined;
+  title?: string | undefined;
+}) {
   const mark = () => threadMark(props.status, props.unread);
   return (
-    <Show when={mark().kind !== "idle"} fallback={<MessageSquareText aria-hidden="true" />}>
+    <Show when={mark().kind !== "idle"} fallback={<ThreadTopicIcon kind={pickThreadTopicIcon(props.title)} />}>
       <StatusBadge status={mark()} />
     </Show>
   );

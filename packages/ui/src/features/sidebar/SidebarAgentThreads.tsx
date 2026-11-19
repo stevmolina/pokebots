@@ -47,7 +47,7 @@ function ThreadRow(props: { thread: ThreadItem; current: boolean; index: number;
         onClick={props.onOpen}
       >
         <span class="sidebar-thread-icon" aria-hidden="true">
-          <ThreadTabIcon status={props.thread.status} unread={props.thread.unread} />
+          <ThreadTabIcon status={props.thread.status} unread={props.thread.unread} title={props.thread.title} />
         </span>
         <ThreadTitle class="sidebar-thread-title" title={props.thread.title} />
         <ThreadStatusText status={props.thread.status} unread={props.thread.unread} />
@@ -173,7 +173,7 @@ function ThreadCard(props: {
                     onClick={() => pick(() => props.model.onOpen(props.agentId, thread().id))}
                   >
                     <span class="sidebar-threads-card-icon" aria-hidden="true">
-                      <ThreadTabIcon status={thread().status} unread={thread().unread} />
+                      <ThreadTabIcon status={thread().status} unread={thread().unread} title={thread().title} />
                     </span>
                     <ThreadTitle class="sidebar-threads-card-title" title={thread().title} />
                     <ThreadStatusText status={thread().status} unread={thread().unread} />
