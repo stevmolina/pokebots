@@ -2,6 +2,7 @@
 
 import { runCauseEffect } from "../../backend/effect-boundary";
 import type { IdleRestart } from "../idle-restart";
+import { approvePokebotsUpdate, checkPokebotsUpdate, pokebotsUpdateStatus } from "../pokebots-update-job";
 import type { RequestedUpdate } from "../requested-update";
 import { readUpdatePreference } from "../update-preference-store";
 import type { UpdateService } from "../update-service";
@@ -11,6 +12,7 @@ import { handler, type IpcGroupHandlers, payloadHandler } from "./define-ipc-gro
 export interface UpdateIpcDependencies {
   updater: UpdateService;
   updatePreferenceFile: string;
+  usePokebotsUpdateJob?: boolean;
   requestedUpdate: Pick<RequestedUpdate, "cancel" | "setPreference">;
   idleRestart: Pick<IdleRestart, "request" | "cancel">;
 }
@@ -18,15 +20,27 @@ export interface UpdateIpcDependencies {
 export function updateIpcHandlers({
   updater,
   updatePreferenceFile,
+  usePokebotsUpdateJob,
   requestedUpdate,
   idleRestart,
 }: UpdateIpcDependencies): Pick<IpcGroupHandlers, "update"> {
+  const getStatus = () => {
+    const status = updater.getStatus();
+    return usePokebotsUpdateJob ? pokebotsUpdateStatus(status.currentVersion) : status;
+  };
+
   return {
     update: {
-      getStatus: handler(() => updater.getStatus()),
-      check: handler(() => runCauseEffect(updater.checkForUpdates())),
+      getStatus: handler(getStatus),
+      check: handler(() => {
+        if (!usePokebotsUpdateJob) return runCauseEffect(updater.checkForUpdates());
+        checkPokebotsUpdate();
+        return getStatus();
+      }),
       download: handler(() => runCauseEffect(updater.downloadUpdate())),
-      install: handler(() => runCauseEffect(updater.installUpdate())),
+      install: handler(() =>
+        usePokebotsUpdateJob ? approvePokebotsUpdate() : runCauseEffect(updater.installUpdate()),
+      ),
       getPreference: handler(() => runCauseEffect(readUpdatePreference(updatePreferenceFile))),
       setPreference: payloadHandler(parseUpdatePreference, (parsed) =>
         runCauseEffect(requestedUpdate.setPreference(parsed)),

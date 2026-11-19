@@ -155,6 +155,7 @@ import { ensureMacApplicationPresence, secondLaunchResponse } from "./main-windo
 import { MessageLinkRelay, openHttpLink } from "./message-link-relay";
 import { recoverFromNewerDatabase } from "./newer-database-recovery";
 import { removeOrcaPaneEnvironment } from "./orca-pane-environment";
+import { pokebotsUpdateStatus, usesPokebotsUpdateJob } from "./pokebots-update-job";
 import { flushMainLog, startMainLog } from "./provider-log";
 import { notifyRemoteControlStarted } from "./remote-control-question";
 import { watchRemoteHostDirectory } from "./remote-server-host-directory";
@@ -1136,7 +1137,13 @@ function registerIpcHandlers({
       translate: language.translate,
       reportUploadProgress: forwardInstanceTransferUploadProgress,
     }),
-    ...updateIpcHandlers({ updater, updatePreferenceFile, requestedUpdate, idleRestart }),
+    ...updateIpcHandlers({
+      updater,
+      updatePreferenceFile,
+      requestedUpdate,
+      idleRestart,
+      usePokebotsUpdateJob: usesPokebotsUpdateJob(app.getPath("exe")),
+    }),
     ...notificationIpcHandlers({
       notificationPreference,
       translate: language.translate,
@@ -1935,7 +1942,20 @@ if (!hasSingleInstanceLock) {
           Effect.catch(() => Effect.void),
         ),
       ).catch((error) => logger.warn("Unable to start the selected server's connection:", toLogValue(error)));
-      updater.on("status", forwardUpdateStatus);
+      if (usesPokebotsUpdateJob(app.getPath("exe"))) {
+        const currentVersion = updater.getStatus().currentVersion;
+        let previous = pokebotsUpdateStatus(currentVersion);
+        const poll = setInterval(() => {
+          const next = pokebotsUpdateStatus(currentVersion);
+          if (next.phase === previous.phase && next.availableVersion === previous.availableVersion) return;
+          previous = next;
+          forwardUpdateStatus(next);
+        }, 3_000);
+        poll.unref();
+        app.once("will-quit", () => clearInterval(poll));
+      } else {
+        updater.on("status", forwardUpdateStatus);
+      }
       // An install that fails after shutdown preparation has no window left to show the failure, and
       // the process still holds the single-instance lock. Exit now, not at the install deadline.
       updater.on("status", (status) => {

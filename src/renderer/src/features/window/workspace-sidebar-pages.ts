@@ -1,10 +1,11 @@
 import { BRAIN_CAPABILITY } from "@openbot/contracts/brain";
-import { isUpdateActivePhase } from "@openbot/contracts/ipc";
+import { isUpdateActivePhase, isUpdateBusyPhase } from "@openbot/contracts/ipc";
 import { AGENT_COMPUTER_CAPABILITY } from "@openbot/contracts/team-protocol/agent-computer-v1";
 import { AGENT_TASKS_CAPABILITY } from "@openbot/contracts/team-protocol/agent-tasks-v1";
 import { CRM_CAPABILITY } from "@openbot/contracts/team-protocol/crm-v1";
 import { POKEBOTS_INTEGRATIONS_CAPABILITY } from "@openbot/contracts/team-protocol/pokebots-integrations-v1";
 import { ROOMS_CAPABILITY } from "@openbot/contracts/team-protocol/rooms-v1";
+import { toast } from "@openbot/ui";
 import type { SidebarPage, SidebarPages } from "@openbot/ui/features/sidebar/sidebar-pages";
 import type { SidebarView } from "@openbot/ui/features/sidebar/sidebar-types";
 import { useText } from "@openbot/ui/text";
@@ -70,6 +71,35 @@ export function useWorkspaceSidebarPages(): () => SidebarPages {
     const phase = updates.status().phase;
     if (!layout.leftPanelCompact() || !isUpdateActivePhase(phase)) return undefined;
     return text.t(phase === "ready" || phase === "installing" ? "account.update.ready" : "account.update.available");
+  };
+  /** Manual update trigger in the sidebar footer: check, download, or restart to install on demand. */
+  const footerUpdate = (): SidebarPages["update"] => {
+    const currentStatus = updates.status();
+    if (currentStatus.phase === "unsupported") return undefined;
+    const managed = currentStatus.managedByHost === true;
+    const phase = currentStatus.phase;
+    const busy = isUpdateBusyPhase(phase);
+    const hasUpdate = phase === "available" || phase === "ready";
+    const percent =
+      currentStatus.progress === null ? null : Math.min(100, Math.max(0, Math.round(currentStatus.progress)));
+    const label = (() => {
+      if (managed) return text.t("account.update.managedByHostLabel");
+      if (phase === "downloading" && percent !== null) return text.t("account.update.downloadingLabel", { percent });
+      if (phase === "installing") return text.t("account.update.restartingLabel");
+      if (phase === "ready") return text.t("account.update.restartLabel");
+      if (phase === "available") return text.t("account.update.downloadLabel");
+      return text.t("menu.checkForUpdates");
+    })();
+    return {
+      phase: phase === "up-to-date" ? "idle" : phase,
+      busy,
+      hasUpdate,
+      label,
+      disabled: managed,
+      onAction: () => {
+        void updates.runAction().catch((error) => toast.error(text.t("error.update.installFailed"), { error }));
+      },
+    };
   };
   // An older joined server has no task routes.
   const tasksAvailable = () => {
@@ -146,5 +176,6 @@ export function useWorkspaceSidebarPages(): () => SidebarPages {
     onCollapse: () => layout.setSidebarCollapsed(true),
     shortcutPlatform: shortcutPlatform(),
     settingsShortcut: true,
+    update: footerUpdate(),
   });
 }
