@@ -51,6 +51,7 @@ export function runShortcutCommand(command: ShortcutCommand): boolean {
 const OWNED_KEYS = [
   "shortcuts",
   "newChat",
+  "newInstance",
   "toggleSidebar",
   "previousChat",
   "nextChat",

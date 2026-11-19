@@ -43,6 +43,7 @@ export interface KeyCombo {
 export type ShortcutId =
   | "search"
   | "newChat"
+  | "newInstance"
   | "previousChat"
   | "nextChat"
   | "previousUnreadChat"
@@ -105,11 +106,14 @@ export const SHORTCUTS: readonly ShortcutDefinition[] = [
     id: "newChat",
     group: "navigation",
     label: "app.shortcuts.newChat",
-    // ⌘⇧O is the second key, as in T3 Code.
-    ...both([
-      { key: "n", mod: "primary", inTextFields: true },
-      { key: "o", mod: "primary", shift: true, inTextFields: true },
-    ]),
+    ...both([{ key: "n", mod: "primary", inTextFields: true }]),
+  },
+  {
+    id: "newInstance",
+    group: "navigation",
+    label: "app.shortcuts.newInstance",
+    // Opens a new instance on an existing bot, as in T3 Code.
+    ...both([{ key: "o", mod: "primary", shift: true, inTextFields: true }]),
   },
   {
     id: "previousChat",

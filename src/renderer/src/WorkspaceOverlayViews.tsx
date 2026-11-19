@@ -1,4 +1,5 @@
 import type { AddedAgent, McpSignInState, ServerSummary } from "@openbot/contracts/ipc";
+import { NewInstancePicker } from "@openbot/ui/components/NewInstancePicker";
 import type { MarketplaceListingLink } from "@openbot/contracts/marketplace-links";
 import { MAC_APPS_LIMIT_CAPABILITY } from "@openbot/contracts/team-protocol/mac-apps-limit-v1";
 import type { BrowserViewRuntime } from "@openbot/ui/features/browser/BrowserLiveView";
@@ -383,6 +384,16 @@ export function GlobalSearchOverlay(props: ComponentProps<typeof GlobalSearch>) 
       <Loading>
         <GlobalSearch open={true} {...search} />
       </Loading>
+    </Show>
+  );
+}
+
+/** Quick picker opened by Cmd+Shift+O to start a new instance on an existing bot. */
+export function NewInstancePickerOverlay(props: ComponentProps<typeof NewInstancePicker>) {
+  const picker = omit(props, "open");
+  return (
+    <Show when={props.open}>
+      <NewInstancePicker open={true} {...picker} />
     </Show>
   );
 }
