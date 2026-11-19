@@ -9,7 +9,9 @@
 // when that host advertises this capability. A server without the capability never sees the tools. The
 // host gives them only to the agents that `remote-computer-use-v1` already allows. The file tool is
 // made on the host from the app's file-chunk tool, so a computer that does not list that tool gets no
-// file tool. Widening any of it needs a second capability string.
+// file tool. The app may offer its computer for these tools alone when its own Computer Use has no
+// grants: its `list-tools` answer then holds only the terminal tools, and every Computer Use call is
+// refused. Widening any of it needs a second capability string.
 
 export const REMOTE_COMPUTER_TERMINAL_CAPABILITY = "remote-computer-terminal-v1";
 

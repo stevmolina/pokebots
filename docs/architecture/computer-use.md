@@ -272,7 +272,8 @@ carries, so it has its own capability: a host that advertises it also gives the 
 desktop app lists in its answer to `list-tools`. The app lists and runs them only for a server whose
 second switch is on (`remoteTerminalServerIds` in `servers.json`, off by default, and removed when
 the main switch goes off, on Stop, or when the server is left), only while the main switch,
-the connection and the host's capability are all there, and only on macOS and Linux.
+the connection and the host's capability are all there, and only on macOS and Linux. It needs no Computer
+Use grants: without them the app offers the computer for the terminal tools alone.
 
 - **`openbot_run_command`** (answered by `RemoteComputerTerminal`, not the driver). Runs `$SHELL -l -c`
   as the user, in the home folder unless `cwd` is set, with a time limit (60 s, at most 600 s) and its

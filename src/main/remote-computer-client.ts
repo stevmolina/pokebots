@@ -257,9 +257,12 @@ export class RemoteComputerClient {
     await Promise.all(goodbyes);
   }
 
-  /** Whether `serverId` may use this computer now. */
-  #allowed(serverId: string): RemoteComputerServer | null {
-    if (!this.#options.driver() || this.#stopped.has(serverId)) return null;
+  /**
+   * Whether `serverId` may use this computer now. Computer Use tools need the driver; the terminal
+   * tools do not, so a user who allowed only commands needs no screen grants.
+   */
+  #allowed(serverId: string, needsDriver = true): RemoteComputerServer | null {
+    if ((needsDriver && !this.#options.driver()) || this.#stopped.has(serverId)) return null;
     const server = this.#options.servers().find((candidate) => candidate.serverId === serverId);
     return server?.enabled && server.supported && server.connected ? server : null;
   }
@@ -267,7 +270,7 @@ export class RemoteComputerClient {
   /** Whether `serverId` may also run commands here and copy files now. */
   #terminalAllowed(serverId: string): boolean {
     if (!terminalAvailableHere()) return false;
-    const server = this.#allowed(serverId);
+    const server = this.#allowed(serverId, false);
     return server?.terminalSupported === true && server.terminalEnabled;
   }
 
@@ -280,7 +283,8 @@ export class RemoteComputerClient {
         if (!server.connected) this.#announced.delete(server.serverId);
         continue;
       }
-      const wanted = server.enabled && driverReady && !this.#stopped.has(server.serverId);
+      const terminalOnly = terminalAvailableHere() && server.terminalSupported && server.terminalEnabled;
+      const wanted = server.enabled && (driverReady || terminalOnly) && !this.#stopped.has(server.serverId);
       const announced = this.#announced.has(server.serverId);
       if (!wanted && !announced) continue;
       if (wanted && announced && !repeat) continue;
@@ -305,7 +309,7 @@ export class RemoteComputerClient {
     serverId: string,
     event: RemoteComputerCallEvent,
   ): Effect.fn.Return<void, RemoteWorkflowError> {
-    const server = this.#allowed(serverId);
+    const server = this.#allowed(serverId, false);
     const reply = (ok: boolean, payload: string) =>
       this.#options
         .send(serverId, REMOTE_COMPUTER_USE_ROUTES.reply, { requestId: event.requestId, ok, payload })
@@ -347,6 +351,11 @@ export class RemoteComputerClient {
   ): Effect.fn.Return<string, RemoteComputerClientError> {
     if (event.operation === "call-tool" && TERMINAL_TOOL_NAMES.has(event.tool))
       return yield* this.#runTerminal(serverId, event, signal);
+    if (event.operation === "list-tools" && !this.#options.driver() && this.#terminalAllowed(serverId)) {
+      // No Computer Use grants here: the agent still gets the terminal tools.
+      const result: ListToolsResult = { tools: terminalTools() };
+      return JSON.stringify(result);
+    }
     const connection = yield* this.#connect();
     const options = { signal, timeout: CALL_TIMEOUT_MS };
     if (event.operation === "list-tools") {

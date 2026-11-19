@@ -71,6 +71,7 @@ let enabled = true;
 let terminalEnabled = false;
 let terminalSupported = true;
 let disabledByStop = false;
+let driverPresent = true;
 const servers = (): RemoteComputerServer[] => [
   {
     serverId: SERVER,
@@ -112,7 +113,7 @@ const client = new RemoteComputerClient({
         host.reply(MEMBER, SESSION, body);
       return {};
     }),
-  driver: () => driver,
+  driver: () => (driverPresent ? driver : null),
   computerName: () => "Test Mac",
   toJpeg: () => null,
   terminal: new RemoteComputerTerminal({
@@ -181,7 +182,7 @@ try {
   // 2. The host lacks the capability (the app's view of it): still nothing, even with the switch on.
   terminalEnabled = true;
   terminalSupported = false;
-  skewMs += 61_000;
+  await expireToolList();
   assert.ok(!(await mcp.listTools()).tools.some((tool) => tool.name.startsWith("openbot_")));
   assert.equal(
     (await mcp.callTool({ name: "openbot_run_command", arguments: { command: "echo nope" } })).isError,
@@ -191,7 +192,7 @@ try {
 
   // 3. Switch on, host capable: the tools are listed, and the file tool is made by the host.
   terminalSupported = true;
-  skewMs += 61_000;
+  await expireToolList();
   const onTools = (await mcp.listTools()).tools.map((tool) => tool.name).sort();
   assert.deepEqual(onTools, [
     "click",
@@ -287,6 +288,24 @@ try {
   assert.ok(!logged.includes("abcdefghijklmnopqrstuvwx"));
   pass("the redaction that the log line uses hides keys and bearers in a command");
 
+  // 6b. Terminal only: no Computer Use grants on the Mac, so the driver is not ready.
+  driverPresent = false;
+  client.reconcile();
+  await expireToolList();
+  assert.deepEqual((await mcp.listTools()).tools.map((tool) => tool.name).sort(), [
+    "openbot_fetch_file",
+    "openbot_read_file_chunk",
+    "openbot_run_command",
+  ]);
+  const noDriver = JSON.parse((await run({ command: "echo still-works" })).text) as { stdout: string };
+  assert.equal(noDriver.stdout, "still-works\n");
+  assert.equal((await mcp.callTool({ name: "click", arguments: { x: 1 } })).isError, true);
+  driverPresent = true;
+  client.reconcile();
+  await expireToolList();
+  assert.ok((await mcp.listTools()).tools.some((tool) => tool.name === "click"));
+  pass("without Computer Use grants the terminal still works alone, and the driver tools stay refused");
+
   // 7. Switch off while a command runs: it ends at once and its process is gone.
   const pidFile = join(macHome, "pid-switch");
   const running = run({ command: `echo $$ > '${pidFile}'; sleep 30` });
@@ -330,6 +349,12 @@ try {
   await writeFile(resolve(OUT, "report.json"), `${JSON.stringify(report, null, 2)}\n`);
   process.stdout.write(`${JSON.stringify(report, null, 2)}\n`);
   process.exitCode = report.passed ? 0 : 1;
+}
+
+/** The host keeps a computer's tool list for 60 s; move its clock on, and say that the computer is still there. */
+async function expireToolList(): Promise<void> {
+  skewMs += 61_000;
+  await runCauseEffect(host.setState(MEMBER, SESSION, { available: true, computerName: "Test Mac" }));
 }
 
 function alive(pid: number): boolean {
