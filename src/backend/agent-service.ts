@@ -304,6 +304,7 @@ import type { AgentStore } from "./agent-store";
 import { type AgentTaskBranchFailed, AgentTasks } from "./agent-tasks/agent-tasks";
 import { codingComputer } from "./agent-tasks/coding-computer";
 import { CodingJobs } from "./agent-tasks/coding-jobs";
+import { buildTaskTitlePrompt, parseGeneratedTaskTitle } from "./agent-tasks/task-title";
 import { type AgentThreadRecord, AgentThreadStore } from "./agent-threads/agent-thread-store";
 import { AgentWaitStore } from "./agent-waits/agent-wait-store";
 import { AgentWaits } from "./agent-waits/agent-waits";
@@ -6742,12 +6743,13 @@ export class AgentService extends EventEmitter<AgentServiceEvents> {
     sender: ConversationMessageSender | undefined,
     timezone: string | undefined,
   ): Effect.fn.Return<AgentTask, AgentLifecycleFailed> {
+    const titleText =
+      input.text.trim() ||
+      (input.attachmentDraftIds?.[0] ? (this.#mailbox.draftName(input.attachmentDraftIds[0]) ?? "") : "");
     const task = yield* lifecycleStep("start task", () => {
       if (!this.listAgents().some((agent) => agent.id === input.agentId))
         throw new Error(sourceText("error.agent.unknown", { id: input.agentId }));
       // A start with files and no text takes its title from the first file.
-      const firstDraft = input.attachmentDraftIds?.[0];
-      const titleText = input.text.trim() || (firstDraft ? (this.#mailbox.draftName(firstDraft) ?? "") : "");
       return this.#tasks.create(input.agentId, titleText, "user");
     });
     this.#tasks.changed(task.agentId);
@@ -6770,6 +6772,7 @@ export class AgentService extends EventEmitter<AgentServiceEvents> {
         }),
       ),
     );
+    this.#scheduleTaskTitle(task, titleText);
     return this.#tasks.publicTask(task);
   }).bind(this);
 
@@ -6805,7 +6808,55 @@ export class AgentService extends EventEmitter<AgentServiceEvents> {
     this.#mailboxSync.emitQueue(input.agentId);
     this.#tasks.changed(input.agentId);
     this.#drain.scheduleDrain(input.agentId);
+    this.#scheduleTaskTitle(task, context.delivery.text);
     return this.#tasks.publicTask(task);
+  }).bind(this);
+
+  /** Generates a concise session title in the background using the agent's smaller model. */
+  #scheduleTaskTitle(task: AgentThreadRecord, promptText: string): void {
+    if (task.titleSource !== "auto" || !promptText.trim()) return;
+    Effect.runFork(this.#generateTaskTitle(task, promptText).pipe(Effect.forkIn(this.#scope)));
+  }
+
+  readonly #generateTaskTitle = Effect.fn("AgentService.generateTaskTitle")(function* (
+    this: AgentService,
+    task: AgentThreadRecord,
+    promptText: string,
+  ): Effect.fn.Return<void> {
+    if (this.#stopping || !this.#profileClients.hasSpare()) return;
+    const agent = this.#store.get(task.agentId);
+    if (!agent) return;
+    const started = yield* Effect.result(this.#providers.ensureProvider(agent.provider));
+    if (Result.isFailure(started) || this.#stopping || !this.#profileClients.hasSpare()) return;
+    const model = backgroundModel(agent, this.#agentModels(agent));
+    if (!model) return;
+    const turnModel = withBackgroundEffort(model);
+    const clientResult = yield* Effect.result(
+      Effect.try(() => this.#providers.createProfileClient(agent.provider, agent.providerAccountId)),
+    );
+    if (Result.isFailure(clientResult)) return;
+    const generated = yield* Effect.result(
+      this.#profileClients.run(clientResult.success, (cancelled) =>
+        generateTextWithoutTools(
+          clientResult.success,
+          turnModel,
+          buildTaskTitlePrompt(promptText),
+          cancelled,
+          sideSessionUsageObserver("task-title", this.#store.database.usage, agent.id, agent.provider, turnModel.id),
+        ),
+      ),
+    );
+    if (Result.isFailure(generated)) {
+      logger.debug("Background task title generation skipped.", {
+        agentId: task.agentId,
+        taskId: task.taskId,
+        cause: generated.failure,
+      });
+      return;
+    }
+    const title = parseGeneratedTaskTitle(generated.success);
+    if (!title) return;
+    this.#tasks.retitleAuto(task.taskId, title);
   }).bind(this);
 
   /**
