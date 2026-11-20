@@ -7,7 +7,7 @@ import { afterEach, describe, expect, it } from "vitest";
 import { ServerMode, type ServerModeOptions } from "./server-mode";
 import type { RestartReadiness } from "./update-readiness";
 
-function createTestServerMode(controlSocketPath: string, restartReadiness?: () => RestartReadiness): ServerMode {
+function createTestServerMode(controlSocketPath: string, restartReadiness: () => RestartReadiness): ServerMode {
   const centralAuth: ServerModeOptions["centralAuth"] = {
     getState: () => ({ status: "signed_out" }),
     requestEmailCode: () => Effect.die("unused"),
