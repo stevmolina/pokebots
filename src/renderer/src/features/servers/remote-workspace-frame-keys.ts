@@ -3,7 +3,7 @@
 
 export type FrameStorage = Pick<Storage, "getItem" | "setItem" | "removeItem" | "key" | "length">;
 
-export const FRAME_KEY_PREFIX = "openbot:remote-frame:v1:";
+const FRAME_KEY_PREFIX = "openbot:remote-frame:v1:";
 
 export function frameKey(accountId: string, serverId: string): string {
   return `${FRAME_KEY_PREFIX}${encodeURIComponent(accountId)}:${encodeURIComponent(serverId)}`;

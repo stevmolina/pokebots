@@ -18,7 +18,7 @@ import { SIDEBAR_PINS_ROUTES } from "@openbot/contracts/team-protocol/sidebar-pi
  * A hold ends by itself after this time, so a host that does not answer the first screen does not hold
  * the rest. A read of that screen that waits for a held read also ends here; keep the list complete.
  */
-export const FIRST_SCREEN_HOLD_MS = 5_000;
+const FIRST_SCREEN_HOLD_MS = 5_000;
 
 const FIRST_SCREEN_PATHS: ReadonlySet<string> = new Set([
   // The connect: compatibility, membership, the agents and their models.
@@ -58,7 +58,7 @@ const AGENT_CHAT_PATH = /^\/v1\/agents\/[^/]+\/(?:conversation|conversation-page
 const ATTACHMENT_PATH = /^\/v1\/attachments\/[^/]+$/u;
 
 /** True for a request that the first screen of a host shows. */
-export function isFirstScreenPath(path: string): boolean {
+function isFirstScreenPath(path: string): boolean {
   const route = path.split("?", 1)[0] ?? path;
   return FIRST_SCREEN_PATHS.has(route) || AGENT_CHAT_PATH.test(route) || ATTACHMENT_PATH.test(route);
 }

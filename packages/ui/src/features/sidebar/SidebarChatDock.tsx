@@ -37,7 +37,7 @@ import { useSidebarScope } from "./sidebar-scope";
 import { SIDEBAR_DOCK_DONE_ID, SIDEBAR_DOCK_WORKING_ID, type SidebarChatItem } from "./sidebar-types";
 
 /** Rows of the open list, in the order given. */
-export function SidebarChatRows(rowsProps: { chats: readonly SidebarChatItem[] }) {
+function SidebarChatRows(rowsProps: { chats: readonly SidebarChatItem[] }) {
   return (
     <div class="sidebar-chat-rows">
       {/* Keyed by chat, so a new order after a message keeps each row, its focus and its menu. */}

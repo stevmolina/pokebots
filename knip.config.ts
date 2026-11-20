@@ -40,6 +40,9 @@ const config: KnipConfig = {
     "ldd",
     // Stops a stuck packaged app during Windows package verification.
     "taskkill.exe",
+    // Read Linux process usage and inspect local iOS signing certificates.
+    "top",
+    "openssl",
     // Finds the parent process of the stand-in CLI in the Windows Claude `.cmd` E2E script.
     "tasklist",
     // Tunnels Slack to the local Signal and account API in `bun run dev:slack`.
@@ -124,8 +127,8 @@ const config: KnipConfig = {
     },
     "apps/auth-api": {
       // The wrangler plugin of knip reads `main` (src/worker-entry.ts) from wrangler.jsonc only. The
-      // email relay Worker's `main` is in wrangler.email-relay.jsonc.
-      entry: ["*.ts", "src/email-relay-entry.ts"],
+      // email relay Worker and the self-hosted Docker server have separate entry points.
+      entry: ["*.ts", "src/email-relay-entry.ts", "src/self-hosted/server.ts"],
       project: ["src/**/*.{ts,tsx,css}", "test/**/*.ts", "*.ts"],
       // `cloudflare:workers` is a runtime module of the Workers platform, not an npm package.
       ignoreDependencies: ["cloudflare"],

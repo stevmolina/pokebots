@@ -5,7 +5,7 @@ export class CodingComputerFailed extends Schema.TaggedError<CodingComputerFaile
   cause: Schema.Defect(),
 }) {}
 
-export interface CodingMachine {
+interface CodingMachine {
   id: string;
   deadline_at: string;
 }

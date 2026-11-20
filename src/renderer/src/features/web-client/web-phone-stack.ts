@@ -17,7 +17,7 @@ const SLOP = 8;
 /** The pointer samples of the last part of the drag give the release speed. */
 const VELOCITY_WINDOW_MS = 80;
 
-export const WEB_PHONE_SWIPE_ATTRIBUTE = "data-web-phone-swiping";
+const WEB_PHONE_SWIPE_ATTRIBUTE = "data-web-phone-swiping";
 const SWIPE_PROPERTY = "--web-phone-swipe";
 
 interface Sample {

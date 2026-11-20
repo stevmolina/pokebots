@@ -38,7 +38,7 @@ const ARCHIVED: ThreadItem[] = [
 
 /**
  * The chat header with the session pill over the agent panel's Sessions card. A click on a row makes it
- * the main session: it moves to the top and its title shows in the pill. "+" makes a new session main.
+ * the main session: its title shows in the pill and the card keeps its order. "+" makes a new session main.
  */
 function SessionsStory(props: { active?: string; archived?: ThreadItem[]; editable?: boolean }) {
   const [state, setState] = createStore({
@@ -126,7 +126,7 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/** A side session is the main session: the pill names it, and it leads the card. */
+/** A side session is the main session: the pill names it. */
 export const SideSessionMain: Story = { render: () => <SessionsStory /> };
 
 /** The agent's own chat is the main session: the pill shows the agent only. */

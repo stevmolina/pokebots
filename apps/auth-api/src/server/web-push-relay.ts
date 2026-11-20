@@ -62,7 +62,7 @@ class WebPushProviderError extends Schema.TaggedError<WebPushProviderError>()("W
  * port. With `allowLoopback`, which only `vite dev` sets, an `http:` URL on this computer also passes,
  * so a local check can stand in for a push service.
  */
-export function webPushEndpointAllowed(endpoint: string, allowLoopback: boolean): boolean {
+function webPushEndpointAllowed(endpoint: string, allowLoopback: boolean): boolean {
   if (endpoint.length > WEB_PUSH_ENDPOINT_LIMIT) return false;
   let url: URL;
   try {
@@ -164,7 +164,7 @@ export class WebPushRelaySender {
  * RFC 8030 section 5: 201 is the answer for a stored message, and some services give 200 or 202. A
  * subscription that ended answers 404 or 410. A body that is too large answers 413.
  */
-export function relayResult(status: number): WebPushRelayResult {
+function relayResult(status: number): WebPushRelayResult {
   if (status === 200 || status === 201 || status === 202) return "sent";
   if (status === 404 || status === 410) return "gone";
   if (status === 429 || status >= 500) return "unavailable";
@@ -175,10 +175,7 @@ export function relayResult(status: number): WebPushRelayResult {
  * Reads one notification from a host request body, or returns `null` when it is not valid or its
  * endpoint is not a known push service.
  */
-export function readWebNotificationRelayPush(
-  body: DynamicRecord,
-  allowLoopback: boolean,
-): WebNotificationRelayPush | null {
+function readWebNotificationRelayPush(body: DynamicRecord, allowLoopback: boolean): WebNotificationRelayPush | null {
   const { endpoint, sessionId, body: encrypted, ttl, urgency, topic, timestamp } = body;
   if (!isString(endpoint) || !webPushEndpointAllowed(endpoint, allowLoopback)) return null;
   if (!isString(sessionId) || !sessionId || sessionId.length > 128) return null;

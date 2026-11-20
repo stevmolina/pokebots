@@ -159,15 +159,21 @@ function SessionRow(props: AgentSessionsProps & { session: ThreadItem }) {
 const SESSIONS_SHOWN = 5;
 
 /**
- * The sessions of an agent, at the top of its panel. The main session, which is on screen, comes
- * first, then the newest others. A click on a row opens that session and makes it the main session.
+ * The sessions of an agent, newest first. A click on a row opens that session.
  * "New session" starts one. "All sessions" shows the rest and the archived sessions.
  */
 export function AgentSessions(props: AgentSessionsProps) {
   const { t, format } = useText();
   const titleId = createUniqueId();
   const [all, setAll] = createSignal(false);
-  const shown = () => (all() ? props.sessions : props.sessions.slice(0, SESSIONS_SHOWN));
+  const ordered = () =>
+    props.sessions.toSorted(
+      (left, right) =>
+        Number(left.kind === "draft") - Number(right.kind === "draft") ||
+        right.updatedAt.localeCompare(left.updatedAt) ||
+        left.id.localeCompare(right.id),
+    );
+  const shown = () => (all() ? ordered() : ordered().slice(0, SESSIONS_SHOWN));
   const more = () => props.sessions.length > SESSIONS_SHOWN || props.archived.length > 0;
   return (
     <section class="settings-link-section agent-sessions" aria-labelledby={titleId}>

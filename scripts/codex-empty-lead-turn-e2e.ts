@@ -195,7 +195,8 @@ const answer = (message) => {
       const turnId = "turn-" + process.pid + "-" + (++turns);
       const text = (params.input || []).map((item) => item.text || "").join("\\n");
       const turn = { threadId: params.threadId, turnId, ...decide(text, params.model) };
-      appendFileSync(LOG, JSON.stringify({ turnId, model: params.model, kind: turn.kind, mode: turn.mode ?? null, empty: turn.empty }) + "\\n");
+      const taskTitle = text.includes("Write a concise 3 to 6 word title");
+      appendFileSync(LOG, JSON.stringify({ turnId, taskTitle, model: params.model, kind: turn.kind, mode: turn.mode ?? null, empty: turn.empty }) + "\\n");
       write({ id: message.id, result: { turn: { id: turnId, status: "inProgress", items: [] } } });
       write({ method: "turn/started", params: { threadId: params.threadId, turn: { id: turnId } } });
       return callNext(turn);
@@ -230,6 +231,7 @@ process.stdin.on("data", (chunk) => {
 `;
 
 interface FakeTurn {
+  taskTitle: boolean;
   turnId: string;
   model: string;
   kind: "result" | "calls" | "question" | "empty" | "step-empty" | "chat" | "narration";
@@ -288,7 +290,8 @@ function fakeTurns(): FakeTurn[] {
   return text
     .split("\n")
     .filter(Boolean)
-    .map((line) => JSON.parse(line));
+    .map((line): FakeTurn => JSON.parse(line))
+    .filter((turn) => !turn.taskTitle);
 }
 
 const ended = (status: string | undefined) =>

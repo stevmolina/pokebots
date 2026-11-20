@@ -286,7 +286,7 @@ pass("a claim ends after its idle time", { idleMs: CLAIM_IDLE_MS });
 
 // 7. An agent that gives up while it waits leaves the queue, and holds no lease afterwards.
 coordinator.turnEnded("agent-ada", "thread-ada-chat");
-const slow = send(adaAddress, "click", { pid: MAIL, x: 4, y: 4, marker: "ada-mail" });
+const slow = send(adaAddress, "click", { pid: MAIL, coordinate_frame: "desktop", x: 4, y: 4, marker: "ada-mail" });
 await sleep(10);
 const abandoned = connect(graceAddress);
 abandoned.write(
@@ -295,7 +295,13 @@ abandoned.write(
 await sleep(20);
 abandoned.destroy();
 await slow;
-const next = await send(graceAddress, "click", { pid: NOTES, x: 6, y: 6, marker: "grace-after" });
+const next = await send(graceAddress, "click", {
+  pid: NOTES,
+  coordinate_frame: "desktop",
+  x: 6,
+  y: 6,
+  marker: "grace-after",
+});
 assert.equal(next.isError, false);
 assert.ok(next.ms < ACTION_MS * 3, `the next action did not wait for a lost lease (${next.ms} ms)`);
 assert.ok(!calls.some((call) => call.marker === "grace-gave-up"), "the abandoned request never reached the daemon");

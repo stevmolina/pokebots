@@ -144,11 +144,15 @@ async function main(): Promise<void> {
       refused,
     );
     const create = fetches.find((item) => item.url === new URL("/v2/remote/sessions/", API_URL).href);
+    const createBody = JSON.parse(create?.body ?? "null");
     check(
-      "the session request goes through the bridge with the bearer token",
+      "the session request sends the bearer token and client key through the bridge",
       create?.method === "POST" &&
         create.headers.authorization === `Bearer ${SESSION_TOKEN}` &&
-        create.body === JSON.stringify({ hostId: "host-refused" }),
+        isDynamicRecord(createBody) &&
+        createBody.hostId === "host-refused" &&
+        isString(createBody.clientPublicKey) &&
+        createBody.clientPublicKey.startsWith("-----BEGIN PUBLIC KEY-----"),
       create,
     );
     check("no file is read before the connection", fileReads.length === 0, fileReads);

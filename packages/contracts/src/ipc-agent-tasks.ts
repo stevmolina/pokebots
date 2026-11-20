@@ -24,7 +24,7 @@ export const HOST_AGENT_TASK_LIMIT_MAX = 64;
  * The built-in task limit of an agent that has no limit of its own, when the host sets no default.
  * Pokebots: the highest host default, so agents run many side threads unless an owner sets less.
  */
-export const AGENT_TASK_LIMIT_DEFAULT = HOST_AGENT_TASK_LIMIT_MAX;
+export const AGENT_TASK_LIMIT_DEFAULT = 64;
 
 export function isAgentTaskLimit(value: unknown): value is number {
   return integerInRange(value, 1, AGENT_TASK_LIMIT_MAX);

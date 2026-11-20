@@ -18,7 +18,7 @@ import serverPurple from "./assets/machines/server-purple.webp";
 const MACHINE_MASCOTS = [serverMint, serverOrange, serverPurple, serverPink] as const;
 
 /** The plush machine of a server: the same id always gives the same picture. */
-export function serverMascotUrl(serverId: string): string {
+function serverMascotUrl(serverId: string): string {
   let hash = 0;
   for (let index = 0; index < serverId.length; index += 1) {
     hash = (Math.imul(hash, 31) + serverId.charCodeAt(index)) >>> 0;

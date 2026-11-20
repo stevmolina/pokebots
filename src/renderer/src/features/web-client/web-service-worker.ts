@@ -10,11 +10,11 @@ import { isDynamicRecord } from "@openbot/contracts/runtime-values";
  */
 
 /** Where the Worker serves the worker file. */
-export const WEB_SERVICE_WORKER_URL = "/app-sw.js";
+const WEB_SERVICE_WORKER_URL = "/app-sw.js";
 /** The scope of the worker: the web client and the paths under it. */
-export const WEB_SERVICE_WORKER_SCOPE = "/app";
+const WEB_SERVICE_WORKER_SCOPE = "/app";
 /** The worker tells an open window to open a path, after a click on a notification. */
-export const NOTIFICATION_OPEN_MESSAGE = "openbot-notification-open";
+const NOTIFICATION_OPEN_MESSAGE = "openbot-notification-open";
 /** The worker tells open windows that the push service replaced the push subscription. */
 export const PUSH_SUBSCRIPTION_CHANGE_MESSAGE = "openbot-push-subscription-change";
 /** The page asks a waiting worker to take over. */

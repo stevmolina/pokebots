@@ -11,6 +11,10 @@ const ALLOWED_DIRECTORIES = [
   "src/renderer/stories/assets/",
   // Images that shared UI (`@openbot/ui`) bundles for the desktop and web apps.
   "packages/ui/src/assets/",
+  // Pokebots app identity, agent portraits, and server illustrations.
+  "packages/brand/src/assets/pokebots/",
+  "packages/ui/src/features/agents/assets/pokebots/",
+  "packages/ui/src/features/servers/assets/machines/",
   // Expo icons and splash screens.
   "apps/mobile/assets/",
   // Public site files, news and guide art, and guide images.
@@ -20,6 +24,8 @@ const ALLOWED_DIRECTORIES = [
   // The background logo of the agent display on a server (scripts/hosting/openbot-desktop).
   "scripts/hosting/desktop/",
 ] as const;
+
+const SERVER_RAIL_ICON = "packages/ui/src/features/servers/assets/pokebots-icon.png";
 
 const IMAGE_FILE = /\.(avif|bmp|gif|heic|icns|ico|jpe?g|mov|mp4|png|svg|tiff?|webm|webp)$/i;
 
@@ -34,7 +40,7 @@ if (result.status !== 0) {
 const misplaced = result.stdout
   .split("\0")
   .filter((path) => IMAGE_FILE.test(path))
-  .filter((path) => !ALLOWED_DIRECTORIES.some((directory) => path.startsWith(directory)));
+  .filter((path) => path !== SERVER_RAIL_ICON && !ALLOWED_DIRECTORIES.some((directory) => path.startsWith(directory)));
 
 if (misplaced.length > 0) {
   logger.error(

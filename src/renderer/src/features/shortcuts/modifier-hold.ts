@@ -1,7 +1,7 @@
 import type { ShortcutPlatform } from "@openbot/ui/features/shortcuts/shortcut-registry";
 
 /** How long ⌘ (Ctrl elsewhere) stays down alone before the shortcut list shows. */
-export const MODIFIER_HOLD_MS = 600;
+const MODIFIER_HOLD_MS = 600;
 
 /** The key that starts every app shortcut: ⌘ on a Mac, Ctrl elsewhere. */
 function primaryKey(platform: ShortcutPlatform): "Meta" | "Control" {

@@ -145,8 +145,20 @@ jobs:
       # Not in the parallel group: it fetches a release tag into the shallow clone, and a parallel
       # `git fetch` (released database schemas) then fails on `.git/shallow.lock`.
       - name: Check frozen migrations
-        if: env.CODE == 'true'
+        if: env.CODE == 'true' && github.repository != 'stevmolina/pokebots'
         run: bun run check:migrations
+
+      - name: Check frozen Pokebots migrations
+        if: env.CODE == 'true' && github.repository == 'stevmolina/pokebots'
+        run: |
+          release_tags=$(git ls-remote --tags --refs origin 'v*')
+          if grep -Eq 'refs/tags/v[0-9]+\.[0-9]+\.[0-9]+$' <<< "$release_tags"; then
+            bun run check:migrations
+          else
+            # Pokebots has no release tags. Check the upstream release included in the fork.
+            git fetch --no-tags --depth=1 https://github.com/nightly-labs/openbot.git refs/tags/v0.73.0:refs/tags/v0.73.0
+            bun scripts/check-frozen-migrations.ts --tag v0.73.0
+          fi
 
       - parallel:
           - name: Check translation catalogs

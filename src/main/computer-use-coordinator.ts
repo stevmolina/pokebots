@@ -70,7 +70,7 @@ export function computerUseActor(agentId: string, threadId: string | null): Comp
  * - `focus` is input that can take keyboard focus. It is refused, not queued, on an application
  *   another actor holds.
  */
-export type ComputerUseActionKind = "read" | "input" | "focus";
+type ComputerUseActionKind = "read" | "input" | "focus";
 
 /**
  * Tools that read the desktop, or change only the driver's own session, cursor or settings.
@@ -112,7 +112,7 @@ const NO_INPUT_TOOLS: ReadonlySet<string> = new Set([
 /** Input tools that send keys or bring a window to the front, so they move keyboard focus. */
 const FOCUS_TOOLS: ReadonlySet<string> = new Set(["type_text", "press_key", "hotkey", "set_value", "bring_to_front"]);
 
-export function computerUseActionKind(tool: string): ComputerUseActionKind {
+function computerUseActionKind(tool: string): ComputerUseActionKind {
   if (NO_INPUT_TOOLS.has(tool)) return "read";
   return FOCUS_TOOLS.has(tool) ? "focus" : "input";
 }

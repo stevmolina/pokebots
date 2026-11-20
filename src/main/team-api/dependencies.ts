@@ -786,7 +786,7 @@ export type TeamApiLiveVoice = Pick<AgentService, "startLiveVoice" | "stopLiveVo
 export type TeamApiAgentAccess = Pick<AgentAccessStore, "copyAgent" | "get" | "levels" | "set" | "subscribe">;
 export type TeamApiServerAudit = Pick<ServerAuditStore, "read">;
 
-export type TeamApiRemoteComputers = Pick<
+type TeamApiRemoteComputers = Pick<
   RemoteComputerHost,
   "attach" | "detach" | "setState" | "reply" | "sessionDisconnected"
 >;

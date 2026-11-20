@@ -73,7 +73,7 @@ function BrainAccountScreen({
   const generation = useRef(0);
   const supported = workspace.canUseBrain(serverId);
   const scope = { mcpServerId: state.connection, brain: state.brain };
-  const connect = () => router.push({ pathname: "/server-settings/mcp", params: { serverId } });
+  const connect = () => router.push({ pathname: "/server-settings/mcp-server", params: { serverId, preset: "brain" } });
   useFocusEffect(
     useCallback(() => {
       if (!supported) return;

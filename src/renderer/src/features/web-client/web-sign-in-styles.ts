@@ -1,5 +1,5 @@
 /** The selector of the last style rule of `web-sign-in.css`, which marks that stylesheet in the page. */
-export const SIGN_IN_SHEET_MARK = ".openbot-web-sign-in-sheet";
+const SIGN_IN_SHEET_MARK = ".openbot-web-sign-in-sheet";
 
 /** True for the sign-in stylesheet. Tailwind puts its `@property` rules after the style rules. */
 function isSignInSheet(sheet: CSSStyleSheet): boolean {

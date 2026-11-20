@@ -14,7 +14,7 @@ import {
 } from "./computer-use-coordinator";
 
 /** What the agent service knows about one agent. */
-export interface ComputerUseAgentEntry {
+interface ComputerUseAgentEntry {
   name: string;
   color: AvatarColor | null;
   /** The public thread of the agent's own chat. */

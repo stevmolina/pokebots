@@ -21,7 +21,7 @@ export function useOpenAgentTasks(serverId: string, agentId: string): AgentTask[
 }
 
 /** The open threads of one agent, and `loading` while the first list from the host is on its way. */
-export function useOpenAgentTasksState(serverId: string, agentId: string): { tasks: AgentTask[]; loading: boolean } {
+function useOpenAgentTasksState(serverId: string, agentId: string): { tasks: AgentTask[]; loading: boolean } {
   const queryScope = useQueryScope();
   const workspace = useMobileWorkspaceReader();
   const enabled = useMobileWorkspaceSelector(

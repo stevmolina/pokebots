@@ -73,7 +73,7 @@ const answer = (message) => {
     case "thread/items/list": return write({ id: message.id, result: { data: [], nextCursor: null } });
     case "thread/read": return write({ id: message.id, result: { thread: { id: params.threadId, turns: [] } } });
     case "turn/start": {
-      const turnId = "turn-" + (++turns);
+      const turnId = "turn-" + process.pid + "-" + (++turns);
       const prompts = (/prompts=([0-9,]+)/.exec(JSON.stringify(params.input))?.[1] ?? "1000").split(",").map(Number);
       write({ id: message.id, result: { turn: { id: turnId, status: "inProgress", items: [] } } });
       write({ method: "turn/started", params: { threadId: params.threadId, turn: { id: turnId } } });
@@ -226,8 +226,9 @@ const closeReader = () => connection?.close();
 function records(turnId: string): UsageRecord[] {
   return sqlite()
     .prepare(
-      `SELECT r.agent_id, s.thread_id, r.turn_id, r.model, r.tokens_json, r.estimated_cost_usd, r.rate_basis
-       FROM agent_usage_records r JOIN projection_provider_sessions s ON s.id = r.session_id
+      `SELECT r.agent_id, COALESCE(s.thread_id, r.session_id) AS thread_id, r.turn_id, r.model,
+              r.tokens_json, r.estimated_cost_usd, r.rate_basis
+       FROM agent_usage_records r LEFT JOIN projection_provider_sessions s ON s.id = r.session_id
        WHERE r.turn_id = ? ORDER BY r.recorded_at, r.rowid`,
     )
     .all(turnId)
@@ -368,6 +369,18 @@ try {
   // The new counter starts from the totals before the first request, so both requests count once.
   check("chat turn after the upgrade", chatThread, upgradeTurn, agent.id, expected([20000, 21000], 15000));
 
+  const titleUsage = await waitFor("the task title to report both requests", () => {
+    const row = sqlite()
+      .prepare(
+        `SELECT session_id, turn_id FROM agent_usage_records
+         WHERE agent_id = ? AND session_id LIKE 'task-title:%'
+         GROUP BY session_id, turn_id HAVING COUNT(*) = 2`,
+      )
+      .get(agent.id);
+    return row && { sessionId: String(row.session_id), turnId: String(row.turn_id) };
+  });
+  check("task title", titleUsage.sessionId, titleUsage.turnId, agent.id, expected([12000, 15000], 0));
+
   const today = new Date().toISOString().slice(0, 10);
   const analytics = agents.getAnalytics({ agentId: agent.id, startDate: today, endDate: today, timeZone: "UTC" });
   const recorded = report.cases.flatMap((entry) => entry.records);
@@ -387,7 +400,7 @@ try {
       (record.tokens.output ?? 0),
     0,
   );
-  assert.equal(analytics.totals.turns, 5, "Analytics count the chat and task turns.");
+  assert.equal(analytics.totals.turns, 6, "Analytics count the chat, task, and task title turns.");
   assert.equal(analytics.totals.missingUsageTurns, 0, "Every turn has usage.");
   assert.equal(analytics.totals.unpricedRecords, 0, "Every record is priced.");
   assert.equal(analytics.totals.processedTokens, tokens, "Analytics count each record once.");

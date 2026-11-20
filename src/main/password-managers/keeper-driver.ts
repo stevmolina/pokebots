@@ -60,10 +60,10 @@ export const keeperRecordSchema = Schema.Struct({
   email: Schema.String,
   connectedAt: Schema.Number,
 });
-export type KeeperRecord = typeof keeperRecordSchema.Type;
+type KeeperRecord = typeof keeperRecordSchema.Type;
 
 /** Commander's config file as JSON. The bridge reads and writes it; OpenBot only stores it. */
-export type KeeperConfig = DynamicRecord;
+type KeeperConfig = DynamicRecord;
 
 /** One request to the bridge, the first line of its stdin. */
 export type KeeperHelperRequest =
