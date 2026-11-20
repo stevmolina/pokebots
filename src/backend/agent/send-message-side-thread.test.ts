@@ -5,6 +5,7 @@ import type { AgentSummary } from "@openbot/contracts/ipc";
 import { sourceText } from "@openbot/i18n/source";
 import { Effect } from "effect";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { z } from "zod";
 import { AgentStore } from "../agent-store";
 import { AgentTasks } from "../agent-tasks/agent-tasks";
 import { AgentThreadStore } from "../agent-threads/agent-thread-store";
@@ -12,7 +13,7 @@ import { runCauseEffect } from "../effect-boundary";
 import { MailboxStore } from "../mailbox-store";
 import { OpenBotDatabase } from "../openbot-database";
 import { ConversationRuntime } from "./conversation-runtime";
-import { OpenBotToolRouter } from "./openbot-tool-router";
+import { handleSendMessageTool, type SendMessageToolHost } from "./send-message-tool";
 
 const cleanup: Array<() => Promise<void>> = [];
 afterEach(async () => {
@@ -30,19 +31,21 @@ interface SendMessageArgs {
   taskId?: string | null;
 }
 
-interface DeliveryReceipt {
-  id: string;
-  messageId?: string;
-  recipientAgentId: string;
-  status: string;
-  position: number | null;
-  taskId?: string;
-}
+const deliveryReceiptSchema = z.object({
+  id: z.string(),
+  messageId: z.string().optional(),
+  recipientAgentId: z.string(),
+  status: z.string(),
+  position: z.number().nullable(),
+  taskId: z.string().optional(),
+});
 
-interface SendMessageResultPayload {
-  messageId: string;
-  deliveries: DeliveryReceipt[];
-}
+const sendMessageResultPayloadSchema = z.object({
+  messageId: z.string(),
+  deliveries: z.array(deliveryReceiptSchema),
+});
+
+type SendMessageResultPayload = z.infer<typeof sendMessageResultPayloadSchema>;
 
 function makeAgent(id: string, name: string, root: string): AgentSummary & { threadId: string } {
   return {
@@ -109,37 +112,24 @@ async function createFixture() {
     conversation.bindThread(agent.threadId, agent.id, agent.threadId);
   }
 
-  const router = new OpenBotToolRouter({
-    store: agentStore,
+  const host: SendMessageToolHost = {
     mailbox,
-    mailboxSync: {
-      emitQueue: (agentId: string) => emittedQueues.push(agentId),
-      syncMailboxMessages: vi.fn(),
-    } as never,
-    conversation,
-    attention: { cancelRequest: vi.fn() } as never,
-    codexSubagentParent: () => undefined,
-    browser: {} as never,
-    browserUploads: {} as never,
-    attachments: {} as never,
-    channels: { store: { channelForThread: () => null } } as never,
-    messaging: { store: { linkForThread: () => null } } as never,
-    hostedSites: {} as never,
-    routines: { handleTool: () => Effect.succeed(null) } as never,
-    memories: { handleTool: () => null } as never,
-    waits: { handleTool: () => null } as never,
     tasks,
-    messagePins: {} as never,
-    drain: { scheduleDrain: (agentId: string) => drainScheduled.push(agentId) } as never,
-    approvalAutomation: {} as never,
-    hooks: {
-      listAgents: () => agents,
-      steerAgentMessage: () => Effect.succeed(null),
-      emitError: vi.fn(),
-      redactMcp: (text: string) => text,
-      redactMcpForAgent: (_agentId: string, text: string) => text,
-    } as never,
-  } as never);
+    conversation,
+    mailboxSync: {
+      emitQueue: (agentId: string) => {
+        emittedQueues.push(agentId);
+      },
+      syncMailboxMessages: vi.fn(),
+    },
+    drain: {
+      scheduleDrain: (agentId: string) => {
+        drainScheduled.push(agentId);
+      },
+    },
+    listAgents: () => agents,
+    steerAgentMessage: () => Effect.succeed(null),
+  };
 
   const callSendMessage = async (input: {
     threadId: string;
@@ -150,44 +140,30 @@ async function createFixture() {
     success: boolean;
     text: string;
     parsed?: SendMessageResultPayload;
-    rpcError?: { code: number; message: string };
   }> => {
-    let response: { success: boolean; contentItems: Array<{ text: string }> } | undefined;
-    let rpcError: { code: number; message: string } | undefined;
-    const client = {
-      provider: "codex",
-      running: true,
-      respond: (_id: string | number, payload: { success: boolean; contentItems: Array<{ text: string }> }) => {
-        response = payload;
-      },
-      respondError: (_id: string | number, err: { code: number; message: string }) => {
-        rpcError = err;
-      },
-    };
-    await Effect.runPromise(
-      router.handle(
-        client as never,
+    const senderAgentId = conversation.agentForThread(input.threadId);
+    if (!senderAgentId) throw new Error(`Unknown thread: ${input.threadId}`);
+    const response = await Effect.runPromise(
+      handleSendMessageTool(
+        host,
         {
-          id: input.callId ?? "req-1",
-          method: "item/tool/call",
-          params: {
-            threadId: input.threadId,
-            turnId: input.turnId ?? "turn-1",
-            callId: input.callId ?? "call-1",
-            namespace: "openbot",
-            tool: "send_message",
-            arguments: input.arguments,
-          },
-        } as never,
+          threadId: input.threadId,
+          turnId: input.turnId ?? "turn-1",
+          callId: input.callId ?? "call-1",
+          namespace: "openbot",
+          tool: "send_message",
+          arguments: input.arguments,
+        },
+        senderAgentId,
       ),
     );
-    if (rpcError) return { success: false, text: rpcError.message, rpcError };
-    const text = response?.contentItems?.[0]?.text ?? "";
+    const firstItem = response.contentItems[0];
+    const text = firstItem?.type === "inputText" ? firstItem.text : "";
     let parsed: SendMessageResultPayload | undefined;
-    if (response?.success) {
-      parsed = JSON.parse(text) as SendMessageResultPayload;
+    if (response.success) {
+      parsed = sendMessageResultPayloadSchema.parse(JSON.parse(text));
     }
-    return { success: Boolean(response?.success), text, parsed };
+    return { success: response.success, text, parsed };
   };
 
   return { alice, bob, carol, mailbox, threadStore, tasks, conversation, callSendMessage, drainScheduled };
