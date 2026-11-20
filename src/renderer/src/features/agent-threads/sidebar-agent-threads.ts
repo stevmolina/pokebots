@@ -1,4 +1,4 @@
-import { sideThreadItem } from "@openbot/ui/features/conversation/threads/thread-items";
+import { compareThreadItems, sideThreadItem } from "@openbot/ui/features/conversation/threads/thread-items";
 import { MAIN_THREAD_ID } from "@openbot/ui/features/conversation/threads/thread-types";
 import type { SidebarAgentThreads } from "@openbot/ui/features/sidebar/sidebar-types";
 import type { AgentTasks } from "../agent-tasks/agent-tasks-state";
@@ -34,7 +34,7 @@ export function sidebarAgentThreads(input: SidebarAgentThreadsInput): SidebarAge
       return list
         .filter((task) => task.state !== "closed" && !hidden.has(task.id))
         .map((task) => sideThreadItem(task, taskWaitsFor(task, waits), tasks.unreadCount(task)))
-        .sort((left, right) => right.updatedAt.localeCompare(left.updatedAt));
+        .sort(compareThreadItems);
     },
     openId: (agentId) => {
       if (input.activeAgentId() !== agentId) return undefined;
