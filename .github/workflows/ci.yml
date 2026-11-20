@@ -615,6 +615,12 @@ jobs:
         if: ${{ !cancelled() }}
         run: bun scripts/start-agent-task-e2e.ts
 
+      - name: Run the remote coding job recovery smoke tests
+        if: ${{ !cancelled() }}
+        run: |
+          bun scripts/remote-coding-task-smoke.ts
+          bun scripts/coding-jobs-controller-smoke.ts
+
       - name: Run the pinned message agent tool E2E test
         if: ${{ !cancelled() }}
         run: bun run test:pinned-message-agent-tool
@@ -884,6 +890,8 @@ jobs:
             .openbot-build/library-folders-e2e/
             .openbot-build/agent-workflow-gate-e2e/
             .openbot-build/start-agent-task-e2e/
+            .openbot-build/remote-coding-task-smoke/
+            .openbot-build/coding-jobs-controller-smoke/
             .openbot-build/pinned-message-agent-tool-e2e/
             .openbot-build/messaging-owner-card-e2e/
             .openbot-build/agent-profile-accounts-e2e/
