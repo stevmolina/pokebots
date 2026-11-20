@@ -49,12 +49,15 @@ import { useSetup } from "./features/onboarding/onboarding-context";
 import { useRemoteDesktop } from "./features/remote-desktop/remote-desktop-context";
 import { desktopScheduleSource } from "./features/schedule/schedule-port";
 import { AddServerOverlay } from "./features/servers/AddServerOverlay";
+import { useAllMachines } from "./features/servers/all-machines-context";
+import { allMachinesSearchAgents, mergeAllMachinesSidebar } from "./features/servers/all-machines-sidebar";
 import {
   createdRoutines,
   HostedServerUpsell,
   hostedUpsellRoutineCreated,
 } from "./features/servers/hosted-server-upsell-controller";
 import { InstallServerOverlay } from "./features/servers/InstallServerOverlay";
+import { useOpenMachineAgent } from "./features/servers/machine-agent-open";
 import { mcpToolRuntimeNote } from "./features/servers/mcp-servers";
 import type { ServerCopyOptions } from "./features/servers/ServerTransferPanel";
 import { useServerActions } from "./features/servers/server-actions";
@@ -1249,18 +1252,40 @@ function AppSettings(props: AccountProps) {
   );
 }
 
-/** The search and new instance pickers share the active server’s bot list. */
+/** Global Search merges every online machine in "All machines" view; the new instance picker stays on the active server. */
 function WorkspacePickers() {
+  const { activeServerId } = useServers();
   const { agentList, userHiddenAgentIds } = useAgents();
   const { sidebarLayout, pinnedSidebarItems } = useSidebar();
+  const allMachines = useAllMachines();
+  const machineAgents = useOpenMachineAgent();
   // In sidebar order, so that ⌘1-9 opens the agents the user put at the top.
-  const agents = createMemo(() =>
+  const activeMachineAgents = createMemo(() =>
     sidebarAgentOrder(agentList(), {
       layout: sidebarLayout(),
       pinnedItems: pinnedSidebarItems(),
       hiddenAgentIds: userHiddenAgentIds(),
     }),
   );
+  const allMachinesSearch = createMemo(() => {
+    if (!allMachines.active()) return undefined;
+    const hidden = userHiddenAgentIds();
+    return mergeAllMachinesSidebar({
+      sources: allMachines.sources({
+        serverId: activeServerId(),
+        agents: agentList().filter((agent) => !hidden.has(agent.id)),
+        agentStates: {},
+        agentMoods: {},
+        layout: sidebarLayout(),
+      }),
+      activeServerId: activeServerId(),
+      filter: allMachines.filter(),
+    });
+  });
+  const searchAgents = createMemo(() => {
+    const merged = allMachinesSearch();
+    return merged ? allMachinesSearchAgents(merged) : activeMachineAgents();
+  });
   const { globalSearchOpen, searchGlobalMessages, setGlobalSearchVisibility, selectAgent, selectGlobalSearchMessage } =
     useNavigation();
   const sources = useGlobalSearchSources(globalSearchOpen);
@@ -1276,11 +1301,20 @@ function WorkspacePickers() {
     }),
   );
 
+  function openSearchAgent(id: string): void {
+    const ref = allMachinesSearch()?.agentServers.get(id);
+    if (ref) {
+      void machineAgents.openAgent(ref.serverId, ref.agentId);
+      return;
+    }
+    selectAgent(id);
+  }
+
   return (
     <>
       <GlobalSearchOverlay
         open={globalSearchOpen()}
-        agents={agents()}
+        agents={searchAgents()}
         channels={sources.channels()}
         routines={sources.routines()}
         routinesLoading={sources.routinesLoading()}
@@ -1288,14 +1322,14 @@ function WorkspacePickers() {
         onSearchMessages={searchGlobalMessages}
         onSearchFiles={sources.searchFiles()}
         onOpenChange={setGlobalSearchVisibility}
-        onSelectAgent={selectAgent}
+        onSelectAgent={openSearchAgent}
         onSelectChannel={sources.openChannel}
         onSelectMessage={selectGlobalSearchMessage}
         onSelectRoutine={sources.selectRoutine}
       />
       <NewInstancePickerOverlay
         open={instanceOpen()}
-        agents={agents()}
+        agents={activeMachineAgents()}
         onOpenChange={setInstanceOpen}
         onSelectAgent={(agentId) => {
           if (selectAgent(agentId)) threads.startNew(agentId);
