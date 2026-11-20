@@ -1,0 +1,13 @@
+[Unit]
+Description=Stage and safely auto-update the self-hosted OpenBot VPS container
+After=docker.service network-online.target
+Requires=docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/openbot-vps-auto-update
+Environment=STACK_DIR=/srv/stacks/openbot
+Environment=COMPOSE_SERVICE=openbot
+Environment=CONTAINER_NAME=openbot-openbot-1
+Environment=IMAGE_REF=ghcr.io/stevmolina/pokebots:latest
+TimeoutStartSec=10min

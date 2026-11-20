@@ -33,6 +33,7 @@ import { readBodyWithin } from "./http-body";
 import { createHostedMobileConnect } from "./mobile-connect-host";
 import { RemoteWorkflowError, remoteCall, toRemoteWorkflowError } from "./remote-service-effects";
 import type { ServerMemory } from "./server-memory";
+import type { RestartReadiness } from "./update-readiness";
 
 const CONTROL_SOCKET_FILE = "control.sock";
 const MAX_BODY_BYTES = 4096;
@@ -100,6 +101,8 @@ export interface ServerModeOptions {
   >;
   /** The memory guard, so that `status` shows the memory ceiling and the turn limit. */
   memory: (Pick<ServerMemory, "level" | "sample"> & { turnLimit(): number | "unlimited" }) | null;
+  /** Whether the server is idle and safe for a host-side updater to restart right now. */
+  restartReadiness?: () => RestartReadiness;
   onError: (message: string, error: unknown) => void;
   /** Tests only. */
   uid?: number;
@@ -355,7 +358,17 @@ export class ServerMode {
         server_name: host.serverName ?? this.#pendingName,
         server_message: this.#publishError ?? host.message,
         ...this.#memoryLines(),
+        ...this.#restartReadinessLines(),
       },
+    };
+  }
+
+  #restartReadinessLines(): Answer["lines"] {
+    const readiness = this.#options.restartReadiness?.();
+    if (!readiness) return {};
+    return {
+      restart_ready: readiness.safeToRestart ? "true" : "false",
+      restart_blockers: readiness.reasons.length > 0 ? readiness.reasons.join(",") : null,
     };
   }
 
