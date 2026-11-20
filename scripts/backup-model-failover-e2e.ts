@@ -496,7 +496,8 @@ function turns(): { model: string; failed: boolean; input: string; pid: number }
     return readFileSync(turnLog, "utf8")
       .split("\n")
       .filter(Boolean)
-      .map((line) => JSON.parse(line));
+      .map((line): { model: string; failed: boolean; input: string; pid: number } => JSON.parse(line))
+      .filter((turn) => !turn.input.includes("Write a concise 3 to 6 word title"));
   } catch {
     return [];
   }
