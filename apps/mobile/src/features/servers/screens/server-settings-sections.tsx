@@ -28,6 +28,7 @@ import { useMobileSession } from "@/features/auth/context/mobile-session-context
 import { hostedServerCalls } from "@/features/servers/api/hosted-servers";
 import {
   ServerBrowsingMemoryRow,
+  ServerHomeAgentRulesRows,
   ServerMemoryLimitRow,
   ServerMemoryReviewRow,
   ServerPersonalityRow,
@@ -320,7 +321,8 @@ function permitsAgentSettings(checks: ServerChecks, serverId: string): boolean {
     checks.canManageAgentMemoryLimit(serverId) ||
     checks.canManageMemoryReview(serverId) ||
     checks.canManageSkillLearning(serverId) ||
-    checks.canManageBrowsingMemory(serverId)
+    checks.canManageBrowsingMemory(serverId) ||
+    checks.canManageHomeAgentRules(serverId)
   );
 }
 
@@ -398,6 +400,7 @@ export function ServerAgentsSection({ serverId }: { serverId: string }) {
     canManageMemoryReview,
     canManageSkillLearning,
     canManageBrowsingMemory,
+    canManageHomeAgentRules,
   } = useMobileWorkspace();
   return (
     <>
@@ -406,6 +409,7 @@ export function ServerAgentsSection({ serverId }: { serverId: string }) {
       {canManageMemoryReview(serverId) ? <ServerMemoryReviewRow serverId={serverId} /> : null}
       {canManageSkillLearning(serverId) ? <ServerSkillLearningRow serverId={serverId} /> : null}
       {canManageBrowsingMemory(serverId) ? <ServerBrowsingMemoryRow serverId={serverId} /> : null}
+      {canManageHomeAgentRules(serverId) ? <ServerHomeAgentRulesRows key={serverId} serverId={serverId} /> : null}
     </>
   );
 }

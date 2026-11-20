@@ -27,6 +27,7 @@ export function serverSupportsCapability(
   if (
     (capability === "pokebots-integrations-v1" ||
       capability === "rooms-v1" ||
+      capability === "home-agent-rules-v1" ||
       capability === "brain-v1" ||
       capability === "remote-desktop-setup" ||
       capability === "channel-chats-v1" ||

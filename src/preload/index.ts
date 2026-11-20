@@ -310,6 +310,7 @@ import {
   decodeDynamicIslandPreference,
   decodeDynamicIslandPresentation,
 } from "./dynamic-island-decoding";
+import { decodeHomeAgentRulesFromMain } from "./home-agent-rules-decoding";
 import { decodeHostReleaseStatusFromMain } from "./host-release-decoding";
 import { decodeMacAutomationResults } from "./mac-automation-decoding";
 import {
@@ -1383,6 +1384,8 @@ const openbotApi: OpenBotDesktopApi = {
     getPromptCacheTtl: decodePromptCacheTtlSetting,
     setPromptCacheTtl: decodePromptCacheTtlSetting,
     getClaudeUserSetup: decodeClaudeUserSetupSetting,
+    getHomeAgentRules: decodeHomeAgentRulesFromMain,
+    setHomeAgentRules: decodeHomeAgentRulesFromMain,
     setClaudeUserSetup: decodeClaudeUserSetupSetting,
     getClaudeAiTools: decodeClaudeAiToolsSetting,
     setClaudeAiTools: decodeClaudeAiToolsSetting,

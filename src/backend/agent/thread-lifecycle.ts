@@ -8,8 +8,10 @@ import {
   agentProviderDescriptor,
   agentQuickAcknowledgementEnabled,
   COMPUTER_USE_MCP_SERVER_ID,
+  DEFAULT_HOME_AGENT_RULES_PREFERENCE,
   DEFAULT_RESPONSE_STYLE,
   GITHUB_CONNECTOR_MCP_SERVER_ID,
+  type HomeAgentRulesPreference,
   type McpServerConfig,
   type ResponseStyle,
   workspaceAccessEnforced,
@@ -22,6 +24,7 @@ import { type AgentClient, type AgentProvider, ProviderStoppedError } from "../a
 import type { AgentStore } from "../agent-store";
 import type { ProviderSession } from "../database/provider-sessions";
 import { causeHelpers } from "../effect-boundary";
+import { readHomeAgentRules } from "../home-agent-rules";
 import { type HomeSkill, listHomeSkills, skillFolderNames, userSkillFolderNames } from "../home-skills";
 import type { MailboxStore } from "../mailbox-store";
 import type { McpOperationError } from "../mcp-effects";
@@ -188,6 +191,7 @@ export interface ThreadLifecycleHooks {
 }
 
 export interface ThreadLifecycleOptions {
+  homeAgentRules?: () => HomeAgentRulesPreference;
   store: AgentStore;
   mailbox: MailboxStore;
   conversation: ConversationRuntime;
@@ -270,6 +274,7 @@ export class ThreadLifecycle {
   readonly #passwordVaultConnected: () => boolean;
   readonly #vaultItems: (agentId: string) => VaultContents;
   readonly #serverHost: boolean;
+  readonly #homeAgentRules: () => HomeAgentRulesPreference;
   readonly #hostedStorageGb: () => number | null;
   readonly #agentCursorDrawn: boolean;
   readonly #computerUseOnWayland: boolean;
@@ -283,9 +288,8 @@ export class ThreadLifecycle {
   readonly #importedHistory: (threadId: string) => boolean;
   readonly #pendingHandoffs = new Map<string, string>();
   /**
-   * The section-mates and the saved-logins state that each loaded session got at its start or resume,
-   * for a client with `turnContext`. A change does not change the tool fingerprint, so the next turn
-   * resumes the session to give the new state to the turn context, as a memory change does.
+   * The context that each loaded session got. A change resumes the session before its next turn.
+   * Codex keeps its developer instructions on resume, so its rule changes use the tool fingerprint.
    */
   readonly #givenTurnContext = new Map<string, string>();
   /**
@@ -332,6 +336,7 @@ export class ThreadLifecycle {
     this.#passwordVaultConnected = options.passwordVaultConnected ?? (() => false);
     this.#vaultItems = options.vaultItems ?? (() => ({ available: false, cards: false, contacts: false }));
     this.#serverHost = options.serverHost ?? false;
+    this.#homeAgentRules = options.homeAgentRules ?? (() => DEFAULT_HOME_AGENT_RULES_PREFERENCE);
     this.#hostedStorageGb = options.hostedStorageGb ?? (() => null);
     this.#agentCursorDrawn = options.agentCursorDrawn ?? false;
     this.#computerUseOnWayland = options.computerUseOnWayland ?? false;
@@ -558,10 +563,11 @@ export class ThreadLifecycle {
         });
         return replacement;
       }
-      const turnContext = yield* this.#turnContextKey(currentAgent, client);
+      const homeRules = client.provider === "codex" ? "" : yield* this.#readHomeRules(currentAgent, client);
+      const turnContext = yield* this.#turnContextKey(currentAgent, client, homeRules);
       if (
         this.#conversation.loadedClientFor(session.externalSessionId) !== client ||
-        this.#turnContextChanged(client, session.externalSessionId, turnContext)
+        this.#turnContextChanged(session.externalSessionId, turnContext)
       ) {
         const resumed = yield* Effect.result(this.resumeThread(currentAgent, client, session.externalSessionId));
         if (Result.isFailure(resumed)) {
@@ -806,6 +812,7 @@ export class ThreadLifecycle {
     const proxy = client.provider === "codex" ? yield* this.#proxyFingerprint(mcpServers) : null;
     // The same single reading, so the manifest records the file text these instructions carry.
     const instructionsFile = yield* this.#instructionsFile(agent, client);
+    const homeRules = yield* this.#readHomeRules(agent, client);
     const config = yield* this.codexConfigEffect(agent, client, mcpServers, own, toolRuntimes, environment);
     const params: DynamicRecord = {
       ...config,
@@ -830,12 +837,13 @@ export class ThreadLifecycle {
         this.#runsBesideOwnChat(owner, publicThreadId),
         mcpServers,
         instructionsFile,
+        homeRules,
         yield* this.#workspaceSkills(agent, client),
       ),
       serviceName: "openbot",
       dynamicTools: visibleDynamicTools(client.provider),
     };
-    return { agent, mcpServers, toolRuntimes, own, environment, proxy, instructionsFile, params };
+    return { agent, mcpServers, toolRuntimes, own, environment, proxy, instructionsFile, homeRules, params };
   });
 
   readonly #startProviderThread = Effect.fn("ThreadLifecycle.prepareProviderThread")(function* (
@@ -846,9 +854,9 @@ export class ThreadLifecycle {
     reason?: "configuration-change" | "missing-session",
   ) {
     // Read before the params: a change that lands after it then resumes the session at the next turn.
-    const givenContext = yield* this.#turnContextKey(owner, client);
-    const { agent, mcpServers, toolRuntimes, own, environment, proxy, instructionsFile, params } =
+    const { agent, mcpServers, toolRuntimes, own, environment, proxy, instructionsFile, homeRules, params } =
       yield* this.#startParams(owner, client, publicThreadId);
+    const givenContext = yield* this.#turnContextKey(owner, client, client.provider === "codex" ? "" : homeRules);
     // Before the request, with the same reading, as the Codex manifest: a sign-in or a download that
     // finishes while the provider answers is not what this session was given.
     const mcpSet = this.#mcpSetFingerprint(mcpServers, toolRuntimes);
@@ -878,7 +886,17 @@ export class ThreadLifecycle {
           const approvals = this.#toolApprovals(mcpServers, own);
           yield* this.#writeToolManifest(
             externalThreadId,
-            this.toolFingerprint(agent, mcpServers, own, approvals, toolRuntimes, environment, proxy, instructionsFile),
+            this.toolFingerprint(
+              agent,
+              mcpServers,
+              own,
+              approvals,
+              toolRuntimes,
+              environment,
+              proxy,
+              instructionsFile,
+              homeRules,
+            ),
             approvals,
           );
         } else if (client.mcpToolsFixedAtStart?.(externalThreadId)) {
@@ -924,7 +942,7 @@ export class ThreadLifecycle {
         });
       return yield* prepared.failure;
     }
-    this.#rememberTurnContext(client, externalThreadId, givenContext);
+    this.#rememberTurnContext(externalThreadId, givenContext);
     this.#conversation.bindThread(externalThreadId, agent.id, publicThreadId);
     this.#conversation.markThreadLoaded(externalThreadId, client);
     this.#conversation.ensureSnapshot(agent.id, publicThreadId);
@@ -1177,6 +1195,7 @@ export class ThreadLifecycle {
     environment: Readonly<Record<string, string>>,
     proxy: string | null,
     instructionsFile: InstructionsFileInPrompt,
+    homeRules: string,
     legacySection: SectionTeammates | null = null,
   ): string {
     const folders = existingAgentFolders(agent);
@@ -1218,6 +1237,7 @@ export class ThreadLifecycle {
           // to the file adds a new value. Only another file name, or a file with text, adds a value.
           ...(instructionsFile.fileName === "AGENTS.md" ? [] : [["instructions-file", instructionsFile.fileName]]),
           ...(instructionsFile.found?.text ? [["instructions", instructionsFile.found.text]] : []),
+          ...(homeRules ? [["home-agent-rules", homeRules]] : []),
           // A Marketplace app that starts on the managed Bun: a session from before that start has the
           // `npx` command, and Codex keeps it on resume. Only an agent with such an app adds a value.
           ...(catalogCommands.length > 0 ? [["catalog-commands", ...catalogCommands]] : []),
@@ -1277,12 +1297,16 @@ export class ThreadLifecycle {
     this: ThreadLifecycle,
     agent: AgentSummary,
     client: AgentClient,
+    homeRules: string,
   ) {
+    const ruleHash = homeRules ? createHash("sha256").update(homeRules).digest("hex") : "";
+    if (!client.turnContext) return ruleHash;
     const file = this.#instructionsFileInTurns(client) ? (yield* this.#instructionsFile(agent, client)).file : null;
     return JSON.stringify([
       this.#sectionTeammates(agent.id),
       this.#passwordVaultConnected(),
       file && [file.fileName, file.text, file.truncated],
+      ruleHash,
     ]);
   }).bind(this);
 
@@ -1291,13 +1315,13 @@ export class ThreadLifecycle {
     return client.provider === "claude" && client.turnContext === true;
   }
 
-  #rememberTurnContext(client: AgentClient, externalThreadId: string, key: string): void {
-    if (client.turnContext === true) this.#givenTurnContext.set(externalThreadId, key);
+  #rememberTurnContext(externalThreadId: string, key: string): void {
+    this.#givenTurnContext.set(externalThreadId, key);
   }
 
-  #turnContextChanged(client: AgentClient, externalThreadId: string, current: string): boolean {
+  #turnContextChanged(externalThreadId: string, current: string): boolean {
     const given = this.#givenTurnContext.get(externalThreadId);
-    return client.turnContext === true && given !== undefined && given !== current;
+    return given !== undefined && given !== current;
   }
 
   /**
@@ -1428,6 +1452,7 @@ export class ThreadLifecycle {
     const section = this.#sectionTeammates(agent.id);
     const approvals = this.#toolApprovals(configs, own);
     const instructionsFile = yield* this.#instructionsFile(agent, client);
+    const homeRules = yield* this.#readHomeRules(agent, client);
     const newline = stored.success.indexOf("\n");
     const storedFingerprint = newline < 0 ? stored.success : stored.success.slice(0, newline);
     // Also the form of a session from before the section-mates went with the turns, with their ids.
@@ -1446,12 +1471,23 @@ export class ThreadLifecycle {
               environment,
               proxy,
               instructionsFile,
+              homeRules,
               legacySection,
             ),
         ),
       );
     const fingerprint = yield* threadStep(() =>
-      this.toolFingerprint(agent, configs, own, approvals, toolRuntimes, environment, proxy, instructionsFile),
+      this.toolFingerprint(
+        agent,
+        configs,
+        own,
+        approvals,
+        toolRuntimes,
+        environment,
+        proxy,
+        instructionsFile,
+        homeRules,
+      ),
     );
     if (storedFingerprint === fingerprint) return true;
     if (section && (yield* matches(approvals, [section]))) {
@@ -1485,6 +1521,7 @@ export class ThreadLifecycle {
     sideThread = false,
     mcpServers: readonly McpServerConfig[],
     instructionsFile: InstructionsFileInPrompt,
+    homeRules: string,
     workspaceSkills: readonly string[] = [],
   ): DynamicRecord {
     const memories = this.#memories.essentialFor(agent.id);
@@ -1532,14 +1569,19 @@ export class ThreadLifecycle {
       instructionsFileName: instructionsFile.fileName,
       instructionsFile: instructionsFile.file,
     };
-    const instructions = developerInstructions(
-      agent,
-      this.#store.sharedRoot,
-      memories,
-      this.#store.automationRoot,
-      this.#store.agentDefaults(),
-      options,
-    );
+    const instructions = [
+      developerInstructions(
+        agent,
+        this.#store.sharedRoot,
+        memories,
+        this.#store.automationRoot,
+        this.#store.agentDefaults(),
+        options,
+      ),
+      homeRules,
+    ]
+      .filter(Boolean)
+      .join("\n\n");
     return options.memoriesInTurns
       ? {
           developerInstructions: instructions,
@@ -1552,6 +1594,17 @@ export class ThreadLifecycle {
         }
       : { developerInstructions: instructions };
   }
+
+  readonly #readHomeRules = Effect.fn("ThreadLifecycle.homeRules")(function* (
+    this: ThreadLifecycle,
+    agent: AgentSummary,
+    client: AgentClient,
+  ) {
+    const preference = this.#homeAgentRules();
+    if (!preference.enabled || preference.files.length === 0) return "";
+    const native = yield* client.nativeHomeRuleDirectories?.(agent.workspacePath) ?? Effect.succeed([]);
+    return yield* readHomeAgentRules(preference, native);
+  }).bind(this);
 
   /**
    * The skills in `~/.agents/skills` that the instructions name, for a CLI that does not read that
@@ -1609,6 +1662,7 @@ export class ThreadLifecycle {
     owner: AgentSummary,
     client: AgentClient,
     externalThreadId: string,
+    homeRules?: string,
   ): Effect.fn.Return<DynamicRecord, ThreadOperationFailed> {
     const publicThreadId = this.#conversation.publicThreadId(owner.id, externalThreadId);
     const agent = owner;
@@ -1636,6 +1690,7 @@ export class ThreadLifecycle {
         this.#runsBesideOwnChat(agent, publicThreadId),
         configs,
         yield* this.#instructionsFile(agent, client),
+        homeRules ?? (yield* this.#readHomeRules(agent, client)),
         yield* this.#workspaceSkills(agent, client),
       ),
       ...(client.provider === "codex" ? {} : { dynamicTools: visibleDynamicTools(client.provider) }),
@@ -1659,8 +1714,9 @@ export class ThreadLifecycle {
     const releasing = this.#idleReleases.get(externalThreadId);
     if (releasing) yield* Deferred.await(releasing);
     this.#conversation.bindThread(externalThreadId, agent.id);
-    const givenContext = yield* this.#turnContextKey(agent, client);
-    const params = yield* this.threadParams(agent, client, externalThreadId);
+    const homeRules = yield* this.#readHomeRules(agent, client);
+    const givenContext = yield* this.#turnContextKey(agent, client, client.provider === "codex" ? "" : homeRules);
+    const params = yield* this.threadParams(agent, client, externalThreadId, homeRules);
     const resumed = yield* Effect.result(
       client.request("thread/resume", params, decodeRecordResponse).pipe(toThreadOperationFailed),
     );
@@ -1672,7 +1728,7 @@ export class ThreadLifecycle {
         .pipe(toThreadOperationFailed);
       response = yield* client.request("thread/resume", params, decodeRecordResponse).pipe(toThreadOperationFailed);
     } else response = resumed.success;
-    this.#rememberTurnContext(client, externalThreadId, givenContext);
+    this.#rememberTurnContext(externalThreadId, givenContext);
     this.#conversation.markThreadLoaded(externalThreadId, client);
     yield* this.#nameSession(client, externalThreadId, agent, getString(getRecord(response, "thread"), "name"));
   }).bind(this);

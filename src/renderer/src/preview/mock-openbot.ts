@@ -115,6 +115,7 @@ import {
   type ExternalLinkPreference,
   type FilePreview,
   folderInside,
+  type HomeAgentRulesSetting,
   type HostedSiteSummary,
   type HostStatus,
   hostAgentMemoryLimit,
@@ -548,6 +549,7 @@ export function createMockOpenBot(options: MockOpenBotOptions = {}): MockOpenBot
   // The disk level is below the preview disk use (82%), so Storage shows a passed level.
   let machineAlerts: MachineAlertSettings = { ...DEFAULT_MACHINE_ALERT_SETTINGS, diskPercent: 80 };
   let promptCacheTtl: PromptCacheTtlSetting = { ...DEFAULT_PROMPT_CACHE_TTL };
+  let homeAgentRules: HomeAgentRulesSetting = { enabled: false, files: [], availableFiles: ["agents.md", "proof.md"] };
   let claudeUserSetup: ClaudeUserSetupSetting = { ...DEFAULT_CLAUDE_USER_SETUP };
   let claudeAiTools: ClaudeAiToolsSetting = { ...DEFAULT_CLAUDE_AI_TOOLS };
   let claudeCompactWindow: ClaudeCompactWindowSetting = { ...DEFAULT_CLAUDE_COMPACT_WINDOW };
@@ -3850,6 +3852,11 @@ export function createMockOpenBot(options: MockOpenBotOptions = {}): MockOpenBot
         return clone(promptCacheTtl);
       },
       // Preview has one host, so every server shares one switch.
+      getHomeAgentRules: async () => clone(homeAgentRules),
+      setHomeAgentRules: async (preference) => {
+        homeAgentRules = { ...homeAgentRules, ...preference };
+        return clone(homeAgentRules);
+      },
       getClaudeUserSetup: async () => clone(claudeUserSetup),
       setClaudeUserSetup: async (enabled) => {
         if (typeof enabled !== "boolean") throw new Error("Invalid Claude setup setting.");

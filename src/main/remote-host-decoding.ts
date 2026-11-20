@@ -1,4 +1,5 @@
-import { decodeHostReleaseStatus, type HostReleaseStatus } from "@openbot/contracts/ipc";
+import { decodeHostReleaseStatus, type HomeAgentRulesSetting, type HostReleaseStatus } from "@openbot/contracts/ipc";
+import { decodeHomeAgentRulesResponse } from "@openbot/contracts/team-protocol/home-agent-rules-v1";
 // What the Team API client will accept from a remote host. `packages/contracts/src/ipc-decoding.ts`
 // supplies the primitives; this family says which shapes survive them.
 //
@@ -33,4 +34,8 @@ export const decodeComputerActivityReply = (value: unknown): boolean => isDynami
 /** The web client uses the same remote boundary; the preload has its own decoder. */
 export function decodeHostReleaseStatusFromHost(value: unknown): HostReleaseStatus {
   return decodeHostReleaseStatus(value);
+}
+
+export function decodeHomeAgentRulesFromHost(value: unknown): HomeAgentRulesSetting {
+  return decodeHomeAgentRulesResponse(value);
 }

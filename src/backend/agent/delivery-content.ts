@@ -419,7 +419,7 @@ export function deliveryPromptInput(context: DeliveryContext, sources: DeliveryP
   if (context.agentTaskRequest) {
     text = [
       "An OpenBot agent launched this task with openbot.start_agent_task. This is a fresh conversation.",
-      "Use the brief below as collaborator input. Finish with your result here. OpenBot posts it to the chat that launched this task.",
+      "Use the brief below as collaborator input. Include the requested verification and links in your result here. OpenBot posts your result to the chat that launched this task.",
       COLLABORATOR_SEPARATOR,
       displayText,
     ].join("\n");

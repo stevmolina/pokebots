@@ -67,6 +67,8 @@ import type {
   ExportInstanceInput,
   ForeignProviderId,
   GitHubConnectorRepositories,
+  HomeAgentRulesPreference,
+  HomeAgentRulesSetting,
   HostAddMessagingOrchestratorInput,
   HostAgentMemoryLimit,
   HostAnalytics,
@@ -561,6 +563,9 @@ export interface MobileWorkspaceContextValue {
   loadSkillLearning: (serverId: string) => Promise<HostSkillLearning>;
   setSkillLearning: (mode: string, serverId: string) => Promise<HostSkillLearning>;
   /** An owner or admin of an online host that serves `browsing-memory-v1`. The host checks the role again. */
+  canManageHomeAgentRules: (serverId: string) => boolean;
+  loadHomeAgentRules: (serverId: string) => Promise<HomeAgentRulesSetting>;
+  setHomeAgentRules: (preference: HomeAgentRulesPreference, serverId: string) => Promise<HomeAgentRulesSetting>;
   canManageBrowsingMemory: (serverId: string) => boolean;
   /** "Learn from my browsing". Off deletes what the host recorded. */
   loadBrowsingMemory: (serverId: string) => Promise<HostBrowsingMemory>;
@@ -1359,6 +1364,7 @@ type ServerCheckKey =
   | "canManageAgentMemoryLimit"
   | "canManageMemoryReview"
   | "canManageSkillLearning"
+  | "canManageHomeAgentRules"
   | "canManageBrowsingMemory"
   | "canManageServerPersonality"
   | "servesServerPersonality"

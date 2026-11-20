@@ -1051,6 +1051,7 @@ function ServerSettings() {
           skillLearning={{}}
           browsingMemory={{}}
           hostPromptCacheTtl={{}}
+          homeAgentRules={serversPort().hostAdmin}
           claudeUserSetup={{}}
           claudeAiTools={{}}
           claudeCompactWindow={{}}
