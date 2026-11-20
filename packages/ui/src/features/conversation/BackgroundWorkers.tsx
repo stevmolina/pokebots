@@ -1,7 +1,7 @@
-import { createEffect, createSignal, For, Show } from "solid-js";
+import { createEffect, createSignal, createUniqueId, For, Show } from "solid-js";
 import { Button } from "../../button";
 import type { AgentProfile } from "../../data";
-import { ChevronRight } from "../../icons";
+import { ChevronRight, ChevronUp } from "../../icons";
 import { useText } from "../../text";
 import { AgentAvatar } from "../agents/AgentAvatar";
 
@@ -22,6 +22,22 @@ export interface BackgroundWorker {
 export function BackgroundWorkers(props: { items: readonly BackgroundWorker[] }) {
   const { t, format } = useText();
   const [now, setNow] = createSignal(Date.now());
+  const [expanded, setExpanded] = createSignal(false);
+  const listId = createUniqueId();
+  const collapsible = () => props.items.length > 1;
+  const collapsed = () => collapsible() && !expanded();
+  const countLabel = () => {
+    const hasRunning = props.items.some((item) => item.state === "running");
+    return t(hasRunning ? "chat.workers.runningCount" : "chat.workers.queuedCount", {
+      count: props.items.length,
+    });
+  };
+  createEffect(
+    () => props.items.length <= 1,
+    (single) => {
+      if (single) setExpanded(false);
+    },
+  );
   createEffect(
     () => props.items.length > 0,
     (active) => {
@@ -44,25 +60,48 @@ export function BackgroundWorkers(props: { items: readonly BackgroundWorker[] })
   }
   return (
     <Show when={props.items.length > 0}>
-      <div class="background-workers">
-        <For each={props.items} keyed={(item) => item.id}>
-          {(item) => (
-            <Button variant="ghost" class="background-worker-row" onClick={() => item().onOpen()}>
-              <span class="background-worker-avatar">
-                <AgentAvatar agent={item().agent} mood="working" />
-                <span class="background-worker-dot" />
-              </span>
-              <span class="background-worker-copy">
-                <span class="background-worker-title">{item().title}</span>
-                <span class="background-worker-status">
-                  {t(item().state === "running" ? "chat.workers.running" : "chat.workers.queued")}
+      <div
+        class="background-workers"
+        data-collapsible={collapsible() ? "true" : undefined}
+        data-collapsed={collapsed() ? "true" : undefined}
+      >
+        <Show when={collapsible()}>
+          <Button
+            variant="ghost"
+            class="background-workers-toggle"
+            aria-expanded={expanded() ? "true" : "false"}
+            aria-controls={listId}
+            aria-label={
+              expanded() ? t("chat.workers.showOne") : t("chat.workers.showAll", { count: props.items.length })
+            }
+            onClick={() => setExpanded((value) => !value)}
+          >
+            <span class="background-workers-toggle-pill">
+              <ChevronUp class="background-workers-toggle-chevron" aria-hidden="true" />
+              <span>{countLabel()}</span>
+            </span>
+          </Button>
+        </Show>
+        <div id={listId} class="background-workers-list">
+          <For each={props.items} keyed={(item) => item.id}>
+            {(item) => (
+              <Button variant="ghost" class="background-worker-row" onClick={() => item().onOpen()}>
+                <span class="background-worker-avatar">
+                  <AgentAvatar agent={item().agent} mood="working" />
+                  <span class="background-worker-dot" />
                 </span>
-              </span>
-              <span class="background-worker-elapsed">{elapsed(item().since)}</span>
-              <ChevronRight class="background-worker-chevron" aria-hidden="true" />
-            </Button>
-          )}
-        </For>
+                <span class="background-worker-copy">
+                  <span class="background-worker-title">{item().title}</span>
+                  <span class="background-worker-status">
+                    {t(item().state === "running" ? "chat.workers.running" : "chat.workers.queued")}
+                  </span>
+                </span>
+                <span class="background-worker-elapsed">{elapsed(item().since)}</span>
+                <ChevronRight class="background-worker-chevron" aria-hidden="true" />
+              </Button>
+            )}
+          </For>
+        </div>
       </div>
     </Show>
   );
