@@ -5014,6 +5014,7 @@ export async function createApplicationServices({
           sample: () => hostMemory.sample(),
           turnLimit: () => hostTurnLimits.turnLimit() ?? hostMemory.turnLimit(),
         },
+        restartReadiness: describeRestartReadiness,
         onError: (message, error) => logger.warn(message, toLogValue(error)),
       })
     : null;

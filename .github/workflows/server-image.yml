@@ -1,13 +1,26 @@
 name: Server image
 
 # Builds the Custom self-hosted server image (docker/Dockerfile) from the x64 AppImage of one commit,
-# for the personal VPS servers. It publishes nothing: the image is a workflow artifact that an
-# operator downloads and loads with `docker load`. Official releases still use release.yml.
+# for the personal VPS servers. Runs automatically on pushes to main and publishes to GHCR after the
+# container smoke test passes, while still uploading the tarball artifact for manual loads. Official
+# releases still use release.yml.
 on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - "docs/**"
+      - "README.md"
+      - "CHANGELOG.md"
   workflow_dispatch:
+
+concurrency:
+  group: server-image-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'push' }}
 
 permissions:
   contents: read
+  packages: write
 
 jobs:
   image:
@@ -48,6 +61,7 @@ jobs:
           version=$(jq -r .version package.json)
           short=${GITHUB_SHA::9}
           docker build --file docker/Dockerfile --platform linux/amd64 \
+            --label "org.opencontainers.image.source=https://github.com/${GITHUB_REPOSITORY}" \
             --build-arg "VERSION=$version-custom" --build-arg "REVISION=$short" \
             --tag "openbot-custom:$short" image
           docker save "openbot-custom:$short" | gzip -1 > "openbot-custom-$short.tar.gz"
@@ -70,6 +84,23 @@ jobs:
           done
           echo "The control socket did not answer." >&2
           exit 1
+
+      - name: Push image to GHCR
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          image="ghcr.io/${GITHUB_REPOSITORY,,}"
+          short=${GITHUB_SHA::9}
+          printf '%s' "$GH_TOKEN" | docker login ghcr.io --username "$GITHUB_ACTOR" --password-stdin
+          docker tag "openbot-custom:$short" "$image:sha-$short"
+          docker push "$image:sha-$short"
+          if [ "${GITHUB_REF:-}" = "refs/heads/main" ]; then
+            docker tag "openbot-custom:$short" "$image:main"
+            docker tag "openbot-custom:$short" "$image:latest"
+            docker push "$image:main"
+            docker push "$image:latest"
+          fi
 
       - name: Upload the image
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
