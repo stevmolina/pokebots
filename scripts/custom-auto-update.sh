@@ -156,7 +156,8 @@ take_lock() {
     fi
     echo $$ >"$lock/pid"
   fi
-  trap 'rm -rf "$state/lock"' EXIT
+  staging_dir=""
+  trap '[[ -n "${staging_dir:-}" ]] && rm -rf "$staging_dir"; rm -rf "$state/lock"' EXIT
 }
 
 # HTTPS with the GitHub CLI token, so the job does not need an SSH agent.
@@ -234,33 +235,122 @@ quit_app() {
   sleep 2
 }
 
+# Copy a bundle to a non-.app staging path and verify it before moving it into place, so macOS
+# cannot launch or lock a half-copied app under App Management TCC.
+stage_bundle() {
+  local src="$1" dst="$2"
+  rm -rf "$dst"
+  ditto "$src" "$dst" || return 1
+  [[ -f "$dst/Contents/Info.plist" ]] || return 1
+  codesign --verify --strict "$dst" >/dev/null 2>&1
+}
+
+restore_previous_app() {
+  local previous="$1" backup="$2" restore_target="$3" target_dir="$4"
+  if [[ -n "$previous" && -d "$previous" ]]; then
+    if ! mv "$previous" "$restore_target"; then
+      ditto "$previous" "$restore_target" || return 1
+      rm -rf "$previous"
+    fi
+    open -a "$restore_target" >/dev/null 2>&1 || true
+    return 0
+  fi
+  if [[ -n "$backup" && -d "$backup" ]]; then
+    local restore_stage="$target_dir/.Pokebots.restore.$$"
+    staging_dir="$restore_stage"
+    if stage_bundle "$backup" "$restore_stage" && mv "$restore_stage" "$restore_target"; then
+      staging_dir=""
+      open -a "$restore_target" >/dev/null 2>&1 || true
+      return 0
+    fi
+    rm -rf "$restore_stage"
+    staging_dir=""
+    return 1
+  fi
+}
+
 install_app() {
-  local commit="$1" built backup restore_target
+  local commit="$1" built target_dir staging previous backup legacy_backup restore_target
   built="$(find "$worktree/dist-custom" -maxdepth 2 -name '*.app' -type d | head -n 1)"
   [[ -n "$built" ]] || { say "No built app in $worktree/dist-custom."; return 1; }
+
+  target_dir="$(dirname "$target")"
+  staging="$target_dir/.Pokebots.staging.$$"
+  staging_dir="$staging"
+  if ! stage_bundle "$built" "$staging"; then
+    rm -rf "$staging"
+    staging_dir=""
+    say "Failed to stage $(describe "$commit"). The installed app did not change."
+    write_status install_failed "$commit" "Failed to stage $(describe "$commit"). The installed app did not change."
+    notify "Failed to stage $(describe "$commit"). The installed app did not change."
+    return 1
+  fi
 
   write_status installing "$commit" "Installing $(describe "$commit")."
   quit_app
   mkdir -p "$HOME/OpenBot/backups"
+  previous=""
   backup=""
   restore_target="$target"
   if [[ -d "$legacy_target" ]]; then
-    backup="$HOME/OpenBot/backups/OpenBot-Custom-before-$(short "$commit")-$(date -u +%Y%m%dT%H%M%SZ).app"
+    legacy_backup="$HOME/OpenBot/backups/OpenBot-Custom-before-$(short "$commit")-$(date -u +%Y%m%dT%H%M%SZ).app"
+    backup="$legacy_backup"
     restore_target="$legacy_target"
-    ditto "$legacy_target" "$backup"
-    rm -rf "$legacy_target"
+    if ditto "$legacy_target" "$legacy_backup"; then
+      rm -rf "$legacy_target"
+    else
+      rm -rf "$legacy_backup" "$staging"
+      staging_dir=""
+      say "Failed to back up $legacy_target. The installed app did not change."
+      write_status install_failed "$commit" "Failed to back up the previous app."
+      open -a "$legacy_target" >/dev/null 2>&1 || true
+      return 1
+    fi
   fi
   if [[ -d "$target" ]]; then
+    previous="$target_dir/.Pokebots.previous.$$"
     backup="$HOME/OpenBot/backups/Pokebots-before-$(short "$commit")-$(date -u +%Y%m%dT%H%M%SZ).app"
     restore_target="$target"
-    ditto "$target" "$backup"
-    rm -rf "$target"
+    rm -rf "$previous"
+    if ! mv "$target" "$previous"; then
+      rm -rf "$staging"
+      staging_dir=""
+      say "Failed to move $target aside. The installed app did not change."
+      write_status install_failed "$commit" "Failed to move the previous app aside."
+      open -a "$target" >/dev/null 2>&1 || true
+      return 1
+    fi
   fi
-  ditto "$built" "$target"
-  open -a "$target"
+
+  if ! mv "$staging" "$target"; then
+    say "Failed to move staged app into $target. Restoring the previous app."
+    rm -rf "$staging" "$target"
+    staging_dir=""
+    restore_previous_app "$previous" "$backup" "$restore_target" "$target_dir" || true
+    write_status install_failed "$commit" "Failed to install $(describe "$commit"). The previous app is back."
+    notify "Failed to install $(describe "$commit"). The previous app is back."
+    return 1
+  fi
+  staging_dir=""
+
+  open -a "$target" || true
   sleep 20
 
   if pgrep -f "$app_process" >/dev/null; then
+    if [[ -n "$previous" && -d "$previous" ]]; then
+      if [[ -f "$previous/Contents/Info.plist" ]]; then
+        if ! mv "$previous" "$backup" 2>/dev/null; then
+          if ditto "$previous" "$backup"; then
+            rm -rf "$previous"
+          else
+            say "Could not archive the previous app to $backup; leaving it in $previous."
+            rm -rf "$backup"
+          fi
+        fi
+      else
+        rm -rf "$previous"
+      fi
+    fi
     echo "$commit" >"$state/installed-commit"
     rm -f "$state/failed-commit"
     say "Installed $(describe "$commit")."
@@ -271,10 +361,7 @@ install_app() {
     say "The new app did not stay up. Restoring the previous app."
     echo "$commit" >"$state/failed-commit"
     rm -rf "$target"
-    if [[ -n "$backup" ]]; then
-      ditto "$backup" "$restore_target"
-      open -a "$restore_target"
-    fi
+    restore_previous_app "$previous" "$backup" "$restore_target" "$target_dir" || true
     write_status launch_failed "$commit" "$(describe "$commit") did not start. The previous app is back."
     notify "$(describe "$commit") did not start. The previous app is back."
     return 1
