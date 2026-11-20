@@ -890,7 +890,7 @@ export const OPENBOT_TOOL_DEFINITIONS: readonly OpenBotToolDefinition[] = [
   {
     name: "send_message",
     description:
-      "Queue an asynchronous message and optional local files for one or more OpenBot agents. On a reply, pass the original message id as replyToMessageId.",
+      "Queue an asynchronous message and optional local files for one or more OpenBot agents. On a reply, pass the original message id as replyToMessageId. Pass newThread: true (with optional threadTitle) to open a side thread for each recipient, or taskId to continue one open side thread of a single recipient.",
     shape: {
       recipientAgentIds: z.array(z.string()).min(1).max(32),
       text: z.string().min(1).max(100_000),
@@ -900,6 +900,26 @@ export const OPENBOT_TOOL_DEFINITIONS: readonly OpenBotToolDefinition[] = [
         .boolean()
         .describe(
           "True, the default, for a request, question or delegated task: OpenBot sends the recipient's result back. False for information that the recipient must not answer, such as a status or your own reply to a task; it ends the exchange.",
+        )
+        .optional(),
+      newThread: z
+        .boolean()
+        .describe(
+          "True to open a fresh side thread for each recipient instead of their main chat. Returns each recipient's taskId for follow-ups. Cannot be combined with taskId or replyToMessageId.",
+        )
+        .optional(),
+      threadTitle: z
+        .string()
+        .trim()
+        .min(1)
+        .max(INPUT_LIMITS.agentTaskTitle)
+        .describe("Optional short title for a new side thread. Implies newThread: true.")
+        .optional(),
+      taskId: z
+        .string()
+        .nullable()
+        .describe(
+          "Optional open side thread id of a single recipient to continue. Cannot be combined with newThread or threadTitle.",
         )
         .optional(),
     },
