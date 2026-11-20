@@ -19,6 +19,7 @@ import { useText } from "@openbot/ui/text";
 import { createSignal, createUniqueId, For, Show } from "solid-js";
 import { ThreadStatusMark } from "./ThreadStatusMark";
 import { ThreadTitle } from "./ThreadTitle";
+import { compareThreadItems } from "./thread-items";
 import { type ThreadHeaderProps, type ThreadItem, threadBusy } from "./thread-types";
 
 export type AgentSessionsProps = Omit<ThreadHeaderProps, "phoneActions">;
@@ -159,20 +160,14 @@ function SessionRow(props: AgentSessionsProps & { session: ThreadItem }) {
 const SESSIONS_SHOWN = 5;
 
 /**
- * The sessions of an agent, newest first. A click on a row opens that session.
+ * The sessions of an agent, working first and then newest first. A click on a row opens that session.
  * "New session" starts one. "All sessions" shows the rest and the archived sessions.
  */
 export function AgentSessions(props: AgentSessionsProps) {
   const { t, format } = useText();
   const titleId = createUniqueId();
   const [all, setAll] = createSignal(false);
-  const ordered = () =>
-    props.sessions.toSorted(
-      (left, right) =>
-        Number(left.kind === "draft") - Number(right.kind === "draft") ||
-        right.updatedAt.localeCompare(left.updatedAt) ||
-        left.id.localeCompare(right.id),
-    );
+  const ordered = () => props.sessions.toSorted(compareThreadItems);
   const shown = () => (all() ? ordered() : ordered().slice(0, SESSIONS_SHOWN));
   const more = () => props.sessions.length > SESSIONS_SHOWN || props.archived.length > 0;
   return (

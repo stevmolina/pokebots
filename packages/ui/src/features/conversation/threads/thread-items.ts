@@ -2,6 +2,16 @@ import type { AgentTask } from "@openbot/contracts/ipc";
 import type { SidebarWaitReason } from "@openbot/ui/features/sidebar/sidebar-types";
 import { DRAFT_THREAD_ID, MAIN_THREAD_ID, type ThreadItem, type ThreadStatus } from "./thread-types";
 
+/** Orders open sessions with working ones first, then by newest activity, with drafts at the end. */
+export function compareThreadItems(left: ThreadItem, right: ThreadItem): number {
+  return (
+    Number(left.kind === "draft") - Number(right.kind === "draft") ||
+    Number(right.status.kind === "working") - Number(left.status.kind === "working") ||
+    right.updatedAt.localeCompare(left.updatedAt) ||
+    left.id.localeCompare(right.id)
+  );
+}
+
 /** What a side thread does now. A turn that waits for an approval or an answer waits for the user. */
 export function agentTaskThreadStatus(task: AgentTask, waitsFor: SidebarWaitReason | undefined): ThreadStatus {
   if (task.state === "running") return waitsFor ? { kind: "waiting", reason: waitsFor } : { kind: "working" };
@@ -73,7 +83,7 @@ export function threadLists(input: ThreadListsInput): ThreadLists {
     if (task.state === "closed") archived.push(item);
     else open.push(item);
   }
-  open.sort((left, right) => right.updatedAt.localeCompare(left.updatedAt));
+  open.sort(compareThreadItems);
   archived.sort((left, right) => right.updatedAt.localeCompare(left.updatedAt));
   const sources = new Map<string, string>();
   for (const task of input.tasks) {
