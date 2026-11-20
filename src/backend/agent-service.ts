@@ -856,10 +856,20 @@ export class AgentService extends EventEmitter<AgentServiceEvents> {
       () => this.listAgents(),
     );
     const agentComputer = new AgentComputerApi({ key: options.agentComputerKey ?? (() => null) });
-    this.#codingJobs = new CodingJobs(codingComputer(agentComputer), (agentId, taskId) => {
-      this.#tasks.failed(taskId, sourceText("error.backend.taskStartFailed"));
-      this.#tasks.changed(agentId);
-    });
+    this.#codingJobs = new CodingJobs(
+      codingComputer(agentComputer),
+      (agentId, taskId) => {
+        this.#tasks.failed(taskId, sourceText("error.backend.taskStartFailed"));
+        this.#tasks.changed(agentId);
+      },
+      {
+        computerForMember: (memberId) => {
+          const credential = options.agentComputerCredential?.(memberId);
+          return credential && codingComputer(agentComputer.forAccount(credential));
+        },
+        originalBrief: (agentId, taskId) => mailbox.originalTaskBrief(agentId, taskId),
+      },
+    );
     this.#history = new AgentHistoryTransfer({
       database: store.database,
       threads: new AgentThreadStore(store.database),
@@ -7379,13 +7389,15 @@ export class AgentService extends EventEmitter<AgentServiceEvents> {
       ? yield* lifecycleStep("find message task", () => this.#tasks.requireOpen(agent.id, taskId))
       : null;
     if (task)
-      yield* this.#codingJobs
-        .resumePaused(agent.id, agent.workspacePath, task.taskId, sender?.id)
-        .pipe(
-          Effect.mapError(
-            (failure) => new AgentLifecycleFailed({ operation: "resume remote coding job", cause: failure.cause }),
-          ),
-        );
+      yield* this.#codingJobs.resumePaused(agent.id, agent.workspacePath, task.taskId, sender?.id).pipe(
+        Effect.mapError(
+          () =>
+            new AgentLifecycleFailed({
+              operation: "resume remote coding job",
+              cause: new Error(sourceText("error.backend.codingJobResumeFailed")),
+            }),
+        ),
+      );
     const marked = readArtifactRequest(input.text);
     const createArtifact = input.createArtifact === true || marked.createArtifact;
     const receipt = yield* this.#mailbox

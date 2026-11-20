@@ -3091,7 +3091,10 @@ export class OpenBotToolRouter {
     if (!agent || !api || !isAgentComputerTool(params.tool))
       return openBotToolFailure(sourceText("error.agent.toolRequestInvalid"));
     const threadId = this.#conversation.publicThreadId(agent.id, params.threadId);
-    const account = this.#computerAccount(agent.id, params.turnId);
+    const taskId = this.#tasks.taskForThread(threadId);
+    const creator = taskId === null ? undefined : this.#tasks.scopedCodingCreator(agent.id, taskId);
+    const account = this.#computerAccount(agent.id, params.turnId, creator);
+    if (creator !== undefined && !account) return openBotToolFailure(sourceText("error.backend.codingJobResumeFailed"));
     const result = yield* handleAgentComputerTool(account?.api ?? api, {
       ...(account
         ? {
@@ -3378,9 +3381,14 @@ export class OpenBotToolRouter {
     );
   }
 
-  #computerAccount(agentId: string, turnId: string): { api: AgentComputerApi; memberId: string } | undefined {
+  #computerAccount(
+    agentId: string,
+    turnId: string,
+    creator?: string | null,
+  ): { api: AgentComputerApi; memberId: string } | undefined {
     const [memberId, another] = this.#turnRequesters(agentId, turnId);
-    if (!memberId || another || !this.#agentComputer) return undefined;
+    if (!memberId || another || !this.#agentComputer || (creator !== undefined && memberId !== creator))
+      return undefined;
     const credential = this.#agentComputerCredential(memberId);
     return credential ? { api: this.#agentComputer.forAccount(credential), memberId } : undefined;
   }

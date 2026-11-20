@@ -35,7 +35,12 @@ import {
   copyBranchMessages,
   type ThreadListPosition,
 } from "../agent-threads/agent-thread-store";
-import type { AgentTaskRequest, DeliveryContext, MailboxStore } from "../mailbox-store";
+import {
+  AGENT_TASK_START_KEY_PREFIX,
+  type AgentTaskRequest,
+  type DeliveryContext,
+  type MailboxStore,
+} from "../mailbox-store";
 import type { DynamicToolCallParams } from "../protocol";
 import { storedSync } from "../stored-state-effects";
 
@@ -214,6 +219,11 @@ export class AgentTasks implements TaskLanes {
     if (!task || task.agentId !== agentId) throw new Error(sourceText("error.backend.threadNotFound"));
     this.#conversation.registerTaskThread(agentId, task.threadId);
     return this.#conversation.ensureSnapshot(agentId, task.threadId);
+  }
+
+  scopedCodingCreator(agentId: string, taskId: string): string | null | undefined {
+    const agent = this.#hooks.agent(agentId);
+    return agent ? this.#codingJobs?.scopedCreator(agent.id, agent.workspacePath, taskId) : undefined;
   }
 
   /** The open task of this agent, ready for a message. */
@@ -724,12 +734,11 @@ export class AgentTasks implements TaskLanes {
     const targetId = launch?.targetId ?? caller.agentId;
     if (launch && !this.canLaunch(caller.agentId, targetId, launch.request.requesterIds))
       return openBotToolFailure(sourceText("error.team.agentNotFound"));
-    const idempotencyKey = `${launch ? "start-agent-task" : "start-task"}:${createHash("sha256")
+    const idempotencyKey = `${launch ? "start-agent-task:" : AGENT_TASK_START_KEY_PREFIX}${createHash("sha256")
       .update(
         JSON.stringify([caller.agentId, params.turnId, params.callId, ...(launch ? [launch.request.threadId] : [])]),
       )
       .digest("hex")}`;
-    const accountComputer = coding ? caller.computer?.() : undefined;
     const taskRequesterIds = launch ? undefined : caller.requesterIds?.();
     const taskFromExternalChat = !launch && caller.fromExternalChat?.() === true;
     const started = this.#mailbox.deliveryForKey(idempotencyKey);
@@ -740,10 +749,16 @@ export class AgentTasks implements TaskLanes {
     if (startedTask) {
       const agent = this.#hooks.agent(caller.agentId);
       if (coding && this.#codingJobs && agent) {
+        const requester = taskRequesterIds?.length === 1 ? taskRequesterIds[0] : undefined;
         const resumed = yield* this.#codingJobs
-          .resumePaused(agent.id, agent.workspacePath, startedTask.taskId, accountComputer?.memberId)
+          .resumePaused(agent.id, agent.workspacePath, startedTask.taskId, requester)
           .pipe(Effect.result);
-        if (Result.isFailure(resumed)) return openBotToolFailure(sourceText("error.backend.taskStartFailed"));
+        if (Result.isFailure(resumed) || !resumed.success)
+          return openBotToolFailure(sourceText("error.backend.codingJobResumeFailed"));
+        if (started?.delivery.status === "queued") {
+          this.changed(agent.id);
+          this.#hooks.queued(agent.id);
+        }
       }
       return launch ? launchedTaskResult(startedTask) : startedTaskResult(startedTask);
     }
@@ -768,6 +783,7 @@ export class AgentTasks implements TaskLanes {
     // All of them close before the first yield, so no turn starts between the check and the close.
     for (const task of archived) this.#closeQuietly(task);
     const task = this.create(targetId, input.title, "agent");
+    const accountComputer = coding ? caller.computer?.() : undefined;
     const context = accountComputer
       ? `job-${createHash("sha256").update(task.taskId).digest("hex").slice(0, 28)}`
       : "openbot-coding-jobs";

@@ -3,6 +3,9 @@ import { z } from "zod";
 
 export const RUN_CODING_TASK_TOOL = "run_coding_task";
 
+export const REMOTE_CODING_BRIEF_HEADER =
+  "Run this coding job on Agent Computer using Codex. Keep this task as the progress and result thread.";
+
 /** Repository identifiers exclude credentials, shell syntax and arbitrary clone transports. */
 export const runCodingTaskToolSchema = z.strictObject({
   repository: z
@@ -20,7 +23,7 @@ export const runCodingTaskToolSchema = z.strictObject({
 /** The persisted task message is also the recovery contract after a provider restart. */
 export function remoteCodingBrief(repository: string, task: string, context: string): string {
   return [
-    "Run this coding job on Agent Computer using Codex. Keep this task as the progress and result thread.",
+    REMOTE_CODING_BRIEF_HEADER,
     `Repository: ${repository}`,
     `Machine context: ${context}`,
     "Use the built-in openbot computer tools (computer_bash, computer_screenshot, computer_get_file, computer_publish) on this machine. The app starts and resumes this exact context. Do not start or pause a machine yourself. Never guess a replacement context or copy local credentials. Read the app job registration at .openbot/coding-jobs/ in your workspace for the machine id and deadline.",

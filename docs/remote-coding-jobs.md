@@ -6,9 +6,9 @@ The task uses connected computer tools and Codex. No local credentials are sent.
 The task's existing tab shows progress, questions, and its result. Send a message
 in that same task to continue after sign-in or a machine pause.
 
-The context is deterministic per tool call. Retrying the call returns the same
-OpenBot task through the existing task idempotency key. Existing queue limits,
-boot recovery, conversation storage and provider handoffs apply.
+The scoped context comes from the task ID. Retrying the original tool call
+reuses that task. Existing queue limits, conversation storage and provider
+handoffs apply.
 
 The app owns a persisted CodingJobs controller and an authenticated MCP adapter.
 A remote Node supervisor owns the CLI process group and atomic checkpoints.
@@ -16,9 +16,13 @@ Task Stop requests termination and confirms the remote checkpoint before pausing
 the machine. A failed remote operation remains a failure, never a confirmed Stop.
 The supervisor checkpoints and suspends the verified process before the session
 deadline. Resume retains its PID and process identity instead of launching a second
-CLI. Host recovery checkpoints active jobs before allowing continuation.
-The controller serializes machine controls and reserves the shared machine for one
-job. It uses the configured Composio connection and never copies credentials.
+CLI. After a host restart, the person who started an account-scoped job can send
+a message to the same task. The host gets a fresh scoped connection and uses the
+saved context and checkpoint. An older account-scoped record can resume if the
+original task brief records one requester and that person still has access.
+Keep the task's job record and the machine's checkpoint to resume the job.
+The controller serializes machine controls. Shared jobs use the configured host
+connection.
 
 Codex and GitHub must be signed in on Agent Computer. Missing sign-in blocks live
 execution, not creating the task. No API key or GitHub token is copied from the

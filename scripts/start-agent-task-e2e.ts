@@ -21,7 +21,7 @@ import { decodeTeamProtocolV2Json, type TeamProtocolV2Json } from "@openbot/cont
 import { TEAM_PROTOCOL_V10 } from "@openbot/contracts/team-protocol/v10";
 import { sourceText } from "@openbot/i18n/source";
 import { plugin } from "bun";
-import { Effect } from "effect";
+import { Effect, Redacted } from "effect";
 import { z } from "zod";
 import type { AgentBrowserHost } from "../src/backend/agent/turn-lifecycle";
 import type {
@@ -423,12 +423,52 @@ const member = { username: "test-member", password: "e2e-member-password" };
 let taskLimit = 2;
 const autoApproving = new Set<string>();
 
+const codingMachineId = "coding-fixture";
+const codingContext = "original-coding-context";
+const codingRequests: string[] = [];
+let codingMemberId: string | undefined;
+const codingComputer = Bun.serve({
+  hostname: "127.0.0.1",
+  port: 0,
+  async fetch(request) {
+    assert.equal(request.headers.get("authorization"), "Bearer scoped-fixture");
+    const path = new URL(request.url).pathname;
+    codingRequests.push(path);
+    if (path === "/machines/start") {
+      assert.deepEqual(await request.json(), { context: codingContext });
+      return Response.json({
+        id: codingMachineId,
+        context: codingContext,
+        existing: true,
+        resumed: true,
+        live_view_url: "https://example.invalid/live",
+        deadline_at: new Date(Date.now() + 120_000).toISOString(),
+      });
+    }
+    assert.equal(path, `/machines/${codingMachineId}/bash`);
+    const { cmd } = z.object({ cmd: z.string() }).parse(await request.json());
+    assert.match(cmd, /test -s checkpoint\.json/);
+    return Response.json({
+      stdout: 'OPENBOT_CODING_CHECKPOINT={"phase":"running"}\n',
+      stderr: "",
+      exit_code: 0,
+      timed_out: false,
+    });
+  },
+});
+process.env.OPENBOT_AGENT_COMPUTER_API_URL = codingComputer.url.origin;
+
 const agents = new AgentService({
   store,
   mailbox,
   browser: agentBrowser,
   sidebarLayout,
   preferredProvider: "codex",
+  agentComputerKey: () => "host-fixture-key",
+  agentComputerCredential: (memberId) =>
+    memberId === codingMemberId
+      ? { audience: "computer", bearer: Effect.succeed(Redacted.make("scoped-fixture")) }
+      : undefined,
   homeAgentRules: homeAgentRules.preference,
   requestTimeoutMs: 2500,
   bundledExecutables: { opencode: fakeOpencode },
@@ -1089,6 +1129,57 @@ try {
   assert.equal((await launchResults(handoffOrigin)).length, 1);
   assert.equal((await fixtureEntries()).filter(({ tag }) => tag === "BACKGROUND-HANDOFF").length, 1);
   report.checks.backgroundHandoffCancellation = true;
+  const codingAgent = await create("Coding");
+  const memberId = team.listMembers().find(({ username }) => username === member.username)?.id;
+  assert.ok(memberId);
+  codingMemberId = memberId;
+  const started = await call(AGENT_TASKS_ROUTES.start, 200, ownerToken, {
+    agentId: codingAgent.id,
+    text: "RUN CODING-FIXTURE",
+  });
+  assert.ok(isAgentTask(started));
+  await fixtureLog("CODING-FIXTURE");
+  const jobs = join(codingAgent.workspacePath, ".openbot", "coding-jobs");
+  await mkdir(jobs, { recursive: true });
+  // A paused registration on disk with no account port in this host process.
+  await writeFile(
+    join(jobs, `${started.id}.json`),
+    JSON.stringify({
+      taskId: started.id,
+      repository: "example/project",
+      task: "Fixture task",
+      context: codingContext,
+      machine: codingMachineId,
+      phase: "paused",
+      accountScoped: true,
+      creatorMemberId: codingMemberId,
+    }),
+  );
+  const message = {
+    agentId: codingAgent.id,
+    taskId: started.id,
+    clientMessageId: "resume-once",
+    text: "RUN CODING-RESUMED",
+  };
+  const refused = await call(AGENT_TASKS_ROUTES.send, 500, ownerToken, message);
+  assert.deepEqual(refused, { error: sourceText("error.backend.codingJobResumeFailed") });
+  assert.deepEqual(codingRequests, []);
+  const [resumeReceipt, retryReceipt] = await Promise.all([
+    call(AGENT_TASKS_ROUTES.send, 202, token, message),
+    call(AGENT_TASKS_ROUTES.send, 202, token, message),
+  ]);
+  assert.deepEqual(resumeReceipt, retryReceipt);
+  assert.deepEqual(codingRequests, ["/machines/start", `/machines/${codingMachineId}/bash`]);
+  await fixtureLog("CODING-RESUMED");
+  assert.equal((await chat(codingAgent.id, started.id)).messages.filter(({ text }) => text === message.text).length, 1);
+  report.checks.scopedCodingTaskMessageRetries = true;
+  codingMemberId = undefined;
+  await send(codingAgent.id, command("scoped-computer-revoked", "computer_list", {}), started.id);
+  const deniedTool = (await fixtureLog("scoped-computer-revoked")).result;
+  assert.equal(deniedTool?.success, false);
+  assert.match(deniedTool?.contentItems[0]?.text ?? "", /could not resume this coding job/);
+  assert.deepEqual(codingRequests, ["/machines/start", `/machines/${codingMachineId}/bash`]);
+  report.checks.scopedCodingToolsNeverUseHostKey = true;
   report.passed = true;
 } catch (error) {
   report.error = error instanceof Error ? (error.stack ?? error.message) : String(error);
@@ -1097,6 +1188,7 @@ try {
 try {
   await runCauseEffect(server.stop()).catch(() => undefined);
   await runCauseEffect(agents.stop()).catch(() => undefined);
+  await codingComputer.stop(true);
   database.close();
   await mkdir(OUT, { recursive: true });
   const evidence = JSON.stringify(report, null, 2);

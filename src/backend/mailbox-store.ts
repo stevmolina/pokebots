@@ -69,6 +69,7 @@ const FAILED_REQUEST_KEY_PREFIX = "failed-request:";
 export const AUTO_RESULT_KEY_PREFIX = "auto-result:";
 /** The key of a teammate's result that went back to the queue after a restart (`requeueResultAfterRestart`). */
 const RESTARTED_RESULT_KEY_PREFIX = "restarted-result:";
+export const AGENT_TASK_START_KEY_PREFIX = "start-task:";
 
 /** Host-only return address and member permissions for a brief sent by start_agent_task. */
 export interface AgentTaskRequest {
@@ -2205,6 +2206,22 @@ export class MailboxStore {
     const request = this.#state.messages.find((message) => message.taskId === taskId && message.agentTaskRequest);
     const delivery = request && this.#state.deliveries.find((item) => item.messageId === request.id);
     return delivery ? this.#context(delivery) : null;
+  }
+
+  /** The initial brief recorded by the task start tool. Later messages cannot establish ownership. */
+  originalTaskBrief(agentId: string, taskId: string) {
+    const candidates = this.#state.messages.filter(
+      (message) => message.taskId === taskId && message.sender.kind === "agent" && message.sender.agentId === agentId,
+    );
+    if (!candidates.length) return undefined;
+    const starts = new Set(
+      Object.entries(this.#state.idempotency)
+        .filter(([key]) => key.startsWith(AGENT_TASK_START_KEY_PREFIX))
+        .map(([, messageId]) => messageId),
+    );
+    const [brief, another] = candidates.filter((message) => starts.has(message.id));
+    if (!brief || another) return undefined;
+    return { text: brief.text, requesterIds: brief.taskFromExternalChat ? [] : (brief.taskRequesterIds ?? []) };
   }
 
   /** The requesters of the agent-authored brief, including during a provider-started turn. */
