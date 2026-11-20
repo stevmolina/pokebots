@@ -7,6 +7,7 @@ import {
 import type { AvatarMood } from "@openbot/ui/bloub-avatar";
 import type { AgentProfile } from "@openbot/ui/data";
 import { computeAgentAvatarMoods } from "@openbot/ui/features/agents/agent-avatar-mood";
+import { sidebarAgentOrder } from "@openbot/ui/features/sidebar/sidebar-agent-order";
 import { computeSidebarAgentStates } from "@openbot/ui/features/sidebar/sidebar-agent-states";
 import type {
   SidebarAgentState,
@@ -143,4 +144,18 @@ export function mergeAllMachinesSidebar(input: {
   }
   result.layout.order = [SIDEBAR_PEOPLE_SECTION_ID, ...folderOrder, SIDEBAR_UNASSIGNED_SECTION_ID];
   return result;
+}
+
+const EMPTY_HIDDEN_AGENT_IDS: ReadonlySet<string> = new Set();
+
+/**
+ * Orders the merged "All machines" agents in the same top-to-bottom order as the sidebar so
+ * Global Search (⌘K) and its ⌘1-9 shortcuts match what the user sees in the sidebar.
+ */
+export function allMachinesSearchAgents(merged: Pick<AllMachinesSidebar, "agents" | "layout">): AgentProfile[] {
+  return sidebarAgentOrder(merged.agents, {
+    layout: merged.layout,
+    pinnedItems: [],
+    hiddenAgentIds: EMPTY_HIDDEN_AGENT_IDS,
+  });
 }
