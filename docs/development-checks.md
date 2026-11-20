@@ -405,7 +405,8 @@ CI runs it in the `check` job.
 
 `bun run check:migrations` compares `src/backend/migrations/` with the newest `v*` tag on origin.
 CI checks out one commit and no tags, so the script fetches only that tag commit (`--depth=1`).
-`--tag <tag>` compares with another tag. The rules and the fix for a released bug are in
+`--tag <tag>` compares with another tag. When the Pokebots fork has no release tags, CI uses
+the upstream v0.73.0 release included in the fork. The rules and the fix for a released bug are in
 [src/backend/AGENTS.md](../src/backend/AGENTS.md#frozen-migrations); the rule fixtures are in
 `scripts/check-frozen-migrations.test.ts`. A tag from before the folder (v0.72.0 and earlier) has
 no frozen files, so only the rules on the current folder apply.
