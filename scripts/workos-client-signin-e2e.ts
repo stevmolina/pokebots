@@ -44,7 +44,10 @@ const server = Bun.serve({
       );
     const startPath = provider === "workos" ? "/v1/auth/workos/start" : "/v1/auth/company/start";
     const exchangePath = provider === "workos" ? "/v1/auth/workos/exchange" : "/v1/auth/company/exchange";
-    if (url.pathname === startPath) {
+    if (url.pathname === "/v1/auth/workos/start" && request.method === "GET") {
+      return Response.json({ enabled: provider === "workos" });
+    }
+    if (url.pathname === startPath && request.method === "POST") {
       const flow = Schema.decodeUnknownSync(startSchema)(await request.json());
       const code = randomBytes(32).toString("base64url");
       flows.set(code, flow);
