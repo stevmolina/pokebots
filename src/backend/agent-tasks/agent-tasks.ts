@@ -19,6 +19,7 @@ import {
   type BranchAgentTaskInput,
   type ConversationMessage,
   type ConversationSnapshot,
+  type QueuedMessageReceipt,
   workspaceAccessEnforced,
 } from "@openbot/contracts/ipc";
 import { sourceText } from "@openbot/i18n/source";
@@ -224,6 +225,125 @@ export class AgentTasks implements TaskLanes {
     this.#conversation.registerTaskThread(agentId, task.threadId);
     return task;
   }
+
+  /**
+   * Validates that `taskId` is an open, non-routine side thread owned by `agentId`, and registers it
+   * with the conversation runtime. Returns an error string when not usable for `send_message`.
+   */
+  validateMessageTarget(
+    agentId: string,
+    taskId: string,
+  ): { ok: true; task: AgentThreadRecord } | { ok: false; error: string } {
+    const task = this.#store.task(taskId);
+    if (!task || task.agentId !== agentId) return { ok: false, error: sourceText("error.backend.threadNotFound") };
+    if (task.closedAt !== null) return { ok: false, error: sourceText("error.backend.threadArchived") };
+    if (task.routineId !== null) return { ok: false, error: "Cannot send a direct message into a routine thread." };
+    this.#conversation.registerTaskThread(agentId, task.threadId);
+    return { ok: true, task };
+  }
+
+  /**
+   * Opens one new agent-started side thread per recipient that does not already have an idempotent
+   * delivery, under the shared start permit so concurrent `start_task`, `start_agent_task` and
+   * `send_message` calls cannot bypass unfinished or open thread limits. Enqueue runs inside the
+   * permit so every created thread is busy before the next caller checks limits.
+   */
+  readonly runWithNewMessageThreads = Effect.fn("AgentTasks.runWithNewMessageThreads")(function* <E>(
+    this: AgentTasks,
+    recipients: readonly { agentId: string; idempotencyKey: string }[],
+    title: string,
+    enqueue: (recipient: {
+      agentId: string;
+      idempotencyKey: string;
+      taskId: string;
+    }) => Effect.Effect<QueuedMessageReceipt, E>,
+  ): Effect.fn.Return<
+    | { ok: true; results: Array<{ agentId: string; taskId: string; receipt: QueuedMessageReceipt }> }
+    | { ok: false; error: string },
+    E
+  > {
+    return yield* this.#starts.withPermit(
+      Effect.gen({ self: this }, function* () {
+        const resolvedTitle = taskTitle(title) || title.trim().slice(0, INPUT_LIMITS.agentTaskTitle);
+        if (!resolvedTitle) return { ok: false as const, error: sourceText("error.backend.threadTitleRequired") };
+
+        const existingByAgent = new Map<string, { taskId: string; receipt: QueuedMessageReceipt }>();
+        const pending: Array<{ agentId: string; idempotencyKey: string }> = [];
+        for (const recipient of recipients) {
+          const receipt = this.#mailbox.receiptForKey(recipient.idempotencyKey);
+          const taskId = receipt ? this.#mailbox.taskIdForKey(recipient.idempotencyKey) : null;
+          if (receipt && taskId) {
+            existingByAgent.set(recipient.agentId, { taskId, receipt });
+          } else {
+            pending.push(recipient);
+          }
+        }
+
+        // Check every pending recipient's limits before archiving or creating any thread.
+        const plans: Array<{ agentId: string; idempotencyKey: string; archived: AgentThreadRecord[] }> = [];
+        for (const recipient of pending) {
+          const plan = this.#planAgentThread(recipient.agentId);
+          if (!plan.ok) return plan;
+          plans.push({ ...recipient, archived: plan.archived });
+        }
+
+        const created: Array<{
+          agentId: string;
+          idempotencyKey: string;
+          task: AgentThreadRecord;
+          archived: AgentThreadRecord[];
+          enqueued: boolean;
+        }> = [];
+        for (const plan of plans) {
+          for (const old of plan.archived) this.#closeQuietly(old);
+          const task = this.create(plan.agentId, resolvedTitle, "agent");
+          created.push({
+            agentId: plan.agentId,
+            idempotencyKey: plan.idempotencyKey,
+            task,
+            archived: plan.archived,
+            enqueued: false,
+          });
+        }
+        for (const item of created) {
+          if (item.archived.length > 0) yield* this.#hooks.archived(item.agentId, item.archived);
+        }
+
+        const createdByAgent = new Map(created.map((item) => [item.agentId, item]));
+        const results: Array<{ agentId: string; taskId: string; receipt: QueuedMessageReceipt }> = [];
+        yield* Effect.gen({ self: this }, function* () {
+          for (const recipient of recipients) {
+            const existing = existingByAgent.get(recipient.agentId);
+            if (existing) {
+              results.push({ agentId: recipient.agentId, taskId: existing.taskId, receipt: existing.receipt });
+              continue;
+            }
+            const item = createdByAgent.get(recipient.agentId);
+            if (!item) continue;
+            const receipt = yield* enqueue({
+              agentId: item.agentId,
+              idempotencyKey: item.idempotencyKey,
+              taskId: item.task.taskId,
+            });
+            item.enqueued = true;
+            this.changed(item.agentId);
+            results.push({ agentId: item.agentId, taskId: item.task.taskId, receipt });
+          }
+        }).pipe(
+          Effect.onError(() =>
+            Effect.sync(() => {
+              for (const item of created) {
+                if (!item.enqueued) this.discard(item.task);
+                if (item.archived.length > 0) this.changed(item.agentId);
+              }
+            }),
+          ),
+        );
+
+        return { ok: true as const, results };
+      }),
+    );
+  });
 
   /**
    * The side threads of this agent, open and archived, with activity at or after `after`. The latest
@@ -747,24 +867,9 @@ export class AgentTasks implements TaskLanes {
       }
       return launch ? launchedTaskResult(startedTask) : startedTaskResult(startedTask);
     }
-    const open = this.#store.openTaskIds(targetId).flatMap((taskId) => this.#store.task(taskId) ?? []);
-    const finished = open.filter((task) => this.#finished(task));
-    // A routine thread is the routine's own: its runs do not count as tasks that the agent started.
-    const unfinishedTasks = open.filter((task) => task.routineId === null && !finished.includes(task)).length;
-    if (unfinishedTasks >= AGENT_STARTED_UNFINISHED_TASKS)
-      return openBotToolFailure(
-        sourceText("error.backend.taskUnfinishedLimit", { count: AGENT_STARTED_UNFINISHED_TASKS }),
-      );
-    // The newest finished tasks that the agent started stay open, when the task list has a place for them
-    // and for the new task. The person's own tasks, branches and routine threads stay open.
-    const finishedByAgent = finished
-      .filter((task) => task.origin === "agent" && task.branch === null && task.routineId === null)
-      .sort((left, right) => right.updatedAt.localeCompare(left.updatedAt));
-    const others = open.length - finishedByAgent.length;
-    const kept = Math.max(0, Math.min(AGENT_STARTED_FINISHED_KEPT, INPUT_LIMITS.agentTasks - 1 - others));
-    const archived = finishedByAgent.slice(kept);
-    if (open.length - archived.length >= INPUT_LIMITS.agentTasks)
-      return openBotToolFailure(sourceText("error.backend.threadOpenLimitReached", { count: INPUT_LIMITS.agentTasks }));
+    const plan = this.#planAgentThread(targetId);
+    if (!plan.ok) return openBotToolFailure(plan.error);
+    const { archived } = plan;
     // All of them close before the first yield, so no turn starts between the check and the close.
     for (const task of archived) this.#closeQuietly(task);
     const task = this.create(targetId, input.title, "agent");
@@ -887,6 +992,35 @@ export class AgentTasks implements TaskLanes {
       default:
         return false;
     }
+  }
+
+  /** Checks agent-started thread limits and returns finished agent-started threads to archive. */
+  #planAgentThread(targetId: string): { ok: true; archived: AgentThreadRecord[] } | { ok: false; error: string } {
+    const open = this.#store.openTaskIds(targetId).flatMap((taskId) => this.#store.task(taskId) ?? []);
+    const finished = open.filter((task) => this.#finished(task));
+    // A routine thread is the routine's own: its runs do not count as tasks that the agent started.
+    const unfinishedTasks = open.filter((task) => task.routineId === null && !finished.includes(task)).length;
+    if (unfinishedTasks >= AGENT_STARTED_UNFINISHED_TASKS) {
+      return {
+        ok: false,
+        error: sourceText("error.backend.taskUnfinishedLimit", { count: AGENT_STARTED_UNFINISHED_TASKS }),
+      };
+    }
+    // The newest finished tasks that the agent started stay open, when the task list has a place for them
+    // and for the new task. The person's own tasks, branches and routine threads stay open.
+    const finishedByAgent = finished
+      .filter((task) => task.origin === "agent" && task.branch === null && task.routineId === null)
+      .sort((left, right) => right.updatedAt.localeCompare(left.updatedAt));
+    const others = open.length - finishedByAgent.length;
+    const kept = Math.max(0, Math.min(AGENT_STARTED_FINISHED_KEPT, INPUT_LIMITS.agentTasks - 1 - others));
+    const archived = finishedByAgent.slice(kept);
+    if (open.length - archived.length >= INPUT_LIMITS.agentTasks) {
+      return {
+        ok: false,
+        error: sourceText("error.backend.threadOpenLimitReached", { count: INPUT_LIMITS.agentTasks }),
+      };
+    }
+    return { ok: true, archived };
   }
 
   /** No turn runs in the task, and no message is queued for it. */
