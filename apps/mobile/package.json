@@ -87,6 +87,7 @@
     "marked": "catalog:",
     "mermaid": "catalog:",
     "pdfjs-dist": "catalog:",
+    "posthog-react-native": "@4",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "react-native": "0.88.0",

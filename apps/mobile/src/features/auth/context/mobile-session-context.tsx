@@ -11,6 +11,8 @@ import {
   useState,
 } from "react";
 import { mobileAnalytics } from "@/features/analytics/mobile-analytics";
+import { posthog } from "@/features/analytics/posthog";
+import { posthogLog } from "@/features/analytics/posthog-log";
 import {
   followAccountAnalytics,
   loadAnalyticsPreference,
@@ -73,6 +75,21 @@ export function MobileSessionProvider({ children }: PropsWithChildren) {
   const refreshProfile = useCallback(() => refreshProfileRef.current(), []);
 
   const setCurrentSession = useCallback((session: MobileSession | null) => {
+    const previousUser = sessionRef.current?.user;
+    const userChanged = previousUser?.id !== session?.user.id;
+    if (userChanged && previousUser) {
+      posthogLog.sessionCleared();
+      posthog?.reset();
+    }
+    if (session && userChanged) {
+      posthog?.identify(session.user.id, {
+        $set: {
+          email: session.user.email,
+          ...(session.user.name ? { name: session.user.name } : {}),
+        },
+      });
+      posthogLog.sessionEstablished();
+    }
     if (sessionRef.current?.sessionToken !== session?.sessionToken || sessionRef.current?.apiUrl !== session?.apiUrl) {
       sessionScope.current += 1;
       queryClient.removeQueries({ queryKey: queryKeys.accountSessions() });
