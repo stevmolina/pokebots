@@ -77,3 +77,52 @@ export const Streaming: Story = {
     );
   },
 };
+
+export const ManyRunning: Story = {
+  render: () => {
+    const since = new Date(Date.now() - 81_000).toISOString();
+    const items: BackgroundWorker[] = [
+      {
+        id: "w1",
+        agent: STORY_AGENTS[0],
+        title: "Order active sessions first",
+        since,
+        state: "running",
+        onOpen: () => undefined,
+      },
+      {
+        id: "w2",
+        agent: STORY_AGENTS[0],
+        title: "Minimalist bot list toggle mockups",
+        since,
+        state: "running",
+        onOpen: () => undefined,
+      },
+      {
+        id: "w3",
+        agent: STORY_AGENTS[0],
+        title: "Send agent messages into side threads",
+        since,
+        state: "running",
+        onOpen: () => undefined,
+      },
+      {
+        id: "w4",
+        agent: STORY_AGENTS[0],
+        title: "Automating Pokebots VPS updates",
+        since,
+        state: "running",
+        onOpen: () => undefined,
+      },
+      {
+        id: "w5",
+        agent: STORY_AGENTS[0],
+        title: "Bot search broken on all machines",
+        since,
+        state: "running",
+        onOpen: () => undefined,
+      },
+    ];
+    return <BackgroundWorkers items={items} />;
+  },
+};

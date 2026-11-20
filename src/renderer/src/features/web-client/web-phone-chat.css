@@ -248,9 +248,25 @@
     gap: var(--openbot-space-2);
     overflow-x: auto;
     border-top: 0;
+    margin-top: 0;
     margin-bottom: 0;
     padding: var(--openbot-space-1) var(--openbot-space-1) var(--openbot-space-2);
     scrollbar-width: none;
+  }
+
+  .web-app-frame[data-web-mobile-pane="conversation"] .background-workers-toggle {
+    display: none;
+  }
+
+  .web-app-frame[data-web-mobile-pane="conversation"] .background-workers-list {
+    display: contents;
+  }
+
+  .web-app-frame[data-web-mobile-pane="conversation"]
+    .background-workers[data-collapsed="true"]
+    .background-workers-list
+    > .background-worker-row:not(:first-child) {
+    display: flex;
   }
 
   .web-app-frame[data-web-mobile-pane="conversation"] .background-worker-row.ui-button {

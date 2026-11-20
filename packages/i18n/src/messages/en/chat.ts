@@ -3,6 +3,10 @@ import { defineMessages } from "../../message";
 export const messages = defineMessages("chat", {
   "chat.workers.running": "Running",
   "chat.workers.queued": "Queued",
+  "chat.workers.runningCount": "{count} running",
+  "chat.workers.queuedCount": "{count} queued",
+  "chat.workers.showAll": "Show all {count} active sessions",
+  "chat.workers.showOne": "Collapse to one active session",
   "chat.activity.workingOnIt": "Working on it…",
   "chat.activity.thinking": "Thinking it through…",
   "chat.activity.connectingDots": "Connecting the dots…",
