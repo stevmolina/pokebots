@@ -69,6 +69,7 @@ import {
   workspaceAgentOfPath,
 } from "./quoted-text";
 import type { SkillSuggestionSaveResult } from "./SkillSuggestionChatCard";
+import { resolveDefaultSidePanelAction, resolveEmptySidePanelAction } from "./side-panel-fallback";
 import { createActivityStore } from "./stores/activity-store";
 import { createBrowserStore } from "./stores/browser-store";
 import { createComposerActions } from "./stores/composer-actions";
@@ -650,11 +651,18 @@ export function createConversationViewScope(props: ConversationProps) {
   }
   const sideThreadIds = () => props.threads?.side.tabs.map((thread) => thread.id) ?? [];
   /**
-   * The side panel after its last tab closed: it lists the panes. On a phone the list covers the chat,
-   * so the chat shows again.
+   * The side panel after its last tab closed: on a phone, or when the user closed the settings pane
+   * itself, the panel closes. Otherwise it opens the bot/channel settings pane when available instead
+   * of an empty launcher.
    */
-  function showEmptySidePanel() {
-    if (isPhoneWeb()) hideBrowserPanel();
+  function showEmptySidePanel(closedPane?: SidePanelPane) {
+    const action = resolveEmptySidePanelAction({
+      phoneWeb: isPhoneWeb(),
+      hasSettingsTarget: Boolean(props.agent || channel),
+      closedPane,
+    });
+    if (action === "close") hideBrowserPanel();
+    else if (action === "settings") openSidePanelPane("settings");
     else setActiveRightPanel("side-panel");
   }
   /** The side thread that the side panel shows, or null when its tab is gone. */
@@ -663,17 +671,18 @@ export function createConversationViewScope(props: ConversationProps) {
     return id !== null && sideThreadIds().includes(id) ? id : null;
   };
   /**
-   * The panel button opens the side panel at its last file, pane or side thread, or at the list of
-   * panes when no tab is open. A file that is not loaded is read again. The panel lists the panes
-   * until the file shows, so the panel opens also when the read fails.
+   * The panel button opens the side panel at its last file, pane or side thread, or at the bot/channel
+   * settings pane when no tab is open. A file that is not loaded is read again. The panel lists the
+   * panes until the file shows, so the panel opens also when the read fails.
    */
   function toggleSidePanel() {
     if (sidePanelOpen()) hideBrowserPanel();
     else showSidePanel();
   }
   /**
-   * Opens the side panel of this chat at its last file, pane or side thread, or at the list of panes.
-   * With `startsBrowser` false, a Browser pane with no tab does not open a page: the panel lists the panes.
+   * Opens the side panel of this chat at its last file, pane or side thread, or at the bot/channel
+   * settings pane when no tab is open.
+   * With `startsBrowser` false, a Browser pane with no tab does not open a page.
    */
   function showSidePanel(startsBrowser = true) {
     const { panes, selected, files, file } = sidePanel();
@@ -687,6 +696,8 @@ export function createConversationViewScope(props: ConversationProps) {
     } else if (pane) openSidePanelPane(pane);
     else if (thread && selected === null) openPanelThread(thread);
     else if (opens(panes[0])) openSidePanelPane(panes[0]);
+    else if (resolveDefaultSidePanelAction(Boolean(props.agent || channel)) === "settings")
+      openSidePanelPane("settings");
     else setActiveRightPanel("side-panel");
   }
   /**
@@ -744,7 +755,7 @@ export function createConversationViewScope(props: ConversationProps) {
       else if (next.file) {
         setActiveRightPanel("side-panel");
         openSidePanelFile(next.file);
-      }
+      } else showEmptySidePanel();
     },
   );
   /** The subagent that the side panel shows now, or null. */
@@ -754,12 +765,12 @@ export function createConversationViewScope(props: ConversationProps) {
     if (shownSubagentId() === subagentId) closeSidePanelPane("subagent");
     else openSubagentPanel(subagentId);
   }
-  /** Closes the tab of a pane. The next tab takes its place; with no tab, the panel lists the panes. */
+  /** Closes the tab of a pane. The next tab takes its place; with no tab, the panel falls back to settings or closes. */
   function closeSidePanelPane(pane: SidePanelPane) {
     sidePanelPaneActions[pane]?.release?.();
     const shown = sidePanelOpen() && sidePanel().selected === pane;
     const next = removeSidePanelPane(pane);
-    if (shown) showSidePanelInPlaceOf(next);
+    if (shown) showSidePanelInPlaceOf(next, pane);
   }
   /**
    * Closes the browser pane when its last tab closes. The full view and picture in picture are outside the
@@ -767,10 +778,10 @@ export function createConversationViewScope(props: ConversationProps) {
    * panel mode that a write sets does not show yet, so this does not read the mode.
    */
   function closeBrowserPane() {
-    showSidePanelInPlaceOf(removeSidePanelPane("browser"));
+    showSidePanelInPlaceOf(removeSidePanelPane("browser"), "browser");
   }
-  /** Shows the next tab of the side panel after a tab closed; with no tab, the panel lists the panes. */
-  function showSidePanelInPlaceOf(next: SidePanelPane | null) {
+  /** Shows the next tab of the side panel after a tab closed; with no tab, falls back to settings or closes. */
+  function showSidePanelInPlaceOf(next: SidePanelPane | null, closedPane?: SidePanelPane) {
     const thread = sideThreadIds()[0];
     const file = sidePanel().files.at(-1);
     if (next) openSidePanelPane(next);
@@ -779,7 +790,7 @@ export function createConversationViewScope(props: ConversationProps) {
       // The closed pane must not stay on screen while the file reads, or after a failed read.
       setActiveRightPanel("side-panel");
       openSidePanelFile(file.key);
-    } else showEmptySidePanel();
+    } else showEmptySidePanel(closedPane);
   }
   /**
    * Closes the tab of a file. When the file showed, the file next to it shows, else the last pane or
