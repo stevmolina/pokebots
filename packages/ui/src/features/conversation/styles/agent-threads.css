@@ -395,8 +395,7 @@
 }
 
 /* The same dot on the thread list button, for unread replies in a thread that the header does not show. */
-.agent-threads-menu-button.ui-button,
-.agent-threads-switcher.ui-button {
+.agent-threads-menu-button.ui-button {
   position: relative;
 }
 

@@ -1,3 +1,4 @@
+import { BRAIN_MCP_URL } from "@openbot/contracts/brain";
 import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
 import type { McpServerConfig, McpTestResult, McpTransport } from "@openbot/contracts/ipc";
 import { matchingSourceKeys } from "@openbot/i18n/source";
@@ -55,7 +56,11 @@ type TestState = { status: "testing" } | { status: "done"; result: McpTestResult
  */
 export function ServerMcpServerScreen() {
   const { t } = useText();
-  const { serverId, mcpServerId } = useLocalSearchParams<{ serverId: string; mcpServerId?: string }>();
+  const { serverId, mcpServerId, preset } = useLocalSearchParams<{
+    serverId: string;
+    mcpServerId?: string;
+    preset?: string;
+  }>();
   const mcp = useServerMcp(serverId);
   const saved = mcpServerId ? mcp.list.data?.find((config) => config.id === mcpServerId) : undefined;
   if (!mcp.server || !mcp.canManage || (mcpServerId && !saved))
@@ -72,24 +77,39 @@ export function ServerMcpServerScreen() {
         </SettingsNote>
       </SettingsContent>
     );
-  return <McpServerForm key={saved?.id ?? "new"} serverId={serverId} saved={saved} mcp={mcp} />;
+  const draft = mcpServerDraft(saved);
+  const initialDraft: McpServerDraft =
+    !saved && preset === "brain"
+      ? { ...draft, name: t("mobile.brain.title"), transport: "http", url: BRAIN_MCP_URL }
+      : draft;
+  return (
+    <McpServerForm
+      key={saved?.id ?? preset ?? "new"}
+      serverId={serverId}
+      saved={saved}
+      mcp={mcp}
+      initialDraft={initialDraft}
+    />
+  );
 }
 
 function McpServerForm({
   serverId,
   saved,
   mcp,
+  initialDraft,
 }: {
   serverId: string;
   saved: McpServerConfig | undefined;
   mcp: ReturnType<typeof useServerMcp>;
+  initialDraft: McpServerDraft;
 }) {
   const { t, sourceText, errorMessage } = useText();
   const { theme } = useUniwind();
   const { saveMcpServer, removeMcpServer, setMcpServerEnabled, testMcpServer, signOutMcpServer } =
     useMobileWorkspaceActions();
   const { action, perform, setList, setSignIns } = mcp;
-  const [draft, setDraft] = useState<McpServerDraft>(() => mcpServerDraft(saved));
+  const [draft, setDraft] = useState(initialDraft);
   // A new server keeps its switch in the draft. A saved one turns on and off at once.
   const [newEnabled, setNewEnabled] = useState(true);
   const [test, setTest] = useState<TestState | null>(null);

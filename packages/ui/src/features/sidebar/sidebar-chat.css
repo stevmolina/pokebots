@@ -1286,8 +1286,8 @@
   right: 5px;
   width: 7px;
   height: 7px;
-  border-radius: 50%;
-  background: var(--openbot-accent, #22c55e);
+  border-radius: var(--openbot-radius-pill);
+  background: var(--openbot-accent);
   box-shadow: 0 0 0 1.5px var(--openbot-sidebar-bg, var(--openbot-bg-secondary));
   pointer-events: none;
 }
@@ -1337,7 +1337,7 @@
   height: 22px;
   min-height: 22px;
   padding: 0;
-  border-radius: 6px;
+  border-radius: var(--openbot-radius-sm);
   justify-content: center;
   color: var(--text-muted);
 }
@@ -1356,15 +1356,15 @@
   min-width: 0;
   min-height: 30px;
   padding: 5px 8px;
-  border-radius: 8px;
-  border: 1px solid var(--border-subtle, rgba(128, 128, 128, 0.16));
-  font-size: 12px;
+  border-radius: var(--openbot-radius-md);
+  border: 1px solid var(--openbot-border);
+  font-size: var(--openbot-text-sm);
   font-weight: 500;
 }
 
 .sidebar-footer-machine-tile[data-active] {
-  background: var(--surface-hover, rgba(128, 128, 128, 0.12));
-  border-color: var(--border-strong, rgba(128, 128, 128, 0.32));
+  background: var(--openbot-bg-control-hover);
+  border-color: var(--openbot-border-focus);
   font-weight: 600;
 }
 
@@ -1387,13 +1387,13 @@
   bottom: -1px;
   width: 5px;
   height: 5px;
-  border-radius: 9999px;
+  border-radius: var(--openbot-radius-pill);
   background: var(--text-muted);
   border: 1px solid var(--surface-popover, var(--bg-primary));
 }
 
 .sidebar-footer-machine-dot[data-online] {
-  background: #22c55e;
+  background: var(--openbot-success);
 }
 
 .sidebar-footer-machine-check {
