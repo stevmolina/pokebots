@@ -23,10 +23,10 @@ import { join, resolve } from "node:path";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 import type { McpServerConfig, RemoteComputerServer } from "@openbot/contracts/ipc";
-import type { DynamicRecord } from "@openbot/contracts/runtime-values";
+import { type DynamicRecord, isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
 import { REMOTE_COMPUTER_USE_ROUTES } from "@openbot/contracts/team-protocol/remote-computer-use-v1";
 import { createOpenBotLogger, redactText } from "@openbot/logging";
-import { Effect } from "effect";
+import { Effect, Schema } from "effect";
 import { McpGateway } from "../src/backend/agent/mcp-gateway";
 import { findAgentMcpTool, mcpServersFromGateway, mcpToolCallResponse } from "../src/backend/agent/mcp-tools";
 import { runCauseEffect } from "../src/backend/effect-boundary";
@@ -148,9 +148,22 @@ async function connect(url: string, bearer: string): Promise<Client> {
   return mcp;
 }
 
+const commandReport = Schema.decodeUnknownSync(
+  Schema.Struct({
+    exit_code: Schema.NullOr(Schema.Number),
+    stdout: Schema.String,
+    stderr: Schema.String,
+    timed_out: Schema.Boolean,
+  }),
+);
+
+const fileReport = Schema.decodeUnknownSync(
+  Schema.Struct({ saved_to: Schema.String, bytes: Schema.Number, sha256: Schema.String }),
+);
+
 function textOf(result: unknown): string {
-  const content = (result as { content?: Array<{ type: string; text?: string }> }).content ?? [];
-  return content.map((item) => item.text ?? "").join("");
+  assert.ok(isDynamicRecord(result) && Array.isArray(result.content), "The tool returns content.");
+  return result.content.map((item) => (isDynamicRecord(item) && isString(item.text) ? item.text : "")).join("");
 }
 
 try {
@@ -216,12 +229,7 @@ try {
     return { success: response.success, text };
   };
   const first = await run({ command: "printf hello-from-mac; echo oops >&2; pwd; exit 3" });
-  const firstReport = JSON.parse(first.text) as {
-    exit_code: number;
-    stdout: string;
-    stderr: string;
-    timed_out: boolean;
-  };
+  const firstReport = commandReport(JSON.parse(first.text));
   assert.equal(firstReport.exit_code, 3);
   assert.equal(firstReport.stdout, `hello-from-mac${macHome}\n`);
   assert.equal(firstReport.stderr, "oops\n");
@@ -231,11 +239,9 @@ try {
     "openbot.tool_call to my_computer.openbot_run_command runs in the home folder and reports exit code, stdout and stderr",
   );
 
-  const secret = JSON.parse((await run({ command: `echo "$\{OPENBOT_E2E_SECRET:-unset}"` })).text) as {
-    stdout: string;
-  };
+  const secret = commandReport(JSON.parse((await run({ command: `echo "$\{OPENBOT_E2E_SECRET:-unset}"` })).text));
   assert.equal(secret.stdout.trim(), "unset");
-  const cwd = JSON.parse((await run({ command: "pwd", cwd: "~/Desktop" })).text) as { stdout: string };
+  const cwd = commandReport(JSON.parse((await run({ command: "pwd", cwd: "~/Desktop" })).text));
   assert.equal(cwd.stdout.trim(), join(macHome, "Desktop"));
   const badCwd = await run({ command: "pwd", cwd: "~/missing" });
   assert.equal(badCwd.success, false);
@@ -243,10 +249,10 @@ try {
 
   const slow = await run({ command: "sleep 30", timeout_seconds: 1 });
   assert.equal(slow.success, false);
-  assert.equal((JSON.parse(slow.text) as { timed_out: boolean }).timed_out, true);
+  assert.equal(commandReport(JSON.parse(slow.text)).timed_out, true);
   pass("a command still running at its time limit is stopped and reported");
 
-  const big = JSON.parse((await run({ command: "yes abcdefghij | head -c 600000" })).text) as { stdout: string };
+  const big = commandReport(JSON.parse((await run({ command: "yes abcdefghij | head -c 600000" })).text));
   assert.match(big.stdout, /characters omitted/u);
   assert.ok(big.stdout.length < 51_000);
   // The worst case for the reply size: every character is escaped twice on the wire.
@@ -272,7 +278,7 @@ try {
   const fetchRecord = async (args: DynamicRecord) => mcp.callTool({ name: "openbot_fetch_file", arguments: args });
   const copied = await fetchRecord({ path: "~/Desktop/Screen Recording 2026-11-19 at 10.00.00.mov" });
   assert.ok(!copied.isError, textOf(copied));
-  const copiedReport = JSON.parse(textOf(copied)) as { saved_to: string; bytes: number; sha256: string };
+  const copiedReport = fileReport(JSON.parse(textOf(copied)));
   assert.equal(copiedReport.saved_to, join(workspace, "from-mac", "Screen Recording 2026-11-19 at 10.00.00.mov"));
   assert.equal(copiedReport.bytes, recordingBytes.length);
   assert.equal(copiedReport.sha256, createHash("sha256").update(recordingBytes).digest("hex"));
@@ -280,13 +286,13 @@ try {
   report.samples.fetch = copiedReport;
   pass("openbot_fetch_file copies a 1 MB recording in three chunks to the agent's folder on the host, byte for byte");
 
-  const again = JSON.parse(textOf(await fetchRecord({ path: recording }))) as { saved_to: string };
+  const again = fileReport(JSON.parse(textOf(await fetchRecord({ path: recording }))));
   assert.equal(again.saved_to, join(workspace, "from-mac", "Screen Recording 2026-11-19 at 10.00.00 (2).mov"));
-  const empty = JSON.parse(textOf(await fetchRecord({ path: "~/Desktop/empty.txt" }))) as { bytes: number };
+  const empty = fileReport(JSON.parse(textOf(await fetchRecord({ path: "~/Desktop/empty.txt" }))));
   assert.equal(empty.bytes, 0);
-  const traversal = JSON.parse(textOf(await fetchRecord({ path: "~/note.txt", file_name: "../../../evil.txt" }))) as {
-    saved_to: string;
-  };
+  const traversal = fileReport(
+    JSON.parse(textOf(await fetchRecord({ path: "~/note.txt", file_name: "../../../evil.txt" }))),
+  );
   assert.equal(traversal.saved_to, join(workspace, "from-mac", "evil.txt"));
   assert.equal(await readFile(traversal.saved_to, "utf8"), "hello from the mac\n");
   assert.equal((await fetchRecord({ path: "~/Desktop" })).isError, true);
@@ -344,7 +350,7 @@ try {
     "openbot_read_file_chunk",
     "openbot_run_command",
   ]);
-  const noDriver = JSON.parse((await run({ command: "echo still-works" })).text) as { stdout: string };
+  const noDriver = commandReport(JSON.parse((await run({ command: "echo still-works" })).text));
   assert.equal(noDriver.stdout, "still-works\n");
   assert.equal((await mcp.callTool({ name: "click", arguments: { x: 1 } })).isError, true);
   driverPresent = true;
