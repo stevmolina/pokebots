@@ -66,8 +66,8 @@ export function BackgroundWorkers(props: { items: readonly BackgroundWorker[] })
         data-collapsed={collapsed() ? "true" : undefined}
       >
         <Show when={collapsible()}>
-          <button
-            type="button"
+          <Button
+            variant="ghost"
             class="background-workers-toggle"
             aria-expanded={expanded() ? "true" : "false"}
             aria-controls={listId}
@@ -80,7 +80,7 @@ export function BackgroundWorkers(props: { items: readonly BackgroundWorker[] })
               <ChevronUp class="background-workers-toggle-chevron" aria-hidden="true" />
               <span>{countLabel()}</span>
             </span>
-          </button>
+          </Button>
         </Show>
         <div id={listId} class="background-workers-list">
           <For each={props.items} keyed={(item) => item.id}>
