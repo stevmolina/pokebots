@@ -56,7 +56,11 @@ try {
     nonce: "expected-nonce",
   };
   token = await sign({ nonce: input.nonce, email: "Person@Example.com", email_verified: true });
-  assert.deepEqual(await Effect.runPromise(oidc.redeem(input)), { subject: "person-1", email: "person@example.com" });
+  assert.deepEqual(await Effect.runPromise(oidc.redeem(input)), {
+    subject: "person-1",
+    email: "person@example.com",
+    pictureUrl: null,
+  });
   assert.equal(received.tokenRequest?.get("client_secret"), "local-secret");
   assert.equal(received.tokenRequest?.get("code_verifier"), "pkce-verifier");
   checks.push("verified identity and token request");
