@@ -2,6 +2,7 @@ import type { CentralAuthUser } from "@openbot/contracts/ipc";
 import { normalizeEmailAddress } from "@openbot/contracts/validation";
 import { classifyFailure, type Operation, type ReportQueue, safeProperties } from "@openbot/telemetry";
 import { Effect } from "effect";
+import { posthog } from "@/features/analytics/posthog";
 import { type MobileEventName, type MobileEventProperties, type SafeProperties, sanitizeMobileEvent } from "./events";
 
 export interface MobileAnalyticsClient {
@@ -49,6 +50,22 @@ const FAILURE_OPERATIONS: Record<MobileEventName, Operation> = {
   onboarding_completed: "other",
 };
 
+const POSTHOG_EVENTS = new Set<MobileEventName>([
+  "account_sign_in_completed",
+  "account_sign_out",
+  "mobile_pairing_action",
+  "mobile_connection_action",
+  "conversation_opened",
+  "message_send",
+  "agent_input_action",
+  "attachment_action",
+  "agent_action",
+  "routine_action",
+  "memory_action",
+  "team_action",
+  "marketplace_action",
+  "onboarding_completed",
+]);
 const ANONYMOUS_TTL_MS = 30 * 60 * 1_000;
 const MAX_PENDING_EVENTS = 100;
 type PendingEvent = { name: MobileEventName; properties: SafeProperties; timestamp: string };
@@ -208,6 +225,7 @@ export class MobileAnalytics {
     if (!this.isSending() || this.closing) return;
     this.expireAnonymous();
     const safe = sanitizeMobileEvent(name, properties);
+    if (this.enabled && POSTHOG_EVENTS.has(name)) posthog?.capture(name, safe);
     if (safe.result === "failed") {
       const reports = failureScope === undefined ? this.createReports?.() : failureScope;
       const operation = FAILURE_OPERATIONS[name];

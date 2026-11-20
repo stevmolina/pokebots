@@ -16,6 +16,8 @@ const GOOGLE_SERVICES_FILE = "./google-services.json";
 const PERSONAL_ENV = "OPENBOT_IOS_PERSONAL";
 const PERSONAL_BUNDLE_ID_ENV = "OPENBOT_IOS_PERSONAL_BUNDLE_ID";
 const PERSONAL_NAME_ENV = "OPENBOT_IOS_PERSONAL_NAME";
+const POSTHOG_KEY_ENV = "EXPO_PUBLIC_POSTHOG_KEY";
+const POSTHOG_HOST_ENV = "EXPO_PUBLIC_POSTHOG_HOST";
 const PERSONAL_DROPPED_PLUGINS = new Set([
   "expo-notifications",
   "expo-widgets",
@@ -80,5 +82,13 @@ module.exports = ({ config }) => {
   const withFirebase = existsSync(join(__dirname, GOOGLE_SERVICES_FILE))
     ? { ...config, android: { ...config.android, googleServicesFile: GOOGLE_SERVICES_FILE } }
     : config;
-  return process.env[PERSONAL_ENV] === "1" ? personalIosConfig(withFirebase) : withFirebase;
+  const withPostHog = {
+    ...withFirebase,
+    extra: {
+      ...withFirebase.extra,
+      posthogProjectToken: process.env[POSTHOG_KEY_ENV],
+      posthogHost: process.env[POSTHOG_HOST_ENV],
+    },
+  };
+  return process.env[PERSONAL_ENV] === "1" ? personalIosConfig(withPostHog) : withPostHog;
 };
