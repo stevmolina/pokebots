@@ -6,7 +6,7 @@ import type { IntegrationCredential } from "../backend/integration-credential";
 import { readLimitedBody } from "../backend/limited-body";
 import type { McpOAuthAuthority } from "../backend/mcp-oauth-provider";
 
-export const ROOMS_MCP_URL = "https://rooms.mcpbox.dev/mcp";
+const ROOMS_MCP_URL = "https://rooms.mcpbox.dev/mcp";
 const nullableText = Schema.NullOr(Schema.String);
 const room = Schema.Struct({
   id: Schema.String,
@@ -51,7 +51,7 @@ const reply = Schema.Struct({
   invite: Schema.optional(Schema.String),
 });
 
-export class RoomsError extends Schema.TaggedError<RoomsError>()("RoomsError", { cause: Schema.Defect() }) {}
+class RoomsError extends Schema.TaggedError<RoomsError>()("RoomsError", { cause: Schema.Defect() }) {}
 const failed = () => new RoomsError({ cause: new Error(sourceText("error.team.roomsRequestFailed")) });
 
 /** Fixed origin, no redirects, bounded replies, and no upstream error text or credentials in replies. */

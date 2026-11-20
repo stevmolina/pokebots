@@ -9,12 +9,6 @@ import { For } from "solid-js";
 
 const PRODUCT_NAME = "OpenBot";
 const STORAGE_KEY = "openbot.web.phoneBrowser";
-/**
- * A phone: a touch pointer and a narrow screen, or a short screen when the phone is in landscape. A
- * narrow desktop window has a mouse, and a tablet is wider and taller, so both keep the web client.
- */
-const PHONE_QUERY = "(pointer: coarse) and (max-width: 720px), (pointer: coarse) and (max-height: 500px)";
-
 interface StoreLink {
   platform: MobilePlatformLogoVariant;
   label: AppTextKey;
@@ -25,20 +19,6 @@ const STORES: Record<MobilePlatformLogoVariant, StoreLink> = {
   ios: { platform: "ios", label: "webClient.phoneApp.ios", href: IOS_APP_STORE_URL },
   android: { platform: "android", label: "webClient.phoneApp.android", href: ANDROID_PLAY_STORE_URL },
 };
-
-/**
- * True when the web client opens on a phone and this browser has not chosen to stay in the browser.
- * It is read once at start, so a turn of the phone does not swap the screen. Blocked storage counts
- * as no choice.
- */
-export function phoneAppScreenWanted(): boolean {
-  if (!window.matchMedia?.(PHONE_QUERY).matches) return false;
-  try {
-    return window.localStorage.getItem(STORAGE_KEY) !== "1";
-  } catch {
-    return true;
-  }
-}
 
 function rememberBrowserChoice(): void {
   try {

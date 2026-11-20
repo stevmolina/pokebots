@@ -9,7 +9,7 @@ import { useText } from "@openbot/ui/text";
 import { createMemo, createSignal, createUniqueId, For, onCleanup, Show, untrack } from "solid-js";
 
 /** The closed tasks that the Done column shows before "Show all". */
-export const TASKS_BOARD_CLOSED_SHOWN = 12;
+const TASKS_BOARD_CLOSED_SHOWN = 12;
 
 type BoardColumnId = Extract<TasksSectionId, "needsYou" | "working" | "waiting" | "closed">;
 

@@ -96,7 +96,7 @@ class SqlitePreparedStatement implements D1PreparedStatement {
   }
 }
 
-export function applySelfHostedMigrations(database: DatabaseSync, migrationsDir: string): string[] {
+function applySelfHostedMigrations(database: DatabaseSync, migrationsDir: string): string[] {
   database.exec(`
     CREATE TABLE IF NOT EXISTS d1_migrations (
       id INTEGER PRIMARY KEY AUTOINCREMENT,

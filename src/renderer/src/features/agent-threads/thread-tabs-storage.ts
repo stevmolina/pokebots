@@ -97,16 +97,7 @@ function readSeenThreads(storage: ThreadTabsStorage): SeenThreadsByServer {
   }
 }
 
-/** The creation time of the newest side thread of the agent that this device has seen, if any. */
-export function readThreadsSeenThrough(
-  serverId: string,
-  agentId: string,
-  storage: ThreadTabsStorage = window.localStorage,
-): string | undefined {
-  return readSeenThreads(storage)[serverId]?.[agentId];
-}
-
-/** Sets the time that `readThreadsSeenThrough` reads. `null` forgets it, for a deleted agent. */
+/** Sets the newest seen thread creation time. `null` forgets it for a deleted agent. */
 export function writeThreadsSeenThrough(
   serverId: string,
   agentId: string,

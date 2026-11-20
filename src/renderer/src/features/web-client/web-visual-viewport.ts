@@ -17,7 +17,7 @@
  * While the user zooms with two fingers, the app does not follow, so the zoom works as usual.
  */
 
-export const WEB_KEYBOARD_OPEN_ATTRIBUTE = "data-web-keyboard-open";
+const WEB_KEYBOARD_OPEN_ATTRIBUTE = "data-web-keyboard-open";
 
 /** A visual viewport this much shorter than the layout viewport has a keyboard under it. */
 const KEYBOARD_MIN_HEIGHT = 120;

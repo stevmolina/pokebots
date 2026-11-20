@@ -17,13 +17,13 @@ const MAX_SESSIONS = 4;
 const MAX_STAGES = 80;
 const SLOWEST_FILES = 3;
 
-export interface ConnectionStage {
+interface ConnectionStage {
   name: string;
   /** Milliseconds since the page started to load. */
   at: number;
 }
 
-export interface ConnectionPageSummary {
+interface ConnectionPageSummary {
   timeToFirstByte: number | null;
   domContentLoaded: number | null;
   loaded: number | null;

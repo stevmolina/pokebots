@@ -20,7 +20,7 @@ const FIRST_DARWIN_WITH_PHOTO_PICKER = 22;
 const EXECUTABLE_NAME = "macos-photo-picker";
 const OUTPUT_LIMIT_BYTES = 1024 * 1024;
 
-export class PhotoPickerFailed extends Schema.TaggedError<PhotoPickerFailed>()("PhotoPickerFailed", {
+class PhotoPickerFailed extends Schema.TaggedError<PhotoPickerFailed>()("PhotoPickerFailed", {
   cause: Schema.Defect(),
 }) {}
 
@@ -54,7 +54,7 @@ export interface PhotoPickerRequest {
 }
 
 /** The copies of the chosen items, in the order of the selection. The caller removes `directory`. */
-export interface PickedPhotos {
+interface PickedPhotos {
   directory: string;
   paths: string[];
 }

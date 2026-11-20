@@ -20,7 +20,7 @@ const PUBLIC_KEY_BYTES = 65;
 const AUTH_BYTES = 16;
 const TAG_BYTES = 16;
 /** Salt, record size, key id length and key id. */
-export const WEB_PUSH_HEADER_BYTES = SALT_BYTES + 4 + 1 + PUBLIC_KEY_BYTES;
+const WEB_PUSH_HEADER_BYTES = SALT_BYTES + 4 + 1 + PUBLIC_KEY_BYTES;
 
 export interface WebPushSubscriptionKeys {
   /** The P-256 public key of the subscription, 65 bytes uncompressed, base64url. */
@@ -53,7 +53,7 @@ export function decodeWebPushKeys(keys: WebPushSubscriptionKeys): { publicKey: B
 }
 
 /** The largest plaintext that fits one record and the 4096-byte limit of push services with its header. */
-export const WEB_PUSH_PLAINTEXT_LIMIT = RECORD_SIZE - WEB_PUSH_HEADER_BYTES - TAG_BYTES - 1;
+const WEB_PUSH_PLAINTEXT_LIMIT = RECORD_SIZE - WEB_PUSH_HEADER_BYTES - TAG_BYTES - 1;
 
 /**
  * The `aes128gcm` body for `plaintext`, or `null` when the keys are not valid or the plaintext is longer

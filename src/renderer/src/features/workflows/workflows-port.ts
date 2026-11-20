@@ -177,11 +177,6 @@ export function keptPicture(fileId: string, file: File, previewUrl: string | nul
  * The desktop adapter for one server. `window.openbot` and `server` are read on each call: tests and
  * stories replace them per case, and a role can change.
  */
-/** The media credits of one server: this computer, or a joined server through main. */
-export function desktopMediaCredits(serverId: string) {
-  return window.openbot.workflows.mediaCredits(serverId);
-}
-
 export function desktopWorkflowHost(serverId: string, server: () => ServerSummary | undefined): WorkflowHost {
   const api = () => window.openbot.workflows;
   /** A server that has not loaded yet is this computer, as the page reads it. */

@@ -381,7 +381,7 @@ export function SidebarProfileMenu(props: {
  * The grid button of the footer. It opens the Marketplace at once, as a modal over the window. The custom MCP
  * servers that its menu had on the web client are part of the Marketplace now.
  */
-export function ConnectAppsButton(props: { pages: SidebarPages; class?: string }) {
+function ConnectAppsButton(props: { pages: SidebarPages; class?: string }) {
   const { t } = useText();
   return (
     <Show when={props.pages.onMarketplace}>

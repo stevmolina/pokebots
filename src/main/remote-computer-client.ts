@@ -82,7 +82,7 @@ export class RemoteComputerClientError extends Schema.TaggedError<RemoteComputer
 const { io: clientCall } = causeHelpers(RemoteComputerClientError);
 
 /** The two bodies that `remote-computer-use-v1` sends: the state, and the answer to one call. */
-export type RemoteComputerBody =
+type RemoteComputerBody =
   | { available: boolean; computerName: string }
   | { requestId: string; ok: boolean; payload: string };
 

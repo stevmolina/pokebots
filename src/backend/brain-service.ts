@@ -8,7 +8,7 @@ import type { IntegrationCredential } from "./integration-credential";
 import { readLimitedBody } from "./limited-body";
 import type { McpOAuth } from "./mcp-oauth-provider";
 
-export class BrainError extends Schema.TaggedError<BrainError>()("BrainError", {
+class BrainError extends Schema.TaggedError<BrainError>()("BrainError", {
   message: Schema.String,
 }) {}
 
@@ -36,7 +36,7 @@ type BrainServiceRequest = {
 
 const writes = new Set<BrainRequest["operation"]>(["addFile", "remember", "update", "forget"]);
 
-export function isBrainConnection(config: McpServerConfig): boolean {
+function isBrainConnection(config: McpServerConfig): boolean {
   if (config.transport !== "http") return false;
   try {
     const url = new URL(config.url);

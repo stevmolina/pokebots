@@ -9,15 +9,11 @@ import { redactSecrets, registerSecretValue } from "@openbot/logging";
 import { Effect, Redacted, Schema } from "effect";
 import type { IntegrationCredential } from "../integration-credential";
 
-export const AGENT_COMPUTER_API_URL = "https://computer.mcpbox.dev/api/v1";
-/** Where a person makes a key. */
-export const AGENT_COMPUTER_KEYS_URL = "https://computer.mcpbox.dev/keys";
-/** `cmk_` plus 32 random bytes in base64url. A WorkOS access token is also accepted, so only the length is bounded. */
-export const AGENT_COMPUTER_KEY_LIMIT = 4_096;
+const AGENT_COMPUTER_API_URL = "https://computer.mcpbox.dev/api/v1";
+
 export const AGENT_COMPUTER_CONTEXT_PATTERN = /^[a-z0-9-]{1,32}$/u;
 export const AGENT_COMPUTER_BASH_TIMEOUT_MAX = 600;
-/** The API's file cap. */
-export const AGENT_COMPUTER_FILE_LIMIT = 1024 * 1024;
+
 /** Machine sizes: standard is 2 vCPU, large is 8 vCPU. An older API ignores the size and answers without one. */
 export const AGENT_COMPUTER_SIZES = ["standard", "large"] as const;
 export type AgentComputerSize = (typeof AGENT_COMPUTER_SIZES)[number];
@@ -41,7 +37,6 @@ const machineSchema = Schema.Struct({
   live_view_url: Schema.NullOr(Schema.String),
   updated_at: Schema.NullOr(Schema.String),
 });
-export type AgentComputerMachine = typeof machineSchema.Type;
 
 const listSchema = Schema.Struct({ machines: Schema.Array(machineSchema) });
 
@@ -50,7 +45,6 @@ const allowanceSchema = Schema.Struct({
   minutes_remaining: Schema.NullOr(Schema.Number),
   resets_at: Schema.NullOr(Schema.String),
 });
-export type AgentComputerAllowance = typeof allowanceSchema.Type;
 
 const startSchema = Schema.Struct({
   id: Schema.String,
@@ -75,7 +69,6 @@ const startSchema = Schema.Struct({
   ),
   briefing: Schema.optional(Schema.Array(Schema.String)),
 });
-export type AgentComputerStart = typeof startSchema.Type;
 
 const bashSchema = Schema.Struct({
   stdout: Schema.String,
@@ -83,10 +76,8 @@ const bashSchema = Schema.Struct({
   exit_code: Schema.NullOr(Schema.Number),
   timed_out: Schema.Boolean,
 });
-export type AgentComputerBash = typeof bashSchema.Type;
 
 const publishSchema = Schema.Struct({ url: Schema.String, bytes: Schema.Number, expires_at: Schema.String });
-export type AgentComputerPublish = typeof publishSchema.Type;
 
 const statusSchema = Schema.Struct({ id: Schema.String, status: Schema.String });
 
