@@ -20,10 +20,10 @@ export const messages = {
   "error.remote.linuxNeedsX11":
     "Linux のリモートデスクトップには X11 セッションが必要です。Wayland には対応していません。",
   "error.remote.runtimeMissing":
-    "Sunshine と Moonlight Web のランタイムがないか、このホストでは対応していません。Mac、Windows x64 または Linux x64 のホストに OpenBot のフルリリースをインストールしてから、OpenBot を再起動してください。",
+    "Sunshine と Moonlight Web のランタイムがないか、このホストでは対応していません。Mac、Windows x64 または Linux x64 のホストに Pokebots のフルリリースをインストールしてから、Pokebots を再起動してください。",
   "error.remote.testActive": "リモートデスクトップのテストを実行中です。終了してから再試行してください。",
   "error.remote.screenRecordingDenied":
-    "ホストが OpenBot に画面の収録を許可していません。ホストで画面収録を許可してから、再試行してください。",
+    "ホストが Pokebots に画面の収録を許可していません。ホストで画面収録を許可してから、再試行してください。",
   "error.remote.windowsSessionDisconnected":
     "ホストの Windows セッションが切断されているため、共有する画面がありません。ホストの画面で Windows にサインインしてから、再試行してください。",
   "error.remote.streamTooSlowLowerQuality":
@@ -43,7 +43,7 @@ export const messages = {
   "error.remote.moonlightStartFailed":
     "ホストで Moonlight Web を起動できませんでした。ホストのリモートデスクトップのログを確認してから、もう一度お試しください。",
   "error.remote.pairingFailed":
-    "ホストで Moonlight と Sunshine をペアリングできませんでした。もう一度お試しください。問題が続く場合は、ホストで OpenBot を再起動してください。",
+    "ホストで Moonlight と Sunshine をペアリングできませんでした。もう一度お試しください。問題が続く場合は、ホストで Pokebots を再起動してください。",
   "error.remote.runtimeStartFailed":
     "ホストでリモートデスクトップのランタイムを起動できませんでした。ホストのリモートデスクトップのログを確認してから、もう一度お試しください。",
   "error.remote.hostUnreachable": "ホストに接続できません。",
@@ -51,7 +51,7 @@ export const messages = {
   "error.remote.invalidData": "ホストが無効なデータを返しました。",
   "error.remote.unsafeData": "ホストが、このアプリで安全に使用できないデータを返しました。",
   "error.remote.requestFailedStatus": "リモートサーバーへのリクエストに失敗しました ({status})。",
-  "error.remote.appUpdateRequired": "ホストに接続する前に、この OpenBot アプリを更新してください。",
+  "error.remote.appUpdateRequired": "ホストに接続する前に、この Pokebots アプリを更新してください。",
   "error.remote.identityNotVerified": "サーバーの ID を確認できませんでした。",
   "error.remote.webRtcUnavailable": "WebRTC トランスポートを利用できません。",
   "error.remote.invalidCompatibility": "ホストが無効な互換性情報を返しました。",
@@ -70,9 +70,9 @@ export const messages = {
   "error.remote.inviteIdentityChanged": "招待の承認中に、ホストの ID が変わりました。",
   "error.remote.localServerRemove": "ローカルサーバーは削除できません。",
   "error.remote.desktopSetupHostUpdate":
-    "リモートデスクトップの設定を確認するには、ホストの OpenBot を更新してください。",
+    "リモートデスクトップの設定を確認するには、ホストの Pokebots を更新してください。",
   "error.remote.desktopTestHostUpdate":
-    "リモートデスクトップの設定をテストするには、ホストの OpenBot を更新してください。",
+    "リモートデスクトップの設定をテストするには、ホストの Pokebots を更新してください。",
   "error.remote.viewerProxyUnavailable": "リモートビューアーのローカルプロキシを利用できません。",
   "error.remote.viewerTransportInvalid": "リモートビューアーのトランスポートが無効です。",
   "error.remote.viewerProxyNoPort": "リモートビューアーのローカルプロキシがポートを取得できませんでした。",
@@ -90,9 +90,9 @@ export const messages = {
   "error.remote.requestTimeout": "リモートリクエストがタイムアウトしました。",
   "error.remote.requestFailed": "リモートリクエストに失敗しました。",
   "error.remote.hostKeyMissing":
-    "セキュリティキーがないか変更されたため、OpenBot はこのサーバーを確認できません。サーバーの所有者にサーバーの確認を依頼してください。",
+    "セキュリティキーがないか変更されたため、Pokebots はこのサーバーを確認できません。サーバーの所有者にサーバーの確認を依頼してください。",
   "error.remote.connectionNotStarted":
-    "OpenBot はこのサーバーへの接続を開始できませんでした。問題が続く場合は、OpenBot を終了してもう一度開いてください。",
+    "Pokebots はこのサーバーへの接続を開始できませんでした。問題が続く場合は、Pokebots を終了してもう一度開いてください。",
   "error.remote.hostDidNotConnect": "WebRTC ホストが接続しませんでした。",
   "error.remote.connectionCancelled": "リモート接続がキャンセルされました。",
   "error.remote.hostDisconnected":
@@ -145,11 +145,11 @@ export const messages = {
   "error.remote.permanentInviteNoEmail": "永続的な招待はメールで送信できません。",
   "error.remote.selfHostedInviteNoEmail":
     "セルフホストのアカウントサービスの招待はメールで送信できません。リンクをコピーしてください。",
-  "error.remote.inviteOtherService": "この招待は別の OpenBot サービスのものです。",
+  "error.remote.inviteOtherService": "この招待は別の Pokebots サービスのものです。",
   "error.remote.inviteFingerprintMismatch": "招待のホストの ID がフィンガープリントと一致しません。",
   "error.remote.inviteHostKeyMissing": "招待のホストキーがありません。",
   "error.remote.inviteKeyConflict": "招待が信頼済みのホストキーと競合しています。",
-  "error.remote.serviceRequestFailed": "OpenBot サービスへのリクエストに失敗しました。",
+  "error.remote.serviceRequestFailed": "Pokebots サービスへのリクエストに失敗しました。",
   "error.remote.downloadTimeout": "添付ファイルのダウンロードがタイムアウトしました。再試行してください。",
   "error.remote.attachmentConnectionClosed": "添付ファイルの接続が閉じました。",
   "error.remote.tooManyDownloads": "添付ファイルのダウンロードが多すぎます。",
@@ -184,31 +184,31 @@ export const messages = {
   "error.remote.hostBusy": "ホストは別の接続を処理中です。しばらくしてからもう一度お試しください。",
   "error.remote.signalPermissionDenied":
     "あなたのアカウントにはこのホストへのアクセス権がありません。オーナーにアクセスを依頼してください。",
-  "error.remote.signalRateLimited": "接続の試行が多すぎます。OpenBot は {seconds} 秒後にもう一度試します。",
+  "error.remote.signalRateLimited": "接続の試行が多すぎます。Pokebots は {seconds} 秒後にもう一度試します。",
   "error.remote.signalProtocolError":
-    "Signal とこのアプリの接続プロトコルが一致しません。OpenBot を更新してから、もう一度お試しください。",
+    "Signal とこのアプリの接続プロトコルが一致しません。Pokebots を更新してから、もう一度お試しください。",
   "error.remote.signalRefused": "Signal が接続を拒否しました。",
   "error.remote.signalClosed": "ホストが応答する前に Signal への接続が閉じました。",
   "error.remote.relayUnavailable": "Signal はこの接続にリレーサーバーを送りませんでした。後でもう一度お試しください。",
   "error.remote.iceFailed":
     "ホストに直接接続できませんでした。ファイアウォール、VPN、プロキシが接続をブロックしている可能性があります。",
   "error.remote.iceDisconnected": "ホストへの直接接続が切れました。",
-  "error.remote.directoryUnreachable": "OpenBot は OpenBot サービスに接続できませんでした。接続を確認してください。",
-  "error.remote.directoryTimeout": "OpenBot サービスが時間内に応答しませんでした。もう一度お試しください。",
+  "error.remote.directoryUnreachable": "Pokebots は Pokebots サービスに接続できませんでした。接続を確認してください。",
+  "error.remote.directoryTimeout": "Pokebots サービスが時間内に応答しませんでした。もう一度お試しください。",
   "error.remote.inviteAlreadyUsed": "この招待はすでに使用されています。新しい招待を依頼してください。",
   "error.remote.inviteNotFound": "この招待は存在しないか、期限が切れています。新しい招待を依頼してください。",
   "error.remote.licenseUsersFull":
     "サーバー所有者のライセンスに空きユーザーがありません。所有者にライセンスへのユーザー追加を依頼してください。",
   "error.remote.memberLimitReached":
     "このホストはメンバーの上限に達しました。オーナーに空きを作るよう依頼してください。",
-  "error.remote.hostNotRegistered": "このホストは OpenBot サービスに登録されなくなりました。",
+  "error.remote.hostNotRegistered": "このホストは Pokebots サービスに登録されなくなりました。",
   "error.remote.membershipEnded":
     "あなたはこのホストのメンバーではなくなりました。オーナーに新しい招待を依頼してください。",
   "error.remote.membershipChanged":
     "同時に別の人がこのメンバーを変更しました。メンバーを再読み込みして、もう一度お試しください。",
   "error.remote.accountSessionInactive": "サインインが無効になりました。もう一度サインインしてください。",
   "error.remote.hostOtherAccount": "このホストは別のアカウントのものです。",
-  "error.remote.remoteNotConfigured": "この OpenBot サービスではリモート接続が設定されていません。",
+  "error.remote.remoteNotConfigured": "この Pokebots サービスではリモート接続が設定されていません。",
   "error.remote.hostRefused": "ホストがリクエストを拒否しました ({status})。",
   "error.remote.formUnavailable": "このフォームは利用できなくなりました。",
   "error.remote.hostedServerRemoval": "ホスト型サーバーを削除するには「お支払い」を使用してください。",
@@ -217,9 +217,9 @@ export const messages = {
   "error.remote.channelDeleteUnsupported": "チャンネルを削除するには、このデスクトップサーバーを更新してください。",
   "error.remote.historyRefreshFailed": "メッセージは送信されましたが、チャット履歴を更新できませんでした。",
   "error.remote.taskHistoryRefreshFailed": "タスクは変更されましたが、チャット履歴を更新できませんでした。",
-  "error.remote.serverNotLoaded": "OpenBot はサーバーを読み込めませんでした。もう一度お試しください。",
+  "error.remote.serverNotLoaded": "Pokebots はサーバーを読み込めませんでした。もう一度お試しください。",
   "error.remote.localServerNotStarted":
-    "このコンピューターのサーバーが起動しませんでした。もう一度お試しください。起動しない場合は、このコンピューターで OpenBot を再起動してください。",
+    "このコンピューターのサーバーが起動しませんでした。もう一度お試しください。起動しない場合は、このコンピューターで Pokebots を再起動してください。",
   "error.remote.localServerAccountRemovalFailed":
     "サーバーはそのコンピュータで削除されましたが、アカウントにはまだ表示されています。アカウントから外すには、もう一度削除してください。",
 } as const satisfies PartialTranslation<typeof source>;

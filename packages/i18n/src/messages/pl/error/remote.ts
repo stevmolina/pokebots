@@ -17,10 +17,10 @@ export const messages = {
   "error.remote.sessionCapacity": "Host ma już cztery aktywne sesje.",
   "error.remote.linuxNeedsX11": "Zdalny pulpit w systemie Linux wymaga sesji X11. Wayland nie jest obsługiwany.",
   "error.remote.runtimeMissing":
-    "Brakuje środowiska Sunshine i Moonlight Web lub nie jest ono obsługiwane na tym hoście. Zainstaluj pełne wydanie OpenBot na Macu, hoście Windows x64 lub hoście Linux x64, a następnie uruchom ponownie OpenBot.",
+    "Brakuje środowiska Sunshine i Moonlight Web lub nie jest ono obsługiwane na tym hoście. Zainstaluj pełne wydanie Pokebots na Macu, hoście Windows x64 lub hoście Linux x64, a następnie uruchom ponownie Pokebots.",
   "error.remote.testActive": "Test zdalnego pulpitu jest aktywny. Spróbuj ponownie po jego zakończeniu.",
   "error.remote.screenRecordingDenied":
-    "Host nie zezwolił OpenBot na nagrywanie ekranu. Przyznaj na hoście uprawnienie do nagrywania ekranu, a następnie spróbuj ponownie.",
+    "Host nie zezwolił Pokebots na nagrywanie ekranu. Przyznaj na hoście uprawnienie do nagrywania ekranu, a następnie spróbuj ponownie.",
   "error.remote.windowsSessionDisconnected":
     "Sesja Windows na hoście jest rozłączona, więc nie ma ekranu do udostępnienia. Zaloguj się do Windows na ekranie hosta, a następnie spróbuj ponownie.",
   "error.remote.streamTooSlowLowerQuality":
@@ -39,7 +39,7 @@ export const messages = {
   "error.remote.moonlightStartFailed":
     "Moonlight Web nie uruchomił się na hoście. Sprawdź logi zdalnego pulpitu na hoście, a następnie spróbuj ponownie.",
   "error.remote.pairingFailed":
-    "Moonlight nie mógł sparować się z Sunshine na hoście. Spróbuj ponownie. Jeśli problem nie ustąpi, uruchom ponownie OpenBot na hoście.",
+    "Moonlight nie mógł sparować się z Sunshine na hoście. Spróbuj ponownie. Jeśli problem nie ustąpi, uruchom ponownie Pokebots na hoście.",
   "error.remote.runtimeStartFailed":
     "Środowisko zdalnego pulpitu nie uruchomiło się na hoście. Sprawdź logi zdalnego pulpitu na hoście, a następnie spróbuj ponownie.",
   "error.remote.hostUnreachable": "Host jest nieosiągalny.",
@@ -47,7 +47,7 @@ export const messages = {
   "error.remote.invalidData": "Host zwrócił nieprawidłowe dane.",
   "error.remote.unsafeData": "Host zwrócił dane, których ta aplikacja nie może bezpiecznie użyć.",
   "error.remote.requestFailedStatus": "Żądanie do zdalnego serwera nie powiodło się ({status}).",
-  "error.remote.appUpdateRequired": "Zaktualizuj tę aplikację OpenBot, zanim połączysz się z hostem.",
+  "error.remote.appUpdateRequired": "Zaktualizuj tę aplikację Pokebots, zanim połączysz się z hostem.",
   "error.remote.identityNotVerified": "Nie udało się zweryfikować tożsamości serwera.",
   "error.remote.webRtcUnavailable": "Transport WebRTC jest niedostępny.",
   "error.remote.invalidCompatibility": "Host zwrócił nieprawidłowe informacje o zgodności.",
@@ -65,9 +65,9 @@ export const messages = {
   "error.remote.inviteAcceptedOtherHost": "Usługa kont zaakceptowała inny host.",
   "error.remote.inviteIdentityChanged": "Tożsamość hosta zaproszenia zmieniła się podczas akceptacji.",
   "error.remote.localServerRemove": "Nie można usunąć lokalnego serwera.",
-  "error.remote.desktopSetupHostUpdate": "Zaktualizuj OpenBot na hoście, aby sprawdzić konfigurację zdalnego pulpitu.",
+  "error.remote.desktopSetupHostUpdate": "Zaktualizuj Pokebots na hoście, aby sprawdzić konfigurację zdalnego pulpitu.",
   "error.remote.desktopTestHostUpdate":
-    "Zaktualizuj OpenBot na hoście, aby przetestować konfigurację zdalnego pulpitu.",
+    "Zaktualizuj Pokebots na hoście, aby przetestować konfigurację zdalnego pulpitu.",
   "error.remote.viewerProxyUnavailable": "Lokalny serwer proxy zdalnego podglądu jest niedostępny.",
   "error.remote.viewerTransportInvalid": "Transport zdalnego podglądu jest nieprawidłowy.",
   "error.remote.viewerProxyNoPort": "Lokalny serwer proxy zdalnego podglądu nie otrzymał portu.",
@@ -86,9 +86,9 @@ export const messages = {
   "error.remote.requestTimeout": "Przekroczono limit czasu zdalnego żądania.",
   "error.remote.requestFailed": "Zdalne żądanie nie powiodło się.",
   "error.remote.hostKeyMissing":
-    "OpenBot nie może zweryfikować tego serwera, ponieważ brakuje jego klucza bezpieczeństwa lub klucz się zmienił. Poproś właściciela serwera o sprawdzenie serwera.",
+    "Pokebots nie może zweryfikować tego serwera, ponieważ brakuje jego klucza bezpieczeństwa lub klucz się zmienił. Poproś właściciela serwera o sprawdzenie serwera.",
   "error.remote.connectionNotStarted":
-    "OpenBot nie mógł nawiązać połączenia z tym serwerem. Jeśli problem się powtarza, zamknij OpenBot i otwórz go ponownie.",
+    "Pokebots nie mógł nawiązać połączenia z tym serwerem. Jeśli problem się powtarza, zamknij Pokebots i otwórz go ponownie.",
   "error.remote.hostDidNotConnect": "Host WebRTC nie połączył się.",
   "error.remote.connectionCancelled": "Zdalne połączenie zostało anulowane.",
   "error.remote.hostDisconnected":
@@ -141,11 +141,11 @@ export const messages = {
   "error.remote.permanentInviteNoEmail": "Stałych zaproszeń nie można wysyłać e-mailem.",
   "error.remote.selfHostedInviteNoEmail":
     "Zaproszenia z samodzielnie hostowanej usługi kont nie można wysłać e-mailem. Skopiuj link.",
-  "error.remote.inviteOtherService": "To zaproszenie należy do innej usługi OpenBot.",
+  "error.remote.inviteOtherService": "To zaproszenie należy do innej usługi Pokebots.",
   "error.remote.inviteFingerprintMismatch": "Tożsamość hosta zaproszenia nie pasuje do jego odcisku.",
   "error.remote.inviteHostKeyMissing": "Brakuje klucza hosta zaproszenia.",
   "error.remote.inviteKeyConflict": "Zaproszenie koliduje z zaufanym kluczem hosta.",
-  "error.remote.serviceRequestFailed": "Żądanie do usługi OpenBot nie powiodło się.",
+  "error.remote.serviceRequestFailed": "Żądanie do usługi Pokebots nie powiodło się.",
   "error.remote.downloadTimeout": "Przekroczono limit czasu pobierania załącznika. Spróbuj ponownie.",
   "error.remote.attachmentConnectionClosed": "Połączenie załączników zostało zamknięte.",
   "error.remote.tooManyDownloads": "Zbyt wiele pobierań załączników.",
@@ -179,9 +179,9 @@ export const messages = {
   "error.remote.dataChannelFailed": "Kanał {kind} uległ awarii.",
   "error.remote.hostBusy": "Host obsługuje inne połączenie. Spróbuj ponownie za chwilę.",
   "error.remote.signalPermissionDenied": "Twoje konto nie ma dostępu do tego hosta. Poproś właściciela o dostęp.",
-  "error.remote.signalRateLimited": "Zbyt wiele prób połączenia. OpenBot spróbuje ponownie za {seconds} s.",
+  "error.remote.signalRateLimited": "Zbyt wiele prób połączenia. Pokebots spróbuje ponownie za {seconds} s.",
   "error.remote.signalProtocolError":
-    "Signal i ta aplikacja nie zgadzają się co do protokołu połączenia. Zaktualizuj OpenBot, a następnie spróbuj ponownie.",
+    "Signal i ta aplikacja nie zgadzają się co do protokołu połączenia. Zaktualizuj Pokebots, a następnie spróbuj ponownie.",
   "error.remote.signalRefused": "Signal odrzucił połączenie.",
   "error.remote.signalClosed": "Połączenie z Signal zamknęło się, zanim host odpowiedział.",
   "error.remote.relayUnavailable":
@@ -189,20 +189,20 @@ export const messages = {
   "error.remote.iceFailed":
     "Nie udało się nawiązać bezpośredniego połączenia z hostem. Może je blokować zapora, VPN lub serwer proxy.",
   "error.remote.iceDisconnected": "Bezpośrednie połączenie z hostem zostało utracone.",
-  "error.remote.directoryUnreachable": "OpenBot nie mógł połączyć się z usługą OpenBot. Sprawdź połączenie.",
-  "error.remote.directoryTimeout": "Usługa OpenBot nie odpowiedziała na czas. Spróbuj ponownie.",
+  "error.remote.directoryUnreachable": "Pokebots nie mógł połączyć się z usługą Pokebots. Sprawdź połączenie.",
+  "error.remote.directoryTimeout": "Usługa Pokebots nie odpowiedziała na czas. Spróbuj ponownie.",
   "error.remote.inviteAlreadyUsed": "To zaproszenie zostało już użyte. Poproś o nowe zaproszenie.",
   "error.remote.inviteNotFound": "To zaproszenie nie istnieje lub wygasło. Poproś o nowe zaproszenie.",
   "error.remote.licenseUsersFull":
     "Licencja właściciela serwera nie ma wolnego użytkownika. Poproś właściciela o dodanie użytkownika do licencji.",
   "error.remote.memberLimitReached": "Ten host osiągnął limit członków. Poproś właściciela o zwolnienie miejsca.",
-  "error.remote.hostNotRegistered": "Ten host nie jest już zarejestrowany w usłudze OpenBot.",
+  "error.remote.hostNotRegistered": "Ten host nie jest już zarejestrowany w usłudze Pokebots.",
   "error.remote.membershipEnded": "Nie jesteś już członkiem tego hosta. Poproś właściciela o nowe zaproszenie.",
   "error.remote.membershipChanged":
     "Ktoś inny zmienił tego członka w tym samym czasie. Wczytaj członków ponownie i spróbuj jeszcze raz.",
   "error.remote.accountSessionInactive": "Twoje logowanie nie jest już aktywne. Zaloguj się ponownie.",
   "error.remote.hostOtherAccount": "Ten host należy do innego konta.",
-  "error.remote.remoteNotConfigured": "Zdalne połączenia nie są skonfigurowane w tej usłudze OpenBot.",
+  "error.remote.remoteNotConfigured": "Zdalne połączenia nie są skonfigurowane w tej usłudze Pokebots.",
   "error.remote.hostRefused": "Host odrzucił żądanie ({status}).",
   "error.remote.formUnavailable": "Ten formularz nie jest już dostępny.",
   "error.remote.hostedServerRemoval": "Użyj sekcji Rozliczenia, aby usunąć hostowany serwer.",
@@ -213,7 +213,7 @@ export const messages = {
   "error.remote.taskHistoryRefreshFailed": "Zadanie zostało zmienione, ale nie udało się odświeżyć historii czatu.",
   "error.remote.serverNotLoaded": "Nie udało się wczytać serwera. Spróbuj ponownie.",
   "error.remote.localServerNotStarted":
-    "Serwer na tym komputerze się nie uruchomił. Spróbuj ponownie. Jeśli nadal się nie uruchamia, uruchom ponownie OpenBot na tym komputerze.",
+    "Serwer na tym komputerze się nie uruchomił. Spróbuj ponownie. Jeśli nadal się nie uruchamia, uruchom ponownie Pokebots na tym komputerze.",
   "error.remote.localServerAccountRemovalFailed":
     "Serwer został usunięty na swoim komputerze, ale konto nadal go pokazuje. Usuń go ponownie, aby usunąć go z konta.",
 } as const satisfies PartialTranslation<typeof source>;

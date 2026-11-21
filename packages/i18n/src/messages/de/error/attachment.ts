@@ -10,14 +10,14 @@ export const messages = {
   "error.attachment.tooMany": "Wähle höchstens {limit} Dateien.",
   "error.attachment.photoPickerFailed": "Die Fotos konnten nicht hinzugefügt werden.",
   "error.attachment.mediaUnsupported":
-    "Dieser Server unterstützt keine MP3- oder MOV-Anhänge. Aktualisiere OpenBot auf dem Host und versuche es erneut.",
+    "Dieser Server unterstützt keine MP3- oder MOV-Anhänge. Aktualisiere Pokebots auf dem Host und versuche es erneut.",
   "error.attachment.emlUnsupported":
-    "Dieser Server unterstützt keine EML-Anhänge. Aktualisiere OpenBot auf dem Host und versuche es erneut.",
+    "Dieser Server unterstützt keine EML-Anhänge. Aktualisiere Pokebots auf dem Host und versuche es erneut.",
   "error.attachment.zipUnsupported":
-    "Dieser Server unterstützt keine ZIP-Anhänge. Aktualisiere OpenBot auf dem Host und versuche es erneut.",
+    "Dieser Server unterstützt keine ZIP-Anhänge. Aktualisiere Pokebots auf dem Host und versuche es erneut.",
   "error.attachment.mp4Unsupported":
-    "Dieser Server unterstützt keine MP4-Anhänge. Aktualisiere OpenBot auf dem Host und versuche es erneut.",
+    "Dieser Server unterstützt keine MP4-Anhänge. Aktualisiere Pokebots auf dem Host und versuche es erneut.",
   "error.attachment.svgUnsupported":
-    "Dieser Server unterstützt keine SVG-Anhänge. Aktualisiere OpenBot auf dem Host und versuche es erneut.",
+    "Dieser Server unterstützt keine SVG-Anhänge. Aktualisiere Pokebots auf dem Host und versuche es erneut.",
   "error.attachment.previewTooLarge": "Die Datei überschreitet die Grenze von 100 MB.",
 } as const satisfies PartialTranslation<typeof source>;

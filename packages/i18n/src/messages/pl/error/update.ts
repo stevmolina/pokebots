@@ -4,10 +4,10 @@ import type { messages as source } from "../../en/error/update";
 export const messages = {
   "error.update.unsupported": "Aktualizacje są dostępne w zainstalowanych wersjach desktopowych.",
   "error.update.notReady": "Aktualizacja nie jest gotowa do instalacji.",
-  "error.update.restartFailed": "OpenBot nie mógł uruchomić się ponownie, aby zainstalować aktualizację.",
+  "error.update.restartFailed": "Pokebots nie mógł uruchomić się ponownie, aby zainstalować aktualizację.",
   "error.update.downloadStalled": "Pobieranie aktualizacji przestało odpowiadać. Spróbuj ponownie.",
   "error.update.installFailed":
-    "Nie udało się zainstalować aktualizacji. Zamknij i otwórz ponownie OpenBot, a potem spróbuj ponownie.",
+    "Nie udało się zainstalować aktualizacji. Zamknij i otwórz ponownie Pokebots, a potem spróbuj ponownie.",
   "error.update.notInstalled":
     "Ostatnie ponowne uruchomienie nie zainstalowało aktualizacji. Uruchom ponownie, aby spróbować jeszcze raz.",
   "error.update.downloadFailed": "Nie udało się pobrać aktualizacji. Spróbuj ponownie.",
@@ -16,24 +16,25 @@ export const messages = {
   "error.update.checkOffline":
     "Nie udało się połączyć z usługą aktualizacji. Sprawdź połączenie z internetem i spróbuj ponownie.",
   "error.update.checkUnavailable":
-    "Usługa aktualizacji nie odpowiedziała. OpenBot sam spróbuje ponownie za kilka minut.",
+    "Usługa aktualizacji nie odpowiedziała. Pokebots sam spróbuje ponownie za kilka minut.",
   "error.update.checkNoRelease":
-    "Nie znaleziono opublikowanej aktualizacji dla tej platformy. OpenBot sam spróbuje ponownie za kilka minut.",
-  "error.update.managedByNix": "Aktualizacje tej kopii OpenBot instaluje Nix. Zaktualizuj ją przez Nix.",
+    "Nie znaleziono opublikowanej aktualizacji dla tej platformy. Pokebots sam spróbuje ponownie za kilka minut.",
+  "error.update.managedByNix": "Aktualizacje tej kopii Pokebots instaluje Nix. Zaktualizuj ją przez Nix.",
   "error.update.managedByHost":
     "Aktualizacje na tym Macu instaluje host. Aktualizacja pozostaje gotowa do czasu konserwacji hosta.",
   "error.update.siblingSession":
-    "Inna sesja OpenBot nadal działa z tej aplikacji. Najpierw zatrzymaj OpenBot na każdym innym koncie użytkownika macOS, a potem ponownie zainstaluj aktualizację.",
+    "Inna sesja Pokebots nadal działa z tej aplikacji. Najpierw zatrzymaj Pokebots na każdym innym koncie użytkownika macOS, a potem ponownie zainstaluj aktualizację.",
   "error.update.siblingSessionSameAccount":
-    "Inny proces OpenBot nadal działa na tym koncie użytkownika. Zamknij go, a potem ponownie zainstaluj aktualizację.",
-  "error.update.siblingCheckFailed": "Nie udało się sprawdzić innych sesji OpenBot. Spróbuj ponownie przed instalacją.",
+    "Inny proces Pokebots nadal działa na tym koncie użytkownika. Zamknij go, a potem ponownie zainstaluj aktualizację.",
+  "error.update.siblingCheckFailed":
+    "Nie udało się sprawdzić innych sesji Pokebots. Spróbuj ponownie przed instalacją.",
   "error.update.readOnlyLocation":
-    "OpenBot nie może instalować aktualizacji z tej lokalizacji. Zamknij OpenBot. W Finderze przeciągnij OpenBot do folderu Aplikacje (jeśli już tam jest, przeciągnij go na zewnątrz i z powrotem). Następnie otwórz OpenBot i zainstaluj aktualizację ponownie.",
+    "Pokebots nie może instalować aktualizacji z tej lokalizacji. Zamknij Pokebots. W Finderze przeciągnij Pokebots do folderu Aplikacje (jeśli już tam jest, przeciągnij go na zewnątrz i z powrotem). Następnie otwórz Pokebots i zainstaluj aktualizację ponownie.",
   "error.update.appImageMissing":
-    "OpenBot nie może zainstalować aktualizacji, ponieważ jego plik AppImage został przeniesiony, zmieniono jego nazwę lub go zastąpiono. Zamknij OpenBot, a następnie ponownie otwórz plik AppImage.",
+    "Pokebots nie może zainstalować aktualizacji, ponieważ jego plik AppImage został przeniesiony, zmieniono jego nazwę lub go zastąpiono. Zamknij Pokebots, a następnie ponownie otwórz plik AppImage.",
   "error.update.appImageReadOnly":
-    "OpenBot nie może instalować aktualizacji w folderze swojego pliku AppImage. Zamknij OpenBot, przenieś plik AppImage do folderu w swoim folderze domowym, a następnie otwórz go i ponownie zainstaluj aktualizację.",
+    "Pokebots nie może instalować aktualizacji w folderze swojego pliku AppImage. Zamknij Pokebots, przenieś plik AppImage do folderu w swoim folderze domowym, a następnie otwórz go i ponownie zainstaluj aktualizację.",
   "error.update.remoteDisabled": "Aktualizacje od administratorów serwera są wyłączone na tym komputerze.",
-  "error.update.restartStarted": "OpenBot już uruchamia się ponownie, aby zainstalować aktualizację.",
-  "error.update.alreadyRestarting": "OpenBot już uruchamia się ponownie.",
+  "error.update.restartStarted": "Pokebots już uruchamia się ponownie, aby zainstalować aktualizację.",
+  "error.update.alreadyRestarting": "Pokebots już uruchamia się ponownie.",
 } as const satisfies PartialTranslation<typeof source>;

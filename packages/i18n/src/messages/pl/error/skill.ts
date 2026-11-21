@@ -46,7 +46,7 @@ export const messages = {
   "error.skill.tooManySkills": "Agent może mieć maksymalnie {limit} umiejętności.",
   "error.skill.unmanagedExists": "Niezarządzana umiejętność już istnieje w {path}.",
   "error.skill.managedSlug":
-    "OpenBot daje każdemu agentowi własną umiejętność {slug}. Nadaj tej umiejętności inną nazwę.",
+    "Pokebots daje każdemu agentowi własną umiejętność {slug}. Nadaj tej umiejętności inną nazwę.",
   "error.skill.templateMarkdownTooLarge": "{name}: SKILL.md jest większy niż 64 KB. Skróć go przed publikacją.",
   "error.skill.localNoRevisions": "Lokalna umiejętność nie ma opublikowanych wersji.",
   "error.skill.localNotFound": "Ta lokalna umiejętność nie istnieje. Sprawdź jej ID na liście lokalnych umiejętności.",
@@ -63,12 +63,13 @@ export const messages = {
   "error.skill.pathSymlink": "Ścieżki umiejętności nie mogą zawierać dowiązań symbolicznych.",
   "error.skill.folderNotRead": "{provider} nie czyta folderu {folder}. Skopiuj ten folder do {target}.",
   "error.skill.githubLinkInvalid": "Wklej link do repozytorium lub folderu w GitHub.",
-  "error.skill.githubNotFound": "OpenBot nie może otworzyć {repository}. Repozytorium jest prywatne albo nie istnieje.",
+  "error.skill.githubNotFound":
+    "Pokebots nie może otworzyć {repository}. Repozytorium jest prywatne albo nie istnieje.",
   "error.skill.githubNoSkills": "W {folder} nie ma pliku SKILL.md.",
-  "error.skill.githubUnavailable": "OpenBot nie może teraz odczytać GitHub. Spróbuj ponownie później.",
+  "error.skill.githubUnavailable": "Pokebots nie może teraz odczytać GitHub. Spróbuj ponownie później.",
   "error.skill.githubRateLimited":
-    "GitHub ogranicza, jak często OpenBot może go odczytać bez konta. Spróbuj ponownie za godzinę.",
-  "error.skill.githubTooLarge": "OpenBot nie może odczytać wszystkich plików {repository}. Repozytorium jest za duże.",
+    "GitHub ogranicza, jak często Pokebots może go odczytać bez konta. Spróbuj ponownie za godzinę.",
+  "error.skill.githubTooLarge": "Pokebots nie może odczytać wszystkich plików {repository}. Repozytorium jest za duże.",
   "error.skill.githubHostTooOld": "Zaktualizuj ten serwer, aby dodawać umiejętności z GitHub.",
   "error.skill.publishGithub": "{name} pochodzi z GitHub. Możesz publikować tylko umiejętności, które utworzysz.",
 } as const satisfies PartialTranslation<typeof source>;

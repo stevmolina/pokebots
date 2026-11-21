@@ -37,25 +37,25 @@ export const messages = {
   "status.agent.sendIdea": "يصبح هذا مشكلة عامة على GitHub. لا يظهر اسمك.",
   "status.agent.feedbackRecentErrors": "الأخطاء الأخيرة في المحادثة:",
   "status.agent.feedbackSameAs": "يُضاف إلى المشكلة #{issue}",
-  "status.agent.feedbackSent": "أُرسل إلى فريق OpenBot: {title}",
+  "status.agent.feedbackSent": "أُرسل إلى فريق Pokebots: {title}",
   "status.agent.feedbackWithdrawn": "أُزيل من GitHub: {title}",
   "status.agent.feedbackWithdrawCommand": "إزالة البلاغ #{issue} من GitHub",
   "status.agent.feedbackWithdrawReason":
     "لن يتمكن أحد من رؤية هذا البلاغ على GitHub بعد الآن. لا يمكنك التراجع عن ذلك. لتصحيحه، يمكن للوكيل إرسال بلاغ مصحَّح.",
   "status.agent.feedbackWithdrawing": "جارٍ إزالة بلاغك من GitHub…",
   "status.agent.serverInstallCommand":
-    "إنشاء أمر لمرة واحدة يثبّت OpenBot على كمبيوتر آخر كالخادم {name} ويسجّل دخوله إلى حسابك. يشغّله الوكيل هناك.",
+    "إنشاء أمر لمرة واحدة يثبّت Pokebots على كمبيوتر آخر كالخادم {name} ويسجّل دخوله إلى حسابك. يشغّله الوكيل هناك.",
   "status.agent.serverInstallCard": "أمر التثبيت للخادم {name}",
   "status.agent.browserProfileNamed":
     "انقل {agents} إلى ملف تعريف المتصفح {profile}. يحصلون على تسجيلات الدخول وملفات تعريف الارتباط الخاصة به. تُغلق علاماتهم المفتوحة.",
-  "status.agent.commitCoAuthorOff": "إيقاف إضافة OpenBot كمؤلف مشارك في إيداعات جميع الوكلاء.",
-  "status.agent.commitCoAuthorOn": "إضافة OpenBot مجددًا كمؤلف مشارك في إيداعات جميع الوكلاء.",
+  "status.agent.commitCoAuthorOff": "إيقاف إضافة Pokebots كمؤلف مشارك في إيداعات جميع الوكلاء.",
+  "status.agent.commitCoAuthorOn": "إضافة Pokebots مجددًا كمؤلف مشارك في إيداعات جميع الوكلاء.",
   "status.agent.browserProfileNew":
     "أنشئ ملف تعريف المتصفح الجديد {profile} وانقل {agents} إليه. لا يحتوي على أي تسجيل دخول. تُغلق علاماتهم المفتوحة.",
   "status.agent.browserProfileShared":
     "انقل {agents} إلى ملف تعريف المتصفح المشترك. يحصلون على تسجيلات الدخول وملفات تعريف الارتباط الخاصة به. تُغلق علاماتهم المفتوحة.",
   "status.agent.browserProfileOwn": "امنح كل واحد من {agents} ملف تعريف متصفح خاصًا به. تُغلق علاماتهم المفتوحة.",
-  "status.agent.feedbackSending": "جارٍ إرسال ملاحظاتك إلى فريق OpenBot…",
+  "status.agent.feedbackSending": "جارٍ إرسال ملاحظاتك إلى فريق Pokebots…",
   "status.agent.workflowDelete": "احذف سير العمل {title} مع عمليات تشغيله وإصداراته. تتوقف خطواته المفتوحة.",
   "status.agent.deleteAgents": "احذف {agents} مع محادثاتهم وملفاتهم. لا يمكنك التراجع عن ذلك.",
   "status.agent.vaultCardFillFrames": "حقول البطاقة موجودة في إطارات من {origins}.",
@@ -113,9 +113,9 @@ export const messages = {
   "status.agent.memoryChangesWithConflicts":
     "الذاكرة: حُفظ {saved}، وحُدّث {updated}، ونُسي {forgotten}، ولم يتغير {notChanged} لأن سلسلة أخرى غيّرته أولًا.",
   "status.agent.mcpServerAdd":
-    "إضافة خادم MCP {name}: {target}. يحصل كل وكيل على هذا الخادم على أدواته. يتصل OpenBot به لاختباره.",
+    "إضافة خادم MCP {name}: {target}. يحصل كل وكيل على هذا الخادم على أدواته. يتصل Pokebots به لاختباره.",
   "status.agent.mcpServerChange":
-    "تغيير خادم MCP {name} إلى {target}. يحصل كل وكيل على هذا الخادم على أدواته. يتصل OpenBot به لاختباره.",
+    "تغيير خادم MCP {name} إلى {target}. يحصل كل وكيل على هذا الخادم على أدواته. يتصل Pokebots به لاختباره.",
   "status.agent.mcpServerEnable": "تشغيل خادم MCP {name} لكل وكيل على هذا الخادم.",
   "status.agent.mcpServerDisable": "إيقاف خادم MCP {name} لكل وكيل على هذا الخادم.",
   "status.agent.mcpServerRemove": "إزالة خادم MCP {name} وتسجيل دخوله من كل وكيل على هذا الخادم.",

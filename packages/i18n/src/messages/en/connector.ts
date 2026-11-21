@@ -19,7 +19,7 @@ export const messages = defineMessages("connector", {
     "Agents can use only the repositories where the OpenBot GitHub App is installed.",
   "connector.github.chooseRepositories": "Choose repositories",
   "connector.github.repositoriesLoading": "Reading the repositories from GitHub",
-  "connector.github.repositoriesFailed": "OpenBot could not read the repositories from GitHub.",
+  "connector.github.repositoriesFailed": "Pokebots could not read the repositories from GitHub.",
   "connector.github.noRepositories": "The OpenBot GitHub App is not installed on a repository yet.",
   // {count} is a number, such as 12.
   "connector.github.moreRepositories": { one: "And {count} more repository", other: "And {count} more repositories" },
@@ -31,7 +31,7 @@ export const messages = defineMessages("connector", {
   "connector.github.expiredTitle": "The GitHub connection expired",
   "connector.github.expiredDescription": "Connect again as @{login} to give agents GitHub again.",
   "connector.github.reconnect": "Reconnect",
-  "connector.github.actionFailed": "OpenBot could not change the GitHub connection.",
+  "connector.github.actionFailed": "Pokebots could not change the GitHub connection.",
   // The status next to the name at the top of the GitHub page.
   "connector.github.statusConnected": "Connected",
   "connector.github.statusConnecting": "Connecting",
@@ -45,7 +45,7 @@ export const messages = defineMessages("connector", {
   // The connect dialog. The steps show as numbers; screen readers read the names.
   "connector.github.stepSignIn": "Sign in",
   "connector.github.stepConnected": "Connected",
-  "connector.github.requestingCode": "OpenBot asks GitHub for a code.",
+  "connector.github.requestingCode": "Pokebots asks GitHub for a code.",
   // {code} is the code to type on GitHub, such as WDJB-MJHT.
   "connector.github.codeLabel": "Code {code}",
   "connector.github.failedTitle": "GitHub did not connect",
@@ -77,7 +77,7 @@ export const messages = defineMessages("connector", {
   // The last section of an integration page, with the action that removes it.
   "connector.dangerZone": "Danger zone",
   "connector.statusUnknown": "Unknown",
-  "connector.readFailed": "OpenBot could not read the state of this connection.",
+  "connector.readFailed": "Pokebots could not read the state of this connection.",
 
   // Marketplace > Apps > Slack: a workspace installs the one OpenBot app, and the Slack
   // Orchestrator agent receives each request, asks the team and answers.
@@ -104,10 +104,10 @@ export const messages = defineMessages("connector", {
   "connector.slack.disconnectAllSummary":
     "Every workspace disconnects. People can no longer reach your agents through @OpenBot.",
   "connector.slack.disconnectAllSummaryOrchestrator":
-    "Every workspace disconnects. The Slack Orchestrator and its conversations are deleted from OpenBot.",
+    "Every workspace disconnects. The Slack Orchestrator and its conversations are deleted from Pokebots.",
   "connector.slack.missingScopes":
-    "OpenBot does not have these permissions in Slack: {scopes}. Disconnect the workspace, then connect it again.",
-  "connector.slack.retryAt": "Slack asked OpenBot to wait. It tries again at {time}.",
+    "Pokebots does not have these permissions in Slack: {scopes}. Disconnect the workspace, then connect it again.",
+  "connector.slack.retryAt": "Slack asked Pokebots to wait. It tries again at {time}.",
   "connector.slack.reconnect": "Reconnect",
   "connector.slack.pause": "Pause",
   "connector.slack.resume": "Resume",
@@ -119,7 +119,7 @@ export const messages = defineMessages("connector", {
   "connector.slack.orchestratorNone": "No agent answers yet",
   "connector.slack.orchestratorNoneDescription": "Add the Slack Orchestrator, or Slack gets no answer.",
   "connector.slack.inviteNote":
-    "OpenBot joins every public channel by itself, and each new one. For a private channel, invite it: /invite @OpenBot.",
+    "Pokebots joins every public channel by itself, and each new one. For a private channel, invite it: /invite @OpenBot.",
   // The connect dialog. The steps show as numbers; screen readers read the names.
   "connector.slack.stepWorkspace": "Workspace",
   "connector.slack.stepAgent": "Agent",
@@ -141,17 +141,17 @@ export const messages = defineMessages("connector", {
   "connector.slack.orchestratorDoesDelegate": "Gives each task to the agent that fits best",
   "connector.slack.orchestratorDoesAnswer": "Posts the answer in the Slack thread",
   "connector.slack.orchestratorModel": "Model",
-  "connector.slack.doneTitle": "OpenBot is in {workspace}",
+  "connector.slack.doneTitle": "Pokebots is in {workspace}",
   "connector.slack.doneDescription": "Mention @OpenBot in any public channel, or send it a direct message.",
   "connector.slack.done": "Done",
   "connector.slack.disconnectTitle": "Disconnect {workspace}?",
   "connector.slack.disconnectDescription":
-    "OpenBot stops answering in {workspace} and removes its Slack token from this computer.",
+    "Pokebots stops answering in {workspace} and removes its Slack token from this computer.",
   "connector.slack.disconnectDescriptionHost":
-    "OpenBot stops answering in {workspace} and removes its Slack token from {host}.",
+    "Pokebots stops answering in {workspace} and removes its Slack token from {host}.",
   "connector.slack.disconnectEffect": "People in {workspace} can no longer reach your agents through @OpenBot.",
-  "connector.slack.removeEffectKept": "The conversations and the Slack Orchestrator stay in OpenBot.",
-  "connector.slack.removeEffectDeleted": "The Slack Orchestrator and its conversations are deleted from OpenBot.",
+  "connector.slack.removeEffectKept": "The conversations and the Slack Orchestrator stay in Pokebots.",
+  "connector.slack.removeEffectDeleted": "The Slack Orchestrator and its conversations are deleted from Pokebots.",
   "connector.slack.keep": "Keep connected",
   "connector.slack.close": "Close",
   "connector.slack.addWorkspace": "Add workspace",
@@ -192,10 +192,10 @@ export const messages = defineMessages("connector", {
   "connector.discord.disconnectAllSummary":
     "Every server disconnects. People can no longer reach your agents through @OpenBot.",
   "connector.discord.disconnectAllSummaryOrchestrator":
-    "Every server disconnects. The Discord Orchestrator and its conversations are deleted from OpenBot.",
+    "Every server disconnects. The Discord Orchestrator and its conversations are deleted from Pokebots.",
   "connector.discord.missingScopes":
-    "OpenBot does not have these permissions in Discord: {scopes}. Disconnect the Discord server, then connect it again.",
-  "connector.discord.retryAt": "Discord asked OpenBot to wait. It tries again at {time}.",
+    "Pokebots does not have these permissions in Discord: {scopes}. Disconnect the Discord server, then connect it again.",
+  "connector.discord.retryAt": "Discord asked Pokebots to wait. It tries again at {time}.",
   "connector.discord.reconnect": "Reconnect",
   "connector.discord.pause": "Pause",
   "connector.discord.resume": "Resume",
@@ -206,7 +206,7 @@ export const messages = defineMessages("connector", {
     "This agent receives every request from Discord. It answers short ones itself, gives other work to the right agent, and replies with the answer in the channel.",
   "connector.discord.orchestratorNone": "No agent answers yet",
   "connector.discord.orchestratorNoneDescription": "Add the Discord Orchestrator, or Discord gets no answer.",
-  "connector.discord.channelsNote": "OpenBot sees the channels that its role can view.",
+  "connector.discord.channelsNote": "Pokebots sees the channels that its role can view.",
   // The connect dialog. The steps show as numbers; screen readers read the names.
   "connector.discord.stepWorkspace": "Discord server",
   "connector.discord.stepAgent": "Agent",
@@ -227,17 +227,17 @@ export const messages = defineMessages("connector", {
   "connector.discord.orchestratorDoesDelegate": "Gives each task to the agent that fits best",
   "connector.discord.orchestratorDoesAnswer": "Replies with the answer in the Discord channel",
   "connector.discord.orchestratorModel": "Model",
-  "connector.discord.doneTitle": "OpenBot is in {workspace}",
+  "connector.discord.doneTitle": "Pokebots is in {workspace}",
   "connector.discord.doneDescription": "Mention @OpenBot in a channel. Reply to OpenBot to continue.",
   "connector.discord.done": "Done",
   "connector.discord.disconnectTitle": "Disconnect {workspace}?",
   "connector.discord.disconnectDescription":
-    "OpenBot stops answering in {workspace} and removes the Discord connection from this computer.",
+    "Pokebots stops answering in {workspace} and removes the Discord connection from this computer.",
   "connector.discord.disconnectDescriptionHost":
-    "OpenBot stops answering in {workspace} and removes the Discord connection from {host}.",
+    "Pokebots stops answering in {workspace} and removes the Discord connection from {host}.",
   "connector.discord.disconnectEffect": "People in {workspace} can no longer reach your agents through @OpenBot.",
-  "connector.discord.removeEffectKept": "The conversations and the Discord Orchestrator stay in OpenBot.",
-  "connector.discord.removeEffectDeleted": "The Discord Orchestrator and its conversations are deleted from OpenBot.",
+  "connector.discord.removeEffectKept": "The conversations and the Discord Orchestrator stay in Pokebots.",
+  "connector.discord.removeEffectDeleted": "The Discord Orchestrator and its conversations are deleted from Pokebots.",
   "connector.discord.keep": "Keep connected",
   "connector.discord.close": "Close",
   "connector.discord.addWorkspace": "Add Discord server",
@@ -251,15 +251,15 @@ export const messages = defineMessages("connector", {
     other: "{count} Discord servers · Discord Orchestrator answers",
   },
   // Who can use OpenBot in one Discord server: the members with one of the chosen Discord roles.
-  "connector.discord.accessTitle": "Who can use OpenBot",
-  "connector.discord.accessDescription": "OpenBot answers only these people. It ignores mentions from others.",
+  "connector.discord.accessTitle": "Who can use Pokebots",
+  "connector.discord.accessDescription": "Pokebots answers only these people. It ignores mentions from others.",
   "connector.discord.accessEveryone": "Everyone in the server",
-  "connector.discord.accessEveryoneDescription": "Anyone who can post in a channel that OpenBot sees can mention it.",
+  "connector.discord.accessEveryoneDescription": "Anyone who can post in a channel that Pokebots sees can mention it.",
   // {roles} is a list of Discord role names, such as "Admin and Moderator".
   "connector.discord.accessRoles": "Members with {roles}",
   "connector.discord.accessChoose": "Choose roles",
   // {workspace} is the Discord server name.
-  "connector.discord.accessDialogTitle": "Who can use OpenBot in {workspace}?",
+  "connector.discord.accessDialogTitle": "Who can use Pokebots in {workspace}?",
   "connector.discord.accessDialogDescription": "With no role selected, everyone can mention OpenBot.",
   "connector.discord.accessLoading": "Loading roles…",
   "connector.discord.accessLoadFailed": "Discord roles did not load",
@@ -268,13 +268,13 @@ export const messages = defineMessages("connector", {
   "connector.discord.accessRoleDeleted": "{role} (deleted)",
   "connector.discord.accessSave": "Save",
   // {host} is the joined server's name.
-  "connector.discord.accessHostUpdate": "Update OpenBot on {host} to choose roles.",
+  "connector.discord.accessHostUpdate": "Update Pokebots on {host} to choose roles.",
 
   // Marketplace > Apps > Telegram: each chat adds the one OpenBot bot, and the Telegram
   // Orchestrator agent receives the messages of all chats, asks the team and answers.
   "connector.telegram.title": "Telegram",
   "connector.telegram.description":
-    "Add the OpenBot bot to a Telegram group or open a direct chat with it. The Telegram Orchestrator asks the right agent and answers.",
+    "Add the Pokebots bot to a Telegram group or open a direct chat with it. The Telegram Orchestrator asks the right agent and answers.",
   "connector.telegram.statusConnected": "Connected",
   "connector.telegram.statusAttention": "Needs attention",
   // {count} is the number of linked Telegram chats.
@@ -298,23 +298,23 @@ export const messages = defineMessages("connector", {
   "connector.telegram.groupDescription": "People mention the bot or reply to its messages.",
   "connector.telegram.directDescription": "Every message in this chat goes to the Telegram Orchestrator.",
   "connector.telegram.helpRemoved":
-    "The OpenBot bot is no longer in this chat. Disconnect the chat, then add the bot again.",
+    "The Pokebots bot is no longer in this chat. Disconnect the chat, then add the bot again.",
   "connector.telegram.helpRelayUnavailable":
-    "OpenBot cannot receive Telegram messages on this computer. Sign in, give this computer a name in Server settings, and keep OpenBot open.",
+    "Pokebots cannot receive Telegram messages on this computer. Sign in, give this computer a name in Server settings, and keep Pokebots open.",
   "connector.telegram.helpRelayUnavailableHost":
-    "OpenBot on {host} cannot receive Telegram messages. On {host}, sign in, give the server a name in Server settings, and keep OpenBot open.",
-  "connector.telegram.helpError": "OpenBot cannot reach this chat. Reconnect, or disconnect the chat.",
+    "Pokebots on {host} cannot receive Telegram messages. On {host}, sign in, give the server a name in Server settings, and keep Pokebots open.",
+  "connector.telegram.helpError": "Pokebots cannot reach this chat. Reconnect, or disconnect the chat.",
   "connector.telegram.helpNotLinked": "This chat is not linked to this server. Select Reconnect to link it.",
-  "connector.telegram.retryAt": "Telegram asked OpenBot to wait. It tries again at {time}.",
+  "connector.telegram.retryAt": "Telegram asked Pokebots to wait. It tries again at {time}.",
   "connector.telegram.pause": "Pause",
   "connector.telegram.resume": "Resume",
   "connector.telegram.reconnect": "Reconnect",
   "connector.telegram.disconnectChat": "Disconnect",
   "connector.telegram.disconnectAllTitle": "Disconnect Telegram",
   "connector.telegram.disconnectAllSummary":
-    "Every chat disconnects. People can no longer reach your agents through the OpenBot bot.",
+    "Every chat disconnects. People can no longer reach your agents through the Pokebots bot.",
   "connector.telegram.disconnectAllSummaryOrchestrator":
-    "Every chat disconnects. The Telegram Orchestrator and its conversations are deleted from OpenBot.",
+    "Every chat disconnects. The Telegram Orchestrator and its conversations are deleted from Pokebots.",
   // {action} is a button, such as Pause; {name} is the chat name.
   "connector.telegram.rowAction": "{action}: {name}",
   "connector.telegram.linkChat": "Link a chat",
@@ -322,7 +322,7 @@ export const messages = defineMessages("connector", {
   "connector.telegram.openDirectChat": "Open a direct chat",
   "connector.telegram.orchestratorTitle": "Telegram Orchestrator",
   "connector.telegram.orchestratorDescription":
-    "This agent receives the messages for OpenBot from all your Telegram chats. It answers short ones itself, gives other work to the right agent, and posts the answer in the chat.",
+    "This agent receives the messages for Pokebots from all your Telegram chats. It answers short ones itself, gives other work to the right agent, and posts the answer in the chat.",
   "connector.telegram.orchestratorNone": "No agent answers yet",
   "connector.telegram.orchestratorNoneDescription": "Add the Telegram Orchestrator, or Telegram gets no answer.",
   "connector.telegram.mentionNote":
@@ -332,7 +332,7 @@ export const messages = defineMessages("connector", {
   "connector.telegram.stepAgent": "Agent",
   "connector.telegram.connectTitle": "Link a Telegram chat",
   "connector.telegram.connectDescription":
-    "Add the OpenBot bot to a group, or open a direct chat with it. One bot serves all your chats.",
+    "Add the Pokebots bot to a group, or open a direct chat with it. One bot serves all your chats.",
   "connector.telegram.connectStepBrowser": "Telegram opens in your browser",
   "connector.telegram.connectStepPick": "Select the group, or press Start in the direct chat",
   "connector.telegram.connectStepReturn": "This dialog continues when the chat is linked",
@@ -340,21 +340,21 @@ export const messages = defineMessages("connector", {
   "connector.telegram.agentStepTitle": "Add the Telegram Orchestrator",
   // {chat} is the Telegram chat name.
   "connector.telegram.agentStepDescription":
-    "This new agent answers the messages for OpenBot in {chat} and in each chat that you link later.",
+    "This new agent answers the messages for Pokebots in {chat} and in each chat that you link later.",
   "connector.telegram.orchestratorName": "Telegram Orchestrator",
   "connector.telegram.orchestratorRole": "Answers in Telegram and asks the team",
-  "connector.telegram.orchestratorDoesReceive": "Receives every Telegram message for OpenBot first",
+  "connector.telegram.orchestratorDoesReceive": "Receives every Telegram message for Pokebots first",
   "connector.telegram.orchestratorDoesDelegate": "Gives each task to the agent that fits best",
   "connector.telegram.orchestratorDoesAnswer": "Posts the answer in the Telegram chat",
   "connector.telegram.orchestratorModel": "Model",
-  "connector.telegram.doneTitle": "OpenBot is in {chat}",
+  "connector.telegram.doneTitle": "Pokebots is in {chat}",
   "connector.telegram.done": "Done",
   "connector.telegram.disconnectTitle": "Disconnect {chat}?",
-  "connector.telegram.leaveDescription": "The OpenBot bot leaves {chat}, and OpenBot stops answering there.",
-  "connector.telegram.disconnectEffect": "People in {chat} can no longer reach your agents through the OpenBot bot.",
-  "connector.telegram.removeEffectKept": "The conversations and the Telegram Orchestrator stay in OpenBot.",
+  "connector.telegram.leaveDescription": "The Pokebots bot leaves {chat}, and Pokebots stops answering there.",
+  "connector.telegram.disconnectEffect": "People in {chat} can no longer reach your agents through the Pokebots bot.",
+  "connector.telegram.removeEffectKept": "The conversations and the Telegram Orchestrator stay in Pokebots.",
   "connector.telegram.removeEffectDeleted":
-    "This is the last chat, so the Telegram Orchestrator and its conversations are deleted from OpenBot.",
+    "This is the last chat, so the Telegram Orchestrator and its conversations are deleted from Pokebots.",
   "connector.telegram.keep": "Keep connected",
   "connector.telegram.close": "Close",
   // Marketplace > Apps > WhatsApp: a WhatsApp number links this computer as a device, and the
@@ -385,14 +385,14 @@ export const messages = defineMessages("connector", {
   "connector.whatsapp.actionFailed": "WhatsApp did not accept the change",
   "connector.whatsapp.numbersTitle": "Numbers",
   "connector.whatsapp.linkNumber": "Link a number",
-  "connector.whatsapp.ownNumberNote": "Your “Message yourself” chat and the people you allow reach OpenBot.",
-  "connector.whatsapp.dedicatedNote": "The people you allow reach OpenBot. Other people get a code to give you.",
+  "connector.whatsapp.ownNumberNote": "Your “Message yourself” chat and the people you allow reach Pokebots.",
+  "connector.whatsapp.dedicatedNote": "The people you allow reach Pokebots. Other people get a code to give you.",
   "connector.whatsapp.helpLoggedOut": "WhatsApp removed this computer from the linked devices. Link the number again.",
   "connector.whatsapp.helpLoggedOutHost":
     "WhatsApp removed this server from the linked devices. Link the number again.",
-  "connector.whatsapp.helpError": "OpenBot cannot reach WhatsApp on this number. Reconnect, or disconnect the number.",
-  "connector.whatsapp.helpKeysUnreadable": "OpenBot cannot read the saved keys of this number. Link the number again.",
-  "connector.whatsapp.retryAt": "WhatsApp asked OpenBot to wait. It tries again at {time}.",
+  "connector.whatsapp.helpError": "Pokebots cannot reach WhatsApp on this number. Reconnect, or disconnect the number.",
+  "connector.whatsapp.helpKeysUnreadable": "Pokebots cannot read the saved keys of this number. Link the number again.",
+  "connector.whatsapp.retryAt": "WhatsApp asked Pokebots to wait. It tries again at {time}.",
   "connector.whatsapp.pause": "Pause",
   "connector.whatsapp.resume": "Resume",
   "connector.whatsapp.reconnect": "Reconnect",
@@ -402,21 +402,21 @@ export const messages = defineMessages("connector", {
   "connector.whatsapp.disconnectAllSummary":
     "Every number disconnects. People can no longer reach your agents through WhatsApp.",
   "connector.whatsapp.disconnectAllSummaryOrchestrator":
-    "Every number disconnects. The WhatsApp Orchestrator and its conversations are deleted from OpenBot.",
+    "Every number disconnects. The WhatsApp Orchestrator and its conversations are deleted from Pokebots.",
   // {action} is a button, such as Pause; {name} is the WhatsApp number or a person's name.
   "connector.whatsapp.rowAction": "{action}: {name}",
   "connector.whatsapp.ownNumber": "Personal number",
   "connector.whatsapp.ownNumberDescription":
-    "Only your “Message yourself” chat and the people you allow can write. Other people get no reply. When it is off, OpenBot replies to unknown people with a code.",
+    "Only your “Message yourself” chat and the people you allow can write. Other people get no reply. When it is off, Pokebots replies to unknown people with a code.",
   "connector.whatsapp.workingMessage": "“Working on it…” message",
   "connector.whatsapp.workingMessageDescription":
-    "OpenBot posts it while the agent works, then replaces it with the answer. A request that waits for an earlier request gets a waiting message too. Turn off to post only the answer.",
+    "Pokebots posts it while the agent works, then replaces it with the answer. A request that waits for an earlier request gets a waiting message too. Turn off to post only the answer.",
   "connector.whatsapp.statusReactions": "Status reactions",
   "connector.whatsapp.statusReactionsDescription":
-    "OpenBot reacts with 👀 when a message arrives and with ✅ when the answer is ready. Turn off to send no reactions.",
+    "Pokebots reacts with 👀 when a message arrives and with ✅ when the answer is ready. Turn off to send no reactions.",
   "connector.whatsapp.orchestratorTitle": "WhatsApp Orchestrator",
   "connector.whatsapp.orchestratorDescription":
-    "This agent receives the messages for OpenBot from all your linked numbers. It answers short ones itself, gives other work to the right agent, and answers in WhatsApp.",
+    "This agent receives the messages for Pokebots from all your linked numbers. It answers short ones itself, gives other work to the right agent, and answers in WhatsApp.",
   "connector.whatsapp.orchestratorNone": "No agent answers yet",
   "connector.whatsapp.orchestratorNoneDescription": "Add the WhatsApp Orchestrator, or WhatsApp gets no answer.",
   "connector.whatsapp.note":
@@ -430,10 +430,10 @@ export const messages = defineMessages("connector", {
   "connector.whatsapp.kindLabel": "Number",
   "connector.whatsapp.kindPersonal": "My personal number",
   "connector.whatsapp.kindPersonalDescription":
-    "OpenBot answers only your “Message yourself” chat and the people you allow. Other people get no reply.",
-  "connector.whatsapp.kindDedicated": "A number only for OpenBot",
+    "Pokebots answers only your “Message yourself” chat and the people you allow. Other people get no reply.",
+  "connector.whatsapp.kindDedicated": "A number only for Pokebots",
   "connector.whatsapp.kindDedicatedDescription":
-    "OpenBot replies from this number to each unknown person, with a code to give you. You approve them here.",
+    "Pokebots replies from this number to each unknown person, with a code to give you. You approve them here.",
   "connector.whatsapp.methodLabel": "How to link",
   "connector.whatsapp.methodQr": "QR code",
   "connector.whatsapp.methodCode": "Pairing code",
@@ -459,27 +459,27 @@ export const messages = defineMessages("connector", {
   "connector.whatsapp.failedTimeout": "The code expired before the phone used it.",
   "connector.whatsapp.failedRefused": "WhatsApp refused the link. Wait a few minutes, then try again.",
   "connector.whatsapp.failedBusy": "Another link is running. Wait for it to end, then try again.",
-  "connector.whatsapp.failedUnavailable": "OpenBot cannot reach WhatsApp. Check the internet connection.",
+  "connector.whatsapp.failedUnavailable": "Pokebots cannot reach WhatsApp. Check the internet connection.",
   "connector.whatsapp.tryAgain": "Try again",
   "connector.whatsapp.agentStepTitle": "Add the WhatsApp Orchestrator",
   // {number} is the WhatsApp number or its name.
   "connector.whatsapp.agentStepDescription":
-    "This new agent answers the messages for OpenBot on {number} and on each number that you link later.",
+    "This new agent answers the messages for Pokebots on {number} and on each number that you link later.",
   "connector.whatsapp.orchestratorName": "WhatsApp Orchestrator",
   "connector.whatsapp.orchestratorRole": "Answers in WhatsApp and asks the team",
-  "connector.whatsapp.orchestratorDoesReceive": "Receives every WhatsApp message for OpenBot first",
+  "connector.whatsapp.orchestratorDoesReceive": "Receives every WhatsApp message for Pokebots first",
   "connector.whatsapp.orchestratorDoesDelegate": "Gives each task to the agent that fits best",
   "connector.whatsapp.orchestratorDoesAnswer": "Answers in the WhatsApp chat",
   "connector.whatsapp.orchestratorModel": "Model",
-  "connector.whatsapp.doneTitle": "OpenBot is linked to {number}",
+  "connector.whatsapp.doneTitle": "Pokebots is linked to {number}",
   "connector.whatsapp.done": "Done",
   "connector.whatsapp.disconnectTitle": "Disconnect {number}?",
   "connector.whatsapp.disconnectDescription":
-    "OpenBot logs out of WhatsApp on {number}. If OpenBot was off, also remove the device in WhatsApp > Linked devices.",
+    "Pokebots logs out of WhatsApp on {number}. If Pokebots was off, also remove the device in WhatsApp > Linked devices.",
   "connector.whatsapp.disconnectEffect": "People can no longer reach your agents through {number}.",
-  "connector.whatsapp.removeEffectKept": "The conversations and the WhatsApp Orchestrator stay in OpenBot.",
+  "connector.whatsapp.removeEffectKept": "The conversations and the WhatsApp Orchestrator stay in Pokebots.",
   "connector.whatsapp.removeEffectDeleted":
-    "This is the last number, so the WhatsApp Orchestrator and its conversations are deleted from OpenBot.",
+    "This is the last number, so the WhatsApp Orchestrator and its conversations are deleted from Pokebots.",
   "connector.whatsapp.keep": "Keep linked",
   "connector.whatsapp.close": "Close",
   // Who can give work through one number: contacts by phone number, and groups.
@@ -501,7 +501,7 @@ export const messages = defineMessages("connector", {
     "People in this group can give work to your agents when they mention the number or reply to its messages.",
   "connector.whatsapp.groupSearch": "Search groups",
   "connector.whatsapp.groupsLoading": "Reading the groups…",
-  "connector.whatsapp.groupsLoadFailed": "OpenBot could not read the groups",
+  "connector.whatsapp.groupsLoadFailed": "Pokebots could not read the groups",
   "connector.whatsapp.groupsEmpty": "This number is in no group.",
   "connector.whatsapp.groupsNoMatch": "No group has this name.",
   "connector.whatsapp.groupAdded": "Added",
@@ -517,9 +517,9 @@ export const messages = defineMessages("connector", {
   // Marketplace > 1Password: a vault that the user shares with OpenBot through a service account.
   "connector.onePassword.title": "1Password",
   "connector.onePassword.description":
-    "Share a dedicated 1Password vault with OpenBot through a service account, so agents can sign in to sites in the OpenBot browser.",
+    "Share a dedicated 1Password vault with Pokebots through a service account, so agents can sign in to sites in the Pokebots browser.",
   "connector.onePassword.howItWorks":
-    "Connecting sets up a “Shared with OpenBot” vault in your 1Password account and a service account that can read only that vault. OpenBot fills saved logins in its browser on this computer, so only the items you move into that vault are ever shared. Agents never see a password.",
+    "Connecting sets up a “Shared with OpenBot” vault in your 1Password account and a service account that can read only that vault. Pokebots fills saved logins in its browser on this computer, so only the items you move into that vault are ever shared. Agents never see a password.",
   "connector.onePassword.connect": "Connect 1Password",
   // The three setup steps before a connection, each with the one button it needs.
   "connector.onePassword.setupTitle": "Set up",
@@ -529,20 +529,20 @@ export const messages = defineMessages("connector", {
   // {version} is a version number, such as 2.39.0.
   "connector.onePassword.stepCliReady": "Version {version} is installed.",
   "connector.onePassword.stepCliMissing":
-    "OpenBot downloads it from 1Password into its own folder. It needs no administrator password.",
+    "Pokebots downloads it from 1Password into its own folder. It needs no administrator password.",
   "connector.onePassword.stepCliManual":
-    "OpenBot cannot install it on this computer. Install it from 1Password, then come back to this page.",
+    "Pokebots cannot install it on this computer. Install it from 1Password, then come back to this page.",
   "connector.onePassword.installCli": "Install",
   "connector.onePassword.stepAppTitle": "Turn on the CLI integration",
   "connector.onePassword.stepAppDescription":
     "In the 1Password app, open Settings > Developer and turn on “Integrate with 1Password CLI”.",
   "connector.onePassword.stepAppReady": "The 1Password app lets the CLI create the shared vault.",
   "connector.onePassword.openApp": "Open 1Password",
-  "connector.onePassword.openAppFailed": "OpenBot could not open 1Password.",
+  "connector.onePassword.openAppFailed": "Pokebots could not open 1Password.",
   "connector.onePassword.checkAgain": "Check again",
   "connector.onePassword.stepVaultTitle": "Create the shared vault",
   "connector.onePassword.stepVaultDescription":
-    "OpenBot creates the vault “Shared with OpenBot” and a service account that can only read it. 1Password asks you to approve.",
+    "Pokebots creates the vault “Shared with OpenBot” and a service account that can only read it. 1Password asks you to approve.",
   // The last row of the setup steps: the other way to connect, without the CLI.
   "connector.onePassword.useTokenDescription":
     "Instead of these steps, paste a service account token from 1Password.com.",
@@ -553,7 +553,7 @@ export const messages = defineMessages("connector", {
   "connector.onePassword.approveInApp": "Approve the request in the 1Password app",
   "connector.onePassword.cancel": "Cancel",
   "connector.onePassword.chooseAccountTitle": "Choose an account",
-  "connector.onePassword.chooseAccountDescription": "OpenBot creates the shared vault in the account you choose.",
+  "connector.onePassword.chooseAccountDescription": "Pokebots creates the shared vault in the account you choose.",
   "connector.onePassword.useAccount": "Use this account",
   "connector.onePassword.vaultTitle": "Shared vault",
   "connector.onePassword.vaultDescription":
@@ -564,15 +564,15 @@ export const messages = defineMessages("connector", {
   "connector.onePassword.disconnect": "Disconnect",
   "connector.onePassword.disconnectTitle": "Disconnect 1Password",
   "connector.onePassword.disconnectSummary":
-    "OpenBot forgets the token. The vault and the service account stay in 1Password; remove them there if you no longer need them.",
-  "connector.onePassword.actionFailed": "OpenBot could not change the 1Password connection.",
+    "Pokebots forgets the token. The vault and the service account stay in 1Password; remove them there if you no longer need them.",
+  "connector.onePassword.actionFailed": "Pokebots could not change the 1Password connection.",
   "connector.onePassword.statusConnected": "Connected",
   "connector.onePassword.statusConnecting": "Connecting",
   // The same page for the connection of a joined server. {host} is the server name, such as Studio.
   "connector.onePassword.descriptionHost":
-    "Share a dedicated 1Password vault with OpenBot on {host} through a service account, so agents on {host} can sign in to sites in its browser.",
+    "Share a dedicated 1Password vault with Pokebots on {host} through a service account, so agents on {host} can sign in to sites in its browser.",
   "connector.onePassword.howItWorksHost":
-    "{host} connects with a service account token. On 1Password.com, create a service account that can read only the vault you share with OpenBot, then paste its token here. {host} checks the token and keeps it; this computer does not. Agents never see a password.",
+    "{host} connects with a service account token. On 1Password.com, create a service account that can read only the vault you share with Pokebots, then paste its token here. {host} checks the token and keeps it; this computer does not. Agents never see a password.",
   "connector.onePassword.disconnectSummaryHost":
     "{host} forgets the token. The vault and the service account stay in 1Password; remove them there if you no longer need them.",
   "connector.bitwarden.title": "Bitwarden",
@@ -580,24 +580,24 @@ export const messages = defineMessages("connector", {
   "connector.bitwarden.setup":
     "Install the Bitwarden CLI and sign in with bw login. Create a folder named Shared with OpenBot and put only the logins that agents may use in it. Run bw unlock --raw and paste the session key below. Do not paste your master password.",
   "connector.bitwarden.scope":
-    "All agents on this computer can use matching logins in Shared with OpenBot. OpenBot uses exact HTTPS origins. It does not use items that require a master password prompt or a custom URI match rule.",
+    "All agents on this computer can use matching logins in Shared with OpenBot. Pokebots uses exact HTTPS origins. It does not use items that require a master password prompt or a custom URI match rule.",
   "connector.bitwarden.session":
-    "The session key stays in memory. Connect again after 8 hours without vault use or after OpenBot exits. Disconnect stops OpenBot access; it does not lock other Bitwarden clients.",
+    "The session key stays in memory. Connect again after 8 hours without vault use or after Pokebots exits. Disconnect stops Pokebots access; it does not lock other Bitwarden clients.",
   "connector.bitwarden.sessionKey": "Bitwarden session key",
   "connector.bitwarden.connect": "Connect Bitwarden",
   "connector.bitwarden.disconnect": "Disconnect Bitwarden",
   "connector.bitwarden.disconnectAction": "Disconnect",
   "connector.bitwarden.disconnectSummary":
-    "OpenBot forgets the session key. Agents can no longer fill logins from Bitwarden. Other Bitwarden clients stay unlocked.",
+    "Pokebots forgets the session key. Agents can no longer fill logins from Bitwarden. Other Bitwarden clients stay unlocked.",
   "connector.bitwarden.disconnectSummaryHost":
     "{host} removes the API key and the master password. Agents on {host} can no longer fill logins from Bitwarden.",
   "connector.bitwarden.connected": "Connected",
-  "connector.bitwarden.actionFailed": "OpenBot could not change the Bitwarden connection.",
+  "connector.bitwarden.actionFailed": "Pokebots could not change the Bitwarden connection.",
   "connector.bitwarden.descriptionHost": "Fill browser logins on {host} from Bitwarden or Vaultwarden.",
   "connector.bitwarden.setupHost":
     "{host} signs in with its own Bitwarden CLI. In your vault, create a folder named Shared with OpenBot and put only the logins that agents may use in it. In the web vault, open Settings › Security › Keys and view your API key. Enter the server address, client_id, client_secret and your master password below.",
   "connector.bitwarden.scopeHost":
-    "All agents on {host} can use matching logins in Shared with OpenBot. OpenBot uses exact HTTPS origins. It does not use items that require a master password prompt or a custom URI match rule.",
+    "All agents on {host} can use matching logins in Shared with OpenBot. Pokebots uses exact HTTPS origins. It does not use items that require a master password prompt or a custom URI match rule.",
   "connector.bitwarden.sessionHost":
     "{host} keeps the API key and the master password encrypted, so it can unlock again after a restart. This computer does not keep them. Disconnect removes them from {host}. {host} must reach the server address over HTTPS.",
   "connector.bitwarden.serverUrl": "Server address",
@@ -623,19 +623,19 @@ export const messages = defineMessages("connector", {
   "connector.protonPass.keyPlaceholder": "pst_…",
   "connector.protonPass.setupTitle": "Set up",
   "connector.protonPass.setupDescription":
-    "Connect opens the Proton sign-in in your browser. Then OpenBot makes the shared vault and keeps only a read-only key for it.",
+    "Connect opens the Proton sign-in in your browser. Then Pokebots makes the shared vault and keeps only a read-only key for it.",
   "connector.protonPass.setupDescriptionHost":
     "Connect opens the Proton sign-in in your browser. Then {host} makes the shared vault and keeps only a read-only key for it.",
   // The exact vault name that OpenBot makes in Proton Pass. Keep it in English.
   "connector.protonPass.vaultName": "Shared with OpenBot",
-  "connector.protonPass.vaultSetup": "OpenBot makes this vault when you connect. Move logins into it to share them.",
+  "connector.protonPass.vaultSetup": "Pokebots makes this vault when you connect. Move logins into it to share them.",
   "connector.protonPass.showSteps": "Show steps",
   "connector.protonPass.stepsLabel": "Connect steps",
   "connector.protonPass.stepSignIn": "Sign in",
   "connector.protonPass.stepVault": "Make the shared vault",
   "connector.protonPass.stepDone": "Done",
   "connector.protonPass.signInTitle": "Sign in to Proton",
-  "connector.protonPass.signInStarting": "OpenBot starts the sign-in. The Proton page opens in your browser.",
+  "connector.protonPass.signInStarting": "Pokebots starts the sign-in. The Proton page opens in your browser.",
   "connector.protonPass.signInDescription":
     "The sign-in is open in your browser. Proton asks for your password and your second factor.",
   "connector.protonPass.signInDescriptionHost":
@@ -646,7 +646,7 @@ export const messages = defineMessages("connector", {
   "connector.protonPass.continue": "Continue",
   "connector.protonPass.setupStepTitle": "Making the shared vault",
   "connector.protonPass.setupStepDescription":
-    "OpenBot makes the vault “{vault}” and a read-only key for it. Then it signs out of your Proton session.",
+    "Pokebots makes the vault “{vault}” and a read-only key for it. Then it signs out of your Proton session.",
   "connector.protonPass.doneTitle": "Proton Pass is connected",
   "connector.protonPass.doneDescription": "Move logins into “{vault}” to let agents sign in with them.",
   "connector.protonPass.failedTitle": "Proton Pass did not connect",
@@ -674,11 +674,11 @@ export const messages = defineMessages("connector", {
   "connector.protonPass.keyNoExpiry": "Read only. Does not expire.",
   "connector.protonPass.disconnectTitle": "Disconnect Proton Pass",
   "connector.protonPass.disconnectSummary":
-    "OpenBot deletes its access key on this computer. The vault and its logins stay in your Proton account.",
+    "Pokebots deletes its access key on this computer. The vault and its logins stay in your Proton account.",
   "connector.protonPass.disconnectSummaryHost":
-    "OpenBot deletes its access key on {host}. The vault and its logins stay in your Proton account.",
+    "Pokebots deletes its access key on {host}. The vault and its logins stay in your Proton account.",
   "connector.protonPass.disconnect": "Disconnect",
-  "connector.protonPass.actionFailed": "OpenBot could not change the Proton Pass connection.",
+  "connector.protonPass.actionFailed": "Pokebots could not change the Proton Pass connection.",
   "connector.keeper.title": "Keeper",
   "connector.keeper.description": "Let agents sign in to sites with the logins in a shared Keeper folder.",
   "connector.keeper.descriptionHost":
@@ -686,7 +686,7 @@ export const messages = defineMessages("connector", {
   "connector.keeper.connect": "Connect",
   "connector.keeper.setupTitle": "Sign in",
   "connector.keeper.setupDescription":
-    "Enter your Keeper email and master password. OpenBot gives them to Keeper Commander once and does not keep them. Keeper Commander is Keeper's command-line tool.",
+    "Enter your Keeper email and master password. Pokebots gives them to Keeper Commander once and does not keep them. Keeper Commander is Keeper's command-line tool.",
   "connector.keeper.setupDescriptionHost":
     "Enter your Keeper email and master password. {host} gives them to Keeper Commander once and does not keep them. Keeper Commander is Keeper's command-line tool.",
   "connector.keeper.emailLabel": "Email",
@@ -694,7 +694,7 @@ export const messages = defineMessages("connector", {
   // The exact folder name that OpenBot makes in Keeper. Keep it in English.
   "connector.keeper.folderName": "Shared with OpenBot",
   "connector.keeper.folderSetup":
-    "OpenBot makes this folder in your vault when you connect. Move logins into it to share them.",
+    "Pokebots makes this folder in your vault when you connect. Move logins into it to share them.",
   "connector.keeper.showSteps": "Show steps",
   "connector.keeper.stepsLabel": "Connect steps",
   "connector.keeper.stepSignIn": "Sign in",
@@ -714,7 +714,7 @@ export const messages = defineMessages("connector", {
   "connector.keeper.continue": "Continue",
   "connector.keeper.setupStepTitle": "Making the shared folder",
   "connector.keeper.setupStepDescription":
-    "OpenBot makes the folder “{folder}” in your vault and turns on sign-in for this device.",
+    "Pokebots makes the folder “{folder}” in your vault and turns on sign-in for this device.",
   "connector.keeper.doneTitle": "Keeper is connected",
   "connector.keeper.doneDescription": "Move logins into “{folder}” to let agents sign in with them.",
   "connector.keeper.failedTitle": "Keeper did not connect",
@@ -736,9 +736,9 @@ export const messages = defineMessages("connector", {
   "connector.keeper.loginsLoading": "Counting logins…",
   "connector.keeper.disconnectTitle": "Disconnect Keeper",
   "connector.keeper.disconnectSummary":
-    "OpenBot ends its Keeper session on this computer. The folder and its logins stay in your Keeper vault.",
+    "Pokebots ends its Keeper session on this computer. The folder and its logins stay in your Keeper vault.",
   "connector.keeper.disconnectSummaryHost":
-    "OpenBot ends its Keeper session on {host}. The folder and its logins stay in your Keeper vault.",
+    "Pokebots ends its Keeper session on {host}. The folder and its logins stay in your Keeper vault.",
   "connector.keeper.disconnect": "Disconnect",
-  "connector.keeper.actionFailed": "OpenBot could not change the Keeper connection.",
+  "connector.keeper.actionFailed": "Pokebots could not change the Keeper connection.",
 });
