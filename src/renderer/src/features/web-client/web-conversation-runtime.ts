@@ -46,7 +46,11 @@ import {
   uninstallAgentSkill,
   unpublishAgentTemplate,
 } from "@pokebots/team-client/team-admin-requests";
-import { listInstalledSkills, type TeamApiRequest, teamAgentRoutinesApi } from "@pokebots/team-client/team-api-requests";
+import {
+  listInstalledSkills,
+  type TeamApiRequest,
+  teamAgentRoutinesApi,
+} from "@pokebots/team-client/team-api-requests";
 import { currentText } from "@pokebots/ui/text";
 import { Effect } from "effect";
 import { onCleanup } from "solid-js";

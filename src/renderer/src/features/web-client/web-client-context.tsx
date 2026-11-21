@@ -43,7 +43,10 @@ import {
   CHAT_COLORS_CAPABILITY,
 } from "@pokebots/contracts/team-protocol/current";
 import { FOCUS_USE_CAPABILITY } from "@pokebots/contracts/team-protocol/focus-use-v1";
-import { HOST_APPEARANCE_CAPABILITY, type ServerAppearance } from "@pokebots/contracts/team-protocol/host-appearance-v1";
+import {
+  HOST_APPEARANCE_CAPABILITY,
+  type ServerAppearance,
+} from "@pokebots/contracts/team-protocol/host-appearance-v1";
 import { MESSAGE_DELETE_CAPABILITY } from "@pokebots/contracts/team-protocol/message-delete-v1";
 import { SIDEBAR_PINS_CAPABILITY } from "@pokebots/contracts/team-protocol/sidebar-pins-v1";
 import { cleanAgentMessageText } from "@pokebots/team-client/agent-message-text";

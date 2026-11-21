@@ -1,4 +1,13 @@
-import { BookOpen, Bug, CircleQuestionMark, DropdownMenu, Gift, Keyboard, Megaphone, MotionTooltip } from "@pokebots/ui";
+import {
+  BookOpen,
+  Bug,
+  CircleQuestionMark,
+  DropdownMenu,
+  Gift,
+  Keyboard,
+  Megaphone,
+  MotionTooltip,
+} from "@pokebots/ui";
 import { createSignal, For, Show } from "solid-js";
 import { useText } from "../../text";
 import { DiscordMark } from "../settings/brand-marks";

@@ -1,5 +1,8 @@
 import type { ClientAgentSummary } from "@pokebots/contracts/ipc";
-import { AGENT_WELCOME_CAPABILITY, TEAM_AGENT_CREATE_MODEL_CAPABILITY } from "@pokebots/contracts/team-protocol/current";
+import {
+  AGENT_WELCOME_CAPABILITY,
+  TEAM_AGENT_CREATE_MODEL_CAPABILITY,
+} from "@pokebots/contracts/team-protocol/current";
 import { classifyFailure } from "@pokebots/telemetry";
 import { toast } from "@pokebots/ui";
 import type { AgentProfile } from "@pokebots/ui/data";

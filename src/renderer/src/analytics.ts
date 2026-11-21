@@ -1,3 +1,4 @@
+import { OpenPanelBase, type OpenPanelOptions } from "@openpanel/web";
 import { AGENT_PROVIDERS, type AgentProviderId, isKeyOnlyProvider } from "@pokebots/contracts/agent-providers";
 import {
   BILLING_CURRENCIES,
@@ -19,10 +20,16 @@ import {
 } from "@pokebots/contracts/ipc-agent-identity";
 import { SPEECH_VOICES, type SpeechVoice } from "@pokebots/contracts/ipc-voice";
 import { WORKFLOW_NODE_KINDS, type WorkflowNodeKind } from "@pokebots/contracts/ipc-workflows";
-import { isBoolean, isDynamicRecord, isFunction, isNumber, isOneOf, isString } from "@pokebots/contracts/runtime-values";
+import {
+  isBoolean,
+  isDynamicRecord,
+  isFunction,
+  isNumber,
+  isOneOf,
+  isString,
+} from "@pokebots/contracts/runtime-values";
 import { normalizeEmailAddress } from "@pokebots/contracts/validation";
 import { ANALYTICS_GENERATIONS } from "@pokebots/telemetry";
-import { OpenPanelBase, type OpenPanelOptions } from "@openpanel/web";
 import {
   ANALYTICS_SCHEMA_VERSION,
   configureDesktopReports,

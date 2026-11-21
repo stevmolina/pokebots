@@ -1,4 +1,9 @@
-import { nextSpeechSpeed, type OpenBotDesktopApi, type SpeechSettings, type SpeechSpeed } from "@pokebots/contracts/ipc";
+import {
+  nextSpeechSpeed,
+  type OpenBotDesktopApi,
+  type SpeechSettings,
+  type SpeechSpeed,
+} from "@pokebots/contracts/ipc";
 import { toast } from "@pokebots/ui";
 import { currentText } from "@pokebots/ui/text";
 import { createSignal } from "solid-js";

@@ -12,7 +12,10 @@ import { isDynamicRecord, isString } from "@pokebots/contracts/runtime-values";
 import { type TeamCurrentCapability, teamCapabilityHeaders } from "@pokebots/contracts/team-protocol/current";
 import { teamHttpCodec } from "@pokebots/contracts/team-protocol/http-codecs";
 import { teamSideRouteCodec } from "@pokebots/contracts/team-protocol/side-routes";
-import { addSkillSuggestionNames, SKILL_LEARNING_CAPABILITY } from "@pokebots/contracts/team-protocol/skill-learning-v1";
+import {
+  addSkillSuggestionNames,
+  SKILL_LEARNING_CAPABILITY,
+} from "@pokebots/contracts/team-protocol/skill-learning-v1";
 import { TEAM_APP_VERSION_HEADER, TEAM_PROTOCOL_VERSION_HEADER } from "@pokebots/contracts/team-protocol/v1";
 import { decodeTeamProtocolV1CurrentHttpResponse } from "@pokebots/contracts/team-protocol/v1-adapter";
 import { decodeTeamProtocolV2Json, type TeamProtocolV2Json } from "@pokebots/contracts/team-protocol/v2";

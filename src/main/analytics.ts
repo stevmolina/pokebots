@@ -1,3 +1,4 @@
+import { OpenPanelBase, type OpenPanelOptions } from "@openpanel/web";
 import { isKeyOnlyProvider } from "@pokebots/contracts/agent-providers";
 import {
   AGENT_PROVIDERS,
@@ -15,7 +16,14 @@ import {
   type UsageTokens,
   WORKFLOW_RUN_SOURCES,
 } from "@pokebots/contracts/ipc";
-import { isBoolean, isDynamicRecord, isFunction, isNumber, isOneOf, isString } from "@pokebots/contracts/runtime-values";
+import {
+  isBoolean,
+  isDynamicRecord,
+  isFunction,
+  isNumber,
+  isOneOf,
+  isString,
+} from "@pokebots/contracts/runtime-values";
 import { normalizeEmailAddress } from "@pokebots/contracts/validation";
 import {
   ANALYTICS_GENERATIONS,
@@ -25,7 +33,6 @@ import {
   type ReportQueue,
   safeProperties,
 } from "@pokebots/telemetry";
-import { OpenPanelBase, type OpenPanelOptions } from "@openpanel/web";
 import { Effect, Exit, Scope } from "effect";
 import { parse as parseDomain } from "tldts";
 import type { FailureSignal } from "../backend/agent/failure-signal";

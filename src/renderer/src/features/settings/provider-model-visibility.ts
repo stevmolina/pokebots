@@ -1,4 +1,9 @@
-import type { AgentModelId, AgentProviderId, OpenBotDesktopApi, ProviderModelVisibility } from "@pokebots/contracts/ipc";
+import type {
+  AgentModelId,
+  AgentProviderId,
+  OpenBotDesktopApi,
+  ProviderModelVisibility,
+} from "@pokebots/contracts/ipc";
 import type { ProviderModelVisibilityControl } from "@pokebots/ui/features/settings/ProviderSettingsPage";
 import { useText } from "@pokebots/ui/text";
 import { createEffect, createStore, untrack } from "solid-js";

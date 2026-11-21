@@ -90,7 +90,12 @@ import { isDynamicRecord, isOneOf } from "@pokebots/contracts/runtime-values";
 import { INSTANCE_TRANSFER_REMOTE_BYTES } from "@pokebots/contracts/team-protocol/instance-transfer-v1";
 import { sourceText } from "@pokebots/i18n/source";
 import { createOpenBotLogger, toLogValue } from "@pokebots/logging";
-import { copyManifestBytes, copyTail, ZIP_TAIL_BYTES, zipDirectory } from "@pokebots/team-client/instance-transfer-copy";
+import {
+  copyManifestBytes,
+  copyTail,
+  ZIP_TAIL_BYTES,
+  zipDirectory,
+} from "@pokebots/team-client/instance-transfer-copy";
 import { Cause, Deferred, Effect, Exit, Result } from "effect";
 import { Zip, ZipPassThrough, zipSync } from "fflate";
 import { isMissingFileError } from "../backend/file-errors";

@@ -1,4 +1,9 @@
-import type { BrowserDiagnosticEntry, BrowserSiteMemory, BrowserSnapshot, BrowserTarget } from "@pokebots/contracts/ipc";
+import type {
+  BrowserDiagnosticEntry,
+  BrowserSiteMemory,
+  BrowserSnapshot,
+  BrowserTarget,
+} from "@pokebots/contracts/ipc";
 import { Context, Deferred, Effect, Fiber, Option, Result } from "effect";
 import type { BrowserDialog, BrowserDialogOwner, BrowserPageStatus, SnapshotReadResult } from "./browser-cdp";
 import {
