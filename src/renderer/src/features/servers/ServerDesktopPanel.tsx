@@ -27,7 +27,7 @@ const ISSUE_TITLES = {
   authentication_required: "server.desktop.connectionUnavailable",
   network_unavailable: "server.desktop.connectionUnavailable",
 } as const satisfies Record<ServerConnectionIssueCode, AppTextKey>;
-const REMOTE_HOST_GATEWAY_NAME = "OpenBot Remote Host Gateway";
+const REMOTE_HOST_GATEWAY_NAME = "Pokebots Remote Host Gateway";
 
 /** The Remote desktop section of the server settings. */
 export function ServerDesktopPanel(props: {

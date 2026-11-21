@@ -50,7 +50,7 @@ const Platform = createSimpleContext({
           })
           .catch(() =>
             setAppInfo({
-              name: "OpenBot",
+              name: "Pokebots",
               version: "unavailable",
               platform: "darwin",
               variant: "production",

@@ -1,5 +1,6 @@
 import { AppLogo } from "@pokebots/brand";
 import { AGENT_TEMPLATE_CARD, type AgentTemplatePreview } from "@pokebots/contracts/ipc";
+import { translateFor } from "@pokebots/i18n";
 import { avatarHeadColor, createStaticAvatarSvg } from "@pokebots/ui/bloub-avatar";
 import { render } from "@solidjs/web";
 import { flush } from "solid-js";
@@ -12,8 +13,8 @@ import { loadImage, loadSvg, withAlpha } from "../../avatar-canvas";
  * or the photo the owner uploaded. The Worker only checks its size and stores it.
  *
  * Layout, on the app's dark canvas: a hero square on the left in the avatar's own colour with the
- * avatar in it, and on the right the OpenBot mark, the name, the role, the instructions, and the
- * "Add to OpenBot" pill the page carries.
+ * avatar in it, and on the right the Pokebots mark, the name, the role, the instructions, and the
+ * "Add to Pokebots" pill the page carries.
  */
 
 const { width: WIDTH, height: HEIGHT } = AGENT_TEMPLATE_CARD;
@@ -128,7 +129,7 @@ async function drawColumn(
   await drawLogo(context, x, 92, 44, colors);
   context.fillStyle = colors.primary;
   context.font = `600 28px ${FONT}`;
-  context.fillText("OpenBot", x + 58, 124);
+  context.fillText("Pokebots", x + 58, 124);
 
   // `y` is always the baseline of the last line drawn.
   let y = 154;
@@ -157,7 +158,7 @@ async function drawColumn(
     y += lineHeight;
   }
 
-  const label = "Add to OpenBot";
+  const label = translateFor("en")("sitePage.marketplace.addToOpenBot");
   context.font = `600 24px ${FONT}`;
   const pillWidth = context.measureText(label).width + 64;
   context.fillStyle = colors.primary;
@@ -168,7 +169,7 @@ async function drawColumn(
   context.fillText(label, x + 32, pillTop + 38);
   context.font = `500 24px ${FONT}`;
   context.fillStyle = colors.muted;
-  context.fillText("openbot.run", x + pillWidth + 24, pillTop + 38);
+  context.fillText("pokebots.xyz", x + pillWidth + 24, pillTop + 38);
 }
 
 /** The app mark from `@pokebots/brand`, with its CSS colours written onto the shapes. */
