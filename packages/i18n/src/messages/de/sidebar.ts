@@ -181,7 +181,7 @@ export const messages = {
   "sidebar.delete.pending": "Wird gelöscht…",
   "sidebar.delete.title": "{name} löschen?",
   "sidebar.delete.agentDescription":
-    "Dies entfernt den Agenten und seine OpenBot-Unterhaltung aus der App. Seine Warteschlange, Erinnerungen, Routinen und sein Arbeitsbereich werden gelöscht. Der separat vom verbundenen CLI-Anbieter gespeicherte Verlauf wird nicht gelöscht.",
+    "Dies entfernt den Agenten und seine Pokebots-Unterhaltung aus der App. Seine Warteschlange, Erinnerungen, Routinen und sein Arbeitsbereich werden gelöscht. Der separat vom verbundenen CLI-Anbieter gespeicherte Verlauf wird nicht gelöscht.",
   "sidebar.delete.channelDescription":
     "Dies stoppt den Kanal. Sein Verlauf bleibt unter „Gelöschte Kanäle“ nur zur Ansicht erhalten. Dort kannst du ihn wiederherstellen. Die zugehörigen Agenten bleiben erhalten.",
   "sidebar.delete.sectionDescription":
@@ -195,7 +195,7 @@ export const messages = {
   "sidebar.announce.movedPinned": "Der angeheftete Chat wurde an Position {position} von {total} verschoben.",
   "sidebar.announce.personFallback": "Person",
   "sidebar.announce.chatFallback": "Chat",
-  "sidebar.mobileApp.title": "OpenBot für Mobilgeräte",
+  "sidebar.mobileApp.title": "Pokebots für Mobilgeräte",
   "sidebar.storage.lowTitle": "Speicher fast voll",
   "sidebar.storage.fullTitle": "Speicher voll",
   "sidebar.storage.body": "{used} von {total} belegt auf {server}.",
@@ -214,5 +214,5 @@ export const messages = {
   "sidebar.machine.alertTo": "Die Warnung geht an {name}",
   "sidebar.machine.details": "Details ansehen",
   "sidebar.machine.dismiss": "Bis zur nächsten Warnung ausblenden",
-  "sidebar.community.followX": "OpenBot auf X folgen",
+  "sidebar.community.followX": "Pokebots auf X folgen",
 } as const satisfies PartialTranslation<typeof source>;

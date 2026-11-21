@@ -66,12 +66,12 @@ export const messages = {
   "mobile.marketplace.facts.accessMac": "Mac 전용",
   "mobile.marketplace.permission.admin": "마켓플레이스에서는 소유자와 관리자만 설치할 수 있어요.",
   "mobile.marketplace.permission.unavailable":
-    "이 서버가 오프라인이거나 서버의 OpenBot 버전이 너무 오래되었어요. 서버를 실행하는 컴퓨터에서 OpenBot을 업데이트해 주세요.",
+    "이 서버가 오프라인이거나 서버의 Pokebots 버전이 너무 오래되었어요. 서버를 실행하는 컴퓨터에서 Pokebots을 업데이트해 주세요.",
   "mobile.marketplace.error.agentUnsupported":
-    "마켓플레이스에서 에이전트를 추가하려면 서버의 OpenBot을 업데이트해 주세요.",
+    "마켓플레이스에서 에이전트를 추가하려면 서버의 Pokebots을 업데이트해 주세요.",
   "mobile.marketplace.error.agentUpdateUnsupported":
-    "마켓플레이스에서 에이전트를 업데이트하려면 서버의 OpenBot을 업데이트해 주세요.",
-  "mobile.marketplace.error.signInUnsupported": "휴대폰에서 앱에 로그인하려면 서버의 OpenBot을 업데이트해 주세요.",
+    "마켓플레이스에서 에이전트를 업데이트하려면 서버의 Pokebots을 업데이트해 주세요.",
+  "mobile.marketplace.error.signInUnsupported": "휴대폰에서 앱에 로그인하려면 서버의 Pokebots을 업데이트해 주세요.",
   "mobile.marketplace.agent.add": "에이전트 추가",
   "mobile.marketplace.agent.adding": "에이전트 추가 중",
   "mobile.marketplace.agent.update": "에이전트 업데이트",
@@ -113,10 +113,10 @@ export const messages = {
   "mobile.marketplace.app.connectFailed": "앱을 연결하지 못했어요.",
   "mobile.marketplace.app.linkInvalid": "{hostname}의 https 링크를 사용해 주세요.",
   "mobile.marketplace.app.docs": "키 발급받기",
-  "mobile.marketplace.app.local": "이 앱은 OpenBot이 있는 컴퓨터에서 실행돼요. 그 컴퓨터에서 설정하세요.",
-  "mobile.marketplace.app.needsMac": "이 앱은 OpenBot을 실행하는 Mac에서만 작동하며, 이 서버는 Mac이 아닙니다.",
+  "mobile.marketplace.app.local": "이 앱은 Pokebots이 있는 컴퓨터에서 실행돼요. 그 컴퓨터에서 설정하세요.",
+  "mobile.marketplace.app.needsMac": "이 앱은 Pokebots을 실행하는 Mac에서만 작동하며, 이 서버는 Mac이 아닙니다.",
   "mobile.marketplace.app.relayUnsupported":
-    "이 앱은 브라우저 로그인이 필요해요. 서버의 OpenBot을 업데이트하거나 컴퓨터에서 앱을 연결하세요.",
+    "이 앱은 브라우저 로그인이 필요해요. 서버의 Pokebots을 업데이트하거나 컴퓨터에서 앱을 연결하세요.",
   "mobile.marketplace.app.waiting": "로그인 페이지를 기다리는 중…",
   "mobile.marketplace.app.openAgain": "로그인 페이지 다시 열기",
   "mobile.marketplace.app.pasteHint":

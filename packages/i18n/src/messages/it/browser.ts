@@ -58,8 +58,8 @@ export const messages = {
   "browser.pip.reattach": "Riaggancia il browser alla barra laterale destra",
   "browser.pip.reattachTitle": "Riaggancia il browser",
   "browser.pip.close": "Chiudi il popup del browser",
-  "browser.pip.reattachFailed": "OpenBot non è riuscito a riagganciare il browser.",
-  "browser.pip.closeFailed": "OpenBot non è riuscito a chiudere il popup del browser.",
+  "browser.pip.reattachFailed": "Pokebots non è riuscito a riagganciare il browser.",
+  "browser.pip.closeFailed": "Pokebots non è riuscito a chiudere il popup del browser.",
   "browser.popupBlocked.title": "Popup bloccato",
   "browser.popupBlocked.dismiss": "Chiudi il messaggio del popup",
   "browser.liveView.label": "Vista in diretta della pagina sul server",
@@ -95,17 +95,17 @@ export const messages = {
   "browser.secret.takeOver": "Intervieni",
   "browser.secret.failed": "Non è stato possibile completare la richiesta. Controlla la connessione e riprova.",
   "browser.secret.vaultSkip.agentScript":
-    "OpenBot non ha usato le tue credenziali salvate perché l’agente ha eseguito uno script in questa pagina. Per usarle, chiedi all’agente di ricaricare la pagina e riprovare.",
+    "Pokebots non ha usato le tue credenziali salvate perché l’agente ha eseguito uno script in questa pagina. Per usarle, chiedi all’agente di ricaricare la pagina e riprovare.",
   "browser.secret.vaultSkip.fieldKind":
-    "OpenBot non ha usato le tue credenziali salvate perché l’agente ha scelto il campo sbagliato nella pagina.",
+    "Pokebots non ha usato le tue credenziali salvate perché l’agente ha scelto il campo sbagliato nella pagina.",
   "browser.secret.vaultSkip.loginChoice":
-    "OpenBot non ha usato credenziali salvate perché l’agente non ha scelto nessuna delle credenziali salvate per questo sito. Di’ all’agente quale account usare.",
+    "Pokebots non ha usato credenziali salvate perché l’agente non ha scelto nessuna delle credenziali salvate per questo sito. Di’ all’agente quale account usare.",
   "browser.secret.vaultSkip.noPassword":
-    "OpenBot non ha usato le tue credenziali salvate perché non contengono una password per questo sito.",
+    "Pokebots non ha usato le tue credenziali salvate perché non contengono una password per questo sito.",
   "browser.secret.vaultSkip.noAuthenticatorKey":
-    "OpenBot non ha usato le tue credenziali salvate perché non contengono una chiave dell’autenticatore.",
+    "Pokebots non ha usato le tue credenziali salvate perché non contengono una chiave dell’autenticatore.",
   "browser.secret.vaultSkip.vaultUnreadable":
-    "OpenBot non ha usato credenziali salvate perché non è riuscito a leggere il tuo gestore di password.",
+    "Pokebots non ha usato credenziali salvate perché non è riuscito a leggere il tuo gestore di password.",
   "browser.error.openAddress": "Impossibile aprire l'indirizzo in questa scheda.",
   "browser.error.channelNoBrowserMember": "Nessun membro può aprire una nuova scheda in questo canale.",
   "browser.error.closeTab": "Impossibile chiudere la scheda del browser.",
@@ -166,21 +166,22 @@ export const messages = {
   "browser.signIn.local": "Accedi su questo computer",
   "browser.signIn.title": "Accedi a {site}",
   "browser.signIn.description":
-    "Alcuni siti rifiutano un accesso da un server. Accedi su questo computer e OpenBot invia l’accesso a {site} a {server}. Tutti gli agenti e i membri di {server} potranno usarlo nel browser.",
+    "Alcuni siti rifiutano un accesso da un server. Accedi su questo computer e Pokebots invia l’accesso a {site} a {server}. Tutti gli agenti e i membri di {server} potranno usarlo nel browser.",
   "browser.signIn.windowOpen":
-    "Accedi nella finestra che si è aperta. OpenBot invia l’accesso quando è completo. Se la finestra resta aperta, seleziona Fine.",
+    "Accedi nella finestra che si è aperta. Pokebots invia l’accesso quando è completo. Se la finestra resta aperta, seleziona Fine.",
   "browser.signIn.windowClosed":
     "La finestra di accesso è chiusa. Seleziona Fine per inviare l’accesso, o apri di nuovo la finestra.",
   "browser.signIn.reopen": "Apri la finestra di accesso",
   "browser.signIn.sending": "Invio a {server}…",
   "browser.signIn.sent": "Accesso a {site} su {server} eseguito",
-  "browser.signIn.notFound": "OpenBot non ha trovato un accesso per {site}. Accedi nella finestra, poi seleziona Fine.",
+  "browser.signIn.notFound":
+    "Pokebots non ha trovato un accesso per {site}. Accedi nella finestra, poi seleziona Fine.",
   "browser.signIn.stillSignedOut":
     "{server} mostra ancora una pagina di accesso di {site}. Completa l’accesso nella finestra.",
-  "browser.signIn.failed": "OpenBot non è riuscito a inviare l’accesso.",
+  "browser.signIn.failed": "Pokebots non è riuscito a inviare l’accesso.",
   "browser.profiles.title": "Profili del browser",
   "browser.profiles.subtitle":
-    "Ogni profilo mantiene accessi, cookie e dati dei siti propri sul computer su cui gira OpenBot.",
+    "Ogni profilo mantiene accessi, cookie e dati dei siti propri sul computer su cui gira Pokebots.",
   "browser.profiles.label": "Profili del browser",
   "browser.profiles.newName": "Nome del profilo",
   "browser.profiles.create": "Aggiungi",
@@ -199,8 +200,8 @@ export const messages = {
   "browser.profiles.deleteDescription":
     "Questa azione elimina gli accessi, i cookie e i dati dei siti del profilo. Le sue schede aperte si chiudono.",
   "browser.profiles.deleteAgents": "Questi agenti passano al profilo condiviso: {agents}.",
-  "browser.profiles.failed": "OpenBot non è riuscito a modificare i profili del browser.",
-  "browser.profiles.loadFailed": "OpenBot non è riuscito a caricare i profili del browser.",
+  "browser.profiles.failed": "Pokebots non è riuscito a modificare i profili del browser.",
+  "browser.profiles.loadFailed": "Pokebots non è riuscito a caricare i profili del browser.",
   "browser.profiles.tabLabel": "Profilo: {name}",
   "browser.profiles.tabLabelProxy": "Profilo: {name} · Proxy: {proxy}",
   "browser.profiles.agentTabLabel": "Profilo proprio dell’agente",
@@ -215,7 +216,7 @@ export const messages = {
   "browser.proxies.addTitle": "Aggiungi proxy",
   "browser.proxies.editTitle": "Modifica {name}",
   "browser.proxies.dialogDescription":
-    "Usa socks5, http o https. Nome utente e password sono facoltativi per ogni tipo. La password resta cifrata sul computer su cui gira OpenBot.",
+    "Usa socks5, http o https. Nome utente e password sono facoltativi per ogni tipo. La password resta cifrata sul computer su cui gira Pokebots.",
   "browser.proxies.address": "Indirizzo",
   "browser.proxies.addressPlaceholder": "socks5://user:password@host:1080",
   "browser.proxies.deleteUsed": {
@@ -225,7 +226,7 @@ export const messages = {
   "browser.proxies.deleteUnused": "Nessun profilo usa questo proxy.",
   "browser.proxies.failing": "{name} non risponde",
   "browser.proxies.signInRefused": "{name} ha rifiutato l’accesso",
-  "browser.proxies.unsupported": "Questo server non può usare proxy. Aggiorna OpenBot su quel server.",
+  "browser.proxies.unsupported": "Questo server non può usare proxy. Aggiorna Pokebots su quel server.",
   "browser.proxies.yourComputer": "Il tuo computer",
   "browser.proxies.memberComputer": "Computer di {name}",
   "browser.proxies.unknownComputer": "Computer di un membro",
@@ -236,7 +237,7 @@ export const messages = {
   "browser.proxies.offlineBadge": "{name} è offline",
   "browser.proxies.shareTitle": "Condividere la connessione di questo computer?",
   "browser.proxies.shareDescription":
-    "I profili che usano il tuo computer aprono i siti pubblici tramite la connessione internet di questo computer. Funziona solo mentre OpenBot è aperto qui. Il server non può aprire indirizzi della tua rete locale.",
+    "I profili che usano il tuo computer aprono i siti pubblici tramite la connessione internet di questo computer. Funziona solo mentre Pokebots è aperto qui. Il server non può aprire indirizzi della tua rete locale.",
   "browser.proxies.share": "Condividi",
   "browser.proxies.stopSharing": "Interrompi condivisione",
   "browser.proxies.closesTabs": {

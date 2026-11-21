@@ -21,7 +21,7 @@ export const messages = {
   "dialog.saveExportSkill": "حفظ مهارة التصدير",
   "dialog.saveTransfer": "حفظ ملف النقل",
   "dialog.chooseTransfer": "اختر ملف نقل",
-  "dialog.filter.transfer": "ملفات نقل OpenBot",
+  "dialog.filter.transfer": "ملفات نقل Pokebots",
   "dialog.chooseExternalLinkApp": "اختر متصفحًا",
   "dialog.filter.applications": "التطبيقات",
 } as const satisfies PartialTranslation<typeof source>;

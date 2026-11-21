@@ -8,12 +8,12 @@ export const messages = {
   "mobile.settings.language.system": "Langue du système",
   "mobile.settings.language.footer":
     "« Langue du système » suit la première langue des réglages du téléphone. Le texte pas encore traduit s’affiche en anglais.",
-  "mobile.settings.language.restartTitle": "Redémarrer OpenBot ?",
+  "mobile.settings.language.restartTitle": "Redémarrer Pokebots ?",
   "mobile.settings.language.restartBody":
-    "Cette langue se lit dans l’autre sens. Les écrans changent de sens au prochain démarrage d’OpenBot. Si les écrans restent incorrects après le redémarrage, fermez OpenBot dans le sélecteur d’apps et rouvrez-le.",
+    "Cette langue se lit dans l’autre sens. Les écrans changent de sens au prochain démarrage d’Pokebots. Si les écrans restent incorrects après le redémarrage, fermez Pokebots dans le sélecteur d’apps et rouvrez-le.",
   "mobile.settings.language.restartNow": "Redémarrer maintenant",
   "mobile.settings.language.restartFailed":
-    "OpenBot n’a pas pu redémarrer. Les écrans changeront de sens à la prochaine ouverture d’OpenBot.",
+    "Pokebots n’a pas pu redémarrer. Les écrans changeront de sens à la prochaine ouverture d’Pokebots.",
   "mobile.settings.dictation.language": "Langue de dictée",
   "mobile.settings.about.development": "Développement",
   "mobile.settings.about.openFailed": "Impossible d’ouvrir le lien. Réessayez.",
@@ -22,7 +22,7 @@ export const messages = {
   "mobile.settings.about.privacy": "Politique de confidentialité",
   "mobile.settings.home.profile": "Profil",
   "mobile.settings.home.preferences": "Préférences",
-  "mobile.settings.home.about": "À propos d’OpenBot",
+  "mobile.settings.home.about": "À propos d’Pokebots",
   "mobile.settings.home.support": "Assistance",
   "mobile.settings.home.supportHint": "Obtenir de l’aide et enregistrer un journal d’assistance",
   "mobile.settings.home.account": "Compte",
@@ -45,7 +45,7 @@ export const messages = {
   "mobile.settings.billing.status.unpaid": "Impayé",
   "mobile.settings.billing.status.paused": "En pause",
   "mobile.settings.billing.footer":
-    "Pour changer de formule ou de moyen de paiement, ou voir les factures, ouvrez Réglages → Facturation dans OpenBot sur votre ordinateur.",
+    "Pour changer de formule ou de moyen de paiement, ou voir les factures, ouvrez Réglages → Facturation dans Pokebots sur votre ordinateur.",
   "mobile.settings.support.help": "Obtenir de l’aide",
   "mobile.settings.support.discord": "Ouvrir un ticket sur Discord",
   "mobile.settings.support.discordHint": "Le moyen le plus rapide d’obtenir de l’aide",
@@ -61,7 +61,7 @@ export const messages = {
   "mobile.settings.support.clearTitle": "Effacer le journal d’assistance ?",
   "mobile.settings.support.clearBody": "Tous les événements du journal seront supprimés de ce téléphone.",
   "mobile.settings.support.logFooter":
-    "Le journal reste sur ce téléphone. OpenBot en envoie des lignes uniquement avec un rapport de bug sur l’app du téléphone que vous envoyez, et la carte du rapport les affiche d’abord. Il enregistre les étapes de connexion, les requêtes et les erreurs. Il n’enregistre ni les messages ni les fichiers, et il masque les mots de passe et les jetons. Lisez le fichier avant de le partager.",
+    "Le journal reste sur ce téléphone. Pokebots en envoie des lignes uniquement avec un rapport de bug sur l’app du téléphone que vous envoyez, et la carte du rapport les affiche d’abord. Il enregistre les étapes de connexion, les requêtes et les erreurs. Il n’enregistre ni les messages ni les fichiers, et il masque les mots de passe et les jetons. Lisez le fichier avant de le partager.",
   "mobile.settings.support.saveFailed": "Impossible d’enregistrer le fichier du journal. Réessayez.",
   "mobile.settings.support.sharingUnavailable": "Le partage n’est pas disponible sur ce téléphone.",
   "mobile.settings.support.newestFirst": "Les plus récents en premier.",
@@ -198,31 +198,31 @@ export const messages = {
   "mobile.settings.feedback.retry": "Réessayer d’enregistrer le réglage haptique",
   "mobile.settings.liveActivities.title": "Activités en direct",
   "mobile.settings.liveActivities.footer":
-    "Affiche le travail, les messages, les questions et les approbations des agents sur l’écran verrouillé et dans la Dynamic Island pendant qu’OpenBot est ouvert.",
+    "Affiche le travail, les messages, les questions et les approbations des agents sur l’écran verrouillé et dans la Dynamic Island pendant qu’Pokebots est ouvert.",
   "mobile.settings.liveActivities.toggle": "Afficher l’activité des agents",
   "mobile.settings.liveActivities.retry": "Réessayer d’enregistrer le réglage des activités en direct",
   "mobile.settings.notifications.title": "Notifications",
   "mobile.settings.notifications.toggle": "Autoriser les notifications",
   "mobile.settings.notifications.footer":
-    "Les agents vous préviennent quand ils terminent, s’arrêtent sur une erreur ou attendent votre réponse, une approbation ou une étape dans le navigateur. Rien n’arrive pendant que vous utilisez OpenBot ici ou dans l’app de bureau. Tant que l’activité en direct s’affiche, elle montre l’événement à la place.",
+    "Les agents vous préviennent quand ils terminent, s’arrêtent sur une erreur ou attendent votre réponse, une approbation ou une étape dans le navigateur. Rien n’arrive pendant que vous utilisez Pokebots ici ou dans l’app de bureau. Tant que l’activité en direct s’affiche, elle montre l’événement à la place.",
   "mobile.settings.notifications.footerAndroid":
-    "Les agents vous préviennent quand ils terminent, s’arrêtent sur une erreur ou attendent votre réponse, une approbation ou une étape dans le navigateur. Rien n’arrive pendant que vous utilisez OpenBot ici ou dans l’app de bureau.",
-  "mobile.settings.notifications.denied": "Les notifications d’OpenBot sont désactivées dans les Réglages d’iOS.",
+    "Les agents vous préviennent quand ils terminent, s’arrêtent sur une erreur ou attendent votre réponse, une approbation ou une étape dans le navigateur. Rien n’arrive pendant que vous utilisez Pokebots ici ou dans l’app de bureau.",
+  "mobile.settings.notifications.denied": "Les notifications d’Pokebots sont désactivées dans les Réglages d’iOS.",
   "mobile.settings.notifications.deniedAndroid":
-    "Les notifications d’OpenBot sont désactivées dans les paramètres d’Android.",
+    "Les notifications d’Pokebots sont désactivées dans les paramètres d’Android.",
   "mobile.settings.notifications.openSettings": "Ouvrir les Réglages d’iOS",
   "mobile.settings.notifications.openSettingsAndroid": "Ouvrir les paramètres d’Android",
   "mobile.settings.notifications.preview": "Afficher l’aperçu de la réponse",
   "mobile.settings.notifications.previewFooter":
-    "Affiche le début d’une réponse, une question ou l’action à approuver. Apple et le service de compte OpenBot ne peuvent pas le lire.",
+    "Affiche le début d’une réponse, une question ou l’action à approuver. Apple et le service de compte Pokebots ne peuvent pas le lire.",
   "mobile.settings.notifications.previewFooterAndroid":
-    "Affiche le début d’une réponse, une question ou l’action à approuver. Google et le service de compte OpenBot ne peuvent pas le lire.",
+    "Affiche le début d’une réponse, une question ou l’action à approuver. Google et le service de compte Pokebots ne peuvent pas le lire.",
   "mobile.settings.notifications.threadReplies": "Réponses dans les fils",
   "mobile.settings.notifications.threadRepliesFooter":
     "Les réponses dans les fils vous préviennent quand un agent termine ou s’arrête sur une erreur dans un fil. Sans elles, un fil vous prévient toujours quand il attend votre réponse ou une approbation.",
   "mobile.settings.notifications.sound": "Son",
   "mobile.settings.notifications.playSound": "Jouer un son",
-  "mobile.settings.notifications.sound.openbot": "OpenBot",
+  "mobile.settings.notifications.sound.openbot": "Pokebots",
   "mobile.settings.notifications.sound.warm": "Chaleureux",
   "mobile.settings.notifications.sound.mech": "Mécanique",
   "mobile.settings.notifications.sound.bubble": "Pétillant",
@@ -230,9 +230,9 @@ export const messages = {
   "mobile.settings.notifications.sound.default": "Son par défaut d’iOS",
   "mobile.settings.notifications.sound.defaultAndroid": "Son par défaut d’Android",
   "mobile.settings.notifications.soundFooter":
-    "Les notifications et l’activité en direct jouent ce son. L’activité en direct allume aussi l’écran. Le son OpenBot est celui que l’app de bureau joue quand une tâche se termine. Les quatre sons suivants sont ceux des thèmes sonores de l’app de bureau.",
+    "Les notifications et l’activité en direct jouent ce son. L’activité en direct allume aussi l’écran. Le son Pokebots est celui que l’app de bureau joue quand une tâche se termine. Les quatre sons suivants sont ceux des thèmes sonores de l’app de bureau.",
   "mobile.settings.notifications.soundFooterAndroid":
-    "Les notifications jouent ce son. Le son OpenBot est celui que l’app de bureau joue quand une tâche se termine. Les quatre sons suivants sont ceux des thèmes sonores de l’app de bureau.",
+    "Les notifications jouent ce son. Le son Pokebots est celui que l’app de bureau joue quand une tâche se termine. Les quatre sons suivants sont ceux des thèmes sonores de l’app de bureau.",
   "mobile.settings.notifications.level.all": "Toute l’activité",
   "mobile.settings.notifications.level.needsMe": "Seulement quand on a besoin de moi",
   "mobile.settings.notifications.level.nothing": "Rien",
@@ -248,7 +248,7 @@ export const messages = {
   "mobile.settings.notifications.serverFooter":
     "Les événements de ce serveur qui notifient ce téléphone. L’app de bureau a ses propres réglages.",
   "mobile.settings.notifications.serverUnsupported":
-    "Ce serveur ne peut pas envoyer de notifications. Mettez à jour OpenBot sur l’ordinateur qui l’exécute.",
+    "Ce serveur ne peut pas envoyer de notifications. Mettez à jour Pokebots sur l’ordinateur qui l’exécute.",
   "mobile.settings.notifications.thisPhone": "Ce téléphone",
   "mobile.settings.notifications.whatYouHear": "Ce qui vous est signalé",
   "mobile.settings.notifications.wholeServer": "Tout le serveur",
@@ -262,7 +262,7 @@ export const messages = {
   "mobile.settings.notifications.chooseAgent": "Choisir pour un agent",
   "mobile.settings.notifications.chooseAnotherAgent": "Choisir un autre agent",
   "mobile.settings.notifications.levelsFooter": "Touchez à nouveau le niveau d’un agent pour qu’il suive le serveur.",
-  "mobile.settings.notifications.agentsUnsupported": "Mettez à jour OpenBot sur ce serveur pour choisir des agents.",
+  "mobile.settings.notifications.agentsUnsupported": "Mettez à jour Pokebots sur ce serveur pour choisir des agents.",
   "mobile.settings.notifications.agentsOffline": "Les agents s’affichent quand ce serveur est en ligne.",
   "mobile.settings.notifications.scopeFooter":
     "Vos choix s’appliquent sur tous vos appareils. Le silence ne s’applique qu’à ce téléphone.",
@@ -270,7 +270,7 @@ export const messages = {
   "mobile.settings.notifications.channelSilent": "Notifications des agents (sans son)",
   "mobile.settings.privacy.title": "Confidentialité",
   "mobile.settings.privacy.footer":
-    "L’utilisation des fonctions et les résultats de connexion de ce téléphone sont toujours envoyés aux services analytiques d’OpenBot. Activé : avec l’identifiant et l’e-mail de votre compte. Désactivé : avec un identifiant d’installation aléatoire uniquement. Le contenu des messages et les fichiers ne sont pas envoyés.",
+    "L’utilisation des fonctions et les résultats de connexion de ce téléphone sont toujours envoyés aux services analytiques d’Pokebots. Activé : avec l’identifiant et l’e-mail de votre compte. Désactivé : avec un identifiant d’installation aléatoire uniquement. Le contenu des messages et les fichiers ne sont pas envoyés.",
   "mobile.settings.privacy.analytics": "Lier les données analytiques à mon compte",
   "mobile.settings.privacy.retry": "Réessayer d’enregistrer le réglage de confidentialité",
   "mobile.settings.conversations.title": "Conversations",
@@ -316,7 +316,7 @@ export const messages = {
   "mobile.settings.profile.accountSessions": "Sessions du compte",
   "mobile.settings.profile.signOutTitle": "Se déconnecter ?",
   "mobile.settings.profile.signOutBody":
-    "Reconnectez-vous en scannant un nouveau code depuis OpenBot sur votre ordinateur.",
+    "Reconnectez-vous en scannant un nouveau code depuis Pokebots sur votre ordinateur.",
   "mobile.settings.profile.signOut": "Se déconnecter",
   "mobile.settings.profile.options": "Options du profil",
   "mobile.settings.profile.activity.title": "Activité sur {server}",
@@ -354,7 +354,7 @@ export const messages = {
   "mobile.settings.profile.models.title": "Utilisation des modèles",
   "mobile.settings.profile.share": "Partager",
   "mobile.settings.profile.shareTitle": "Partager votre activité",
-  "mobile.settings.profile.share.caption": "Mes six derniers mois avec OpenBot",
+  "mobile.settings.profile.share.caption": "Mes six derniers mois avec Pokebots",
   "mobile.settings.profile.share.createFailed": "Impossible de créer l’image.",
   "mobile.settings.profile.share.fileName": "openbot-activity.png",
   "mobile.settings.voice.title": "Voix",
@@ -388,7 +388,7 @@ export const messages = {
   "mobile.settings.voice.supertonic.male": "Voix masculine {number}",
   "mobile.settings.voice.elevenLabs.title": "ElevenLabs",
   "mobile.settings.voice.elevenLabs.footer":
-    "OpenBot envoie le texte de chaque réponse à ElevenLabs avec votre clé, et ElevenLabs facture votre compte. La clé reste dans le trousseau de ce téléphone.",
+    "Pokebots envoie le texte de chaque réponse à ElevenLabs avec votre clé, et ElevenLabs facture votre compte. La clé reste dans le trousseau de ce téléphone.",
   "mobile.settings.voice.elevenLabs.key": "Clé d’API",
   "mobile.settings.voice.elevenLabs.keySaved": "Enregistrée sur ce téléphone",
   "mobile.settings.voice.elevenLabs.chooseVoice": "Choisir une voix",
@@ -399,7 +399,7 @@ export const messages = {
   "mobile.settings.voice.elevenLabs.saveKey": "Enregistrer la clé",
   "mobile.settings.voice.elevenLabs.testing": "Test de la clé",
   "mobile.settings.voice.elevenLabs.keyHint":
-    "OpenBot teste les deux premières autorisations avant d’enregistrer la clé.",
+    "Pokebots teste les deux premières autorisations avant d’enregistrer la clé.",
   "mobile.settings.voice.elevenLabs.testFailed": "ElevenLabs n’a pas répondu. Réessayez.",
   "mobile.settings.voice.elevenLabs.refused": "ElevenLabs a refusé la demande : {reason}",
   "mobile.settings.voice.elevenLabs.getKey": "Obtenir une clé d’API",
@@ -455,11 +455,11 @@ export const messages = {
   "mobile.settings.voice.pause.title": "Pause avant l’envoi",
   "mobile.settings.voice.pause.label": "Attendre de nouveaux mots",
   "mobile.settings.voice.pause.footer":
-    "Dans une conversation vocale, OpenBot envoie vos mots quand il ne reconnaît aucun nouveau mot pendant cette durée. Le bruit sans mots ne le fait pas continuer à écouter. Choisissez une pause plus longue si vous parlez lentement ou vous arrêtez pour réfléchir.",
+    "Dans une conversation vocale, Pokebots envoie vos mots quand il ne reconnaît aucun nouveau mot pendant cette durée. Le bruit sans mots ne le fait pas continuer à écouter. Choisissez une pause plus longue si vous parlez lentement ou vous arrêtez pour réfléchir.",
   "mobile.settings.voice.pause.seconds": "{seconds} s",
   "mobile.settings.voice.speed.title": "Vitesse des réponses",
   "mobile.settings.voice.speed.footer":
-    "La vitesse des réponses qu’OpenBot lit à voix haute, aussi dans une conversation vocale.",
+    "La vitesse des réponses qu’Pokebots lit à voix haute, aussi dans une conversation vocale.",
   "mobile.settings.voice.speed.value": "{speed}×",
   "mobile.settings.voice.gptLive.title": "GPT Live Voice",
   "mobile.settings.voice.gptLive.footer":
@@ -473,13 +473,13 @@ export const messages = {
   "mobile.settings.voice.gptLive.status.ready": "Prêt",
   "mobile.settings.voice.gptLive.status.supported": "Compatible",
   "mobile.settings.voice.gptLive.status.offline": "Hors ligne",
-  "mobile.settings.voice.gptLive.status.update": "Nécessite un OpenBot plus récent sur son ordinateur",
+  "mobile.settings.voice.gptLive.status.update": "Nécessite un Pokebots plus récent sur son ordinateur",
   "mobile.settings.voice.gptLive.status.signIn": "Connectez-vous à Codex avec ChatGPT",
   "mobile.settings.voice.server.title": "Serveur vocal",
   "mobile.settings.voice.server.row": "Serveur compatible OpenAI",
   "mobile.settings.voice.server.notSetUp": "Non configuré",
   "mobile.settings.voice.server.footer":
-    "Votre propre serveur avec les routes /v1/audio d’OpenAI, comme Speaches ou Kokoro-FastAPI, comme sur l’ordinateur. OpenBot envoie vos enregistrements et le texte des réponses uniquement à son adresse, et le téléphone doit pouvoir la joindre, par exemple sur le même réseau.",
+    "Votre propre serveur avec les routes /v1/audio d’OpenAI, comme Speaches ou Kokoro-FastAPI, comme sur l’ordinateur. Pokebots envoie vos enregistrements et le texte des réponses uniquement à son adresse, et le téléphone doit pouvoir la joindre, par exemple sur le même réseau.",
   "mobile.settings.voice.server.choice": "Votre serveur vocal",
   "mobile.settings.voice.server.dictationReady": "Sur votre serveur vocal · {model}",
   "mobile.settings.voice.server.dictationOff": "Configurez la dictée sur votre serveur vocal",
@@ -505,7 +505,7 @@ export const messages = {
     "La reconnaissance du téléphone et Supertonic 3 prennent le relais là où le serveur écoutait ou parlait, et sa clé API est supprimée de ce téléphone.",
   "mobile.settings.voice.server.removeFailed": "Impossible de retirer le serveur vocal.",
   "mobile.settings.voice.elevenLabs.recognitionFooter":
-    "OpenBot envoie votre voix en continu à ElevenLabs avec un jeton à usage unique, et ElevenLabs le facture sur votre compte. La clé reste sur ce téléphone.",
+    "Pokebots envoie votre voix en continu à ElevenLabs avec un jeton à usage unique, et ElevenLabs le facture sur votre compte. La clé reste sur ce téléphone.",
   "mobile.settings.voice.elevenLabs.model.title": "Modèle",
   "mobile.settings.voice.elevenLabs.model.footer":
     "Chaque modèle a son propre prix chez ElevenLabs. Le changement s’applique à la prochaine réponse.",
@@ -538,9 +538,9 @@ export const messages = {
     "Les nouveaux messages rejoignent le travail en cours de l’agent, pas la file. Avec les agents qui ne le permettent pas, ils attendent dans la file.",
   "mobile.settings.agents.planCardFooter": "Avant une longue tâche, l’agent montre son plan.",
   "mobile.settings.agents.commitSection": "Commits Git",
-  "mobile.settings.agents.commitCoAuthor": "Créditer OpenBot dans les commits",
+  "mobile.settings.agents.commitCoAuthor": "Créditer Pokebots dans les commits",
   "mobile.settings.agents.commitCoAuthorFooter":
-    "Les agents ajoutent OpenBot comme coauteur de leurs commits. Vous restez l’auteur.",
+    "Les agents ajoutent Pokebots comme coauteur de leurs commits. Vous restez l’auteur.",
   "mobile.settings.agents.planStart.title": "Démarrer le travail",
   "mobile.settings.agents.planStart.wait": "Quand j’appuie sur Démarrer",
   "mobile.settings.agents.planStart.after": "Après {time}",
@@ -557,7 +557,7 @@ export const messages = {
     "Le nombre maximal de messages et d’exécutions de routines que les scripts locaux peuvent envoyer à chaque agent en une heure. Elle s’applique à tous les agents de ce serveur.",
   "mobile.settings.agents.processes.title": "Processus en arrière-plan",
   "mobile.settings.agents.processes.description":
-    "Programmes que les agents ont lancés et laissés en marche, comme des serveurs de développement. Ils continuent après la fin du chat et quand vous quittez OpenBot.",
+    "Programmes que les agents ont lancés et laissés en marche, comme des serveurs de développement. Ils continuent après la fin du chat et quand vous quittez Pokebots.",
   "mobile.settings.agents.processes.empty": "Aucun programme d’agent n’est en marche.",
   "mobile.settings.agents.processes.loadFailed": "Impossible de lire les processus en arrière-plan.",
   "mobile.settings.agents.processes.noAgent": "Aucun agent",
@@ -569,7 +569,7 @@ export const messages = {
   "mobile.settings.agents.processes.stopLabel": "Arrêter le processus {pid}",
   "mobile.settings.quickActions.title": "Menu de l’icône",
   "mobile.settings.quickActions.footer":
-    "Touchez longuement l’icône OpenBot pour voir ces actions. Vous pouvez en activer {count} au maximum.",
+    "Touchez longuement l’icône Pokebots pour voir ces actions. Vous pouvez en activer {count} au maximum.",
   "mobile.settings.quickActions.latestChat": "Dernier chat",
   "mobile.settings.quickActions.secondChat": "Avant-dernier chat",
   "mobile.settings.shortcuts.title": "Raccourcis",
@@ -578,18 +578,18 @@ export const messages = {
   "mobile.settings.shortcuts.unsupported": "Les raccourcis nécessitent iOS 26 ou une version ultérieure.",
   "mobile.settings.shortcuts.card.agents": "Agents",
   "mobile.settings.shortcuts.card.noAgents": "Aucun agent pour l’instant",
-  "mobile.settings.shortcuts.card.setUp.title": "Ouvrez OpenBot pour configurer les raccourcis",
-  "mobile.settings.shortcuts.card.setUp.action": "Ouvrir OpenBot",
+  "mobile.settings.shortcuts.card.setUp.title": "Ouvrez Pokebots pour configurer les raccourcis",
+  "mobile.settings.shortcuts.card.setUp.action": "Ouvrir Pokebots",
   "mobile.settings.shortcuts.card.noAgent.title": "Choisissez un agent pour les raccourcis",
   "mobile.settings.shortcuts.card.noAgent.detail": "Les raccourcis envoient à un seul agent.",
   "mobile.settings.shortcuts.card.noAgent.action": "Choisir un agent",
-  "mobile.settings.shortcuts.card.locked.title": "OpenBot est verrouillé",
-  "mobile.settings.shortcuts.card.locked.action": "Ouvrir OpenBot",
+  "mobile.settings.shortcuts.card.locked.title": "Pokebots est verrouillé",
+  "mobile.settings.shortcuts.card.locked.action": "Ouvrir Pokebots",
   "mobile.settings.shortcuts.footer":
     "Send Message dans l’app Raccourcis envoie à cet agent. L’app ne s’ouvre pas. Open Agent ouvre sa discussion.",
   "mobile.settings.shortcuts.send.sent": "Envoyé",
-  "mobile.settings.shortcuts.send.failed": "OpenBot n’a pas pu envoyer ce message.",
+  "mobile.settings.shortcuts.send.failed": "Pokebots n’a pas pu envoyer ce message.",
   "mobile.settings.shortcuts.send.unconfirmed": "Pas de réponse du serveur. Le message est peut-être dans le chat.",
-  "mobile.settings.shortcuts.send.inApp": "Envoyer dans OpenBot",
+  "mobile.settings.shortcuts.send.inApp": "Envoyer dans Pokebots",
   "mobile.settings.shortcuts.send.openChat": "Ouvrir le chat",
 } as const satisfies PartialTranslation<typeof source>;

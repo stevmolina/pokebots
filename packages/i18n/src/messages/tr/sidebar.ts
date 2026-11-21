@@ -163,7 +163,7 @@ export const messages = {
   "sidebar.delete.pending": "Siliniyor…",
   "sidebar.delete.title": "{name} silinsin mi?",
   "sidebar.delete.agentDescription":
-    "Bu işlem ajanı ve OpenBot konuşmasını uygulamadan kaldırır. Kuyruğu, bellekleri, rutinleri ve çalışma alanı silinir. Bağlı CLI sağlayıcısı tarafından ayrı depolanan geçmiş silinmez.",
+    "Bu işlem ajanı ve Pokebots konuşmasını uygulamadan kaldırır. Kuyruğu, bellekleri, rutinleri ve çalışma alanı silinir. Bağlı CLI sağlayıcısı tarafından ayrı depolanan geçmiş silinmez.",
   "sidebar.delete.channelDescription":
     "Bu işlem kanalı durdurur. Geçmişi yalnızca önizleme amacıyla Silinen kanallar bölümünde kalır. Oradan geri yükleyebilirsiniz. Üye ajanlar korunur.",
   "sidebar.delete.sectionDescription":
@@ -177,7 +177,7 @@ export const messages = {
   "sidebar.announce.movedPinned": "Sabitlenen sohbet {position}/{total} konumuna taşındı.",
   "sidebar.announce.personFallback": "kişi",
   "sidebar.announce.chatFallback": "sohbet",
-  "sidebar.mobileApp.title": "Mobil için OpenBot",
+  "sidebar.mobileApp.title": "Mobil için Pokebots",
   "sidebar.storage.lowTitle": "Depolama neredeyse dolu",
   "sidebar.storage.fullTitle": "Depolama dolu",
   "sidebar.storage.body": "{server} üzerinde {total} alanın {used} kadarı kullanılıyor.",
@@ -196,5 +196,5 @@ export const messages = {
   "sidebar.machine.alertTo": "Uyarı alıcısı: {name}",
   "sidebar.machine.details": "Ayrıntıları gör",
   "sidebar.machine.dismiss": "Sonraki uyarıya kadar gizle",
-  "sidebar.community.followX": "X’te OpenBot’u takip et",
+  "sidebar.community.followX": "X’te Pokebots’u takip et",
 } as const satisfies PartialTranslation<typeof source>;

@@ -160,7 +160,7 @@ export const messages = {
   "sidebar.delete.pending": "삭제 중…",
   "sidebar.delete.title": "{name}을(를) 삭제할까요?",
   "sidebar.delete.agentDescription":
-    "앱에서 에이전트와 OpenBot 대화가 삭제돼요. 에이전트의 대기열, 메모리, 루틴, 워크스페이스도 삭제돼요. 연결된 CLI 제공자가 따로 저장한 기록은 삭제되지 않아요.",
+    "앱에서 에이전트와 Pokebots 대화가 삭제돼요. 에이전트의 대기열, 메모리, 루틴, 워크스페이스도 삭제돼요. 연결된 CLI 제공자가 따로 저장한 기록은 삭제되지 않아요.",
   "sidebar.delete.channelDescription":
     "채널이 중지돼요. 채널 기록은 삭제된 채널에 남아 미리보기만 할 수 있어요. 거기서 복원할 수 있어요. 멤버 에이전트는 유지돼요.",
   "sidebar.delete.sectionDescription":
@@ -174,7 +174,7 @@ export const messages = {
   "sidebar.announce.movedPinned": "고정된 채팅을 {total}개 중 {position}번째로 이동했어요.",
   "sidebar.announce.personFallback": "사람",
   "sidebar.announce.chatFallback": "채팅",
-  "sidebar.mobileApp.title": "모바일용 OpenBot",
+  "sidebar.mobileApp.title": "모바일용 Pokebots",
   "sidebar.storage.lowTitle": "저장 공간이 거의 찼어요",
   "sidebar.storage.fullTitle": "저장 공간이 가득 찼어요",
   "sidebar.storage.body": "{server}에서 {total} 중 {used}를 사용 중이에요.",
@@ -193,5 +193,5 @@ export const messages = {
   "sidebar.machine.alertTo": "알림은 {name}에게 전송돼요",
   "sidebar.machine.details": "세부정보 보기",
   "sidebar.machine.dismiss": "다음 알림까지 숨기기",
-  "sidebar.community.followX": "X에서 OpenBot 팔로우",
+  "sidebar.community.followX": "X에서 Pokebots 팔로우",
 } as const satisfies PartialTranslation<typeof source>;

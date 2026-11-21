@@ -3,14 +3,14 @@ import { defineMessages } from "../../message";
 export const messages = defineMessages("computerUse", {
   // Computer Use settings, the permission help window, and the window highlight.
   "computerUse.permission.screenRecording.title": "Screen Recording",
-  "computerUse.permission.screenRecording.description": "Lets OpenBot see app windows.",
+  "computerUse.permission.screenRecording.description": "Lets Pokebots see app windows.",
   "computerUse.permission.screenRecording.pane": "Screen & System Audio Recording",
   "computerUse.permission.accessibility.title": "Accessibility",
-  "computerUse.permission.accessibility.description": "Lets OpenBot click and type.",
+  "computerUse.permission.accessibility.description": "Lets Pokebots click and type.",
   "computerUse.permission.accessibility.pane": "Accessibility",
-  "computerUse.error.check": "OpenBot could not check Computer Use.",
-  "computerUse.error.openSettings": "OpenBot could not open System Settings.",
-  "computerUse.error.startDriver": "OpenBot could not start the Computer Use driver.",
+  "computerUse.error.check": "Pokebots could not check Computer Use.",
+  "computerUse.error.openSettings": "Pokebots could not open System Settings.",
+  "computerUse.error.startDriver": "Pokebots could not start the Computer Use driver.",
   "computerUse.checkAgain": "Check again",
   "computerUse.checking": "Checking Computer Use",
   "computerUse.unavailable.title": "Computer Use isn’t available yet",
@@ -18,14 +18,14 @@ export const messages = defineMessages("computerUse", {
   "computerUse.permissions.description": "Permissions are managed by macOS.",
   "computerUse.ready.title": "Computer Use is ready",
   "computerUse.ready.description":
-    "OpenBot can see and interact with apps on this computer. This system asks for no extra permission.",
+    "Pokebots can see and interact with apps on this computer. This system asks for no extra permission.",
   "computerUse.openSettingsFailed.title": "Couldn’t open System Settings",
   "computerUse.restartRequired.title": "Restart needed",
   "computerUse.restartRequired.description":
-    "macOS still blocks clicks and typing. If this comes back after a restart, remove OpenBot from Accessibility and add it again.",
-  "computerUse.restartRequired.action": "Restart OpenBot",
+    "macOS still blocks clicks and typing. If this comes back after a restart, remove Pokebots from Accessibility and add it again.",
+  "computerUse.restartRequired.action": "Restart Pokebots",
   "computerUse.compact.title": "Enable Computer Use",
-  "computerUse.compact.description": "Let OpenBot see and interact with apps on this computer.",
+  "computerUse.compact.description": "Let Pokebots see and interact with apps on this computer.",
   "computerUse.granted": "Granted",
   "computerUse.opening": "Opening…",
   "computerUse.manage": "Manage",
@@ -42,7 +42,7 @@ export const messages = defineMessages("computerUse", {
   "computerUse.help.showInFinder": "Show in Finder",
   "computerUse.help.revealFailed": "The application could not be shown in Finder.",
   "computerUse.help.dragFailed": "The application could not be dragged.",
-  "computerUse.highlight.working": "OpenBot is working in {title}",
+  "computerUse.highlight.working": "Pokebots is working in {title}",
   // Agents on a joined server that use Computer Use on this computer. The switch starts off.
   "computerUse.remote.title": "Agents on your servers",
   "computerUse.remote.description":
@@ -52,7 +52,7 @@ export const messages = defineMessages("computerUse", {
   "computerUse.remote.off": "Off",
   "computerUse.remote.offline": "Not connected",
   "computerUse.remote.unsupported": "This server needs an update first",
-  "computerUse.remote.error": "OpenBot could not change this setting.",
+  "computerUse.remote.error": "Pokebots could not change this setting.",
   "computerUse.remote.inUse": "An agent on {server} is using this computer",
   "computerUse.remote.stop": "Stop",
   // Commands and file copies for those agents. A second switch, off until the user turns it on.

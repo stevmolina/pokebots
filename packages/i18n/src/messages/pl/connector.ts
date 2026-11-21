@@ -19,7 +19,7 @@ export const messages = {
     "Agenci mogą używać tylko repozytoriów, w których zainstalowano OpenBot GitHub App.",
   "connector.github.chooseRepositories": "Wybierz repozytoria",
   "connector.github.repositoriesLoading": "Odczytywanie repozytoriów z GitHub",
-  "connector.github.repositoriesFailed": "OpenBot nie mógł odczytać repozytoriów z GitHub.",
+  "connector.github.repositoriesFailed": "Pokebots nie mógł odczytać repozytoriów z GitHub.",
   "connector.github.noRepositories": "OpenBot GitHub App nie jest jeszcze zainstalowana w żadnym repozytorium.",
   "connector.github.moreRepositories": {
     one: "I jeszcze {count} repozytorium",
@@ -34,7 +34,7 @@ export const messages = {
   "connector.github.expiredTitle": "Połączenie z GitHub wygasło",
   "connector.github.expiredDescription": "Połącz ponownie jako @{login}, aby przywrócić agentom dostęp do GitHub.",
   "connector.github.reconnect": "Połącz ponownie",
-  "connector.github.actionFailed": "OpenBot nie mógł zmienić połączenia z GitHub.",
+  "connector.github.actionFailed": "Pokebots nie mógł zmienić połączenia z GitHub.",
   "connector.github.statusConnected": "Połączono",
   "connector.github.statusConnecting": "Łączenie",
   "connector.github.statusExpired": "Wygasło",
@@ -49,7 +49,7 @@ export const messages = {
   "connector.github.noMatch": "Żadne repozytorium nie pasuje do „{query}”.",
   "connector.github.stepSignIn": "Logowanie",
   "connector.github.stepConnected": "Połączono",
-  "connector.github.requestingCode": "OpenBot prosi GitHub o kod.",
+  "connector.github.requestingCode": "Pokebots prosi GitHub o kod.",
   "connector.github.codeLabel": "Kod {code}",
   "connector.github.failedTitle": "Nie udało się połączyć z GitHub",
   "connector.github.cancelConnecting": "Anuluj łączenie z GitHub",
@@ -107,10 +107,10 @@ export const messages = {
   "connector.slack.disconnectAllSummary":
     "Wszystkie przestrzenie robocze zostaną odłączone. Nikt nie dotrze już do Twoich agentów przez @OpenBot.",
   "connector.slack.disconnectAllSummaryOrchestrator":
-    "Wszystkie przestrzenie robocze zostaną odłączone. Slack Orchestrator i jego rozmowy zostaną usunięte z OpenBot.",
+    "Wszystkie przestrzenie robocze zostaną odłączone. Slack Orchestrator i jego rozmowy zostaną usunięte z Pokebots.",
   "connector.slack.missingScopes":
-    "OpenBot nie ma tych uprawnień w Slacku: {scopes}. Odłącz obszar roboczy, a potem połącz go ponownie.",
-  "connector.slack.retryAt": "Slack poprosił OpenBot o czekanie. Kolejna próba o {time}.",
+    "Pokebots nie ma tych uprawnień w Slacku: {scopes}. Odłącz obszar roboczy, a potem połącz go ponownie.",
+  "connector.slack.retryAt": "Slack poprosił Pokebots o czekanie. Kolejna próba o {time}.",
   "connector.slack.reconnect": "Połącz ponownie",
   "connector.slack.pause": "Wstrzymaj",
   "connector.slack.resume": "Wznów",
@@ -121,7 +121,7 @@ export const messages = {
   "connector.slack.orchestratorNone": "Żaden agent jeszcze nie odpowiada",
   "connector.slack.orchestratorNoneDescription": "Dodaj Slack Orchestrator, inaczej Slack nie dostanie odpowiedzi.",
   "connector.slack.inviteNote":
-    "OpenBot sam dołącza do każdego publicznego kanału, także do nowych. Do kanału prywatnego zaproś go: /invite @OpenBot.",
+    "Pokebots sam dołącza do każdego publicznego kanału, także do nowych. Do kanału prywatnego zaproś go: /invite @OpenBot.",
   "connector.slack.stepWorkspace": "Obszar roboczy",
   "connector.slack.stepAgent": "Agent",
   "connector.slack.connectTitle": "Połącz obszar roboczy Slack",
@@ -141,18 +141,18 @@ export const messages = {
   "connector.slack.orchestratorDoesDelegate": "Przekazuje każde zadanie najlepiej pasującemu agentowi",
   "connector.slack.orchestratorDoesAnswer": "Publikuje odpowiedź w wątku Slacka",
   "connector.slack.orchestratorModel": "Model",
-  "connector.slack.doneTitle": "OpenBot jest w obszarze roboczym {workspace}",
+  "connector.slack.doneTitle": "Pokebots jest w obszarze roboczym {workspace}",
   "connector.slack.doneDescription": "Oznacz @OpenBot w dowolnym publicznym kanale lub wyślij mu wiadomość prywatną.",
   "connector.slack.done": "Gotowe",
   "connector.slack.disconnectTitle": "Odłączyć {workspace}?",
   "connector.slack.disconnectDescription":
-    "OpenBot przestaje odpowiadać w obszarze roboczym {workspace} i usuwa swój token Slack z tego komputera.",
+    "Pokebots przestaje odpowiadać w obszarze roboczym {workspace} i usuwa swój token Slack z tego komputera.",
   "connector.slack.disconnectDescriptionHost":
-    "OpenBot przestaje odpowiadać w obszarze roboczym {workspace} i usuwa swój token Slack z serwera {host}.",
+    "Pokebots przestaje odpowiadać w obszarze roboczym {workspace} i usuwa swój token Slack z serwera {host}.",
   "connector.slack.disconnectEffect":
     "Ludzie z obszaru roboczego {workspace} nie będą już mogli kontaktować się z twoimi agentami przez @OpenBot.",
-  "connector.slack.removeEffectKept": "Rozmowy i Slack Orchestrator zostają w OpenBot.",
-  "connector.slack.removeEffectDeleted": "Slack Orchestrator i jego rozmowy zostaną usunięte z OpenBot.",
+  "connector.slack.removeEffectKept": "Rozmowy i Slack Orchestrator zostają w Pokebots.",
+  "connector.slack.removeEffectDeleted": "Slack Orchestrator i jego rozmowy zostaną usunięte z Pokebots.",
   "connector.slack.keep": "Nie odłączaj",
   "connector.slack.close": "Zamknij",
   "connector.slack.addWorkspace": "Dodaj obszar roboczy",
@@ -194,10 +194,10 @@ export const messages = {
   "connector.discord.disconnectAllSummary":
     "Wszystkie serwery zostaną odłączone. Nikt nie dotrze już do Twoich agentów przez @OpenBot.",
   "connector.discord.disconnectAllSummaryOrchestrator":
-    "Wszystkie serwery zostaną odłączone. Discord Orchestrator i jego rozmowy zostaną usunięte z OpenBot.",
+    "Wszystkie serwery zostaną odłączone. Discord Orchestrator i jego rozmowy zostaną usunięte z Pokebots.",
   "connector.discord.missingScopes":
-    "OpenBot nie ma tych uprawnień w Discordzie: {scopes}. Odłącz serwer Discord, a potem połącz go ponownie.",
-  "connector.discord.retryAt": "Discord poprosił OpenBot o czekanie. Kolejna próba o {time}.",
+    "Pokebots nie ma tych uprawnień w Discordzie: {scopes}. Odłącz serwer Discord, a potem połącz go ponownie.",
+  "connector.discord.retryAt": "Discord poprosił Pokebots o czekanie. Kolejna próba o {time}.",
   "connector.discord.reconnect": "Połącz ponownie",
   "connector.discord.pause": "Wstrzymaj",
   "connector.discord.resume": "Wznów",
@@ -208,7 +208,7 @@ export const messages = {
   "connector.discord.orchestratorNone": "Żaden agent jeszcze nie odpowiada",
   "connector.discord.orchestratorNoneDescription":
     "Dodaj Discord Orchestrator, inaczej Discord nie dostanie odpowiedzi.",
-  "connector.discord.channelsNote": "OpenBot widzi kanały, które może wyświetlać jego rola.",
+  "connector.discord.channelsNote": "Pokebots widzi kanały, które może wyświetlać jego rola.",
   "connector.discord.stepWorkspace": "Serwer Discord",
   "connector.discord.stepAgent": "Agent",
   "connector.discord.connectTitle": "Połącz serwer Discord",
@@ -227,18 +227,18 @@ export const messages = {
   "connector.discord.orchestratorDoesDelegate": "Przekazuje każde zadanie najlepiej pasującemu agentowi",
   "connector.discord.orchestratorDoesAnswer": "Odpowiada na kanale Discord",
   "connector.discord.orchestratorModel": "Model",
-  "connector.discord.doneTitle": "OpenBot jest na serwerze {workspace}",
+  "connector.discord.doneTitle": "Pokebots jest na serwerze {workspace}",
   "connector.discord.doneDescription": "Oznacz @OpenBot na kanale. Odpowiedz na wiadomość OpenBot, aby kontynuować.",
   "connector.discord.done": "Gotowe",
   "connector.discord.disconnectTitle": "Odłączyć {workspace}?",
   "connector.discord.disconnectDescription":
-    "OpenBot przestaje odpowiadać na serwerze {workspace} i usuwa połączenie z Discord z tego komputera.",
+    "Pokebots przestaje odpowiadać na serwerze {workspace} i usuwa połączenie z Discord z tego komputera.",
   "connector.discord.disconnectDescriptionHost":
-    "OpenBot przestaje odpowiadać na serwerze {workspace} i usuwa połączenie z Discord z serwera {host}.",
+    "Pokebots przestaje odpowiadać na serwerze {workspace} i usuwa połączenie z Discord z serwera {host}.",
   "connector.discord.disconnectEffect":
     "Ludzie na serwerze {workspace} nie będą już mogli kontaktować się z twoimi agentami przez @OpenBot.",
-  "connector.discord.removeEffectKept": "Rozmowy i Discord Orchestrator zostają w OpenBot.",
-  "connector.discord.removeEffectDeleted": "Discord Orchestrator i jego rozmowy zostaną usunięte z OpenBot.",
+  "connector.discord.removeEffectKept": "Rozmowy i Discord Orchestrator zostają w Pokebots.",
+  "connector.discord.removeEffectDeleted": "Discord Orchestrator i jego rozmowy zostaną usunięte z Pokebots.",
   "connector.discord.keep": "Nie odłączaj",
   "connector.discord.close": "Zamknij",
   "connector.discord.addWorkspace": "Dodaj serwer Discord",
@@ -254,25 +254,25 @@ export const messages = {
     many: "{count} serwerów Discord · odpowiada Discord Orchestrator",
     other: "{count} serwera Discord · odpowiada Discord Orchestrator",
   },
-  "connector.discord.accessTitle": "Kto może używać OpenBot",
-  "connector.discord.accessDescription": "OpenBot odpowiada tylko tym osobom. Ignoruje oznaczenia od innych.",
+  "connector.discord.accessTitle": "Kto może używać Pokebots",
+  "connector.discord.accessDescription": "Pokebots odpowiada tylko tym osobom. Ignoruje oznaczenia od innych.",
   "connector.discord.accessEveryone": "Wszyscy na serwerze",
   "connector.discord.accessEveryoneDescription":
-    "Każdy, kto może pisać na kanale widocznym dla OpenBot, może go oznaczyć.",
+    "Każdy, kto może pisać na kanale widocznym dla Pokebots, może go oznaczyć.",
   "connector.discord.accessRoles": "Członkowie z rolami: {roles}",
   "connector.discord.accessChoose": "Wybierz role",
-  "connector.discord.accessDialogTitle": "Kto może używać OpenBot na {workspace}?",
+  "connector.discord.accessDialogTitle": "Kto może używać Pokebots na {workspace}?",
   "connector.discord.accessDialogDescription": "Bez wybranej roli każdy może oznaczyć OpenBot.",
   "connector.discord.accessLoading": "Wczytywanie ról…",
   "connector.discord.accessLoadFailed": "Nie udało się wczytać ról Discord",
   "connector.discord.accessNoRoles": "Ten serwer nie ma ról do wyboru.",
   "connector.discord.accessRoleDeleted": "{role} (usunięta)",
   "connector.discord.accessSave": "Zapisz",
-  "connector.discord.accessHostUpdate": "Zaktualizuj OpenBot na {host}, aby wybrać role.",
+  "connector.discord.accessHostUpdate": "Zaktualizuj Pokebots na {host}, aby wybrać role.",
 
   "connector.telegram.title": "Telegram",
   "connector.telegram.description":
-    "Dodaj bota OpenBot do grupy Telegram lub otwórz z nim czat prywatny. Telegram Orchestrator pyta odpowiedniego agenta i odpowiada.",
+    "Dodaj bota Pokebots do grupy Telegram lub otwórz z nim czat prywatny. Telegram Orchestrator pyta odpowiedniego agenta i odpowiada.",
   "connector.telegram.statusConnected": "Połączono",
   "connector.telegram.statusAttention": "Wymaga uwagi",
   "connector.telegram.summaryConnected": {
@@ -300,31 +300,31 @@ export const messages = {
   "connector.telegram.chatsTitle": "Czaty",
   "connector.telegram.groupDescription": "Ludzie oznaczają bota lub odpowiadają na jego wiadomości.",
   "connector.telegram.directDescription": "Każda wiadomość w tym czacie trafia do Telegram Orchestrator.",
-  "connector.telegram.helpRemoved": "Bota OpenBot nie ma już w tym czacie. Odłącz czat, a potem dodaj bota ponownie.",
+  "connector.telegram.helpRemoved": "Bota Pokebots nie ma już w tym czacie. Odłącz czat, a potem dodaj bota ponownie.",
   "connector.telegram.helpRelayUnavailable":
-    "OpenBot nie może odbierać wiadomości z Telegram na tym komputerze. Zaloguj się, nadaj temu komputerowi nazwę w ustawieniach serwera i nie zamykaj OpenBot.",
+    "Pokebots nie może odbierać wiadomości z Telegram na tym komputerze. Zaloguj się, nadaj temu komputerowi nazwę w ustawieniach serwera i nie zamykaj Pokebots.",
   "connector.telegram.helpRelayUnavailableHost":
-    "OpenBot na serwerze {host} nie może odbierać wiadomości z Telegram. Na serwerze {host} zaloguj się, nadaj serwerowi nazwę w ustawieniach serwera i nie zamykaj OpenBot.",
-  "connector.telegram.helpError": "OpenBot nie może połączyć się z tym czatem. Połącz ponownie lub odłącz czat.",
+    "Pokebots na serwerze {host} nie może odbierać wiadomości z Telegram. Na serwerze {host} zaloguj się, nadaj serwerowi nazwę w ustawieniach serwera i nie zamykaj Pokebots.",
+  "connector.telegram.helpError": "Pokebots nie może połączyć się z tym czatem. Połącz ponownie lub odłącz czat.",
   "connector.telegram.helpNotLinked":
     "Ten czat nie jest połączony z tym serwerem. Wybierz Połącz ponownie, aby go połączyć.",
-  "connector.telegram.retryAt": "Telegram poprosił OpenBot o czekanie. Kolejna próba o {time}.",
+  "connector.telegram.retryAt": "Telegram poprosił Pokebots o czekanie. Kolejna próba o {time}.",
   "connector.telegram.pause": "Wstrzymaj",
   "connector.telegram.resume": "Wznów",
   "connector.telegram.reconnect": "Połącz ponownie",
   "connector.telegram.disconnectChat": "Odłącz",
   "connector.telegram.disconnectAllTitle": "Odłącz Telegram",
   "connector.telegram.disconnectAllSummary":
-    "Wszystkie czaty zostaną odłączone. Nikt nie dotrze już do Twoich agentów przez bota OpenBot.",
+    "Wszystkie czaty zostaną odłączone. Nikt nie dotrze już do Twoich agentów przez bota Pokebots.",
   "connector.telegram.disconnectAllSummaryOrchestrator":
-    "Wszystkie czaty zostaną odłączone. Telegram Orchestrator i jego rozmowy zostaną usunięte z OpenBot.",
+    "Wszystkie czaty zostaną odłączone. Telegram Orchestrator i jego rozmowy zostaną usunięte z Pokebots.",
   "connector.telegram.rowAction": "{action}: {name}",
   "connector.telegram.linkChat": "Połącz czat",
   "connector.telegram.addToGroup": "Dodaj do grupy",
   "connector.telegram.openDirectChat": "Otwórz czat prywatny",
   "connector.telegram.orchestratorTitle": "Telegram Orchestrator",
   "connector.telegram.orchestratorDescription":
-    "Ten agent odbiera wiadomości do OpenBot ze wszystkich twoich czatów Telegram. Na krótkie odpowiada sam, inną pracę przekazuje odpowiedniemu agentowi i publikuje odpowiedź w czacie.",
+    "Ten agent odbiera wiadomości do Pokebots ze wszystkich twoich czatów Telegram. Na krótkie odpowiada sam, inną pracę przekazuje odpowiedniemu agentowi i publikuje odpowiedź w czacie.",
   "connector.telegram.orchestratorNone": "Żaden agent jeszcze nie odpowiada",
   "connector.telegram.orchestratorNoneDescription":
     "Dodaj Telegram Orchestrator, inaczej Telegram nie dostanie odpowiedzi.",
@@ -334,29 +334,29 @@ export const messages = {
   "connector.telegram.stepAgent": "Agent",
   "connector.telegram.connectTitle": "Połącz czat Telegram",
   "connector.telegram.connectDescription":
-    "Dodaj bota OpenBot do grupy lub otwórz z nim czat prywatny. Jeden bot obsługuje wszystkie twoje czaty.",
+    "Dodaj bota Pokebots do grupy lub otwórz z nim czat prywatny. Jeden bot obsługuje wszystkie twoje czaty.",
   "connector.telegram.connectStepBrowser": "Telegram otworzy się w przeglądarce",
   "connector.telegram.connectStepPick": "Wybierz grupę lub naciśnij Start w czacie prywatnym",
   "connector.telegram.connectStepReturn": "To okno przejdzie dalej, gdy czat zostanie połączony",
   "connector.telegram.connectWaiting": "Czekanie na Telegram. Wybierz czat w Telegramie.",
   "connector.telegram.agentStepTitle": "Dodaj Telegram Orchestrator",
   "connector.telegram.agentStepDescription":
-    "Ten nowy agent odpowiada na wiadomości do OpenBot w czacie {chat} i w każdym czacie, który połączysz później.",
+    "Ten nowy agent odpowiada na wiadomości do Pokebots w czacie {chat} i w każdym czacie, który połączysz później.",
   "connector.telegram.orchestratorName": "Telegram Orchestrator",
   "connector.telegram.orchestratorRole": "Odpowiada w Telegramie i pyta zespół",
-  "connector.telegram.orchestratorDoesReceive": "Jako pierwszy odbiera każdą wiadomość z Telegram do OpenBot",
+  "connector.telegram.orchestratorDoesReceive": "Jako pierwszy odbiera każdą wiadomość z Telegram do Pokebots",
   "connector.telegram.orchestratorDoesDelegate": "Przekazuje każde zadanie najlepiej pasującemu agentowi",
   "connector.telegram.orchestratorDoesAnswer": "Publikuje odpowiedź w czacie Telegram",
   "connector.telegram.orchestratorModel": "Model",
-  "connector.telegram.doneTitle": "OpenBot jest w czacie {chat}",
+  "connector.telegram.doneTitle": "Pokebots jest w czacie {chat}",
   "connector.telegram.done": "Gotowe",
   "connector.telegram.disconnectTitle": "Odłączyć {chat}?",
-  "connector.telegram.leaveDescription": "Bot OpenBot opuści czat {chat}, a OpenBot przestanie tam odpowiadać.",
+  "connector.telegram.leaveDescription": "Bot Pokebots opuści czat {chat}, a Pokebots przestanie tam odpowiadać.",
   "connector.telegram.disconnectEffect":
-    "Ludzie w czacie {chat} nie będą już mogli kontaktować się z twoimi agentami przez bota OpenBot.",
-  "connector.telegram.removeEffectKept": "Rozmowy i Telegram Orchestrator zostają w OpenBot.",
+    "Ludzie w czacie {chat} nie będą już mogli kontaktować się z twoimi agentami przez bota Pokebots.",
+  "connector.telegram.removeEffectKept": "Rozmowy i Telegram Orchestrator zostają w Pokebots.",
   "connector.telegram.removeEffectDeleted":
-    "To ostatni czat, więc Telegram Orchestrator i jego rozmowy zostaną usunięte z OpenBot.",
+    "To ostatni czat, więc Telegram Orchestrator i jego rozmowy zostaną usunięte z Pokebots.",
   "connector.telegram.keep": "Nie odłączaj",
   "connector.telegram.close": "Zamknij",
   "connector.whatsapp.title": "WhatsApp",
@@ -391,16 +391,16 @@ export const messages = {
   "connector.whatsapp.numbersTitle": "Numery",
   "connector.whatsapp.linkNumber": "Połącz numer",
   "connector.whatsapp.ownNumberNote":
-    "Do OpenBot trafiają wiadomości z twojego czatu „Wiadomość do siebie” i od osób, którym pozwolisz.",
+    "Do Pokebots trafiają wiadomości z twojego czatu „Wiadomość do siebie” i od osób, którym pozwolisz.",
   "connector.whatsapp.dedicatedNote":
-    "Do OpenBot trafiają wiadomości od osób, którym pozwolisz. Inne osoby dostają kod, który mają ci przekazać.",
+    "Do Pokebots trafiają wiadomości od osób, którym pozwolisz. Inne osoby dostają kod, który mają ci przekazać.",
   "connector.whatsapp.helpLoggedOut": "WhatsApp usunął ten komputer z połączonych urządzeń. Połącz numer ponownie.",
   "connector.whatsapp.helpLoggedOutHost": "WhatsApp usunął ten serwer z połączonych urządzeń. Połącz numer ponownie.",
   "connector.whatsapp.helpError":
-    "OpenBot nie może połączyć się z WhatsApp na tym numerze. Połącz ponownie lub odłącz numer.",
+    "Pokebots nie może połączyć się z WhatsApp na tym numerze. Połącz ponownie lub odłącz numer.",
   "connector.whatsapp.helpKeysUnreadable":
-    "OpenBot nie może odczytać zapisanych kluczy tego numeru. Połącz numer ponownie.",
-  "connector.whatsapp.retryAt": "WhatsApp poprosił OpenBot o czekanie. Kolejna próba o {time}.",
+    "Pokebots nie może odczytać zapisanych kluczy tego numeru. Połącz numer ponownie.",
+  "connector.whatsapp.retryAt": "WhatsApp poprosił Pokebots o czekanie. Kolejna próba o {time}.",
   "connector.whatsapp.pause": "Wstrzymaj",
   "connector.whatsapp.resume": "Wznów",
   "connector.whatsapp.reconnect": "Połącz ponownie",
@@ -410,20 +410,20 @@ export const messages = {
   "connector.whatsapp.disconnectAllSummary":
     "Wszystkie numery zostaną odłączone. Nikt nie dotrze już do Twoich agentów przez WhatsApp.",
   "connector.whatsapp.disconnectAllSummaryOrchestrator":
-    "Wszystkie numery zostaną odłączone. WhatsApp Orchestrator i jego rozmowy zostaną usunięte z OpenBot.",
+    "Wszystkie numery zostaną odłączone. WhatsApp Orchestrator i jego rozmowy zostaną usunięte z Pokebots.",
   "connector.whatsapp.rowAction": "{action}: {name}",
   "connector.whatsapp.ownNumber": "Numer prywatny",
   "connector.whatsapp.ownNumberDescription":
-    "Pisać mogą tylko twój czat „Wiadomość do siebie” i osoby, którym pozwolisz. Inne osoby nie dostają odpowiedzi. Gdy jest wyłączone, OpenBot odpowiada nieznanym osobom kodem.",
+    "Pisać mogą tylko twój czat „Wiadomość do siebie” i osoby, którym pozwolisz. Inne osoby nie dostają odpowiedzi. Gdy jest wyłączone, Pokebots odpowiada nieznanym osobom kodem.",
   "connector.whatsapp.workingMessage": "Wiadomość „Pracuję nad tym…”",
   "connector.whatsapp.workingMessageDescription":
-    "OpenBot wysyła ją, gdy agent pracuje, a potem zastępuje odpowiedzią. Żądanie, które czeka na wcześniejsze, też dostaje wiadomość o oczekiwaniu. Wyłącz, aby wysyłać tylko odpowiedź.",
+    "Pokebots wysyła ją, gdy agent pracuje, a potem zastępuje odpowiedzią. Żądanie, które czeka na wcześniejsze, też dostaje wiadomość o oczekiwaniu. Wyłącz, aby wysyłać tylko odpowiedź.",
   "connector.whatsapp.statusReactions": "Reakcje stanu",
   "connector.whatsapp.statusReactionsDescription":
-    "OpenBot reaguje 👀, gdy przychodzi wiadomość, i ✅, gdy odpowiedź jest gotowa. Wyłącz, aby nie wysyłać reakcji.",
+    "Pokebots reaguje 👀, gdy przychodzi wiadomość, i ✅, gdy odpowiedź jest gotowa. Wyłącz, aby nie wysyłać reakcji.",
   "connector.whatsapp.orchestratorTitle": "WhatsApp Orchestrator",
   "connector.whatsapp.orchestratorDescription":
-    "Ten agent odbiera wiadomości do OpenBot ze wszystkich twoich połączonych numerów. Na krótkie odpowiada sam, inną pracę przekazuje odpowiedniemu agentowi i odpowiada w WhatsApp.",
+    "Ten agent odbiera wiadomości do Pokebots ze wszystkich twoich połączonych numerów. Na krótkie odpowiada sam, inną pracę przekazuje odpowiedniemu agentowi i odpowiada w WhatsApp.",
   "connector.whatsapp.orchestratorNone": "Żaden agent jeszcze nie odpowiada",
   "connector.whatsapp.orchestratorNoneDescription":
     "Dodaj WhatsApp Orchestrator, inaczej WhatsApp nie dostanie odpowiedzi.",
@@ -437,10 +437,10 @@ export const messages = {
   "connector.whatsapp.kindLabel": "Numer",
   "connector.whatsapp.kindPersonal": "Mój numer prywatny",
   "connector.whatsapp.kindPersonalDescription":
-    "OpenBot odpowiada tylko w twoim czacie „Wiadomość do siebie” i osobom, którym pozwolisz. Inne osoby nie dostają odpowiedzi.",
-  "connector.whatsapp.kindDedicated": "Numer tylko dla OpenBot",
+    "Pokebots odpowiada tylko w twoim czacie „Wiadomość do siebie” i osobom, którym pozwolisz. Inne osoby nie dostają odpowiedzi.",
+  "connector.whatsapp.kindDedicated": "Numer tylko dla Pokebots",
   "connector.whatsapp.kindDedicatedDescription":
-    "OpenBot odpowiada z tego numeru każdej nieznanej osobie kodem, który ma ci przekazać. Zatwierdzasz je tutaj.",
+    "Pokebots odpowiada z tego numeru każdej nieznanej osobie kodem, który ma ci przekazać. Zatwierdzasz je tutaj.",
   "connector.whatsapp.methodLabel": "Sposób połączenia",
   "connector.whatsapp.methodQr": "Kod QR",
   "connector.whatsapp.methodCode": "Kod parowania",
@@ -465,27 +465,27 @@ export const messages = {
   "connector.whatsapp.failedTimeout": "Kod wygasł, zanim telefon go użył.",
   "connector.whatsapp.failedRefused": "WhatsApp odrzucił połączenie. Odczekaj kilka minut i spróbuj ponownie.",
   "connector.whatsapp.failedBusy": "Trwa inne łączenie. Poczekaj, aż się skończy, i spróbuj ponownie.",
-  "connector.whatsapp.failedUnavailable": "OpenBot nie może połączyć się z WhatsApp. Sprawdź połączenie z internetem.",
+  "connector.whatsapp.failedUnavailable": "Pokebots nie może połączyć się z WhatsApp. Sprawdź połączenie z internetem.",
   "connector.whatsapp.tryAgain": "Ponów",
   "connector.whatsapp.agentStepTitle": "Dodaj WhatsApp Orchestrator",
   "connector.whatsapp.agentStepDescription":
-    "Ten nowy agent odpowiada na wiadomości do OpenBot na numerze {number} i na każdym numerze, który połączysz później.",
+    "Ten nowy agent odpowiada na wiadomości do Pokebots na numerze {number} i na każdym numerze, który połączysz później.",
   "connector.whatsapp.orchestratorName": "WhatsApp Orchestrator",
   "connector.whatsapp.orchestratorRole": "Odpowiada w WhatsApp i pyta zespół",
-  "connector.whatsapp.orchestratorDoesReceive": "Jako pierwszy odbiera każdą wiadomość z WhatsApp do OpenBot",
+  "connector.whatsapp.orchestratorDoesReceive": "Jako pierwszy odbiera każdą wiadomość z WhatsApp do Pokebots",
   "connector.whatsapp.orchestratorDoesDelegate": "Przekazuje każde zadanie najlepiej pasującemu agentowi",
   "connector.whatsapp.orchestratorDoesAnswer": "Odpowiada w czacie WhatsApp",
   "connector.whatsapp.orchestratorModel": "Model",
-  "connector.whatsapp.doneTitle": "OpenBot jest połączony z numerem {number}",
+  "connector.whatsapp.doneTitle": "Pokebots jest połączony z numerem {number}",
   "connector.whatsapp.done": "Gotowe",
   "connector.whatsapp.disconnectTitle": "Odłączyć {number}?",
   "connector.whatsapp.disconnectDescription":
-    "OpenBot wyloguje się z WhatsApp na numerze {number}. Jeśli OpenBot był wyłączony, usuń też urządzenie w WhatsApp > Połączone urządzenia.",
+    "Pokebots wyloguje się z WhatsApp na numerze {number}. Jeśli Pokebots był wyłączony, usuń też urządzenie w WhatsApp > Połączone urządzenia.",
   "connector.whatsapp.disconnectEffect":
     "Ludzie nie będą już mogli kontaktować się z twoimi agentami przez numer {number}.",
-  "connector.whatsapp.removeEffectKept": "Rozmowy i WhatsApp Orchestrator zostają w OpenBot.",
+  "connector.whatsapp.removeEffectKept": "Rozmowy i WhatsApp Orchestrator zostają w Pokebots.",
   "connector.whatsapp.removeEffectDeleted":
-    "To ostatni numer, więc WhatsApp Orchestrator i jego rozmowy zostaną usunięte z OpenBot.",
+    "To ostatni numer, więc WhatsApp Orchestrator i jego rozmowy zostaną usunięte z Pokebots.",
   "connector.whatsapp.keep": "Nie odłączaj",
   "connector.whatsapp.close": "Zamknij",
   "connector.whatsapp.sendersTitle": "Kto może pisać na {number}",
@@ -506,7 +506,7 @@ export const messages = {
     "Osoby w tej grupie mogą zlecać pracę twoim agentom, gdy oznaczą ten numer lub odpowiedzą na jego wiadomości.",
   "connector.whatsapp.groupSearch": "Szukaj grup",
   "connector.whatsapp.groupsLoading": "Odczytywanie grup…",
-  "connector.whatsapp.groupsLoadFailed": "OpenBot nie mógł odczytać grup",
+  "connector.whatsapp.groupsLoadFailed": "Pokebots nie mógł odczytać grup",
   "connector.whatsapp.groupsEmpty": "Ten numer nie należy do żadnej grupy.",
   "connector.whatsapp.groupsNoMatch": "Żadna grupa nie ma tej nazwy.",
   "connector.whatsapp.groupAdded": "Dodano",
@@ -519,9 +519,9 @@ export const messages = {
   "connector.whatsapp.deny": "Odrzuć",
   "connector.onePassword.title": "1Password",
   "connector.onePassword.description":
-    "Udostępnij OpenBot osobny sejf 1Password przez konto usługi, aby agenci mogli logować się na strony w przeglądarce OpenBot.",
+    "Udostępnij Pokebots osobny sejf 1Password przez konto usługi, aby agenci mogli logować się na strony w przeglądarce Pokebots.",
   "connector.onePassword.howItWorks":
-    "Połączenie tworzy sejf „Shared with OpenBot” na twoim koncie 1Password i konto usługi, które może odczytywać tylko ten sejf. OpenBot wypełnia zapisane loginy w swojej przeglądarce na tym komputerze, więc udostępniane są tylko elementy przeniesione do tego sejfu. Agenci nigdy nie widzą hasła.",
+    "Połączenie tworzy sejf „Shared with OpenBot” na twoim koncie 1Password i konto usługi, które może odczytywać tylko ten sejf. Pokebots wypełnia zapisane loginy w swojej przeglądarce na tym komputerze, więc udostępniane są tylko elementy przeniesione do tego sejfu. Agenci nigdy nie widzą hasła.",
   "connector.onePassword.connect": "Połącz 1Password",
   "connector.onePassword.setupTitle": "Konfiguracja",
   "connector.onePassword.stepCliTitle": "Zainstaluj 1Password CLI",
@@ -529,9 +529,9 @@ export const messages = {
   "connector.onePassword.stepCliInstalling": "Pobieranie 1Password CLI z 1Password",
   "connector.onePassword.stepCliReady": "Zainstalowana wersja: {version}.",
   "connector.onePassword.stepCliMissing":
-    "OpenBot pobierze je z 1Password do własnego folderu. Nie potrzeba hasła administratora.",
+    "Pokebots pobierze je z 1Password do własnego folderu. Nie potrzeba hasła administratora.",
   "connector.onePassword.stepCliManual":
-    "OpenBot nie może go zainstalować na tym komputerze. Zainstaluj je z 1Password i wróć na tę stronę.",
+    "Pokebots nie może go zainstalować na tym komputerze. Zainstaluj je z 1Password i wróć na tę stronę.",
   "connector.onePassword.installCli": "Zainstaluj",
   "connector.onePassword.stepAppTitle": "Włącz integrację z CLI",
   "connector.onePassword.stepAppDescription":
@@ -542,7 +542,7 @@ export const messages = {
   "connector.onePassword.checkAgain": "Sprawdź ponownie",
   "connector.onePassword.stepVaultTitle": "Utwórz udostępniony sejf",
   "connector.onePassword.stepVaultDescription":
-    "OpenBot tworzy sejf „Shared with OpenBot” i konto usługi, które może go tylko odczytywać. 1Password poprosi cię o zatwierdzenie.",
+    "Pokebots tworzy sejf „Shared with OpenBot” i konto usługi, które może go tylko odczytywać. 1Password poprosi cię o zatwierdzenie.",
   "connector.onePassword.useTokenDescription": "Zamiast tych kroków wklej token konta usługi z 1Password.com.",
   "connector.onePassword.useTokenAction": "Użyj tokenu",
   "connector.onePassword.tokenLabel": "Token konta usługi",
@@ -551,7 +551,7 @@ export const messages = {
   "connector.onePassword.approveInApp": "Zatwierdź prośbę w aplikacji 1Password",
   "connector.onePassword.cancel": "Anuluj",
   "connector.onePassword.chooseAccountTitle": "Wybierz konto",
-  "connector.onePassword.chooseAccountDescription": "OpenBot utworzy udostępniony sejf na wybranym koncie.",
+  "connector.onePassword.chooseAccountDescription": "Pokebots utworzy udostępniony sejf na wybranym koncie.",
   "connector.onePassword.useAccount": "Użyj tego konta",
   "connector.onePassword.vaultTitle": "Udostępniony sejf",
   "connector.onePassword.vaultDescription":
@@ -566,14 +566,14 @@ export const messages = {
   "connector.onePassword.disconnect": "Odłącz",
   "connector.onePassword.disconnectTitle": "Odłącz 1Password",
   "connector.onePassword.disconnectSummary":
-    "OpenBot zapomina token. Sejf i konto usługi zostają w 1Password; usuń je tam, jeśli już ich nie potrzebujesz.",
-  "connector.onePassword.actionFailed": "OpenBot nie mógł zmienić połączenia z 1Password.",
+    "Pokebots zapomina token. Sejf i konto usługi zostają w 1Password; usuń je tam, jeśli już ich nie potrzebujesz.",
+  "connector.onePassword.actionFailed": "Pokebots nie mógł zmienić połączenia z 1Password.",
   "connector.onePassword.statusConnected": "Połączono",
   "connector.onePassword.statusConnecting": "Łączenie",
   "connector.onePassword.descriptionHost":
-    "Udostępnij OpenBot na serwerze {host} osobny sejf 1Password przez konto usługi, aby agenci na serwerze {host} mogli logować się na strony w jego przeglądarce.",
+    "Udostępnij Pokebots na serwerze {host} osobny sejf 1Password przez konto usługi, aby agenci na serwerze {host} mogli logować się na strony w jego przeglądarce.",
   "connector.onePassword.howItWorksHost":
-    "{host} łączy się tokenem konta usługi. Na 1Password.com utwórz konto usługi, które może odczytywać tylko sejf udostępniany OpenBot, a potem wklej tutaj jego token. {host} sprawdza token i go przechowuje; ten komputer go nie przechowuje. Agenci nigdy nie widzą hasła.",
+    "{host} łączy się tokenem konta usługi. Na 1Password.com utwórz konto usługi, które może odczytywać tylko sejf udostępniany Pokebots, a potem wklej tutaj jego token. {host} sprawdza token i go przechowuje; ten komputer go nie przechowuje. Agenci nigdy nie widzą hasła.",
   "connector.onePassword.disconnectSummaryHost":
     "{host} zapomina token. Sejf i konto usługi zostają w 1Password; usuń je tam, jeśli już ich nie potrzebujesz.",
   "connector.bitwarden.title": "Bitwarden",
@@ -581,24 +581,24 @@ export const messages = {
   "connector.bitwarden.setup":
     "Zainstaluj Bitwarden CLI i zaloguj się poleceniem bw login. Utwórz folder o nazwie Shared with OpenBot i umieść w nim tylko loginy, których agenci mogą używać. Uruchom bw unlock --raw i wklej poniżej klucz sesji. Nie wklejaj hasła głównego.",
   "connector.bitwarden.scope":
-    "Wszyscy agenci na tym komputerze mogą używać pasujących loginów z Shared with OpenBot. OpenBot używa dokładnych źródeł HTTPS. Nie używa elementów, które wymagają podania hasła głównego ani niestandardowej reguły dopasowania URI.",
+    "Wszyscy agenci na tym komputerze mogą używać pasujących loginów z Shared with OpenBot. Pokebots używa dokładnych źródeł HTTPS. Nie używa elementów, które wymagają podania hasła głównego ani niestandardowej reguły dopasowania URI.",
   "connector.bitwarden.session":
-    "Klucz sesji zostaje w pamięci. Połącz ponownie po 8 godzinach bez użycia sejfu lub po zamknięciu OpenBot. Odłączenie kończy dostęp OpenBot; nie blokuje innych klientów Bitwarden.",
+    "Klucz sesji zostaje w pamięci. Połącz ponownie po 8 godzinach bez użycia sejfu lub po zamknięciu Pokebots. Odłączenie kończy dostęp Pokebots; nie blokuje innych klientów Bitwarden.",
   "connector.bitwarden.sessionKey": "Klucz sesji Bitwarden",
   "connector.bitwarden.connect": "Połącz Bitwarden",
   "connector.bitwarden.disconnect": "Odłącz Bitwarden",
   "connector.bitwarden.disconnectAction": "Odłącz",
   "connector.bitwarden.disconnectSummary":
-    "OpenBot zapomina klucz sesji. Agenci nie mogą już wypełniać danych logowania z Bitwarden. Inne klienty Bitwarden pozostają odblokowane.",
+    "Pokebots zapomina klucz sesji. Agenci nie mogą już wypełniać danych logowania z Bitwarden. Inne klienty Bitwarden pozostają odblokowane.",
   "connector.bitwarden.disconnectSummaryHost":
     "{host} usuwa klucz API i hasło główne. Agenci na {host} nie mogą już wypełniać danych logowania z Bitwarden.",
   "connector.bitwarden.connected": "Połączono",
-  "connector.bitwarden.actionFailed": "OpenBot nie mógł zmienić połączenia z Bitwarden.",
+  "connector.bitwarden.actionFailed": "Pokebots nie mógł zmienić połączenia z Bitwarden.",
   "connector.bitwarden.descriptionHost": "Wypełniaj loginy w przeglądarce na {host} z Bitwarden lub Vaultwarden.",
   "connector.bitwarden.setupHost":
     "{host} loguje się własnym Bitwarden CLI. W sejfie utwórz folder o nazwie Shared with OpenBot i umieść w nim tylko loginy, których agenci mogą używać. W sejfie internetowym otwórz Ustawienia › Zabezpieczenia › Klucze i wyświetl klucz API. Poniżej wpisz adres serwera, client_id, client_secret i hasło główne.",
   "connector.bitwarden.scopeHost":
-    "Wszyscy agenci na {host} mogą używać pasujących loginów z Shared with OpenBot. OpenBot używa dokładnych źródeł HTTPS. Nie używa elementów, które wymagają ponownego podania hasła głównego, ani elementów z własną regułą dopasowania URI.",
+    "Wszyscy agenci na {host} mogą używać pasujących loginów z Shared with OpenBot. Pokebots używa dokładnych źródeł HTTPS. Nie używa elementów, które wymagają ponownego podania hasła głównego, ani elementów z własną regułą dopasowania URI.",
   "connector.bitwarden.sessionHost":
     "{host} przechowuje klucz API i hasło główne w postaci zaszyfrowanej, aby po ponownym uruchomieniu znowu odblokować sejf. Ten komputer ich nie przechowuje. Rozłączenie usuwa je z {host}. {host} musi łączyć się z adresem serwera przez HTTPS.",
   "connector.bitwarden.serverUrl": "Adres serwera",
@@ -623,19 +623,19 @@ export const messages = {
   "connector.protonPass.keyPlaceholder": "pst_…",
   "connector.protonPass.setupTitle": "Konfiguracja",
   "connector.protonPass.setupDescription":
-    "Połącz otwiera logowanie do Proton w przeglądarce. Potem OpenBot tworzy udostępniony sejf i zachowuje tylko klucz tylko do odczytu.",
+    "Połącz otwiera logowanie do Proton w przeglądarce. Potem Pokebots tworzy udostępniony sejf i zachowuje tylko klucz tylko do odczytu.",
   "connector.protonPass.setupDescriptionHost":
     "Połącz otwiera logowanie do Proton w przeglądarce. Potem {host} tworzy udostępniony sejf i zachowuje tylko klucz tylko do odczytu.",
   "connector.protonPass.vaultName": "Shared with OpenBot",
   "connector.protonPass.vaultSetup":
-    "OpenBot tworzy ten sejf podczas łączenia. Przenieś do niego dane logowania, aby je udostępnić.",
+    "Pokebots tworzy ten sejf podczas łączenia. Przenieś do niego dane logowania, aby je udostępnić.",
   "connector.protonPass.showSteps": "Pokaż kroki",
   "connector.protonPass.stepsLabel": "Kroki połączenia",
   "connector.protonPass.stepSignIn": "Logowanie",
   "connector.protonPass.stepVault": "Tworzenie sejfu",
   "connector.protonPass.stepDone": "Gotowe",
   "connector.protonPass.signInTitle": "Zaloguj się do Proton",
-  "connector.protonPass.signInStarting": "OpenBot rozpoczyna logowanie. Strona Proton otworzy się w przeglądarce.",
+  "connector.protonPass.signInStarting": "Pokebots rozpoczyna logowanie. Strona Proton otworzy się w przeglądarce.",
   "connector.protonPass.signInDescription":
     "Logowanie jest otwarte w przeglądarce. Proton prosi o hasło i drugi składnik.",
   "connector.protonPass.signInDescriptionHost":
@@ -646,7 +646,7 @@ export const messages = {
   "connector.protonPass.continue": "Dalej",
   "connector.protonPass.setupStepTitle": "Tworzenie udostępnionego sejfu",
   "connector.protonPass.setupStepDescription":
-    "OpenBot tworzy sejf „{vault}” i klucz tylko do odczytu. Potem wylogowuje Twoją sesję Proton.",
+    "Pokebots tworzy sejf „{vault}” i klucz tylko do odczytu. Potem wylogowuje Twoją sesję Proton.",
   "connector.protonPass.doneTitle": "Proton Pass jest połączony",
   "connector.protonPass.doneDescription": "Przenieś dane logowania do „{vault}”, aby agenci mogli się nimi logować.",
   "connector.protonPass.failedTitle": "Nie połączono Proton Pass",
@@ -680,11 +680,11 @@ export const messages = {
   "connector.protonPass.keyNoExpiry": "Tylko do odczytu. Nie wygasa.",
   "connector.protonPass.disconnectTitle": "Odłącz Proton Pass",
   "connector.protonPass.disconnectSummary":
-    "OpenBot usuwa swój klucz dostępu z tego komputera. Sejf i jego dane logowania zostają na Twoim koncie Proton.",
+    "Pokebots usuwa swój klucz dostępu z tego komputera. Sejf i jego dane logowania zostają na Twoim koncie Proton.",
   "connector.protonPass.disconnectSummaryHost":
-    "OpenBot usuwa swój klucz dostępu z {host}. Sejf i jego dane logowania zostają na Twoim koncie Proton.",
+    "Pokebots usuwa swój klucz dostępu z {host}. Sejf i jego dane logowania zostają na Twoim koncie Proton.",
   "connector.protonPass.disconnect": "Odłącz",
-  "connector.protonPass.actionFailed": "OpenBot nie mógł zmienić połączenia z Proton Pass.",
+  "connector.protonPass.actionFailed": "Pokebots nie mógł zmienić połączenia z Proton Pass.",
   "connector.keeper.title": "Keeper",
   "connector.keeper.description": "Agenci logują się do witryn danymi logowania z udostępnionego folderu Keeper.",
   "connector.keeper.descriptionHost":
@@ -692,7 +692,7 @@ export const messages = {
   "connector.keeper.connect": "Połącz",
   "connector.keeper.setupTitle": "Logowanie",
   "connector.keeper.setupDescription":
-    "Wpisz e-mail i hasło główne do Keeper. OpenBot przekazuje je Keeper Commander jeden raz i ich nie zachowuje. Keeper Commander to narzędzie wiersza poleceń Keeper.",
+    "Wpisz e-mail i hasło główne do Keeper. Pokebots przekazuje je Keeper Commander jeden raz i ich nie zachowuje. Keeper Commander to narzędzie wiersza poleceń Keeper.",
   "connector.keeper.setupDescriptionHost":
     "Wpisz e-mail i hasło główne do Keeper. {host} przekazuje je Keeper Commander jeden raz i ich nie zachowuje. Keeper Commander to narzędzie wiersza poleceń Keeper.",
   "connector.keeper.emailLabel": "E-mail",
@@ -700,7 +700,7 @@ export const messages = {
   // The exact folder name that OpenBot makes in Keeper. Keep it in English.
   "connector.keeper.folderName": "Shared with OpenBot",
   "connector.keeper.folderSetup":
-    "OpenBot tworzy ten folder w Twoim sejfie podczas łączenia. Przenieś do niego dane logowania, aby je udostępnić.",
+    "Pokebots tworzy ten folder w Twoim sejfie podczas łączenia. Przenieś do niego dane logowania, aby je udostępnić.",
   "connector.keeper.showSteps": "Pokaż kroki",
   "connector.keeper.stepsLabel": "Kroki połączenia",
   "connector.keeper.stepSignIn": "Logowanie",
@@ -720,7 +720,7 @@ export const messages = {
   "connector.keeper.continue": "Dalej",
   "connector.keeper.setupStepTitle": "Tworzenie udostępnionego folderu",
   "connector.keeper.setupStepDescription":
-    "OpenBot tworzy w Twoim sejfie folder „{folder}” i włącza logowanie dla tego urządzenia.",
+    "Pokebots tworzy w Twoim sejfie folder „{folder}” i włącza logowanie dla tego urządzenia.",
   "connector.keeper.doneTitle": "Keeper jest połączony",
   "connector.keeper.doneDescription": "Przenieś dane logowania do „{folder}”, aby agenci mogli się nimi logować.",
   "connector.keeper.failedTitle": "Nie połączono Keeper",
@@ -747,9 +747,9 @@ export const messages = {
   "connector.keeper.loginsLoading": "Liczenie danych logowania…",
   "connector.keeper.disconnectTitle": "Odłącz Keeper",
   "connector.keeper.disconnectSummary":
-    "OpenBot kończy swoją sesję Keeper na tym komputerze. Folder i jego dane logowania zostają w Twoim sejfie Keeper.",
+    "Pokebots kończy swoją sesję Keeper na tym komputerze. Folder i jego dane logowania zostają w Twoim sejfie Keeper.",
   "connector.keeper.disconnectSummaryHost":
-    "OpenBot kończy swoją sesję Keeper na {host}. Folder i jego dane logowania zostają w Twoim sejfie Keeper.",
+    "Pokebots kończy swoją sesję Keeper na {host}. Folder i jego dane logowania zostają w Twoim sejfie Keeper.",
   "connector.keeper.disconnect": "Odłącz",
-  "connector.keeper.actionFailed": "OpenBot nie mógł zmienić połączenia z Keeper.",
+  "connector.keeper.actionFailed": "Pokebots nie mógł zmienić połączenia z Keeper.",
 } as const satisfies PartialTranslation<typeof source>;

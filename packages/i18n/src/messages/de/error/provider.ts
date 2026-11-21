@@ -3,27 +3,28 @@ import type { messages as source } from "../../en/error/provider";
 
 export const messages = {
   "error.provider.mcpConfig":
-    "OpenBot konnte die MCP-Server nicht in der Codex-Konfiguration registrieren. Prüfe, ob deine Codex-Datei config.toml gültig und beschreibbar ist, und starte OpenBot neu.",
+    "Pokebots konnte die MCP-Server nicht in der Codex-Konfiguration registrieren. Prüfe, ob deine Codex-Datei config.toml gültig und beschreibbar ist, und starte Pokebots neu.",
   "error.provider.computerUseConfig":
-    "OpenBot konnte die Computersteuerung nicht in der Codex-Konfiguration registrieren. Prüfe, ob deine Codex-Datei config.toml gültig und beschreibbar ist, und starte OpenBot neu. Du kannst die Computersteuerung in den Agenteneinstellungen ausschalten, um ohne sie fortzufahren.",
-  "error.provider.codexUnresponsive": "Codex hat nicht mehr geantwortet, daher hat OpenBot den Prozess beendet.",
+    "Pokebots konnte die Computersteuerung nicht in der Codex-Konfiguration registrieren. Prüfe, ob deine Codex-Datei config.toml gültig und beschreibbar ist, und starte Pokebots neu. Du kannst die Computersteuerung in den Agenteneinstellungen ausschalten, um ohne sie fortzufahren.",
+  "error.provider.codexUnresponsive": "Codex hat nicht mehr geantwortet, daher hat Pokebots den Prozess beendet.",
   "error.provider.acpUnresponsive":
-    "{provider} hat nicht rechtzeitig geantwortet, daher hat OpenBot den Prozess beendet.",
+    "{provider} hat nicht rechtzeitig geantwortet, daher hat Pokebots den Prozess beendet.",
   "error.provider.acpSignInLost":
-    "{provider} hat seine Anmeldung verloren, daher hat OpenBot den Prozess beendet. Sende deine Nachricht erneut.",
+    "{provider} hat seine Anmeldung verloren, daher hat Pokebots den Prozess beendet. Sende deine Nachricht erneut.",
   "error.provider.acpRefusedUntilRestart":
-    "{provider} hat eine Nachricht abgelehnt, daher hat OpenBot den Prozess beendet. Sende deine Nachricht erneut.",
+    "{provider} hat eine Nachricht abgelehnt, daher hat Pokebots den Prozess beendet. Sende deine Nachricht erneut.",
   "error.provider.acpServerLost": "{provider} hat die Verbindung verloren. Sende deine Nachricht erneut.",
-  "error.provider.acpServerLostEnded": "{provider} hat die Verbindung verloren, daher hat OpenBot den Prozess beendet.",
+  "error.provider.acpServerLostEnded":
+    "{provider} hat die Verbindung verloren, daher hat Pokebots den Prozess beendet.",
   "error.provider.acpSettingsTimedOut": "{provider} hat nicht rechtzeitig geantwortet. Versuche es gleich noch einmal.",
   "error.provider.acpPlanUsedUp":
     "{provider} meldet, dass dein Tarif aufgebraucht ist. Wähle ein anderes Modell oder wechsle zu einem höheren {provider}-Tarif.",
   "error.provider.acpMcpNotLoaded":
-    "{provider} hat die OpenBot-Tools nicht geladen, daher kann dieser Agent sie nicht nutzen und seine Teammitglieder nicht erreichen. Eine Team-Richtlinie von {provider} kann lokale MCP-Server blockieren. Bitte deinen Team-Admin, sie zu erlauben, und versuche es dann erneut.",
+    "{provider} hat die Pokebots-Tools nicht geladen, daher kann dieser Agent sie nicht nutzen und seine Teammitglieder nicht erreichen. Eine Team-Richtlinie von {provider} kann lokale MCP-Server blockieren. Bitte deinen Team-Admin, sie zu erlauben, und versuche es dann erneut.",
   "error.provider.acpOwnMcpServerFailed":
-    "{provider} konnte den MCP-Server {name} nicht starten, daher wurde die Antwort beendet. Dieser Server ist in deinen eigenen {provider}-Einstellungen, nicht in OpenBot. Entferne oder repariere ihn dort und starte dann einen neuen Chat.",
+    "{provider} konnte den MCP-Server {name} nicht starten, daher wurde die Antwort beendet. Dieser Server ist in deinen eigenen {provider}-Einstellungen, nicht in Pokebots. Entferne oder repariere ihn dort und starte dann einen neuen Chat.",
   "error.provider.endpointsReadOnly":
-    "Die gespeicherten Endpunkte wurden mit einer neueren OpenBot-Version geschrieben oder die Datei kann nicht gelesen werden. Aktualisiere OpenBot, um sie zu ändern.",
+    "Die gespeicherten Endpunkte wurden mit einer neueren Pokebots-Version geschrieben oder die Datei kann nicht gelesen werden. Aktualisiere Pokebots, um sie zu ändern.",
   "error.provider.endpointNoSecureStorage":
     "Dieser Computer hat keinen sicheren Speicher. Ein API-Schlüssel oder Header kann daher nicht gespeichert werden. Entferne sie oder verwende einen Endpunkt ohne Zugangsdaten.",
   "error.provider.endpointDuplicate":
@@ -35,14 +36,14 @@ export const messages = {
   "error.provider.endpointSecretUnreadable":
     "Dieser Computer kann den gespeicherten API-Schlüssel und die Header nicht lesen. Gib sie erneut ein, damit keine Daten verloren gehen.",
   "error.provider.discoveryTimeout": "{host} hat nicht rechtzeitig geantwortet.",
-  "error.provider.discoveryUnreachable": "OpenBot konnte keine Verbindung zu {host} herstellen.",
+  "error.provider.discoveryUnreachable": "Pokebots konnte keine Verbindung zu {host} herstellen.",
   "error.provider.discoveryRedirect": "{host} hat eine Weiterleitung gesendet. Gib die endgültige Serveradresse ein.",
   "error.provider.discoveryRefused": "{host} hat die Anfrage abgelehnt. Prüfe den API-Schlüssel und die Header.",
   "error.provider.discoveryHttp": "{host} hat mit HTTP {status} geantwortet.",
   "error.provider.discoveryTooLarge": "Die Modellliste von {host} ist zu groß.",
   "error.provider.discoveryInvalid": "{host} hat keine mit OpenAI kompatible Modellliste gesendet.",
   "error.provider.detectionSettingsReadOnly":
-    "Die Erkennungseinstellungen wurden mit einer neueren OpenBot-Version geschrieben oder die Datei kann nicht gelesen werden. Aktualisiere OpenBot, um sie zu ändern.",
+    "Die Erkennungseinstellungen wurden mit einer neueren Pokebots-Version geschrieben oder die Datei kann nicht gelesen werden. Aktualisiere Pokebots, um sie zu ändern.",
   "error.provider.detectionEntryInvalid":
     "Eine Adresse muss eine http://- oder https://-URL ohne Passwort sein. Ein Ordner muss ein absoluter Pfad sein.",
   "error.provider.detectionEntriesTooMany": "Es gibt zu viele Adressen oder Ordner.",
@@ -50,7 +51,7 @@ export const messages = {
   "error.provider.credentialFileTooLarge": "Die Zugangsdaten-Datei des Anbieters ist zu groß.",
   "error.provider.environmentNameInvalid":
     "{name} ist kein gültiger Variablenname. Verwende Buchstaben, Ziffern und _, und beginne nicht mit einer Ziffer.",
-  "error.provider.environmentNameReserved": "OpenBot setzt {name} für diesen Anbieter. Entferne diese Variable.",
+  "error.provider.environmentNameReserved": "Pokebots setzt {name} für diesen Anbieter. Entferne diese Variable.",
   "error.provider.environmentNameDuplicate": "{name} steht mehr als einmal in der Liste.",
   "error.provider.environmentValueTooLong": "Der Wert von {name} ist zu lang.",
   "error.provider.environmentTooMany": "Ein Anbieter kann höchstens {limit} Variablen haben.",
@@ -78,14 +79,14 @@ export const messages = {
   "error.provider.bunLicenseChecksum": "Die Prüfsumme der Bun-Lizenz stimmt nicht überein.",
   "error.provider.bunxDamaged": "Das Ausführungsprogramm des Bun-Paketmanagers fehlt oder ist beschädigt.",
   "error.provider.releaseSourcesUnreachable":
-    "OpenBot konnte die Versionsquellen des Anbieters nicht erreichen. Prüfe die Verbindung und versuche es erneut.",
+    "Pokebots konnte die Versionsquellen des Anbieters nicht erreichen. Prüfe die Verbindung und versuche es erneut.",
   "error.provider.runtimesUnsupported": "Anbieterlaufzeiten sind auf dieser Plattform nicht verfügbar.",
-  "error.provider.closing": "OpenBot wird geschlossen.",
+  "error.provider.closing": "Pokebots wird geschlossen.",
   "error.provider.removeWhileOn": "Schalte den Anbieter aus, bevor du seinen Download entfernst.",
   "error.provider.removeWhileDownloading": "Warte, bis der Download fertig ist, und entferne ihn dann.",
   "error.provider.removeIncomplete": "Ein Programm verwendet Dateien dieser CLI. Schließe es und versuche es erneut.",
   "error.provider.removeDownloadsFailed": "Die CLI-Downloads von {providers} konnten nicht entfernt werden.",
-  "error.provider.cliOverride": "Entferne den ausdrücklich festgelegten CLI-Pfad, bevor du in OpenBot aktualisierst.",
+  "error.provider.cliOverride": "Entferne den ausdrücklich festgelegten CLI-Pfad, bevor du in Pokebots aktualisierst.",
   "error.provider.runtimeUpdateIncomplete": "Die Laufzeitaktualisierung wurde nicht abgeschlossen.",
   "error.provider.downloadHttp": "Der Laufzeitdownload ist mit HTTP {status} fehlgeschlagen.",
   "error.provider.downloadNoData": "Der Laufzeitdownload hat keine Daten zurückgegeben.",
@@ -103,7 +104,7 @@ export const messages = {
   "error.provider.unexpectedVersion": "Die Anbieterlaufzeit hat eine unerwartete Version zurückgegeben.",
   "error.provider.metadataNoData": "Der Download der Laufzeitmetadaten hat keine Daten zurückgegeben.",
   "error.provider.metadataTooLarge": "Die Laufzeitmetadaten sind zu groß.",
-  "error.provider.requestFailed": "OpenBot konnte {url} nicht herunterladen. {reason}",
+  "error.provider.requestFailed": "Pokebots konnte {url} nicht herunterladen. {reason}",
   "error.provider.installRecordMismatch": "Der Installationseintrag der Laufzeit stimmt nicht überein.",
   "error.provider.runtimeChecksum": "Die Prüfsumme der Anbieterlaufzeit stimmt nicht überein.",
   "error.provider.codexReleaseShape": "Die Codex-Version hat eine unerwartete Struktur.",
@@ -145,32 +146,32 @@ export const messages = {
     "Der Anbieterschlüssel enthält ein Leerzeichen oder ein Zeichen, das in einem Schlüssel nicht vorkommen kann.",
   "error.provider.noModel": "Der gewählte Anbieter hat kein verfügbares Modell.",
   "error.provider.noModelNamed": "{provider} hat kein verfügbares Modell.",
-  "error.provider.acpNoModels": "Die ACP CLI hat keine ACP-Modelle gemeldet. OpenBot wird kein Ersatzmodell erraten.",
+  "error.provider.acpNoModels": "Die ACP CLI hat keine ACP-Modelle gemeldet. Pokebots wird kein Ersatzmodell erraten.",
   "error.provider.endpointRemoveBusy":
     "Warte, bis der aktive Durchlauf und die Warteschlange abgeschlossen sind, bevor du diesen Endpunkt entfernst.",
-  "error.provider.codexOutdated": "Codex CLI {version} ist zu alt. OpenBot benötigt 0.156.0 oder neuer.",
+  "error.provider.codexOutdated": "Codex CLI {version} ist zu alt. Pokebots benötigt 0.156.0 oder neuer.",
   "error.provider.codexNotStarted": "Codex CLI wurde gefunden, konnte aber nicht gestartet werden.",
   "error.provider.codexNotStartedHint":
     "Codex CLI wurde gefunden, konnte aber nicht gestartet werden. Führe `codex --version` in einem neuen Terminal aus.",
   "error.provider.codexManagedNotStarted":
-    "ChatGPT wurde heruntergeladen, konnte aber nicht gestartet werden. Lade es in OpenBot erneut herunter.",
-  "error.provider.codexMissing": "ChatGPT wurde nicht heruntergeladen. Lade es in OpenBot herunter, um fortzufahren.",
-  "error.provider.claudeOutdated": "Claude Code {version} ist zu alt. OpenBot benötigt 2.1.232 oder neuer.",
+    "ChatGPT wurde heruntergeladen, konnte aber nicht gestartet werden. Lade es in Pokebots erneut herunter.",
+  "error.provider.codexMissing": "ChatGPT wurde nicht heruntergeladen. Lade es in Pokebots herunter, um fortzufahren.",
+  "error.provider.claudeOutdated": "Claude Code {version} ist zu alt. Pokebots benötigt 2.1.232 oder neuer.",
   "error.provider.claudeNotStarted": "Claude CLI wurde gefunden, konnte aber nicht gestartet werden.",
   "error.provider.claudeNotStartedHint":
     "Claude CLI wurde gefunden, konnte aber nicht gestartet werden. Führe `claude --version` in einem neuen Terminal aus.",
   "error.provider.claudeManagedNotStarted":
-    "Claude wurde heruntergeladen, konnte aber nicht gestartet werden. Lade es in OpenBot erneut herunter.",
-  "error.provider.claudeMissing": "Claude wurde nicht heruntergeladen. Lade es in OpenBot herunter, um fortzufahren.",
-  "error.provider.grokOutdated": "Grok CLI {version} ist zu alt. OpenBot benötigt 1.0.5 oder neuer.",
+    "Claude wurde heruntergeladen, konnte aber nicht gestartet werden. Lade es in Pokebots erneut herunter.",
+  "error.provider.claudeMissing": "Claude wurde nicht heruntergeladen. Lade es in Pokebots herunter, um fortzufahren.",
+  "error.provider.grokOutdated": "Grok CLI {version} ist zu alt. Pokebots benötigt 1.0.5 oder neuer.",
   "error.provider.grokNotStarted": "Grok CLI wurde gefunden, konnte aber nicht gestartet werden.",
   "error.provider.grokNotStartedHint":
     "Grok CLI wurde gefunden, konnte aber nicht gestartet werden. Führe `grok --version` in einem neuen Terminal aus.",
-  "error.provider.grokMissing": "Grok wurde nicht heruntergeladen. Lade es in OpenBot herunter, um fortzufahren.",
+  "error.provider.grokMissing": "Grok wurde nicht heruntergeladen. Lade es in Pokebots herunter, um fortzufahren.",
   "error.provider.opencodeNotStarted":
     "OpenCode konnte nicht starten. Führe `opencode --version` in einem Terminal aus.",
   "error.provider.opencodeMissing":
-    "OpenCode wurde nicht heruntergeladen. Lade es in OpenBot herunter, um fortzufahren.",
+    "OpenCode wurde nicht heruntergeladen. Lade es in Pokebots herunter, um fortzufahren.",
   "error.provider.codexVersionUnreadable": "Die Version von Codex CLI konnte nicht gelesen werden.",
   "error.provider.claudeVersionUnreadable": "Die Version von Claude CLI konnte nicht gelesen werden.",
   "error.provider.grokVersionUnreadable": "Die Version von Grok CLI konnte nicht gelesen werden.",
@@ -179,15 +180,15 @@ export const messages = {
   "error.provider.connectBeforeProfile": "Verbinde den gewählten Anbieter, bevor du ein Profil erstellst.",
   "error.provider.cliNotReady": "Die CLI von {provider} ist nicht bereit oder nicht angemeldet.",
   "error.provider.cliTimedOut":
-    "{provider} hat nicht rechtzeitig geantwortet. Der Computer ist möglicherweise ausgelastet. OpenBot versucht es erneut.",
+    "{provider} hat nicht rechtzeitig geantwortet. Der Computer ist möglicherweise ausgelastet. Pokebots versucht es erneut.",
   "error.provider.cliTimedOutRefresh":
     "{provider} hat nicht rechtzeitig geantwortet. Der Computer ist möglicherweise ausgelastet. Aktualisiere die Anbieter, um es erneut zu versuchen.",
   "error.provider.stoppedBeforeStart":
     "{provider} wurde beendet, bevor diese Nachricht gestartet ist. Sende die Nachricht erneut.",
   "error.provider.sessionStartTimedOut":
-    "{provider} hat nicht rechtzeitig einen neuen Chat geöffnet, daher ist diese Nachricht nicht gestartet. Öffne auf dem Computer, auf dem OpenBot läuft, Anbieter, wähle {provider} und klicke auf Neu starten. Versuche es dann erneut.",
+    "{provider} hat nicht rechtzeitig einen neuen Chat geöffnet, daher ist diese Nachricht nicht gestartet. Öffne auf dem Computer, auf dem Pokebots läuft, Anbieter, wähle {provider} und klicke auf Neu starten. Versuche es dann erneut.",
   "error.provider.serviceUnreachable":
-    "{provider} kann keine Verbindung zu seinem Dienst herstellen. Prüfe deine Internetverbindung. OpenBot versucht es erneut.",
+    "{provider} kann keine Verbindung zu seinem Dienst herstellen. Prüfe deine Internetverbindung. Pokebots versucht es erneut.",
   "error.provider.serviceUnreachableRefresh":
     "{provider} kann keine Verbindung zu seinem Dienst herstellen. Prüfe deine Internetverbindung und aktualisiere dann die Anbieter.",
   "error.provider.acpStartTimedOut":
@@ -195,9 +196,9 @@ export const messages = {
   "error.provider.acpModelsTimedOut":
     "{provider} hat seine Modelle nicht innerhalb von {seconds} s aufgelistet. Der Computer ist möglicherweise ausgelastet.",
   "error.provider.startStopped":
-    "{provider} ist mehrmals hintereinander nicht gestartet, daher versucht OpenBot es nicht mehr. Aktualisiere die Anbieter, um es erneut zu versuchen.",
+    "{provider} ist mehrmals hintereinander nicht gestartet, daher versucht Pokebots es nicht mehr. Aktualisiere die Anbieter, um es erneut zu versuchen.",
   "error.provider.startPaused":
-    "{provider} ist mehrmals hintereinander nicht gestartet. OpenBot versucht es mit der nächsten Nachricht oder Routine erneut. Aktualisiere die Anbieter, um es jetzt zu versuchen.",
+    "{provider} ist mehrmals hintereinander nicht gestartet. Pokebots versucht es mit der nächsten Nachricht oder Routine erneut. Aktualisiere die Anbieter, um es jetzt zu versuchen.",
   "error.provider.tempDiskSpace":
     "{provider} braucht zum Starten mindestens 1 GB freien Speicherplatz. Gib Speicherplatz frei und aktualisiere dann die Anbieter.",
   "error.provider.noCodeSignIn": "Bei {provider} ist keine Anmeldung mit einem Code möglich.",
@@ -209,20 +210,20 @@ export const messages = {
   "error.provider.codeLoginUnsupported":
     "Dieser Server unterstützt keine Anmeldung mit einem eingefügten Code. Melde dich im Browser auf dem Servercomputer an.",
   "error.provider.claudeLoginNotSaved":
-    "Claude konnte die Anmeldung auf dem Mac nicht speichern. Starte den Mac, auf dem OpenBot läuft, neu und verbinde Claude dann erneut.",
+    "Claude konnte die Anmeldung auf dem Mac nicht speichern. Starte den Mac, auf dem Pokebots läuft, neu und verbinde Claude dann erneut.",
   "error.provider.cliBusyRetry":
     "Die CLI von {provider} bearbeitet einen Durchlauf. Warte auf den Abschluss und versuche es erneut.",
   "error.provider.cliSigningIn":
     "Die CLI von {provider} meldet sich an. Beende die Anmeldung oder brich sie ab und aktualisiere dann.",
   "error.provider.cliBusyUpdate":
     "Die CLI von {provider} bearbeitet einen Durchlauf. Warte auf den Abschluss und aktualisiere dann.",
-  "error.provider.cliSelectFailed": "OpenBot konnte die installierte verwaltete CLI nicht auswählen.",
+  "error.provider.cliSelectFailed": "Pokebots konnte die installierte verwaltete CLI nicht auswählen.",
   "error.provider.noAuthenticatedAccount": "{provider} hat kein authentifiziertes Konto zurückgegeben.",
   "error.provider.codexModelProvider":
     "Codex verwendet auf diesem Computer einen anderen Modellanbieter, und dieser Anbieter verwendet keine ChatGPT-Anmeldung und keinen OpenAI-API-Schlüssel. ChatGPT-Agenten können diesen Anbieter jetzt verwenden. Um dein ChatGPT-Konto zu verwenden, stelle den Modellanbieter von Codex wieder auf OpenAI.",
   "error.provider.signInExpired":
     "Deine Anmeldung bei {provider} ist abgelaufen. Melde dich erneut an, um fortzufahren.",
-  "error.provider.cliActivateFailed": "OpenBot konnte die verwaltete CLI nicht aktivieren.",
+  "error.provider.cliActivateFailed": "Pokebots konnte die verwaltete CLI nicht aktivieren.",
   "error.provider.noMainlandChinaSignIn": "{provider} hat keine Anmeldung für Festlandchina.",
   "error.provider.cliNewVersionNotStarted": "Die neue Version ist nicht gestartet.",
   "error.provider.cliBusyReconnect":
@@ -260,11 +261,11 @@ export const messages = {
   "error.provider.opencodeInvalidUpload":
     "Der Modellanbieter von OpenCode hat eine ungültige Upload-Anfrage gemeldet. Wähle ein anderes Modell und fahre fort. Prüfe gespeicherte Routinen, bevor du sie erneut erstellst.\n{detail}",
   "error.provider.opencodeUnreadableContent":
-    "Dieses Modell kann eine Datei oder ein Bild in diesem Chat nicht lesen. OpenBot hat eine neue OpenCode-Sitzung mit dem Chatverlauf gestartet. Sende deine Nachricht ohne die Datei erneut oder wähle ein Modell, das Dateien lesen kann. Wenn du dieses Modell zu einem eigenen Anbieter hinzugefügt hast, entferne in seinen Einstellungen bei „Akzeptiert“ die Auswahl „Bilder“.",
+    "Dieses Modell kann eine Datei oder ein Bild in diesem Chat nicht lesen. Pokebots hat eine neue OpenCode-Sitzung mit dem Chatverlauf gestartet. Sende deine Nachricht ohne die Datei erneut oder wähle ein Modell, das Dateien lesen kann. Wenn du dieses Modell zu einem eigenen Anbieter hinzugefügt hast, entferne in seinen Einstellungen bei „Akzeptiert“ die Auswahl „Bilder“.",
   "error.provider.opencodeOutOfMemory":
-    "Dem Modellserver ist für diesen Chat der Speicher ausgegangen. Starte einen neuen Chat, oder lade das Modell mit einer kleineren Kontextlänge und trage dasselbe Fenster in OpenBot in den Einstellungen seines Anbieters ein.",
+    "Dem Modellserver ist für diesen Chat der Speicher ausgegangen. Starte einen neuen Chat, oder lade das Modell mit einer kleineren Kontextlänge und trage dasselbe Fenster in Pokebots in den Einstellungen seines Anbieters ein.",
   "error.provider.opencodeContextTooSmall":
-    "Dieser Chat passt nicht in das Kontextfenster des Modells. Lade das Modell in Ollama oder LM Studio mit einer größeren Kontextlänge und trage dasselbe Fenster in OpenBot in den Einstellungen seines Anbieters ein. Oder wähle ein größeres Modell.",
+    "Dieser Chat passt nicht in das Kontextfenster des Modells. Lade das Modell in Ollama oder LM Studio mit einer größeren Kontextlänge und trage dasselbe Fenster in Pokebots in den Einstellungen seines Anbieters ein. Oder wähle ein größeres Modell.",
   "error.provider.opencodeFreeLimit":
     "Die kostenlosen OpenCode-Modelle haben ihr Nutzungslimit erreicht. Alle kostenlosen Modelle teilen sich dieses Limit. Um weiterzumachen, füge einen OpenCode-Go-Schlüssel in den OpenCode-Einstellungen ein oder wähle ein Modell eines anderen Anbieters.",
   "error.provider.opencodeProviderFailed":
@@ -278,13 +279,13 @@ export const messages = {
   "error.provider.opencodeModelNotServed":
     "Der Modellanbieter stellt dieses Modell deinem Konto gerade nicht bereit. Wähle ein anderes Modell und sende deine Nachricht dann erneut.",
   "error.provider.opencodeNetwork":
-    "OpenCode konnte keine Verbindung zum Modellanbieter herstellen. Prüfe die Netzwerkverbindung des Computers, auf dem OpenBot läuft, und versuche es erneut.\n{detail}",
+    "OpenCode konnte keine Verbindung zum Modellanbieter herstellen. Prüfe die Netzwerkverbindung des Computers, auf dem Pokebots läuft, und versuche es erneut.\n{detail}",
   "error.provider.codexStateBusy":
     "ChatGPT bereitet nach einem früheren Start noch seinen lokalen Verlauf vor. Warte ein paar Minuten und versuche es dann erneut.",
   "error.provider.codexThreadInUse":
     "Eine andere Codex-App hat diesen Chat geöffnet, zum Beispiel die Codex-Desktop-App, die Codex CLI oder eine IDE-Erweiterung. Nur eine App kann gleichzeitig in einen Codex-Chat schreiben. Schließe den Chat in dieser App und sende deine Nachricht dann erneut.",
   "error.provider.realtimeLimitZero":
-    "Linux hat den Anbieter beendet, weil OpenBot ein Echtzeit-CPU-Limit von 0 hat. Das Limit kommt von deinem System. Installiere und starte rtkit (`rtkit-daemon`), führe `systemctl --user restart xdg-desktop-portal` aus und starte OpenBot dann neu. Ein Neustart von xdg-desktop-portal allein hilft nicht, solange rtkit fehlt.",
+    "Linux hat den Anbieter beendet, weil Pokebots ein Echtzeit-CPU-Limit von 0 hat. Das Limit kommt von deinem System. Installiere und starte rtkit (`rtkit-daemon`), führe `systemctl --user restart xdg-desktop-portal` aus und starte Pokebots dann neu. Ein Neustart von xdg-desktop-portal allein hilft nicht, solange rtkit fehlt.",
   "error.provider.cpuUnsupported":
     "Der Prozessor dieses Computers kann diesen Anbieter nicht ausführen. Verwende einen anderen Anbieter.",
   "error.provider.opencodeDatabaseNewer":
@@ -298,24 +299,24 @@ export const messages = {
   "error.provider.noAnswerAfterSteps":
     "{provider} hat einige Schritte ausgeführt und den Durchgang dann ohne Antwort beendet. Frag den Agenten, was er getan hat, bevor du dieselbe Anfrage noch einmal sendest.",
   "error.provider.acpRefusedNoReason": "{provider} hat ohne Antwort aufgehört. Sende die Nachricht erneut.",
-  "error.provider.chatgptPageFailed": "OpenBot konnte die ChatGPT-Verbindungsseite nicht öffnen.",
+  "error.provider.chatgptPageFailed": "Pokebots konnte die ChatGPT-Verbindungsseite nicht öffnen.",
   "error.provider.noneReady": "Kein Agentenanbieter ist bereit.",
   "error.provider.claudeTurnActive":
     "Warte auf den Abschluss des aktiven Claude-Durchlaufs, bevor du seinen Kontext aktualisierst.",
   "error.provider.codexLoginRequired":
     "Codex erfordert eine Anmeldung mit einem ChatGPT-Abonnement. Führe `codex login` aus.",
-  "error.provider.cliUpdateFailed": "OpenBot konnte die CLI von {provider} nicht aktualisieren. {reason}",
+  "error.provider.cliUpdateFailed": "Pokebots konnte die CLI von {provider} nicht aktualisieren. {reason}",
   "error.provider.tryAgain": "Versuche es erneut.",
   "error.provider.noAgentProcess": "{provider} hat keinen laufenden Prozess für diesen Agenten.",
   "error.provider.stoppedBeforeAgentProcess": "{provider} wurde gestoppt, bevor der Agentenprozess gestartet wurde.",
   "error.provider.archiveUnreadable":
     "Das Laufzeitarchiv kann nicht gelesen werden oder verwendet ein nicht unterstütztes Format.",
   "error.provider.antigravityMissing":
-    "Gemini wurde nicht heruntergeladen. Lade es in OpenBot herunter, um fortzufahren.",
+    "Gemini wurde nicht heruntergeladen. Lade es in Pokebots herunter, um fortzufahren.",
   "error.provider.antigravityNotStarted":
     "Der Gemini-Server wurde gefunden, aber seine Version kann nicht gelesen werden.",
   "error.provider.antigravityOverrideInvalid":
-    "Der Gemini-Server in OPENBOT_ANTIGRAVITY_PATH fehlt oder ist nicht ausführbar. Korrigiere den Pfad oder entferne die Variable und starte OpenBot dann neu.",
+    "Der Gemini-Server in OPENBOT_ANTIGRAVITY_PATH fehlt oder ist nicht ausführbar. Korrigiere den Pfad oder entferne die Variable und starte Pokebots dann neu.",
   "error.provider.antigravityVersionUnreadable": "Die Version des Gemini-Servers konnte nicht gelesen werden.",
   "error.provider.antigravitySignIn": "Melde dich mit Google an, um Gemini zu verwenden.",
   "error.provider.antigravityModelAtCapacity":
@@ -335,9 +336,9 @@ export const messages = {
   "error.provider.antigravityNetwork":
     "Gemini hat die Verbindung zu Google verloren. Sende deine Nachricht erneut. ({cause})",
   "error.provider.antigravitySessionRejected":
-    "Gemini hat diese Anfrage abgelehnt und keinen Grund genannt. Ein Element im Chatverlauf kann die Ursache sein, zum Beispiel ein Bild, das der Agent geöffnet hat. OpenBot hat eine neue Gemini-Sitzung mit dem Chatverlauf gestartet. Versuche es erneut. Wenn der Fehler bleibt, wähle ein anderes Modell.",
+    "Gemini hat diese Anfrage abgelehnt und keinen Grund genannt. Ein Element im Chatverlauf kann die Ursache sein, zum Beispiel ein Bild, das der Agent geöffnet hat. Pokebots hat eine neue Gemini-Sitzung mit dem Chatverlauf gestartet. Versuche es erneut. Wenn der Fehler bleibt, wähle ein anderes Modell.",
   "error.provider.antigravityHistoryUnreadable":
-    "Gemini konnte den gespeicherten Verlauf dieses Chats nicht lesen. OpenBot hat eine neue Gemini-Sitzung mit dem Chatverlauf gestartet. Sende deine Nachricht erneut.",
+    "Gemini konnte den gespeicherten Verlauf dieses Chats nicht lesen. Pokebots hat eine neue Gemini-Sitzung mit dem Chatverlauf gestartet. Sende deine Nachricht erneut.",
   "error.provider.antigravityLocationUnsupported":
     "Google lässt Gemini am Netzwerkstandort des Computers, auf dem dieser Agent läuft, nicht arbeiten. Nutze Gemini auf einem anderen Computer oder wähle einen anderen Anbieter für diesen Agenten.\n{detail}",
   "error.provider.antigravityConnectionLost":
@@ -351,7 +352,7 @@ export const messages = {
   "error.provider.cursorArchivePath": "Das Cursor-Archiv enthält eine unerwartete Datei.",
   "error.provider.cursorChecksum": "Die Prüfsumme der Cursor-Laufzeit stimmt nicht überein.",
   "error.provider.cursorReleaseShape": "Die Cursor-Version hat eine unerwartete Struktur.",
-  "error.provider.cursorMissing": "Cursor wurde nicht heruntergeladen. Lade es in OpenBot herunter, um fortzufahren.",
+  "error.provider.cursorMissing": "Cursor wurde nicht heruntergeladen. Lade es in Pokebots herunter, um fortzufahren.",
   "error.provider.cursorNotStarted": "Der Cursor-Agent wurde gefunden, aber seine Version kann nicht gelesen werden.",
   "error.provider.cursorVersionUnreadable": "Die Version des Cursor-Agenten konnte nicht gelesen werden.",
   "error.provider.cursorSignIn": "Melde dich mit Cursor an oder setze CURSOR_API_KEY, um Cursor zu verwenden.",
@@ -361,16 +362,16 @@ export const messages = {
   "error.provider.clinePackageMismatch": "Das Cline-Paket stimmt nicht mit dem Laufzeitkatalog überein.",
   "error.provider.clineChecksum": "Die Prüfsumme der Cline-Laufzeit stimmt nicht überein.",
   "error.provider.clineLicenseChecksum": "Die Prüfsumme der Cline-Lizenz stimmt nicht überein.",
-  "error.provider.clineMissing": "Cline wurde nicht heruntergeladen. Lade es in OpenBot herunter, um fortzufahren.",
-  "error.provider.clineOutdated": "Cline CLI {version} ist zu alt. OpenBot benötigt 3.0.68 oder neuer.",
+  "error.provider.clineMissing": "Cline wurde nicht heruntergeladen. Lade es in Pokebots herunter, um fortzufahren.",
+  "error.provider.clineOutdated": "Cline CLI {version} ist zu alt. Pokebots benötigt 3.0.68 oder neuer.",
   "error.provider.clineNotStarted": "Cline konnte nicht starten. Führe `cline --version` in einem Terminal aus.",
   "error.provider.clineVersionUnreadable": "Die Version von Cline CLI konnte nicht gelesen werden.",
   "error.provider.clineSignIn": "Melde dich mit Cline an oder setze CLINE_API_KEY, um Cline zu verwenden.",
   "error.provider.kimiArchivePath": "Das Kimi-Archiv hat einen unerwarteten Pfad.",
   "error.provider.kimiChecksum": "Die Prüfsumme der Kimi-Laufzeit stimmt nicht überein.",
   "error.provider.kimiLicenseChecksum": "Die Prüfsumme der Kimi-Lizenz stimmt nicht überein.",
-  "error.provider.kimiMissing": "Kimi wurde nicht heruntergeladen. Lade es in OpenBot herunter, um fortzufahren.",
-  "error.provider.kimiOutdated": "Kimi CLI {version} ist zu alt. OpenBot benötigt 1.52.0 oder neuer.",
+  "error.provider.kimiMissing": "Kimi wurde nicht heruntergeladen. Lade es in Pokebots herunter, um fortzufahren.",
+  "error.provider.kimiOutdated": "Kimi CLI {version} ist zu alt. Pokebots benötigt 1.52.0 oder neuer.",
   "error.provider.kimiNotStarted": "Kimi konnte nicht starten. Führe `kimi --version` in einem Terminal aus.",
   "error.provider.kimiVersionUnreadable": "Die Version von Kimi CLI konnte nicht gelesen werden.",
   "error.provider.kimiSignIn": "Melde dich mit Kimi Code an, um Kimi zu verwenden.",
@@ -387,14 +388,14 @@ export const messages = {
   "error.provider.hermesTurnFailed":
     "Hermes konnte diesen Durchlauf nicht abschließen. Wenn die Antwort einen Grund nennt, folge ihm. Sonst ist vielleicht ein MCP-Server dieses Agenten nicht erreichbar: Prüfe ihn unter Marketplace, Apps und sende deine Nachricht erneut.",
   "error.provider.hermesRefused":
-    "Hermes hat diese Nachricht abgelehnt, bevor sie begann. Sende sie erneut. Wenn Hermes jede Nachricht ablehnt, starte OpenBot auf dem Computer neu, auf dem dieser Agent läuft.",
+    "Hermes hat diese Nachricht abgelehnt, bevor sie begann. Sende sie erneut. Wenn Hermes jede Nachricht ablehnt, starte Pokebots auf dem Computer neu, auf dem dieser Agent läuft.",
   "error.provider.hermesConnectionLost":
     "Hermes hat während dieser Nachricht die Verbindung verloren und weiß daher nicht, ob die Arbeit fertig ist. Prüfe, was der Agent getan hat, bevor du die Nachricht erneut sendest.",
   "error.provider.copilotThinkingRejected":
     "GitHub Copilot konnte dieses Modell nicht verwenden: Das Modell hat die Denk-Einstellung nicht akzeptiert. Wähle ein anderes Modell für diesen Agenten und sende deine Nachricht erneut.",
   "error.provider.usageLimitReached": "Das Konto hat sein Nutzungslimit erreicht.",
   "error.provider.claudeContextFull":
-    "Dieser Chat ist für Claude zu lang geworden. OpenBot hat eine neue Claude-Code-Sitzung mit dem Chatverlauf gestartet. Versuche es erneut.",
+    "Dieser Chat ist für Claude zu lang geworden. Pokebots hat eine neue Claude-Code-Sitzung mit dem Chatverlauf gestartet. Versuche es erneut.",
   "error.provider.claudeApiKeyNoCredit":
     "Der Anthropic-API-Schlüssel hat kein API-Guthaben. Ein Claude-Abo bezahlt keine Anfragen mit einem API-Schlüssel. Lade Guthaben in der Anthropic Console auf, oder melde dich in den Einstellungen bei Claude an und wähle das Claude-Konto im Modellmenü des Agenten.",
   "error.provider.claudeAccountNoCredit":
@@ -402,33 +403,33 @@ export const messages = {
   "error.provider.claudeServiceBlocked":
     "Der Claude-Dienst hat diese Anfrage blockiert. Das ist meist ein kurzes Problem bei Claude, kein Problem mit deinem Konto. Sende die Nachricht in ein paar Minuten noch einmal.",
   "error.provider.foreignReasoning":
-    "{provider} hat die früheren Überlegungen in diesem Chat nicht akzeptiert, da ein anderes Konto oder ein anderer API-Schlüssel sie erhalten hat. OpenBot hat eine neue {provider}-Sitzung mit dem Chatverlauf gestartet. Versuche es erneut.",
+    "{provider} hat die früheren Überlegungen in diesem Chat nicht akzeptiert, da ein anderes Konto oder ein anderer API-Schlüssel sie erhalten hat. Pokebots hat eine neue {provider}-Sitzung mit dem Chatverlauf gestartet. Versuche es erneut.",
   "error.provider.blankHistoryText":
-    "Das Modell hat diesen Chat nicht akzeptiert, da sein gespeicherter Verlauf eine leere Nachricht enthält. OpenBot hat eine neue {provider}-Sitzung mit dem Chatverlauf gestartet. Versuche es erneut.",
+    "Das Modell hat diesen Chat nicht akzeptiert, da sein gespeicherter Verlauf eine leere Nachricht enthält. Pokebots hat eine neue {provider}-Sitzung mit dem Chatverlauf gestartet. Versuche es erneut.",
   "error.provider.codexHistoryItemMissing":
-    "Codex konnte diesen Chat nicht fortsetzen, da ein Element in seinem gespeicherten Verlauf fehlt. OpenBot hat eine neue Codex-Sitzung mit dem Chatverlauf gestartet. Versuche es erneut.",
+    "Codex konnte diesen Chat nicht fortsetzen, da ein Element in seinem gespeicherten Verlauf fehlt. Pokebots hat eine neue Codex-Sitzung mit dem Chatverlauf gestartet. Versuche es erneut.",
   "error.provider.codexRequestRefused":
-    "{provider} hat die Anfrage für diesen Chat abgelehnt und keinen Grund genannt. Das kann in einem langen Chat mit vielen Bildern passieren. OpenBot hat eine neue {provider}-Sitzung mit dem Chatverlauf gestartet. Versuche es erneut.",
+    "{provider} hat die Anfrage für diesen Chat abgelehnt und keinen Grund genannt. Das kann in einem langen Chat mit vielen Bildern passieren. Pokebots hat eine neue {provider}-Sitzung mit dem Chatverlauf gestartet. Versuche es erneut.",
   "error.provider.codexAudioRefused":
-    "Das Modell hat Audio in diesem Chat nicht akzeptiert. OpenBot hat eine neue Codex-Sitzung mit dem Chatverlauf gestartet. Versuche es erneut.",
+    "Das Modell hat Audio in diesem Chat nicht akzeptiert. Pokebots hat eine neue Codex-Sitzung mit dem Chatverlauf gestartet. Versuche es erneut.",
   "error.provider.imageTooSmall":
-    "Das Modell hat ein Bild in diesem Chat nicht akzeptiert, weil das Bild zu klein ist. OpenBot hat eine neue {provider}-Sitzung mit dem Chatverlauf gestartet. Versuche es erneut.",
+    "Das Modell hat ein Bild in diesem Chat nicht akzeptiert, weil das Bild zu klein ist. Pokebots hat eine neue {provider}-Sitzung mit dem Chatverlauf gestartet. Versuche es erneut.",
   "error.provider.imageTooLarge":
-    "Das Modell hat ein Bild in diesem Chat nicht akzeptiert, weil das Bild zu groß ist. OpenBot hat eine neue {provider}-Sitzung mit dem Chatverlauf gestartet. Versuche es erneut.",
+    "Das Modell hat ein Bild in diesem Chat nicht akzeptiert, weil das Bild zu groß ist. Pokebots hat eine neue {provider}-Sitzung mit dem Chatverlauf gestartet. Versuche es erneut.",
   "error.provider.imageCountLimit":
-    "Das Modell hat diesen Chat nicht akzeptiert, weil er zu viele Bilder enthält. OpenBot hat eine neue {provider}-Sitzung mit dem Chatverlauf gestartet. Versuche es erneut.",
+    "Das Modell hat diesen Chat nicht akzeptiert, weil er zu viele Bilder enthält. Pokebots hat eine neue {provider}-Sitzung mit dem Chatverlauf gestartet. Versuche es erneut.",
   "error.provider.imageUnreadable":
-    "Das Modell konnte ein Bild in diesem Chat nicht lesen. OpenBot hat eine neue {provider}-Sitzung mit dem Chatverlauf gestartet. Versuche es erneut. Wenn du ein Bild gesendet hast, sende ein anderes.",
+    "Das Modell konnte ein Bild in diesem Chat nicht lesen. Pokebots hat eine neue {provider}-Sitzung mit dem Chatverlauf gestartet. Versuche es erneut. Wenn du ein Bild gesendet hast, sende ein anderes.",
   "error.provider.requestTooLarge":
-    "Dieser Chat ist zu groß geworden, um ihn an das Modell zu senden. Oft sind Bilder im Chat die Ursache. OpenBot hat eine neue {provider}-Sitzung mit dem Chatverlauf gestartet. Versuche es erneut.",
+    "Dieser Chat ist zu groß geworden, um ihn an das Modell zu senden. Oft sind Bilder im Chat die Ursache. Pokebots hat eine neue {provider}-Sitzung mit dem Chatverlauf gestartet. Versuche es erneut.",
   "error.provider.opencodeSessionRejected":
-    "OpenCode hat die Anfrage abgelehnt und keinen Grund genannt. Das kann in einem langen Chat oder nach einem Modellwechsel passieren. OpenBot hat eine neue OpenCode-Sitzung mit dem Chatverlauf gestartet. Versuche es erneut. Wenn der Fehler bleibt, wähle ein anderes Modell oder einen niedrigeren Aufwand.",
+    "OpenCode hat die Anfrage abgelehnt und keinen Grund genannt. Das kann in einem langen Chat oder nach einem Modellwechsel passieren. Pokebots hat eine neue OpenCode-Sitzung mit dem Chatverlauf gestartet. Versuche es erneut. Wenn der Fehler bleibt, wähle ein anderes Modell oder einen niedrigeren Aufwand.",
   "error.provider.opencodeCompactionFailed":
-    "Das Modell konnte diesen langen Chat nicht zusammenfassen, um Platz im Kontextfenster zu schaffen. OpenBot hat eine neue OpenCode-Sitzung mit dem Chatverlauf gestartet. Versuche es erneut. Wenn der Fehler bleibt, wähle ein stärkeres Modell.",
+    "Das Modell konnte diesen langen Chat nicht zusammenfassen, um Platz im Kontextfenster zu schaffen. Pokebots hat eine neue OpenCode-Sitzung mit dem Chatverlauf gestartet. Versuche es erneut. Wenn der Fehler bleibt, wähle ein stärkeres Modell.",
   "error.provider.museMcpStartupFault":
-    "Muse konnte einen MCP-Server nicht starten und hat MCP in dieser Sitzung gesperrt. OpenBot hat eine neue Muse-Sitzung mit dem Chatverlauf gestartet. Versuche es erneut. Wenn der Fehler bleibt, schalte Computersteuerung oder den fehlerhaften MCP-Server für diesen Agenten aus.",
+    "Muse konnte einen MCP-Server nicht starten und hat MCP in dieser Sitzung gesperrt. Pokebots hat eine neue Muse-Sitzung mit dem Chatverlauf gestartet. Versuche es erneut. Wenn der Fehler bleibt, schalte Computersteuerung oder den fehlerhaften MCP-Server für diesen Agenten aus.",
   "error.provider.claudeSessionMissing":
-    "Claude Code hat die gespeicherte Sitzung dieses Chats nicht gefunden. OpenBot hat eine neue Claude-Code-Sitzung mit dem Chatverlauf gestartet. Versuche es erneut.",
+    "Claude Code hat die gespeicherte Sitzung dieses Chats nicht gefunden. Pokebots hat eine neue Claude-Code-Sitzung mit dem Chatverlauf gestartet. Versuche es erneut.",
   "error.provider.grokSignIn": "Führe `grok login` aus oder setze XAI_API_KEY, um Grok zu verwenden.",
   "error.provider.acpSignInTimedOut": "Die Zeit für die Anmeldung ist abgelaufen.",
   "error.provider.acpSignInStopped": "Die Anmeldung wurde vor dem Abschluss gestoppt.",
@@ -439,7 +440,7 @@ export const messages = {
   "error.provider.acpSignInFailed": "Die Anmeldung wurde nicht abgeschlossen.",
   "error.provider.acpSignInFailedReason": "Die Anmeldung wurde nicht abgeschlossen: {reason}",
   "error.provider.acpSignInNetwork":
-    "Die Anmeldung konnte den Server des Anbieters nicht erreichen. Prüfe die Netzwerkverbindung und die DNS-Einstellungen des Computers, auf dem OpenBot läuft, und versuche es dann erneut.",
+    "Die Anmeldung konnte den Server des Anbieters nicht erreichen. Prüfe die Netzwerkverbindung und die DNS-Einstellungen des Computers, auf dem Pokebots läuft, und versuche es dann erneut.",
   "error.provider.acpSignOutFailed": "Die Abmeldung wurde nicht abgeschlossen.",
   "error.provider.acpSignOutFailedReason": "Die Abmeldung wurde nicht abgeschlossen: {reason}",
   "error.provider.acpSignInMethodMissing":
@@ -454,7 +455,7 @@ export const messages = {
   "error.provider.geminiAccountSettingsUnreadable":
     "Gemini kann die Einstellungsdatei dieses Kontos nicht öffnen und sich deshalb nicht anmelden. Entferne dieses Konto und füge es erneut hinzu.",
   "error.provider.geminiSettingsUnreadable":
-    "Gemini kann seine Einstellungsdatei auf diesem Computer nicht öffnen und sich deshalb nicht anmelden. Beende die anderen Apps, die Gemini verwenden, und starte OpenBot dann neu.",
+    "Gemini kann seine Einstellungsdatei auf diesem Computer nicht öffnen und sich deshalb nicht anmelden. Beende die anderen Apps, die Gemini verwenden, und starte Pokebots dann neu.",
   "error.provider.geminiVerificationRequired":
     "Google muss dein Konto bestätigen, bevor Gemini antworten kann. Bestätige dein Google-Konto in einem Browser und sende deine Nachricht dann erneut.",
   "error.provider.keyProviderRefused":
@@ -468,7 +469,7 @@ export const messages = {
   "error.provider.modelServiceRefusedReason":
     "Der Modelldienst hat die Anfrage abgelehnt: {reason}. Wähle ein anderes Modell oder prüfe deinen Zugriff auf dieses Modell beim Dienst.",
   "error.provider.messageTooLarge":
-    "OpenBot hat {provider} gestoppt, da eine Nachricht mit mehr als {limit} MB gesendet wurde.",
+    "Pokebots hat {provider} gestoppt, da eine Nachricht mit mehr als {limit} MB gesendet wurde.",
   "error.provider.customAgentIdInvalid":
     "Eine Agenten-ID darf nur Kleinbuchstaben, Ziffern oder `-` enthalten und darf nicht die ID eines integrierten Anbieters sein.",
   "error.provider.customAgentEnvInvalid":
@@ -481,11 +482,11 @@ export const messages = {
   "error.provider.customAgentWindowsScript":
     "Ein .cmd- oder .bat-Befehl erlaubt in seinen Argumenten nur Buchstaben, Zahlen und - _ . , : = @ + / \\.",
   "error.provider.customAgentNotFound":
-    "OpenBot kann {command} nicht finden. Gib den vollständigen Pfad des Befehls ein.",
+    "Pokebots kann {command} nicht finden. Gib den vollständigen Pfad des Befehls ein.",
   "error.provider.customAgentCheckTimedOut": "Der Agent hat innerhalb von 20 Sekunden nicht geantwortet.",
   "error.provider.customAgentCheckStopped": "Der Agent wurde gestoppt, bevor er geantwortet hat.",
   "error.provider.customAgentProtocolVersion":
-    "Der Agent verwendet ACP-Version {version}. OpenBot verwendet Version 1.",
+    "Der Agent verwendet ACP-Version {version}. Pokebots verwendet Version 1.",
   "error.provider.customAgentCheckFailed": "Der Agent hat nicht als ACP-Agent geantwortet.",
   "error.provider.customAgentRemoveBusy":
     "Warte, bis der aktive Durchlauf und die Warteschlange abgeschlossen sind, bevor du diesen benutzerdefinierten Agenten entfernst.",
@@ -494,7 +495,7 @@ export const messages = {
     "Dieser benutzerdefinierte Agent ist derzeit nicht gespeichert. Wähle ein anderes Modell.",
   "error.provider.customAgentSignIn": "Melde dich mit dem eigenen Befehl des Agenten an und versuche es erneut.",
   "error.provider.customAgentsReadOnly":
-    "Die gespeicherten benutzerdefinierten Agenten wurden mit einer neueren OpenBot-Version geschrieben oder die Datei kann nicht gelesen werden. Aktualisiere OpenBot, um sie zu ändern.",
+    "Die gespeicherten benutzerdefinierten Agenten wurden mit einer neueren Pokebots-Version geschrieben oder die Datei kann nicht gelesen werden. Aktualisiere Pokebots, um sie zu ändern.",
   "error.provider.customAgentNoSecureStorage":
     "Dieser Computer hat keinen sicheren Speicher. Umgebungswerte können daher nicht gespeichert werden. Entferne sie und versuche es erneut.",
   "error.provider.customAgentNotSaved":
@@ -503,16 +504,16 @@ export const messages = {
   "error.provider.customAgentTooMany": "Du kannst höchstens {count} benutzerdefinierte Agenten speichern.",
   "error.provider.customAgentEnvValueMissing": "Gib einen Wert für {name} ein.",
   "error.provider.off":
-    "{provider} ist in OpenBot ausgeschaltet. Schalte den Anbieter zuerst in den Anbietereinstellungen ein.",
+    "{provider} ist in Pokebots ausgeschaltet. Schalte den Anbieter zuerst in den Anbietereinstellungen ein.",
   "error.provider.inUse": "Ein Agent verwendet {provider}. Ändere sein Modell, bevor du diesen Anbieter ausschaltest.",
   "error.provider.useBusy": "Warte, bis die Anbieterprüfung oder Anmeldung abgeschlossen ist, und versuche es erneut.",
   "error.provider.useSettingsReadOnly":
-    "Die gespeicherten Anbietereinstellungen können nicht gelesen werden. Aktualisiere OpenBot, bevor du sie änderst.",
-  "error.provider.useChangeFailed": "OpenBot konnte die Anbietereinstellung nicht ändern.",
+    "Die gespeicherten Anbietereinstellungen können nicht gelesen werden. Aktualisiere Pokebots, bevor du sie änderst.",
+  "error.provider.useChangeFailed": "Pokebots konnte die Anbietereinstellung nicht ändern.",
   "error.provider.accountsUnsupported": "{provider} unterstützt nur ein Konto.",
   "error.provider.accountNeedsConnection": "Verbinde {provider}, bevor du ein weiteres Konto hinzufügst.",
   "error.provider.usageResetUnsupported": "{provider} kann Nutzungslimits nicht zurücksetzen.",
-  "error.provider.signOutUnsupported": "OpenBot kann die {provider}-Anmeldung nicht trennen.",
+  "error.provider.signOutUnsupported": "Pokebots kann die {provider}-Anmeldung nicht trennen.",
   "error.provider.usageResetNotConnected":
     "Melde dich erneut bei diesem {provider}-Konto an, bevor du seine Nutzung zurücksetzt.",
   "error.provider.accountLimit": "{provider} unterstützt höchstens {limit} Konten.",
@@ -523,17 +524,17 @@ export const messages = {
   "error.provider.accountUsesKey":
     "Dieses {provider}-Konto verwendet den gespeicherten API-Schlüssel und hat keine Anmeldung. Ändere den Schlüssel in Servereinstellungen → Anbieter.",
   "error.provider.accountNeedsKey":
-    "Ein neues {provider}-Konto braucht einen API-Schlüssel. Aktualisiere OpenBot auf diesem Gerät und füge das Konto dann erneut hinzu.",
+    "Ein neues {provider}-Konto braucht einen API-Schlüssel. Aktualisiere Pokebots auf diesem Gerät und füge das Konto dann erneut hinzu.",
   "error.provider.accountKeyRefused":
     "{provider} hat diesen API-Schlüssel nicht akzeptiert. Prüfe den Schlüssel und versuche es erneut.",
   "error.provider.accountKeyUnreachable":
-    "OpenBot konnte {provider} nicht erreichen, um den API-Schlüssel zu prüfen. Prüfe die Internetverbindung und versuche es erneut.",
+    "Pokebots konnte {provider} nicht erreichen, um den API-Schlüssel zu prüfen. Prüfe die Internetverbindung und versuche es erneut.",
   "error.provider.accountKeySignedOut":
     "{provider} akzeptiert den API-Schlüssel dieses Kontos nicht mehr. Gib dem Konto einen neuen Schlüssel.",
   "error.provider.accountInUse":
     "Ein Agent mit diesem Konto arbeitet gerade. Versuche es erneut, wenn der Agent anhält.",
   "error.provider.accountsReadOnly":
-    "Die gespeicherten Anbieterkonten können nicht gelesen werden. Aktualisiere OpenBot, bevor du sie änderst.",
+    "Die gespeicherten Anbieterkonten können nicht gelesen werden. Aktualisiere Pokebots, bevor du sie änderst.",
   "error.provider.accountSignedOut": "Dieses {provider}-Konto ist abgemeldet. Melde dich erneut an.",
   "error.provider.sessionSettingUnavailable": "Diese Einstellung ist in der aktuellen Anbietersitzung nicht verfügbar.",
   "error.provider.sessionSettingInvalid": "Dieser Wert ist für die Einstellung nicht verfügbar.",
@@ -577,7 +578,7 @@ export const messages = {
   "error.provider.museConnectionFailed":
     "Die Verbindung zu Muse ist fehlgeschlagen. Setze die Unterhaltung fort, um ihren gespeicherten Verlauf wiederherzustellen.",
   "error.provider.museUnknownSession": "Unbekannte Muse-Sitzung.",
-  "error.provider.museInvalidToolResult": "Ungültiges OpenBot-Werkzeugergebnis.",
+  "error.provider.museInvalidToolResult": "Ungültiges Pokebots-Werkzeugergebnis.",
   "error.provider.museMcpRequired": "Muse muss MCP-Server pro Sitzung unterstützen.",
   "error.provider.museSessionMismatch": "Muse hat eine andere Sitzung zurückgegeben.",
   "error.provider.museCompactRejected": "Muse hat die Komprimierung nicht akzeptiert.",

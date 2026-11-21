@@ -3,7 +3,7 @@ import type { messages as source } from "../../en/error/backend";
 
 export const messages = {
   "error.backend.eventsUnavailable": "这台主机不支持事件。",
-  "error.backend.databaseIntegrity": "OpenBot 数据库未通过完整性校验。",
+  "error.backend.databaseIntegrity": "Pokebots 数据库未通过完整性校验。",
   "error.backend.webhookRouteLimit": "一台主机最多可有 {limit} 个 Webhook 自动化任务。",
   "error.backend.webhookSettingsInvalid": "请检查 Webhook 设置后重试。",
   "error.backend.webhookSenderSecretInvalid": "请粘贴发送方提供的完整签名密钥。它包含 16 到 1024 个字符，且没有空格。",
@@ -16,8 +16,8 @@ export const messages = {
   "error.backend.browserViewLimit": "这台主机上打开的浏览器视图过多。",
   "error.backend.browserViewEnded": "该页面的实时视图已结束。",
   "error.backend.browserViewFailed": "该页面的实时视图失败。",
-  "error.backend.windowTemporarilyUnavailable": "OpenBot 窗口暂时不可用。",
-  "error.backend.windowUnavailable": "OpenBot 窗口不可用。",
+  "error.backend.windowTemporarilyUnavailable": "Pokebots 窗口暂时不可用。",
+  "error.backend.windowUnavailable": "Pokebots 窗口不可用。",
   "error.backend.sunshineApiHttp": "Sunshine API 失败，HTTP {status}。",
   "error.backend.sunshinePortsUnavailable": "无法为远程桌面预留空闲的 Sunshine 端口组。",
   "error.backend.moonlightPortsUnavailable": "无法为远程桌面预留空闲的 Moonlight WebRTC 端口范围。",
@@ -32,7 +32,7 @@ export const messages = {
   "error.backend.moonlightRejectedPairing": "Moonlight 拒绝了 Sunshine 配对。",
   "error.backend.moonlightNoPin": "Moonlight 未返回配对 PIN。",
   "error.backend.moonlightPairingIncomplete": "Moonlight 配对未完成。",
-  "error.backend.moonlightWebNotEmbedded": "Moonlight Web 不是 OpenBot 的嵌入式构建。",
+  "error.backend.moonlightWebNotEmbedded": "Moonlight Web 不是 Pokebots 的嵌入式构建。",
   "error.backend.moonlightEmptyResponse": "Moonlight 返回了空响应。",
   "error.backend.remoteDesktopTimeout": "远程桌面请求超时。",
   "error.backend.moonlightApiHttp": "Moonlight API 失败，HTTP {status}。",
@@ -49,8 +49,8 @@ export const messages = {
   "error.backend.browserTeachUnsupported": "此远程主机不支持录制任务。",
   "error.backend.browserUserControlUnsupported": "该远程主机不支持接管浏览器标签页。",
   "error.backend.browserSignInUnsupported": "该远程主机无法接收来自这台电脑的登录。",
-  "error.backend.browserSignInOpenFailed": "OpenBot 无法打开登录窗口。",
-  "error.backend.browserSignInReadFailed": "OpenBot 无法从窗口读取登录信息。",
+  "error.backend.browserSignInOpenFailed": "Pokebots 无法打开登录窗口。",
+  "error.backend.browserSignInReadFailed": "Pokebots 无法从窗口读取登录信息。",
   "error.backend.browserStopUnsupported": "该远程主机无法停止页面加载。",
   "error.backend.browserColorSchemeUnsupported": "该远程主机无法更改页面主题。",
   "error.backend.sharedDataLocalOnly": "共享数据在运行这些助手的电脑上管理。",
@@ -59,17 +59,17 @@ export const messages = {
   "error.backend.sunshineNotReadyReason": "Sunshine 未能就绪。{reason}",
   "error.backend.channelLeadModelUnavailable": "频道主责模型不可用。",
   "error.backend.contextCompactionIneffective":
-    "压缩无法缩小这个聊天：压缩两次后，它仍占用模型上下文窗口的 {percent}%，所以 OpenBot 停止自动压缩。窗口的大部分被工具和指令占用。请关闭这个智能体不需要的 MCP 服务器或电脑操作，或选择窗口更大的模型。然后开始新的聊天。",
+    "压缩无法缩小这个聊天：压缩两次后，它仍占用模型上下文窗口的 {percent}%，所以 Pokebots 停止自动压缩。窗口的大部分被工具和指令占用。请关闭这个智能体不需要的 MCP 服务器或电脑操作，或选择窗口更大的模型。然后开始新的聊天。",
   "error.backend.contextCompactionStopped":
-    "此对话的压缩连续失败了两次，因此 OpenBot 停止自动压缩它。每次尝试都会把整个对话发送给模型，并消耗你的套餐额度。选择“立即压缩”重试，或开始新对话。",
+    "此对话的压缩连续失败了两次，因此 Pokebots 停止自动压缩它。每次尝试都会把整个对话发送给模型，并消耗你的套餐额度。选择“立即压缩”重试，或开始新对话。",
   "error.backend.providerModelAtCapacity":
     "该模型已满载。提供方会在几分钟后重试。要立即继续，请停止本轮并选择其他模型。",
   "error.backend.providerRetrying":
     "提供方已 {attempts} 次未能完成这个请求，正在重试。如果智能体没有继续，请停止本轮。",
   "error.backend.providerRetryingLargeContext":
-    "提供方已 {attempts} 次未能完成这个请求，正在重试。这个聊天占用模型上下文窗口的 {percent}%。如果智能体没有继续，请停止本轮：OpenBot 会在下一条消息前压缩聊天。",
+    "提供方已 {attempts} 次未能完成这个请求，正在重试。这个聊天占用模型上下文窗口的 {percent}%。如果智能体没有继续，请停止本轮：Pokebots 会在下一条消息前压缩聊天。",
   "error.backend.sharedDataUnavailable": "共享数据不可用。",
-  "error.backend.shuttingDown": "OpenBot 正在关闭。",
+  "error.backend.shuttingDown": "Pokebots 正在关闭。",
   "error.backend.channelUnconfirmedStart": "该频道有一项未确认的派活启动，请在删除前确认其结果。",
   "error.backend.channelNotFound": "未找到该频道。",
   "error.backend.channelMemberUnavailable": "有频道成员不可用。",
@@ -148,7 +148,7 @@ export const messages = {
   "error.backend.queueOrderStale": "队列顺序已过期，请刷新队列后重试。",
   "error.backend.fileGone": "文件不存在或已被删除。",
   "error.backend.managedAttachmentChanged": "受管理的附件缺失或已变更：{name}",
-  "error.backend.mailboxStateCorrupt": "信箱状态已损坏或来自更新版本的 OpenBot，拒绝覆盖它。",
+  "error.backend.mailboxStateCorrupt": "信箱状态已损坏或来自更新版本的 Pokebots，拒绝覆盖它。",
   "error.backend.recipientDeleting": "该收件人正在删除中，请等删除完成后再试。",
   "error.backend.recipientHidden": "该助手已隐藏，请恢复它后再发送消息。",
   "error.backend.agentIdUnknown": "没有 ID 为 {id} 的助手。请用 openbot.list_agents 获取 ID，然后重试。",
@@ -162,7 +162,7 @@ export const messages = {
   "error.backend.videoGenerationNoVideo": "视频生成没有返回视频。",
   "error.backend.videoGenerationInterrupted": "视频生成已中断。",
   "error.backend.attachmentNotRegularFile": "只能附加普通文件：{name}",
-  "error.backend.attachmentCopyFailed": "OpenBot 无法复制 {name}。",
+  "error.backend.attachmentCopyFailed": "Pokebots 无法复制 {name}。",
   "error.backend.routineNameRequired": "需要填写自动化任务名称。",
   "error.backend.routineNameTooLong": "自动化任务名称过长。",
   "error.backend.routineInstructionRequired": "需要填写自动化任务指令。",
@@ -183,13 +183,13 @@ export const messages = {
   "error.backend.routineDeletionBusy": "该助手已有另一个自动化任务正在删除。",
   "error.backend.routineWaitForAgent": "请等助手操作结束后再运行自动化任务。",
   "error.backend.routineRunStarting": "本次自动化任务仍在启动中，请等它的对话开始后再试。",
-  "error.backend.routineRunNoSession": "由于服务商会话不可用，OpenBot 无法中断正在进行中的自动化任务运行。",
+  "error.backend.routineRunNoSession": "由于服务商会话不可用，Pokebots 无法中断正在进行中的自动化任务运行。",
   "error.backend.interruptSelf": "助手不能中断自己。",
   "error.backend.interruptOtherWork": "该助手正在处理非你的消息发起的任务，只有用户或该任务的发送者才能停止它。",
   "error.backend.interruptSharedWork":
     "该助手的这一轮在处理你的消息，同时也在处理来自用户或其他助手的消息。只有用户可以在该助手的聊天中用“停止助手”停止它。",
   "error.backend.interruptStarting": "该助手仍在启动对话，请等对话开始后再试。",
-  "error.backend.interruptNoSession": "由于服务商会话不可用，OpenBot 无法中断该助手。",
+  "error.backend.interruptNoSession": "由于服务商会话不可用，Pokebots 无法中断该助手。",
   "error.backend.memoryTextRequired": "需要填写记忆内容。",
   "error.backend.memoryTextTooLong": "记忆内容过长。",
   "error.backend.mcpServerGone": "该 MCP 服务器已不存在。",
@@ -217,39 +217,39 @@ export const messages = {
   "error.backend.messagePinNotFound": "此消息不在聊天中。",
   "error.backend.messagePinLimit": "此聊天已有 50 条置顶消息。请先取消置顶一条，再置顶其他消息。",
   "error.backend.routineFlowHandoffFailed": "自动化任务无法把工作交给该助手。",
-  "error.backend.mcpServerLimit": "OpenBot 最多保留 {limit} 个 MCP 服务器。",
+  "error.backend.mcpServerLimit": "Pokebots 最多保留 {limit} 个 MCP 服务器。",
   "error.backend.mcpServerNameTaken": "名为 {name} 的 MCP 服务器已存在。",
-  "error.backend.mcpServerInvalid": "OpenBot 无法保存此 MCP 服务器配置。",
+  "error.backend.mcpServerInvalid": "Pokebots 无法保存此 MCP 服务器配置。",
   "error.backend.mcpServerNoAnswer": "服务器未在 {seconds} 秒内响应。",
   "error.backend.mcpSignInNotAccepted": "服务器未接受该登录。",
   "error.backend.mcpSignInAccountRefused":
     "服务器拒绝了你登录所用的账号。请确认该账号可以使用此服务。要使用其他账号，请先退出登录，再重新登录。",
   "error.backend.mcpSignInClientRefused":
-    "完成登录时，登录服务器未接受 OpenBot。请重新登录，OpenBot 会重新向服务器注册。",
+    "完成登录时，登录服务器未接受 Pokebots。请重新登录，Pokebots 会重新向服务器注册。",
   "error.backend.mcpSignInAppRefused":
     "登录服务器未接受该服务器的登录应用。请检查登录应用的客户端 ID 和客户端密钥，然后重新登录。",
   "error.backend.mcpCommandNotFound": "未找到命令：{command}",
   "error.backend.mcpProviderLimit":
     "此智能体只能使用有限数量的 MCP 服务器。要使用此服务器，请关闭智能体不需要的 MCP 服务器。",
   "error.backend.mcpRegistrationRefused":
-    "登录服务器尚未接受 OpenBot 作为应用，这与你的账号无关。请改用其他连接方式，例如本地 MCP 服务器。",
+    "登录服务器尚未接受 Pokebots 作为应用，这与你的账号无关。请改用其他连接方式，例如本地 MCP 服务器。",
   "error.backend.mcpRegistrationUnavailable":
-    "登录服务器无法将 OpenBot 注册为应用，这与你的账号无关。要连接，请在 市场、应用 中保存此服务器，然后为它添加登录应用。",
+    "登录服务器无法将 Pokebots 注册为应用，这与你的账号无关。要连接，请在 市场、应用 中保存此服务器，然后为它添加登录应用。",
   "error.backend.mcpSignInAbandonedGeneric": "登录已放弃。",
   "error.backend.mcpSignInForgotten": "MCP 登录在运行过程中被遗忘。",
   "error.backend.mcpSignInAbandoned": "MCP 登录已放弃。",
   "error.backend.mcpSignInNoBrowser": "该 MCP 登录无法打开浏览器。",
   "error.backend.mcpSignInNotWebPage": "登录地址不是网页。",
   "error.backend.mcpSignInRequired": "该服务器要求登录。请选择“登录”，在浏览器中继续。",
-  "error.backend.mcpSignInOnHost": "该服务器要求登录。请在主机电脑上的 OpenBot 中登录它。",
-  "error.backend.mcpSignInNeedsHttps": "该服务器要求登录，而 OpenBot 仅通过 https 登录。请把地址改为 {url}。",
+  "error.backend.mcpSignInOnHost": "该服务器要求登录。请在主机电脑上的 Pokebots 中登录它。",
+  "error.backend.mcpSignInNeedsHttps": "该服务器要求登录，而 Pokebots 仅通过 https 登录。请把地址改为 {url}。",
   "error.backend.mcpSignInCancelled": "登录已取消。",
   "error.backend.mcpSignInTimedOut": "未在浏览器中完成登录。",
   "error.backend.mcpSignInRefused": "登录页面拒绝了访问。请重新登录。",
   "error.backend.mcpSignInResponseTimedOut": "登录响应未及时返回。",
-  "error.backend.mcpSignInMetadataUnreadable": "OpenBot 无法读取该服务器的登录信息。请检查服务器地址后重试。",
+  "error.backend.mcpSignInMetadataUnreadable": "Pokebots 无法读取该服务器的登录信息。请检查服务器地址后重试。",
   "error.backend.mcpSignInAnswerUnreadable":
-    "登录服务器发送了 OpenBot 无法读取的响应。如果该服务为你提供了 API 密钥或令牌，请将其添加到该服务器的设置中，然后重新测试连接。",
+    "登录服务器发送了 Pokebots 无法读取的响应。如果该服务为你提供了 API 密钥或令牌，请将其添加到该服务器的设置中，然后重新测试连接。",
   "error.backend.mcpServerExited": "服务器在响应之前就停止了。请在终端中运行该命令以查看错误。",
   "error.backend.mcpServerExitedWithOutput": "服务器在响应之前就停止了。它输出了：{detail}",
   "error.backend.mcpServerFailedToStart": "服务器没有启动：{reason}",
@@ -262,21 +262,21 @@ export const messages = {
   "error.backend.mcpServerFailedForProvider":
     "{provider} 无法启动 MCP 服务器 {name}。请在 市场、应用 中打开 {name} 并选择“测试连接”查看原因。",
   "error.backend.mcpServerFailedInProvider":
-    "{provider} 无法启动 MCP 服务器 {name}，{provider} 无法使用它的工具。{provider} 会自行启动服务器，因此 OpenBot 中的连接测试可能会成功。请开始新的聊天后再试一次。",
+    "{provider} 无法启动 MCP 服务器 {name}，{provider} 无法使用它的工具。{provider} 会自行启动服务器，因此 Pokebots 中的连接测试可能会成功。请开始新的聊天后再试一次。",
   "error.backend.mcpServerTimedOutInProvider":
     "{provider} 无法启动 MCP 服务器 {name}，因为服务器没有及时响应。请开始新的聊天后再试一次。",
-  "error.backend.mcpOAuthProxyUnavailable": "OpenBot 无法为这台服务器建立本地登录连接。请重启 OpenBot 后再试一次。",
-  "error.backend.mcpOAuthSignInNeeded": "该 MCP 服务器的登录已结束。用户需要在 OpenBot 中重新登录。",
+  "error.backend.mcpOAuthProxyUnavailable": "Pokebots 无法为这台服务器建立本地登录连接。请重启 Pokebots 后再试一次。",
+  "error.backend.mcpOAuthSignInNeeded": "该 MCP 服务器的登录已结束。用户需要在 Pokebots 中重新登录。",
   "error.backend.mcpOAuthRenewalFailed":
-    "OpenBot 暂时无法续期此 MCP 服务器的登录。登录信息已保留，下一次请求会重试。如果此错误持续出现，用户可以在 OpenBot 中退出该服务器的登录，然后重新登录。",
-  "error.backend.mcpServerUnreachable": "OpenBot 无法连接该服务器。请检查地址与网络。",
+    "Pokebots 暂时无法续期此 MCP 服务器的登录。登录信息已保留，下一次请求会重试。如果此错误持续出现，用户可以在 Pokebots 中退出该服务器的登录，然后重新登录。",
+  "error.backend.mcpServerUnreachable": "Pokebots 无法连接该服务器。请检查地址与网络。",
   "error.backend.mcpLocalServerOff":
     "该电脑上 {address} 没有服务器在响应。请启动服务器，或在运行它的应用中开启它，然后重试。",
   "error.backend.mcpServerBlocked": "该电脑阻止了与该服务器的连接。请检查防火墙或安全软件后重试。",
   "error.backend.mcpServerIncompatible":
     "该地址有响应，但不是通过 Streamable HTTP 提供服务的 MCP 服务器。请检查地址，并更新运行该服务器的应用。",
   "error.backend.mcpRemoteBridge":
-    "{reason} 该命令运行的是 mcp-remote 桥接。请改用 Streamable HTTP 并填写地址 {url}，由 OpenBot 帮你登录。",
+    "{reason} 该命令运行的是 mcp-remote 桥接。请改用 Streamable HTTP 并填写地址 {url}，由 Pokebots 帮你登录。",
   "error.backend.oauthNotHttps": "OAuth 端点 {origin} 不是 https，因此未发送凭据。",
   "error.backend.oauthTooManyRedirects": "OAuth 端点重定向次数过多。",
   "error.backend.oauthRedirectOrigin": "OAuth 端点重定向到了 {origin}，因此未转发凭据。",
@@ -327,10 +327,10 @@ export const messages = {
   "error.backend.approvalInactive": "该审批已不再有效。",
   "error.backend.approvalOwnerOnly": "只有服务器所有者可以批准该操作。",
   "error.backend.feedbackNeedsPhone":
-    "只有 OpenBot 手机应用可以发送这份报告，因为它会附上手机的版本和支持日志。请在手机上打开此对话。如果在手机上也看到这条消息，请更新手机应用。",
+    "只有 Pokebots 手机应用可以发送这份报告，因为它会附上手机的版本和支持日志。请在手机上打开此对话。如果在手机上也看到这条消息，请更新手机应用。",
   "error.backend.takeoverInactive": "该浏览器接管已不再有效。",
   "error.backend.authSubmitting": "身份验证正在提交中。",
-  "error.backend.apiKeySaveFailed": "OpenBot 无法保存 API 密钥，请重试。",
+  "error.backend.apiKeySaveFailed": "Pokebots 无法保存 API 密钥，请重试。",
   "error.backend.apiKeyNotAllowed": "只有服务器所有者或管理员可以输入 API 密钥。",
   "error.backend.apiKeySaving": "API 密钥正在保存中。",
   "error.backend.vaultItemNotAllowed": "只有服务器所有者或管理员可以向保险库添加项目。",
@@ -354,7 +354,7 @@ export const messages = {
   "error.backend.browserProxyUnreachable": "代理 {name} 没有响应，因此页面没有打开。",
   "error.backend.browserProxySignInRefused": "代理 {name} 拒绝了登录，因此页面没有打开。",
   "error.backend.browserSystemProxyFailed":
-    "运行 OpenBot 的计算机设置中的代理没有响应或拒绝了连接，因此页面没有打开。请检查该计算机的代理设置。",
+    "运行 Pokebots 的计算机设置中的代理没有响应或拒绝了连接，因此页面没有打开。请检查该计算机的代理设置。",
   "error.backend.browserProxyComputerUnreachable": "此配置文件使用的计算机没有响应，因此页面没有打开。",
   "error.backend.browserProxyComputerLocalAddress":
     "此配置文件使用的计算机只打开公共网站。它不打开本地网络上的地址，因此页面没有打开。",
@@ -382,7 +382,7 @@ export const messages = {
   "error.backend.mcpSignInAppUrl": "登录应用需要有效的服务器地址。",
   "error.backend.mcpSignInAppClientId": "请输入登录应用的客户端 ID。",
   "error.backend.mcpSignInAppIssuerChanged":
-    "该 MCP 服务器的登录服务器已变更，因此 OpenBot 没有把登录应用发送给它。若该变更正确，请移除登录应用后重新添加。",
+    "该 MCP 服务器的登录服务器已变更，因此 Pokebots 没有把登录应用发送给它。若该变更正确，请移除登录应用后重新添加。",
   "error.backend.mcpSignInAppNoServer": "请先把该 MCP 服务器保存为 URL 服务器，再添加登录应用。",
   "error.backend.mcpSignInAppUnavailable": "该电脑无法保存登录应用。",
   // Tasks: conversations of one agent that run beside its own chat.
@@ -407,5 +407,5 @@ export const messages = {
   "error.backend.taskUnfinishedLimit": "该助手已有 {count} 个未完成的任务。请等其中一个结束后再启动新任务。",
   "error.backend.taskOpenLimitReached": "该助手有 {count} 个未关闭的任务。请关闭一个任务，再启动或打开其他任务。",
   "error.backend.taskRemoteUnsupported": "任务仅适用于本电脑上的助手。",
-  "error.backend.taskStartFailed": "OpenBot 无法启动该任务，请改为在本轮对话中完成。",
+  "error.backend.taskStartFailed": "Pokebots 无法启动该任务，请改为在本轮对话中完成。",
 } as const satisfies PartialTranslation<typeof source>;

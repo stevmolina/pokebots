@@ -2,31 +2,31 @@ import type { PartialTranslation } from "../../../message";
 import type { messages as source } from "../../en/error/connector";
 
 export const messages = {
-  "error.connector.githubUnavailable": "Esta versão do OpenBot não tem um GitHub App.",
+  "error.connector.githubUnavailable": "Esta versão do Pokebots não tem um GitHub App.",
   "error.connector.githubDenied": "O login no GitHub foi recusado.",
   "error.connector.githubCodeExpired": "O código do GitHub expirou. Conecte o GitHub novamente.",
   "error.connector.githubDeviceFlowDisabled": "O GitHub App não permite login por dispositivo.",
   "error.connector.githubClientUnknown": "O GitHub não reconhece o Client ID deste GitHub App.",
   "error.connector.githubUnexpected": "O GitHub enviou uma resposta inesperada: {detail}",
-  "error.connector.githubUnreachable": "O OpenBot não consegue acessar o GitHub: {detail}",
+  "error.connector.githubUnreachable": "O Pokebots não consegue acessar o GitHub: {detail}",
   "error.connector.githubExpired": "A conexão com o GitHub expirou. Conecte o GitHub novamente.",
   "error.connector.githubFileUnreadable": "O arquivo de conexão com o GitHub não pode ser lido.",
   "error.connector.githubFileTooLarge": "O arquivo de conexão com o GitHub é muito grande.",
   "error.connector.onePasswordCliMissing":
-    "O OpenBot não encontrou a CLI do 1Password. Instale-a e ative a integração no app do 1Password, ou use um token de conta de serviço.",
+    "O Pokebots não encontrou a CLI do 1Password. Instale-a e ative a integração no app do 1Password, ou use um token de conta de serviço.",
   "error.connector.onePasswordCliInstallFailed":
-    "O OpenBot não conseguiu instalar a CLI do 1Password. Verifique a conexão com a internet e tente novamente.",
+    "O Pokebots não conseguiu instalar a CLI do 1Password. Verifique a conexão com a internet e tente novamente.",
   "error.connector.onePasswordCliSignedOut":
     "A CLI do 1Password não está conectada. Ative a integração no app do 1Password e conecte novamente.",
   "error.connector.onePasswordAppUnreachable":
-    "O OpenBot não consegue acessar o app do 1Password. Abra o 1Password e desbloqueie-o. Em Ajustes > Desenvolvedor, confira se “Integrar com a CLI do 1Password” está ativado. Depois tente novamente.",
+    "O Pokebots não consegue acessar o app do 1Password. Abra o 1Password e desbloqueie-o. Em Ajustes > Desenvolvedor, confira se “Integrar com a CLI do 1Password” está ativado. Depois tente novamente.",
   "error.connector.onePasswordCliFailed": "A CLI do 1Password falhou: {detail}",
   "error.connector.onePasswordCliForbidden":
     "Sua conta do 1Password não permite que você crie o cofre compartilhado nem uma conta de serviço. Peça essa permissão a um proprietário ou administrador da conta, ou peça um token de conta de serviço e clique em “Usar token”.",
   "error.connector.onePasswordUnexpected": "O 1Password enviou uma resposta inesperada: {detail}",
   "error.connector.onePasswordTokenRejected": "O 1Password não aceitou o token da conta de serviço.",
   "error.connector.onePasswordUnreachable":
-    "O OpenBot não conseguiu se conectar ao 1Password. Verifique a conexão com a internet e tente novamente.",
+    "O Pokebots não conseguiu se conectar ao 1Password. Verifique a conexão com a internet e tente novamente.",
   "error.connector.onePasswordRateLimited":
     "O 1Password recebeu solicitações demais. Aguarde alguns minutos e tente novamente.",
   "error.connector.onePasswordNoVault":
@@ -36,7 +36,7 @@ export const messages = {
   "error.connector.bitwardenFailed":
     "Não foi possível ler o Bitwarden. Instale a CLI bw, entre, desbloqueie e crie uma pasta chamada Shared with OpenBot. Conecte com uma nova chave de sessão.",
   "error.connector.bitwardenCliMissing":
-    "O OpenBot não encontra a CLI do Bitwarden. Instale o bw, confirme que ele funciona em um novo terminal e conecte novamente.",
+    "O Pokebots não encontra a CLI do Bitwarden. Instale o bw, confirme que ele funciona em um novo terminal e conecte novamente.",
   "error.connector.bitwardenFolderMissing":
     "O Bitwarden precisa ter exatamente uma pasta chamada Shared with OpenBot. Crie a pasta ou remova a pasta extra e conecte novamente.",
   "error.connector.bitwardenHostInput":
@@ -46,7 +46,7 @@ export const messages = {
   "error.connector.bitwardenCliInstallFailed":
     "Não foi possível instalar a CLI do Bitwarden neste servidor. Verifique a conexão de rede dele e conecte de novo.",
   "error.connector.bitwardenFileUnreadable": "O arquivo de conexão do Bitwarden não pode ser lido.",
-  "error.connector.passwordManagerUnknown": "O OpenBot não conhece este gestor de senhas.",
+  "error.connector.passwordManagerUnknown": "O Pokebots não conhece este gestor de senhas.",
   "error.connector.passwordManagerMethod": "Este gestor de senhas não pode se conectar desta forma.",
   "error.connector.passwordManagerNoSignIn": "Nenhuma página de login está aberta. Conecte novamente.",
   "error.connector.protonPassFailed": "Não foi possível conectar o Proton Pass. Conecte novamente.",
@@ -82,7 +82,7 @@ export const messages = {
   "error.connector.keeperThrottled":
     "O Keeper pede para esperar alguns minutos antes do próximo login. Conecte de novo mais tarde.",
   "error.connector.keeperPersistentLogin":
-    'O administrador do Keeper desativou "Stay logged in", que o OpenBot precisa. Peça para permitir e conecte de novo.',
+    'O administrador do Keeper desativou "Stay logged in", que o Pokebots precisa. Peça para permitir e conecte de novo.',
   "error.connector.keeperSignInTimeout": "O login no Keeper demorou demais. Conecte novamente.",
   "error.connector.keeperFileUnreadable": "O arquivo de conexão do Keeper não pode ser lido.",
 } as const satisfies PartialTranslation<typeof source>;
