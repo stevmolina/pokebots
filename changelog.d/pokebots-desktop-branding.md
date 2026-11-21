@@ -1,0 +1,1 @@
+- Use Pokebots as the default desktop display name in Electron configuration, main-process windows, notifications, and desktop HTML while keeping the installed app identity and backup manifest format unchanged.
