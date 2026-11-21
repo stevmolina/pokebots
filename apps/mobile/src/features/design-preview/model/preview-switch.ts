@@ -1,6 +1,6 @@
 import * as SecureStore from "expo-secure-store";
 import { create } from "zustand";
-import { APP_BRAND } from "@/shared/lib/app-brand";
+import { IS_POKEBOTS_PERSONAL_BUILD } from "@/shared/lib/app-brand";
 
 const key = "openbot.mobile.design-preview.v1";
 
@@ -9,7 +9,7 @@ const key = "openbot.mobile.design-preview.v1";
  * ignores the switch, the link and the long press, so a link from another app cannot replace its
  * sign-in screen with made-up data.
  */
-export const DESIGN_PREVIEW_ALLOWED = __DEV__ || APP_BRAND === "pokebots";
+export const DESIGN_PREVIEW_ALLOWED = __DEV__ || IS_POKEBOTS_PERSONAL_BUILD;
 
 /**
  * The switch of the calm design preview, with made-up data; the preview touches no server. A long
