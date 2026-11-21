@@ -264,6 +264,7 @@ export const messages = {
   "agentSettings.links.library": "المكتبة",
   "agentSettings.links.computer": "الكمبيوتر",
   "agentSettings.links.computerActive": "قيد الاستخدام",
+  "agentSettings.links.computerAsleep": "في وضع السكون",
   "agentSettings.links.computerOffline": "غير متصل",
   "agentSettings.links.routinesCount": {
     zero: "لا مهام دورية مضبوطة",
@@ -272,6 +273,14 @@ export const messages = {
     few: "{count} مهام دورية مضبوطة",
     many: "{count} مهمةً دورية مضبوطة",
     other: "{count} مهمة دورية مضبوطة",
+  },
+  "agentSettings.links.routinesActive": {
+    zero: "{count} نشط",
+    one: "{count} نشط",
+    two: "{count} نشطان",
+    few: "{count} نشطة",
+    many: "{count} نشطًا",
+    other: "{count} نشط",
   },
   "agentSettings.links.routinesNone": "لا شيء",
   "agentSettings.runtime.workspaceNote":
@@ -304,9 +313,6 @@ export const messages = {
   "agentSettings.tabs.activity": "النشاط",
   "agentSettings.tabs.library": "المكتبة",
   "agentSettings.groups.tools": "الأدوات",
-  "agentSettings.routines.new": "روتين جديد",
-  "agentSettings.routines.all": "كل الروتينات",
-  "agentSettings.routines.empty": "لا توجد روتينات بعد",
   "agentSettings.library.filter.label": "تصفية المكتبة",
   "agentSettings.library.filter.all": "الكل",
   "agentSettings.library.filter.pages": "صفحات",

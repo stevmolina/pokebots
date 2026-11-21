@@ -213,15 +213,14 @@ export interface AgentSettingsPanelProps {
    */
   reveal?: AgentSettingReveal | null | undefined;
   /**
-   * The calm first view under the agent's face: its sessions, routines, model and pinned messages.
-   * "Edit" hides it and shows the full settings.
+   * The calm Activity view under the agent's face: model, computer, sessions, and routines.
    */
   overview?: JSX.Element;
   /** The Library tab content shown when the segmented control selects "Library". */
   libraryOverview?: JSX.Element;
-  /** Tools group rendered below Notify me on the Activity tab. */
+  /** Tools group rendered inside the Settings tab. */
   tools?: JSX.Element;
-  /** Application-owned rows of the full settings view, which "Edit" opens. */
+  /** Application-owned rows of the Settings tab. */
   links?: JSX.Element;
   detailOpen?: boolean;
   children?: JSX.Element;
@@ -338,12 +337,7 @@ export default function AgentSettingsPanel(props: AgentSettingsPanelProps) {
   const agentDefaults = () => props.agentDefaults ?? DEFAULT_AGENT_DEFAULTS;
   const [newChatOpen, setNewChatOpen] = createSignal(false);
   const [deleteHistoryOpen, setDeleteHistoryOpen] = createSignal(false);
-  /**
-   * The full settings view: the name, title, description and chat color, then every settings row.
-   * Without it, the panel shows the calm first view.
-   */
-  const [editing, setEditing] = createSignal(false);
-  const [detailsTab, setDetailsTab] = createSignal<"activity" | "library">("activity");
+  const [detailsTab, setDetailsTab] = createSignal<"activity" | "library" | "settings">("activity");
   const [draft, setDraft] = createStore<AgentSettingsDraft>({
     avatar: {
       hue: null,
@@ -407,10 +401,14 @@ export default function AgentSettingsPanel(props: AgentSettingsPanelProps) {
       // An effect cannot flush, so a new page shows after this callback, and the observer finds its row.
       const pageShown = untrack(page) === row.page;
       setPage(row.page);
-      // The calm first view shows only the notification row; "Edit" shows the other rows of the root.
       if (row.page === null) {
-        setDetailsTab("activity");
-        setEditing(reveal.settingId !== "agent.notification-level");
+        setDetailsTab(
+          reveal.settingId === "agent.routines"
+            ? "activity"
+            : reveal.settingId === "agent.memories" && props.libraryOverview
+              ? "library"
+              : "settings",
+        );
       }
       // A detail page covers the panel: the page is where its Back goes, and no row shows to mark.
       if (untrack(() => props.detailOpen)) return;
@@ -1151,7 +1149,13 @@ export default function AgentSettingsPanel(props: AgentSettingsPanelProps) {
                       })
                     }
                   >
-                    <Popover.Trigger class="agent-settings-avatar" aria-label={t("agentSettings.avatar.edit")}>
+                    <Popover.Trigger
+                      class={[
+                        "agent-settings-avatar",
+                        { "agent-settings-avatar-editing": detailsTab() === "settings" },
+                      ]}
+                      aria-label={t("agentSettings.avatar.edit")}
+                    >
                       <AgentAvatar
                         seed={draft.avatar.seed}
                         hue={draft.avatar.hue}
@@ -1420,33 +1424,35 @@ export default function AgentSettingsPanel(props: AgentSettingsPanelProps) {
                   )}
                 </Show>
                 <div class="agent-settings-hero-actions">
-                  <Show when={!editing() && props.libraryOverview}>
-                    <div class="agent-settings-tabs">
-                      <SlidingTabs.Root
-                        value={detailsTab()}
-                        onChange={(value) => setDetailsTab(value === "library" ? "library" : "activity")}
-                      >
-                        <SlidingTabs.List aria-label={t("agentSettings.tabs.label")}>
-                          <SlidingTabs.Trigger value="activity">{t("agentSettings.tabs.activity")}</SlidingTabs.Trigger>
+                  <div class="agent-settings-tabs">
+                    <SlidingTabs.Root
+                      value={detailsTab()}
+                      onChange={(value) =>
+                        setDetailsTab(
+                          value === "library" && props.libraryOverview
+                            ? "library"
+                            : value === "settings"
+                              ? "settings"
+                              : "activity",
+                        )
+                      }
+                    >
+                      <SlidingTabs.List aria-label={t("agentSettings.tabs.label")}>
+                        <SlidingTabs.Trigger value="activity">{t("agentSettings.tabs.activity")}</SlidingTabs.Trigger>
+                        <Show when={props.libraryOverview}>
                           <SlidingTabs.Trigger value="library">{t("agentSettings.tabs.library")}</SlidingTabs.Trigger>
-                        </SlidingTabs.List>
-                      </SlidingTabs.Root>
-                    </div>
-                  </Show>
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    type="button"
-                    class="agent-settings-edit-toggle"
-                    aria-expanded={editing() ? "true" : "false"}
-                    aria-controls="agent-settings-edit-fields"
-                    onClick={() => setEditing((open) => !open)}
-                  >
-                    {editing() ? t("common.done") : t("common.edit")}
-                  </Button>
+                        </Show>
+                        <SlidingTabs.Trigger value="settings">{t("agentSettings.title")}</SlidingTabs.Trigger>
+                      </SlidingTabs.List>
+                    </SlidingTabs.Root>
+                  </div>
                 </div>
               </div>
-              <Show when={editing()}>
+              <Show when={detailsTab() === "activity"}>
+                <div class="agent-settings-overview-stack">{props.overview}</div>
+              </Show>
+              <Show when={detailsTab() === "library" && props.libraryOverview}>{props.libraryOverview}</Show>
+              <Show when={detailsTab() === "settings"}>
                 <div id="agent-settings-edit-fields" class="agent-settings-edit-fields">
                   <SettingsField label={t("agentSettings.name")}>
                     <Input
@@ -1508,43 +1514,29 @@ export default function AgentSettingsPanel(props: AgentSettingsPanelProps) {
                     )}
                   </Show>
                 </div>
-              </Show>
-              <Show when={!editing()}>
-                <Show
-                  when={props.libraryOverview && detailsTab() === "library"}
-                  fallback={
-                    <div class="agent-settings-overview-stack">
-                      {props.overview}
-                      <Show when={props.notificationLevel}>
-                        {(options) => (
-                          <div class="agent-settings-notify-section">
-                            <SettingsLinkGroup
-                              inset
-                              title={t("settings.tab.notifications.title")}
-                              class="agent-settings-runtime-rows agent-settings-notify"
-                            >
-                              <SettingsLinkRow
-                                icon={<Bell aria-hidden="true" />}
-                                label={t("agentSettings.notificationLevel.title")}
-                                value={notificationLevelLabel(options())}
-                                onClick={(trigger) => options().onOpen(trigger)}
-                              />
-                            </SettingsLinkGroup>
-                            <Text as="p" class="agent-settings-runtime-note" variant="caption" tone="muted">
-                              {t("agentSettings.notificationLevel.footer")}
-                            </Text>
-                          </div>
-                        )}
-                      </Show>
-                      {props.tools}
+                <Show when={props.notificationLevel}>
+                  {(options) => (
+                    <div class="agent-settings-notify-section">
+                      <SettingsLinkGroup
+                        inset
+                        title={t("settings.tab.notifications.title")}
+                        class="agent-settings-runtime-rows agent-settings-notify"
+                      >
+                        <SettingsLinkRow
+                          icon={<Bell aria-hidden="true" />}
+                          label={t("agentSettings.notificationLevel.title")}
+                          value={notificationLevelLabel(options())}
+                          onClick={(trigger) => options().onOpen(trigger)}
+                        />
+                      </SettingsLinkGroup>
+                      <Text as="p" class="agent-settings-runtime-note" variant="caption" tone="muted">
+                        {t("agentSettings.notificationLevel.footer")}
+                      </Text>
                     </div>
-                  }
-                >
-                  {props.libraryOverview}
+                  )}
                 </Show>
-              </Show>
-              <Show when={editing()}>
-                {/* One scroll of rows: what it knows, what it does, its rules, then its model. */}
+                {props.tools}
+                {/* One scroll of rows: pinned messages, what it knows, what it does, its rules, then its model. */}
                 {props.links}
                 <SettingsLinkGroup inset title={t("agentSettings.groups.rules")}>
                   <SettingsLinkRow

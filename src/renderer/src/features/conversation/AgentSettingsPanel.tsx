@@ -8,33 +8,13 @@ import {
   canPreviewAttachment,
   DEFAULT_AGENT_DEFAULTS,
   type FilePreview,
-  isAvatarColor,
   type ServerNotificationLevel,
   type StoredFileRow,
   type TestRoutineInput,
   userAssignedSkills,
 } from "@openbot/contracts/ipc";
 import { fileTypeOf } from "@openbot/team-client/stored-files";
-import {
-  Blocks,
-  BookMarked,
-  Button,
-  ChevronRight,
-  CircleCheck,
-  Clock3,
-  Cpu,
-  FileText,
-  Folder,
-  Gauge,
-  Link,
-  Monitor,
-  Plus,
-  Puzzle,
-  Switch,
-  Table2,
-  Upload,
-} from "@openbot/ui";
-import { avatarHeadColor } from "@openbot/ui/bloub-avatar";
+import { Blocks, BookMarked, Button, ChevronRight, FileText, Folder, Gauge, Puzzle, Table2, Upload } from "@openbot/ui";
 import { ProviderModelPicker } from "@openbot/ui/components/ProviderModelPicker";
 import { SettingsLinkGroup, SettingsLinkRow } from "@openbot/ui/components/SettingsPanel";
 import type { AgentProfile } from "@openbot/ui/data";
@@ -55,7 +35,6 @@ import SharedAgentSettingsPanel, {
 } from "@openbot/ui/features/conversation/AgentSettingsPanel";
 import { AttachmentReferenceVisual } from "@openbot/ui/features/conversation/AttachmentReference";
 import type { AgentSettingLinkId, AgentSettingReveal } from "@openbot/ui/features/conversation/agent-setting-links";
-import { solidBubbleTakesDarkText } from "@openbot/ui/features/conversation/own-bubble";
 import { PinnedMessages, type PinnedMessagesProps } from "@openbot/ui/features/conversation/PinnedMessages";
 import { AgentSessions, type AgentSessionsProps } from "@openbot/ui/features/conversation/threads/AgentSessions";
 import { agentFilesLinkValue } from "@openbot/ui/features/files/AgentFilesView";
@@ -64,7 +43,6 @@ import { useText } from "@openbot/ui/text";
 import type { ComponentProps } from "@solidjs/web";
 import { createEffect, createMemo, createSignal, createStore, For, Show, untrack } from "solid-js";
 import { actionToast } from "../../action-toast";
-import { desktopAnalytics } from "../../analytics";
 import { createSidePanelWidth, readSidePanelWidth, saveSidePanelWidth } from "../../components/side-panel-width";
 import type { SkillCatalogCalls } from "../../skills-port";
 import { agentSkillCalls, skillsPort } from "../../skills-port";
@@ -79,14 +57,7 @@ import { AgentSkillsModal, type AgentSkillsMode, type SkillDetail } from "./Agen
 import { conversationPort, type SharedTableCalls } from "./conversation-port";
 import type { AgentNotificationLevelCalls, ConversationRuntime } from "./conversation-runtime";
 import { type AgentMemoriesApi, agentMemoriesPort, type MemoriesPort } from "./memories-port";
-import { trackRoutineAction } from "./routine-analytics";
-import {
-  routineCompleted,
-  routineListSummary,
-  routineScheduleOf,
-  routineTriggerKind,
-  routineWebhookTrigger,
-} from "./routine-summary";
+import { routineCompleted } from "./routine-summary";
 import type { EventRoutinesApi } from "./routine-webhooks-api";
 import {
   type AgentRoutinesApi,
@@ -261,23 +232,12 @@ export default function AgentSettingsPanel(props: AgentSettingsPanelProps) {
     skills: { count: 0, open: false, reopenAfterMarketplace: false },
   });
   const [routinesList, setRoutinesList] = createSignal<RoutineEditorRecord[]>([]);
-  const [togglingRoutineIds, setTogglingRoutineIds] = createSignal<ReadonlySet<string>>(new Set());
   const [localRoutineRequest, setLocalRoutineRequest] = createSignal<RoutineSelectionRequest | null>(null);
-  let localRoutineNonce = 0;
-  const listedRoutines = createMemo(() =>
-    [...routinesList()].sort((a, b) =>
-      b.createdAt === a.createdAt ? (a.id < b.id ? -1 : a.id > b.id ? 1 : 0) : b.createdAt < a.createdAt ? -1 : 1,
-    ),
+  const activeRoutinesCount = createMemo(
+    () => routinesList().filter((routine) => routine.active && !routineCompleted(routine)).length,
   );
   type LibraryFilter = "all" | "pages" | "media" | "files";
   const [libraryFilter, setLibraryFilter] = createSignal<LibraryFilter>("all");
-  const agentSwitchAccent = createMemo(() =>
-    avatarHeadColor(props.agent.avatarSeed, props.agent.avatarHue, props.agent.avatarColor ?? null),
-  );
-  const agentSwitchDarkThumb = createMemo(() => {
-    const color = agentSwitchAccent().toLowerCase();
-    return isAvatarColor(color) && solidBubbleTakesDarkText(color);
-  });
   // One store per host. It goes with the host, so the list of the last server never shows for the next.
   const browserProfiles = createMemo(() => {
     const calls = props.browserProfileCalls;
@@ -561,44 +521,6 @@ export default function AgentSettingsPanel(props: AgentSettingsPanelProps) {
       });
   }
 
-  function toggleActivityRoutine(routine: RoutineEditorRecord, active: boolean): Promise<void> | undefined {
-    if (togglingRoutineIds().has(routine.id)) return undefined;
-    return setActivityRoutineActive(routine, active);
-  }
-
-  async function setActivityRoutineActive(routine: RoutineEditorRecord, active: boolean): Promise<void> {
-    setTogglingRoutineIds((current) => new Set(current).add(routine.id));
-    const schedule = routineScheduleOf(routine);
-    const tracked = { triggerKind: routineTriggerKind(routine), schedule };
-    const startedAt = performance.now();
-    const analytics = desktopAnalytics.scope();
-    try {
-      const { routine: saved } = await routinesPort().save({
-        routineId: routine.id,
-        name: routine.name,
-        instruction: routine.instruction,
-        active,
-        timezone: routine.timezone,
-        schedule,
-        trigger: routineWebhookTrigger(routine) ?? { kind: "schedule", schedule },
-        ...(routine.limitPolicy ? { limitPolicy: routine.limitPolicy } : {}),
-        ...(routine.missedPolicy ? { missedPolicy: routine.missedPolicy } : {}),
-      });
-      setRoutinesList((items) => items.map((item) => (item.id === saved.id ? saved : item)));
-      trackRoutineAction(analytics, "update", tracked, startedAt, "succeeded");
-    } catch (caught) {
-      trackRoutineAction(analytics, "update", tracked, startedAt, "failed", caught);
-      const fallback = active ? t("routine.settings.resumeFailed") : t("routine.settings.pauseFailed");
-      actionToast.error(errorMessage(caught, fallback));
-    } finally {
-      setTogglingRoutineIds((current) => {
-        const next = new Set(current);
-        next.delete(routine.id);
-        return next;
-      });
-    }
-  }
-
   // The count follows a skill change made anywhere, as the dialog does.
   createEffect(
     () => [props.agent.id, skillsMode(), skillCalls()] as const,
@@ -734,155 +656,66 @@ export default function AgentSettingsPanel(props: AgentSettingsPanelProps) {
       detailOpen={draft.routines.open || draft.files.open || draft.memories.open || draft.instructions.open}
       overview={
         <>
-          <Show when={props.sessions}>{(sessions) => <AgentSessions {...sessions()} />}</Show>
-          <Show when={routinesShown()}>
-            <section class="settings-link-section">
-              <div class="settings-link-section-header">
-                <h3 class="settings-link-section-title">{t("agentSettings.links.routines")}</h3>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  type="button"
-                  class="agent-settings-section-action"
-                  onClick={() => {
-                    setLocalRoutineRequest({ routineId: null, routineName: "", nonce: --localRoutineNonce });
-                    setDraft((state) => {
-                      state.routines.open = true;
-                    });
-                  }}
-                >
-                  <Plus aria-hidden="true" />
-                  <span>{t("agentSettings.routines.new")}</span>
-                </Button>
-              </div>
-              <SettingsLinkGroup inset class="agent-settings-overview-card">
-                <For
-                  each={listedRoutines()}
-                  keyed={(routine) => routine.id}
-                  fallback={
-                    <SettingsLinkRow
-                      label={t("agentSettings.routines.empty")}
-                      onClick={() => {
-                        setLocalRoutineRequest(null);
-                        setDraft((state) => {
-                          state.routines.open = true;
-                        });
-                      }}
-                    />
-                  }
-                >
-                  {(routine) => (
-                    <div class="agent-settings-routine-item">
-                      <Button
-                        variant="ghost"
-                        type="button"
-                        class="agent-settings-routine-button"
-                        onClick={() => {
-                          setLocalRoutineRequest({
-                            routineId: routine().id,
-                            routineName: routine().name,
-                            nonce: --localRoutineNonce,
-                          });
-                          setDraft((state) => {
-                            state.routines.open = true;
-                          });
-                        }}
-                      >
-                        <span
-                          class={
-                            routine().active ? "agent-routine-status-icon-active" : "agent-routine-status-icon-paused"
-                          }
-                        >
-                          <Show when={!routineCompleted(routine())} fallback={<CircleCheck aria-hidden="true" />}>
-                            <Show
-                              when={routineTriggerKind(routine()) === "webhook"}
-                              fallback={<Clock3 aria-hidden="true" />}
-                            >
-                              <Link aria-hidden="true" />
-                            </Show>
-                          </Show>
-                        </span>
-                        <span class="agent-settings-routine-copy">
-                          <span class="agent-settings-routine-title">{routine().name}</span>
-                          <span class="agent-settings-routine-schedule">
-                            {routineCompleted(routine())
-                              ? t("routine.settings.completed", { schedule: routineListSummary(routine(), text) })
-                              : routineListSummary(routine(), text)}
-                          </span>
-                        </span>
-                      </Button>
-                      <Switch
-                        size="sm"
-                        class={["agent-routine-switch", { "agent-routine-switch-dark-thumb": agentSwitchDarkThumb() }]}
-                        style={{ "--agent-switch-accent": agentSwitchAccent() }}
-                        aria-label={routine().name}
-                        checked={routine().active}
-                        disabled={routineCompleted(routine())}
-                        onChange={(active) => toggleActivityRoutine(routine(), active)}
-                      />
-                    </div>
-                  )}
-                </For>
-                <Show when={listedRoutines().length > 0}>
+          <Show when={props.modelPicker || props.computer}>
+            <SettingsLinkGroup inset class="agent-settings-overview-card agent-settings-summary-card">
+              <Show when={props.modelPicker}>
+                {(picker) => (
+                  <div class="agent-settings-model-row">
+                    <span class="settings-link-text">{t("agentSettings.groups.model")}</span>
+                    <ProviderModelPicker {...picker()} variant="pill" ariaLabel={t("agentSettings.runtime.model")} />
+                  </div>
+                )}
+              </Show>
+              <Show when={props.computer}>
+                {(computer) => (
                   <SettingsLinkRow
-                    label={t("agentSettings.routines.all")}
-                    value={t("agentSettings.links.routinesCount", { count: draft.routines.count })}
-                    onClick={() => {
-                      setLocalRoutineRequest(null);
-                      setDraft((state) => {
-                        state.routines.open = true;
-                      });
+                    label={t("agentSettings.links.computer")}
+                    value={
+                      <span class="agent-settings-computer-status">
+                        <span
+                          class={[
+                            "agent-settings-computer-dot",
+                            { "agent-settings-computer-dot-active": computer().active },
+                          ]}
+                          aria-hidden="true"
+                        />
+                        <span>
+                          {computer().active
+                            ? t("agentSettings.links.computerActive")
+                            : computer().enabled
+                              ? t("agentSettings.links.computerAsleep")
+                              : t("agentSettings.links.computerOffline")}
+                        </span>
+                      </span>
+                    }
+                    onClick={(trigger) => {
+                      if (computer().enabled) computer().onOpen(trigger);
                     }}
                   />
-                </Show>
-              </SettingsLinkGroup>
-            </section>
+                )}
+              </Show>
+            </SettingsLinkGroup>
           </Show>
-          <Show when={props.modelPicker}>
-            {(picker) => (
-              <SettingsLinkGroup
-                inset
-                title={t("agentSettings.groups.model")}
-                class="agent-settings-overview-card agent-settings-runtime-rows"
-              >
-                <ProviderModelPicker
-                  {...picker()}
-                  icon={
-                    <span class="settings-link-icon">
-                      <Cpu aria-hidden="true" />
-                    </span>
-                  }
-                  ariaLabel={t("agentSettings.runtime.model")}
-                />
-              </SettingsLinkGroup>
-            )}
-          </Show>
-          <Show when={props.pins}>
-            {(pins) => (
-              <SettingsLinkGroup inset class="agent-settings-overview-card">
-                <PinnedMessages {...pins()} variant="row" />
-              </SettingsLinkGroup>
-            )}
-          </Show>
-          <Show when={props.computer}>
-            {(computer) => (
-              <SettingsLinkGroup inset title={t("agentSettings.links.computer")} class="agent-settings-overview-card">
-                <SettingsLinkRow
-                  icon={<Monitor aria-hidden="true" />}
-                  label={t("agentSettings.links.computer")}
-                  value={
-                    computer().active
-                      ? t("agentSettings.links.computerActive")
-                      : computer().enabled
-                        ? undefined
-                        : t("agentSettings.links.computerOffline")
-                  }
-                  onClick={(trigger) => {
-                    if (computer().enabled) computer().onOpen(trigger);
-                  }}
-                />
-              </SettingsLinkGroup>
-            )}
+          <Show when={props.sessions}>{(sessions) => <AgentSessions {...sessions()} />}</Show>
+          <Show when={routinesShown()}>
+            <SettingsLinkGroup inset class="agent-settings-overview-card">
+              <SettingsLinkRow
+                label={t("agentSettings.links.routines")}
+                value={
+                  activeRoutinesCount() > 0
+                    ? t("agentSettings.links.routinesActive", { count: activeRoutinesCount() })
+                    : draft.routines.count > 0
+                      ? t("agentSettings.links.routinesCount", { count: draft.routines.count })
+                      : t("agentSettings.links.routinesNone")
+                }
+                onClick={() => {
+                  setLocalRoutineRequest(null);
+                  setDraft((state) => {
+                    state.routines.open = true;
+                  });
+                }}
+              />
+            </SettingsLinkGroup>
           </Show>
         </>
       }
@@ -1034,6 +867,13 @@ export default function AgentSettingsPanel(props: AgentSettingsPanelProps) {
       }
       links={
         <>
+          <Show when={props.pins}>
+            {(pins) => (
+              <SettingsLinkGroup inset class="agent-settings-overview-card">
+                <PinnedMessages {...pins()} variant="row" />
+              </SettingsLinkGroup>
+            )}
+          </Show>
           <Show when={sessionSettings()}>
             {(api) => (
               <AgentSessionSettings
