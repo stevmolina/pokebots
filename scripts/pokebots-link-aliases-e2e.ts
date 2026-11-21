@@ -84,10 +84,12 @@ for (const scheme of ["openbot", "pokebots"]) {
   assert.ok(mobileLink(value).kind === "invite");
   assert.deepEqual(parseInviteUrl(value), invite);
   for (const path of rejected) assert.equal(parseDeepLink(`${scheme}://${path}`), null);
+  const selfHosted = `${scheme}://join${untrustedQuery}`;
+  const options = { selfHostedApiOrigin: "https://accounts.example" };
+  assert.deepEqual(mobileLink(selfHosted), { kind: "invite", url: selfHosted });
+  assert.throws(() => parseInviteUrl(selfHosted, { selfHostedApiOrigin: "https://different.example" }));
+  assert.ok(parseDeepLink(selfHosted, options)?.kind === "invite");
 }
-const selfHosted = `pokebots://join${untrustedQuery}`;
-assert.equal(mobileLink(selfHosted).kind, "invalid");
-assert.ok(parseDeepLink(selfHosted, { selfHostedApiOrigin: "https://accounts.example" })?.kind === "invite");
 assert.equal(parseDeepLink("https://openbot.run.example/plugins/sample-plugin"), null);
 for (const path of [
   "mcp-auth?code=sample&state=sample",
