@@ -1,32 +1,28 @@
-# Pokebots: upstream sync
+# Upstream fixes for Pokebots
 
-Pokebots (`stevmolina/pokebots`, named `openbot-custom` before 2026-11-12) is a fork of
-`nightly-labs/openbot`. Each sync is a real merge commit, so the next sync starts from the last
-merged upstream commit.
+Pokebots releases from `stevmolina/pokebots`. It keeps the history, license, and notices from its
+OpenBot fork. The last upstream merge was [PR #252](https://github.com/stevmolina/pokebots/pull/252).
+The T3 schedule **Daily Pokebots upstream sync** is disabled.
 
-## Steps
+## Take an upstream fix
 
-1. `git remote add upstream https://github.com/nightly-labs/openbot.git` (once per checkout), then
-   `git fetch upstream --tags`.
-2. Make a worktree from `origin/main`, and set `git config rerere.enabled true` in it.
-3. `git merge-tree --write-tree --name-only origin/main upstream/main` lists the conflicts before
-   the merge.
-4. `git merge --no-ff upstream/main`. Where upstream now has the same feature, take upstream's
-   version and drop ours.
-5. Check `src/backend` migrations. The fork adds none: remote coding jobs keep their state in JSON
-   files under the agent workspace (`.openbot/coding-jobs/`).
+1. Review the upstream advisory or fix. Identify the affected Pokebots builds and the upstream
+   commit and dependencies that the fix needs.
+2. In a worktree based on `origin/main`, apply the individual commit with `git cherry-pick -x` or
+   adapt the patch and record its original commit. Keep its required attribution.
+3. Verify the Pokebots behavior, frozen migrations, and released contracts that the patch touches.
+   Open a focused PR with the advisory or patch reference and the check results.
 
-## Fork-owned files
+## Current release channels
 
-Keep fork code in these files, and keep the hook in each upstream file to one call or one prop.
+- Mac uses the [launchd updater](../AGENTS.md#after-merge-pokebots-app). Verify the staged revision
+  and the installed app after approval.
+- The [server image workflow](../.github/workflows/server-image.yml) builds and smoke-tests the
+  self-hosted Linux image. A push to `main` updates `ghcr.io/stevmolina/pokebots:latest`. An app change
+  on `main` can reach hosts that use the [VPS updater](../docker/vps-auto-update.sh).
+- The [Dokploy runbook](pokebots-dokploy.md) covers the account API and browser app on matching
+  `main` changes. The landing page has its own repository and deployment.
 
-| Feature | Fork file | Hook in the upstream file |
-| --- | --- | --- |
-| Thread worker rows, reactions, read aloud | `src/renderer/src/features/conversation/custom-thread-extras.tsx` | `useCustomThreadExtras` in `ConversationThread.tsx` and `ConversationSideThread.tsx` |
-| Sidebar thread lanes | `src/renderer/src/features/sidebar/custom-sidebar-thread-lanes.ts` | `useCustomSidebarThreadLanes` and `threadLanes` in `WorkspaceSidebar.tsx` |
-| Remote coding jobs | `src/backend/agent-tasks/coding-*.ts`, `remote-coding-task.ts` | `codingJobs` in `agent-tasks.ts` and `agent-service.ts` |
-| Per-agent screens | `src/backend/agent/agent-screens.ts`, `scripts/hosting/openbot-agent-screen` | `DISPLAY` in `claude-client.ts`, reaper in `application-services.ts` |
-| Ad hoc signed build | `electron-builder.custom.yml`, `build/custom/` | none |
-
-Do not add fields to released Team API routes (`agent-tasks-v1`, `agent-thread-files-v1`). Use a new
-optional capability, as upstream did with `agent-thread-replies-v1`.
+Run the [Pokebots release dry run](RELEASING.md#pokebots-release-dry-run) for an isolated source
+preflight. Confirm signing and channel ownership before adding a release path. Keep the 60-day
+Team API support window and the existing update paths during a compatibility release.
