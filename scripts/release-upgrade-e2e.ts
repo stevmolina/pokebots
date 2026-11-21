@@ -33,6 +33,13 @@
 //                        so only its own start data is in the database. Then the check also compares
 //                        the row count of each table before and after the upgrade, and a forced end of
 //                        the old release is a warning, because the new build must start after it too.
+// Local Pokebots fixture (run in a fresh macOS test login with network access limited to loopback):
+//   bun scripts/release-upgrade-e2e.ts macos --local-pokebots --fixture-user=<login> \
+//     --previous-artifact=/fixtures/old/Pokebots.app --new=/fixtures/new/Pokebots.app
+// Use trusted signed builds from the commits under test. Run from the candidate checkout.
+// The test login isolates native macOS paths and the keychain. Keep real profiles and accounts
+// out of this login. This test checks bundle replacement and fixture data.
+//
 // The download needs `gh` with a token (GH_TOKEN or GITHUB_TOKEN). Windows installs in the real
 // %LOCALAPPDATA%\Programs\OpenBot, so it runs only on a GitHub Actions runner. Linux needs a display
 // (`xvfb-run -a`), a writable /opt/OpenBot and the AppArmor profile; it never uses `--no-sandbox`.
@@ -52,7 +59,7 @@
 // a modified install. electron-updater installs on Windows with the same `--updated /S` arguments
 // that this test uses, and on Linux it replaces the AppImage file, as this test does; macOS
 // replaces the bundle. `bun run verify:update-artifacts` checks the feed files of the new build.
-import { type ChildProcess, execFileSync, spawn } from "node:child_process";
+import { type ChildProcess, execFileSync, spawn, spawnSync } from "node:child_process";
 import { createHash, randomUUID } from "node:crypto";
 import { createReadStream, existsSync } from "node:fs";
 import {
@@ -65,11 +72,12 @@ import {
   mkdtemp,
   readdir,
   readFile,
+  realpath,
   rename,
   rm,
   writeFile,
 } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { tmpdir, userInfo } from "node:os";
 import { basename, join, resolve } from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import { setTimeout as sleep } from "node:timers/promises";
@@ -125,6 +133,29 @@ function option(name: string): string | undefined {
 }
 
 const history = process.argv.includes("--history");
+const localPokebots = process.argv.includes("--local-pokebots");
+const fixtureUser = option("fixture-user");
+const previousArtifact = option("previous-artifact");
+const candidateArtifact = option("new");
+if (localPokebots) {
+  if (target !== "macos" || history || option("previous") !== undefined || option("previous-age-days") !== undefined) {
+    throw new Error("Local Pokebots requires macos with no release selection or history options.");
+  }
+  if (!previousArtifact?.endsWith(".app") || !candidateArtifact?.endsWith(".app")) {
+    throw new Error("Local Pokebots requires two signed .app folders via --previous-artifact and --new.");
+  }
+  const login = userInfo();
+  if (fixtureUser !== login.username || login.uid === 0) {
+    throw new Error("Set --fixture-user to the name of the fresh macOS test login.");
+  }
+  const appData = join(login.homedir, "Library", "Application Support");
+  const profileNames = ["OpenBot", "OpenBot Custom", "Pokebots"];
+  if (existsSync(join(login.homedir, "OpenBot")) || profileNames.some((name) => existsSync(join(appData, name)))) {
+    throw new Error("Use a fresh macOS test login. This login has an existing OpenBot or Pokebots profile.");
+  }
+} else if (fixtureUser !== undefined) {
+  throw new Error("--fixture-user requires --local-pokebots.");
+}
 
 const newVersion = z
   .object({ version: z.string() })
@@ -139,6 +170,7 @@ interface Report {
   history: boolean;
   newVersion: string;
   installedVersion?: string;
+  localBuilds?: { previous: LocalMacBuild; candidate: LocalMacBuild };
   oldQuit?: QuitResult;
   newQuit?: QuitResult;
   /** The calls of the previous release that the seed step used. */
@@ -185,10 +217,14 @@ const runMarkerFile = z.object({ state: z.string() });
 
 const report: Report = { passed: false, target, arch: process.arch, history, newVersion };
 const root = await mkdtemp(join(tmpdir(), "openbot-upgrade-"));
-const userDataPath = join(root, "user-data");
 const homePath = join(root, "home");
-await mkdir(userDataPath);
+// Keep the profile's released path relative to the fixture home. Electron's native appData
+// resolution can ignore HOME, so launch also passes this exact path via --user-data-dir.
+const userDataPath = localPokebots
+  ? join(homePath, "Library", "Application Support", "OpenBot")
+  : join(root, "user-data");
 await mkdir(homePath);
+await mkdir(userDataPath, { recursive: true });
 // The app puts agent workspaces in `homedir()`/OpenBot/Agents. On Windows `homedir()` reads
 // USERPROFILE, which stays the real one (see `launchEnvironment`), and an earlier step of the job
 // can have made workspaces there. So the check counts only the folders that are new.
@@ -314,13 +350,23 @@ async function newArtifact(): Promise<string> {
 // --- Install -------------------------------------------------------------------------------------
 
 const macApplications = join(root, "Applications");
-const macBundle = join(macApplications, "OpenBot.app");
+const macBundle = join(macApplications, localPokebots ? "Pokebots.app" : "OpenBot.app");
+const localMacCandidate = join(root, "update-staging", "Pokebots.app");
+
+interface LocalMacBuild {
+  version: string;
+  executable: string;
+  cdHash: string;
+  signingRequirement: string;
+}
+
+let localMacExecutable: string | undefined;
 const windowsFolder = join(process.env.LOCALAPPDATA ?? "", "Programs", "OpenBot");
 // The shipped AppArmor profile attaches to this path.
 const linuxAppImage = "/opt/OpenBot/OpenBot.AppImage";
 
 function executablePath(): string {
-  if (target === "macos") return join(macBundle, "Contents", "MacOS", "OpenBot");
+  if (target === "macos") return join(macBundle, "Contents", "MacOS", localMacExecutable ?? "OpenBot");
   if (target === "windows") return join(windowsFolder, "OpenBot.exe");
   return linuxAppImage;
 }
@@ -350,6 +396,53 @@ function extractMacZip(zip: string, destination: string): void {
 
 function verifyMacSignature(): void {
   execFileSync("codesign", ["--verify", "--deep", "--strict", macBundle], { stdio: ["ignore", "ignore", "inherit"] });
+}
+
+async function stageLocalMacBuild(source: string, bundle: string): Promise<LocalMacBuild> {
+  const input = await realpath(source);
+  check(input.endsWith(".app") && (await lstat(input)).isDirectory(), "Expected a signed .app directory.");
+  await mkdir(resolve(bundle, ".."), { recursive: true });
+  execFileSync("/usr/bin/ditto", [input, bundle]);
+  execFileSync("/usr/bin/codesign", [
+    "--verify",
+    "--deep",
+    "--strict",
+    "-R",
+    '=identifier "app.openbot.custom" and certificate leaf[subject.CN] = "OpenBot Custom Local Signing"',
+    bundle,
+  ]);
+  const display = spawnSync("/usr/bin/codesign", ["-d", "--verbose=4", "-r", "-", bundle], { encoding: "utf8" });
+  check(display.status === 0, "Cannot read the bundle signature.");
+  const plist = z
+    .object({
+      CFBundleShortVersionString: z.string().regex(/^\d+\.\d+\.\d+$/u),
+      CFBundleExecutable: z.string().regex(/^[\w -]+$/u),
+    })
+    .parse(
+      JSON.parse(
+        execFileSync("/usr/bin/plutil", ["-convert", "json", "-o", "-", join(bundle, "Contents", "Info.plist")], {
+          encoding: "utf8",
+        }),
+      ),
+    );
+  const executable = join(bundle, "Contents", "MacOS", plist.CFBundleExecutable);
+  check((await lstat(executable)).isFile(), "The signed bundle must have a regular executable file.");
+  check(
+    (await realpath(executable)) === join(await realpath(bundle), "Contents", "MacOS", plist.CFBundleExecutable),
+    "The executable must stay inside the fixture bundle.",
+  );
+  await access(executable, constants.X_OK);
+  check(!existsSync(join(bundle, "Contents", "Resources", "app-update.yml")), "The fixture build has an update feed.");
+  const cdHash = /^CDHash=([a-f0-9]+)$/mu.exec(display.stderr)?.[1];
+  check(cdHash, "The signed bundle has no CDHash.");
+  const signingRequirement = /^designated => (.+)$/mu.exec(display.stderr)?.[1];
+  check(signingRequirement, "The signed bundle has no designated signing requirement.");
+  return {
+    version: plist.CFBundleShortVersionString,
+    executable: plist.CFBundleExecutable,
+    cdHash,
+    signingRequirement,
+  };
 }
 
 async function installPrevious(artifact: string): Promise<void> {
@@ -414,7 +507,7 @@ interface RunningApp extends LaunchedProcess {
 
 function launchEnvironment(): NodeJS.ProcessEnv {
   return {
-    ...process.env,
+    ...(localPokebots ? { PATH: "/usr/bin:/bin:/usr/sbin:/sbin", TMPDIR: root } : process.env),
     // Agent workspaces go to ~/OpenBot, so the home folder is the test's own. Windows keeps the real
     // USERPROFILE: with an empty one, Windows cannot find the AppData known folder and the start
     // fails ("Failed to get 'appData' path"). So on Windows the workspaces go to the real profile
@@ -459,6 +552,10 @@ async function readDevToolsPort(): Promise<number | null> {
 }
 
 async function launch(): Promise<RunningApp> {
+  if (localPokebots) {
+    const legacyProfile = join(await realpath(root), "home", "Library", "Application Support", "OpenBot");
+    check((await realpath(userDataPath)) === legacyProfile, "The legacy profile must resolve inside the fixture home.");
+  }
   // A stale port file from the earlier start would point at a closed port.
   await rm(join(userDataPath, "DevToolsActivePort"), { force: true });
   const args = [`--user-data-dir=${userDataPath}`, "--remote-debugging-port=0"];
@@ -467,6 +564,7 @@ async function launch(): Promise<RunningApp> {
   // outlive a killed app: the crash handler and the fake agent keep the stderr pipe open.
   const child = spawn(executablePath(), args, {
     env: launchEnvironment(),
+    ...(localPokebots ? { cwd: homePath } : {}),
     stdio: ["ignore", "ignore", "pipe"],
     detached: process.platform !== "win32",
     windowsHide: true,
@@ -1020,17 +1118,38 @@ async function printLogs(): Promise<void> {
 }
 
 try {
-  const ageDays = option("previous-age-days");
-  const tag = option("previous") ?? previousTag(ageDays === undefined ? undefined : Number(ageDays));
-  const previousVersion = tag.replace(/^v/u, "");
-  check(compareVersions(previousVersion, newVersion) < 0, `${tag} is not older than ${newVersion}.`);
+  let tag: string;
+  let previousVersion: string;
+  let newBuild: string;
+  if (localPokebots) {
+    check(previousArtifact && candidateArtifact, "Both local builds are required.");
+    const previous = await stageLocalMacBuild(previousArtifact, macBundle);
+    const candidate = await stageLocalMacBuild(candidateArtifact, localMacCandidate);
+    report.localBuilds = { previous, candidate };
+    check(previous.signingRequirement === candidate.signingRequirement, "The candidate changed the signing identity.");
+    check(previous.cdHash !== candidate.cdHash, "Use two distinct signed builds.");
+    check(
+      compareVersions(previous.version, candidate.version) <= 0,
+      "The candidate version is older than the baseline.",
+    );
+    check(candidate.version === newVersion, "Run the fixture from the candidate checkout.");
+    check((await readdir(userDataPath)).length === 0, "The fixture profile must start empty.");
+    previousVersion = previous.version;
+    tag = previous.cdHash;
+    newBuild = localMacCandidate;
+    localMacExecutable = previous.executable;
+  } else {
+    const ageDays = option("previous-age-days");
+    tag = option("previous") ?? previousTag(ageDays === undefined ? undefined : Number(ageDays));
+    previousVersion = tag.replace(/^v/u, "");
+    check(compareVersions(previousVersion, newVersion) < 0, `${tag} is not older than ${newVersion}.`);
+    newBuild = await newArtifact();
+    const previousBuild = previousArtifact ? resolve(previousArtifact) : await downloadPrevious(tag, previousVersion);
+    await installPrevious(previousBuild);
+  }
   report.previousVersion = previousVersion;
-  const newBuild = await newArtifact();
-  const previousArtifact = option("previous-artifact");
-  const previousBuild = previousArtifact ? resolve(previousArtifact) : await downloadPrevious(tag, previousVersion);
   logger.info(`Upgrade from ${tag} to ${newVersion} (${basename(newBuild)}) in ${root}.`);
 
-  await installPrevious(previousBuild);
   const oldApp = await launch();
   const oldVersion = await readAppVersion(oldApp.page);
   check(oldVersion === previousVersion, `The previous release reports version ${oldVersion}, not ${previousVersion}.`);
@@ -1044,7 +1163,15 @@ try {
   const previousRowCounts = rowCounts(before);
   before.close();
 
-  await installNew(newBuild);
+  if (report.localBuilds) {
+    check(report.oldQuit.clean && report.oldQuit.exitCode === 0, "The baseline must quit before bundle replacement.");
+    await rm(macBundle, { recursive: true });
+    await rename(newBuild, macBundle);
+    localMacExecutable = report.localBuilds.candidate.executable;
+    verifyMacSignature();
+  } else {
+    await installNew(newBuild);
+  }
   const newApp = await launch();
   report.installedVersion = await readAppVersion(newApp.page);
   report.afterUpgrade = await readSeed(newApp.page, seeded);
