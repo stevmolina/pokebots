@@ -197,17 +197,6 @@ export const LITERAL_RULES: readonly LiteralRule[] = [
     find: 'context.fillText("OpenBot",',
     replace: (name) => `context.fillText(${JSON.stringify(name)},`,
   },
-  // Web client: the app name that its views show, and the name of a server that has none.
-  {
-    file: "src/renderer/src/features/web-client/WebWorkspace.tsx",
-    find: 'const WEB_APP_INFO: AppInfo = { name: "OpenBot",',
-    replace: (name) => `const WEB_APP_INFO: AppInfo = { name: ${JSON.stringify(name)},`,
-  },
-  {
-    file: "src/renderer/src/features/web-client/WebWorkspace.tsx",
-    find: 'workspace.state.host?.name ?? "OpenBot"',
-    replace: (name) => `workspace.state.host?.name ?? ${JSON.stringify(name)}`,
-  },
   // The included models in the provider lists, and the version names in Settings > Updates.
   {
     file: "packages/contracts/src/agent-providers.ts",
@@ -266,12 +255,7 @@ export const LITERAL_RULES: readonly LiteralRule[] = [
     find: '{ serverName: "OpenBot" }',
     replace: (name) => `{ serverName: ${JSON.stringify(name)} }`,
   },
-  // Other names in the desktop and web views.
-  {
-    file: "src/renderer/src/features/web-client/WebPhoneAppScreen.tsx",
-    find: 'const PRODUCT_NAME = "OpenBot";',
-    replace: (name) => `const PRODUCT_NAME = ${JSON.stringify(name)};`,
-  },
+  // Other names in desktop views.
   {
     file: "src/renderer/src/platform.tsx",
     find: 'name: "OpenBot",',
@@ -286,11 +270,6 @@ export const LITERAL_RULES: readonly LiteralRule[] = [
     file: "packages/ui/src/user-avatar.tsx",
     find: '|| "OpenBot";',
     replace: (name) => `|| ${JSON.stringify(name)};`,
-  },
-  {
-    file: "src/renderer/src/features/web-client/connection-log.ts",
-    find: '"OpenBot web connection log"',
-    replace: (name) => JSON.stringify(`${name} web connection log`),
   },
   {
     file: "packages/contracts/src/ipc-mcp-servers.ts",
