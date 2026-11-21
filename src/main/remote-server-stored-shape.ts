@@ -24,8 +24,8 @@
 // is a re-tag. A version this build does not know is refused outright: it was written by a newer
 // OpenBot, and guessing at it would replace a file that build can still read.
 
-import type { ServerNotificationLevel, TeamRole } from "@openbot/contracts/ipc";
-import { LOCAL_SERVER_ID, SERVER_NOTIFICATION_LEVELS } from "@openbot/contracts/ipc";
+import type { ServerNotificationLevel, TeamRole } from "@pokebots/contracts/ipc";
+import { LOCAL_SERVER_ID, SERVER_NOTIFICATION_LEVELS } from "@pokebots/contracts/ipc";
 import {
   type DynamicRecord,
   isBoolean,
@@ -33,11 +33,11 @@ import {
   isNumber,
   isOneOf,
   isString,
-} from "@openbot/contracts/runtime-values";
+} from "@pokebots/contracts/runtime-values";
 import {
   optionalServerAppearanceField,
   type ServerAppearance,
-} from "@openbot/contracts/team-protocol/host-appearance-v1";
+} from "@pokebots/contracts/team-protocol/host-appearance-v1";
 
 export interface StoredRemoteServer {
   id: string;

@@ -1,4 +1,4 @@
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
+import { isDynamicRecord, isString } from "@pokebots/contracts/runtime-values";
 import { Directory, File, Paths } from "expo-file-system";
 import { Platform } from "react-native";
 import { supportLog, supportLogValue } from "@/features/support/model/support-log";

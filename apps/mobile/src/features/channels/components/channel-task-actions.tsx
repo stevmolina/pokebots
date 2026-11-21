@@ -1,4 +1,4 @@
-import type { ChannelTask } from "@openbot/contracts/ipc";
+import type { ChannelTask } from "@pokebots/contracts/ipc";
 import { Button, Typography } from "heroui-native";
 import { View } from "react-native";
 import { BloubAvatarThumbnail } from "@/features/agents/components/bloub-avatar";

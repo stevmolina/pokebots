@@ -1,6 +1,6 @@
-import type { CrmActor, CrmCustomerPage, CrmOverview } from "@openbot/contracts/ipc";
-import { CRM_CAPABILITY, CRM_ROUTES } from "@openbot/contracts/team-protocol/crm-v1";
-import { sourceText } from "@openbot/i18n/source";
+import type { CrmActor, CrmCustomerPage, CrmOverview } from "@pokebots/contracts/ipc";
+import { CRM_CAPABILITY, CRM_ROUTES } from "@pokebots/contracts/team-protocol/crm-v1";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect } from "effect";
 import { CrmError } from "../../backend/crm/crm-handle";
 import {

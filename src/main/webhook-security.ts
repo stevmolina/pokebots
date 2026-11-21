@@ -1,11 +1,11 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
-import { WEBHOOK_DELIVERY_BODY_BYTES_LIMIT } from "@openbot/contracts/signal-protocol/messages";
+import { WEBHOOK_DELIVERY_BODY_BYTES_LIMIT } from "@pokebots/contracts/signal-protocol/messages";
 import {
   STANDARD_WEBHOOK_SIGNATURE_PATTERN,
   WEBHOOK_DELIVERY_ID_PATTERN,
   WEBHOOK_MAX_CLOCK_SKEW_SECONDS,
   WEBHOOK_TIMESTAMP_PATTERN,
-} from "@openbot/contracts/signal-protocol/webhook-route";
+} from "@pokebots/contracts/signal-protocol/webhook-route";
 import { Schema } from "effect";
 
 /** Signatures outside this clock window are replays, even if the secret is valid. */

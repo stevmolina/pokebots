@@ -12,7 +12,7 @@ import { spawnSync } from "node:child_process";
 import { chmod, mkdir, mkdtemp, readdir, readFile, readlink, rm, stat, symlink, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import { type AgentSummary, DEFAULT_AGENT_DEFAULTS } from "@openbot/contracts/ipc";
+import { type AgentSummary, DEFAULT_AGENT_DEFAULTS } from "@pokebots/contracts/ipc";
 import { displayMessageReferences } from "../src/backend/agent/delivery-content";
 import { developerInstructions } from "../src/backend/agent/developer-instructions";
 import { ClaudeAgentClient } from "../src/backend/claude-client";

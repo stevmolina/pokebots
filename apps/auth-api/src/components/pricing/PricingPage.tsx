@@ -1,9 +1,9 @@
-import type { BillingPlanId } from "@openbot/contracts/billing";
-import { type LicenseTier, pricingOrderSearch } from "@openbot/contracts/license";
-import type { TranslatedLocale } from "@openbot/i18n";
-import { Checkbox } from "@openbot/ui/checkbox";
-import { OrderForm, type OrderFormOrder } from "@openbot/ui/features/billing/OrderForm";
-import { TextProvider, useText } from "@openbot/ui/text";
+import type { BillingPlanId } from "@pokebots/contracts/billing";
+import { type LicenseTier, pricingOrderSearch } from "@pokebots/contracts/license";
+import type { TranslatedLocale } from "@pokebots/i18n";
+import { Checkbox } from "@pokebots/ui/checkbox";
+import { OrderForm, type OrderFormOrder } from "@pokebots/ui/features/billing/OrderForm";
+import { TextProvider, useText } from "@pokebots/ui/text";
 import { Link } from "@tanstack/solid-router";
 import { type Accessor, createSignal, createUniqueId, onSettled, Show } from "solid-js";
 import { landingAnalytics } from "../../lib/analytics";

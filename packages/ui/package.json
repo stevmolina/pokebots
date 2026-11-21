@@ -1,5 +1,5 @@
 {
-  "name": "@openbot/ui",
+  "name": "@pokebots/ui",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -574,16 +574,16 @@
     "./features/brain/BrainPanel": "./src/features/brain/BrainPanel.tsx"
   },
   "dependencies": {
-    "@openbot/contracts": "workspace:*",
+    "@pokebots/contracts": "workspace:*",
     "@kobalte/core": "catalog:",
     "class-variance-authority": "catalog:",
     "lucide-solid": "catalog:",
     "solid-sonner": "catalog:",
     "solid-recharts": "catalog:",
     "qrcode": "catalog:",
-    "@openbot/brand": "workspace:*",
-    "@openbot/team-client": "workspace:*",
-    "@openbot/user-errors": "workspace:*",
+    "@pokebots/brand": "workspace:*",
+    "@pokebots/team-client": "workspace:*",
+    "@pokebots/user-errors": "workspace:*",
     "@norbert_bodziony/bloub": "catalog:",
     "@speed-highlight/core": "catalog:",
     "katex": "catalog:",
@@ -591,8 +591,8 @@
     "mermaid": "catalog:",
     "@tanstack/virtual-core": "catalog:",
     "zod": "catalog:",
-    "@openbot/i18n": "workspace:*",
-    "@openbot/telemetry": "workspace:*"
+    "@pokebots/i18n": "workspace:*",
+    "@pokebots/telemetry": "workspace:*"
   },
   "peerDependencies": {
     "solid-js": "2.0.0",

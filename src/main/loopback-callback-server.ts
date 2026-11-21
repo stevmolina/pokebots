@@ -11,8 +11,8 @@
 
 import { createServer, type IncomingMessage, type Server } from "node:http";
 import type { Socket } from "node:net";
-import type { AppTextKey } from "@openbot/i18n";
-import { createOpenBotLogger } from "@openbot/logging";
+import type { AppTextKey } from "@pokebots/i18n";
+import { createOpenBotLogger } from "@pokebots/logging";
 import type { LanguageService } from "./language-service";
 import { listenLoopback, listenLoopbackExact } from "./listen-loopback";
 

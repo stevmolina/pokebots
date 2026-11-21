@@ -1,9 +1,9 @@
 import { execFile, execFileSync } from "node:child_process";
-import { isManagedRuntimeProvider, type ManagedProviderId } from "@openbot/contracts/agent-providers";
-import { ANALYTICS_GENERATIONS, openPanelTransport, ReportQueue } from "@openbot/telemetry";
-import { fileReportStorage } from "@openbot/telemetry/node";
-import { makeWASocket } from "@openbot/whatsapp/baileys";
-import { makeOpenBotSignalRepository } from "@openbot/whatsapp/signal-repository";
+import { isManagedRuntimeProvider, type ManagedProviderId } from "@pokebots/contracts/agent-providers";
+import { ANALYTICS_GENERATIONS, openPanelTransport, ReportQueue } from "@pokebots/telemetry";
+import { fileReportStorage } from "@pokebots/telemetry/node";
+import { makeWASocket } from "@pokebots/whatsapp/baileys";
+import { makeOpenBotSignalRepository } from "@pokebots/whatsapp/signal-repository";
 import { Effect, Fiber, Schema } from "effect";
 import { toAgentRemovalFailed } from "../backend/agent/agent-removal";
 import { perAgentScreensEnabled } from "../backend/agent/agent-screens";
@@ -109,8 +109,8 @@ import { homedir, hostname, tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { createInterface } from "node:readline";
 import type { Readable } from "node:stream";
-import { leadingAddress } from "@openbot/contracts/chat-tag-references";
-import { selfHostedApiOrigin } from "@openbot/contracts/invite-links";
+import { leadingAddress } from "@pokebots/contracts/chat-tag-references";
+import { selfHostedApiOrigin } from "@pokebots/contracts/invite-links";
 import type {
   AgentStatus,
   AppVariant,
@@ -123,7 +123,7 @@ import type {
   VoiceModelStatus,
   VoiceServerSettings,
   VoiceStreamTranscript,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   agentBrowserProfile,
   type ChannelCommand,
@@ -138,15 +138,15 @@ import {
   isUpdateBusyPhase,
   LOCAL_SERVER_ID,
   latestTurnAnswer,
-} from "@openbot/contracts/ipc";
-import { decodeRecord, requiredString } from "@openbot/contracts/ipc-decoding";
-import { isValidSemver } from "@openbot/contracts/release-version";
-import { CHANNEL_ROUTES } from "@openbot/contracts/team-protocol/channels-v1";
-import { localeDirection } from "@openbot/i18n";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger, redactSecrets, registerSecretValue, toLogValue } from "@openbot/logging";
-import { REMOTE_ACCOUNT_CHECK_INTERVAL_MS } from "@openbot/team-client";
-import { installRemoteSyncProfileSink } from "@openbot/team-client/sync-profile";
+} from "@pokebots/contracts/ipc";
+import { decodeRecord, requiredString } from "@pokebots/contracts/ipc-decoding";
+import { isValidSemver } from "@pokebots/contracts/release-version";
+import { CHANNEL_ROUTES } from "@pokebots/contracts/team-protocol/channels-v1";
+import { localeDirection } from "@pokebots/i18n";
+import { sourceText } from "@pokebots/i18n/source";
+import { createOpenBotLogger, redactSecrets, registerSecretValue, toLogValue } from "@pokebots/logging";
+import { REMOTE_ACCOUNT_CHECK_INTERVAL_MS } from "@pokebots/team-client";
+import { installRemoteSyncProfileSink } from "@pokebots/team-client/sync-profile";
 import {
   app,
   BrowserWindow,

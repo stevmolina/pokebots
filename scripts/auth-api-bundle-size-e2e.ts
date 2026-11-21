@@ -22,7 +22,7 @@ const apiRoot = join(projectRoot, "apps", "auth-api");
 const serverRoot = join(apiRoot, "dist", "server");
 const reportPath = join(projectRoot, ".openbot-build", "auth-api-bundle-size.json");
 
-/** The set was 33.9 MB when the `@openbot/contracts/ipc` barrel was imported. It is about 4 MB now. */
+/** The set was 33.9 MB when the `@pokebots/contracts/ipc` barrel was imported. It is about 4 MB now. */
 const MAX_STATIC_BYTES = 6 * 1024 * 1024;
 
 /** A source path in the static set that makes the Worker slower to start, and why. */

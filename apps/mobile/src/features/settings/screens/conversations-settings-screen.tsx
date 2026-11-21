@@ -1,4 +1,4 @@
-import { MOBILE_ATTACHMENT_BYTES } from "@openbot/team-client/remote-peer";
+import { MOBILE_ATTACHMENT_BYTES } from "@pokebots/team-client/remote-peer";
 import { router } from "expo-router";
 import { Typography } from "heroui-native";
 import EyeOff from "lucide-react-native/icons/eye-off";

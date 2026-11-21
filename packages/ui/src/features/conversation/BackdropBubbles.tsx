@@ -1,5 +1,5 @@
-import type { ChatBackdropBubbles } from "@openbot/contracts/chat-visual";
-import type { AvatarColor } from "@openbot/contracts/ipc";
+import type { ChatBackdropBubbles } from "@pokebots/contracts/chat-visual";
+import type { AvatarColor } from "@pokebots/contracts/ipc";
 import type { JSX } from "@solidjs/web";
 import { createContext, useContext } from "solid-js";
 

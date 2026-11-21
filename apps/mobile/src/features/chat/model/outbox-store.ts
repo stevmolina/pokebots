@@ -1,4 +1,4 @@
-import { MOBILE_ATTACHMENT_BYTES } from "@openbot/team-client/remote-peer";
+import { MOBILE_ATTACHMENT_BYTES } from "@pokebots/team-client/remote-peer";
 import type { ChatAttachment } from "../components/use-chat-attachments";
 import {
   type DecodedOutbox,

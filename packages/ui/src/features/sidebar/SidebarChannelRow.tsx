@@ -7,8 +7,8 @@
  * There it does not drag, and it has the same badge, chip and tooltip as the agent row.
  */
 
-import type { ChannelSummary } from "@openbot/contracts/ipc";
-import { Badge, buttonVariants, ContextMenu } from "@openbot/ui";
+import type { ChannelSummary } from "@pokebots/contracts/ipc";
+import { Badge, buttonVariants, ContextMenu } from "@pokebots/ui";
 import type { JSX } from "@solidjs/web";
 import { createMemo, createSignal, Show } from "solid-js";
 import { useText } from "../../text";

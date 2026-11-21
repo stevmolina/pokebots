@@ -1,4 +1,4 @@
-import type { IdleRestartTarget, OpenBotDesktopApi, UpdateStatus } from "@openbot/contracts/ipc";
+import type { IdleRestartTarget, OpenBotDesktopApi, UpdateStatus } from "@pokebots/contracts/ipc";
 
 /**
  * What the updates context reaches in main: the app update status, its check, download and

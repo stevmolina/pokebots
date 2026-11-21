@@ -1,6 +1,6 @@
-import type { RemoteComputerSession } from "@openbot/contracts/ipc";
-import { Button, MousePointer2 } from "@openbot/ui";
-import { useText } from "@openbot/ui/text";
+import type { RemoteComputerSession } from "@pokebots/contracts/ipc";
+import { Button, MousePointer2 } from "@pokebots/ui";
+import { useText } from "@pokebots/ui/text";
 import { createSignal, For, onCleanup, onSettled, Show } from "solid-js";
 import { computerUsePort } from "./computer-use-port";
 

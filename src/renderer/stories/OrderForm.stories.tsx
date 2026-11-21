@@ -1,7 +1,7 @@
-import type { BillingCurrency } from "@openbot/contracts/billing";
-import { Button } from "@openbot/ui";
-import { OrderForm, type OrderFormOrder } from "@openbot/ui/features/billing/OrderForm";
-import { useText } from "@openbot/ui/text";
+import type { BillingCurrency } from "@pokebots/contracts/billing";
+import { Button } from "@pokebots/ui";
+import { OrderForm, type OrderFormOrder } from "@pokebots/ui/features/billing/OrderForm";
+import { useText } from "@pokebots/ui/text";
 import type { Accessor } from "solid-js";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { MOCK_HOSTED_SERVER_CATALOG } from "../src/preview/mock-hosted-servers";

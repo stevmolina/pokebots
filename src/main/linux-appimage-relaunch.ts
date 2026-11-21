@@ -5,7 +5,7 @@
 // the AppImage file after this process is gone.
 import { spawn } from "node:child_process";
 import { dirname } from "node:path";
-import { createOpenBotLogger, toLogValue } from "@openbot/logging";
+import { createOpenBotLogger, toLogValue } from "@pokebots/logging";
 import type { App } from "electron";
 import { runsFromOwnMount } from "./linux-appimage-crashpad";
 

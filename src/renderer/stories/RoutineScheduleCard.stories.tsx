@@ -1,10 +1,10 @@
-import type { AgentMessage } from "@openbot/ui/data";
-import { ChatMessageRow } from "@openbot/ui/features/conversation/ChatMessageRow";
+import type { AgentMessage } from "@pokebots/ui/data";
+import { ChatMessageRow } from "@pokebots/ui/features/conversation/ChatMessageRow";
 import {
   RoutineScheduleCard,
   type RoutineScheduleCardProps,
-} from "@openbot/ui/features/conversation/RoutineScheduleCard";
-import { ROUTINE_WORKDAYS, type RoutineScheduleDraft } from "@openbot/ui/features/conversation/routine-schedule-draft";
+} from "@pokebots/ui/features/conversation/RoutineScheduleCard";
+import { ROUTINE_WORKDAYS, type RoutineScheduleDraft } from "@pokebots/ui/features/conversation/routine-schedule-draft";
 import { createSignal } from "solid-js";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";

@@ -9,7 +9,7 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import type { MessagingConnection, MessagingPlatform, SetMessagingEnabledInput } from "@openbot/contracts/ipc";
+import type { MessagingConnection, MessagingPlatform, SetMessagingEnabledInput } from "@pokebots/contracts/ipc";
 import { Effect } from "effect";
 import type { AgentBrowserHost } from "../src/backend/agent/turn-lifecycle";
 import { AgentService } from "../src/backend/agent-service";

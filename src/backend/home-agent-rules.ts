@@ -2,8 +2,8 @@ import { constants, type Stats } from "node:fs";
 import { lstat, open, realpath } from "node:fs/promises";
 import { homedir } from "node:os";
 import { join } from "node:path";
-import { HOME_AGENT_RULE_FILES, type HomeAgentRuleFile, type HomeAgentRulesPreference } from "@openbot/contracts/ipc";
-import { redactSecrets } from "@openbot/logging";
+import { HOME_AGENT_RULE_FILES, type HomeAgentRuleFile, type HomeAgentRulesPreference } from "@pokebots/contracts/ipc";
+import { redactSecrets } from "@pokebots/logging";
 import { Effect } from "effect";
 
 const MAX_RULE_BYTES = 32 * 1024;

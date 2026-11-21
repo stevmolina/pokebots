@@ -1,4 +1,4 @@
-import { resolveMobileFeatures, resolveMobileLatestVersion } from "@openbot/contracts/mobile-features";
+import { resolveMobileFeatures, resolveMobileLatestVersion } from "@pokebots/contracts/mobile-features";
 import { createFileRoute } from "@tanstack/solid-router";
 import { APP_MINIMUM_VERSIONS } from "../../../server/app-minimum-version";
 import { MOBILE_FEATURE_CONFIG, MOBILE_LATEST_VERSIONS } from "../../../server/mobile-features-config";

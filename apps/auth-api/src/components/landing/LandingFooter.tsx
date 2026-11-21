@@ -1,6 +1,6 @@
-import { AppLogo } from "@openbot/brand";
-import { SocialNetworkMark } from "@openbot/ui/features/social-follow/social-marks";
-import { SOCIAL_NETWORKS, type SocialNetworkId } from "@openbot/ui/features/social-follow/social-networks";
+import { AppLogo } from "@pokebots/brand";
+import { SocialNetworkMark } from "@pokebots/ui/features/social-follow/social-marks";
+import { SOCIAL_NETWORKS, type SocialNetworkId } from "@pokebots/ui/features/social-follow/social-networks";
 import type { JSX } from "@solidjs/web";
 import { Link } from "@tanstack/solid-router";
 import { For, Show } from "solid-js";

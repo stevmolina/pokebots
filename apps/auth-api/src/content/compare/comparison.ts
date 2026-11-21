@@ -1,5 +1,5 @@
-import type { ProviderLogoVariant } from "@openbot/brand";
-import { APP_LANGUAGES } from "@openbot/contracts/app-language";
+import type { ProviderLogoVariant } from "@pokebots/brand";
+import { APP_LANGUAGES } from "@pokebots/contracts/app-language";
 import type { RivalMarkName } from "../../components/compare/rival-mark-shapes";
 import type { LandingIconName } from "../../components/landing/LandingIcon";
 

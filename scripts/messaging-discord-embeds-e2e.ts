@@ -8,13 +8,13 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import { type DynamicRecord, isDynamicRecord } from "@openbot/contracts/runtime-values";
+import { type DynamicRecord, isDynamicRecord } from "@pokebots/contracts/runtime-values";
 import {
   DISCORD_MESSAGE_TEXT_LIMIT,
   type DiscordApiErrorCode,
   type DiscordApiRequest,
-} from "@openbot/contracts/signal-protocol/discord-api";
-import { registerSecretValue } from "@openbot/logging";
+} from "@pokebots/contracts/signal-protocol/discord-api";
+import { registerSecretValue } from "@pokebots/logging";
 import { Effect } from "effect";
 import {
   type DiscordRestRequest,

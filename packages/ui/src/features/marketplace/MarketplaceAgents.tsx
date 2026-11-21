@@ -1,7 +1,7 @@
-import { type MarketplaceAgentSummary, SKILL_CATEGORIES, type SkillCategory } from "@openbot/contracts/ipc";
-import { Badge, Button, Heading, Plus, Text } from "@openbot/ui";
-import { AgentAvatar } from "@openbot/ui/features/agents/AgentAvatar";
-import { useText } from "@openbot/ui/text";
+import { type MarketplaceAgentSummary, SKILL_CATEGORIES, type SkillCategory } from "@pokebots/contracts/ipc";
+import { Badge, Button, Heading, Plus, Text } from "@pokebots/ui";
+import { AgentAvatar } from "@pokebots/ui/features/agents/AgentAvatar";
+import { useText } from "@pokebots/ui/text";
 import type { JSX } from "@solidjs/web";
 import { createEffect, createMemo, createStore, For, Match, onCleanup, Show, Switch, untrack } from "solid-js";
 import { Done, ListingPanel, MissingNotice } from "./MarketplaceParts";

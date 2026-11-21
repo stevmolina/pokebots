@@ -4,7 +4,7 @@
  * other errors are faults.
  */
 
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import { Effect } from "effect";
 import { z } from "zod";
 import { openBotToolFailure, openBotToolResult } from "../agent/routine-tools";

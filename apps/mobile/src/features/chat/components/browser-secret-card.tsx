@@ -1,11 +1,11 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import type {
   BrowserTakeoverRequest,
   BrowserVaultSkipReason,
   RespondToBrowserSecretInput,
-} from "@openbot/contracts/ipc";
-import { markdownInlinePlainText } from "@openbot/contracts/markdown-preview-text";
-import type { MobileTextKey } from "@openbot/i18n/mobile";
+} from "@pokebots/contracts/ipc";
+import { markdownInlinePlainText } from "@pokebots/contracts/markdown-preview-text";
+import type { MobileTextKey } from "@pokebots/i18n/mobile";
 import { GlassView } from "expo-glass-effect";
 import { Button, Spinner, Typography } from "heroui-native";
 import { useThemeColor } from "heroui-native/hooks";

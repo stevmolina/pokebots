@@ -7,7 +7,7 @@ import {
   isHiddenAgentsSnapshot,
   isSidebarPinsSnapshot,
   type SidebarPinsSnapshot,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 // What main answers for agents: provider status, models, the agents themselves, memories, routines,
 // shared tables and the sidebar layout.
 //
@@ -56,9 +56,9 @@ import {
   type ProviderUsageResets,
   type SharedTable,
   type SidebarLayoutSnapshot,
-} from "@openbot/contracts/ipc";
-import { decodeRecord, guardedDecoder, guardedListDecoder } from "@openbot/contracts/ipc-decoding";
-import { isDynamicRecord, isHttpsUrl, isNumber, isOneOf, isString } from "@openbot/contracts/runtime-values";
+} from "@pokebots/contracts/ipc";
+import { decodeRecord, guardedDecoder, guardedListDecoder } from "@pokebots/contracts/ipc-decoding";
+import { isDynamicRecord, isHttpsUrl, isNumber, isOneOf, isString } from "@pokebots/contracts/runtime-values";
 
 export const decodeRoutine = guardedDecoder(isRoutine, "routine response");
 export const decodeAgentHostSettingsFromMain = guardedDecoder(isAgentHostSettings, "agent host settings response");

@@ -4,9 +4,9 @@
 // URL, and its buttons are links to fixed URLs that the main process stops and handles. It offers an
 // earlier release only when that release can open the data (`start-recovery-release.ts`), and the
 // latest release in its place.
-import type { AppTranslate, TranslatedLocale } from "@openbot/i18n";
-import { localeDirection } from "@openbot/i18n";
-import { createOpenBotLogger, toLogValue } from "@openbot/logging";
+import type { AppTranslate, TranslatedLocale } from "@pokebots/i18n";
+import { localeDirection } from "@pokebots/i18n";
+import { createOpenBotLogger, toLogValue } from "@pokebots/logging";
 import { app, BrowserWindow, nativeTheme, session, shell } from "electron";
 import { runCauseEffect } from "../backend/effect-boundary";
 import { DOWNLOAD_URL, RELEASES_URL } from "./download-url";

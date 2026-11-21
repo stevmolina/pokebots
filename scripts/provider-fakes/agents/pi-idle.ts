@@ -4,7 +4,7 @@
 import { appendFileSync } from "node:fs";
 import { join } from "node:path";
 import { createInterface } from "node:readline";
-import { isDynamicRecord, type DynamicRecord as RpcRecord } from "@openbot/contracts/runtime-values";
+import { isDynamicRecord, type DynamicRecord as RpcRecord } from "@pokebots/contracts/runtime-values";
 
 let sessionFile = join(process.env.FAKE_DIR ?? process.cwd(), `pi-${process.pid}.jsonl`);
 

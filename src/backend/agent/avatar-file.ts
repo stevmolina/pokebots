@@ -1,7 +1,7 @@
 import { open } from "node:fs/promises";
 import { resolve } from "node:path";
-import { AVATAR_MIME_TYPES, isValidAvatarImage } from "@openbot/contracts/avatar-images";
-import { AVATAR_IMAGE_LIMITS } from "@openbot/contracts/input-limits";
+import { AVATAR_MIME_TYPES, isValidAvatarImage } from "@pokebots/contracts/avatar-images";
+import { AVATAR_IMAGE_LIMITS } from "@pokebots/contracts/input-limits";
 import { Effect, Schema, Stream } from "effect";
 import { causeHelpers } from "../effect-boundary";
 

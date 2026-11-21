@@ -30,9 +30,9 @@ import {
   workflowCatalogProvider,
   workflowFixedCatalogModel,
   workflowGitHubTriggerRepositories,
-} from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
-import { nextValidRoutineOccurrence } from "@openbot/team-client/routine-schedule";
+} from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
+import { nextValidRoutineOccurrence } from "@pokebots/team-client/routine-schedule";
 
 const PREVIEW_HOOKS = "https://hooks.openbot.run/wf";
 

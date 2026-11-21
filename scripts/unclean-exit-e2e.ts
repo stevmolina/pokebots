@@ -19,7 +19,7 @@ import { createServer, type IncomingMessage, type Server } from "node:http";
 import { homedir } from "node:os";
 import { join, resolve } from "node:path";
 import { setTimeout as sleep } from "node:timers/promises";
-import { createOpenBotLogger } from "@openbot/logging";
+import { createOpenBotLogger } from "@pokebots/logging";
 import { z } from "zod";
 import { RUN_MARKER_FILE } from "../src/main/run-marker";
 import { readDevInstanceRecords } from "./dev-automation/instance-registry";

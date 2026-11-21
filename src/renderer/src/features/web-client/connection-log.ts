@@ -2,7 +2,7 @@
 // can be read after the fact. Settings shows it with a button that copies it.
 //
 // The stages are the fixed-name `openbot:remote-*` marks that `markRemoteSync` already sets (see
-// `@openbot/team-client/sync-profile`), so the log adds no call to the connection code. Each stage
+// `@pokebots/team-client/sync-profile`), so the log adds no call to the connection code. Each stage
 // keeps its time since the page started to load, which counts the network time of the page and its
 // code. A phone that is slow before the first stage is slow to download or run the code. A phone
 // that is slow between two stages is slow in that stage.

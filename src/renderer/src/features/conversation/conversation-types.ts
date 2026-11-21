@@ -32,19 +32,19 @@ import type {
   UpdateAgentInput,
   UpdateCustomProviderInput,
   WorkspaceDirectory,
-} from "@openbot/contracts/ipc";
-import type { ConversationUiBlock } from "@openbot/contracts/ui-blocks";
-import type { AgentMessage, AgentProfile, ComposerThreadMessageMatch } from "@openbot/ui/data";
-import type { BrowserViewRuntime } from "@openbot/ui/features/browser/BrowserLiveView";
-import type { ChannelWorker } from "@openbot/ui/features/channels/ChannelActivityIndicator";
-import type { AwaitingReplyItem } from "@openbot/ui/features/conversation/AwaitingReplies";
-import type { UsageLimitAskCardProps } from "@openbot/ui/features/conversation/BackupModels";
-import type { ChatMessageAuthor } from "@openbot/ui/features/conversation/ChatMessageRow";
-import type { UnloadedHistory } from "@openbot/ui/features/conversation/ChatScrollRail";
-import type { SidePanelPane } from "@openbot/ui/features/conversation/SidePanel";
-import type { AgentThreadOlderMessages } from "@openbot/ui/features/conversation/threads/AgentThreadView";
-import type { ThreadHeaderProps, ThreadItem } from "@openbot/ui/features/conversation/threads/thread-types";
-import type { SidebarAgentWait } from "@openbot/ui/features/sidebar/sidebar-agent-states";
+} from "@pokebots/contracts/ipc";
+import type { ConversationUiBlock } from "@pokebots/contracts/ui-blocks";
+import type { AgentMessage, AgentProfile, ComposerThreadMessageMatch } from "@pokebots/ui/data";
+import type { BrowserViewRuntime } from "@pokebots/ui/features/browser/BrowserLiveView";
+import type { ChannelWorker } from "@pokebots/ui/features/channels/ChannelActivityIndicator";
+import type { AwaitingReplyItem } from "@pokebots/ui/features/conversation/AwaitingReplies";
+import type { UsageLimitAskCardProps } from "@pokebots/ui/features/conversation/BackupModels";
+import type { ChatMessageAuthor } from "@pokebots/ui/features/conversation/ChatMessageRow";
+import type { UnloadedHistory } from "@pokebots/ui/features/conversation/ChatScrollRail";
+import type { SidePanelPane } from "@pokebots/ui/features/conversation/SidePanel";
+import type { AgentThreadOlderMessages } from "@pokebots/ui/features/conversation/threads/AgentThreadView";
+import type { ThreadHeaderProps, ThreadItem } from "@pokebots/ui/features/conversation/threads/thread-types";
+import type { SidebarAgentWait } from "@pokebots/ui/features/sidebar/sidebar-agent-states";
 import type { JSX } from "@solidjs/web";
 import type { ConnectorRegistry } from "../connectors/connector-registry";
 import type { AppSettingLinkId } from "../settings/setting-link-targets";
@@ -189,7 +189,7 @@ export interface ConversationProps {
    * this client cannot open a server; the card then stays a marker.
    */
   serverInstall?: ServerInstallWatch | undefined;
-  platform?: import("@openbot/contracts/ipc").AppInfo["platform"] | undefined;
+  platform?: import("@pokebots/contracts/ipc").AppInfo["platform"] | undefined;
   /**
    * The desktop app has the macOS photo picker (`AppInfo.photoPicker`), so the "+" menu offers Photos.
    * The web client never sets it: the browser's own file picker already offers the photo library.
@@ -527,10 +527,10 @@ export type { SidePanelPane };
  * pin of the agent itself, and returns the stop.
  */
 export interface ConversationMessagePins {
-  list: (agentId: string) => Promise<import("@openbot/contracts/ipc").PinnedMessagesSnapshot>;
+  list: (agentId: string) => Promise<import("@pokebots/contracts/ipc").PinnedMessagesSnapshot>;
   set: (
-    input: import("@openbot/contracts/ipc").SetMessagePinnedInput,
-  ) => Promise<import("@openbot/contracts/ipc").PinnedMessagesSnapshot>;
+    input: import("@pokebots/contracts/ipc").SetMessagePinnedInput,
+  ) => Promise<import("@pokebots/contracts/ipc").PinnedMessagesSnapshot>;
   subscribe: (agentId: string, changed: () => void) => () => void;
 }
 

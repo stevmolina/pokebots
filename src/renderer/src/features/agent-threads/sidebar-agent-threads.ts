@@ -1,6 +1,6 @@
-import { compareThreadItems, sideThreadItem } from "@openbot/ui/features/conversation/threads/thread-items";
-import { MAIN_THREAD_ID } from "@openbot/ui/features/conversation/threads/thread-types";
-import type { SidebarAgentThreads } from "@openbot/ui/features/sidebar/sidebar-types";
+import { compareThreadItems, sideThreadItem } from "@pokebots/ui/features/conversation/threads/thread-items";
+import { MAIN_THREAD_ID } from "@pokebots/ui/features/conversation/threads/thread-types";
+import type { SidebarAgentThreads } from "@pokebots/ui/features/sidebar/sidebar-types";
 import type { AgentTasks } from "../agent-tasks/agent-tasks-state";
 import type { AgentThreadTabsState } from "./agent-thread-tabs";
 import { type ThreadWaits, taskWaitsFor } from "./conversation-threads";

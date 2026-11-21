@@ -1,5 +1,5 @@
-import { NOTIFICATION_SOUNDS, type NotificationSound } from "@openbot/contracts/notification-relay";
-import type { MobileTextKey } from "@openbot/i18n/mobile";
+import { NOTIFICATION_SOUNDS, type NotificationSound } from "@pokebots/contracts/notification-relay";
+import type { MobileTextKey } from "@pokebots/i18n/mobile";
 import * as Notifications from "expo-notifications";
 import { currentText } from "@/shared/lib/text";
 

@@ -5,7 +5,7 @@ import { homedir } from "node:os";
 import { isAbsolute, join, resolve } from "node:path";
 import { StringDecoder } from "node:string_decoder";
 import type { CallToolResult, Tool } from "@modelcontextprotocol/sdk/types.js";
-import { type DynamicRecord, isDynamicRecord } from "@openbot/contracts/runtime-values";
+import { type DynamicRecord, isDynamicRecord } from "@pokebots/contracts/runtime-values";
 import {
   REMOTE_TERMINAL_CHUNK_BYTES,
   REMOTE_TERMINAL_COMMAND_MAX_LENGTH,
@@ -14,7 +14,7 @@ import {
   REMOTE_TERMINAL_MAX_TIMEOUT_SECONDS,
   REMOTE_TERMINAL_READ_TOOL,
   REMOTE_TERMINAL_RUN_TOOL,
-} from "@openbot/contracts/team-protocol/remote-computer-terminal-v1";
+} from "@pokebots/contracts/team-protocol/remote-computer-terminal-v1";
 
 // The two tools of `remote-computer-terminal-v1` that this computer answers itself, not its Computer
 // Use driver: run one shell command, and read one chunk of one file. `RemoteComputerClient` lists

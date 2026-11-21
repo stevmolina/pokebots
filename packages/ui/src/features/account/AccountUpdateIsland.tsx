@@ -1,6 +1,6 @@
-import type { UpdateStatus } from "@openbot/contracts/ipc";
-import { isUpdateActivePhase, isUpdateBusyPhase } from "@openbot/contracts/ipc";
-import { Button, Download, RefreshCw, Spinner } from "@openbot/ui";
+import type { UpdateStatus } from "@pokebots/contracts/ipc";
+import { isUpdateActivePhase, isUpdateBusyPhase } from "@pokebots/contracts/ipc";
+import { Button, Download, RefreshCw, Spinner } from "@pokebots/ui";
 import { createEffect, createMemo, createSignal, For, Show, untrack } from "solid-js";
 import { createDigitRoll } from "../../digit-roll";
 import { useText } from "../../text";

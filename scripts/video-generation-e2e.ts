@@ -10,8 +10,8 @@ import {
   type ConversationPage,
   isConversationMessage,
   type VideoGenerationInfo,
-} from "@openbot/contracts/ipc";
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
+} from "@pokebots/contracts/ipc";
+import { isDynamicRecord } from "@pokebots/contracts/runtime-values";
 import {
   legacyTeamCapabilities,
   TEAM_BOOTSTRAP_CAPABILITIES,
@@ -19,15 +19,15 @@ import {
   TEAM_PROTOCOL_V9_ONLY_CAPABILITIES,
   TEAM_VIDEO_GENERATION_CAPABILITY,
   teamCapabilitiesForProtocol,
-} from "@openbot/contracts/team-protocol/current";
-import { teamHttpCodec } from "@openbot/contracts/team-protocol/http-codecs";
-import { encodeTeamProtocolV8BaseCurrentEvent } from "@openbot/contracts/team-protocol/v8-base-adapter";
+} from "@pokebots/contracts/team-protocol/current";
+import { teamHttpCodec } from "@pokebots/contracts/team-protocol/http-codecs";
+import { encodeTeamProtocolV8BaseCurrentEvent } from "@pokebots/contracts/team-protocol/v8-base-adapter";
 import {
   createTeamProtocolV8Event,
   decodeTeamProtocolV8CurrentEvent,
   encodeTeamProtocolV8WebRtcHttpResponse,
-} from "@openbot/contracts/team-protocol/v8-webrtc-adapter";
-import { decodeTeamProtocolV9WebRtcHttpResponse } from "@openbot/contracts/team-protocol/v9-webrtc-adapter";
+} from "@pokebots/contracts/team-protocol/v8-webrtc-adapter";
+import { decodeTeamProtocolV9WebRtcHttpResponse } from "@pokebots/contracts/team-protocol/v9-webrtc-adapter";
 
 const OUT = resolve(import.meta.dirname, "../.openbot-build/video-generation-e2e");
 const PAGE_PATH = "/v1/agents/agent-1/conversation-page";

@@ -6,7 +6,7 @@ import {
   createMarketplaceShareUrl,
   isMarketplaceAgentId,
   isMarketplaceSkillSlug,
-} from "@openbot/contracts/marketplace-links";
+} from "@pokebots/contracts/marketplace-links";
 import { BRAND_PAGE_UPDATED_AT, BRAND_ROUTE } from "../lib/brand-page";
 import { changelogUrl } from "../lib/changelog";
 import { CHANGELOG_UPDATED_AT } from "../lib/changelog-releases";

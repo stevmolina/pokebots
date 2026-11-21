@@ -1,5 +1,5 @@
-import type { AppLanguage } from "@openbot/contracts/app-language";
-import type { HourCycle } from "@openbot/contracts/ipc";
+import type { AppLanguage } from "@pokebots/contracts/app-language";
+import type { HourCycle } from "@pokebots/contracts/ipc";
 
 /** The languages a catalog exists for. `"system"` resolves to one of these; it is never one itself. */
 export const TRANSLATED_LOCALES = [

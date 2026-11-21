@@ -1,4 +1,4 @@
-import { Button } from "@openbot/ui";
+import { Button } from "@pokebots/ui";
 import type { JSX } from "@solidjs/web";
 import { createSignal, onSettled, Show } from "solid-js";
 

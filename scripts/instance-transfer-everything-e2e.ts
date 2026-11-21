@@ -37,8 +37,8 @@ import {
   type ServerNotificationLevel,
   type SkillLearningMode,
   type UpdateHostIdentityInput,
-} from "@openbot/contracts/ipc";
-import { copiedTransferUpload } from "@openbot/team-client/team-api-requests";
+} from "@pokebots/contracts/ipc";
+import { copiedTransferUpload } from "@pokebots/team-client/team-api-requests";
 import { Effect } from "effect";
 import type { AgentBrowserHost } from "../src/backend/agent/turn-lifecycle";
 

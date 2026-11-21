@@ -4,7 +4,7 @@
 import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
-import type { RoutineSchedule } from "@openbot/contracts/ipc";
+import type { RoutineSchedule } from "@pokebots/contracts/ipc";
 import { Effect } from "effect";
 import { AgentRoutineStore } from "../src/backend/agent-routine-store";
 import { OpenBotDatabase } from "../src/backend/openbot-database";

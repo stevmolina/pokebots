@@ -3,9 +3,9 @@ import type {
   StartWhatsAppLinkInput,
   WhatsAppLinkState,
   WhatsAppOverview,
-} from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
-import { currentText } from "@openbot/ui/text";
+} from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
+import { currentText } from "@pokebots/ui/text";
 import { createSignal, onCleanup, untrack } from "solid-js";
 import {
   type ConnectorAnalyticsAction,

@@ -1,15 +1,15 @@
 "use dom";
 
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { TEAM_WEB_CLIENT_PROTOCOL } from "@openbot/contracts/team-protocol/current";
-import { sourceText } from "@openbot/i18n/source";
+import { isDynamicRecord, isString } from "@pokebots/contracts/runtime-values";
+import { TEAM_WEB_CLIENT_PROTOCOL } from "@pokebots/contracts/team-protocol/current";
+import { sourceText } from "@pokebots/i18n/source";
 import {
   createRemoteTeamPeer,
   decodeRemoteTeamCommand,
   type RemoteTeamCommandResult,
   type RemoteTeamPeerActions,
-} from "@openbot/team-client/remote-peer";
-import { createTeamRequestId } from "@openbot/team-client/request-id";
+} from "@pokebots/team-client/remote-peer";
+import { createTeamRequestId } from "@pokebots/team-client/request-id";
 import { type DOMImperativeFactory, useDOMImperativeHandle } from "expo/dom";
 import { type Ref, useEffect, useRef } from "react";
 import { type BrowserViewBridgeEvent, createBrowserViewBridge } from "@/features/browser/model/browser-view-bridge";

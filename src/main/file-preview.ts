@@ -1,10 +1,10 @@
 import { readFile, realpath } from "node:fs/promises";
 import { dirname } from "node:path";
-import { attachmentMimeTypeForName } from "@openbot/contracts/attachment-files";
-import { isChatVisualMimeType } from "@openbot/contracts/chat-visual";
-import { ATTACHMENT_LIMITS } from "@openbot/contracts/input-limits";
-import { type FilePreview, filePreviewKindForFile } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+import { attachmentMimeTypeForName } from "@pokebots/contracts/attachment-files";
+import { isChatVisualMimeType } from "@pokebots/contracts/chat-visual";
+import { ATTACHMENT_LIMITS } from "@pokebots/contracts/input-limits";
+import { type FilePreview, filePreviewKindForFile } from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect } from "effect";
 import { attachmentCall } from "../backend/attachment-effects";
 import { filePreviewPages } from "./file-preview-pages";

@@ -1,4 +1,4 @@
-import { Button, buttonVariants, Input, ItemActions, ItemGroup, Plus, Textarea } from "@openbot/ui";
+import { Button, buttonVariants, Input, ItemActions, ItemGroup, Plus, Textarea } from "@pokebots/ui";
 import {
   SettingsField,
   SettingsLinkGroup,
@@ -6,9 +6,9 @@ import {
   SettingsPanel,
   SettingsPanelContent,
   SettingsPanelHeader,
-} from "@openbot/ui/components/SettingsPanel";
-import { ChannelContextActions } from "@openbot/ui/features/channels/ChannelContextActions";
-import { ChannelMemberRow } from "@openbot/ui/features/channels/ChannelMemberRow";
+} from "@pokebots/ui/components/SettingsPanel";
+import { ChannelContextActions } from "@pokebots/ui/features/channels/ChannelContextActions";
+import { ChannelMemberRow } from "@pokebots/ui/features/channels/ChannelMemberRow";
 import { onCleanup } from "solid-js";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";

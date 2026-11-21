@@ -1,7 +1,7 @@
 import { createHash, randomUUID } from "node:crypto";
-import { agentProviderDescriptor } from "@openbot/contracts/agent-providers";
-import { expandAttachmentReferences } from "@openbot/contracts/attachment-references";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { agentProviderDescriptor } from "@pokebots/contracts/agent-providers";
+import { expandAttachmentReferences } from "@pokebots/contracts/attachment-references";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import {
   AGENT_EXCHANGE_ITEM_TYPE,
   AGENT_TASK_QUEUED_PREVIEW,
@@ -21,9 +21,9 @@ import {
   type ConversationSnapshot,
   type QueuedMessageReceipt,
   workspaceAccessEnforced,
-} from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger } from "@openbot/logging";
+} from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
+import { createOpenBotLogger } from "@pokebots/logging";
 import { Deferred, Effect, Result, Schema, Semaphore } from "effect";
 import { z } from "zod";
 import type { ConversationRuntime } from "../agent/conversation-runtime";

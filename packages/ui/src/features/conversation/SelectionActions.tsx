@@ -1,12 +1,12 @@
-import { fileQuoteId, fileQuoteTarget } from "@openbot/contracts/chat-tag-references";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { fileQuoteId, fileQuoteTarget } from "@pokebots/contracts/chat-tag-references";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import {
   SELECTION_ACTION_INSTRUCTIONS,
   serializeFileSelectionInstruction,
   serializeSelectionInstruction,
-} from "@openbot/contracts/selection-instruction";
-import { Button, Input, Kbd, TextQuote } from "@openbot/ui";
-import { clamp } from "@openbot/ui/utils";
+} from "@pokebots/contracts/selection-instruction";
+import { Button, Input, Kbd, TextQuote } from "@pokebots/ui";
+import { clamp } from "@pokebots/ui/utils";
 import { Portal } from "@solidjs/web";
 import type { Element as SolidElement } from "solid-js";
 import { createEffect, createMemo, createSignal, For, onCleanup, onSettled, Show } from "solid-js";

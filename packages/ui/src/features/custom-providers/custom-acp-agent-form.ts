@@ -2,7 +2,7 @@
 // over the Agent Client Protocol on stdio. The dialog hands the trimmed draft to its host, which
 // turns it into the IPC input with `customAgentInput`.
 
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import {
   type AcpAgentPreset,
   type CheckCustomAgentInput,
@@ -13,8 +13,8 @@ import {
   isCustomAgentUsagePrompt,
   isNewCustomAgentId,
   type SaveCustomAgentInput,
-} from "@openbot/contracts/ipc";
-import type { AppTranslate } from "@openbot/i18n";
+} from "@pokebots/contracts/ipc";
+import type { AppTranslate } from "@pokebots/i18n";
 import { currentText } from "../../text";
 
 export interface CustomAcpEnvDraft {

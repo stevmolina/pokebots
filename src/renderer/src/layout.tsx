@@ -1,11 +1,11 @@
-import type { AppInfo } from "@openbot/contracts/ipc";
-import type { ServerView } from "@openbot/ui/features/servers/ServerMenu";
-import { SIDEBAR_PINNABLE_PAGES, type SidebarPinnablePage } from "@openbot/ui/features/sidebar/sidebar-pages";
+import type { AppInfo } from "@pokebots/contracts/ipc";
+import type { ServerView } from "@pokebots/ui/features/servers/ServerMenu";
+import { SIDEBAR_PINNABLE_PAGES, type SidebarPinnablePage } from "@pokebots/ui/features/sidebar/sidebar-pages";
 import {
   SIDEBAR_CHAT_ORDERS,
   type SidebarChatOrder,
   type SidebarView,
-} from "@openbot/ui/features/sidebar/sidebar-types";
+} from "@pokebots/ui/features/sidebar/sidebar-types";
 import { createEffect, createMemo, createSignal, onSettled } from "solid-js";
 import { z } from "zod";
 import { readPanelWidth } from "./components/panel-width-storage";

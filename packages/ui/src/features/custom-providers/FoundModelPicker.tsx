@@ -1,5 +1,5 @@
-import { CUSTOM_PROVIDER_LIMITS } from "@openbot/contracts/ipc";
-import { Check, ChevronsUpDown, DropdownMenu, Input, Search } from "@openbot/ui";
+import { CUSTOM_PROVIDER_LIMITS } from "@pokebots/contracts/ipc";
+import { Check, ChevronsUpDown, DropdownMenu, Input, Search } from "@pokebots/ui";
 import { createMemo, createSignal, For, onCleanup, Show } from "solid-js";
 import { createMenuSearch } from "../../components/createMenuSearch";
 import { createScrollFades } from "../../components/createScrollFades";

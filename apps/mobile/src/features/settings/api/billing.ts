@@ -1,4 +1,4 @@
-import { type BillingState, parseBillingState } from "@openbot/contracts/billing";
+import { type BillingState, parseBillingState } from "@pokebots/contracts/billing";
 import { type MobileSession, requestMobileAccount } from "@/features/auth/api/mobile-auth";
 import { currentText } from "@/shared/lib/text";
 

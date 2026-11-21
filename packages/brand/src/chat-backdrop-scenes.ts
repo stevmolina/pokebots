@@ -1,4 +1,4 @@
-import type { AvatarColor } from "@openbot/contracts/ipc";
+import type { AvatarColor } from "@pokebots/contracts/ipc";
 
 /**
  * The animated scenes that can play behind a chat, on the desktop, the web client and mobile. Each

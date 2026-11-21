@@ -23,8 +23,8 @@ import {
   type LocalVoiceModelId,
   VOICE_MODELS,
   type VoiceLanguage,
-} from "@openbot/contracts/ipc";
-import { createOpenBotLogger } from "@openbot/logging";
+} from "@pokebots/contracts/ipc";
+import { createOpenBotLogger } from "@pokebots/logging";
 import { Effect } from "effect";
 import { VoiceApiKeyStore } from "../src/main/voice-api-key-store";
 import { openScribeSocket } from "../src/main/voice-cloud-stream";

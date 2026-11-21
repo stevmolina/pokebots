@@ -1,7 +1,7 @@
-import type { CrmProposal } from "@openbot/contracts/ipc";
-import { Button, CircleCheck, IconButton, X } from "@openbot/ui";
-import { AgentAvatar } from "@openbot/ui/features/agents/AgentAvatar";
-import { useText } from "@openbot/ui/text";
+import type { CrmProposal } from "@pokebots/contracts/ipc";
+import { Button, CircleCheck, IconButton, X } from "@pokebots/ui";
+import { AgentAvatar } from "@pokebots/ui/features/agents/AgentAvatar";
+import { useText } from "@pokebots/ui/text";
 import { createMemo, createSignal, createUniqueId, For, Show } from "solid-js";
 import { AgentAccess, Owner, SideBody } from "./CrmParts";
 import { matches, timeAgo } from "./crm-model";

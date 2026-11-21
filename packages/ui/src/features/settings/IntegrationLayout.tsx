@@ -4,8 +4,8 @@
  * The connectors and the Marketplace app pages use them.
  */
 
-import { AppLogo } from "@openbot/brand";
-import type { AppTextKey } from "@openbot/i18n";
+import { AppLogo } from "@pokebots/brand";
+import type { AppTextKey } from "@pokebots/i18n";
 import {
   Alert,
   AlertActions,
@@ -31,7 +31,7 @@ import {
   Text,
   TriangleAlert,
   X,
-} from "@openbot/ui";
+} from "@pokebots/ui";
 import type { JSX } from "@solidjs/web";
 import { createSignal, For, Show } from "solid-js";
 import type { AgentProfile } from "../../data";

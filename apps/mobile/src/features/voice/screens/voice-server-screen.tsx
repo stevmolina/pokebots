@@ -1,5 +1,5 @@
-import { sameCustomProviderOrigin, type VoiceServerModels, type VoiceServerRoutes } from "@openbot/contracts/ipc";
-import { fitVoiceServerRoutes, shortVoiceServerModel } from "@openbot/contracts/voice-server";
+import { sameCustomProviderOrigin, type VoiceServerModels, type VoiceServerRoutes } from "@pokebots/contracts/ipc";
+import { fitVoiceServerRoutes, shortVoiceServerModel } from "@pokebots/contracts/voice-server";
 import { router } from "expo-router";
 import { usePreventRemove } from "expo-router/react-navigation";
 import { Typography } from "heroui-native";

@@ -16,7 +16,7 @@ import type {
   ServerNotificationLevel,
   ServerSummary,
   UpdateStatus,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   Alert,
   AlertActions,
@@ -26,22 +26,22 @@ import {
   Button,
   Tabs,
   TriangleAlert,
-} from "@openbot/ui";
-import { BillingPanel } from "@openbot/ui/features/billing/BillingPanel";
-import { createBillingStore } from "@openbot/ui/features/billing/billing-store";
-import { LicenseSection } from "@openbot/ui/features/billing/LicenseSection";
-import { createLicenseStore } from "@openbot/ui/features/billing/license-store";
-import type { GeneralSettingsValue } from "@openbot/ui/features/settings/app-settings";
-import { SettingsDialogShell, type SettingsPagePlacement } from "@openbot/ui/features/settings/SettingsDialogShell";
-import { SettingsMachinesTab } from "@openbot/ui/features/settings/SettingsMachinesTab";
-import { SettingsMobileConnectTab } from "@openbot/ui/features/settings/SettingsMobileConnectTab";
-import { SettingsProfileTab } from "@openbot/ui/features/settings/SettingsProfileTab";
-import { SettingsUpdatesTab } from "@openbot/ui/features/settings/SettingsUpdatesTab";
-import { createSettingsHostedServersStore } from "@openbot/ui/features/settings/stores/hosted-servers-store";
-import { createSettingsMobileConnectStore } from "@openbot/ui/features/settings/stores/mobile-connect-store";
-import { createSettingsProfileStore } from "@openbot/ui/features/settings/stores/profile-store";
-import { createSettingsUpdatesStore } from "@openbot/ui/features/settings/stores/updates-store";
-import { cx } from "@openbot/ui/utils";
+} from "@pokebots/ui";
+import { BillingPanel } from "@pokebots/ui/features/billing/BillingPanel";
+import { createBillingStore } from "@pokebots/ui/features/billing/billing-store";
+import { LicenseSection } from "@pokebots/ui/features/billing/LicenseSection";
+import { createLicenseStore } from "@pokebots/ui/features/billing/license-store";
+import type { GeneralSettingsValue } from "@pokebots/ui/features/settings/app-settings";
+import { SettingsDialogShell, type SettingsPagePlacement } from "@pokebots/ui/features/settings/SettingsDialogShell";
+import { SettingsMachinesTab } from "@pokebots/ui/features/settings/SettingsMachinesTab";
+import { SettingsMobileConnectTab } from "@pokebots/ui/features/settings/SettingsMobileConnectTab";
+import { SettingsProfileTab } from "@pokebots/ui/features/settings/SettingsProfileTab";
+import { SettingsUpdatesTab } from "@pokebots/ui/features/settings/SettingsUpdatesTab";
+import { createSettingsHostedServersStore } from "@pokebots/ui/features/settings/stores/hosted-servers-store";
+import { createSettingsMobileConnectStore } from "@pokebots/ui/features/settings/stores/mobile-connect-store";
+import { createSettingsProfileStore } from "@pokebots/ui/features/settings/stores/profile-store";
+import { createSettingsUpdatesStore } from "@pokebots/ui/features/settings/stores/updates-store";
+import { cx } from "@pokebots/ui/utils";
 import type { JSX } from "@solidjs/web";
 import { createEffect, createSignal, For, Show, untrack } from "solid-js";
 import { useI18n } from "../../i18n-context";

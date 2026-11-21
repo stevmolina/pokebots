@@ -1,6 +1,6 @@
-import { avatarHeadColor } from "@openbot/brand/bloub-avatar";
-import { type PokebotsAccessoryPart, pokebotsAccessory, pokebotsAccessoryParts } from "@openbot/brand/pokebots-avatar";
-import type { AvatarColor, AvatarHue } from "@openbot/contracts/ipc";
+import { avatarHeadColor } from "@pokebots/brand/bloub-avatar";
+import { type PokebotsAccessoryPart, pokebotsAccessory, pokebotsAccessoryParts } from "@pokebots/brand/pokebots-avatar";
+import type { AvatarColor, AvatarHue } from "@pokebots/contracts/ipc";
 import {
   PaintStyle,
   type SkCanvas,
@@ -14,7 +14,7 @@ import { plushGeometry } from "./plush-frames";
 
 /*
  * Pokebots: the brand look of the plush, as the desktop draws it (`PokebotsAccessory` and
- * `pokebots-avatar.css` in `@openbot/ui`). The accessory comes from the seed, so the phone shows the
+ * `pokebots-avatar.css` in `@pokebots/ui`). The accessory comes from the seed, so the phone shows the
  * one that the desktop shows.
  */
 

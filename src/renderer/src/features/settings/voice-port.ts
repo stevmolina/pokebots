@@ -1,4 +1,4 @@
-import type { OpenBotDesktopApi } from "@openbot/contracts/ipc";
+import type { OpenBotDesktopApi } from "@pokebots/contracts/ipc";
 
 /** What the Voice tab reaches in main: the dictation models and the dictation settings. */
 export interface VoicePort {

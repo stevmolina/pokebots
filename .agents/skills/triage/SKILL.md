@@ -125,7 +125,7 @@ Write, in one line each:
 - **Need**: the problem under the request. A request often names one
   solution. Assess the need, not the named solution.
 - **Today**: what the user can do now, and since which release
-  (`git tag --contains`). Search the `@openbot/i18n` catalog
+  (`git tag --contains`). Search the `@pokebots/i18n` catalog
   (`packages/i18n/src/messages/en`), settings, workflows, webhooks, agent
   tools, and `marketplace/production-catalog`. Text that starts with `/`
   goes to the provider; OpenBot has no local slash commands. Give
@@ -270,7 +270,7 @@ impact also sets the bar for the fix in Step 4.
 Find the root cause, not only the place where the symptom shows.
 
 1. Find the code path from the symptom. Start from the UI text (an
-   `@openbot/i18n` key), the IPC channel, the error code, or the log line
+   `@pokebots/i18n` key), the IPC channel, the error code, or the log line
    in the issue. Use an `Explore` agent for a broad search.
 2. Write the hypothesis in one sentence: "X fails because Y at `path:line`".
 3. Prove it. Use the cheapest proof that is conclusive:
@@ -319,7 +319,7 @@ Otherwise, continue:
      new toggle to explain a bad flow.
    When this needs a UI design decision, stop and ask (see the list above).
 2. Obey `AGENTS.md`: non-negotiable rules, Effect rules, shared UI,
-   `@openbot/i18n` text, and terms.
+   `@pokebots/i18n` text, and terms.
 3. Add a test only when `AGENTS.md` asks for one: data loss, released
    protocol, trust boundary, secret leak, or a bug that came back. A
    migration always needs its tests. Delete temporary tests from Step 3

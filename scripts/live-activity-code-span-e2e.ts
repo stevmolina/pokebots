@@ -7,15 +7,15 @@ import { createHash, randomBytes } from "node:crypto";
 import { EventEmitter } from "node:events";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
-import { type AgentEvent, type AgentRuntimeSnapshot, isAgentRuntimeSnapshot } from "@openbot/contracts/ipc";
-import { LIVE_ACTIVITY_SEALED_LIMIT, type LiveActivityRelayPush } from "@openbot/contracts/live-activity-relay";
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
-import type { AgentLiveActivityProps } from "@openbot/team-client/live-activity-props";
+import { type AgentEvent, type AgentRuntimeSnapshot, isAgentRuntimeSnapshot } from "@pokebots/contracts/ipc";
+import { LIVE_ACTIVITY_SEALED_LIMIT, type LiveActivityRelayPush } from "@pokebots/contracts/live-activity-relay";
+import { isDynamicRecord } from "@pokebots/contracts/runtime-values";
+import type { AgentLiveActivityProps } from "@pokebots/team-client/live-activity-props";
 import {
   encodeLiveActivityBytes,
   LIVE_ACTIVITY_SECRET_BYTES,
   liveActivityKeys,
-} from "@openbot/team-client/live-activity-seal";
+} from "@pokebots/team-client/live-activity-seal";
 import { Effect } from "effect";
 import { openSealedLiveActivity } from "../apps/mobile/src/features/live-activity/model/live-activity-open";
 import { LiveActivityPushService } from "../src/main/live-activity-push";

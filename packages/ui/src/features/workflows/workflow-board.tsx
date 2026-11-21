@@ -4,9 +4,9 @@
  * the same type. Drag between an output and an input in either direction, or press one and then the other.
  */
 
-import type { RoutineSchedule, StoredFileRow } from "@openbot/contracts/ipc";
-import type { AppTextKey, AppTranslate } from "@openbot/i18n";
-import { Button, Kbd, LabelTooltip, Repeat, X } from "@openbot/ui";
+import type { RoutineSchedule, StoredFileRow } from "@pokebots/contracts/ipc";
+import type { AppTextKey, AppTranslate } from "@pokebots/i18n";
+import { Button, Kbd, LabelTooltip, Repeat, X } from "@pokebots/ui";
 import type { JSX } from "@solidjs/web";
 import {
   createContext,

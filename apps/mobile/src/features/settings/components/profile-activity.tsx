@@ -1,4 +1,4 @@
-import { agentProviderCliName, isAgentProvider } from "@openbot/contracts/ipc";
+import { agentProviderCliName, isAgentProvider } from "@pokebots/contracts/ipc";
 import {
   type HeatLevel,
   heatLevel,
@@ -6,7 +6,7 @@ import {
   heatmapWeeks,
   type ProfileDay,
   type ProfileStats,
-} from "@openbot/team-client/profile-stats";
+} from "@pokebots/team-client/profile-stats";
 import { Button, Typography } from "heroui-native";
 import { useMemo, useRef, useState } from "react";
 import { type GestureResponderEvent, Pressable, ScrollView, type ScrollViewInstance, View } from "react-native";

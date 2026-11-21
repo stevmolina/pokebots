@@ -1,4 +1,4 @@
-import type { ConversationPage } from "@openbot/contracts/ipc";
+import type { ConversationPage } from "@pokebots/contracts/ipc";
 
 /**
  * Which messages a conversation shows after a page or a snapshot arrives.

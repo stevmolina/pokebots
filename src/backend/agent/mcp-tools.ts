@@ -1,5 +1,5 @@
 import { CallToolResultSchema } from "@modelcontextprotocol/sdk/types.js";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import {
   type AgentAccess,
   MCP_TRANSPORTS,
@@ -8,8 +8,8 @@ import {
   mcpConfigErrors,
   normalizeMcpConfig,
   workspaceAccessEnforced,
-} from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect } from "effect";
 import { z } from "zod";
 import type { McpSignInOffer } from "../mcp-oauth-provider";

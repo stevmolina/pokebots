@@ -1,7 +1,7 @@
 import { stat } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { isAbsolute } from "node:path";
-import { type AgentSummary, workspaceAccessEnforced } from "@openbot/contracts/ipc";
+import { type AgentSummary, workspaceAccessEnforced } from "@pokebots/contracts/ipc";
 import { Effect } from "effect";
 import { isPathInside } from "../path-containment";
 

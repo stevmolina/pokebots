@@ -1,4 +1,4 @@
-import { LOCAL_SERVER_ID } from "@openbot/contracts/ipc";
+import { LOCAL_SERVER_ID } from "@pokebots/contracts/ipc";
 import { onSettled } from "solid-js";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import type { MockOpenBotOptions } from "../src/preview/mock-openbot";

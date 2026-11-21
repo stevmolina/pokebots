@@ -1,4 +1,4 @@
-import type { ShortcutPlatform } from "@openbot/ui/features/shortcuts/shortcut-registry";
+import type { ShortcutPlatform } from "@pokebots/ui/features/shortcuts/shortcut-registry";
 
 /** How long ⌘ (Ctrl elsewhere) stays down alone before the shortcut list shows. */
 const MODIFIER_HOLD_MS = 600;

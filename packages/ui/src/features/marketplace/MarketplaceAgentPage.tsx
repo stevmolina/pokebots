@@ -1,5 +1,5 @@
-import type { MarketplaceAgentDetail, MarketplaceAgentSummary } from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
+import type { MarketplaceAgentDetail, MarketplaceAgentSummary } from "@pokebots/contracts/ipc";
+import type { AppTextKey } from "@pokebots/i18n";
 import {
   Button,
   CalendarClock,
@@ -16,10 +16,10 @@ import {
   SettingsSection,
   Text,
   UsersRound,
-} from "@openbot/ui";
-import { AgentAvatar } from "@openbot/ui/features/agents/AgentAvatar";
-import { routineScheduleSummary } from "@openbot/ui/features/conversation/routine-schedule-ui";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/ui";
+import { AgentAvatar } from "@pokebots/ui/features/agents/AgentAvatar";
+import { routineScheduleSummary } from "@pokebots/ui/features/conversation/routine-schedule-ui";
+import { useText } from "@pokebots/ui/text";
 import { For, Show } from "solid-js";
 import { IntegrationPage, type IntegrationStatus, LogoTile } from "../settings/IntegrationLayout";
 import { CopyListingLink, DetailState, SkillIcon } from "./MarketplaceParts";

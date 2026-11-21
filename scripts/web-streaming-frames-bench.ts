@@ -17,7 +17,7 @@
 import assert from "node:assert/strict";
 import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { createOpenBotLogger } from "@openbot/logging";
+import { createOpenBotLogger } from "@pokebots/logging";
 import { type Browser, devices, type Page, webkit } from "playwright-core";
 
 const logger = createOpenBotLogger("web-streaming-frames-bench");

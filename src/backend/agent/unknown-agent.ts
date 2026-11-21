@@ -1,6 +1,6 @@
-import type { AgentSummary } from "@openbot/contracts/ipc";
-import { isGeneratedAgentId, isUuidV4 } from "@openbot/contracts/validation";
-import { sourceText } from "@openbot/i18n/source";
+import type { AgentSummary } from "@pokebots/contracts/ipc";
+import { isGeneratedAgentId, isUuidV4 } from "@pokebots/contracts/validation";
+import { sourceText } from "@pokebots/i18n/source";
 
 /** A model that copies a long agent id can drop, add or change a character or two. */
 const NEAR_ID_EDITS = 2;

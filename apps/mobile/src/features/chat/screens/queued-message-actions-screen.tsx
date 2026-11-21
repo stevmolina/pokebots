@@ -1,4 +1,4 @@
-import type { AttachmentSummary, QueueDelivery } from "@openbot/contracts/ipc";
+import type { AttachmentSummary, QueueDelivery } from "@pokebots/contracts/ipc";
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import { StackActions } from "expo-router/react-navigation";
 import { Typography } from "heroui-native";

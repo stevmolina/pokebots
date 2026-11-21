@@ -2,11 +2,11 @@ import type {
   AgentComputerAccountAllowance,
   AgentComputerStatus,
   ComputerManagementInput,
-} from "@openbot/contracts/ipc";
-import type { AgentComputerPort } from "@openbot/team-client/agent-computer";
-import type { CloudComputer } from "@openbot/ui/features/servers/CloudComputerList";
-import { AgentComputerPanel } from "@openbot/ui/features/settings/AgentComputerPanel";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/contracts/ipc";
+import type { AgentComputerPort } from "@pokebots/team-client/agent-computer";
+import type { CloudComputer } from "@pokebots/ui/features/servers/CloudComputerList";
+import { AgentComputerPanel } from "@pokebots/ui/features/settings/AgentComputerPanel";
+import { useText } from "@pokebots/ui/text";
 import { createEffect, createSignal, onCleanup } from "solid-js";
 
 /** Where a person makes an Agent Computer API key. */

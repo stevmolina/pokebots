@@ -1,5 +1,5 @@
-import type { AgentMessage } from "@openbot/ui/data";
-import { preferredMessageScrollBehavior } from "@openbot/ui/features/conversation/MessageNavigation";
+import type { AgentMessage } from "@pokebots/ui/data";
+import { preferredMessageScrollBehavior } from "@pokebots/ui/features/conversation/MessageNavigation";
 import type { VirtualItem } from "@tanstack/virtual-core";
 import { createEffect, createSignal } from "solid-js";
 import type { ConversationProps } from "../conversation-types";

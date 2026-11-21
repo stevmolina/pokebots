@@ -28,7 +28,7 @@ import { createHash, randomBytes } from "node:crypto";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { HOSTED_SITE_HOST_ID_HEADER, HOSTED_SITE_HOST_TOKEN_HEADER } from "@openbot/contracts/hosted-sites";
+import { HOSTED_SITE_HOST_ID_HEADER, HOSTED_SITE_HOST_TOKEN_HEADER } from "@pokebots/contracts/hosted-sites";
 import { z } from "zod";
 import { developmentChildEnvironment } from "./development-environment";
 

@@ -1,4 +1,4 @@
-import { CHANNEL_ROUTING_EVENT_ITEM_TYPE_PREFIX, type ChannelMessage } from "@openbot/contracts/ipc";
+import { CHANNEL_ROUTING_EVENT_ITEM_TYPE_PREFIX, type ChannelMessage } from "@pokebots/contracts/ipc";
 
 /** Item types that the host leaves out of a channel's unread count (`src/backend/channel-store.ts`). */
 const NOT_COUNTED_ITEM_TYPES: ReadonlySet<string> = new Set([

@@ -11,7 +11,7 @@ import { Effect } from "effect";
  */
 
 import { join } from "node:path";
-import type { AppShortcutCommand } from "@openbot/contracts/app-shortcut";
+import type { AppShortcutCommand } from "@pokebots/contracts/app-shortcut";
 import {
   type AgentSummary,
   type AppVariant,
@@ -23,8 +23,8 @@ import {
   LOCAL_SERVER_ID,
   type MacPermissionId,
   type QuitGuard,
-} from "@openbot/contracts/ipc";
-import type { AppTextKey, AppTranslate, LayoutDirection } from "@openbot/i18n";
+} from "@pokebots/contracts/ipc";
+import type { AppTextKey, AppTranslate, LayoutDirection } from "@pokebots/i18n";
 import {
   app,
   BrowserWindow,

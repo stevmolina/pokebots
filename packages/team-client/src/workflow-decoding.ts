@@ -36,9 +36,9 @@ import {
   type WorkflowMediaCatalog,
   type WorkflowMediaCreditBalance,
   type WorkflowMediaPrice,
-} from "@openbot/contracts/ipc";
-import { guardedDecoder, guardedListDecoder } from "@openbot/contracts/ipc-decoding";
-import { type DynamicRecord, isDynamicRecord, isOneOf, isString } from "@openbot/contracts/runtime-values";
+} from "@pokebots/contracts/ipc";
+import { guardedDecoder, guardedListDecoder } from "@pokebots/contracts/ipc-decoding";
+import { type DynamicRecord, isDynamicRecord, isOneOf, isString } from "@pokebots/contracts/runtime-values";
 
 type Json = DynamicRecord;
 

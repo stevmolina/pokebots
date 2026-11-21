@@ -20,14 +20,14 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import { AGENT_PROVIDERS, type AgentEvent, routineConversationEvent } from "@openbot/contracts/ipc";
-import type { EventActivity, EventRoutine } from "@openbot/contracts/ipc-events";
+import { AGENT_PROVIDERS, type AgentEvent, routineConversationEvent } from "@pokebots/contracts/ipc";
+import type { EventActivity, EventRoutine } from "@pokebots/contracts/ipc-events";
 import {
   STANDARD_WEBHOOKS_FORMAT,
   WEBHOOK_DELIVERY_ID_HEADER,
   WEBHOOK_SIGNATURE_HEADER,
   WEBHOOK_TIMESTAMP_HEADER,
-} from "@openbot/contracts/signal-protocol/webhook-route";
+} from "@pokebots/contracts/signal-protocol/webhook-route";
 import { Effect } from "effect";
 import type { AgentBrowserHost } from "../src/backend/agent/turn-lifecycle";
 

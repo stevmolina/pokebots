@@ -7,9 +7,9 @@ import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
-import { avatarHeadColor } from "@openbot/brand/bloub-avatar";
-import { POKEBOTS_PORTRAITS, pokebotsDefaultPortrait } from "@openbot/brand/pokebots-avatar";
-import type { AvatarColor, AvatarHue, ClientAgentSummary } from "@openbot/contracts/ipc";
+import { avatarHeadColor } from "@pokebots/brand/bloub-avatar";
+import { POKEBOTS_PORTRAITS, pokebotsDefaultPortrait } from "@pokebots/brand/pokebots-avatar";
+import type { AvatarColor, AvatarHue, ClientAgentSummary } from "@pokebots/contracts/ipc";
 import { brandModule, readBrandSettings } from "./brand-layer";
 import { connectChannelE2e } from "./channel-e2e-support";
 

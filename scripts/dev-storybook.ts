@@ -9,7 +9,7 @@ import { type ChildProcess, spawn } from "node:child_process";
 import { existsSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { createOpenBotLogger, toLogValue } from "@openbot/logging";
+import { createOpenBotLogger, toLogValue } from "@pokebots/logging";
 import { cliSpawnTarget } from "../src/backend/cli";
 import { withDevPortAllocation } from "./dev-automation/port-allocation";
 import {

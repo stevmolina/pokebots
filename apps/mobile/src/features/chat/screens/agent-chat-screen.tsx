@@ -1,4 +1,4 @@
-import { isAgentTaskOpen } from "@openbot/team-client/agent-tasks";
+import { isAgentTaskOpen } from "@pokebots/team-client/agent-tasks";
 import { router, useFocusEffect, useIsFocused, useLocalSearchParams } from "expo-router";
 import { Typography } from "heroui-native";
 import { useThemeColor } from "heroui-native/hooks";

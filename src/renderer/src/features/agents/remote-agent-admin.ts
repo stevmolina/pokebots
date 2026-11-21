@@ -12,15 +12,15 @@ import type {
   UpdateAgentAdminSettingsInput,
   UpdateAgentHostSettingsInput,
   UpdateAgentInput,
-} from "@openbot/contracts/ipc";
-import { AGENT_ADMIN_CAPABILITY } from "@openbot/contracts/team-protocol/agent-admin-v1";
-import { AGENT_BACKUP_MODELS_CAPABILITY } from "@openbot/contracts/team-protocol/agent-backup-models-v1";
-import { AGENT_FAST_MODE_CAPABILITY } from "@openbot/contracts/team-protocol/agent-fast-mode-v1";
-import { AGENT_HOST_SETTINGS_CAPABILITY } from "@openbot/contracts/team-protocol/agent-host-settings-v1";
-import { AGENT_NEW_CHAT_CAPABILITY } from "@openbot/contracts/team-protocol/agent-new-chat-v1";
-import { AGENT_PLAN_CARD_CAPABILITY } from "@openbot/contracts/team-protocol/agent-plan-card-v1";
-import { AGENT_SPEED_CAPABILITY } from "@openbot/contracts/team-protocol/agent-speed-v1";
-import { currentText } from "@openbot/ui/text";
+} from "@pokebots/contracts/ipc";
+import { AGENT_ADMIN_CAPABILITY } from "@pokebots/contracts/team-protocol/agent-admin-v1";
+import { AGENT_BACKUP_MODELS_CAPABILITY } from "@pokebots/contracts/team-protocol/agent-backup-models-v1";
+import { AGENT_FAST_MODE_CAPABILITY } from "@pokebots/contracts/team-protocol/agent-fast-mode-v1";
+import { AGENT_HOST_SETTINGS_CAPABILITY } from "@pokebots/contracts/team-protocol/agent-host-settings-v1";
+import { AGENT_NEW_CHAT_CAPABILITY } from "@pokebots/contracts/team-protocol/agent-new-chat-v1";
+import { AGENT_PLAN_CARD_CAPABILITY } from "@pokebots/contracts/team-protocol/agent-plan-card-v1";
+import { AGENT_SPEED_CAPABILITY } from "@pokebots/contracts/team-protocol/agent-speed-v1";
+import { currentText } from "@pokebots/ui/text";
 import { createEffect, createMemo, createStore, untrack } from "solid-js";
 import { serverCanAdminister, serverSupportsCapability } from "../servers/server-capabilities";
 import { type AgentsPort, agentsPort } from "./agents-port";

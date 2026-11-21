@@ -3,7 +3,7 @@
  * does not change the layout, and the list keeps it for as long as the sidebar is open.
  */
 
-import type { AppTextKey } from "@openbot/i18n";
+import type { AppTextKey } from "@pokebots/i18n";
 
 export type SidebarListShow = "all" | "agents" | "channels";
 

@@ -1,4 +1,4 @@
-import { type SidebarPin, sidebarPinKey } from "@openbot/contracts/ipc";
+import { type SidebarPin, sidebarPinKey } from "@pokebots/contracts/ipc";
 import { Typography } from "heroui-native";
 import { useThemeColor } from "heroui-native/hooks";
 import {

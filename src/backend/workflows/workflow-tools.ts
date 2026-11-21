@@ -8,7 +8,7 @@
  * reads; other errors are faults.
  */
 
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import {
   isGitHubRepositoryName,
   isRoutineSchedule,
@@ -27,9 +27,9 @@ import {
   workflowGitHubTriggerRepositoryFields,
   workflowGraphProblemAt,
   workflowListField,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 
-import { RoutineInputError } from "@openbot/team-client/routine-schedule";
+import { RoutineInputError } from "@pokebots/team-client/routine-schedule";
 import { Effect } from "effect";
 import { z } from "zod";
 import { openBotToolFailure, openBotToolResult } from "../agent/routine-tools";

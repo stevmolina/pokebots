@@ -7,7 +7,7 @@
 import assert from "node:assert/strict";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { translateFor } from "@openbot/i18n";
+import { translateFor } from "@pokebots/i18n";
 import { chromium, type Page } from "playwright-core";
 
 declare global {

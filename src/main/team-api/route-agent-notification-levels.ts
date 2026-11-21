@@ -1,9 +1,9 @@
-import { parseSetAgentNotificationLevelInput, parseSetOwnServerNotificationLevelInput } from "@openbot/contracts/ipc";
+import { parseSetAgentNotificationLevelInput, parseSetOwnServerNotificationLevelInput } from "@pokebots/contracts/ipc";
 import {
   AGENT_NOTIFICATION_LEVELS_CAPABILITY,
   AGENT_NOTIFICATION_LEVELS_ROUTES,
-} from "@openbot/contracts/team-protocol/agent-notification-levels-v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/team-protocol/agent-notification-levels-v1";
+import { sourceText } from "@pokebots/i18n/source";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import type { TeamApiAgentNotificationLevels, TeamApiAgents } from "./dependencies";
 import { HttpError } from "./http-error";

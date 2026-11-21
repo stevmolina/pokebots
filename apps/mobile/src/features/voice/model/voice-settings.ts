@@ -6,8 +6,8 @@ import {
   isSpeechVoice,
   type SpeechSpeed,
   type SpeechVoice,
-} from "@openbot/contracts/ipc";
-import { isDynamicRecord, isOneOf, isString } from "@openbot/contracts/runtime-values";
+} from "@pokebots/contracts/ipc";
+import { isDynamicRecord, isOneOf, isString } from "@pokebots/contracts/runtime-values";
 import * as SecureStore from "expo-secure-store";
 import { create } from "zustand";
 

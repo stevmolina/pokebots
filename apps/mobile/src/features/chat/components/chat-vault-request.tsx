@@ -1,6 +1,6 @@
-import type { ConversationQuestionPrompt } from "@openbot/contracts/ipc";
-import type { ConversationUiBlock, UiBlockVaultRequest, UiVaultRequestKind } from "@openbot/contracts/ui-blocks";
-import type { MobileTextKey } from "@openbot/i18n/mobile";
+import type { ConversationQuestionPrompt } from "@pokebots/contracts/ipc";
+import type { ConversationUiBlock, UiBlockVaultRequest, UiVaultRequestKind } from "@pokebots/contracts/ui-blocks";
+import type { MobileTextKey } from "@pokebots/i18n/mobile";
 import { router } from "expo-router";
 import { Button, Typography } from "heroui-native";
 import { useThemeColor } from "heroui-native/hooks";

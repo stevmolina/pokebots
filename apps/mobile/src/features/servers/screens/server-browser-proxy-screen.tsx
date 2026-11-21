@@ -7,7 +7,7 @@ import {
   editableBrowserProxyAddress,
   parseBrowserProxyAddress,
   type SaveBrowserProxyInput,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { usePreventRemove } from "expo-router/react-navigation";
 import { Typography } from "heroui-native";

@@ -14,15 +14,15 @@ import {
   WORKFLOW_TRIGGER_TYPES,
   type WorkflowRunPage,
   type WorkflowVersion,
-} from "@openbot/contracts/ipc";
-import { accountUsageProviderRows } from "@openbot/ui/features/account/account-usage-view";
-import { Sidebar } from "@openbot/ui/features/sidebar/Sidebar";
-import type { SidebarPage } from "@openbot/ui/features/sidebar/sidebar-pages";
-import type { SidebarView } from "@openbot/ui/features/sidebar/sidebar-types";
-import { WorkflowCanvas } from "@openbot/ui/features/workflows/WorkflowCanvas";
-import { WORKFLOW_FEATURES_V1, type WorkflowFeatures } from "@openbot/ui/features/workflows/workflow-model";
-import type { WorkflowPresence } from "@openbot/ui/features/workflows/workflow-presence";
-import type { WorkflowRunView } from "@openbot/ui/features/workflows/workflow-run-view";
+} from "@pokebots/contracts/ipc";
+import { accountUsageProviderRows } from "@pokebots/ui/features/account/account-usage-view";
+import { Sidebar } from "@pokebots/ui/features/sidebar/Sidebar";
+import type { SidebarPage } from "@pokebots/ui/features/sidebar/sidebar-pages";
+import type { SidebarView } from "@pokebots/ui/features/sidebar/sidebar-types";
+import { WorkflowCanvas } from "@pokebots/ui/features/workflows/WorkflowCanvas";
+import { WORKFLOW_FEATURES_V1, type WorkflowFeatures } from "@pokebots/ui/features/workflows/workflow-model";
+import type { WorkflowPresence } from "@pokebots/ui/features/workflows/workflow-presence";
+import type { WorkflowRunView } from "@pokebots/ui/features/workflows/workflow-run-view";
 import { createSignal, Show, untrack } from "solid-js";
 import { fn } from "storybook/test";
 import { defaultSidebarLayout } from "../src/features/sidebar/sidebar-sections";

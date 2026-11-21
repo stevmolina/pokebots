@@ -3,8 +3,8 @@ import {
   AGENT_MEMORY_CONTEXT_BUDGET_BYTES,
   essentialMemoryBytes,
   serializeEssentialMemories,
-} from "@openbot/contracts/agent-memory-context";
-import { agentProviderDescriptor, isKeyOnlyProvider } from "@openbot/contracts/agent-providers";
+} from "@pokebots/contracts/agent-memory-context";
+import { agentProviderDescriptor, isKeyOnlyProvider } from "@pokebots/contracts/agent-providers";
 import {
   type AgentDefaults,
   type AgentInstructionFileName,
@@ -19,8 +19,8 @@ import {
   OPENBOT_COMMIT_TRAILER,
   type ResponseStyle,
   workspaceAccessEnforced,
-} from "@openbot/contracts/ipc";
-import { redactSecrets, redactText } from "@openbot/logging";
+} from "@pokebots/contracts/ipc";
+import { redactSecrets, redactText } from "@pokebots/logging";
 import { automationRunCommand } from "../automation-command";
 import type { HomeSkill } from "../home-skills";
 import { PASSWORD_MANAGER_BRAND_NAMES } from "../password-vault";

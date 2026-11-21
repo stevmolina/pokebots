@@ -1,7 +1,7 @@
-import type { FirstTouch } from "@openbot/contracts/first-touch";
-import { type AvatarColor, isAvatarColor } from "@openbot/contracts/ipc-agent-identity";
-import type { MobileConnectHostBinding } from "@openbot/contracts/mobile-connect";
-import { type DynamicRecord, isBoolean, isNumber, isString } from "@openbot/contracts/runtime-values";
+import type { FirstTouch } from "@pokebots/contracts/first-touch";
+import { type AvatarColor, isAvatarColor } from "@pokebots/contracts/ipc-agent-identity";
+import type { MobileConnectHostBinding } from "@pokebots/contracts/mobile-connect";
+import { type DynamicRecord, isBoolean, isNumber, isString } from "@pokebots/contracts/runtime-values";
 import {
   isUuidV4,
   normalizeEmailAddress,
@@ -9,8 +9,8 @@ import {
   ONE_TIME_CODE_ALPHABET,
   ONE_TIME_CODE_LENGTH,
   validateProfileName,
-} from "@openbot/contracts/validation";
-import { sourceText } from "@openbot/i18n/source-english";
+} from "@pokebots/contracts/validation";
+import { sourceText } from "@pokebots/i18n/source-english";
 import { Context, Effect, Layer, Result, Schema } from "effect";
 import { type AccountAnalytics, type AccountSurface, NO_ACCOUNT_ANALYTICS } from "./account-analytics";
 import type { AccountAttribution } from "./account-attribution";

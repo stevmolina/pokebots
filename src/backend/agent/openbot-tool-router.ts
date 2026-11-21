@@ -1,14 +1,14 @@
 import { createHash, randomUUID } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { basename } from "node:path";
-import { attachmentMimeTypeForName } from "@openbot/contracts/attachment-files";
+import { attachmentMimeTypeForName } from "@pokebots/contracts/attachment-files";
 import {
   CHAT_BACKDROP_ITEM_TYPE,
   chatVisualItemType,
   withChatBackdropBubbles,
   withChatBackdropRequesters,
-} from "@openbot/contracts/chat-visual";
-import { sortConversationMessages } from "@openbot/contracts/conversation-order";
+} from "@pokebots/contracts/chat-visual";
+import { sortConversationMessages } from "@pokebots/contracts/conversation-order";
 import {
   BUG_REPORT_AREAS,
   BUG_REPORT_SEVERITIES,
@@ -32,14 +32,14 @@ import {
   parseFeedback,
   type SimilarFeedbackIssue,
   withFeedbackPhone,
-} from "@openbot/contracts/feedback";
+} from "@pokebots/contracts/feedback";
 import {
   installServerCommand,
   parseHostedServerName,
   type ServerClaim,
   serverInstallItemType,
-} from "@openbot/contracts/hosted-servers";
-import { ATTACHMENT_LIMITS, INPUT_LIMITS } from "@openbot/contracts/input-limits";
+} from "@pokebots/contracts/hosted-servers";
+import { ATTACHMENT_LIMITS, INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import type {
   AgentApproval,
   AgentModelChoice,
@@ -52,7 +52,7 @@ import type {
   McpServerConfig,
   SidebarLayoutSnapshot,
   UpdateAgentInput,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   agentComputerUseEnabled,
   agentNewChatAllowed,
@@ -72,11 +72,11 @@ import {
   skillConversationEventItemType,
   VAULT_CHANGE_ITEM_TYPE,
   workspaceAccessEnforced,
-} from "@openbot/contracts/ipc";
-import { isOneOf, isString } from "@openbot/contracts/runtime-values";
-import { isUiBlockId, normalizeUiBlockSpec } from "@openbot/contracts/ui-blocks";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger, maskIdentifiers, redactText, registerSecretValue, toLogValue } from "@openbot/logging";
+} from "@pokebots/contracts/ipc";
+import { isOneOf, isString } from "@pokebots/contracts/runtime-values";
+import { isUiBlockId, normalizeUiBlockSpec } from "@pokebots/contracts/ui-blocks";
+import { sourceText } from "@pokebots/i18n/source";
+import { createOpenBotLogger, maskIdentifiers, redactText, registerSecretValue, toLogValue } from "@pokebots/logging";
 import { Effect, Result } from "effect";
 import { z } from "zod";
 import type { AgentApiKeys, SavedApiKey } from "../agent-api-keys";

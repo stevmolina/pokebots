@@ -1,4 +1,4 @@
-import type { LiveVoiceEvent } from "@openbot/contracts/team-protocol/live-voice-v1";
+import type { LiveVoiceEvent } from "@pokebots/contracts/team-protocol/live-voice-v1";
 
 type LiveVoiceListener = (serverId: string, event: LiveVoiceEvent) => void;
 

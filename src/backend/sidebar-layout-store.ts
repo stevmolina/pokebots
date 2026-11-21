@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 import { EventEmitter } from "node:events";
 import { mkdir } from "node:fs/promises";
 import { dirname } from "node:path";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import {
   isCompleteSectionOrder,
   SIDEBAR_FOLDER_LEVELS,
@@ -15,10 +15,10 @@ import {
   sidebarFolderHeight,
   sidebarFolderParents,
   sidebarFolderTreeOrder,
-} from "@openbot/contracts/ipc";
-import { isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
-import { isUuidV4, legacyAgentId } from "@openbot/contracts/validation";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/ipc";
+import { isDynamicRecord, isNumber, isString } from "@pokebots/contracts/runtime-values";
+import { isUuidV4, legacyAgentId } from "@pokebots/contracts/validation";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect, Exit, Semaphore } from "effect";
 import { writeFileAtomically } from "./atomic-json-file";
 import { StoredStateFailure, storedIO, storedSync } from "./stored-state-effects";

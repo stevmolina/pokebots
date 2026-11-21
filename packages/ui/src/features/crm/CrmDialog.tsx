@@ -8,9 +8,9 @@ import {
   type CrmPaymentPatch,
   type CrmPlan,
   type CrmPlanPatch,
-} from "@openbot/contracts/ipc";
-import { Button, Checkbox, Dialog, Field, IconButton, Input, Plus, SearchSelect, X } from "@openbot/ui";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/contracts/ipc";
+import { Button, Checkbox, Dialog, Field, IconButton, Input, Plus, SearchSelect, X } from "@pokebots/ui";
+import { useText } from "@pokebots/ui/text";
 import type { JSX } from "@solidjs/web";
 import { createMemo, createSignal, createStore, createUniqueId, For, Show } from "solid-js";
 import { ChoiceSelect, CrmPopupLayer, LabelledControl, OwnerSelect, usePopupMount } from "./CrmParts";

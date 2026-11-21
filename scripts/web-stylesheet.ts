@@ -43,24 +43,24 @@ export const DESKTOP_ONLY_STYLES: readonly string[] = [
  * Styles of screens that open after the first chat. `web-deferred-styles.ts` loads them with that
  * screen. A name that `styles.css` no longer imports stops the build.
  *
- * `@openbot/ui/features/settings/settings-modal.css` stays in the first sheet. The marketplace
+ * `@pokebots/ui/features/settings/settings-modal.css` stays in the first sheet. The marketplace
  * navigation reuses `.settings-modal-nav-item`, and that rule must stay before the marketplace rule.
  */
 export const DEFERRED_WEB_STYLES: readonly string[] = [
-  "@openbot/ui/features/billing/billing.css",
-  "@openbot/ui/features/tasks/tasks.css",
-  "@openbot/ui/features/servers/add-server-dialog.css",
-  "@openbot/ui/features/servers/hosted-pricing-page.css",
-  "@openbot/ui/features/servers/install-server-dialog.css",
-  "@openbot/ui/features/servers/create-local-server-dialog.css",
-  "@openbot/ui/features/servers/server-roles.css",
-  "@openbot/ui/features/servers/server-audit-log.css",
-  "@openbot/ui/features/settings/profile.css",
-  "@openbot/ui/features/settings/integration-layout.css",
-  "@openbot/ui/features/settings/provider-settings-page.css",
-  "@openbot/ui/features/settings/mcp-connect-dialog.css",
-  "@openbot/ui/features/settings/notification-matrix.css",
-  "@openbot/ui/features/settings/plan-start.css",
+  "@pokebots/ui/features/billing/billing.css",
+  "@pokebots/ui/features/tasks/tasks.css",
+  "@pokebots/ui/features/servers/add-server-dialog.css",
+  "@pokebots/ui/features/servers/hosted-pricing-page.css",
+  "@pokebots/ui/features/servers/install-server-dialog.css",
+  "@pokebots/ui/features/servers/create-local-server-dialog.css",
+  "@pokebots/ui/features/servers/server-roles.css",
+  "@pokebots/ui/features/servers/server-audit-log.css",
+  "@pokebots/ui/features/settings/profile.css",
+  "@pokebots/ui/features/settings/integration-layout.css",
+  "@pokebots/ui/features/settings/provider-settings-page.css",
+  "@pokebots/ui/features/settings/mcp-connect-dialog.css",
+  "@pokebots/ui/features/settings/notification-matrix.css",
+  "@pokebots/ui/features/settings/plan-start.css",
   "./features/settings/settings-modal.css",
   "./features/servers/server-settings-modal.css",
   "./features/servers/server-mcp.css",

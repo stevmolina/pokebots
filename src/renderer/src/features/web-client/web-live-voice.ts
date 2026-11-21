@@ -1,6 +1,6 @@
-import type { AgentEvent, TeamRealtimeEvent } from "@openbot/contracts/ipc";
-import { runTeamEffect } from "@openbot/team-client";
-import { startLiveVoice, stopLiveVoice, type TeamApiRequest } from "@openbot/team-client/team-api-requests";
+import type { AgentEvent, TeamRealtimeEvent } from "@pokebots/contracts/ipc";
+import { runTeamEffect } from "@pokebots/team-client";
+import { startLiveVoice, stopLiveVoice, type TeamApiRequest } from "@pokebots/team-client/team-api-requests";
 import { Effect } from "effect";
 import { createSignal } from "solid-js";
 import type { CodexLivePort } from "../conversation/stores/codex-live-conversation-store";

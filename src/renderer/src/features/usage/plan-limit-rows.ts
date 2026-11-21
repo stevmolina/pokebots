@@ -1,7 +1,7 @@
-import { DEFAULT_PROVIDER_ACCOUNT_ID } from "@openbot/contracts/ipc";
-import { spentUsageWindow, usageTone } from "@openbot/team-client/plan-limits";
-import { accountUsageProviderRows, formatUsageReset } from "@openbot/ui/features/account/account-usage-view";
-import { useText } from "@openbot/ui/text";
+import { DEFAULT_PROVIDER_ACCOUNT_ID } from "@pokebots/contracts/ipc";
+import { spentUsageWindow, usageTone } from "@pokebots/team-client/plan-limits";
+import { accountUsageProviderRows, formatUsageReset } from "@pokebots/ui/features/account/account-usage-view";
+import { useText } from "@pokebots/ui/text";
 import { createMemo } from "solid-js";
 import { useTurns } from "../../turns";
 import { useAuth } from "../account/account-context";

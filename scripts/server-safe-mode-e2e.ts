@@ -47,7 +47,7 @@ import {
   TEAM_PROTOCOL_VERSION_HEADER,
   type TeamProtocolV2Json,
   teamProtocolV2AuthenticationTranscript,
-} from "@openbot/contracts/team-protocol";
+} from "@pokebots/contracts/team-protocol";
 import {
   expandTeamCapabilitiesV10,
   readTeamHostCompatibility,
@@ -57,19 +57,19 @@ import {
   teamCapabilityHeaders,
   teamCapabilityLists,
   teamWebRtcClientProtocol,
-} from "@openbot/contracts/team-protocol/current";
+} from "@pokebots/contracts/team-protocol/current";
 import {
   decodeServerSafeModeReason,
   SERVER_SAFE_MODE_CAPABILITY,
   SERVER_SAFE_MODE_ROUTES,
   type ServerSafeModeReason,
-} from "@openbot/contracts/team-protocol/server-safe-mode-v1";
-import { teamSideRouteCodec } from "@openbot/contracts/team-protocol/side-routes";
-import { TEAM_PROTOCOL_V9 } from "@openbot/contracts/team-protocol/v9";
-import { encodeTeamProtocolV9WebRtcHttpRequest } from "@openbot/contracts/team-protocol/v9-webrtc-adapter";
-import { decodeTeamProtocolSupportV10, TEAM_PROTOCOL_V10 } from "@openbot/contracts/team-protocol/v10";
-import { decodeTeamProtocolV10WebRtcHttpResponse } from "@openbot/contracts/team-protocol/v10-webrtc-adapter";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/team-protocol/server-safe-mode-v1";
+import { teamSideRouteCodec } from "@pokebots/contracts/team-protocol/side-routes";
+import { TEAM_PROTOCOL_V9 } from "@pokebots/contracts/team-protocol/v9";
+import { encodeTeamProtocolV9WebRtcHttpRequest } from "@pokebots/contracts/team-protocol/v9-webrtc-adapter";
+import { decodeTeamProtocolSupportV10, TEAM_PROTOCOL_V10 } from "@pokebots/contracts/team-protocol/v10";
+import { decodeTeamProtocolV10WebRtcHttpResponse } from "@pokebots/contracts/team-protocol/v10-webrtc-adapter";
+import { sourceText } from "@pokebots/i18n/source";
 import { plugin } from "bun";
 import { Effect, Exit } from "effect";
 import { runCauseEffect } from "../src/backend/effect-boundary";

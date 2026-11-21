@@ -30,8 +30,8 @@ import {
   type UpdateAgentPlanCardInput,
   type UpdateAgentSpeedInput,
   type UpdateAgentTaskLimitInput,
-} from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
 import type { AgentService } from "../backend/agent-service";
 import { causeHelpers } from "../backend/effect-boundary";
 import { AgentNotFoundError } from "./agent-admin-settings";

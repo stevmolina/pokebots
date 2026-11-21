@@ -1,5 +1,5 @@
-import { classifyFailure, type FailureProperties, type NotificationMetadata } from "@openbot/telemetry";
-import { errorReference } from "@openbot/user-errors";
+import { classifyFailure, type FailureProperties, type NotificationMetadata } from "@pokebots/telemetry";
+import { errorReference } from "@pokebots/user-errors";
 import type { ComponentProps, JSX } from "@solidjs/web";
 import { createEffect, omit, onSettled } from "solid-js";
 import {

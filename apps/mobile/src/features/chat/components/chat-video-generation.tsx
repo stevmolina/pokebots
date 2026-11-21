@@ -1,4 +1,4 @@
-import type { AttachmentSummary, ImageGenerationAspectRatio, VideoGenerationInfo } from "@openbot/contracts/ipc";
+import type { AttachmentSummary, ImageGenerationAspectRatio, VideoGenerationInfo } from "@pokebots/contracts/ipc";
 import { Typography } from "heroui-native";
 import { useThemeColor } from "heroui-native/hooks";
 import X from "lucide-react-native/icons/x";

@@ -1,4 +1,4 @@
-import type { ConversationMessage } from "@openbot/contracts/ipc";
+import type { ConversationMessage } from "@pokebots/contracts/ipc";
 import { useCallback, useSyncExternalStore } from "react";
 import { useMobileWorkspaceSelector } from "@/features/workspace/context/mobile-workspace-context";
 

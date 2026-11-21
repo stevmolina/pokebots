@@ -1,5 +1,5 @@
-import { isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
-import { SERVER_SETUP_HEADER, SERVER_SETUP_ROUTES } from "@openbot/contracts/server-setup";
+import { isDynamicRecord, isNumber, isString } from "@pokebots/contracts/runtime-values";
+import { SERVER_SETUP_HEADER, SERVER_SETUP_ROUTES } from "@pokebots/contracts/server-setup";
 
 /**
  * The calls of the server setup page (`src/main/server-setup-page.ts`). Each answer is a flat record

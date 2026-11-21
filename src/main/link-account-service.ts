@@ -1,15 +1,15 @@
 // The Link account of this computer (link.com, by Stripe): the sign-in, the stored tokens, and the
 // one-time cards that agents ask for.
 
-import type { LinkAccountState, LinkAccountStatus } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+import type { LinkAccountState, LinkAccountStatus } from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
 import {
   createOpenBotLogger,
   redactText,
   registerSecretValue,
   registerSecretValues,
   toLogValue,
-} from "@openbot/logging";
+} from "@pokebots/logging";
 import { Duration, Effect, Exit, Result, Scope, Semaphore } from "effect";
 import { z } from "zod";
 import {

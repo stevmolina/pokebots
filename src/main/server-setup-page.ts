@@ -20,7 +20,7 @@ import { readFile } from "node:fs/promises";
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from "node:http";
 import type { Socket } from "node:net";
 import { join } from "node:path";
-import { SERVER_SETUP_HEADER, SERVER_SETUP_ROUTES } from "@openbot/contracts/server-setup";
+import { SERVER_SETUP_HEADER, SERVER_SETUP_ROUTES } from "@pokebots/contracts/server-setup";
 import { Effect } from "effect";
 import { runCauseEffect } from "../backend/effect-boundary";
 import { applicationContentType } from "./application-content-type";

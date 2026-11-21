@@ -1,4 +1,4 @@
-import { referenceName } from "@openbot/contracts/chat-tag-references";
+import { referenceName } from "@pokebots/contracts/chat-tag-references";
 import { useCallback, useMemo, useSyncExternalStore } from "react";
 import { agentBrowserTabs, browserTabHost, browserTabTitle } from "@/features/browser/model/browser-tabs";
 import { selectLiveState } from "@/features/workspace/components/use-live-workspace";

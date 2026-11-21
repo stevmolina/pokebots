@@ -1,13 +1,13 @@
-import type { CentralAuthUser } from "@openbot/contracts/ipc";
-import { AGENT_TASKS_CAPABILITY } from "@openbot/contracts/team-protocol/agent-tasks-v1";
-import { CRM_CAPABILITY } from "@openbot/contracts/team-protocol/crm-v1";
+import type { CentralAuthUser } from "@pokebots/contracts/ipc";
+import { AGENT_TASKS_CAPABILITY } from "@pokebots/contracts/team-protocol/agent-tasks-v1";
+import { CRM_CAPABILITY } from "@pokebots/contracts/team-protocol/crm-v1";
 import {
   ConversationLoadNotice,
   ServerConnectionNotice,
   ServerPanelLoadNotice,
   serverWorkspacePhase,
-} from "@openbot/ui/features/servers/ServerConnectionNotice";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/ui/features/servers/ServerConnectionNotice";
+import { useText } from "@pokebots/ui/text";
 import type { JSX } from "@solidjs/web";
 import { createEffect, createMemo, createSignal, Show } from "solid-js";
 import { useAccountUsagePolling } from "./features/account/account-usage-polling";

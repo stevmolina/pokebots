@@ -39,10 +39,10 @@ import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, renameSync, statSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
-import { isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
-import { translateFor } from "@openbot/i18n";
-import { createOpenBotLogger } from "@openbot/logging";
-import type { RemoteRequestRecord } from "@openbot/team-client/sync-profile";
+import { isDynamicRecord, isNumber, isString } from "@pokebots/contracts/runtime-values";
+import { translateFor } from "@pokebots/i18n";
+import { createOpenBotLogger } from "@pokebots/logging";
+import type { RemoteRequestRecord } from "@pokebots/team-client/sync-profile";
 import { type Browser, type BrowserContext, chromium, type Page } from "playwright-core";
 import { argument, WAIT_MS } from "./channel-e2e-support";
 import { type Spread, spread } from "./dev-automation/bench-stats";
@@ -368,7 +368,7 @@ async function instrument(context: BrowserContext): Promise<void> {
     ({ halfTrip, bytesPerMs }: { halfTrip: number; bytesPerMs: number }) => {
       const collected: NonNullable<Window["__syncPerfSink"]> = { records: [], open: 0 };
       window.__syncPerfSink = collected;
-      // The recorder of `@openbot/team-client/sync-profile` finds this sink by its global name.
+      // The recorder of `@pokebots/team-client/sync-profile` finds this sink by its global name.
       globalThis.__openbotSyncProfile = {
         started() {
           collected.open += 1;

@@ -1,8 +1,8 @@
 // The Computer Use driver's readiness, and the macOS permission panes it may need.
 
-import { parseRemoteComputerServerId, parseSetRemoteComputerServerInput } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger, toLogValue } from "@openbot/logging";
+import { parseRemoteComputerServerId, parseSetRemoteComputerServerInput } from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
+import { createOpenBotLogger, toLogValue } from "@pokebots/logging";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import type { ComputerUsePermissionHelpWindowController } from "../computer-use-permission-help-window";
 import type { CuaDriverRuntime } from "../cua-driver-runtime";

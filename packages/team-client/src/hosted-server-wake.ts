@@ -3,9 +3,9 @@ import {
   type HostedServerState,
   parseHostedServerStatus,
   parseHostedServerSummary,
-} from "@openbot/contracts/hosted-servers";
-import type { HostedServerStartStep } from "@openbot/contracts/ipc";
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
+} from "@pokebots/contracts/hosted-servers";
+import type { HostedServerStartStep } from "@pokebots/contracts/ipc";
+import { isDynamicRecord } from "@pokebots/contracts/runtime-values";
 import { Deferred, Effect, Schema } from "effect";
 
 class HostedServerWakeError extends Schema.TaggedError<HostedServerWakeError>()("HostedServerWakeError", {}) {}

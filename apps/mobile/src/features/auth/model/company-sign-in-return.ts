@@ -1,4 +1,4 @@
-import { MOBILE_COMPANY_SIGN_IN_RETURN } from "@openbot/contracts/company-sign-in";
+import { MOBILE_COMPANY_SIGN_IN_RETURN } from "@pokebots/contracts/company-sign-in";
 
 /** True for the return link of a company sign-in, which only its browser session takes. */
 export function isCompanySignInReturn(path: string): boolean {

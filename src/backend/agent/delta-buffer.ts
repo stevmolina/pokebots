@@ -1,5 +1,5 @@
-import type { AgentEvent, ConversationSnapshot } from "@openbot/contracts/ipc";
-import { createOpenBotLogger, toLogValue } from "@openbot/logging";
+import type { AgentEvent, ConversationSnapshot } from "@pokebots/contracts/ipc";
+import { createOpenBotLogger, toLogValue } from "@pokebots/logging";
 import type { OpenBotDatabase, StreamingMessageWrite } from "../openbot-database";
 import type { ConversationRuntime } from "./conversation-runtime";
 

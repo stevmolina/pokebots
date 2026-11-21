@@ -1,6 +1,6 @@
-import { Button } from "@openbot/ui";
-import { UiBlockCard } from "@openbot/ui/features/conversation/ui-blocks/UiBlockCard";
-import { useText } from "@openbot/ui/text";
+import { Button } from "@pokebots/ui";
+import { UiBlockCard } from "@pokebots/ui/features/conversation/ui-blocks/UiBlockCard";
+import { useText } from "@pokebots/ui/text";
 import { Show } from "solid-js";
 
 /**

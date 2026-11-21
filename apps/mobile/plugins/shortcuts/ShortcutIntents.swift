@@ -14,7 +14,7 @@ import Foundation
 // The snippets that show the cards need iOS 26 (`SnippetIntent`), so an older iOS has no shortcuts.
 //
 // iOS reads the names and the phrases of the shortcuts when the app is built, so they are English
-// here and not from the `@openbot/i18n` catalog. The text of the cards is from the catalog: the app
+// here and not from the `@pokebots/i18n` catalog. The text of the cards is from the catalog: the app
 // writes it to `shortcuts.json`.
 
 /// Why a shortcut cannot run now. The card names the reason and has one button.

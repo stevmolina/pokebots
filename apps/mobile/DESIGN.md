@@ -405,7 +405,7 @@ sticky header would stick under the native bar.
 The backdrop of Settings › Appearance (`features/settings/model/chat-backdrop.ts`) is the desktop
 window backdrop in the Ambient look: a quiet layer, not a wallpaper.
 
-- The built-in scenes come from `@openbot/brand/chat-backdrop-scenes`, the same painters as the
+- The built-in scenes come from `@pokebots/brand/chat-backdrop-scenes`, the same painters as the
   desktop. `ChatBackdropSceneView` draws them with Skia in 6 pt cells at about 15 frames each second.
   A scene stops on a hidden screen (also under a sheet), in the background and with reduced motion.
   A stop keeps the frame that shows, and the scene goes on from that time; a new screen goes on from

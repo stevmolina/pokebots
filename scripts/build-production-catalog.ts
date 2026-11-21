@@ -3,7 +3,7 @@ import { mkdir, mkdtemp, readdir, readFile, rename, rm, stat, writeFile } from "
 import { homedir, tmpdir } from "node:os";
 import { dirname, join, parse, posix, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import {
   type AvatarHue,
   isAgentTemplateRoutine,
@@ -11,9 +11,9 @@ import {
   isSkillCategory,
   type MarketplaceAgentRoutine,
   type SkillCategory,
-} from "@openbot/contracts/ipc";
-import { isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
-import { createOpenBotLogger, toLogValue } from "@openbot/logging";
+} from "@pokebots/contracts/ipc";
+import { isDynamicRecord, isNumber, isString } from "@pokebots/contracts/runtime-values";
+import { createOpenBotLogger, toLogValue } from "@pokebots/logging";
 import { unzipSync, zipSync } from "fflate";
 import { parse as parseYaml } from "yaml";
 

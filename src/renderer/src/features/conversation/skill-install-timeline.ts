@@ -1,4 +1,4 @@
-import type { AgentMessage, ChatActionMarkerModel } from "@openbot/ui/data";
+import type { AgentMessage, ChatActionMarkerModel } from "@pokebots/ui/data";
 import { startsDay } from "./agent-message-timeline";
 
 type SkillMarker = Extract<ChatActionMarkerModel, { kind: "skill-lifecycle" }>;

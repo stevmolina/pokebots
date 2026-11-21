@@ -1,5 +1,5 @@
-import type { AppTextKey } from "@openbot/i18n";
-import { AudioLines, Play, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@openbot/ui";
+import type { AppTextKey } from "@pokebots/i18n";
+import { AudioLines, Play, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@pokebots/ui";
 import type { JSX } from "@solidjs/web";
 import { createSignal, onCleanup } from "solid-js";
 import { useText } from "../../text";

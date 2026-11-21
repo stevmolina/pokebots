@@ -6,8 +6,8 @@
  * `SidebarProviderStack`.
  */
 
-import { ProviderLogo } from "@openbot/brand";
-import { Button, MotionTooltip } from "@openbot/ui";
+import { ProviderLogo } from "@pokebots/brand";
+import { Button, MotionTooltip } from "@pokebots/ui";
 import type { JSX } from "@solidjs/web";
 import { createMemo, For, Show } from "solid-js";
 import { useText } from "../../text";

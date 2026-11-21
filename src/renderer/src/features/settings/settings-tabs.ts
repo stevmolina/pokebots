@@ -1,5 +1,5 @@
-import type { AppInfo } from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
+import type { AppInfo } from "@pokebots/contracts/ipc";
+import type { AppTextKey } from "@pokebots/i18n";
 import {
   Bell,
   CircleArrowDown,
@@ -14,7 +14,7 @@ import {
   Settings,
   Smartphone,
   UserRound,
-} from "@openbot/ui";
+} from "@pokebots/ui";
 
 export type SettingsTab =
   | "general"

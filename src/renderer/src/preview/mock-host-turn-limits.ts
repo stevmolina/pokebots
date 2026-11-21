@@ -4,7 +4,7 @@ import {
   type HostTurnLimits,
   type HostTurnLimitsInput,
   parseHostTurnLimitsInput,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 
 /** Preview has one host, so every server shares these limits. The automatic total is a server's 8. */
 export function createMockHostTurnLimits(): Pick<HostAdminDesktopApi, "getTurnLimits" | "setTurnLimits"> {

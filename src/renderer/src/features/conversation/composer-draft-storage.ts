@@ -1,5 +1,5 @@
-import { rewriteAttachmentReferences } from "@openbot/contracts/attachment-references";
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
+import { rewriteAttachmentReferences } from "@pokebots/contracts/attachment-references";
+import { isDynamicRecord, isString } from "@pokebots/contracts/runtime-values";
 import { createEffect, onCleanup } from "solid-js";
 import { EMPTY_DRAFT } from "./composer-draft";
 import { composerDraftKey } from "./conversation-keys";

@@ -25,7 +25,7 @@
  * has no pass limit; it ends when a condition takes the other branch, a step fails, or the run stops.
  */
 
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import {
   DEFAULT_PROVIDER_ACCOUNT_ID,
   isWorkflowStepKind,
@@ -39,8 +39,8 @@ import {
   type WorkflowMediaSpecs,
   type WorkflowNode,
   workflowLoopEdges,
-} from "@openbot/contracts/ipc";
-import { redactText } from "@openbot/logging";
+} from "@pokebots/contracts/ipc";
+import { redactText } from "@pokebots/logging";
 import { runtimeFields } from "./workflow-graph";
 import { isOpenStep, type StoredWorkflowStep } from "./workflow-run-store";
 

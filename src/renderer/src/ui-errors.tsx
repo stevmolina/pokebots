@@ -1,6 +1,6 @@
-import type { AgentMessage } from "@openbot/ui/data";
-import { currentText } from "@openbot/ui/text";
-import { errorReference } from "@openbot/user-errors";
+import type { AgentMessage } from "@pokebots/ui/data";
+import { currentText } from "@pokebots/ui/text";
+import { errorReference } from "@pokebots/user-errors";
 import { createSignal } from "solid-js";
 import { formatMessageTime } from "./app-message-projection";
 import { agentConversationKey } from "./features/conversation/conversation-keys";

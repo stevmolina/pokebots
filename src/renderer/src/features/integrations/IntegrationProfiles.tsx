@@ -1,6 +1,6 @@
-import { POKEBOTS_INTEGRATION_ACCOUNTS_URL } from "@openbot/contracts/team-protocol/pokebots-integrations-v1";
-import { Button, NativeSelect } from "@openbot/ui";
-import { useText } from "@openbot/ui/text";
+import { POKEBOTS_INTEGRATION_ACCOUNTS_URL } from "@pokebots/contracts/team-protocol/pokebots-integrations-v1";
+import { Button, NativeSelect } from "@pokebots/ui";
+import { useText } from "@pokebots/ui/text";
 import type { JSX } from "@solidjs/web";
 import { createSignal, Show } from "solid-js";
 

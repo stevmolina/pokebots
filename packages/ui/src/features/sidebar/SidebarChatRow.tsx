@@ -8,9 +8,9 @@
  * did not read.
  */
 
-import type { ChannelSummary } from "@openbot/contracts/ipc";
-import type { AppFormat } from "@openbot/i18n";
-import { buttonVariants, ContextMenu, MotionTooltip } from "@openbot/ui";
+import type { ChannelSummary } from "@pokebots/contracts/ipc";
+import type { AppFormat } from "@pokebots/i18n";
+import { buttonVariants, ContextMenu, MotionTooltip } from "@pokebots/ui";
 import type { JSX } from "@solidjs/web";
 import { createSignal, Match, Show, Switch } from "solid-js";
 import type { AgentProfile } from "../../data";

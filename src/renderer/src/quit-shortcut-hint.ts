@@ -1,4 +1,4 @@
-import type { ClientAgentSummary } from "@openbot/contracts/ipc";
+import type { ClientAgentSummary } from "@pokebots/contracts/ipc";
 import { createSignal } from "solid-js";
 import { appPort } from "./app-port";
 

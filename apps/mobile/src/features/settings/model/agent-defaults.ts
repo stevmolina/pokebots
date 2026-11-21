@@ -5,8 +5,8 @@ import {
   type AgentDefaultsOverview,
   agentDefaultChoiceValues,
   type UpdateAgentDefaultsInput,
-} from "@openbot/contracts/ipc";
-import type { MobileTextKey } from "@openbot/i18n/mobile";
+} from "@pokebots/contracts/ipc";
+import type { MobileTextKey } from "@pokebots/i18n/mobile";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useRef, useState } from "react";
 import { useQueryScope } from "@/features/auth/context/mobile-session-context";

@@ -1,14 +1,14 @@
-import type { AvatarMood } from "@openbot/brand/bloub-avatar-motion";
-import type { AgentTask } from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
-import { taskTone } from "@openbot/team-client/agent-tasks";
-import { buttonVariants } from "@openbot/ui";
-import { SwapLabel } from "@openbot/ui/components/SwapLabel";
-import type { AgentProfile } from "@openbot/ui/data";
-import { AgentAvatar } from "@openbot/ui/features/agents/AgentAvatar";
-import { AgentTaskMark, agentTaskStatus } from "@openbot/ui/features/conversation/AgentTasks";
-import { useText } from "@openbot/ui/text";
-import { prefersReducedMotion } from "@openbot/ui/utils";
+import type { AvatarMood } from "@pokebots/brand/bloub-avatar-motion";
+import type { AgentTask } from "@pokebots/contracts/ipc";
+import type { AppTextKey } from "@pokebots/i18n";
+import { taskTone } from "@pokebots/team-client/agent-tasks";
+import { buttonVariants } from "@pokebots/ui";
+import { SwapLabel } from "@pokebots/ui/components/SwapLabel";
+import type { AgentProfile } from "@pokebots/ui/data";
+import { AgentAvatar } from "@pokebots/ui/features/agents/AgentAvatar";
+import { AgentTaskMark, agentTaskStatus } from "@pokebots/ui/features/conversation/AgentTasks";
+import { useText } from "@pokebots/ui/text";
+import { prefersReducedMotion } from "@pokebots/ui/utils";
 import { createMemo, createSignal, For, onSettled } from "solid-js";
 
 /** One sample task: its title, and what its agent does while it runs. */

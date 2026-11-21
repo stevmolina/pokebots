@@ -1,4 +1,4 @@
-import { validateProfileName } from "@openbot/contracts/validation";
+import { validateProfileName } from "@pokebots/contracts/validation";
 import { useFonts } from "@shopify/react-native-skia";
 import { router } from "expo-router";
 import * as Sharing from "expo-sharing";

@@ -50,56 +50,56 @@ import {
   type WorkflowMediaPriceRequest,
   type WorkflowNode,
   workflowVideoLengthChoices,
-} from "@openbot/contracts/ipc";
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
+} from "@pokebots/contracts/ipc";
+import { TEAM_API_ROUTES } from "@pokebots/contracts/team-api-routes";
 import {
   TEAM_APP_VERSION_HEADER,
   TEAM_CAPABILITIES_HEADER,
   TEAM_PROTOCOL_V1_WEBSOCKET,
   TEAM_PROTOCOL_VERSION_HEADER,
-} from "@openbot/contracts/team-protocol";
-import { AGENT_ACCESS_CODECS, AGENT_ACCESS_ROUTES } from "@openbot/contracts/team-protocol/agent-access-v1";
-import { teamCapabilitiesForProtocol } from "@openbot/contracts/team-protocol/current";
-import { TEAM_PROTOCOL_V7 } from "@openbot/contracts/team-protocol/v7";
-import { TEAM_PROTOCOL_V9 } from "@openbot/contracts/team-protocol/v9";
-import { WORKFLOWS_CHANNELS_CAPABILITY } from "@openbot/contracts/team-protocol/workflows-channels-v1";
-import { WORKFLOWS_CHATS_CAPABILITY } from "@openbot/contracts/team-protocol/workflows-chats-v1";
+} from "@pokebots/contracts/team-protocol";
+import { AGENT_ACCESS_CODECS, AGENT_ACCESS_ROUTES } from "@pokebots/contracts/team-protocol/agent-access-v1";
+import { teamCapabilitiesForProtocol } from "@pokebots/contracts/team-protocol/current";
+import { TEAM_PROTOCOL_V7 } from "@pokebots/contracts/team-protocol/v7";
+import { TEAM_PROTOCOL_V9 } from "@pokebots/contracts/team-protocol/v9";
+import { WORKFLOWS_CHANNELS_CAPABILITY } from "@pokebots/contracts/team-protocol/workflows-channels-v1";
+import { WORKFLOWS_CHATS_CAPABILITY } from "@pokebots/contracts/team-protocol/workflows-chats-v1";
 import {
   WORKFLOWS_HIGGSFIELD_CAPABILITY,
   WORKFLOWS_HIGGSFIELD_CODECS,
   WORKFLOWS_HIGGSFIELD_ROUTES,
-} from "@openbot/contracts/team-protocol/workflows-higgsfield-v1";
-import { WORKFLOWS_MEDIA_ACCOUNT_CAPABILITY } from "@openbot/contracts/team-protocol/workflows-media-account-v1";
+} from "@pokebots/contracts/team-protocol/workflows-higgsfield-v1";
+import { WORKFLOWS_MEDIA_ACCOUNT_CAPABILITY } from "@pokebots/contracts/team-protocol/workflows-media-account-v1";
 import {
   WORKFLOWS_MEDIA_CATALOG_CAPABILITY,
   WORKFLOWS_MEDIA_CATALOG_CODECS,
   WORKFLOWS_MEDIA_CATALOG_ROUTES,
-} from "@openbot/contracts/team-protocol/workflows-media-catalog-v1";
-import { WORKFLOWS_MEDIA_SIZE_CAPABILITY } from "@openbot/contracts/team-protocol/workflows-media-size-v1";
-import { WORKFLOWS_MEDIA_TRANSPARENT_CAPABILITY } from "@openbot/contracts/team-protocol/workflows-media-transparent-v1";
+} from "@pokebots/contracts/team-protocol/workflows-media-catalog-v1";
+import { WORKFLOWS_MEDIA_SIZE_CAPABILITY } from "@pokebots/contracts/team-protocol/workflows-media-size-v1";
+import { WORKFLOWS_MEDIA_TRANSPARENT_CAPABILITY } from "@pokebots/contracts/team-protocol/workflows-media-transparent-v1";
 import {
   WORKFLOWS_MEDIA_CAPABILITY,
   WORKFLOWS_MEDIA_CODECS,
   WORKFLOWS_MEDIA_ROUTES,
-} from "@openbot/contracts/team-protocol/workflows-media-v1";
+} from "@pokebots/contracts/team-protocol/workflows-media-v1";
 import {
   WORKFLOWS_SUNRA_CAPABILITY,
   WORKFLOWS_SUNRA_CODECS,
   WORKFLOWS_SUNRA_ROUTES,
-} from "@openbot/contracts/team-protocol/workflows-sunra-v1";
+} from "@pokebots/contracts/team-protocol/workflows-sunra-v1";
 import {
   WORKFLOW_STEP_TEXT_LIMIT,
   WORKFLOWS_CAPABILITY,
   WORKFLOWS_CODECS,
   WORKFLOWS_ROUTES,
   workflowsEvent,
-} from "@openbot/contracts/team-protocol/workflows-v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/team-protocol/workflows-v1";
+import { sourceText } from "@pokebots/i18n/source";
 import {
   decodeRemoteWorkflowDetail,
   decodeRemoteWorkflowRunDetail,
   decodeRemoteWorkflowVersions,
-} from "@openbot/team-client/workflow-decoding";
+} from "@pokebots/team-client/workflow-decoding";
 import { plugin } from "bun";
 import { Effect } from "effect";
 import { providerLabel } from "../src/backend/agent/thread-items";

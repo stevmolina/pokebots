@@ -4,16 +4,16 @@
 // method is matched, so a malformed id is a 400 and not a 404. That ordering is the released
 // behaviour and the status-contract test pins it.
 
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import type { AgentMemory } from "@openbot/contracts/ipc";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
+import type { AgentMemory } from "@pokebots/contracts/ipc";
 import {
   AGENT_MEMORIES_CAPABILITY,
   AGENT_MEMORIES_PAGE_ROUTE,
   AGENT_MEMORIES_PAGE_SIZE,
   AGENT_MEMORY_INCLUSION_ROUTE,
   AGENT_MEMORY_SELECTION_PAGE_ROUTE,
-} from "@openbot/contracts/team-protocol/agent-memories-v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/team-protocol/agent-memories-v1";
+import { sourceText } from "@pokebots/i18n/source";
 import { parseSetAgentMemoryInclusion } from "../ipc/agent-inputs";
 import type { TeamApiAgents } from "./dependencies";
 import { HttpError } from "./http-error";

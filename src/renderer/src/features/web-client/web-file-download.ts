@@ -1,4 +1,4 @@
-import { base64ToBytes } from "@openbot/team-client/base64";
+import { base64ToBytes } from "@pokebots/team-client/base64";
 import { onCleanup } from "solid-js";
 
 /**

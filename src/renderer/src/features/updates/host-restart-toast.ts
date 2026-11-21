@@ -1,5 +1,5 @@
-import { toast } from "@openbot/ui";
-import { currentText } from "@openbot/ui/text";
+import { toast } from "@pokebots/ui";
+import { currentText } from "@pokebots/ui/text";
 import { type Accessor, createEffect, createSignal, onCleanup } from "solid-js";
 import { statusAlertsShown } from "./status-alerts";
 

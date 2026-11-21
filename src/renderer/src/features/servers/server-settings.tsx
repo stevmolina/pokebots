@@ -1,5 +1,5 @@
-import { parseHostedServerName } from "@openbot/contracts/hosted-servers";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { parseHostedServerName } from "@pokebots/contracts/hosted-servers";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import type {
   AvatarImageInput,
   CentralAuthUser,
@@ -9,8 +9,8 @@ import type {
   TeamInviteSummary,
   TeamPresenceMember,
   UpdateTeamMemberInput,
-} from "@openbot/contracts/ipc";
-import { currentText } from "@openbot/ui/text";
+} from "@pokebots/contracts/ipc";
+import { currentText } from "@pokebots/ui/text";
 import { createEffect, createMemo, createSignal, flush, onCleanup } from "solid-js";
 import { desktopAnalytics } from "../../analytics";
 import { createSimpleContext } from "../../simple-context";

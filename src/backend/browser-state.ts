@@ -1,8 +1,8 @@
 import { createHash } from "node:crypto";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import { type BrowserBounds, type BrowserEnvironment, isBrowserProfileId } from "@openbot/contracts/ipc";
-import { type DynamicRecord, isBoolean, isNumber, isString } from "@openbot/contracts/runtime-values";
-import { legacyAgentId } from "@openbot/contracts/validation";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
+import { type BrowserBounds, type BrowserEnvironment, isBrowserProfileId } from "@pokebots/contracts/ipc";
+import { type DynamicRecord, isBoolean, isNumber, isString } from "@pokebots/contracts/runtime-values";
+import { legacyAgentId } from "@pokebots/contracts/validation";
 import { Effect } from "effect";
 import type { BrowserToolArguments } from "./browser-tools";
 import { isRecord } from "./protocol";

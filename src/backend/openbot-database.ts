@@ -12,7 +12,7 @@ import type {
   HostedSiteConversationEventStatus,
   MessagePinner,
   SentMessageStats,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import { AgentHistoryQueries, type AgentHistorySelection } from "./database/agent-history-queries";
 import { type AgentModelChange, AgentRoster } from "./database/agent-roster";
 import { AgentUsage } from "./database/agent-usage";

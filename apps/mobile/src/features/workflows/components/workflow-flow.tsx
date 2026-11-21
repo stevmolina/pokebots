@@ -1,5 +1,5 @@
-import type { WorkflowNode } from "@openbot/contracts/ipc";
-import type { MobileTextKey } from "@openbot/i18n/mobile";
+import type { WorkflowNode } from "@pokebots/contracts/ipc";
+import type { MobileTextKey } from "@pokebots/i18n/mobile";
 import { Typography } from "heroui-native";
 import { Fragment } from "react";
 import {

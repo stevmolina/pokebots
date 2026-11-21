@@ -20,7 +20,7 @@ import { createHash } from "node:crypto";
 import { existsSync, mkdirSync, rmSync, statfsSync, statSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { DatabaseSync } from "node:sqlite";
-import { isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
+import { isDynamicRecord, isNumber, isString } from "@pokebots/contracts/runtime-values";
 import { Duration, Effect } from "effect";
 import { AgentStore } from "../src/backend/agent-store";
 import { compactedItemJson } from "../src/backend/database/provider-history-store";

@@ -1,5 +1,5 @@
-import type { AgentProviderRef } from "@openbot/contracts/agent-providers";
-import { isNarrationItemId, showsNarration } from "@openbot/contracts/conversation-narration";
+import type { AgentProviderRef } from "@pokebots/contracts/agent-providers";
+import { isNarrationItemId, showsNarration } from "@pokebots/contracts/conversation-narration";
 import {
   CONVERSATION_PLAN_ITEM_TYPE,
   CONVERSATION_SUBAGENTS_ITEM_TYPE,
@@ -8,7 +8,7 @@ import {
   type QueueDelivery,
   ROUTINE_QUIET_ANSWER_ITEM_TYPE,
   type RoutineRun,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import { bridgedToolName, getString, type ThreadItem } from "../protocol";
 
 /**

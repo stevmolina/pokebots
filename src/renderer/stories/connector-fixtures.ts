@@ -3,10 +3,10 @@ import {
   DISCONNECTED_ONEPASSWORD_CONNECTOR,
   disconnectedPasswordManager,
   type MessagingConnection,
-} from "@openbot/contracts/ipc";
-import type { ConnectorDetail } from "@openbot/ui/features/connectors/ConnectorDetailPanel";
-import type { SlackIntegrationAgent } from "@openbot/ui/features/settings/SlackIntegrationPanel";
-import { WHATSAPP_LINK_IDLE } from "@openbot/ui/features/settings/WhatsAppIntegrationPanel";
+} from "@pokebots/contracts/ipc";
+import type { ConnectorDetail } from "@pokebots/ui/features/connectors/ConnectorDetailPanel";
+import type { SlackIntegrationAgent } from "@pokebots/ui/features/settings/SlackIntegrationPanel";
+import { WHATSAPP_LINK_IDLE } from "@pokebots/ui/features/settings/WhatsAppIntegrationPanel";
 import { fn } from "storybook/test";
 import type { ConnectorController } from "../src/features/connectors/connector-controller";
 import type { ConnectorSet } from "../src/features/connectors/connector-registry";

@@ -9,8 +9,8 @@ import { mkdir, mkdtemp, readdir, readFile, rm, writeFile } from "node:fs/promis
 import { tmpdir } from "node:os";
 import { dirname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import type { AgentSummary, MarketplaceSkillDetail } from "@openbot/contracts/ipc";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
+import type { AgentSummary, MarketplaceSkillDetail } from "@pokebots/contracts/ipc";
 import { Effect, Schema } from "effect";
 import { zipSync } from "fflate";
 import { CentralAuthOperationError } from "../src/main/central-auth-effects";

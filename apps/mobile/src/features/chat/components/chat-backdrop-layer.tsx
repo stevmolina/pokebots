@@ -1,4 +1,4 @@
-import { CHAT_BACKDROP_BASE, isChatBackdropScene } from "@openbot/brand/chat-backdrop-scenes";
+import { CHAT_BACKDROP_BASE, isChatBackdropScene } from "@pokebots/brand/chat-backdrop-scenes";
 import { Image } from "expo-image";
 import { useThemeColor } from "heroui-native/hooks";
 import { useEffect, useId, useState } from "react";

@@ -1,7 +1,7 @@
-import { agentProviderName, isAgentProvider } from "@openbot/contracts/ipc";
-import { matchingSourceKeys } from "@openbot/i18n";
-import { redactText } from "@openbot/logging";
-import { currentText } from "@openbot/ui/text";
+import { agentProviderName, isAgentProvider } from "@pokebots/contracts/ipc";
+import { matchingSourceKeys } from "@pokebots/i18n";
+import { redactText } from "@pokebots/logging";
+import { currentText } from "@pokebots/ui/text";
 
 /** The notices of a turn whose provider retries a request. They say what the turn does now. */
 const RETRY_NOTICE_KEYS: ReadonlySet<string> = new Set([

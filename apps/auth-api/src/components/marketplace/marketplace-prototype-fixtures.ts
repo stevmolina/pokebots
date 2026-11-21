@@ -4,7 +4,7 @@ import type {
   MarketplaceAgentSkill,
   MarketplaceAgentSummary,
   MarketplaceSkillSummary,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 
 /*
  * Catalog data for the public Marketplace stories. Copied from the app's preview fixtures

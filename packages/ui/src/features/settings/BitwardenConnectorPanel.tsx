@@ -1,5 +1,5 @@
-import type { BitwardenConnectorStatus, BitwardenHostConnectInput } from "@openbot/contracts/ipc";
-import { Button, Field, Input, ItemGroup, SettingsSection, Text } from "@openbot/ui";
+import type { BitwardenConnectorStatus, BitwardenHostConnectInput } from "@pokebots/contracts/ipc";
+import { Button, Field, Input, ItemGroup, SettingsSection, Text } from "@pokebots/ui";
 import { createSignal, Show } from "solid-js";
 import { useText } from "../../text";
 import { BitwardenTile } from "./brand-marks";

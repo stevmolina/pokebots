@@ -4,7 +4,7 @@ import {
   type HostedSiteRouteManifest,
   hostedSiteBlockKey,
   hostedSiteRouteKey,
-} from "@openbot/contracts/hosted-sites";
+} from "@pokebots/contracts/hosted-sites";
 import { Context, Effect, Layer, Schema } from "effect";
 
 interface SiteBucket {

@@ -3,8 +3,8 @@ import {
   DEFAULT_PROVIDER_ACCOUNT_ID,
   PROVIDER_ACCOUNT_LABEL_MAX_LENGTH,
   type ProviderAccountState,
-} from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
+} from "@pokebots/contracts/ipc";
+import type { AppTextKey } from "@pokebots/i18n";
 import {
   Badge,
   buttonVariants,
@@ -16,7 +16,7 @@ import {
   Smartphone,
   Trash2,
   X,
-} from "@openbot/ui";
+} from "@pokebots/ui";
 import { createSignal, For, Show } from "solid-js";
 import { useText } from "../text";
 import {

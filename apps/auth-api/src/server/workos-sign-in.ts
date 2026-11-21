@@ -1,9 +1,9 @@
-import { isAvatarMimeType, isValidAvatarImage } from "@openbot/contracts/avatar-images";
-import { MOBILE_COMPANY_SIGN_IN_RETURN } from "@openbot/contracts/company-sign-in";
-import { AVATAR_IMAGE_LIMITS } from "@openbot/contracts/input-limits";
-import { isAvatarColor } from "@openbot/contracts/ipc-agent-identity";
-import { normalizeEmailAddress } from "@openbot/contracts/validation";
-import { sourceText } from "@openbot/i18n/source-english";
+import { isAvatarMimeType, isValidAvatarImage } from "@pokebots/contracts/avatar-images";
+import { MOBILE_COMPANY_SIGN_IN_RETURN } from "@pokebots/contracts/company-sign-in";
+import { AVATAR_IMAGE_LIMITS } from "@pokebots/contracts/input-limits";
+import { isAvatarColor } from "@pokebots/contracts/ipc-agent-identity";
+import { normalizeEmailAddress } from "@pokebots/contracts/validation";
+import { sourceText } from "@pokebots/i18n/source-english";
 import { Effect, Schema } from "effect";
 import { avatarObjectKey } from "./avatar-storage";
 import { randomToken, sha256 } from "./crypto";

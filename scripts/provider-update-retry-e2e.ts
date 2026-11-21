@@ -11,7 +11,7 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 
 import { chmod, mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import type { ProviderRuntimeSnapshot } from "@openbot/contracts/ipc";
+import type { ProviderRuntimeSnapshot } from "@pokebots/contracts/ipc";
 import { Effect } from "effect";
 import lockValue from "../native-runtime.lock.json";
 import { runCauseEffect } from "../src/backend/effect-boundary";

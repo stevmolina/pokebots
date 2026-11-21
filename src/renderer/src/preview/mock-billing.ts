@@ -10,9 +10,9 @@ import {
   billingListPrices,
   storageTierGb,
   storageTierListPrices,
-} from "@openbot/contracts/billing";
-import type { BillingDetails } from "@openbot/contracts/billing-details";
-import type { BillingDesktopApi } from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/billing";
+import type { BillingDetails } from "@pokebots/contracts/billing-details";
+import type { BillingDesktopApi } from "@pokebots/contracts/ipc";
 
 const DAY = 24 * 60 * 60_000;
 

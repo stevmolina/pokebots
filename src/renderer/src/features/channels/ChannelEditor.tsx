@@ -1,5 +1,5 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import type { Channel, ChannelBrowser, ChannelDraft, ChannelIcon } from "@openbot/contracts/ipc";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
+import type { Channel, ChannelBrowser, ChannelDraft, ChannelIcon } from "@pokebots/contracts/ipc";
 import {
   Button,
   buttonVariants,
@@ -18,17 +18,17 @@ import {
   SelectValue,
   SwitchField,
   Tooltip,
-} from "@openbot/ui";
-import { createScrollFades } from "@openbot/ui/components/createScrollFades";
-import { ResizableTextarea } from "@openbot/ui/components/ResizableTextarea";
-import { SettingsField, SettingsLinkGroup, SettingsLinkRow } from "@openbot/ui/components/SettingsPanel";
-import { AgentAvatar } from "@openbot/ui/features/agents/AgentAvatar";
-import { InstructionsLimit, instructionsTooLong } from "@openbot/ui/features/agents/InstructionsLimit";
-import { ChannelContextActions } from "@openbot/ui/features/channels/ChannelContextActions";
-import { ChannelMemberRow } from "@openbot/ui/features/channels/ChannelMemberRow";
-import { ChannelPictureEditor } from "@openbot/ui/features/channels/ChannelPictureEditor";
-import { ContentExitMotion } from "@openbot/ui/menu-motion";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/ui";
+import { createScrollFades } from "@pokebots/ui/components/createScrollFades";
+import { ResizableTextarea } from "@pokebots/ui/components/ResizableTextarea";
+import { SettingsField, SettingsLinkGroup, SettingsLinkRow } from "@pokebots/ui/components/SettingsPanel";
+import { AgentAvatar } from "@pokebots/ui/features/agents/AgentAvatar";
+import { InstructionsLimit, instructionsTooLong } from "@pokebots/ui/features/agents/InstructionsLimit";
+import { ChannelContextActions } from "@pokebots/ui/features/channels/ChannelContextActions";
+import { ChannelMemberRow } from "@pokebots/ui/features/channels/ChannelMemberRow";
+import { ChannelPictureEditor } from "@pokebots/ui/features/channels/ChannelPictureEditor";
+import { ContentExitMotion } from "@pokebots/ui/menu-motion";
+import { useText } from "@pokebots/ui/text";
 import { createEffect, createMemo, createStore, For, onSettled, Show } from "solid-js";
 import { useChannels } from "./channels-context";
 import { matchesAgentSearch, toggleChannelMember } from "./channels-draft";

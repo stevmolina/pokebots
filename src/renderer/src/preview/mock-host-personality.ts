@@ -1,4 +1,4 @@
-import { DEFAULT_RESPONSE_STYLE, type HostAdminDesktopApi, type HostPersonality } from "@openbot/contracts/ipc";
+import { DEFAULT_RESPONSE_STYLE, type HostAdminDesktopApi, type HostPersonality } from "@pokebots/contracts/ipc";
 
 /** Preview has one host, so every server shares this personality. */
 export function createMockHostPersonality(): Pick<HostAdminDesktopApi, "getPersonality" | "setPersonality"> {

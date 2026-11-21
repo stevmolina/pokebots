@@ -1,8 +1,8 @@
-import type { ServerSummary } from "@openbot/contracts/ipc";
-import { classifyFailure } from "@openbot/telemetry";
-import type { ServerActionCallbacks } from "@openbot/ui/features/servers/ServerActionItems";
-import type { HiddenLocalServer } from "@openbot/ui/features/servers/ServerRail";
-import { useText } from "@openbot/ui/text";
+import type { ServerSummary } from "@pokebots/contracts/ipc";
+import { classifyFailure } from "@pokebots/telemetry";
+import type { ServerActionCallbacks } from "@pokebots/ui/features/servers/ServerActionItems";
+import type { HiddenLocalServer } from "@pokebots/ui/features/servers/ServerRail";
+import { useText } from "@pokebots/ui/text";
 import { actionToast } from "../../action-toast";
 import { usePlatform } from "../../platform";
 import { useSettings } from "../settings/settings-context";

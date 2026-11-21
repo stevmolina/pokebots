@@ -1,5 +1,5 @@
-import { CHAT_BACKDROP_SCENES, type ChatBackdropScene } from "@openbot/brand/chat-backdrop-scenes";
-import type { MobileTextKey } from "@openbot/i18n/mobile";
+import { CHAT_BACKDROP_SCENES, type ChatBackdropScene } from "@pokebots/brand/chat-backdrop-scenes";
+import type { MobileTextKey } from "@pokebots/i18n/mobile";
 import { File } from "expo-file-system";
 import { Image } from "expo-image";
 import * as ImagePicker from "expo-image-picker";
