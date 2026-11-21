@@ -36,7 +36,7 @@ jobs:
   # and the repository token each go to one step only.
   stage:
     name: Save the APK on a draft GitHub release
-    if: github.ref == 'refs/heads/main'
+    if: github.repository == 'nightly-labs/openbot' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
     timeout-minutes: 25
     environment: release-android

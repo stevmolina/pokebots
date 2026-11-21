@@ -26,7 +26,7 @@ permissions: {}
 jobs:
   publish:
     name: Make the APK release public
-    if: github.ref == 'refs/heads/main'
+    if: github.repository == 'nightly-labs/openbot' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     # A group of its own. In the group of the stage job, a waiting run of this job could be
