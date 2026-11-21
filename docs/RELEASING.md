@@ -44,6 +44,9 @@ This is a source preflight. Package builds, signing, version order against live 
 feed access require separate checks after the release owner confirms the channels. The workflow
 uses read-only repository access and has no release or deployment jobs.
 
+The inherited desktop release workflow runs only on `nightly-labs/openbot`. Use the Pokebots
+dry run for this fork. The next sections describe upstream publishing and signing.
+
 ## One-time GitHub setup
 
 Create the `release` environment in `nightly-labs/openbot`, then add these environment secrets:
