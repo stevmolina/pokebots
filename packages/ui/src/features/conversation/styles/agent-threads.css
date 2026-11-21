@@ -230,10 +230,11 @@
   flex: 1 1 auto;
 }
 
-.agent-sessions-count {
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-sm);
-  font-variant-numeric: tabular-nums;
+.agent-sessions-all.ui-button {
+  border-radius: 0;
+  border-top: 0.5px solid var(--openbot-border);
+  background: color-mix(in srgb, var(--openbot-bg-control) 45%, transparent);
+  color: var(--openbot-text-secondary);
 }
 
 .agent-sessions-chevron {

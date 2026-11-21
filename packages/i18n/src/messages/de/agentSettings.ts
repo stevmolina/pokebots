@@ -220,11 +220,13 @@ export const messages = {
   "agentSettings.links.library": "Bibliothek",
   "agentSettings.links.computer": "Computer",
   "agentSettings.links.computerActive": "In Benutzung",
+  "agentSettings.links.computerAsleep": "Im Ruhezustand",
   "agentSettings.links.computerOffline": "Offline",
   "agentSettings.links.routinesCount": {
     one: "{count} eingerichtet",
     other: "{count} eingerichtet",
   },
+  "agentSettings.links.routinesActive": { one: "{count} aktiv", other: "{count} aktiv" },
   "agentSettings.links.routinesNone": "Keine",
   "agentSettings.runtime.workspaceNote":
     "„Nur Arbeitsbereich“ beschränkt Schreibzugriffe auf den Arbeitsbereich dieses Agenten, den gemeinsamen Ordner und temporäre Ordner. Lesen und Netzwerkzugriff bleiben verfügbar.",
@@ -258,9 +260,6 @@ export const messages = {
   "agentSettings.tabs.activity": "Aktivität",
   "agentSettings.tabs.library": "Bibliothek",
   "agentSettings.groups.tools": "Tools",
-  "agentSettings.routines.new": "Neue Routine",
-  "agentSettings.routines.all": "Alle Routinen",
-  "agentSettings.routines.empty": "Noch keine Routinen",
   "agentSettings.library.filter.label": "Bibliothek filtern",
   "agentSettings.library.filter.all": "Alle",
   "agentSettings.library.filter.pages": "Seiten",

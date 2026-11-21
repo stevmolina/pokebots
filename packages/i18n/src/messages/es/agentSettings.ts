@@ -218,11 +218,13 @@ export const messages = {
   "agentSettings.links.library": "Biblioteca",
   "agentSettings.links.computer": "Computadora",
   "agentSettings.links.computerActive": "En uso",
+  "agentSettings.links.computerAsleep": "En reposo",
   "agentSettings.links.computerOffline": "Sin conexión",
   "agentSettings.links.routinesCount": {
     one: "{count} configurada",
     other: "{count} configuradas",
   },
+  "agentSettings.links.routinesActive": { one: "{count} activa", other: "{count} activas" },
   "agentSettings.links.routinesNone": "Ninguna",
   "agentSettings.runtime.workspaceNote":
     "Solo espacio de trabajo limita la escritura al espacio de trabajo de este agente, la carpeta compartida y las carpetas temporales. La lectura y la red siguen disponibles.",
@@ -256,9 +258,6 @@ export const messages = {
   "agentSettings.tabs.activity": "Actividad",
   "agentSettings.tabs.library": "Biblioteca",
   "agentSettings.groups.tools": "Herramientas",
-  "agentSettings.routines.new": "Nueva rutina",
-  "agentSettings.routines.all": "Todas las rutinas",
-  "agentSettings.routines.empty": "Sin rutinas aún",
   "agentSettings.library.filter.label": "Filtrar biblioteca",
   "agentSettings.library.filter.all": "Todo",
   "agentSettings.library.filter.pages": "Páginas",
