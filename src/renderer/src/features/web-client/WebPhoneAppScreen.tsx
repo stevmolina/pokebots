@@ -7,7 +7,7 @@ import { IOS_APP_STORE_URL } from "@pokebots/ui/features/mobile-app/ios-app-stor
 import { useText } from "@pokebots/ui/text";
 import { For } from "solid-js";
 
-const PRODUCT_NAME = "OpenBot";
+const PRODUCT_NAME = "Pokebots";
 const STORAGE_KEY = "openbot.web.phoneBrowser";
 interface StoreLink {
   platform: MobilePlatformLogoVariant;
