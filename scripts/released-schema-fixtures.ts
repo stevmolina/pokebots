@@ -1,21 +1,21 @@
 // Writes `src/backend/released-schemas/releases.json`: the schema of a new database and of an upgraded
-// database that each shipped release made, taken from the release tags with git, not written by hand.
+// database that each shipped release made, taken from pinned commits and fork tags with git.
 //
-// For each tag, the script exports `src/backend` and `packages` of that tag (`git archive`) to
-// `.openbot-build/released-schema-fixtures/<tag>`, links the tag's own `@openbot/*` packages, and runs
-// the tag's own `migrateOpenBotDatabase` in a child process two times: on an empty database (a new
-// install), and on the database that the previous tag upgraded (an install that upgraded through every
-// release from the first one). Each run reads `sqlite_master` and `schema_migrations`.
+// For each release source, the script exports `src/backend` and `packages` with `git archive`.
+// It links that release's packages and uses its migrations to create a new database and upgrade
+// the database from the previous release. Each run reads `sqlite_master` and `schema_migrations`.
 //
 // The file stays small: an entry is written only for a tag whose databases differ from the tag before,
 // each SQL statement is stored once and referred to by its hash, and each list is stored as a change of
 // the same list in the entry before (`src/backend/migration-harness.ts` reads it back). So a release
-// that does not change the schema does not change the file. Run this script after a release that does:
+// that does not change the schema does not change the file. The installed Pokebots baseline
+// has its own entry even when its schema matches an inherited release. Run this script after
+// a release that changes the schema:
 //
 //   bun scripts/released-schema-fixtures.ts [--check]
 //
-// `--check` writes nothing and exits non-zero when the file is not up to date. The `Check` job of CI
-// runs it.
+// `--check` leaves the fixture unchanged and exits non-zero if it is out of date. CI fetches
+// the pinned history and fork tags from origin before running the check.
 // The tags before v0.1.12 have no database. The tags before v0.3.0 have no migration registry; their
 // schemas are also in `src/backend/released-schemas/v*.sql`, which the pre-registry test reads.
 import { execFileSync } from "node:child_process";
@@ -24,6 +24,7 @@ import { copyFile, mkdir, readFile, rm, symlink, writeFile } from "node:fs/promi
 import { join, resolve } from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import { z } from "zod";
+import pinnedReleases from "./released-migration-sources.json";
 
 const ROOT = resolve(import.meta.dirname, "..");
 const WORK = join(ROOT, ".openbot-build", "released-schema-fixtures");
@@ -104,25 +105,28 @@ function releaseTags(): string[] {
   return git("tag", "--list", "v*")
     .split("\n")
     .filter((tag) => /^v\d+\.\d+\.\d+$/u.test(tag))
-    .filter((tag) => compareVersions(tag, FIRST_DATABASE_TAG) >= 0)
+    .filter((tag) => !Object.hasOwn(pinnedReleases, tag))
     .sort(compareVersions);
 }
 
 /** Exports the tag and returns the path of its schema module. */
-async function exportTag(tag: string): Promise<string> {
+async function exportTag(tag: string, ref: string): Promise<string> {
   const directory = join(WORK, tag);
   await rm(directory, { recursive: true, force: true });
   await mkdir(directory, { recursive: true });
-  const archive = execFileSync("git", ["archive", "--format=tar", tag, "src/backend", "packages"], {
+  const archive = execFileSync("git", ["archive", "--format=tar", ref, "src/backend", "packages"], {
     cwd: ROOT,
     maxBuffer: 512 * 1024 * 1024,
   });
   execFileSync("tar", ["-x", "-C", directory], { input: archive });
   // The tag's own packages, so that its code runs with the helpers it shipped with. Other
   // dependencies come from the node_modules of this checkout.
-  await mkdir(join(directory, "node_modules", "@openbot"), { recursive: true });
-  for (const name of git("ls-tree", "--name-only", `${tag}:packages`).split("\n").filter(Boolean)) {
-    await symlink(join(directory, "packages", name), join(directory, "node_modules", "@openbot", name), "dir");
+  const packages = git("ls-tree", "--name-only", `${ref}:packages`).split("\n").filter(Boolean);
+  for (const scope of ["@openbot", "@pokebots"]) {
+    await mkdir(join(directory, "node_modules", scope), { recursive: true });
+    for (const name of packages) {
+      await symlink(join(directory, "packages", name), join(directory, "node_modules", scope, name), "dir");
+    }
   }
   return join(directory, SCHEMA_MODULE);
 }
@@ -188,8 +192,12 @@ const empty: ReleasedSchema = { migrations: [], objects: [] };
 let previous = { newInstall: empty, upgraded: empty };
 const upgradedDatabase = join(WORK, "upgraded.db");
 await rm(WORK, { recursive: true, force: true });
-for (const tag of releaseTags()) {
-  const schemaModule = await exportTag(tag);
+const sources = Object.entries(pinnedReleases).filter(
+  ([tag]) => !tag.startsWith("v") || compareVersions(tag, FIRST_DATABASE_TAG) >= 0,
+);
+for (const tag of releaseTags()) sources.push([tag, `refs/tags/${tag}`]);
+for (const [tag, ref] of sources) {
+  const schemaModule = await exportTag(tag, ref);
   const newDatabase = join(WORK, `${tag}.db`);
   const newInstall = releasedSchema(dumpDatabase(schemaModule, newDatabase));
   // The first tag starts the upgrade chain with its new database.
@@ -197,7 +205,8 @@ for (const tag of releaseTags()) {
   const upgraded = releasedSchema(dumpDatabase(schemaModule, upgradedDatabase));
   await rm(join(WORK, tag), { recursive: true, force: true });
   const current = { newInstall, upgraded };
-  if (JSON.stringify(current) === JSON.stringify(previous)) continue;
+  const installedBaseline = tag === "pokebots-bc41a1d1d";
+  if (!installedBaseline && JSON.stringify(current) === JSON.stringify(previous)) continue;
   const change = (kind: keyof typeof current) => ({
     migrations: encode(previous[kind].migrations, current[kind].migrations),
     objects: encode(previous[kind].objects, current[kind].objects),
