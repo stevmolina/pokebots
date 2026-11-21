@@ -7,7 +7,7 @@ import {
 export const Route = createFileRoute("/app")({
   head: () => ({
     meta: [
-      { title: "OpenBot web" },
+      { title: "Pokebots web" },
       { name: "robots", content: "noindex, nofollow" },
       // `viewport-fit=cover` lets the page draw under the notch and the home bar. The web client pads
       // its frame with `env(safe-area-inset-*)`.
@@ -19,7 +19,7 @@ export const Route = createFileRoute("/app")({
       { name: "apple-mobile-web-app-capable", content: "yes" },
       { name: "mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
-      { name: "apple-mobile-web-app-title", content: "OpenBot" },
+      { name: "apple-mobile-web-app-title", content: "Pokebots" },
     ],
     scripts: [{ children: WEB_APPEARANCE_BOOT_SCRIPT }],
   }),
