@@ -28,6 +28,22 @@ first-install fallback. To stop a broken upstream release, add its version to th
 `provider-runtime-blocklist.json` and merge it to `main`. Apps read the list at their next check. A
 blocked version is no longer offered, but it stays on the computers that already installed it.
 
+## Pokebots release dry run
+
+In `stevmolina/pokebots`, open **Actions → Pokebots release dry run → Run workflow** and
+select a branch. GitHub makes the manual trigger available after the workflow reaches the
+default branch.
+
+The run checks release text, version comparison fixtures, the Pokebots brand layer, and the
+custom desktop package config. Download the
+`pokebots-release-dry-run-<run-id>-<attempt>` Actions artifact for the commit, version, check
+reports, package config, license, notices and SHA-256 checksums. The artifact expires after seven
+days.
+
+This is a source preflight. Package builds, signing, version order against live installs and
+feed access require separate checks after the release owner confirms the channels. The workflow
+uses read-only repository access and has no release or deployment jobs.
+
 ## One-time GitHub setup
 
 Create the `release` environment in `nightly-labs/openbot`, then add these environment secrets:
