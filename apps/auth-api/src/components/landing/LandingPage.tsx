@@ -145,7 +145,7 @@ function LandingPageContent() {
                 )}
               </Show>
               <AppLogo variant="production" animation="blink" interactive class="landing-hero-logo" />{" "}
-              <span>OpenBot</span>
+              <span>Pokebots</span>
               <Show when={hero().title.after}>
                 {(after) => (
                   <>
