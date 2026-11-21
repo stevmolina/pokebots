@@ -1,10 +1,10 @@
-import type { SkillSuggestionEvent } from "@openbot/contracts/ipc";
-import type { AgentMessage } from "@openbot/ui/data";
+import type { SkillSuggestionEvent } from "@pokebots/contracts/ipc";
+import type { AgentMessage } from "@pokebots/ui/data";
 import {
   MarketplaceSuggestionCard,
   type MarketplaceSuggestionSkillAction,
-} from "@openbot/ui/features/conversation/MarketplaceSuggestionCard";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/ui/features/conversation/MarketplaceSuggestionCard";
+import { useText } from "@pokebots/ui/text";
 import { createSignal } from "solid-js";
 import { dismissMarketplaceSuggestion, marketplaceSuggestionDismissed } from "./marketplace-suggestion-dismissals";
 

@@ -20,28 +20,28 @@ import {
   parseOpenStorageLocationInput,
   parseOpenStoredFileInput,
   STORAGE_CAPABILITY,
-} from "@openbot/contracts/ipc";
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
-import type { TeamCurrentCapability } from "@openbot/contracts/team-protocol/current";
+} from "@pokebots/contracts/ipc";
+import { isDynamicRecord } from "@pokebots/contracts/runtime-values";
+import type { TeamCurrentCapability } from "@pokebots/contracts/team-protocol/current";
 import {
   LIBRARY_FOLDERS_CAPABILITY,
   LIBRARY_FOLDERS_ROUTES,
-} from "@openbot/contracts/team-protocol/library-folders-v1";
+} from "@pokebots/contracts/team-protocol/library-folders-v1";
 import {
   MACHINE_RESOURCES_CAPABILITY,
   MACHINE_RESOURCES_ROUTES,
-} from "@openbot/contracts/team-protocol/machine-resources-v1";
+} from "@pokebots/contracts/team-protocol/machine-resources-v1";
 import {
   STORAGE_CHANNEL_CAPABILITY,
   STORAGE_CHANNEL_ROUTES,
-} from "@openbot/contracts/team-protocol/storage-channel-v1";
-import { STORAGE_DISK_CAPABILITY, STORAGE_DISK_ROUTES } from "@openbot/contracts/team-protocol/storage-disk-v1";
+} from "@pokebots/contracts/team-protocol/storage-channel-v1";
+import { STORAGE_DISK_CAPABILITY, STORAGE_DISK_ROUTES } from "@pokebots/contracts/team-protocol/storage-disk-v1";
 import {
   STORAGE_USER_FILES_CAPABILITY,
   STORAGE_USER_FILES_ROUTES,
-} from "@openbot/contracts/team-protocol/storage-user-files-v1";
-import { STORAGE_ROUTES } from "@openbot/contracts/team-protocol/storage-v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/team-protocol/storage-user-files-v1";
+import { STORAGE_ROUTES } from "@pokebots/contracts/team-protocol/storage-v1";
+import { sourceText } from "@pokebots/i18n/source";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import type { StorageAgent, StorageUsageService } from "../../backend/storage-usage";
 import type { LibraryFoldersService } from "../library-folders-service";

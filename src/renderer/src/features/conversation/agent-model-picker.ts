@@ -1,7 +1,7 @@
-import { foreignProvider } from "@openbot/contracts/agent-providers";
-import { agentNextProviderAccountId, workspaceAccessEnforced } from "@openbot/contracts/ipc";
-import type { ProviderModelPicker } from "@openbot/ui/components/ProviderModelPicker";
-import { useText } from "@openbot/ui/text";
+import { foreignProvider } from "@pokebots/contracts/agent-providers";
+import { agentNextProviderAccountId, workspaceAccessEnforced } from "@pokebots/contracts/ipc";
+import type { ProviderModelPicker } from "@pokebots/ui/components/ProviderModelPicker";
+import { useText } from "@pokebots/ui/text";
 import type { ComponentProps } from "@solidjs/web";
 import { usePlatform } from "../../platform";
 import { shortcutPlatform } from "../shortcuts/shortcut-platform";

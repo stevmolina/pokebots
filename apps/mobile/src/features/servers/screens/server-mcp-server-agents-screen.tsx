@@ -1,4 +1,4 @@
-import { canAdministerServer } from "@openbot/contracts/ipc";
+import { canAdministerServer } from "@pokebots/contracts/ipc";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { Typography } from "heroui-native";
 import Check from "lucide-react-native/icons/check";

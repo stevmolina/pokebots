@@ -3,7 +3,7 @@
  * are the contract's (`workflowGraphProblem`), so the mobile editor checks a graph as the host does.
  */
 
-import type { WorkflowFieldValue, WorkflowNode, WorkflowNodeKind } from "@openbot/contracts/ipc";
+import type { WorkflowFieldValue, WorkflowNode, WorkflowNodeKind } from "@pokebots/contracts/ipc";
 
 /** The zone that a trigger node names, or null when it names none. */
 export function nodeTimezone(node: WorkflowNode): string | null {

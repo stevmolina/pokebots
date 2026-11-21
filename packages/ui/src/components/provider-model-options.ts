@@ -7,7 +7,7 @@ import type {
   CustomProviderHarness,
   CustomProviderSummary,
   ProviderRuntimeStatus,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   agentProviderName,
   CUSTOM_AGENT_DEFAULT_MODEL,
@@ -16,8 +16,8 @@ import {
   isFreeOpencodeModel,
   isFreeOpencodeModelName,
   isKnownAgentProvider,
-} from "@openbot/contracts/ipc";
-import type { AppTextKey, AppTranslate } from "@openbot/i18n";
+} from "@pokebots/contracts/ipc";
+import type { AppTextKey, AppTranslate } from "@pokebots/i18n";
 import { currentText } from "../text";
 
 /** The efforts that have a name in the catalog. The other efforts show their id. */

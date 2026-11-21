@@ -3,7 +3,7 @@ import {
   DEFAULT_APP_APPEARANCE,
   DEFAULT_TRANSPARENT_WINDOW,
   selectedThemePalette,
-} from "@openbot/contracts/app-appearance";
+} from "@pokebots/contracts/app-appearance";
 import { type BrowserWindow, nativeTheme } from "electron";
 
 /** The light canvas, `--openbot-bg-canvas` in `tokens-light.css`, so a light window opens without a dark frame. */

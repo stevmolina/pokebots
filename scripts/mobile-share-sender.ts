@@ -8,7 +8,7 @@
 
 import { mkdirSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
-import { createOpenBotLogger } from "@openbot/logging";
+import { createOpenBotLogger } from "@pokebots/logging";
 
 const ROOT = resolve(import.meta.dirname, "..");
 const logger = createOpenBotLogger("mobile-share-sender");

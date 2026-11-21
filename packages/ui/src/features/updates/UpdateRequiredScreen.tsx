@@ -1,5 +1,5 @@
-import { AppLogo, type AppLogoVariant } from "@openbot/brand";
-import type { UpdateStatus } from "@openbot/contracts/ipc";
+import { AppLogo, type AppLogoVariant } from "@pokebots/brand";
+import type { UpdateStatus } from "@pokebots/contracts/ipc";
 import { createSignal, Show } from "solid-js";
 import { Button } from "../../button";
 import { TriangleAlert } from "../../icons";

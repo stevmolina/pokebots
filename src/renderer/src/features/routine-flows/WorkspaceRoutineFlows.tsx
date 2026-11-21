@@ -4,11 +4,11 @@
  * notice. Webhook routines change only for an account that manages the server's events.
  */
 
-import { EVENTS_CAPABILITY } from "@openbot/contracts/team-protocol/events-v1";
-import { ROUTINE_FLOW_STOP_CAPABILITY } from "@openbot/contracts/team-protocol/routine-flow-stop-v1";
-import { ROUTINE_FLOWS_CAPABILITY } from "@openbot/contracts/team-protocol/routine-flows-v1";
-import type { DiagramModelChoice } from "@openbot/ui/features/diagrams/DiagramNewAgentCard";
-import { useText } from "@openbot/ui/text";
+import { EVENTS_CAPABILITY } from "@pokebots/contracts/team-protocol/events-v1";
+import { ROUTINE_FLOW_STOP_CAPABILITY } from "@pokebots/contracts/team-protocol/routine-flow-stop-v1";
+import { ROUTINE_FLOWS_CAPABILITY } from "@pokebots/contracts/team-protocol/routine-flows-v1";
+import type { DiagramModelChoice } from "@pokebots/ui/features/diagrams/DiagramNewAgentCard";
+import { useText } from "@pokebots/ui/text";
 import { createMemo, Show } from "solid-js";
 import { useLayout } from "../../layout";
 import { useNavigation } from "../../navigation";

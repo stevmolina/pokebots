@@ -5,7 +5,7 @@
 //
 // It must import only `electron` and code that the build puts in `out/main`. An installed package
 // here, such as `effect`, would fail in the same way and with no message.
-import { resolveLocale, translateFor } from "@openbot/i18n";
+import { resolveLocale, translateFor } from "@pokebots/i18n";
 import { app, dialog, shell } from "electron";
 import { DOWNLOAD_URL } from "./download-url";
 
@@ -33,7 +33,7 @@ function runsAsServer(): boolean {
 }
 
 /**
- * `@openbot/logging` needs an installed package, so this writes the line itself. The error names
+ * `@pokebots/logging` needs an installed package, so this writes the line itself. The error names
  * only program files.
  */
 function report(message: string, error: unknown): void {

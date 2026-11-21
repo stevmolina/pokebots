@@ -3,21 +3,21 @@ import { openAsBlob } from "node:fs";
 import { createRequire } from "node:module";
 import { dirname, join } from "node:path";
 import { deflateRawSync } from "node:zlib";
-import { BROWSER_SECRET_RESPONSE_PATH } from "@openbot/contracts/ipc";
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
-import { AGENT_BACKGROUND_WORK_CAPABILITY } from "@openbot/contracts/team-protocol/agent-background-work-v1";
-import { AGENT_PENDING_RUNTIME_CAPABILITY } from "@openbot/contracts/team-protocol/agent-pending-runtime-v1";
-import { AGENT_TASK_SUBAGENTS_CAPABILITY } from "@openbot/contracts/team-protocol/agent-task-subagents-v1";
-import { AGENT_TASK_UI_BLOCKS_CAPABILITY } from "@openbot/contracts/team-protocol/agent-task-ui-blocks-v1";
-import { browserViewStreamSessionId } from "@openbot/contracts/team-protocol/browser-view-v1";
-import { TEAM_PROTOCOL_CAPABILITY_LIMITS } from "@openbot/contracts/team-protocol/capability-limits";
+import { BROWSER_SECRET_RESPONSE_PATH } from "@pokebots/contracts/ipc";
+import { isDynamicRecord, isString } from "@pokebots/contracts/runtime-values";
+import { TEAM_API_ROUTES } from "@pokebots/contracts/team-api-routes";
+import { AGENT_BACKGROUND_WORK_CAPABILITY } from "@pokebots/contracts/team-protocol/agent-background-work-v1";
+import { AGENT_PENDING_RUNTIME_CAPABILITY } from "@pokebots/contracts/team-protocol/agent-pending-runtime-v1";
+import { AGENT_TASK_SUBAGENTS_CAPABILITY } from "@pokebots/contracts/team-protocol/agent-task-subagents-v1";
+import { AGENT_TASK_UI_BLOCKS_CAPABILITY } from "@pokebots/contracts/team-protocol/agent-task-ui-blocks-v1";
+import { browserViewStreamSessionId } from "@pokebots/contracts/team-protocol/browser-view-v1";
+import { TEAM_PROTOCOL_CAPABILITY_LIMITS } from "@pokebots/contracts/team-protocol/capability-limits";
 import {
   COMPACT_RPC_MAX_KEPT_LISTS,
   COMPACT_RPC_MIN_COMPRESSED_BYTES,
   COMPACT_RPC_UNKNOWN_KEY_CODE,
   isCompactRpcKey,
-} from "@openbot/contracts/team-protocol/compact-rpc-v1";
+} from "@pokebots/contracts/team-protocol/compact-rpc-v1";
 import {
   BROWSER_SIGN_IN_CAPABILITY,
   BROWSER_VAULT_SKIP_CAPABILITY,
@@ -41,28 +41,28 @@ import {
   TEAM_UI_BLOCKS_CAPABILITY,
   TEAM_USAGE_TERTIARY_CAPABILITY,
   TEAM_VIDEO_GENERATION_CAPABILITY,
-} from "@openbot/contracts/team-protocol/current";
-import { toWireAgentKeysObjectForPath } from "@openbot/contracts/team-protocol/current-agent-keys";
-import { MCP_MANY_SERVERS_CAPABILITY } from "@openbot/contracts/team-protocol/mcp-many-servers-v1";
-import { optionalTeamEvent } from "@openbot/contracts/team-protocol/optional-events";
-import { ROUTINE_RESULTS_WHATSAPP_CAPABILITY } from "@openbot/contracts/team-protocol/routine-results-whatsapp-v1";
-import { teamSideRouteCodec } from "@openbot/contracts/team-protocol/side-routes";
+} from "@pokebots/contracts/team-protocol/current";
+import { toWireAgentKeysObjectForPath } from "@pokebots/contracts/team-protocol/current-agent-keys";
+import { MCP_MANY_SERVERS_CAPABILITY } from "@pokebots/contracts/team-protocol/mcp-many-servers-v1";
+import { optionalTeamEvent } from "@pokebots/contracts/team-protocol/optional-events";
+import { ROUTINE_RESULTS_WHATSAPP_CAPABILITY } from "@pokebots/contracts/team-protocol/routine-results-whatsapp-v1";
+import { teamSideRouteCodec } from "@pokebots/contracts/team-protocol/side-routes";
 import {
   addSkillSuggestionNames,
   SKILL_LEARNING_CAPABILITY,
   withSkillSuggestionNames,
-} from "@openbot/contracts/team-protocol/skill-learning-v1";
+} from "@pokebots/contracts/team-protocol/skill-learning-v1";
 import {
   addUiBlockAutoAnswers,
   TEAM_UI_BLOCK_AUTO_ANSWER_CAPABILITY,
   withUiBlockAutoAnswers,
-} from "@openbot/contracts/team-protocol/ui-block-auto-answer-v1";
+} from "@pokebots/contracts/team-protocol/ui-block-auto-answer-v1";
 import {
   addUiBlockVaultRequests,
   TEAM_UI_BLOCK_VAULT_CAPABILITY,
   withUiBlockVaultRequests,
-} from "@openbot/contracts/team-protocol/ui-block-vault-v1";
-import { encodeTeamProtocolV1ClientEvent } from "@openbot/contracts/team-protocol/v1";
+} from "@pokebots/contracts/team-protocol/ui-block-vault-v1";
+import { encodeTeamProtocolV1ClientEvent } from "@pokebots/contracts/team-protocol/v1";
 import {
   decodeTeamProtocolV2AuthFrame,
   decodeTeamProtocolV2EventFrame,
@@ -73,42 +73,42 @@ import {
   type TeamProtocolV2Json,
   type TeamProtocolV2RpcFrame,
   teamProtocolV2AuthenticationTranscript,
-} from "@openbot/contracts/team-protocol/v2";
-import { createTeamProtocolV2Event } from "@openbot/contracts/team-protocol/v2-adapter";
+} from "@pokebots/contracts/team-protocol/v2";
+import { createTeamProtocolV2Event } from "@pokebots/contracts/team-protocol/v2-adapter";
 import {
   createTeamProtocolV4Event,
   decodeTeamProtocolV4WebRtcHttpRequest,
   encodeTeamProtocolV4WebRtcHttpResponse,
-} from "@openbot/contracts/team-protocol/v4-webrtc-adapter";
-import { TEAM_LOCAL_PROVIDERS_CAPABILITY } from "@openbot/contracts/team-protocol/v5";
+} from "@pokebots/contracts/team-protocol/v4-webrtc-adapter";
+import { TEAM_LOCAL_PROVIDERS_CAPABILITY } from "@pokebots/contracts/team-protocol/v5";
 import {
   createTeamProtocolV5Event,
   decodeTeamProtocolV5WebRtcHttpRequest,
   encodeTeamProtocolV5WebRtcHttpResponse,
-} from "@openbot/contracts/team-protocol/v5-webrtc-adapter";
-import { TEAM_CURSOR_CLINE_CAPABILITY } from "@openbot/contracts/team-protocol/v6";
+} from "@pokebots/contracts/team-protocol/v5-webrtc-adapter";
+import { TEAM_CURSOR_CLINE_CAPABILITY } from "@pokebots/contracts/team-protocol/v6";
 import {
   createTeamProtocolV6Event,
   decodeTeamProtocolV6WebRtcHttpRequest,
   encodeTeamProtocolV6WebRtcHttpResponse,
-} from "@openbot/contracts/team-protocol/v6-webrtc-adapter";
-import { TEAM_PI_MUSE_CAPABILITY } from "@openbot/contracts/team-protocol/v7";
+} from "@pokebots/contracts/team-protocol/v6-webrtc-adapter";
+import { TEAM_PI_MUSE_CAPABILITY } from "@pokebots/contracts/team-protocol/v7";
 import {
   createTeamProtocolV7Event,
   decodeTeamProtocolV7WebRtcHttpRequest,
   encodeTeamProtocolV7WebRtcHttpResponse,
-} from "@openbot/contracts/team-protocol/v7-webrtc-adapter";
-import { TEAM_OPEN_PROVIDERS_CAPABILITY } from "@openbot/contracts/team-protocol/v8";
+} from "@pokebots/contracts/team-protocol/v7-webrtc-adapter";
+import { TEAM_OPEN_PROVIDERS_CAPABILITY } from "@pokebots/contracts/team-protocol/v8";
 import {
   createTeamProtocolV8Event,
   decodeTeamProtocolV8WebRtcHttpRequest,
   encodeTeamProtocolV8WebRtcHttpResponse,
-} from "@openbot/contracts/team-protocol/v8-webrtc-adapter";
+} from "@pokebots/contracts/team-protocol/v8-webrtc-adapter";
 import {
   decodeTeamProtocolSupportV9,
   TEAM_LONG_CAPABILITY_LISTS_CAPABILITY,
-} from "@openbot/contracts/team-protocol/v9";
-import { decodeTeamProtocolV9WebRtcHttpRequest } from "@openbot/contracts/team-protocol/v9-webrtc-adapter";
+} from "@pokebots/contracts/team-protocol/v9";
+import { decodeTeamProtocolV9WebRtcHttpRequest } from "@pokebots/contracts/team-protocol/v9-webrtc-adapter";
 import {
   decodeTeamProtocolSupportV10,
   readTeamCapabilitiesV10,
@@ -116,8 +116,8 @@ import {
   TEAM_CAPABILITY_BASELINE_CAPABILITY,
   TEAM_PROTOCOL_V10,
   TEAM_PROTOCOL_V10_ABSENT_LIMIT,
-} from "@openbot/contracts/team-protocol/v10";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/team-protocol/v10";
+import { sourceText } from "@pokebots/i18n/source";
 import { Context, Deferred, Effect, Exit, Fiber, Layer, ManagedRuntime } from "effect";
 import type * as Ws from "ws";
 import type { VerifiedRemoteSessionTicket } from "./central-auth-manager";

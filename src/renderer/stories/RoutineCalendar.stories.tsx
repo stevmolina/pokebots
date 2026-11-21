@@ -1,14 +1,14 @@
-import type { RoutineSchedule } from "@openbot/contracts/ipc";
+import type { RoutineSchedule } from "@pokebots/contracts/ipc";
 import {
   RoutineCalendar,
   type RoutineCalendarAgent,
   type RoutineCalendarRoutine,
   type RoutineCalendarRun,
-} from "@openbot/ui/features/conversation/RoutineCalendar";
+} from "@pokebots/ui/features/conversation/RoutineCalendar";
 import type {
   RoutineCalendarCreate,
   RoutineCreateFields,
-} from "@openbot/ui/features/conversation/RoutineCalendarCreateCard";
+} from "@pokebots/ui/features/conversation/RoutineCalendarCreateCard";
 import { type ComponentProps, createSignal } from "solid-js";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";

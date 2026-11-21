@@ -5,19 +5,19 @@
  * other. A run in these stories uses the preview mock, not a provider.
  */
 
-import { Toaster } from "@openbot/ui";
-import { AgentNode } from "@openbot/ui/features/workflows/WorkflowAgentNode";
-import { ApprovalNode } from "@openbot/ui/features/workflows/WorkflowApprovalNode";
-import { AssetNode } from "@openbot/ui/features/workflows/WorkflowAssetNode";
-import { ConditionNode } from "@openbot/ui/features/workflows/WorkflowConditionNode";
-import { ImageNode } from "@openbot/ui/features/workflows/WorkflowImageNode";
-import { LlmNode } from "@openbot/ui/features/workflows/WorkflowLlmNode";
-import { NoteNode } from "@openbot/ui/features/workflows/WorkflowNoteNode";
-import { OutputNode } from "@openbot/ui/features/workflows/WorkflowOutputNode";
-import { PromptNode } from "@openbot/ui/features/workflows/WorkflowPromptNode";
-import { TextNode } from "@openbot/ui/features/workflows/WorkflowTextNode";
-import { TriggerNode } from "@openbot/ui/features/workflows/WorkflowTriggerNode";
-import type { WorkflowCatalogs } from "@openbot/ui/features/workflows/workflow-model";
+import { Toaster } from "@pokebots/ui";
+import { AgentNode } from "@pokebots/ui/features/workflows/WorkflowAgentNode";
+import { ApprovalNode } from "@pokebots/ui/features/workflows/WorkflowApprovalNode";
+import { AssetNode } from "@pokebots/ui/features/workflows/WorkflowAssetNode";
+import { ConditionNode } from "@pokebots/ui/features/workflows/WorkflowConditionNode";
+import { ImageNode } from "@pokebots/ui/features/workflows/WorkflowImageNode";
+import { LlmNode } from "@pokebots/ui/features/workflows/WorkflowLlmNode";
+import { NoteNode } from "@pokebots/ui/features/workflows/WorkflowNoteNode";
+import { OutputNode } from "@pokebots/ui/features/workflows/WorkflowOutputNode";
+import { PromptNode } from "@pokebots/ui/features/workflows/WorkflowPromptNode";
+import { TextNode } from "@pokebots/ui/features/workflows/WorkflowTextNode";
+import { TriggerNode } from "@pokebots/ui/features/workflows/WorkflowTriggerNode";
+import type { WorkflowCatalogs } from "@pokebots/ui/features/workflows/workflow-model";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { NodeGallery } from "./workflow-node-gallery";
 import { createStoryPresence } from "./workflow-presence-story";

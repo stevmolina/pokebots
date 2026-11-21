@@ -1,10 +1,10 @@
-import { MCP_SERVERS_CAPABILITY } from "@openbot/contracts/ipc";
+import { MCP_SERVERS_CAPABILITY } from "@pokebots/contracts/ipc";
 import {
   MCP_FROZEN_SERVERS_LIST_LIMIT,
   MCP_MANY_SERVERS_CAPABILITY,
-} from "@openbot/contracts/team-protocol/mcp-many-servers-v1";
-import { MCP_ROUTES, mcpRequest } from "@openbot/contracts/team-protocol/mcp-v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/team-protocol/mcp-many-servers-v1";
+import { MCP_ROUTES, mcpRequest } from "@pokebots/contracts/team-protocol/mcp-v1";
+import { sourceText } from "@pokebots/i18n/source";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import {
   parseRemoveMcpServer,

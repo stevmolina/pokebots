@@ -5,7 +5,7 @@ import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { isAgentProvider } from "@openbot/contracts/agent-providers";
+import { isAgentProvider } from "@pokebots/contracts/agent-providers";
 import type {
   AgentSummary,
   Channel,
@@ -17,9 +17,9 @@ import type {
   OpenBotDesktopApi,
   QueueSnapshot,
   UpdateAgentInput,
-} from "@openbot/contracts/ipc";
-import { TEAM_PROTOCOL_V8, TEAM_PROTOCOL_VERSION_HEADER } from "@openbot/contracts/team-protocol";
-import { createOpenBotLogger } from "@openbot/logging";
+} from "@pokebots/contracts/ipc";
+import { TEAM_PROTOCOL_V8, TEAM_PROTOCOL_VERSION_HEADER } from "@pokebots/contracts/team-protocol";
+import { createOpenBotLogger } from "@pokebots/logging";
 import type { Page } from "playwright-core";
 import { decodeTeamProtocolSupportV8Base } from "../packages/contracts/src/team-protocol/v8-base";
 import { assertMutationAllowed, connectToDevApp } from "./dev-automation/cdp-client";

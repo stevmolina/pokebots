@@ -19,7 +19,7 @@ import {
   type DiscordHistoryMessage,
   type DiscordRoleSummary,
   discordEmbedTextLength,
-} from "@openbot/contracts/signal-protocol/discord-api";
+} from "@pokebots/contracts/signal-protocol/discord-api";
 import { Effect, Schema } from "effect";
 import { z } from "zod";
 import { type DiscordState, discordAuthorName, messageBody } from "./discord-events";

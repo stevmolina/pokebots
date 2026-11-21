@@ -1,4 +1,4 @@
-import { useText } from "@openbot/ui/text";
+import { useText } from "@pokebots/ui/text";
 import { Loading, Match, Show, Switch } from "solid-js";
 import { AgentUsagePanel, CrmPage, LibraryPanel, MachinesPanel, WorkflowsPage } from "../../lazy-views";
 import { SkillsMarketplace } from "../../WorkspaceOverlays";

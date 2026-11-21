@@ -1,4 +1,4 @@
-import type { ServerSummary } from "@openbot/contracts/ipc";
+import type { ServerSummary } from "@pokebots/contracts/ipc";
 
 /**
  * The server on this computer while the user hides it. An open server always shows, and without

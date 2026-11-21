@@ -1,5 +1,5 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import { ROUTINE_LIMIT_POLICIES, ROUTINE_MISSED_POLICIES, ROUTINE_RUN_PLACES } from "@openbot/contracts/ipc";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
+import { ROUTINE_LIMIT_POLICIES, ROUTINE_MISSED_POLICIES, ROUTINE_RUN_PLACES } from "@pokebots/contracts/ipc";
 import { z } from "zod";
 import { WEBHOOK_EVENT_TYPE_MAX_LENGTH, WEBHOOK_FILTERS_LIMIT } from "./webhook-trigger";
 

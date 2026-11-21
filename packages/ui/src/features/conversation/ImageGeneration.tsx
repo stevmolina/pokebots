@@ -3,8 +3,8 @@ import {
   type ImageGenerationAspectRatio,
   imageAspectRatioOf,
   imagePixelSize,
-} from "@openbot/contracts/ipc";
-import { Button, Download, Maximize2 } from "@openbot/ui";
+} from "@pokebots/contracts/ipc";
+import { Button, Download, Maximize2 } from "@pokebots/ui";
 import { createEffect, createSignal, Show, untrack } from "solid-js";
 import { useText } from "../../text";
 import {

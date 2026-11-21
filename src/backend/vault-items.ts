@@ -13,7 +13,7 @@ import type {
   VaultItemKind,
   VaultItemOrigin,
   VaultSaveInput,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import type { Effect } from "effect";
 import type { PasswordVaultError } from "./password-vault";
 

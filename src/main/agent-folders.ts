@@ -18,7 +18,7 @@ import {
   agentExclusionCoverage,
   agentFolderCoverage,
   folderInside,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import type { AgentService } from "../backend/agent-service";
 import { runCauseEffect } from "../backend/effect-boundary";
 import { oneAtATimePerKey } from "./ipc/one-at-a-time";

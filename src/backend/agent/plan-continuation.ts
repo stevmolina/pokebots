@@ -1,4 +1,4 @@
-import type { ConversationPlan, ConversationPlanStep } from "@openbot/contracts/ipc";
+import type { ConversationPlan, ConversationPlanStep } from "@pokebots/contracts/ipc";
 import {
   compactionContinuationPrompt,
   nextStepContinuationPrompt,

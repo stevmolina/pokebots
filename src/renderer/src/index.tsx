@@ -1,7 +1,7 @@
 // The app stylesheet comes first. The diagram and workflow stylesheets load with their components, and
 // the cascade needs them after it, where the app stylesheet imported them before.
 import "./styles.css";
-import { installPointerFocusGuard } from "@openbot/ui/pointer-focus";
+import { installPointerFocusGuard } from "@pokebots/ui/pointer-focus";
 import { render } from "@solidjs/web";
 // Copying a selection with a formula in it gives its LaTeX source, not the typeset glyphs twice.
 import "katex/contrib/copy-tex";

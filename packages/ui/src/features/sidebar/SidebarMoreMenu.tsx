@@ -17,7 +17,7 @@ import {
   Sparkles,
   Store,
   type Waypoints,
-} from "@openbot/ui";
+} from "@pokebots/ui";
 import { Dynamic } from "@solidjs/web";
 import { For, Show } from "solid-js";
 import { useText } from "../../text";

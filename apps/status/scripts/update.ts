@@ -16,7 +16,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { parseArgs } from "node:util";
-import { createOpenBotLogger, registerSecretValue } from "@openbot/logging";
+import { createOpenBotLogger, registerSecretValue } from "@pokebots/logging";
 import { Schema } from "effect";
 import {
   type CheckDay,

@@ -11,8 +11,8 @@ import type {
   SetAgentSessionSettingInput,
   TestRoutineInput,
   WithdrawFeedbackResult,
-} from "@openbot/contracts/ipc";
-import type { AttachmentMediaSource } from "@openbot/ui/features/conversation/AttachmentCards";
+} from "@pokebots/contracts/ipc";
+import type { AttachmentMediaSource } from "@pokebots/ui/features/conversation/AttachmentCards";
 import type { AgentSkillCalls, SkillCatalogCalls } from "../../skills-port";
 import type { AgentTemplatePublishCalls } from "../agent-templates/agent-templates-port";
 import type { BrowserProfileCalls } from "../browser/browser-profiles-port";

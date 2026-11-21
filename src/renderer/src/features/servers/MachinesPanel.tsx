@@ -1,6 +1,6 @@
-import { AGENT_COMPUTER_CAPABILITY } from "@openbot/contracts/team-protocol/agent-computer-v1";
-import type { CloudComputer } from "@openbot/ui/features/servers/CloudComputerList";
-import { MachinesPage } from "@openbot/ui/features/servers/MachinesPage";
+import { AGENT_COMPUTER_CAPABILITY } from "@pokebots/contracts/team-protocol/agent-computer-v1";
+import type { CloudComputer } from "@pokebots/ui/features/servers/CloudComputerList";
+import { MachinesPage } from "@pokebots/ui/features/servers/MachinesPage";
 import { createEffect, createSignal, onCleanup } from "solid-js";
 import { appPort } from "../../app-port";
 import { useOpenMachineAgent } from "./machine-agent-open";

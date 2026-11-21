@@ -6,8 +6,8 @@ import {
   ReportQueue,
   type ReportStorage,
   telemetryIO,
-} from "@openbot/telemetry";
-import { errorReference } from "@openbot/user-errors";
+} from "@pokebots/telemetry";
+import { errorReference } from "@pokebots/user-errors";
 import { Effect } from "effect";
 import { randomUUID } from "expo-crypto";
 import { Alert, type AlertButton, Platform } from "react-native";

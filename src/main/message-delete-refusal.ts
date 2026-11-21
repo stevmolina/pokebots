@@ -1,4 +1,4 @@
-import { sourceText } from "@openbot/i18n/source";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect, Result } from "effect";
 import { MessageDeleteRefused } from "../backend/message-delete";
 

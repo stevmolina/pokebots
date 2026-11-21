@@ -14,8 +14,8 @@ import { randomUUID } from "node:crypto";
 import { lstat, mkdir, open, readdir, readFile, rename, rm, stat, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { basename, dirname, join, relative, resolve, sep } from "node:path";
-import type { AgentProviderId } from "@openbot/contracts/agent-providers";
-import { AVATAR_IMAGE_LIMITS, INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import type { AgentProviderId } from "@pokebots/contracts/agent-providers";
+import { AVATAR_IMAGE_LIMITS, INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import {
   AGENT_IMPORT_LIMITS,
   type AgentImportPreviewAgent,
@@ -79,18 +79,18 @@ import {
   type SidebarPinKind,
   type UpdateAgentInput,
   type UpdateHostIdentityInput,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   type EventRoutine,
   type EventRoutineOwner,
   isEventRoutineTriggerInput,
   type SaveEventRoutineInput,
-} from "@openbot/contracts/ipc-events";
-import { isDynamicRecord, isOneOf } from "@openbot/contracts/runtime-values";
-import { INSTANCE_TRANSFER_REMOTE_BYTES } from "@openbot/contracts/team-protocol/instance-transfer-v1";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger, toLogValue } from "@openbot/logging";
-import { copyManifestBytes, copyTail, ZIP_TAIL_BYTES, zipDirectory } from "@openbot/team-client/instance-transfer-copy";
+} from "@pokebots/contracts/ipc-events";
+import { isDynamicRecord, isOneOf } from "@pokebots/contracts/runtime-values";
+import { INSTANCE_TRANSFER_REMOTE_BYTES } from "@pokebots/contracts/team-protocol/instance-transfer-v1";
+import { sourceText } from "@pokebots/i18n/source";
+import { createOpenBotLogger, toLogValue } from "@pokebots/logging";
+import { copyManifestBytes, copyTail, ZIP_TAIL_BYTES, zipDirectory } from "@pokebots/team-client/instance-transfer-copy";
 import { Cause, Deferred, Effect, Exit, Result } from "effect";
 import { Zip, ZipPassThrough, zipSync } from "fflate";
 import { isMissingFileError } from "../backend/file-errors";
@@ -809,7 +809,7 @@ export class InstanceTransferService {
 
   /**
    * Copy to another server: keeps only the settings of the copied agents in the file at `path`
-   * (`@openbot/team-client/instance-transfer-copy`). The file can be up to 2 GB, so only its end is
+   * (`@pokebots/team-client/instance-transfer-copy`). The file can be up to 2 GB, so only its end is
    * read and written again.
    */
   readonly keepCopiedSettings = Effect.fn("InstanceTransfer.keepCopiedSettings")(function* (

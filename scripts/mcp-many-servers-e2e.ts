@@ -14,25 +14,25 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import type { McpServerConfig, McpSignInState } from "@openbot/contracts/ipc";
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
+import type { McpServerConfig, McpSignInState } from "@pokebots/contracts/ipc";
+import { TEAM_API_ROUTES } from "@pokebots/contracts/team-api-routes";
 import {
   TEAM_APP_VERSION_HEADER,
   TEAM_CAPABILITIES_HEADER,
   TEAM_PROTOCOL_VERSION_HEADER,
-} from "@openbot/contracts/team-protocol";
-import { teamCapabilitiesForProtocol } from "@openbot/contracts/team-protocol/current";
+} from "@pokebots/contracts/team-protocol";
+import { teamCapabilitiesForProtocol } from "@pokebots/contracts/team-protocol/current";
 import {
   MCP_FROZEN_SERVERS_LIST_LIMIT,
   MCP_MANY_SERVERS_CAPABILITY,
   MCP_MANY_SERVERS_LIST_LIMIT,
-} from "@openbot/contracts/team-protocol/mcp-many-servers-v1";
-import { MCP_SIGN_IN_ROUTES } from "@openbot/contracts/team-protocol/mcp-sign-in-v1";
-import { MCP_ROUTES, mcpResponse } from "@openbot/contracts/team-protocol/mcp-v1";
-import { teamSideRouteCodec } from "@openbot/contracts/team-protocol/side-routes";
-import { TEAM_PROTOCOL_V9 } from "@openbot/contracts/team-protocol/v9";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/team-protocol/mcp-many-servers-v1";
+import { MCP_SIGN_IN_ROUTES } from "@pokebots/contracts/team-protocol/mcp-sign-in-v1";
+import { MCP_ROUTES, mcpResponse } from "@pokebots/contracts/team-protocol/mcp-v1";
+import { teamSideRouteCodec } from "@pokebots/contracts/team-protocol/side-routes";
+import { TEAM_PROTOCOL_V9 } from "@pokebots/contracts/team-protocol/v9";
+import { sourceText } from "@pokebots/i18n/source";
 import { plugin } from "bun";
 import { Effect } from "effect";
 import type { AgentBrowserHost } from "../src/backend/agent/turn-lifecycle";

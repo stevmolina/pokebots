@@ -1,5 +1,5 @@
-import { ProviderLogo } from "@openbot/brand";
-import { prefersReducedMotion } from "@openbot/ui/utils";
+import { ProviderLogo } from "@pokebots/brand";
+import { prefersReducedMotion } from "@pokebots/ui/utils";
 import { createSignal, For, onSettled } from "solid-js";
 import { LANDING_NETWORK_AGENTS, LANDING_NETWORK_HUB, LANDING_PROVIDERS } from "../../lib/landing-content";
 import { createAgentNetworkEggs } from "./agent-network-eggs";
@@ -344,7 +344,7 @@ export function AgentNetworkSection() {
       })
       .catch(() => {});
     // The avatar engine is too large for the first load of the home page, as in the features section.
-    void import("@openbot/ui/bloub-avatar")
+    void import("@pokebots/ui/bloub-avatar")
       .then(({ AVATAR_HUE_CHOICES, avatarHeadColor, createStaticAvatarSvg }) => {
         if (disposed) return;
         const seeds = [

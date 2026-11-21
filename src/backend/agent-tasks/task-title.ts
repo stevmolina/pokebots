@@ -1,5 +1,5 @@
-import { expandAttachmentReferences } from "@openbot/contracts/attachment-references";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { expandAttachmentReferences } from "@pokebots/contracts/attachment-references";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 
 const TITLE_PROMPT_MAX_CHARS = 800;
 

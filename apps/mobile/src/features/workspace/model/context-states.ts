@@ -1,4 +1,4 @@
-import type { AgentContextState, AgentEvent, TeamRealtimeEvent } from "@openbot/contracts/ipc";
+import type { AgentContextState, AgentEvent, TeamRealtimeEvent } from "@pokebots/contracts/ipc";
 
 /**
  * How full the context window of each agent chat and each side thread of a server is, from the last

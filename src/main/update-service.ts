@@ -9,11 +9,11 @@ import type {
   UpdateBusyPhase,
   UpdateFailureCode,
   UpdateStatus,
-} from "@openbot/contracts/ipc";
-import { isUpdateBusyPhase } from "@openbot/contracts/ipc";
-import { isNewerRelease } from "@openbot/contracts/release-version";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger, toLogValue } from "@openbot/logging";
+} from "@pokebots/contracts/ipc";
+import { isUpdateBusyPhase } from "@pokebots/contracts/ipc";
+import { isNewerRelease } from "@pokebots/contracts/release-version";
+import { sourceText } from "@pokebots/i18n/source";
+import { createOpenBotLogger, toLogValue } from "@pokebots/logging";
 import { Cause, Deferred, Effect, Fiber, Result, Schema, Scope, Semaphore } from "effect";
 import type { ProgressInfo, UpdateInfo } from "electron-updater";
 import type { HostUpdateState } from "../../packages/contracts/src/host-manager";

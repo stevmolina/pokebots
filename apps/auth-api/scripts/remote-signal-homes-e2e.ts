@@ -12,7 +12,7 @@ import { createHash } from "node:crypto";
 import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { DatabaseSync } from "node:sqlite";
-import { REMOTE_TICKET_AUDIENCE } from "@openbot/contracts/signal-protocol/ticket";
+import { REMOTE_TICKET_AUDIENCE } from "@pokebots/contracts/signal-protocol/ticket";
 import { Effect } from "effect";
 import { jwtVerify } from "jose";
 import { RemoteControlPlane, type SignalLocation } from "../src/server/remote-control-plane";

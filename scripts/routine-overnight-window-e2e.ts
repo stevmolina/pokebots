@@ -9,7 +9,7 @@ import assert from "node:assert/strict";
 import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import { nextRoutineOccurrence } from "@openbot/team-client/routine-schedule";
+import { nextRoutineOccurrence } from "@pokebots/team-client/routine-schedule";
 import {
   ROUTINE_EVERY_DAY,
   ROUTINE_WORKDAYS,
@@ -18,7 +18,7 @@ import {
   routineRunsPerDay,
   routineScheduleFromDraft,
   routineScheduleToDraft,
-} from "@openbot/team-client/routine-schedule-draft";
+} from "@pokebots/team-client/routine-schedule-draft";
 import { Effect } from "effect";
 import { AgentRoutineStore } from "../src/backend/agent-routine-store";
 import { OpenBotDatabase } from "../src/backend/openbot-database";

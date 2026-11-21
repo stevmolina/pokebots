@@ -2,8 +2,8 @@ import type {
   ComputerUseAgentCursorPlacement,
   ComputerUseCoveredArea,
   ComputerUseHighlightPlacement,
-} from "@openbot/contracts/ipc";
-import { createOpenBotLogger, type Logger, toLogValue } from "@openbot/logging";
+} from "@pokebots/contracts/ipc";
+import { createOpenBotLogger, type Logger, toLogValue } from "@pokebots/logging";
 import { Deferred, Effect, Exit, Schema } from "effect";
 import type { BrowserWindow, Rectangle } from "electron";
 import type { ComputerUseHighlightTarget } from "./computer-use-target-window";

@@ -39,7 +39,7 @@ import {
   type AgentModelOption,
   BROWSER_SECRET_RESPONSE_PATH,
   LEGACY_AGENT_REASONING_EFFORTS,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   createTeamProtocolV2Request,
   createTeamProtocolV8Event,
@@ -71,10 +71,10 @@ import {
   TEAM_PROTOCOL_VERSION_HEADER,
   teamCapabilitiesForProtocol,
   teamProtocolV2AuthenticationTranscript,
-} from "@openbot/contracts/team-protocol";
-import { AGENT_BACKGROUND_WORK_CAPABILITY } from "@openbot/contracts/team-protocol/agent-background-work-v1";
-import { AGENT_NOTIFICATION_LEVELS_CAPABILITY } from "@openbot/contracts/team-protocol/agent-notification-levels-v1";
-import { teamProtocolCapabilityLimit } from "@openbot/contracts/team-protocol/capability-limits";
+} from "@pokebots/contracts/team-protocol";
+import { AGENT_BACKGROUND_WORK_CAPABILITY } from "@pokebots/contracts/team-protocol/agent-background-work-v1";
+import { AGENT_NOTIFICATION_LEVELS_CAPABILITY } from "@pokebots/contracts/team-protocol/agent-notification-levels-v1";
+import { teamProtocolCapabilityLimit } from "@pokebots/contracts/team-protocol/capability-limits";
 import {
   BROWSER_VAULT_SKIP_CAPABILITY,
   TEAM_CURRENT_CAPABILITIES,
@@ -82,23 +82,23 @@ import {
   TEAM_WEB_CLIENT_PROTOCOL,
   TEAM_WEBRTC_CLIENT_PROTOCOL,
   teamWebRtcClientProtocol,
-} from "@openbot/contracts/team-protocol/current";
+} from "@pokebots/contracts/team-protocol/current";
 import {
   TEAM_REASONING_EFFORTS,
   TEAM_REASONING_EFFORTS_CAPABILITY,
-} from "@openbot/contracts/team-protocol/reasoning-efforts-v1";
-import { TEAM_PI_MUSE_CAPABILITY } from "@openbot/contracts/team-protocol/v7";
-import { decodeTeamProtocolV8CurrentHttpResponse } from "@openbot/contracts/team-protocol/v8-adapter";
-import { decodeTeamProtocolSupportV8Base } from "@openbot/contracts/team-protocol/v8-base";
-import { decodeTeamProtocolV8BaseCurrentEvent } from "@openbot/contracts/team-protocol/v8-base-adapter";
+} from "@pokebots/contracts/team-protocol/reasoning-efforts-v1";
+import { TEAM_PI_MUSE_CAPABILITY } from "@pokebots/contracts/team-protocol/v7";
+import { decodeTeamProtocolV8CurrentHttpResponse } from "@pokebots/contracts/team-protocol/v8-adapter";
+import { decodeTeamProtocolSupportV8Base } from "@pokebots/contracts/team-protocol/v8-base";
+import { decodeTeamProtocolV8BaseCurrentEvent } from "@pokebots/contracts/team-protocol/v8-base-adapter";
 import {
   decodeTeamProtocolSupportV9,
   TEAM_LONG_CAPABILITY_LISTS_CAPABILITY,
   TEAM_PROTOCOL_V9,
   TEAM_PROTOCOL_V9_CAPABILITY_LIMIT,
-} from "@openbot/contracts/team-protocol/v9";
-import { TEAM_PROTOCOL_V10 } from "@openbot/contracts/team-protocol/v10";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/team-protocol/v9";
+import { TEAM_PROTOCOL_V10 } from "@pokebots/contracts/team-protocol/v10";
+import { sourceText } from "@pokebots/i18n/source";
 import { plugin } from "bun";
 import { Effect } from "effect";
 import type { AgentBrowserHost } from "../src/backend/agent/turn-lifecycle";

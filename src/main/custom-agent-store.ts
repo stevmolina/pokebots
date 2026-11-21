@@ -8,10 +8,10 @@
 // Electron-free, with the cipher injected, so its tests need neither a keychain nor a display.
 
 import { readFile } from "node:fs/promises";
-import type { CustomAgentEnvInput, CustomAgentSummary, SaveCustomAgentInput } from "@openbot/contracts/ipc";
-import { CUSTOM_AGENT_LIMITS, isCustomAgentUsagePrompt } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
-import { registerSecretValue } from "@openbot/logging";
+import type { CustomAgentEnvInput, CustomAgentSummary, SaveCustomAgentInput } from "@pokebots/contracts/ipc";
+import { CUSTOM_AGENT_LIMITS, isCustomAgentUsagePrompt } from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
+import { registerSecretValue } from "@pokebots/logging";
 import { Effect, Schema, Semaphore } from "effect";
 import { z } from "zod";
 import { resolveAgentCommand } from "../backend/acp-agent-command";

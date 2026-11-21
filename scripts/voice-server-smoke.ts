@@ -19,9 +19,9 @@
 import assert from "node:assert/strict";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
-import type { OpenBotDesktopApi, VoiceServerSettings } from "@openbot/contracts/ipc";
-import { translateFor } from "@openbot/i18n";
-import { createOpenBotLogger } from "@openbot/logging";
+import type { OpenBotDesktopApi, VoiceServerSettings } from "@pokebots/contracts/ipc";
+import { translateFor } from "@pokebots/i18n";
+import { createOpenBotLogger } from "@pokebots/logging";
 import type { Page } from "playwright-core";
 import { assertMutationAllowed, connectToDevApp } from "./dev-automation/cdp-client";
 import { readDevInstanceRecords } from "./dev-automation/instance-registry";

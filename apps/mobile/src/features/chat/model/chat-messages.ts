@@ -1,8 +1,8 @@
-import type { AgentProviderRef } from "@openbot/contracts/agent-providers";
-import { chatVisualReply } from "@openbot/contracts/chat-visual";
-import { isNarrationItemId, showsNarration } from "@openbot/contracts/conversation-narration";
-import { sortConversationMessages } from "@openbot/contracts/conversation-order";
-import { itemTypeCountsAsUnread } from "@openbot/contracts/conversation-read";
+import type { AgentProviderRef } from "@pokebots/contracts/agent-providers";
+import { chatVisualReply } from "@pokebots/contracts/chat-visual";
+import { isNarrationItemId, showsNarration } from "@pokebots/contracts/conversation-narration";
+import { sortConversationMessages } from "@pokebots/contracts/conversation-order";
+import { itemTypeCountsAsUnread } from "@pokebots/contracts/conversation-read";
 import type {
   AgentExchangeSummary,
   AttachmentSummary,
@@ -20,7 +20,7 @@ import type {
   RoutineConversationEventAction,
   RoutineRunStatus,
   VideoGenerationInfo,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   CONVERSATION_MEMORY_CHANGES_ITEM_TYPE,
   CONVERSATION_PLAN_ITEM_TYPE,
@@ -37,9 +37,9 @@ import {
   routineConversationEvent,
   routineRunConversationEvent,
   SETTING_LINK_ITEM_TYPE_PREFIX,
-} from "@openbot/contracts/ipc";
-import type { ConversationUiBlock } from "@openbot/contracts/ui-blocks";
-import type { MobileTextKey } from "@openbot/i18n/mobile";
+} from "@pokebots/contracts/ipc";
+import type { ConversationUiBlock } from "@pokebots/contracts/ui-blocks";
+import type { MobileTextKey } from "@pokebots/i18n/mobile";
 import { MOBILE_PLUGINS } from "@/features/marketplace/model/plugin-catalog.generated";
 import { isMobileConnectorId } from "@/features/servers/model/connectors";
 import { thinkingRowId } from "./turn-thinking";

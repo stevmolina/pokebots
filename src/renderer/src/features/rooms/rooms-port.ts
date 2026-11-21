@@ -1,4 +1,4 @@
-import type { RoomsPort } from "@openbot/contracts/rooms";
+import type { RoomsPort } from "@pokebots/contracts/rooms";
 import type { AccountMode } from "../integrations/IntegrationProfiles";
 export const roomsPort =
   (serverId: string, account: AccountMode): RoomsPort =>

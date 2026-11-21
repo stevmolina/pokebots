@@ -4,7 +4,7 @@
  * read only while the menu is open.
  */
 
-import { ArrowDownWideNarrow, Badge, Check, ChevronRight, DropdownMenu, Filter, Folder, Minus, X } from "@openbot/ui";
+import { ArrowDownWideNarrow, Badge, Check, ChevronRight, DropdownMenu, Filter, Folder, Minus, X } from "@pokebots/ui";
 import { For, Show } from "solid-js";
 import { useText } from "../../text";
 import {

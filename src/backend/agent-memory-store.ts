@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { AGENT_MEMORY_CONTEXT_BUDGET_BYTES, essentialMemoryBytes } from "@openbot/contracts/agent-memory-context";
+import { AGENT_MEMORY_CONTEXT_BUDGET_BYTES, essentialMemoryBytes } from "@pokebots/contracts/agent-memory-context";
 import {
   type AgentMemory,
   type AgentMemorySelection,
@@ -7,8 +7,8 @@ import {
   type AgentMemorySelectionState,
   DEFAULT_AGENT_MEMORY_LIMIT,
   type MemoryEntry,
-} from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
 import { Schema } from "effect";
 import { initializeAgentMemorySelection } from "./agent-memory-selection";
 import { databaseRows, requiredNumberColumn, requiredStringColumn } from "./database/database-rows";

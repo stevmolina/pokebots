@@ -1,4 +1,4 @@
-import type { HostedServerIssue, HostedServerSleep, HostedServerStart } from "@openbot/contracts/ipc";
+import type { HostedServerIssue, HostedServerSleep, HostedServerStart } from "@pokebots/contracts/ipc";
 import type { JSX } from "@solidjs/web";
 import { createEffect, createMemo, createSignal, Show, untrack } from "solid-js";
 import { Button } from "../../button";

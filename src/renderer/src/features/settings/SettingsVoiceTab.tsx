@@ -29,9 +29,9 @@ import {
   WHISPER_LANGUAGES,
   type WhisperLanguage,
   XAI_SPEECH_VOICES,
-} from "@openbot/contracts/ipc";
-import { shortVoiceServerModel, voiceServerHost } from "@openbot/contracts/voice-server";
-import type { AppTextKey } from "@openbot/i18n";
+} from "@pokebots/contracts/ipc";
+import { shortVoiceServerModel, voiceServerHost } from "@pokebots/contracts/voice-server";
+import type { AppTextKey } from "@pokebots/i18n";
 import {
   Button,
   Item,
@@ -49,8 +49,8 @@ import {
   SettingsSection,
   Square,
   SwitchField,
-} from "@openbot/ui";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/ui";
+import { useText } from "@pokebots/ui/text";
 import { createMemo, createSignal, Show } from "solid-js";
 import type { CodexLiveAccess } from "../speech/codex-live-access";
 import type { SettingsVoiceStore } from "./settings-voice-store";

@@ -6,7 +6,7 @@
  * the web client the pinned group does not repeat the agent. The phone list keeps it there.
  */
 
-import { buttonVariants, ContextMenu, Star } from "@openbot/ui";
+import { buttonVariants, ContextMenu, Star } from "@pokebots/ui";
 import { createMemo, createSignal, Show } from "solid-js";
 import type { AgentProfile } from "../../data";
 import { useText } from "../../text";

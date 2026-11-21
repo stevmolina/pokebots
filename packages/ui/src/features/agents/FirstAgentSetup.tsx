@@ -1,7 +1,7 @@
 import type { ExpressionId } from "@norbert_bodziony/bloub";
-import { POKEBOTS_LANDING_ARTWORK } from "@openbot/brand/pokebots-avatar";
-import { agentProviderDescriptor } from "@openbot/contracts/agent-providers";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { POKEBOTS_LANDING_ARTWORK } from "@pokebots/brand/pokebots-avatar";
+import { agentProviderDescriptor } from "@pokebots/contracts/agent-providers";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import type {
   AccountUsage,
   AgentModelId,
@@ -14,9 +14,9 @@ import type {
   CustomAgentSummary,
   CustomProviderSummary,
   ProviderRuntimeStatus,
-} from "@openbot/contracts/ipc";
-import type { AppTextKey, AppTranslate } from "@openbot/i18n";
-import { Button, Field, Input, Textarea } from "@openbot/ui";
+} from "@pokebots/contracts/ipc";
+import type { AppTextKey, AppTranslate } from "@pokebots/i18n";
+import { Button, Field, Input, Textarea } from "@pokebots/ui";
 import { createSignal, For, onSettled, Show } from "solid-js";
 import {
   avatarArtworkColor,

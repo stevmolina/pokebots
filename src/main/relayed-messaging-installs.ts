@@ -2,8 +2,8 @@
 // Each install ends in an `openbot://` link to this computer. The link carries a grant that is sealed
 // to a one-use key of the host, so this computer cannot open it and only sends it on.
 
-import { decodeRecord, requiredBoolean } from "@openbot/contracts/ipc-decoding";
-import { CONNECTORS_ROUTES } from "@openbot/contracts/team-protocol/connectors-v1";
+import { decodeRecord, requiredBoolean } from "@pokebots/contracts/ipc-decoding";
+import { CONNECTORS_ROUTES } from "@pokebots/contracts/team-protocol/connectors-v1";
 import { Effect } from "effect";
 import type { ResponseDecoder } from "./remote-host-decoding";
 import type { RemoteRequestInit } from "./remote-server-client";

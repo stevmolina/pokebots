@@ -4,7 +4,7 @@ import {
   type PasswordManagerId,
   type PasswordManagerMethod,
   type PasswordManagerStatus,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 
 type PasswordManagersApi = OpenBotDesktopApi["passwordManagers"];
 

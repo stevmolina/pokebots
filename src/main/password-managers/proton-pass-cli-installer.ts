@@ -5,7 +5,7 @@ import { createHash, randomBytes } from "node:crypto";
 import { createReadStream } from "node:fs";
 import { chmod, mkdir, rename, rm } from "node:fs/promises";
 import { join } from "node:path";
-import { sourceText } from "@openbot/i18n/source";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect } from "effect";
 import { causeHelpers } from "../../backend/effect-boundary";
 import { downloadArchive } from "../onepassword-cli-installer";

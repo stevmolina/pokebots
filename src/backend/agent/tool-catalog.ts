@@ -1,6 +1,6 @@
-import type { AgentProviderId } from "@openbot/contracts/agent-providers";
-import type { DynamicRecord } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
+import type { AgentProviderId } from "@pokebots/contracts/agent-providers";
+import type { DynamicRecord } from "@pokebots/contracts/runtime-values";
+import { sourceText } from "@pokebots/i18n/source";
 import { z } from "zod";
 import { BROWSER_DYNAMIC_TOOLS, BROWSER_TOOL_DEFINITIONS, OPENBOT_BROWSER_NAMESPACE } from "../browser-tools";
 import type { DynamicToolNamespace } from "../local-mcp-bridge";

@@ -1,10 +1,10 @@
-import type { SidebarPin, SidebarPinsSnapshot } from "@openbot/contracts/ipc";
+import type { SidebarPin, SidebarPinsSnapshot } from "@pokebots/contracts/ipc";
 import {
   normalizeSidebarPinnedItems,
   reownSidebarPinnedItems,
   type SidebarPinnedItem,
   sidebarPinnedItemKey,
-} from "@openbot/ui/features/sidebar/sidebar-pins";
+} from "@pokebots/ui/features/sidebar/sidebar-pins";
 import { createMemo, createSignal } from "solid-js";
 import {
   readPendingSidebarPinScopes,

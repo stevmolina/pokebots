@@ -6,10 +6,10 @@ import {
   type AgentModelOption,
   type AgentSummary,
   CHANNEL_RESUME_ITEM_TYPE,
-} from "@openbot/contracts/ipc";
-import { isFixedSourceText, matchingSourceKeys, sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger } from "@openbot/logging";
-import { classifyUserError } from "@openbot/user-errors";
+} from "@pokebots/contracts/ipc";
+import { isFixedSourceText, matchingSourceKeys, sourceText } from "@pokebots/i18n/source";
+import { createOpenBotLogger } from "@pokebots/logging";
+import { classifyUserError } from "@pokebots/user-errors";
 import { Deferred, Effect, Result, Schema } from "effect";
 import {
   type AgentProvider,

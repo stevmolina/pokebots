@@ -1,5 +1,5 @@
-import type { GitHubConnectorStatus, OpenBotDesktopApi } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+import type { GitHubConnectorStatus, OpenBotDesktopApi } from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
 
 /** What the GitHub app page reaches: one GitHub connection, of this computer or of a joined server. */
 export type GitHubConnectorPort = Pick<

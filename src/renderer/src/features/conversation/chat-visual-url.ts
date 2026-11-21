@@ -1,4 +1,4 @@
-import { CHAT_VISUAL_PAGE_LIMIT, isHtmlPageFile } from "@openbot/contracts/chat-visual";
+import { CHAT_VISUAL_PAGE_LIMIT, isHtmlPageFile } from "@pokebots/contracts/chat-visual";
 
 /**
  * The address of a visual reply page. The page comes from its own scheme, which serves only HTML

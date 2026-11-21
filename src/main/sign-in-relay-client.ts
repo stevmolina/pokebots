@@ -8,10 +8,10 @@ import {
   relayCallbackQuery,
   relayPageUrl,
   type SignInRelayStatus,
-} from "@openbot/contracts/ipc";
-import { SIGN_IN_RELAY_ROUTES } from "@openbot/contracts/team-protocol/sign-in-relay-v1";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger, toLogValue } from "@openbot/logging";
+} from "@pokebots/contracts/ipc";
+import { SIGN_IN_RELAY_ROUTES } from "@pokebots/contracts/team-protocol/sign-in-relay-v1";
+import { sourceText } from "@pokebots/i18n/source";
+import { createOpenBotLogger, toLogValue } from "@pokebots/logging";
 import { Deferred, Duration, Effect } from "effect";
 import type { LanguageService } from "./language-service";
 import { type LoopbackCallbackServer, startLoopbackCallbackServer } from "./loopback-callback-server";

@@ -114,10 +114,10 @@ windows, its OS dialogs or its native notifications.
 
 ## Shared UI
 
-`packages/ui` (`@openbot/ui`) owns shared SolidJS controls and feature components used by
+`packages/ui` (`@pokebots/ui`) owns shared SolidJS controls and feature components used by
 desktop, public web, and Storybook. Reuse these components before adding UI. Import primitives
-from `@openbot/ui` and feature components from explicit subpaths such as
-`@openbot/ui/features/sidebar/Sidebar`. Do not copy them back into an app.
+from `@pokebots/ui` and feature components from explicit subpaths such as
+`@pokebots/ui/features/sidebar/Sidebar`. Do not copy them back into an app.
 
 Keep shared components independent of application contexts, desktop storage, host connections,
 and `window.openbot`. Pass data and actions through typed props. Platform adapters and the main
@@ -149,7 +149,7 @@ web client must also look good at every width, phones included. Phones also have
 
 ## Interface text
 
-Text that a user reads comes from `@openbot/i18n` catalog keys, on desktop, web and mobile. Do not
+Text that a user reads comes from `@pokebots/i18n` catalog keys, on desktop, web and mobile. Do not
 write a literal. Errors that the main process, backend or team client send use `sourceText(key)`.
 Read [docs/i18n.md](docs/i18n.md) before adding a key or a language.
 

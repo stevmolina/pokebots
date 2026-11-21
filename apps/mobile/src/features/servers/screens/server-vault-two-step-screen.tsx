@@ -3,7 +3,7 @@
 // screenshot), the camera, and a check of the first code on the site. The key stays in memory (`useTwoStepSetup`) until the login page takes it.
 // The host gets it only when the user saves the login.
 
-import { parseTwoStepKey, TWO_STEP_KEY_LIMIT } from "@openbot/contracts/two-step-code";
+import { parseTwoStepKey, TWO_STEP_KEY_LIMIT } from "@pokebots/contracts/two-step-code";
 import { scanFromURLAsync } from "expo-camera";
 import * as ImagePicker from "expo-image-picker";
 import { router, Stack, useLocalSearchParams } from "expo-router";

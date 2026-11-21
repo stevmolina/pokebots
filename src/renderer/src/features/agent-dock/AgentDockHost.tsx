@@ -1,6 +1,6 @@
-import type { AgentProviderRef } from "@openbot/contracts/agent-providers";
-import { leadingAddress } from "@openbot/contracts/chat-tag-references";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import type { AgentProviderRef } from "@pokebots/contracts/agent-providers";
+import { leadingAddress } from "@pokebots/contracts/chat-tag-references";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import {
   AGENT_DOCK_LIMITS,
   type AgentApproval,
@@ -23,9 +23,9 @@ import {
   type ChannelSummary,
   isAttachmentSummary,
   sameAgentModelChoice,
-} from "@openbot/contracts/ipc";
-import { approvalIsCut } from "@openbot/team-client/runtime-attention";
-import type { AgentMessage, ComposerAgent } from "@openbot/ui/data";
+} from "@pokebots/contracts/ipc";
+import { approvalIsCut } from "@pokebots/team-client/runtime-attention";
+import type { AgentMessage, ComposerAgent } from "@pokebots/ui/data";
 import {
   AgentDock,
   type AgentDockChatAnswers,
@@ -34,14 +34,14 @@ import {
   type AgentDockChannel as AgentDockUiChannel,
   type AgentDockSeat as AgentDockUiSeat,
   agentDockSeatKey,
-} from "@openbot/ui/features/agent-dock/AgentDock";
-import { isDockMessage } from "@openbot/ui/features/agent-dock/AgentDockChat";
-import type { UsageLimitAskCardProps } from "@openbot/ui/features/conversation/BackupModels";
-import { markdownPlainText } from "@openbot/ui/features/conversation/MarkdownMessageText";
-import { sidebarAgentOrder } from "@openbot/ui/features/sidebar/sidebar-agent-order";
-import { sidebarChannelWaits, sidebarUnreadBadge } from "@openbot/ui/features/sidebar/sidebar-agent-states";
-import type { SidebarAgentState } from "@openbot/ui/features/sidebar/sidebar-types";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/ui/features/agent-dock/AgentDock";
+import { isDockMessage } from "@pokebots/ui/features/agent-dock/AgentDockChat";
+import type { UsageLimitAskCardProps } from "@pokebots/ui/features/conversation/BackupModels";
+import { markdownPlainText } from "@pokebots/ui/features/conversation/MarkdownMessageText";
+import { sidebarAgentOrder } from "@pokebots/ui/features/sidebar/sidebar-agent-order";
+import { sidebarChannelWaits, sidebarUnreadBadge } from "@pokebots/ui/features/sidebar/sidebar-agent-states";
+import type { SidebarAgentState } from "@pokebots/ui/features/sidebar/sidebar-types";
+import { useText } from "@pokebots/ui/text";
 import { createEffect, createMemo, createSignal, Match, onCleanup, onSettled, Show, Switch, untrack } from "solid-js";
 import { appPort } from "../../app-port";
 import { useNavigation } from "../../navigation";

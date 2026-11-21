@@ -1,8 +1,8 @@
-import { hostedPlanMachineMetrics } from "@openbot/contracts/hosted-servers";
-import type { MachineMetrics, OpenBotDesktopApi } from "@openbot/contracts/ipc";
-import { MACHINE_RESOURCES_CAPABILITY } from "@openbot/contracts/team-protocol/machine-resources-v1";
-import { STORAGE_USER_FILES_CAPABILITY } from "@openbot/contracts/team-protocol/storage-user-files-v1";
-import { UsageMachineMeter } from "@openbot/ui/features/usage/UsageMachineMeter";
+import { hostedPlanMachineMetrics } from "@pokebots/contracts/hosted-servers";
+import type { MachineMetrics, OpenBotDesktopApi } from "@pokebots/contracts/ipc";
+import { MACHINE_RESOURCES_CAPABILITY } from "@pokebots/contracts/team-protocol/machine-resources-v1";
+import { STORAGE_USER_FILES_CAPABILITY } from "@pokebots/contracts/team-protocol/storage-user-files-v1";
+import { UsageMachineMeter } from "@pokebots/ui/features/usage/UsageMachineMeter";
 import { createMemo, createSignal, Show, untrack } from "solid-js";
 import { createUsageRefreshPoll } from "../account/usage-refresh-poll";
 import { canManageStorage, hostedPlanStorageGb } from "../files/storage-usage";

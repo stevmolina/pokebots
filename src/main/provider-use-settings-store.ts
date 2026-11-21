@@ -3,8 +3,8 @@ import {
   type AgentProviderId,
   MANAGED_RUNTIME_PROVIDERS,
   type ManagedProviderId,
-} from "@openbot/contracts/agent-providers";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/agent-providers";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect, Result, Schema, Semaphore } from "effect";
 import { isMissingFileError } from "../backend/file-errors";
 import { PreferenceFileFailure, readPreferenceFile, writePreferenceFile } from "./preference-file";

@@ -1,4 +1,4 @@
-import { BrainPanel } from "@openbot/ui/features/brain/BrainPanel";
+import { BrainPanel } from "@pokebots/ui/features/brain/BrainPanel";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { mockBrainRequest } from "../src/preview/mock-brain";
 

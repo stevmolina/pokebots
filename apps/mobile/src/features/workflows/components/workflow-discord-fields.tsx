@@ -3,8 +3,8 @@ import {
   WORKFLOW_DISCORD_TRIGGER_SERVER,
   type WorkflowNode,
   workflowListField,
-} from "@openbot/contracts/ipc";
-import { isOneOf } from "@openbot/contracts/runtime-values";
+} from "@pokebots/contracts/ipc";
+import { isOneOf } from "@pokebots/contracts/runtime-values";
 import { Typography } from "heroui-native";
 import { SettingsRow, SettingsSection } from "@/features/settings/components/settings-content";
 import { DISCORD_ACTION_LABEL, discordAction } from "@/features/workflows/model/workflow-steps";

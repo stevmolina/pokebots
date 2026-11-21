@@ -12,8 +12,8 @@
 import assert from "node:assert/strict";
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
-import type { ConversationMessage } from "@openbot/contracts/ipc";
-import { translateFor } from "@openbot/i18n";
+import type { ConversationMessage } from "@pokebots/contracts/ipc";
+import { translateFor } from "@pokebots/i18n";
 import { argument, connectChannelE2e, writeReport } from "./channel-e2e-support";
 import { seedMessageId as messageId, readSeed, SEED_FILE, type Seed } from "./pinned-message-e2e-seed";
 

@@ -1,7 +1,7 @@
-// The client half of compact-rpc-v1 (`@openbot/contracts/team-protocol/compact-rpc-v1`): request
+// The client half of compact-rpc-v1 (`@pokebots/contracts/team-protocol/compact-rpc-v1`): request
 // capability lists by key, and compressed response bodies.
-import { decodeTeamProtocolV2Json, type TeamProtocolV2Json } from "@openbot/contracts/team-protocol";
-import { TEAM_PROTOCOL_V2_MAX_JSON_FRAME_BYTES } from "@openbot/contracts/team-protocol/v2";
+import { decodeTeamProtocolV2Json, type TeamProtocolV2Json } from "@pokebots/contracts/team-protocol";
+import { TEAM_PROTOCOL_V2_MAX_JSON_FRAME_BYTES } from "@pokebots/contracts/team-protocol/v2";
 import { base64UrlToBytes } from "./base64";
 
 let inflates: boolean | null = null;

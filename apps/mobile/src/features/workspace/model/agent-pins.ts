@@ -1,5 +1,5 @@
-import { type SidebarPin, sidebarPinKey } from "@openbot/contracts/ipc";
-import type { createWorkspacePreferences, RemoteWorkspacePreferences } from "@openbot/team-client";
+import { type SidebarPin, sidebarPinKey } from "@pokebots/contracts/ipc";
+import type { createWorkspacePreferences, RemoteWorkspacePreferences } from "@pokebots/team-client";
 
 const MAX_PINNED_AGENTS = 16;
 

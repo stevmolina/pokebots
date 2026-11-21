@@ -5,13 +5,13 @@
  * of the agent model picker has. The panel keeps one size, so a tab change or a search does not move it.
  */
 
-import { ProviderLogo } from "@openbot/brand";
+import { ProviderLogo } from "@pokebots/brand";
 import {
   DEFAULT_PROVIDER_ACCOUNT_ID,
   type WorkflowMediaKind,
   workflowMediaResolutions,
   workflowVideoDurations,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   buttonVariants,
   ChevronDown,
@@ -24,7 +24,7 @@ import {
   Popover,
   Search,
   Tabs,
-} from "@openbot/ui";
+} from "@pokebots/ui";
 import { createSignal, For, Show } from "solid-js";
 import { isApiKeyAccount, providerAccountName } from "../../components/provider-accounts";
 import { useText } from "../../text";

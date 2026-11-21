@@ -1,6 +1,6 @@
-import { Button } from "@openbot/ui";
-import { WhatsNewDialog } from "@openbot/ui/features/updates/WhatsNewDialog";
-import type { WhatsNewNotes, WhatsNewRelease } from "@openbot/ui/features/updates/whats-new";
+import { Button } from "@pokebots/ui";
+import { WhatsNewDialog } from "@pokebots/ui/features/updates/WhatsNewDialog";
+import type { WhatsNewNotes, WhatsNewRelease } from "@pokebots/ui/features/updates/whats-new";
 import { createSignal, Show } from "solid-js";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";

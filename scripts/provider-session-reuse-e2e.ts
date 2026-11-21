@@ -26,7 +26,7 @@ import {
   type AgentProviderId,
   defaultProviderModel,
   type McpServerConfig,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import { Effect } from "effect";
 import type { AgentClientFactory } from "../src/backend/agent/provider-runtime";
 import type { AgentBrowserHost } from "../src/backend/agent/turn-lifecycle";

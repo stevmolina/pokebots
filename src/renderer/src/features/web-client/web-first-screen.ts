@@ -1,18 +1,18 @@
 // The first screen of a host: the sidebar and the open chat. All host reads share one ordered data
 // channel and the host's work, so on a far host each read also waits for the others. The reads that
 // that screen does not show (closed panels, settings, routines, pictures) wait until it shows.
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
-import { AGENT_COLORS_ROUTES } from "@openbot/contracts/team-protocol/agent-colors-v1";
-import { AGENT_FAST_MODE_ROUTES } from "@openbot/contracts/team-protocol/agent-fast-mode-v1";
-import { AGENT_HIDDEN_ROUTES } from "@openbot/contracts/team-protocol/agent-hidden-v1";
-import { BROWSER_PAGE_STATE_ROUTES } from "@openbot/contracts/team-protocol/browser-page-state-v1";
-import { BROWSER_USER_CONTROL_ROUTES } from "@openbot/contracts/team-protocol/browser-user-control-v1";
-import { CHANNEL_PICTURE_ROUTES } from "@openbot/contracts/team-protocol/channel-picture-v1";
-import { CHANNEL_ROUTES } from "@openbot/contracts/team-protocol/channels-v1";
-import { CHAT_COLORS_ROUTES } from "@openbot/contracts/team-protocol/chat-colors-v1";
-import { MODEL_VISIBILITY_ROUTES } from "@openbot/contracts/team-protocol/model-visibility-v1";
-import { SIDEBAR_FOLDERS_ROUTES } from "@openbot/contracts/team-protocol/sidebar-folders-v1";
-import { SIDEBAR_PINS_ROUTES } from "@openbot/contracts/team-protocol/sidebar-pins-v1";
+import { TEAM_API_ROUTES } from "@pokebots/contracts/team-api-routes";
+import { AGENT_COLORS_ROUTES } from "@pokebots/contracts/team-protocol/agent-colors-v1";
+import { AGENT_FAST_MODE_ROUTES } from "@pokebots/contracts/team-protocol/agent-fast-mode-v1";
+import { AGENT_HIDDEN_ROUTES } from "@pokebots/contracts/team-protocol/agent-hidden-v1";
+import { BROWSER_PAGE_STATE_ROUTES } from "@pokebots/contracts/team-protocol/browser-page-state-v1";
+import { BROWSER_USER_CONTROL_ROUTES } from "@pokebots/contracts/team-protocol/browser-user-control-v1";
+import { CHANNEL_PICTURE_ROUTES } from "@pokebots/contracts/team-protocol/channel-picture-v1";
+import { CHANNEL_ROUTES } from "@pokebots/contracts/team-protocol/channels-v1";
+import { CHAT_COLORS_ROUTES } from "@pokebots/contracts/team-protocol/chat-colors-v1";
+import { MODEL_VISIBILITY_ROUTES } from "@pokebots/contracts/team-protocol/model-visibility-v1";
+import { SIDEBAR_FOLDERS_ROUTES } from "@pokebots/contracts/team-protocol/sidebar-folders-v1";
+import { SIDEBAR_PINS_ROUTES } from "@pokebots/contracts/team-protocol/sidebar-pins-v1";
 
 /**
  * A hold ends by itself after this time, so a host that does not answer the first screen does not hold

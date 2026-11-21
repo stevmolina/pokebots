@@ -1,8 +1,8 @@
-import type { CrmApplyResult, CrmChange, CrmPaymentPageInput } from "@openbot/contracts/ipc";
-import { toast } from "@openbot/ui";
-import { type CrmLayout, defaultCrmLayout, readCrmLayout, SOURCE_KEY_PAGE } from "@openbot/ui/features/crm/crm-model";
-import type { CrmData, CrmDrawerData, CrmViewProps } from "@openbot/ui/features/crm/crm-state";
-import { useText } from "@openbot/ui/text";
+import type { CrmApplyResult, CrmChange, CrmPaymentPageInput } from "@pokebots/contracts/ipc";
+import { toast } from "@pokebots/ui";
+import { type CrmLayout, defaultCrmLayout, readCrmLayout, SOURCE_KEY_PAGE } from "@pokebots/ui/features/crm/crm-model";
+import type { CrmData, CrmDrawerData, CrmViewProps } from "@pokebots/ui/features/crm/crm-state";
+import { useText } from "@pokebots/ui/text";
 import { createSignal, createStore, onCleanup, reconcile } from "solid-js";
 import type { CrmHost } from "./crm-port";
 

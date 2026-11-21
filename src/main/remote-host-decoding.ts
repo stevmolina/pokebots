@@ -1,5 +1,5 @@
-import { decodeHostReleaseStatus, type HomeAgentRulesSetting, type HostReleaseStatus } from "@openbot/contracts/ipc";
-import { decodeHomeAgentRulesResponse } from "@openbot/contracts/team-protocol/home-agent-rules-v1";
+import { decodeHostReleaseStatus, type HomeAgentRulesSetting, type HostReleaseStatus } from "@pokebots/contracts/ipc";
+import { decodeHomeAgentRulesResponse } from "@pokebots/contracts/team-protocol/home-agent-rules-v1";
 // What the Team API client will accept from a remote host. `packages/contracts/src/ipc-decoding.ts`
 // supplies the primitives; this family says which shapes survive them.
 //
@@ -18,8 +18,8 @@ import { decodeHomeAgentRulesResponse } from "@openbot/contracts/team-protocol/h
 // already checks; the two consequences worth naming (a host older than 63b55606 omitting `avatarUrl`,
 // a browser preview that is not a bounded JPEG data URL) are covered where they are reached.
 
-import { emptyDecoder } from "@openbot/contracts/ipc-decoding";
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
+import { emptyDecoder } from "@pokebots/contracts/ipc-decoding";
+import { isDynamicRecord } from "@pokebots/contracts/runtime-values";
 
 export type ResponseDecoder<T> = (value: unknown) => T;
 

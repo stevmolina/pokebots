@@ -3,16 +3,16 @@ import type {
   InstanceTransferResult,
   InstanceTransferSummary,
   OpenBotDesktopApi,
-} from "@openbot/contracts/ipc";
-import { toast } from "@openbot/ui";
+} from "@pokebots/contracts/ipc";
+import { toast } from "@pokebots/ui";
 import type {
   InstanceExportOptions,
   InstanceExportPhase,
   InstanceImportPhase,
   InstanceTransferScreen,
   TransferUploadState,
-} from "@openbot/ui/features/transfer/InstanceTransferView";
-import { currentText } from "@openbot/ui/text";
+} from "@pokebots/ui/features/transfer/InstanceTransferView";
+import { currentText } from "@pokebots/ui/text";
 import { createEffect, createStore, onCleanup } from "solid-js";
 import { desktopAnalytics } from "../../analytics";
 

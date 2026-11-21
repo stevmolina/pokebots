@@ -14,10 +14,10 @@ import {
   type GitHubConnectorStatus,
   type McpServerConfig,
   type WorkflowGitHubCatalog,
-} from "@openbot/contracts/ipc";
-import { GITHUB_ROUTE_EVENTS } from "@openbot/contracts/signal-protocol/github-route";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger, redactText, registerSecretValue, toLogValue } from "@openbot/logging";
+} from "@pokebots/contracts/ipc";
+import { GITHUB_ROUTE_EVENTS } from "@pokebots/contracts/signal-protocol/github-route";
+import { sourceText } from "@pokebots/i18n/source";
+import { createOpenBotLogger, redactText, registerSecretValue, toLogValue } from "@pokebots/logging";
 import { Deferred, Effect, Exit, type Layer, Result, Scope, Semaphore } from "effect";
 import { z } from "zod";
 import { writeFileAtomically } from "../backend/atomic-json-file";

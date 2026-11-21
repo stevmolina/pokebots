@@ -1,4 +1,4 @@
-import { avatarHeadColor, avatarHueSwatch } from "@openbot/brand/bloub-avatar";
+import { avatarHeadColor, avatarHueSwatch } from "@pokebots/brand/bloub-avatar";
 import { Typography } from "heroui-native";
 import { useThemeColor } from "heroui-native/hooks";
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";

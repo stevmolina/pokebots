@@ -14,11 +14,11 @@ import {
   type WorkflowRunDetail,
   type WorkflowStep,
   type WorkflowVersion,
-} from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
-import { EMPTY_GITHUB_HISTORY, type WorkflowGitHubCanvas } from "@openbot/ui/features/workflows/workflow-github";
-import type { WorkflowCatalogs } from "@openbot/ui/features/workflows/workflow-model";
-import type { WorkflowRunView } from "@openbot/ui/features/workflows/workflow-run-view";
+} from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
+import { EMPTY_GITHUB_HISTORY, type WorkflowGitHubCanvas } from "@pokebots/ui/features/workflows/workflow-github";
+import type { WorkflowCatalogs } from "@pokebots/ui/features/workflows/workflow-model";
+import type { WorkflowRunView } from "@pokebots/ui/features/workflows/workflow-run-view";
 import { FILES_ROWS } from "./files-fixtures";
 import { STORY_AGENT_STATUS, STORY_AGENTS, STORY_MODELS, STORY_TEAM_MEMBERS } from "./fixtures";
 

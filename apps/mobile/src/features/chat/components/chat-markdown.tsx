@@ -4,12 +4,12 @@ import {
   fileReferenceName,
   fileReferenceTone,
   isFileReference,
-} from "@openbot/brand/file-reference";
-import { chatMathStart } from "@openbot/contracts/chat-math";
-import { chatPreviewKind } from "@openbot/contracts/chat-preview";
-import { chatTagReferences } from "@openbot/contracts/chat-tag-references";
-import { markdownInlinePlainText } from "@openbot/contracts/markdown-preview-text";
-import type { MobileTranslate } from "@openbot/i18n/mobile";
+} from "@pokebots/brand/file-reference";
+import { chatMathStart } from "@pokebots/contracts/chat-math";
+import { chatPreviewKind } from "@pokebots/contracts/chat-preview";
+import { chatTagReferences } from "@pokebots/contracts/chat-tag-references";
+import { markdownInlinePlainText } from "@pokebots/contracts/markdown-preview-text";
+import type { MobileTranslate } from "@pokebots/i18n/mobile";
 import * as Clipboard from "expo-clipboard";
 import * as Linking from "expo-linking";
 import { Typography } from "heroui-native";

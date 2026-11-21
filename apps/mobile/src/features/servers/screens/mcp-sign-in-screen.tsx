@@ -1,4 +1,4 @@
-import type { McpSignInState } from "@openbot/contracts/ipc";
+import type { McpSignInState } from "@pokebots/contracts/ipc";
 import { useQueryClient } from "@tanstack/react-query";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { usePreventRemove } from "expo-router/react-navigation";

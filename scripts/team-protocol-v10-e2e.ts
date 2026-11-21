@@ -22,7 +22,7 @@ import { mkdtemp, rm } from "node:fs/promises";
 import { createServer, type Server } from "node:http";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import { type AgentModelOption, LEGACY_AGENT_REASONING_EFFORTS } from "@openbot/contracts/ipc";
+import { type AgentModelOption, LEGACY_AGENT_REASONING_EFFORTS } from "@pokebots/contracts/ipc";
 import {
   createTeamProtocolV2Request,
   decodeTeamProtocolSupportV9,
@@ -35,7 +35,7 @@ import {
   TEAM_PROTOCOL_V1_CAPABILITIES,
   TEAM_PROTOCOL_VERSION_HEADER,
   teamProtocolV2AuthenticationTranscript,
-} from "@openbot/contracts/team-protocol";
+} from "@pokebots/contracts/team-protocol";
 import {
   expandTeamCapabilitiesV10,
   TEAM_POKEBOTS_CAPABILITIES,
@@ -45,23 +45,23 @@ import {
   teamCapabilityHeaders,
   teamCapabilityLists,
   teamWebRtcClientProtocol,
-} from "@openbot/contracts/team-protocol/current";
+} from "@pokebots/contracts/team-protocol/current";
 import {
   TEAM_REASONING_EFFORTS,
   TEAM_REASONING_EFFORTS_CAPABILITY,
-} from "@openbot/contracts/team-protocol/reasoning-efforts-v1";
+} from "@pokebots/contracts/team-protocol/reasoning-efforts-v1";
 import {
   TEAM_LONG_CAPABILITY_LISTS_CAPABILITY,
   TEAM_PROTOCOL_V9,
   TEAM_PROTOCOL_V9_CAPABILITY_LIMIT,
-} from "@openbot/contracts/team-protocol/v9";
+} from "@pokebots/contracts/team-protocol/v9";
 import {
   decodeTeamProtocolSupportV10,
   TEAM_ABSENT_CAPABILITIES_HEADER,
   TEAM_CAPABILITY_BASELINE_CAPABILITY,
   TEAM_PROTOCOL_V10,
-} from "@openbot/contracts/team-protocol/v10";
-import { decodeTeamProtocolV10WebRtcHttpResponse } from "@openbot/contracts/team-protocol/v10-webrtc-adapter";
+} from "@pokebots/contracts/team-protocol/v10";
+import { decodeTeamProtocolV10WebRtcHttpResponse } from "@pokebots/contracts/team-protocol/v10-webrtc-adapter";
 import { plugin } from "bun";
 import { Effect } from "effect";
 import type { AgentBrowserHost } from "../src/backend/agent/turn-lifecycle";

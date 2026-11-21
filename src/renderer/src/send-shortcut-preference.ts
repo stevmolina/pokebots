@@ -1,4 +1,4 @@
-import type { QuoteShortcutModifier } from "@openbot/ui/features/conversation/SelectionActions";
+import type { QuoteShortcutModifier } from "@pokebots/ui/features/conversation/SelectionActions";
 import {
   parseSendShortcutMode,
   resolveSendShortcut,
@@ -6,7 +6,7 @@ import {
   type SendShortcutMode,
   sendShortcutAriaKey,
   sendShortcutHintKey,
-} from "@openbot/ui/features/conversation/send-shortcut";
+} from "@pokebots/ui/features/conversation/send-shortcut";
 import { createSignal } from "solid-js";
 
 export { sendShortcutAriaKey, sendShortcutHintKey };

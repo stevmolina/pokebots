@@ -1,4 +1,4 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import {
   agentPermissionLevel,
   canAdministerServer,
@@ -6,7 +6,7 @@ import {
   type HostProviderAccounts,
   type UpdateAgentInput,
   workspaceAccessEnforced,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import { useQueryClient } from "@tanstack/react-query";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { usePreventRemove } from "expo-router/react-navigation";

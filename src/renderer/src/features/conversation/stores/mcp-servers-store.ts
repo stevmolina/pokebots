@@ -1,4 +1,4 @@
-import { type McpServerConfig, mcpSignInEvent } from "@openbot/contracts/ipc";
+import { type McpServerConfig, mcpSignInEvent } from "@pokebots/contracts/ipc";
 import { createEffect, createMemo, createSignal } from "solid-js";
 import { serverCanManageMcp } from "../../servers/server-capabilities";
 import { conversationRuntime } from "../conversation-runtime";

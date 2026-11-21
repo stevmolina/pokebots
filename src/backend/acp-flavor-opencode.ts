@@ -1,8 +1,8 @@
 import { RequestError, type SessionUpdate } from "@agentclientprotocol/sdk";
-import { isFreeOpencodeModel } from "@openbot/contracts/ipc";
-import { type SourceMessages, sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger } from "@openbot/logging";
-import type { CauseCode } from "@openbot/telemetry";
+import { isFreeOpencodeModel } from "@pokebots/contracts/ipc";
+import { type SourceMessages, sourceText } from "@pokebots/i18n/source";
+import { createOpenBotLogger } from "@pokebots/logging";
+import type { CauseCode } from "@pokebots/telemetry";
 import { type AcpCustomEndpoint, type AcpFlavor, type AcpRetryCause, shownFailureDetail } from "./acp-flavor";
 import {
   isImageCountDiagnostic,

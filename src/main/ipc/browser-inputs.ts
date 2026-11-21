@@ -1,4 +1,4 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import type {
   BrowserBounds,
   BrowserColorSchemeInput,
@@ -8,9 +8,9 @@ import type {
   BrowserOpenInput,
   BrowserTeachStopInput,
   BrowserVisibilityInput,
-} from "@openbot/contracts/ipc";
-import { isBoolean, isNumber } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/ipc";
+import { isBoolean, isNumber } from "@pokebots/contracts/runtime-values";
+import { sourceText } from "@pokebots/i18n/source";
 import { isObject, requireString } from "./validation";
 
 export function parseBrowserOpen(value: unknown): BrowserOpenInput {

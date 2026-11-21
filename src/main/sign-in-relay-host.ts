@@ -9,11 +9,11 @@ import {
   relayableSignInLink,
   type SignInRelayStatus,
   type TestMcpServerInput,
-} from "@openbot/contracts/ipc";
-import type { ProviderAccountRelayProvider } from "@openbot/contracts/team-protocol/provider-account-relays";
-import type { SIGN_IN_RELAY_PROVIDERS } from "@openbot/contracts/team-protocol/sign-in-relay-v1";
-import { sourceText } from "@openbot/i18n/source";
-import { registerSecretValue } from "@openbot/logging";
+} from "@pokebots/contracts/ipc";
+import type { ProviderAccountRelayProvider } from "@pokebots/contracts/team-protocol/provider-account-relays";
+import type { SIGN_IN_RELAY_PROVIDERS } from "@pokebots/contracts/team-protocol/sign-in-relay-v1";
+import { sourceText } from "@pokebots/i18n/source";
+import { registerSecretValue } from "@pokebots/logging";
 import { Duration, Effect, Schema } from "effect";
 import { causeHelpers } from "../backend/effect-boundary";
 import type { McpHostSignIns } from "./mcp-host-sign-ins";

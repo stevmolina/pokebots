@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
-import { isReservedMcpServerName, type McpServerConfig } from "@openbot/contracts/ipc";
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
+import { isReservedMcpServerName, type McpServerConfig } from "@pokebots/contracts/ipc";
+import { isDynamicRecord, isString } from "@pokebots/contracts/runtime-values";
 import { Effect } from "effect";
 import { analyticsIO, analyticsSync } from "./analytics-effects";
 

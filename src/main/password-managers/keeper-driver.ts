@@ -18,10 +18,10 @@ import {
   type PasswordManagerErrorCode,
   type PasswordManagerStatus,
   type PasswordManagerStep,
-} from "@openbot/contracts/ipc";
-import { type DynamicRecord, isDynamicRecord } from "@openbot/contracts/runtime-values";
-import { isFixedSourceText, sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger, registerSecretValue, toLogValue } from "@openbot/logging";
+} from "@pokebots/contracts/ipc";
+import { type DynamicRecord, isDynamicRecord } from "@pokebots/contracts/runtime-values";
+import { isFixedSourceText, sourceText } from "@pokebots/i18n/source";
+import { createOpenBotLogger, registerSecretValue, toLogValue } from "@pokebots/logging";
 import { Effect, Exit, Result, Schema, Scope, Semaphore } from "effect";
 import { causeHelpers } from "../../backend/effect-boundary";
 import {

@@ -1,5 +1,5 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import type { SidebarLayoutAction } from "@openbot/contracts/ipc";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
+import type { SidebarLayoutAction } from "@pokebots/contracts/ipc";
 import { Effect } from "effect";
 import { z } from "zod";
 import type { SidebarLayoutStore } from "../sidebar-layout-store";

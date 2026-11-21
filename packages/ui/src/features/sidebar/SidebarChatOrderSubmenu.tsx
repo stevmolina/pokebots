@@ -1,6 +1,6 @@
 /** "Sort chats" in the list menu: the order of the chats in the sections. See `SidebarChatOrder`. */
 
-import { ArrowDownWideNarrow, Check, ChevronRight, ContextMenu } from "@openbot/ui";
+import { ArrowDownWideNarrow, Check, ChevronRight, ContextMenu } from "@pokebots/ui";
 import { For, Show } from "solid-js";
 import { useText } from "../../text";
 import { useSidebarScope } from "./sidebar-scope";

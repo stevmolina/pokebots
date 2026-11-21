@@ -4,13 +4,13 @@ import {
   type ServerSummary,
   STORAGE_CAPABILITY,
   type StorageUsage,
-} from "@openbot/contracts/ipc";
-import { BACKGROUND_PROCESSES_CAPABILITY } from "@openbot/contracts/team-protocol/background-processes-v1";
-import { STORAGE_CHANNEL_CAPABILITY } from "@openbot/contracts/team-protocol/storage-channel-v1";
-import { classifyFailure } from "@openbot/telemetry";
-import type { AgentProfile } from "@openbot/ui/data";
-import type { StoredFileAction, StoredFileRow } from "@openbot/ui/features/files/files-view";
-import { currentText } from "@openbot/ui/text";
+} from "@pokebots/contracts/ipc";
+import { BACKGROUND_PROCESSES_CAPABILITY } from "@pokebots/contracts/team-protocol/background-processes-v1";
+import { STORAGE_CHANNEL_CAPABILITY } from "@pokebots/contracts/team-protocol/storage-channel-v1";
+import { classifyFailure } from "@pokebots/telemetry";
+import type { AgentProfile } from "@pokebots/ui/data";
+import type { StoredFileAction, StoredFileRow } from "@pokebots/ui/features/files/files-view";
+import { currentText } from "@pokebots/ui/text";
 import { type Accessor, createEffect, createSignal, createStore, untrack } from "solid-js";
 import { actionToast } from "../../action-toast";
 import { toAgentProfile } from "../../app-message-projection";

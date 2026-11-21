@@ -1,4 +1,4 @@
-import type { AgentModelId, AgentProviderId, ProviderModelVisibility } from "@openbot/contracts/ipc";
+import type { AgentModelId, AgentProviderId, ProviderModelVisibility } from "@pokebots/contracts/ipc";
 import { skipToken, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useRef, useState } from "react";
 import { useQueryScope } from "@/features/auth/context/mobile-session-context";

@@ -1,5 +1,5 @@
-import type { SettingLinkId } from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
+import type { SettingLinkId } from "@pokebots/contracts/ipc";
+import type { AppTextKey } from "@pokebots/i18n";
 
 /**
  * The pages behind the root list of the agent settings. The root edits the agent's face, name, title

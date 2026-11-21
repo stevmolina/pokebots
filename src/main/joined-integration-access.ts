@@ -1,4 +1,4 @@
-import { sourceText } from "@openbot/i18n/source";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect } from "effect";
 import type { IntegrationCredential } from "../backend/integration-credential";
 import type { CentralAuthManager } from "./central-auth-manager";

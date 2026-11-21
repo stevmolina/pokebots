@@ -13,8 +13,8 @@
 // It writes .openbot-build/remote-connect-analytics-e2e/report.json and exits non-zero on a failure.
 import { mkdir, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
-import { createOpenBotLogger } from "@openbot/logging";
-import { ANALYTICS_GENERATIONS } from "@openbot/telemetry";
+import { createOpenBotLogger } from "@pokebots/logging";
+import { ANALYTICS_GENERATIONS } from "@pokebots/telemetry";
 import { HostAnalytics, type HostOpenPanelClient } from "../src/main/analytics";
 import { REMOTE_CONNECT_PHASES, RemoteConnectTrace } from "../src/main/remote-connect-trace";
 

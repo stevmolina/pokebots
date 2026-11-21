@@ -1,5 +1,5 @@
-import { isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
+import { isDynamicRecord, isNumber, isString } from "@pokebots/contracts/runtime-values";
+import { TEAM_API_ROUTES } from "@pokebots/contracts/team-api-routes";
 import type { RemoteDesktopConnection } from "@/features/workspace/components/remote-team-transport";
 import { currentText } from "@/shared/lib/text";
 

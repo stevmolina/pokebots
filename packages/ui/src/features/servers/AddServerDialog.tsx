@@ -3,8 +3,8 @@ import {
   LICENSE_MAX_USERS,
   type LicenseOrder,
   licenseOrderFor,
-} from "@openbot/contracts/license";
-import type { AppTextKey } from "@openbot/i18n";
+} from "@pokebots/contracts/license";
+import type { AppTextKey } from "@pokebots/i18n";
 import {
   Alert,
   AlertActions,
@@ -28,9 +28,9 @@ import {
   Text,
   TriangleAlert,
   X,
-} from "@openbot/ui";
-import { motionDuration, prefersReducedMotion } from "@openbot/ui/utils";
-import type { UserErrorDetails } from "@openbot/user-errors";
+} from "@pokebots/ui";
+import { motionDuration, prefersReducedMotion } from "@pokebots/ui/utils";
+import type { UserErrorDetails } from "@pokebots/user-errors";
 import {
   createEffect,
   createMemo,

@@ -1,7 +1,7 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import type { FilePreview, InstalledSkill, MarketplaceSkillDetail } from "@openbot/contracts/ipc";
-import { assignedSkillCount, isFolderSkill, isSkillEnabled, userAssignedSkills } from "@openbot/contracts/ipc";
-import type { AppTranslate } from "@openbot/i18n";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
+import type { FilePreview, InstalledSkill, MarketplaceSkillDetail } from "@pokebots/contracts/ipc";
+import { assignedSkillCount, isFolderSkill, isSkillEnabled, userAssignedSkills } from "@pokebots/contracts/ipc";
+import type { AppTranslate } from "@pokebots/i18n";
 import {
   Button,
   ChevronRight,
@@ -15,11 +15,11 @@ import {
   Switch,
   Trash2,
   X,
-} from "@openbot/ui";
-import { createScrollFades } from "@openbot/ui/components/createScrollFades";
-import { SkillGlyph } from "@openbot/ui/features/conversation/SkillGlyph";
-import { SkillLibraryToolbar } from "@openbot/ui/features/conversation/SkillLibraryToolbar";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/ui";
+import { createScrollFades } from "@pokebots/ui/components/createScrollFades";
+import { SkillGlyph } from "@pokebots/ui/features/conversation/SkillGlyph";
+import { SkillLibraryToolbar } from "@pokebots/ui/features/conversation/SkillLibraryToolbar";
+import { useText } from "@pokebots/ui/text";
 import { createEffect, createMemo, createSignal, For, onSettled, Show, untrack } from "solid-js";
 import { desktopAnalytics } from "../../analytics";
 import { SkillPreview } from "../../components/SkillPreview";

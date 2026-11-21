@@ -1,6 +1,6 @@
-import { toast } from "@openbot/ui";
-import { WhatsNewDialog } from "@openbot/ui/features/updates/WhatsNewDialog";
-import { useText } from "@openbot/ui/text";
+import { toast } from "@pokebots/ui";
+import { WhatsNewDialog } from "@pokebots/ui/features/updates/WhatsNewDialog";
+import { useText } from "@pokebots/ui/text";
 import { createEffect, untrack } from "solid-js";
 import { appPort } from "../../app-port";
 import { statusAlertsShown } from "./status-alerts";

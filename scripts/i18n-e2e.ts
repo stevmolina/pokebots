@@ -6,12 +6,12 @@
 import assert from "node:assert/strict";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { isAppLanguage } from "@openbot/contracts/app-language";
-import type { OpenBotDesktopApi } from "@openbot/contracts/ipc";
-import { en, TRANSLATED_LOCALES, type TranslatedLocale, translateFor } from "@openbot/i18n";
-import { type AppLanguage, appLanguageOption } from "@openbot/i18n/languages";
-import { createOpenBotLogger } from "@openbot/logging";
-import { userErrorMessage } from "@openbot/user-errors";
+import { isAppLanguage } from "@pokebots/contracts/app-language";
+import type { OpenBotDesktopApi } from "@pokebots/contracts/ipc";
+import { en, TRANSLATED_LOCALES, type TranslatedLocale, translateFor } from "@pokebots/i18n";
+import { type AppLanguage, appLanguageOption } from "@pokebots/i18n/languages";
+import { createOpenBotLogger } from "@pokebots/logging";
+import { userErrorMessage } from "@pokebots/user-errors";
 import type { Page } from "playwright-core";
 import { assertMutationAllowed, connectToDevApp } from "./dev-automation/cdp-client";
 import { readDevInstanceRecords } from "./dev-automation/instance-registry";

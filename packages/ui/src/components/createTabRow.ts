@@ -1,4 +1,4 @@
-import { prefersReducedMotion } from "@openbot/ui/utils";
+import { prefersReducedMotion } from "@pokebots/ui/utils";
 import { createEffect, createStore } from "solid-js";
 
 /** A held tab this close to an end of the row scrolls the row, at up to this many pixels a frame. */

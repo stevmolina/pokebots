@@ -1,5 +1,5 @@
-import type { AgentProviderRef } from "@openbot/contracts/agent-providers";
-import { isNarrationItemId } from "@openbot/contracts/conversation-narration";
+import type { AgentProviderRef } from "@pokebots/contracts/agent-providers";
+import { isNarrationItemId } from "@pokebots/contracts/conversation-narration";
 import {
   type ChannelMessage,
   type ChannelTask,
@@ -7,7 +7,7 @@ import {
   isAgentAnswer,
   latestTurnAnswer,
   type QueueDelivery,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import { activateKeepAwakeAsync, deactivateKeepAwake } from "expo-keep-awake";
 import { useEffect, useId, useRef, useState } from "react";
 import { BackHandler } from "react-native";

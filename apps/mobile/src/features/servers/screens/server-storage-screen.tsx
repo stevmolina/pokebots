@@ -1,12 +1,12 @@
-import { hostedPlanDisk } from "@openbot/contracts/hosted-servers";
+import { hostedPlanDisk } from "@pokebots/contracts/hosted-servers";
 import {
   CLEARABLE_STORAGE_CATEGORIES,
   type ClearableStorageCategory,
   canAdministerServer,
   type StorageCategory,
-} from "@openbot/contracts/ipc";
-import { isOneOf } from "@openbot/contracts/runtime-values";
-import type { MobileTextKey } from "@openbot/i18n/mobile";
+} from "@pokebots/contracts/ipc";
+import { isOneOf } from "@pokebots/contracts/runtime-values";
+import type { MobileTextKey } from "@pokebots/i18n/mobile";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { Typography } from "heroui-native";
 import RotateCw from "lucide-react-native/icons/rotate-cw";

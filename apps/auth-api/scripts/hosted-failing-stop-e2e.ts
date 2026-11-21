@@ -16,7 +16,7 @@ import { readdirSync, readFileSync } from "node:fs";
 import { mkdir, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { DatabaseSync } from "node:sqlite";
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
+import { isDynamicRecord, isString } from "@pokebots/contracts/runtime-values";
 import { Effect } from "effect";
 import { HostedServerService } from "../src/server/hosted-server-service";
 import { sqliteD1 } from "./sqlite-d1";

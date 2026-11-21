@@ -10,7 +10,7 @@ import type {
   CrmSettings,
   CrmSourceConnectInput,
   CrmSourceInput,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import { appPort } from "../../app-port";
 
 /**

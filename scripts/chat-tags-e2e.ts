@@ -14,8 +14,8 @@
 // Writes .openbot-build/chat-tags-e2e/report.json.
 import assert from "node:assert/strict";
 import { createServer } from "node:http";
-import { serializeChatTagReference } from "@openbot/contracts/chat-tag-references";
-import type { ConversationSnapshot } from "@openbot/contracts/ipc";
+import { serializeChatTagReference } from "@pokebots/contracts/chat-tag-references";
+import type { ConversationSnapshot } from "@pokebots/contracts/ipc";
 import { argument, connectChannelE2e, SHORT_PROMPT, waitFor, writeReport } from "./channel-e2e-support";
 
 const agentArgument = argument("agent");

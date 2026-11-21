@@ -2,7 +2,7 @@ import { createCipheriv, createECDH, createHmac, randomBytes } from "node:crypto
 import {
   WEB_PUSH_AUTH_PATTERN,
   WEB_PUSH_P256DH_PATTERN,
-} from "@openbot/contracts/team-protocol/push-notifications-web-v1";
+} from "@pokebots/contracts/team-protocol/push-notifications-web-v1";
 
 /**
  * Encrypts a Web Push message for one subscription, as RFC 8291 says, with the `aes128gcm` content

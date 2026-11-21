@@ -4,9 +4,9 @@ import {
   githubSkillUrl,
   type MarketplaceSkillSummary,
   parseGithubSkillId,
-} from "@openbot/contracts/ipc";
-import { TriangleAlert } from "@openbot/ui";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/contracts/ipc";
+import { TriangleAlert } from "@pokebots/ui";
+import { useText } from "@pokebots/ui/text";
 import { createEffect, createSignal } from "solid-js";
 import type { GithubSkillRead, MarketplaceModel } from "./marketplace-model";
 

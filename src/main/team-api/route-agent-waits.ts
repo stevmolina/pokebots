@@ -2,8 +2,8 @@ import {
   AGENT_WAITS_CAPABILITY,
   AGENT_WAITS_REQUEST_TEXT_LIMIT,
   AGENT_WAITS_ROUTES,
-} from "@openbot/contracts/team-protocol/agent-waits-v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/team-protocol/agent-waits-v1";
+import { sourceText } from "@pokebots/i18n/source";
 import { AgentWaitError } from "../../backend/agent-waits/agent-wait-store";
 import type { TeamApiAgents } from "./dependencies";
 import { HttpError } from "./http-error";

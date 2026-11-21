@@ -39,7 +39,7 @@ export function getRouter() {
     hydrate: async (data: { textCatalog?: string | undefined }) => {
       const locale = data.textCatalog;
       if (!locale || locale === "en") return;
-      const { loadLocale, TRANSLATED_LOCALES } = await import("@openbot/i18n");
+      const { loadLocale, TRANSLATED_LOCALES } = await import("@pokebots/i18n");
       const translated = TRANSLATED_LOCALES.find((item) => item === locale);
       if (translated) await loadLocale(translated).catch(() => undefined);
     },

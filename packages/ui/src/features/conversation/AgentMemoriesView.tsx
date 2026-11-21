@@ -1,13 +1,13 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import type { MemoryEntry } from "@openbot/contracts/ipc";
-import type { AppMessages, AppTextKey } from "@openbot/i18n";
-import { Button, Input, Plus, Search, Switch, Textarea } from "@openbot/ui";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
+import type { MemoryEntry } from "@pokebots/contracts/ipc";
+import type { AppMessages, AppTextKey } from "@pokebots/i18n";
+import { Button, Input, Plus, Search, Switch, Textarea } from "@pokebots/ui";
 import {
   SettingsLinkGroup,
   SettingsLinkRow,
   SettingsPanelContent,
   SettingsPanelHeader,
-} from "@openbot/ui/components/SettingsPanel";
+} from "@pokebots/ui/components/SettingsPanel";
 import { createMemo, createSignal, For, Show, untrack } from "solid-js";
 import { useText } from "../../text";
 import { AgentMemoriesEmpty } from "./AgentMemoriesEmpty";

@@ -1,4 +1,4 @@
-import type { AnalyticsAgent } from "@openbot/contracts/ipc";
+import type { AnalyticsAgent } from "@pokebots/contracts/ipc";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { router, useLocalSearchParams } from "expo-router";
 import { Button, Typography } from "heroui-native";

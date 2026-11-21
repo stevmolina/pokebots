@@ -4,7 +4,7 @@ import {
   type GetStorageUsageInput,
   type StorageDesktopApi,
   type StorageUsage,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   FILES_AGENT_USAGE,
   FILES_BREAKDOWN,

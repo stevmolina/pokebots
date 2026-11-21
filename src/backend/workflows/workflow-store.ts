@@ -27,9 +27,9 @@ import {
   type WorkflowVersion,
   type WorkflowVersionKind,
   workflowGraphProblem,
-} from "@openbot/contracts/ipc";
-import { type DynamicRecord, isOneOf } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/ipc";
+import { type DynamicRecord, isOneOf } from "@pokebots/contracts/runtime-values";
+import { sourceText } from "@pokebots/i18n/source";
 import { Schema } from "effect";
 import {
   checkedColumn,

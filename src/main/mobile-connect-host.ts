@@ -1,5 +1,5 @@
-import type { MobileConnectHostBinding } from "@openbot/contracts/mobile-connect";
-import { sourceText } from "@openbot/i18n/source";
+import type { MobileConnectHostBinding } from "@pokebots/contracts/mobile-connect";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect } from "effect";
 import type { CentralAuthOperationError } from "./central-auth-effects";
 import type { CentralAuthManager } from "./central-auth-manager";

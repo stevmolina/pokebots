@@ -3,10 +3,10 @@
  * `sidebar-update-island` wrapper is the class that the sidebar puts around the island.
  */
 
-import type { UpdateStatus } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
-import { AccountUpdateIsland } from "@openbot/ui/features/account/AccountUpdateIsland";
-import { useText } from "@openbot/ui/text";
+import type { UpdateStatus } from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
+import { AccountUpdateIsland } from "@pokebots/ui/features/account/AccountUpdateIsland";
+import { useText } from "@pokebots/ui/text";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 

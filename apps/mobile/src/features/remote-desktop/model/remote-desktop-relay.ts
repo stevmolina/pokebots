@@ -1,11 +1,11 @@
-import { isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
+import { isDynamicRecord, isNumber, isString } from "@pokebots/contracts/runtime-values";
 import {
   decodeRemoteDesktopSignalBinary,
   decodeRemoteDesktopSignalControl,
   encodeRemoteDesktopSignalBinary,
   encodeRemoteDesktopSignalControl,
-} from "@openbot/contracts/team-protocol/remote-stream-v1";
-import { base64ToBytes, bytesToBase64 } from "@openbot/team-client/base64";
+} from "@pokebots/contracts/team-protocol/remote-stream-v1";
+import { base64ToBytes, bytesToBase64 } from "@pokebots/team-client/base64";
 
 // The remote desktop viewer's sockets, in the hidden page that holds the Team peer. The viewer runs
 // in its own web view and reaches the host through the app's loopback proxy. Its page files go as

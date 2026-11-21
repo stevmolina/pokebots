@@ -3,7 +3,7 @@ import type {
   AgentComputerMachine,
   AgentComputerStatus,
   ComputerManagementInput,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import { router, useLocalSearchParams } from "expo-router";
 import { Typography } from "heroui-native";
 import { useEffect, useRef, useState } from "react";

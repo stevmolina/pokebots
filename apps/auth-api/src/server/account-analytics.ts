@@ -6,8 +6,8 @@ import {
   type BillingInterval,
   type BillingPlanId,
   isBillingAmount,
-} from "@openbot/contracts/billing";
-import { FIRST_TOUCH_CAMPAIGN_FIELDS, type FirstTouch, parseFirstTouch } from "@openbot/contracts/first-touch";
+} from "@pokebots/contracts/billing";
+import { FIRST_TOUCH_CAMPAIGN_FIELDS, type FirstTouch, parseFirstTouch } from "@pokebots/contracts/first-touch";
 import {
   HOSTED_SERVER_ENTRY_POINTS,
   HOSTED_SERVER_ERRORS,
@@ -15,9 +15,9 @@ import {
   type HostedServerEntryPoint,
   type HostedServerError,
   type HostedServerSize,
-} from "@openbot/contracts/hosted-servers";
-import { isOneOf } from "@openbot/contracts/runtime-values";
-import { normalizeEmailAddress } from "@openbot/contracts/validation";
+} from "@pokebots/contracts/hosted-servers";
+import { isOneOf } from "@pokebots/contracts/runtime-values";
+import { normalizeEmailAddress } from "@pokebots/contracts/validation";
 import { Effect, Schema } from "effect";
 import type { HostedPoolGroup } from "./hosted-pool-snapshot";
 

@@ -4,12 +4,12 @@ import {
   isAgentProvider,
   isReasoningEffort,
   type UpdateAgentInput,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   AGENT_PENDING_RUNTIME_CAPABILITY,
   AGENT_PENDING_RUNTIME_ROUTES,
-} from "@openbot/contracts/team-protocol/agent-pending-runtime-v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/team-protocol/agent-pending-runtime-v1";
+import { sourceText } from "@pokebots/i18n/source";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import type { TeamApiAgents } from "./dependencies";
 import { HttpError } from "./http-error";

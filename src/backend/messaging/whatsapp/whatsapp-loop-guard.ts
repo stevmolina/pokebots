@@ -1,4 +1,4 @@
-import { sourceText } from "@openbot/i18n/source";
+import { sourceText } from "@pokebots/i18n/source";
 import { CANCEL_TEXT, chatFailureReason } from "../messaging-types";
 
 /**

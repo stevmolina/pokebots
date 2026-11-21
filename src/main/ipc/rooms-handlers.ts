@@ -1,12 +1,12 @@
-import type { RoomsRequest } from "@openbot/contracts/rooms";
+import type { RoomsRequest } from "@pokebots/contracts/rooms";
 import {
   type IntegrationProfile,
   integrationRequest,
   POKEBOTS_INTEGRATIONS_CAPABILITY,
   POKEBOTS_INTEGRATIONS_ROUTES,
-} from "@openbot/contracts/team-protocol/pokebots-integrations-v1";
-import { ROOMS_CAPABILITY, ROOMS_ROUTE } from "@openbot/contracts/team-protocol/rooms-v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/team-protocol/pokebots-integrations-v1";
+import { ROOMS_CAPABILITY, ROOMS_ROUTE } from "@pokebots/contracts/team-protocol/rooms-v1";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect } from "effect";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import type { CentralAuthManager } from "../central-auth-manager";

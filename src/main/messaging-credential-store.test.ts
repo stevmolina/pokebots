@@ -3,7 +3,7 @@
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { redactText } from "@openbot/logging";
+import { redactText } from "@pokebots/logging";
 import { Effect } from "effect";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { MessagingCredentialStore } from "./messaging-credential-store";

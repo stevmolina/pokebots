@@ -12,9 +12,9 @@ import { readdirSync, readFileSync } from "node:fs";
 import { mkdir, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { DatabaseSync } from "node:sqlite";
-import type { BillingPlanId } from "@openbot/contracts/billing";
-import { HOSTED_PLAN_SIZE } from "@openbot/contracts/hosted-servers";
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
+import type { BillingPlanId } from "@pokebots/contracts/billing";
+import { HOSTED_PLAN_SIZE } from "@pokebots/contracts/hosted-servers";
+import { isDynamicRecord } from "@pokebots/contracts/runtime-values";
 import { Effect, Result } from "effect";
 import {
   ACCOUNT_ANALYTICS_SCHEMA_VERSION,

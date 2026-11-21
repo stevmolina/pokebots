@@ -1,4 +1,4 @@
-import type { AgentApproval, ApprovalAutomationPreference } from "@openbot/contracts/ipc";
+import type { AgentApproval, ApprovalAutomationPreference } from "@pokebots/contracts/ipc";
 import { Effect } from "effect";
 
 /**

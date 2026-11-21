@@ -1,4 +1,4 @@
-import type { AppTextKey } from "@openbot/i18n";
+import type { AppTextKey } from "@pokebots/i18n";
 import {
   Button,
   buttonVariants,
@@ -16,15 +16,15 @@ import {
   Tabs,
   Workflow,
   X,
-} from "@openbot/ui";
+} from "@pokebots/ui";
 import {
   AttachmentReferenceVisual,
   attachmentReferenceTone,
-} from "@openbot/ui/features/conversation/AttachmentReference";
-import { ComputerIcon } from "@openbot/ui/features/conversation/ConversationIcons";
-import { TabShape } from "@openbot/ui/features/conversation/TabShape";
-import type { ThreadItem } from "@openbot/ui/features/conversation/threads/thread-types";
-import { type TextValue, useText } from "@openbot/ui/text";
+} from "@pokebots/ui/features/conversation/AttachmentReference";
+import { ComputerIcon } from "@pokebots/ui/features/conversation/ConversationIcons";
+import { TabShape } from "@pokebots/ui/features/conversation/TabShape";
+import type { ThreadItem } from "@pokebots/ui/features/conversation/threads/thread-types";
+import { type TextValue, useText } from "@pokebots/ui/text";
 import type { JSX } from "@solidjs/web";
 import { createEffect, createMemo, createSignal, For, flush, onSettled, Show } from "solid-js";
 import { createTabRow } from "../../components/createTabRow";

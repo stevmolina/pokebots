@@ -1,5 +1,5 @@
-import type { OnePasswordConnectorStatus, OpenBotDesktopApi } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+import type { OnePasswordConnectorStatus, OpenBotDesktopApi } from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
 
 /** What the 1Password page reaches: one 1Password connection, of this computer or of a joined server. */
 export type OnePasswordConnectorPort = Omit<

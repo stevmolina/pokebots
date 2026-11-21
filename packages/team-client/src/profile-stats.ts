@@ -3,7 +3,7 @@ import {
   analyticsTokens,
   type ClientAgentSummary,
   type HostAnalytics,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 
 const DAY_MS = 86_400_000;
 

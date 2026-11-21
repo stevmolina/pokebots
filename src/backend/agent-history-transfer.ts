@@ -1,5 +1,5 @@
-import type { AttachmentSummary, ConversationMessage } from "@openbot/contracts/ipc";
-import { parseRoutineRunConversationEventItemType, routineRunConversationEventItemType } from "@openbot/contracts/ipc";
+import type { AttachmentSummary, ConversationMessage } from "@pokebots/contracts/ipc";
+import { parseRoutineRunConversationEventItemType, routineRunConversationEventItemType } from "@pokebots/contracts/ipc";
 import { Effect, Schema } from "effect";
 import type { AgentThreadRecord, AgentThreadStore } from "./agent-threads/agent-thread-store";
 import { copyBranchMessages } from "./agent-threads/agent-thread-store";

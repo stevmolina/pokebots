@@ -20,8 +20,8 @@ import {
   type VoiceServerRoutes,
   type VoiceServerSettings,
   type VoiceTranscriptionResult,
-} from "@openbot/contracts/ipc";
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
+} from "@pokebots/contracts/ipc";
+import { isDynamicRecord, isString } from "@pokebots/contracts/runtime-values";
 import {
   decodeVoiceServerWav,
   OPENAI_VOICES,
@@ -29,9 +29,9 @@ import {
   voiceServerHost,
   voiceServerModelLists,
   voiceServerVoiceNames,
-} from "@openbot/contracts/voice-server";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger, registerSecretValue } from "@openbot/logging";
+} from "@pokebots/contracts/voice-server";
+import { sourceText } from "@pokebots/i18n/source";
+import { createOpenBotLogger, registerSecretValue } from "@pokebots/logging";
 import { Effect, Schema } from "effect";
 import { readLimitedBody } from "../backend/limited-body";
 import { PreferenceStore } from "./preference-file";

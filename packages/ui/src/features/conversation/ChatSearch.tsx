@@ -1,4 +1,4 @@
-import { Button, ChevronDown, ChevronUp, Input, Search, X } from "@openbot/ui";
+import { Button, ChevronDown, ChevronUp, Input, Search, X } from "@pokebots/ui";
 import { useText } from "../../text";
 
 interface ChatSearchProps {

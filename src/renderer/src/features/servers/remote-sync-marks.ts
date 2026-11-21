@@ -1,4 +1,4 @@
-import { markRemoteSync } from "@openbot/team-client/sync-profile";
+import { markRemoteSync } from "@pokebots/team-client/sync-profile";
 import { createEffect } from "solid-js";
 
 /**

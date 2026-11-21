@@ -1,6 +1,6 @@
-import type { AppTextKey } from "@openbot/i18n";
-import { type CalendarDay, calendarDayDate, calendarMonthStart } from "@openbot/team-client/routine-calendar-dates";
-import { Button, buttonVariants, Check, DropdownMenu } from "@openbot/ui";
+import type { AppTextKey } from "@pokebots/i18n";
+import { type CalendarDay, calendarDayDate, calendarMonthStart } from "@pokebots/team-client/routine-calendar-dates";
+import { Button, buttonVariants, Check, DropdownMenu } from "@pokebots/ui";
 import { createMemo, createSignal, For, Match, onSettled, Show, Switch } from "solid-js";
 import { useText } from "../../text";
 import { prefersReducedMotion } from "../../utils";

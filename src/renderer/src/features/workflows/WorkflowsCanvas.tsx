@@ -3,15 +3,15 @@ import {
   type WorkflowMediaCatalogModel,
   type WorkflowMediaModel,
   workflowCatalogMediaModel,
-} from "@openbot/contracts/ipc";
-import { providerAvailability, providerTurnedOff } from "@openbot/ui/components/provider-model-options";
-import { WorkflowCanvas } from "@openbot/ui/features/workflows/WorkflowCanvas";
+} from "@pokebots/contracts/ipc";
+import { providerAvailability, providerTurnedOff } from "@pokebots/ui/components/provider-model-options";
+import { WorkflowCanvas } from "@pokebots/ui/features/workflows/WorkflowCanvas";
 import {
   WORKFLOW_FEATURES_V1,
   type WorkflowCatalogs,
   type WorkflowFeatures,
-} from "@openbot/ui/features/workflows/workflow-model";
-import { currentText } from "@openbot/ui/text";
+} from "@pokebots/ui/features/workflows/workflow-model";
+import { currentText } from "@pokebots/ui/text";
 import { createMemo, createSignal, onCleanup, Show, untrack } from "solid-js";
 import { desktopAnalytics } from "../../analytics";
 import { createWorkflowsController, type WorkflowRequest } from "./workflows-controller";

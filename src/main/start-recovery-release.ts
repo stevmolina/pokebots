@@ -5,7 +5,7 @@
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { DatabaseSync } from "node:sqlite";
-import { isValidSemver } from "@openbot/contracts/release-version";
+import { isValidSemver } from "@pokebots/contracts/release-version";
 import { Effect, Schema } from "effect";
 import { RELEASED_SCHEMA_VERSIONS } from "./released-schema-versions";
 import type { StartAttemptsSummary } from "./start-attempts";

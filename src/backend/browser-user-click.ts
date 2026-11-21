@@ -1,4 +1,4 @@
-import { isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
+import { isDynamicRecord, isNumber, isString } from "@pokebots/contracts/runtime-values";
 import { Effect } from "effect";
 import {
   automationContextId,

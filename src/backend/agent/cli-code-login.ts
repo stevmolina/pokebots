@@ -1,7 +1,7 @@
 import { type ChildProcess, spawn } from "node:child_process";
-import { pasteCodeSignInSupported } from "@openbot/contracts/agent-providers";
-import { sourceText } from "@openbot/i18n/source";
-import { registerSecretValue } from "@openbot/logging";
+import { pasteCodeSignInSupported } from "@pokebots/contracts/agent-providers";
+import { sourceText } from "@pokebots/i18n/source";
+import { registerSecretValue } from "@pokebots/logging";
 import { Deferred, Effect, Fiber, Option, Schema } from "effect";
 import { shellQuote } from "../automation-command";
 import { cliSpawnTarget } from "../cli";

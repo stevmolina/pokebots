@@ -1,10 +1,10 @@
-import type { AgentMessage } from "@openbot/ui/data";
-import { ChatMessageRow } from "@openbot/ui/features/conversation/ChatMessageRow";
+import type { AgentMessage } from "@pokebots/ui/data";
+import { ChatMessageRow } from "@pokebots/ui/features/conversation/ChatMessageRow";
 import {
   MarketplaceSuggestionCard,
   type MarketplaceSuggestionCardProps,
   type MarketplaceSuggestionState,
-} from "@openbot/ui/features/conversation/MarketplaceSuggestionCard";
+} from "@pokebots/ui/features/conversation/MarketplaceSuggestionCard";
 import { createStore, untrack } from "solid-js";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";

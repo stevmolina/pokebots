@@ -1,2 +1,2 @@
-import { brainResponseSchema } from "@openbot/contracts/brain";
+import { brainResponseSchema } from "@pokebots/contracts/brain";
 export const decodeBrainFromMain = (value: unknown) => brainResponseSchema.parse(value);

@@ -1,4 +1,4 @@
-import { Button, ChevronRight, Settings } from "@openbot/ui";
+import { Button, ChevronRight, Settings } from "@pokebots/ui";
 import { For, Show } from "solid-js";
 import { useText } from "../../text";
 import { UiBlockCard } from "./ui-blocks/UiBlockCard";

@@ -17,9 +17,9 @@ import assert from "node:assert/strict";
 import { readdirSync, readFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
-import { agentProviderDescriptor } from "@openbot/contracts/agent-providers";
-import type { ChannelPage, ChannelTask } from "@openbot/contracts/ipc";
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
+import { agentProviderDescriptor } from "@pokebots/contracts/agent-providers";
+import type { ChannelPage, ChannelTask } from "@pokebots/contracts/ipc";
+import { isDynamicRecord } from "@pokebots/contracts/runtime-values";
 import { ChannelClient, connectChannelE2e, waitFor, writeReport } from "./channel-e2e-support";
 import { resolveDevelopmentAppDataRoot } from "./development-state-paths";
 

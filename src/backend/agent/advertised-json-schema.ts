@@ -1,4 +1,4 @@
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
+import { isDynamicRecord } from "@pokebots/contracts/runtime-values";
 import { z } from "zod";
 
 type JsonValue = null | boolean | number | string | JsonValue[] | JsonObject;

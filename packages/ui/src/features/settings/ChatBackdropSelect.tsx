@@ -1,4 +1,4 @@
-import { Button, Input, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@openbot/ui";
+import { Button, Input, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@pokebots/ui";
 import type { JSX } from "@solidjs/web";
 import { createMemo, Show } from "solid-js";
 import { useText } from "../../text";

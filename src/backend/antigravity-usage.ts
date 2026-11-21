@@ -24,7 +24,7 @@
 // (#9864). Google's JSON leaves a zero `remainingFraction` out, so a spent bucket has none.
 
 import { readFile } from "node:fs/promises";
-import { usageGroupForModel } from "@openbot/contracts/ipc";
+import { usageGroupForModel } from "@pokebots/contracts/ipc";
 import { Effect, Option, Schema } from "effect";
 import type {
   AccountRateLimitGroupResult,

@@ -3,8 +3,8 @@ import {
   decodeTeamProtocolV2FileChunk,
   decodeTeamProtocolV2FileControlFrame,
   encodeTeamProtocolV2Frame,
-} from "@openbot/contracts/team-protocol/v2";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/team-protocol/v2";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect } from "effect";
 import { bytesToBase64 } from "./base64";
 import { FileTransferError, fileTransferError, MOBILE_ATTACHMENT_BYTES } from "./file-upload";

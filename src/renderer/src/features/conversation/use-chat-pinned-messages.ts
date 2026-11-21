@@ -1,6 +1,6 @@
-import type { PinnedMessagesProps } from "@openbot/ui/features/conversation/PinnedMessages";
-import { DRAFT_THREAD_ID } from "@openbot/ui/features/conversation/threads/thread-types";
-import { useText } from "@openbot/ui/text";
+import type { PinnedMessagesProps } from "@pokebots/ui/features/conversation/PinnedMessages";
+import { DRAFT_THREAD_ID } from "@pokebots/ui/features/conversation/threads/thread-types";
+import { useText } from "@pokebots/ui/text";
 import { actionToast } from "../../action-toast";
 import { useConversationViewScope } from "./conversation-scope";
 

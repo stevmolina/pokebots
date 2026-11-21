@@ -70,7 +70,7 @@ import {
   CONVERSATION_MEMORY_CHANGES_ITEM_TYPE,
   type SkillConversationEvent,
   type SkillLearningMode,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import { Effect } from "effect";
 import type { LearnedSkillDraft, SkillLearner } from "../src/backend/agent/skill-learning";
 import type { LocalSkillTools } from "../src/backend/agent/skill-tools";

@@ -1,4 +1,4 @@
-import { createOpenBotLogger, toLogValue } from "@openbot/logging";
+import { createOpenBotLogger, toLogValue } from "@pokebots/logging";
 import { Effect, Result } from "effect";
 import { type PasswordVault, PasswordVaultError, type VaultLogin } from "./password-vault";
 

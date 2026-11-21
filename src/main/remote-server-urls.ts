@@ -5,10 +5,10 @@
 // rewrites them in place on a decoded payload before it leaves the main process. `src/main/index.ts`
 // registers the matching protocol handlers, and they parse exactly what these builders emit.
 
-import { playableMediaKind } from "@openbot/contracts/attachment-files";
-import type { ConversationPageAnchor, DirectConversationPageAnchor } from "@openbot/contracts/ipc";
-import { isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
-import { isUuidV4 } from "@openbot/contracts/validation";
+import { playableMediaKind } from "@pokebots/contracts/attachment-files";
+import type { ConversationPageAnchor, DirectConversationPageAnchor } from "@pokebots/contracts/ipc";
+import { isDynamicRecord, isNumber, isString } from "@pokebots/contracts/runtime-values";
+import { isUuidV4 } from "@pokebots/contracts/validation";
 
 export function pageQuery(anchor: ConversationPageAnchor | DirectConversationPageAnchor, limit: number): string {
   const query = new URLSearchParams({ limit: String(limit) });

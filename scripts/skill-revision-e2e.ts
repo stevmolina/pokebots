@@ -8,7 +8,7 @@ import { createHash } from "node:crypto";
 import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
-import type { AgentSummary, SkillConversationEvent } from "@openbot/contracts/ipc";
+import type { AgentSummary, SkillConversationEvent } from "@pokebots/contracts/ipc";
 import { Effect, Exit, Schema } from "effect";
 import { runLocalSkillTool } from "../src/backend/agent/skill-tools";
 import { isMissingFileError } from "../src/backend/file-errors";

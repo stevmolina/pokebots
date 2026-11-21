@@ -22,8 +22,8 @@ import {
   type CrmStatus,
   type CrmTag,
   type OpenBotDesktopApi,
-} from "@openbot/contracts/ipc";
-import { type SourceMessages, sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/ipc";
+import { type SourceMessages, sourceText } from "@pokebots/i18n/source";
 
 /** A customer as a story gives it: the totals come from the payments. */
 export type MockCrmCustomer = Omit<CrmCustomer, "paidMinor" | "openMinor" | "lateMinor" | "nextDueOn" | "lastPaidAt">;

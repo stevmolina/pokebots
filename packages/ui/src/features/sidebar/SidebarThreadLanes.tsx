@@ -11,9 +11,9 @@
  * "Channels" is the order of the layout.
  */
 
-import { SIDEBAR_PEOPLE_SECTION_ID } from "@openbot/contracts/ipc";
-import type { AppFormat, AppTranslate } from "@openbot/i18n";
-import { Button, buttonVariants, ChevronDown, ContextMenu } from "@openbot/ui";
+import { SIDEBAR_PEOPLE_SECTION_ID } from "@pokebots/contracts/ipc";
+import type { AppFormat, AppTranslate } from "@pokebots/i18n";
+import { Button, buttonVariants, ChevronDown, ContextMenu } from "@pokebots/ui";
 import type { JSX } from "@solidjs/web";
 import { createMemo, createSignal, For, onSettled, Show } from "solid-js";
 import type { AgentProfile } from "../../data";

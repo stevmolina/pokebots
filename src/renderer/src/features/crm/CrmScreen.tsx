@@ -1,6 +1,6 @@
-import { CrmView } from "@openbot/ui/features/crm/CrmView";
-import type { CrmAgent } from "@openbot/ui/features/crm/crm-model";
-import type { CrmConnectorsRequest } from "@openbot/ui/features/crm/crm-state";
+import { CrmView } from "@pokebots/ui/features/crm/CrmView";
+import type { CrmAgent } from "@pokebots/ui/features/crm/crm-model";
+import type { CrmConnectorsRequest } from "@pokebots/ui/features/crm/crm-state";
 import { createCrmController } from "./crm-controller";
 import type { CrmHost } from "./crm-port";
 

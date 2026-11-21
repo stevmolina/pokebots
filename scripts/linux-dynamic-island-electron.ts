@@ -15,7 +15,7 @@ import {
   type DynamicIslandAction,
   IPC_ENDPOINTS,
   isDynamicIslandPresentation,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import { Effect, Schema } from "effect";
 import { app, BrowserWindow, ipcMain, screen } from "electron";
 import { DynamicIslandWindowController } from "../src/main/dynamic-island-window";

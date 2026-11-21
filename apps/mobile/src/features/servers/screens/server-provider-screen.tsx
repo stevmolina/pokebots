@@ -11,8 +11,8 @@ import {
   type ProviderAccountPool,
   type ProviderAccountStatus,
   type ProviderApiKeyStatus,
-} from "@openbot/contracts/ipc";
-import { CLAUDE_API_KEY_ACCOUNT_ID } from "@openbot/contracts/team-protocol/claude-api-key-v1";
+} from "@pokebots/contracts/ipc";
+import { CLAUDE_API_KEY_ACCOUNT_ID } from "@pokebots/contracts/team-protocol/claude-api-key-v1";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { Chip, Typography } from "heroui-native";

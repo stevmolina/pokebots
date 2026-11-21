@@ -24,8 +24,8 @@ import {
   storageTierGb,
   storageTierLookupKey,
   storageTierOf,
-} from "@openbot/contracts/billing";
-import type { BillingDetails, BillingDetailsRequest } from "@openbot/contracts/billing-details";
+} from "@pokebots/contracts/billing";
+import type { BillingDetails, BillingDetailsRequest } from "@pokebots/contracts/billing-details";
 import {
   type HostedServerCatalog,
   type HostedServerCatalogPlan,
@@ -33,7 +33,7 @@ import {
   type HostedServerPlanPrices,
   type HostedServerSize,
   hostedServerStorageGb,
-} from "@openbot/contracts/hosted-servers";
+} from "@pokebots/contracts/hosted-servers";
 import {
   LICENSE_METADATA,
   LICENSE_METADATA_KIND,
@@ -41,9 +41,9 @@ import {
   licensePeriodAmount,
   ORDER_METADATA,
   parseLicenseOrder,
-} from "@openbot/contracts/license";
-import { isDynamicRecord, isOneOf, isString } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source-english";
+} from "@pokebots/contracts/license";
+import { isDynamicRecord, isOneOf, isString } from "@pokebots/contracts/runtime-values";
+import { sourceText } from "@pokebots/i18n/source-english";
 import { Context, Effect, Layer } from "effect";
 import { SOLD_OUT_PLANS } from "../lib/pricing-page";
 import {

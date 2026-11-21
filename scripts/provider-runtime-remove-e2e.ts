@@ -19,7 +19,7 @@ import { createHash } from "node:crypto";
 import { chmod, mkdir, mkdtemp, readFile, rm, stat, utimes, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { basename, dirname, join, resolve } from "node:path";
-import type { AgentProviderId, ManagedProviderId } from "@openbot/contracts/agent-providers";
+import type { AgentProviderId, ManagedProviderId } from "@pokebots/contracts/agent-providers";
 import { chooseInstalledFirst, resolveCodexCli } from "../src/backend/cli";
 import { runCauseEffect } from "../src/backend/effect-boundary";
 import { INSTALL_RECORD } from "../src/main/provider-runtime-descriptors";

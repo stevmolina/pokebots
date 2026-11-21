@@ -19,23 +19,23 @@ import {
   SIDEBAR_PEOPLE_SECTION_ID,
   SIDEBAR_UNASSIGNED_SECTION_ID,
   type SidebarLayoutSnapshot,
-} from "@openbot/contracts/ipc";
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
+} from "@pokebots/contracts/ipc";
+import { TEAM_API_ROUTES } from "@pokebots/contracts/team-api-routes";
 import {
   TEAM_APP_VERSION_HEADER,
   TEAM_CAPABILITIES_HEADER,
   TEAM_PROTOCOL_V1_WEBSOCKET,
   TEAM_PROTOCOL_VERSION_HEADER,
-} from "@openbot/contracts/team-protocol";
-import { teamCapabilitiesForProtocol } from "@openbot/contracts/team-protocol/current";
+} from "@pokebots/contracts/team-protocol";
+import { teamCapabilitiesForProtocol } from "@pokebots/contracts/team-protocol/current";
 import {
   SIDEBAR_FOLDERS_CODECS,
   SIDEBAR_FOLDERS_ROUTES,
   sidebarFoldersEvent,
-} from "@openbot/contracts/team-protocol/sidebar-folders-v1";
-import { TEAM_PROTOCOL_V7 } from "@openbot/contracts/team-protocol/v7";
-import { TEAM_PROTOCOL_V9 } from "@openbot/contracts/team-protocol/v9";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/team-protocol/sidebar-folders-v1";
+import { TEAM_PROTOCOL_V7 } from "@pokebots/contracts/team-protocol/v7";
+import { TEAM_PROTOCOL_V9 } from "@pokebots/contracts/team-protocol/v9";
+import { sourceText } from "@pokebots/i18n/source";
 import { plugin } from "bun";
 import { Effect } from "effect";
 import type { AgentBrowserHost } from "../src/backend/agent/turn-lifecycle";

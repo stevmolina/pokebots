@@ -1,4 +1,4 @@
-import { AppLogo, PlatformLogo, ProviderLogo } from "@openbot/brand";
+import { AppLogo, PlatformLogo, ProviderLogo } from "@pokebots/brand";
 import { For, onSettled, Show } from "solid-js";
 import { landingAnalytics } from "../../lib/analytics";
 import type { HeroProviderPart, LandingPageText } from "../../lib/landing-page-text";

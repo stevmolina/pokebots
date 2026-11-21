@@ -1,6 +1,6 @@
-import { siteLimitForPlan } from "@openbot/contracts/billing";
-import type { HostedServerCatalogPlan, HostedServerList, HostedServerSummary } from "@openbot/contracts/hosted-servers";
-import type { MobileTextKey } from "@openbot/i18n/mobile";
+import { siteLimitForPlan } from "@pokebots/contracts/billing";
+import type { HostedServerCatalogPlan, HostedServerList, HostedServerSummary } from "@pokebots/contracts/hosted-servers";
+import type { MobileTextKey } from "@pokebots/i18n/mobile";
 import { skipToken, useQuery } from "@tanstack/react-query";
 import { router, useLocalSearchParams } from "expo-router";
 import { Button, Chip, Skeleton, Typography } from "heroui-native";

@@ -1,18 +1,18 @@
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
+import { isDynamicRecord, isString } from "@pokebots/contracts/runtime-values";
+import { TEAM_API_ROUTES } from "@pokebots/contracts/team-api-routes";
 import {
   INSTANCE_TRANSFER_REMOTE_BYTES,
   INSTANCE_TRANSFER_ROUTES,
-} from "@openbot/contracts/team-protocol/instance-transfer-v1";
-import { LIVE_VOICE_ROUTES } from "@openbot/contracts/team-protocol/live-voice-v1";
-import { PENDING_APPROVAL_ROUTES } from "@openbot/contracts/team-protocol/pending-approval-v1";
-import { PHONE_FEEDBACK_ROUTES } from "@openbot/contracts/team-protocol/phone-feedback-v1";
-import { isQueueEditRoute, QueueEditRejectedError } from "@openbot/contracts/team-protocol/queue-edit-v1";
-import type { TeamProtocolV2Json } from "@openbot/contracts/team-protocol/v2";
-import { sourceText } from "@openbot/i18n/source";
-import type { RemoteTeamDirectoryClient } from "@openbot/team-client";
-import { runTeamEffect } from "@openbot/team-client";
-import { bytesToBase64 } from "@openbot/team-client/base64";
+} from "@pokebots/contracts/team-protocol/instance-transfer-v1";
+import { LIVE_VOICE_ROUTES } from "@pokebots/contracts/team-protocol/live-voice-v1";
+import { PENDING_APPROVAL_ROUTES } from "@pokebots/contracts/team-protocol/pending-approval-v1";
+import { PHONE_FEEDBACK_ROUTES } from "@pokebots/contracts/team-protocol/phone-feedback-v1";
+import { isQueueEditRoute, QueueEditRejectedError } from "@pokebots/contracts/team-protocol/queue-edit-v1";
+import type { TeamProtocolV2Json } from "@pokebots/contracts/team-protocol/v2";
+import { sourceText } from "@pokebots/i18n/source";
+import type { RemoteTeamDirectoryClient } from "@pokebots/team-client";
+import { runTeamEffect } from "@pokebots/team-client";
+import { bytesToBase64 } from "@pokebots/team-client/base64";
 import {
   createRemoteCommandMailbox,
   type RemoteDownloadProgress,
@@ -25,9 +25,9 @@ import {
   type RemoteTeamDiagnostic,
   type RemoteTeamEvent,
   type RemoteUploadProgress,
-} from "@openbot/team-client/remote-peer";
-import { remoteWorkspaceReadTimeout } from "@openbot/team-client/remote-recovery";
-import { referenceFrom } from "@openbot/user-errors";
+} from "@pokebots/team-client/remote-peer";
+import { remoteWorkspaceReadTimeout } from "@pokebots/team-client/remote-recovery";
+import { referenceFrom } from "@pokebots/user-errors";
 import type { DOMProps } from "expo/dom";
 import * as Crypto from "expo-crypto";
 import { File, FileMode } from "expo-file-system";

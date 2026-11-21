@@ -1,5 +1,5 @@
-import { ArrowUp, AudioLines, Button, LoaderCircle, X } from "@openbot/ui";
-import { useText } from "@openbot/ui/text";
+import { ArrowUp, AudioLines, Button, LoaderCircle, X } from "@pokebots/ui";
+import { useText } from "@pokebots/ui/text";
 import { Match, Show, Switch } from "solid-js";
 import { StopIcon } from "./ConversationIcons";
 

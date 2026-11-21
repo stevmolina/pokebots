@@ -5,9 +5,9 @@ import {
   AGENT_PROVIDER_DESCRIPTORS,
   agentProviderCliName,
   agentProviderDescriptor,
-} from "@openbot/contracts/agent-providers";
-import { type AgentSummary, type InstalledSkill, SKILL_DESCRIPTION_MAX_LENGTH } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/agent-providers";
+import { type AgentSummary, type InstalledSkill, SKILL_DESCRIPTION_MAX_LENGTH } from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect } from "effect";
 import { HOME_SKILL_FOLDER, homeSkillTagId, listHomeSkills } from "../backend/home-skills";
 import { readSkillFrontmatter } from "../backend/skill-frontmatter";

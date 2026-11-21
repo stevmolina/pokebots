@@ -1,6 +1,6 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
-import { redactText } from "@openbot/logging";
+import { redactText } from "@pokebots/logging";
 import { Effect } from "effect";
 import { app, BrowserWindow, type WebContents } from "electron";
 import { z } from "zod";

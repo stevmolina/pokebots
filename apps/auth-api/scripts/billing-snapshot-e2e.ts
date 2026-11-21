@@ -11,7 +11,7 @@ import { readdirSync, readFileSync } from "node:fs";
 import { mkdir, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { DatabaseSync, type SQLInputValue } from "node:sqlite";
-import { LICENSE_METADATA, LICENSE_METADATA_KIND, licenseLookupKey } from "@openbot/contracts/license";
+import { LICENSE_METADATA, LICENSE_METADATA_KIND, licenseLookupKey } from "@pokebots/contracts/license";
 import { Effect, Exit, Schema } from "effect";
 import { captureBillingSnapshot } from "../src/server/billing-snapshots";
 

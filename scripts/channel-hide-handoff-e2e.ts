@@ -10,8 +10,8 @@
 // channels and deletes them, restores each agent it hides, and gives the agent its provider back.
 // Writes .openbot-build/channel-hide-handoff-e2e/report.json.
 import assert from "node:assert/strict";
-import { agentProviderDescriptor, isAgentProvider } from "@openbot/contracts/agent-providers";
-import type { AgentSummary, ChannelPage, ChannelTask } from "@openbot/contracts/ipc";
+import { agentProviderDescriptor, isAgentProvider } from "@pokebots/contracts/agent-providers";
+import type { AgentSummary, ChannelPage, ChannelTask } from "@pokebots/contracts/ipc";
 import { argument, ChannelClient, connectChannelE2e, SHORT_PROMPT, waitFor, writeReport } from "./channel-e2e-support";
 
 interface Report {

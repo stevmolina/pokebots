@@ -1,4 +1,4 @@
-import type { AgentEvent, RoutineCalendar, RoutineCalendarInput, TeamRealtimeEvent } from "@openbot/contracts/ipc";
+import type { AgentEvent, RoutineCalendar, RoutineCalendarInput, TeamRealtimeEvent } from "@pokebots/contracts/ipc";
 
 /** What the schedule reads: the routine calendar of a server, and the changes that make it stale. */
 export interface ScheduleSource {

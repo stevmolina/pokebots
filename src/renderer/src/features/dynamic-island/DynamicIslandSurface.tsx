@@ -3,16 +3,16 @@ import type {
   DynamicIslandAction,
   DynamicIslandPreference,
   DynamicIslandPresentation,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   DEFAULT_DYNAMIC_ISLAND_PREFERENCE,
   dynamicIslandShowsMode,
   IDLE_DYNAMIC_ISLAND_PRESENTATION,
-} from "@openbot/contracts/ipc";
-import type { DynamicIslandNotchSize, DynamicIslandStateChangeReason, DynamicIslandViewState } from "@openbot/ui";
-import { OpenBotDynamicIsland } from "@openbot/ui/features/dynamic-island/OpenBotDynamicIsland";
-import { useText } from "@openbot/ui/text";
-import { errorReference, type UserErrorDetails } from "@openbot/user-errors";
+} from "@pokebots/contracts/ipc";
+import type { DynamicIslandNotchSize, DynamicIslandStateChangeReason, DynamicIslandViewState } from "@pokebots/ui";
+import { OpenBotDynamicIsland } from "@pokebots/ui/features/dynamic-island/OpenBotDynamicIsland";
+import { useText } from "@pokebots/ui/text";
+import { errorReference, type UserErrorDetails } from "@pokebots/user-errors";
 import { createEffect, createSignal, onSettled, Show } from "solid-js";
 import { currentDevicePlatform } from "../../send-shortcut-preference";
 import { windowShape } from "../../window-shape";

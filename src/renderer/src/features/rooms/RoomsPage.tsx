@@ -1,5 +1,5 @@
-import { POKEBOTS_INTEGRATIONS_CAPABILITY } from "@openbot/contracts/team-protocol/pokebots-integrations-v1";
-import { RoomsPanel } from "@openbot/ui/features/rooms/RoomsPanel";
+import { POKEBOTS_INTEGRATIONS_CAPABILITY } from "@pokebots/contracts/team-protocol/pokebots-integrations-v1";
+import { RoomsPanel } from "@pokebots/ui/features/rooms/RoomsPanel";
 import { Show } from "solid-js";
 import { IntegrationProfiles } from "../integrations/IntegrationProfiles";
 import { useLocalIntegrations } from "../integrations/local-integrations";

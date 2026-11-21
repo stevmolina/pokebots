@@ -4,8 +4,8 @@ import type {
   ServerAuditEntry,
   ServerAuditMemberRole,
   ServerAuditName,
-} from "@openbot/contracts/ipc";
-import type { AppTextKey, AppTranslate } from "@openbot/i18n";
+} from "@pokebots/contracts/ipc";
+import type { AppTextKey, AppTranslate } from "@pokebots/i18n";
 import {
   ArrowRight,
   Crown,
@@ -31,7 +31,7 @@ import {
   Text,
   Trash2,
   UserRoundPlus,
-} from "@openbot/ui";
+} from "@pokebots/ui";
 import type { JSX } from "@solidjs/web";
 import { createMemo, createSignal, For, Show } from "solid-js";
 import { useText } from "../../text";

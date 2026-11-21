@@ -1,6 +1,6 @@
-import { ProviderLogo } from "@openbot/brand";
-import { usagePaceRemainingPercent } from "@openbot/team-client/plan-limits";
-import { Button, Gauge, RefreshCw } from "@openbot/ui";
+import { ProviderLogo } from "@pokebots/brand";
+import { usagePaceRemainingPercent } from "@pokebots/team-client/plan-limits";
+import { Button, Gauge, RefreshCw } from "@pokebots/ui";
 import type { JSX } from "@solidjs/web";
 import { createEffect, createSignal, For, onCleanup, Show } from "solid-js";
 import { createScrollFades } from "../../components/createScrollFades";

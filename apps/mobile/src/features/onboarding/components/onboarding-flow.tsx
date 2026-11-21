@@ -1,5 +1,5 @@
-import { avatarHeadColor } from "@openbot/brand/bloub-avatar";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { avatarHeadColor } from "@pokebots/brand/bloub-avatar";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import * as Crypto from "expo-crypto";
 import { router } from "expo-router";
 import type { NativeStackNavigationProp } from "expo-router/native-stack";

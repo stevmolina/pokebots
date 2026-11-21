@@ -1,4 +1,4 @@
-import { isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
+import { isDynamicRecord, isNumber, isString } from "@pokebots/contracts/runtime-values";
 import { listingsWithoutCards, outDirectoryArgument, refreshCardAfterReview, runCardCommand } from "./marketplace-card";
 
 const [command, targetId, ...rest] = process.argv.slice(2);

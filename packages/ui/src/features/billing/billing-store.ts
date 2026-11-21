@@ -1,4 +1,4 @@
-import type { BillingPortalRequest, BillingState, BillingStorageRequest } from "@openbot/contracts/billing";
+import type { BillingPortalRequest, BillingState, BillingStorageRequest } from "@pokebots/contracts/billing";
 import { createEffect, createStore, untrack } from "solid-js";
 import { currentText } from "../../text";
 

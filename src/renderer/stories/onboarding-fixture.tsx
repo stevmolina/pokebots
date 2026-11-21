@@ -1,6 +1,6 @@
-import { isManagedRuntimeProvider, type ManagedProviderId } from "@openbot/contracts/agent-providers";
-import type { AgentProviderId, AgentProviderStatus, AgentStatus, ProviderRuntimeStatus } from "@openbot/contracts/ipc";
-import { Toaster, toast } from "@openbot/ui";
+import { isManagedRuntimeProvider, type ManagedProviderId } from "@pokebots/contracts/agent-providers";
+import type { AgentProviderId, AgentProviderStatus, AgentStatus, ProviderRuntimeStatus } from "@pokebots/contracts/ipc";
+import { Toaster, toast } from "@pokebots/ui";
 import type { JSX } from "@solidjs/web";
 import { createSignal, onCleanup, untrack } from "solid-js";
 import { fn } from "storybook/test";

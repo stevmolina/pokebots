@@ -10,42 +10,42 @@ import {
   type EventRoutine,
   type EventRoutineOwner,
   type ListEventRoutinesInput,
-} from "@openbot/contracts/ipc-events";
-import { EVENTS_CAPABILITY, EVENTS_ROUTES } from "@openbot/contracts/team-protocol/events-v1";
+} from "@pokebots/contracts/ipc-events";
+import { EVENTS_CAPABILITY, EVENTS_ROUTES } from "@pokebots/contracts/team-protocol/events-v1";
 import {
   decodeRoutinePauseReasons,
   ROUTINE_PAUSE_REASONS_CAPABILITY,
   ROUTINE_PAUSE_REASONS_ROUTES,
-} from "@openbot/contracts/team-protocol/routine-pause-reasons-v1";
+} from "@pokebots/contracts/team-protocol/routine-pause-reasons-v1";
 import {
   ROUTINE_RECOVERY_CAPABILITY,
   ROUTINE_RECOVERY_ROUTES,
-} from "@openbot/contracts/team-protocol/routine-recovery-v1";
+} from "@pokebots/contracts/team-protocol/routine-recovery-v1";
 import {
   decodeRoutineRunPlace,
   decodeRoutineRunPlaces,
   ROUTINE_RUN_PLACE_CAPABILITY,
   ROUTINE_RUN_PLACE_ROUTES,
-} from "@openbot/contracts/team-protocol/routine-run-place-v1";
-import { ROUTINES_ONCE_CAPABILITY } from "@openbot/contracts/team-protocol/routines-once-v1";
+} from "@pokebots/contracts/team-protocol/routine-run-place-v1";
+import { ROUTINES_ONCE_CAPABILITY } from "@pokebots/contracts/team-protocol/routines-once-v1";
 import {
   WEBHOOK_AGENT_SECRET_CAPABILITY,
   WEBHOOK_AGENT_SECRET_ROUTES,
-} from "@openbot/contracts/team-protocol/webhook-agent-secret-v1";
+} from "@pokebots/contracts/team-protocol/webhook-agent-secret-v1";
 import {
   WEBHOOK_SENDER_SECRET_CAPABILITY,
   WEBHOOK_SENDER_SECRET_ROUTES,
-} from "@openbot/contracts/team-protocol/webhook-sender-secret-v1";
-import { WEBHOOK_TESTS_CAPABILITY, WEBHOOK_TESTS_ROUTES } from "@openbot/contracts/team-protocol/webhook-tests-v1";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger } from "@openbot/logging";
+} from "@pokebots/contracts/team-protocol/webhook-sender-secret-v1";
+import { WEBHOOK_TESTS_CAPABILITY, WEBHOOK_TESTS_ROUTES } from "@pokebots/contracts/team-protocol/webhook-tests-v1";
+import { sourceText } from "@pokebots/i18n/source";
+import { createOpenBotLogger } from "@pokebots/logging";
 import {
   listOnceEventRoutines,
   type RoutinesOncePost,
   requireReleasedScheduleOn,
   saveOnceEventRoutine,
-} from "@openbot/team-client/routines-once";
-import { withRoutinePauseReasons, withRoutineRunPlaces } from "@openbot/team-client/team-api-requests";
+} from "@pokebots/team-client/routines-once";
+import { withRoutinePauseReasons, withRoutineRunPlaces } from "@pokebots/team-client/team-api-requests";
 import type { Effect } from "effect";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import type { HostEventsApi } from "../host-events-api";

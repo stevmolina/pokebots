@@ -2,7 +2,7 @@ import {
   type ChatBackdropCells,
   type ChatBackdropScene,
   paintChatBackdropScene,
-} from "@openbot/brand/chat-backdrop-scenes";
+} from "@pokebots/brand/chat-backdrop-scenes";
 import { Canvas, createPicture, Picture, type SkColor, Skia, type SkPicture } from "@shopify/react-native-skia";
 import { useEffect, useRef, useState } from "react";
 import { type LayoutChangeEvent, View } from "react-native";
@@ -53,7 +53,7 @@ function framePicture(scene: ChatBackdropScene, width: number, height: number, t
 }
 
 /**
- * A built-in scene of the desktop (`@openbot/brand/chat-backdrop-scenes`), drawn with Skia. It moves
+ * A built-in scene of the desktop (`@pokebots/brand/chat-backdrop-scenes`), drawn with Skia. It moves
  * only while `animate` is true: the caller stops it when its screen is hidden or covered by a sheet,
  * the app is in the background, or motion is reduced. A stop keeps the frame that shows, and the scene
  * goes on from that time when it moves again.

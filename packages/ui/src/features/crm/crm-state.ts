@@ -12,8 +12,8 @@ import type {
   CrmSourceKind,
   CrmStatus,
   CrmTag,
-} from "@openbot/contracts/ipc";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/contracts/ipc";
+import { useText } from "@pokebots/ui/text";
 import { createEffect, createMemo, createStore } from "solid-js";
 import { type CrmAgent, type CrmLayout, readCrmLayout, statusLabel, todayIso } from "./crm-model";
 

@@ -1,5 +1,5 @@
-import type { AgentTask } from "@openbot/contracts/ipc";
-import { taskTone } from "@openbot/team-client/agent-tasks";
+import type { AgentTask } from "@pokebots/contracts/ipc";
+import { taskTone } from "@pokebots/team-client/agent-tasks";
 import { Typography } from "heroui-native";
 import { memo, useRef, useState } from "react";
 import { Pressable, View } from "react-native";

@@ -5,7 +5,7 @@ import {
   type SkillSuggestionTarget,
   skillConversationEvent,
   skillSuggestionTarget,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import { chatTranscript, promptJson } from "./side-question";
 
 /** The tool steps that a review or a note reads, failed steps and the step after them first. */

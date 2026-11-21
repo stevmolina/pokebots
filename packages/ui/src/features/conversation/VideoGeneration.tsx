@@ -1,4 +1,4 @@
-import type { AttachmentSummary, ImageGenerationAspectRatio } from "@openbot/contracts/ipc";
+import type { AttachmentSummary, ImageGenerationAspectRatio } from "@pokebots/contracts/ipc";
 import { createEffect, createStore, Show, untrack } from "solid-js";
 import { useText } from "../../text";
 import type { AttachmentMediaSource } from "./AttachmentCards";

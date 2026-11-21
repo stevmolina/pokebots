@@ -18,9 +18,9 @@ import {
   APP_SURFACES,
   isBelowMinimumVersion,
   parseAppMinimumVersion,
-} from "@openbot/contracts/app-minimum-version";
-import type { ScheduledUpdateRestart, UpdatePreference, UpdateStatus } from "@openbot/contracts/ipc";
-import { createOpenBotLogger } from "@openbot/logging";
+} from "@pokebots/contracts/app-minimum-version";
+import type { ScheduledUpdateRestart, UpdatePreference, UpdateStatus } from "@pokebots/contracts/ipc";
+import { createOpenBotLogger } from "@pokebots/logging";
 import { Effect } from "effect";
 import { type ChangelogRelease, parseChangelog } from "../apps/auth-api/src/lib/changelog";
 import { APP_MINIMUM_VERSIONS } from "../apps/auth-api/src/server/app-minimum-version";

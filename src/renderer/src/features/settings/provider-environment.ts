@@ -5,9 +5,9 @@ import {
   type OpenBotDesktopApi,
   type ProviderEnvironment,
   type ProviderEnvironmentVariableInput,
-} from "@openbot/contracts/ipc";
-import type { ProviderEnvironmentControl } from "@openbot/ui/features/settings/ProviderSettingsPage";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/contracts/ipc";
+import type { ProviderEnvironmentControl } from "@pokebots/ui/features/settings/ProviderSettingsPage";
+import { useText } from "@pokebots/ui/text";
 import { createHostSetting } from "./host-setting-state";
 
 /** The variable calls of one server's host. The desktop reaches them through main. */

@@ -1,4 +1,4 @@
-import type { MobileTextKey } from "@openbot/i18n/mobile";
+import type { MobileTextKey } from "@pokebots/i18n/mobile";
 import { router } from "expo-router";
 import { Typography } from "heroui-native";
 import { useServerProviders } from "@/features/servers/model/use-server-providers";

@@ -1,4 +1,4 @@
-import { Button, Check, Lock, Spinner } from "@openbot/ui";
+import { Button, Check, Lock, Spinner } from "@pokebots/ui";
 import type { JSX } from "@solidjs/web";
 import { createSignal, createStore, createUniqueId, onCleanup, onSettled, Show } from "solid-js";
 import { useText } from "../../text";

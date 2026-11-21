@@ -1,4 +1,4 @@
-import { type AgentProviderId, isAgentProvider, relayCallbackQuery } from "@openbot/contracts/ipc";
+import { type AgentProviderId, isAgentProvider, relayCallbackQuery } from "@pokebots/contracts/ipc";
 import * as Clipboard from "expo-clipboard";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { Spinner, Typography } from "heroui-native";

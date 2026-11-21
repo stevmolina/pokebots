@@ -1,4 +1,4 @@
-import type { AgentProfile } from "@openbot/ui/data";
+import type { AgentProfile } from "@pokebots/ui/data";
 import { createSignal, onCleanup } from "solid-js";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { CrmScreen } from "../src/features/crm/CrmScreen";

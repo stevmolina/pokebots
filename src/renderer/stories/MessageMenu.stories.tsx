@@ -1,7 +1,7 @@
-import type { MessageReaction } from "@openbot/contracts/ipc";
-import type { AgentMessage } from "@openbot/ui/data";
-import { ChatMessageRow } from "@openbot/ui/features/conversation/ChatMessageRow";
-import { MessageActions, MessageMenu, MessageMenuItems } from "@openbot/ui/features/conversation/MessageRendering";
+import type { MessageReaction } from "@pokebots/contracts/ipc";
+import type { AgentMessage } from "@pokebots/ui/data";
+import { ChatMessageRow } from "@pokebots/ui/features/conversation/ChatMessageRow";
+import { MessageActions, MessageMenu, MessageMenuItems } from "@pokebots/ui/features/conversation/MessageRendering";
 import { createStore } from "solid-js";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";

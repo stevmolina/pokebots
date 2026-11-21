@@ -1,11 +1,11 @@
-import type { AgentTask } from "@openbot/contracts/ipc";
-import type { MobileTextKey } from "@openbot/i18n/mobile";
+import type { AgentTask } from "@pokebots/contracts/ipc";
+import type { MobileTextKey } from "@pokebots/i18n/mobile";
 import {
   TASKS_CLOSED_SHOWN,
   type TasksSection,
   type TasksSectionId,
   taskSections,
-} from "@openbot/team-client/agent-tasks";
+} from "@pokebots/team-client/agent-tasks";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { useNavigationState, useRoute } from "expo-router/react-navigation";
 import { Typography } from "heroui-native";

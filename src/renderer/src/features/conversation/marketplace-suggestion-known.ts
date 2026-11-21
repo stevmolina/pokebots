@@ -1,4 +1,4 @@
-import { isConnectorId } from "@openbot/ui/features/connectors/connectors";
+import { isConnectorId } from "@pokebots/ui/features/connectors/connectors";
 import { MARKETPLACE_PLUGIN_SLUGS } from "../settings/marketplace-plugin-slugs";
 
 /**

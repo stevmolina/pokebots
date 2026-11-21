@@ -1,6 +1,6 @@
 import { readFileSync, writeFileSync } from "node:fs";
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
-import { createOpenBotLogger } from "@openbot/logging";
+import { isDynamicRecord } from "@pokebots/contracts/runtime-values";
+import { createOpenBotLogger } from "@pokebots/logging";
 
 // The baseline rules of `type-ratchet.ts`. A baseline file holds the count of each check (a
 // TypeScript option) for each file. A count above the baseline

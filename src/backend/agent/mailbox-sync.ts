@@ -1,4 +1,4 @@
-import { sortConversationMessages } from "@openbot/contracts/conversation-order";
+import { sortConversationMessages } from "@pokebots/contracts/conversation-order";
 import {
   type AgentEvent,
   type AgentSummary,
@@ -8,7 +8,7 @@ import {
   type QueueDeliveryStatus,
   type QueueHold,
   type QueueSnapshot,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import { Effect, type Scope } from "effect";
 import { isMailboxMessageCopy } from "../conversation-snapshots";
 import type { MailboxStore } from "../mailbox-store";

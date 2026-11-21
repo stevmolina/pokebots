@@ -1,5 +1,5 @@
-import type { BrainRequest, BrainResponse } from "@openbot/contracts/brain";
-import { POKEBOTS_BRAIN_ID } from "@openbot/contracts/team-protocol/pokebots-integrations-v1";
+import type { BrainRequest, BrainResponse } from "@pokebots/contracts/brain";
+import { POKEBOTS_BRAIN_ID } from "@pokebots/contracts/team-protocol/pokebots-integrations-v1";
 import * as DocumentPicker from "expo-document-picker";
 import { File } from "expo-file-system";
 import { router, Stack, useFocusEffect, useLocalSearchParams } from "expo-router";
