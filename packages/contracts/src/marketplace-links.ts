@@ -20,6 +20,8 @@
  * data, so a listing cannot put a foreign address behind the button that copies its own link.
  */
 
+import { isSupportedDeepLinkProtocol } from "./deep-link-schemes";
+
 export const OPENBOT_MARKETPLACE_ORIGIN = "https://openbot.run";
 export const OPENBOT_MARKETPLACE_PATH = "/marketplace";
 export const OPENBOT_MARKETPLACE_HOST = "marketplace";
@@ -140,7 +142,7 @@ export function parseMarketplaceUrl(value: string): MarketplaceListingLink {
   const prefix = `${OPENBOT_MARKETPLACE_PATH}/`;
   const canonical =
     url.protocol === "https:" && url.origin === OPENBOT_MARKETPLACE_ORIGIN && url.pathname.startsWith(prefix);
-  const customScheme = url.protocol === "openbot:" && url.hostname === OPENBOT_MARKETPLACE_HOST;
+  const customScheme = isSupportedDeepLinkProtocol(url.protocol) && url.hostname === OPENBOT_MARKETPLACE_HOST;
   if (
     (!canonical && !customScheme) ||
     url.username !== "" ||

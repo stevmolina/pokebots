@@ -1,5 +1,10 @@
+import { EnvCompatibilityConflictError } from "@openbot/contracts/pokebots-env";
 import { describe, expect, it } from "vitest";
-import { buildContentSecurityPolicy, readSelfHostedSignalOrigin } from "./content-security-policy";
+import {
+  buildContentSecurityPolicy,
+  readSelfHostedSignalOrigin,
+  readSelfHostedSignalOriginFromEnv,
+} from "./content-security-policy";
 
 describe("buildContentSecurityPolicy", () => {
   it("allows the production analytics endpoint", () => {
@@ -61,5 +66,48 @@ describe("buildContentSecurityPolicy", () => {
     ["https://api.example.com", "wss://user:pass@signal.example.com/v1/signal", "must be a wss: URL"],
   ])("refuses a self-hosted Signal URL with auth API %s and Signal %s", (authApiUrl, signalUrl, message) => {
     expect(() => readSelfHostedSignalOrigin(authApiUrl, signalUrl)).toThrow(message);
+  });
+
+  it("accepts matching or single POKEBOTS_* and OPENBOT_* self-hosted Signal settings", () => {
+    expect(
+      readSelfHostedSignalOriginFromEnv({
+        POKEBOTS_AUTH_API_URL: "https://api.example.com",
+        POKEBOTS_REMOTE_SIGNAL_URL: "wss://signal.example.com:8443/v1/signal",
+      }),
+    ).toBe("wss://signal.example.com:8443");
+
+    expect(
+      readSelfHostedSignalOriginFromEnv({
+        POKEBOTS_AUTH_API_URL: "https://API.EXAMPLE.COM/",
+        OPENBOT_AUTH_API_URL: "https://api.example.com:443",
+        POKEBOTS_REMOTE_SIGNAL_URL: "wss://SIGNAL.EXAMPLE.COM:443/v1/signal",
+        OPENBOT_REMOTE_SIGNAL_URL: "wss://signal.example.com/v1/signal",
+      }),
+    ).toBe("wss://signal.example.com");
+
+    expect(
+      readSelfHostedSignalOriginFromEnv({
+        OPENBOT_AUTH_API_URL: "https://api.example.com",
+        OPENBOT_REMOTE_SIGNAL_URL: "wss://signal.example.com/v1/signal",
+      }),
+    ).toBe("wss://signal.example.com");
+  });
+
+  it("rejects contradictory POKEBOTS_* and OPENBOT_* self-hosted Signal settings without leaking values", () => {
+    const secretToken = "top-secret-signal-token-value";
+    let caught: unknown;
+    try {
+      readSelfHostedSignalOriginFromEnv({
+        POKEBOTS_AUTH_API_URL: "https://api.example.com",
+        POKEBOTS_REMOTE_SIGNAL_URL: `wss://signal-a.example.com/v1/signal?token=${secretToken}`,
+        OPENBOT_REMOTE_SIGNAL_URL: "wss://signal-b.example.com/v1/signal",
+      });
+    } catch (error) {
+      caught = error;
+    }
+    expect(caught).toBeInstanceOf(EnvCompatibilityConflictError);
+    expect(caught instanceof Error ? caught.message : "").toContain("POKEBOTS_REMOTE_SIGNAL_URL");
+    expect(caught instanceof Error ? caught.message : "").toContain("OPENBOT_REMOTE_SIGNAL_URL");
+    expect(caught instanceof Error ? caught.message : "").not.toContain(secretToken);
   });
 });

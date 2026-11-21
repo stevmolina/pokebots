@@ -32,6 +32,7 @@
 
 import { mkdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
+import { DISABLE_GPU_ENV, resolveCompatEnv } from "@openbot/contracts/pokebots-env";
 import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
 import { createOpenBotLogger, toLogValue } from "@openbot/logging";
 import { app, type Details } from "electron";
@@ -132,7 +133,7 @@ export function readLinuxGpuMode(userDataPath: string, server: boolean): LinuxGp
   return resolveLinuxGpuMode({
     platform: process.platform,
     server,
-    disableGpu: process.env.OPENBOT_DISABLE_GPU,
+    disableGpu: resolveCompatEnv(process.env, DISABLE_GPU_ENV),
     chromiumMajor: chromiumMajorVersion(),
     crash: linux ? readGpuFailure(join(userDataPath, GPU_CRASH_FILE)) : undefined,
     unfinishedStart: linux ? readUnfinishedStart(join(userDataPath, GPU_START_FILE)) : undefined,

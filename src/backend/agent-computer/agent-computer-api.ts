@@ -4,6 +4,7 @@
 
 import { request as httpRequest } from "node:http";
 import { request as httpsRequest } from "node:https";
+import { AGENT_COMPUTER_API_URL_ENV, resolveCompatEnv } from "@openbot/contracts/pokebots-env";
 import { sourceText } from "@openbot/i18n/source";
 import { redactSecrets, registerSecretValue } from "@openbot/logging";
 import { Effect, Redacted, Schema } from "effect";
@@ -113,10 +114,11 @@ export class AgentComputerApi {
   constructor(options: AgentComputerApiOptions) {
     this.#key = options.key ?? (() => null);
     this.#credential = options.credential;
-    this.#base = (options.baseUrl ?? process.env.OPENBOT_AGENT_COMPUTER_API_URL ?? AGENT_COMPUTER_API_URL).replace(
-      /\/+$/u,
-      "",
-    );
+    this.#base = (
+      options.baseUrl ??
+      resolveCompatEnv(process.env, AGENT_COMPUTER_API_URL_ENV) ??
+      AGENT_COMPUTER_API_URL
+    ).replace(/\/+$/u, "");
   }
 
   connected(): boolean {

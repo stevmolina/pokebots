@@ -1,5 +1,12 @@
 import { execFile, execFileSync } from "node:child_process";
 import { isManagedRuntimeProvider, type ManagedProviderId } from "@openbot/contracts/agent-providers";
+import {
+  AGENT_SCREEN_BIN_ENV,
+  CUA_DRIVER_PATH_ENV,
+  HOSTED_SERVER_ENV,
+  REMOTE_DESKTOP_RUNTIME_PATH_ENV,
+  resolveCompatEnv,
+} from "@openbot/contracts/pokebots-env";
 import { ANALYTICS_GENERATIONS, openPanelTransport, ReportQueue } from "@openbot/telemetry";
 import { fileReportStorage } from "@openbot/telemetry/node";
 import { makeWASocket } from "@openbot/whatsapp/baileys";
@@ -2177,7 +2184,7 @@ export async function createApplicationServices({
       architecture: process.arch,
       homeDirectory: homedir(),
       pathVariable: process.env.PATH ?? null,
-      overrides: [process.env.OPENBOT_CUA_DRIVER_PATH, process.env.CUA_DRIVER_PATH],
+      overrides: [resolveCompatEnv(process.env, CUA_DRIVER_PATH_ENV), process.env.CUA_DRIVER_PATH],
       ...(installDirectory === undefined ? {} : { installDirectory }),
       ...(localAppDataDirectory === undefined ? {} : { localAppDataDirectory }),
       applicationsDirectory: "/Applications",
@@ -3093,7 +3100,7 @@ export async function createApplicationServices({
       yield* cuaDriver.warmUp().pipe(Effect.tap(() => Effect.sync(startComputerUseHighlight)));
     }).pipe(Effect.exit),
   );
-  const screenBin = process.env.OPENBOT_AGENT_SCREEN_BIN;
+  const screenBin = resolveCompatEnv(process.env, AGENT_SCREEN_BIN_ENV);
   if (perAgentScreensEnabled() && screenBin) {
     const screenReap = setInterval(() => {
       execFile(screenBin, ["reap"], { timeout: 10_000 }, () => undefined);
@@ -3394,6 +3401,7 @@ export async function createApplicationServices({
 
   const teamChatStore = new TeamChatStore(store.database);
   performance.mark("openbot:services.hosted");
+  const remoteDesktopRuntimeOverrideRoot = resolveCompatEnv(process.env, REMOTE_DESKTOP_RUNTIME_PATH_ENV);
   const remoteDesktopRuntime = await Effect.runPromise(
     resolveRemoteDesktopRuntime({
       isPackaged: app.isPackaged,
@@ -3401,9 +3409,7 @@ export async function createApplicationServices({
       sourceRoot: resolve(__dirname, "../.."),
       platform: process.platform === "darwin" || process.platform === "win32" ? process.platform : "linux",
       architecture: process.arch,
-      ...(process.env.OPENBOT_REMOTE_DESKTOP_RUNTIME_PATH === undefined
-        ? {}
-        : { overrideRoot: process.env.OPENBOT_REMOTE_DESKTOP_RUNTIME_PATH }),
+      ...(remoteDesktopRuntimeOverrideRoot === undefined ? {} : { overrideRoot: remoteDesktopRuntimeOverrideRoot }),
     }),
   );
   const agentAdminSettings = createAgentAdminSettings({ agents: service, approvalAutomation });
@@ -4734,7 +4740,8 @@ export async function createApplicationServices({
     containerInstaller ||
     (app.isPackaged &&
       process.platform === "linux" &&
-      (process.env.OPENBOT_HOSTED_SERVER === "1" || (serverModeEnvironment !== null && installationMode === "self")) &&
+      (resolveCompatEnv(process.env, HOSTED_SERVER_ENV) === "1" ||
+        (serverModeEnvironment !== null && installationMode === "self")) &&
       existsSync(HOSTED_UPDATE_TRIGGER));
   // A local server is the same application as its parent, which installs the update for both.
   const updatesEnabled =

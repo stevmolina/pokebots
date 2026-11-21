@@ -1,4 +1,28 @@
+import {
+  type EnvCompatibilityMode,
+  type EnvironmentRecord,
+  type EnvValueNormalizer,
+  normalizeEnvLowercase,
+  normalizeEnvUrl,
+  resolveCompatEnv,
+  resolveCompatEnvGroup,
+  SOURCE_COMMIT_ENV,
+} from "@openbot/contracts/pokebots-env";
 import { TELEGRAM_BOT_ID_PATTERN } from "@openbot/contracts/signal-protocol/telegram-route";
+
+function readSignalEnv(
+  environment: EnvironmentRecord,
+  legacy: string,
+  mode: EnvCompatibilityMode,
+  normalize?: EnvValueNormalizer,
+): string | undefined {
+  return resolveCompatEnv(environment, {
+    pokebots: `POKEBOTS_${legacy}`,
+    legacy,
+    mode,
+    ...(normalize === undefined ? {} : { normalize }),
+  });
+}
 
 export interface RemoteApiConfig {
   host: string;
@@ -108,13 +132,16 @@ function readSlackSigningSecrets(value: string | undefined): SlackSigningSecret[
  * value, or a missing or weak `TELEGRAM_WEBHOOK_SECRET`, turns off only Telegram: the remote sessions
  * and the Slack route keep running.
  */
-function readTelegramConfig(environment: Record<string, string | undefined>): TelegramConfig | null {
+function readTelegramConfig(environment: EnvironmentRecord): TelegramConfig | null {
   const off = (message: string) => {
     console.error(`${message} Telegram is off.`);
     return null;
   };
+  const rawTokens = readSignalEnv(environment, "TELEGRAM_BOT_TOKENS", "security-sensitive");
+  const rawWebhookSecret = readSignalEnv(environment, "TELEGRAM_WEBHOOK_SECRET", "security-sensitive");
+  const rawWebhookOrigin = readSignalEnv(environment, "TELEGRAM_WEBHOOK_ORIGIN", "security-sensitive", normalizeEnvUrl);
   const bots: TelegramBot[] = [];
-  for (const token of (environment.TELEGRAM_BOT_TOKENS ?? "").split(",").map((part) => part.trim())) {
+  for (const token of (rawTokens ?? "").split(",").map((part) => part.trim())) {
     if (!token) continue;
     const separator = token.indexOf(":");
     const botId = token.slice(0, separator);
@@ -128,10 +155,10 @@ function readTelegramConfig(environment: Record<string, string | undefined>): Te
     bots.push({ botId, token });
   }
   if (bots.length === 0) return null;
-  const webhookSecret = environment.TELEGRAM_WEBHOOK_SECRET?.trim() ?? "";
+  const webhookSecret = rawWebhookSecret?.trim() ?? "";
   if (new TextEncoder().encode(webhookSecret).byteLength < 32)
     return off("TELEGRAM_WEBHOOK_SECRET must contain at least 32 bytes.");
-  const origin = optional(environment.TELEGRAM_WEBHOOK_ORIGIN);
+  const origin = optional(rawWebhookOrigin);
   const webhookOrigin = origin ? httpsOrigin(origin) : null;
   if (origin && !webhookOrigin) return off("TELEGRAM_WEBHOOK_ORIGIN must be an https origin.");
   return { bots, webhookSecret, webhookOrigin };
@@ -164,43 +191,80 @@ function readDiscordBot(
   return { botToken, applicationId: id, messageContent: messageContent !== "false" };
 }
 
-export function readRemoteApiConfig(environment: Record<string, string | undefined> = process.env): RemoteApiConfig {
-  const tlsDisabled = environment.REMOTE_TLS_DISABLED === "true";
-  const ticketJwks = optional(environment.REMOTE_TICKET_PUBLIC_KEYS ?? environment.REMOTE_TICKET_PUBLIC_JWKS);
-  const ticketJwksUrl = optional(environment.REMOTE_TICKET_JWKS_URL);
+export function readRemoteApiConfig(environment: EnvironmentRecord = process.env): RemoteApiConfig {
+  const tlsDisabled = readSignalEnv(environment, "REMOTE_TLS_DISABLED", "security-sensitive") === "true";
+  const ticketJwks = optional(
+    resolveCompatEnvGroup(environment, {
+      pokebots: ["POKEBOTS_REMOTE_TICKET_PUBLIC_KEYS", "POKEBOTS_REMOTE_TICKET_PUBLIC_JWKS"],
+      legacy: ["REMOTE_TICKET_PUBLIC_KEYS", "REMOTE_TICKET_PUBLIC_JWKS"],
+      mode: "security-sensitive",
+    }),
+  );
+  const ticketJwksUrl = optional(
+    readSignalEnv(environment, "REMOTE_TICKET_JWKS_URL", "security-sensitive", normalizeEnvUrl),
+  );
   if (!ticketJwks && !ticketJwksUrl)
     throw new Error("REMOTE_TICKET_PUBLIC_KEYS or REMOTE_TICKET_JWKS_URL is required.");
   return {
-    host: environment.REMOTE_SIGNAL_HOST ?? "0.0.0.0",
-    port: positiveInteger(environment.REMOTE_SIGNAL_PORT, tlsDisabled ? 8081 : 8443),
-    healthHost: environment.REMOTE_HEALTH_HOST ?? "127.0.0.1",
-    healthPort: positiveInteger(environment.REMOTE_HEALTH_PORT, 8080),
-    tlsCertificatePath: tlsDisabled ? null : required(environment.REMOTE_TLS_CERT_PATH, "REMOTE_TLS_CERT_PATH"),
-    tlsPrivateKeyPath: tlsDisabled ? null : required(environment.REMOTE_TLS_KEY_PATH, "REMOTE_TLS_KEY_PATH"),
+    host: readSignalEnv(environment, "REMOTE_SIGNAL_HOST", "safe") ?? "0.0.0.0",
+    port: positiveInteger(readSignalEnv(environment, "REMOTE_SIGNAL_PORT", "safe"), tlsDisabled ? 8081 : 8443),
+    healthHost: readSignalEnv(environment, "REMOTE_HEALTH_HOST", "safe") ?? "127.0.0.1",
+    healthPort: positiveInteger(readSignalEnv(environment, "REMOTE_HEALTH_PORT", "safe"), 8080),
+    tlsCertificatePath: tlsDisabled
+      ? null
+      : required(readSignalEnv(environment, "REMOTE_TLS_CERT_PATH", "security-sensitive"), "REMOTE_TLS_CERT_PATH"),
+    tlsPrivateKeyPath: tlsDisabled
+      ? null
+      : required(readSignalEnv(environment, "REMOTE_TLS_KEY_PATH", "security-sensitive"), "REMOTE_TLS_KEY_PATH"),
     ticketJwks,
     ticketJwksUrl,
-    controlPlaneUrl: required(environment.REMOTE_CONTROL_PLANE_URL, "REMOTE_CONTROL_PLANE_URL"),
-    sessionSecret: strongSecret(environment.REMOTE_SESSION_SECRET, "REMOTE_SESSION_SECRET"),
-    authWebhookSecret: strongSecret(environment.REMOTE_AUTH_WEBHOOK_SECRET, "REMOTE_AUTH_WEBHOOK_SECRET"),
-    turnSecret: strongSecret(environment.TURN_SHARED_SECRET, "TURN_SHARED_SECRET"),
-    turnHosts: readTurnHosts(required(environment.TURN_HOST, "TURN_HOST"), environment.TURN_EXTRA_HOSTS),
-    turnPort: positiveInteger(environment.TURN_PORT, 3478),
-    turnTlsPort: positiveInteger(environment.TURN_TLS_PORT, 5349),
-    metricsToken: optional(environment.REMOTE_METRICS_TOKEN),
-    maximumConnectionsPerUser: positiveInteger(environment.REMOTE_MAX_CONNECTIONS_PER_USER, 32),
-    maximumConnectionsPerIp: positiveInteger(environment.REMOTE_MAX_CONNECTIONS_PER_IP, 32),
-    maximumMessagesPerMinute: positiveInteger(environment.REMOTE_MAX_MESSAGES_PER_MINUTE, 600),
-    trustProxy: environment.REMOTE_TRUST_PROXY === "true",
-    sourceCommit: optional(environment.OPENBOT_SOURCE_COMMIT) ?? "unknown",
-    slackSigningSecrets: readSlackSigningSecrets(environment.SLACK_SIGNING_SECRET),
-    githubWebhookSecret: readGitHubWebhookSecret(environment.GITHUB_WEBHOOK_SECRET),
+    controlPlaneUrl: required(
+      readSignalEnv(environment, "REMOTE_CONTROL_PLANE_URL", "security-sensitive", normalizeEnvUrl),
+      "REMOTE_CONTROL_PLANE_URL",
+    ),
+    sessionSecret: strongSecret(
+      readSignalEnv(environment, "REMOTE_SESSION_SECRET", "security-sensitive"),
+      "REMOTE_SESSION_SECRET",
+    ),
+    authWebhookSecret: strongSecret(
+      readSignalEnv(environment, "REMOTE_AUTH_WEBHOOK_SECRET", "security-sensitive"),
+      "REMOTE_AUTH_WEBHOOK_SECRET",
+    ),
+    turnSecret: strongSecret(
+      readSignalEnv(environment, "TURN_SHARED_SECRET", "security-sensitive"),
+      "TURN_SHARED_SECRET",
+    ),
+    turnHosts: readTurnHosts(
+      required(readSignalEnv(environment, "TURN_HOST", "security-sensitive", normalizeEnvLowercase), "TURN_HOST"),
+      readSignalEnv(environment, "TURN_EXTRA_HOSTS", "security-sensitive", normalizeEnvLowercase),
+    ),
+    turnPort: positiveInteger(readSignalEnv(environment, "TURN_PORT", "safe"), 3478),
+    turnTlsPort: positiveInteger(readSignalEnv(environment, "TURN_TLS_PORT", "safe"), 5349),
+    metricsToken: optional(readSignalEnv(environment, "REMOTE_METRICS_TOKEN", "security-sensitive")),
+    maximumConnectionsPerUser: positiveInteger(
+      readSignalEnv(environment, "REMOTE_MAX_CONNECTIONS_PER_USER", "safe"),
+      32,
+    ),
+    maximumConnectionsPerIp: positiveInteger(readSignalEnv(environment, "REMOTE_MAX_CONNECTIONS_PER_IP", "safe"), 32),
+    maximumMessagesPerMinute: positiveInteger(
+      readSignalEnv(environment, "REMOTE_MAX_MESSAGES_PER_MINUTE", "safe"),
+      600,
+    ),
+    trustProxy: readSignalEnv(environment, "REMOTE_TRUST_PROXY", "security-sensitive") === "true",
+    sourceCommit: optional(resolveCompatEnv(environment, SOURCE_COMMIT_ENV)) ?? "unknown",
+    slackSigningSecrets: readSlackSigningSecrets(
+      readSignalEnv(environment, "SLACK_SIGNING_SECRET", "security-sensitive"),
+    ),
+    githubWebhookSecret: readGitHubWebhookSecret(
+      readSignalEnv(environment, "GITHUB_WEBHOOK_SECRET", "security-sensitive"),
+    ),
     telegram: readTelegramConfig(environment),
     discord: readDiscordBot(
-      environment.DISCORD_BOT_TOKEN,
-      environment.DISCORD_APPLICATION_ID,
-      environment.DISCORD_MESSAGE_CONTENT,
+      readSignalEnv(environment, "DISCORD_BOT_TOKEN", "security-sensitive"),
+      readSignalEnv(environment, "DISCORD_APPLICATION_ID", "security-sensitive"),
+      readSignalEnv(environment, "DISCORD_MESSAGE_CONTENT", "security-sensitive"),
     ),
-    signalId: readSignalId(environment.SIGNAL_ID),
+    signalId: readSignalId(readSignalEnv(environment, "SIGNAL_ID", "security-sensitive")),
     entry: readEntryConfig(environment),
   };
 }
@@ -226,21 +290,25 @@ const IPV4_PATTERN =
   /^(?:(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])\.){3}(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])$/u;
 
 /** `SIGNAL_ENTRY_HOST` and `SIGNAL_PUBLIC_IPV4` turn on the entry rule together. One without the other stops the start. */
-function readEntryConfig(environment: Record<string, string | undefined>): SignalEntryConfig | null {
-  const host = optional(environment.SIGNAL_ENTRY_HOST)?.toLowerCase() ?? null;
-  const publicIpv4 = optional(environment.SIGNAL_PUBLIC_IPV4);
+function readEntryConfig(environment: EnvironmentRecord): SignalEntryConfig | null {
+  const host =
+    optional(
+      readSignalEnv(environment, "SIGNAL_ENTRY_HOST", "security-sensitive", normalizeEnvLowercase),
+    )?.toLowerCase() ?? null;
+  const publicIpv4 = optional(readSignalEnv(environment, "SIGNAL_PUBLIC_IPV4", "security-sensitive"));
   if (!host && !publicIpv4) return null;
   if (!host || !publicIpv4) throw new Error("SIGNAL_ENTRY_HOST and SIGNAL_PUBLIC_IPV4 must be set together.");
   if (!TURN_HOST_PATTERN.test(host) || IPV4_PATTERN.test(host))
     throw new Error("SIGNAL_ENTRY_HOST must be a DNS name.");
   if (!IPV4_PATTERN.test(publicIpv4)) throw new Error("SIGNAL_PUBLIC_IPV4 must be an IPv4 address.");
-  const dnsServer = optional(environment.SIGNAL_ENTRY_TEST_DNS_SERVER);
+  const dnsServer = optional(readSignalEnv(environment, "SIGNAL_ENTRY_TEST_DNS_SERVER", "safe"));
   if (dnsServer && !/^[0-9.]+:[0-9]{1,5}$/u.test(dnsServer))
     throw new Error("SIGNAL_ENTRY_TEST_DNS_SERVER must be <IPv4>:<port>.");
   return {
     host,
     publicIpv4,
-    checkIntervalMilliseconds: positiveInteger(environment.SIGNAL_ENTRY_TEST_CHECK_SECONDS, 30) * 1_000,
+    checkIntervalMilliseconds:
+      positiveInteger(readSignalEnv(environment, "SIGNAL_ENTRY_TEST_CHECK_SECONDS", "safe"), 30) * 1_000,
     dnsServer,
   };
 }

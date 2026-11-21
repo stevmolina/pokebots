@@ -2,9 +2,14 @@
 // uses it. The services of the app and the server safe mode (`server-safe-mode.ts`) make the account
 // manager in the same way, so both read the same session file and the same host credentials.
 import { join } from "node:path";
+import type { EnvironmentRecord } from "@openbot/contracts/pokebots-env";
 import { sourceText } from "@openbot/i18n/source";
 import { app, net } from "electron";
-import { CentralAuthManager, readCentralAuthApiUrl, readMobileConnectApiUrl } from "./central-auth-manager";
+import {
+  CentralAuthManager,
+  readCentralAuthApiUrlFromEnv,
+  readMobileConnectApiUrlFromEnv,
+} from "./central-auth-manager";
 import type { CompanySignInBrowser } from "./company-sign-in-browser";
 import {
   createSecretStorage,
@@ -58,9 +63,9 @@ export async function accountServiceFetch(input: string | URL | Request, init?: 
 }
 
 /** The account service address: the released one, or the local one in development. */
-export function centralAuthApiUrl(): string {
-  return readCentralAuthApiUrl(
-    process.env.OPENBOT_AUTH_API_URL,
+export function centralAuthApiUrl(environment: EnvironmentRecord = process.env): string {
+  return readCentralAuthApiUrlFromEnv(
+    environment,
     app.isPackaged ? "https://api.openbot.run" : "http://127.0.0.1:3100",
   );
 }
@@ -74,7 +79,7 @@ export function createCentralAuthManager(options: {
   const apiUrl = centralAuthApiUrl();
   return new CentralAuthManager({
     apiUrl,
-    mobileConnectApiUrl: readMobileConnectApiUrl(process.env.OPENBOT_MOBILE_AUTH_API_URL, apiUrl),
+    mobileConnectApiUrl: readMobileConnectApiUrlFromEnv(process.env, apiUrl),
     storagePath: join(app.getPath("userData"), CENTRAL_AUTH_FILE),
     fetch: accountServiceFetch,
     ...safeStorageCipher("error.app.macSecureStorageUnavailable"),

@@ -1,4 +1,6 @@
-const MOBILE_CONNECT_PROTOCOL = "openbot:";
+import { isSupportedDeepLinkProtocol, OPENBOT_DEEP_LINK_PROTOCOL } from "./deep-link-schemes";
+
+const MOBILE_CONNECT_PROTOCOL = OPENBOT_DEEP_LINK_PROTOCOL;
 const MOBILE_CONNECT_HOST = "mobile-connect";
 
 export interface MobileConnectHostBinding {
@@ -96,8 +98,11 @@ export function parseMobileConnectUrl(value: string): MobileConnectPayload | nul
   try {
     const url = new URL(value);
     if (
-      url.protocol !== MOBILE_CONNECT_PROTOCOL ||
+      !isSupportedDeepLinkProtocol(url.protocol) ||
       url.hostname !== MOBILE_CONNECT_HOST ||
+      url.username !== "" ||
+      url.password !== "" ||
+      url.port !== "" ||
       (url.pathname !== "" && url.pathname !== "/") ||
       url.hash !== "" ||
       [...url.searchParams.keys()].some(

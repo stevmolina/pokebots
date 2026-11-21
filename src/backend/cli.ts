@@ -5,6 +5,7 @@ import { homedir } from "node:os";
 import { basename, delimiter, dirname, extname, isAbsolute, join, posix, resolve, win32 } from "node:path";
 import { promisify, stripVTControlCharacters } from "node:util";
 import { type AgentProviderId, agentProviderName } from "@openbot/contracts/ipc";
+import { pairedOpenBotEnv, resolveCompatEnv } from "@openbot/contracts/pokebots-env";
 import { isDynamicRecord } from "@openbot/contracts/runtime-values";
 import { sourceText } from "@openbot/i18n/source";
 import { Deferred, Effect, Result } from "effect";
@@ -1044,7 +1045,7 @@ function cliCommandName(provider: AgentProviderId): string {
 
 /** An explicit path remains under the user's control, including during managed updates. */
 export function configuredCliPath(provider: AgentProviderId): string | null {
-  return process.env[`OPENBOT_${provider.toUpperCase()}_PATH`]?.trim() || null;
+  return resolveCompatEnv(process.env, pairedOpenBotEnv(`${provider.toUpperCase()}_PATH`, "safe")) ?? null;
 }
 
 const cliCandidates = Effect.fn("Cli.candidates")(function* (

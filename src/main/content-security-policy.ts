@@ -1,4 +1,10 @@
 import { isMobileConnectDevelopmentHost } from "@openbot/contracts/mobile-connect";
+import {
+  AUTH_API_URL_ENV,
+  type EnvironmentRecord,
+  REMOTE_SIGNAL_URL_ENV,
+  resolveCompatEnv,
+} from "@openbot/contracts/pokebots-env";
 
 export function buildContentSecurityPolicy(
   packaged: boolean,
@@ -30,8 +36,8 @@ export function buildContentSecurityPolicy(
 
 /**
  * The Signal origin of a self-hosted Account API. The Worker still chooses the URL in each ticket;
- * this only lets the peer window open it. It needs `OPENBOT_AUTH_API_URL`, because our Worker never
- * issues a ticket for another Signal.
+ * this only lets the peer window open it. It needs `OPENBOT_AUTH_API_URL` (or `POKEBOTS_AUTH_API_URL`),
+ * because our Worker never issues a ticket for another Signal.
  */
 export function readSelfHostedSignalOrigin(
   authApiUrl: string | undefined,
@@ -44,6 +50,14 @@ export function readSelfHostedSignalOrigin(
     throw new Error("OPENBOT_REMOTE_SIGNAL_URL must be a wss: URL without credentials.");
   }
   return url.origin;
+}
+
+/** Reads `POKEBOTS_*` / `OPENBOT_*` auth API and self-hosted Signal URLs and rejects contradictions. */
+export function readSelfHostedSignalOriginFromEnv(environment: EnvironmentRecord = process.env): string | null {
+  return readSelfHostedSignalOrigin(
+    resolveCompatEnv(environment, AUTH_API_URL_ENV),
+    resolveCompatEnv(environment, REMOTE_SIGNAL_URL_ENV),
+  );
 }
 
 function developmentSignalSource(value: string | undefined): string {

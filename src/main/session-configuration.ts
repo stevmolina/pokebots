@@ -22,7 +22,7 @@ import type { MailboxStore } from "../backend/mailbox-store";
 import { applicationContentType } from "./application-content-type";
 import { attachmentCorsHeaders, attachmentDocumentHeaders, chatVisualResponse } from "./chat-visual-protocol";
 import { inlineContentDisposition } from "./content-disposition";
-import { buildContentSecurityPolicy, readSelfHostedSignalOrigin } from "./content-security-policy";
+import { buildContentSecurityPolicy, readSelfHostedSignalOriginFromEnv } from "./content-security-policy";
 import { filePreviewPages } from "./file-preview-pages";
 import { bytesResponse, fileResponse } from "./file-response";
 import { canAnswerRemoteRanges } from "./remote-attachment-cache";
@@ -36,7 +36,7 @@ export function configureContentSecurityPolicy(): void {
   const policy = buildContentSecurityPolicy(
     app.isPackaged,
     process.env.REMOTE_SIGNAL_URL,
-    readSelfHostedSignalOrigin(process.env.OPENBOT_AUTH_API_URL, process.env.OPENBOT_REMOTE_SIGNAL_URL),
+    readSelfHostedSignalOriginFromEnv(process.env),
   );
 
   session.defaultSession.webRequest.onHeadersReceived((details, callback) => {

@@ -3,14 +3,19 @@
 
 import { execFileSync } from "node:child_process";
 import { COMPUTER_USE_MCP_SERVER_ID, COMPUTER_USE_MCP_SERVER_NAME, type McpServerConfig } from "@openbot/contracts/ipc";
+import { AGENT_DISPLAY_ENV, AGENT_SCREEN_BIN_ENV, resolveCompatEnv, SERVER_ENV } from "@openbot/contracts/pokebots-env";
 
 /** A server whose agents do not share one display. A hosted desktop that sets `OPENBOT_AGENT_DISPLAY` stays shared. */
 export function perAgentScreensEnabled(env: NodeJS.ProcessEnv = process.env): boolean {
-  return env.OPENBOT_SERVER === "1" && !env.OPENBOT_AGENT_DISPLAY && Boolean(env.OPENBOT_AGENT_SCREEN_BIN);
+  return (
+    resolveCompatEnv(env, SERVER_ENV) === "1" &&
+    !resolveCompatEnv(env, AGENT_DISPLAY_ENV) &&
+    Boolean(resolveCompatEnv(env, AGENT_SCREEN_BIN_ENV))
+  );
 }
 
 function screenBin(env: NodeJS.ProcessEnv): string | null {
-  return perAgentScreensEnabled(env) ? (env.OPENBOT_AGENT_SCREEN_BIN ?? null) : null;
+  return perAgentScreensEnabled(env) ? (resolveCompatEnv(env, AGENT_SCREEN_BIN_ENV) ?? null) : null;
 }
 
 function runScreen(args: string[], env: NodeJS.ProcessEnv): string | null {
@@ -47,6 +52,9 @@ export function agentScreenMcpServer(agentId: string, env: NodeJS.ProcessEnv = p
       "HOME",
       "PATH",
       "XDG_RUNTIME_DIR",
+      "POKEBOTS_AGENT_SCREEN_STATE",
+      "POKEBOTS_AGENT_SCREEN_RUNTIME",
+      "POKEBOTS_DISPLAY_SIZE",
       "OPENBOT_AGENT_SCREEN_STATE",
       "OPENBOT_AGENT_SCREEN_RUNTIME",
       "OPENBOT_DISPLAY_SIZE",

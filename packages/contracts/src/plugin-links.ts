@@ -20,6 +20,8 @@
  * rule becomes weaker.
  */
 
+import { isSupportedDeepLinkProtocol } from "./deep-link-schemes";
+
 export const OPENBOT_PLUGIN_ORIGIN = "https://openbot.run";
 export const OPENBOT_PLUGIN_PATH_PREFIX = "/plugins/";
 export const OPENBOT_PLUGIN_HOST = "plugins";
@@ -94,7 +96,7 @@ export function parsePluginUrl(value: string): string {
     url.protocol === "https:" &&
     url.origin === OPENBOT_PLUGIN_ORIGIN &&
     url.pathname.startsWith(OPENBOT_PLUGIN_PATH_PREFIX);
-  const customScheme = url.protocol === "openbot:" && url.hostname === OPENBOT_PLUGIN_HOST;
+  const customScheme = isSupportedDeepLinkProtocol(url.protocol) && url.hostname === OPENBOT_PLUGIN_HOST;
   if (
     (!canonical && !customScheme) ||
     url.username !== "" ||

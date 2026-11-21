@@ -355,6 +355,8 @@
     "./team-protocol/v10": "./src/team-protocol/v10.ts",
     "./team-protocol/v10-webrtc-adapter": "./src/team-protocol/v10-webrtc-adapter.ts",
     "./rooms": "./src/rooms.ts",
+    "./deep-link-schemes": "./src/deep-link-schemes.ts",
+    "./pokebots-env": "./src/pokebots-env.ts",
     "./team-protocol/pokebots-integrations-v1": "./src/team-protocol/pokebots-integrations-v1.ts",
     "./team-protocol/rooms-v1": "./src/team-protocol/rooms-v1.ts",
     "./brain": "./src/brain.ts"

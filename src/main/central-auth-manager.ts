@@ -31,6 +31,12 @@ import {
   type MobileConnectHostBinding,
 } from "@openbot/contracts/mobile-connect";
 import {
+  AUTH_API_URL_ENV,
+  type EnvironmentRecord,
+  MOBILE_AUTH_API_URL_ENV,
+  resolveCompatEnv,
+} from "@openbot/contracts/pokebots-env";
+import {
   decodeRemoteSession,
   decodeRemoteSessionTicket,
   type RemoteSession,
@@ -2707,10 +2713,24 @@ export function readCentralAuthApiUrl(value: string | undefined, fallback = "htt
   return url.origin;
 }
 
+export function readCentralAuthApiUrlFromEnv(
+  environment: EnvironmentRecord = process.env,
+  fallback = "http://127.0.0.1:3100",
+): string {
+  return readCentralAuthApiUrl(resolveCompatEnv(environment, AUTH_API_URL_ENV), fallback);
+}
+
 export function readMobileConnectApiUrl(value: string | undefined, fallback: string): string {
   const apiUrl = value ?? fallback;
   createMobileConnectUrl({ apiUrl, ticket: "x".repeat(32) });
   return new URL(apiUrl).origin;
+}
+
+export function readMobileConnectApiUrlFromEnv(
+  environment: EnvironmentRecord = process.env,
+  fallback = "http://127.0.0.1:3100",
+): string {
+  return readMobileConnectApiUrl(resolveCompatEnv(environment, MOBILE_AUTH_API_URL_ENV), fallback);
 }
 
 /**

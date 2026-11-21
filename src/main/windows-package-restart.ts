@@ -13,6 +13,7 @@
  */
 import { spawn } from "node:child_process";
 import { join } from "node:path";
+import { hasSupportedDeepLinkScheme } from "@openbot/contracts/deep-link-schemes";
 import { Effect } from "effect";
 
 /** Set on the new start. When the shell could not take the start, the new process does not start again. */
@@ -34,7 +35,8 @@ export const restartOutsideWindowsPackage = Effect.fn("restartOutsideWindowsPack
   if (process.platform !== "win32" || !process.windowsStore || restarted) return false;
   const [link, ...rest] = argv.slice(1);
   // The shell opens a web link in the browser, not in OpenBot, and explorer.exe splits its argument at a comma.
-  const shellOpensInOpenBot = (value: string) => /^openbot:/i.test(value) && !value.includes(",") && isLink(value);
+  const shellOpensInOpenBot = (value: string) =>
+    hasSupportedDeepLinkScheme(value) && !value.includes(",") && isLink(value);
   if (rest.length > 0 || (link !== undefined && !shellOpensInOpenBot(link))) return false;
   const target = link ?? process.execPath;
   const explorer = join(environment.SystemRoot ?? environment.windir ?? "C:\\Windows", "explorer.exe");

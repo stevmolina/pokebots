@@ -20,6 +20,7 @@
  */
 
 import { parseAgentTemplateUrl } from "@openbot/contracts/agent-template-links";
+import { isSupportedDeepLinkProtocol } from "@openbot/contracts/deep-link-schemes";
 import { type InviteLinkOptions, parseInviteUrl } from "@openbot/contracts/invite-links";
 import { type MarketplaceListingLink, parseMarketplaceUrl } from "@openbot/contracts/marketplace-links";
 import { parsePluginUrl } from "@openbot/contracts/plugin-links";
@@ -76,11 +77,21 @@ export function parseDeepLink(value: string, options: InviteLinkOptions = {}): D
   return parseMcpAuthUrl(value) ?? parseSlackUrl(value);
 }
 
+function isValidCallbackDeepLinkUrl(url: URL): boolean {
+  return (
+    isSupportedDeepLinkProtocol(url.protocol) &&
+    url.username === "" &&
+    url.password === "" &&
+    url.port === "" &&
+    (url.pathname === "" || url.pathname === "/")
+  );
+}
+
 /**
  * The return leg of the Slack install, from the page at `/slack/connect`:
- * `openbot://slack-workspace?nonce=…&grant=…`, and of the Discord install, from `/discord/connect`:
- * `openbot://discord-guild?nonce=…&grant=…`. As with `mcp-auth`, the waiting sign-in checks
- * `nonce`, so a link this run did not start does nothing.
+ * `openbot://slack-workspace?nonce=…&grant=…` (or `pokebots://…`), and of the Discord install,
+ * from `/discord/connect`: `openbot://discord-guild?nonce=…&grant=…` (or `pokebots://…`). As with
+ * `mcp-auth`, the waiting sign-in checks `nonce`, so a link this run did not start does nothing.
  */
 function parseSlackUrl(value: string): DeepLink | null {
   let url: URL;
@@ -89,7 +100,7 @@ function parseSlackUrl(value: string): DeepLink | null {
   } catch {
     return null;
   }
-  if (url.protocol !== "openbot:") return null;
+  if (!isValidCallbackDeepLinkUrl(url)) return null;
   if (url.hostname === SLACK_WORKSPACE_HOST) {
     const nonce = url.searchParams.get("nonce");
     const grant = url.searchParams.get("grant");
@@ -104,7 +115,7 @@ function parseSlackUrl(value: string): DeepLink | null {
 }
 
 /**
- * The return leg of an MCP sign-in: `openbot://mcp-auth?code=…&state=…`.
+ * The return leg of an MCP sign-in: `openbot://mcp-auth?code=…&state=…` (or `pokebots://…`).
  *
  * Both halves are required and neither is inspected here. `state` is what the waiting sign-in is
  * keyed by, so a link this run did not start finds nothing and does nothing - which is the check
@@ -119,7 +130,7 @@ function parseMcpAuthUrl(value: string): DeepLink | null {
   } catch {
     return null;
   }
-  if (url.protocol !== "openbot:" || url.hostname !== MCP_OAUTH_HOST) return null;
+  if (!isValidCallbackDeepLinkUrl(url) || url.hostname !== MCP_OAUTH_HOST) return null;
   const code = url.searchParams.get("code");
   const state = url.searchParams.get("state");
   if (!code || !state) return null;
