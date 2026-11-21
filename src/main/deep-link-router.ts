@@ -1,5 +1,6 @@
 /**
- * What an `openbot://` or `https://openbot.run/...` link means.
+ * Classifies incoming app and website links. Invite and listing parsers also accept
+ * `pokebots://` links when a caller passes them here. Sign-in callbacks use their registered address.
  *
  * The scheme carries more than one kind of link now, so the decision of which kind a URL is has one
  * home rather than one `try` per entry point. `src/main/index.ts` has four ways a link arrives -
