@@ -99,7 +99,7 @@ jobs:
           lane api '^(apps/(auth-api|site-router)|src/renderer|resources)/|^(apps/mobile/)?CHANGELOG\.md$'
           lane remote '^(remote|scripts)/'
           lane storybook '^(src|apps/(auth-api|status)|\.storybook|resources|marketplace|build)/'
-          lane schema '^(src/backend/|scripts/released-schema-fixtures\.ts$)'
+          lane schema '^(src/backend/|scripts/(released-schema-fixtures\.ts|released-migration-sources\.json)$)'
           lane surfaces '^(apps/(mobile|mobile-updates|site-router|status)|remote|scripts)/'
           cat "$GITHUB_OUTPUT"
 
@@ -142,23 +142,17 @@ jobs:
         if: env.CODE == 'true'
         run: bun run check:desktop:static
 
-      # Not in the parallel group: it fetches a release tag into the shallow clone, and a parallel
-      # `git fetch` (released database schemas) then fails on `.git/shallow.lock`.
-      - name: Check frozen migrations
-        if: env.CODE == 'true' && github.repository != 'stevmolina/pokebots'
-        run: bun run check:migrations
-
-      - name: Check frozen Pokebots migrations
-        if: env.CODE == 'true' && github.repository == 'stevmolina/pokebots'
+      - name: Get migration release history
+        if: env.CODE == 'true'
         run: |
-          release_tags=$(git ls-remote --tags --refs origin 'v*')
-          if grep -Eq 'refs/tags/v[0-9]+\.[0-9]+\.[0-9]+$' <<< "$release_tags"; then
-            bun run check:migrations
-          else
-            # Pokebots has no release tags. Check the upstream release included in the fork.
-            git fetch --no-tags --depth=1 https://github.com/nightly-labs/openbot.git refs/tags/v0.73.0:refs/tags/v0.73.0
-            bun scripts/check-frozen-migrations.ts --tag v0.73.0
+          if [[ $(git rev-parse --is-shallow-repository) == true ]]; then
+            git fetch --unshallow --no-tags origin
           fi
+          git fetch --no-tags origin 'refs/tags/v*:refs/tags/v*'
+
+      - name: Check frozen migrations
+        if: env.CODE == 'true'
+        run: bun run check:migrations
 
       - parallel:
           - name: Check translation catalogs
@@ -183,12 +177,10 @@ jobs:
 
           # Fails after a release that changed the database schema until `releases.json` has it. It
           # takes about 50 s, so it runs only when the database code changes: a new migration must be
-          # tested from every released schema. `git archive` needs only the tag commits.
+          # tested from every released schema. The history step gets the commits for `git archive`.
           - name: Check released database schemas
             if: needs.detect.result != 'success' || needs.detect.outputs.schema == 'true'
-            run: |
-              git fetch --no-tags --depth=1 origin '+refs/tags/v*:refs/tags/v*'
-              bun scripts/released-schema-fixtures.ts --check
+            run: bun scripts/released-schema-fixtures.ts --check
 
   browser:
     # The smoke test starts the real Electron binary and opens windows, so it

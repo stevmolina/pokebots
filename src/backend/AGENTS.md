@@ -27,7 +27,9 @@ of something remote — which is what makes the first section below non-negotiab
 
 Each migration is one file in `migrations/`: `<4-digit version>-<name>.ts`, which exports
 `migration` with the same `version` and `name`. `migrations/registry.ts` lists them in order.
-`bun run check:migrations` (CI job Check) compares the folder with the newest `v*` release tag:
+`bun run check:migrations` (CI job Check) compares the folder with the pinned release commits and
+each stable `vMAJOR.MINOR.PATCH` tag. CI fetches history and tags from the Pokebots repository.
+Keep the pinned commits and published release tags available at their original revisions.
 
 - A file that the tag has must not change, move or go away. `registry.ts` and the `migration.ts`
   type are the only exceptions. This includes helpers in a migration file and `runtime-values.ts`.
@@ -62,7 +64,7 @@ table, and the test checks that each row is kept or changed as the migration say
 `integrity_check`, `foreign_key_check` and the full-text index are clean, that the schema is the same as
 a new install's, and that a second start changes nothing.
 
-- The released schemas come from the release tags, not from this build:
+- The released schemas come from pinned release commits and release tags:
   `released-schemas/releases.json`. A release that does not change the schema does not change the
   file. After a release that does, the `Check` job of CI fails (`--check`) until you run
   `bun scripts/released-schema-fixtures.ts`. Do not edit the file by hand.

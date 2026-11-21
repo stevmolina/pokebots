@@ -403,13 +403,13 @@ CI runs it in the `check` job.
 
 ### Frozen migrations
 
-`bun run check:migrations` compares `src/backend/migrations/` with the newest `v*` tag on origin.
-CI checks out one commit and no tags, so the script fetches only that tag commit (`--depth=1`).
-`--tag <tag>` compares with another tag. When the Pokebots fork has no release tags, CI uses
-the upstream v0.73.0 release included in the fork. The rules and the fix for a released bug are in
-[src/backend/AGENTS.md](../src/backend/AGENTS.md#frozen-migrations); the rule fixtures are in
-`scripts/check-frozen-migrations.test.ts`. A tag from before the folder (v0.72.0 and earlier) has
-no frozen files, so only the rules on the current folder apply.
+`bun run check:migrations` compares `src/backend/migrations/` with the pinned commits in
+`scripts/released-migration-sources.json` and each local stable `vMAJOR.MINOR.PATCH` tag. CI fetches
+the history and tags from Pokebots origin before the check. `--tag <tag>` adds one local release ref
+to the comparison. Commits from before the migration folder contribute no frozen files.
+
+The [database instructions](../src/backend/AGENTS.md#frozen-migrations) describe the rules and how to
+fix a released migration. The rule fixtures are in `scripts/check-frozen-migrations.test.ts`.
 
 ### Plugin cost
 

@@ -891,6 +891,11 @@
         ]
       },
       "upgraded": { "migrations": [[0, 59], 64, 65], "objects": [[0, 192], "3245c20ac0b2fc8b"] }
+    },
+    {
+      "tag": "pokebots-bc41a1d1d",
+      "newInstall": { "migrations": [[0, 58]], "objects": [[0, 193]] },
+      "upgraded": { "migrations": [[0, 61]], "objects": [[0, 193]] }
     }
   ],
   "statements": {
