@@ -1,12 +1,12 @@
 const { cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } = require("node:fs");
-const { join, resolve } = require("node:path");
+const { join } = require("node:path");
 const { IOSConfig, withAndroidManifest, withDangerousMod, withXcodeProject } = require("expo/config-plugins");
 
 // The app icons that the user can select in Settings > Appearance > App icon (`modules/app-icon`).
 // They are the logo colors of the desktop app (`packages/contracts/src/app-logo-color.ts`): the body
 // color with the released eyes. The default color is the main icon of `app.json`.
 //
-// iOS: each other color is a copy of the main Icon Composer file (`ios.icon`) with that body color.
+// iOS: each other color is a copy of the OpenBot Icon Composer file with that body color.
 // In dark mode the icon keeps the dark body of the main icon, and the eyes take the color. Xcode
 // compiles each file named in `ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES`, and
 // `UIApplication.setAlternateIconName` selects it.
@@ -30,7 +30,7 @@ const pascal = (id) => id.charAt(0).toUpperCase() + id.slice(1);
 /** @param {string} id */
 const iosIconName = (id) => `AppIcon${pascal(id)}`;
 
-/** The colors other than the main icon, in the order of the desktop picker. */
+/** The colors other than the default color, in the order of the desktop picker. */
 function alternateColors() {
   return APP_LOGO_COLORS.filter((color) => color !== DEFAULT_APP_LOGO_COLOR).map((id) => {
     if (!/^[a-z][a-z0-9]*$/.test(id)) throw new Error(`with-app-icons: bad color id "${id}"`);
@@ -78,11 +78,7 @@ const withIosAppIcons = (config) => {
     "ios",
     (config) => {
       const { projectRoot, platformProjectRoot, projectName } = config.modRequest;
-      const mainIcon = config.ios?.icon;
-      if (typeof mainIcon !== "string" || !mainIcon.endsWith(".icon")) {
-        throw new Error("with-app-icons: ios.icon must be an Icon Composer file");
-      }
-      const source = resolve(projectRoot, mainIcon);
+      const source = join(projectRoot, "assets/icons/app-icon.icon");
       const main = JSON.parse(readFileSync(join(source, "icon.json"), "utf8"));
       for (const { id, hex } of alternateColors()) {
         const target = join(platformProjectRoot, projectName, `${iosIconName(id)}.icon`);

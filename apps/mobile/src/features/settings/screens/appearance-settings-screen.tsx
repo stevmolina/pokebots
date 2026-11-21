@@ -45,7 +45,7 @@ import {
 import { saveTextSize, useTextSize } from "@/features/settings/model/text-size";
 import { saveFullVisualPreference, useFullVisualPreference } from "@/features/settings/model/visual-preview";
 import { PauseSlider } from "@/features/voice/components/pause-slider";
-import { APP_BRAND } from "@/shared/lib/app-brand";
+import { IS_POKEBOTS_PERSONAL_BUILD } from "@/shared/lib/app-brand";
 import { haptics } from "@/shared/lib/haptics";
 import { useText } from "@/shared/lib/text";
 
@@ -97,7 +97,7 @@ export function AppearanceSettingsScreen() {
           {DESIGN_PREVIEW_ALLOWED ? <CalmLookSection dark={dark} /> : null}
           <TextSizeSection />
           {/* The Pokebots build has one icon: the other icons are the OpenBot logo colors. */}
-          {APP_BRAND === "pokebots" ? null : <AppIconSection />}
+          {IS_POKEBOTS_PERSONAL_BUILD ? null : <AppIconSection />}
         </>
       ) : null}
       {tab === "colors" ? (

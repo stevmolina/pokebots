@@ -2,22 +2,15 @@ import { POKEBOTS_HUE_COLORS } from "@pokebots/brand/pokebots-avatar";
 import Constants from "expo-constants";
 import { Uniwind } from "uniwind";
 
-/*
- * The Pokebots look of Steven's personal iPhone build. `app.config.js` sets `extra.brand` to
- * "pokebots" only for that build (`scripts/mobile-ios-personal.ts`), so the store build reads null and
- * keeps the OpenBot look. All of the fork's brand choices for the phone app are in this module, so the
- * daily upstream merge touches only the few lines that call it.
- */
+const extra = Constants.expoConfig?.extra;
 
-export const APP_BRAND: "pokebots" | null = Constants.expoConfig?.extra?.brand === "pokebots" ? "pokebots" : null;
+export const APP_BRAND: "pokebots" | null = extra?.brand === "pokebots" ? "pokebots" : null;
 
-/**
- * The account service where the Pokebots build signs in by email or WorkOS: the same one as the
- * Pokebots desktop app (`scripts/custom-build-install.sh`). It has WorkOS on, so the sign-in screen
- * offers WorkOS. After sign-in the app keeps the service of the session, as for a QR code sign-in.
- * The store build returns null and keeps the OpenBot service.
- */
-export const BRAND_ACCOUNT_API_URL: string | null = APP_BRAND === "pokebots" ? "https://api.pokebots.xyz" : null;
+// Older personal manifests have the brand but no build profile flag.
+export const IS_POKEBOTS_PERSONAL_BUILD = APP_BRAND === "pokebots" && extra?.personalBuild !== false;
+
+// Keep each build's account service until the A3 sign-in checks pass.
+export const BRAND_ACCOUNT_API_URL: string | null = IS_POKEBOTS_PERSONAL_BUILD ? "https://api.pokebots.xyz" : null;
 
 /** The Pokebots colors of the phone app: the brand blue for buttons, a light blue for the big block. */
 export const POKEBOTS_BRAND = {
