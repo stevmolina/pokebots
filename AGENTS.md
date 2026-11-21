@@ -337,6 +337,18 @@ risks since the last release.
 Read [check design notes](docs/development-checks.md#lint-and-ui-rules) when changing these checks.
 They describe the enforced syntax, fixture behavior, and reasons for removed rules.
 
+## Pokebots releases
+
+Release Pokebots from `stevmolina/pokebots`. Steven Molina owns the release process and tracks
+OpenBot security advisories, dependency advisories, and fixes that Pokebots needs. Take individual
+upstream fixes in reviewed PRs. Keep the existing Git history, license, and notices. Keep automatic
+upstream merges disabled.
+
+Follow [the release guide](docs/RELEASING.md) and the upgrade safety review before a version bump
+or tag. Verify channel and signing ownership before a cutover. Keep installed identities and
+released contracts during the source rename. Require signed upgrade proof and production approval
+before changing an installed identity or migrating user data.
+
 ## After merge: Pokebots app
 
 This repository is Steven's fork: `stevmolina/pokebots` on GitHub, checked out at
@@ -344,20 +356,18 @@ This repository is Steven's fork: `stevmolina/pokebots` on GitHub, checked out a
 app (`/Applications/Pokebots.app`), which `electron-builder.custom.yml` builds. It was
 `OpenBot Custom` before. A launchd job on his Mac updates that app; agents do not.
 
-- The job (`scripts/custom-auto-update.sh`) checks `origin/main` every 5 minutes. On a new commit
-  that changes the app, it builds it, waits until no local agent works (10 minutes at most), quits
-  the app, installs the new build, and opens it. It keeps the 3 newest copies in
-  `~/OpenBot/backups/`, backs up and removes an old `OpenBot Custom.app`, and puts the old app back
-  when the new one does not start.
-- The name Pokebots comes from the brand layer (`scripts/brand-layer.ts`), not from source edits.
-  Keep "OpenBot" in the source, so that the daily upstream merge does not conflict.
+- The job (`scripts/custom-auto-update.sh`) checks `origin/main` every 5 minutes. It builds and stages
+  app changes for approval. After approval, it waits up to 10 minutes for local agents to finish,
+  quits the app, installs the build, and opens it. It keeps the 3 newest backups in
+  `~/OpenBot/backups/` and restores the previous app if the new app fails to start.
+- The current build uses `scripts/brand-layer.ts` during the source rename.
   `scripts/custom-build-install.sh` sets `OPENBOT_BRAND_NAME`, `OPENBOT_BRAND_AUTH_API_URL` and
   `OPENBOT_BRAND_SIGNAL_URL` for the build. When the build warns that the brand layer did not find a
   literal, update `LITERAL_RULES` and run `bun scripts/pokebots-brand-e2e.ts`.
 - Do not build or install the app yourself after a merge, and do not ask Steven to quit it. Builds
   from agent sessions stopped when the session ended, and they raced each other.
-- After a merge, wait for the job instead. `scripts/custom-auto-update-setup.sh --status` shows the
-  installed commit, the status (`building`, `waiting`, `installed`, `build_failed`,
+- After a merge, wait for the job. `scripts/custom-auto-update-setup.sh --status` shows the
+  installed commit, the status (`building`, `ready`, `waiting`, `installed`, `build_failed`,
   `launch_failed`) and the log. A build takes about 5 minutes after the next check.
 - In the report, give the commit of the installed app from `--status`. When the status is
   `build_failed` or `launch_failed`, read the log, fix the cause on `main`, and the next merge
