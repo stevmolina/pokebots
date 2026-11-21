@@ -8,7 +8,7 @@
  * native menu, and the keys of the full browser view (`browser-view-shortcuts.ts`).
  */
 
-import type { AppTextKey } from "@openbot/i18n";
+import type { AppTextKey } from "@pokebots/i18n";
 
 /** The keyboard of the device, never of a remote host. */
 export type ShortcutPlatform = "mac" | "pc";

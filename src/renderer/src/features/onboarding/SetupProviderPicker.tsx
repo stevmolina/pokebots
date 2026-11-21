@@ -13,29 +13,29 @@ import {
   isLocalOnlyProvider,
   type ProviderRuntimeStatus,
   type SaveCustomProviderInput,
-} from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
+} from "@pokebots/contracts/ipc";
+import type { AppTextKey } from "@pokebots/i18n";
 import {
   type ProviderConnection,
   ProviderPicker,
   type ProviderPickerOption,
-} from "@openbot/ui/components/ProviderPicker";
-import { freeModelsReady, servesCustomProvider } from "@openbot/ui/components/provider-row";
+} from "@pokebots/ui/components/ProviderPicker";
+import { freeModelsReady, servesCustomProvider } from "@pokebots/ui/components/provider-row";
 import {
   CustomProviderDialog,
   type CustomProviderHarnessChoice,
-} from "@openbot/ui/features/custom-providers/CustomProviderDialog";
-import { CustomProviderListDialog } from "@openbot/ui/features/custom-providers/CustomProviderListDialog";
-import { DetectedProviders } from "@openbot/ui/features/custom-providers/DetectedProviders";
-import type { DetectedProviderApi, ProviderDetection } from "@openbot/ui/features/custom-providers/detected-providers";
+} from "@pokebots/ui/features/custom-providers/CustomProviderDialog";
+import { CustomProviderListDialog } from "@pokebots/ui/features/custom-providers/CustomProviderListDialog";
+import { DetectedProviders } from "@pokebots/ui/features/custom-providers/DetectedProviders";
+import type { DetectedProviderApi, ProviderDetection } from "@pokebots/ui/features/custom-providers/detected-providers";
 import {
   isKeyDialogProvider,
   type KeyDialogProvider,
   OpenCodeKeyDialog,
   type ProviderKeyApi,
-} from "@openbot/ui/features/settings/OpenCodeKeyDialog";
-import { useText } from "@openbot/ui/text";
-import { errorReference, type UserErrorDetails } from "@openbot/user-errors";
+} from "@pokebots/ui/features/settings/OpenCodeKeyDialog";
+import { useText } from "@pokebots/ui/text";
+import { errorReference, type UserErrorDetails } from "@pokebots/user-errors";
 import { createEffect, createMemo, createSignal, onCleanup, Show, untrack } from "solid-js";
 import { ProviderSignInDialogs } from "../../components/ProviderSignInDialogs";
 import type { ProviderConnectionApi } from "../../components/provider-connection-api";

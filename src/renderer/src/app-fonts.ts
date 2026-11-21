@@ -1,4 +1,4 @@
-import type { AppAppearancePreference, AppFontFamily } from "@openbot/contracts/app-appearance";
+import type { AppAppearancePreference, AppFontFamily } from "@pokebots/contracts/app-appearance";
 import { type Accessor, createSignal, onSettled } from "solid-js";
 import { appPort } from "./app-port";
 

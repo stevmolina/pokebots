@@ -5,7 +5,7 @@
  * the menu and the drag of its section.
  */
 
-import { ChevronRight } from "@openbot/ui";
+import { ChevronRight } from "@pokebots/ui";
 import { Show } from "solid-js";
 import { useText } from "../../text";
 import { ServerMark, type ServerMarkServer } from "../servers/ServerRail";

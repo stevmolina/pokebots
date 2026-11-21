@@ -1,4 +1,4 @@
-import { type LibraryFolder, libraryFolderBranch } from "@openbot/contracts/ipc";
+import { type LibraryFolder, libraryFolderBranch } from "@pokebots/contracts/ipc";
 import { createEffect, createMemo, createStore } from "solid-js";
 import { agentKey, canHoldFolder, childFolders } from "./library-folders-view";
 

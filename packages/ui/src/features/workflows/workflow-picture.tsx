@@ -1,6 +1,6 @@
 /** A picture that fills a card on the canvas, with a loading state. */
 
-import { Skeleton } from "@openbot/ui";
+import { Skeleton } from "@pokebots/ui";
 import { createSignal, Show } from "solid-js";
 
 /**

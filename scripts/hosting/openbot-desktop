@@ -14,7 +14,7 @@ set -uo pipefail
 
 desktop=${BASH_SOURCE[0]%/*}/desktop
 # The background: the dark color of the app with the OpenBot logo in the center, at each display size.
-# openbot-logo.png is the lilac logo with a light name from @openbot/brand (openbot-logo-lilac-light
+# openbot-logo.png is the lilac logo with a light name from @pokebots/brand (openbot-logo-lilac-light
 # on the /brand page), 300 px wide. Without hsetroot, the display keeps its white root: a dark screen
 # with no logo looks like no video came.
 if command -v hsetroot >/dev/null && [ -r "$desktop/openbot-logo.png" ]; then

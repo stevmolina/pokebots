@@ -31,8 +31,8 @@ import {
   ROUTINE_QUIET_ANSWER_ITEM_TYPE,
   type RoutineRun,
   routineRunConversationEvent,
-} from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect } from "effect";
 import type { AgentBrowserHost } from "../src/backend/agent/turn-lifecycle";
 

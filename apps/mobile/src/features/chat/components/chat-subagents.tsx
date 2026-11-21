@@ -1,4 +1,4 @@
-import type { ConversationSubagent, ConversationSubagentStatus } from "@openbot/contracts/ipc";
+import type { ConversationSubagent, ConversationSubagentStatus } from "@pokebots/contracts/ipc";
 import { Typography } from "heroui-native";
 import ChevronRight from "lucide-react-native/icons/chevron-right";
 import CircleCheck from "lucide-react-native/icons/circle-check";

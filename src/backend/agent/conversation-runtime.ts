@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { sortConversationMessages } from "@openbot/contracts/conversation-order";
+import { sortConversationMessages } from "@pokebots/contracts/conversation-order";
 import {
   type AgentEvent,
   type AgentSummary,
@@ -7,9 +7,9 @@ import {
   type ConversationMessage,
   type ConversationSnapshot,
   type QueueDeliveryStatus,
-} from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger } from "@openbot/logging";
+} from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
+import { createOpenBotLogger } from "@pokebots/logging";
 import type { AgentClient } from "../agent-client";
 import type { AgentStore } from "../agent-store";
 import { isTurnEndEvent, withoutQueuePositions } from "../database/conversation-writer";

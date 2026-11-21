@@ -14,7 +14,7 @@ import type {
   AgentDockUsageLimit,
   BrowserTab,
   LocalBrowserSecretResponse,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   AppWindow,
   ArrowUp,
@@ -30,7 +30,7 @@ import {
   PinOff,
   Plus,
   X,
-} from "@openbot/ui";
+} from "@pokebots/ui";
 import { createMemo, For, onCleanup, Show } from "solid-js";
 import { createScrollFades } from "../../components/createScrollFades";
 import { QuestionPromptBubble } from "../../components/QuestionPromptBubble";

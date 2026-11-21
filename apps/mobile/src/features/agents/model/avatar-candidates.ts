@@ -6,7 +6,7 @@ import {
   avatarSeedForFace,
   SUPPORTED_AVATAR_SILHOUETTES,
   type SupportedAvatarSilhouetteId,
-} from "@openbot/brand/bloub-avatar";
+} from "@pokebots/brand/bloub-avatar";
 
 interface AvatarCandidates {
   namespace: string;

@@ -1,6 +1,6 @@
-import { type AnalyticsTotals, analyticsTokens, type HostAnalytics } from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
-import { Button, SlidingTabs } from "@openbot/ui";
+import { type AnalyticsTotals, analyticsTokens, type HostAnalytics } from "@pokebots/contracts/ipc";
+import type { AppTextKey } from "@pokebots/i18n";
+import { Button, SlidingTabs } from "@pokebots/ui";
 import { createMemo, createStore, For, onSettled, Show } from "solid-js";
 import { ScrollEdges } from "../../components/ScrollEdges";
 import { useText } from "../../text";

@@ -3,7 +3,7 @@ import {
   type LibraryFolder,
   libraryFolderHeight,
   libraryFolderPath,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 
 /**
  * The place in the Library that the page shows. `recent`: the files of the last days. `unsorted`: the

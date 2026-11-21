@@ -1,13 +1,13 @@
-import { hostedPlanDisk } from "@openbot/contracts/hosted-servers";
+import { hostedPlanDisk } from "@pokebots/contracts/hosted-servers";
 import {
   LOCAL_SERVER_ID,
   type RemovableRuntimes,
   type StorageDisk,
   type TeamMemberSummary,
-} from "@openbot/contracts/ipc";
-import { MachineResources } from "@openbot/ui/features/files/MachineResources";
-import { StorageOverview } from "@openbot/ui/features/files/StorageOverview";
-import { BackgroundProcessesSection } from "@openbot/ui/features/settings/BackgroundProcessesSection";
+} from "@pokebots/contracts/ipc";
+import { MachineResources } from "@pokebots/ui/features/files/MachineResources";
+import { StorageOverview } from "@pokebots/ui/features/files/StorageOverview";
+import { BackgroundProcessesSection } from "@pokebots/ui/features/settings/BackgroundProcessesSection";
 import { createEffect, createSignal, Show } from "solid-js";
 import { type FilesPort, filesPort } from "./files-port";
 import { createMachineResources } from "./machine-resources";

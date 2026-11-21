@@ -3,12 +3,12 @@
 // through `routine-results-v1`. That contract keeps the deliveries and a second send on the host's
 // own computer, so `deliveries` and `resend` reach this computer only.
 
-import { decodeRoutineResultConnectionOptions, decodeRoutineResultDestinationAnswer } from "@openbot/contracts/ipc";
+import { decodeRoutineResultConnectionOptions, decodeRoutineResultDestinationAnswer } from "@pokebots/contracts/ipc";
 import {
   ROUTINE_RESULTS_CAPABILITY,
   ROUTINE_RESULTS_ROUTES,
-} from "@openbot/contracts/team-protocol/routine-results-v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/team-protocol/routine-results-v1";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect } from "effect";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import type { RoutineResultsHandle } from "../../backend/routine-results/routine-results";

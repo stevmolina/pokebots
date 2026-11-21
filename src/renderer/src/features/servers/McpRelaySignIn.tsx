@@ -1,4 +1,4 @@
-import { McpSignInPageDialog, McpSignInRelayDialog } from "@openbot/ui/features/settings/McpSignInPage";
+import { McpSignInPageDialog, McpSignInRelayDialog } from "@pokebots/ui/features/settings/McpSignInPage";
 import { createEffect, createMemo, Show } from "solid-js";
 import type { McpServerTools } from "./mcp-server-tools";
 import type { McpServerConfig } from "./mcp-servers";

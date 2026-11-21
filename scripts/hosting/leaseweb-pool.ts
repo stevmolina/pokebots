@@ -73,10 +73,10 @@ import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { setTimeout as delay } from "node:timers/promises";
-import { BILLING_PLAN_IDS, type BillingPlanId } from "@openbot/contracts/billing";
-import { HOSTED_PLAN_SIZE, HOSTED_SERVER_SIZE_NAMES } from "@openbot/contracts/hosted-servers";
-import { isOneOf } from "@openbot/contracts/runtime-values";
-import { createOpenBotLogger, toLogValue } from "@openbot/logging";
+import { BILLING_PLAN_IDS, type BillingPlanId } from "@pokebots/contracts/billing";
+import { HOSTED_PLAN_SIZE, HOSTED_SERVER_SIZE_NAMES } from "@pokebots/contracts/hosted-servers";
+import { isOneOf } from "@pokebots/contracts/runtime-values";
+import { createOpenBotLogger, toLogValue } from "@pokebots/logging";
 import { z } from "zod";
 
 const logger = createOpenBotLogger("leaseweb-pool");

@@ -5,7 +5,7 @@ import {
   type ProviderEnvironmentProvider,
   type ProviderEnvironmentVariableInput,
   providerEnvironmentProblem,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { router, useLocalSearchParams } from "expo-router";
 import { Typography } from "heroui-native";

@@ -1,6 +1,6 @@
 /*
  * Settings modal rules for markup that only the renderer draws: the provider section, the Dynamic
- * Island tab and the voice key row. The shared modal frame and its panels are in `@openbot/ui/features/settings/settings-modal.css`, which `styles.css` imports
+ * Island tab and the voice key row. The shared modal frame and its panels are in `@pokebots/ui/features/settings/settings-modal.css`, which `styles.css` imports
  * immediately before this file.
  */
 

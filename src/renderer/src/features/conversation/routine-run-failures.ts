@@ -1,6 +1,6 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import type { ListRoutineRunsInput, RoutineRun } from "@openbot/contracts/ipc";
-import type { AgentMessage } from "@openbot/ui/data";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
+import type { ListRoutineRunsInput, RoutineRun } from "@pokebots/contracts/ipc";
+import type { AgentMessage } from "@pokebots/ui/data";
 import { createEffect, createMemo, createSignal } from "solid-js";
 
 /** The run history of the agent of a chat, for a person who can read it. */

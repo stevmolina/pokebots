@@ -5,9 +5,9 @@
 import { createHash, createHmac, randomBytes, timingSafeEqual } from "node:crypto";
 import { once } from "node:events";
 import { createServer, type Server as HttpServer, type IncomingMessage, type ServerResponse } from "node:http";
-import { type DynamicRecord, isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger, registerSecretValue, toLogValue } from "@openbot/logging";
+import { type DynamicRecord, isDynamicRecord, isString } from "@pokebots/contracts/runtime-values";
+import { sourceText } from "@pokebots/i18n/source";
+import { createOpenBotLogger, registerSecretValue, toLogValue } from "@pokebots/logging";
 import { Effect, Semaphore } from "effect";
 import { runCauseEffect } from "./effect-boundary";
 import { McpOperationError, mcpCall, mcpSync } from "./mcp-effects";

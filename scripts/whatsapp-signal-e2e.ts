@@ -18,7 +18,7 @@ import { existsSync } from "node:fs";
 import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import { createOpenBotLogger } from "@openbot/logging";
+import { createOpenBotLogger } from "@pokebots/logging";
 import {
   type AuthenticationCreds,
   addTransactionCapability,
@@ -36,8 +36,8 @@ import {
   type SocketConfig,
   unpadRandomMax16,
   writeRandomPadMax16,
-} from "@openbot/whatsapp/baileys";
-import { makeOpenBotSignalRepository } from "@openbot/whatsapp/signal-repository";
+} from "@pokebots/whatsapp/baileys";
+import { makeOpenBotSignalRepository } from "@pokebots/whatsapp/signal-repository";
 import { Schema } from "effect";
 import { addressToString, jidToAddress } from "../packages/whatsapp/src/signal/address";
 import { publicKeyOf, sharedKey, sign, verify, withKeyType } from "../packages/whatsapp/src/signal/curve";

@@ -3,7 +3,7 @@ import { createHash } from "node:crypto";
 import { copyFileSync, createReadStream, existsSync, readFileSync, writeFileSync } from "node:fs";
 import { mkdir, mkdtemp, readdir, readFile, rename, rm, stat, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
-import { createOpenBotLogger } from "@openbot/logging";
+import { createOpenBotLogger } from "@pokebots/logging";
 import { PARAKEET_MODEL_FILES, VOICE_RUNTIME_ADDON, VOICE_SESSION_CONFIGS } from "../src/main/voice-model-service";
 import { elfSearchPaths, ORIGIN_SEARCH_PATH } from "./elf-search-paths";
 

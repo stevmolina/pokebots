@@ -1,6 +1,6 @@
 import { readFile, rm, writeFile } from "node:fs/promises";
-import { isDynamicRecord, isOneOf, isString } from "@openbot/contracts/runtime-values";
-import { createOpenBotLogger } from "@openbot/logging";
+import { isDynamicRecord, isOneOf, isString } from "@pokebots/contracts/runtime-values";
+import { createOpenBotLogger } from "@pokebots/logging";
 import {
   assembleSection,
   FRAGMENT_DIR,

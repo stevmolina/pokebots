@@ -5,8 +5,8 @@
  * the schemas stay small and the change check is the contract's `isCrmProposedChange`.
  */
 
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import { CRM_EVERY, CRM_LIMITS, CRM_METHODS } from "@openbot/contracts/ipc";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
+import { CRM_EVERY, CRM_LIMITS, CRM_METHODS } from "@pokebots/contracts/ipc";
 import { Effect } from "effect";
 import { z } from "zod";
 import type { CrmAgentOperations } from "../crm/crm-agent-view";

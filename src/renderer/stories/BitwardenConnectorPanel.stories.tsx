@@ -1,5 +1,5 @@
-import { type BitwardenConnectorStatus, DISCONNECTED_BITWARDEN_CONNECTOR } from "@openbot/contracts/ipc";
-import { BitwardenConnectorPanel } from "@openbot/ui/features/settings/BitwardenConnectorPanel";
+import { type BitwardenConnectorStatus, DISCONNECTED_BITWARDEN_CONNECTOR } from "@pokebots/contracts/ipc";
+import { BitwardenConnectorPanel } from "@pokebots/ui/features/settings/BitwardenConnectorPanel";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { SettledArgs } from "./settled-args";

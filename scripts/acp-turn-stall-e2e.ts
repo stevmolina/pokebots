@@ -21,7 +21,7 @@ import assert from "node:assert/strict";
 import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import { sourceText } from "@openbot/i18n/source";
+import { sourceText } from "@pokebots/i18n/source";
 import { AcpAgentClient } from "../src/backend/acp-client";
 import { type AcpCustomEndpoint, type AcpFlavor, DEFAULT_ACP_FLAVOR } from "../src/backend/acp-flavor";
 import { ANTIGRAVITY_ACP_FLAVOR } from "../src/backend/acp-flavor-antigravity";

@@ -17,7 +17,7 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
+import { isDynamicRecord, isString } from "@pokebots/contracts/runtime-values";
 import { Effect } from "effect";
 import type { AgentBrowserHost } from "../src/backend/agent/turn-lifecycle";
 import { AgentService } from "../src/backend/agent-service";

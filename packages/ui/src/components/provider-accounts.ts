@@ -1,4 +1,4 @@
-import { agentProviderDescriptor, isAgentProvider } from "@openbot/contracts/agent-providers";
+import { agentProviderDescriptor, isAgentProvider } from "@pokebots/contracts/agent-providers";
 import {
   type AgentProviderId,
   type ClientAgentModelOption,
@@ -6,9 +6,9 @@ import {
   type ProviderAccountStatus,
   type ProviderUsageResetOutcome,
   type ProviderUsageResets,
-} from "@openbot/contracts/ipc";
-import { CLAUDE_API_KEY_ACCOUNT_ID } from "@openbot/contracts/team-protocol/claude-api-key-v1";
-import type { AppTranslate } from "@openbot/i18n";
+} from "@pokebots/contracts/ipc";
+import { CLAUDE_API_KEY_ACCOUNT_ID } from "@pokebots/contracts/team-protocol/claude-api-key-v1";
+import type { AppTranslate } from "@pokebots/i18n";
 
 /** One account of a provider row, with the agents that use it. */
 export interface ProviderPickerAccount extends ProviderAccountStatus {

@@ -4,8 +4,8 @@
 // in the file is left empty, as a new step is. A messaging connection and a webhook address belong to
 // the other computer: the import leaves them empty and asks the user to choose them again.
 
-import { isWorkflowGraph, type WorkflowGraph, type WorkflowNode } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+import { isWorkflowGraph, type WorkflowGraph, type WorkflowNode } from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect, Result } from "effect";
 import { reason } from "./instance-transfer-preferences";
 

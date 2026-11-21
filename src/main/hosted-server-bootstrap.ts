@@ -12,9 +12,9 @@
  */
 
 import { existsSync } from "node:fs";
-import { serverStorageGb } from "@openbot/contracts/billing";
-import { parseHostedServerList } from "@openbot/contracts/hosted-servers";
-import type { CentralAuthState, CentralAuthUser } from "@openbot/contracts/ipc";
+import { serverStorageGb } from "@pokebots/contracts/billing";
+import { parseHostedServerList } from "@pokebots/contracts/hosted-servers";
+import type { CentralAuthState, CentralAuthUser } from "@pokebots/contracts/ipc";
 import { Effect } from "effect";
 import type { CentralAuthManager } from "./central-auth-manager";
 import { RemoteWorkflowError, toRemoteWorkflowError } from "./remote-service-effects";

@@ -2,8 +2,8 @@ import { closeSync, openSync, readdirSync, readFileSync, readSync, statSync } fr
 import { homedir } from "node:os";
 import { join } from "node:path";
 import { RequestError } from "@agentclientprotocol/sdk";
-import { type SourceMessages, sourceText } from "@openbot/i18n/source";
-import type { CauseCode } from "@openbot/telemetry";
+import { type SourceMessages, sourceText } from "@pokebots/i18n/source";
+import type { CauseCode } from "@pokebots/telemetry";
 import { type AcpFlavor, shownFailureDetail } from "./acp-flavor";
 import { GEMINI_INVALID_ARGUMENT, GEMINI_INVALID_CREDENTIALS } from "./agent/provider-diagnostics";
 import { getRecord, getString, isRecord } from "./protocol";

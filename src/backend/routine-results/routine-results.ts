@@ -28,9 +28,9 @@ import type {
   RoutineResultDestination,
   RoutineResultRoutineInput,
   SetRoutineResultDestinationInput,
-} from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger } from "@openbot/logging";
+} from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
+import { createOpenBotLogger } from "@pokebots/logging";
 import { Cause, Context, Effect, Exit, Fiber, Layer, ManagedRuntime, Schema, Scope, Semaphore } from "effect";
 import { isNoUpdateAnswer } from "../agent/routine-quiet-runs";
 import type { MessagingPostFailure } from "../messaging/messaging-threads";

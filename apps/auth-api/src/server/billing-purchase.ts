@@ -1,5 +1,5 @@
-import type { BillingCurrency, BillingInterval, BillingPlanId } from "@openbot/contracts/billing";
-import type { LicenseTier } from "@openbot/contracts/license";
+import type { BillingCurrency, BillingInterval, BillingPlanId } from "@pokebots/contracts/billing";
+import type { LicenseTier } from "@pokebots/contracts/license";
 import { Effect } from "effect";
 import type { BillingAction, PlanEndReason } from "./account-analytics";
 import { billingCall } from "./billing-errors";

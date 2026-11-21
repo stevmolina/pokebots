@@ -1,11 +1,11 @@
 /**
  * The chat color picker: the color picker primitive with the 11 chat colors of
- * `@openbot/brand/chat-colors` as presets.
+ * `@pokebots/brand/chat-colors` as presets.
  */
 
-import { CHAT_COLOR_PRESETS as CHAT_COLORS, type ChatColorPresetId } from "@openbot/brand/chat-colors";
-import { type AvatarColor, isAvatarColor } from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
+import { CHAT_COLOR_PRESETS as CHAT_COLORS, type ChatColorPresetId } from "@pokebots/brand/chat-colors";
+import { type AvatarColor, isAvatarColor } from "@pokebots/contracts/ipc";
+import type { AppTextKey } from "@pokebots/i18n";
 import { createMemo } from "solid-js";
 import { AVATAR_COLOR_CHOICES } from "../../bloub-avatar";
 import { ColorPicker } from "../../color-picker";

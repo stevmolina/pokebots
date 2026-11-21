@@ -5,13 +5,13 @@ import {
   type FileAction,
   type FilePreview,
   type WorkspaceDirectory,
-} from "@openbot/contracts/ipc";
-import { matchingSourceKeys } from "@openbot/i18n";
-import type { AgentSettingLinkId, AgentSettingReveal } from "@openbot/ui/features/conversation/agent-setting-links";
-import type { MessageImageFile } from "@openbot/ui/features/conversation/MarkdownMessageText";
-import { isSidePanelPane } from "@openbot/ui/features/conversation/SidePanel";
-import { currentText } from "@openbot/ui/text";
-import { normalizeMessage } from "@openbot/user-errors/reference";
+} from "@pokebots/contracts/ipc";
+import { matchingSourceKeys } from "@pokebots/i18n";
+import type { AgentSettingLinkId, AgentSettingReveal } from "@pokebots/ui/features/conversation/agent-setting-links";
+import type { MessageImageFile } from "@pokebots/ui/features/conversation/MarkdownMessageText";
+import { isSidePanelPane } from "@pokebots/ui/features/conversation/SidePanel";
+import { currentText } from "@pokebots/ui/text";
+import { normalizeMessage } from "@pokebots/user-errors/reference";
 import { createEffect, createMemo, createSignal, onCleanup, type Store, type StoreSetter, untrack } from "solid-js";
 import { createScopeGuard } from "../../../scope-lifetime";
 import { createAttachmentDownloads } from "../attachment-downloads";
@@ -111,9 +111,9 @@ export interface PanelsStoreDeps {
   /** Owned with `rightPanels`, so that the tabs stay with the open pane when the view of the chat closes. */
   panels: Store<SidePanelsState>;
   setPanels: StoreSetter<SidePanelsState>;
-  settingsProvider: () => import("@openbot/contracts/ipc").AgentProviderId;
-  settingsModel: () => import("@openbot/contracts/ipc").AgentModelId;
-  settingsReasoning: () => import("@openbot/contracts/ipc").AgentReasoningEffort;
+  settingsProvider: () => import("@pokebots/contracts/ipc").AgentProviderId;
+  settingsModel: () => import("@pokebots/contracts/ipc").AgentModelId;
+  settingsReasoning: () => import("@pokebots/contracts/ipc").AgentReasoningEffort;
   setBrowserPipBounds: (bounds: BrowserBounds | null) => void;
   sidebarFilePreview: () => SidebarFilePreview | null;
   setSidebarFilePreview: (preview: SidebarFilePreview | null) => void;

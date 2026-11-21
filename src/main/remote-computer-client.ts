@@ -6,15 +6,15 @@ import {
   type ListToolsResult,
   type Tool,
 } from "@modelcontextprotocol/sdk/types.js";
-import type { McpServerConfig, RemoteComputerServer, RemoteComputerSession } from "@openbot/contracts/ipc";
-import { type DynamicRecord, isDynamicRecord } from "@openbot/contracts/runtime-values";
+import type { McpServerConfig, RemoteComputerServer, RemoteComputerSession } from "@pokebots/contracts/ipc";
+import { type DynamicRecord, isDynamicRecord } from "@pokebots/contracts/runtime-values";
 import {
   REMOTE_COMPUTER_REPLY_MAX_LENGTH,
   REMOTE_COMPUTER_STATE_INTERVAL_MS,
   REMOTE_COMPUTER_USE_ROUTES,
   type RemoteComputerCallEvent,
-} from "@openbot/contracts/team-protocol/remote-computer-use-v1";
-import { createOpenBotLogger, redactText, toLogValue } from "@openbot/logging";
+} from "@pokebots/contracts/team-protocol/remote-computer-use-v1";
+import { createOpenBotLogger, redactText, toLogValue } from "@pokebots/logging";
 import { Cause, Effect, Schema } from "effect";
 import { causeHelpers } from "../backend/effect-boundary";
 import {

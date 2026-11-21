@@ -3,8 +3,8 @@ import {
   AGENT_ACCESS_ROLE_NAME_LIMIT,
   type AgentAccessLevel,
   agentAccessRank,
-} from "@openbot/contracts/ipc";
-import type { MobileTextKey } from "@openbot/i18n/mobile";
+} from "@pokebots/contracts/ipc";
+import type { MobileTextKey } from "@pokebots/i18n/mobile";
 import { router, useLocalSearchParams } from "expo-router";
 import { usePreventRemove } from "expo-router/react-navigation";
 import { Typography } from "heroui-native";

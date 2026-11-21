@@ -1,5 +1,5 @@
-import { isBoolean, isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
-import type { RemoteTeamHost } from "@openbot/team-client/remote-directory";
+import { isBoolean, isDynamicRecord, isNumber, isString } from "@pokebots/contracts/runtime-values";
+import type { RemoteTeamHost } from "@pokebots/team-client/remote-directory";
 
 /** Keep the last server in this browser, separately for each account. */
 export function readWebServerSelection(accountId: string): string | null {

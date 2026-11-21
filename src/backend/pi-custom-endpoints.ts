@@ -1,7 +1,7 @@
 import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import type { CustomProviderReasoningEffort } from "@openbot/contracts/ipc";
+import type { CustomProviderReasoningEffort } from "@pokebots/contracts/ipc";
 import { Effect } from "effect";
 import { type CustomProviderConfig, customModelOutputLimit, isMistralApi } from "./opencode-config";
 import type { PiMcpExtension } from "./pi-mcp";

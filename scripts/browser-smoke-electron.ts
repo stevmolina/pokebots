@@ -4,8 +4,8 @@ import { mkdir, mkdtemp, open, readFile, rm, utimes, writeFile } from "node:fs/p
 import { createServer } from "node:http";
 import { tmpdir } from "node:os";
 import { basename, join } from "node:path";
-import type { BrowserBounds } from "@openbot/contracts/ipc";
-import { type DynamicRecord, isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
+import type { BrowserBounds } from "@pokebots/contracts/ipc";
+import { type DynamicRecord, isDynamicRecord, isNumber, isString } from "@pokebots/contracts/runtime-values";
 import { Effect } from "effect";
 import {
   app,

@@ -1,4 +1,4 @@
-import { isString } from "@openbot/contracts/runtime-values";
+import { isString } from "@pokebots/contracts/runtime-values";
 import { setDrawsOnCpu } from "../../motion-preference";
 
 /**

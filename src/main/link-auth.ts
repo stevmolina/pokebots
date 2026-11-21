@@ -6,7 +6,7 @@
 // so the user does not type it: OpenBot opens `verification_uri_complete`.
 
 import { hostname } from "node:os";
-import { sourceText } from "@openbot/i18n/source";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect, Result, Schema } from "effect";
 import { z } from "zod";
 import { LinkOperationError, linkCall, linkDecode } from "./link-effects";

@@ -1,29 +1,29 @@
-import { agentTemplateIdFromWebAppSearch, WEB_APP_AGENT_TEMPLATE_PARAM } from "@openbot/contracts/agent-template-links";
-import { companySignInErrorKey, WEB_APP_COMPANY_SIGN_IN_ERROR_PARAM } from "@openbot/contracts/company-sign-in";
-import { type FirstTouch, readFirstTouch } from "@openbot/contracts/first-touch";
-import { inviteUrlFromWebAppSearch, WEB_APP_INVITE_FIELDS } from "@openbot/contracts/invite-links";
-import type { AppVariant, CentralAuthState, CentralAuthUser } from "@openbot/contracts/ipc";
-import { isAvatarColor } from "@openbot/contracts/ipc-agent-identity";
+import { agentTemplateIdFromWebAppSearch, WEB_APP_AGENT_TEMPLATE_PARAM } from "@pokebots/contracts/agent-template-links";
+import { companySignInErrorKey, WEB_APP_COMPANY_SIGN_IN_ERROR_PARAM } from "@pokebots/contracts/company-sign-in";
+import { type FirstTouch, readFirstTouch } from "@pokebots/contracts/first-touch";
+import { inviteUrlFromWebAppSearch, WEB_APP_INVITE_FIELDS } from "@pokebots/contracts/invite-links";
+import type { AppVariant, CentralAuthState, CentralAuthUser } from "@pokebots/contracts/ipc";
+import { isAvatarColor } from "@pokebots/contracts/ipc-agent-identity";
 import {
   type MarketplaceListingLink,
   marketplaceListingFromWebAppSearch,
   WEB_APP_MARKETPLACE_AGENT_PARAM,
   WEB_APP_MARKETPLACE_SKILL_PARAM,
-} from "@openbot/contracts/marketplace-links";
-import { pluginSlugFromWebAppSearch, WEB_APP_PLUGIN_PARAM } from "@openbot/contracts/plugin-links";
-import { isBoolean, isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { WEB_APP_WORKOS_SIGN_IN_ERROR_PARAM, workosSignInErrorKey } from "@openbot/contracts/workos-sign-in";
-import { formatLocale, resolveLocale } from "@openbot/i18n";
-import { sourceText } from "@openbot/i18n/source";
-import { markRemoteSync } from "@openbot/team-client/sync-marks";
-import { classifyFailure } from "@openbot/telemetry";
-// UI subpaths, not the `@openbot/ui` index: the sign-in screen loads this file, and the index holds
+} from "@pokebots/contracts/marketplace-links";
+import { pluginSlugFromWebAppSearch, WEB_APP_PLUGIN_PARAM } from "@pokebots/contracts/plugin-links";
+import { isBoolean, isDynamicRecord, isString } from "@pokebots/contracts/runtime-values";
+import { WEB_APP_WORKOS_SIGN_IN_ERROR_PARAM, workosSignInErrorKey } from "@pokebots/contracts/workos-sign-in";
+import { formatLocale, resolveLocale } from "@pokebots/i18n";
+import { sourceText } from "@pokebots/i18n/source";
+import { markRemoteSync } from "@pokebots/team-client/sync-marks";
+import { classifyFailure } from "@pokebots/telemetry";
+// UI subpaths, not the `@pokebots/ui` index: the sign-in screen loads this file, and the index holds
 // every control.
-import { NotificationObserver } from "@openbot/ui/alert";
-import { AccountLogin } from "@openbot/ui/features/account/AccountLogin";
-import { AppLoadingScreen } from "@openbot/ui/features/account/AppLoadingScreen";
-import { currentText } from "@openbot/ui/text";
-import { Toaster, toast } from "@openbot/ui/toast";
+import { NotificationObserver } from "@pokebots/ui/alert";
+import { AccountLogin } from "@pokebots/ui/features/account/AccountLogin";
+import { AppLoadingScreen } from "@pokebots/ui/features/account/AppLoadingScreen";
+import { currentText } from "@pokebots/ui/text";
+import { Toaster, toast } from "@pokebots/ui/toast";
 import { Dynamic } from "@solidjs/web";
 import { createEffect, createSignal, createStore, onSettled, Show } from "solid-js";
 import type { DesktopAnalyticsProperties } from "../../analytics";

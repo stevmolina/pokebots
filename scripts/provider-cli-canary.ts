@@ -13,7 +13,7 @@ import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import { MANAGED_RUNTIME_PROVIDERS, type ManagedProviderId } from "@openbot/contracts/ipc";
+import { MANAGED_RUNTIME_PROVIDERS, type ManagedProviderId } from "@pokebots/contracts/ipc";
 import { Effect, Option, Schema } from "effect";
 import lockValue from "../native-runtime.lock.json";
 import { isMissingProviderSessionError } from "../src/backend/agent/thread-items";

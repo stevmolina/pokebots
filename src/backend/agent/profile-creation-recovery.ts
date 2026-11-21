@@ -1,7 +1,7 @@
 import { mkdir, readdir, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import { decodeSaveAgentProfileResult } from "@openbot/contracts/ipc";
-import { isGeneratedAgentId, isUuidV4 } from "@openbot/contracts/validation";
+import { decodeSaveAgentProfileResult } from "@pokebots/contracts/ipc";
+import { isGeneratedAgentId, isUuidV4 } from "@pokebots/contracts/validation";
 import { Effect } from "effect";
 import type { OpenBotDatabase } from "../openbot-database";
 import { StoredStateFailure, storedIO, storedSync } from "../stored-state-effects";

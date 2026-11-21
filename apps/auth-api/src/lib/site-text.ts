@@ -1,5 +1,5 @@
-import type { AppTranslate } from "@openbot/i18n";
-import { appLanguageOption } from "@openbot/i18n/languages";
+import type { AppTranslate } from "@pokebots/i18n";
+import { appLanguageOption } from "@pokebots/i18n/languages";
 import type { SiteLocale } from "./site-paths";
 import { slot } from "./text-slots";
 

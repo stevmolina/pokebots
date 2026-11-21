@@ -6,7 +6,7 @@ import {
   type BillingInterval,
   type BillingSubscriptionStatus,
   isOpenBillingStatus,
-} from "@openbot/contracts/billing";
+} from "@pokebots/contracts/billing";
 import {
   LICENSE_INCLUDED_USERS,
   LICENSE_LOOKUP_KEYS,
@@ -27,9 +27,9 @@ import {
   licensePeriodAmount,
   licensePlanFromPrice,
   ORDER_METADATA,
-} from "@openbot/contracts/license";
-import { isOneOf } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source-english";
+} from "@pokebots/contracts/license";
+import { isOneOf } from "@pokebots/contracts/runtime-values";
+import { sourceText } from "@pokebots/i18n/source-english";
 import { Context, Effect, Layer } from "effect";
 import {
   type AccountAnalytics,

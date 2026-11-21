@@ -1,8 +1,8 @@
-import { CHANNEL_CHATS_CAPABILITY, canAdministerServer } from "@openbot/contracts/ipc";
-import { CHAT_HISTORY_CAPABILITY, CHAT_HISTORY_ROUTES } from "@openbot/contracts/team-protocol/chat-history-v1";
-import { ContextCompactRefusedError } from "@openbot/contracts/team-protocol/context-compact-v1";
-import { ContextResetBusyError } from "@openbot/contracts/team-protocol/context-reset-v1";
-import { sourceText } from "@openbot/i18n/source";
+import { CHANNEL_CHATS_CAPABILITY, canAdministerServer } from "@pokebots/contracts/ipc";
+import { CHAT_HISTORY_CAPABILITY, CHAT_HISTORY_ROUTES } from "@pokebots/contracts/team-protocol/chat-history-v1";
+import { ContextCompactRefusedError } from "@pokebots/contracts/team-protocol/context-compact-v1";
+import { ContextResetBusyError } from "@pokebots/contracts/team-protocol/context-reset-v1";
+import { sourceText } from "@pokebots/i18n/source";
 import type { ChannelService } from "../../backend/channel-service";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import type { TeamApiAgents } from "./dependencies";

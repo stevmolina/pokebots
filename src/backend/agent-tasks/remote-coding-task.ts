@@ -1,4 +1,4 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import { z } from "zod";
 
 export const RUN_CODING_TASK_TOOL = "run_coding_task";

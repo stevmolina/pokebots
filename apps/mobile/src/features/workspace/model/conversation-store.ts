@@ -3,7 +3,7 @@ import {
   type ConversationMessage,
   type ConversationPage,
   openExchangesOutside,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 
 import { replaceEqualDeep } from "@tanstack/react-query";
 

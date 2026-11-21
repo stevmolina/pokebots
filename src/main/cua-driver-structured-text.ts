@@ -15,7 +15,7 @@
 // the tool's output schema, and a result that fails the check reaches the agent as an error. A
 // failed call only gets its reason added, which the proxy's refusal schema accepts.
 
-import { type DynamicRecord, isDynamicRecord } from "@openbot/contracts/runtime-values";
+import { type DynamicRecord, isDynamicRecord } from "@pokebots/contracts/runtime-values";
 
 /** The first line of the copy, which also marks a result that already holds one. */
 const STRUCTURED_TEXT_LABEL = "structuredContent as JSON, copied by OpenBot for clients that show only text:";

@@ -12,7 +12,7 @@
 // is .openbot-build/umbrel/<app id>. Copy it to the app store as a folder with the name of the app id.
 import { chmodSync, cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
-import { createOpenBotLogger } from "@openbot/logging";
+import { createOpenBotLogger } from "@pokebots/logging";
 import { Schema } from "effect";
 
 const logger = createOpenBotLogger("umbrel-app");

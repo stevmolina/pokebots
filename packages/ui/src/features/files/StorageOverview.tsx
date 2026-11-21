@@ -1,7 +1,7 @@
-import { agentProviderDescriptor, type ManagedProviderId } from "@openbot/contracts/agent-providers";
-import { CLEARABLE_STORAGE_CATEGORIES, type ClearableStorageCategory } from "@openbot/contracts/ipc";
-import { isOneOf } from "@openbot/contracts/runtime-values";
-import type { AppFormat, AppTextKey, AppTranslate } from "@openbot/i18n";
+import { agentProviderDescriptor, type ManagedProviderId } from "@pokebots/contracts/agent-providers";
+import { CLEARABLE_STORAGE_CATEGORIES, type ClearableStorageCategory } from "@pokebots/contracts/ipc";
+import { isOneOf } from "@pokebots/contracts/runtime-values";
+import type { AppFormat, AppTextKey, AppTranslate } from "@pokebots/i18n";
 import {
   Button,
   ChevronRight,
@@ -11,10 +11,10 @@ import {
   RefreshCw,
   Skeleton,
   TriangleAlert,
-} from "@openbot/ui";
-import { SettingsBackIcon } from "@openbot/ui/components/SettingsPanel";
-import type { AgentProfile } from "@openbot/ui/data";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/ui";
+import { SettingsBackIcon } from "@pokebots/ui/components/SettingsPanel";
+import type { AgentProfile } from "@pokebots/ui/data";
+import { useText } from "@pokebots/ui/text";
 import type { JSX } from "@solidjs/web";
 import { createMemo, createSignal, createUniqueId, For, Show } from "solid-js";
 import { AgentAvatar } from "../agents/AgentAvatar";

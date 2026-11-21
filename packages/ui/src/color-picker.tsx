@@ -14,15 +14,15 @@
  * The port keeps the area with its loupe, the hue slider, the eye dropper, the format switch with
  * the hex field or the RGB and HSL channels, the swatch and the presets with the hopping ring. The
  * presets are "no color" and the swatches of the caller. It drops alpha, because a tint has no
- * opacity. Springs come from `@openbot/ui/spring-motion` as CSS `linear()` curves and WAAPI
+ * opacity. Springs come from `@pokebots/ui/spring-motion` as CSS `linear()` curves and WAAPI
  * keyframes. The panel has a 1px ring and no drop shadow.
  *
  * `ColorPickerPopover` floats the picker beside its trigger, and `ColorPickerTrigger` is a trigger
  * that looks like the select triggers.
  */
 
-import type { AvatarColor } from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
+import type { AvatarColor } from "@pokebots/contracts/ipc";
+import type { AppTextKey } from "@pokebots/i18n";
 import { type JSX, Portal } from "@solidjs/web";
 import ChevronsUpDown from "lucide-solid/icons/chevrons-up-down";
 import Pipette from "lucide-solid/icons/pipette";

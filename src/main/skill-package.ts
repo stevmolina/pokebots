@@ -1,9 +1,9 @@
 import { createHash } from "node:crypto";
 import { lstat, readdir, readFile } from "node:fs/promises";
 import { join, relative } from "node:path";
-import { SKILL_DESCRIPTION_MAX_LENGTH, type SkillPackagePreview } from "@openbot/contracts/ipc";
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
+import { SKILL_DESCRIPTION_MAX_LENGTH, type SkillPackagePreview } from "@pokebots/contracts/ipc";
+import { isDynamicRecord, isString } from "@pokebots/contracts/runtime-values";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect, Schema } from "effect";
 import { strFromU8, unzipSync, type Zippable, zipSync } from "fflate";
 import { parse as parseYaml } from "yaml";

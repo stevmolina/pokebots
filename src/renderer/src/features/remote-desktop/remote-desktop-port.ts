@@ -1,4 +1,4 @@
-import type { OpenBotDesktopApi } from "@openbot/contracts/ipc";
+import type { OpenBotDesktopApi } from "@pokebots/contracts/ipc";
 
 /**
  * What the remote desktop context reaches in main: the sessions this computer holds to other

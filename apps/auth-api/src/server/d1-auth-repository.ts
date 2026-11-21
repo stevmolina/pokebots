@@ -1,5 +1,5 @@
-import { type AvatarColor, isAvatarColor } from "@openbot/contracts/ipc-agent-identity";
-import type { AccountSession, MobileConnectHostBinding } from "@openbot/contracts/mobile-connect";
+import { type AvatarColor, isAvatarColor } from "@pokebots/contracts/ipc-agent-identity";
+import type { AccountSession, MobileConnectHostBinding } from "@pokebots/contracts/mobile-connect";
 import { Context, Effect, Layer, Schema } from "effect";
 import { sha256 } from "./crypto";
 import type {

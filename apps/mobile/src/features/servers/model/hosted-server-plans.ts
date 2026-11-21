@@ -1,6 +1,6 @@
-import type { BillingPlanId } from "@openbot/contracts/billing";
-import type { HostedServerSummary } from "@openbot/contracts/hosted-servers";
-import type { MobileTextKey } from "@openbot/i18n/mobile";
+import type { BillingPlanId } from "@pokebots/contracts/billing";
+import type { HostedServerSummary } from "@pokebots/contracts/hosted-servers";
+import type { MobileTextKey } from "@pokebots/i18n/mobile";
 
 /** The name and the summary of each plan, for the plans sheet and Settings > Billing. */
 export const HOSTED_PLAN_TEXT = {

@@ -1,5 +1,5 @@
-import type { AppTextKey } from "@openbot/i18n";
-import { Button, CalendarClock, File as FileIcon, Hash, Spinner } from "@openbot/ui";
+import type { AppTextKey } from "@pokebots/i18n";
+import { Button, CalendarClock, File as FileIcon, Hash, Spinner } from "@pokebots/ui";
 import {
   type AgentResult,
   type ChannelResult,
@@ -17,11 +17,11 @@ import {
   messagePreview,
   type PagedSearch,
   type RoutineResult,
-} from "@openbot/ui/components/global-search-model";
-import { normalizedSearchText, snippetAround } from "@openbot/ui/components/global-search-text";
-import type { AgentProfile } from "@openbot/ui/data";
-import { AgentAvatar } from "@openbot/ui/features/agents/AgentAvatar";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/ui/components/global-search-model";
+import { normalizedSearchText, snippetAround } from "@pokebots/ui/components/global-search-text";
+import type { AgentProfile } from "@pokebots/ui/data";
+import { AgentAvatar } from "@pokebots/ui/features/agents/AgentAvatar";
+import { useText } from "@pokebots/ui/text";
 import { Dynamic } from "@solidjs/web";
 import { createEffect, createMemo, createSignal, For, Show, untrack } from "solid-js";
 

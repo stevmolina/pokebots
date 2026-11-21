@@ -18,7 +18,7 @@ import type {
   TeamMemberSummary,
   TeamPresenceSnapshot,
   TeamSessionSummary,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import { describe, expect, it } from "vitest";
 import {
   decodeDirectConversation,

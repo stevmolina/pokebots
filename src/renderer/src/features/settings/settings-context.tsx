@@ -6,11 +6,11 @@ import {
   type ExternalLinkTarget,
   LOCAL_SERVER_ID,
   type McpSignInState,
-} from "@openbot/contracts/ipc";
-import type { MarketplaceListingLink } from "@openbot/contracts/marketplace-links";
-import type { AppTextKey } from "@openbot/i18n";
-import { DEFAULT_GENERAL_SETTINGS, type GeneralSettingsValue } from "@openbot/ui/features/settings/app-settings";
-import { currentText } from "@openbot/ui/text";
+} from "@pokebots/contracts/ipc";
+import type { MarketplaceListingLink } from "@pokebots/contracts/marketplace-links";
+import type { AppTextKey } from "@pokebots/i18n";
+import { DEFAULT_GENERAL_SETTINGS, type GeneralSettingsValue } from "@pokebots/ui/features/settings/app-settings";
+import { currentText } from "@pokebots/ui/text";
 import { createEffect, createSignal, flush, onSettled } from "solid-js";
 import { isActionSoundEnabled, readActionSoundTheme, setActionSoundChoice } from "../../action-sounds";
 import { actionToast } from "../../action-toast";

@@ -2,8 +2,8 @@ import {
   expandAttachmentReferences,
   removeAttachmentReferences,
   serializeAttachmentReference,
-} from "@openbot/contracts/attachment-references";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+} from "@pokebots/contracts/attachment-references";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import type {
   AgentApproval,
   AgentTask,
@@ -13,26 +13,26 @@ import type {
   AttachmentSummary,
   ConversationSnapshot,
   DraftAttachment,
-} from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
-import { plainTaskTitle, taskApproval } from "@openbot/team-client/agent-tasks";
-import { retryOperationIds } from "@openbot/team-client/retry-operation-id";
-import type { AgentMessage, AgentProfile } from "@openbot/ui/data";
-import type { AgentTaskWait } from "@openbot/ui/features/conversation/AgentTasks";
-import type { AttachmentDownloads, AttachmentMediaSource } from "@openbot/ui/features/conversation/AttachmentCards";
-import type { ComposerPasteResult, ComposerSelection } from "@openbot/ui/features/conversation/ComposerEditor";
-import type { SendShortcut } from "@openbot/ui/features/conversation/send-shortcut";
-import { AgentThreadView, type AgentThreadVoice } from "@openbot/ui/features/conversation/threads/AgentThreadView";
-import { TaskAnswerCard } from "@openbot/ui/features/tasks/TaskAnswerCard";
-import { TaskPanel } from "@openbot/ui/features/tasks/TaskPanel";
+} from "@pokebots/contracts/ipc";
+import type { AppTextKey } from "@pokebots/i18n";
+import { plainTaskTitle, taskApproval } from "@pokebots/team-client/agent-tasks";
+import { retryOperationIds } from "@pokebots/team-client/retry-operation-id";
+import type { AgentMessage, AgentProfile } from "@pokebots/ui/data";
+import type { AgentTaskWait } from "@pokebots/ui/features/conversation/AgentTasks";
+import type { AttachmentDownloads, AttachmentMediaSource } from "@pokebots/ui/features/conversation/AttachmentCards";
+import type { ComposerPasteResult, ComposerSelection } from "@pokebots/ui/features/conversation/ComposerEditor";
+import type { SendShortcut } from "@pokebots/ui/features/conversation/send-shortcut";
+import { AgentThreadView, type AgentThreadVoice } from "@pokebots/ui/features/conversation/threads/AgentThreadView";
+import { TaskAnswerCard } from "@pokebots/ui/features/tasks/TaskAnswerCard";
+import { TaskPanel } from "@pokebots/ui/features/tasks/TaskPanel";
 import {
   TASKS_SIDE_DEFAULT,
   TASKS_SIDE_MIN,
   TasksPage,
   type TasksView as TasksPageView,
   type TasksVoice,
-} from "@openbot/ui/features/tasks/TasksPage";
-import { currentText } from "@openbot/ui/text";
+} from "@pokebots/ui/features/tasks/TasksPage";
+import { currentText } from "@pokebots/ui/text";
 import {
   createEffect,
   createMemo,

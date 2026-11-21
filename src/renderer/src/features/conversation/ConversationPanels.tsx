@@ -1,20 +1,20 @@
-import { LOCAL_SERVER_ID, type ServerSummary } from "@openbot/contracts/ipc";
-import { AGENT_MEMORY_LIMIT_CAPABILITY } from "@openbot/contracts/team-protocol/agent-memory-limit-v1";
-import { AGENT_NOTIFICATION_LEVELS_CAPABILITY } from "@openbot/contracts/team-protocol/agent-notification-levels-v1";
-import { BROWSER_PROFILES_CAPABILITY } from "@openbot/contracts/team-protocol/browser-profiles-v1";
-import { ROUTINE_RUN_COMMAND_CAPABILITY } from "@openbot/contracts/team-protocol/routine-run-command-v1";
-import { classifyFailure } from "@openbot/telemetry";
-import { buttonVariants, DropdownMenu, Folder, Maximize2, Minimize2, Plus } from "@openbot/ui";
-import { PanelResizer } from "@openbot/ui/components/PanelResizer";
-import { SettingsLinkGroup, SettingsLinkRow, settingsPanelMaxWidth } from "@openbot/ui/components/SettingsPanel";
-import { BROWSER_NEW_TAB_URL } from "@openbot/ui/features/browser/browser-suggestions";
-import { ComputerIcon } from "@openbot/ui/features/conversation/ConversationIcons";
-import { SidePanelHeader, SidePanelLauncher, type SidePanelPane } from "@openbot/ui/features/conversation/SidePanel";
-import { SideQuestionPanel } from "@openbot/ui/features/conversation/SideQuestionPanel";
-import { SubagentPanel } from "@openbot/ui/features/conversation/Subagents";
-import { VoicePill } from "@openbot/ui/features/conversation/VoicePill";
-import { McpSignInRelayDialog } from "@openbot/ui/features/settings/McpSignInPage";
-import { useText } from "@openbot/ui/text";
+import { LOCAL_SERVER_ID, type ServerSummary } from "@pokebots/contracts/ipc";
+import { AGENT_MEMORY_LIMIT_CAPABILITY } from "@pokebots/contracts/team-protocol/agent-memory-limit-v1";
+import { AGENT_NOTIFICATION_LEVELS_CAPABILITY } from "@pokebots/contracts/team-protocol/agent-notification-levels-v1";
+import { BROWSER_PROFILES_CAPABILITY } from "@pokebots/contracts/team-protocol/browser-profiles-v1";
+import { ROUTINE_RUN_COMMAND_CAPABILITY } from "@pokebots/contracts/team-protocol/routine-run-command-v1";
+import { classifyFailure } from "@pokebots/telemetry";
+import { buttonVariants, DropdownMenu, Folder, Maximize2, Minimize2, Plus } from "@pokebots/ui";
+import { PanelResizer } from "@pokebots/ui/components/PanelResizer";
+import { SettingsLinkGroup, SettingsLinkRow, settingsPanelMaxWidth } from "@pokebots/ui/components/SettingsPanel";
+import { BROWSER_NEW_TAB_URL } from "@pokebots/ui/features/browser/browser-suggestions";
+import { ComputerIcon } from "@pokebots/ui/features/conversation/ConversationIcons";
+import { SidePanelHeader, SidePanelLauncher, type SidePanelPane } from "@pokebots/ui/features/conversation/SidePanel";
+import { SideQuestionPanel } from "@pokebots/ui/features/conversation/SideQuestionPanel";
+import { SubagentPanel } from "@pokebots/ui/features/conversation/Subagents";
+import { VoicePill } from "@pokebots/ui/features/conversation/VoicePill";
+import { McpSignInRelayDialog } from "@pokebots/ui/features/settings/McpSignInPage";
+import { useText } from "@pokebots/ui/text";
 import { actionToast } from "../../action-toast";
 import { useChatBubbleStyle } from "../../chat-bubble-style-preference";
 import {
@@ -51,7 +51,7 @@ import { useChatPinnedMessages } from "./use-chat-pinned-messages";
 
 const loadAgentSettingsPanel = () => import("./AgentSettingsPanel");
 
-import { type HostFolderPick, HostFolderPicker } from "@openbot/ui/features/conversation/HostFolderPicker";
+import { type HostFolderPick, HostFolderPicker } from "@pokebots/ui/features/conversation/HostFolderPicker";
 import { Portal } from "@solidjs/web";
 import {
   createEffect,

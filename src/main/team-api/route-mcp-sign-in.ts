@@ -1,6 +1,6 @@
-import type { McpSignInState } from "@openbot/contracts/ipc";
-import { MCP_SIGN_IN_CAPABILITY, MCP_SIGN_IN_ROUTES } from "@openbot/contracts/team-protocol/mcp-sign-in-v1";
-import { sourceText } from "@openbot/i18n/source";
+import type { McpSignInState } from "@pokebots/contracts/ipc";
+import { MCP_SIGN_IN_CAPABILITY, MCP_SIGN_IN_ROUTES } from "@pokebots/contracts/team-protocol/mcp-sign-in-v1";
+import { sourceText } from "@pokebots/i18n/source";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import { parseCancelMcpSignIn, parseRemoveMcpServer, parseTestMcpServer } from "../ipc/mcp-inputs";
 import type { TeamApiMcpServerOwners, TeamApiMcpServers, TeamApiMcpSignIns } from "./dependencies";

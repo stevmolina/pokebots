@@ -1,6 +1,6 @@
-import type { AgentMessage } from "@openbot/ui/data";
-import { matchShortcut, shortcutMatches } from "@openbot/ui/features/shortcuts/shortcut-registry";
-import { prefersReducedMotion } from "@openbot/ui/utils";
+import type { AgentMessage } from "@pokebots/ui/data";
+import { matchShortcut, shortcutMatches } from "@pokebots/ui/features/shortcuts/shortcut-registry";
+import { prefersReducedMotion } from "@pokebots/ui/utils";
 import { createEffect, onCleanup } from "solid-js";
 import type { ChatSearchMatch } from "../chat-search";
 import { clearChatSearchHighlights, findChatSearchMatches, renderChatSearchHighlights } from "../chat-search";

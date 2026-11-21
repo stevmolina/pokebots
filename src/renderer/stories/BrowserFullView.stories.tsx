@@ -3,10 +3,10 @@ import type {
   BrowserDockIsland,
   BrowserLiveViewEvent,
   BrowserTab,
-} from "@openbot/contracts/ipc";
-import { BrowserDock } from "@openbot/ui/features/browser/BrowserDock";
-import BrowserFullView from "@openbot/ui/features/browser/BrowserFullView";
-import type { BrowserViewRuntime } from "@openbot/ui/features/browser/BrowserLiveView";
+} from "@pokebots/contracts/ipc";
+import { BrowserDock } from "@pokebots/ui/features/browser/BrowserDock";
+import BrowserFullView from "@pokebots/ui/features/browser/BrowserFullView";
+import type { BrowserViewRuntime } from "@pokebots/ui/features/browser/BrowserLiveView";
 import { createSignal } from "solid-js";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";

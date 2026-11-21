@@ -19,7 +19,7 @@ import {
   PinOff,
   RotateCcw,
   Star,
-} from "@openbot/ui";
+} from "@pokebots/ui";
 import { Show } from "solid-js";
 import type { AgentProfile } from "../../data";
 import { useText } from "../../text";

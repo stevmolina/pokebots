@@ -1,5 +1,5 @@
-import type { MobileTextKey } from "@openbot/i18n/mobile";
-import { ROUTINE_SAVED_DRAFT_KIND_VALUES, type RoutineDraftKind } from "@openbot/team-client/routine-schedule-draft";
+import type { MobileTextKey } from "@pokebots/i18n/mobile";
+import { ROUTINE_SAVED_DRAFT_KIND_VALUES, type RoutineDraftKind } from "@pokebots/team-client/routine-schedule-draft";
 import { Typography } from "heroui-native";
 import AlarmClock from "lucide-react-native/icons/alarm-clock";
 import Check from "lucide-react-native/icons/check";

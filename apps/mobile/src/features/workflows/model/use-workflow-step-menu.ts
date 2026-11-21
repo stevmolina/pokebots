@@ -1,4 +1,4 @@
-import type { WorkflowNode } from "@openbot/contracts/ipc";
+import type { WorkflowNode } from "@pokebots/contracts/ipc";
 import { router } from "expo-router";
 import { Alert } from "react-native";
 import { useWorkflowDraft, type WorkflowDraft } from "@/features/workflows/model/workflow-draft";

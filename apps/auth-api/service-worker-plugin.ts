@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
+import { isDynamicRecord } from "@pokebots/contracts/runtime-values";
 import type { Plugin } from "vite";
 import { brandText, readBrandSettings } from "../../scripts/brand-layer";
 

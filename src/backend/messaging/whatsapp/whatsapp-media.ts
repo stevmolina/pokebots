@@ -1,7 +1,7 @@
 import { createWriteStream } from "node:fs";
 import { Transform } from "node:stream";
 import { pipeline } from "node:stream/promises";
-import { downloadMediaMessage, type WAMessage } from "@openbot/whatsapp/baileys";
+import { downloadMediaMessage, type WAMessage } from "@pokebots/whatsapp/baileys";
 import type { WhatsAppSession } from "./whatsapp-session";
 
 /**

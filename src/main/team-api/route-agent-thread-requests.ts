@@ -2,8 +2,8 @@ import {
   AGENT_THREAD_REQUESTS_CAPABILITY,
   AGENT_THREAD_REQUESTS_LIMIT,
   AGENT_THREAD_REQUESTS_ROUTES,
-} from "@openbot/contracts/team-protocol/agent-thread-requests-v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/team-protocol/agent-thread-requests-v1";
+import { sourceText } from "@pokebots/i18n/source";
 import type { TeamApiAgentTasks } from "./dependencies";
 import { HttpError } from "./http-error";
 import type { RouteOutcome, TeamApiRequestContext } from "./request-context";

@@ -3,7 +3,7 @@
  * and the button open the global search.
  */
 
-import { Bot, Button, DropdownMenu, FolderPlus, Hash } from "@openbot/ui";
+import { Bot, Button, DropdownMenu, FolderPlus, Hash } from "@pokebots/ui";
 import { Show } from "solid-js";
 import { useText } from "../../text";
 import { SidebarFilterMenu } from "./SidebarFilterMenu";

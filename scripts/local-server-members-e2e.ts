@@ -16,10 +16,10 @@
 import assert from "node:assert/strict";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { createWebAppInvitePath, parseInviteUrl } from "@openbot/contracts/invite-links";
-import type { OpenBotDesktopApi, ServerSummary } from "@openbot/contracts/ipc";
-import { en } from "@openbot/i18n";
-import { createOpenBotLogger } from "@openbot/logging";
+import { createWebAppInvitePath, parseInviteUrl } from "@pokebots/contracts/invite-links";
+import type { OpenBotDesktopApi, ServerSummary } from "@pokebots/contracts/ipc";
+import { en } from "@pokebots/i18n";
+import { createOpenBotLogger } from "@pokebots/logging";
 import { chromium, type Page } from "playwright-core";
 import { assertMutationAllowed, connectToDevApp } from "./dev-automation/cdp-client";
 import { readDevInstanceRecords } from "./dev-automation/instance-registry";

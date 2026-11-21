@@ -7,10 +7,10 @@
 import assert from "node:assert/strict";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
-import type { OpenBotDesktopApi } from "@openbot/contracts/ipc";
-import type { EventRoutine, EventRoutineRun, SaveEventRoutineInput } from "@openbot/contracts/ipc-events";
-import { ROUTINE_RECOVERY_CAPABILITY } from "@openbot/contracts/team-protocol/routine-recovery-v1";
-import { createOpenBotLogger } from "@openbot/logging";
+import type { OpenBotDesktopApi } from "@pokebots/contracts/ipc";
+import type { EventRoutine, EventRoutineRun, SaveEventRoutineInput } from "@pokebots/contracts/ipc-events";
+import { ROUTINE_RECOVERY_CAPABILITY } from "@pokebots/contracts/team-protocol/routine-recovery-v1";
+import { createOpenBotLogger } from "@pokebots/logging";
 import type { Page } from "playwright-core";
 import { assertMutationAllowed, connectToDevApp } from "./dev-automation/cdp-client";
 import { readDevInstanceRecords } from "./dev-automation/instance-registry";

@@ -8,9 +8,9 @@
  * no real code and talks to nothing.
  */
 
-import { type AgentProviderId, agentProviderDescriptor } from "@openbot/contracts/ipc";
-import { toast } from "@openbot/ui";
-import type { ProviderCodeLoginState } from "@openbot/ui/components/ProviderCodeLoginDialog";
+import { type AgentProviderId, agentProviderDescriptor } from "@pokebots/contracts/ipc";
+import { toast } from "@pokebots/ui";
+import type { ProviderCodeLoginState } from "@pokebots/ui/components/ProviderCodeLoginDialog";
 import { createSignal } from "solid-js";
 import type { ProviderConnectionApi, ProviderUseApp } from "../src/components/provider-connection-api";
 

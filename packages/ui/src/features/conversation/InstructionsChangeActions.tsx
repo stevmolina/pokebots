@@ -5,8 +5,8 @@
  * calls, as in a thread, the line has View only.
  */
 
-import type { AgentInstructionsChange } from "@openbot/contracts/ipc";
-import { Button, FileText, MarkerIcon, Undo2 } from "@openbot/ui";
+import type { AgentInstructionsChange } from "@pokebots/contracts/ipc";
+import { Button, FileText, MarkerIcon, Undo2 } from "@pokebots/ui";
 import type { JSX } from "@solidjs/web";
 import { createSignal, onSettled, Show } from "solid-js";
 import { useText } from "../../text";

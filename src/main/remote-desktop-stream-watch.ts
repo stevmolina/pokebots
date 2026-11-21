@@ -1,4 +1,4 @@
-import { sourceText } from "@openbot/i18n/source";
+import { sourceText } from "@pokebots/i18n/source";
 
 /** No decoded frame for this long means the stream stalled. Sunshine sends at least half the frame rate, also for a still screen. */
 const STALL_MS = 20_000;

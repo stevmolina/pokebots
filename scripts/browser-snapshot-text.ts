@@ -1,4 +1,4 @@
-import type { DynamicRecord } from "@openbot/contracts/runtime-values";
+import type { DynamicRecord } from "@pokebots/contracts/runtime-values";
 import { z } from "zod";
 
 /**

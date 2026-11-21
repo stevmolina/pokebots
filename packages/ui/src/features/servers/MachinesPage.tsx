@@ -4,9 +4,9 @@
  * is down does not hide the others. A click on an agent opens it on its server.
  */
 
-import type { ServerConnectionState } from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
-import { Button, RefreshCw, Settings } from "@openbot/ui";
+import type { ServerConnectionState } from "@pokebots/contracts/ipc";
+import type { AppTextKey } from "@pokebots/i18n";
+import { Button, RefreshCw, Settings } from "@pokebots/ui";
 import { createMemo, createSignal, For, Match, Show, Switch } from "solid-js";
 import type { AgentProfile } from "../../data";
 import { useText } from "../../text";

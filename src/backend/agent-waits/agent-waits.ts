@@ -1,6 +1,6 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import type { AgentEvent, AgentWait, AgentWaitsSnapshot } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
+import type { AgentEvent, AgentWait, AgentWaitsSnapshot } from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
 import { z } from "zod";
 import { type OpenBotToolResponse, openBotToolFailure, openBotToolResult } from "../agent/routine-tools";
 import type { MailboxStore } from "../mailbox-store";

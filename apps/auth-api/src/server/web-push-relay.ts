@@ -5,9 +5,9 @@ import {
   WEB_NOTIFICATION_URGENCIES,
   type WebNotificationRelayPush,
   type WebNotificationUrgency,
-} from "@openbot/contracts/notification-relay";
-import { type DynamicRecord, isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { isWebPushEndpoint, WEB_PUSH_ENDPOINT_LIMIT } from "@openbot/contracts/team-protocol/push-notifications-web-v1";
+} from "@pokebots/contracts/notification-relay";
+import { type DynamicRecord, isDynamicRecord, isString } from "@pokebots/contracts/runtime-values";
+import { isWebPushEndpoint, WEB_PUSH_ENDPOINT_LIMIT } from "@pokebots/contracts/team-protocol/push-notifications-web-v1";
 import { Effect, Schema } from "effect";
 import { importJWK, type JWK, SignJWT } from "jose";
 

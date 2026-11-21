@@ -4,9 +4,9 @@ import {
   type AgentSummary,
   agentComputerUseEnabled,
   workspaceAccessEnforced,
-} from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger } from "@openbot/logging";
+} from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
+import { createOpenBotLogger } from "@pokebots/logging";
 import { Effect } from "effect";
 import type { DynamicToolCallParams } from "../protocol";
 import { agentReasoningEffort, requestedRuntime, requestedToolModel, requireRunnableChange } from "./model-tools";

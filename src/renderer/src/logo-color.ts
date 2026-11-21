@@ -3,7 +3,7 @@ import {
   APP_LOGO_EYE_HEX,
   type AppLogoColor,
   DEFAULT_APP_LOGO_COLOR,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import { createSignal, onSettled } from "solid-js";
 import { appPort } from "./app-port";
 

@@ -6,7 +6,7 @@ import type {
   AgentDockInputRect,
   AgentDockPresentation,
   SetAgentDockInteractiveInput,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import { Effect } from "effect";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { agentDockIpcHandlers } from "./agent-dock-handlers";

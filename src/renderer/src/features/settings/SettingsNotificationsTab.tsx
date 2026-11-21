@@ -1,4 +1,4 @@
-import type { ServerNotificationLevel } from "@openbot/contracts/ipc";
+import type { ServerNotificationLevel } from "@pokebots/contracts/ipc";
 import {
   Button,
   Item,
@@ -10,14 +10,14 @@ import {
   SettingsSection,
   SwitchField,
   toast,
-} from "@openbot/ui";
+} from "@pokebots/ui";
 import {
   ACTION_SOUND_CHOICES,
   type GeneralSettingsValue,
   TASK_SOUND_CHOICES,
-} from "@openbot/ui/features/settings/app-settings";
-import { NotificationMatrix, NotificationScopeTitle } from "@openbot/ui/features/settings/NotificationMatrix";
-import { SoundChoiceSelect } from "@openbot/ui/features/settings/SoundChoiceSelect";
+} from "@pokebots/ui/features/settings/app-settings";
+import { NotificationMatrix, NotificationScopeTitle } from "@pokebots/ui/features/settings/NotificationMatrix";
+import { SoundChoiceSelect } from "@pokebots/ui/features/settings/SoundChoiceSelect";
 import { Show } from "solid-js";
 import { playSoundChoice } from "../../completion-sound";
 import { useI18n } from "../../i18n-context";

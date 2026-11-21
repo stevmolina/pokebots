@@ -1,10 +1,10 @@
 import { EventEmitter } from "node:events";
 import { join } from "node:path";
-import type { RemoteDesktopIceServer } from "@openbot/contracts/ipc";
-import type { IceServer } from "@openbot/contracts/signal-protocol/messages";
-import type { RemoteMemberRole } from "@openbot/contracts/signal-protocol/ticket";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger } from "@openbot/logging";
+import type { RemoteDesktopIceServer } from "@pokebots/contracts/ipc";
+import type { IceServer } from "@pokebots/contracts/signal-protocol/messages";
+import type { RemoteMemberRole } from "@pokebots/contracts/signal-protocol/ticket";
+import { sourceText } from "@pokebots/i18n/source";
+import { createOpenBotLogger } from "@pokebots/logging";
 import { Deferred, Effect, Exit, Fiber, Scope } from "effect";
 import { BrowserWindow, MessageChannelMain, type MessagePortMain } from "electron";
 import { z } from "zod";

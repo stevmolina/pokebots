@@ -1,4 +1,4 @@
-import { hostedPlanMachineMetrics } from "@openbot/contracts/hosted-servers";
+import { hostedPlanMachineMetrics } from "@pokebots/contracts/hosted-servers";
 import {
   DEFAULT_MACHINE_ALERT_SETTINGS,
   type MachineMetric,
@@ -7,8 +7,8 @@ import {
   machineAlertLevel,
   machineMetricPercent,
   machineMetricTone,
-} from "@openbot/contracts/ipc";
-import type { MobileTextKey } from "@openbot/i18n/mobile";
+} from "@pokebots/contracts/ipc";
+import type { MobileTextKey } from "@pokebots/i18n/mobile";
 import { router } from "expo-router";
 import { Typography } from "heroui-native";
 import { useThemeColor } from "heroui-native/hooks";

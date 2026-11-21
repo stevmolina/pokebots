@@ -1,4 +1,4 @@
-import { sourceText } from "@openbot/i18n/source-english";
+import { sourceText } from "@pokebots/i18n/source-english";
 import { Effect } from "effect";
 import { createRemoteJWKSet, customFetch, type FetchImplementation, importPKCS8, jwtVerify, SignJWT } from "jose";
 import { AuthServiceError } from "./auth-service";

@@ -1,5 +1,5 @@
-import { avatarHeadColor } from "@openbot/brand/bloub-avatar";
-import { canAdministerServer, providerDisplayName } from "@openbot/contracts/ipc";
+import { avatarHeadColor } from "@pokebots/brand/bloub-avatar";
+import { canAdministerServer, providerDisplayName } from "@pokebots/contracts/ipc";
 import { useQuery } from "@tanstack/react-query";
 import * as Clipboard from "expo-clipboard";
 import { router, Stack, useNavigation } from "expo-router";

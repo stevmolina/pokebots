@@ -6,8 +6,8 @@ import type {
   AgentDockPresentation,
   AgentDockSeatRef as AgentDockSeatContract,
   AgentRuntimeApproval,
-} from "@openbot/contracts/ipc";
-import type { AgentMessage } from "@openbot/ui/data";
+} from "@pokebots/contracts/ipc";
+import type { AgentMessage } from "@pokebots/ui/data";
 import {
   AgentDock,
   type AgentDockChatAnswers,
@@ -18,8 +18,8 @@ import {
   type AgentDockChannel as AgentDockUiChannel,
   agentDockBody,
   agentDockSeatKey,
-} from "@openbot/ui/features/agent-dock/AgentDock";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/ui/features/agent-dock/AgentDock";
+import { useText } from "@pokebots/ui/text";
 import { createEffect, createMemo, createSignal, onSettled, Show } from "solid-js";
 import { currentDevicePlatform } from "../../send-shortcut-preference";
 import { windowShape } from "../../window-shape";

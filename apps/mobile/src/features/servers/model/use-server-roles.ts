@@ -4,7 +4,7 @@ import {
   type AgentAccessLevels,
   type AgentAccessRole,
   canAdministerServer,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRef } from "react";
 import { useQueryScope } from "@/features/auth/context/mobile-session-context";

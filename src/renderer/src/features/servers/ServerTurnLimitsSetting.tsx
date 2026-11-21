@@ -5,7 +5,7 @@ import {
   type HostTurnLimits,
   type HostTurnLimitsInput,
   type OpenBotDesktopApi,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   Item,
   ItemActions,
@@ -17,8 +17,8 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@openbot/ui";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/ui";
+import { useText } from "@pokebots/ui/text";
 import { createEffect, createSignal, Show, untrack } from "solid-js";
 
 /** The turn limit calls of one server's host. The desktop reaches them through main. */

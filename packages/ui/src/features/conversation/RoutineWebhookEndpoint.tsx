@@ -1,4 +1,4 @@
-import { MASKED_WEBHOOK_SECRET } from "@openbot/contracts/event-filter-value";
+import { MASKED_WEBHOOK_SECRET } from "@pokebots/contracts/event-filter-value";
 import {
   Bot,
   Button,
@@ -10,7 +10,7 @@ import {
   KeyRound,
   RefreshCw,
   Text,
-} from "@openbot/ui";
+} from "@pokebots/ui";
 import { createEffect, createMemo, createSignal, Show } from "solid-js";
 import { useText } from "../../text";
 

@@ -1,10 +1,10 @@
-import { isManagedRuntimeProvider, type ManagedProviderId } from "@openbot/contracts/agent-providers";
+import { isManagedRuntimeProvider, type ManagedProviderId } from "@pokebots/contracts/agent-providers";
 import type {
   AgentProviderId,
   OpenBotDesktopApi,
   ProviderRuntimeSnapshot,
   ProviderRuntimeStatus,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import { clone, type Listener, type MockRuntime } from "./mock-support";
 
 export interface MockProviderRuntimeOptions {

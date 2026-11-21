@@ -1,6 +1,6 @@
-import { parseSaveSkillSuggestion } from "@openbot/contracts/ipc";
-import { SKILL_LEARNING_CAPABILITY, SKILL_LEARNING_ROUTES } from "@openbot/contracts/team-protocol/skill-learning-v1";
-import { sourceText } from "@openbot/i18n/source";
+import { parseSaveSkillSuggestion } from "@pokebots/contracts/ipc";
+import { SKILL_LEARNING_CAPABILITY, SKILL_LEARNING_ROUTES } from "@pokebots/contracts/team-protocol/skill-learning-v1";
+import { sourceText } from "@pokebots/i18n/source";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import type { TeamApiAgents } from "./dependencies";
 import { HttpError } from "./http-error";

@@ -1,4 +1,4 @@
-import type { ConversationSubagent, ConversationSubagentStepKind } from "@openbot/contracts/ipc";
+import type { ConversationSubagent, ConversationSubagentStepKind } from "@pokebots/contracts/ipc";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { Typography } from "heroui-native";
 import type { LucideIcon } from "lucide-react-native";

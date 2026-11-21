@@ -1,5 +1,5 @@
-import { AGENT_INSTRUCTION_FILE_NAMES } from "@openbot/contracts/ipc";
-import { isDynamicRecord, isNumber, isOneOf, isString } from "@openbot/contracts/runtime-values";
+import { AGENT_INSTRUCTION_FILE_NAMES } from "@pokebots/contracts/ipc";
+import { isDynamicRecord, isNumber, isOneOf, isString } from "@pokebots/contracts/runtime-values";
 import {
   type InstructionsFileText,
   instructionsFileUpdate,

@@ -1,6 +1,6 @@
-import { isAgentProvider } from "@openbot/contracts/agent-providers";
-import type { AgentSummary } from "@openbot/contracts/ipc";
-import type { TeamProtocolV1JsonObject, TeamProtocolV1JsonValue } from "@openbot/contracts/team-protocol/v1";
+import { isAgentProvider } from "@pokebots/contracts/agent-providers";
+import type { AgentSummary } from "@pokebots/contracts/ipc";
+import type { TeamProtocolV1JsonObject, TeamProtocolV1JsonValue } from "@pokebots/contracts/team-protocol/v1";
 
 /**
  * The providers that each frozen protocol knows. Protocol 8 and later accept any provider id, so they

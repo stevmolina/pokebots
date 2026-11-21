@@ -18,9 +18,9 @@
 // It deletes its channel at the end. Writes .openbot-build/chat-visual-e2e/report.json and screenshots.
 import assert from "node:assert/strict";
 import { resolve } from "node:path";
-import { isAgentProvider } from "@openbot/contracts/agent-providers";
-import type { AgentSummary } from "@openbot/contracts/ipc";
-import { translateFor } from "@openbot/i18n";
+import { isAgentProvider } from "@pokebots/contracts/agent-providers";
+import type { AgentSummary } from "@pokebots/contracts/ipc";
+import { translateFor } from "@pokebots/i18n";
 import type { FrameLocator, Locator, Page } from "playwright-core";
 import { argument, ChannelClient, connectChannelE2e, WAIT_MS, waitFor, writeReport } from "./channel-e2e-support";
 

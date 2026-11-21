@@ -1,13 +1,13 @@
 // What an agent changed in its instruction file during its turns. The chat shows a line after the
 // turn, and the user can undo the change from it.
 
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import {
   AGENT_INSTRUCTIONS_CHANGE_ITEM_TYPE,
   type AgentInstructionsChange,
   type ConversationMessage,
-} from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect } from "effect";
 import { readAgentInstructionsFile } from "./workspace-instructions";
 

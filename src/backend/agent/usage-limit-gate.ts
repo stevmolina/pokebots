@@ -1,5 +1,5 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import type { AccountUsage, AgentEvent, AgentRuntimeSnapshot } from "@openbot/contracts/ipc";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
+import type { AccountUsage, AgentEvent, AgentRuntimeSnapshot } from "@pokebots/contracts/ipc";
 import { Effect, Exit, Schema, Scope } from "effect";
 import type { AgentProvider } from "../agent-client";
 import type { AgentStore } from "../agent-store";

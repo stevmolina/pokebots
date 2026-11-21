@@ -1,4 +1,4 @@
-import { agentSteersTurns } from "@openbot/contracts/agent-providers";
+import { agentSteersTurns } from "@pokebots/contracts/agent-providers";
 import type {
   ConversationMessageSender,
   QueueDelivery,
@@ -6,9 +6,9 @@ import type {
   ReorderQueueInput,
   SteerQueuedMessageInput,
   UpdateQueuedMessageInput,
-} from "@openbot/contracts/ipc";
-import { QueueEditRejectedError, type QueueEditRequest } from "@openbot/contracts/team-protocol/queue-edit-v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/ipc";
+import { QueueEditRejectedError, type QueueEditRequest } from "@pokebots/contracts/team-protocol/queue-edit-v1";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect, Schema } from "effect";
 import type { AgentProvider } from "../agent-client";
 import type { AgentStore } from "../agent-store";

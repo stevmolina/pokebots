@@ -1,4 +1,4 @@
-import type { AppTranslate } from "@openbot/i18n";
+import type { AppTranslate } from "@pokebots/i18n";
 import type { TeamsSetupId } from "../../lib/teams-page";
 import { slot } from "../../lib/text-slots";
 

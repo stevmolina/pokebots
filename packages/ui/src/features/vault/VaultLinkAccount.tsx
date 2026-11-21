@@ -1,4 +1,4 @@
-import type { LinkAccountStatus } from "@openbot/contracts/ipc";
+import type { LinkAccountStatus } from "@pokebots/contracts/ipc";
 import {
   Button,
   buttonVariants,
@@ -14,7 +14,7 @@ import {
   ItemTitle,
   Link2Off,
   Text,
-} from "@openbot/ui";
+} from "@pokebots/ui";
 import { createStore, Show } from "solid-js";
 import { useText } from "../../text";
 

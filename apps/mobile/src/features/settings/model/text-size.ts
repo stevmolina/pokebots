@@ -1,4 +1,4 @@
-import { type AppInterfaceSize, isAppInterfaceSize } from "@openbot/contracts/ipc";
+import { type AppInterfaceSize, isAppInterfaceSize } from "@pokebots/contracts/ipc";
 import * as SecureStore from "expo-secure-store";
 import { useTextSize } from "./text-size-store";
 

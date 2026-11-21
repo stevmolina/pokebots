@@ -6,7 +6,7 @@
 // `Publish the Android APK` workflow makes it public.
 // See apps/mobile/README.md#android-apk.
 
-import { isNewerMobileVersion } from "@openbot/contracts/mobile-features";
+import { isNewerMobileVersion } from "@pokebots/contracts/mobile-features";
 import { ANDROID_APK_FIRST_VERSION, MOBILE_LATEST_VERSIONS } from "../server/mobile-features-config";
 import { OPENBOT_LINKS } from "./landing-links";
 

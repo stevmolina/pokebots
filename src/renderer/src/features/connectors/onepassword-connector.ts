@@ -1,6 +1,6 @@
-import { DISCONNECTED_ONEPASSWORD_CONNECTOR, type OnePasswordConnectorStatus } from "@openbot/contracts/ipc";
-import { classifyFailure } from "@openbot/telemetry";
-import { currentText } from "@openbot/ui/text";
+import { DISCONNECTED_ONEPASSWORD_CONNECTOR, type OnePasswordConnectorStatus } from "@pokebots/contracts/ipc";
+import { classifyFailure } from "@pokebots/telemetry";
+import { currentText } from "@pokebots/ui/text";
 import { createSignal, onCleanup, onSettled } from "solid-js";
 import { actionToast } from "../../action-toast";
 import {

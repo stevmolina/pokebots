@@ -1,13 +1,13 @@
 // The programs that agents left running on this computer, or on a joined server through
 // `background-processes-v1`. See `../background-processes.ts`.
 
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import {
   BACKGROUND_PROCESSES_CAPABILITY,
   BACKGROUND_PROCESSES_ROUTES,
   decodeBackgroundProcessesResponse,
-} from "@openbot/contracts/team-protocol/background-processes-v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/team-protocol/background-processes-v1";
+import { sourceText } from "@pokebots/i18n/source";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import { type BackgroundProcessAgent, listBackgroundProcesses, stopBackgroundProcess } from "../background-processes";
 import { acceptEmpty } from "../remote-host-decoding";

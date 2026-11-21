@@ -1,4 +1,4 @@
-import type { HostedServerList, HostedServerSummary } from "@openbot/contracts/hosted-servers";
+import type { HostedServerList, HostedServerSummary } from "@pokebots/contracts/hosted-servers";
 import { create } from "zustand";
 import type { HostedServerCalls } from "@/features/servers/api/hosted-servers";
 

@@ -4,8 +4,8 @@
 
 import { request as httpRequest } from "node:http";
 import { request as httpsRequest } from "node:https";
-import { sourceText } from "@openbot/i18n/source";
-import { redactSecrets, registerSecretValue } from "@openbot/logging";
+import { sourceText } from "@pokebots/i18n/source";
+import { redactSecrets, registerSecretValue } from "@pokebots/logging";
 import { Effect, Redacted, Schema } from "effect";
 import type { IntegrationCredential } from "../integration-credential";
 

@@ -240,8 +240,8 @@
                     "group": [
                       "electron",
                       "electron/**",
-                      "@openbot/renderer-preview",
-                      "@openbot/renderer-web",
+                      "@pokebots/renderer-preview",
+                      "@pokebots/renderer-web",
                       "**/src/main/**",
                       "**/src/backend/**",
                       "**/src/preload/**",

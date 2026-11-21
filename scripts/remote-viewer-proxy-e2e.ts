@@ -10,7 +10,7 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { request } from "node:http";
 import { connect } from "node:net";
 import { join, resolve } from "node:path";
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
+import { TEAM_API_ROUTES } from "@pokebots/contracts/team-api-routes";
 import { Effect } from "effect";
 import { RemoteViewerProxy } from "../src/main/remote-viewer-proxy";
 

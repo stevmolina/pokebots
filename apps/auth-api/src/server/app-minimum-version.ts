@@ -1,4 +1,4 @@
-import type { AppSurface } from "@openbot/contracts/app-minimum-version";
+import type { AppSurface } from "@pokebots/contracts/app-minimum-version";
 
 /**
  * The lowest supported version of each surface (plan 011, item 24). Null blocks nothing. Raise a value

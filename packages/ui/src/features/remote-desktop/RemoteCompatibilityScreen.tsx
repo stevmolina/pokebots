@@ -1,6 +1,6 @@
-import type { ServerSummary } from "@openbot/contracts/ipc";
-import { Alert, AlertContent, AlertDescription, Button } from "@openbot/ui";
-import { useText } from "@openbot/ui/text";
+import type { ServerSummary } from "@pokebots/contracts/ipc";
+import { Alert, AlertContent, AlertDescription, Button } from "@pokebots/ui";
+import { useText } from "@pokebots/ui/text";
 import { For, Show } from "solid-js";
 
 /**

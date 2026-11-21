@@ -1,6 +1,6 @@
-import type { BrowserTab } from "@openbot/contracts/ipc";
-import { ContextMenu } from "@openbot/ui";
-import { useText } from "@openbot/ui/text";
+import type { BrowserTab } from "@pokebots/contracts/ipc";
+import { ContextMenu } from "@pokebots/ui";
+import { useText } from "@pokebots/ui/text";
 import { Show } from "solid-js";
 import { BrowserShortcutHint } from "./BrowserTabIcon";
 import type { BrowserFullViewProps } from "./browser-full-view-types";

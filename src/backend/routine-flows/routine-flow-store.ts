@@ -5,7 +5,7 @@
  * runtime says when something changed.
  */
 
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import {
   ROUTINE_FLOW_STEP_STATUSES,
   ROUTINE_RUN_SOURCES,
@@ -15,9 +15,9 @@ import {
   type RoutineFlowStepStatus,
   type RoutineRun,
   type RoutineRunStatus,
-} from "@openbot/contracts/ipc";
-import { type DynamicRecord, isOneOf } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/ipc";
+import { type DynamicRecord, isOneOf } from "@pokebots/contracts/runtime-values";
+import { sourceText } from "@pokebots/i18n/source";
 import { databaseRow, databaseRows, placeholders } from "../database/database-rows";
 import { withTransaction } from "../database/sqlite-transaction";
 import type { OpenBotDatabase } from "../openbot-database";

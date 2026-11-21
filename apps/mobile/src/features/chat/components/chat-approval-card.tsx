@@ -1,4 +1,4 @@
-import { feedbackApproval } from "@openbot/team-client/feedback-approval";
+import { feedbackApproval } from "@pokebots/team-client/feedback-approval";
 import { Button, Typography } from "heroui-native";
 import { useThemeColor } from "heroui-native/hooks";
 import Folder from "lucide-react-native/icons/folder";

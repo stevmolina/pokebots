@@ -1,5 +1,5 @@
-import { AGENT_MEMORY_CONTEXT_BUDGET_BYTES, essentialMemoryBytes } from "@openbot/contracts/agent-memory-context";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { AGENT_MEMORY_CONTEXT_BUDGET_BYTES, essentialMemoryBytes } from "@pokebots/contracts/agent-memory-context";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import type {
   AgentEvent,
   AgentMemory,
@@ -9,10 +9,10 @@ import type {
   DeleteAgentMemoryInput,
   SetAgentMemoryInclusionInput,
   UpdateAgentMemoryInput,
-} from "@openbot/contracts/ipc";
-import { isString } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
-import { redactSecrets } from "@openbot/logging";
+} from "@pokebots/contracts/ipc";
+import { isString } from "@pokebots/contracts/runtime-values";
+import { sourceText } from "@pokebots/i18n/source";
+import { redactSecrets } from "@pokebots/logging";
 import { z } from "zod";
 import {
   type AgentMemoryListPage,

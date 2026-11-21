@@ -1,4 +1,4 @@
-import { McpSignInCard } from "@openbot/ui/features/conversation/McpSignInCard";
+import { McpSignInCard } from "@pokebots/ui/features/conversation/McpSignInCard";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 

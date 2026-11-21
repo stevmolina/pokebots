@@ -9,27 +9,27 @@ import {
   type WorkflowNodeKind,
   type WorkflowSaveResult,
   type WorkflowSummary,
-} from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
-import { toast } from "@openbot/ui";
-import type { WorkflowCanvasProps } from "@openbot/ui/features/workflows/WorkflowCanvas";
-import type { WorkflowBuild } from "@openbot/ui/features/workflows/workflow-build";
+} from "@pokebots/contracts/ipc";
+import type { AppTextKey } from "@pokebots/i18n";
+import { toast } from "@pokebots/ui";
+import type { WorkflowCanvasProps } from "@pokebots/ui/features/workflows/WorkflowCanvas";
+import type { WorkflowBuild } from "@pokebots/ui/features/workflows/workflow-build";
 import {
   EMPTY_GITHUB_HISTORY,
   githubItemUrl,
   type WorkflowGitHubCanvas,
-} from "@openbot/ui/features/workflows/workflow-github";
-import { stableJson } from "@openbot/ui/features/workflows/workflow-history";
-import { mergeWorkflowGraphs } from "@openbot/ui/features/workflows/workflow-merge";
+} from "@pokebots/ui/features/workflows/workflow-github";
+import { stableJson } from "@pokebots/ui/features/workflows/workflow-history";
+import { mergeWorkflowGraphs } from "@pokebots/ui/features/workflows/workflow-merge";
 import type {
   WorkflowChannel,
   WorkflowDiscordServer,
   WorkflowPlace,
   WorkflowSlackWorkspace,
   WorkflowTelegramChat,
-} from "@openbot/ui/features/workflows/workflow-model";
-import { EMPTY_WORKFLOW_RUN_VIEW } from "@openbot/ui/features/workflows/workflow-run-view";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/ui/features/workflows/workflow-model";
+import { EMPTY_WORKFLOW_RUN_VIEW } from "@pokebots/ui/features/workflows/workflow-run-view";
+import { useText } from "@pokebots/ui/text";
 import { createEffect, createMemo, createSignal, onSettled, untrack } from "solid-js";
 import { agentAskedHere } from "../../agent-requests";
 import type { DesktopAnalyticsScope, WorkflowAnalyticsAction } from "../../analytics";

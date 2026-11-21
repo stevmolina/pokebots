@@ -5,17 +5,17 @@ import { mkdtemp, rm, stat, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { DatabaseSync } from "node:sqlite";
-import { sortConversationMessages } from "@openbot/contracts/conversation-order";
-import type { AgentProviderId, AgentSummary, ConversationMessage, ConversationSnapshot } from "@openbot/contracts/ipc";
+import { sortConversationMessages } from "@pokebots/contracts/conversation-order";
+import type { AgentProviderId, AgentSummary, ConversationMessage, ConversationSnapshot } from "@pokebots/contracts/ipc";
 import {
   hostedSiteConversationEventItemType,
   hostedSiteConversationEventText,
   ROUTINE_QUIET_ANSWER_ITEM_TYPE,
   routineConversationEventItemType,
   routineRunConversationEventItemType,
-} from "@openbot/contracts/ipc";
-import { isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/ipc";
+import { isDynamicRecord, isNumber, isString } from "@pokebots/contracts/runtime-values";
+import { sourceText } from "@pokebots/i18n/source";
 import { afterEach, assert, describe, expect, it } from "vitest";
 import { AgentRoutineStore } from "./agent-routine-store";
 import { ChannelRoutineStore } from "./channel-routine-store";

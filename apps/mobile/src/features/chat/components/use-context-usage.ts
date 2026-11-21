@@ -1,4 +1,4 @@
-import type { AgentContextState } from "@openbot/contracts/ipc";
+import type { AgentContextState } from "@pokebots/contracts/ipc";
 import { router } from "expo-router";
 import { useCallback, useMemo, useSyncExternalStore } from "react";
 import {

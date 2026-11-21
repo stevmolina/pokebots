@@ -1,5 +1,5 @@
-import type { AvatarMood } from "@openbot/brand/bloub-avatar-motion";
-import type { PokebotsPortrait as Portrait } from "@openbot/brand/pokebots-avatar";
+import type { AvatarMood } from "@pokebots/brand/bloub-avatar-motion";
+import type { PokebotsPortrait as Portrait } from "@pokebots/brand/pokebots-avatar";
 import { Show } from "solid-js";
 import { POKEBOTS_PORTRAIT_IMAGES } from "./pokebots-portraits";
 

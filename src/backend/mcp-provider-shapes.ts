@@ -11,9 +11,9 @@ import {
   isReservedMcpServerName,
   type McpServerConfig,
   type McpTransport,
-} from "@openbot/contracts/ipc";
-import { type DynamicRecord, isDynamicRecord } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/ipc";
+import { type DynamicRecord, isDynamicRecord } from "@pokebots/contracts/runtime-values";
+import { sourceText } from "@pokebots/i18n/source";
 import { Deferred, Effect, Schema } from "effect";
 import { agentScreenMcpServer, withAgentScreen } from "./agent/agent-screens";
 import { agentLaunchPath, isExecutable, isWindowsRunnable } from "./cli";

@@ -1,4 +1,4 @@
-import type { AgentPromptResolution, ConversationQuestionPrompt } from "@openbot/contracts/ipc";
+import type { AgentPromptResolution, ConversationQuestionPrompt } from "@pokebots/contracts/ipc";
 import {
   type ConversationUiBlock,
   UI_BLOCK_LIMITS,
@@ -16,7 +16,7 @@ import {
   uiBlockAnswersFromResponse,
   uiConfirmAnswersWithPreview,
   uiConfirmPreviewEditable,
-} from "@openbot/contracts/ui-blocks";
+} from "@pokebots/contracts/ui-blocks";
 import { router } from "expo-router";
 import { Button, Typography } from "heroui-native";
 import { useThemeColor } from "heroui-native/hooks";

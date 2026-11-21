@@ -2,8 +2,8 @@ import {
   type AgentEvent,
   type ConversationMessage,
   MARKETPLACE_SUGGESTION_ITEM_TYPE_PREFIX,
-} from "@openbot/contracts/ipc";
-import type { ServerView } from "@openbot/ui/features/servers/ServerMenu";
+} from "@pokebots/contracts/ipc";
+import type { ServerView } from "@pokebots/ui/features/servers/ServerMenu";
 import { onCleanup } from "solid-js";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { App } from "../src/App";

@@ -5,8 +5,8 @@
  * the custom agents, and a link to the usage page.
  */
 
-import { ProviderLogo } from "@openbot/brand";
-import { Button, ChevronRight, MotionTooltip, Popover } from "@openbot/ui";
+import { ProviderLogo } from "@pokebots/brand";
+import { Button, ChevronRight, MotionTooltip, Popover } from "@pokebots/ui";
 import { createMemo, createSignal, For, onCleanup, Show } from "solid-js";
 import { useText } from "../../text";
 import { AccountUsageWindowList } from "../account/AccountUsageDetails";

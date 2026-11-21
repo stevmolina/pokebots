@@ -4,16 +4,16 @@ import type {
   BrowserPreview,
   BrowserTab,
   BrowserTeachStep,
-} from "@openbot/contracts/ipc";
-import { BROWSER_TEACH_CAPABILITY } from "@openbot/contracts/team-protocol/browser-teach-v1";
-import { BROWSER_USER_CONTROL_CAPABILITY } from "@openbot/contracts/team-protocol/browser-user-control-v1";
-import { TEAM_BROWSER_NAVIGATION_CAPABILITY } from "@openbot/contracts/team-protocol/current";
-import { classifyFailure } from "@openbot/telemetry";
-import { toast } from "@openbot/ui";
-import type { AgentProfile } from "@openbot/ui/data";
-import { BROWSER_NEW_TAB_URL, browserAddressUrl } from "@openbot/ui/features/browser/browser-suggestions";
-import { MAIN_THREAD_ID } from "@openbot/ui/features/conversation/threads/thread-types";
-import { currentText } from "@openbot/ui/text";
+} from "@pokebots/contracts/ipc";
+import { BROWSER_TEACH_CAPABILITY } from "@pokebots/contracts/team-protocol/browser-teach-v1";
+import { BROWSER_USER_CONTROL_CAPABILITY } from "@pokebots/contracts/team-protocol/browser-user-control-v1";
+import { TEAM_BROWSER_NAVIGATION_CAPABILITY } from "@pokebots/contracts/team-protocol/current";
+import { classifyFailure } from "@pokebots/telemetry";
+import { toast } from "@pokebots/ui";
+import type { AgentProfile } from "@pokebots/ui/data";
+import { BROWSER_NEW_TAB_URL, browserAddressUrl } from "@pokebots/ui/features/browser/browser-suggestions";
+import { MAIN_THREAD_ID } from "@pokebots/ui/features/conversation/threads/thread-types";
+import { currentText } from "@pokebots/ui/text";
 import { createEffect, createMemo, createSignal, untrack } from "solid-js";
 import { actionToast } from "../../../action-toast";
 import { desktopAnalytics } from "../../../analytics";

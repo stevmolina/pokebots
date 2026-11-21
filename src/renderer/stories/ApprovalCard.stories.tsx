@@ -1,7 +1,7 @@
-import { type BugReport, type FeatureRequest, type Feedback, feedbackPreview } from "@openbot/contracts/feedback";
-import type { AgentApproval } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
-import { ApprovalCard } from "@openbot/ui/features/conversation/ConversationPrompts";
+import { type BugReport, type FeatureRequest, type Feedback, feedbackPreview } from "@pokebots/contracts/feedback";
+import type { AgentApproval } from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
+import { ApprovalCard } from "@pokebots/ui/features/conversation/ConversationPrompts";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 

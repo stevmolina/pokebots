@@ -1,5 +1,5 @@
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { remoteHostFingerprint } from "@openbot/team-client";
+import { isDynamicRecord, isString } from "@pokebots/contracts/runtime-values";
+import { remoteHostFingerprint } from "@pokebots/team-client";
 import { create } from "zustand";
 import type { RecentAgent } from "./quick-action-items";
 

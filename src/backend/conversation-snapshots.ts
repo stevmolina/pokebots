@@ -1,17 +1,17 @@
-import { sortConversationMessages } from "@openbot/contracts/conversation-order";
+import { sortConversationMessages } from "@pokebots/contracts/conversation-order";
 import type {
   AgentExchangeSummary,
   AgentProviderId,
   ConversationMessage,
   ConversationSnapshot,
   QueueDelivery,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   AGENT_EXCHANGE_ITEM_TYPE,
   mergeImageGenerationInfo,
   ROUTINE_QUIET_ANSWER_ITEM_TYPE,
-} from "@openbot/contracts/ipc";
-import { isString } from "@openbot/contracts/runtime-values";
+} from "@pokebots/contracts/ipc";
+import { isString } from "@pokebots/contracts/runtime-values";
 import { displayMessageReferences, type TeammatePrompt, teammatePrompts } from "./agent/delivery-content";
 import {
   imageGenerationAspectRatio,

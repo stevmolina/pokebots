@@ -1,5 +1,5 @@
-import { ConfirmDialog } from "@openbot/ui";
-import { useText } from "@openbot/ui/text";
+import { ConfirmDialog } from "@pokebots/ui";
+import { useText } from "@pokebots/ui/text";
 
 /** Explains the Full access level that "Always allow" on an approval card gives. */
 export function StandingApprovalConfirmation(props: {

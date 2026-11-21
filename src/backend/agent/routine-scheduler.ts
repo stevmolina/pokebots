@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
-import { sortConversationMessages } from "@openbot/contracts/conversation-order";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { sortConversationMessages } from "@pokebots/contracts/conversation-order";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import type {
   AgentEvent,
   AgentSummary,
@@ -18,13 +18,13 @@ import type {
   TestRoutineInput,
   UpdateRoutineInput,
   WorkflowRunSource,
-} from "@openbot/contracts/ipc";
-import { routineConversationEventItemType, routineRunConversationEventItemType } from "@openbot/contracts/ipc";
-import type { EventRoutine } from "@openbot/contracts/ipc-events";
-import { type DynamicRecord, isBoolean } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger, redactText } from "@openbot/logging";
-import { collapseMissedOccurrences, RoutineInputError } from "@openbot/team-client/routine-schedule";
+} from "@pokebots/contracts/ipc";
+import { routineConversationEventItemType, routineRunConversationEventItemType } from "@pokebots/contracts/ipc";
+import type { EventRoutine } from "@pokebots/contracts/ipc-events";
+import { type DynamicRecord, isBoolean } from "@pokebots/contracts/runtime-values";
+import { sourceText } from "@pokebots/i18n/source";
+import { createOpenBotLogger, redactText } from "@pokebots/logging";
+import { collapseMissedOccurrences, RoutineInputError } from "@pokebots/team-client/routine-schedule";
 import { Effect, Schema } from "effect";
 import { AgentRoutineStore } from "../agent-routine-store";
 import type { AgentStore } from "../agent-store";

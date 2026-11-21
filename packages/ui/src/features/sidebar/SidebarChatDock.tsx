@@ -19,8 +19,8 @@
  * unread chats are out of view, below the list or in a closed group, and goes to the next one.
  */
 
-import { SIDEBAR_PEOPLE_SECTION_ID, SIDEBAR_UNASSIGNED_SECTION_ID } from "@openbot/contracts/ipc";
-import { ArrowDown, Button } from "@openbot/ui";
+import { SIDEBAR_PEOPLE_SECTION_ID, SIDEBAR_UNASSIGNED_SECTION_ID } from "@pokebots/contracts/ipc";
+import { ArrowDown, Button } from "@pokebots/ui";
 import type { JSX } from "@solidjs/web";
 import { createMemo, createSignal, For, onSettled, Show } from "solid-js";
 import { useText } from "../../text";

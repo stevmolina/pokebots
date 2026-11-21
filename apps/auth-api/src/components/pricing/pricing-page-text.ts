@@ -1,6 +1,6 @@
-import { BILLING_PLANS } from "@openbot/contracts/billing";
-import { LICENSE_MAX_USERS } from "@openbot/contracts/license";
-import type { AppTranslate } from "@openbot/i18n";
+import { BILLING_PLANS } from "@pokebots/contracts/billing";
+import { LICENSE_MAX_USERS } from "@pokebots/contracts/license";
+import type { AppTranslate } from "@pokebots/i18n";
 
 /*
  * The text of the pricing page around the order form, built from `sitePage.pricing.*` catalog keys. The order form

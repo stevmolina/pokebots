@@ -1,19 +1,19 @@
-import { type AvatarMimeType, isValidAvatarImage } from "@openbot/contracts/avatar-images";
-import { companySignInErrorKey, MOBILE_COMPANY_SIGN_IN_RETURN } from "@openbot/contracts/company-sign-in";
-import { AVATAR_IMAGE_LIMITS } from "@openbot/contracts/input-limits";
-import { OPENBOT_CONTROL_PLANE_ORIGIN } from "@openbot/contracts/invite-links";
-import type { CentralAuthUser } from "@openbot/contracts/ipc";
+import { type AvatarMimeType, isValidAvatarImage } from "@pokebots/contracts/avatar-images";
+import { companySignInErrorKey, MOBILE_COMPANY_SIGN_IN_RETURN } from "@pokebots/contracts/company-sign-in";
+import { AVATAR_IMAGE_LIMITS } from "@pokebots/contracts/input-limits";
+import { OPENBOT_CONTROL_PLANE_ORIGIN } from "@pokebots/contracts/invite-links";
+import type { CentralAuthUser } from "@pokebots/contracts/ipc";
 import {
   isMobileConnectDevelopmentHost,
   isMobileConnectHostBinding,
   type MobileConnectHostBinding,
   parseMobileConnectUrl,
   validateMobileConnectHostBinding,
-} from "@openbot/contracts/mobile-connect";
-import { type DynamicRecord, isBoolean, isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { normalizeEmailAddress, normalizeOneTimeCode, validateProfileName } from "@openbot/contracts/validation";
-import { workosSignInErrorKey } from "@openbot/contracts/workos-sign-in";
-import type { MobileTextKey } from "@openbot/i18n/mobile";
+} from "@pokebots/contracts/mobile-connect";
+import { type DynamicRecord, isBoolean, isDynamicRecord, isString } from "@pokebots/contracts/runtime-values";
+import { normalizeEmailAddress, normalizeOneTimeCode, validateProfileName } from "@pokebots/contracts/validation";
+import { workosSignInErrorKey } from "@pokebots/contracts/workos-sign-in";
+import type { MobileTextKey } from "@pokebots/i18n/mobile";
 import * as Crypto from "expo-crypto";
 import * as Device from "expo-device";
 import * as SecureStore from "expo-secure-store";

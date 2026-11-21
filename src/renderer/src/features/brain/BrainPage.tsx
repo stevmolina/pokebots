@@ -1,9 +1,9 @@
-import { BRAIN_CAPABILITY } from "@openbot/contracts/brain";
+import { BRAIN_CAPABILITY } from "@pokebots/contracts/brain";
 import {
   POKEBOTS_BRAIN_ID,
   POKEBOTS_INTEGRATIONS_CAPABILITY,
-} from "@openbot/contracts/team-protocol/pokebots-integrations-v1";
-import { BrainPanel } from "@openbot/ui/features/brain/BrainPanel";
+} from "@pokebots/contracts/team-protocol/pokebots-integrations-v1";
+import { BrainPanel } from "@pokebots/ui/features/brain/BrainPanel";
 import { createEffect, createSignal, Show } from "solid-js";
 import { IntegrationProfiles } from "../integrations/IntegrationProfiles";
 import { useLocalIntegrations } from "../integrations/local-integrations";

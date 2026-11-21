@@ -3,8 +3,8 @@ import {
   type HomeAgentRulesPreference,
   type HomeAgentRulesSetting,
   parseHomeAgentRulesPreference,
-} from "@openbot/contracts/ipc";
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
+} from "@pokebots/contracts/ipc";
+import { isDynamicRecord } from "@pokebots/contracts/runtime-values";
 import { Effect } from "effect";
 import { availableHomeAgentRules } from "../backend/home-agent-rules";
 import { PreferenceStore } from "./preference-file";

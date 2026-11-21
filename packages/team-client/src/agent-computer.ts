@@ -7,11 +7,11 @@ import {
   decodeAgentComputerAccountAllowance,
   decodeAgentComputerMachineList,
   decodeAgentComputerStatus,
-} from "@openbot/contracts/ipc";
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
-import { AGENT_COMPUTER_ROUTES } from "@openbot/contracts/team-protocol/agent-computer-v1";
-import { COMPUTER_MANAGEMENT_ROUTE } from "@openbot/contracts/team-protocol/computer-management-v1";
-import { POKEBOTS_INTEGRATIONS_ROUTES } from "@openbot/contracts/team-protocol/pokebots-integrations-v1";
+} from "@pokebots/contracts/ipc";
+import { isDynamicRecord } from "@pokebots/contracts/runtime-values";
+import { AGENT_COMPUTER_ROUTES } from "@pokebots/contracts/team-protocol/agent-computer-v1";
+import { COMPUTER_MANAGEMENT_ROUTE } from "@pokebots/contracts/team-protocol/computer-management-v1";
+import { POKEBOTS_INTEGRATIONS_ROUTES } from "@pokebots/contracts/team-protocol/pokebots-integrations-v1";
 import type { TeamApiRequest } from "./team-api-requests";
 
 /** Human-only account controls. The transport supplies authentication and capability checks. */

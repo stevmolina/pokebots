@@ -1,4 +1,4 @@
-import { ROOMS_CAPABILITY, ROOMS_ROUTE } from "@openbot/contracts/team-protocol/rooms-v1";
+import { ROOMS_CAPABILITY, ROOMS_ROUTE } from "@pokebots/contracts/team-protocol/rooms-v1";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import { decodeRoomsRequest } from "../rooms-inputs";
 import type { RoomsService } from "../rooms-service";

@@ -10,7 +10,7 @@ import {
   STRIPE_MARK_PATH,
   TELEGRAM_MARK_PATH,
   WHATSAPP_MARK_PATH,
-} from "@openbot/brand/connector-mark-shape";
+} from "@pokebots/brand/connector-mark-shape";
 import type { JSX } from "@solidjs/web";
 
 /** GitHub's mark. Lucide has no brand icons, so the path is GitHub's own. */

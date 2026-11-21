@@ -27,8 +27,8 @@
  * did not start is sent then; one that was on its way fails as uncertain.
  */
 
-import { isAgentProvider } from "@openbot/contracts/agent-providers";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { isAgentProvider } from "@pokebots/contracts/agent-providers";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import {
   type AgentEvent,
   type AgentReasoningEffort,
@@ -76,10 +76,10 @@ import {
   workflowMediaKind,
   workflowMediaModel,
   workflowMediaSpecs,
-} from "@openbot/contracts/ipc";
-import { isOneOf } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger } from "@openbot/logging";
+} from "@pokebots/contracts/ipc";
+import { isOneOf } from "@pokebots/contracts/runtime-values";
+import { sourceText } from "@pokebots/i18n/source";
+import { createOpenBotLogger } from "@pokebots/logging";
 import { Cause, Context, Effect, Exit, Fiber, Layer, ManagedRuntime, Result, Schema, Scope, Semaphore } from "effect";
 import { isNoUpdateAnswer } from "../agent/routine-quiet-runs";
 import type { AgentProvider } from "../agent-client";

@@ -1,5 +1,5 @@
-import { DEFAULT_SKILL_LEARNING_MODE, isSkillLearningMode, type SkillLearningPreference } from "@openbot/contracts/ipc";
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
+import { DEFAULT_SKILL_LEARNING_MODE, isSkillLearningMode, type SkillLearningPreference } from "@pokebots/contracts/ipc";
+import { isDynamicRecord } from "@pokebots/contracts/runtime-values";
 import { Effect, Result, Semaphore } from "effect";
 import { isMissingFileError } from "../backend/file-errors";
 import { type PreferenceFileFailure, readPreferenceFile, writePreferenceFile } from "./preference-file";

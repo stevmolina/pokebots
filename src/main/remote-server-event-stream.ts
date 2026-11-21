@@ -1,11 +1,11 @@
-import type { HostAppearanceEvent } from "@openbot/contracts/team-protocol/host-appearance-v1";
-import type { HostRestartEvent } from "@openbot/contracts/team-protocol/host-update-v1";
-import type { LiveVoiceEvent } from "@openbot/contracts/team-protocol/live-voice-v1";
-import type { MachineAlertEvent } from "@openbot/contracts/team-protocol/machine-resources-v1";
-import { optionalTeamEvent, optionalTeamEventToCurrent } from "@openbot/contracts/team-protocol/optional-events";
-import type { RemoteComputerCallEvent } from "@openbot/contracts/team-protocol/remote-computer-use-v1";
-import { addSkillSuggestionNames, SKILL_LEARNING_CAPABILITY } from "@openbot/contracts/team-protocol/skill-learning-v1";
-import { decodeTeamProtocolV8BaseCurrentEvent } from "@openbot/contracts/team-protocol/v8-base-adapter";
+import type { HostAppearanceEvent } from "@pokebots/contracts/team-protocol/host-appearance-v1";
+import type { HostRestartEvent } from "@pokebots/contracts/team-protocol/host-update-v1";
+import type { LiveVoiceEvent } from "@pokebots/contracts/team-protocol/live-voice-v1";
+import type { MachineAlertEvent } from "@pokebots/contracts/team-protocol/machine-resources-v1";
+import { optionalTeamEvent, optionalTeamEventToCurrent } from "@pokebots/contracts/team-protocol/optional-events";
+import type { RemoteComputerCallEvent } from "@pokebots/contracts/team-protocol/remote-computer-use-v1";
+import { addSkillSuggestionNames, SKILL_LEARNING_CAPABILITY } from "@pokebots/contracts/team-protocol/skill-learning-v1";
+import { decodeTeamProtocolV8BaseCurrentEvent } from "@pokebots/contracts/team-protocol/v8-base-adapter";
 import { Effect, Exit, Result, Scope } from "effect";
 import { RemoteWorkflowError, remoteDecode } from "./remote-service-effects";
 // The live event channel for HTTPS servers, and the reconnect policy both transports share.
@@ -36,22 +36,22 @@ import type {
   ServerCompatibility,
   ServerSummary,
   TeamPresenceSnapshot,
-} from "@openbot/contracts/ipc";
-import { decodeRecord } from "@openbot/contracts/ipc-decoding";
-import { isString } from "@openbot/contracts/runtime-values";
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
+} from "@pokebots/contracts/ipc";
+import { decodeRecord } from "@pokebots/contracts/ipc-decoding";
+import { isString } from "@pokebots/contracts/runtime-values";
+import { TEAM_API_ROUTES } from "@pokebots/contracts/team-api-routes";
 import {
   supportsTeamCapability,
   type TeamCurrentCapability,
   teamCapabilitiesForProtocol,
-} from "@openbot/contracts/team-protocol/current";
-import { TEAM_PROTOCOL_V1_WEBSOCKET } from "@openbot/contracts/team-protocol/v1";
+} from "@pokebots/contracts/team-protocol/current";
+import { TEAM_PROTOCOL_V1_WEBSOCKET } from "@pokebots/contracts/team-protocol/v1";
 import {
   encodeTeamProtocolV1CurrentClientEvent,
   type TeamProtocolV1CurrentClientEvent,
-} from "@openbot/contracts/team-protocol/v1-adapter";
-import { sourceText } from "@openbot/i18n/source";
-import { referenceFrom } from "@openbot/user-errors";
+} from "@pokebots/contracts/team-protocol/v1-adapter";
+import { sourceText } from "@pokebots/i18n/source";
+import { referenceFrom } from "@pokebots/user-errors";
 import { RemoteProtocolError, RemoteRequestError } from "./remote-server-errors";
 import { requestJson } from "./remote-server-http";
 import type { RemoteServerDirectory, StoredRemoteServerView } from "./remote-server-store";

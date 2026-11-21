@@ -43,9 +43,9 @@ import {
   type CrmTone,
   isCrmChange,
   isCrmProposedChange,
-} from "@openbot/contracts/ipc";
-import { type DynamicRecord, isDynamicRecord, isNumber, isOneOf, isString } from "@openbot/contracts/runtime-values";
-import { type SourceMessages, sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/ipc";
+import { type DynamicRecord, isDynamicRecord, isNumber, isOneOf, isString } from "@pokebots/contracts/runtime-values";
+import { type SourceMessages, sourceText } from "@pokebots/i18n/source";
 import {
   checkedColumn,
   databaseRow,

@@ -1,4 +1,4 @@
-import { isAppSurface } from "@openbot/contracts/app-minimum-version";
+import { isAppSurface } from "@pokebots/contracts/app-minimum-version";
 import { createFileRoute } from "@tanstack/solid-router";
 import { APP_MINIMUM_VERSIONS } from "../../../server/app-minimum-version";
 

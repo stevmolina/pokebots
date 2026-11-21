@@ -3,17 +3,17 @@ import {
   DISCORD_ROUTE_AUDIENCE,
   DISCORD_ROUTE_GUILDS_LIMIT,
   type DiscordRouteGuild,
-} from "@openbot/contracts/signal-protocol/discord-route";
+} from "@pokebots/contracts/signal-protocol/discord-route";
 import {
   GITHUB_ROUTE_AUDIENCE,
   GITHUB_ROUTE_REPOSITORIES_LIMIT,
   type GitHubRouteRepository,
-} from "@openbot/contracts/signal-protocol/github-route";
+} from "@pokebots/contracts/signal-protocol/github-route";
 import {
   SLACK_ROUTE_AUDIENCE,
   SLACK_ROUTE_TEAMS_LIMIT,
   type SlackRouteTeam,
-} from "@openbot/contracts/signal-protocol/slack-route";
+} from "@pokebots/contracts/signal-protocol/slack-route";
 import {
   TELEGRAM_BOT_ID_PATTERN,
   TELEGRAM_CHAT_ID_PATTERN,
@@ -22,12 +22,12 @@ import {
   TELEGRAM_ROUTE_CHATS_LIMIT,
   type TelegramReplyParameters,
   type TelegramRouteChat,
-} from "@openbot/contracts/signal-protocol/telegram-route";
+} from "@pokebots/contracts/signal-protocol/telegram-route";
 import {
   WEBHOOK_ROUTE_AUDIENCE,
   WEBHOOK_ROUTES_LIMIT,
   type WebhookRoute,
-} from "@openbot/contracts/signal-protocol/webhook-route";
+} from "@pokebots/contracts/signal-protocol/webhook-route";
 import { Effect, Result, Schema } from "effect";
 import {
   createLocalJWKSet,

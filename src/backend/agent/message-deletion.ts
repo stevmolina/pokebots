@@ -1,4 +1,4 @@
-import type { ConversationMessage, ConversationSnapshot, DeleteConversationMessageInput } from "@openbot/contracts/ipc";
+import type { ConversationMessage, ConversationSnapshot, DeleteConversationMessageInput } from "@pokebots/contracts/ipc";
 import { Effect } from "effect";
 import type { AgentStore } from "../agent-store";
 import type { AgentTasks } from "../agent-tasks/agent-tasks";

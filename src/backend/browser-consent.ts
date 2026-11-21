@@ -1,4 +1,4 @@
-import { createOpenBotLogger, toLogValue } from "@openbot/logging";
+import { createOpenBotLogger, toLogValue } from "@pokebots/logging";
 import type { WebContents } from "electron";
 
 /** The isolated world of the consent script. The page cannot read its state or its functions. */

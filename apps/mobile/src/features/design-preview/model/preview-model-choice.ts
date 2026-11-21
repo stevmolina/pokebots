@@ -1,4 +1,4 @@
-import type { AgentProviderId } from "@openbot/contracts/ipc";
+import type { AgentProviderId } from "@pokebots/contracts/ipc";
 import { create } from "zustand";
 import { PREVIEW_DEFAULT_MODEL, PREVIEW_MODEL_GROUPS } from "./preview-data";
 

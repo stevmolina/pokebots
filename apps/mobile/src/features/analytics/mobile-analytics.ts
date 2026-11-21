@@ -1,4 +1,4 @@
-import { ANALYTICS_GENERATIONS } from "@openbot/telemetry";
+import { ANALYTICS_GENERATIONS } from "@pokebots/telemetry";
 import type { TrackHandlerPayload } from "@openpanel/react-native";
 import { Platform } from "react-native";
 import { nativeApplication, nativeApplicationVersion, nativeBuildVersion } from "@/shared/lib/native-application";

@@ -1,4 +1,4 @@
-import type { MessagingPlatform } from "@openbot/contracts/ipc";
+import type { MessagingPlatform } from "@pokebots/contracts/ipc";
 
 /** One earlier message of the external conversation, given to the agent as context. */
 export interface MessagingContextMessage {

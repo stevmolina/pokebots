@@ -5,8 +5,8 @@ import {
   type ChatVisualAppearance,
   chatVisualAppTheme,
   chatVisualFrameUrl,
-} from "@openbot/contracts/chat-visual";
-import { redactText } from "@openbot/logging";
+} from "@pokebots/contracts/chat-visual";
+import { redactText } from "@pokebots/logging";
 import { Effect, Semaphore } from "effect";
 import { BrowserWindow, session as electronSession, type NativeImage, type Session } from "electron";
 import {

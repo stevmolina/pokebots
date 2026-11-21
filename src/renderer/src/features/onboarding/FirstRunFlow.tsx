@@ -1,7 +1,7 @@
-import type { AppLogoVariant } from "@openbot/brand";
-import type { AgentModelId, AgentProviderId, AppSetupState, DesktopPlatform } from "@openbot/contracts/ipc";
-import { Button, ErrorReference } from "@openbot/ui";
-import { useText } from "@openbot/ui/text";
+import type { AppLogoVariant } from "@pokebots/brand";
+import type { AgentModelId, AgentProviderId, AppSetupState, DesktopPlatform } from "@pokebots/contracts/ipc";
+import { Button, ErrorReference } from "@pokebots/ui";
+import { useText } from "@pokebots/ui/text";
 import { createEffect, createSignal, createStore, createUniqueId, For, Match, Show, Switch, untrack } from "solid-js";
 import { desktopAnalytics } from "../../analytics";
 import { ComputerUseSetup } from "../computer-use/ComputerUseSetup";

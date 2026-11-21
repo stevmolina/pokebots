@@ -1,4 +1,4 @@
-import type { RoutineSchedule } from "@openbot/contracts/ipc";
+import type { RoutineSchedule } from "@pokebots/contracts/ipc";
 import type { DesktopAnalyticsScope } from "../../analytics";
 import { webhookFailureCode } from "../../webhook-failure-code";
 

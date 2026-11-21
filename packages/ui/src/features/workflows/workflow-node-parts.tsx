@@ -4,10 +4,10 @@
  * results strip. The control blocks share their choice pills, the toolbar menus and the colours.
  */
 
-import type { ProviderLogoVariant } from "@openbot/brand";
-import { isKnownAgentProvider } from "@openbot/contracts/agent-providers";
-import { isAgentProviderRef } from "@openbot/contracts/ipc";
-import type { AppFormat, AppTextKey, AppTranslate } from "@openbot/i18n";
+import type { ProviderLogoVariant } from "@pokebots/brand";
+import { isKnownAgentProvider } from "@pokebots/contracts/agent-providers";
+import { isAgentProviderRef } from "@pokebots/contracts/ipc";
+import type { AppFormat, AppTextKey, AppTranslate } from "@pokebots/i18n";
 import {
   Button,
   buttonVariants,
@@ -35,7 +35,7 @@ import {
   Trash2,
   TriangleAlert,
   Type,
-} from "@openbot/ui";
+} from "@pokebots/ui";
 import type { JSX } from "@solidjs/web";
 import { children, createEffect, createSignal, createStore, For, onSettled, Show, untrack } from "solid-js";
 import type { AgentProfile } from "../../data";

@@ -4,9 +4,9 @@ import {
   imageAspectRatioOf,
   imagePixelSizeText,
   type VideoGenerationInfo,
-} from "@openbot/contracts/ipc";
-import { isNumber, isString } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/ipc";
+import { isNumber, isString } from "@pokebots/contracts/runtime-values";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect, Exit, Fiber, Result, Schema, Scope } from "effect";
 import { newAssistantMessage } from "../conversation-snapshots";
 import { causeHelpers } from "../effect-boundary";

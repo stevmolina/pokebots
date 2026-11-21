@@ -1,6 +1,6 @@
-import type { SkillCategory } from "@openbot/contracts/ipc";
-import { Button, Heading, Input, Plus, Search, Text } from "@openbot/ui";
-import { useText } from "@openbot/ui/text";
+import type { SkillCategory } from "@pokebots/contracts/ipc";
+import { Button, Heading, Input, Plus, Search, Text } from "@pokebots/ui";
+import { useText } from "@pokebots/ui/text";
 import { createEffect, For, Match, Show, Switch, untrack } from "solid-js";
 import { AgentLibrary, agentFromSource } from "./MarketplaceAgents";
 import { AppRow } from "./MarketplaceCards";

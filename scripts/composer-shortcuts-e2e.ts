@@ -8,8 +8,8 @@
 import assert from "node:assert/strict";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { APP_SHORTCUT_COMMANDS } from "@openbot/contracts/app-shortcut";
-import { isAlternateSubmitKey } from "@openbot/ui/features/conversation/send-shortcut";
+import { APP_SHORTCUT_COMMANDS } from "@pokebots/contracts/app-shortcut";
+import { isAlternateSubmitKey } from "@pokebots/ui/features/conversation/send-shortcut";
 import {
   type KeyCombo,
   matchShortcut,
@@ -18,7 +18,7 @@ import {
   type ShortcutKeyEvent,
   type ShortcutPlatform,
   shortcutText,
-} from "@openbot/ui/features/shortcuts/shortcut-registry";
+} from "@pokebots/ui/features/shortcuts/shortcut-registry";
 import { parseSendMessage } from "../src/main/ipc/agent-inputs";
 import { type BusyOppositeAction, busyOppositeAction } from "../src/renderer/src/features/conversation/busy-submit";
 

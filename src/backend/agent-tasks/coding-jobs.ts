@@ -1,7 +1,7 @@
 import { mkdirSync, readdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { SIGNED_OUT_CHANNEL_MEMBER_ID } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+import { SIGNED_OUT_CHANNEL_MEMBER_ID } from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect, Semaphore } from "effect";
 import { z } from "zod";
 import { runCauseEffect } from "../effect-boundary";

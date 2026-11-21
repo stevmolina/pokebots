@@ -1,7 +1,7 @@
-import { agentWelcomeMessage } from "@openbot/contracts/agent-welcome";
-import type { CreateAgentInput } from "@openbot/contracts/ipc";
-import { appLanguageOption } from "@openbot/i18n/languages";
-import type { TranslatedLocale } from "@openbot/i18n/mobile";
+import { agentWelcomeMessage } from "@pokebots/contracts/agent-welcome";
+import type { CreateAgentInput } from "@pokebots/contracts/ipc";
+import { appLanguageOption } from "@pokebots/i18n/languages";
+import type { TranslatedLocale } from "@pokebots/i18n/mobile";
 
 /** A new agent as a screen asks for it. `firstTask` is what the user wrote for the agent to do first. */
 export type NewAgentInput = Omit<CreateAgentInput, "initialMessage"> & { firstTask?: string };

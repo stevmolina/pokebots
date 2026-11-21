@@ -1,4 +1,4 @@
-import type { RoomsRequest } from "@openbot/contracts/rooms";
+import type { RoomsRequest } from "@pokebots/contracts/rooms";
 import { Schema } from "effect";
 
 const roomId = Schema.String.check(Schema.isPattern(/^r_[a-zA-Z0-9_-]{1,128}$/));

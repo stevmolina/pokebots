@@ -6,8 +6,8 @@ import {
   type LicenseUsersRequest,
   parseLicenseCheckoutUrl,
   parseLicenseState,
-} from "@openbot/contracts/license";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/license";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect, type Layer } from "effect";
 import {
   type AccountRequestClient,

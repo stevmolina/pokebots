@@ -1,4 +1,4 @@
-import type { AgentTasksSnapshot } from "@openbot/contracts/ipc";
+import type { AgentTasksSnapshot } from "@pokebots/contracts/ipc";
 import { useQueryClient } from "@tanstack/react-query";
 import { router, useGlobalSearchParams, useSegments } from "expo-router";
 import { Stack } from "expo-router/stack";

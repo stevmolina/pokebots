@@ -9,7 +9,7 @@
 // disposition applies and the kernel ends the process whatever it is doing.
 
 import { join } from "node:path";
-import { createOpenBotLogger, toLogValue } from "@openbot/logging";
+import { createOpenBotLogger, toLogValue } from "@pokebots/logging";
 import { Effect } from "effect";
 import { utilityProcess } from "electron";
 import {

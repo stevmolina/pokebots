@@ -1,4 +1,4 @@
-import type { RemoteFileUpload } from "@openbot/team-client/remote-peer";
+import type { RemoteFileUpload } from "@pokebots/team-client/remote-peer";
 
 /**
  * The Cancel state of the device-file uploads in progress, by file ref. The transport reads it

@@ -1,6 +1,6 @@
-import { COMPUTER_USE_MCP_SERVER_NAME, isReservedMcpServerName } from "@openbot/contracts/ipc";
-import type { DynamicRecord } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
+import { COMPUTER_USE_MCP_SERVER_NAME, isReservedMcpServerName } from "@pokebots/contracts/ipc";
+import type { DynamicRecord } from "@pokebots/contracts/runtime-values";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect, Result, Semaphore } from "effect";
 import type { AgentClient } from "../agent-client";
 import {

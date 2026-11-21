@@ -1,4 +1,4 @@
-import type { AgentDockVoice, AgentDockVoiceTarget } from "@openbot/ui/features/agent-dock/AgentDock";
+import type { AgentDockVoice, AgentDockVoiceTarget } from "@pokebots/ui/features/agent-dock/AgentDock";
 import { createSignal, onCleanup } from "solid-js";
 import { appendVoiceTranscript } from "../../voice-recording";
 import { EMPTY_DRAFT } from "../conversation/composer-draft";

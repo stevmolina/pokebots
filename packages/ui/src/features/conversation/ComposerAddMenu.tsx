@@ -13,8 +13,8 @@ import {
   Puzzle,
   Sparkles,
   X,
-} from "@openbot/ui";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/ui";
+import { useText } from "@pokebots/ui/text";
 import { createSignal, Show } from "solid-js";
 import type { AgentProfile } from "../../data";
 import { AgentNewChatDialog } from "./AgentNewChatDialog";

@@ -12,22 +12,22 @@ import {
   type ListToolsResult,
   ListToolsResultSchema,
 } from "@modelcontextprotocol/sdk/types.js";
-import type { McpServerConfig } from "@openbot/contracts/ipc";
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
+import type { McpServerConfig } from "@pokebots/contracts/ipc";
+import { isDynamicRecord, isString } from "@pokebots/contracts/runtime-values";
 import {
   REMOTE_TERMINAL_CHUNK_BYTES,
   REMOTE_TERMINAL_FETCH_TOOL,
   REMOTE_TERMINAL_MAX_FILE_BYTES,
   REMOTE_TERMINAL_READ_TOOL,
-} from "@openbot/contracts/team-protocol/remote-computer-terminal-v1";
+} from "@pokebots/contracts/team-protocol/remote-computer-terminal-v1";
 import {
   REMOTE_COMPUTER_ARGUMENTS_MAX_LENGTH,
   REMOTE_COMPUTER_CALL_EVENT,
   REMOTE_COMPUTER_STATE_INTERVAL_MS,
   REMOTE_COMPUTER_TOOL_MAX_LENGTH,
   type RemoteComputerCallEvent,
-} from "@openbot/contracts/team-protocol/remote-computer-use-v1";
-import { createOpenBotLogger, toLogValue } from "@openbot/logging";
+} from "@pokebots/contracts/team-protocol/remote-computer-use-v1";
+import { createOpenBotLogger, toLogValue } from "@pokebots/logging";
 import { Deferred, Duration, Effect, Schema } from "effect";
 import { causeHelpers, runCauseEffect } from "../backend/effect-boundary";
 import { readJsonBody } from "../backend/local-mcp-bridge";

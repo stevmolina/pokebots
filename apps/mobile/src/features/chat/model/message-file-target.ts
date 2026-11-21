@@ -1,4 +1,4 @@
-import { fileReferenceName, isFileReference } from "@openbot/brand/file-reference";
+import { fileReferenceName, isFileReference } from "@pokebots/brand/file-reference";
 import { parseFinishedChatMarkdown, walkChatMarkdown } from "./chat-markdown-parser";
 
 /** A file that a message names: in the shared folder, or in the workspace of the agent that wrote it. */

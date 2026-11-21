@@ -1,4 +1,4 @@
-import type { MobileTranslate } from "@openbot/i18n/mobile";
+import type { MobileTranslate } from "@pokebots/i18n/mobile";
 import type { Href } from "expo-router";
 import { Typography } from "heroui-native";
 import type { LucideIcon } from "lucide-react-native";

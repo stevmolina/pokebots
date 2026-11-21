@@ -1,5 +1,5 @@
 import { randomBytes, randomUUID } from "node:crypto";
-import type { WorkflowTriggerInput, WorkflowWebhookSecret } from "@openbot/contracts/ipc";
+import type { WorkflowTriggerInput, WorkflowWebhookSecret } from "@pokebots/contracts/ipc";
 import type {
   AgentWebhookSecret,
   EventFilter,
@@ -14,17 +14,17 @@ import type {
   SaveEventRoutineInput,
   SetWebhookSecretInput,
   WebhookTestResult,
-} from "@openbot/contracts/ipc-events";
-import { isEventJsonValue } from "@openbot/contracts/ipc-events";
-import { type DynamicRecord, isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
+} from "@pokebots/contracts/ipc-events";
+import { isEventJsonValue } from "@pokebots/contracts/ipc-events";
+import { type DynamicRecord, isDynamicRecord, isString } from "@pokebots/contracts/runtime-values";
 import {
   WEBHOOK_DELIVERY_BODY_BYTES_LIMIT,
   type WebhookDeliveryStatus,
-} from "@openbot/contracts/signal-protocol/messages";
-import { STANDARD_WEBHOOKS_FORMAT, WEBHOOK_ROUTES_LIMIT } from "@openbot/contracts/signal-protocol/webhook-route";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger, registerSecretValue } from "@openbot/logging";
-import { RoutineInputError } from "@openbot/team-client/routine-schedule";
+} from "@pokebots/contracts/signal-protocol/messages";
+import { STANDARD_WEBHOOKS_FORMAT, WEBHOOK_ROUTES_LIMIT } from "@pokebots/contracts/signal-protocol/webhook-route";
+import { sourceText } from "@pokebots/i18n/source";
+import { createOpenBotLogger, registerSecretValue } from "@pokebots/logging";
+import { RoutineInputError } from "@pokebots/team-client/routine-schedule";
 import { Effect, Semaphore } from "effect";
 import { RoutineOperationFailed } from "../backend/agent/routine-scheduler";
 import {

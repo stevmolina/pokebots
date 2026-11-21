@@ -1,4 +1,4 @@
-import { AgentUpdateDialog } from "@openbot/ui/features/marketplace/AgentUpdateDialog";
+import { AgentUpdateDialog } from "@pokebots/ui/features/marketplace/AgentUpdateDialog";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 

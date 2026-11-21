@@ -1,7 +1,7 @@
-import { avatarHeadColor, avatarStyleForSeed } from "@openbot/brand/bloub-avatar";
-import type { AvatarMood } from "@openbot/brand/bloub-avatar-motion";
-import { pokebotsDefaultPortrait } from "@openbot/brand/pokebots-avatar";
-import type { AvatarColor, AvatarHue } from "@openbot/contracts/ipc";
+import { avatarHeadColor, avatarStyleForSeed } from "@pokebots/brand/bloub-avatar";
+import type { AvatarMood } from "@pokebots/brand/bloub-avatar-motion";
+import { pokebotsDefaultPortrait } from "@pokebots/brand/pokebots-avatar";
+import type { AvatarColor, AvatarHue } from "@pokebots/contracts/ipc";
 import { FilterMode, ImageFormat, MipmapMode, Skia } from "@shopify/react-native-skia";
 import { Directory, File, Paths } from "expo-file-system";
 import { Image } from "react-native";

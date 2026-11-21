@@ -1,4 +1,4 @@
-import { LOCAL_SERVER_ID } from "@openbot/contracts/ipc";
+import { LOCAL_SERVER_ID } from "@pokebots/contracts/ipc";
 import { createSimpleContext } from "../../simple-context";
 import { useCustomAgents } from "../custom-agents/custom-agents-context";
 import { useCustomProviders } from "./custom-providers-context";

@@ -8,7 +8,7 @@ import {
   type VoiceSettings,
   type VoiceTranscriptionInput,
   type VoiceTranscriptionResult,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import type { IpcMainInvokeEvent } from "electron";
 import { describe, expect, it, vi } from "vitest";
 import { agentRequest } from "./agent-inputs";

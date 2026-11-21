@@ -1,4 +1,4 @@
-declare module "@openbot/renderer-preview" {
+declare module "@pokebots/renderer-preview" {
   import type { JSX } from "@solidjs/web";
 
   export interface OpenBotPlaygroundProps {

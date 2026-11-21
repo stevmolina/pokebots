@@ -1,11 +1,11 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import {
   DISCORD_EMBED_LIMITS,
   DISCORD_EMBED_TEXT_LIMIT,
   DISCORD_EMBEDS_LIMIT,
   type DiscordEmbed,
   discordEmbedTextLength,
-} from "@openbot/contracts/signal-protocol/discord-api";
+} from "@pokebots/contracts/signal-protocol/discord-api";
 import { z } from "zod";
 import type { ContextEntry, HistoryFilter } from "./messaging-types";
 
