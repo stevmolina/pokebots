@@ -1,0 +1,301 @@
+{
+  "version": 1,
+  "tokens": ["nightly-labs/openbot", "openbot.run", "@openbot", "OpenBot", "OPENBOT", "openbot"],
+  "excludedDirectories": [
+    ".git",
+    ".openbot-build",
+    ".turbo",
+    ".vite",
+    "coverage",
+    "dist",
+    "node_modules",
+    "out",
+    "release"
+  ],
+  "entries": [
+    {
+      "id": "legal-and-notices",
+      "category": "legal-and-attribution",
+      "paths": [
+        "LICENSE",
+        "NOTICE",
+        "CLA.md",
+        "PRIVACY.md",
+        "SECURITY.md",
+        "SUPPORT.md",
+        "CONTRIBUTING.md",
+        "build/licenses/**"
+      ],
+      "tokens": ["nightly-labs/openbot", "openbot.run", "@openbot", "OpenBot", "OPENBOT", "openbot"],
+      "reason": "License, upstream attribution notices, and legal policy documents preserve original Nightly Labs and OpenBot attribution.",
+      "removalCondition": "Keep LICENSE and NOTICE upstream attribution permanently; update policy and contributor docs when Pokebots legal policies replace upstream templates."
+    },
+    {
+      "id": "historical-changelog-and-plans",
+      "category": "historical-records",
+      "paths": ["CHANGELOG.md", "changelog.d/**", "plans/**"],
+      "tokens": ["nightly-labs/openbot", "openbot.run", "@openbot", "OpenBot", "OPENBOT", "openbot"],
+      "reason": "Historical release notes, changelog fragments, and design plans record prior releases and rename context.",
+      "removalCondition": "Never rewrite historical release entries; new fragments describe Pokebots by default."
+    },
+    {
+      "id": "frozen-sqlite-migrations",
+      "category": "frozen-storage-schema",
+      "paths": ["src/backend/migrations/**", "src/backend/released-schemas/**"],
+      "tokens": ["@openbot", "OpenBot", "openbot"],
+      "reason": "Frozen SQLite migration files and released schema snapshots must stay byte-compatible for installed user databases.",
+      "removalCondition": "Never edit or rename frozen migrations."
+    },
+    {
+      "id": "team-api-wire-contracts",
+      "category": "wire-compatibility",
+      "paths": ["packages/contracts/src/team-protocol/**", "packages/team-client/**", "src/main/team-api/**"],
+      "tokens": ["openbot.run", "@openbot", "OpenBot", "OPENBOT", "openbot"],
+      "reason": "Team API wire payloads, protocol headers, and sync markers remain compatible during the 60-day Release A compatibility window.",
+      "removalCondition": "Remove legacy wire aliases after Release B retires OpenBot Team API protocol identifiers."
+    },
+    {
+      "id": "contracts-legacy-repo-compatibility",
+      "category": "wire-compatibility",
+      "paths": [
+        "packages/contracts/src/feedback.ts",
+        "packages/contracts/src/hosted-servers.ts",
+        "packages/contracts/src/ipc-agent-import.ts"
+      ],
+      "tokens": ["nightly-labs/openbot", "openbot.run", "@openbot", "OpenBot", "OPENBOT", "openbot"],
+      "reason": "Feedback repository fallback, hosted-server parsing, and agent import contracts keep legacy upstream repository identifiers for migration and compatibility.",
+      "removalCondition": "Remove after Release B drops legacy feedback and upstream repo fallbacks."
+    },
+    {
+      "id": "contracts-package-and-ipc",
+      "category": "workspace-package-scope",
+      "paths": ["packages/contracts/**"],
+      "tokens": ["openbot.run", "@openbot", "OpenBot", "OPENBOT", "openbot"],
+      "reason": "Contracts retain the @openbot workspace scope, IPC channel names, and Release A compatibility types.",
+      "removalCondition": "Remove after Release B renames the internal @openbot package scope and IPC contract names."
+    },
+    {
+      "id": "desktop-installer-and-packaging",
+      "category": "installed-identity-release-a",
+      "paths": [
+        "electron-builder.yml",
+        "electron-builder.custom.yml",
+        "electron-builder.windows-signing.yml",
+        "electron.vite.config.ts",
+        "build/**",
+        "flake.nix",
+        "nix/**",
+        "docker/**",
+        "native-runtime.lock.json",
+        "vendor/remote-desktop/**"
+      ],
+      "tokens": ["nightly-labs/openbot", "openbot.run", "@openbot", "OpenBot", "OPENBOT", "openbot"],
+      "reason": "Desktop packaging, signing, Nix/Docker builds, and bundle identifiers preserve installed app identity, keychain entries, and macOS privacy grants through Release A.",
+      "removalCondition": "Remove after Release A3/Release B completes Pokebots installer identity cutover and data migration."
+    },
+    {
+      "id": "main-process-identity-and-storage",
+      "category": "installed-identity-release-a",
+      "paths": ["src/main/**"],
+      "tokens": ["nightly-labs/openbot", "openbot.run", "@openbot", "OpenBot", "OPENBOT", "openbot"],
+      "reason": "Main process keeps installed app identity, keychain service name, data directory, IPC channels, update feed fallbacks, and Release A2 main-process track work.",
+      "removalCondition": "Tighten after Release A2 main-process PR lands; remove identity and storage fallbacks in Release B."
+    },
+    {
+      "id": "preload-bridge",
+      "category": "installed-identity-release-a",
+      "paths": ["src/preload/**"],
+      "tokens": ["openbot.run", "@openbot", "OpenBot", "openbot"],
+      "reason": "Preload exposes the window.openbot IPC bridge and @openbot workspace imports kept stable through Release A.",
+      "removalCondition": "Remove after Release B migrates window.openbot and @openbot imports."
+    },
+    {
+      "id": "backend-runtime-and-storage",
+      "category": "installed-identity-release-a",
+      "paths": ["src/backend/**"],
+      "tokens": ["nightly-labs/openbot", "openbot.run", "@openbot", "OpenBot", "OPENBOT", "openbot"],
+      "reason": "Backend runtime keeps existing local database paths, agent tool router names, MCP server prefixes, and @openbot imports through Release A.",
+      "removalCondition": "Remove internal tool and storage renames in Release B after data migration support ships."
+    },
+    {
+      "id": "i18n-catalogs",
+      "category": "release-a-in-flight",
+      "paths": ["packages/i18n/**"],
+      "tokens": ["nightly-labs/openbot", "openbot.run", "@openbot", "OpenBot", "OPENBOT", "openbot"],
+      "reason": "Locale catalogs are owned by a parallel Release A2 i18n PR and retain kept compatibility phrases.",
+      "removalCondition": "Tighten token allowlist once the parallel Release A2 i18n PR lands."
+    },
+    {
+      "id": "shared-packages",
+      "category": "workspace-package-scope",
+      "paths": [
+        "packages/brand/**",
+        "packages/logging/**",
+        "packages/telemetry/**",
+        "packages/ui/**",
+        "packages/user-errors/**",
+        "packages/whatsapp/**"
+      ],
+      "tokens": ["openbot.run", "@openbot", "OpenBot", "OPENBOT", "openbot"],
+      "reason": "Shared packages retain @openbot workspace imports, CSS tokens, telemetry event names, localStorage keys, and unit test fixtures through Release A.",
+      "removalCondition": "Remove @openbot scope and storage key aliases in Release B."
+    },
+    {
+      "id": "renderer-application",
+      "category": "installed-identity-release-a",
+      "paths": [
+        "src/renderer/src/**",
+        "src/renderer/tsconfig*.json",
+        "src/renderer/AGENTS.md",
+        "src/renderer/vitest*.ts",
+        "src/renderer/src-*"
+      ],
+      "tokens": ["openbot.run", "@openbot", "OpenBot", "OPENBOT", "openbot"],
+      "reason": "Renderer keeps @openbot imports, window.openbot bridge calls, CSS classes, localStorage keys, openbot-attachment scheme, and test fixtures through Release A; visible display defaults now use Pokebots.",
+      "removalCondition": "Remove remaining legacy storage keys, bridge globals, and @openbot imports in Release B."
+    },
+    {
+      "id": "renderer-html-entries",
+      "category": "release-a-in-flight",
+      "paths": ["src/renderer/*.html"],
+      "tokens": ["OpenBot", "openbot"],
+      "reason": "Renderer HTML window title templates are updated alongside scripts/brand-layer.ts in a parallel Release A2 PR.",
+      "removalCondition": "Remove once renderer HTML entry titles default to Pokebots and brand-layer HTML rewriting is retired."
+    },
+    {
+      "id": "renderer-stories-and-storybook",
+      "category": "test-and-story-fixtures",
+      "paths": ["src/renderer/stories/**", ".storybook/**"],
+      "tokens": ["nightly-labs/openbot", "openbot.run", "@openbot", "OpenBot", "OPENBOT", "openbot"],
+      "reason": "Storybook configuration and story fixtures retain @openbot package aliases and sample repository strings.",
+      "removalCondition": "Update stories and Storybook aliases in Release B."
+    },
+    {
+      "id": "account-service-and-web",
+      "category": "release-a-in-flight",
+      "paths": ["apps/auth-api/**"],
+      "tokens": ["nightly-labs/openbot", "openbot.run", "@openbot", "OpenBot", "OPENBOT", "openbot"],
+      "reason": "Account Worker and web routes are updated in a parallel Release A track while keeping API compatibility with installed clients.",
+      "removalCondition": "Tighten after the parallel apps/auth-api Release A2 PR lands; remove compatibility aliases in Release B."
+    },
+    {
+      "id": "mobile-app-identity-and-ota",
+      "category": "release-a-in-flight",
+      "paths": ["apps/mobile/**", "apps/mobile-updates/**"],
+      "tokens": ["nightly-labs/openbot", "openbot.run", "@openbot", "OpenBot", "OPENBOT", "openbot"],
+      "reason": "Mobile app bundle IDs, deep links, OTA channels, and Release A mobile branding are handled in a separate Release A track.",
+      "removalCondition": "Tighten after the parallel apps/mobile Release A PR lands; retire legacy bundle IDs in Release B."
+    },
+    {
+      "id": "companion-apps-and-router",
+      "category": "release-a-in-flight",
+      "paths": [
+        "apps/discord-app/**",
+        "apps/site-router/**",
+        "apps/slack-app/**",
+        "apps/status/**",
+        "apps/telegram-app/**"
+      ],
+      "tokens": ["nightly-labs/openbot", "openbot.run", "@openbot", "OpenBot", "OPENBOT", "openbot"],
+      "reason": "Companion chat bots, status page, and site router retain legacy app identifiers and domain redirects during Release A.",
+      "removalCondition": "Retire or rebrand companion services in Release B after pokebots.xyz cutover completes."
+    },
+    {
+      "id": "signal-and-turn-infra",
+      "category": "wire-compatibility",
+      "paths": ["remote/**"],
+      "tokens": ["openbot.run", "@openbot", "OpenBot", "OPENBOT", "openbot"],
+      "reason": "Signal relay, nginx, coturn, and acme configs keep protocol names and fallback domain references through the compatibility window.",
+      "removalCondition": "Remove legacy Signal identifiers in Release B after all clients target signal.pokebots.xyz."
+    },
+    {
+      "id": "marketplace-and-resources",
+      "category": "runtime-resources",
+      "paths": ["marketplace/**", "resources/**"],
+      "tokens": ["openbot.run", "OpenBot", "OPENBOT", "openbot"],
+      "reason": "Bundled CLI shims, managed skills, plugin catalogs, and agent-import resources preserve existing CLI names and catalog schema.",
+      "removalCondition": "Update bundled CLI and catalog metadata in Release B."
+    },
+    {
+      "id": "workspace-manifests-and-tooling",
+      "category": "workspace-package-scope",
+      "paths": [
+        "package.json",
+        "bun.lock",
+        "bunfig.toml",
+        "biome.json",
+        "knip.config.ts",
+        "vitest.config.ts",
+        ".gitignore",
+        ".worktreeinclude",
+        "patches/**",
+        "tools/biome/**",
+        "tools/ui-foundation/**",
+        "tools/vitest/**",
+        "tools/pokebots/legacy-name-allowlist.json"
+      ],
+      "tokens": ["nightly-labs/openbot", "openbot.run", "@openbot", "OpenBot", "OPENBOT", "openbot"],
+      "reason": "Workspace manifests, lockfile, lint/test configs, patches, and this allowlist file reference @openbot workspace packages and build artifacts.",
+      "removalCondition": "Remove @openbot workspace entries in Release B when packages move to @pokebots."
+    },
+    {
+      "id": "github-config-and-workflows",
+      "category": "ci-and-release-automation",
+      "paths": [".github/**"],
+      "tokens": ["nightly-labs/openbot", "openbot.run", "OpenBot", "OPENBOT", "openbot"],
+      "reason": "CI workflows, issue templates, and review configs retain existing release workflow names and upstream references until Release A3 CI cutover.",
+      "removalCondition": "Update GitHub workflows and templates in Release A3/B."
+    },
+    {
+      "id": "automation-and-build-scripts",
+      "category": "ci-and-release-automation",
+      "paths": ["scripts/**"],
+      "tokens": ["nightly-labs/openbot", "openbot.run", "@openbot", "OpenBot", "OPENBOT", "openbot"],
+      "reason": "Build, brand-layer, hosting, verification, and test scripts inspect or transform legacy tokens during Release A.",
+      "removalCondition": "Remove scripts/brand-layer.ts and tighten script allowlist entries in Release A3/B."
+    },
+    {
+      "id": "project-docs-and-agent-skills",
+      "category": "documentation",
+      "paths": ["README.md", "AGENTS.md", "ANALYTICS.md", "docs/**", ".agents/skills/**", ".codex/environments/**"],
+      "tokens": ["nightly-labs/openbot", "openbot.run", "@openbot", "OpenBot", "OPENBOT", "openbot"],
+      "reason": "Architecture docs, analytics inventory, and repository agent skills document both legacy compatibility surfaces and Pokebots conventions.",
+      "removalCondition": "Refresh documentation in Release B once legacy names are retired."
+    }
+  ],
+  "builtOutput": {
+    "allowedPhrases": [
+      "Shared with OpenBot",
+      "OpenBot GitHub App",
+      "OpenBot Mobile",
+      "OpenBot Shared",
+      "OpenBot Safe Storage"
+    ],
+    "entries": [
+      {
+        "id": "built-main-process-compat",
+        "category": "built-output-release-a",
+        "paths": ["main/**", "preload/**"],
+        "tokens": ["nightly-labs/openbot", "openbot.run", "@openbot", "OpenBot", "OPENBOT", "openbot"],
+        "reason": "Main and preload build outputs retain installed app identity, frozen migration SQL, keychain service compatibility, and feedback repo fallback through Release A.",
+        "removalCondition": "Tighten in Release B when installed identity and legacy migration strings are isolated."
+      },
+      {
+        "id": "built-sourcemaps",
+        "category": "built-output-release-a",
+        "paths": ["**/*.map"],
+        "tokens": ["nightly-labs/openbot", "openbot.run", "@openbot", "OpenBot", "OPENBOT", "openbot"],
+        "reason": "Source maps embed original source file paths and comments.",
+        "removalCondition": "Not shipped as user-visible strings."
+      },
+      {
+        "id": "built-technical-identifiers",
+        "category": "built-output-release-a",
+        "paths": ["**"],
+        "tokens": ["openbot.run", "@openbot", "OPENBOT", "openbot"],
+        "reason": "Built renderer and web bundles keep CSS tokens, storage keys, window.openbot bridge, openbot:// schemes, and compatibility links through Release A while blocking unallowlisted visible OpenBot and nightly-labs/openbot leaks.",
+        "removalCondition": "Remove legacy technical identifiers in Release B."
+      }
+    ]
+  }
+}

@@ -348,8 +348,8 @@ function stableIndex(value: string, length: number): number {
   return (hash >>> 0) % length;
 }
 
-/** The Vite brand layer enables landing artwork for Pokebots desktop and web builds. */
-export const POKEBOTS_LANDING_ARTWORK = false;
+/** Enables Pokebots landing artwork for desktop and web builds by default. */
+export const POKEBOTS_LANDING_ARTWORK = true;
 
 export const POKEBOTS_PORTRAITS = ["blue", "mint", "orange", "purple"] as const;
 export type PokebotsPortrait = (typeof POKEBOTS_PORTRAITS)[number];

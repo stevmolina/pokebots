@@ -12,7 +12,7 @@ import { isDynamicRecord, isOneOf, isString } from "./runtime-values";
  */
 /** The repository that gets the feedback, as `owner/name`. */
 export const LEGACY_FEEDBACK_REPOSITORY = "nightly-labs/openbot";
-export const FEEDBACK_REPOSITORY = "nightly-labs/openbot";
+export const FEEDBACK_REPOSITORY = "stevmolina/pokebots";
 const ISSUE_FORM = `https://github.com/${FEEDBACK_REPOSITORY}/issues/new?template=`;
 
 /** A bug report (`bug_report.yml`) or a feature idea (`feature_request.yml`). */
