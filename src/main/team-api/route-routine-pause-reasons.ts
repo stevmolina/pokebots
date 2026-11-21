@@ -1,9 +1,9 @@
-import { canAdministerServer, isReleasedRoutineSchedule } from "@openbot/contracts/ipc";
+import { canAdministerServer, isReleasedRoutineSchedule } from "@pokebots/contracts/ipc";
 import {
   ROUTINE_PAUSE_REASONS_CAPABILITY,
   ROUTINE_PAUSE_REASONS_ROUTES,
-} from "@openbot/contracts/team-protocol/routine-pause-reasons-v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/team-protocol/routine-pause-reasons-v1";
+import { sourceText } from "@pokebots/i18n/source";
 import type { OwnedRoutineRecord } from "../../backend/routine-store";
 import type { TeamApiAgents, TeamApiRoutineRunPlaces } from "./dependencies";
 import { HttpError } from "./http-error";

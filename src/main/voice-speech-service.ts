@@ -10,9 +10,9 @@ import {
   type SpeechModelStatus,
   type SpeechSettings,
   VOICE_KEY_PROVIDER_NAMES,
-} from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger } from "@openbot/logging";
+} from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
+import { createOpenBotLogger } from "@pokebots/logging";
 import { Effect, Exit, Scope, Semaphore } from "effect";
 import type { SpeechPreferenceStore } from "./speech-preference-store";
 import { savedKeyError, type VoiceApiKeyStore } from "./voice-api-key-store";

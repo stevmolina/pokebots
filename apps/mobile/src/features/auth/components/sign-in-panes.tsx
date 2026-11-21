@@ -1,4 +1,4 @@
-import { ONE_TIME_CODE_LENGTH } from "@openbot/contracts/validation";
+import { ONE_TIME_CODE_LENGTH } from "@pokebots/contracts/validation";
 import { useRouter } from "expo-router";
 import { Button, Spinner, Typography } from "heroui-native";
 import type { LucideIcon } from "lucide-react-native";

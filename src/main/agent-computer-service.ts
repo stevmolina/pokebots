@@ -3,9 +3,9 @@
 // system, kept decrypted in memory only, and registered for redaction before anything can log it.
 
 import { readFile, rm } from "node:fs/promises";
-import type { AgentComputerMachineList, AgentComputerStatus, ComputerManagementInput } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
-import { registerSecretValue } from "@openbot/logging";
+import type { AgentComputerMachineList, AgentComputerStatus, ComputerManagementInput } from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
+import { registerSecretValue } from "@pokebots/logging";
 import { Effect, Result, Schema, Semaphore } from "effect";
 import { AgentComputerApi, type AgentComputerFailed } from "../backend/agent-computer/agent-computer-api";
 import { writeJsonFileAtomically } from "../backend/atomic-json-file";

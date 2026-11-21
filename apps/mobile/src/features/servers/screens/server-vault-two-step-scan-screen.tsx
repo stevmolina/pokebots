@@ -1,4 +1,4 @@
-import { parseTwoStepKey } from "@openbot/contracts/two-step-code";
+import { parseTwoStepKey } from "@pokebots/contracts/two-step-code";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { useThemeColor } from "heroui-native/hooks";
 import { QrScanner } from "@/features/auth/components/qr-scanner";

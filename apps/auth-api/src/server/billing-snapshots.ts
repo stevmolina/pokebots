@@ -1,4 +1,4 @@
-import { licensePeriodAmount, licensePlanFromPrice } from "@openbot/contracts/license";
+import { licensePeriodAmount, licensePlanFromPrice } from "@pokebots/contracts/license";
 import { Effect, Schema } from "effect";
 import { readBillingCohortCounts } from "./billing-cohorts";
 import { BillingUsd, type BillingUsdCurrency } from "./billing-usd";

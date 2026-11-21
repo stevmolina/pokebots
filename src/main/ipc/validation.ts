@@ -1,5 +1,5 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import { type DynamicRecord, isBoolean, isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
+import { type DynamicRecord, isBoolean, isDynamicRecord, isString } from "@pokebots/contracts/runtime-values";
 
 export function requireString(value: unknown, field: string, maxLength: number = INPUT_LIMITS.identifier): string {
   if (!isString(value) || !value.trim()) throw new Error(`${field} is required.`);

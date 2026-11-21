@@ -17,23 +17,23 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import type { AgentEvent } from "@openbot/contracts/ipc";
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
+import type { AgentEvent } from "@pokebots/contracts/ipc";
+import { isDynamicRecord } from "@pokebots/contracts/runtime-values";
+import { TEAM_API_ROUTES } from "@pokebots/contracts/team-api-routes";
 import {
   TEAM_APP_VERSION_HEADER,
   TEAM_CAPABILITIES_HEADER,
   TEAM_PROTOCOL_V9,
   TEAM_PROTOCOL_VERSION_HEADER,
   teamCapabilitiesForProtocol,
-} from "@openbot/contracts/team-protocol";
+} from "@pokebots/contracts/team-protocol";
 import {
   COMPUTER_ACTIVITY_CAPABILITY,
   COMPUTER_ACTIVITY_CODECS,
   COMPUTER_ACTIVITY_ROUTES,
-} from "@openbot/contracts/team-protocol/computer-activity-v1";
-import { createOpenBotLogger } from "@openbot/logging";
-import { encodeLiveActivityBytes, LIVE_ACTIVITY_SECRET_BYTES } from "@openbot/team-client/live-activity-seal";
+} from "@pokebots/contracts/team-protocol/computer-activity-v1";
+import { createOpenBotLogger } from "@pokebots/logging";
+import { encodeLiveActivityBytes, LIVE_ACTIVITY_SECRET_BYTES } from "@pokebots/team-client/live-activity-seal";
 import { plugin } from "bun";
 import { Effect } from "effect";
 import type { AgentBrowserHost } from "../src/backend/agent/turn-lifecycle";

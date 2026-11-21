@@ -1,5 +1,5 @@
-import type { ConversationMessage, QueueDelivery } from "@openbot/contracts/ipc";
-import { speechTextFromMarkdown } from "@openbot/contracts/speech-text";
+import type { ConversationMessage, QueueDelivery } from "@pokebots/contracts/ipc";
+import { speechTextFromMarkdown } from "@pokebots/contracts/speech-text";
 
 /** What a live voice conversation does now. */
 export type LiveConversationPhase = "starting" | "listening" | "sending" | "thinking" | "speaking" | "offline";

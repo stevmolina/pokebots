@@ -14,8 +14,8 @@ import {
   storageTierListPrices,
   storageTierLookupKey,
   storageTierPriceMetadata,
-} from "@openbot/contracts/billing";
-import { VAT_TAX_RATE } from "@openbot/contracts/billing-details";
+} from "@pokebots/contracts/billing";
+import { VAT_TAX_RATE } from "@pokebots/contracts/billing-details";
 import {
   LICENSE_LOOKUP_KEYS,
   LICENSE_METADATA,
@@ -27,8 +27,8 @@ import {
   licenseIncludedUsers,
   licenseLookupKey,
   licensePlanPrice,
-} from "@openbot/contracts/license";
-import { createOpenBotLogger, toLogValue } from "@openbot/logging";
+} from "@pokebots/contracts/license";
+import { createOpenBotLogger, toLogValue } from "@pokebots/logging";
 import { z } from "zod";
 
 /**

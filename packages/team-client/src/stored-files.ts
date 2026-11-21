@@ -1,4 +1,4 @@
-import type { AttachmentSummary, StoredFileRow } from "@openbot/contracts/ipc";
+import type { AttachmentSummary, StoredFileRow } from "@pokebots/contracts/ipc";
 
 /**
  * The file types, search and order of the stored files of a host. The desktop Library and Files views

@@ -1,4 +1,4 @@
-import { isKnownAgentProvider } from "@openbot/contracts/agent-providers";
+import { isKnownAgentProvider } from "@pokebots/contracts/agent-providers";
 import {
   type AgentNotificationLevelsSnapshot,
   type AgentStatus,
@@ -9,11 +9,11 @@ import {
   type HiddenAgent,
   type ServerNotificationLevel,
   type UpdateAgentInput,
-} from "@openbot/contracts/ipc";
-import { AGENT_HIDDEN_WORK_CAPABILITY } from "@openbot/contracts/team-protocol/current";
-import { PROVIDER_ACCOUNTS_CAPABILITY } from "@openbot/contracts/team-protocol/provider-accounts-v1";
-import type { AgentProfile } from "@openbot/ui/data";
-import { createFirstAgentDraft, type FirstAgentDraft } from "@openbot/ui/features/agents/FirstAgentSetup";
+} from "@pokebots/contracts/ipc";
+import { AGENT_HIDDEN_WORK_CAPABILITY } from "@pokebots/contracts/team-protocol/current";
+import { PROVIDER_ACCOUNTS_CAPABILITY } from "@pokebots/contracts/team-protocol/provider-accounts-v1";
+import type { AgentProfile } from "@pokebots/ui/data";
+import { createFirstAgentDraft, type FirstAgentDraft } from "@pokebots/ui/features/agents/FirstAgentSetup";
 import { createEffect, createMemo, createSignal, untrack } from "solid-js";
 import { desktopAnalytics } from "../../analytics";
 import { FALLBACK_STATUS } from "../../app-defaults";

@@ -1,5 +1,5 @@
-import type { EventFilterDraft } from "@openbot/contracts/event-filter-value";
-import { RoutineWebhookCard, type RoutineWebhookCardProps } from "@openbot/ui/features/conversation/RoutineWebhookCard";
+import type { EventFilterDraft } from "@pokebots/contracts/event-filter-value";
+import { RoutineWebhookCard, type RoutineWebhookCardProps } from "@pokebots/ui/features/conversation/RoutineWebhookCard";
 import { createSignal } from "solid-js";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";

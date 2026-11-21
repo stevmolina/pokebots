@@ -8,8 +8,8 @@ import {
   type AgentImportSkillSource,
   HERMES_EXPORT_PROMPT,
   HERMES_SKILL_COMMAND,
-} from "@openbot/contracts/ipc";
-import type { AppFormat, AppTranslate } from "@openbot/i18n";
+} from "@pokebots/contracts/ipc";
+import type { AppFormat, AppTranslate } from "@pokebots/i18n";
 import {
   Button,
   Checkbox,
@@ -28,7 +28,7 @@ import {
   SlidingTabs,
   TriangleAlert,
   Upload,
-} from "@openbot/ui";
+} from "@pokebots/ui";
 import { createMemo, createSignal, createUniqueId, For, Show } from "solid-js";
 import { useText } from "../../text";
 import { AgentAvatar } from "../agents/AgentAvatar";

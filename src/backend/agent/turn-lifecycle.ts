@@ -1,6 +1,6 @@
-import { agentProviderName } from "@openbot/contracts/agent-providers";
-import { isNarrationItemId } from "@openbot/contracts/conversation-narration";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { agentProviderName } from "@pokebots/contracts/agent-providers";
+import { isNarrationItemId } from "@pokebots/contracts/conversation-narration";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import {
   type AgentEvent,
   type AgentStepActivity,
@@ -24,12 +24,12 @@ import {
   PLAN_CONTINUATION_ITEM_TYPE,
   type QueueDelivery,
   SIGN_IN_FAILURE_ITEM_TYPE_PREFIX,
-} from "@openbot/contracts/ipc";
-import { type DynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger, redactText } from "@openbot/logging";
-import { type CauseCode, classifyFailure, isCauseCode } from "@openbot/telemetry";
-import { userErrorMessage } from "@openbot/user-errors";
+} from "@pokebots/contracts/ipc";
+import { type DynamicRecord, isString } from "@pokebots/contracts/runtime-values";
+import { sourceText } from "@pokebots/i18n/source";
+import { createOpenBotLogger, redactText } from "@pokebots/logging";
+import { type CauseCode, classifyFailure, isCauseCode } from "@pokebots/telemetry";
+import { userErrorMessage } from "@pokebots/user-errors";
 import { Cause, Deferred, Effect, Exit, Schema, Scope } from "effect";
 import type { AgentClient } from "../agent-client";
 import type { AgentStore } from "../agent-store";

@@ -1,19 +1,19 @@
-import { isReleasedRoutineSchedule } from "@openbot/contracts/ipc";
-import { EVENTS_CAPABILITY, EVENTS_ROUTES } from "@openbot/contracts/team-protocol/events-v1";
+import { isReleasedRoutineSchedule } from "@pokebots/contracts/ipc";
+import { EVENTS_CAPABILITY, EVENTS_ROUTES } from "@pokebots/contracts/team-protocol/events-v1";
 import {
   ROUTINE_RECOVERY_CAPABILITY,
   ROUTINE_RECOVERY_ROUTES,
-} from "@openbot/contracts/team-protocol/routine-recovery-v1";
+} from "@pokebots/contracts/team-protocol/routine-recovery-v1";
 import {
   WEBHOOK_AGENT_SECRET_CAPABILITY,
   WEBHOOK_AGENT_SECRET_ROUTES,
-} from "@openbot/contracts/team-protocol/webhook-agent-secret-v1";
+} from "@pokebots/contracts/team-protocol/webhook-agent-secret-v1";
 import {
   WEBHOOK_SENDER_SECRET_CAPABILITY,
   WEBHOOK_SENDER_SECRET_ROUTES,
-} from "@openbot/contracts/team-protocol/webhook-sender-secret-v1";
-import { WEBHOOK_TESTS_CAPABILITY, WEBHOOK_TESTS_ROUTES } from "@openbot/contracts/team-protocol/webhook-tests-v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/team-protocol/webhook-sender-secret-v1";
+import { WEBHOOK_TESTS_CAPABILITY, WEBHOOK_TESTS_ROUTES } from "@pokebots/contracts/team-protocol/webhook-tests-v1";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect } from "effect";
 import { type HostEventsApi, HostEventsFailure, hostEventsFailureMessage } from "../host-events-api";
 import {

@@ -1,29 +1,29 @@
-import { INSTALL_SERVER_SCRIPT_URL } from "@openbot/contracts/hosted-servers";
+import { INSTALL_SERVER_SCRIPT_URL } from "@pokebots/contracts/hosted-servers";
 import {
   type CentralAuthUser,
   LOCAL_SERVER_ID,
   LOCAL_SERVER_LIMIT,
   type RoutineFields,
   type ServerSummary,
-} from "@openbot/contracts/ipc";
-import { AGENT_COMPUTER_CAPABILITY } from "@openbot/contracts/team-protocol/agent-computer-v1";
-import { BROWSER_PROFILES_CAPABILITY } from "@openbot/contracts/team-protocol/browser-profiles-v1";
-import { COMPUTER_MANAGEMENT_CAPABILITY } from "@openbot/contracts/team-protocol/computer-management-v1";
-import { PROVIDER_DETECTION_CAPABILITY } from "@openbot/contracts/team-protocol/provider-detection-v1";
-import { VAULT_IMPORT_CAPABILITY } from "@openbot/contracts/team-protocol/vault-import-v1";
-import { VAULT_CAPABILITY } from "@openbot/contracts/team-protocol/vault-v1";
-import { VAULT_V2_CAPABILITY } from "@openbot/contracts/team-protocol/vault-v2";
-import { VAULT_V3_CAPABILITY } from "@openbot/contracts/team-protocol/vault-v3";
-import { classifyFailure } from "@openbot/telemetry";
-import { isAgentAccount } from "@openbot/ui/components/provider-accounts";
-import type { AcpRegistrySettingsApi } from "@openbot/ui/features/custom-providers/AcpRegistrySettings";
-import type { CustomAgentSettingsApi } from "@openbot/ui/features/custom-providers/CustomAgentSettings";
-import { providerDiagnosticsText } from "@openbot/ui/features/provider-diagnostics/provider-diagnostics";
-import { LeaveServerDialog } from "@openbot/ui/features/servers/LeaveServerDialog";
-import { RestartServerDialog } from "@openbot/ui/features/servers/RestartServerDialog";
-import type { HostedSiteDeleteResult } from "@openbot/ui/features/settings/stores/hosted-sites-store";
-import { sidebarAgentOrder } from "@openbot/ui/features/sidebar/sidebar-agent-order";
-import { currentText } from "@openbot/ui/text";
+} from "@pokebots/contracts/ipc";
+import { AGENT_COMPUTER_CAPABILITY } from "@pokebots/contracts/team-protocol/agent-computer-v1";
+import { BROWSER_PROFILES_CAPABILITY } from "@pokebots/contracts/team-protocol/browser-profiles-v1";
+import { COMPUTER_MANAGEMENT_CAPABILITY } from "@pokebots/contracts/team-protocol/computer-management-v1";
+import { PROVIDER_DETECTION_CAPABILITY } from "@pokebots/contracts/team-protocol/provider-detection-v1";
+import { VAULT_IMPORT_CAPABILITY } from "@pokebots/contracts/team-protocol/vault-import-v1";
+import { VAULT_CAPABILITY } from "@pokebots/contracts/team-protocol/vault-v1";
+import { VAULT_V2_CAPABILITY } from "@pokebots/contracts/team-protocol/vault-v2";
+import { VAULT_V3_CAPABILITY } from "@pokebots/contracts/team-protocol/vault-v3";
+import { classifyFailure } from "@pokebots/telemetry";
+import { isAgentAccount } from "@pokebots/ui/components/provider-accounts";
+import type { AcpRegistrySettingsApi } from "@pokebots/ui/features/custom-providers/AcpRegistrySettings";
+import type { CustomAgentSettingsApi } from "@pokebots/ui/features/custom-providers/CustomAgentSettings";
+import { providerDiagnosticsText } from "@pokebots/ui/features/provider-diagnostics/provider-diagnostics";
+import { LeaveServerDialog } from "@pokebots/ui/features/servers/LeaveServerDialog";
+import { RestartServerDialog } from "@pokebots/ui/features/servers/RestartServerDialog";
+import type { HostedSiteDeleteResult } from "@pokebots/ui/features/settings/stores/hosted-sites-store";
+import { sidebarAgentOrder } from "@pokebots/ui/features/sidebar/sidebar-agent-order";
+import { currentText } from "@pokebots/ui/text";
 import { createEffect, createMemo, createSignal, Loading, onSettled, Show, untrack } from "solid-js";
 import { actionToast } from "./action-toast";
 import { desktopAnalytics } from "./analytics";

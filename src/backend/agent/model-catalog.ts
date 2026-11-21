@@ -1,6 +1,6 @@
-import type { AgentModelOption, ProviderModelSource } from "@openbot/contracts/ipc";
-import { isAgentModel, isReasoningEffort } from "@openbot/contracts/ipc";
-import { createOpenBotLogger } from "@openbot/logging";
+import type { AgentModelOption, ProviderModelSource } from "@pokebots/contracts/ipc";
+import { isAgentModel, isReasoningEffort } from "@pokebots/contracts/ipc";
+import { createOpenBotLogger } from "@pokebots/logging";
 import { Effect, Result } from "effect";
 import type { AgentClient, AgentProvider } from "./../agent-client";
 import { providerCheckTimeoutMs } from "../disk-restore";

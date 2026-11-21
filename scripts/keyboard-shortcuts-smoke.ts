@@ -10,7 +10,7 @@
 
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
-import { createOpenBotLogger } from "@openbot/logging";
+import { createOpenBotLogger } from "@pokebots/logging";
 import type { Page } from "playwright-core";
 import { connectToDevApp } from "./dev-automation/cdp-client";
 import { readDevInstanceRecords, selectDevInstance } from "./dev-automation/instance-registry";

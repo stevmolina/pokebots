@@ -2,7 +2,7 @@
 // submit produces the contract `SaveCustomProviderInput` verbatim. Every bound/pattern comes
 // from the contract; main rechecks on save, so a drifted copy would pass the form and fail save.
 
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import type {
   CustomProviderHarness,
   CustomProviderInputKind,
@@ -10,7 +10,7 @@ import type {
   CustomProviderSummary,
   SaveCustomProviderInput,
   UpdateCustomProviderInput,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   AGENT_PROVIDERS,
   CUSTOM_PROVIDER_ID_PATTERN,
@@ -22,8 +22,8 @@ import {
   isCustomProviderContextWindow,
   isCustomProviderHeaderName,
   isCustomProviderMaxOutput,
-} from "@openbot/contracts/ipc";
-import type { AppFormat, AppTranslate } from "@openbot/i18n";
+} from "@pokebots/contracts/ipc";
+import type { AppFormat, AppTranslate } from "@pokebots/i18n";
 import { currentText } from "../../text";
 
 export interface CustomModelDraft {

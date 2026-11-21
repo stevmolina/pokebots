@@ -19,9 +19,9 @@ import assert from "node:assert/strict";
 import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import type { McpServerConfig } from "@openbot/contracts/ipc";
-import { matchingSourceKeys, sourceText } from "@openbot/i18n/source";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
+import type { McpServerConfig } from "@pokebots/contracts/ipc";
+import { matchingSourceKeys, sourceText } from "@pokebots/i18n/source";
 import { runCauseEffect } from "../src/backend/effect-boundary";
 import { testMcpServer } from "../src/backend/mcp-probe";
 

@@ -40,8 +40,8 @@ import {
   IPC_ENDPOINTS,
   LOCAL_SERVER_ID,
   type NotificationOpenedEvent,
-} from "@openbot/contracts/ipc";
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
+} from "@pokebots/contracts/ipc";
+import { isDynamicRecord } from "@pokebots/contracts/runtime-values";
 import {
   TEAM_APP_VERSION_HEADER,
   TEAM_CAPABILITIES_HEADER,
@@ -49,22 +49,22 @@ import {
   TEAM_PROTOCOL_V9,
   TEAM_PROTOCOL_VERSION_HEADER,
   teamCapabilitiesForProtocol,
-} from "@openbot/contracts/team-protocol";
-import { CHANNEL_ROUTES, channelResponse } from "@openbot/contracts/team-protocol/channels-v1";
-import { CHAT_HISTORY_CAPABILITY, CHAT_HISTORY_ROUTES } from "@openbot/contracts/team-protocol/chat-history-v1";
+} from "@pokebots/contracts/team-protocol";
+import { CHANNEL_ROUTES, channelResponse } from "@pokebots/contracts/team-protocol/channels-v1";
+import { CHAT_HISTORY_CAPABILITY, CHAT_HISTORY_ROUTES } from "@pokebots/contracts/team-protocol/chat-history-v1";
 import {
   CHANNEL_BROWSER_CAPABILITY,
   CHANNEL_ISOLATION_CAPABILITY,
   CHANNEL_SEEN_SUBTASKS_CAPABILITY,
   CHANNEL_TASK_WAITS_CAPABILITY,
   TEAM_CHANNEL_ATTENTION_CAPABILITY,
-} from "@openbot/contracts/team-protocol/current";
-import { teamSideRouteCodec } from "@openbot/contracts/team-protocol/side-routes";
+} from "@pokebots/contracts/team-protocol/current";
+import { teamSideRouteCodec } from "@pokebots/contracts/team-protocol/side-routes";
 import {
   STORAGE_CHANNEL_CAPABILITY,
   STORAGE_CHANNEL_ROUTES,
-} from "@openbot/contracts/team-protocol/storage-channel-v1";
-import { createFormat, translateFor } from "@openbot/i18n";
+} from "@pokebots/contracts/team-protocol/storage-channel-v1";
+import { createFormat, translateFor } from "@pokebots/i18n";
 import { plugin } from "bun";
 import { Effect } from "effect";
 import type { AgentBrowserHost } from "../src/backend/agent/turn-lifecycle";

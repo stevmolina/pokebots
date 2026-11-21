@@ -1,5 +1,5 @@
-import { sourceText } from "@openbot/i18n/source";
-import { redactText } from "@openbot/logging";
+import { sourceText } from "@pokebots/i18n/source";
+import { redactText } from "@pokebots/logging";
 import { Context, Deferred, Effect, Layer, Result, Semaphore } from "effect";
 import { recordRestartActivity } from "../backend/restart-activity";
 import { RemoteWorkflowError, remoteDecode } from "./remote-service-effects";
@@ -35,7 +35,7 @@ import {
   encodeBrowserViewFrame,
   encodeBrowserViewHostMessage,
   isBrowserViewUserAction,
-} from "@openbot/contracts/team-protocol/browser-view-v1";
+} from "@pokebots/contracts/team-protocol/browser-view-v1";
 import type * as Ws from "ws";
 import type { BrowserScreencastFrame } from "../backend/browser-cdp";
 import type { BrowserHost } from "../backend/browser-host";

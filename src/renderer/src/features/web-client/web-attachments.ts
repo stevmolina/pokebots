@@ -1,8 +1,8 @@
-import { attachmentMimeTypeForName } from "@openbot/contracts/attachment-files";
-import { CHAT_VISUAL_PAGE_LIMIT, isHtmlPageFile } from "@openbot/contracts/chat-visual";
-import { type AttachmentSummary, type FilePreview, filePreviewKindForFile } from "@openbot/contracts/ipc";
-import { base64ToBytes } from "@openbot/team-client/base64";
-import { currentText } from "@openbot/ui/text";
+import { attachmentMimeTypeForName } from "@pokebots/contracts/attachment-files";
+import { CHAT_VISUAL_PAGE_LIMIT, isHtmlPageFile } from "@pokebots/contracts/chat-visual";
+import { type AttachmentSummary, type FilePreview, filePreviewKindForFile } from "@pokebots/contracts/ipc";
+import { base64ToBytes } from "@pokebots/team-client/base64";
+import { currentText } from "@pokebots/ui/text";
 import type { WebAttachmentMedia } from "./web-attachment-media";
 import { createWebFileSaver } from "./web-file-download";
 import type { WebFile, WebWorkspaceRuntime } from "./web-runtime";

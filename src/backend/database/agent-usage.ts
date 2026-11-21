@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import type { DatabaseSync } from "node:sqlite";
-import { KEY_ONLY_PROVIDERS } from "@openbot/contracts/agent-providers";
+import { KEY_ONLY_PROVIDERS } from "@pokebots/contracts/agent-providers";
 import {
   type AgentAnalytics,
   type AgentAnalyticsInput,
@@ -16,8 +16,8 @@ import {
   parseAgentAnalyticsInput,
   parseHostAnalyticsInput,
   type UsageTokens,
-} from "@openbot/contracts/ipc";
-import type { DynamicRecord } from "@openbot/contracts/runtime-values";
+} from "@pokebots/contracts/ipc";
+import type { DynamicRecord } from "@pokebots/contracts/runtime-values";
 import { estimateUsageCost } from "../agent/usage-pricing";
 import type { DatabaseCore } from "./database-core";
 import { databaseRow, databaseRows, optionalNumberColumn, requiredStringColumn } from "./database-rows";

@@ -10,12 +10,12 @@ import {
   type ProviderRuntimeStatus,
   type ServerSummary,
   type UpdateCustomProviderInput,
-} from "@openbot/contracts/ipc";
-import { Toaster, toast } from "@openbot/ui";
-import type { ProviderAccountActions } from "@openbot/ui/components/provider-accounts";
-import type { ProviderDetection } from "@openbot/ui/features/custom-providers/detected-providers";
-import type { ProviderDetectionSettingsValue } from "@openbot/ui/features/custom-providers/ProviderDetectionSettings";
-import type { ProviderKeyApi } from "@openbot/ui/features/settings/OpenCodeKeyDialog";
+} from "@pokebots/contracts/ipc";
+import { Toaster, toast } from "@pokebots/ui";
+import type { ProviderAccountActions } from "@pokebots/ui/components/provider-accounts";
+import type { ProviderDetection } from "@pokebots/ui/features/custom-providers/detected-providers";
+import type { ProviderDetectionSettingsValue } from "@pokebots/ui/features/custom-providers/ProviderDetectionSettings";
+import type { ProviderKeyApi } from "@pokebots/ui/features/settings/OpenCodeKeyDialog";
 import { createSignal, onCleanup } from "solid-js";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";

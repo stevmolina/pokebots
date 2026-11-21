@@ -1,10 +1,10 @@
-import { itemTypeCountsAsUnread } from "@openbot/contracts/conversation-read";
+import { itemTypeCountsAsUnread } from "@pokebots/contracts/conversation-read";
 import type {
   ConversationMessageAuthor,
   ConversationReadState,
   DirectConversationSnapshot,
   DirectMessage,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   CONTEXT_RESET_ITEM_TYPE,
   HOSTED_SITE_EVENT_ITEM_TYPE_PREFIX,
@@ -14,8 +14,8 @@ import {
   ROUTINE_RUN_EVENT_ITEM_TYPE_PREFIX,
   SETTING_LINK_ITEM_TYPE_PREFIX,
   SKILL_EVENT_ITEM_TYPE_PREFIX,
-} from "@openbot/contracts/ipc";
-import type { AgentMessage } from "@openbot/ui/data";
+} from "@pokebots/contracts/ipc";
+import type { AgentMessage } from "@pokebots/ui/data";
 
 /**
  * What the renderer has already asked main to mark read, per conversation. A

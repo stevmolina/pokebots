@@ -1,4 +1,4 @@
-import { type BackgroundWorker, BackgroundWorkers } from "@openbot/ui/features/conversation/BackgroundWorkers";
+import { type BackgroundWorker, BackgroundWorkers } from "@pokebots/ui/features/conversation/BackgroundWorkers";
 import { fireEvent, render, screen, waitFor } from "@solidjs/testing-library";
 import { createSignal } from "solid-js";
 import { describe, expect, it, vi } from "vitest";

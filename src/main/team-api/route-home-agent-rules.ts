@@ -1,9 +1,9 @@
-import { parseHomeAgentRulesPreference } from "@openbot/contracts/ipc";
+import { parseHomeAgentRulesPreference } from "@pokebots/contracts/ipc";
 import {
   HOME_AGENT_RULES_CAPABILITY,
   HOME_AGENT_RULES_ROUTES,
-} from "@openbot/contracts/team-protocol/home-agent-rules-v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/team-protocol/home-agent-rules-v1";
+import { sourceText } from "@pokebots/i18n/source";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import type { TeamApiAdmin } from "./dependencies";
 import { HttpError } from "./http-error";

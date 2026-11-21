@@ -1,4 +1,4 @@
-import { SOUND_THEMES, type SoundChoice, type SoundTheme } from "@openbot/ui/features/settings/app-settings";
+import { SOUND_THEMES, type SoundChoice, type SoundTheme } from "@pokebots/ui/features/settings/app-settings";
 import { bind, type PlayOptions, play, type SoundName, setEnabled, setTheme } from "cuelume";
 
 const ACTION_SOUNDS_STORAGE_KEY = "openbot:action-sounds-enabled";

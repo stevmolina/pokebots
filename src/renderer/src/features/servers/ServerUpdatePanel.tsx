@@ -3,8 +3,8 @@ import type {
   HostUpdateSettingsChange,
   HostUpdateStatus,
   OpenBotDesktopApi,
-} from "@openbot/contracts/ipc";
-import { classifyFailure } from "@openbot/telemetry";
+} from "@pokebots/contracts/ipc";
+import { classifyFailure } from "@pokebots/telemetry";
 import {
   Alert,
   AlertActions,
@@ -25,9 +25,9 @@ import {
   SettingsSection,
   SwitchField,
   TriangleAlert,
-} from "@openbot/ui";
-import { restartReasonKey } from "@openbot/ui/features/updates/restart-reasons";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/ui";
+import { restartReasonKey } from "@pokebots/ui/features/updates/restart-reasons";
+import { useText } from "@pokebots/ui/text";
 import { createEffect, createSignal, onCleanup, Show, untrack } from "solid-js";
 import { actionToast } from "../../action-toast";
 import { openServerUpdate, serverUpdateStatus } from "./server-update-flow";

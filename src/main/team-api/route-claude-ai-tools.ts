@@ -1,8 +1,8 @@
 import {
   CLAUDE_AI_TOOLS_CAPABILITY,
   CLAUDE_AI_TOOLS_ROUTES,
-} from "@openbot/contracts/team-protocol/claude-ai-tools-v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/team-protocol/claude-ai-tools-v1";
+import { sourceText } from "@pokebots/i18n/source";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import type { TeamApiAdmin } from "./dependencies";
 import { HttpError } from "./http-error";

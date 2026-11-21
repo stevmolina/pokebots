@@ -1,6 +1,6 @@
-import { AppLogo } from "@openbot/brand";
-import { AGENT_TEMPLATE_CARD, type AgentTemplatePreview } from "@openbot/contracts/ipc";
-import { avatarHeadColor, createStaticAvatarSvg } from "@openbot/ui/bloub-avatar";
+import { AppLogo } from "@pokebots/brand";
+import { AGENT_TEMPLATE_CARD, type AgentTemplatePreview } from "@pokebots/contracts/ipc";
+import { avatarHeadColor, createStaticAvatarSvg } from "@pokebots/ui/bloub-avatar";
 import { render } from "@solidjs/web";
 import { flush } from "solid-js";
 import { loadImage, loadSvg, withAlpha } from "../../avatar-canvas";
@@ -171,7 +171,7 @@ async function drawColumn(
   context.fillText("openbot.run", x + pillWidth + 24, pillTop + 38);
 }
 
-/** The app mark from `@openbot/brand`, with its CSS colours written onto the shapes. */
+/** The app mark from `@pokebots/brand`, with its CSS colours written onto the shapes. */
 export async function drawLogo(
   context: CanvasRenderingContext2D,
   x: number,

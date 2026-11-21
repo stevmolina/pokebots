@@ -7,8 +7,8 @@ import {
   type ProviderAccountPool,
   type ProviderAccountStatus,
   type ProviderUsageResetOutcome,
-} from "@openbot/contracts/ipc";
-import { CLAUDE_API_KEY_ACCOUNT_ID } from "@openbot/contracts/team-protocol/claude-api-key-v1";
+} from "@pokebots/contracts/ipc";
+import { CLAUDE_API_KEY_ACCOUNT_ID } from "@pokebots/contracts/team-protocol/claude-api-key-v1";
 import { skipToken, useQuery } from "@tanstack/react-query";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { Typography } from "heroui-native";

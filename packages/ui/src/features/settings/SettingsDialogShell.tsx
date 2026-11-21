@@ -1,5 +1,5 @@
-import { PageHeader, type PageHeaderParent } from "@openbot/ui/features/window/PageHeader";
-import { cx, prefersReducedMotion } from "@openbot/ui/utils";
+import { PageHeader, type PageHeaderParent } from "@pokebots/ui/features/window/PageHeader";
+import { cx, prefersReducedMotion } from "@pokebots/ui/utils";
 import { type JSX, Portal } from "@solidjs/web";
 import { createEffect, createSignal, createUniqueId, onCleanup, Show, untrack } from "solid-js";
 

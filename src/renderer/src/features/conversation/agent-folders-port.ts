@@ -2,13 +2,13 @@
 // Instructions page. The folders and the Instructions page also work for a joined server's agent,
 // through `agent-folders-v1` and `agent-instructions-v1`.
 
-import { agentFolderParent, type OpenBotDesktopApi } from "@openbot/contracts/ipc";
-import type { AgentFolderCalls } from "@openbot/ui/features/conversation/AgentFolders";
+import { agentFolderParent, type OpenBotDesktopApi } from "@pokebots/contracts/ipc";
+import type { AgentFolderCalls } from "@pokebots/ui/features/conversation/AgentFolders";
 import type {
   AgentInstructionsCalls,
   AgentInstructionsFileCalls,
-} from "@openbot/ui/features/conversation/AgentInstructionsView";
-import type { HostFolderPickMode } from "@openbot/ui/features/conversation/HostFolderPicker";
+} from "@pokebots/ui/features/conversation/AgentInstructionsView";
+import type { HostFolderPickMode } from "@pokebots/ui/features/conversation/HostFolderPicker";
 
 /** Read on each call: tests and stories replace `window.openbot` per case. */
 export function agentFolderCalls(): AgentFolderCalls {

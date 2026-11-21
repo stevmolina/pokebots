@@ -3,11 +3,11 @@ import type {
   AgentAccessRole,
   AgentAccessSnapshot,
   OpenBotDesktopApi,
-} from "@openbot/contracts/ipc";
-import { AGENT_ACCESS_CAPABILITY } from "@openbot/contracts/team-protocol/agent-access-v1";
-import { Alert, AlertContent, AlertDescription } from "@openbot/ui";
-import { type RoleAgent, type ServerRolePage, ServerRolesPanel } from "@openbot/ui/features/servers/ServerRoles";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/contracts/ipc";
+import { AGENT_ACCESS_CAPABILITY } from "@pokebots/contracts/team-protocol/agent-access-v1";
+import { Alert, AlertContent, AlertDescription } from "@pokebots/ui";
+import { type RoleAgent, type ServerRolePage, ServerRolesPanel } from "@pokebots/ui/features/servers/ServerRoles";
+import { useText } from "@pokebots/ui/text";
 import type { JSX } from "@solidjs/web";
 import { createEffect, createStore, Show, untrack } from "solid-js";
 import { serverCanAdminister } from "./server-capabilities";

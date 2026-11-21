@@ -1,5 +1,5 @@
-import type { MessagingDesktopApi } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+import type { MessagingDesktopApi } from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
 import type { MessagingApi } from "./messaging-connector";
 
 /**

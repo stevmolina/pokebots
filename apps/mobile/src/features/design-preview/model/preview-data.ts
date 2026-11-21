@@ -1,4 +1,4 @@
-import type { AgentProviderId, AvatarHue } from "@openbot/contracts/ipc";
+import type { AgentProviderId, AvatarHue } from "@pokebots/contracts/ipc";
 
 /*
  * Made-up data for the design preview. No real agent, chat or person: these are fixtures, so their

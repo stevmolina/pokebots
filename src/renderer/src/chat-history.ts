@@ -1,4 +1,4 @@
-import { isEditableTarget, matchShortcut, shortcutText } from "@openbot/ui/features/shortcuts/shortcut-registry";
+import { isEditableTarget, matchShortcut, shortcutText } from "@pokebots/ui/features/shortcuts/shortcut-registry";
 import { createStore } from "solid-js";
 
 /** A chat that the window opened: an agent chat, a channel, or a direct conversation with a person. */

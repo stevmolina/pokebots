@@ -1,8 +1,8 @@
 import {
   HOST_PERSONALITY_CAPABILITY,
   HOST_PERSONALITY_ROUTES,
-} from "@openbot/contracts/team-protocol/host-personality-v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/team-protocol/host-personality-v1";
+import { sourceText } from "@pokebots/i18n/source";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import { parseServerPersonality } from "../server-personality-preference-store";
 import type { TeamApiAdmin } from "./dependencies";

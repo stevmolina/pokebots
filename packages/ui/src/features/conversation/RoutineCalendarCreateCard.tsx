@@ -1,4 +1,4 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import {
   ROUTINE_LIMIT_POLICIES,
   ROUTINE_MISSED_POLICIES,
@@ -6,8 +6,8 @@ import {
   type RoutineMissedPolicy,
   type RoutineRunPlace,
   type RoutineSchedule,
-} from "@openbot/contracts/ipc";
-import { type CalendarDay, calendarDayDate } from "@openbot/team-client/routine-calendar-dates";
+} from "@pokebots/contracts/ipc";
+import { type CalendarDay, calendarDayDate } from "@pokebots/team-client/routine-calendar-dates";
 import {
   Button,
   IconButton,
@@ -22,7 +22,7 @@ import {
   Text,
   Textarea,
   X,
-} from "@openbot/ui";
+} from "@pokebots/ui";
 import { createEffect, createStore, createUniqueId, onSettled, Show, untrack } from "solid-js";
 import { useText } from "../../text";
 import { AgentSearchSelect, type AgentSearchSelectAgent, agentOf } from "../agents/AgentSearchSelect";

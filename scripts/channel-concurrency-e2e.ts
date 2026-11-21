@@ -10,8 +10,8 @@
 // makes its own two channels and deletes them at the end.
 // Writes .openbot-build/channel-concurrency-e2e/report.json.
 import assert from "node:assert/strict";
-import { agentProviderDescriptor } from "@openbot/contracts/agent-providers";
-import type { AgentTask, ChannelPage, ChannelTask } from "@openbot/contracts/ipc";
+import { agentProviderDescriptor } from "@pokebots/contracts/agent-providers";
+import type { AgentTask, ChannelPage, ChannelTask } from "@pokebots/contracts/ipc";
 import {
   ChannelClient,
   connectChannelE2e,

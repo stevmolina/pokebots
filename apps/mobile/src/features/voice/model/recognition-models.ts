@@ -5,7 +5,7 @@ import {
   PARAKEET_UNIFIED_MODEL_FILES,
   QWEN3_ASR_MODEL_DIRECTORY,
   QWEN3_ASR_MODEL_FILES,
-} from "@openbot/contracts/speech-models";
+} from "@pokebots/contracts/speech-models";
 import * as Device from "expo-device";
 import { createModelDownload, type ModelDownload } from "./model-download";
 import { speechNative } from "./speech-native";

@@ -1,10 +1,10 @@
-import { canAdministerServer, isReleasedRoutineSchedule } from "@openbot/contracts/ipc";
+import { canAdministerServer, isReleasedRoutineSchedule } from "@pokebots/contracts/ipc";
 import {
   ROUTINE_RUN_PLACE_CAPABILITY,
   ROUTINE_RUN_PLACE_ROUTES,
-} from "@openbot/contracts/team-protocol/routine-run-place-v1";
-import { sourceText } from "@openbot/i18n/source";
-import { RoutineInputError } from "@openbot/team-client/routine-schedule";
+} from "@pokebots/contracts/team-protocol/routine-run-place-v1";
+import { sourceText } from "@pokebots/i18n/source";
+import { RoutineInputError } from "@pokebots/team-client/routine-schedule";
 import type { OwnedRoutineRecord } from "../../backend/routine-store";
 import type { TeamApiAgents, TeamApiRoutineRunPlaces } from "./dependencies";
 import { HttpError } from "./http-error";

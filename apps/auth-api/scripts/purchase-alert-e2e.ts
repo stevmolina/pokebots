@@ -13,7 +13,7 @@ import { readdirSync, readFileSync } from "node:fs";
 import { mkdir, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { DatabaseSync } from "node:sqlite";
-import { licensePeriodAmount } from "@openbot/contracts/license";
+import { licensePeriodAmount } from "@pokebots/contracts/license";
 import { Effect } from "effect";
 import { createHostedBilling } from "../src/server/hosted-billing";
 import { sqliteD1 } from "./sqlite-d1";

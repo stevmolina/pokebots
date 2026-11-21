@@ -1,5 +1,5 @@
-import { APP_LOGO_CORNER, APP_LOGO_EYE_POINTS, APP_LOGO_SIZE } from "@openbot/brand/app-logo-shape";
-import { heatLevel, heatmapMonths, heatmapWeeks, type ProfileStats } from "@openbot/team-client/profile-stats";
+import { APP_LOGO_CORNER, APP_LOGO_EYE_POINTS, APP_LOGO_SIZE } from "@pokebots/brand/app-logo-shape";
+import { heatLevel, heatmapMonths, heatmapWeeks, type ProfileStats } from "@pokebots/team-client/profile-stats";
 import {
   ClipOp,
   ImageFormat,

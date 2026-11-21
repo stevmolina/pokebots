@@ -1,4 +1,4 @@
-import { isFunction } from "@openbot/contracts/runtime-values";
+import { isFunction } from "@pokebots/contracts/runtime-values";
 import { onSettled } from "solid-js";
 import { useText } from "../text";
 import { createPointerDrag } from "./createPointerDrag";

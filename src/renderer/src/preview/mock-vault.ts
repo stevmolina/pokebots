@@ -6,14 +6,14 @@ import {
   type VaultSecretField,
   type VaultState,
   type VaultTwoStepCode,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   normalizeTwoStepKey,
   parseTwoStepKey,
   twoStepCode,
   twoStepRemainingMs,
-} from "@openbot/contracts/two-step-code";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/two-step-code";
+import { sourceText } from "@pokebots/i18n/source";
 
 function brandOf(number: string): "visa" | "mastercard" | "amex" | "discover" | null {
   if (number.startsWith("4")) return "visa";

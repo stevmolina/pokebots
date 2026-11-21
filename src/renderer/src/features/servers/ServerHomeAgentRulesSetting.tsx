@@ -3,7 +3,7 @@ import {
   type HomeAgentRulesPreference,
   type HomeAgentRulesSetting,
   type OpenBotDesktopApi,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   Item,
   ItemActions,
@@ -13,8 +13,8 @@ import {
   ItemTitle,
   SettingsSection,
   Switch,
-} from "@openbot/ui";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/ui";
+import { useText } from "@pokebots/ui/text";
 import { createSignal, For, onCleanup, onSettled, Show } from "solid-js";
 
 export type HostHomeAgentRulesCalls = Pick<OpenBotDesktopApi["hostAdmin"], "getHomeAgentRules" | "setHomeAgentRules">;

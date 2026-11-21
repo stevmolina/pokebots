@@ -1,10 +1,10 @@
 import { KeyboardAwareLegendList } from "@legendapp/list/keyboard";
 import type { AnchoredEndSpaceConfig } from "@legendapp/list/react-native";
-import { avatarHeadColor } from "@openbot/brand/bloub-avatar";
-import { expandAttachmentReferences } from "@openbot/contracts/attachment-references";
-import { expandChatTagReferences } from "@openbot/contracts/chat-tag-references";
-import type { AttachmentSummary, BrowserTakeoverRequest } from "@openbot/contracts/ipc";
-import { markdownInlinePlainText, markdownPlainText } from "@openbot/contracts/markdown-preview-text";
+import { avatarHeadColor } from "@pokebots/brand/bloub-avatar";
+import { expandAttachmentReferences } from "@pokebots/contracts/attachment-references";
+import { expandChatTagReferences } from "@pokebots/contracts/chat-tag-references";
+import type { AttachmentSummary, BrowserTakeoverRequest } from "@pokebots/contracts/ipc";
+import { markdownInlinePlainText, markdownPlainText } from "@pokebots/contracts/markdown-preview-text";
 import { useIsFocused } from "expo-router";
 import { Button, Spinner, Typography } from "heroui-native";
 import CircleX from "lucide-react-native/icons/circle-x";

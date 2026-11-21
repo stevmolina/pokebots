@@ -3,8 +3,8 @@ import type {
   BillingInterval,
   BillingStorageUpgrade,
   BillingStorageUpgradeTier,
-} from "@openbot/contracts/billing";
-import { Badge, Button, Dialog, Progress, RadioGroup } from "@openbot/ui";
+} from "@pokebots/contracts/billing";
+import { Badge, Button, Dialog, Progress, RadioGroup } from "@pokebots/ui";
 import { createSignal, For, Show } from "solid-js";
 import { useText } from "../../text";
 import { formatMinorMoney } from "./money";

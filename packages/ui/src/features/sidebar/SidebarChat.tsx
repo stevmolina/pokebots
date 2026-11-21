@@ -26,7 +26,7 @@ import {
   PanelLeft,
   Plus,
   Search,
-} from "@openbot/ui";
+} from "@pokebots/ui";
 import type { JSX } from "@solidjs/web";
 import { createMemo, createSignal, For, onSettled, Show } from "solid-js";
 import { useText } from "../../text";

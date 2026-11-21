@@ -1,4 +1,4 @@
-import type { AgentDefaultChoice, AgentDefaultSetting, AgentDefaultsOverview } from "@openbot/contracts/ipc";
+import type { AgentDefaultChoice, AgentDefaultSetting, AgentDefaultsOverview } from "@pokebots/contracts/ipc";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { Typography } from "heroui-native";
 import { useUniwind } from "uniwind";

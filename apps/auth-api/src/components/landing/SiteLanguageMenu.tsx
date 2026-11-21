@@ -1,4 +1,4 @@
-import { appLanguageOption } from "@openbot/i18n/languages";
+import { appLanguageOption } from "@pokebots/i18n/languages";
 import { useLocation, useRouter } from "@tanstack/solid-router";
 import { createSignal, createUniqueId, For, Match, onSettled, Show, Switch } from "solid-js";
 import {

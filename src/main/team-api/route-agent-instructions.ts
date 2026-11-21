@@ -1,9 +1,9 @@
-import { parseSaveAgentInstructionsInput } from "@openbot/contracts/ipc";
+import { parseSaveAgentInstructionsInput } from "@pokebots/contracts/ipc";
 import {
   AGENT_INSTRUCTIONS_CAPABILITY,
   AGENT_INSTRUCTIONS_ROUTES,
-} from "@openbot/contracts/team-protocol/agent-instructions-v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/team-protocol/agent-instructions-v1";
+import { sourceText } from "@pokebots/i18n/source";
 import { AgentInstructionsRefusedError } from "../agent-instructions-files";
 import type { TeamApiAdmin } from "./dependencies";
 import { HttpError } from "./http-error";

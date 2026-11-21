@@ -22,14 +22,14 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import { decodeHostKeyHandover, type HostKeyHandover } from "@openbot/contracts/host-key-handover";
-import { decodeRecord, requiredString } from "@openbot/contracts/ipc-decoding";
-import { verifyEd25519Base64Url } from "@openbot/team-client/ed25519";
+import { decodeHostKeyHandover, type HostKeyHandover } from "@pokebots/contracts/host-key-handover";
+import { decodeRecord, requiredString } from "@pokebots/contracts/ipc-decoding";
+import { verifyEd25519Base64Url } from "@pokebots/team-client/ed25519";
 import {
   followHostKeyHandovers,
   hostKeyChangedAt,
   remoteHostFingerprint,
-} from "@openbot/team-client/host-key-handover";
+} from "@pokebots/team-client/host-key-handover";
 import { Effect } from "effect";
 import { verifyHostKeySignature } from "../src/main/remote-server-host-directory";
 

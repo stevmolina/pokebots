@@ -1,6 +1,6 @@
-import type { AgentEvent, TeamRealtimeEvent } from "@openbot/contracts/ipc";
-import { isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
-import { decodeSignalServerMessage } from "@openbot/contracts/signal-protocol/decode";
+import type { AgentEvent, TeamRealtimeEvent } from "@pokebots/contracts/ipc";
+import { isDynamicRecord, isNumber, isString } from "@pokebots/contracts/runtime-values";
+import { decodeSignalServerMessage } from "@pokebots/contracts/signal-protocol/decode";
 import {
   SIGNAL_DEFAULT_RECONNECT_GRACE_MS,
   SIGNAL_PROTOCOL_VERSION,
@@ -8,9 +8,9 @@ import {
   SIGNAL_TURN_REFRESH_INTERVAL_MS,
   type SignalClientMessage,
   type SignalServerMessage,
-} from "@openbot/contracts/signal-protocol/messages";
-import { ticketNamesSignalHome } from "@openbot/contracts/signal-protocol/ticket";
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
+} from "@pokebots/contracts/signal-protocol/messages";
+import { ticketNamesSignalHome } from "@pokebots/contracts/signal-protocol/ticket";
+import { TEAM_API_ROUTES } from "@pokebots/contracts/team-api-routes";
 import {
   decodeTeamProtocolSupportExpanded,
   decodeTeamProtocolV2AuthFrame,
@@ -33,29 +33,29 @@ import {
   teamCapabilityLists,
   teamProtocolV2AuthenticationTranscript,
   teamWebRtcClientProtocol,
-} from "@openbot/contracts/team-protocol";
+} from "@pokebots/contracts/team-protocol";
 import {
   COMPACT_RPC_CAPABILITY,
   COMPACT_RPC_UNKNOWN_KEY_CODE,
   compressedRpcResult,
-} from "@openbot/contracts/team-protocol/compact-rpc-v1";
-import type { LiveVoiceEvent } from "@openbot/contracts/team-protocol/live-voice-v1";
-import { optionalTeamEvent, optionalTeamEventToCurrent } from "@openbot/contracts/team-protocol/optional-events";
+} from "@pokebots/contracts/team-protocol/compact-rpc-v1";
+import type { LiveVoiceEvent } from "@pokebots/contracts/team-protocol/live-voice-v1";
+import { optionalTeamEvent, optionalTeamEventToCurrent } from "@pokebots/contracts/team-protocol/optional-events";
 import {
   POKEBOTS_INTEGRATIONS_CAPABILITY,
   POKEBOTS_INTEGRATIONS_ROUTES,
-} from "@openbot/contracts/team-protocol/pokebots-integrations-v1";
-import { teamSideRouteCodec } from "@openbot/contracts/team-protocol/side-routes";
-import { addSkillSuggestionNames } from "@openbot/contracts/team-protocol/skill-learning-v1";
-import { addUiBlockAutoAnswers } from "@openbot/contracts/team-protocol/ui-block-auto-answer-v1";
-import { addUiBlockVaultRequests } from "@openbot/contracts/team-protocol/ui-block-vault-v1";
+} from "@pokebots/contracts/team-protocol/pokebots-integrations-v1";
+import { teamSideRouteCodec } from "@pokebots/contracts/team-protocol/side-routes";
+import { addSkillSuggestionNames } from "@pokebots/contracts/team-protocol/skill-learning-v1";
+import { addUiBlockAutoAnswers } from "@pokebots/contracts/team-protocol/ui-block-auto-answer-v1";
+import { addUiBlockVaultRequests } from "@pokebots/contracts/team-protocol/ui-block-vault-v1";
 import {
   type TeamProtocolV1CurrentEventControl,
   toWireTeamProtocolV1ClientEvent,
-} from "@openbot/contracts/team-protocol/v1-adapter";
-import { TEAM_PROTOCOL_V9 } from "@openbot/contracts/team-protocol/v9";
-import { sourceText } from "@openbot/i18n/source";
-import { errorReference, referenceFrom } from "@openbot/user-errors/reference";
+} from "@pokebots/contracts/team-protocol/v1-adapter";
+import { TEAM_PROTOCOL_V9 } from "@pokebots/contracts/team-protocol/v9";
+import { sourceText } from "@pokebots/i18n/source";
+import { errorReference, referenceFrom } from "@pokebots/user-errors/reference";
 import { Context, Deferred, Effect, Exit, Layer, ManagedRuntime, Result, Schema, Scope, Semaphore } from "effect";
 import { base64ToBytes, base64UrlToBytes, bytesToBase64Url } from "./base64";
 import { canInflateResponses, capabilityListKey, inflateRpcBody } from "./compact-rpc";

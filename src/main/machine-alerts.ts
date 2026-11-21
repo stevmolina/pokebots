@@ -9,9 +9,9 @@ import {
   machineAlertLevel,
   machineMetricRatio,
   type TeamMemberSummary,
-} from "@openbot/contracts/ipc";
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
-import { MACHINE_ALERT_EVENT, type MachineAlertEvent } from "@openbot/contracts/team-protocol/machine-resources-v1";
+} from "@pokebots/contracts/ipc";
+import { isDynamicRecord } from "@pokebots/contracts/runtime-values";
+import { MACHINE_ALERT_EVENT, type MachineAlertEvent } from "@pokebots/contracts/team-protocol/machine-resources-v1";
 import { Effect, Result, Semaphore } from "effect";
 import { isMissingFileError } from "../backend/file-errors";
 import { type PreferenceFileFailure, readPreferenceFile, writePreferenceFile } from "./preference-file";

@@ -6,9 +6,9 @@
 // other computer is written as interrupted (an agent's) or cancelled (a channel's): nothing here
 // starts it again. A run has no trigger and no handle here, because both belonged to the other server.
 
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import { ROUTINE_RUN_SOURCES, type RoutineRunFields } from "@openbot/contracts/ipc";
-import { isDynamicRecord, isOneOf, isString } from "@openbot/contracts/runtime-values";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
+import { ROUTINE_RUN_SOURCES, type RoutineRunFields } from "@pokebots/contracts/ipc";
+import { isDynamicRecord, isOneOf, isString } from "@pokebots/contracts/runtime-values";
 import type { ImportedRoutineRun } from "../backend/routine-store";
 
 /** A run as the file keeps it. */

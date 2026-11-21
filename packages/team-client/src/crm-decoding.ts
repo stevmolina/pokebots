@@ -9,8 +9,8 @@ import {
   isCrmOverview,
   isCrmPaymentPage,
   isCrmSettings,
-} from "@openbot/contracts/ipc";
-import { guardedDecoder } from "@openbot/contracts/ipc-decoding";
+} from "@pokebots/contracts/ipc";
+import { guardedDecoder } from "@pokebots/contracts/ipc-decoding";
 
 export const decodeRemoteCrmOverview = guardedDecoder(isCrmOverview, "remote CRM overview");
 export const decodeRemoteCrmCustomerPage = guardedDecoder(isCrmCustomerPage, "remote CRM customers");

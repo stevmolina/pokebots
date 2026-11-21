@@ -1,5 +1,5 @@
 {
-  "name": "@openbot/brand",
+  "name": "@pokebots/brand",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@norbert_bodziony/bloub": "catalog:",
-    "@openbot/contracts": "workspace:*"
+    "@pokebots/contracts": "workspace:*"
   },
   "peerDependencies": {
     "@solidjs/web": "catalog:",

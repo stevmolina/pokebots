@@ -1,4 +1,4 @@
-import type { ChangeMarkerActions } from "@openbot/ui/features/conversation/ChatActionMarker";
+import type { ChangeMarkerActions } from "@pokebots/ui/features/conversation/ChatActionMarker";
 import { createMemo } from "solid-js";
 import { serverCanAdminister } from "../servers/server-capabilities";
 import { agentInstructionsCalls } from "./agent-folders-port";

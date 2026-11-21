@@ -9,7 +9,7 @@ import {
   conversationSubagentsText,
   type DirectMessage,
   type QueueDelivery,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   LANDING_DEMO_SCENES,
   LANDING_DIRECT_DEMO_SCRIPTS,

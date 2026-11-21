@@ -7,7 +7,7 @@
  * data: a value of the wrong shape makes the event match nothing.
  */
 
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import {
   isGitHubRepositoryName,
   WORKFLOW_GITHUB_EVENTS,
@@ -18,7 +18,7 @@ import {
   workflowGitHubEventItemKind,
   workflowGitHubTriggerRepositories,
   workflowListField,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   type DynamicRecord,
   isBoolean,
@@ -26,7 +26,7 @@ import {
   isNumber,
   isOneOf,
   isString,
-} from "@openbot/contracts/runtime-values";
+} from "@pokebots/contracts/runtime-values";
 import { EXTERNAL_EVENT_END, EXTERNAL_EVENT_START } from "../webhook-trigger";
 
 /** The parts of one GitHub event that the triggers, the loop guard and the run text read. */

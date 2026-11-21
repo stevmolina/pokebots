@@ -1,7 +1,7 @@
-import type { AgentEvent, AgentTask, AgentTasksSnapshot, ConversationSnapshot } from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
-import { retryOperationIds } from "@openbot/team-client/retry-operation-id";
-import { currentText } from "@openbot/ui/text";
+import type { AgentEvent, AgentTask, AgentTasksSnapshot, ConversationSnapshot } from "@pokebots/contracts/ipc";
+import type { AppTextKey } from "@pokebots/i18n";
+import { retryOperationIds } from "@pokebots/team-client/retry-operation-id";
+import { currentText } from "@pokebots/ui/text";
 import { createEffect, createMemo, createStore, untrack } from "solid-js";
 import { actionToast } from "../../action-toast";
 import { desktopAnalytics } from "../../analytics";

@@ -1,10 +1,10 @@
-import type { CodexLiveVoice } from "@openbot/contracts/ipc";
+import type { CodexLiveVoice } from "@pokebots/contracts/ipc";
 import {
   isLiveVoiceName,
   type LiveVoiceEvent,
   type LiveVoiceSessionResponse,
   type LiveVoiceStartRequest,
-} from "@openbot/contracts/team-protocol/live-voice-v1";
+} from "@pokebots/contracts/team-protocol/live-voice-v1";
 import { activateKeepAwakeAsync, deactivateKeepAwake } from "expo-keep-awake";
 import { useEffect, useId, useRef, useState } from "react";
 import { BackHandler } from "react-native";

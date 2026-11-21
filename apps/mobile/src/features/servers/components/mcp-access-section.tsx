@@ -1,5 +1,5 @@
-import { MCP_ACCESS_LEVELS, type McpAccessLevel, mcpAccessRank } from "@openbot/contracts/ipc";
-import type { MobileTextKey } from "@openbot/i18n/mobile";
+import { MCP_ACCESS_LEVELS, type McpAccessLevel, mcpAccessRank } from "@pokebots/contracts/ipc";
+import type { MobileTextKey } from "@pokebots/i18n/mobile";
 import { router } from "expo-router";
 import { Typography } from "heroui-native";
 import { useMemo } from "react";

@@ -36,8 +36,8 @@ import {
   writeFileSync,
 } from "node:fs";
 import { join, resolve } from "node:path";
-import { TRANSLATED_LOCALES, translateFor } from "@openbot/i18n";
-import { createOpenBotLogger } from "@openbot/logging";
+import { TRANSLATED_LOCALES, translateFor } from "@pokebots/i18n";
+import { createOpenBotLogger } from "@pokebots/logging";
 import { Option, Schema } from "effect";
 import { LATEST_SCHEMA_VERSION } from "../src/backend/openbot-database-schema";
 import { developmentUserDataName } from "../src/main/development-profile";

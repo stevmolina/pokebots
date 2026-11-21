@@ -1,4 +1,4 @@
-import type { WAMessage } from "@openbot/whatsapp/baileys";
+import type { WAMessage } from "@pokebots/whatsapp/baileys";
 import { matchesHistoryFilter } from "../messaging-history-store";
 import type { ContextEntry, HistoryFilter, InboundFile, MessageBody } from "../messaging-types";
 import type { WhatsAppArchive } from "./whatsapp-archive";

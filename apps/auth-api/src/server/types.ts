@@ -1,6 +1,6 @@
-import type { AvatarColor } from "@openbot/contracts/ipc-agent-identity";
-import type { AccountSession } from "@openbot/contracts/mobile-connect";
-import { isDynamicRecord, isFunction } from "@openbot/contracts/runtime-values";
+import type { AvatarColor } from "@pokebots/contracts/ipc-agent-identity";
+import type { AccountSession } from "@pokebots/contracts/mobile-connect";
+import { isDynamicRecord, isFunction } from "@pokebots/contracts/runtime-values";
 import type { Effect } from "effect";
 import type { AuthStoreError } from "./d1-auth-repository";
 import type { EmailDeliveryError } from "./email-delivery";
@@ -248,7 +248,7 @@ export function requireWorkerBindings(value: unknown): WorkerBindings {
 export interface MobileAuthSessionResult {
   sessionToken: string;
   user: AuthUser;
-  host?: import("@openbot/contracts/mobile-connect").MobileConnectHostBinding;
+  host?: import("@pokebots/contracts/mobile-connect").MobileConnectHostBinding;
 }
 
 export interface AuthUser {
@@ -388,7 +388,7 @@ export interface AuthRepository {
     expiresAt: number;
   }): Effect.Effect<void, AuthStoreError>;
   replaceMobileAuthTicket(input: {
-    host?: import("@openbot/contracts/mobile-connect").MobileConnectHostBinding | undefined;
+    host?: import("@pokebots/contracts/mobile-connect").MobileConnectHostBinding | undefined;
     ticketHash: string;
     userId: string;
     serverId: string;
@@ -419,7 +419,7 @@ export interface AuthRepository {
     linkHash: string;
     desktopSessionToken: string;
     userId: string;
-    host: import("@openbot/contracts/mobile-connect").MobileConnectHostBinding;
+    host: import("@pokebots/contracts/mobile-connect").MobileConnectHostBinding;
     createdAt: number;
   }): Effect.Effect<boolean, AuthStoreError>;
   revokeMobileConnectLink(input: { userId: string; hostId: string; now: number }): Effect.Effect<void, AuthStoreError>;

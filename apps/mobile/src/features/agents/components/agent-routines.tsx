@@ -1,6 +1,6 @@
-import type { RoutineSchedule } from "@openbot/contracts/ipc";
-import { routineOnceInstant } from "@openbot/team-client/routine-schedule";
-import { routineScheduleToDraft } from "@openbot/team-client/routine-schedule-draft";
+import type { RoutineSchedule } from "@pokebots/contracts/ipc";
+import { routineOnceInstant } from "@pokebots/team-client/routine-schedule";
+import { routineScheduleToDraft } from "@pokebots/team-client/routine-schedule-draft";
 import { type QueryKey, useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
 import { Typography } from "heroui-native";

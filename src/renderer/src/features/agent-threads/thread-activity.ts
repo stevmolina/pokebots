@@ -1,11 +1,11 @@
-import type { AgentTask } from "@openbot/contracts/ipc";
-import { MAIN_THREAD_ID, type ThreadStatus } from "@openbot/ui/features/conversation/threads/thread-types";
+import type { AgentTask } from "@pokebots/contracts/ipc";
+import { MAIN_THREAD_ID, type ThreadStatus } from "@pokebots/ui/features/conversation/threads/thread-types";
 import {
   computeSidebarAgentStates,
   isAgentWorking,
   sidebarThreadWait,
-} from "@openbot/ui/features/sidebar/sidebar-agent-states";
-import type { SidebarThreadEntry } from "@openbot/ui/features/sidebar/sidebar-types";
+} from "@pokebots/ui/features/sidebar/sidebar-agent-states";
+import type { SidebarThreadEntry } from "@pokebots/ui/features/sidebar/sidebar-types";
 import { createMemo } from "solid-js";
 import { useTurns } from "../../turns";
 import { useAgentTasks } from "../agent-tasks/agent-tasks-context";

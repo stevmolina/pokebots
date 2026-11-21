@@ -15,10 +15,10 @@ import {
   type VaultSaveScope,
   type VaultSecretField,
   type VaultSecretRequest,
-} from "@openbot/contracts/ipc";
-import type { DynamicRecord } from "@openbot/contracts/runtime-values";
-import { normalizeTwoStepKey, TWO_STEP_KEY_LIMIT } from "@openbot/contracts/two-step-code";
-import { type SourceMessages, sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/ipc";
+import type { DynamicRecord } from "@pokebots/contracts/runtime-values";
+import { normalizeTwoStepKey, TWO_STEP_KEY_LIMIT } from "@pokebots/contracts/two-step-code";
+import { type SourceMessages, sourceText } from "@pokebots/i18n/source";
 import { websiteUrl } from "../backend/password-vault";
 import { isObject } from "./ipc/validation";
 

@@ -1,17 +1,17 @@
-import type { ChannelSummary, HiddenAgent, SidebarLayoutSnapshot } from "@openbot/contracts/ipc";
-import { Button } from "@openbot/ui";
-import type { AvatarMood } from "@openbot/ui/bloub-avatar";
-import type { ThreadItem } from "@openbot/ui/features/conversation/threads/thread-types";
-import { Sidebar } from "@openbot/ui/features/sidebar/Sidebar";
-import { SidebarMachineCard } from "@openbot/ui/features/sidebar/SidebarMachineCard";
-import { SidebarStorageCard } from "@openbot/ui/features/sidebar/SidebarStorageCard";
-import { normalizeSidebarPinnedItems, type SidebarPinnedItem } from "@openbot/ui/features/sidebar/sidebar-pins";
+import type { ChannelSummary, HiddenAgent, SidebarLayoutSnapshot } from "@pokebots/contracts/ipc";
+import { Button } from "@pokebots/ui";
+import type { AvatarMood } from "@pokebots/ui/bloub-avatar";
+import type { ThreadItem } from "@pokebots/ui/features/conversation/threads/thread-types";
+import { Sidebar } from "@pokebots/ui/features/sidebar/Sidebar";
+import { SidebarMachineCard } from "@pokebots/ui/features/sidebar/SidebarMachineCard";
+import { SidebarStorageCard } from "@pokebots/ui/features/sidebar/SidebarStorageCard";
+import { normalizeSidebarPinnedItems, type SidebarPinnedItem } from "@pokebots/ui/features/sidebar/sidebar-pins";
 import {
   SIDEBAR_HIDDEN_GROUP_OPEN_ID,
   type SidebarAgentState,
   type SidebarAgentThreads,
   type SidebarThreadLanes,
-} from "@openbot/ui/features/sidebar/sidebar-types";
+} from "@pokebots/ui/features/sidebar/sidebar-types";
 import { createSignal, For, untrack } from "solid-js";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";

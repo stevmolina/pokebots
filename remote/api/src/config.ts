@@ -1,4 +1,4 @@
-import { TELEGRAM_BOT_ID_PATTERN } from "@openbot/contracts/signal-protocol/telegram-route";
+import { TELEGRAM_BOT_ID_PATTERN } from "@pokebots/contracts/signal-protocol/telegram-route";
 
 export interface RemoteApiConfig {
   host: string;

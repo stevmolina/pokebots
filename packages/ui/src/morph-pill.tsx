@@ -5,8 +5,8 @@ import {
   ISLAND_OPEN,
   type Spring,
   springKeyframes,
-} from "@openbot/ui/spring-motion";
-import { clamp, mix, prefersReducedMotion } from "@openbot/ui/utils";
+} from "@pokebots/ui/spring-motion";
+import { clamp, mix, prefersReducedMotion } from "@pokebots/ui/utils";
 import type { JSX } from "@solidjs/web";
 import { createEffect, createSignal, flush, omit, onCleanup, Show, untrack } from "solid-js";
 

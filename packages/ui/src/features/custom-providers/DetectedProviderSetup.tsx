@@ -1,4 +1,4 @@
-import type { CustomProviderHarness, CustomProviderRestart } from "@openbot/contracts/ipc";
+import type { CustomProviderHarness, CustomProviderRestart } from "@pokebots/contracts/ipc";
 import { createEffect, createSignal } from "solid-js";
 import { useText } from "../../text";
 import { CustomAcpAgentDialog } from "./CustomAcpAgentDialog";

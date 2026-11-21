@@ -1,5 +1,5 @@
-import type { AgentTask } from "@openbot/contracts/ipc";
-import { isAgentTaskOpen } from "@openbot/team-client/agent-tasks";
+import type { AgentTask } from "@pokebots/contracts/ipc";
+import { isAgentTaskOpen } from "@pokebots/team-client/agent-tasks";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { useQueryScope } from "@/features/auth/context/mobile-session-context";

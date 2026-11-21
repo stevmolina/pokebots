@@ -1,8 +1,8 @@
 import { randomUUID } from "node:crypto";
 import { realpath } from "node:fs/promises";
 import { extname, join, relative, sep } from "node:path";
-import { CHAT_VISUAL_PAGE_LIMIT, isChatVisualMimeType } from "@openbot/contracts/chat-visual";
-import { isFilePreviewPageUrl } from "@openbot/contracts/ipc";
+import { CHAT_VISUAL_PAGE_LIMIT, isChatVisualMimeType } from "@pokebots/contracts/chat-visual";
+import { isFilePreviewPageUrl } from "@pokebots/contracts/ipc";
 import { runCauseEffect } from "../backend/effect-boundary";
 import { isPathInside } from "../backend/path-containment";
 import { attachmentDocumentHeaders, chatVisualResponse } from "./chat-visual-protocol";

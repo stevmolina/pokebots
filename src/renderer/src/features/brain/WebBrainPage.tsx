@@ -1,13 +1,13 @@
-import { BRAIN_ROUTE, decodeBrainResponse } from "@openbot/contracts/brain";
-import type { McpServerConfig } from "@openbot/contracts/ipc";
+import { BRAIN_ROUTE, decodeBrainResponse } from "@pokebots/contracts/brain";
+import type { McpServerConfig } from "@pokebots/contracts/ipc";
 import {
   integrationRequest,
   POKEBOTS_BRAIN_ID,
   POKEBOTS_INTEGRATIONS_ROUTES,
-} from "@openbot/contracts/team-protocol/pokebots-integrations-v1";
-import { listMcpServers } from "@openbot/team-client/team-admin-requests";
-import type { TeamApiRequest } from "@openbot/team-client/team-api-requests";
-import { BrainPanel } from "@openbot/ui/features/brain/BrainPanel";
+} from "@pokebots/contracts/team-protocol/pokebots-integrations-v1";
+import { listMcpServers } from "@pokebots/team-client/team-admin-requests";
+import type { TeamApiRequest } from "@pokebots/team-client/team-api-requests";
+import { BrainPanel } from "@pokebots/ui/features/brain/BrainPanel";
 import { Effect } from "effect";
 import { createEffect, createSignal, Show } from "solid-js";
 

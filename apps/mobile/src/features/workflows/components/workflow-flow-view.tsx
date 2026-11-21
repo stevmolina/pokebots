@@ -1,4 +1,4 @@
-import type { WorkflowGraph, WorkflowNode, WorkflowStep } from "@openbot/contracts/ipc";
+import type { WorkflowGraph, WorkflowNode, WorkflowStep } from "@pokebots/contracts/ipc";
 import { Typography } from "heroui-native";
 import CornerDownLeft from "lucide-react-native/icons/corner-down-left";
 import TriangleAlert from "lucide-react-native/icons/triangle-alert";

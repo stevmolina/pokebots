@@ -1,5 +1,5 @@
-import { documentColorScheme } from "@openbot/ui/document-color-scheme";
-import { prefersReducedMotion } from "@openbot/ui/utils";
+import { documentColorScheme } from "@pokebots/ui/document-color-scheme";
+import { prefersReducedMotion } from "@pokebots/ui/utils";
 
 /**
  * A theme change as a soft wash of brand colors that moves across the window, as glimm does it. A

@@ -12,10 +12,10 @@ import type {
   AgentDockInputRect,
   AgentDockPresentation,
   SetAgentDockInteractiveInput,
-} from "@openbot/contracts/ipc";
-import { AGENT_DOCK_LIMITS, AGENT_DOCK_SIZE_LIMITS, IPC_ENDPOINTS } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger, type Logger, toLogValue } from "@openbot/logging";
+} from "@pokebots/contracts/ipc";
+import { AGENT_DOCK_LIMITS, AGENT_DOCK_SIZE_LIMITS, IPC_ENDPOINTS } from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
+import { createOpenBotLogger, type Logger, toLogValue } from "@pokebots/logging";
 import { Deferred, Effect, Schema, Semaphore } from "effect";
 import type { BrowserWindow, Display, Rectangle, Screen } from "electron";
 import { causeHelpers } from "../backend/effect-boundary";

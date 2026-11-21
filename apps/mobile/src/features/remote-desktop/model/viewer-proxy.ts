@@ -1,7 +1,7 @@
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
-import { decodeTeamProtocolV2Json, type TeamProtocolV2Json } from "@openbot/contracts/team-protocol/v2";
-import { base64ToBytes, bytesToBase64 } from "@openbot/team-client/base64";
+import { isDynamicRecord, isString } from "@pokebots/contracts/runtime-values";
+import { TEAM_API_ROUTES } from "@pokebots/contracts/team-api-routes";
+import { decodeTeamProtocolV2Json, type TeamProtocolV2Json } from "@pokebots/contracts/team-protocol/v2";
+import { base64ToBytes, bytesToBase64 } from "@pokebots/team-client/base64";
 import * as Crypto from "expo-crypto";
 import type {
   RemoteDesktopConnection,

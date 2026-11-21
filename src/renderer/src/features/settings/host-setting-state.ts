@@ -1,4 +1,4 @@
-import { useText } from "@openbot/ui/text";
+import { useText } from "@pokebots/ui/text";
 import { createEffect, createStore, untrack } from "solid-js";
 
 /** One host setting as a settings page shows it. `value` is null until the host answers. */

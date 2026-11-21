@@ -8,10 +8,10 @@
 import assert from "node:assert/strict";
 import { mkdirSync, renameSync, rmSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
-import type { AppThemePaletteColor } from "@openbot/contracts/app-appearance";
-import type { OpenBotDesktopApi } from "@openbot/contracts/ipc";
-import { en } from "@openbot/i18n";
-import { createOpenBotLogger } from "@openbot/logging";
+import type { AppThemePaletteColor } from "@pokebots/contracts/app-appearance";
+import type { OpenBotDesktopApi } from "@pokebots/contracts/ipc";
+import { en } from "@pokebots/i18n";
+import { createOpenBotLogger } from "@pokebots/logging";
 import type { Page } from "playwright-core";
 import { assertMutationAllowed, connectToDevApp } from "./dev-automation/cdp-client";
 import { readDevInstanceRecords } from "./dev-automation/instance-registry";

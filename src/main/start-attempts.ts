@@ -1,6 +1,6 @@
 import { readFileSync, renameSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { isNewerRelease } from "@openbot/contracts/release-version";
+import { isNewerRelease } from "@pokebots/contracts/release-version";
 import { Effect, Option, Schema } from "effect";
 import { countCrashDumps } from "./run-marker";
 

@@ -1,5 +1,5 @@
-import type { AgentProfile } from "@openbot/ui/data";
-import { AwaitingReplies, type AwaitingReplyItem } from "@openbot/ui/features/conversation/AwaitingReplies";
+import type { AgentProfile } from "@pokebots/ui/data";
+import { AwaitingReplies, type AwaitingReplyItem } from "@pokebots/ui/features/conversation/AwaitingReplies";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { requireFixture, STORY_AGENTS } from "../src/preview/fixtures";

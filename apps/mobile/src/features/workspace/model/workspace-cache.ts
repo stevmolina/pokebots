@@ -1,4 +1,4 @@
-import { isStorageGb } from "@openbot/contracts/billing";
+import { isStorageGb } from "@pokebots/contracts/billing";
 import {
   type AvatarColor,
   type ChannelPage,
@@ -9,10 +9,10 @@ import {
   isAvatarColor,
   ROUTINE_QUIET_ANSWER_ITEM_TYPE,
   type SidebarLayoutSnapshot,
-} from "@openbot/contracts/ipc";
-import { isBoolean, isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
-import { optionalServerAppearanceField } from "@openbot/contracts/team-protocol/host-appearance-v1";
-import type { RemoteTeamHost } from "@openbot/team-client";
+} from "@pokebots/contracts/ipc";
+import { isBoolean, isDynamicRecord, isNumber, isString } from "@pokebots/contracts/runtime-values";
+import { optionalServerAppearanceField } from "@pokebots/contracts/team-protocol/host-appearance-v1";
+import type { RemoteTeamHost } from "@pokebots/team-client";
 import * as Crypto from "expo-crypto";
 import * as FileSystem from "expo-file-system/legacy";
 import * as LockedKeychain from "@/shared/lib/locked-keychain";

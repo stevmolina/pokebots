@@ -1,6 +1,6 @@
-import { agentProviderName } from "@openbot/contracts/agent-providers";
-import type { InstanceTransferAgent, InstanceTransferResult } from "@openbot/contracts/ipc";
-import type { ServerAppearance } from "@openbot/contracts/team-protocol/host-appearance-v1";
+import { agentProviderName } from "@pokebots/contracts/agent-providers";
+import type { InstanceTransferAgent, InstanceTransferResult } from "@pokebots/contracts/ipc";
+import type { ServerAppearance } from "@pokebots/contracts/team-protocol/host-appearance-v1";
 import {
   ArrowRight,
   Button,
@@ -14,7 +14,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@openbot/ui";
+} from "@pokebots/ui";
 import { createEffect, createMemo, createSignal, createUniqueId, For, Show, untrack } from "solid-js";
 import { useText } from "../../text";
 import { AgentAvatar } from "../agents/AgentAvatar";

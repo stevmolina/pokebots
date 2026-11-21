@@ -6,7 +6,7 @@ import {
   avatarFileExtension,
   isAvatarMimeType,
   isValidAvatarImage,
-} from "@openbot/contracts/avatar-images";
+} from "@pokebots/contracts/avatar-images";
 import { Effect, Semaphore } from "effect";
 
 // The pictures of the agents and channels of joined servers that this computer already downloaded,

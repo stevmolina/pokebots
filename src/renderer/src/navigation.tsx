@@ -1,6 +1,6 @@
-import type { GlobalSearchPage } from "@openbot/ui/components/GlobalSearch";
-import type { AgentMessage } from "@openbot/ui/data";
-import { currentText } from "@openbot/ui/text";
+import type { GlobalSearchPage } from "@pokebots/ui/components/GlobalSearch";
+import type { AgentMessage } from "@pokebots/ui/data";
+import { currentText } from "@pokebots/ui/text";
 import { createEffect, createSignal, onSettled, untrack } from "solid-js";
 import { desktopAnalytics } from "./analytics";
 import { toAgentMessage } from "./app-message-projection";

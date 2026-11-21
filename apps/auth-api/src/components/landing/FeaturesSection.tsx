@@ -1,4 +1,4 @@
-import { ProviderLogo } from "@openbot/brand";
+import { ProviderLogo } from "@pokebots/brand";
 import type { JSX } from "@solidjs/web";
 import { Link } from "@tanstack/solid-router";
 import { createSignal, For, lazy, onSettled, Show } from "solid-js";
@@ -33,7 +33,7 @@ import { useLandingText } from "./LandingText";
 // Loaded after the page is in the browser, as on the agent template page: the
 // avatar engine is too large for the first load of the home page.
 const AgentAvatar = lazy(() =>
-  import("@openbot/ui/features/agents/AgentAvatar").then((module) => ({ default: module.AgentAvatar })),
+  import("@pokebots/ui/features/agents/AgentAvatar").then((module) => ({ default: module.AgentAvatar })),
 );
 
 /** The second marquee row runs the other way, so it starts from the other end of the list. */

@@ -3,7 +3,7 @@
 // computer and the `library-folders-v1` route of the Team API both change the folders through it, so
 // a joined server applies the same rules.
 
-import type { LibraryFolderAction, LibraryFolderContext, LibraryFoldersSnapshot } from "@openbot/contracts/ipc";
+import type { LibraryFolderAction, LibraryFolderContext, LibraryFoldersSnapshot } from "@pokebots/contracts/ipc";
 import { Effect } from "effect";
 import type { AgentLibraryFolders, LibraryFileStamp } from "../backend/agent/library-folder-tools";
 import type { LibraryFoldersStore } from "../backend/library-folders-store";

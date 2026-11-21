@@ -15,8 +15,8 @@ import { chmod, copyFile, mkdir, mkdtemp, open, readdir, readFile, rm, stat, wri
 import { tmpdir } from "node:os";
 import { dirname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
-import type { AgentSummary } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+import type { AgentSummary } from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect } from "effect";
 import { type AgentImportAgents, AgentImportService } from "../src/main/agent-import-service";
 import { LocalSkillLibrary } from "../src/main/local-skill-library";

@@ -3,9 +3,9 @@ import {
   CHAT_VISUAL_FRAME_SANDBOX,
   type ChatVisualKey,
   parseChatVisualMessage,
-} from "@openbot/contracts/chat-visual";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import { ChatVisual } from "@openbot/ui/features/conversation/ChatVisual";
+} from "@pokebots/contracts/chat-visual";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
+import { ChatVisual } from "@pokebots/ui/features/conversation/ChatVisual";
 import { render, screen, waitFor } from "@solidjs/testing-library";
 import { afterEach, describe, expect, it, vi } from "vitest";
 

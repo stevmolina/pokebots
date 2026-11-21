@@ -1,4 +1,4 @@
-import type { AgentImportSkillSource } from "@openbot/contracts/ipc";
+import type { AgentImportSkillSource } from "@pokebots/contracts/ipc";
 import { router, useLocalSearchParams } from "expo-router";
 import { Typography } from "heroui-native";
 import {

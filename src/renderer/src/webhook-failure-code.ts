@@ -1,5 +1,5 @@
-import { matchingSourceKeys } from "@openbot/i18n";
-import { normalizeMessage } from "@openbot/user-errors/reference";
+import { matchingSourceKeys } from "@pokebots/i18n";
+import { normalizeMessage } from "@pokebots/user-errors/reference";
 
 /**
  * The `failure_code` of a failed routine or workflow action: `webhook_route_limit` when the host

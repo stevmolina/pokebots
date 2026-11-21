@@ -4,8 +4,8 @@ import {
   type MarketplaceSkillSort,
   type MarketplaceSkillSummary,
   parseGithubSkillId,
-} from "@openbot/contracts/ipc";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/contracts/ipc";
+import { useText } from "@pokebots/ui/text";
 import type { MarketplaceAgent, MarketplaceModel } from "./marketplace-model";
 
 export const isOn = (skill: InstalledSkill | undefined) => skill?.enabled !== false;

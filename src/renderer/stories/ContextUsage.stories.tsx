@@ -1,14 +1,14 @@
-import { ArrowUp, Button, Mic, Plus } from "@openbot/ui";
-import type { AgentMessage } from "@openbot/ui/data";
-import { ChatMessageRow } from "@openbot/ui/features/conversation/ChatMessageRow";
-import { ComposerEditor } from "@openbot/ui/features/conversation/ComposerEditor";
+import { ArrowUp, Button, Mic, Plus } from "@pokebots/ui";
+import type { AgentMessage } from "@pokebots/ui/data";
+import { ChatMessageRow } from "@pokebots/ui/features/conversation/ChatMessageRow";
+import { ComposerEditor } from "@pokebots/ui/features/conversation/ComposerEditor";
 import {
   ComposerCompactionNotice,
   ContextCompactionMarker,
   type ContextCompactionView,
   ContextUsageMeter,
   type ContextUsageView,
-} from "@openbot/ui/features/conversation/ContextUsage";
+} from "@pokebots/ui/features/conversation/ContextUsage";
 import type { JSX } from "@solidjs/web";
 import { createSignal, For, Show } from "solid-js";
 import { fn } from "storybook/test";

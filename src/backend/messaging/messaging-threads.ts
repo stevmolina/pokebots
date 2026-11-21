@@ -1,20 +1,20 @@
-import type { AgentProviderRef } from "@openbot/contracts/agent-providers";
-import { isNarrationItemId, showsNarration } from "@openbot/contracts/conversation-narration";
+import type { AgentProviderRef } from "@pokebots/contracts/agent-providers";
+import { isNarrationItemId, showsNarration } from "@pokebots/contracts/conversation-narration";
 import type {
   AgentEvent,
   ConversationMessage,
   ConversationSnapshot,
   MessagingPlatform,
   RoutineResultConnectionOption,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   CONVERSATION_PLAN_ITEM_TYPE,
   CONVERSATION_SUBAGENTS_ITEM_TYPE,
   MESSAGING_LIMITS,
-} from "@openbot/contracts/ipc";
-import type { DiscordEmbed } from "@openbot/contracts/signal-protocol/discord-api";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger } from "@openbot/logging";
+} from "@pokebots/contracts/ipc";
+import type { DiscordEmbed } from "@pokebots/contracts/signal-protocol/discord-api";
+import { sourceText } from "@pokebots/i18n/source";
+import { createOpenBotLogger } from "@pokebots/logging";
 import { Deferred, Effect, Result, Schema, type Scope } from "effect";
 import { type OpenBotToolResponse, openBotToolFailure, openBotToolResult } from "../agent/routine-tools";
 import type { AttachmentOperationError } from "../attachment-effects";

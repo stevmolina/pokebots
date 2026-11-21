@@ -3,17 +3,17 @@ import {
   SIDEBAR_UNASSIGNED_SECTION_ID,
   type SidebarLayoutSnapshot,
   type SidebarSection,
-} from "@openbot/contracts/ipc";
-import type { AvatarMood } from "@openbot/ui/bloub-avatar";
-import type { AgentProfile } from "@openbot/ui/data";
-import { computeAgentAvatarMoods } from "@openbot/ui/features/agents/agent-avatar-mood";
-import { sidebarAgentOrder } from "@openbot/ui/features/sidebar/sidebar-agent-order";
-import { computeSidebarAgentStates } from "@openbot/ui/features/sidebar/sidebar-agent-states";
+} from "@pokebots/contracts/ipc";
+import type { AvatarMood } from "@pokebots/ui/bloub-avatar";
+import type { AgentProfile } from "@pokebots/ui/data";
+import { computeAgentAvatarMoods } from "@pokebots/ui/features/agents/agent-avatar-mood";
+import { sidebarAgentOrder } from "@pokebots/ui/features/sidebar/sidebar-agent-order";
+import { computeSidebarAgentStates } from "@pokebots/ui/features/sidebar/sidebar-agent-states";
 import type {
   SidebarAgentState,
   SidebarMachineAgentRef,
   SidebarMachineAttention,
-} from "@openbot/ui/features/sidebar/sidebar-types";
+} from "@pokebots/ui/features/sidebar/sidebar-types";
 import type { MachineActivity } from "./machine-activity";
 
 /** The chats and folders of one server, as the "All machines" view merges them. */

@@ -1,4 +1,4 @@
-import { NO_BLUR_ATTRIBUTE, STILL_FACES_ATTRIBUTE } from "@openbot/ui/document-rendering";
+import { NO_BLUR_ATTRIBUTE, STILL_FACES_ATTRIBUTE } from "@pokebots/ui/document-rendering";
 import { createSignal } from "solid-js";
 
 /** The effects that cost the most when a window is drawn on the CPU. Each one has a switch in Settings. */

@@ -1,6 +1,6 @@
-import type { LibraryFolder } from "@openbot/contracts/ipc";
-import { Button, ChevronRight, Folder } from "@openbot/ui";
-import type { AgentProfile } from "@openbot/ui/data";
+import type { LibraryFolder } from "@pokebots/contracts/ipc";
+import { Button, ChevronRight, Folder } from "@pokebots/ui";
+import type { AgentProfile } from "@pokebots/ui/data";
 import type { JSX } from "@solidjs/web";
 import { For, Show } from "solid-js";
 import { AgentAvatar } from "../agents/AgentAvatar";

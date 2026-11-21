@@ -1,4 +1,4 @@
-import type { AgentBrowserProfile } from "@openbot/contracts/ipc";
+import type { AgentBrowserProfile } from "@pokebots/contracts/ipc";
 import { useLocalSearchParams } from "expo-router";
 import { Typography } from "heroui-native";
 import Check from "lucide-react-native/icons/check";

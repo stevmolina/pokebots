@@ -1,4 +1,4 @@
-import { ATTACHMENT_LIMITS, INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { ATTACHMENT_LIMITS, INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import {
   type AgentIpcRequest,
   type AttachmentImportEvent,
@@ -99,7 +99,7 @@ import {
   type ServerScope,
   type ServerSummary,
   type Untyped,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   decodeAgentWebhookSecret,
   decodeEventActivity,
@@ -109,7 +109,7 @@ import {
   decodeSaveEventRoutineResult,
   decodeWebhookSecret,
   decodeWebhookTestResult,
-} from "@openbot/contracts/ipc-events";
+} from "@pokebots/contracts/ipc-events";
 import { contextBridge, ipcRenderer, webUtils } from "electron";
 import {
   decodeAgentComputerAllowanceFromMain,

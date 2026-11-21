@@ -1,12 +1,12 @@
-import { Badge, Button, Clock3, Lock, Plus } from "@openbot/ui";
-import { ProviderModelPicker } from "@openbot/ui/components/ProviderModelPicker";
-import type { AgentProfile } from "@openbot/ui/data";
-import { AgentAvatar } from "@openbot/ui/features/agents/AgentAvatar";
-import { agentAccessLockLabel } from "@openbot/ui/features/agents/agent-access";
-import { RemoteDesktopIcon } from "@openbot/ui/features/conversation/ConversationIcons";
-import { PinnedMessages, type PinnedMessagesProps } from "@openbot/ui/features/conversation/PinnedMessages";
-import { SidePanelToggle, type SidePanelToggleProps } from "@openbot/ui/features/conversation/SidePanel";
-import { useText } from "@openbot/ui/text";
+import { Badge, Button, Clock3, Lock, Plus } from "@pokebots/ui";
+import { ProviderModelPicker } from "@pokebots/ui/components/ProviderModelPicker";
+import type { AgentProfile } from "@pokebots/ui/data";
+import { AgentAvatar } from "@pokebots/ui/features/agents/AgentAvatar";
+import { agentAccessLockLabel } from "@pokebots/ui/features/agents/agent-access";
+import { RemoteDesktopIcon } from "@pokebots/ui/features/conversation/ConversationIcons";
+import { PinnedMessages, type PinnedMessagesProps } from "@pokebots/ui/features/conversation/PinnedMessages";
+import { SidePanelToggle, type SidePanelToggleProps } from "@pokebots/ui/features/conversation/SidePanel";
+import { useText } from "@pokebots/ui/text";
 import type { ComponentProps, JSX } from "@solidjs/web";
 import { Show } from "solid-js";
 

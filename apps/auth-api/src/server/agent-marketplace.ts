@@ -1,7 +1,7 @@
-import { isValidAvatarImage } from "@openbot/contracts/avatar-images";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import { isAvatarHue, isAvatarSeed } from "@openbot/contracts/ipc-agent-identity";
-import { isAgentTemplateCardPng } from "@openbot/contracts/ipc-agent-templates";
+import { isValidAvatarImage } from "@pokebots/contracts/avatar-images";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
+import { isAvatarHue, isAvatarSeed } from "@pokebots/contracts/ipc-agent-identity";
+import { isAgentTemplateCardPng } from "@pokebots/contracts/ipc-agent-templates";
 import type {
   AgentPublicationPreview,
   AgentSubmission,
@@ -10,10 +10,10 @@ import type {
   MarketplaceAgentRoutine,
   MarketplaceAgentSkill,
   MarketplaceAgentSummary,
-} from "@openbot/contracts/ipc-marketplace-agents";
-import { isReleasedRoutineSchedule } from "@openbot/contracts/ipc-routines";
-import { isSkillCategory, type SkillCategory } from "@openbot/contracts/ipc-skills";
-import { isBoolean, isDynamicRecord, isNumber, isOneOf, isString } from "@openbot/contracts/runtime-values";
+} from "@pokebots/contracts/ipc-marketplace-agents";
+import { isReleasedRoutineSchedule } from "@pokebots/contracts/ipc-routines";
+import { isSkillCategory, type SkillCategory } from "@pokebots/contracts/ipc-skills";
+import { isBoolean, isDynamicRecord, isNumber, isOneOf, isString } from "@pokebots/contracts/runtime-values";
 import { Effect, Result, Schema } from "effect";
 import {
   decodeMarketplaceCursor,

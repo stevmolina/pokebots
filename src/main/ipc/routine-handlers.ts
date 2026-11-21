@@ -11,34 +11,34 @@ import {
   type Routine,
   type RoutineCalendarOwner,
   type RoutineRunPlace,
-} from "@openbot/contracts/ipc";
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
-import { CHANNEL_ROUTES } from "@openbot/contracts/team-protocol/channels-v1";
+} from "@pokebots/contracts/ipc";
+import { TEAM_API_ROUTES } from "@pokebots/contracts/team-api-routes";
+import { CHANNEL_ROUTES } from "@pokebots/contracts/team-protocol/channels-v1";
 import {
   decodeRoutinePauseReasons,
   ROUTINE_PAUSE_REASONS_CAPABILITY,
   ROUTINE_PAUSE_REASONS_ROUTES,
-} from "@openbot/contracts/team-protocol/routine-pause-reasons-v1";
+} from "@pokebots/contracts/team-protocol/routine-pause-reasons-v1";
 import {
   decodeRoutineRunCommandResponse,
   ROUTINE_RUN_COMMAND_CAPABILITY,
   ROUTINE_RUN_COMMAND_ROUTES,
-} from "@openbot/contracts/team-protocol/routine-run-command-v1";
+} from "@pokebots/contracts/team-protocol/routine-run-command-v1";
 import {
   decodeRoutineRunPlace,
   decodeRoutineRunPlaces,
   ROUTINE_RUN_PLACE_CAPABILITY,
   ROUTINE_RUN_PLACE_ROUTES,
-} from "@openbot/contracts/team-protocol/routine-run-place-v1";
+} from "@pokebots/contracts/team-protocol/routine-run-place-v1";
 import {
   decodeOnceAgentRoutines,
   decodeOnceChannelRoutines,
   ROUTINES_ONCE_CAPABILITY,
   ROUTINES_ONCE_ROUTES,
-} from "@openbot/contracts/team-protocol/routines-once-v1";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger } from "@openbot/logging";
-import { buildRoutineCalendar, type RoutineCalendarSource } from "@openbot/team-client/routine-calendar";
+} from "@pokebots/contracts/team-protocol/routines-once-v1";
+import { sourceText } from "@pokebots/i18n/source";
+import { createOpenBotLogger } from "@pokebots/logging";
+import { buildRoutineCalendar, type RoutineCalendarSource } from "@pokebots/team-client/routine-calendar";
 import {
   createOnceAgentRoutine,
   isOnceSchedule,
@@ -46,8 +46,8 @@ import {
   type RoutinesOncePost,
   requireReleasedScheduleOn,
   updateAgentRoutineOnce,
-} from "@openbot/team-client/routines-once";
-import { withRoutinePauseReasons, withRoutineRunPlaces } from "@openbot/team-client/team-api-requests";
+} from "@pokebots/team-client/routines-once";
+import { withRoutinePauseReasons, withRoutineRunPlaces } from "@pokebots/team-client/team-api-requests";
 import type { AgentService } from "../../backend/agent-service";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import { localRoutineCalendarSource } from "../local-routine-calendar";

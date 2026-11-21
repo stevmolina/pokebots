@@ -7,7 +7,7 @@ import {
   SelectSection,
   SelectTrigger,
   SelectValue,
-} from "@openbot/ui";
+} from "@pokebots/ui";
 import { createSignal } from "solid-js";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 

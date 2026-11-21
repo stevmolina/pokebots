@@ -1,11 +1,11 @@
-import { TEAM_AGENT_CREATE_MODEL_CAPABILITY } from "@openbot/contracts/team-protocol/current";
-import { PROVIDER_ACCOUNTS_CAPABILITY } from "@openbot/contracts/team-protocol/provider-accounts-v1";
+import { TEAM_AGENT_CREATE_MODEL_CAPABILITY } from "@pokebots/contracts/team-protocol/current";
+import { PROVIDER_ACCOUNTS_CAPABILITY } from "@pokebots/contracts/team-protocol/provider-accounts-v1";
 import {
   FIRST_AGENT_SUGGESTIONS,
   type FirstAgentDraft,
   FirstAgentSetup,
-} from "@openbot/ui/features/agents/FirstAgentSetup";
-import { NewAgentDialog } from "@openbot/ui/features/agents/NewAgentDialog";
+} from "@pokebots/ui/features/agents/FirstAgentSetup";
+import { NewAgentDialog } from "@pokebots/ui/features/agents/NewAgentDialog";
 import { createEffect, createMemo, createSignal, Show, untrack } from "solid-js";
 import { useProviders } from "../../providers";
 import { useAuth } from "../account/account-context";

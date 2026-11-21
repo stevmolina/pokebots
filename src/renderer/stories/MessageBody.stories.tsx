@@ -1,6 +1,6 @@
-import { Bubble, BubbleContent, type BubbleVariant } from "@openbot/ui";
-import type { AgentMessage } from "@openbot/ui/data";
-import { MessageBody } from "@openbot/ui/features/conversation/MessageRendering";
+import { Bubble, BubbleContent, type BubbleVariant } from "@pokebots/ui";
+import type { AgentMessage } from "@pokebots/ui/data";
+import { MessageBody } from "@pokebots/ui/features/conversation/MessageRendering";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { STORY_AGENTS, STORY_ATTACHMENTS, STORY_REPLY_QUOTE_BODY } from "./fixtures";

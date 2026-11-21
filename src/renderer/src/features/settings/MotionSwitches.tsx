@@ -1,5 +1,5 @@
-import { SwitchField } from "@openbot/ui";
-import { useText } from "@openbot/ui/text";
+import { SwitchField } from "@pokebots/ui";
+import { useText } from "@pokebots/ui/text";
 import { setMotionEffect, useMotionEffect } from "../../motion-preference";
 
 /**

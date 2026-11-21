@@ -1,14 +1,14 @@
-import { PROVIDER_ACCOUNT_RELAYS } from "@openbot/contracts/team-protocol/provider-account-relays";
+import { PROVIDER_ACCOUNT_RELAYS } from "@pokebots/contracts/team-protocol/provider-account-relays";
 import {
   SIGN_IN_RELAY_DEEP_LINK_CAPABILITY,
   SIGN_IN_RELAY_DEEP_LINK_ROUTES,
-} from "@openbot/contracts/team-protocol/sign-in-relay-deep-link-v1";
+} from "@pokebots/contracts/team-protocol/sign-in-relay-deep-link-v1";
 import {
   SIGN_IN_RELAY_CAPABILITY,
   SIGN_IN_RELAY_PROVIDERS,
   SIGN_IN_RELAY_ROUTES,
-} from "@openbot/contracts/team-protocol/sign-in-relay-v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/team-protocol/sign-in-relay-v1";
+import { sourceText } from "@pokebots/i18n/source";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import { MCP_OAUTH_REDIRECT_URL } from "../deep-link-router";
 import { parseTestMcpServer } from "../ipc/mcp-inputs";

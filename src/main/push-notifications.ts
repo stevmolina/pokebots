@@ -5,8 +5,8 @@ import {
   type ConversationMessage,
   latestTurnAnswer,
   type ServerNotificationLevel,
-} from "@openbot/contracts/ipc";
-import type { LiveActivityRelayPush } from "@openbot/contracts/live-activity-relay";
+} from "@pokebots/contracts/ipc";
+import type { LiveActivityRelayPush } from "@pokebots/contracts/live-activity-relay";
 import {
   type AndroidNotificationRelayPush,
   NOTIFICATION_SEALED_LIMIT,
@@ -14,14 +14,14 @@ import {
   type NotificationSound,
   WEB_NOTIFICATION_TTL_LIMIT,
   type WebNotificationRelayPush,
-} from "@openbot/contracts/notification-relay";
-import { TEAM_CHANNEL_ATTENTION_CAPABILITY } from "@openbot/contracts/team-protocol/current";
-import { PUSH_NOTIFICATION_THREADS_CAPABILITY } from "@openbot/contracts/team-protocol/push-notification-threads-v1";
-import type { PushNotificationSound } from "@openbot/contracts/team-protocol/push-notifications-v1";
-import type { WebPushNotificationRegistration } from "@openbot/contracts/team-protocol/push-notifications-web-v1";
-import { type WebPushPayload, webPushOpenPath } from "@openbot/contracts/web-push";
-import { resolveLocale, translateFor } from "@openbot/i18n";
-import { redactText, toLogValue } from "@openbot/logging";
+} from "@pokebots/contracts/notification-relay";
+import { TEAM_CHANNEL_ATTENTION_CAPABILITY } from "@pokebots/contracts/team-protocol/current";
+import { PUSH_NOTIFICATION_THREADS_CAPABILITY } from "@pokebots/contracts/team-protocol/push-notification-threads-v1";
+import type { PushNotificationSound } from "@pokebots/contracts/team-protocol/push-notifications-v1";
+import type { WebPushNotificationRegistration } from "@pokebots/contracts/team-protocol/push-notifications-web-v1";
+import { type WebPushPayload, webPushOpenPath } from "@pokebots/contracts/web-push";
+import { resolveLocale, translateFor } from "@pokebots/i18n";
+import { redactText, toLogValue } from "@pokebots/logging";
 import {
   type AgentNotificationChannel,
   agentEventCanNotify,
@@ -29,19 +29,19 @@ import {
   agentNotificationLevel,
   notificationForAgentEvent,
   teammateTurnCompleted,
-} from "@openbot/team-client/agent-notifications";
+} from "@pokebots/team-client/agent-notifications";
 import {
   decodeLiveActivityBytes,
   LIVE_ACTIVITY_NONCE_BYTES,
   LIVE_ACTIVITY_SECRET_BYTES,
-} from "@openbot/team-client/live-activity-seal";
+} from "@pokebots/team-client/live-activity-seal";
 import {
   type PushNotificationContent,
   type PushNotificationKeys,
   type PushNotificationKind,
   pushNotificationKeys,
   sealPushNotification,
-} from "@openbot/team-client/push-notification-seal";
+} from "@pokebots/team-client/push-notification-seal";
 import { Effect, Exit, Fiber, Result, Schema, Scope } from "effect";
 import { isNoUpdateAnswer } from "../backend/agent/routine-quiet-runs";
 import type { AgentService } from "../backend/agent-service";

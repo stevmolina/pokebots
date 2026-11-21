@@ -2467,10 +2467,10 @@ textarea {
   border-color: var(--sidebar-row-selected);
 }
 
-/* The working badge, with its felt balls, is in `@openbot/ui/features/sidebar/sidebar-working-badge.css`. */
+/* The working badge, with its felt balls, is in `@pokebots/ui/features/sidebar/sidebar-working-badge.css`. */
 
 /* The unread count, the failed routine mark and the badge of an agent that waits for the user are
-   felt too, with their transitions, in `@openbot/ui/features/sidebar/sidebar-felt-badges.css`. */
+   felt too, with their transitions, in `@pokebots/ui/features/sidebar/sidebar-felt-badges.css`. */
 
 .agent-row-thinking-dots {
   display: inline-flex;
@@ -2550,7 +2550,7 @@ textarea {
   height: 11px;
 }
 
-/* The sidebar row tooltips are in `@openbot/ui/features/sidebar/sidebar-tooltips.css`. */
+/* The sidebar row tooltips are in `@pokebots/ui/features/sidebar/sidebar-tooltips.css`. */
 
 .agent-row-agent-status-entering {
   animation: sidebar-reply-in var(--openbot-duration-overlay) cubic-bezier(0.22, 1, 0.36, 1) both;

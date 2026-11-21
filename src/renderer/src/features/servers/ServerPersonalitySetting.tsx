@@ -1,4 +1,4 @@
-import { type HostPersonality, RESPONSE_STYLES, type ResponseStyle } from "@openbot/contracts/ipc";
+import { type HostPersonality, RESPONSE_STYLES, type ResponseStyle } from "@pokebots/contracts/ipc";
 import {
   Item,
   ItemActions,
@@ -10,8 +10,8 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@openbot/ui";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/ui";
+import { useText } from "@pokebots/ui/text";
 import { createEffect, createSignal, Show, untrack } from "solid-js";
 import { type HostPersonalityCalls, rememberServerPersonality } from "./server-personality";
 

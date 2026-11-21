@@ -6,8 +6,8 @@ import {
   VAT_SELLER_COUNTRY,
   VAT_TAX_RATE,
   vatIdPrefix,
-} from "@openbot/contracts/billing-details";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/billing-details";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect, Option, Schema } from "effect";
 import { BillingError, type BillingOperationError, stripeFailure, stripeRequest } from "./billing-errors";
 import { requestCountry } from "./request-country";

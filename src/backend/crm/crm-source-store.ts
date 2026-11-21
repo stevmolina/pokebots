@@ -5,8 +5,8 @@ import {
   type CrmSourceError,
   type CrmSourceKind,
   type CrmSourceSyncState,
-} from "@openbot/contracts/ipc";
-import { type DynamicRecord, isString } from "@openbot/contracts/runtime-values";
+} from "@pokebots/contracts/ipc";
+import { type DynamicRecord, isString } from "@pokebots/contracts/runtime-values";
 import { databaseRow, databaseRows, optionalStringColumn, requiredStringColumn } from "../database/database-rows";
 import { type CrmDetails, type CrmStore, CrmWrite, crmRefused, newCrmId } from "./crm-store";
 

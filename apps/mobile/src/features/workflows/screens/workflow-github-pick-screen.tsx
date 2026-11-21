@@ -1,4 +1,4 @@
-import { workflowGitHubTriggerRepositoryFields } from "@openbot/contracts/ipc";
+import { workflowGitHubTriggerRepositoryFields } from "@pokebots/contracts/ipc";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { Typography } from "heroui-native";
 import Check from "lucide-react-native/icons/check";

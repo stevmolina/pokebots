@@ -1,9 +1,9 @@
-import type { OpenBotDesktopApi, ServerAuditEntry } from "@openbot/contracts/ipc";
-import { SERVER_AUDIT_CAPABILITY } from "@openbot/contracts/team-protocol/server-audit-v1";
-import { Alert, AlertContent, AlertDescription } from "@openbot/ui";
-import { ServerAuditLogPanel } from "@openbot/ui/features/servers/ServerAuditLog";
-import type { RoleAgent } from "@openbot/ui/features/servers/ServerRoles";
-import { useText } from "@openbot/ui/text";
+import type { OpenBotDesktopApi, ServerAuditEntry } from "@pokebots/contracts/ipc";
+import { SERVER_AUDIT_CAPABILITY } from "@pokebots/contracts/team-protocol/server-audit-v1";
+import { Alert, AlertContent, AlertDescription } from "@pokebots/ui";
+import { ServerAuditLogPanel } from "@pokebots/ui/features/servers/ServerAuditLog";
+import type { RoleAgent } from "@pokebots/ui/features/servers/ServerRoles";
+import { useText } from "@pokebots/ui/text";
 import type { JSX } from "@solidjs/web";
 import { createEffect, createStore, Show, untrack } from "solid-js";
 import { serverCanAdminister } from "./server-capabilities";

@@ -1,6 +1,6 @@
 import { execFile } from "node:child_process";
 import { stat } from "node:fs/promises";
-import { createOpenBotLogger, toLogValue } from "@openbot/logging";
+import { createOpenBotLogger, toLogValue } from "@pokebots/logging";
 import { Effect, Exit, Fiber, Option, Schema, Scope } from "effect";
 
 const logger = createOpenBotLogger("user-files-bytes");

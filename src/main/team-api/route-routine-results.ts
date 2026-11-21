@@ -1,15 +1,15 @@
-import { isOneOf } from "@openbot/contracts/runtime-values";
+import { isOneOf } from "@pokebots/contracts/runtime-values";
 import {
   ROUTINE_RESULTS_CAPABILITY,
   ROUTINE_RESULTS_PLACE_LIMIT,
   ROUTINE_RESULTS_PLATFORMS,
   ROUTINE_RESULTS_ROUTES,
-} from "@openbot/contracts/team-protocol/routine-results-v1";
+} from "@pokebots/contracts/team-protocol/routine-results-v1";
 import {
   ROUTINE_RESULTS_WHATSAPP_CAPABILITY,
   ROUTINE_RESULTS_WHATSAPP_PLATFORMS,
-} from "@openbot/contracts/team-protocol/routine-results-whatsapp-v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/team-protocol/routine-results-whatsapp-v1";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect } from "effect";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import { RoutineResultError } from "../../backend/routine-results/routine-results";

@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
 
-import type { OpenBotDesktopApi } from "@openbot/contracts/ipc";
+import type { OpenBotDesktopApi } from "@pokebots/contracts/ipc";
 
 declare global {
   interface HighlightRegistry {

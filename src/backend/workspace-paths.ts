@@ -1,15 +1,15 @@
 import { readdir, realpath, stat } from "node:fs/promises";
 import { homedir } from "node:os";
 import { basename, dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import {
   type AgentSummary,
   WORKSPACE_DIRECTORY_LIMIT,
   type WorkspaceDirectory,
   type WorkspaceDirectoryEntry,
-} from "@openbot/contracts/ipc";
-import { legacyAgentId } from "@openbot/contracts/validation";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/ipc";
+import { legacyAgentId } from "@pokebots/contracts/validation";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect, Result } from "effect";
 import { type AttachmentOperationError, attachmentCall, attachmentFailure } from "./attachment-effects";
 import { isRecord } from "./protocol";

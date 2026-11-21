@@ -1,7 +1,7 @@
-import type { AgentDockEdge } from "@openbot/contracts/ipc";
-import { Button } from "@openbot/ui";
-import { agentDockBody } from "@openbot/ui/features/agent-dock/AgentDock";
-import { useText } from "@openbot/ui/text";
+import type { AgentDockEdge } from "@pokebots/contracts/ipc";
+import { Button } from "@pokebots/ui";
+import { agentDockBody } from "@pokebots/ui/features/agent-dock/AgentDock";
+import { useText } from "@pokebots/ui/text";
 import { createEffect, onSettled } from "solid-js";
 
 /** The width of the strip at rest. Linux takes the pointer only in this width at the edge. */

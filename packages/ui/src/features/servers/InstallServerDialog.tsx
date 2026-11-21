@@ -1,6 +1,6 @@
-import { AppLogo } from "@openbot/brand";
-import { installServerCommand, type ServerClaim } from "@openbot/contracts/hosted-servers";
-import { Button, Check, CircleAlert, Copy, Dialog, Heading, IconButton, LoaderCircle, Text, X } from "@openbot/ui";
+import { AppLogo } from "@pokebots/brand";
+import { installServerCommand, type ServerClaim } from "@pokebots/contracts/hosted-servers";
+import { Button, Check, CircleAlert, Copy, Dialog, Heading, IconButton, LoaderCircle, Text, X } from "@pokebots/ui";
 import { createSignal, Match, onCleanup, onSettled, Show, Switch } from "solid-js";
 import { useText } from "../../text";
 import { CodeBlock } from "../conversation/CodeBlock";

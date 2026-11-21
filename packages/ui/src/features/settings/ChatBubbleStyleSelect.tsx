@@ -1,4 +1,4 @@
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@openbot/ui";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@pokebots/ui";
 import type { JSX } from "@solidjs/web";
 import { useText } from "../../text";
 import { CHAT_BUBBLE_STYLE_LABEL, CHAT_BUBBLE_STYLES, type ChatBubbleStyle } from "../conversation/own-bubble";

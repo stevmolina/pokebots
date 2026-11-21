@@ -1,10 +1,10 @@
-import type { MessagingConnection, WhatsAppAccount, WhatsAppLinkState } from "@openbot/contracts/ipc";
+import type { MessagingConnection, WhatsAppAccount, WhatsAppLinkState } from "@pokebots/contracts/ipc";
 import {
   WHATSAPP_LINK_IDLE,
   type WhatsAppIntegrationAgent,
   WhatsAppIntegrationPanel,
   WhatsAppLinkDialog,
-} from "@openbot/ui/features/settings/WhatsAppIntegrationPanel";
+} from "@pokebots/ui/features/settings/WhatsAppIntegrationPanel";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { STORY_AGENT_SUMMARIES } from "./fixtures";

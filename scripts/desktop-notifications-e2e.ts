@@ -20,9 +20,9 @@ import {
   LOCAL_SERVER_ID,
   type ServerNotificationLevel,
   type ServerSummary,
-} from "@openbot/contracts/ipc";
-import { PUSH_NOTIFICATION_THREADS_CAPABILITY } from "@openbot/contracts/team-protocol/push-notification-threads-v1";
-import { createFormat, translateFor } from "@openbot/i18n";
+} from "@pokebots/contracts/ipc";
+import { PUSH_NOTIFICATION_THREADS_CAPABILITY } from "@pokebots/contracts/team-protocol/push-notification-threads-v1";
+import { createFormat, translateFor } from "@pokebots/i18n";
 import { plugin } from "bun";
 import { Effect } from "effect";
 import type { AgentBrowserHost } from "../src/backend/agent/turn-lifecycle";

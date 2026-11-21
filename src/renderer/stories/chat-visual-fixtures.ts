@@ -1,4 +1,4 @@
-import { chatVisualDocument } from "@openbot/contracts/chat-visual";
+import { chatVisualDocument } from "@pokebots/contracts/chat-visual";
 import logoUrl from "../src/assets/openbot-logo-production.png?inline";
 import takeoverUrl from "./assets/browser-takeover-preview.svg?inline";
 import macMockUrl from "./assets/remote-desktop-mac-mock.png?inline";

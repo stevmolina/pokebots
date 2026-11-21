@@ -1,5 +1,5 @@
-import { CHAT_VISUAL_PAGE_LIMIT, chatBackdropPage, chatBackdropRequesters } from "@openbot/contracts/chat-visual";
-import type { AttachmentSummary, ConversationMessage } from "@openbot/contracts/ipc";
+import { CHAT_VISUAL_PAGE_LIMIT, chatBackdropPage, chatBackdropRequesters } from "@pokebots/contracts/chat-visual";
+import type { AttachmentSummary, ConversationMessage } from "@pokebots/contracts/ipc";
 import { File, Paths } from "expo-file-system";
 import { useEffect, useRef } from "react";
 import { setAgentBackdrop, useChatBackdrop } from "@/features/settings/model/chat-backdrop";

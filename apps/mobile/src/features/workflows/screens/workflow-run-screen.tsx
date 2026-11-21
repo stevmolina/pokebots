@@ -1,4 +1,4 @@
-import type { WorkflowStep } from "@openbot/contracts/ipc";
+import type { WorkflowStep } from "@pokebots/contracts/ipc";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { Typography } from "heroui-native";
 import Square from "lucide-react-native/icons/square";

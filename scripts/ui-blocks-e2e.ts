@@ -11,36 +11,36 @@ import {
   type ConversationPage,
   type ConversationSnapshot,
   isConversationMessage,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   TEAM_BOOTSTRAP_CAPABILITIES,
   TEAM_CURRENT_CAPABILITIES,
   TEAM_UI_BLOCKS_CAPABILITY,
   teamCapabilitiesForProtocol,
-} from "@openbot/contracts/team-protocol/current";
+} from "@pokebots/contracts/team-protocol/current";
 import {
   addUiBlockAutoAnswers,
   TEAM_UI_BLOCK_AUTO_ANSWER_CAPABILITY,
   withUiBlockAutoAnswers,
-} from "@openbot/contracts/team-protocol/ui-block-auto-answer-v1";
-import { UI_BLOCK_PREVIEW_EDIT_CAPABILITY } from "@openbot/contracts/team-protocol/ui-block-preview-edit-v1";
+} from "@pokebots/contracts/team-protocol/ui-block-auto-answer-v1";
+import { UI_BLOCK_PREVIEW_EDIT_CAPABILITY } from "@pokebots/contracts/team-protocol/ui-block-preview-edit-v1";
 import {
   addUiBlockVaultRequests,
   TEAM_UI_BLOCK_VAULT_CAPABILITY,
   withUiBlockVaultRequests,
-} from "@openbot/contracts/team-protocol/ui-block-vault-v1";
+} from "@pokebots/contracts/team-protocol/ui-block-vault-v1";
 import {
   decodeTeamProtocolV6CurrentHttpResponse,
   encodeTeamProtocolV6CurrentHttpResponse,
-} from "@openbot/contracts/team-protocol/v6-adapter";
+} from "@pokebots/contracts/team-protocol/v6-adapter";
 import {
   decodeTeamProtocolV7CurrentHttpResponse,
   encodeTeamProtocolV7CurrentHttpResponse,
-} from "@openbot/contracts/team-protocol/v7-adapter";
+} from "@pokebots/contracts/team-protocol/v7-adapter";
 import {
   decodeTeamProtocolV7BaseCurrentEvent,
   encodeTeamProtocolV7BaseCurrentEvent,
-} from "@openbot/contracts/team-protocol/v7-base-adapter";
+} from "@pokebots/contracts/team-protocol/v7-base-adapter";
 import {
   type ConversationUiBlock,
   normalizeUiBlockSpec,
@@ -51,7 +51,7 @@ import {
   type UiBlockValue,
   type UiBlockVaultRequest,
   uiBlockAnswersFromResponse,
-} from "@openbot/contracts/ui-blocks";
+} from "@pokebots/contracts/ui-blocks";
 import { Effect } from "effect";
 import { AttentionRegistry, type PromptResponder } from "../src/backend/agent/attention-registry";
 import { ForbiddenAttentionAnswer } from "../src/backend/agent/inactive-attention-request";

@@ -1,5 +1,5 @@
-import type { TeamProtocolSupportV9 } from "@openbot/contracts/team-protocol/v9";
-import { hasTeamProtocolV10Lists, TEAM_PROTOCOL_V10 } from "@openbot/contracts/team-protocol/v10";
+import type { TeamProtocolSupportV9 } from "@pokebots/contracts/team-protocol/v9";
+import { hasTeamProtocolV10Lists, TEAM_PROTOCOL_V10 } from "@pokebots/contracts/team-protocol/v10";
 // One Team API call, from picking a wire format to recording that it failed.
 //
 // **Two encodings, on purpose. Never merge them.** The HTTPS path frames V1 or V3 according to the
@@ -20,8 +20,8 @@ import { hasTeamProtocolV10Lists, TEAM_PROTOCOL_V10 } from "@openbot/contracts/t
 // reaching in and closing a WebSocket.
 
 import { randomBytes, verify } from "node:crypto";
-import type { RemoteDesktopCapabilities, ServerCompatibility } from "@openbot/contracts/ipc";
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
+import type { RemoteDesktopCapabilities, ServerCompatibility } from "@pokebots/contracts/ipc";
+import { TEAM_API_ROUTES } from "@pokebots/contracts/team-api-routes";
 import {
   decodeTeamProtocolSupportExpanded,
   isAgentCreateRoute,
@@ -31,19 +31,19 @@ import {
   type TeamCurrentCapability,
   teamCapabilitiesForProtocol,
   teamCapabilityHeaders,
-} from "@openbot/contracts/team-protocol/current";
+} from "@pokebots/contracts/team-protocol/current";
 import {
   decodeServerSafeModeReason,
   SERVER_SAFE_MODE_CAPABILITY,
   SERVER_SAFE_MODE_ROUTES,
-} from "@openbot/contracts/team-protocol/server-safe-mode-v1";
+} from "@pokebots/contracts/team-protocol/server-safe-mode-v1";
 import {
   highestCommonTeamProtocol,
   TEAM_APP_VERSION_HEADER,
   TEAM_PROTOCOL_VERSION_HEADER,
   teamProtocolUpdateDirection,
-} from "@openbot/contracts/team-protocol/v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/team-protocol/v1";
+import { sourceText } from "@pokebots/i18n/source";
 import { Deferred, Effect, Option, Result } from "effect";
 import { decodeRemoteDesktopCapabilities } from "./remote-device-decoding";
 import type { ResponseDecoder } from "./remote-host-decoding";

@@ -1,5 +1,5 @@
-import type { AgentApproval } from "@openbot/contracts/ipc";
-import { sourceText as englishSourceText } from "@openbot/i18n/source";
+import type { AgentApproval } from "@pokebots/contracts/ipc";
+import { sourceText as englishSourceText } from "@pokebots/i18n/source";
 
 /** A bug report or an idea from `openbot.send_feedback`. */
 export interface FeedbackApproval {

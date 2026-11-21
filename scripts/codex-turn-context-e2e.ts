@@ -20,7 +20,7 @@ import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { createServer, type Server as HttpServer } from "node:http";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import { type AgentMemory, type AgentSummary, DEFAULT_AGENT_DEFAULTS } from "@openbot/contracts/ipc";
+import { type AgentMemory, type AgentSummary, DEFAULT_AGENT_DEFAULTS } from "@pokebots/contracts/ipc";
 import { Effect } from "effect";
 import {
   developerInstructions,

@@ -2,7 +2,7 @@ import {
   type LiveActivityAction,
   type LiveActivityLink,
   readLiveActivityLink,
-} from "@openbot/team-client/live-activity-props";
+} from "@pokebots/team-client/live-activity-props";
 // A relative path, so that the E2E script of the links can load this module outside the app.
 import type { OutsideTarget } from "../../workspace/model/outside-target";
 

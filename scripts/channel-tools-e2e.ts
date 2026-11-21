@@ -12,7 +12,7 @@
 // channel and deletes it, and gives the agent its settings back.
 // Writes .openbot-build/channel-tools-e2e/report.json.
 import assert from "node:assert/strict";
-import { agentProviderDescriptor } from "@openbot/contracts/agent-providers";
+import { agentProviderDescriptor } from "@pokebots/contracts/agent-providers";
 import type {
   AgentAdminSettings,
   AgentApproval,
@@ -21,7 +21,7 @@ import type {
   ChannelMessage,
   ChannelPage,
   ChannelTask,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import { ChannelClient, connectChannelE2e, waitFor, writeReport } from "./channel-e2e-support";
 
 interface SeenPrompt {

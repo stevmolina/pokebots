@@ -1,9 +1,9 @@
 // The Slack, Discord and Telegram connections of the joined server in the browser client
 // (`connectors-v1`). The host opens no page; this browser opens the platform's page that the host
 // names. A Slack or Discord install returns to a page of this origin, which gives the sealed grant
-// back to this tab (`@openbot/contracts/web-messaging-install`). This tab sends it on to the host.
+// back to this tab (`@pokebots/contracts/web-messaging-install`). This tab sends it on to the host.
 
-import { type ConnectorMessagingPlatform, messagingPage } from "@openbot/contracts/ipc";
+import { type ConnectorMessagingPlatform, messagingPage } from "@pokebots/contracts/ipc";
 import {
   decodeWebMessagingInstallGrant,
   decodeWebMessagingInstallMark,
@@ -14,9 +14,9 @@ import {
   type WebMessagingInstallPlatform,
   webMessagingInstallKey,
   webMessagingInstallReceipt,
-} from "@openbot/contracts/web-messaging-install";
-import { sourceText } from "@openbot/i18n/source";
-import { runTeamEffect } from "@openbot/team-client";
+} from "@pokebots/contracts/web-messaging-install";
+import { sourceText } from "@pokebots/i18n/source";
+import { runTeamEffect } from "@pokebots/team-client";
 import {
   discordAccess,
   discordRoles,
@@ -30,10 +30,10 @@ import {
   messagingConnectorSetEnabled,
   setDiscordAccess,
   type TeamAdminRequestError,
-} from "@openbot/team-client/team-admin-requests";
-import type { TeamApiRequest } from "@openbot/team-client/team-api-requests";
-import { classifyFailure } from "@openbot/telemetry";
-import { currentText } from "@openbot/ui/text";
+} from "@pokebots/team-client/team-admin-requests";
+import type { TeamApiRequest } from "@pokebots/team-client/team-api-requests";
+import { classifyFailure } from "@pokebots/telemetry";
+import { currentText } from "@pokebots/ui/text";
 import { Effect } from "effect";
 import { actionToast } from "../../action-toast";
 import type { HostMessagingApi } from "../connectors/host-messaging-port";

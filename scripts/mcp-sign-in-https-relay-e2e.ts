@@ -18,7 +18,7 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { createServer as createHttpServer } from "node:http";
 import { createServer } from "node:net";
 import { resolve } from "node:path";
-import { translateFor } from "@openbot/i18n";
+import { translateFor } from "@pokebots/i18n";
 import { Effect } from "effect";
 import { runCauseEffect } from "../src/backend/effect-boundary";
 import {

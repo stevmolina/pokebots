@@ -4,14 +4,14 @@ import { createReadStream, existsSync } from "node:fs";
 import { mkdir, open, rename, rm, stat } from "node:fs/promises";
 import { availableParallelism } from "node:os";
 import { join } from "node:path";
-import type { LocalSpeechModelId, LocalVoiceModelId, VoiceModelStatus } from "@openbot/contracts/ipc";
+import type { LocalSpeechModelId, LocalVoiceModelId, VoiceModelStatus } from "@pokebots/contracts/ipc";
 import {
   PARAKEET_MODEL_FILES,
   PARAKEET_UNIFIED_MODEL_FILES,
   SUPERTONIC_MODEL_FILES,
-} from "@openbot/contracts/speech-models";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger } from "@openbot/logging";
+} from "@pokebots/contracts/speech-models";
+import { sourceText } from "@pokebots/i18n/source";
+import { createOpenBotLogger } from "@pokebots/logging";
 import { Effect, Exit, Fiber, Result, Schema, Scope, Stream } from "effect";
 import { causeHelpers } from "../backend/effect-boundary";
 
@@ -186,7 +186,7 @@ export {
   PARAKEET_MODEL_FILES,
   PARAKEET_UNIFIED_MODEL_DIRECTORY,
   SUPERTONIC_MODEL_DIRECTORY,
-} from "@openbot/contracts/speech-models";
+} from "@pokebots/contracts/speech-models";
 
 /** The files of each model. */
 const VOICE_MODEL_FILES: Record<DownloadedModelId, readonly VoiceModelFile[]> = {

@@ -1,11 +1,11 @@
-import type { InstanceTransferResult, OpenBotDesktopApi } from "@openbot/contracts/ipc";
+import type { InstanceTransferResult, OpenBotDesktopApi } from "@pokebots/contracts/ipc";
 import type {
   CopyAgentsAgent,
   CopyAgentsPhase,
   CopyAgentsServer,
-} from "@openbot/ui/features/transfer/CopyAgentsDialog";
-import type { TransferUploadState } from "@openbot/ui/features/transfer/InstanceTransferView";
-import { currentText } from "@openbot/ui/text";
+} from "@pokebots/ui/features/transfer/CopyAgentsDialog";
+import type { TransferUploadState } from "@pokebots/ui/features/transfer/InstanceTransferView";
+import { currentText } from "@pokebots/ui/text";
 import { createEffect, createStore, onCleanup, untrack } from "solid-js";
 import { desktopAnalytics } from "../../analytics";
 

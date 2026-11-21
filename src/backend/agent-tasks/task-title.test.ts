@@ -1,4 +1,4 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import { describe, expect, test } from "vitest";
 import { buildTaskTitlePrompt, looksLikeRawTaskTitle, parseGeneratedTaskTitle, taskTitle } from "./task-title";
 

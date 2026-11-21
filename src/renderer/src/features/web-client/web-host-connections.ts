@@ -6,25 +6,25 @@ import {
   type ServerNotificationLevel,
   type SetAgentNotificationLevelInput,
   type TeamRealtimeEvent,
-} from "@openbot/contracts/ipc";
-import { guardedListDecoder } from "@openbot/contracts/ipc-decoding";
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
-import { AGENT_NOTIFICATION_LEVELS_CAPABILITY } from "@openbot/contracts/team-protocol/agent-notification-levels-v1";
-import { SERVER_SAFE_MODE_CAPABILITY } from "@openbot/contracts/team-protocol/server-safe-mode-v1";
-import type { TeamProtocolV2Json } from "@openbot/contracts/team-protocol/v2";
-import { runTeamEffect } from "@openbot/team-client";
-import { agentEventCanNotify } from "@openbot/team-client/agent-notifications";
-import type { RemoteTeamHost } from "@openbot/team-client/remote-directory";
-import type { createRemoteTeamPeer, RemoteTeamPeerActions } from "@openbot/team-client/remote-peer";
-import { createRemoteConnectionRecovery } from "@openbot/team-client/remote-recovery";
+} from "@pokebots/contracts/ipc";
+import { guardedListDecoder } from "@pokebots/contracts/ipc-decoding";
+import { TEAM_API_ROUTES } from "@pokebots/contracts/team-api-routes";
+import { AGENT_NOTIFICATION_LEVELS_CAPABILITY } from "@pokebots/contracts/team-protocol/agent-notification-levels-v1";
+import { SERVER_SAFE_MODE_CAPABILITY } from "@pokebots/contracts/team-protocol/server-safe-mode-v1";
+import type { TeamProtocolV2Json } from "@pokebots/contracts/team-protocol/v2";
+import { runTeamEffect } from "@pokebots/team-client";
+import { agentEventCanNotify } from "@pokebots/team-client/agent-notifications";
+import type { RemoteTeamHost } from "@pokebots/team-client/remote-directory";
+import type { createRemoteTeamPeer, RemoteTeamPeerActions } from "@pokebots/team-client/remote-peer";
+import { createRemoteConnectionRecovery } from "@pokebots/team-client/remote-recovery";
 import {
   listAgentNotificationLevels,
   setAgentNotificationLevel,
   setOwnServerNotificationLevel,
-} from "@openbot/team-client/team-admin-requests";
-import type { TeamApiRequest } from "@openbot/team-client/team-api-requests";
-import { currentText } from "@openbot/ui/text";
-import { referenceFrom } from "@openbot/user-errors";
+} from "@pokebots/team-client/team-admin-requests";
+import type { TeamApiRequest } from "@pokebots/team-client/team-api-requests";
+import { currentText } from "@pokebots/ui/text";
+import { referenceFrom } from "@pokebots/user-errors";
 import { Effect } from "effect";
 import { readWebHostCompatibility } from "./web-host-compatibility";
 import {

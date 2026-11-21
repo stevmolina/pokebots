@@ -13,10 +13,10 @@ import {
   canAdministerServer,
   type OpenBotDesktopApi,
   type UpdateRoutineInput,
-} from "@openbot/contracts/ipc";
-import type { SaveEventRoutineInput } from "@openbot/contracts/ipc-events";
-import { ROUTINE_RUN_PLACE_CAPABILITY } from "@openbot/contracts/team-protocol/routine-run-place-v1";
-import { createOpenBotLogger } from "@openbot/logging";
+} from "@pokebots/contracts/ipc";
+import type { SaveEventRoutineInput } from "@pokebots/contracts/ipc-events";
+import { ROUTINE_RUN_PLACE_CAPABILITY } from "@pokebots/contracts/team-protocol/routine-run-place-v1";
+import { createOpenBotLogger } from "@pokebots/logging";
 import { assertMutationAllowed, connectToDevApp } from "./dev-automation/cdp-client";
 import { readDevInstanceRecords } from "./dev-automation/instance-registry";
 

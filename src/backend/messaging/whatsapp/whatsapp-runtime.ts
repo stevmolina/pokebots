@@ -1,7 +1,7 @@
 import { existsSync, readdirSync, rmSync, statSync } from "node:fs";
 import { join, resolve, sep } from "node:path";
-import { WhatsAppAuthStore } from "@openbot/whatsapp/auth-store";
-import type { SocketConfig, WAVersion } from "@openbot/whatsapp/baileys";
+import { WhatsAppAuthStore } from "@pokebots/whatsapp/auth-store";
+import type { SocketConfig, WAVersion } from "@pokebots/whatsapp/baileys";
 import type { WhatsAppHistory } from "./whatsapp-archive";
 import { WhatsAppChatState } from "./whatsapp-chats";
 import type { WhatsAppSenderRules } from "./whatsapp-senders";

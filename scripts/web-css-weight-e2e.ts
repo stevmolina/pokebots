@@ -31,8 +31,8 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, renameSync, writeFile
 import { createServer } from "node:net";
 import { join, resolve } from "node:path";
 import { gzipSync } from "node:zlib";
-import { isDynamicRecord, isNumber } from "@openbot/contracts/runtime-values";
-import { createOpenBotLogger } from "@openbot/logging";
+import { isDynamicRecord, isNumber } from "@pokebots/contracts/runtime-values";
+import { createOpenBotLogger } from "@pokebots/logging";
 import { type Browser, type BrowserContext, devices, type Page, webkit } from "playwright-core";
 import { type Spread, spread } from "./dev-automation/bench-stats";
 import { DESKTOP_ONLY_STYLES } from "./web-stylesheet";

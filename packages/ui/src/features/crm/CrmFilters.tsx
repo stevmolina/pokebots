@@ -1,4 +1,4 @@
-import type { CrmCustomer, CrmPayment, CrmTone } from "@openbot/contracts/ipc";
+import type { CrmCustomer, CrmPayment, CrmTone } from "@pokebots/contracts/ipc";
 import {
   Badge,
   buttonVariants,
@@ -16,9 +16,9 @@ import {
   Tag,
   UserRound,
   X,
-} from "@openbot/ui";
-import { AgentAvatar } from "@openbot/ui/features/agents/AgentAvatar";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/ui";
+import { AgentAvatar } from "@pokebots/ui/features/agents/AgentAvatar";
+import { useText } from "@pokebots/ui/text";
 import type { JSX } from "@solidjs/web";
 import { createMemo, createSignal, For, flush, onCleanup, Show } from "solid-js";
 import { createMenuSearch } from "../../components/createMenuSearch";

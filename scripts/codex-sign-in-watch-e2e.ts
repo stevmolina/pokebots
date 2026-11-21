@@ -10,8 +10,8 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { chmod, mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import { agentProviderDescriptor } from "@openbot/contracts/agent-providers";
-import type { AgentProviderState } from "@openbot/contracts/ipc";
+import { agentProviderDescriptor } from "@pokebots/contracts/agent-providers";
+import type { AgentProviderState } from "@pokebots/contracts/ipc";
 import { Effect, Result } from "effect";
 
 const OUT = resolve(import.meta.dirname, "../.openbot-build/codex-sign-in-watch-e2e");

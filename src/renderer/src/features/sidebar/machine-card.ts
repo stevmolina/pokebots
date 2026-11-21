@@ -6,8 +6,8 @@ import {
   machineAlertLevel,
   machineMetricRatio,
   type ServerSummary,
-} from "@openbot/contracts/ipc";
-import { MACHINE_RESOURCES_CAPABILITY } from "@openbot/contracts/team-protocol/machine-resources-v1";
+} from "@pokebots/contracts/ipc";
+import { MACHINE_RESOURCES_CAPABILITY } from "@pokebots/contracts/team-protocol/machine-resources-v1";
 import { createMemo, createSignal, untrack } from "solid-js";
 import { createUsageRefreshPoll } from "../account/usage-refresh-poll";
 import { MACHINE_RESOURCES_SHOWN } from "../files/machine-resources";

@@ -4,8 +4,8 @@ import { chmod, mkdir, mkdtemp, readdir, readFile, rename, rm, stat, writeFile }
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { promisify } from "node:util";
-import { VOICE_AUDIO_LIMITS } from "@openbot/contracts/ipc";
-import { createOpenBotLogger } from "@openbot/logging";
+import { VOICE_AUDIO_LIMITS } from "@pokebots/contracts/ipc";
+import { createOpenBotLogger } from "@pokebots/logging";
 import { Effect, Option, Schema, Semaphore } from "effect";
 import { BrowserWindow, session as electronSession, net, type Session } from "electron";
 import {

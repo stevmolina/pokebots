@@ -1,5 +1,5 @@
-import { CopyAgentsDialog } from "@openbot/ui/features/transfer/CopyAgentsDialog";
-import { InstanceTransferView } from "@openbot/ui/features/transfer/InstanceTransferView";
+import { CopyAgentsDialog } from "@pokebots/ui/features/transfer/CopyAgentsDialog";
+import { InstanceTransferView } from "@pokebots/ui/features/transfer/InstanceTransferView";
 import { createSignal } from "solid-js";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";

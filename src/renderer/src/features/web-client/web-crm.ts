@@ -1,9 +1,9 @@
 // The CRM page of the joined server in the browser client. The host serves it through `crm-v1`, to an
 // owner or admin only.
 
-import type { AgentEvent, TeamRealtimeEvent } from "@openbot/contracts/ipc";
-import { CRM_ROUTES, crmEvent } from "@openbot/contracts/team-protocol/crm-v1";
-import { decodeTeamProtocolV2Json } from "@openbot/contracts/team-protocol/v2";
+import type { AgentEvent, TeamRealtimeEvent } from "@pokebots/contracts/ipc";
+import { CRM_ROUTES, crmEvent } from "@pokebots/contracts/team-protocol/crm-v1";
+import { decodeTeamProtocolV2Json } from "@pokebots/contracts/team-protocol/v2";
 import {
   decodeRemoteCrmActivityPage,
   decodeRemoteCrmApplyResult,
@@ -11,8 +11,8 @@ import {
   decodeRemoteCrmOverview,
   decodeRemoteCrmPaymentPage,
   decodeRemoteCrmSettings,
-} from "@openbot/team-client/crm-decoding";
-import type { TeamApiRequest } from "@openbot/team-client/team-api-requests";
+} from "@pokebots/team-client/crm-decoding";
+import type { TeamApiRequest } from "@pokebots/team-client/team-api-requests";
 import type { CrmHost } from "../crm/crm-port";
 
 export interface WebCrmHostOptions {

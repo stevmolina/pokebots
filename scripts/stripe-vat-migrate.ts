@@ -1,5 +1,5 @@
-import { VAT_SELLER_COUNTRY, VAT_TAX_RATE } from "@openbot/contracts/billing-details";
-import { createOpenBotLogger, toLogValue } from "@openbot/logging";
+import { VAT_SELLER_COUNTRY, VAT_TAX_RATE } from "@pokebots/contracts/billing-details";
+import { createOpenBotLogger, toLogValue } from "@pokebots/logging";
 import { z } from "zod";
 import { billingDetailsOf, type VatTreatment, vatTreatment } from "../apps/auth-api/src/server/billing-tax";
 import { STRIPE_API_VERSION, type StripeCustomerTax, VAT_METADATA } from "../apps/auth-api/src/server/stripe-client";

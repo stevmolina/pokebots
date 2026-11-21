@@ -2,7 +2,7 @@
 // and Google use for provisioning: find a user by `userName`, add one, and turn one off or on. A
 // user is an OpenBot account at one of the connection's domains, and `userName` is its email.
 
-import { type DynamicRecord, isBoolean, isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
+import { type DynamicRecord, isBoolean, isDynamicRecord, isString } from "@pokebots/contracts/runtime-values";
 import { Effect } from "effect";
 import type { ScimUser } from "./company-sign-in";
 import { CompanySignInError } from "./company-sign-in";

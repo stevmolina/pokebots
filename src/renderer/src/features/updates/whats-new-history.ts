@@ -1,4 +1,4 @@
-import type { WhatsNewRelease } from "@openbot/ui/features/updates/whats-new";
+import type { WhatsNewRelease } from "@pokebots/ui/features/updates/whats-new";
 
 const WHATS_NEW_VERSION_KEY = "openbot:whats-new-version";
 const LEGACY_VERSION_KEY = "openbot:analytics-app-version";

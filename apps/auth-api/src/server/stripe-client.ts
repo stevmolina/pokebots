@@ -4,9 +4,9 @@ import {
   type BillingCurrency,
   type BillingStorageTier,
   parseStorageTierPrice,
-} from "@openbot/contracts/billing";
-import { LICENSE_LOOKUP_KEYS, LICENSE_METADATA, LICENSE_METADATA_KIND } from "@openbot/contracts/license";
-import { isOneOf } from "@openbot/contracts/runtime-values";
+} from "@pokebots/contracts/billing";
+import { LICENSE_LOOKUP_KEYS, LICENSE_METADATA, LICENSE_METADATA_KIND } from "@pokebots/contracts/license";
+import { isOneOf } from "@pokebots/contracts/runtime-values";
 import { Effect, Option, Result, Schema } from "effect";
 import type { CheckoutTax } from "./billing-tax";
 import { constantTimeEqual, hexToBytes, importHmacSha256Key } from "./crypto";

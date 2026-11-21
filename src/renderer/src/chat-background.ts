@@ -1,4 +1,4 @@
-import type { AppAppearancePreference, ChatBackgroundColor } from "@openbot/contracts/app-appearance";
+import type { AppAppearancePreference, ChatBackgroundColor } from "@pokebots/contracts/app-appearance";
 
 type Scheme = "light" | "dark";
 type ChatBackgroundPreference = Pick<AppAppearancePreference, "chatBackgroundLight" | "chatBackgroundDark">;

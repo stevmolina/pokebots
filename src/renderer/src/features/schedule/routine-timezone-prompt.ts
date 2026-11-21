@@ -5,10 +5,10 @@ import type {
   RoutineCalendarOwner,
   RoutineCalendarRoutine,
   ServerSummary,
-} from "@openbot/contracts/ipc";
-import { routineOnceInstant } from "@openbot/team-client/routine-schedule";
-import { toast } from "@openbot/ui";
-import { currentText } from "@openbot/ui/text";
+} from "@pokebots/contracts/ipc";
+import { routineOnceInstant } from "@pokebots/team-client/routine-schedule";
+import { toast } from "@pokebots/ui";
+import { currentText } from "@pokebots/ui/text";
 import { createEffect, createMemo, onCleanup, untrack } from "solid-js";
 import { actionToast } from "../../action-toast";
 import { desktopEventRoutinesApi, type EventRoutinesApi } from "../conversation/routine-webhooks-api";

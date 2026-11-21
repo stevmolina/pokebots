@@ -1,6 +1,6 @@
-import type { AgentApproval, BrowserTakeoverRequest } from "@openbot/contracts/ipc";
-import type { AgentProfile } from "@openbot/ui/data";
-import type { SidebarApproval, SidebarAttention } from "@openbot/ui/features/sidebar/sidebar-agent-states";
+import type { AgentApproval, BrowserTakeoverRequest } from "@pokebots/contracts/ipc";
+import type { AgentProfile } from "@pokebots/ui/data";
+import type { SidebarApproval, SidebarAttention } from "@pokebots/ui/features/sidebar/sidebar-agent-states";
 import { attentionAgentId, type PendingAttentionPrompts } from "./agent-runtime-snapshot";
 
 export interface AgentThreadAttentionInput {

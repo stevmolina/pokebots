@@ -1,6 +1,6 @@
 import { Host } from "@expo/ui";
 import { ColorPicker } from "@expo/ui/swift-ui";
-import { type AvatarColor, isAvatarColor } from "@openbot/contracts/ipc";
+import { type AvatarColor, isAvatarColor } from "@pokebots/contracts/ipc";
 import { useEffect, useRef, useState } from "react";
 import { View } from "react-native";
 import { useNativeLabelFont } from "@/shared/lib/native-label-font";

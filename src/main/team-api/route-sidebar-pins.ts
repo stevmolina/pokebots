@@ -1,6 +1,6 @@
-import { parseSetSidebarPinsInput } from "@openbot/contracts/ipc";
-import { SIDEBAR_PINS_CAPABILITY, SIDEBAR_PINS_ROUTES } from "@openbot/contracts/team-protocol/sidebar-pins-v1";
-import { sourceText } from "@openbot/i18n/source";
+import { parseSetSidebarPinsInput } from "@pokebots/contracts/ipc";
+import { SIDEBAR_PINS_CAPABILITY, SIDEBAR_PINS_ROUTES } from "@pokebots/contracts/team-protocol/sidebar-pins-v1";
+import { sourceText } from "@pokebots/i18n/source";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import type { TeamApiSidebarPins } from "./dependencies";
 import { HttpError } from "./http-error";

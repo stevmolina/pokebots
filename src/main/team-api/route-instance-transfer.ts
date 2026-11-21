@@ -1,15 +1,15 @@
 import { rm } from "node:fs/promises";
-import { parseApplyInstanceTransferInput, parseExportInstanceInput } from "@openbot/contracts/ipc";
+import { parseApplyInstanceTransferInput, parseExportInstanceInput } from "@pokebots/contracts/ipc";
 import {
   INSTANCE_TRANSFER_FULL_COPY_CAPABILITY,
   INSTANCE_TRANSFER_FULL_COPY_ROUTES,
-} from "@openbot/contracts/team-protocol/instance-transfer-full-copy-v1";
+} from "@pokebots/contracts/team-protocol/instance-transfer-full-copy-v1";
 import {
   INSTANCE_TRANSFER_CAPABILITY,
   INSTANCE_TRANSFER_REMOTE_BYTES,
   INSTANCE_TRANSFER_ROUTES,
-} from "@openbot/contracts/team-protocol/instance-transfer-v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/team-protocol/instance-transfer-v1";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect } from "effect";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import type { TeamApiInstanceTransfer } from "./dependencies";

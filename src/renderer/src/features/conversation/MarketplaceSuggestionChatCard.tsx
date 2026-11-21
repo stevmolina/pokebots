@@ -1,14 +1,14 @@
-import type { McpServerConfig } from "@openbot/contracts/ipc";
-import type { AgentMessage } from "@openbot/ui/data";
-import { connectorSummary } from "@openbot/ui/features/connectors/ConnectorDetailPanel";
-import { CONNECTOR_LISTINGS } from "@openbot/ui/features/connectors/connector-catalog";
-import { isConnectorId } from "@openbot/ui/features/connectors/connectors";
+import type { McpServerConfig } from "@pokebots/contracts/ipc";
+import type { AgentMessage } from "@pokebots/ui/data";
+import { connectorSummary } from "@pokebots/ui/features/connectors/ConnectorDetailPanel";
+import { CONNECTOR_LISTINGS } from "@pokebots/ui/features/connectors/connector-catalog";
+import { isConnectorId } from "@pokebots/ui/features/connectors/connectors";
 import {
   MarketplaceSuggestionCard,
   type MarketplaceSuggestionState,
-} from "@openbot/ui/features/conversation/MarketplaceSuggestionCard";
-import { isPluginAppConfig, type MarketplacePluginDetail } from "@openbot/ui/features/settings/marketplace-plugins";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/ui/features/conversation/MarketplaceSuggestionCard";
+import { isPluginAppConfig, type MarketplacePluginDetail } from "@pokebots/ui/features/settings/marketplace-plugins";
+import { useText } from "@pokebots/ui/text";
 import { createMemo, createSignal, Show } from "solid-js";
 import type { ConnectorRegistry } from "../connectors/connector-registry";
 import { localizedPlugin } from "../settings/marketplace-plugin-text";

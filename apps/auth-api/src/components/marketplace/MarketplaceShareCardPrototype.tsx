@@ -1,12 +1,12 @@
-import { AppLogo } from "@openbot/brand";
-import type { MarketplaceAgentSummary } from "@openbot/contracts/ipc";
-import { ShieldCheck } from "@openbot/ui/icons";
+import { AppLogo } from "@pokebots/brand";
+import type { MarketplaceAgentSummary } from "@pokebots/contracts/ipc";
+import { ShieldCheck } from "@pokebots/ui/icons";
 import type { JSX } from "@solidjs/web";
 import { createSignal, Loading, lazy, onSettled, Show } from "solid-js";
 import { isVerifiedAgent } from "./marketplace-prototype-fixtures";
 
 const AgentAvatar = lazy(() =>
-  import("@openbot/ui/features/agents/AgentAvatar").then((module) => ({ default: module.AgentAvatar })),
+  import("@pokebots/ui/features/agents/AgentAvatar").then((module) => ({ default: module.AgentAvatar })),
 );
 
 /*

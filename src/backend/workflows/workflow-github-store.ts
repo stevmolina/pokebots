@@ -16,8 +16,8 @@ import {
   type WorkflowGitHubHistory,
   type WorkflowGitHubItem,
   type WorkflowGitHubSkipReason,
-} from "@openbot/contracts/ipc";
-import type { DynamicRecord } from "@openbot/contracts/runtime-values";
+} from "@pokebots/contracts/ipc";
+import type { DynamicRecord } from "@pokebots/contracts/runtime-values";
 import {
   checkedColumn,
   databaseRow,

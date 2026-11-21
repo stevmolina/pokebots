@@ -1,10 +1,10 @@
-import type { AgentEvent, ServerNotificationLevel, ServerSummary } from "@openbot/contracts/ipc";
+import type { AgentEvent, ServerNotificationLevel, ServerSummary } from "@pokebots/contracts/ipc";
 import {
   agentEventAgentId,
   agentEventCanNotify,
   agentEventNeedsUser,
   agentNotificationLevel,
-} from "@openbot/team-client/agent-notifications";
+} from "@pokebots/team-client/agent-notifications";
 import { Effect } from "effect";
 import type { Notification } from "electron";
 import type { NotificationPreferenceStore } from "./notification-preference-store";

@@ -76,10 +76,10 @@ try {
   // The store build: 1.4.8 is on Android, and iOS still reviews it. One note waits for 1.4.9.
   git("init", "--quiet", "--initial-branch=main");
   write("apps/mobile/app.json", `${JSON.stringify({ expo: { version: "1.4.8" } }, null, 2)}\n`);
-  write("apps/mobile/package.json", `${JSON.stringify({ name: "@openbot/mobile", version: "1.4.8" }, null, 2)}\n`);
+  write("apps/mobile/package.json", `${JSON.stringify({ name: "@pokebots/mobile", version: "1.4.8" }, null, 2)}\n`);
   write(
     "bun.lock",
-    `{\n  "workspaces": {\n    "apps/mobile": {\n      "name": "@openbot/mobile",\n      "version": "1.4.8",\n    },\n  },\n}\n`,
+    `{\n  "workspaces": {\n    "apps/mobile": {\n      "name": "@pokebots/mobile",\n      "version": "1.4.8",\n    },\n  },\n}\n`,
   );
   write("apps/mobile/release-announcement.json", JSON.stringify({ version: "1.4.8", highlights: ["One."] }));
   write(

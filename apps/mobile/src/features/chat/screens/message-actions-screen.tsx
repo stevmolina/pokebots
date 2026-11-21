@@ -3,7 +3,7 @@ import {
   MESSAGE_REACTIONS,
   MORE_MESSAGE_REACTIONS,
   nextSpeechSpeed,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import { router } from "expo-router";
 import { Button, Typography } from "heroui-native";
 import { useThemeColor } from "heroui-native/hooks";

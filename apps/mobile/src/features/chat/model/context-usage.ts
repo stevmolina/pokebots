@@ -1,5 +1,5 @@
-import { AGENT_CONTEXT_CATEGORIES, type AgentContextCategory, type AgentContextState } from "@openbot/contracts/ipc";
-import type { MobileTextKey } from "@openbot/i18n/mobile";
+import { AGENT_CONTEXT_CATEGORIES, type AgentContextCategory, type AgentContextState } from "@pokebots/contracts/ipc";
+import type { MobileTextKey } from "@pokebots/i18n/mobile";
 
 /** The meter's view of a chat's context state, as `contextUsageView` on the desktop. */
 export interface ContextUsageView {

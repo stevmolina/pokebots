@@ -1,7 +1,7 @@
-import type { CrmCustomer } from "@openbot/contracts/ipc";
-import { buttonVariants, CreditCard, DropdownMenu, IconButton, Plug, Plus, SlidingTabs, UsersRound } from "@openbot/ui";
-import { FileSearch } from "@openbot/ui/features/files/FileList";
-import { useText } from "@openbot/ui/text";
+import type { CrmCustomer } from "@pokebots/contracts/ipc";
+import { buttonVariants, CreditCard, DropdownMenu, IconButton, Plug, Plus, SlidingTabs, UsersRound } from "@pokebots/ui";
+import { FileSearch } from "@pokebots/ui/features/files/FileList";
+import { useText } from "@pokebots/ui/text";
 import { createEffect, createMemo, For, Show } from "solid-js";
 import { CrmCustomerPanel } from "./CrmCustomerPanel";
 import { CrmCustomers } from "./CrmCustomers";
