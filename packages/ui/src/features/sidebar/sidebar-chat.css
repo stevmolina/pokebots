@@ -1415,11 +1415,11 @@
   display: none;
 }
 
-/* The calm list on a computer: 36px faces, and the main agent as a tile on top. The phone list keeps its
+/* The calm list on a computer: 42px faces, and the main agent as a tile on top. The phone list keeps its
  * own sizes (`web-phone.css`). */
 @media (min-width: 721px) {
   .sidebar-chat .sidebar-chat-row {
-    --sidebar-chat-face: 36px;
+    --sidebar-chat-face: 42px;
   }
 
   .sidebar-dock-chevron {
