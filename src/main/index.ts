@@ -1,3 +1,6 @@
+// Resolve explicit service settings before other imports and the brand layer defaults.
+import "./service-endpoint-environment";
+
 import { uptime } from "node:os";
 import { join, resolve } from "node:path";
 import { parseInviteUrl, selfHostedApiOrigin } from "@pokebots/contracts/invite-links";
