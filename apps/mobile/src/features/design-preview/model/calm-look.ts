@@ -1,7 +1,7 @@
 import * as SecureStore from "expo-secure-store";
 import { createContext, useContext } from "react";
 import { create } from "zustand";
-import { APP_BRAND } from "@/shared/lib/app-brand";
+import { IS_POKEBOTS_PERSONAL_BUILD } from "@/shared/lib/app-brand";
 import { DESIGN_PREVIEW_ALLOWED } from "./preview-switch";
 
 const key = "openbot.mobile.calm-look.v1";
@@ -21,7 +21,7 @@ export async function loadCalmLook(): Promise<void> {
   if (useCalmLookStore.getState().ready) return;
   try {
     const stored = await SecureStore.getItemAsync(key);
-    const on = stored === null ? APP_BRAND === "pokebots" : stored === "true";
+    const on = stored === null ? IS_POKEBOTS_PERSONAL_BUILD : stored === "true";
     if (!useCalmLookStore.getState().ready) useCalmLookStore.setState({ on });
   } catch {
     // A failed read keeps the current home.

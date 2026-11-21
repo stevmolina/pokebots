@@ -32,9 +32,7 @@ const withoutPushEntitlement = (config) =>
     return mod;
   });
 
-// The Pokebots look of the personal build, when `OPENBOT_BRAND_NAME` is "Pokebots": the Pokebots app
-// icon, a light blue splash with the mascot, and `extra.brand`, which `src/shared/lib/app-brand.ts`
-// reads for the colors and the mascot inside the app. The store build never reads these values.
+// Personal builds can still select the original artwork with OPENBOT_BRAND_NAME.
 const BRAND_NAME_ENV = "OPENBOT_BRAND_NAME";
 const POKEBOTS_ICON = "./assets/pokebots/app-icon.png";
 const POKEBOTS_SPLASH = {
@@ -47,31 +45,54 @@ const POKEBOTS_SPLASH = {
 };
 
 /** @param {import('expo/config').ExpoConfig} config */
+function pokebotsConfig(config) {
+  return {
+    ...config,
+    icon: POKEBOTS_ICON,
+    ios: { ...config.ios, icon: POKEBOTS_ICON },
+    android: {
+      ...config.android,
+      icon: POKEBOTS_ICON,
+      adaptiveIcon: {
+        foregroundImage: "./assets/pokebots/android-adaptive-foreground.png",
+        backgroundColor: POKEBOTS_SPLASH.backgroundColor,
+        monochromeImage: config.android?.adaptiveIcon?.monochromeImage,
+      },
+    },
+    plugins: config.plugins?.map((plugin) => {
+      if (Array.isArray(plugin) && plugin[0] === "expo-splash-screen") {
+        return [plugin[0], { ...POKEBOTS_SPLASH, android: { imageWidth: 150 } }];
+      }
+      return plugin;
+    }),
+    extra: { ...config.extra, brand: "pokebots" },
+  };
+}
+
+/** @param {import('expo/config').ExpoConfig} config */
 function personalIosConfig(config) {
-  const pokebots = process.env[BRAND_NAME_ENV] === "Pokebots";
-  const plugins = (config.plugins ?? [])
+  const pokebots = (process.env[BRAND_NAME_ENV] ?? "Pokebots") === "Pokebots";
+  const branded = pokebots ? pokebotsConfig(config) : config;
+  const plugins = (branded.plugins ?? [])
     .filter((plugin) => !PERSONAL_DROPPED_PLUGINS.has(Array.isArray(plugin) ? plugin[0] : plugin))
     // The other app icons are the OpenBot logo colors, so the Pokebots build has its one icon.
     .filter((plugin) => !(pokebots && plugin === "./plugins/with-app-icons"))
     .map((plugin) => {
       if (Array.isArray(plugin) && plugin[0] === "./plugins/with-share-target")
         return [plugin[0], { ...plugin[1], ios: { ...plugin[1].ios, enabled: false } }];
-      if (pokebots && Array.isArray(plugin) && plugin[0] === "expo-splash-screen")
-        return [plugin[0], { ...plugin[1], ...POKEBOTS_SPLASH }];
       return plugin;
     });
-  const { appleTeamId: _team, associatedDomains: _domains, ...ios } = config.ios ?? {};
+  const { appleTeamId: _team, associatedDomains: _domains, ...ios } = branded.ios ?? {};
   return withoutPushEntitlement({
-    ...config,
+    ...branded,
     name: process.env[PERSONAL_NAME_ENV] || config.name,
     ios: {
       ...ios,
       bundleIdentifier: process.env[PERSONAL_BUNDLE_ID_ENV] || "xyz.pokebots.personal",
-      ...(pokebots ? { icon: POKEBOTS_ICON } : {}),
     },
     plugins,
     updates: { ...config.updates, enabled: false },
-    extra: { ...config.extra, ...(pokebots ? { brand: "pokebots" } : {}) },
+    extra: { ...branded.extra, personalBuild: true },
   });
 }
 
@@ -80,5 +101,6 @@ module.exports = ({ config }) => {
   const withFirebase = existsSync(join(__dirname, GOOGLE_SERVICES_FILE))
     ? { ...config, android: { ...config.android, googleServicesFile: GOOGLE_SERVICES_FILE } }
     : config;
-  return process.env[PERSONAL_ENV] === "1" ? personalIosConfig(withFirebase) : withFirebase;
+  if (process.env[PERSONAL_ENV] === "1") return personalIosConfig(withFirebase);
+  return pokebotsConfig({ ...withFirebase, extra: { ...withFirebase.extra, personalBuild: false } });
 };
