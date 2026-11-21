@@ -1,0 +1,62 @@
+name: Pokebots release dry run
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  preflight:
+    if: github.repository == 'stevmolina/pokebots' && github.ref_type == 'branch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out the selected commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Bun
+        uses: ./.github/actions/setup-bun
+        with:
+          install: ignore-scripts
+
+      - name: Check release inputs and stage evidence
+        shell: bash
+        run: |
+          version="$(bun -p 'require("./package.json").version')"
+          [[ "$version" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]]
+          bun scripts/check-release-notes.ts
+          bun scripts/released-schema-versions.ts
+          bun scripts/discord-release-announcement.ts check "$version" > /dev/null
+          bun scripts/whats-new-translations.ts "$version"
+          bun scripts/release-version-comparator-e2e.ts
+          bun scripts/pokebots-brand-e2e.ts
+          bun -e '
+            const config = Bun.YAML.parse(await Bun.file("electron-builder.custom.yml").text());
+            if (config.productName !== "Pokebots" || config.appId !== "app.openbot.custom" ||
+                config.publish !== null || !config.files.includes("LICENSE") ||
+                !config.files.includes("NOTICE")) {
+              throw new Error("Unexpected Pokebots package identity, feed, or license files.");
+            }
+          '
+
+          evidence="$RUNNER_TEMP/pokebots-release-dry-run"
+          mkdir "$evidence"
+          cp .openbot-build/pokebots-brand-e2e/report.json "$evidence/brand.json"
+          cp .openbot-build/release-version-comparator-e2e.json "$evidence/version-comparators.json"
+          cp electron-builder.custom.yml LICENSE NOTICE "$evidence/"
+          printf 'commit=%s\nversion=%s\n' "$(git rev-parse HEAD)" "$version" > "$evidence/source.txt"
+          cd "$evidence"
+          sha256sum brand.json version-comparators.json electron-builder.custom.yml LICENSE NOTICE source.txt > SHA256SUMS.txt
+          sha256sum --check SHA256SUMS.txt
+
+      - name: Upload dry-run evidence
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: pokebots-release-dry-run-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/pokebots-release-dry-run/
+          if-no-files-found: error
+          retention-days: 7
