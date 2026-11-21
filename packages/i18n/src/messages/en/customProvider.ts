@@ -11,7 +11,7 @@ export const messages = defineMessages("customProvider", {
   "customProvider.registry.update": "Update",
   "customProvider.registry.remove": "Remove runtime",
   "customProvider.registry.searchFailed": "Could not search the registry. Try again.",
-  "customProvider.registry.statusFailed": "Could not check the install progress. OpenBot tries again.",
+  "customProvider.registry.statusFailed": "Could not check the install progress. Pokebots tries again.",
   "customProvider.registry.installFailed": "Could not install the agent. Try again.",
   "customProvider.registry.updateFailed": "Could not update the agent. Try again.",
   "customProvider.registry.removeFailed": "Could not remove the runtime. Try again.",
@@ -21,7 +21,7 @@ export const messages = defineMessages("customProvider", {
   "customProvider.error.providerIdPattern":
     "Use lowercase letters, numbers, hyphens or underscores, starting with a letter or number.",
   "customProvider.error.providerIdLength": "Keep the provider ID under {max} characters.",
-  "customProvider.error.providerIdBuiltIn": "OpenBot already has a provider called {id}. Choose another ID.",
+  "customProvider.error.providerIdBuiltIn": "Pokebots already has a provider called {id}. Choose another ID.",
   "customProvider.error.providerIdSaved":
     "An endpoint called {id} is already saved. Remove it first, or choose another ID.",
   "customProvider.error.displayNameRequired": "Enter a display name.",
@@ -47,14 +47,14 @@ export const messages = defineMessages("customProvider", {
   "customProvider.error.baseUrlCredential": "Put the credential in a header, not in the URL.",
 
   // The note after a save or a removal. It tells the user when the provider reads the new list.
-  "customProvider.saved.restarted": "Saved. OpenBot is loading the models.",
+  "customProvider.saved.restarted": "Saved. Pokebots is loading the models.",
   "customProvider.saved.skippedBusy": "Saved. The provider reads the list after the current task stops.",
   "customProvider.saved.notRunning": "Saved. The provider reads the list when it next starts.",
-  "customProvider.removed.restarted": "Removed. OpenBot is loading the models.",
+  "customProvider.removed.restarted": "Removed. Pokebots is loading the models.",
   "customProvider.removed.skippedBusy": "Removed. The provider reads the list after the current task stops.",
   "customProvider.removed.notRunning": "Removed. The provider reads the list when it next starts.",
-  "customProvider.saveFailed": "OpenBot could not save this endpoint.",
-  "customProvider.removeFailed": "OpenBot could not remove {name}.",
+  "customProvider.saveFailed": "Pokebots could not save this endpoint.",
+  "customProvider.removeFailed": "Pokebots could not remove {name}.",
   "customProvider.saveUnavailable": "This build cannot save an endpoint.",
   "customProvider.removeUnavailable": "This build cannot remove an endpoint.",
 
@@ -145,7 +145,7 @@ export const messages = defineMessages("customProvider", {
   "customProvider.detected.titleServer": "Found on the server",
   "customProvider.detected.scanning": "Looking for local models and agents.",
   "customProvider.detected.scanAgain": "Scan again",
-  "customProvider.detected.empty": "OpenBot found no local model server or ACP agent.",
+  "customProvider.detected.empty": "Pokebots found no local model server or ACP agent.",
   "customProvider.detected.add": "Add",
   "customProvider.detected.addLabel": "Add {name}",
   "customProvider.detected.added": "Added",
@@ -163,10 +163,10 @@ export const messages = defineMessages("customProvider", {
   // Where the scan looks. The default addresses and PATH are always part of it.
   "customProvider.detection.title": "Local detection",
   "customProvider.detection.saveFailed": "Could not save the detection settings.",
-  "customProvider.detection.description": "Where OpenBot looks for local model servers and ACP agents.",
+  "customProvider.detection.description": "Where Pokebots looks for local model servers and ACP agents.",
   "customProvider.detection.enabled": "Look for local models and agents",
   "customProvider.detection.enabledDescription":
-    "OpenBot checks the default addresses of Ollama and LM Studio, and looks for known ACP agents on your PATH.",
+    "Pokebots checks the default addresses of Ollama and LM Studio, and looks for known ACP agents on your PATH.",
   "customProvider.detection.enabledDescriptionServer":
     "The server checks the default addresses of Ollama and LM Studio, and looks for known ACP agents on its PATH.",
   "customProvider.detection.addresses": "Other model server addresses",
@@ -189,13 +189,13 @@ export const messages = defineMessages("customProvider", {
   "customProvider.acp.agentId": "Agent ID",
   "customProvider.acp.agentIdHint": "Lowercase letters, numbers, or hyphens. You cannot change it later.",
   "customProvider.acp.command": "Command",
-  "customProvider.acp.commandHint": "The program to start. OpenBot looks for it on your PATH.",
+  "customProvider.acp.commandHint": "The program to start. Pokebots looks for it on your PATH.",
   "customProvider.acp.commandHintServer": "The program to start. The server looks for it on its PATH.",
   "customProvider.acp.args": "Arguments",
   "customProvider.acp.argsHint": "Separate arguments with spaces. Put quotes around an argument that has spaces.",
   "customProvider.acp.usagePrompt": "Usage command",
   "customProvider.acp.usagePromptHint":
-    "OpenBot sends it at most every 5 minutes and shows the last answer. Use a command that the agent answers itself, such as /usage.",
+    "Pokebots sends it at most every 5 minutes and shows the last answer. Use a command that the agent answers itself, such as /usage.",
   "customProvider.acp.env": "Environment variables",
   "customProvider.acp.env.name": "Variable {number} name",
   "customProvider.acp.env.value": "Variable {number} value",
@@ -203,7 +203,7 @@ export const messages = defineMessages("customProvider", {
   "customProvider.acp.env.add": "Add variable",
   "customProvider.acp.check": "Connection",
   "customProvider.acp.checkRun": "Check agent",
-  "customProvider.acp.checkIdle": "OpenBot starts the command once to make sure that it answers.",
+  "customProvider.acp.checkIdle": "Pokebots starts the command once to make sure that it answers.",
   "customProvider.acp.checking": "Starting {command}.",
   "customProvider.acp.checkOk": "{name} answered",
   "customProvider.acp.checkOkVersion": "{name} {version} answered",
@@ -215,10 +215,10 @@ export const messages = defineMessages("customProvider", {
   "customProvider.acp.checkFailed": "The agent did not answer",
   "customProvider.acp.trustTitle": "This command runs on your computer",
   "customProvider.acp.trustDescription":
-    "OpenBot starts it with your user account. The agent can read and change files and run commands. Add only an agent that you trust.",
+    "Pokebots starts it with your user account. The agent can read and change files and run commands. Add only an agent that you trust.",
   "customProvider.acp.hostTrustTitle": "This command runs on the server",
   "customProvider.acp.hostTrustDescription":
-    "OpenBot starts it with the server's user account. The agent can read and change files on the server and run commands there. Add only an agent that you trust.",
+    "Pokebots starts it with the server's user account. The agent can read and change files on the server and run commands there. Add only an agent that you trust.",
   "customProvider.acp.submit": "Add agent",
   "customProvider.acp.editTitle": "Edit a custom ACP agent",
   "customProvider.acp.submitEdit": "Save agent",
@@ -236,8 +236,8 @@ export const messages = defineMessages("customProvider", {
 
   // The user's own ACP agents in Settings. Each is a command that OpenBot starts on this computer.
   "customProvider.agents.title": "Custom agents",
-  "customProvider.agents.description": "ACP agents that OpenBot starts on this computer.",
-  "customProvider.agents.hostDescription": "ACP agents that OpenBot starts on the server's computer.",
+  "customProvider.agents.description": "ACP agents that Pokebots starts on this computer.",
+  "customProvider.agents.hostDescription": "ACP agents that Pokebots starts on the server's computer.",
   "customProvider.agents.empty": "No custom agents yet.",
   "customProvider.agents.add": "Add agent",
   "customProvider.agents.restart": "Restart agents",
@@ -249,11 +249,11 @@ export const messages = defineMessages("customProvider", {
   "customProvider.agents.deleteLabel": "Delete {name}",
   "customProvider.agents.confirmDescription":
     "Its saved variables are discarded, and each agent that uses it moves to a default model.",
-  "customProvider.agents.saveFailed": "OpenBot could not save this agent.",
-  "customProvider.agents.saved.restarted": "Saved. OpenBot restarted the custom agents.",
+  "customProvider.agents.saveFailed": "Pokebots could not save this agent.",
+  "customProvider.agents.saved.restarted": "Saved. Pokebots restarted the custom agents.",
   "customProvider.agents.saved.skippedBusy": "Saved. The custom agents restart after the current task stops.",
   "customProvider.agents.saved.notRunning": "Saved. The custom agents read it when they next start.",
-  "customProvider.agents.removed.restarted": "Removed. OpenBot restarted the custom agents.",
+  "customProvider.agents.removed.restarted": "Removed. Pokebots restarted the custom agents.",
   "customProvider.agents.removed.skippedBusy": "Removed. The custom agents restart after the current task stops.",
   "customProvider.agents.removed.notRunning": "Removed. The custom agents read it when they next start.",
 

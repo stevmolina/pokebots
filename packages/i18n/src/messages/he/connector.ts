@@ -20,7 +20,7 @@ export const messages = {
     "סוכנים יכולים להשתמש רק במאגרים שבהם מותקנת אפליקציית OpenBot GitHub App.",
   "connector.github.chooseRepositories": "בחירת מאגרים",
   "connector.github.repositoriesLoading": "קורא את המאגרים מ-GitHub",
-  "connector.github.repositoriesFailed": "OpenBot לא הצליח לקרוא את המאגרים מ-GitHub.",
+  "connector.github.repositoriesFailed": "Pokebots לא הצליח לקרוא את המאגרים מ-GitHub.",
   "connector.github.noRepositories": "אפליקציית OpenBot GitHub App עדיין לא מותקנת באף מאגר.",
   // {count} is a number, such as 12.
   "connector.github.moreRepositories": { one: "ועוד מאגר אחד", two: "ועוד שני מאגרים", other: "ועוד {count} מאגרים" },
@@ -32,7 +32,7 @@ export const messages = {
   "connector.github.expiredTitle": "החיבור ל-GitHub פג תוקף",
   "connector.github.expiredDescription": "יש להתחבר שוב בתור @{login} כדי לתת לסוכנים גישה ל-GitHub מחדש.",
   "connector.github.reconnect": "חיבור מחדש",
-  "connector.github.actionFailed": "OpenBot לא הצליח לשנות את החיבור ל-GitHub.",
+  "connector.github.actionFailed": "Pokebots לא הצליח לשנות את החיבור ל-GitHub.",
   // The status next to the name at the top of the GitHub page.
   "connector.github.statusConnected": "מחובר",
   "connector.github.statusConnecting": "מתחבר",
@@ -50,7 +50,7 @@ export const messages = {
   // The connect dialog. The steps show as numbers; screen readers read the names.
   "connector.github.stepSignIn": "התחברות",
   "connector.github.stepConnected": "מחובר",
-  "connector.github.requestingCode": "OpenBot מבקש קוד מ-GitHub.",
+  "connector.github.requestingCode": "Pokebots מבקש קוד מ-GitHub.",
   // {code} is the code to type on GitHub, such as WDJB-MJHT.
   "connector.github.codeLabel": "קוד {code}",
   "connector.github.failedTitle": "החיבור ל-GitHub נכשל",
@@ -84,7 +84,7 @@ export const messages = {
   // The last section of an integration page, with the action that removes it.
   "connector.dangerZone": "אזור מסוכן",
   "connector.statusUnknown": "לא ידוע",
-  "connector.readFailed": "OpenBot לא הצליח לקרוא את מצב החיבור הזה.",
+  "connector.readFailed": "Pokebots לא הצליח לקרוא את מצב החיבור הזה.",
 
   // Marketplace > Apps > Slack: a workspace installs the one OpenBot app, and the Slack
   // Orchestrator agent receives each request, asks the team and answers.
@@ -111,10 +111,10 @@ export const messages = {
   "connector.slack.disconnectAllTitle": "ניתוק Slack",
   "connector.slack.disconnectAllSummary": "כל סביבות העבודה מתנתקות. אי אפשר עוד להגיע לסוכנים שלך דרך @OpenBot.",
   "connector.slack.disconnectAllSummaryOrchestrator":
-    "כל סביבות העבודה מתנתקות. מתזמר Slack והשיחות שלו נמחקים מ-OpenBot.",
+    "כל סביבות העבודה מתנתקות. מתזמר Slack והשיחות שלו נמחקים מ-Pokebots.",
   "connector.slack.missingScopes":
-    "אין ל-OpenBot את ההרשאות האלה ב-Slack: {scopes}. יש לנתק את סביבת העבודה ולחבר אותה שוב.",
-  "connector.slack.retryAt": "Slack ביקש מ-OpenBot להמתין. הוא ינסה שוב ב-{time}.",
+    "אין ל-Pokebots את ההרשאות האלה ב-Slack: {scopes}. יש לנתק את סביבת העבודה ולחבר אותה שוב.",
+  "connector.slack.retryAt": "Slack ביקש מ-Pokebots להמתין. הוא ינסה שוב ב-{time}.",
   "connector.slack.reconnect": "חיבור מחדש",
   "connector.slack.pause": "השהיה",
   "connector.slack.resume": "המשך",
@@ -126,7 +126,7 @@ export const messages = {
   "connector.slack.orchestratorNone": "אין עדיין סוכן שעונה",
   "connector.slack.orchestratorNoneDescription": "יש להוסיף את מתזמר Slack, אחרת Slack לא יקבל תשובה.",
   "connector.slack.inviteNote":
-    "OpenBot מצטרף בעצמו לכל ערוץ ציבורי, וגם לכל ערוץ חדש. לערוץ פרטי יש להזמין אותו: /invite @OpenBot.",
+    "Pokebots מצטרף בעצמו לכל ערוץ ציבורי, וגם לכל ערוץ חדש. לערוץ פרטי יש להזמין אותו: /invite @OpenBot.",
   // The connect dialog. The steps show as numbers; screen readers read the names.
   "connector.slack.stepWorkspace": "סביבת עבודה",
   "connector.slack.stepAgent": "סוכן",
@@ -147,15 +147,15 @@ export const messages = {
   "connector.slack.orchestratorDoesDelegate": "מעביר כל משימה לסוכן המתאים ביותר",
   "connector.slack.orchestratorDoesAnswer": "מפרסם את התשובה בשרשור ב-Slack",
   "connector.slack.orchestratorModel": "מודל",
-  "connector.slack.doneTitle": "OpenBot נמצא ב-{workspace}",
+  "connector.slack.doneTitle": "Pokebots נמצא ב-{workspace}",
   "connector.slack.doneDescription": "אפשר לתייג את @OpenBot בכל ערוץ ציבורי או לשלוח לו הודעה ישירה.",
   "connector.slack.done": "סיום",
   "connector.slack.disconnectTitle": "לנתק את {workspace}?",
-  "connector.slack.disconnectDescription": "OpenBot מפסיק לענות ב-{workspace} ומסיר את אסימון Slack שלו מהמחשב הזה.",
-  "connector.slack.disconnectDescriptionHost": "OpenBot מפסיק לענות ב-{workspace} ומסיר את אסימון Slack שלו מ-{host}.",
+  "connector.slack.disconnectDescription": "Pokebots מפסיק לענות ב-{workspace} ומסיר את אסימון Slack שלו מהמחשב הזה.",
+  "connector.slack.disconnectDescriptionHost": "Pokebots מפסיק לענות ב-{workspace} ומסיר את אסימון Slack שלו מ-{host}.",
   "connector.slack.disconnectEffect": "אנשים ב-{workspace} לא יוכלו עוד להגיע לסוכנים שלך דרך @OpenBot.",
-  "connector.slack.removeEffectKept": "השיחות ומתזמר Slack נשארים ב-OpenBot.",
-  "connector.slack.removeEffectDeleted": "מתזמר Slack והשיחות שלו נמחקים מ-OpenBot.",
+  "connector.slack.removeEffectKept": "השיחות ומתזמר Slack נשארים ב-Pokebots.",
+  "connector.slack.removeEffectDeleted": "מתזמר Slack והשיחות שלו נמחקים מ-Pokebots.",
   "connector.slack.keep": "השארת החיבור",
   "connector.slack.close": "סגירה",
   "connector.slack.addWorkspace": "הוספת סביבת עבודה",
@@ -198,10 +198,10 @@ export const messages = {
   "connector.discord.disconnectAllTitle": "ניתוק Discord",
   "connector.discord.disconnectAllSummary": "כל השרתים מתנתקים. אי אפשר עוד להגיע לסוכנים שלך דרך @OpenBot.",
   "connector.discord.disconnectAllSummaryOrchestrator":
-    "כל השרתים מתנתקים. מתזמר Discord והשיחות שלו נמחקים מ-OpenBot.",
+    "כל השרתים מתנתקים. מתזמר Discord והשיחות שלו נמחקים מ-Pokebots.",
   "connector.discord.missingScopes":
-    "אין ל-OpenBot את ההרשאות האלה ב-Discord: {scopes}. יש לנתק את שרת Discord ולחבר אותו שוב.",
-  "connector.discord.retryAt": "Discord ביקש מ-OpenBot להמתין. הוא ינסה שוב ב-{time}.",
+    "אין ל-Pokebots את ההרשאות האלה ב-Discord: {scopes}. יש לנתק את שרת Discord ולחבר אותו שוב.",
+  "connector.discord.retryAt": "Discord ביקש מ-Pokebots להמתין. הוא ינסה שוב ב-{time}.",
   "connector.discord.reconnect": "חיבור מחדש",
   "connector.discord.pause": "השהיה",
   "connector.discord.resume": "המשך",
@@ -212,7 +212,7 @@ export const messages = {
     "הסוכן הזה מקבל כל בקשה מ-Discord. הוא עונה בעצמו על בקשות קצרות, מעביר עבודה אחרת לסוכן המתאים ומשיב בערוץ עם התשובה.",
   "connector.discord.orchestratorNone": "אין עדיין סוכן שעונה",
   "connector.discord.orchestratorNoneDescription": "יש להוסיף את מתזמר Discord, אחרת Discord לא יקבל תשובה.",
-  "connector.discord.channelsNote": "OpenBot רואה את הערוצים שהתפקיד שלו יכול לראות.",
+  "connector.discord.channelsNote": "Pokebots רואה את הערוצים שהתפקיד שלו יכול לראות.",
   // The connect dialog. The steps show as numbers; screen readers read the names.
   "connector.discord.stepWorkspace": "שרת Discord",
   "connector.discord.stepAgent": "סוכן",
@@ -232,16 +232,16 @@ export const messages = {
   "connector.discord.orchestratorDoesDelegate": "מעביר כל משימה לסוכן המתאים ביותר",
   "connector.discord.orchestratorDoesAnswer": "משיב עם התשובה בערוץ ב-Discord",
   "connector.discord.orchestratorModel": "מודל",
-  "connector.discord.doneTitle": "OpenBot נמצא ב-{workspace}",
+  "connector.discord.doneTitle": "Pokebots נמצא ב-{workspace}",
   "connector.discord.doneDescription": "אפשר לתייג את @OpenBot בערוץ. כדי להמשיך יש להשיב ל-OpenBot.",
   "connector.discord.done": "סיום",
   "connector.discord.disconnectTitle": "לנתק את {workspace}?",
-  "connector.discord.disconnectDescription": "OpenBot מפסיק לענות ב-{workspace} ומסיר את החיבור ל-Discord מהמחשב הזה.",
+  "connector.discord.disconnectDescription": "Pokebots מפסיק לענות ב-{workspace} ומסיר את החיבור ל-Discord מהמחשב הזה.",
   "connector.discord.disconnectDescriptionHost":
-    "OpenBot מפסיק לענות ב-{workspace} ומסיר את החיבור ל-Discord מ-{host}.",
+    "Pokebots מפסיק לענות ב-{workspace} ומסיר את החיבור ל-Discord מ-{host}.",
   "connector.discord.disconnectEffect": "אנשים ב-{workspace} לא יוכלו עוד להגיע לסוכנים שלך דרך @OpenBot.",
-  "connector.discord.removeEffectKept": "השיחות ומתזמר Discord נשארים ב-OpenBot.",
-  "connector.discord.removeEffectDeleted": "מתזמר Discord והשיחות שלו נמחקים מ-OpenBot.",
+  "connector.discord.removeEffectKept": "השיחות ומתזמר Discord נשארים ב-Pokebots.",
+  "connector.discord.removeEffectDeleted": "מתזמר Discord והשיחות שלו נמחקים מ-Pokebots.",
   "connector.discord.keep": "השארת החיבור",
   "connector.discord.close": "סגירה",
   "connector.discord.addWorkspace": "הוספת שרת Discord",
@@ -257,15 +257,15 @@ export const messages = {
     other: "{count} שרתי Discord · מתזמר Discord עונה",
   },
   // Who can use OpenBot in one Discord server: the members with one of the chosen Discord roles.
-  "connector.discord.accessTitle": "מי יכול להשתמש ב-OpenBot",
-  "connector.discord.accessDescription": "OpenBot עונה רק לאנשים האלה. הוא מתעלם מתיוגים של אחרים.",
+  "connector.discord.accessTitle": "מי יכול להשתמש ב-Pokebots",
+  "connector.discord.accessDescription": "Pokebots עונה רק לאנשים האלה. הוא מתעלם מתיוגים של אחרים.",
   "connector.discord.accessEveryone": "כל אחד בשרת",
-  "connector.discord.accessEveryoneDescription": "כל מי שיכול לכתוב בערוץ ש-OpenBot רואה יכול לתייג אותו.",
+  "connector.discord.accessEveryoneDescription": "כל מי שיכול לכתוב בערוץ ש-Pokebots רואה יכול לתייג אותו.",
   // {roles} is a list of Discord role names, such as "Admin and Moderator".
   "connector.discord.accessRoles": "חברים עם {roles}",
   "connector.discord.accessChoose": "בחירת תפקידים",
   // {workspace} is the Discord server name.
-  "connector.discord.accessDialogTitle": "מי יכול להשתמש ב-OpenBot ב-{workspace}?",
+  "connector.discord.accessDialogTitle": "מי יכול להשתמש ב-Pokebots ב-{workspace}?",
   "connector.discord.accessDialogDescription": "אם לא נבחר תפקיד, כל אחד יכול לתייג את OpenBot.",
   "connector.discord.accessLoading": "טוען תפקידים…",
   "connector.discord.accessLoadFailed": "תפקידי Discord לא נטענו",
@@ -274,13 +274,13 @@ export const messages = {
   "connector.discord.accessRoleDeleted": "{role} (נמחק)",
   "connector.discord.accessSave": "שמירה",
   // {host} is the joined server's name.
-  "connector.discord.accessHostUpdate": "יש לעדכן את OpenBot ב-{host} כדי לבחור תפקידים.",
+  "connector.discord.accessHostUpdate": "יש לעדכן את Pokebots ב-{host} כדי לבחור תפקידים.",
 
   // Marketplace > Apps > Telegram: each chat adds the one OpenBot bot, and the Telegram
   // Orchestrator agent receives the messages of all chats, asks the team and answers.
   "connector.telegram.title": "Telegram",
   "connector.telegram.description":
-    "אפשר להוסיף את הבוט של OpenBot לקבוצה ב-Telegram או לפתוח איתו צ'אט ישיר. מתזמר Telegram פונה לסוכן המתאים ועונה.",
+    "אפשר להוסיף את הבוט של Pokebots לקבוצה ב-Telegram או לפתוח איתו צ'אט ישיר. מתזמר Telegram פונה לסוכן המתאים ועונה.",
   "connector.telegram.statusConnected": "מחובר",
   "connector.telegram.statusAttention": "דורש תשומת לב",
   // {count} is the number of linked Telegram chats.
@@ -306,22 +306,22 @@ export const messages = {
   "connector.telegram.chatsTitle": "צ'אטים",
   "connector.telegram.groupDescription": "אפשר לתייג את הבוט או להשיב להודעות שלו.",
   "connector.telegram.directDescription": "כל הודעה בצ'אט הזה עוברת למתזמר Telegram.",
-  "connector.telegram.helpRemoved": "הבוט של OpenBot כבר לא נמצא בצ'אט הזה. יש לנתק את הצ'אט ולהוסיף את הבוט שוב.",
+  "connector.telegram.helpRemoved": "הבוט של Pokebots כבר לא נמצא בצ'אט הזה. יש לנתק את הצ'אט ולהוסיף את הבוט שוב.",
   "connector.telegram.helpRelayUnavailable":
-    "OpenBot לא יכול לקבל הודעות Telegram במחשב הזה. יש להתחבר, לתת למחשב הזה שם בהגדרות השרת ולהשאיר את OpenBot פתוח.",
+    "Pokebots לא יכול לקבל הודעות Telegram במחשב הזה. יש להתחבר, לתת למחשב הזה שם בהגדרות השרת ולהשאיר את Pokebots פתוח.",
   "connector.telegram.helpRelayUnavailableHost":
-    "OpenBot ב-{host} לא יכול לקבל הודעות Telegram. ב-{host} יש להתחבר, לתת לשרת שם בהגדרות השרת ולהשאיר את OpenBot פתוח.",
-  "connector.telegram.helpError": "OpenBot לא מצליח להגיע לצ'אט הזה. יש לחבר מחדש או לנתק את הצ'אט.",
+    "Pokebots ב-{host} לא יכול לקבל הודעות Telegram. ב-{host} יש להתחבר, לתת לשרת שם בהגדרות השרת ולהשאיר את Pokebots פתוח.",
+  "connector.telegram.helpError": "Pokebots לא מצליח להגיע לצ'אט הזה. יש לחבר מחדש או לנתק את הצ'אט.",
   "connector.telegram.helpNotLinked": 'הצ\'אט הזה לא מקושר לשרת הזה. בחרו "חיבור מחדש" כדי לקשר אותו.',
-  "connector.telegram.retryAt": "Telegram ביקש מ-OpenBot להמתין. הוא ינסה שוב ב-{time}.",
+  "connector.telegram.retryAt": "Telegram ביקש מ-Pokebots להמתין. הוא ינסה שוב ב-{time}.",
   "connector.telegram.pause": "השהיה",
   "connector.telegram.resume": "המשך",
   "connector.telegram.reconnect": "חיבור מחדש",
   "connector.telegram.disconnectChat": "ניתוק",
   "connector.telegram.disconnectAllTitle": "ניתוק Telegram",
-  "connector.telegram.disconnectAllSummary": "כל הצ'אטים מתנתקים. אי אפשר עוד להגיע לסוכנים שלך דרך הבוט של OpenBot.",
+  "connector.telegram.disconnectAllSummary": "כל הצ'אטים מתנתקים. אי אפשר עוד להגיע לסוכנים שלך דרך הבוט של Pokebots.",
   "connector.telegram.disconnectAllSummaryOrchestrator":
-    "כל הצ'אטים מתנתקים. מתזמר Telegram והשיחות שלו נמחקים מ-OpenBot.",
+    "כל הצ'אטים מתנתקים. מתזמר Telegram והשיחות שלו נמחקים מ-Pokebots.",
   // {action} is a button, such as Pause; {name} is the chat name.
   "connector.telegram.rowAction": "{action}: {name}",
   "connector.telegram.linkChat": "קישור צ'אט",
@@ -329,7 +329,7 @@ export const messages = {
   "connector.telegram.openDirectChat": "פתיחת צ'אט ישיר",
   "connector.telegram.orchestratorTitle": "מתזמר Telegram",
   "connector.telegram.orchestratorDescription":
-    "הסוכן הזה מקבל את ההודעות ל-OpenBot מכל הצ'אטים שלך ב-Telegram. הוא עונה בעצמו על הודעות קצרות, מעביר עבודה אחרת לסוכן המתאים ומפרסם את התשובה בצ'אט.",
+    "הסוכן הזה מקבל את ההודעות ל-Pokebots מכל הצ'אטים שלך ב-Telegram. הוא עונה בעצמו על הודעות קצרות, מעביר עבודה אחרת לסוכן המתאים ומפרסם את התשובה בצ'אט.",
   "connector.telegram.orchestratorNone": "אין עדיין סוכן שעונה",
   "connector.telegram.orchestratorNoneDescription": "יש להוסיף את מתזמר Telegram, אחרת Telegram לא יקבל תשובה.",
   "connector.telegram.mentionNote": "בקבוצה יש לתייג את הבוט או להשיב להודעות שלו. בצ'אט ישיר כל הודעה עוברת לבוט.",
@@ -338,7 +338,7 @@ export const messages = {
   "connector.telegram.stepAgent": "סוכן",
   "connector.telegram.connectTitle": "קישור צ'אט של Telegram",
   "connector.telegram.connectDescription":
-    "אפשר להוסיף את הבוט של OpenBot לקבוצה או לפתוח איתו צ'אט ישיר. בוט אחד משרת את כל הצ'אטים שלך.",
+    "אפשר להוסיף את הבוט של Pokebots לקבוצה או לפתוח איתו צ'אט ישיר. בוט אחד משרת את כל הצ'אטים שלך.",
   "connector.telegram.connectStepBrowser": "Telegram נפתח בדפדפן",
   "connector.telegram.connectStepPick": "יש לבחור את הקבוצה, או ללחוץ על התחלה (Start) בצ'אט הישיר",
   "connector.telegram.connectStepReturn": "החלון הזה ממשיך כשהצ'אט מקושר",
@@ -346,20 +346,20 @@ export const messages = {
   "connector.telegram.agentStepTitle": "הוספת מתזמר Telegram",
   // {chat} is the Telegram chat name.
   "connector.telegram.agentStepDescription":
-    "הסוכן החדש הזה עונה על ההודעות ל-OpenBot ב-{chat} ובכל צ'אט שיקושר בהמשך.",
+    "הסוכן החדש הזה עונה על ההודעות ל-Pokebots ב-{chat} ובכל צ'אט שיקושר בהמשך.",
   "connector.telegram.orchestratorName": "מתזמר Telegram",
   "connector.telegram.orchestratorRole": "עונה ב-Telegram ופונה לצוות",
-  "connector.telegram.orchestratorDoesReceive": "מקבל קודם כל הודעה ל-OpenBot מ-Telegram",
+  "connector.telegram.orchestratorDoesReceive": "מקבל קודם כל הודעה ל-Pokebots מ-Telegram",
   "connector.telegram.orchestratorDoesDelegate": "מעביר כל משימה לסוכן המתאים ביותר",
   "connector.telegram.orchestratorDoesAnswer": "מפרסם את התשובה בצ'אט ב-Telegram",
   "connector.telegram.orchestratorModel": "מודל",
-  "connector.telegram.doneTitle": "OpenBot נמצא ב-{chat}",
+  "connector.telegram.doneTitle": "Pokebots נמצא ב-{chat}",
   "connector.telegram.done": "סיום",
   "connector.telegram.disconnectTitle": "לנתק את {chat}?",
-  "connector.telegram.leaveDescription": "הבוט של OpenBot עוזב את {chat}, ו-OpenBot מפסיק לענות שם.",
-  "connector.telegram.disconnectEffect": "אנשים ב-{chat} לא יוכלו עוד להגיע לסוכנים שלך דרך הבוט של OpenBot.",
-  "connector.telegram.removeEffectKept": "השיחות ומתזמר Telegram נשארים ב-OpenBot.",
-  "connector.telegram.removeEffectDeleted": "זה הצ'אט האחרון, ולכן מתזמר Telegram והשיחות שלו נמחקים מ-OpenBot.",
+  "connector.telegram.leaveDescription": "הבוט של Pokebots עוזב את {chat}, ו-Pokebots מפסיק לענות שם.",
+  "connector.telegram.disconnectEffect": "אנשים ב-{chat} לא יוכלו עוד להגיע לסוכנים שלך דרך הבוט של Pokebots.",
+  "connector.telegram.removeEffectKept": "השיחות ומתזמר Telegram נשארים ב-Pokebots.",
+  "connector.telegram.removeEffectDeleted": "זה הצ'אט האחרון, ולכן מתזמר Telegram והשיחות שלו נמחקים מ-Pokebots.",
   "connector.telegram.keep": "השארת החיבור",
   "connector.telegram.close": "סגירה",
   // Marketplace > Apps > WhatsApp: a WhatsApp number links this computer as a device, and the
@@ -391,14 +391,14 @@ export const messages = {
   "connector.whatsapp.actionFailed": "WhatsApp לא קיבל את השינוי",
   "connector.whatsapp.numbersTitle": "מספרים",
   "connector.whatsapp.linkNumber": "קישור מספר",
-  "connector.whatsapp.ownNumberNote": "הצ'אט ״הודעה לעצמך״ והאנשים שאישרת יכולים להגיע ל-OpenBot.",
-  "connector.whatsapp.dedicatedNote": "האנשים שאישרת יכולים להגיע ל-OpenBot. אנשים אחרים מקבלים קוד שיש למסור לך.",
+  "connector.whatsapp.ownNumberNote": "הצ'אט ״הודעה לעצמך״ והאנשים שאישרת יכולים להגיע ל-Pokebots.",
+  "connector.whatsapp.dedicatedNote": "האנשים שאישרת יכולים להגיע ל-Pokebots. אנשים אחרים מקבלים קוד שיש למסור לך.",
   "connector.whatsapp.helpLoggedOut": "WhatsApp הסיר את המחשב הזה מהמכשירים המקושרים. יש לקשר את המספר שוב.",
   "connector.whatsapp.helpLoggedOutHost": "WhatsApp הסיר את השרת הזה מהמכשירים המקושרים. יש לקשר את המספר שוב.",
-  "connector.whatsapp.helpError": "OpenBot לא מצליח להגיע ל-WhatsApp במספר הזה. יש לחבר מחדש או לנתק את המספר.",
+  "connector.whatsapp.helpError": "Pokebots לא מצליח להגיע ל-WhatsApp במספר הזה. יש לחבר מחדש או לנתק את המספר.",
   "connector.whatsapp.helpKeysUnreadable":
-    "OpenBot לא מצליח לקרוא את המפתחות השמורים של המספר הזה. יש לקשר את המספר שוב.",
-  "connector.whatsapp.retryAt": "WhatsApp ביקש מ-OpenBot להמתין. הוא ינסה שוב ב-{time}.",
+    "Pokebots לא מצליח לקרוא את המפתחות השמורים של המספר הזה. יש לקשר את המספר שוב.",
+  "connector.whatsapp.retryAt": "WhatsApp ביקש מ-Pokebots להמתין. הוא ינסה שוב ב-{time}.",
   "connector.whatsapp.pause": "השהיה",
   "connector.whatsapp.resume": "המשך",
   "connector.whatsapp.reconnect": "חיבור מחדש",
@@ -407,21 +407,21 @@ export const messages = {
   "connector.whatsapp.disconnectAllTitle": "ניתוק WhatsApp",
   "connector.whatsapp.disconnectAllSummary": "כל המספרים מתנתקים. אי אפשר עוד להגיע לסוכנים שלך דרך WhatsApp.",
   "connector.whatsapp.disconnectAllSummaryOrchestrator":
-    "כל המספרים מתנתקים. מתזמר WhatsApp והשיחות שלו נמחקים מ-OpenBot.",
+    "כל המספרים מתנתקים. מתזמר WhatsApp והשיחות שלו נמחקים מ-Pokebots.",
   // {action} is a button, such as Pause; {name} is the WhatsApp number or a person's name.
   "connector.whatsapp.rowAction": "{action}: {name}",
   "connector.whatsapp.ownNumber": "מספר אישי",
   "connector.whatsapp.ownNumberDescription":
-    "רק הצ'אט ״הודעה לעצמך״ והאנשים שאישרת יכולים לכתוב. אנשים אחרים לא מקבלים תשובה. כשהאפשרות כבויה, OpenBot משיב לאנשים לא מוכרים עם קוד.",
+    "רק הצ'אט ״הודעה לעצמך״ והאנשים שאישרת יכולים לכתוב. אנשים אחרים לא מקבלים תשובה. כשהאפשרות כבויה, Pokebots משיב לאנשים לא מוכרים עם קוד.",
   "connector.whatsapp.workingMessage": "הודעת ״עובד על זה…״",
   "connector.whatsapp.workingMessageDescription":
-    "OpenBot שולח אותה בזמן שהסוכן עובד, ואז מחליף אותה בתשובה. בקשה שממתינה לבקשה קודמת מקבלת גם הודעת המתנה. יש לכבות כדי לשלוח רק את התשובה.",
+    "Pokebots שולח אותה בזמן שהסוכן עובד, ואז מחליף אותה בתשובה. בקשה שממתינה לבקשה קודמת מקבלת גם הודעת המתנה. יש לכבות כדי לשלוח רק את התשובה.",
   "connector.whatsapp.statusReactions": "תגובות סטטוס",
   "connector.whatsapp.statusReactionsDescription":
-    "OpenBot מגיב עם 👀 כשהודעה מגיעה ועם ✅ כשהתשובה מוכנה. יש לכבות כדי לא לשלוח תגובות.",
+    "Pokebots מגיב עם 👀 כשהודעה מגיעה ועם ✅ כשהתשובה מוכנה. יש לכבות כדי לא לשלוח תגובות.",
   "connector.whatsapp.orchestratorTitle": "מתזמר WhatsApp",
   "connector.whatsapp.orchestratorDescription":
-    "הסוכן הזה מקבל את ההודעות ל-OpenBot מכל המספרים המקושרים שלך. הוא עונה בעצמו על הודעות קצרות, מעביר עבודה אחרת לסוכן המתאים ועונה ב-WhatsApp.",
+    "הסוכן הזה מקבל את ההודעות ל-Pokebots מכל המספרים המקושרים שלך. הוא עונה בעצמו על הודעות קצרות, מעביר עבודה אחרת לסוכן המתאים ועונה ב-WhatsApp.",
   "connector.whatsapp.orchestratorNone": "אין עדיין סוכן שעונה",
   "connector.whatsapp.orchestratorNoneDescription": "יש להוסיף את מתזמר WhatsApp, אחרת WhatsApp לא יקבל תשובה.",
   "connector.whatsapp.note": "במספר האישי שלך יש לכתוב בצ'אט ״הודעה לעצמך״. האנשים שאישרת כותבים למספר.",
@@ -434,10 +434,10 @@ export const messages = {
   "connector.whatsapp.kindLabel": "מספר",
   "connector.whatsapp.kindPersonal": "המספר האישי שלי",
   "connector.whatsapp.kindPersonalDescription":
-    "OpenBot עונה רק בצ'אט ״הודעה לעצמך״ ולאנשים שאישרת. אנשים אחרים לא מקבלים תשובה.",
-  "connector.whatsapp.kindDedicated": "מספר רק עבור OpenBot",
+    "Pokebots עונה רק בצ'אט ״הודעה לעצמך״ ולאנשים שאישרת. אנשים אחרים לא מקבלים תשובה.",
+  "connector.whatsapp.kindDedicated": "מספר רק עבור Pokebots",
   "connector.whatsapp.kindDedicatedDescription":
-    "OpenBot משיב מהמספר הזה לכל אדם לא מוכר עם קוד שיש למסור לך. את האישור נותנים כאן.",
+    "Pokebots משיב מהמספר הזה לכל אדם לא מוכר עם קוד שיש למסור לך. את האישור נותנים כאן.",
   "connector.whatsapp.methodLabel": "אופן הקישור",
   "connector.whatsapp.methodQr": "קוד QR",
   "connector.whatsapp.methodCode": "קוד צימוד",
@@ -463,26 +463,26 @@ export const messages = {
   "connector.whatsapp.failedTimeout": "תוקף הקוד פג לפני שהטלפון השתמש בו.",
   "connector.whatsapp.failedRefused": "WhatsApp דחה את הקישור. יש להמתין כמה דקות ולנסות שוב.",
   "connector.whatsapp.failedBusy": "קישור אחר מתבצע. יש להמתין לסיומו ולנסות שוב.",
-  "connector.whatsapp.failedUnavailable": "OpenBot לא מצליח להגיע ל-WhatsApp. יש לבדוק את החיבור לאינטרנט.",
+  "connector.whatsapp.failedUnavailable": "Pokebots לא מצליח להגיע ל-WhatsApp. יש לבדוק את החיבור לאינטרנט.",
   "connector.whatsapp.tryAgain": "ניסיון חוזר",
   "connector.whatsapp.agentStepTitle": "הוספת מתזמר WhatsApp",
   // {number} is the WhatsApp number or its name.
   "connector.whatsapp.agentStepDescription":
-    "הסוכן החדש הזה עונה על ההודעות ל-OpenBot ב-{number} ובכל מספר שיקושר בהמשך.",
+    "הסוכן החדש הזה עונה על ההודעות ל-Pokebots ב-{number} ובכל מספר שיקושר בהמשך.",
   "connector.whatsapp.orchestratorName": "מתזמר WhatsApp",
   "connector.whatsapp.orchestratorRole": "עונה ב-WhatsApp ופונה לצוות",
-  "connector.whatsapp.orchestratorDoesReceive": "מקבל קודם כל הודעה ל-OpenBot מ-WhatsApp",
+  "connector.whatsapp.orchestratorDoesReceive": "מקבל קודם כל הודעה ל-Pokebots מ-WhatsApp",
   "connector.whatsapp.orchestratorDoesDelegate": "מעביר כל משימה לסוכן המתאים ביותר",
   "connector.whatsapp.orchestratorDoesAnswer": "עונה בצ'אט ב-WhatsApp",
   "connector.whatsapp.orchestratorModel": "מודל",
-  "connector.whatsapp.doneTitle": "OpenBot מקושר ל-{number}",
+  "connector.whatsapp.doneTitle": "Pokebots מקושר ל-{number}",
   "connector.whatsapp.done": "סיום",
   "connector.whatsapp.disconnectTitle": "לנתק את {number}?",
   "connector.whatsapp.disconnectDescription":
-    "OpenBot מתנתק מ-WhatsApp ב-{number}. אם OpenBot היה כבוי, יש להסיר את המכשיר גם ב-WhatsApp > מכשירים מקושרים.",
+    "Pokebots מתנתק מ-WhatsApp ב-{number}. אם Pokebots היה כבוי, יש להסיר את המכשיר גם ב-WhatsApp > מכשירים מקושרים.",
   "connector.whatsapp.disconnectEffect": "אי אפשר עוד להגיע לסוכנים שלך דרך {number}.",
-  "connector.whatsapp.removeEffectKept": "השיחות ומתזמר WhatsApp נשארים ב-OpenBot.",
-  "connector.whatsapp.removeEffectDeleted": "זה המספר האחרון, ולכן מתזמר WhatsApp והשיחות שלו נמחקים מ-OpenBot.",
+  "connector.whatsapp.removeEffectKept": "השיחות ומתזמר WhatsApp נשארים ב-Pokebots.",
+  "connector.whatsapp.removeEffectDeleted": "זה המספר האחרון, ולכן מתזמר WhatsApp והשיחות שלו נמחקים מ-Pokebots.",
   "connector.whatsapp.keep": "השארת הקישור",
   "connector.whatsapp.close": "סגירה",
   // Who can give work through one number: contacts by phone number, and groups.
@@ -504,7 +504,7 @@ export const messages = {
     "אנשים בקבוצה הזו יכולים לתת עבודה לסוכנים שלך כשהם מתייגים את המספר או עונים להודעות שלו.",
   "connector.whatsapp.groupSearch": "חיפוש קבוצות",
   "connector.whatsapp.groupsLoading": "קורא את הקבוצות…",
-  "connector.whatsapp.groupsLoadFailed": "OpenBot לא הצליח לקרוא את הקבוצות",
+  "connector.whatsapp.groupsLoadFailed": "Pokebots לא הצליח לקרוא את הקבוצות",
   "connector.whatsapp.groupsEmpty": "המספר הזה לא נמצא באף קבוצה.",
   "connector.whatsapp.groupsNoMatch": "אין קבוצה בשם הזה.",
   "connector.whatsapp.groupAdded": "נוספה",
@@ -519,9 +519,9 @@ export const messages = {
   // Marketplace > 1Password: a vault that the user shares with OpenBot through a service account.
   "connector.onePassword.title": "1Password",
   "connector.onePassword.description":
-    "אפשר לשתף עם OpenBot כספת ייעודית של 1Password דרך חשבון שירות, כדי שסוכנים יוכלו להתחבר לאתרים בדפדפן של OpenBot.",
+    "אפשר לשתף עם Pokebots כספת ייעודית של 1Password דרך חשבון שירות, כדי שסוכנים יוכלו להתחבר לאתרים בדפדפן של Pokebots.",
   "connector.onePassword.howItWorks":
-    "החיבור מגדיר כספת בשם ״Shared with OpenBot״ בחשבון 1Password שלך וחשבון שירות שיכול לקרוא רק את הכספת הזו. OpenBot ממלא פרטי כניסה שמורים בדפדפן שלו במחשב הזה, ולכן משותפים רק הפריטים שהעברת לכספת הזו. סוכנים אף פעם לא רואים סיסמה.",
+    "החיבור מגדיר כספת בשם ״Shared with OpenBot״ בחשבון 1Password שלך וחשבון שירות שיכול לקרוא רק את הכספת הזו. Pokebots ממלא פרטי כניסה שמורים בדפדפן שלו במחשב הזה, ולכן משותפים רק הפריטים שהעברת לכספת הזו. סוכנים אף פעם לא רואים סיסמה.",
   "connector.onePassword.connect": "חיבור 1Password",
   // The three setup steps before a connection, each with the one button it needs.
   "connector.onePassword.setupTitle": "הגדרה",
@@ -530,20 +530,20 @@ export const messages = {
   "connector.onePassword.stepCliInstalling": "מוריד את 1Password CLI מ-1Password",
   // {version} is a version number, such as 2.39.0.
   "connector.onePassword.stepCliReady": "גרסה {version} מותקנת.",
-  "connector.onePassword.stepCliMissing": "OpenBot מוריד אותו מ-1Password לתיקייה משלו. אין צורך בסיסמת מנהל.",
+  "connector.onePassword.stepCliMissing": "Pokebots מוריד אותו מ-1Password לתיקייה משלו. אין צורך בסיסמת מנהל.",
   "connector.onePassword.stepCliManual":
-    "OpenBot לא יכול להתקין אותו במחשב הזה. יש להתקין אותו מ-1Password ואז לחזור לדף הזה.",
+    "Pokebots לא יכול להתקין אותו במחשב הזה. יש להתקין אותו מ-1Password ואז לחזור לדף הזה.",
   "connector.onePassword.installCli": "התקנה",
   "connector.onePassword.stepAppTitle": "הפעלת שילוב ה-CLI",
   "connector.onePassword.stepAppDescription":
     "באפליקציית 1Password יש לפתוח הגדרות > מפתחים ולהפעיל את ״Integrate with 1Password CLI״.",
   "connector.onePassword.stepAppReady": "אפליקציית 1Password מאפשרת ל-CLI ליצור את הכספת המשותפת.",
   "connector.onePassword.openApp": "פתיחת 1Password",
-  "connector.onePassword.openAppFailed": "OpenBot לא הצליח לפתוח את 1Password.",
+  "connector.onePassword.openAppFailed": "Pokebots לא הצליח לפתוח את 1Password.",
   "connector.onePassword.checkAgain": "בדיקה חוזרת",
   "connector.onePassword.stepVaultTitle": "יצירת הכספת המשותפת",
   "connector.onePassword.stepVaultDescription":
-    "OpenBot יוצר את הכספת ״Shared with OpenBot״ וחשבון שירות שיכול רק לקרוא אותה. 1Password מבקש ממך לאשר.",
+    "Pokebots יוצר את הכספת ״Shared with OpenBot״ וחשבון שירות שיכול רק לקרוא אותה. 1Password מבקש ממך לאשר.",
   // The last row of the setup steps: the other way to connect, without the CLI.
   "connector.onePassword.useTokenDescription": "במקום השלבים האלה, אפשר להדביק אסימון של חשבון שירות מ-1Password.com.",
   "connector.onePassword.useTokenAction": "שימוש באסימון",
@@ -553,7 +553,7 @@ export const messages = {
   "connector.onePassword.approveInApp": "יש לאשר את הבקשה באפליקציית 1Password",
   "connector.onePassword.cancel": "ביטול",
   "connector.onePassword.chooseAccountTitle": "בחירת חשבון",
-  "connector.onePassword.chooseAccountDescription": "OpenBot יוצר את הכספת המשותפת בחשבון שייבחר.",
+  "connector.onePassword.chooseAccountDescription": "Pokebots יוצר את הכספת המשותפת בחשבון שייבחר.",
   "connector.onePassword.useAccount": "שימוש בחשבון הזה",
   "connector.onePassword.vaultTitle": "כספת משותפת",
   "connector.onePassword.vaultDescription":
@@ -564,15 +564,15 @@ export const messages = {
   "connector.onePassword.disconnect": "ניתוק",
   "connector.onePassword.disconnectTitle": "ניתוק 1Password",
   "connector.onePassword.disconnectSummary":
-    "OpenBot שוכח את האסימון. הכספת וחשבון השירות נשארים ב-1Password; אם אין בהם צורך, יש להסיר אותם שם.",
-  "connector.onePassword.actionFailed": "OpenBot לא הצליח לשנות את החיבור ל-1Password.",
+    "Pokebots שוכח את האסימון. הכספת וחשבון השירות נשארים ב-1Password; אם אין בהם צורך, יש להסיר אותם שם.",
+  "connector.onePassword.actionFailed": "Pokebots לא הצליח לשנות את החיבור ל-1Password.",
   "connector.onePassword.statusConnected": "מחובר",
   "connector.onePassword.statusConnecting": "מתחבר",
   // The same page for the connection of a joined server. {host} is the server name, such as Studio.
   "connector.onePassword.descriptionHost":
-    "אפשר לשתף עם OpenBot ב-{host} כספת ייעודית של 1Password דרך חשבון שירות, כדי שסוכנים ב-{host} יוכלו להתחבר לאתרים בדפדפן שלו.",
+    "אפשר לשתף עם Pokebots ב-{host} כספת ייעודית של 1Password דרך חשבון שירות, כדי שסוכנים ב-{host} יוכלו להתחבר לאתרים בדפדפן שלו.",
   "connector.onePassword.howItWorksHost":
-    "{host} מתחבר באמצעות אסימון של חשבון שירות. ב-1Password.com יש ליצור חשבון שירות שיכול לקרוא רק את הכספת ששיתפת עם OpenBot, ולהדביק כאן את האסימון שלו. {host} בודק את האסימון ושומר אותו; המחשב הזה לא. סוכנים אף פעם לא רואים סיסמה.",
+    "{host} מתחבר באמצעות אסימון של חשבון שירות. ב-1Password.com יש ליצור חשבון שירות שיכול לקרוא רק את הכספת ששיתפת עם Pokebots, ולהדביק כאן את האסימון שלו. {host} בודק את האסימון ושומר אותו; המחשב הזה לא. סוכנים אף פעם לא רואים סיסמה.",
   "connector.onePassword.disconnectSummaryHost":
     "{host} שוכח את האסימון. הכספת וחשבון השירות נשארים ב-1Password; אם אין בהם צורך, יש להסיר אותם שם.",
   "connector.bitwarden.title": "Bitwarden",
@@ -580,24 +580,24 @@ export const messages = {
   "connector.bitwarden.setup":
     "יש להתקין את Bitwarden CLI ולהתחבר עם bw login. יש ליצור תיקייה בשם Shared with OpenBot ולהכניס אליה רק את פרטי הכניסה שסוכנים רשאים להשתמש בהם. יש להריץ bw unlock --raw ולהדביק למטה את מפתח הסשן. אין להדביק את הסיסמה הראשית.",
   "connector.bitwarden.scope":
-    "כל הסוכנים במחשב הזה יכולים להשתמש בפרטי כניסה תואמים בתיקייה Shared with OpenBot. OpenBot משתמש במקורות HTTPS מדויקים. הוא לא משתמש בפריטים שדורשים בקשת סיסמה ראשית או כלל התאמת URI מותאם אישית.",
+    "כל הסוכנים במחשב הזה יכולים להשתמש בפרטי כניסה תואמים בתיקייה Shared with OpenBot. Pokebots משתמש במקורות HTTPS מדויקים. הוא לא משתמש בפריטים שדורשים בקשת סיסמה ראשית או כלל התאמת URI מותאם אישית.",
   "connector.bitwarden.session":
-    "מפתח הסשן נשאר בזיכרון. יש להתחבר שוב אחרי 8 שעות בלי שימוש בכספת או אחרי ש-OpenBot נסגר. הניתוק עוצר את הגישה של OpenBot; הוא לא נועל לקוחות Bitwarden אחרים.",
+    "מפתח הסשן נשאר בזיכרון. יש להתחבר שוב אחרי 8 שעות בלי שימוש בכספת או אחרי ש-Pokebots נסגר. הניתוק עוצר את הגישה של Pokebots; הוא לא נועל לקוחות Bitwarden אחרים.",
   "connector.bitwarden.sessionKey": "מפתח סשן של Bitwarden",
   "connector.bitwarden.connect": "חיבור Bitwarden",
   "connector.bitwarden.disconnect": "ניתוק Bitwarden",
   "connector.bitwarden.disconnectAction": "ניתוק",
   "connector.bitwarden.disconnectSummary":
-    "OpenBot שוכח את מפתח הסשן. סוכנים לא יכולים עוד למלא פרטי כניסה מ-Bitwarden. לקוחות Bitwarden אחרים נשארים פתוחים.",
+    "Pokebots שוכח את מפתח הסשן. סוכנים לא יכולים עוד למלא פרטי כניסה מ-Bitwarden. לקוחות Bitwarden אחרים נשארים פתוחים.",
   "connector.bitwarden.disconnectSummaryHost":
     "{host} מסיר את מפתח ה-API ואת הסיסמה הראשית. סוכנים ב-{host} לא יכולים עוד למלא פרטי כניסה מ-Bitwarden.",
   "connector.bitwarden.connected": "מחובר",
-  "connector.bitwarden.actionFailed": "OpenBot לא הצליח לשנות את החיבור ל-Bitwarden.",
+  "connector.bitwarden.actionFailed": "Pokebots לא הצליח לשנות את החיבור ל-Bitwarden.",
   "connector.bitwarden.descriptionHost": "מילוי פרטי כניסה בדפדפן ב-{host} מ-Bitwarden או מ-Vaultwarden.",
   "connector.bitwarden.setupHost":
     "{host} מתחבר עם Bitwarden CLI משלו. בכספת שלך יש ליצור תיקייה בשם Shared with OpenBot ולהכניס אליה רק את פרטי הכניסה שסוכנים רשאים להשתמש בהם. בכספת באינטרנט יש לפתוח הגדרות › אבטחה › מפתחות ולהציג את מפתח ה-API. יש להזין למטה את כתובת השרת, client_id, client_secret ואת הסיסמה הראשית.",
   "connector.bitwarden.scopeHost":
-    "כל הסוכנים ב-{host} יכולים להשתמש בפרטי כניסה תואמים בתיקייה Shared with OpenBot. OpenBot משתמש במקורות HTTPS מדויקים. הוא לא משתמש בפריטים שדורשים בקשת סיסמה ראשית או כלל התאמת URI מותאם אישית.",
+    "כל הסוכנים ב-{host} יכולים להשתמש בפרטי כניסה תואמים בתיקייה Shared with OpenBot. Pokebots משתמש במקורות HTTPS מדויקים. הוא לא משתמש בפריטים שדורשים בקשת סיסמה ראשית או כלל התאמת URI מותאם אישית.",
   "connector.bitwarden.sessionHost":
     "{host} שומר את מפתח ה-API ואת הסיסמה הראשית מוצפנים, כדי שיוכל לבטל את הנעילה שוב אחרי הפעלה מחדש. המחשב הזה לא שומר אותם. הניתוק מסיר אותם מ-{host}. {host} חייב להגיע לכתובת השרת דרך HTTPS.",
   "connector.bitwarden.serverUrl": "כתובת השרת",
@@ -623,19 +623,19 @@ export const messages = {
   "connector.protonPass.keyPlaceholder": "pst_…",
   "connector.protonPass.setupTitle": "הגדרה",
   "connector.protonPass.setupDescription":
-    "החיבור פותח את ההתחברות של Proton בדפדפן. לאחר מכן OpenBot יוצר את הכספת המשותפת ושומר רק מפתח לקריאה בלבד עבורה.",
+    "החיבור פותח את ההתחברות של Proton בדפדפן. לאחר מכן Pokebots יוצר את הכספת המשותפת ושומר רק מפתח לקריאה בלבד עבורה.",
   "connector.protonPass.setupDescriptionHost":
     "החיבור פותח את ההתחברות של Proton בדפדפן. לאחר מכן {host} יוצר את הכספת המשותפת ושומר רק מפתח לקריאה בלבד עבורה.",
   // The exact vault name that OpenBot makes in Proton Pass. Keep it in English.
   "connector.protonPass.vaultName": "Shared with OpenBot",
-  "connector.protonPass.vaultSetup": "OpenBot יוצר את הכספת הזו בעת החיבור. כדי לשתף פרטי כניסה, יש להעביר אותם אליה.",
+  "connector.protonPass.vaultSetup": "Pokebots יוצר את הכספת הזו בעת החיבור. כדי לשתף פרטי כניסה, יש להעביר אותם אליה.",
   "connector.protonPass.showSteps": "הצגת השלבים",
   "connector.protonPass.stepsLabel": "שלבי החיבור",
   "connector.protonPass.stepSignIn": "התחברות",
   "connector.protonPass.stepVault": "יצירת הכספת המשותפת",
   "connector.protonPass.stepDone": "סיום",
   "connector.protonPass.signInTitle": "התחברות ל-Proton",
-  "connector.protonPass.signInStarting": "OpenBot מתחיל את ההתחברות. הדף של Proton נפתח בדפדפן.",
+  "connector.protonPass.signInStarting": "Pokebots מתחיל את ההתחברות. הדף של Proton נפתח בדפדפן.",
   "connector.protonPass.signInDescription": "ההתחברות פתוחה בדפדפן. Proton מבקש את הסיסמה שלך ואת הגורם השני לאימות.",
   "connector.protonPass.signInDescriptionHost":
     "ההתחברות של {host} פתוחה בדפדפן. Proton מבקש את הסיסמה שלך ואת הגורם השני לאימות.",
@@ -645,7 +645,7 @@ export const messages = {
   "connector.protonPass.continue": "המשך",
   "connector.protonPass.setupStepTitle": "יוצר את הכספת המשותפת",
   "connector.protonPass.setupStepDescription":
-    "OpenBot יוצר את הכספת ״{vault}״ ומפתח לקריאה בלבד עבורה. לאחר מכן הוא מתנתק מהסשן שלך ב-Proton.",
+    "Pokebots יוצר את הכספת ״{vault}״ ומפתח לקריאה בלבד עבורה. לאחר מכן הוא מתנתק מהסשן שלך ב-Proton.",
   "connector.protonPass.doneTitle": "Proton Pass מחובר",
   "connector.protonPass.doneDescription": "כדי לאפשר לסוכנים להתחבר עם פרטי כניסה, יש להעביר אותם אל ״{vault}״.",
   "connector.protonPass.failedTitle": "החיבור ל-Proton Pass נכשל",
@@ -673,11 +673,11 @@ export const messages = {
   "connector.protonPass.keyNoExpiry": "לקריאה בלבד. ללא תפוגה.",
   "connector.protonPass.disconnectTitle": "ניתוק Proton Pass",
   "connector.protonPass.disconnectSummary":
-    "OpenBot מוחק את מפתח הגישה שלו במחשב הזה. הכספת ופרטי הכניסה שבה נשארים בחשבון Proton שלך.",
+    "Pokebots מוחק את מפתח הגישה שלו במחשב הזה. הכספת ופרטי הכניסה שבה נשארים בחשבון Proton שלך.",
   "connector.protonPass.disconnectSummaryHost":
-    "OpenBot מוחק את מפתח הגישה שלו ב-{host}. הכספת ופרטי הכניסה שבה נשארים בחשבון Proton שלך.",
+    "Pokebots מוחק את מפתח הגישה שלו ב-{host}. הכספת ופרטי הכניסה שבה נשארים בחשבון Proton שלך.",
   "connector.protonPass.disconnect": "ניתוק",
-  "connector.protonPass.actionFailed": "OpenBot לא הצליח לשנות את החיבור ל-Proton Pass.",
+  "connector.protonPass.actionFailed": "Pokebots לא הצליח לשנות את החיבור ל-Proton Pass.",
   "connector.keeper.title": "Keeper",
   "connector.keeper.description": "אפשר לתת לסוכנים להתחבר לאתרים עם פרטי הכניסה בתיקייה משותפת של Keeper.",
   "connector.keeper.descriptionHost":
@@ -685,7 +685,7 @@ export const messages = {
   "connector.keeper.connect": "חיבור",
   "connector.keeper.setupTitle": "התחברות",
   "connector.keeper.setupDescription":
-    "יש להזין את האימייל והסיסמה הראשית של Keeper. OpenBot מוסר אותם ל-Keeper Commander פעם אחת ולא שומר אותם. Keeper Commander הוא כלי שורת הפקודה של Keeper.",
+    "יש להזין את האימייל והסיסמה הראשית של Keeper. Pokebots מוסר אותם ל-Keeper Commander פעם אחת ולא שומר אותם. Keeper Commander הוא כלי שורת הפקודה של Keeper.",
   "connector.keeper.setupDescriptionHost":
     "יש להזין את האימייל והסיסמה הראשית של Keeper. {host} מוסר אותם ל-Keeper Commander פעם אחת ולא שומר אותם. Keeper Commander הוא כלי שורת הפקודה של Keeper.",
   "connector.keeper.emailLabel": "אימייל",
@@ -693,7 +693,7 @@ export const messages = {
   // The exact folder name that OpenBot makes in Keeper. Keep it in English.
   "connector.keeper.folderName": "Shared with OpenBot",
   "connector.keeper.folderSetup":
-    "OpenBot יוצר את התיקייה הזו בכספת בעת החיבור. כדי לשתף פרטי כניסה, יש להעביר אותם אליה.",
+    "Pokebots יוצר את התיקייה הזו בכספת בעת החיבור. כדי לשתף פרטי כניסה, יש להעביר אותם אליה.",
   "connector.keeper.showSteps": "הצגת השלבים",
   "connector.keeper.stepsLabel": "שלבי החיבור",
   "connector.keeper.stepSignIn": "התחברות",
@@ -712,7 +712,7 @@ export const messages = {
   "connector.keeper.codeWrong": "הקוד שגוי. יש להזין אותו שוב.",
   "connector.keeper.continue": "המשך",
   "connector.keeper.setupStepTitle": "יוצר את התיקייה המשותפת",
-  "connector.keeper.setupStepDescription": "OpenBot יוצר בכספת את התיקייה ״{folder}״ ומפעיל התחברות עבור המכשיר הזה.",
+  "connector.keeper.setupStepDescription": "Pokebots יוצר בכספת את התיקייה ״{folder}״ ומפעיל התחברות עבור המכשיר הזה.",
   "connector.keeper.doneTitle": "Keeper מחובר",
   "connector.keeper.doneDescription": "כדי לאפשר לסוכנים להתחבר עם פרטי כניסה, יש להעביר אותם אל ״{folder}״.",
   "connector.keeper.failedTitle": "החיבור ל-Keeper נכשל",
@@ -734,9 +734,9 @@ export const messages = {
   "connector.keeper.loginsLoading": "סופר כניסות…",
   "connector.keeper.disconnectTitle": "ניתוק Keeper",
   "connector.keeper.disconnectSummary":
-    "OpenBot מסיים את הסשן שלו ב-Keeper במחשב הזה. התיקייה ופרטי הכניסה שבה נשארים בכספת של Keeper.",
+    "Pokebots מסיים את הסשן שלו ב-Keeper במחשב הזה. התיקייה ופרטי הכניסה שבה נשארים בכספת של Keeper.",
   "connector.keeper.disconnectSummaryHost":
-    "OpenBot מסיים את הסשן שלו ב-Keeper ב-{host}. התיקייה ופרטי הכניסה שבה נשארים בכספת של Keeper.",
+    "Pokebots מסיים את הסשן שלו ב-Keeper ב-{host}. התיקייה ופרטי הכניסה שבה נשארים בכספת של Keeper.",
   "connector.keeper.disconnect": "ניתוק",
-  "connector.keeper.actionFailed": "OpenBot לא הצליח לשנות את החיבור ל-Keeper.",
+  "connector.keeper.actionFailed": "Pokebots לא הצליח לשנות את החיבור ל-Keeper.",
 } as const satisfies PartialTranslation<typeof source>;

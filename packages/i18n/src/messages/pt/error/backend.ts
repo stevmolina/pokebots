@@ -3,7 +3,7 @@ import type { messages as source } from "../../en/error/backend";
 
 export const messages = {
   "error.backend.eventsUnavailable": "Os eventos não estão disponíveis neste computador anfitrião.",
-  "error.backend.databaseIntegrity": "O banco de dados do OpenBot falhou na verificação de integridade.",
+  "error.backend.databaseIntegrity": "O banco de dados do Pokebots falhou na verificação de integridade.",
   "error.backend.webhookRouteLimit": "Um computador anfitrião pode ter no máximo {limit} rotinas de webhook.",
   "error.backend.webhookSettingsInvalid": "Verifique as configurações do webhook e tente de novo.",
   "error.backend.webhookSenderSecretInvalid":
@@ -17,8 +17,8 @@ export const messages = {
   "error.backend.browserViewLimit": "Há visualizações do navegador demais abertas neste computador anfitrião.",
   "error.backend.browserViewEnded": "A visualização ao vivo desta página terminou.",
   "error.backend.browserViewFailed": "A visualização ao vivo desta página falhou.",
-  "error.backend.windowTemporarilyUnavailable": "A janela do OpenBot está temporariamente indisponível.",
-  "error.backend.windowUnavailable": "A janela do OpenBot está indisponível.",
+  "error.backend.windowTemporarilyUnavailable": "A janela do Pokebots está temporariamente indisponível.",
+  "error.backend.windowUnavailable": "A janela do Pokebots está indisponível.",
   "error.backend.sunshineApiHttp": "A API do Sunshine falhou com HTTP {status}.",
   "error.backend.sunshinePortsUnavailable":
     "Não foi possível reservar um conjunto de portas livres do Sunshine para a área de trabalho remota.",
@@ -36,7 +36,7 @@ export const messages = {
   "error.backend.moonlightRejectedPairing": "O Moonlight rejeitou o pareamento com o Sunshine.",
   "error.backend.moonlightNoPin": "O Moonlight não retornou um PIN de pareamento.",
   "error.backend.moonlightPairingIncomplete": "O pareamento do Moonlight não foi concluído.",
-  "error.backend.moonlightWebNotEmbedded": "O Moonlight Web não é uma versão integrada ao OpenBot.",
+  "error.backend.moonlightWebNotEmbedded": "O Moonlight Web não é uma versão integrada ao Pokebots.",
   "error.backend.moonlightEmptyResponse": "O Moonlight retornou uma resposta vazia.",
   "error.backend.remoteDesktopTimeout": "O tempo da solicitação de área de trabalho remota esgotou.",
   "error.backend.moonlightApiHttp": "A API do Moonlight falhou com HTTP {status}.",
@@ -57,8 +57,8 @@ export const messages = {
   "error.backend.browserUserControlUnsupported":
     "Este computador anfitrião remoto não oferece suporte para assumir o controle de uma aba do navegador.",
   "error.backend.browserSignInUnsupported": "Este host remoto não pode receber um início de sessão deste computador.",
-  "error.backend.browserSignInOpenFailed": "O OpenBot não conseguiu abrir a janela de login.",
-  "error.backend.browserSignInReadFailed": "O OpenBot não conseguiu ler o login da janela.",
+  "error.backend.browserSignInOpenFailed": "O Pokebots não conseguiu abrir a janela de login.",
+  "error.backend.browserSignInReadFailed": "O Pokebots não conseguiu ler o login da janela.",
   "error.backend.browserStopUnsupported":
     "Este computador anfitrião remoto não consegue parar o carregamento de uma página.",
   "error.backend.browserColorSchemeUnsupported": "Este host remoto não pode mudar o tema da página.",
@@ -69,17 +69,17 @@ export const messages = {
   "error.backend.sunshineNotReadyReason": "O Sunshine não ficou pronto. {reason}",
   "error.backend.channelLeadModelUnavailable": "O modelo do líder do canal está indisponível.",
   "error.backend.contextCompactionIneffective":
-    "A compactação não reduz este chat: após duas compactações, ele ainda usa {percent}% da janela de contexto do modelo, por isso o OpenBot para de compactá-lo. Ferramentas e instruções usam a maior parte da janela. Desative os servidores MCP ou o uso do computador de que este agente não precisa, ou escolha um modelo com uma janela maior. Depois, inicie um novo chat.",
+    "A compactação não reduz este chat: após duas compactações, ele ainda usa {percent}% da janela de contexto do modelo, por isso o Pokebots para de compactá-lo. Ferramentas e instruções usam a maior parte da janela. Desative os servidores MCP ou o uso do computador de que este agente não precisa, ou escolha um modelo com uma janela maior. Depois, inicie um novo chat.",
   "error.backend.contextCompactionStopped":
-    'Duas compactações seguidas deste chat falharam, então o OpenBot para de compactá-lo automaticamente. Cada tentativa envia o chat inteiro ao modelo e consome o limite do seu plano. Selecione "Compactar agora" para tentar de novo ou inicie um novo chat.',
+    'Duas compactações seguidas deste chat falharam, então o Pokebots para de compactá-lo automaticamente. Cada tentativa envia o chat inteiro ao modelo e consome o limite do seu plano. Selecione "Compactar agora" para tentar de novo ou inicie um novo chat.',
   "error.backend.providerModelAtCapacity":
     "O modelo está no limite da capacidade. O provedor vai tentar de novo em alguns minutos. Para continuar agora, pare o turno e escolha outro modelo.",
   "error.backend.providerRetrying":
     "O provedor falhou nesta solicitação {attempts} vezes e tenta novamente. Se o agente não continuar, pare o turno.",
   "error.backend.providerRetryingLargeContext":
-    "O provedor falhou nesta solicitação {attempts} vezes e tenta novamente. Este chat usa {percent}% da janela de contexto do modelo. Se o agente não continuar, pare o turno: o OpenBot compacta o chat antes da próxima mensagem.",
+    "O provedor falhou nesta solicitação {attempts} vezes e tenta novamente. Este chat usa {percent}% da janela de contexto do modelo. Se o agente não continuar, pare o turno: o Pokebots compacta o chat antes da próxima mensagem.",
   "error.backend.sharedDataUnavailable": "Os dados compartilhados estão indisponíveis.",
-  "error.backend.shuttingDown": "O OpenBot está encerrando.",
+  "error.backend.shuttingDown": "O Pokebots está encerrando.",
   "error.backend.channelUnconfirmedStart":
     "O canal tem uma tarefa atribuída cujo início não foi confirmado. Verifique o resultado antes de excluí-lo.",
   "error.backend.channelNotFound": "Canal não encontrado.",
@@ -173,7 +173,7 @@ export const messages = {
   "error.backend.fileGone": "O arquivo não existe ou já foi excluído.",
   "error.backend.managedAttachmentChanged": "O anexo gerenciado não foi encontrado ou mudou: {name}",
   "error.backend.mailboxStateCorrupt":
-    "O estado da caixa de mensagens está corrompido ou é de uma versão mais recente do OpenBot; ele não será sobrescrito.",
+    "O estado da caixa de mensagens está corrompido ou é de uma versão mais recente do Pokebots; ele não será sobrescrito.",
   "error.backend.recipientDeleting": "O destinatário está sendo excluído. Tente novamente quando a exclusão terminar.",
   "error.backend.recipientHidden": "Este agente está oculto. Restaure-o para enviar mensagens.",
   "error.backend.agentIdUnknown":
@@ -188,7 +188,7 @@ export const messages = {
   "error.backend.videoGenerationNoVideo": "A geração do vídeo não retornou nenhum vídeo.",
   "error.backend.videoGenerationInterrupted": "A geração do vídeo foi interrompida.",
   "error.backend.attachmentNotRegularFile": "Somente arquivos comuns podem ser anexados: {name}",
-  "error.backend.attachmentCopyFailed": "O OpenBot não conseguiu copiar {name}.",
+  "error.backend.attachmentCopyFailed": "O Pokebots não conseguiu copiar {name}.",
   "error.backend.routineNameRequired": "É necessário informar um nome para a rotina.",
   "error.backend.routineNameTooLong": "O nome da rotina é muito longo.",
   "error.backend.routineInstructionRequired": "É necessário informar uma instrução para a rotina.",
@@ -212,7 +212,7 @@ export const messages = {
   "error.backend.routineRunStarting":
     "Esta execução da rotina ainda está iniciando. Tente novamente após o início do turno.",
   "error.backend.routineRunNoSession":
-    "O OpenBot não pode interromper a execução ativa da rotina porque a sessão do provedor está indisponível.",
+    "O Pokebots não pode interromper a execução ativa da rotina porque a sessão do provedor está indisponível.",
   "error.backend.interruptSelf": "Um agente não pode interromper a si mesmo.",
   "error.backend.interruptOtherWork":
     "Este agente trabalha em uma tarefa que sua mensagem não iniciou. Somente o usuário ou quem enviou a tarefa pode interrompê-lo.",
@@ -221,7 +221,7 @@ export const messages = {
   "error.backend.interruptStarting":
     "Este agente ainda está iniciando um turno. Tente novamente após o início do turno.",
   "error.backend.interruptNoSession":
-    "O OpenBot não pode interromper este agente porque a sessão do provedor está indisponível.",
+    "O Pokebots não pode interromper este agente porque a sessão do provedor está indisponível.",
   "error.backend.memoryTextRequired": "É necessário informar o texto da memória.",
   "error.backend.memoryTextTooLong": "O texto da memória é muito longo.",
   "error.backend.mcpServerGone": "Este servidor MCP não existe mais.",
@@ -253,24 +253,24 @@ export const messages = {
   "error.backend.messagePinNotFound": "Esta mensagem não está no chat.",
   "error.backend.messagePinLimit": "Este chat tem 50 mensagens fixadas. Desafixe uma antes de fixar outra.",
   "error.backend.routineFlowHandoffFailed": "A rotina não conseguiu passar o trabalho para este agente.",
-  "error.backend.mcpServerLimit": "O OpenBot mantém até {limit} servidores MCP.",
+  "error.backend.mcpServerLimit": "O Pokebots mantém até {limit} servidores MCP.",
   "error.backend.mcpServerNameTaken": "Já existe um servidor MCP chamado {name}.",
-  "error.backend.mcpServerInvalid": "O OpenBot não pode salvar esta configuração de servidor MCP.",
+  "error.backend.mcpServerInvalid": "O Pokebots não pode salvar esta configuração de servidor MCP.",
   "error.backend.mcpServerNoAnswer": "O servidor não respondeu em {seconds} segundos.",
   "error.backend.mcpSignInNotAccepted": "O servidor não aceitou esse login.",
   "error.backend.mcpSignInAccountRefused":
     "O servidor recusou a conta com que você entrou. Verifique se essa conta pode usar o serviço. Para usar outra conta, saia e entre de novo.",
   "error.backend.mcpSignInClientRefused":
-    "O servidor de login não aceitou o OpenBot ao concluir o login. Entre de novo: o OpenBot se registra outra vez no servidor.",
+    "O servidor de login não aceitou o Pokebots ao concluir o login. Entre de novo: o Pokebots se registra outra vez no servidor.",
   "error.backend.mcpSignInAppRefused":
     "O servidor de login não aceitou o app de login deste servidor. Confira o ID do cliente e o segredo do cliente do app de login e entre de novo.",
   "error.backend.mcpCommandNotFound": "Comando não encontrado: {command}",
   "error.backend.mcpProviderLimit":
     "Este agente só pode usar um número limitado de servidores MCP. Para usar este servidor, desative um servidor MCP de que o agente não precisa.",
   "error.backend.mcpRegistrationRefused":
-    "O servidor de login ainda não aceita o OpenBot como aplicativo. Sua conta não é a causa. Use outra forma de conexão, como um servidor MCP local.",
+    "O servidor de login ainda não aceita o Pokebots como aplicativo. Sua conta não é a causa. Use outra forma de conexão, como um servidor MCP local.",
   "error.backend.mcpRegistrationUnavailable":
-    "O servidor de login não consegue registrar o OpenBot como aplicativo. Sua conta não é a causa. Para conectar, salve este servidor na Loja, Apps, e depois adicione um app de login a ele.",
+    "O servidor de login não consegue registrar o Pokebots como aplicativo. Sua conta não é a causa. Para conectar, salve este servidor na Loja, Apps, e depois adicione um app de login a ele.",
   "error.backend.mcpSignInAbandonedGeneric": "O login foi abandonado.",
   "error.backend.mcpSignInForgotten": "O login MCP foi esquecido enquanto estava em andamento.",
   "error.backend.mcpSignInAbandoned": "O login MCP foi abandonado.",
@@ -278,17 +278,17 @@ export const messages = {
   "error.backend.mcpSignInNotWebPage": "O endereço de login não é uma página da web.",
   "error.backend.mcpSignInRequired":
     "Este servidor pede que você se autentique. Escolha Entrar para continuar no navegador.",
-  "error.backend.mcpSignInOnHost": "Este servidor pede login. Entre nele pelo OpenBot no computador anfitrião.",
+  "error.backend.mcpSignInOnHost": "Este servidor pede login. Entre nele pelo Pokebots no computador anfitrião.",
   "error.backend.mcpSignInNeedsHttps":
-    "Este servidor pede login, e o OpenBot só faz login por https. Altere a URL para {url}.",
+    "Este servidor pede login, e o Pokebots só faz login por https. Altere a URL para {url}.",
   "error.backend.mcpSignInCancelled": "O login foi cancelado.",
   "error.backend.mcpSignInTimedOut": "O login não foi concluído no navegador.",
   "error.backend.mcpSignInRefused": "A página de login recusou o acesso. Entre novamente.",
   "error.backend.mcpSignInResponseTimedOut": "A resposta do login não chegou a tempo.",
   "error.backend.mcpSignInMetadataUnreadable":
-    "O OpenBot não conseguiu ler as informações de login deste servidor. Verifique o endereço do servidor e tente novamente.",
+    "O Pokebots não conseguiu ler as informações de login deste servidor. Verifique o endereço do servidor e tente novamente.",
   "error.backend.mcpSignInAnswerUnreadable":
-    "O servidor de login enviou uma resposta que o OpenBot não consegue ler. Se o serviço fornecer uma chave de API ou um token, adicione-o nas configurações deste servidor e teste a conexão novamente.",
+    "O servidor de login enviou uma resposta que o Pokebots não consegue ler. Se o serviço fornecer uma chave de API ou um token, adicione-o nas configurações deste servidor e teste a conexão novamente.",
   "error.backend.mcpServerExited":
     "O servidor parou antes de responder. Execute o comando em um terminal para ver o erro.",
   "error.backend.mcpServerExitedWithOutput": "O servidor parou antes de responder. Ele escreveu: {detail}",
@@ -303,24 +303,24 @@ export const messages = {
   "error.backend.mcpServerFailedForProvider":
     "{provider} não conseguiu iniciar o servidor MCP {name}. Abra {name} na Loja, Apps, e escolha Testar conexão para ver a causa.",
   "error.backend.mcpServerFailedInProvider":
-    "{provider} não conseguiu iniciar o servidor MCP {name}. As ferramentas dele não estão disponíveis para o {provider}. O {provider} inicia o servidor por conta própria, então o teste de conexão no OpenBot pode funcionar. Inicie um novo chat para tentar de novo.",
+    "{provider} não conseguiu iniciar o servidor MCP {name}. As ferramentas dele não estão disponíveis para o {provider}. O {provider} inicia o servidor por conta própria, então o teste de conexão no Pokebots pode funcionar. Inicie um novo chat para tentar de novo.",
   "error.backend.mcpServerTimedOutInProvider":
     "{provider} não conseguiu iniciar o servidor MCP {name}, porque o servidor não respondeu a tempo. Inicie um novo chat para tentar de novo.",
   "error.backend.mcpAppReconnect":
     "{name} no ChatGPT pede que você entre de novo. Reconecte {name} no ChatGPT e peça de novo ao agente.",
   "error.backend.mcpServerSignInPage":
-    "O servidor MCP {name} pediu que você entre em uma página da web. O OpenBot não abre essa página para um servidor, então recusou o pedido. Abra {name} na Loja, Apps, entre e peça de novo ao agente.",
+    "O servidor MCP {name} pediu que você entre em uma página da web. O Pokebots não abre essa página para um servidor, então recusou o pedido. Abra {name} na Loja, Apps, entre e peça de novo ao agente.",
   "error.backend.mcpServerRequestDeclined":
-    "O servidor MCP {name} pediu algo que o OpenBot não consegue mostrar, então o OpenBot recusou o pedido.",
+    "O servidor MCP {name} pediu algo que o Pokebots não consegue mostrar, então o Pokebots recusou o pedido.",
   "error.backend.mcpRequestDeclined":
-    "Um servidor MCP pediu algo que o OpenBot não consegue mostrar, então o OpenBot recusou o pedido.",
+    "Um servidor MCP pediu algo que o Pokebots não consegue mostrar, então o Pokebots recusou o pedido.",
   "error.backend.mcpOAuthProxyUnavailable":
-    "O OpenBot não conseguiu iniciar a conexão local de login para este servidor. Reinicie o OpenBot e tente novamente.",
+    "O Pokebots não conseguiu iniciar a conexão local de login para este servidor. Reinicie o Pokebots e tente novamente.",
   "error.backend.mcpOAuthSignInNeeded":
-    "O login neste servidor MCP terminou. O usuário precisa entrar novamente no OpenBot.",
+    "O login neste servidor MCP terminou. O usuário precisa entrar novamente no Pokebots.",
   "error.backend.mcpOAuthRenewalFailed":
-    "O OpenBot não conseguiu renovar agora o login neste servidor MCP. O login continua salvo, e a próxima solicitação tentará de novo. Se o erro continuar, o usuário pode sair do servidor no OpenBot e entrar de novo.",
-  "error.backend.mcpServerUnreachable": "O OpenBot não conseguiu acessar o servidor. Verifique a URL e sua rede.",
+    "O Pokebots não conseguiu renovar agora o login neste servidor MCP. O login continua salvo, e a próxima solicitação tentará de novo. Se o erro continuar, o usuário pode sair do servidor no Pokebots e entrar de novo.",
+  "error.backend.mcpServerUnreachable": "O Pokebots não conseguiu acessar o servidor. Verifique a URL e sua rede.",
   "error.backend.mcpLocalServerOff":
     "Nenhum servidor responde em {address} neste computador. Inicie o servidor ou ative-o no app que o executa e tente novamente.",
   "error.backend.mcpServerBlocked":
@@ -328,7 +328,7 @@ export const messages = {
   "error.backend.mcpServerIncompatible":
     "Algo respondeu neste endereço, mas não como um servidor MCP por Streamable HTTP. Verifique a URL e atualize o app que executa o servidor.",
   "error.backend.mcpRemoteBridge":
-    "{reason} Este comando executa a ponte mcp-remote. Escolha Streamable HTTP com a URL {url} e o OpenBot faz o login para você.",
+    "{reason} Este comando executa a ponte mcp-remote. Escolha Streamable HTTP com a URL {url} e o Pokebots faz o login para você.",
   "error.backend.oauthNotHttps": "O endpoint OAuth {origin} não usa https, por isso as credenciais não foram enviadas.",
   "error.backend.oauthTooManyRedirects": "O endpoint OAuth redirecionou vezes demais.",
   "error.backend.oauthRedirectOrigin":
@@ -378,10 +378,10 @@ export const messages = {
   "error.backend.promptAnswerMismatch": "Uma resposta não corresponde a uma pergunta ativa.",
   "error.backend.approvalInactive": "Esta aprovação não está mais ativa.",
   "error.backend.feedbackNeedsPhone":
-    "Só o app do OpenBot para celular pode enviar este relato, porque ele adiciona a versão e o registro de suporte do celular. Abra este chat no celular. Se você vir esta mensagem lá, atualize o app do celular.",
+    "Só o app do Pokebots para celular pode enviar este relato, porque ele adiciona a versão e o registro de suporte do celular. Abra este chat no celular. Se você vir esta mensagem lá, atualize o app do celular.",
   "error.backend.takeoverInactive": "Este controle manual do navegador não está mais ativo.",
   "error.backend.authSubmitting": "O envio da autenticação já está em andamento.",
-  "error.backend.apiKeySaveFailed": "O OpenBot não conseguiu salvar a chave de API. Tente novamente.",
+  "error.backend.apiKeySaveFailed": "O Pokebots não conseguiu salvar a chave de API. Tente novamente.",
   "error.backend.apiKeyNotAllowed":
     "Somente o proprietário do servidor ou um administrador pode inserir uma chave de API.",
   "error.backend.apiKeySaving": "A chave de API já está sendo salva.",
@@ -406,7 +406,7 @@ export const messages = {
   "error.backend.browserProxyUnreachable": "O proxy {name} não responde, por isso a página não abriu.",
   "error.backend.browserProxySignInRefused": "O proxy {name} recusou o início de sessão, por isso a página não abriu.",
   "error.backend.browserSystemProxyFailed":
-    "O proxy nas configurações do computador que executa o OpenBot não responde ou recusou a conexão, por isso a página não abriu. Verifique as configurações de proxy desse computador.",
+    "O proxy nas configurações do computador que executa o Pokebots não responde ou recusou a conexão, por isso a página não abriu. Verifique as configurações de proxy desse computador.",
   "error.backend.browserProxyComputerUnreachable":
     "O computador que este perfil usa não responde, por isso a página não abriu.",
   "error.backend.browserProxyComputerLocalAddress":
@@ -443,7 +443,7 @@ export const messages = {
   "error.backend.mcpSignInAppUrl": "O app de login precisa de uma URL de servidor válida.",
   "error.backend.mcpSignInAppClientId": "Digite o ID do cliente do app de login.",
   "error.backend.mcpSignInAppIssuerChanged":
-    "O servidor de login deste servidor MCP mudou, então o OpenBot não enviou o app de login a ele. Se a mudança estiver correta, remova o app de login e adicione-o de novo.",
+    "O servidor de login deste servidor MCP mudou, então o Pokebots não enviou o app de login a ele. Se a mudança estiver correta, remova o app de login e adicione-o de novo.",
   "error.backend.mcpSignInAppNoServer":
     "Salve este servidor MCP como servidor de URL antes de adicionar um app de login.",
   "error.backend.mcpSignInAppUnavailable": "Este computador não consegue guardar um app de login.",
@@ -476,5 +476,5 @@ export const messages = {
   "error.backend.taskOpenLimitReached":
     "Este agente tem {count} tarefas abertas. Feche uma tarefa e depois inicie ou abra outra.",
   "error.backend.taskRemoteUnsupported": "As tarefas só estão disponíveis para agentes neste computador.",
-  "error.backend.taskStartFailed": "O OpenBot não conseguiu iniciar a tarefa. Faça o trabalho neste turno.",
+  "error.backend.taskStartFailed": "O Pokebots não conseguiu iniciar a tarefa. Faça o trabalho neste turno.",
 } as const satisfies PartialTranslation<typeof source>;

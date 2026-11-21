@@ -37,26 +37,26 @@ export const messages = {
   "status.agent.sendIdea": "Это станет публичным issue на GitHub. Ваше имя не показывается.",
   "status.agent.feedbackRecentErrors": "Последние ошибки в чате:",
   "status.agent.feedbackSameAs": "Добавляется к issue #{issue}",
-  "status.agent.feedbackSent": "Отправлено команде OpenBot: {title}",
+  "status.agent.feedbackSent": "Отправлено команде Pokebots: {title}",
   "status.agent.feedbackWithdrawn": "Удалено с GitHub: {title}",
   "status.agent.feedbackWithdrawCommand": "Удалить отчёт #{issue} с GitHub",
   "status.agent.feedbackWithdrawReason":
     "Этот отчёт больше никто не увидит на GitHub. Это нельзя отменить. Чтобы исправить отчёт, агент может отправить исправленный.",
   "status.agent.feedbackWithdrawing": "Удаление отчёта с GitHub…",
   "status.agent.serverInstallCommand":
-    "Создать одноразовую команду, которая устанавливает OpenBot на другой компьютер как сервер {name} и подключает его к вашему аккаунту. Агент запускает её там.",
+    "Создать одноразовую команду, которая устанавливает Pokebots на другой компьютер как сервер {name} и подключает его к вашему аккаунту. Агент запускает её там.",
   "status.agent.serverInstallCard": "Команда установки для сервера {name}",
   "status.agent.browserProfileNamed":
     "Перенести {agents} в профиль браузера {profile}. Они получат его входы в аккаунты и файлы cookie. Их открытые вкладки закроются.",
-  "status.agent.commitCoAuthorOff": "Больше не добавлять OpenBot как соавтора в коммиты всех агентов.",
-  "status.agent.commitCoAuthorOn": "Снова добавлять OpenBot как соавтора в коммиты всех агентов.",
+  "status.agent.commitCoAuthorOff": "Больше не добавлять Pokebots как соавтора в коммиты всех агентов.",
+  "status.agent.commitCoAuthorOn": "Снова добавлять Pokebots как соавтора в коммиты всех агентов.",
   "status.agent.browserProfileNew":
     "Создать новый профиль браузера {profile} и перенести в него {agents}. В нём нет входов в аккаунты. Их открытые вкладки закроются.",
   "status.agent.browserProfileShared":
     "Перенести {agents} в общий профиль браузера. Они получат его входы в аккаунты и файлы cookie. Их открытые вкладки закроются.",
   "status.agent.browserProfileOwn":
     "Дать каждому из {agents} собственный профиль браузера. Их открытые вкладки закроются.",
-  "status.agent.feedbackSending": "Отправка отзыва команде OpenBot…",
+  "status.agent.feedbackSending": "Отправка отзыва команде Pokebots…",
   "status.agent.workflowDelete":
     "Удалить рабочий процесс {title} вместе с его запусками и версиями. Его открытые шаги остановятся.",
   "status.agent.deleteAgents": "Удалить {agents} вместе с их чатами и файлами. Это нельзя отменить.",
