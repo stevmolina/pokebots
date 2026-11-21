@@ -1,4 +1,8 @@
-import { DEFAULT_SKILL_LEARNING_MODE, isSkillLearningMode, type SkillLearningPreference } from "@pokebots/contracts/ipc";
+import {
+  DEFAULT_SKILL_LEARNING_MODE,
+  isSkillLearningMode,
+  type SkillLearningPreference,
+} from "@pokebots/contracts/ipc";
 import { isDynamicRecord } from "@pokebots/contracts/runtime-values";
 import { Effect, Result, Semaphore } from "effect";
 import { isMissingFileError } from "../backend/file-errors";

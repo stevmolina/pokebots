@@ -2,7 +2,18 @@
 
 import { type StoredFileRow, WORKFLOW_PICTURE_TYPES } from "@pokebots/contracts/ipc";
 import type { AppTextKey } from "@pokebots/i18n";
-import { Button, Download, File, FileInput, Input, Maximize2, Popover, Search, SlidingTabs, Upload } from "@pokebots/ui";
+import {
+  Button,
+  Download,
+  File,
+  FileInput,
+  Input,
+  Maximize2,
+  Popover,
+  Search,
+  SlidingTabs,
+  Upload,
+} from "@pokebots/ui";
 import { createSignal, createStore, For, onCleanup, Show, untrack } from "solid-js";
 import { createScrollFades } from "../../components/createScrollFades";
 import { useText } from "../../text";

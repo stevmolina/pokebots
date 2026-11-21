@@ -2,7 +2,11 @@
 // reserves a display number here, and the hosting script starts that screen on the first use.
 
 import { execFileSync } from "node:child_process";
-import { COMPUTER_USE_MCP_SERVER_ID, COMPUTER_USE_MCP_SERVER_NAME, type McpServerConfig } from "@pokebots/contracts/ipc";
+import {
+  COMPUTER_USE_MCP_SERVER_ID,
+  COMPUTER_USE_MCP_SERVER_NAME,
+  type McpServerConfig,
+} from "@pokebots/contracts/ipc";
 
 /** A server whose agents do not share one display. A hosted desktop that sets `OPENBOT_AGENT_DISPLAY` stays shared. */
 export function perAgentScreensEnabled(env: NodeJS.ProcessEnv = process.env): boolean {

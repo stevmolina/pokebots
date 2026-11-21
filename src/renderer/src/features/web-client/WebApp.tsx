@@ -1,4 +1,7 @@
-import { agentTemplateIdFromWebAppSearch, WEB_APP_AGENT_TEMPLATE_PARAM } from "@pokebots/contracts/agent-template-links";
+import {
+  agentTemplateIdFromWebAppSearch,
+  WEB_APP_AGENT_TEMPLATE_PARAM,
+} from "@pokebots/contracts/agent-template-links";
 import { companySignInErrorKey, WEB_APP_COMPANY_SIGN_IN_ERROR_PARAM } from "@pokebots/contracts/company-sign-in";
 import { type FirstTouch, readFirstTouch } from "@pokebots/contracts/first-touch";
 import { inviteUrlFromWebAppSearch, WEB_APP_INVITE_FIELDS } from "@pokebots/contracts/invite-links";

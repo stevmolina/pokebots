@@ -9,7 +9,12 @@
 // worth importing. `channels` is optional: an export made before group chats has none.
 
 import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
-import { AGENT_IMPORT_LIMITS, isAgentImportKey, isRoutineSchedule, type RoutineSchedule } from "@pokebots/contracts/ipc";
+import {
+  AGENT_IMPORT_LIMITS,
+  isAgentImportKey,
+  isRoutineSchedule,
+  type RoutineSchedule,
+} from "@pokebots/contracts/ipc";
 import { isBoolean, isDynamicRecord, isString } from "@pokebots/contracts/runtime-values";
 import { sourceText } from "@pokebots/i18n/source";
 import { isUnsafeArchivePath } from "./skill-package";

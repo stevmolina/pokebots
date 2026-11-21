@@ -1,4 +1,9 @@
-import type { AgentBrowserProfile, AvatarHue, BrowserProfileList, BrowserProfileSummary } from "@pokebots/contracts/ipc";
+import type {
+  AgentBrowserProfile,
+  AvatarHue,
+  BrowserProfileList,
+  BrowserProfileSummary,
+} from "@pokebots/contracts/ipc";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useQueryScope } from "@/features/auth/context/mobile-session-context";
 import {

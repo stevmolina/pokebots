@@ -1,5 +1,8 @@
 import { AVATAR_COLOR_CHOICES, type ServerPlushColor, serverPlushColor } from "@pokebots/brand/bloub-avatar";
-import { isServerAppearanceColor, SERVER_APPEARANCE_SHAPES } from "@pokebots/contracts/team-protocol/host-appearance-v1";
+import {
+  isServerAppearanceColor,
+  SERVER_APPEARANCE_SHAPES,
+} from "@pokebots/contracts/team-protocol/host-appearance-v1";
 import { Heading, ServerPlushLogo, Text } from "@pokebots/ui";
 import { For } from "solid-js";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";

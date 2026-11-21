@@ -1,6 +1,9 @@
 import { isKnownAgentProvider } from "@pokebots/contracts/agent-providers";
 import type { AccountUsage, AgentStatus, ClientAgentModelOption, CustomProviderSummary } from "@pokebots/contracts/ipc";
-import { AGENT_WELCOME_CAPABILITY, TEAM_AGENT_CREATE_MODEL_CAPABILITY } from "@pokebots/contracts/team-protocol/current";
+import {
+  AGENT_WELCOME_CAPABILITY,
+  TEAM_AGENT_CREATE_MODEL_CAPABILITY,
+} from "@pokebots/contracts/team-protocol/current";
 import {
   createFirstAgentDraft,
   FIRST_AGENT_SUGGESTIONS,

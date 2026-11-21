@@ -4,7 +4,10 @@ import type { LiveVoiceEvent } from "@pokebots/contracts/team-protocol/live-voic
 import type { MachineAlertEvent } from "@pokebots/contracts/team-protocol/machine-resources-v1";
 import { optionalTeamEvent, optionalTeamEventToCurrent } from "@pokebots/contracts/team-protocol/optional-events";
 import type { RemoteComputerCallEvent } from "@pokebots/contracts/team-protocol/remote-computer-use-v1";
-import { addSkillSuggestionNames, SKILL_LEARNING_CAPABILITY } from "@pokebots/contracts/team-protocol/skill-learning-v1";
+import {
+  addSkillSuggestionNames,
+  SKILL_LEARNING_CAPABILITY,
+} from "@pokebots/contracts/team-protocol/skill-learning-v1";
 import { decodeTeamProtocolV8BaseCurrentEvent } from "@pokebots/contracts/team-protocol/v8-base-adapter";
 import { Effect, Exit, Result, Scope } from "effect";
 import { RemoteWorkflowError, remoteDecode } from "./remote-service-effects";

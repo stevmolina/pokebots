@@ -7,7 +7,10 @@ import {
   type WebNotificationUrgency,
 } from "@pokebots/contracts/notification-relay";
 import { type DynamicRecord, isDynamicRecord, isString } from "@pokebots/contracts/runtime-values";
-import { isWebPushEndpoint, WEB_PUSH_ENDPOINT_LIMIT } from "@pokebots/contracts/team-protocol/push-notifications-web-v1";
+import {
+  isWebPushEndpoint,
+  WEB_PUSH_ENDPOINT_LIMIT,
+} from "@pokebots/contracts/team-protocol/push-notifications-web-v1";
 import { Effect, Schema } from "effect";
 import { importJWK, type JWK, SignJWT } from "jose";
 

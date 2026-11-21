@@ -1,5 +1,15 @@
 import { AppLogo } from "@pokebots/brand";
-import { Button, buttonVariants, Download, ErrorReference, Heading, Link2, RefreshCw, Server, Text } from "@pokebots/ui";
+import {
+  Button,
+  buttonVariants,
+  Download,
+  ErrorReference,
+  Heading,
+  Link2,
+  RefreshCw,
+  Server,
+  Text,
+} from "@pokebots/ui";
 import { useText } from "@pokebots/ui/text";
 import { Show } from "solid-js";
 

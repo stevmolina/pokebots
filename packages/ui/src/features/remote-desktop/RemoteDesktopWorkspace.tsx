@@ -1,5 +1,14 @@
 import type { RemoteDesktopErrorCode, RemoteDesktopSession, ServerSummary } from "@pokebots/contracts/ipc";
-import { ArrowLeft, Button, Monitor, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@pokebots/ui";
+import {
+  ArrowLeft,
+  Button,
+  Monitor,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@pokebots/ui";
 import { AgentAvatar } from "@pokebots/ui/features/agents/AgentAvatar";
 import { useText } from "@pokebots/ui/text";
 import { type JSX, Portal } from "@solidjs/web";
