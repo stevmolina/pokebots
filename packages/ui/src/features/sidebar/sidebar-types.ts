@@ -406,6 +406,8 @@ export interface SidebarThreadEntry {
 
 export interface SidebarThreadLanes {
   threads: readonly SidebarThreadEntry[];
+  /** Latest non-closed side-thread activity time per agent id, including finished threads. */
+  latestThreadUpdatedAt?: Readonly<Record<string, string>> | undefined;
   /** The thread on screen, from `threadTabKey`. Null while no agent chat is on screen. */
   activeKey: string | null;
   /** The agents whose own chat has a reply that the user did not read. */
