@@ -12,7 +12,6 @@ export const messages = {
   "agentSettings.session.resetNamed": "{name} ayarını sıfırla",
   "agentSettings.label": "Ajan ayarları",
   "agentSettings.title": "Ayarlar",
-  "agentSettings.backToDetails": "Ayrıntılara geri dön",
   "agentSettings.closeDetails": "Ayrıntıları kapat",
   "agentSettings.backToSettings": "Ayarlara dön",
   "agentSettings.permissions.title": "İzinler",
@@ -98,7 +97,6 @@ export const messages = {
   "agentSettings.backupModels.withAccount": "{model} · {account}",
   "agentSettings.backupModels.note":
     "Bir kullanım sınırı {name} işe başladıktan sonra onu durdurursa, {name} aynı işe sıradaki ilk kullanılabilir modelle devam eder. Sınır bittiğinde veya bir sağlayıcı hatasından 10 dakika sonra {model} modeline geri döner.",
-  "agentSettings.groups.brain": "Beyin",
   "agentSettings.groups.knows": "Bilgi",
   "agentSettings.groups.does": "Görevler",
   "agentSettings.groups.rules": "Kurallar",
@@ -206,7 +204,6 @@ export const messages = {
   "agentSettings.links.tablesCount": { one: "{count} tablo", other: "{count} tablo" },
   "agentSettings.links.files": "Dosyalar",
   "agentSettings.links.routines": "Rutinler",
-  "agentSettings.links.library": "Kitaplık",
   "agentSettings.links.computer": "Bilgisayar",
   "agentSettings.links.computerActive": "Kullanımda",
   "agentSettings.links.computerAsleep": "Uyku modunda",

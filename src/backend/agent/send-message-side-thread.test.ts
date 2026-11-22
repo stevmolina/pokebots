@@ -163,7 +163,7 @@ async function createFixture() {
     if (response.success) {
       parsed = sendMessageResultPayloadSchema.parse(JSON.parse(text));
     }
-    return { success: response.success, text, parsed };
+    return parsed === undefined ? { success: response.success, text } : { success: response.success, text, parsed };
   };
 
   return { alice, bob, carol, mailbox, threadStore, tasks, conversation, callSendMessage, drainScheduled };

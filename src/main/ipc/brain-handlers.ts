@@ -31,10 +31,10 @@ export function brainIpcHandlers({
   return {
     brain: {
       request: scopedHandler(
-        (value): BrainRequest & { profile?: IntegrationProfile } => ({
-          ...brainRequestSchema.parse(value),
-          profile: isObject(value) && value.profile === "native" ? ("native" as const) : undefined,
-        }),
+        (value): BrainRequest & { profile?: IntegrationProfile } => {
+          const parsed = brainRequestSchema.parse(value);
+          return isObject(value) && value.profile === "native" ? { ...parsed, profile: "native" as const } : parsed;
+        },
         {
           local: ({ profile, ...input }) => {
             const credential =

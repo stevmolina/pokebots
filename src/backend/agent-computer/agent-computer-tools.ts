@@ -175,7 +175,11 @@ export const handleAgentComputerTool = Effect.fn("AgentComputerTools.handle")(fu
       }
       case "computer_start": {
         const input = yield* parse(startSchema, request.arguments);
-        const started = yield* api.start(input.context, input.size, { idempotencyKey: request.idempotencyKey });
+        const started = yield* api.start(
+          input.context,
+          input.size,
+          request.idempotencyKey === undefined ? undefined : { idempotencyKey: request.idempotencyKey },
+        );
         return textResult({
           id: started.id,
           context: started.context,

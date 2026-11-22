@@ -486,7 +486,7 @@ try {
   assert.equal(
     (
       await post("/v1/mobile-auth/workos/exchange", {
-        code: secondReturn.target?.searchParams.get("code"),
+        code: secondReturn.target?.searchParams.get("code") ?? "",
         codeVerifier: secondPhone.verifier,
         ...device,
       })
@@ -881,7 +881,7 @@ try {
   assert.equal(
     (
       await post("/v1/auth/workos/exchange", {
-        code: codeReturn.target?.searchParams.get("code"),
+        code: codeReturn.target?.searchParams.get("code") ?? "",
         codeVerifier: expiringCode.verifier,
       })
     ).status,

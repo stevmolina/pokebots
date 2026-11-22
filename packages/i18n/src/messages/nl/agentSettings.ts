@@ -12,7 +12,6 @@ export const messages = {
   "agentSettings.session.resetNamed": "{name} resetten",
   "agentSettings.label": "Agentinstellingen",
   "agentSettings.title": "Instellingen",
-  "agentSettings.backToDetails": "Terug naar details",
   "agentSettings.closeDetails": "Details sluiten",
   "agentSettings.backToSettings": "Terug naar instellingen",
   "agentSettings.permissions.title": "Machtigingen",
@@ -98,7 +97,6 @@ export const messages = {
   "agentSettings.backupModels.withAccount": "{model} · {account}",
   "agentSettings.backupModels.note":
     "Als een gebruikslimiet {name} stopt nadat het werk is begonnen, gaat {name} met hetzelfde werk verder op het eerste beschikbare model in de volgorde. Het gaat terug naar {model} als de limiet afloopt, of 10 minuten na een fout van de aanbieder.",
-  "agentSettings.groups.brain": "Brein",
   "agentSettings.groups.knows": "Weet",
   "agentSettings.groups.does": "Doet",
   "agentSettings.groups.rules": "Regels",
@@ -207,7 +205,6 @@ export const messages = {
   "agentSettings.links.tablesCount": { one: "{count} tabel", other: "{count} tabellen" },
   "agentSettings.links.files": "Bestanden",
   "agentSettings.links.routines": "Routines",
-  "agentSettings.links.library": "Bibliotheek",
   "agentSettings.links.computer": "Computer",
   "agentSettings.links.computerActive": "In gebruik",
   "agentSettings.links.computerAsleep": "In slaapstand",

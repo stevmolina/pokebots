@@ -1228,7 +1228,8 @@ export function createWebWorkspace(
               connected.appearance !== undefined && !draft.capabilities.includes(HOST_APPEARANCE_CAPABILITY)
                 ? connected.appearance
                 : draft.host.appearance;
-            draft.host = { ...connected, appearance };
+            const { appearance: _prevAppearance, ...restConnected } = connected;
+            draft.host = appearance === undefined ? restConnected : { ...restConnected, appearance };
           }
           draft.hosts = hosts;
           draft.hostsLoaded = true;

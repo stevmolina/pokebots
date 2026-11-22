@@ -4,6 +4,7 @@ import { createServer, type Server as HttpServer, type IncomingMessage, type Ser
 import { basename, join } from "node:path";
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
+import type { Transport } from "@modelcontextprotocol/sdk/shared/transport.js";
 import {
   CallToolRequestSchema,
   type CallToolResult,
@@ -496,8 +497,18 @@ export class RemoteComputerHost {
       ),
     );
     const transport = new StreamableHTTPServerTransport({});
+    const mcpTransport: Transport = {
+      start: () => {
+        transport.onclose = () => mcpTransport.onclose?.();
+        transport.onerror = (error) => mcpTransport.onerror?.(error);
+        transport.onmessage = (message, extra) => mcpTransport.onmessage?.(message, extra);
+        return transport.start();
+      },
+      send: (message, options) => transport.send(message, options),
+      close: () => transport.close(),
+    };
     yield* Effect.gen(function* () {
-      yield* remoteComputerCall(() => mcp.connect(transport));
+      yield* remoteComputerCall(() => mcp.connect(mcpTransport));
       const body = yield* readJsonBody(request, MAX_BODY_BYTES).pipe(
         Effect.mapError(({ cause }) => new RemoteComputerError({ cause })),
       );

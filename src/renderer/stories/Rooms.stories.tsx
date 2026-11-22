@@ -55,8 +55,8 @@ const data: RoomsResult = {
 };
 const request: RoomsPort = async (input) => {
   if (input.kind === "wait") return new Promise(() => {});
-  if (input.kind === "list") return { connected: true, rooms: data.rooms };
-  if (input.kind === "read") return { connected: true, room, messages: data.messages };
+  if (input.kind === "list") return { connected: true, rooms: data.rooms ?? [] };
+  if (input.kind === "read") return { connected: true, room, messages: data.messages ?? [] };
   return data;
 };
 const meta = { title: "Features/Rooms", component: RoomsPanel, parameters: { layout: "fullscreen" } } satisfies Meta<
@@ -74,7 +74,7 @@ export const Paused: Story = {
     const paused: RoomsPort = async (input) => {
       if (input.kind === "wait") return new Promise(() => {});
       if (input.kind === "list") return { connected: true, rooms: [pausedRoom] };
-      if (input.kind === "read") return { connected: true, room: pausedRoom, messages: data.messages };
+      if (input.kind === "read") return { connected: true, room: pausedRoom, messages: data.messages ?? [] };
       return { ...data, room: pausedRoom };
     };
     return <RoomsPanel request={paused} onConnect={() => {}} />;

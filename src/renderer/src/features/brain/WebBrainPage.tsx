@@ -51,16 +51,19 @@ export function WebBrainPage(props: { request: TeamApiRequest; onConnect: () => 
           <BrainPanel
             connectionId={connectionId}
             accountControls={controls}
-            request={(input) =>
-              account === "manual"
-                ? props.request("POST", BRAIN_ROUTE, decodeBrainResponse, input)
+            request={(input) => {
+              const payload = Object.fromEntries(
+                Object.entries(input).filter((entry): entry is [string, string | number] => entry[1] !== undefined),
+              );
+              return account === "manual"
+                ? props.request("POST", BRAIN_ROUTE, decodeBrainResponse, payload)
                 : props.request(
                     "POST",
                     POKEBOTS_INTEGRATIONS_ROUTES.brain,
                     decodeBrainResponse,
-                    integrationRequest(input, account === "native" ? account : undefined),
-                  )
-            }
+                    integrationRequest(payload, account === "native" ? account : undefined),
+                  );
+            }}
             onConnect={props.onConnect}
             onOpenLink={openUrl}
           />

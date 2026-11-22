@@ -388,7 +388,6 @@ export const messages = {
   "chat.actions.more": "פעולות נוספות",
   "chat.menu.reply": "מענה",
   "chat.menu.copy": "העתקת ההודעה",
-  "chat.menu.react": "תגובה",
   "chat.menu.branch": "הסתעפות מכאן",
   "chat.menu.markUnread": "סימון כלא נקרא",
   "chat.menu.pin": "הצמדה",

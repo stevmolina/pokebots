@@ -12,7 +12,6 @@ export const messages = {
   "agentSettings.session.resetNamed": "Resetuj: {name}",
   "agentSettings.label": "Ustawienia agenta",
   "agentSettings.title": "Ustawienia",
-  "agentSettings.backToDetails": "Wróć do szczegółów",
   "agentSettings.closeDetails": "Zamknij szczegóły",
   "agentSettings.backToSettings": "Wróć do ustawień",
   "agentSettings.permissions.title": "Dostęp",
@@ -118,7 +117,6 @@ export const messages = {
   "agentSettings.backupModels.withAccount": "{model} · {account}",
   "agentSettings.backupModels.note":
     "Gdy limit użycia zatrzyma agenta {name} po rozpoczęciu pracy, {name} kontynuuje tę samą pracę na pierwszym dostępnym modelu z kolejności. Wraca do modelu {model}, gdy limit się skończy, lub 10 minut po błędzie dostawcy.",
-  "agentSettings.groups.brain": "Mózg",
   "agentSettings.groups.knows": "Wie",
   "agentSettings.groups.does": "Robi",
   "agentSettings.groups.rules": "Zasady",
@@ -243,7 +241,6 @@ export const messages = {
   },
   "agentSettings.links.files": "Pliki",
   "agentSettings.links.routines": "Rutyny",
-  "agentSettings.links.library": "Biblioteka",
   "agentSettings.links.computer": "Komputer",
   "agentSettings.links.computerActive": "W użyciu",
   "agentSettings.links.computerAsleep": "Uśpiony",

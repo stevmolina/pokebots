@@ -372,7 +372,6 @@ export const messages = {
   "chat.actions.more": "추가 작업",
   "chat.menu.reply": "답장",
   "chat.menu.copy": "메시지 복사",
-  "chat.menu.react": "반응",
   "chat.menu.branch": "여기서 분기",
   "chat.menu.markUnread": "읽지 않음으로 표시",
   "chat.menu.pin": "고정",

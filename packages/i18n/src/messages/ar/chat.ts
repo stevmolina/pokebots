@@ -532,7 +532,6 @@ export const messages = {
   "chat.actions.more": "إجراءات أخرى",
   "chat.menu.reply": "رد",
   "chat.menu.copy": "نسخ الرسالة",
-  "chat.menu.react": "تفاعل",
   "chat.menu.branch": "التفرع من هنا",
   "chat.menu.markUnread": "تعليم كغير مقروءة",
   "chat.menu.pin": "تثبيت",

@@ -200,10 +200,11 @@ async function forward(request: IncomingMessage, response: ServerResponse, upstr
     else if (name === "referer") headers.set(name, upstream + new URL(String(value)).pathname);
     else headers.set(name, Array.isArray(value) ? value.join(", ") : value);
   }
+  const requestBody = await readBody(request);
   const answer = await fetch(target, {
-    method: request.method,
+    method: request.method ?? "GET",
     headers,
-    body: await readBody(request),
+    ...(requestBody === undefined ? {} : { body: requestBody }),
     redirect: "manual",
   });
   const body = Buffer.from(await answer.arrayBuffer());

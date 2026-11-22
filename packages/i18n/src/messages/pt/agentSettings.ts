@@ -11,7 +11,6 @@ export const messages = {
   "agentSettings.session.resetNamed": "Redefinir {name}",
   "agentSettings.label": "Configurações do agente",
   "agentSettings.title": "Configurações",
-  "agentSettings.backToDetails": "Voltar aos detalhes",
   "agentSettings.closeDetails": "Fechar detalhes",
   "agentSettings.backToSettings": "Voltar às configurações",
   "agentSettings.permissions.title": "Permissões",
@@ -97,7 +96,6 @@ export const messages = {
   "agentSettings.backupModels.withAccount": "{model} · {account}",
   "agentSettings.backupModels.note":
     "Quando um limite de uso para {name} depois de começar a trabalhar, {name} continua o mesmo trabalho no primeiro modelo disponível da ordem. Volta para {model} quando o limite termina, ou 10 minutos após um erro do provedor.",
-  "agentSettings.groups.brain": "Cérebro",
   "agentSettings.groups.knows": "Sabe",
   "agentSettings.groups.does": "Faz",
   "agentSettings.groups.rules": "Regras",
@@ -207,7 +205,6 @@ export const messages = {
   "agentSettings.links.tablesCount": { one: "{count} tabela", other: "{count} tabelas" },
   "agentSettings.links.files": "Arquivos",
   "agentSettings.links.routines": "Rotinas",
-  "agentSettings.links.library": "Biblioteca",
   "agentSettings.links.computer": "Computador",
   "agentSettings.links.computerActive": "Em uso",
   "agentSettings.links.computerAsleep": "Em repouso",

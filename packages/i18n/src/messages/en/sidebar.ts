@@ -64,8 +64,6 @@ export const messages = defineMessages("sidebar", {
   "sidebar.footer.goTo": "Go to",
   "sidebar.footer.addAccount": "Add account",
   "sidebar.footer.connectApps": "Connect apps",
-  "sidebar.footer.browseApps": "Browse apps",
-  "sidebar.footer.mcpServers": "MCP servers",
   "sidebar.more.customize": "Customize pill",
   "sidebar.empty.noAgents": "No agents yet",
   "sidebar.empty.firstAgent": "Create your first agent",

@@ -10,7 +10,6 @@ export const messages = defineMessages("agentSettings", {
   "agentSettings.session.resetNamed": "Reset {name}",
   "agentSettings.label": "Agent settings",
   "agentSettings.title": "Settings",
-  "agentSettings.backToDetails": "Back to details",
   "agentSettings.closeDetails": "Close details",
   "agentSettings.backToSettings": "Back to settings",
   "agentSettings.permissions.title": "Permissions",
@@ -94,7 +93,6 @@ export const messages = defineMessages("agentSettings", {
   "agentSettings.backupModels.withAccount": "{model} · {account}",
   "agentSettings.backupModels.note":
     "When a usage limit stops {name} after it starts to work, {name} continues the same work on the first available model in the order. It goes back to {model} when the limit ends, or 10 minutes after a provider error.",
-  "agentSettings.groups.brain": "Brain",
   "agentSettings.groups.knows": "Knows",
   "agentSettings.groups.does": "Does",
   "agentSettings.groups.rules": "Rules",
@@ -213,7 +211,6 @@ export const messages = defineMessages("agentSettings", {
   "agentSettings.links.tablesCount": { one: "{count} table", other: "{count} tables" },
   "agentSettings.links.files": "Files",
   "agentSettings.links.routines": "Routines",
-  "agentSettings.links.library": "Library",
   "agentSettings.links.computer": "Computer",
   "agentSettings.links.computerActive": "In use",
   "agentSettings.links.computerAsleep": "Asleep",

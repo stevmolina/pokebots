@@ -387,7 +387,6 @@ export const messages = {
   "chat.actions.more": "Altre azioni",
   "chat.menu.reply": "Rispondi",
   "chat.menu.copy": "Copia messaggio",
-  "chat.menu.react": "Reagisci",
   "chat.menu.branch": "Ramifica da qui",
   "chat.menu.markUnread": "Segna come non letto",
   "chat.menu.pin": "Fissa",

@@ -371,7 +371,6 @@ export const messages = {
   "chat.actions.more": "更多操作",
   "chat.menu.reply": "回复",
   "chat.menu.copy": "复制消息",
-  "chat.menu.react": "回应",
   "chat.menu.branch": "从这里分支",
   "chat.menu.markUnread": "标为未读",
   "chat.menu.pin": "置顶",

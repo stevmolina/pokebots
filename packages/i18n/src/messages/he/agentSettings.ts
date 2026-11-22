@@ -11,7 +11,6 @@ export const messages = {
   "agentSettings.session.resetNamed": "איפוס {name}",
   "agentSettings.label": "הגדרות סוכן",
   "agentSettings.title": "הגדרות",
-  "agentSettings.backToDetails": "חזרה לפרטים",
   "agentSettings.closeDetails": "סגירת הפרטים",
   "agentSettings.backToSettings": "חזרה להגדרות",
   "agentSettings.permissions.title": "הרשאות",
@@ -102,7 +101,6 @@ export const messages = {
   "agentSettings.backupModels.withAccount": "{model} · {account}",
   "agentSettings.backupModels.note":
     "כשמגבלת שימוש עוצרת את {name} אחרי שהתחיל לעבוד, {name} ממשיך באותה עבודה במודל הזמין הראשון לפי הסדר. הוא חוזר ל-{model} כשהמגבלה מסתיימת, או 10 דקות אחרי שגיאת ספק.",
-  "agentSettings.groups.brain": "מוח",
   "agentSettings.groups.knows": "יודע",
   "agentSettings.groups.does": "עושה",
   "agentSettings.groups.rules": "כללים",
@@ -216,7 +214,6 @@ export const messages = {
   "agentSettings.links.tablesCount": { one: "טבלה אחת", two: "שתי טבלאות", other: "{count} טבלאות" },
   "agentSettings.links.files": "קבצים",
   "agentSettings.links.routines": "שגרות",
-  "agentSettings.links.library": "ספרייה",
   "agentSettings.links.computer": "מחשב",
   "agentSettings.links.computerActive": "בשימוש",
   "agentSettings.links.computerAsleep": "במצב שינה",
