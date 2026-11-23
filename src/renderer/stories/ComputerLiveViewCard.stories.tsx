@@ -11,7 +11,9 @@ const meta = {
   title: "Conversation/Cloud computer live view",
   component: ComputerLiveViewCard,
   render: (args) => (
-    <main style={{ width: "min(560px, 100vw)", padding: "var(--openbot-space-4)" }}>
+    <main
+      style={{ width: "100vw", "max-width": "560px", padding: "var(--openbot-space-4)", "box-sizing": "border-box" }}
+    >
       <ComputerLiveViewCard {...args} />
     </main>
   ),
@@ -19,7 +21,7 @@ const meta = {
     machineId: "demo-machine",
     onOpen: fn(),
   },
-  parameters: { layout: "centered", a11y: { test: "error" } },
+  parameters: { layout: "fullscreen", a11y: { test: "error" } },
 } satisfies Meta<typeof ComputerLiveViewCard>;
 
 export default meta;
