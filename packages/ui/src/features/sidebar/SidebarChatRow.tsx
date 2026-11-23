@@ -217,23 +217,33 @@ function useChannelView(channel: () => ChannelSummary, pinned: () => boolean): C
   };
 }
 
-export function SidebarChatRow(rowProps: { chat: SidebarChatItem; look: SidebarChatLook; pinned?: boolean }) {
+export function SidebarChatRow(rowProps: {
+  chat: SidebarChatItem;
+  look: SidebarChatLook;
+  pinned?: boolean;
+  /** Text in place of the time at the end of a row, such as how long a snooze lasts. */
+  note?: string | undefined;
+}) {
   const pinned = () => rowProps.pinned === true;
   const agent = () => (rowProps.chat.kind === "agent" ? rowProps.chat.agent : undefined);
   const channel = () => (rowProps.chat.kind === "channel" ? rowProps.chat.channel : undefined);
   return (
     <Switch>
       <Match when={agent()}>
-        {(profile) => <SidebarChatView view={useAgentView(profile, pinned)} look={rowProps.look} />}
+        {(profile) => (
+          <SidebarChatView view={useAgentView(profile, pinned)} look={rowProps.look} note={rowProps.note} />
+        )}
       </Match>
       <Match when={channel()}>
-        {(summary) => <SidebarChatView view={useChannelView(summary, pinned)} look={rowProps.look} />}
+        {(summary) => (
+          <SidebarChatView view={useChannelView(summary, pinned)} look={rowProps.look} note={rowProps.note} />
+        )}
       </Match>
     </Switch>
   );
 }
 
-function SidebarChatView(viewProps: { view: ChatView; look: SidebarChatLook }) {
+function SidebarChatView(viewProps: { view: ChatView; look: SidebarChatLook; note?: string | undefined }) {
   const { t } = useText();
   const [menuOpen, setMenuOpen] = createSignal(false);
   const view = viewProps.view;
@@ -244,6 +254,7 @@ function SidebarChatView(viewProps: { view: ChatView; look: SidebarChatLook }) {
       view.preview.replace(/[.!?…]\s*$/u, ""),
       view.extraLabel || (view.unread ? t("sidebar.chat.unread") : ""),
       view.server ? t("sidebar.chat.server", { name: view.server.name }) : "",
+      viewProps.note ? t("sidebar.dock.snoozedUntil", { time: viewProps.note }) : "",
     ]
       .filter(Boolean)
       .join(". ");
@@ -280,9 +291,9 @@ function SidebarChatView(viewProps: { view: ChatView; look: SidebarChatLook }) {
             <span class={["sidebar-chat-preview", { "sidebar-chat-preview-wait": view.waiting }]}>{view.preview}</span>
           </span>
         </Show>
-        <Show when={viewProps.look === "row" && view.time}>
-          <span class="sidebar-chat-time" aria-hidden="true">
-            {view.time}
+        <Show when={viewProps.look === "row" && (viewProps.note ?? view.time)}>
+          <span class={["sidebar-chat-time", { "sidebar-chat-note": viewProps.note !== undefined }]} aria-hidden="true">
+            {viewProps.note ?? view.time}
           </span>
         </Show>
         <Show when={view.unread}>

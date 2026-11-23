@@ -1514,3 +1514,47 @@
     box-shadow: 0 0 0 2px var(--openbot-bg-sidebar);
   }
 }
+
+/* "Active" | "Folders" over the chat list: a quiet pill, two equal halves. */
+.sidebar-list-view-switch {
+  flex: none;
+  padding: 2px 12px 8px;
+}
+
+.sidebar-list-view-tabs.ui-sliding-tabs {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.sidebar-list-view-tab.ui-sliding-tabs-trigger {
+  min-width: 0;
+  justify-content: center;
+  overflow: hidden;
+  font-size: var(--openbot-text-sm);
+  white-space: nowrap;
+}
+
+/* Compact rows ("Done", "Snoozed", "Settled" of the "Active" view): the face and the name on one line. */
+.sidebar-chat .sidebar-chat-rows-compact .sidebar-chat-row.ui-button {
+  --sidebar-chat-face: 30px;
+
+  min-height: 40px;
+  padding-block: 5px;
+}
+
+.sidebar-chat-rows-compact .sidebar-chat-preview {
+  display: none;
+}
+
+/* A snoozed agent is faint, and its time left shows at the end of the row on every screen. */
+.sidebar-chat-rows-compact .sidebar-chat-row:has(.sidebar-chat-note) {
+  opacity: 0.6;
+}
+
+.sidebar-chat-time.sidebar-chat-note {
+  display: inline;
+  flex: none;
+  color: var(--openbot-text-secondary);
+  font-size: var(--openbot-text-sm);
+}
