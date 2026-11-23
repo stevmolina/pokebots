@@ -56,6 +56,8 @@ interface ChatView {
   extraLabel: string;
   /** When the last message came, as the phone list shows it at the end of the row. */
   time: string;
+  /** When the chat last changed, for the elapsed time of a working card. */
+  since: string | null | undefined;
   /** The agent works now: the phone list marks its face with a dot. */
   present: boolean;
   avatar: () => JSX.Element;
@@ -141,6 +143,9 @@ function useAgentView(agent: () => AgentProfile, pinned: () => boolean): ChatVie
     get time() {
       return sidebarChatTime(agent().updatedAt, format);
     },
+    get since() {
+      return agent().updatedAt;
+    },
     get present() {
       return state()?.kind === "working";
     },
@@ -204,6 +209,9 @@ function useChannelView(channel: () => ChannelSummary, pinned: () => boolean): C
     get time() {
       return sidebarChatTime(channel().lastMessage?.at, format);
     },
+    get since() {
+      return channel().lastMessage?.at;
+    },
     get present() {
       return channel().activeTasks > 0;
     },
@@ -223,6 +231,8 @@ export function SidebarChatRow(rowProps: {
   pinned?: boolean;
   /** Text in place of the time at the end of a row, such as how long a snooze lasts. */
   note?: string | undefined;
+  /** A working card: a rounded card with a spinner and the time since the chat last changed. */
+  card?: boolean | undefined;
 }) {
   const pinned = () => rowProps.pinned === true;
   const agent = () => (rowProps.chat.kind === "agent" ? rowProps.chat.agent : undefined);
@@ -231,20 +241,54 @@ export function SidebarChatRow(rowProps: {
     <Switch>
       <Match when={agent()}>
         {(profile) => (
-          <SidebarChatView view={useAgentView(profile, pinned)} look={rowProps.look} note={rowProps.note} />
+          <SidebarChatView
+            view={useAgentView(profile, pinned)}
+            look={rowProps.look}
+            note={rowProps.note}
+            card={rowProps.card}
+          />
         )}
       </Match>
       <Match when={channel()}>
         {(summary) => (
-          <SidebarChatView view={useChannelView(summary, pinned)} look={rowProps.look} note={rowProps.note} />
+          <SidebarChatView
+            view={useChannelView(summary, pinned)}
+            look={rowProps.look}
+            note={rowProps.note}
+            card={rowProps.card}
+          />
         )}
       </Match>
     </Switch>
   );
 }
 
-function SidebarChatView(viewProps: { view: ChatView; look: SidebarChatLook; note?: string | undefined }) {
-  const { t } = useText();
+/** The time since a chat changed, short: now, minutes, hours, or days. */
+function elapsedText(
+  at: string | null | undefined,
+  now: number,
+  t: ReturnType<typeof useText>["t"],
+  format: AppFormat,
+) {
+  if (!at) return "";
+  const time = Date.parse(at);
+  if (Number.isNaN(time)) return "";
+  const minutes = Math.floor((now - time) / 60_000);
+  if (minutes < 1) return t("sidebar.lanes.justNow");
+  if (minutes < 60) return t("sidebar.lanes.minutes", { value: format.number(minutes) });
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return t("sidebar.lanes.hours", { value: format.number(hours) });
+  return t("sidebar.dock.days", { value: format.number(Math.floor(hours / 24)) });
+}
+
+function SidebarChatView(viewProps: {
+  view: ChatView;
+  look: SidebarChatLook;
+  note?: string | undefined;
+  card?: boolean | undefined;
+}) {
+  const { t, format } = useText();
+  const { snoozeClock } = useSidebarScope();
   const [menuOpen, setMenuOpen] = createSignal(false);
   const view = viewProps.view;
   // The preview can end with its own full stop, so the label does not add a second one.
@@ -266,7 +310,7 @@ function SidebarChatView(viewProps: { view: ChatView; look: SidebarChatLook; not
         class={[
           buttonVariants({ variant: "ghost" }),
           viewProps.look === "row" ? "sidebar-chat-row" : "sidebar-chat-face",
-          { "sidebar-chat-active": view.active },
+          { "sidebar-chat-active": view.active, "sidebar-chat-card": viewProps.card === true },
         ]}
         aria-label={label()}
         aria-current={view.active ? "page" : undefined}
@@ -291,7 +335,13 @@ function SidebarChatView(viewProps: { view: ChatView; look: SidebarChatLook; not
             <span class={["sidebar-chat-preview", { "sidebar-chat-preview-wait": view.waiting }]}>{view.preview}</span>
           </span>
         </Show>
-        <Show when={viewProps.look === "row" && (viewProps.note ?? view.time)}>
+        <Show when={viewProps.card}>
+          <span class="sidebar-chat-card-status" aria-hidden="true">
+            <span class="sidebar-chat-spinner" />
+            <span class="sidebar-chat-elapsed">{elapsedText(view.since, snoozeClock(), t, format)}</span>
+          </span>
+        </Show>
+        <Show when={viewProps.look === "row" && !viewProps.card && (viewProps.note ?? view.time)}>
           <span class={["sidebar-chat-time", { "sidebar-chat-note": viewProps.note !== undefined }]} aria-hidden="true">
             {viewProps.note ?? view.time}
           </span>
