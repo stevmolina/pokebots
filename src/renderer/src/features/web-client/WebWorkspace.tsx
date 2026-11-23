@@ -4711,6 +4711,7 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                     clientMessageId,
                     _voice,
                     createArtifact,
+                    queueOnly,
                   ) => {
                     // A sent prompt is what a notification later reports, so the browser asks here, from the user's action.
                     requestWebNotificationPermission();
@@ -4718,7 +4719,7 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                     // A send for a host the user has left would reach the one they opened instead.
                     if (!id || (target && target.serverId !== server()?.id))
                       return { error: t("webClient.error.checkConversation") };
-                    return workspace.send(id, text, attachments, replyTo, clientMessageId, createArtifact);
+                    return workspace.send(id, text, attachments, replyTo, clientMessageId, createArtifact, queueOnly);
                   }}
                   onMarkRead={workspace.markRead}
                   onMarkUnread={markUnreadFrom()}
