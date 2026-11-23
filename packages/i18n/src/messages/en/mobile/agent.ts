@@ -63,6 +63,11 @@ export const messages = defineMessages("mobile.agent", {
   "mobile.agent.menu.info": "Info",
   "mobile.agent.profile.edit": "Edit",
   "mobile.agent.profile.library": "Library",
+  "mobile.agent.profile.files": "Files",
+  "mobile.agent.profile.editProfile": "Edit profile",
+  "mobile.agent.profile.tab.label": "Profile sections",
+  "mobile.agent.profile.tab.activity": "Activity",
+  "mobile.agent.profile.tab.settings": "Settings",
   "mobile.agent.profile.computer": "Computer",
   "mobile.agent.profile.notificationsFooter":
     "Get a notice when this agent finishes or waits for you. Only for you, on all your devices.",
