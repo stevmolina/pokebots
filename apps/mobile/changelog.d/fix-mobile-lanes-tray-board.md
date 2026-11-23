@@ -1,3 +1,5 @@
+### Fixed
+
 - An unread reply in a side session now puts its agent in the Done lane of the chat list, as on the desktop.
 - Opening the sessions tray above the composer now scrolls the chat so the whole list shows.
 - The Threads page remembers List or Board on this device.

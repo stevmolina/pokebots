@@ -1515,7 +1515,7 @@
   }
 }
 
-/* "Active" | "Folders" over the chat list: a rounded track with a raised white thumb (mockup B3). */
+/* "Active" | "Folders" over the chat list: a rounded track with a raised light thumb (mockup B3). */
 .sidebar-list-view-switch {
   flex: none;
   padding: 4px 12px 10px;
@@ -1560,7 +1560,7 @@
 
 .sidebar-chat .sidebar-chat-row.sidebar-chat-card.ui-button {
   border: 1px solid var(--openbot-border);
-  border-radius: 14px;
+  border-radius: var(--openbot-radius-card);
   background: var(--openbot-bg-surface-raised);
   padding: 9px 12px 9px 10px;
 }
