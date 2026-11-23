@@ -121,13 +121,13 @@ export function ConversationSideThread(props: { threadId: string; resizer: JSX.E
     return key ? threadComposer.draft(key) : undefined;
   };
   /** Sends the draft of this thread. Without its key, a send would take the draft of the chat's thread. */
-  function sendSide(side: SideThread, text: string): Promise<boolean> {
+  function sendSide(side: SideThread, text: string, queueOnly?: boolean): Promise<boolean> {
     const key = draftKey();
     if (!key) return Promise.resolve(false);
     // While a queued message is in the message box, Send saves it in its place.
     return threadQueue.editOf(side.task.id)
       ? threadComposer.importsEnded(key).then(() => threadQueue.save(key))
-      : threadComposer.send(side, text, key);
+      : threadComposer.send(side, text, key, queueOnly);
   }
   /** The thread waits for an answer to a question or a takeover, which the chat tab of the thread shows. */
   const waitsForAnswer = () => {
@@ -247,6 +247,9 @@ export function ConversationSideThread(props: { threadId: string; resizer: JSX.E
             mediaSource={view.runtime?.attachmentMedia}
             downloads={attachmentDownloads}
             onSend={(text) => sendSide(current().thread, text)}
+            onSendAlternate={
+              current().thread.conversation?.activeTurnId ? (text) => sendSide(current().thread, text, true) : undefined
+            }
             onStop={() => current().thread.onStop()}
             onOpenLink={(url) => void openExternalMessageUrl(url)}
             onOpenFile={openThreadFile}

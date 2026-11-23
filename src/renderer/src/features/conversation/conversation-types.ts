@@ -573,6 +573,7 @@ export interface ConversationThreads {
     attachmentDraftIds: string[],
     replyToMessageId?: string | null,
     createArtifact?: boolean,
+    queueOnly?: boolean,
   ) => Promise<boolean>;
   onStop: () => void;
   /** Stops any side thread of the agent by its task id. Missing where the host cannot stop a thread. */
@@ -680,6 +681,7 @@ export interface SideThread {
     attachmentDraftIds: string[],
     replyToMessageId?: string | null,
     createArtifact?: boolean,
+    queueOnly?: boolean,
   ) => Promise<boolean>;
   onStop: () => void;
   onRead: (messageId: string) => void;

@@ -355,6 +355,16 @@ export function ConversationThread() {
                 ? threadComposer.importsEnded(key).then(() => threadQueue.save(key))
                 : threadComposer.send(current().threads, text);
             }}
+            onSendAlternate={
+              current().threads.open && current().threads.conversation?.activeTurnId
+                ? (text) => {
+                    const key = threadComposer.openDraftKey();
+                    return key && threadQueue.editOf(current().threads.open?.id)
+                      ? threadComposer.importsEnded(key).then(() => threadQueue.save(key))
+                      : threadComposer.send(current().threads, text, undefined, true);
+                  }
+                : undefined
+            }
             onStop={() => current().threads.onStop()}
             onOpenLink={(url) => void openExternalMessageUrl(url)}
             onOpenFile={openThreadFile}

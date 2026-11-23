@@ -116,6 +116,8 @@ export const messages = {
   "composer.send.hint.enter": "送信 (Enter)。Shift+Enter で改行します。",
   "composer.send.hint.modEnterMac": "送信 (⌘Enter)。Enter で改行します。",
   "composer.send.hint.modEnterWin": "送信 (Ctrl+Enter)。Enter で改行します。",
+  "composer.send.hint.busySteer": "このターンに指示 (Enter)。{chord} で後のキューに追加します。",
+  "composer.send.hint.busyQueue": "このターンの後にキュー (Enter)。{chord} で今すぐ指示します。",
   "composer.save.hint.enter": "保存 (Enter)。Shift+Enter で改行します。",
   "composer.save.hint.modEnterMac": "保存 (⌘Enter)。Enter で改行します。",
   "composer.save.hint.modEnterWin": "保存 (Ctrl+Enter)。Enter で改行します。",

@@ -189,6 +189,10 @@ import {
   MESSAGE_PINS_CAPABILITY,
   MESSAGE_PINS_ROUTES,
 } from "@openbot/contracts/team-protocol/message-pins-v1";
+import {
+  MESSAGE_QUEUE_ONLY_CAPABILITY,
+  MESSAGE_QUEUE_ONLY_ROUTE,
+} from "@openbot/contracts/team-protocol/message-queue-only-v1";
 import { MODEL_STEERING_CAPABILITY, MODEL_STEERING_ROUTES } from "@openbot/contracts/team-protocol/model-steering-v1";
 import {
   MODEL_VISIBILITY_CAPABILITY,
@@ -462,6 +466,7 @@ export interface WebWorkspaceRuntime {
     replyToMessageId?: string | null,
     clientMessageId?: string,
     createArtifact?: boolean,
+    queueOnly?: boolean,
   ): Promise<string>;
   stop(agentId: string, turnId: string): Promise<void>;
   /** Sends which agent this member is writing to, or `null`. It does nothing while the host is offline. */
@@ -1835,7 +1840,7 @@ export function createWebWorkspaceRuntime(
         throw new Error(currentText().t("error.remote.invalidData"));
       return `data:${value.mimeType};base64,${value.base64}`;
     },
-    async send(id, text, attachmentDraftIds, replyToMessageId = null, clientMessageId, createArtifact) {
+    async send(id, text, attachmentDraftIds, replyToMessageId = null, clientMessageId, createArtifact, queueOnly) {
       if (
         createArtifact &&
         !capabilities.includes(ARTIFACT_REQUEST_CAPABILITY) &&
@@ -1843,11 +1848,17 @@ export function createWebWorkspaceRuntime(
       )
         throw new Error(currentText().t("error.team.claudeAiToolsUnsupported"));
       const nativeArtifact = createArtifact && capabilities.includes(ARTIFACT_REQUEST_CAPABILITY);
+      const nativeQueueOnly =
+        queueOnly && capabilities.includes(MESSAGE_QUEUE_ONLY_CAPABILITY) && (!createArtifact || nativeArtifact);
       const result = await request(
         "POST",
-        nativeArtifact ? ARTIFACT_REQUEST_ROUTE : TEAM_API_ROUTES.agent.messages(id),
+        nativeQueueOnly
+          ? MESSAGE_QUEUE_ONLY_ROUTE
+          : nativeArtifact
+            ? ARTIFACT_REQUEST_ROUTE
+            : TEAM_API_ROUTES.agent.messages(id),
         {
-          ...(nativeArtifact ? { agentId: id } : {}),
+          ...(nativeQueueOnly || nativeArtifact ? { agentId: id } : {}),
           text: createArtifact && !nativeArtifact ? artifactRequestText(text) : text,
           attachmentDraftIds,
           replyToMessageId,
@@ -1855,6 +1866,7 @@ export function createWebWorkspaceRuntime(
           timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
           // A host with `message-client-id-v1` answers a retry with the first receipt.
           ...(clientMessageId ? { clientMessageId } : {}),
+          ...(nativeQueueOnly && createArtifact ? { createArtifact: true } : {}),
         },
       );
       if (!isQueuedMessageReceipt(result)) throw new Error(currentText().t("webClient.error.sendUnconfirmed"));

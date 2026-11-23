@@ -1177,6 +1177,7 @@ export function createComposerActions(deps: ComposerActionsDeps) {
     submitComposer,
     steerComposer,
     submitOpposite,
+    hostSteers,
     composerAnswersPrompt,
     sendSelectionInstruction,
     sendCardMessage,

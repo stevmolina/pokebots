@@ -112,6 +112,8 @@ export const messages = {
   "composer.send.hint.enter": "שליחה (Enter). Shift+Enter מוסיף שורה חדשה.",
   "composer.send.hint.modEnterMac": "שליחה (⌘Enter). Enter מוסיף שורה חדשה.",
   "composer.send.hint.modEnterWin": "שליחה (Ctrl+Enter). Enter מוסיף שורה חדשה.",
+  "composer.send.hint.busySteer": "הכוונה של התור הזה (Enter). {chord} מוסיף לתור להמשך.",
+  "composer.send.hint.busyQueue": "הוספה לתור אחרי התור הזה (Enter). {chord} מכוון עכשיו.",
   "composer.save.hint.enter": "שמירה (Enter). Shift+Enter מוסיף שורה חדשה.",
   "composer.save.hint.modEnterMac": "שמירה (⌘Enter). Enter מוסיף שורה חדשה.",
   "composer.save.hint.modEnterWin": "שמירה (Ctrl+Enter). Enter מוסיף שורה חדשה.",

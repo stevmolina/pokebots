@@ -115,6 +115,8 @@ export const messages = {
   "composer.send.hint.enter": "Отправить (Enter). Shift+Enter — новая строка.",
   "composer.send.hint.modEnterMac": "Отправить (⌘Enter). Enter — новая строка.",
   "composer.send.hint.modEnterWin": "Отправить (Ctrl+Enter). Enter — новая строка.",
+  "composer.send.hint.busySteer": "Направить текущий ход (Enter). {chord} ставит в очередь на потом.",
+  "composer.send.hint.busyQueue": "В очередь после этого хода (Enter). {chord} направляет сейчас.",
   "composer.save.hint.enter": "Сохранить (Enter). Shift+Enter — новая строка.",
   "composer.save.hint.modEnterMac": "Сохранить (⌘Enter). Enter — новая строка.",
   "composer.save.hint.modEnterWin": "Сохранить (Ctrl+Enter). Enter — новая строка.",
