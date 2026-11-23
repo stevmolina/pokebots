@@ -74,7 +74,17 @@ export function AgentCalmProfile({ agent }: { agent: MobileAgent }) {
   const [tab, setTab] = useState<ProfileTab>("activity");
   // The stack that presents this sheet. The sheet has its own stack inside.
   const sheetStack = useNavigation().getParent();
-  const tasksSupported = useMobileWorkspaceSelector((current) => current.canUseTasks(serverId));
+  // While the server reconnects after a reload, its capabilities are not known yet. A task list that
+  // the phone kept for this agent shows the host has threads, so the Sessions card stays.
+  const hostHasTasks = useMobileWorkspaceSelector((current) => current.canUseTasks(serverId));
+  const keptTasks = useQuery({
+    queryKey: queryKeys.agentTasks(queryScope, serverId, agent.id),
+    enabled: false,
+    retry: false,
+    queryFn: () => workspace.loadAgentTasks(agent.id, serverId),
+    select: () => true,
+  }).data;
+  const tasksSupported = hostHasTasks || keptTasks === true;
   const mainId = useMainSession(serverId, agent.id) ?? MAIN_THREAD_ID;
   // The same reads as the Model, Routines and Skills pages, so each row shows what its page shows.
   const models = useQuery({

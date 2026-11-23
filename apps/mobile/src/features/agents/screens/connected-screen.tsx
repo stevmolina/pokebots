@@ -547,7 +547,14 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
   // As on the desktop, an agent at work leaves its folder for "Working", and an agent that finished with
   // a reply the user did not read goes to "Done". Both go back to their folder after that.
   const workingAgentIds = useWorkingAgentIds();
-  const unreadAgentIdSet = useMemo(() => new Set(unreadAgentIds), [unreadAgentIds]);
+  // Loads the read marks of the agents' side threads for their badges. As on the desktop, an unread
+  // reply in a side thread also puts its agent in "Done", but adds no number to the count of a folder.
+  const activeAgentIds = useMemo(() => activeAgents.map((agent) => agent.id), [activeAgents]);
+  const threadUnread = useHomeThreadState(activeServer.id, activeAgentIds);
+  const unreadAgentIdSet = useMemo(
+    () => new Set([...unreadAgentIds, ...threadUnread.keys()]),
+    [unreadAgentIds, threadUnread],
+  );
   // This phone's own choice. "Recent activity" sorts each section by last activity with unread chats
   // on top. "Unread in a group" takes the unread chats out of their sections, under "Needs you";
   // "Unread first in folders" puts them first in each section. None of them changes the layout.
@@ -745,10 +752,6 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
   // The read state changes on each message, so the counts become a string first: the map, and with it
   // `renderItem`, change only when the count of a closed folder changes.
   const unreadCounts = useUnreadCounts();
-  // Loads the read marks of the agents' side threads for their badges. As on the desktop, those
-  // threads add no number to the count of a folder.
-  const activeAgentIds = useMemo(() => activeAgents.map((agent) => agent.id), [activeAgents]);
-  useHomeThreadState(activeServer.id, activeAgentIds);
   const folderUnreadKey = useMemo(() => {
     if (!collapsedSectionIds.size) return "[]";
     const unread = new Set(unreadAgentIds);
