@@ -47,14 +47,20 @@ import {
  */
 function SidebarChatRows(rowsProps: {
   chats: readonly SidebarChatItem[];
-  compact?: boolean;
+  compact?: boolean | undefined;
+  card?: boolean | undefined;
   note?: (chat: SidebarChatItem) => string | undefined;
 }) {
   return (
-    <div class={["sidebar-chat-rows", { "sidebar-chat-rows-compact": rowsProps.compact === true }]}>
+    <div
+      class={[
+        "sidebar-chat-rows",
+        { "sidebar-chat-rows-compact": rowsProps.compact === true, "sidebar-chat-rows-cards": rowsProps.card === true },
+      ]}
+    >
       {/* Keyed by chat, so a new order after a message keeps each row, its focus and its menu. */}
       <For each={rowsProps.chats} keyed={(chat) => `${chat.kind}:${chat.id}`}>
-        {(chat) => <SidebarChatRow chat={chat()} look="row" note={rowsProps.note?.(chat())} />}
+        {(chat) => <SidebarChatRow chat={chat()} look="row" note={rowsProps.note?.(chat())} card={rowsProps.card} />}
       </For>
     </div>
   );
@@ -234,6 +240,7 @@ function SidebarDockGroup(groupProps: {
   open: boolean;
   onToggle: () => void;
   compact?: boolean;
+  card?: boolean;
   note?: (chat: SidebarChatItem) => string | undefined;
   children?: JSX.Element;
 }) {
@@ -252,6 +259,7 @@ function SidebarDockGroup(groupProps: {
       style={section() ? `--sidebar-drag-y: ${dragOffset(groupProps.id).y}px;` : undefined}
       aria-label={groupProps.name}
       data-section-id={section() ? groupProps.id : undefined}
+      data-dock-group={groupProps.id}
     >
       <header>
         <Button
@@ -274,7 +282,12 @@ function SidebarDockGroup(groupProps: {
         </Button>
       </header>
       <SidebarDockBody id={groupProps.id} open={open()}>
-        <SidebarChatRows chats={groupProps.chats} compact={groupProps.compact} note={groupProps.note} />
+        <SidebarChatRows
+          chats={groupProps.chats}
+          compact={groupProps.compact}
+          card={groupProps.card}
+          note={groupProps.note}
+        />
         {groupProps.children}
       </SidebarDockBody>
     </section>
@@ -497,6 +510,7 @@ export function SidebarChatDock(dockProps: { groups: SidebarChatDockGroups; open
             chats={dockProps.groups.working}
             open={open().isOpen(SIDEBAR_DOCK_WORKING_ID)}
             onToggle={() => open().toggle(SIDEBAR_DOCK_WORKING_ID)}
+            card
           />
         </Show>
         <Show when={doneShown()}>
