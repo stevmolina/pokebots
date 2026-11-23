@@ -191,6 +191,22 @@ export class AgentThreadStore {
     ).map((row) => ({ id: requiredStringColumn(row, "agent_id"), threadId: requiredStringColumn(row, "thread_id") }));
   }
 
+  /** The latest activity time of each agent's open side threads, by agent id. */
+  latestUpdatedAtByAgent(): Map<string, string> {
+    const latest = new Map<string, string>();
+    for (const row of databaseRows(
+      this.#database.connection
+        .prepare(
+          `SELECT agent_id, MAX(updated_at) AS updated_at FROM projection_agent_threads
+           WHERE archived_at IS NULL GROUP BY agent_id`,
+        )
+        .all(),
+    )) {
+      latest.set(requiredStringColumn(row, "agent_id"), requiredStringColumn(row, "updated_at"));
+    }
+    return latest;
+  }
+
   /** The agent id and thread id of every open side thread, the newest first. */
   openExecutionThreads(): Array<{ id: string; threadId: string }> {
     return databaseRows(

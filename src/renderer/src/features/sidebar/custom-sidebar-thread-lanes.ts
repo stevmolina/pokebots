@@ -46,6 +46,7 @@ export function useCustomSidebarThreadLanes(input: {
     const agent = input.shownAgent();
     return {
       threads: threadActivity.entries(),
+      latestThreadUpdatedAt: threadActivity.latestThreadUpdatedAt(),
       activeKey: agent ? threadTabKey(agent.id, agentThreads.activeId(agent.id)) : null,
       unreadAgentIds: threadActivity.unreadAgentIds(),
       onOpenThread: openAgentThread,
