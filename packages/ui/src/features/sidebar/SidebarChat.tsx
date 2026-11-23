@@ -26,6 +26,7 @@ import {
   PanelLeft,
   Plus,
   Search,
+  SlidingTabs,
 } from "@openbot/ui";
 import type { JSX } from "@solidjs/web";
 import { createMemo, createSignal, For, onSettled, Show } from "solid-js";
@@ -395,6 +396,32 @@ function SidebarSearchField(fieldProps: { onOpen: () => void }) {
   );
 }
 
+/**
+ * "Active" | "Folders" over the chat list. "Active" shows the chats by what they do: Working, Done,
+ * Snoozed, then the rest. "Folders" shows every chat in its folder, also the ones that work.
+ */
+function SidebarListViewSwitch() {
+  const { chatListView, setChatListView } = useSidebarScope();
+  const { t } = useText();
+  return (
+    <div class="sidebar-list-view-switch">
+      <SlidingTabs.Root
+        value={chatListView()}
+        onChange={(value: string) => setChatListView(value === "folders" ? "folders" : "active")}
+      >
+        <SlidingTabs.List class="sidebar-list-view-tabs" aria-label={t("sidebar.listView.label")}>
+          <SlidingTabs.Trigger value="active" class="sidebar-list-view-tab">
+            {t("sidebar.listView.active")}
+          </SlidingTabs.Trigger>
+          <SlidingTabs.Trigger value="folders" class="sidebar-list-view-tab">
+            {t("sidebar.listView.folders")}
+          </SlidingTabs.Trigger>
+        </SlidingTabs.List>
+      </SlidingTabs.Root>
+    </div>
+  );
+}
+
 function SidebarChatList(listProps: { onTitleHiddenChange: (hidden: boolean) => void }) {
   const {
     dropSidebarNativeDrag,
@@ -430,6 +457,8 @@ function SidebarChatList(listProps: { onTitleHiddenChange: (hidden: boolean) => 
     >
       {/* The chips stay over the list while it scrolls. */}
       <Show when={props.machineChips}>{(chips) => <SidebarMachineChips chips={chips()} />}</Show>
+      {/* The switch stays over the list too: "Active" groups the chats by state, "Folders" by folder. */}
+      <SidebarListViewSwitch />
       <div
         ref={(element) => scrollFades.bind(element)}
         class={["sidebar-chat-scroll", scrollFades.classes()]}
