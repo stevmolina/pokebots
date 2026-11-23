@@ -150,7 +150,12 @@ export function useWorkingAgentIds(): ReadonlySet<string> {
       .join("\n");
   }, [liveState, online, serverId]);
   const own = useSyncExternalStore(liveState.subscribe, selectOwn);
-  const subscribeTasks = useCallback((listener: () => void) => queryCache.subscribe(listener), [queryCache]);
+  // The cache tells its listeners while another component renders and adds a query. The list reads
+  // the change after that render, so React does not update this screen during another one's render.
+  const subscribeTasks = useCallback(
+    (listener: () => void) => queryCache.subscribe(() => queueMicrotask(listener)),
+    [queryCache],
+  );
   const selectThreads = useCallback(() => {
     if (!online) return "";
     const ids = queryCache
