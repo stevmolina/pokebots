@@ -328,7 +328,11 @@ function FreeAreaMenu() {
 function useRecentChats() {
   const { filteredChats, waitingChats, unreadChats, props } = useSidebarScope();
   return createMemo(() =>
-    sidebarRecentChats([...waitingChats(), ...unreadChats(), ...filteredChats()], props.threadLanes?.threads),
+    sidebarRecentChats(
+      [...waitingChats(), ...unreadChats(), ...filteredChats()],
+      props.threadLanes?.threads,
+      props.threadLanes?.latestThreadUpdatedAt,
+    ),
   );
 }
 

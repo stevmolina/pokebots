@@ -49,6 +49,7 @@ async function fixture() {
   const store = new AgentThreadStore(database);
   const conversation = new ConversationRuntime(new AgentStore(root, root, database), vi.fn(), () => [agent]);
   const queued = vi.fn();
+  const agentActivityChanged = vi.fn();
   const tasks = new AgentTasks({
     store,
     mailbox,
@@ -60,10 +61,11 @@ async function fixture() {
       turnActive: () => false,
       defaultTaskLimit: () => 4,
       archived: () => Effect.void,
+      agentActivityChanged,
       queued,
     },
   });
-  return { tasks, store, mailbox, conversation, queued };
+  return { tasks, store, mailbox, conversation, queued, agentActivityChanged };
 }
 
 function call(threadId: string, callId = "start-1"): DynamicToolCallParams {
@@ -108,4 +110,32 @@ it("shares the eight-task cap across callers and returns the same task on retry 
   });
   expect(await Effect.runPromise(tasks.handleTool(call("task-thread"), caller))).toEqual(first);
   expect(store.openTaskIds("chief")).toHaveLength(8);
+});
+
+it("tracks the latest open side-thread updatedAt per agent and notifies on activity", async () => {
+  const { tasks, store, agentActivityChanged } = await fixture();
+  const first = tasks.create("chief", "First side thread", "user");
+  const second = tasks.create("chief", "Second side thread", "user");
+  expect(agentActivityChanged).toHaveBeenCalledWith("chief");
+
+  // Complete the second thread and verify latestUpdatedAtByAgent returns its timestamp.
+  const handled = tasks.event({
+    type: "turn-completed",
+    agentId: "chief",
+    threadId: second.threadId,
+    turnId: "turn-2",
+    status: "completed",
+  });
+  expect(handled).toBe(true);
+  const completedSecond = store.task(second.taskId);
+  expect(completedSecond).not.toBeNull();
+  expect(tasks.latestUpdatedAtByAgent().get("chief")).toBe(completedSecond?.updatedAt);
+
+  // Archiving the second thread falls back to the remaining open thread.
+  store.close(second.taskId);
+  expect(tasks.latestUpdatedAtByAgent().get("chief")).toBe(first.updatedAt);
+
+  // Archiving all threads removes the agent from the open side-thread map.
+  store.close(first.taskId);
+  expect(tasks.latestUpdatedAtByAgent().has("chief")).toBe(false);
 });
