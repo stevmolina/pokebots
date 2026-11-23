@@ -88,7 +88,7 @@ import { PlanLimitsHeaderButton } from "@/features/servers/components/plan-limit
 import { usePlanLimits } from "@/features/servers/model/plan-limits";
 import { saveChatOrderPreference, useChatOrderPreference } from "@/features/settings/model/chat-order";
 import { ConnectionHeaderStatus } from "@/features/workspace/components/connection-header-status";
-import { useWaitingAgentIds } from "@/features/workspace/components/use-agent-activity";
+import { useWaitingAgentIds, useWorkingAgentIds } from "@/features/workspace/components/use-agent-activity";
 import { useHomeThreadState } from "@/features/workspace/components/use-home-thread-state";
 import { useUnreadAgentIds, useUnreadCounts } from "@/features/workspace/components/use-live-workspace";
 import {
@@ -101,10 +101,12 @@ import { canAddChatPin } from "@/features/workspace/model/agent-pins";
 import type { DropChange } from "@/features/workspace/model/chat-drag";
 import { showsOnline } from "@/features/workspace/model/server-status";
 import {
+  isMobileGroupHeading,
   MOBILE_CHAT_ORDERS,
   type MobileChatOrder,
   type MobileSidebarItem,
   mobileChatOrderSortsSections,
+  mobileLaneItems,
   mobileSidebarItems,
   mobileUnreadItems,
   mobileWaitingItems,
@@ -542,6 +544,10 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
   const sidebar = sidebarByServer[activeServer.id];
   // A waiting agent leaves its section for "Needs you". A pinned agent stays in its tile, which shows the same badge.
   const waitingAgentIds = useWaitingAgentIds();
+  // As on the desktop, an agent at work leaves its folder for "Working", and an agent that finished with
+  // a reply the user did not read goes to "Done". Both go back to their folder after that.
+  const workingAgentIds = useWorkingAgentIds();
+  const unreadAgentIdSet = useMemo(() => new Set(unreadAgentIds), [unreadAgentIds]);
   // This phone's own choice. "Recent activity" sorts each section by last activity with unread chats
   // on top. "Unread in a group" takes the unread chats out of their sections, under "Needs you";
   // "Unread first in folders" puts them first in each section. None of them changes the layout.
@@ -564,7 +570,12 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
   const items = useMemo(() => {
     if (dragging && chatOrder !== "manual" && heldItems.current) return heldItems.current;
     const layout = sidebar?.layout ?? null;
-    const listedAgents = unpinnedAgents.filter((agent) => !waitingAgentIds.has(agent.id));
+    const laneAgents = unpinnedAgents.filter((agent) => !waitingAgentIds.has(agent.id));
+    const workingAgents = laneAgents.filter((agent) => workingAgentIds.has(agent.id));
+    const doneAgents = laneAgents.filter((agent) => !workingAgentIds.has(agent.id) && unreadAgentIdSet.has(agent.id));
+    const listedAgents = laneAgents.filter(
+      (agent) => !workingAgentIds.has(agent.id) && !unreadAgentIdSet.has(agent.id),
+    );
     const listedChannels = openChannels.filter((channel) => !pinnedChannelIds.includes(channel.id));
     const unread = unreadChatIds;
     const grouped = chatOrder === "unread-group";
@@ -573,6 +584,8 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
         layout,
         unpinnedAgents.filter((agent) => waitingAgentIds.has(agent.id)),
       ),
+      ...mobileLaneItems("working", layout, workingAgents),
+      ...mobileLaneItems("done", layout, doneAgents),
       ...(grouped
         ? mobileUnreadItems(
             layout,
@@ -592,6 +605,8 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
     sidebar?.layout,
     unpinnedAgents,
     waitingAgentIds,
+    workingAgentIds,
+    unreadAgentIdSet,
     openChannels,
     pinnedChannelIds,
     chatOrder,
@@ -605,7 +620,7 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
     let current: string | null = null;
     for (const item of items) {
       if (item.kind === "section") current = item.id;
-      else if (item.kind === "waiting" || item.kind === "unread") current = null;
+      else if (isMobileGroupHeading(item)) current = null;
       else if (current) counts.set(current, (counts.get(current) ?? 0) + 1);
     }
     return counts;
@@ -717,7 +732,7 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
     const ids = new Set<string>();
     let sectionCollapsed = false;
     for (const item of items) {
-      if (item.kind === "waiting" || item.kind === "unread") sectionCollapsed = false;
+      if (isMobileGroupHeading(item)) sectionCollapsed = false;
       else if (item.kind === "section") {
         const hidden = item.ancestorIds.some((ancestorId) => collapsedSectionIds.has(ancestorId));
         if (hidden) ids.add(item.id);
@@ -740,7 +755,7 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
     const counts = new Map<string, number>();
     let folderIds: readonly string[] = [];
     for (const item of items) {
-      if (item.kind === "waiting" || item.kind === "unread") folderIds = [];
+      if (isMobileGroupHeading(item)) folderIds = [];
       else if (item.kind === "section")
         folderIds = [...item.ancestorIds, item.id].filter((id) => collapsedSectionIds.has(id));
       else {
@@ -805,6 +820,13 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
           ) : (
             <AgentWaitingGroupHeader count={item.count} />
           )}
+        </AgentListRowReveal>
+      ) : item.kind === "working" || item.kind === "done" ? (
+        <AgentListRowReveal index={index + rowOffset} reveal={listReveal} skip={holdOpen}>
+          <CalmGroupLabel
+            title={t(item.kind === "working" ? "mobile.agent.list.working.title" : "mobile.agent.list.done.title")}
+            count={item.count}
+          />
         </AgentListRowReveal>
       ) : item.kind === "unread" ? (
         <AgentListRowReveal index={index + rowOffset} reveal={listReveal} skip={holdOpen}>

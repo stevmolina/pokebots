@@ -11,6 +11,10 @@ import type { MobileAgent } from "./workspace-types";
 
 export type MobileSidebarItem =
   | { kind: "waiting"; id: string; count: number }
+  /** The heading of the "Working" lane: the agents that run a turn now, in their chat or a side thread. */
+  | { kind: "working"; id: string; count: number }
+  /** The heading of the "Done" lane: the agents that finished with a reply that the user did not read. */
+  | { kind: "done"; id: string; count: number }
   /** The heading of the "Unread" group of the `unread-group` order. */
   | { kind: "unread"; id: string; count: number }
   | {
@@ -164,6 +168,29 @@ export function mobileWaitingItems(layout: SidebarLayoutSnapshot | null, agents:
     { kind: "waiting", id: "needs-you", count: sorted.length },
     ...sorted.map((agent) => ({ kind: "agent" as const, id: agent.id, agent })),
   ];
+}
+
+/**
+ * The "Working" and "Done" lanes, under "Needs you", as on the desktop. "Working" keeps layout order,
+ * so rows do not jump while agents work. "Done" shows the most recently used agent first. The layout
+ * keeps each agent's place, so an agent returns to its folder when it is read.
+ */
+export function mobileLaneItems(
+  lane: "working" | "done",
+  layout: SidebarLayoutSnapshot | null,
+  agents: MobileAgent[],
+): MobileSidebarItem[] {
+  if (agents.length === 0) return [];
+  const items = chatItems(layout, agents, []);
+  const sorted = lane === "done" ? byRecent(items) : items;
+  return [{ kind: lane, id: `lane:${lane}`, count: sorted.length }, ...sorted];
+}
+
+/** True for the heading of a group above the folders, such as "Needs you" or "Working". */
+export function isMobileGroupHeading(
+  item: MobileSidebarItem,
+): item is Extract<MobileSidebarItem, { kind: "waiting" | "unread" | "working" | "done" }> {
+  return item.kind === "waiting" || item.kind === "unread" || item.kind === "working" || item.kind === "done";
 }
 
 /** The "Unread" group of the `unread-group` order, above the sections, by last activity. */

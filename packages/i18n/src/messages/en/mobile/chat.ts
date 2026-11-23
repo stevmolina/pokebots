@@ -597,6 +597,11 @@ export const messages = defineMessages("mobile.chat", {
   "mobile.chat.threads.main": "Main chat",
   "mobile.chat.sessions.title": "Sessions",
   "mobile.chat.sessions.new": "New session",
+  "mobile.chat.sessionsTray.title": { one: "{count} active", other: "{count} active" },
+  "mobile.chat.sessionsTray.label": {
+    one: "{count} active session. Show or hide",
+    other: "{count} active sessions. Show or hide",
+  },
   "mobile.chat.sessions.all": "All sessions",
   "mobile.chat.threads.branchedFrom": "Branched from {title}",
   "mobile.chat.threads.branchedFromDeleted": "Branched from a deleted thread",

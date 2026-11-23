@@ -13,11 +13,16 @@ import { createScrollFades } from "../../components/createScrollFades";
 import { createSidebarDragEngine } from "./createSidebarDragEngine";
 import { SIDEBAR_NO_LIST_FILTER } from "./sidebar-list-filter";
 import {
+  parseSidebarSnooze,
+  SIDEBAR_DOCK_FOLDERS_VIEW_ID,
   SIDEBAR_DOCK_NONE_ID,
   SIDEBAR_DOCK_OPEN_PREFIX,
   SIDEBAR_DOCK_WORKING_ID,
+  type SidebarChatListView,
   type SidebarProps,
   sidebarChatOrderSortsSections,
+  sidebarSnoozeMarker,
+  sidebarSnoozes,
 } from "./sidebar-types";
 import { createSidebarAnnouncementStore } from "./stores/announcement-store";
 import { createSidebarDataStore } from "./stores/data-store";
@@ -117,6 +122,8 @@ export function createSidebarScope(props: SidebarProps) {
    */
   const startCreateSection = (agentId?: string, parentId?: string) => {
     setListFilter(SIDEBAR_NO_LIST_FILTER);
+    // Only the "Folders" view of the chat list shows folders, so the new folder's name editor shows there.
+    if (props.pages !== undefined) setChatListView("folders");
     startCreateSectionEditor(agentId, parentId);
   };
   let agentList: HTMLElement | undefined;
@@ -161,6 +168,36 @@ export function createSidebarScope(props: SidebarProps) {
   };
   const sectionIsCollapsed = (sectionId: string) =>
     dockHolds(sectionId) ? !dockOpenGroups().includes(sectionId) : layoutSectionIsCollapsed(sectionId);
+
+  /** The view of the chat list: "Active" by state, or "Folders". It is saved with the collapsed sections. */
+  const chatListView = (): SidebarChatListView =>
+    props.collapsedSectionIds.includes(SIDEBAR_DOCK_FOLDERS_VIEW_ID) ? "folders" : "active";
+  const setChatListView = (view: SidebarChatListView) => {
+    if (chatListView() !== view) props.onToggleSection(SIDEBAR_DOCK_FOLDERS_VIEW_ID);
+  };
+  /** A clock for the snoozes: a snooze ends by itself, so the list reads the time again once a minute. */
+  const [snoozeClock, setSnoozeClock] = createSignal(Date.now());
+  const snoozeTimer = setInterval(() => setSnoozeClock(Date.now()), 60_000);
+  onCleanup(() => clearInterval(snoozeTimer));
+  /** The snoozed agents that have not woken up, as agent id to end time. */
+  const snoozedAgents = createMemo(() => sidebarSnoozes(props.collapsedSectionIds, snoozeClock()));
+  /** Removes the snooze markers of one agent, and every marker that ran out. */
+  const clearSnoozeMarkers = (agentId: string | undefined) => {
+    const now = Date.now();
+    for (const id of props.collapsedSectionIds) {
+      const parsed = parseSidebarSnooze(id);
+      if (parsed && (parsed.agentId === agentId || parsed.until <= now)) props.onToggleSection(id);
+    }
+  };
+  const snoozeAgent = (agentId: string, until: number) => {
+    clearSnoozeMarkers(agentId);
+    props.onToggleSection(sidebarSnoozeMarker(agentId, until));
+    setSnoozeClock(Date.now());
+  };
+  const unsnoozeAgent = (agentId: string) => {
+    clearSnoozeMarkers(agentId);
+    setSnoozeClock(Date.now());
+  };
   const foldersSupported = () => props.foldersSupported === true && layoutMutable();
   const dragFolders = () =>
     foldersSupported() ? { canNest: sectionCanNest, isInside: sectionIsInside, parent: sectionParent } : null;
@@ -304,8 +341,14 @@ export function createSidebarScope(props: SidebarProps) {
     channelDeleteTarget,
     deleting,
     chatIsUnread,
+    chatListView,
     chatPinnedItems,
     chatsDraggable,
+    setChatListView,
+    snoozeAgent,
+    snoozedAgents,
+    snoozeClock,
+    unsnoozeAgent,
     directThreadByMember,
     dragOffset: dragState.dragOffset,
     dragOverPinnedKey: dragState.dragOverPinnedKey,
