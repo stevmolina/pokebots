@@ -176,6 +176,12 @@ export interface ConversationProps {
    * where this client cannot sign in for the server on screen; the card then says where to sign in.
    */
   onOpenMcpSignIn?: ((mcpServerId: string, trigger: HTMLElement | null) => void) | undefined;
+  /**
+   * Reads the live view link of a cloud computer that an agent started, from the server's owner or admin
+   * machine list, and opens it. Resolves false when the list does not have the machine. Absent where
+   * this account may not manage the server's cloud computers: the card then has no button.
+   */
+  onOpenComputerLiveView?: ((machineId: string) => Promise<boolean>) | undefined;
   /** Whether the server on screen holds a sign-in for an MCP row, as the Marketplace last read it. */
   mcpSignedIn?: ((mcpServerId: string) => boolean) | undefined;
   /**

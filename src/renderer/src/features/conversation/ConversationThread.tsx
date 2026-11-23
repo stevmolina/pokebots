@@ -19,6 +19,7 @@ import { useCompactMessageActions } from "../../compact-message-actions-preferen
 import { usePlatform } from "../../platform";
 import { deviceQuoteShortcut, deviceSendShortcut } from "../../send-shortcut-preference";
 import { useThreadVisualReplyCard } from "./ChatVisualReply";
+import { useThreadComputerLiveViewCard } from "./ComputerLiveViewChatCard";
 import { ConversationBrowserTakeover } from "./ConversationBrowserTakeover";
 import { ConversationQuestionPrompt } from "./ConversationQuestionPrompt";
 import { chatSearchOpensMessage } from "./chat-search";
@@ -253,6 +254,7 @@ export function ConversationThread() {
   );
   const marketplaceCard = useThreadMarketplaceSuggestionCard();
   const settingLinkCard = useThreadSettingLinkCard();
+  const liveViewCard = useThreadComputerLiveViewCard();
   /** A visual reply page shows as in the agent's chat, and writes in this thread's message box. */
   const visualReplyCard = useThreadVisualReplyCard(threadComposer.openDraftKey, requestThreadFocus);
   /** The cards that the thread waits for: its browser takeover, and its question as a form. */
@@ -387,7 +389,8 @@ export function ConversationThread() {
               visualReplyCard(message, quote) ??
               mcpSignInCard(message) ??
               marketplaceCard(message) ??
-              settingLinkCard(message)
+              settingLinkCard(message) ??
+              liveViewCard(message)
             }
             aboveComposer={extras.aboveComposer()}
             belowTitle={extras.belowTitle()}

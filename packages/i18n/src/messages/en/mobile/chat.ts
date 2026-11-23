@@ -389,6 +389,12 @@ export const messages = defineMessages("mobile.chat", {
   "mobile.chat.mcpSignIn.continueNamed": "Tell the agent to test {name} again",
   "mobile.chat.mcpSignIn.message": "I signed in to the MCP server {name}. Test it again.",
   "mobile.chat.mcpSignIn.unavailable": "Sign in to {name} in OpenBot on your computer, in Server settings, MCP.",
+  "mobile.chat.computerLiveView.title": "Cloud computer",
+  "mobile.chat.computerLiveView.subtitle": "Machine {id}",
+  "mobile.chat.computerLiveView.open": "Open live view",
+  "mobile.chat.computerLiveView.notFound": "This server's cloud computer list does not have this machine.",
+  "mobile.chat.computerLiveView.failed": "Could not open the live view. Try again.",
+  "mobile.chat.computerLiveView.unavailable": "An owner or admin of this server can open the live view.",
   "mobile.chat.browserSecret.signInBlockedTitle": "Sign in on your computer",
   "mobile.chat.browserSecret.signInBlockedBody":
     "This site does not accept a sign-in from the server. Open this chat in the OpenBot desktop app on your computer, and sign in there.",

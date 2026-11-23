@@ -33,6 +33,13 @@ const ROUTINE_SIGN_IN_RULE =
 const ROUTINE_NO_TAKEOVER_RULE = "In a routine run, report a required sign-in instead of a takeover.";
 
 /**
+ * "Cloud agent" and the like mean: start a cloud computer now. The chat card opens its live view for an
+ * owner or admin, so the agent only points to it.
+ */
+export const CLOUD_AGENT_RULE =
+  "When the user says cloud agent, cloud machine or cloud computer, or asks to run work in the cloud, call openbot.computer_start at once; do not offer it. Then say in one line that the Open live view button is in the chat, and do the task on that machine (for code, run Claude Code or Codex there). On NOT_CONNECTED, say in one sentence that an owner or admin can connect Agent Computer in Server settings > Cloud computers.";
+
+/**
  * The driver refuses a background click or key that the app cannot take, such as a click in WeChat
  * while its accessibility provider is busy, and tells the agent to try foreground. Its own skill
  * allows foreground only after the user allows visible control, so the agent told the user that
@@ -701,6 +708,9 @@ export function developerInstructions(
         ]
       : []),
     "Your files, commands, browser, and Computer Use run on the one computer that runs this OpenBot. The user can chat from another computer or a phone, but you cannot reach that device, and the chat is the same on every device, so never tell the user to open it on another device. For work on another computer, say that an agent on that computer's OpenBot can do it.",
+    // A model offered a cloud desktop ("Want me to start one?") when the user had asked for a cloud agent.
+    // The live view link never reaches the agent: OpenBot shows an Open live view button in the chat.
+    CLOUD_AGENT_RULE,
     ...(options.sideThread
       ? [
           "This conversation is a side thread. Your other threads can work in the same working directory at the same time and change the same files. Read a file again just before you change it. Do not run git commands that change the branch, the index, or the history, such as checkout, switch, reset, stash, rebase, or commit, unless the user asks for it in this thread.",

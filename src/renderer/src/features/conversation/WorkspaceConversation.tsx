@@ -22,6 +22,7 @@ import { MAIN_THREAD_ID } from "@openbot/ui/features/conversation/threads/thread
 import { sidebarAgentWaits } from "@openbot/ui/features/sidebar/sidebar-agent-states";
 import { useText } from "@openbot/ui/text";
 import { createMemo } from "solid-js";
+import { appPort } from "../../app-port";
 import { ProviderSignInDialogs } from "../../components/ProviderSignInDialogs";
 import { useNavigation } from "../../navigation";
 import { usePlatform } from "../../platform";
@@ -63,6 +64,7 @@ import { useUsage } from "../usage/usage-context";
 import { useWindowPage } from "../window/window-page-context";
 import { backgroundWorkKey } from "./background-work-key";
 import { Conversation } from "./Conversation";
+import { computerLiveViewOpener, openWithShell } from "./computer-live-view-opener";
 import { useConversation } from "./conversation-context";
 import { useConversationController } from "./conversation-controller-context";
 import { messagePromptRequestKey, promptRequestKey } from "./conversation-keys";
@@ -595,6 +597,13 @@ export function WorkspaceConversation(props: { account: () => CentralAuthUser; o
             setSkillsMarketplaceOpen(true);
           };
         })()}
+        // The cloud computer card reads the live view link from the owner or admin machine list, as
+        // Machines does, and opens it with the shell. A member gets no button.
+        onOpenComputerLiveView={computerLiveViewOpener(
+          activeServer(),
+          (serverId) => appPort().agentComputer.machines(serverId),
+          openWithShell((url) => appPort().openUrl(url)),
+        )}
         mcpSignedIn={(mcpServerId) => {
           const known = mcpSignIns();
           return known?.serverId === activeServer()?.id && known?.states[mcpServerId]?.signedIn === true;

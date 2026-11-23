@@ -484,7 +484,38 @@ Host response decoders and preload response decoders have independent implementa
 settings injects that port into the view. Machines drops old responses after access changes.
 Mobile uses mounted screen state and does not cache bearer links in offline workspace data.
 
-Repeatable proof: `bun scripts/agent-computer-e2e.ts`, `bun run test:team-api-routes`, and
+### Cloud agent requests and the live view card
+
+The base developer instructions (`CLOUD_AGENT_RULE` in `src/backend/agent/developer-instructions.ts`)
+tell every agent to call `computer_start` at once when the user says cloud agent, cloud machine or
+cloud computer, or asks to run work in the cloud. The agent does not offer the machine first. On
+`NOT_CONNECTED` it says that an owner or admin can connect Agent Computer in Server settings > Cloud
+computers.
+
+After a successful start, `handleAgentComputerTool` calls `onStarted(machineId)`, and the tool router
+posts a system card with the item type `computer-live-view:<machine id>`
+(`packages/contracts/src/computer-live-view-events.ts`). The card holds no link. One card is posted for
+each machine and turn.
+
+```mermaid
+flowchart LR
+  U["User: 'cloud agent'"] --> A["Agent calls computer_start"]
+  A --> R["Router posts card: computer-live-view:&lt;id&gt;"]
+  R --> C["Chat shows Open live view (owner or admin only)"]
+  C -->|press| L["Client reads machine list (IPC or agent-computer-v1 route)"]
+  L --> O["Client opens the link; nothing is saved"]
+```
+
+The desktop renderer, the web client and mobile draw the card. `computerLiveViewOpener` in the
+renderer, and `ChatComputerLiveViewCard` on mobile, show the button only when the account may
+administer the server with `agent-computer-v1` (`serverCanAdminister` / `canManageAgentComputer`). At
+the press they call `machines(serverId)`, pick the card's id with `machineLiveViewUrl` (https only), and
+open the link: the desktop with the shell, the web client in a tab that opens at the press, mobile with
+`Linking`. A member sees the card with a note and no button. An older client shows the card's English
+status text. A machine that an account-scoped credential started is not in the host key's list; the
+card then says to open it from Machines.
+
+Repeatable proof: `bun scripts/computer-live-view-card-e2e.ts`, `bun scripts/agent-computer-e2e.ts`, `bun run test:team-api-routes`, and
 `bun scripts/coding-jobs-controller-smoke.ts`. They write JSON reports under `.openbot-build/`.
 The REST proof uses a local HTTP server and does not start a paid cloud machine. The Team API
 CI job runs it before the route checks and uploads both reports.

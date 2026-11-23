@@ -85,7 +85,7 @@ export const AGENT_COMPUTER_TOOL_DEFINITIONS = [
   },
   {
     name: "computer_start",
-    description: `Start or resume the cloud computer for a context, and get its id. ${MACHINE_RULES} The human opens the live view from Machines in OpenBot. Live view and billing links are human credentials and are not available to you. Work in visible windows ($DISPLAY is set) so the live view shows the work. Read ~/PLAYBOOK.md on the machine before a big task. briefing has more rules.`,
+    description: `Start or resume the cloud computer for a context, and get its id. For a cloud agent, machine or computer, call this at once; do not offer it. ${MACHINE_RULES} The chat shows the human an Open live view button. Live view and billing links are human credentials and are not available to you. Work in visible windows ($DISPLAY is set) so the live view shows the work. Read ~/PLAYBOOK.md on the machine before a big task. briefing has more rules.`,
     shape: startSchema.shape,
   },
   {
@@ -143,6 +143,11 @@ export interface AgentComputerToolRequest {
   idempotencyKey?: string;
   /** Asks the user to approve a change, with `reason` as the question. True when approved. */
   approve: (reason: string) => Effect.Effect<boolean>;
+  /**
+   * Called after `computer_start` started or resumed a machine, with its id only. The router posts the
+   * chat card whose button reads the live view link on the person's own client.
+   */
+  onStarted?: ((machineId: string) => void) | undefined;
 }
 
 /** A small text file comes back as text too, so the agent need not read it again. */
@@ -176,6 +181,7 @@ export const handleAgentComputerTool = Effect.fn("AgentComputerTools.handle")(fu
       case "computer_start": {
         const input = yield* parse(startSchema, request.arguments);
         const started = yield* api.start(input.context, input.size, { idempotencyKey: request.idempotencyKey });
+        request.onStarted?.(started.id);
         return textResult({
           id: started.id,
           context: started.context,

@@ -179,6 +179,8 @@ export type ChatActionMarkerModel =
   | (SkillSuggestionEvent & { kind: "skill-suggestion"; timestamp: string })
   /** The agent saved an MCP server that needs a sign-in. The chat shows a card to sign in. */
   | { kind: "mcp-sign-in"; mcpServerId: string; timestamp: string }
+  /** The agent started a cloud computer. The chat shows a card that opens its live view. */
+  | { kind: "computer-live-view"; machineId: string; timestamp: string }
   /**
    * The agent got a one-time command that installs a server. The chat shows a card that waits for the
    * server. `name` is the name that the command gives it; `expiresAt` is in milliseconds since the epoch.
