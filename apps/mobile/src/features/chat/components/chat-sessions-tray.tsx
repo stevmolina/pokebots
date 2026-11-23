@@ -1,18 +1,21 @@
 import type { AgentTask } from "@openbot/contracts/ipc";
 import { router } from "expo-router";
 import { Typography } from "heroui-native";
-import { memo, useState } from "react";
+import { memo, useRef, useState } from "react";
 import { Pressable, View } from "react-native";
 import { usePreviewColors } from "@/features/design-preview/components/preview-parts";
 import { previewType as type } from "@/features/design-preview/model/preview-tokens";
 import { agentTaskStatus } from "@/features/servers/model/agent-task-text";
 import { haptics } from "@/shared/lib/haptics";
 import { useText } from "@/shared/lib/text";
+import { useRevealChatListEnd } from "./chat-list-end";
 
 /**
  * The agent's active side sessions, above the composer, as the desktop "background workers" tray.
  * Closed, it is one quiet row under a small divider pill: the count and what the newest session does
  * now. A tap opens the list; each row opens its session. It shows nothing while no session runs or waits.
+ * The tray sits at the end of the chat list, so an open list scrolls the chat to its end and shows in
+ * full above the composer, with or without the keyboard.
  */
 export const ChatSessionsTray = memo(function ChatSessionsTray({
   tasks,
@@ -26,6 +29,9 @@ export const ChatSessionsTray = memo(function ChatSessionsTray({
   const { t } = useText();
   const colors = usePreviewColors();
   const [open, setOpen] = useState(false);
+  const revealEnd = useRevealChatListEnd();
+  // Set on a tap that opens the list: the next layout, with the rows, scrolls the chat to its end.
+  const revealOnLayout = useRef(false);
   const active = tasks
     .filter((task) => task.state === "running" || task.state === "queued")
     // Running sessions first, then the newest.
@@ -41,7 +47,14 @@ export const ChatSessionsTray = memo(function ChatSessionsTray({
     router.push({ pathname: "/task/[taskId]", params: { serverId, agentId, taskId } });
   };
   return (
-    <View style={{ paddingHorizontal: 16, paddingBottom: 8 }}>
+    <View
+      style={{ paddingHorizontal: 16, paddingBottom: 8 }}
+      onLayout={() => {
+        if (!revealOnLayout.current) return;
+        revealOnLayout.current = false;
+        revealEnd();
+      }}
+    >
       <View
         style={{
           alignSelf: "center",
@@ -58,7 +71,8 @@ export const ChatSessionsTray = memo(function ChatSessionsTray({
         accessibilityLabel={t("mobile.chat.sessionsTray.label", { count: active.length })}
         onPress={() => {
           void haptics.selection();
-          setOpen((current) => !current);
+          revealOnLayout.current = !open;
+          setOpen(!open);
         }}
         style={({ pressed }) => ({
           minHeight: 36,

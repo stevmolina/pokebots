@@ -19,6 +19,7 @@ import { useServerThreadReads } from "@/features/chat/components/use-agent-threa
 import { TaskListRow } from "@/features/servers/components/task-list-row";
 import { useServerTasks } from "@/features/servers/model/use-server-tasks";
 import { useThreadActions } from "@/features/servers/model/use-thread-actions";
+import { saveTasksViewPreference, useTasksViewPreference } from "@/features/settings/model/tasks-view";
 import { useMobileWorkspaceSelector } from "@/features/workspace/context/mobile-workspace-context";
 import { AndroidHeaderButton } from "@/shared/components/android-header-button";
 import { LargeTitleScrollView } from "@/shared/components/large-title";
@@ -47,8 +48,6 @@ const BOARD_TITLE = {
   closed: "mobile.server.threads.board.done",
 } as const satisfies Record<TasksSectionId, MobileTextKey>;
 const BOARD_LANES: readonly TasksSectionId[] = ["needsYou", "working", "waiting", "closed"];
-
-type TasksView = "list" | "board";
 
 /** The first rows that the list renders: more than a phone screen holds. */
 const INITIAL_ROWS = 16;
@@ -97,7 +96,8 @@ export function ServerTasksScreen() {
   const hasServer = serverName !== undefined;
   const { agents, tasks, online, supported, ready, retry } = useServerTasks(serverId, { agentId });
   const [showAllClosed, setShowAllClosed] = useState(false);
-  const [view, setView] = useState<TasksView>("list");
+  // This device keeps the List or Board choice, so the page opens again on the same view.
+  const view = useTasksViewPreference((state) => state.view);
   const threadActions = useThreadActions(serverId);
   const threadReads = useServerThreadReads(serverId, tasks).reads;
   const agentById = useMemo(() => new Map(agents.map((item) => [item.id, item])), [agents]);
@@ -260,7 +260,7 @@ export function ServerTasksScreen() {
                         ]}
                         value={view}
                         accessibilityLabel={t("mobile.server.threads.view.label")}
-                        onChange={setView}
+                        onChange={(next) => void saveTasksViewPreference(next).catch(() => undefined)}
                       />
                     </View>
                   )}
