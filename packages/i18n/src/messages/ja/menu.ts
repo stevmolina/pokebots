@@ -8,6 +8,7 @@ export const messages = {
   "menu.actualSize": "実際のサイズ",
   "menu.zoomIn": "拡大",
   "menu.zoomOut": "縮小",
+  "menu.openLinkInPanel": "リンクをサイドパネルで開く",
   "menu.copyLink": "リンクをコピー",
   "menu.copyImage": "画像をコピー",
   "menu.quit": "Pokebots を終了",

@@ -29,6 +29,9 @@ type Story = StoryObj<typeof meta>;
 
 export const Ready: Story = {};
 
+/** The built-in browser can show the live view, and Open live view still opens the default browser. */
+export const WithSidePanel: Story = { args: { onOpenInPanel: fn() } };
+
 export const Opening: Story = { args: { busy: true } };
 
 export const NotFound: Story = {

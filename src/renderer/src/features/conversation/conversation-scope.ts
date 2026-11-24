@@ -58,6 +58,7 @@ import type {
   SidePanelPane,
 } from "./conversation-types";
 import { lastAgentReply, lastCodeBlock } from "./last-reply";
+import { onOpenLinkInPanel } from "./link-panel-handlers";
 import { openSettingsModelPicker } from "./open-model-picker";
 import { isPhoneWeb } from "./phone-web";
 import {
@@ -2511,6 +2512,31 @@ export function createConversationViewScope(props: ConversationProps) {
     }
   });
 
+  /** The built-in browser can open this link here: the browser is on, and the link is a page it shows. */
+  function canOpenInBuiltInBrowser(url?: string): boolean {
+    return (
+      props.browserEnabled !== false &&
+      !props.browserVisibilitySuspended &&
+      (url === undefined || builtInBrowserPage(url))
+    );
+  }
+
+  /**
+   * Opens the link in a new tab of the built-in browser and shows the browser panel. False when no tab
+   * opened. On a joined server the tab runs on the host, and the members who see the agent's browser
+   * see it too, so the automatic link setting does not use this there; a person's explicit choice does.
+   */
+  async function openInBuiltInBrowser(url: string): Promise<boolean> {
+    if (!canOpenInBuiltInBrowser(url)) return false;
+    if (!(await openBrowserAddress(url, true))) return false;
+    setActiveRightPanel("browser");
+    return true;
+  }
+
+  // The native menu of a link can open it in this chat's side panel. The person chose it, so it opens
+  // on a joined server too, where the tab runs on the host.
+  onCleanup(onOpenLinkInPanel(openInBuiltInBrowser));
+
   /**
    * `ownBrowser` skips the built-in browser: an account page, such as Google's verification page,
    * must open where the user signed in to the provider (#2419).
@@ -2526,11 +2552,8 @@ export function createConversationViewScope(props: ConversationProps) {
         !options.ownBrowser &&
         props.openLinksInBrowser &&
         props.server?.kind !== "remote" &&
-        props.browserEnabled !== false &&
-        builtInBrowserPage(url) &&
-        (await openBrowserAddress(url, true))
+        (await openInBuiltInBrowser(url))
       ) {
-        setActiveRightPanel("browser");
         return;
       }
       if (target && runtime.agent.openMessageLink) {
@@ -2976,6 +2999,8 @@ export function createConversationViewScope(props: ConversationProps) {
     choosePhotos,
     openBrowserAddress,
     openExternalMessageUrl,
+    canOpenInBuiltInBrowser,
+    openInBuiltInBrowser,
     messageLinkRelay,
     openMessageLinkRelay,
     pasteMessageLinkRelay,

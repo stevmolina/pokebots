@@ -8,6 +8,7 @@ export const messages = {
   "menu.actualSize": "Werkelijke grootte",
   "menu.zoomIn": "Zoom in",
   "menu.zoomOut": "Zoom uit",
+  "menu.openLinkInPanel": "Link openen in zijpaneel",
   "menu.copyLink": "Kopieer link",
   "menu.copyImage": "Kopieer afbeelding",
   "menu.quit": "Stop Pokebots",

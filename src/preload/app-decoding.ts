@@ -209,6 +209,14 @@ export function decodeAppInfo(value: unknown): AppInfo {
   };
 }
 
+/** The address of "Open Link in Side Panel": an http or https page, as main sends only those. */
+export function decodeLinkInPanelUrl(value: unknown): string {
+  if (typeof value !== "string" || value.length > 32_768) throw new Error("Invalid link address.");
+  const page = URL.parse(value);
+  if (page?.protocol !== "http:" && page?.protocol !== "https:") throw new Error("Invalid link address.");
+  return value;
+}
+
 export function decodeAppShortcutCommand(value: unknown): AppShortcutCommand {
   if (!isAppShortcutCommand(value)) throw new Error("Invalid shortcut command.");
   return value;

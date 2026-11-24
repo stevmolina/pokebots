@@ -179,9 +179,12 @@ export interface ConversationProps {
   /**
    * Reads the live view link of a cloud computer that an agent started, from the server's owner or admin
    * machine list, and opens it. Resolves false when the list does not have the machine. Absent where
-   * this account may not manage the server's cloud computers: the card then has no button.
+   * this account may not manage the server's cloud computers: the card then has no button. `openHere`
+   * opens the link somewhere else than the client's default for this press, such as the built-in browser.
    */
-  onOpenComputerLiveView?: ((machineId: string) => Promise<boolean>) | undefined;
+  onOpenComputerLiveView?:
+    | ((machineId: string, openHere?: (link: Promise<string | null>) => Promise<boolean>) => Promise<boolean>)
+    | undefined;
   /** Whether the server on screen holds a sign-in for an MCP row, as the Marketplace last read it. */
   mcpSignedIn?: ((mcpServerId: string) => boolean) | undefined;
   /**
