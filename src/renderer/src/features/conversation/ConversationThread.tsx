@@ -19,6 +19,7 @@ import { useCompactMessageActions } from "../../compact-message-actions-preferen
 import { usePlatform } from "../../platform";
 import { deviceQuoteShortcut, deviceSendShortcut } from "../../send-shortcut-preference";
 import { useThreadVisualReplyCard } from "./ChatVisualReply";
+import { useThreadComputerLiveViewCard } from "./ComputerLiveViewChatCard";
 import { ConversationBrowserTakeover } from "./ConversationBrowserTakeover";
 import { ConversationQuestionPrompt } from "./ConversationQuestionPrompt";
 import { chatSearchOpensMessage } from "./chat-search";
@@ -253,6 +254,7 @@ export function ConversationThread() {
   );
   const marketplaceCard = useThreadMarketplaceSuggestionCard();
   const settingLinkCard = useThreadSettingLinkCard();
+  const liveViewCard = useThreadComputerLiveViewCard();
   /** A visual reply page shows as in the agent's chat, and writes in this thread's message box. */
   const visualReplyCard = useThreadVisualReplyCard(threadComposer.openDraftKey, requestThreadFocus);
   /** The cards that the thread waits for: its browser takeover, and its question as a form. */
@@ -355,6 +357,16 @@ export function ConversationThread() {
                 ? threadComposer.importsEnded(key).then(() => threadQueue.save(key))
                 : threadComposer.send(current().threads, text);
             }}
+            onSendAlternate={
+              current().threads.open && current().threads.conversation?.activeTurnId
+                ? (text) => {
+                    const key = threadComposer.openDraftKey();
+                    return key && threadQueue.editOf(current().threads.open?.id)
+                      ? threadComposer.importsEnded(key).then(() => threadQueue.save(key))
+                      : threadComposer.send(current().threads, text, undefined, true);
+                  }
+                : undefined
+            }
             onStop={() => current().threads.onStop()}
             onOpenLink={(url) => void openExternalMessageUrl(url)}
             onOpenFile={openThreadFile}
@@ -377,7 +389,8 @@ export function ConversationThread() {
               visualReplyCard(message, quote) ??
               mcpSignInCard(message) ??
               marketplaceCard(message) ??
-              settingLinkCard(message)
+              settingLinkCard(message) ??
+              liveViewCard(message)
             }
             aboveComposer={extras.aboveComposer()}
             belowTitle={extras.belowTitle()}

@@ -28,6 +28,7 @@ export interface AgentTasksPort
       replyToMessageId?: string;
       clientMessageId: string;
       createArtifact?: boolean;
+      queueOnly?: boolean;
     },
   ): Promise<unknown>;
   /** Missing where the server cannot move a queued message of the agent's own chat to a new thread. */

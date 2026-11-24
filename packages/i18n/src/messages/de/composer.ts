@@ -118,6 +118,8 @@ export const messages = {
   "composer.send.hint.enter": "Senden (Enter). Shift+Enter fügt eine neue Zeile ein.",
   "composer.send.hint.modEnterMac": "Senden (⌘Enter). Enter fügt eine neue Zeile ein.",
   "composer.send.hint.modEnterWin": "Senden (Strg+Enter). Enter fügt eine neue Zeile ein.",
+  "composer.send.hint.busySteer": "In diesen Durchlauf einlenken (Enter). {chord} reiht sie für danach ein.",
+  "composer.send.hint.busyQueue": "Für nach diesem Durchlauf einreihen (Enter). {chord} lenkt sie jetzt ein.",
   "composer.save.hint.enter": "Speichern (Enter). Shift+Enter fügt eine neue Zeile ein.",
   "composer.save.hint.modEnterMac": "Speichern (⌘Enter). Enter fügt eine neue Zeile ein.",
   "composer.save.hint.modEnterWin": "Speichern (Strg+Enter). Enter fügt eine neue Zeile ein.",

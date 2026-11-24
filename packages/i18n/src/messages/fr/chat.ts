@@ -2,6 +2,12 @@ import type { PartialTranslation } from "../../message";
 import type { messages as source } from "../en/chat";
 
 export const messages = {
+  "chat.workers.running": "En cours",
+  "chat.workers.queued": "En attente",
+  "chat.workers.runningCount": "{count} en cours",
+  "chat.workers.queuedCount": "{count} en attente",
+  "chat.workers.showAll": "Afficher les {count} sessions actives",
+  "chat.workers.showOne": "Réduire à une session active",
   "chat.activity.workingOnIt": "Travail en cours…",
   "chat.activity.thinking": "Réflexion en cours…",
   "chat.activity.connectingDots": "Rapprochement des éléments…",
@@ -61,6 +67,8 @@ export const messages = {
   "chat.subagents.stepCount": { one: "{count} étape", other: "{count} étapes" },
   "chat.subagents.seconds": "{seconds} s",
   "chat.subagents.minutes": "{minutes} min {seconds} s",
+  "chat.subagents.hours": "{hours} h {minutes} min",
+  "chat.subagents.days": "{days} j",
   "chat.subagents.open": "{title}, {state}. Ouvrir sur le côté.",
   "chat.trace.title": "Trace",
   "chat.trace.search": "Rechercher des étapes",
@@ -381,7 +389,6 @@ export const messages = {
   "chat.actions.more": "Plus d’actions",
   "chat.menu.reply": "Répondre",
   "chat.menu.copy": "Copier le message",
-  "chat.menu.react": "Réagir",
   "chat.menu.branch": "Dériver d’ici",
   "chat.menu.markUnread": "Marquer comme non lu",
   "chat.menu.pin": "Épingler",

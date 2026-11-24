@@ -25,6 +25,10 @@ import {
   BROWSER_SECRET_VAULT_ROUTES,
 } from "@openbot/contracts/team-protocol/browser-secret-vault-v1";
 import { CHAT_COLORS_CAPABILITY } from "@openbot/contracts/team-protocol/chat-colors-v1";
+import {
+  MESSAGE_QUEUE_ONLY_CAPABILITY,
+  MESSAGE_QUEUE_ONLY_ROUTE,
+} from "@openbot/contracts/team-protocol/message-queue-only-v1";
 import { MODEL_STEERING_CAPABILITY, MODEL_STEERING_ROUTES } from "@openbot/contracts/team-protocol/model-steering-v1";
 import {
   MODEL_VISIBILITY_CAPABILITY,
@@ -1228,8 +1232,23 @@ export function agentIpcHandlers({
       sendMessage: scopedHandler(parseSendMessage, {
         local: (input) => runCauseEffect(service.sendMessage(input, host.conversationSender())),
         remote: (sent, serverId) => {
-          // Only this computer's host reads queueOnly; a joined server follows its own mode.
-          const { queueOnly: _queueOnly, ...input } = sent;
+          const { queueOnly, ...input } = sent;
+          if (
+            queueOnly &&
+            remoteServers.supportsCapability(serverId, MESSAGE_QUEUE_ONLY_CAPABILITY) &&
+            (!input.createArtifact || remoteServers.supportsCapability(serverId, ARTIFACT_REQUEST_CAPABILITY))
+          ) {
+            return runCauseEffect(
+              remoteServers.request(serverId, MESSAGE_QUEUE_ONLY_ROUTE, decodeQueuedMessageReceipt, {
+                method: "POST",
+                body: {
+                  ...input,
+                  attachmentDraftIds: input.attachmentDraftIds ?? [],
+                  timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                },
+              }),
+            );
+          }
           if (input.createArtifact && remoteServers.supportsCapability(serverId, ARTIFACT_REQUEST_CAPABILITY)) {
             return runCauseEffect(
               remoteServers.request(serverId, ARTIFACT_REQUEST_ROUTE, decodeQueuedMessageReceipt, {

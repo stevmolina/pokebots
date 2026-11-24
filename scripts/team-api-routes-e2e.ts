@@ -3564,14 +3564,14 @@ async function runRouteChecks() {
   check("Rooms requires its optional host capability", roomsUnsupported.status !== 200, summary(roomsUnsupported));
   // Brain, through the real Team API dispatcher and frozen optional codec.
   {
-    const options = {
-      token: adaToken,
+    const anonymousOptions = {
       protocol: 9,
       capabilities: [BRAIN_CAPABILITY],
       json: { operation: "brains", mcpServerId: "brain-e2e" },
     };
+    const options = { ...anonymousOptions, token: adaToken };
     const member = await call("POST", BRAIN_ROUTE, { ...options, token: bobToken });
-    const anonymous = await call("POST", BRAIN_ROUTE, { ...options, token: undefined });
+    const anonymous = await call("POST", BRAIN_ROUTE, anonymousOptions);
     const unsupported = await call("POST", BRAIN_ROUTE, { ...options, capabilities: [] });
     check(
       "Brain refuses an unauthorized client before it spends the MCP sign-in",
@@ -3590,14 +3590,15 @@ async function runRouteChecks() {
 
   // Native Agent Computer, through the real Team API dispatcher and frozen optional codecs.
   {
-    const options = { token: adaToken, protocol: 9, capabilities: [AGENT_COMPUTER_CAPABILITY], json: {} };
+    const anonymousOptions = { protocol: 9, capabilities: [AGENT_COMPUTER_CAPABILITY], json: {} };
+    const options = { ...anonymousOptions, token: adaToken };
     for (const path of Object.values(AGENT_COMPUTER_ROUTES)) {
       const member = await call("POST", path, {
         ...options,
         token: bobToken,
         json: path === AGENT_COMPUTER_ROUTES.connect ? { apiKey: FIXTURE_KEY } : {},
       });
-      const anonymous = await call("POST", path, { ...options, token: undefined });
+      const anonymous = await call("POST", path, anonymousOptions);
       const unsupported = await call("POST", path, { ...options, capabilities: [] });
       check(
         `Agent Computer ${path.split("/").at(-1)} requires authentication, admin and capability`,
@@ -3649,10 +3650,14 @@ async function runRouteChecks() {
         (await client.connect(FIXTURE_KEY, serverId)).connected,
       {},
     );
-    const management = { ...options, capabilities: [AGENT_COMPUTER_CAPABILITY, COMPUTER_MANAGEMENT_CAPABILITY] };
+    const anonymousManagement = {
+      ...anonymousOptions,
+      capabilities: [AGENT_COMPUTER_CAPABILITY, COMPUTER_MANAGEMENT_CAPABILITY],
+    };
+    const management = { ...anonymousManagement, token: adaToken };
     const input = { operation: "start", target: "demo-project", size: "large", confirm: "no" };
     const requestCount = computerFixture.requests.length;
-    for (const denied of [{ ...management, token: undefined }, { ...management, token: bobToken }, options]) {
+    for (const denied of [anonymousManagement, { ...management, token: bobToken }, options]) {
       const reply = await call("POST", COMPUTER_MANAGEMENT_ROUTE, { ...denied, json: input });
       check("computer management rejects a missing identity, role or capability", reply.status !== 200, {
         status: reply.status,

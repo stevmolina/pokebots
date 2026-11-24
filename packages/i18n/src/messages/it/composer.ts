@@ -116,6 +116,8 @@ export const messages = {
   "composer.send.hint.enter": "Invia (Invio). Maiusc+Invio va a capo.",
   "composer.send.hint.modEnterMac": "Invia (⌘Invio). Invio va a capo.",
   "composer.send.hint.modEnterWin": "Invia (Ctrl+Invio). Invio va a capo.",
+  "composer.send.hint.busySteer": "Indirizza questo turno (Invio). {chord} lo mette in coda per dopo.",
+  "composer.send.hint.busyQueue": "Metti in coda per dopo questo turno (Invio). {chord} lo indirizza ora.",
   "composer.save.hint.enter": "Salva (Invio). Maiusc+Invio va a capo.",
   "composer.save.hint.modEnterMac": "Salva (⌘Invio). Invio va a capo.",
   "composer.save.hint.modEnterWin": "Salva (Ctrl+Invio). Invio va a capo.",

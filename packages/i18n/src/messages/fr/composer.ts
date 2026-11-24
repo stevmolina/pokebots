@@ -119,6 +119,8 @@ export const messages = {
   "composer.send.hint.enter": "Envoyer (Entrée). Maj+Entrée ajoute une nouvelle ligne.",
   "composer.send.hint.modEnterMac": "Envoyer (⌘Entrée). Entrée ajoute une nouvelle ligne.",
   "composer.send.hint.modEnterWin": "Envoyer (Ctrl+Entrée). Entrée ajoute une nouvelle ligne.",
+  "composer.send.hint.busySteer": "Orienter ce tour (Entrée). {chord} la met en file pour après.",
+  "composer.send.hint.busyQueue": "Mettre en file pour après ce tour (Entrée). {chord} l'oriente maintenant.",
   "composer.save.hint.enter": "Enregistrer (Entrée). Maj+Entrée ajoute une nouvelle ligne.",
   "composer.save.hint.modEnterMac": "Enregistrer (⌘Entrée). Entrée ajoute une nouvelle ligne.",
   "composer.save.hint.modEnterWin": "Enregistrer (Ctrl+Entrée). Entrée ajoute une nouvelle ligne.",

@@ -222,7 +222,7 @@ export const BROWSER_TOOL_DEFINITIONS = [
   browserTool({
     name: "list_tabs",
     description:
-      "List browser tabs owned by this agent, including popup openerTabId and blocked-popup feedback. After a sign-in click, check for a new tab, take a fresh snapshot there, and continue the sign-in. When it closes, return to the opener and verify sign-in succeeded.",
+      "List your browser tabs, with popup openerTabId and blocked-popup feedback. After a sign-in click, snapshot a new tab and continue there; when it closes, return to the opener and verify the sign-in.",
     shape: {},
   }),
   browserTool({
@@ -553,7 +553,7 @@ export const BROWSER_TOOL_DEFINITIONS = [
   browserTool({
     name: "run_script",
     description:
-      "Run a short JavaScript program that drives one tab in one call and returns a final snapshot. Use it for a known sequence, such as typing a search, pressing Enter, and waiting for results, or a loop, such as paging. It runs in a sandbox, not in the page, with no network, files, require, or process. It can await these helpers: navigate(url), click(target, options?), type(target, text, options?), press(key, target?), hover(target), scroll(deltaY, target?), selectOption(target, values), setChecked(target, checked), waitFor(text, condition, or page function), sleep(ms), evaluate(expression or function) (runs in the page; returns JSON), snapshot(), and step({ action, ...fields }), where action names one of these tools. A target is a CSS selector string, role(role, name?), text(text), or a target object; .nth(i), from 0, picks one of several matches, as in text('Delete').nth(1). A failed helper throws; try/catch works. Steps before a failure stay done. log(...values) adds to a short log. Return a JSON value. At most 200 steps and timeoutMs (default 60 s) per call.",
+      "Run a short JavaScript program that drives one tab in one call and returns a final snapshot, for a known sequence (search, Enter, wait for results) or a loop (paging). It runs in a sandbox, not in the page, with no network, files, require, or process. It can await these helpers: navigate(url), click(target, options?), type(target, text, options?), press(key, target?), hover(target), scroll(deltaY, target?), selectOption(target, values), setChecked(target, checked), waitFor(text, condition, or page function), sleep(ms), evaluate(expression or function) (runs in the page; returns JSON), snapshot(), and step({ action, ...fields }), where action names one of these tools. A target is a CSS selector string, role(role, name?), text(text), or a target object; .nth(i), from 0, picks one of several matches, as in text('Delete').nth(1). A failed helper throws; try/catch works. Steps before a failure stay done. log(...values) adds to a short log. Return a JSON value. At most 200 steps and timeoutMs (default 60 s) per call.",
     shape: {
       tabId,
       // OpenCode Code Mode shows a cut tool description but the full field descriptions. Without

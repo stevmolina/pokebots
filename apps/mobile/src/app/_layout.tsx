@@ -45,6 +45,7 @@ import { loadMotionPreferences } from "@/features/settings/model/motion-storage"
 import { loadPhotoQualityPreference } from "@/features/settings/model/photo-quality";
 import { loadPushNotificationPreference } from "@/features/settings/model/push-notifications";
 import { loadRoutineCollapsePreference } from "@/features/settings/model/routine-collapse";
+import { loadTasksViewPreference } from "@/features/settings/model/tasks-view";
 import { loadTextSize } from "@/features/settings/model/text-size";
 import { loadFullVisualPreference } from "@/features/settings/model/visual-preview";
 import { resetShareExtension } from "@/features/share/model/share-extension";
@@ -260,6 +261,7 @@ export default function RootLayout() {
       void loadChatDetailPreferences().catch(() => undefined);
       void loadFullVisualPreference().catch(() => undefined);
       void loadChatOrderPreference().catch(() => undefined);
+      void loadTasksViewPreference().catch(() => undefined);
       void loadChatSwipePreference().catch(() => undefined);
       void loadChatPullPreference().catch(() => undefined);
       void loadTextSize().catch(() => undefined);

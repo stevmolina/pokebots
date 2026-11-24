@@ -582,6 +582,18 @@ function AuthenticatedStack() {
         }}
       />
       <Stack.Screen
+        name="machines"
+        // The grid draws its own title.
+        options={{
+          contentStyle: { backgroundColor: sheetBackground },
+          headerShown: false,
+          scrollEdgeEffects: { top: "hidden", bottom: "soft" },
+          presentation: "formSheet",
+          sheetAllowedDetents: [0.6, 1],
+          sheetGrabberVisible: true,
+        }}
+      />
+      <Stack.Screen
         name="section-form"
         // The header comes from the route's `_layout.tsx`: Android draws no header on a formSheet route.
         listeners={refocusNameField}

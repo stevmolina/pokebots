@@ -279,6 +279,24 @@ its env file keeps that tag and offers no update in the app. An instance made be
 `openbot-instance upgrade <name>` once. A container started with `docker/compose.yaml` or
 `docker run` has no request folders, so it offers no update in the app.
 
+### Automatic updates (Pokebots)
+
+`openbot-instance-auto-update.timer` runs `openbot-instance auto-update --all` every 10 minutes, so
+each instance updates by itself, as the Mac app and the main VPS server do. A push to `main` publishes
+`ghcr.io/stevmolina/pokebots:latest`, the default image of the instances. For each instance it:
+
+1. pulls the image and stops when the container already runs it, or when it is older than the
+   container (an older OpenBot cannot open a database that a newer one migrated);
+2. waits while agents work (`restart_ready` of `/v1/status`, or agent processes on older images);
+3. backs up `/data` to `OPENBOT_BACKUP_DIR` and verifies the backup;
+4. makes the container again and waits until it answers with the new version, and is online again
+   when it was online before;
+5. when it does not come back, restores the backup, starts the old image again
+   (`openbot-instance-rollback:<name>`), and skips that image until a newer one is published.
+
+`create` writes `OPENBOT_BACKUP_DIR=/srv/openbot-backups` (3 kept). It skips an instance without `OPENBOT_BACKUP_DIR`, with `OPENBOT_TAG`, or with
+`OPENBOT_AUTO_UPDATE=off`. `journalctl -u openbot-instance-auto-update` shows what it did.
+
 ### Backups
 
 `openbot-instance backup <name>` copies all of `/data` of an instance into one archive: the

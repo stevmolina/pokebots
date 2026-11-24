@@ -127,6 +127,7 @@
     "./features/conversation/McpSignInCard": "./src/features/conversation/McpSignInCard.tsx",
     "./features/conversation/ServerInstallCard": "./src/features/conversation/ServerInstallCard.tsx",
     "./features/conversation/SettingLinkCard": "./src/features/conversation/SettingLinkCard.tsx",
+    "./features/conversation/ComputerLiveViewCard": "./src/features/conversation/ComputerLiveViewCard.tsx",
     "./features/conversation/agent-setting-links": "./src/features/conversation/agent-setting-links.ts",
     "./features/conversation/ChatActionMarker": "./src/features/conversation/ChatActionMarker.tsx",
     "./features/conversation/SidePanel": "./src/features/conversation/SidePanel.tsx",

@@ -246,6 +246,11 @@ export interface AgentThreadViewProps {
   focusRequest?: number | undefined;
   /** Sends a message. The host clears the text when the message went; when it did not, the text stays. */
   onSend: (text: string) => Promise<boolean>;
+  /**
+   * Cmd+Enter (Ctrl+Enter) while plain Enter sends: queues a message behind the running turn instead
+   * of steering into it. Absent, the chord sends like Enter.
+   */
+  onSendAlternate?: ((text: string) => Promise<boolean>) | undefined;
   onStop: () => void;
   onOpenLink: (url: string) => void;
   /**
@@ -583,7 +588,7 @@ export function AgentThreadView(props: AgentThreadViewProps) {
   const recording = () => voicePhase() === "recording";
   /** As in the agent's own chat, nothing sends while the microphone opens or the speech becomes text. */
   const voiceBusy = () => voicePhase() !== "idle" && !recording();
-  const send = async () => {
+  const send = async (alternate = false) => {
     // As in the agent's own chat, a send while recording sends what was said.
     if (recording()) {
       props.voice?.onSend();
@@ -593,7 +598,7 @@ export function AgentThreadView(props: AgentThreadViewProps) {
     if (draftEmpty() || sending() || voiceBusy()) return;
     setSending(true);
     try {
-      await props.onSend(text);
+      await (alternate && props.onSendAlternate ? props.onSendAlternate(text) : props.onSend(text));
     } finally {
       setSending(false);
     }
@@ -1429,6 +1434,7 @@ export function AgentThreadView(props: AgentThreadViewProps) {
               disabled={sending() || voicePhase() === "transcribing"}
               sendShortcut={props.sendShortcut}
               onSubmit={() => void send()}
+              onSubmitAlternate={props.onSendAlternate ? () => void send(true) : undefined}
               onValueChange={props.onDraftChange}
               onPasteFiles={props.onPasteFiles}
               onOpenAttachment={props.onOpenDraftAttachment}

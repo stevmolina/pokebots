@@ -2,6 +2,12 @@ import type { PartialTranslation } from "../../message";
 import type { messages as source } from "../en/chat";
 
 export const messages = {
+  "chat.workers.running": "In corso",
+  "chat.workers.queued": "In coda",
+  "chat.workers.runningCount": "{count} in corso",
+  "chat.workers.queuedCount": "{count} in coda",
+  "chat.workers.showAll": "Mostra tutte le {count} sessioni attive",
+  "chat.workers.showOne": "Riduci a una sessione attiva",
   "chat.activity.workingOnIt": "Ci sto lavorando…",
   "chat.activity.thinking": "Ci sto pensando…",
   "chat.activity.connectingDots": "Metto insieme i pezzi…",
@@ -61,6 +67,8 @@ export const messages = {
   "chat.subagents.stepCount": { one: "{count} passaggio", other: "{count} passaggi" },
   "chat.subagents.seconds": "{seconds} s",
   "chat.subagents.minutes": "{minutes} min {seconds} s",
+  "chat.subagents.hours": "{hours} h {minutes} min",
+  "chat.subagents.days": "{days} g",
   "chat.subagents.open": "{title}, {state}. Apri di lato.",
   "chat.trace.title": "Traccia",
   "chat.trace.search": "Cerca passaggi",
@@ -387,7 +395,6 @@ export const messages = {
   "chat.actions.more": "Altre azioni",
   "chat.menu.reply": "Rispondi",
   "chat.menu.copy": "Copia messaggio",
-  "chat.menu.react": "Reagisci",
   "chat.menu.branch": "Ramifica da qui",
   "chat.menu.markUnread": "Segna come non letto",
   "chat.menu.pin": "Fissa",

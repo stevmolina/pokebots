@@ -39,6 +39,7 @@ import { messageActionsOpen } from "../model/message-actions-sheet";
 import { useAgentMentionReferences } from "../model/use-agent-mention-references";
 import { useAgentMentionSkills } from "../model/use-agent-mention-skills";
 import { useProgressUpdates } from "../model/use-progress-updates";
+import { ChatSessionsTray } from "./chat-sessions-tray";
 import { MAIN_THREAD_ID, useChatThreadMenu } from "./chat-thread-menu";
 import { ChatView } from "./chat-view";
 import { useAgentBackdrops } from "./use-agent-backdrops";
@@ -462,13 +463,17 @@ export function MobileChatView({
   );
   const workActivity = workChannel ? liveActivity : undefined;
   // One element while its inputs stay, so a new render of this screen does not draw the list again.
-  // The agent's threads are in the thread menu of the header, not in this chat.
+  // The active side sessions show as one quiet tray row above the composer, as on the desktop.
   const activityAccessory = useMemo(
-    () =>
-      workChannel && workActivity ? (
-        <ChatChannelWorkRow channel={workChannel} activity={workActivity} serverId={agent.serverId} />
-      ) : null,
-    [workChannel, workActivity, agent.serverId],
+    () => (
+      <>
+        {workChannel && workActivity ? (
+          <ChatChannelWorkRow channel={workChannel} activity={workActivity} serverId={agent.serverId} />
+        ) : null}
+        <ChatSessionsTray tasks={tasks} serverId={agent.serverId} agentId={agent.id} />
+      </>
+    ),
+    [workChannel, workActivity, agent.serverId, agent.id, tasks],
   );
   return (
     <ChatView

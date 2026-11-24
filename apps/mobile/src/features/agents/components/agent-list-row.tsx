@@ -121,7 +121,26 @@ interface AgentListRowProps {
   scrolling?: boolean;
   /** The row's place in the list. Rows that mount together add their menus a few at a time. */
   index?: number;
+  /** A small mark after the name, such as the server of the agent in All machines. */
+  mark?: ReactNode;
 }
+
+/**
+ * A chat of All machines: the row of the home list with the mark of its server. A tap makes the
+ * agent's server the open one, so the server-scoped screens of the chat read the right server, and
+ * then opens the chat. All machines stays on, so back returns to the merged list.
+ */
+export const AgentMachineRow = memo(function AgentMachineRow({
+  agent,
+  mark,
+  onOpen,
+}: {
+  agent: MobileAgent;
+  mark: ReactNode;
+  onOpen: (agent: MobileAgent) => void;
+}) {
+  return <AgentRowBody agent={agent} leftInset={20} rightInset={20} mark={mark} onPress={() => onOpen(agent)} />;
+});
 
 /**
  * A chat of the home list. It renders again only when its agent, its own live state or a pin
@@ -205,6 +224,7 @@ function AgentRowBody({
   onLongPress,
   onPressOut,
   measurer,
+  mark,
 }: AgentListRowProps & {
   onPress?: ComponentProps<typeof ChatLinkPressable>["onPress"];
   onPressIn?: () => void;
@@ -311,9 +331,14 @@ function AgentRowBody({
             {avatar}
             <View style={{ flex: 1, minWidth: 0, marginLeft: previewSize.rowTextGap }}>
               <View style={{ flexDirection: "row", alignItems: "flex-start", gap: previewSize.rowTrailingGap }}>
-                <Typography numberOfLines={1} style={[previewType.rowTitle, { flex: 1, color: calmColors.title }]}>
+                <Typography
+                  numberOfLines={1}
+                  style={[previewType.rowTitle, { flexShrink: 1, color: calmColors.title }]}
+                >
                   {agent.name}
                 </Typography>
+                {mark}
+                <View style={{ flex: 1 }} />
                 {waitReason ? (
                   <AgentWaitChip reason={waitReason} />
                 ) : (
@@ -353,12 +378,18 @@ function AgentRowBody({
               <View className="min-w-0 flex-1 gap-0.5">
                 <View className="flex-row items-center gap-2">
                   <Typography.Paragraph
-                    className="font-semibold min-w-0 flex-1"
+                    className={mark ? "font-semibold min-w-0 shrink" : "font-semibold min-w-0 flex-1"}
                     numberOfLines={1}
                     style={typeScale.rowTitle}
                   >
                     {agent.name}
                   </Typography.Paragraph>
+                  {mark ? (
+                    <>
+                      {mark}
+                      <View className="flex-1" />
+                    </>
+                  ) : null}
                   {waitReason ? (
                     <AgentWaitChip reason={waitReason} />
                   ) : (

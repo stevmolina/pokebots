@@ -97,6 +97,8 @@ export interface AgentTasksHooks {
   turnActive(agentId: string, threadId: string): boolean;
   /** OpenBot archived finished tasks of one agent: their memory reviews start, and a waiting task lane can start. */
   archived(agentId: string, tasks: readonly AgentThreadRecord[]): Effect.Effect<void>;
+  /** A side thread updated the agent's last-used timestamp, so agent lists should refresh. */
+  agentActivityChanged?(agentId: string): void;
   appendLaunchResult?(agentId: string, threadId: string, originMessageId: string, result: ConversationMessage): void;
 }
 
@@ -203,6 +205,11 @@ export class AgentTasks implements TaskLanes {
     if (!task) return;
     this.#store.setError(taskId, message.slice(0, INPUT_LIMITS.agentTaskError));
     this.changed(task.agentId);
+  }
+
+  /** Latest open side-thread activity time per agent id. */
+  latestUpdatedAtByAgent(): Map<string, string> {
+    return this.#store.latestUpdatedAtByAgent();
   }
 
   snapshot(agentId: string): AgentTasksSnapshot {
@@ -382,6 +389,7 @@ export class AgentTasks implements TaskLanes {
     this.#requireRoom(agentId);
     const task = this.#store.create({ agentId, origin, title, titleSource: origin === "agent" ? "agent" : "auto" });
     this.#conversation.registerTaskThread(agentId, task.threadId);
+    this.#hooks.agentActivityChanged?.(agentId);
     return task;
   }
 
@@ -406,6 +414,7 @@ export class AgentTasks implements TaskLanes {
     const task = this.#store.create({ agentId, origin: "agent", title, titleSource: "agent", routineId });
     this.#conversation.registerTaskThread(agentId, task.threadId);
     this.changed(agentId);
+    this.#hooks.agentActivityChanged?.(agentId);
     return task;
   }
 
@@ -520,6 +529,7 @@ export class AgentTasks implements TaskLanes {
       Effect.onError(() => this.#mailbox.discardStagedGeneratedAttachments(staged).pipe(Effect.ignore)),
     );
     this.#conversation.registerTaskThread(record.agentId, record.threadId);
+    this.#hooks.agentActivityChanged?.(record.agentId);
     return record;
   });
 
@@ -600,6 +610,7 @@ export class AgentTasks implements TaskLanes {
     this.#store.reopen(task.taskId);
     this.#conversation.registerTaskThread(task.agentId, task.threadId);
     this.changed(task.agentId);
+    this.#hooks.agentActivityChanged?.(task.agentId);
   }
 
   /**
@@ -904,7 +915,7 @@ export class AgentTasks implements TaskLanes {
         replyToMessageId: null,
         ...(launch
           ? { agentTaskRequest: launch.request, expectsReply: false }
-          : { taskRequesterIds, taskFromExternalChat }),
+          : { ...(taskRequesterIds === undefined ? {} : { taskRequesterIds }), taskFromExternalChat }),
         idempotencyKey,
       })
       .pipe(
@@ -974,6 +985,7 @@ export class AgentTasks implements TaskLanes {
         if (task.error !== null) this.#store.setError(task.taskId, null);
         this.#store.touch(task.taskId);
         this.changed(task.agentId);
+        this.#hooks.agentActivityChanged?.(task.agentId);
         return true;
       }
       case "turn-completed": {
@@ -985,6 +997,7 @@ export class AgentTasks implements TaskLanes {
           event.status === "completed" ? "completed" : event.status === "failed" ? "failed" : "interrupted",
         );
         this.changed(task.agentId);
+        this.#hooks.agentActivityChanged?.(task.agentId);
         // The waiters leave the map here, so a wait that a failed Stop never runs does not stay.
         const waiters = this.#turnEndWaiters.get(task.taskId);
         this.#turnEndWaiters.delete(task.taskId);

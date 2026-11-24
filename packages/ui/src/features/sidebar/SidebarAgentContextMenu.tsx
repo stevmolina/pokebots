@@ -4,6 +4,7 @@
  */
 
 import {
+  AlarmClock,
   AppWindow,
   Bell,
   BellOff,
@@ -28,6 +29,17 @@ import { SidebarMoveToSubmenu } from "./SidebarMoveToSubmenu";
 import { type SidebarPinnedItem, sidebarPinnedItemKey } from "./sidebar-pins";
 import { useSidebarScope } from "./sidebar-scope";
 
+const HOUR_MS = 60 * 60_000;
+const DAY_MS = 24 * HOUR_MS;
+
+/** 8 in the morning of the next day, in local time. */
+function tomorrowMorning(): number {
+  const next = new Date();
+  next.setDate(next.getDate() + 1);
+  next.setHours(8, 0, 0, 0);
+  return next.getTime();
+}
+
 /**
  * The menu stays at about eight rows. Pin, read state, a new thread, Move to and Edit stay on top, with
  * Make main agent where it applies and Delete last. Mute, Open in new window, Duplicate and Hide sit
@@ -39,9 +51,11 @@ export function SidebarAgentContextMenu(menuProps: {
   pinned: boolean;
   userHidden?: boolean;
   /** Set on a pinned agent that is not the tile at the top: the item moves it before the tile's agent. */
-  mainAgentId?: string;
+  mainAgentId?: string | undefined;
 }) {
-  const { chatPinnedItems, customSectionById, openDelete, props } = useSidebarScope();
+  const { chatPinnedItems, customSectionById, openDelete, props, snoozeAgent, snoozedAgents, unsnoozeAgent } =
+    useSidebarScope();
+  const snoozed = () => snoozedAgents().has(menuProps.agent.id);
   const { t } = useText();
   const ref = (): SidebarPinnedItem => ({ kind: "agent", id: menuProps.agent.id });
   const unread = () => props.unreadAgentIds?.has(menuProps.agent.id) ?? false;
@@ -122,6 +136,38 @@ export function SidebarAgentContextMenu(menuProps: {
           )}
         </Show>
         <SidebarMoveToSubmenu chatId={menuProps.agent.id} />
+        {/* Snooze puts the agent in "Snoozed" of the chat list until the time; it wakes up by itself. */}
+        <Show when={props.pages !== undefined && !menuProps.userHidden && !props.allMachines}>
+          <ContextMenu.Sub>
+            <ContextMenu.SubTrigger>
+              <AlarmClock class="agent-context-icon size-4" aria-hidden="true" />
+              <span>{t("sidebar.snooze.menu")}</span>
+              <ChevronRight class="agent-context-submenu-chevron size-4" aria-hidden="true" />
+            </ContextMenu.SubTrigger>
+            <ContextMenu.Portal>
+              <ContextMenu.SubContent
+                class="ui-action-menu agent-context-menu agent-context-submenu"
+                aria-label={t("sidebar.snooze.menu")}
+              >
+                <ContextMenu.Item onSelect={() => snoozeAgent(menuProps.agent.id, Date.now() + HOUR_MS)}>
+                  <span>{t("sidebar.snooze.hour")}</span>
+                </ContextMenu.Item>
+                <ContextMenu.Item onSelect={() => snoozeAgent(menuProps.agent.id, tomorrowMorning())}>
+                  <span>{t("sidebar.snooze.tomorrow")}</span>
+                </ContextMenu.Item>
+                <ContextMenu.Item onSelect={() => snoozeAgent(menuProps.agent.id, Date.now() + 7 * DAY_MS)}>
+                  <span>{t("sidebar.snooze.week")}</span>
+                </ContextMenu.Item>
+                <Show when={snoozed()}>
+                  <ContextMenu.Separator />
+                  <ContextMenu.Item onSelect={() => unsnoozeAgent(menuProps.agent.id)}>
+                    <span>{t("sidebar.snooze.wake")}</span>
+                  </ContextMenu.Item>
+                </Show>
+              </ContextMenu.SubContent>
+            </ContextMenu.Portal>
+          </ContextMenu.Sub>
+        </Show>
         <ContextMenu.Item onSelect={() => props.onEditAgent(menuProps.agent.id)}>
           <EditIcon />
           <span>{t("sidebar.agentMenu.edit")}</span>
