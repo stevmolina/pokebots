@@ -1,1 +1,0 @@
-- CI no longer runs the build and E2E jobs when a pull request changes only agent skill files, and CodeRabbit no longer reviews pull requests.
