@@ -12,6 +12,7 @@ import { Easing, ReduceMotion, type SharedValue, useSharedValue, withTiming } fr
 import type { MediaStream, MediaStreamTrack, RTCPeerConnection } from "react-native-webrtc";
 import { scheduleOnRN } from "react-native-worklets";
 import { mobileAnalytics } from "@/features/analytics/mobile-analytics";
+import { posthog } from "@/features/analytics/posthog";
 import { liveVoiceWebRtc } from "@/features/voice/model/live-voice-webrtc";
 import { speechNative } from "@/features/voice/model/speech-native";
 import { subscribeLiveVoiceEvents } from "@/features/workspace/model/live-voice-events";
@@ -28,6 +29,46 @@ const CLOSE_MS = 400;
 const METER_MS = 160;
 /** The data channel that the realtime model sends its events on. */
 const EVENTS_CHANNEL = "oai-events";
+/** Voice transcripts can contain user-entered PII, so generation capture omits them. */
+const CAPTURE_GPT_LIVE_TRANSCRIPTS = false;
+
+function aiIdentifier(value: string): string {
+  return value.replace(/[^a-zA-Z0-9\-_~.@()!':|]/g, "_");
+}
+
+function captureGptLiveGeneration({
+  agentId,
+  serverId,
+  replyId,
+  input,
+  output,
+  latencyMs,
+}: {
+  agentId: string;
+  serverId: string;
+  replyId: string;
+  input: string;
+  output: string;
+  latencyMs: number;
+}): void {
+  // The host authenticates the Realtime session and does not expose its selected model to the phone.
+  posthog?.capture("$ai_generation", {
+    $ai_trace_id: aiIdentifier(replyId),
+    $ai_session_id: aiIdentifier(`gpt_live:${serverId}:${agentId}`),
+    $ai_span_id: aiIdentifier(`gpt_live:${replyId}`),
+    $ai_span_name: "gpt_live_voice",
+    $ai_model: "unknown",
+    $ai_provider: "openai",
+    $ai_latency: Math.max(0, latencyMs / 1000),
+    $ai_stream: true,
+    ...(CAPTURE_GPT_LIVE_TRANSCRIPTS
+      ? {
+          $ai_input: [{ role: "user", content: input }],
+          $ai_output_choices: [{ role: "assistant", content: output }],
+        }
+      : {}),
+  });
+}
 
 interface GptLiveConversationInput {
   /** The user chose GPT live voice, and the server, the app binary and the chat can run it. */
@@ -169,6 +210,8 @@ function createController({
   let callAudio = false;
   // Realtime v3 has no command that stops a reply: an interrupted reply plays on mute until its turn ends.
   let currentReply: string | null = null;
+  let replyInput = "";
+  let replyStartedAt = 0;
   let silencedTurn: string | null = null;
   let silenceNextReply = false;
   let startedAt = 0;
@@ -267,16 +310,30 @@ function createController({
       if (phase !== "speaking") setPhase("thinking");
     } else if (turn.step === "reply-started") {
       currentReply = turn.id;
+      replyInput = heard;
+      replyStartedAt = performance.now();
+      said = "";
       routeCall();
       if (silenceNextReply) {
         silenceNextReply = false;
         silencedTurn = turn.id;
         return;
       }
-      said = "";
       setPhase("speaking");
       showCaption();
     } else if (turn.step === "reply-done") {
+      if (currentReply === turn.id) {
+        const { agentId, serverId } = input();
+        captureGptLiveGeneration({
+          agentId,
+          serverId,
+          replyId: turn.id,
+          input: replyInput,
+          output: said,
+          latencyMs: performance.now() - replyStartedAt,
+        });
+        currentReply = null;
+      }
       if (silencedTurn === turn.id) {
         silencedTurn = null;
         setReplyAudible(true);

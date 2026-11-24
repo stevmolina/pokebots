@@ -7,7 +7,8 @@ import { Stack } from "expo-router/stack";
 import { StatusBar } from "expo-status-bar";
 import * as SystemUI from "expo-system-ui";
 import { HeroUINativeProvider } from "heroui-native/provider";
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { PostHogProvider } from "posthog-react-native";
+import { type PropsWithChildren, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
@@ -15,6 +16,8 @@ import { ReducedMotionConfig, ReduceMotion } from "react-native-reanimated";
 import { useCSSVariable, useUniwind, withUniwind } from "uniwind";
 
 import { MobileAnalyticsLifecycle } from "@/features/analytics/lifecycle";
+import { posthog } from "@/features/analytics/posthog";
+import { posthogLog } from "@/features/analytics/posthog-log";
 import { AppLockOverlay } from "@/features/app-lock/components/app-lock-overlay";
 import { installAppLock } from "@/features/app-lock/model/app-lock";
 import { UpdateRequiredOverlay } from "@/features/app-update/components/update-required-overlay";
@@ -78,6 +81,7 @@ export const unstable_settings = {
 
 // The Pokebots build sets its brand colors before the first screen. The store build changes nothing.
 applyAppBrand();
+posthogLog.appInitialized();
 installSupportLog();
 installQuickActions();
 installShortcuts();
@@ -92,6 +96,10 @@ const lightTheme = { ...DefaultTheme, fonts: navigationFonts };
 const SESSION_FADE_MS = 300;
 // A launch that takes longer than this shows what it waits for.
 const SLOW_LAUNCH_MS = 700;
+
+function PostHogBoundary({ children }: PropsWithChildren) {
+  return posthog ? <PostHogProvider client={posthog}>{children}</PostHogProvider> : children;
+}
 
 function RootNavigator() {
   const { t } = useText();
@@ -284,7 +292,8 @@ export default function RootLayout() {
   }, []);
 
   return (
-    <UniwindGestureHandlerRootView className="flex-1">
+    <PostHogBoundary>
+      <UniwindGestureHandlerRootView className="flex-1">
       {/* The app draws under the system bars and pads with safe area insets. Expo Go on Android does not
           report edge-to-edge, and without these props the keyboard provider pads the whole app. */}
       <KeyboardProvider
@@ -312,6 +321,7 @@ export default function RootLayout() {
           </HeroUINativeProvider>
         </QueryClientProvider>
       </KeyboardProvider>
-    </UniwindGestureHandlerRootView>
+      </UniwindGestureHandlerRootView>
+    </PostHogBoundary>
   );
 }
