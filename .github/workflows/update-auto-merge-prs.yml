@@ -9,7 +9,8 @@ name: Update auto-merge PRs
 # A push made with `GITHUB_TOKEN` does not start `pull_request` workflows, but `workflow_dispatch`
 # is the one event that it can start. So this workflow dispatches `ci.yml` on the updated branch;
 # the check runs attach to the new head commit, which is what the required check reads. The
-# dispatch runs every lane except `surfaces`, which only a `pull_request` run does.
+# dispatch runs every lane, like a push to `main`; only the `mobile-runtime` notice, which is not a
+# required check, runs for `pull_request` alone.
 # A pull request with a merge conflict is left as it is: its author resolves it.
 # A pull request with a merge conflict is left as it is: its author resolves it.
 on:
