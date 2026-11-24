@@ -10,6 +10,7 @@ name: Update auto-merge PRs
 # is the one event that it can start. So this workflow dispatches `ci.yml` on the updated branch;
 # the check runs attach to the new head commit, which is what the required check reads. The
 # dispatch runs every lane except `surfaces`, which only a `pull_request` run does.
+# A pull request with a merge conflict is left as it is: its author resolves it.
 on:
   push:
     branches: [main]
