@@ -1126,7 +1126,7 @@ export const messages = defineMessages("mobile.server", {
   "mobile.server.connectors.slack.orchestratorNone": "Add the Slack Orchestrator, or Slack gets no answer.",
   "mobile.server.connectors.slack.addAgent": "Add Slack Orchestrator",
   "mobile.server.connectors.slack.note":
-    "Pokebots joins every public channel by itself, and each new one. For a private channel, invite it: /invite @Pokebots.",
+    "Pokebots joins every public channel by itself, and each new one. For a private channel, invite it: /invite @OpenBot.",
   "mobile.server.connectors.slack.disconnectTitle": "Disconnect {workspace}?",
   "mobile.server.connectors.slack.disconnectBody":
     "Pokebots stops answering in {workspace} and removes its Slack token from {host}.",

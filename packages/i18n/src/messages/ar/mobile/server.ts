@@ -1103,7 +1103,7 @@ export const messages = {
   "mobile.server.connectors.slack.orchestratorNone": "أضف Slack Orchestrator، وإلا فلن يتلقى Slack أي إجابة.",
   "mobile.server.connectors.slack.addAgent": "إضافة Slack Orchestrator",
   "mobile.server.connectors.slack.note":
-    "ينضم Pokebots إلى كل قناة عامة بنفسه، وإلى كل قناة جديدة. للقناة الخاصة، ادعه: /invite @Pokebots.",
+    "ينضم Pokebots إلى كل قناة عامة بنفسه، وإلى كل قناة جديدة. للقناة الخاصة، ادعه: /invite @OpenBot.",
   "mobile.server.connectors.slack.disconnectTitle": "هل تريد قطع اتصال {workspace}؟",
   "mobile.server.connectors.slack.disconnectBody":
     "يتوقف Pokebots عن الرد في {workspace} ويزيل رمز Slack المميز من {host}.",

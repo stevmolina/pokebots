@@ -83,7 +83,7 @@ import {
 } from "@/features/search/components/home-search";
 import { setHomeSearchUnavailable } from "@/features/search/model/home-search-request";
 import { AllMachinesList, useAllMachinesShown } from "@/features/servers/components/all-machines";
-import { useAppDrawer } from "@/features/servers/components/app-drawer-shell";
+import { useAppDrawer } from "@/features/servers/components/app-drawer-context";
 import { PlanLimitsHeaderButton } from "@/features/servers/components/plan-limits-header-button";
 import { loadAllMachines, useAllMachines } from "@/features/servers/model/all-machines";
 import { usePlanLimits } from "@/features/servers/model/plan-limits";

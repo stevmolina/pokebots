@@ -212,7 +212,7 @@ try {
   });
   clients.push(client);
   client.on("diagnostic", (line: string) => {
-    if (/OpenBot's tools/.test(line)) report.diagnostics.push(line);
+    if (/Pokebots's tools/.test(line)) report.diagnostics.push(line);
   });
   client.on("request", (request) => {
     if (request.method !== "item/tool/call") return;

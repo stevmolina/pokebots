@@ -642,7 +642,7 @@ try {
         () => null,
         (error: unknown) => (error instanceof Error ? error.message : String(error)),
       );
-      assert.equal(failure, "OpenBot cannot list Discord roles yet. Try again later.");
+      assert.equal(failure, "Pokebots cannot list Discord roles yet. Try again later.");
       return { failure };
     });
 

@@ -1116,7 +1116,7 @@ export const messages = {
   "mobile.server.connectors.slack.orchestratorNone": "יש להוסיף את Slack Orchestrator, אחרת Slack לא יקבל תשובה.",
   "mobile.server.connectors.slack.addAgent": "הוספת Slack Orchestrator",
   "mobile.server.connectors.slack.note":
-    "Pokebots מצטרף בעצמו לכל ערוץ ציבורי, ולכל ערוץ חדש. לערוץ פרטי יש להזמין אותו: /invite @Pokebots.",
+    "Pokebots מצטרף בעצמו לכל ערוץ ציבורי, ולכל ערוץ חדש. לערוץ פרטי יש להזמין אותו: /invite @OpenBot.",
   "mobile.server.connectors.slack.disconnectTitle": "לנתק את {workspace}?",
   "mobile.server.connectors.slack.disconnectBody":
     "Pokebots מפסיק לענות ב-{workspace} ומסיר את אסימון Slack שלו מ-{host}.",

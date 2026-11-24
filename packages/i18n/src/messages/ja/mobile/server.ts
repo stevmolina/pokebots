@@ -804,7 +804,7 @@ export const messages = {
     "Slack Orchestrator を追加してください。追加しないと、Slack に回答が届きません。",
   "mobile.server.connectors.slack.addAgent": "Slack Orchestrator を追加",
   "mobile.server.connectors.slack.note":
-    "Pokebots はすべての公開チャンネルと新しいチャンネルに自動で参加します。非公開チャンネルには招待してください: /invite @Pokebots",
+    "Pokebots はすべての公開チャンネルと新しいチャンネルに自動で参加します。非公開チャンネルには招待してください: /invite @OpenBot",
   "mobile.server.connectors.slack.disconnectTitle": "{workspace} を切断しますか？",
   "mobile.server.connectors.slack.disconnectBody":
     "Pokebots は {workspace} での回答を停止し、Slack のトークンを {host} から削除します。",

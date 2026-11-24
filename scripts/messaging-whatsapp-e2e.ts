@@ -700,7 +700,8 @@ try {
       assert.equal(received(agents, OWNER_JID, own.id), false, "An own post was read as a request.");
       for (const other of [otherStatus, otherAnswer])
         assert.equal(received(agents, OWNER_JID, other.key.id ?? ""), false, "Another OpenBot's post was a request.");
-      const told = () => phone.textsTo(OWNER_JID).filter((text) => text.startsWith("Another OpenBot is linked")).length;
+      const told = () =>
+        phone.textsTo(OWNER_JID).filter((text) => text.startsWith("Another Pokebots is linked")).length;
       await until(() => told() === 1, "one notice about the other OpenBot");
       return { echoId: own.id, otherOpenBotNotices: told() };
     });
@@ -1675,7 +1676,7 @@ try {
       "loop guard: a loop in the owner's own chat pauses it, a burst does not, and stop goes through",
       async () => {
         const paused = () =>
-          phone.textsTo(OWNER_JID).filter((text) => text.startsWith("OpenBot stopped answering here")).length;
+          phone.textsTo(OWNER_JID).filter((text) => text.startsWith("Pokebots stopped answering here")).length;
         const handle = runtime.get(credentials.get(connectionId(agents))?.storeId ?? "");
         assert.ok(handle, "No open store.");
         const journaled = (chat: string, id: string | null | undefined) =>
