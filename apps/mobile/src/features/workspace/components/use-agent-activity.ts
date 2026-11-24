@@ -1,4 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
+import type { AgentTasksSnapshot } from "@openbot/contracts/ipc";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useMemo, useSyncExternalStore } from "react";
 import { useQueryScope } from "@/features/auth/context/mobile-session-context";
 import { useAgentThreadUnread } from "@/features/chat/components/use-agent-thread-reads";
@@ -124,6 +125,50 @@ export function useWaitingAgentIds(): ReadonlySet<string> {
   }, [liveState, online, serverId]);
   const key = useSyncExternalStore(liveState.subscribe, select);
   return useMemo(() => new Set(key ? key.split("\n") : []), [key]);
+}
+
+/**
+ * The agents of the active server that run a turn now, in their own chat or in a side thread, as the
+ * live activity and the cached task lists say. The selectors return sorted keys, so work that keeps the
+ * same agents busy does not re-render the list.
+ */
+export function useWorkingAgentIds(): ReadonlySet<string> {
+  const liveState = useMobileWorkspaceSelector(selectLiveState);
+  const online = useMobileWorkspaceSelector((workspace) => showsOnline(workspace.activeServer));
+  const serverId = useMobileWorkspaceSelector((workspace) => workspace.activeServer.id);
+  const queryScope = useQueryScope();
+  const queryClient = useQueryClient();
+  const queryCache = queryClient.getQueryCache();
+  const selectOwn = useCallback(() => {
+    if (!online) return "";
+    const activities = liveState.get().activityByServer[serverId] ?? {};
+    return Object.keys(activities)
+      .filter((agentId) => {
+        const phase = activities[agentId]?.phase;
+        return phase === "working" || phase === "responding";
+      })
+      .sort()
+      .join("\n");
+  }, [liveState, online, serverId]);
+  const own = useSyncExternalStore(liveState.subscribe, selectOwn);
+  // The cache tells its listeners while another component renders and adds a query. The list reads
+  // the change after that render, so React does not update this screen during another one's render.
+  const subscribeTasks = useCallback(
+    (listener: () => void) => queryCache.subscribe(() => queueMicrotask(listener)),
+    [queryCache],
+  );
+  const selectThreads = useCallback(() => {
+    if (!online) return "";
+    const ids = queryClient
+      .getQueriesData<AgentTasksSnapshot>({ queryKey: [...queryKeys.serverTasks(queryScope, serverId), "agent"] })
+      .flatMap(([, snapshot]) => (snapshot?.tasks.some((task) => task.state === "running") ? [snapshot.agentId] : []));
+    return [...new Set(ids)].sort().join("\n");
+  }, [queryClient, online, queryScope, serverId]);
+  const threads = useSyncExternalStore(subscribeTasks, selectThreads);
+  return useMemo(
+    () => new Set([...(own ? own.split("\n") : []), ...(threads ? threads.split("\n") : [])]),
+    [own, threads],
+  );
 }
 
 /**

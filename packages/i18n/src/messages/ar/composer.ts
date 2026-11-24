@@ -112,6 +112,8 @@ export const messages = {
   "composer.send.hint.enter": "إرسال (Enter). يضيف Shift+Enter سطرًا جديدًا.",
   "composer.send.hint.modEnterMac": "إرسال (⌘Enter). يضيف Enter سطرًا جديدًا.",
   "composer.send.hint.modEnterWin": "إرسال (Ctrl+Enter). يضيف Enter سطرًا جديدًا.",
+  "composer.send.hint.busySteer": "توجيه هذه الجولة (Enter). يضعها {chord} في قائمة الانتظار لما بعد.",
+  "composer.send.hint.busyQueue": "إضافة إلى قائمة الانتظار بعد هذه الجولة (Enter). يوجّهها {chord} الآن.",
   "composer.save.hint.enter": "حفظ (Enter). يضيف Shift+Enter سطرًا جديدًا.",
   "composer.save.hint.modEnterMac": "حفظ (⌘Enter). يضيف Enter سطرًا جديدًا.",
   "composer.save.hint.modEnterWin": "حفظ (Ctrl+Enter). يضيف Enter سطرًا جديدًا.",

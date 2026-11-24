@@ -111,6 +111,8 @@ export const messages = {
   "composer.send.hint.enter": "보내기 (Enter). Shift+Enter로 줄을 바꿔요.",
   "composer.send.hint.modEnterMac": "보내기 (⌘Enter). Enter로 줄을 바꿔요.",
   "composer.send.hint.modEnterWin": "보내기 (Ctrl+Enter). Enter로 줄을 바꿔요.",
+  "composer.send.hint.busySteer": "이번 턴에 지시 (Enter). {chord}는 나중을 위해 대기열에 넣어요.",
+  "composer.send.hint.busyQueue": "이번 턴 다음 대기열에 추가 (Enter). {chord}는 지금 지시해요.",
   "composer.save.hint.enter": "저장 (Enter). Shift+Enter로 줄을 바꿔요.",
   "composer.save.hint.modEnterMac": "저장 (⌘Enter). Enter로 줄을 바꿔요.",
   "composer.save.hint.modEnterWin": "저장 (Ctrl+Enter). Enter로 줄을 바꿔요.",

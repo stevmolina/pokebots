@@ -34,29 +34,68 @@ import { SidebarSectionHeader } from "./SidebarSectionHeader";
 import { sidebarSectionResolver } from "./sidebar-agent-order";
 import { sidebarAgentWait } from "./sidebar-recent-chats";
 import { useSidebarScope } from "./sidebar-scope";
-import { SIDEBAR_DOCK_DONE_ID, SIDEBAR_DOCK_WORKING_ID, type SidebarChatItem } from "./sidebar-types";
+import {
+  SIDEBAR_DOCK_DONE_ID,
+  SIDEBAR_DOCK_SNOOZED_ID,
+  SIDEBAR_DOCK_WORKING_ID,
+  type SidebarChatItem,
+} from "./sidebar-types";
 
-/** Rows of the open list, in the order given. */
-function SidebarChatRows(rowsProps: { chats: readonly SidebarChatItem[] }) {
+/**
+ * Rows of the open list, in the order given. `compact` rows show the name alone, without the last
+ * message, and `note` replaces the time at the end of a row, such as how long a snooze lasts.
+ */
+function SidebarChatRows(rowsProps: {
+  chats: readonly SidebarChatItem[];
+  compact?: boolean | undefined;
+  card?: boolean | undefined;
+  note?: ((chat: SidebarChatItem) => string | undefined) | undefined;
+}) {
   return (
-    <div class="sidebar-chat-rows">
+    <div
+      class={[
+        "sidebar-chat-rows",
+        { "sidebar-chat-rows-compact": rowsProps.compact === true, "sidebar-chat-rows-cards": rowsProps.card === true },
+      ]}
+    >
       {/* Keyed by chat, so a new order after a message keeps each row, its focus and its menu. */}
       <For each={rowsProps.chats} keyed={(chat) => `${chat.kind}:${chat.id}`}>
-        {(chat) => <SidebarChatRow chat={chat()} look="row" />}
+        {(chat) => <SidebarChatRow chat={chat()} look="row" note={rowsProps.note?.(chat())} card={rowsProps.card} />}
       </For>
     </div>
   );
 }
 
+/** How long is left of a snooze, short: minutes, hours, or days. */
+function useSnoozeLeft() {
+  const { snoozeClock, snoozedAgents } = useSidebarScope();
+  const { t, format } = useText();
+  return (chat: SidebarChatItem) => {
+    const until = chat.kind === "agent" ? snoozedAgents().get(chat.id) : undefined;
+    if (until === undefined) return undefined;
+    const minutes = Math.max(1, Math.ceil((until - snoozeClock()) / 60_000));
+    if (minutes < 60) return t("sidebar.lanes.minutes", { value: format.number(minutes) });
+    const hours = Math.round(minutes / 60);
+    if (hours < 24) return t("sidebar.lanes.hours", { value: format.number(hours) });
+    return t("sidebar.dock.days", { value: format.number(Math.round(hours / 24)) });
+  };
+}
+
 /**
- * The chats that wait, the chats that work, the agents that finished with an unread reply, and the
- * other chats by the folder that the layout puts them in.
+ * The chats that wait, the chats that work, the snoozed agents, the agents that finished with an
+ * unread reply, and the other chats by the folder that the layout puts them in. `allBySection` holds
+ * every chat but the waiting ones by folder, for the "Folders" view, where a working, done or snoozed
+ * chat stays in its folder.
  */
 interface SidebarChatDockGroups {
   waiting: SidebarChatItem[];
   working: SidebarChatItem[];
+  snoozed: SidebarChatItem[];
   done: SidebarChatItem[];
+  /** The chats in no state group, newest first, from every folder: "Settled" of the "Active" view. */
+  rest: SidebarChatItem[];
   bySection: ReadonlyMap<string, SidebarChatItem[]>;
+  allBySection: ReadonlyMap<string, SidebarChatItem[]>;
 }
 
 /**
@@ -82,7 +121,7 @@ function useThreadStates() {
 
 /** The groups of the list. `chats` is newest first, and each group keeps that order. */
 export function useSidebarChatDockGroups(chats: () => readonly SidebarChatItem[]) {
-  const { draggingKind, props, waitingChats } = useSidebarScope();
+  const { draggingKind, props, snoozedAgents, waitingChats } = useSidebarScope();
   const threadStates = useThreadStates();
   const unread = useChatUnread();
   let heldWorking = new Set<string>();
@@ -108,24 +147,39 @@ export function useSidebarChatDockGroups(chats: () => readonly SidebarChatItem[]
     const sectionOf = sidebarSectionResolver(props.layout);
     const waitingIds = new Set(waitingChats().map((chat) => chat.id));
     const states = threadStates();
+    const snoozes = snoozedAgents();
     const waiting: SidebarChatItem[] = [];
     const working: SidebarChatItem[] = [];
+    const snoozed: SidebarChatItem[] = [];
     const done: SidebarChatItem[] = [];
+    const rest: SidebarChatItem[] = [];
     const bySection = new Map<string, SidebarChatItem[]>();
+    const allBySection = new Map<string, SidebarChatItem[]>();
+    const file = (map: Map<string, SidebarChatItem[]>, chat: SidebarChatItem) => {
+      const sectionId = sectionOf(chat.id);
+      map.set(sectionId, [...(map.get(sectionId) ?? []), chat]);
+    };
     for (const chat of chats()) {
       const agent = chat.kind === "agent";
       if (waitingIds.has(chat.id) || (agent && states.waits.has(chat.id))) {
         waiting.push(chat);
-      } else if (workingIds().has(`${chat.kind}:${chat.id}`) || (agent && states.works.has(chat.id))) {
+        continue;
+      }
+      file(allBySection, chat);
+      if (workingIds().has(`${chat.kind}:${chat.id}`) || (agent && states.works.has(chat.id))) {
         working.push(chat);
+      } else if (agent && snoozes.has(chat.id)) {
+        snoozed.push(chat);
       } else if (agent && unreadAgentIds().has(chat.id)) {
         done.push(chat);
       } else {
-        const sectionId = sectionOf(chat.id);
-        bySection.set(sectionId, [...(bySection.get(sectionId) ?? []), chat]);
+        file(bySection, chat);
+        rest.push(chat);
       }
     }
-    return { waiting, working, done, bySection };
+    // The agent that wakes up first comes first.
+    snoozed.sort((a, b) => (snoozes.get(a.id) ?? 0) - (snoozes.get(b.id) ?? 0));
+    return { waiting, working, snoozed, done, rest, bySection, allBySection };
   });
 }
 
@@ -185,12 +239,16 @@ function SidebarDockGroup(groupProps: {
   chats: readonly SidebarChatItem[];
   open: boolean;
   onToggle: () => void;
+  compact?: boolean;
+  card?: boolean;
+  note?: (chat: SidebarChatItem) => string | undefined;
   children?: JSX.Element;
 }) {
-  const { dragOffset, sectionDragClasses } = useSidebarScope();
+  const { chatListView, dragOffset, sectionDragClasses } = useSidebarScope();
   const unread = useChatUnread();
   const open = () => groupProps.open;
-  const section = () => groupProps.id === SIDEBAR_UNASSIGNED_SECTION_ID;
+  // "Settled" of the "Active" view holds chats of every folder, so a drop on it must not take a chat out of its folder.
+  const section = () => groupProps.id === SIDEBAR_UNASSIGNED_SECTION_ID && chatListView() === "folders";
   return (
     <section
       class={[
@@ -201,6 +259,7 @@ function SidebarDockGroup(groupProps: {
       style={section() ? `--sidebar-drag-y: ${dragOffset(groupProps.id).y}px;` : undefined}
       aria-label={groupProps.name}
       data-section-id={section() ? groupProps.id : undefined}
+      data-dock-group={groupProps.id}
     >
       <header>
         <Button
@@ -223,7 +282,12 @@ function SidebarDockGroup(groupProps: {
         </Button>
       </header>
       <SidebarDockBody id={groupProps.id} open={open()}>
-        <SidebarChatRows chats={groupProps.chats} />
+        <SidebarChatRows
+          chats={groupProps.chats}
+          compact={groupProps.compact}
+          card={groupProps.card}
+          note={groupProps.note}
+        />
         {groupProps.children}
       </SidebarDockBody>
     </section>
@@ -350,6 +414,7 @@ export interface SidebarDockOpenState {
 /** The groups on screen and their open state. The list and its unread button share it. */
 export function useSidebarDockOpenState(groups: () => SidebarChatDockGroups): SidebarDockOpenState {
   const {
+    chatListView,
     customSectionById,
     dockOpenGroups,
     orderedPeople,
@@ -358,22 +423,35 @@ export function useSidebarDockOpenState(groups: () => SidebarChatDockGroups): Si
     setDockOpenGroups,
     userHiddenAgentList,
   } = useSidebarScope();
+  const foldersView = () => chatListView() === "folders";
   const folderIds = createMemo(() =>
-    props.layout.order.filter((sectionId) => customSectionById().has(sectionId) && sectionParent(sectionId) === null),
+    foldersView()
+      ? props.layout.order.filter(
+          (sectionId) => customSectionById().has(sectionId) && sectionParent(sectionId) === null,
+        )
+      : [],
   );
-  /** A chat whose folder is not in the layout any more counts as in none. */
-  const settled = createMemo(() => [
-    ...(groups().bySection.get(SIDEBAR_UNASSIGNED_SECTION_ID) ?? []),
-    ...[...groups().bySection].flatMap(([sectionId, chats]) =>
-      sectionId !== SIDEBAR_UNASSIGNED_SECTION_ID && !customSectionById().has(sectionId) ? chats : [],
-    ),
-  ]);
+  /**
+   * "Active" puts every chat that is not in a state group here, from every folder, newest first.
+   * "Folders" puts here the chats in no folder; a chat whose folder is not in the layout any more counts
+   * as in none.
+   */
+  const settled = createMemo(() => {
+    if (!foldersView()) return groups().rest;
+    const map = groups().allBySection;
+    return [
+      ...(map.get(SIDEBAR_UNASSIGNED_SECTION_ID) ?? []),
+      ...[...map].flatMap(([sectionId, chats]) =>
+        sectionId !== SIDEBAR_UNASSIGNED_SECTION_ID && !customSectionById().has(sectionId) ? chats : [],
+      ),
+    ];
+  });
   const people = () => props.showPeople !== false && orderedPeople().length > 0;
   const settledShown = () =>
     settled().length > 0 || people() || userHiddenAgentList().length > 0 || props.showingArchivedChannels === true;
   /** The groups on screen, in their order. */
   const shownIds = createMemo(() => [
-    ...(groups().working.length > 0 ? [SIDEBAR_DOCK_WORKING_ID] : []),
+    ...(!foldersView() && groups().working.length > 0 ? [SIDEBAR_DOCK_WORKING_ID] : []),
     ...folderIds(),
     ...(settledShown() ? [SIDEBAR_UNASSIGNED_SECTION_ID] : []),
   ]);
@@ -396,20 +474,35 @@ export function useSidebarDockOpenState(groups: () => SidebarChatDockGroups): Si
 
 /** The groups of the list, under "Needs you". They scroll with the rows. It hides while it has no group. */
 export function SidebarChatDock(dockProps: { groups: SidebarChatDockGroups; open: SidebarDockOpenState }) {
-  const { pending, props, sectionIsCollapsed, toggleSection } = useSidebarScope();
+  const { chatListView, pending, props, sectionIsCollapsed, toggleSection } = useSidebarScope();
   const { t } = useText();
+  const snoozeLeft = useSnoozeLeft();
   const open = () => dockProps.open;
-  const workingShown = () => dockProps.groups.working.length > 0;
-  const doneShown = () => dockProps.groups.done.length > 0;
+  const foldersView = () => chatListView() === "folders";
+  const workingShown = () => !foldersView() && dockProps.groups.working.length > 0;
+  const doneShown = () => !foldersView() && dockProps.groups.done.length > 0;
+  const snoozedShown = () => !foldersView() && dockProps.groups.snoozed.length > 0;
+  /** The folders read every chat but the waiting ones in "Folders", so a busy chat stays in its folder. */
+  const folderGroups = createMemo<SidebarChatDockGroups>(() => ({
+    ...dockProps.groups,
+    bySection: dockProps.groups.allBySection,
+  }));
   const draftShown = () => {
     const target = pending.sectionEditor?.target;
     return target?.kind === "create" && (target.parentId ?? null) === null;
   };
   return (
     <Show
-      when={workingShown() || doneShown() || open().folderIds().length > 0 || open().settledShown() || draftShown()}
+      when={
+        workingShown() ||
+        doneShown() ||
+        snoozedShown() ||
+        open().folderIds().length > 0 ||
+        open().settledShown() ||
+        draftShown()
+      }
     >
-      <div class="sidebar-dock">
+      <div class="sidebar-dock" data-view={chatListView()}>
         <Show when={workingShown()}>
           <SidebarDockGroup
             id={SIDEBAR_DOCK_WORKING_ID}
@@ -417,6 +510,7 @@ export function SidebarChatDock(dockProps: { groups: SidebarChatDockGroups; open
             chats={dockProps.groups.working}
             open={open().isOpen(SIDEBAR_DOCK_WORKING_ID)}
             onToggle={() => open().toggle(SIDEBAR_DOCK_WORKING_ID)}
+            card
           />
         </Show>
         <Show when={doneShown()}>
@@ -426,24 +520,39 @@ export function SidebarChatDock(dockProps: { groups: SidebarChatDockGroups; open
             chats={dockProps.groups.done}
             open={!sectionIsCollapsed(SIDEBAR_DOCK_DONE_ID)}
             onToggle={() => toggleSection(SIDEBAR_DOCK_DONE_ID)}
+            compact
+          />
+        </Show>
+        <Show when={snoozedShown()}>
+          <SidebarDockGroup
+            id={SIDEBAR_DOCK_SNOOZED_ID}
+            name={t("sidebar.dock.snoozed")}
+            chats={dockProps.groups.snoozed}
+            open={!sectionIsCollapsed(SIDEBAR_DOCK_SNOOZED_ID)}
+            onToggle={() => toggleSection(SIDEBAR_DOCK_SNOOZED_ID)}
+            compact
+            note={snoozeLeft}
           />
         </Show>
         <For each={open().folderIds()}>
           {(sectionId) => (
             <SidebarDockFolder
               sectionId={sectionId}
-              groups={dockProps.groups}
+              groups={folderGroups()}
               open={open().isOpen(sectionId)}
               onToggle={() => open().toggle(sectionId)}
             />
           )}
         </For>
-        <SidebarSectionDraft parentId={null} />
+        <Show when={foldersView()}>
+          <SidebarSectionDraft parentId={null} />
+        </Show>
         <Show when={open().settledShown()}>
           <SidebarDockGroup
             id={SIDEBAR_UNASSIGNED_SECTION_ID}
-            name={t("sidebar.dock.settled")}
+            name={foldersView() ? t("sidebar.dock.noFolder") : t("sidebar.dock.settled")}
             chats={open().settled()}
+            compact={!foldersView()}
             open={open().isOpen(SIDEBAR_UNASSIGNED_SECTION_ID)}
             onToggle={() => open().toggle(SIDEBAR_UNASSIGNED_SECTION_ID)}
           >

@@ -19,6 +19,7 @@ import { useCompactMessageActions } from "../../compact-message-actions-preferen
 import { usePlatform } from "../../platform";
 import { deviceQuoteShortcut } from "../../send-shortcut-preference";
 import { useThreadVisualReplyCard } from "./ChatVisualReply";
+import { useThreadComputerLiveViewCard } from "./ComputerLiveViewChatCard";
 import { latestVisibleAgentMessageId } from "./conversation-read-state";
 import { conversationRuntime } from "./conversation-runtime";
 import { useConversationViewScope } from "./conversation-scope";
@@ -121,13 +122,13 @@ export function ConversationSideThread(props: { threadId: string; resizer: JSX.E
     return key ? threadComposer.draft(key) : undefined;
   };
   /** Sends the draft of this thread. Without its key, a send would take the draft of the chat's thread. */
-  function sendSide(side: SideThread, text: string): Promise<boolean> {
+  function sendSide(side: SideThread, text: string, queueOnly?: boolean): Promise<boolean> {
     const key = draftKey();
     if (!key) return Promise.resolve(false);
     // While a queued message is in the message box, Send saves it in its place.
     return threadQueue.editOf(side.task.id)
       ? threadComposer.importsEnded(key).then(() => threadQueue.save(key))
-      : threadComposer.send(side, text, key);
+      : threadComposer.send(side, text, key, queueOnly);
   }
   /** The thread waits for an answer to a question or a takeover, which the chat tab of the thread shows. */
   const waitsForAnswer = () => {
@@ -146,6 +147,7 @@ export function ConversationSideThread(props: { threadId: string; resizer: JSX.E
   );
   const marketplaceCard = useThreadMarketplaceSuggestionCard();
   const settingLinkCard = useThreadSettingLinkCard();
+  const liveViewCard = useThreadComputerLiveViewCard();
   /** A visual reply page shows as in the agent's chat, and writes in this thread's message box. */
   const visualReplyCard = useThreadVisualReplyCard(draftKey);
   /** Branches this thread through an answer. The branch opens as a chat tab. */
@@ -247,6 +249,9 @@ export function ConversationSideThread(props: { threadId: string; resizer: JSX.E
             mediaSource={view.runtime?.attachmentMedia}
             downloads={attachmentDownloads}
             onSend={(text) => sendSide(current().thread, text)}
+            onSendAlternate={
+              current().thread.conversation?.activeTurnId ? (text) => sendSide(current().thread, text, true) : undefined
+            }
             onStop={() => current().thread.onStop()}
             onOpenLink={(url) => void openExternalMessageUrl(url)}
             onOpenFile={openThreadFile}
@@ -268,7 +273,8 @@ export function ConversationSideThread(props: { threadId: string; resizer: JSX.E
               visualReplyCard(message, quote) ??
               mcpSignInCard(message) ??
               marketplaceCard(message) ??
-              settingLinkCard(message)
+              settingLinkCard(message) ??
+              liveViewCard(message)
             }
             aboveComposer={extras.aboveComposer()}
             belowTitle={extras.belowTitle()}

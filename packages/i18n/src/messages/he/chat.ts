@@ -2,6 +2,12 @@ import type { PartialTranslation } from "../../message";
 import type { messages as source } from "../en/chat";
 
 export const messages = {
+  "chat.workers.running": "פועל",
+  "chat.workers.queued": "בתור",
+  "chat.workers.runningCount": "{count} פועלים",
+  "chat.workers.queuedCount": "{count} בתור",
+  "chat.workers.showAll": "הצגת כל {count} הסשנים הפעילים",
+  "chat.workers.showOne": "צמצום לסשן פעיל אחד",
   "chat.activity.workingOnIt": "עובד על זה…",
   "chat.activity.thinking": "חושב על זה…",
   "chat.activity.connectingDots": "מחבר את הנקודות…",
@@ -61,6 +67,8 @@ export const messages = {
   "chat.subagents.stepCount": { one: "שלב אחד", two: "שני שלבים", other: "{count} שלבים" },
   "chat.subagents.seconds": "{seconds} ש׳",
   "chat.subagents.minutes": "{minutes} ד׳ {seconds} ש׳",
+  "chat.subagents.hours": "{hours} שע׳ {minutes} ד׳",
+  "chat.subagents.days": "{days} י׳",
   "chat.subagents.open": "{title}, {state}. פתיחה בצד.",
   "chat.trace.title": "עקבות",
   "chat.trace.search": "חיפוש שלבים",
@@ -388,7 +396,6 @@ export const messages = {
   "chat.actions.more": "פעולות נוספות",
   "chat.menu.reply": "מענה",
   "chat.menu.copy": "העתקת ההודעה",
-  "chat.menu.react": "תגובה",
   "chat.menu.branch": "הסתעפות מכאן",
   "chat.menu.markUnread": "סימון כלא נקרא",
   "chat.menu.pin": "הצמדה",

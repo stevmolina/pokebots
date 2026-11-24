@@ -353,6 +353,7 @@ import { NO_PROVIDER_CREDENTIALS, type ProviderClientContext, requireProviderDri
 import { providerHistoryPersistence } from "./provider-history-persistence";
 import { remoteComputerMcpServerAgentId } from "./remote-computer-mcp";
 import { recordAgentRestartActivity } from "./restart-activity";
+import { queuedWorkHoldsRestart } from "./restart-holds";
 import type { RoutineFlowTools } from "./routine-flows/routine-flow-tools";
 import { RoutineRecords } from "./routine-records";
 import type { ImportedRoutineRun, RoutineHoldWindow } from "./routine-store";
@@ -598,6 +599,8 @@ export interface AgentServiceOptions {
    * The built-in `computer_*` tools and coding jobs use it.
    */
   agentComputerKey?: () => string | null;
+  /** Whether an agent can start an Agent Computer: the server key or the user's account. */
+  agentComputerConnected?: () => boolean;
   agentComputerCredential?: (memberId: string) => IntegrationCredential<"computer"> | undefined;
   /** The Link account of this computer, or `null`. Agents ask it for one-time cards. */
   linkWallet?: LinkWallet | null;
@@ -916,6 +919,7 @@ export class AgentService extends EventEmitter<AgentServiceEvents> {
           // A task lane that waited for a free task can start now.
           this.#drain.scheduleDrain(agentId);
         }).bind(this),
+        agentActivityChanged: () => this.#emit({ type: "agents-changed", agents: this.listAgents() }),
       },
     });
     this.#messageDeletion = new MessageDeletion({
@@ -1528,6 +1532,7 @@ export class AgentService extends EventEmitter<AgentServiceEvents> {
       mcpProxiedServerIds: (configs) => this.#mcp.proxiedServerIds(configs),
       ...(credentials.agentEnvironment ? { agentEnvironment: credentials.agentEnvironment } : {}),
       passwordVaultConnected: () => options.passwordVault?.connected() ?? false,
+      agentComputerConnected: () => options.agentComputerConnected?.() ?? options.agentComputerKey?.() != null,
       vaultItems: (agentId) => ({
         available: options.vaultItems?.ready() ?? false,
         cards: options.vaultItems?.hasCards(agentId) ?? false,
@@ -2435,7 +2440,17 @@ export class AgentService extends EventEmitter<AgentServiceEvents> {
   }
 
   listAgents(): AgentSummary[] {
-    return this.#duplication.visibleAgents(this.#store.list());
+    const threadTimes = this.#tasks?.latestUpdatedAtByAgent();
+    return this.#duplication.visibleAgents(this.#store.list()).map((agent) => {
+      const threadUpdatedAt = threadTimes?.get(agent.id);
+      if (!threadUpdatedAt) return agent;
+      if (agent.updatedAt) {
+        const agentMs = Date.parse(agent.updatedAt);
+        const threadMs = Date.parse(threadUpdatedAt);
+        if (!Number.isNaN(agentMs) && (Number.isNaN(threadMs) || threadMs <= agentMs)) return agent;
+      }
+      return { ...agent, updatedAt: threadUpdatedAt };
+    });
   }
 
   /** The folder that every local agent can change, beside its own workspace. */
@@ -2584,7 +2599,13 @@ export class AgentService extends EventEmitter<AgentServiceEvents> {
         break;
       }
     }
-    if (this.listAgents().some((agent) => this.#mailbox.hasUnfinishedDelivery(agent.id))) {
+    const limitHeld = (agentId: string) => this.#queueHeldByLimit(agentId);
+    if (
+      queuedWorkHoldsRestart(
+        this.listAgents().map((agent) => agent.id),
+        { hasUnfinishedDelivery: (agentId) => this.#mailbox.hasUnfinishedDelivery(agentId), limitHeld },
+      )
+    ) {
       reasons.push("queued-delivery");
     }
     // A scheduled drain with nothing behind it is a no-op microtask, not work: only an
@@ -2598,7 +2619,7 @@ export class AgentService extends EventEmitter<AgentServiceEvents> {
         break;
       }
     }
-    if (this.#routines.hasActiveRuns() || this.#channelRoutines.hasActiveRuns()) reasons.push("routine-run");
+    if (this.#routines.hasActiveRuns(limitHeld) || this.#channelRoutines.hasActiveRuns()) reasons.push("routine-run");
     if (this.channels.hasActiveWork()) reasons.push("channel-work");
     if (this.#providers.activeProcessCount() > 0) reasons.push("provider-process");
     return reasons;
@@ -4680,6 +4701,19 @@ export class AgentService extends EventEmitter<AgentServiceEvents> {
   /** Whether a spent plan holds this agent's channel work: it is held, and no person's message gave it a try. */
   #channelHeld(agentId: string): boolean {
     return !this.#usageLimits.mayDrain(agentId) && !this.#usageLimits.mayTry(agentId);
+  }
+
+  /**
+   * A spent plan holds this agent's whole queue, and none of its turns runs or starts. Its queued
+   * messages and routine runs are saved, and the hold is kept in memory only, so a restart loses
+   * nothing: they do not hold an update. A held queue can wait for days, until the user writes.
+   */
+  #queueHeldByLimit(agentId: string): boolean {
+    return (
+      this.#channelHeld(agentId) &&
+      this.#conversation.anyWorkingSnapshot(agentId) === undefined &&
+      !this.#mailbox.hasStartedDelivery(agentId)
+    );
   }
 
   /**

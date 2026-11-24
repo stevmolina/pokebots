@@ -2,6 +2,12 @@ import type { PartialTranslation } from "../../message";
 import type { messages as source } from "../en/chat";
 
 export const messages = {
+  "chat.workers.running": "Çalışıyor",
+  "chat.workers.queued": "Sırada",
+  "chat.workers.runningCount": "{count} çalışıyor",
+  "chat.workers.queuedCount": "{count} sırada",
+  "chat.workers.showAll": "{count} etkin oturumun tümünü göster",
+  "chat.workers.showOne": "Tek etkin oturuma daralt",
   "chat.activity.workingOnIt": "Üzerinde çalışılıyor…",
   "chat.activity.thinking": "Düşünülüyor…",
   "chat.activity.connectingDots": "Noktalar birleştiriliyor…",
@@ -61,6 +67,8 @@ export const messages = {
   "chat.subagents.stepCount": { one: "{count} adım", other: "{count} adım" },
   "chat.subagents.seconds": "{seconds} sn",
   "chat.subagents.minutes": "{minutes} dk {seconds} sn",
+  "chat.subagents.hours": "{hours} sa {minutes} dk",
+  "chat.subagents.days": "{days} g",
   "chat.subagents.open": "{title}, {state}. Yanda aç.",
   "chat.trace.title": "İz",
   "chat.trace.search": "Adımlarda ara",
@@ -389,7 +397,6 @@ export const messages = {
   "chat.actions.more": "Daha fazla işlem",
   "chat.menu.reply": "Yanıtla",
   "chat.menu.copy": "Mesajı kopyala",
-  "chat.menu.react": "Tepki ver",
   "chat.menu.branch": "Buradan dallandır",
   "chat.menu.markUnread": "Okunmadı olarak işaretle",
   "chat.menu.pin": "Sabitle",

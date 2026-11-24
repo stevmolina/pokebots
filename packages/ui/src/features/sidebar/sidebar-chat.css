@@ -1415,11 +1415,11 @@
   display: none;
 }
 
-/* The calm list on a computer: 36px faces, and the main agent as a tile on top. The phone list keeps its
+/* The calm list on a computer: 42px faces, and the main agent as a tile on top. The phone list keeps its
  * own sizes (`web-phone.css`). */
 @media (min-width: 721px) {
   .sidebar-chat .sidebar-chat-row {
-    --sidebar-chat-face: 36px;
+    --sidebar-chat-face: 42px;
   }
 
   .sidebar-dock-chevron {
@@ -1513,4 +1513,136 @@
     background: var(--openbot-accent);
     box-shadow: 0 0 0 2px var(--openbot-bg-sidebar);
   }
+}
+
+/* "Active" | "Folders" over the chat list: a rounded track with a raised light thumb (mockup B3). */
+.sidebar-list-view-switch {
+  flex: none;
+  padding: 4px 12px 10px;
+}
+
+.sidebar-list-view-tabs.ui-sliding-tabs {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+  border-radius: var(--openbot-radius-pill);
+  padding: 4px;
+  background: color-mix(in srgb, var(--openbot-text-primary) 7%, transparent);
+  box-shadow: none;
+}
+
+.sidebar-list-view-tab.ui-sliding-tabs-trigger {
+  min-width: 0;
+  height: 36px;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: var(--openbot-radius-pill);
+  font-size: var(--openbot-text-md);
+  white-space: nowrap;
+}
+
+.sidebar-list-view-tabs .ui-sliding-tabs-pill {
+  top: 4px;
+  height: 36px;
+  border-radius: var(--openbot-radius-pill);
+  background: var(--openbot-bg-surface-raised);
+  box-shadow: var(--openbot-shadow-raised);
+}
+
+/* "Working" of the "Active" view: each bot is a rounded card with a spinner and the time it has run. */
+.sidebar-chat-rows-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-block: 2px 4px;
+}
+
+.sidebar-chat .sidebar-chat-row.sidebar-chat-card.ui-button {
+  border: 1px solid var(--openbot-border);
+  border-radius: var(--openbot-radius-card);
+  background: var(--openbot-bg-surface-raised);
+  padding: 9px 12px 9px 10px;
+}
+
+.sidebar-chat .sidebar-chat-row.sidebar-chat-card.ui-button:hover {
+  background: var(--openbot-bg-control-hover);
+}
+
+.sidebar-chat .sidebar-chat-card.sidebar-chat-active.ui-button,
+.sidebar-chat .sidebar-chat-card.sidebar-chat-active.ui-button:hover {
+  border-color: var(--openbot-border-strong);
+  background: var(--openbot-bg-control-active);
+}
+
+.sidebar-chat-card-status {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: flex-end;
+  align-self: stretch;
+  justify-content: space-between;
+  gap: 4px;
+  padding-block: 2px;
+}
+
+.sidebar-chat-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid color-mix(in srgb, var(--openbot-accent) 22%, transparent);
+  border-top-color: var(--openbot-accent);
+  border-radius: var(--openbot-radius-pill);
+  animation: sidebar-chat-spin 0.9s linear infinite;
+}
+
+@keyframes sidebar-chat-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sidebar-chat-spinner {
+    animation-duration: 3s;
+  }
+}
+
+.sidebar-chat-elapsed {
+  color: var(--openbot-text-secondary);
+  font-size: var(--openbot-text-sm);
+  line-height: 18px;
+}
+
+/* A card carries its own state, so the working dot on the face is not needed. */
+.sidebar-chat-card .sidebar-chat-presence {
+  display: none;
+}
+
+/* "Settled" of the "Active" view is the quiet rest of the list: its heading is faint. */
+.sidebar-dock[data-view="active"] [data-dock-group="unassigned"] .sidebar-dock-head {
+  opacity: 0.6;
+}
+
+/* Compact rows ("Done", "Snoozed", "Settled" of the "Active" view): the face and the name on one line. */
+.sidebar-chat .sidebar-chat-rows-compact .sidebar-chat-row.ui-button {
+  --sidebar-chat-face: 36px;
+
+  min-height: 46px;
+  padding-block: 5px;
+}
+
+.sidebar-chat-rows-compact .sidebar-chat-preview {
+  display: none;
+}
+
+/* A snoozed agent is faint, and its time left shows at the end of the row on every screen. */
+.sidebar-chat-rows-compact .sidebar-chat-row:has(.sidebar-chat-note) {
+  opacity: 0.6;
+}
+
+.sidebar-chat-time.sidebar-chat-note {
+  display: inline;
+  flex: none;
+  color: var(--openbot-text-secondary);
+  font-size: var(--openbot-text-sm);
 }

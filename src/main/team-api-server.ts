@@ -229,6 +229,7 @@ import {
 import { MCP_ACCESS_CAPABILITY } from "@openbot/contracts/team-protocol/mcp-access-v1";
 import { MCP_MANY_SERVERS_CAPABILITY } from "@openbot/contracts/team-protocol/mcp-many-servers-v1";
 import { MESSAGE_PINS_CAPABILITY } from "@openbot/contracts/team-protocol/message-pins-v1";
+import { MESSAGE_QUEUE_ONLY_CAPABILITY } from "@openbot/contracts/team-protocol/message-queue-only-v1";
 import { MISTRAL_CODE_SIGN_IN_CAPABILITY } from "@openbot/contracts/team-protocol/mistral-code-sign-in-v1";
 import { MODEL_STEERING_CAPABILITY } from "@openbot/contracts/team-protocol/model-steering-v1";
 import { type OptionalTeamEvent, optionalTeamEvent } from "@openbot/contracts/team-protocol/optional-events";
@@ -3013,6 +3014,7 @@ export class TeamApiServer {
         if (capability === AGENT_THREAD_READS_CAPABILITY) return this.#options.agentTasks !== undefined;
         if (capability === AGENT_THREAD_FILES_CAPABILITY) return this.#options.agentTasks !== undefined;
         if (capability === ARTIFACT_REQUEST_CAPABILITY) return this.#options.agentTasks !== undefined;
+        if (capability === MESSAGE_QUEUE_ONLY_CAPABILITY) return this.#options.agentTasks !== undefined;
         if (capability === AGENT_THREAD_REPLIES_CAPABILITY) return this.#options.agentTasks !== undefined;
         if (capability === AGENT_THREAD_BRANCHES_CAPABILITY) return this.#options.agentTasks !== undefined;
         if (capability === AGENT_THREAD_PAGES_CAPABILITY) return this.#options.agentTasks !== undefined;

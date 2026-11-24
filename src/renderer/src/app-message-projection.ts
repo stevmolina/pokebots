@@ -13,6 +13,7 @@ import {
   CONVERSATION_MEMORY_CHANGES_ITEM_TYPE,
   CONVERSATION_PLAN_ITEM_TYPE,
   CONVERSATION_SUBAGENTS_ITEM_TYPE,
+  computerLiveViewEvent,
   hostedSiteConversationEvent,
   isChannelChangeMarker,
   isContextResetMarker,
@@ -532,6 +533,8 @@ function chatActionMarker(
   if (skillSuggestion) return { ...skillSuggestion, kind: "skill-suggestion", timestamp: message.createdAt };
   const signIn = mcpSignInEvent(message);
   if (signIn) return { kind: "mcp-sign-in", mcpServerId: signIn.mcpServerId, timestamp: message.createdAt };
+  const liveView = computerLiveViewEvent(message);
+  if (liveView) return { kind: "computer-live-view", machineId: liveView.machineId, timestamp: message.createdAt };
   const install = serverInstallEvent(message);
   if (install) return { kind: "server-install", ...install, timestamp: message.createdAt };
   const issue = feedbackSentIssue(message);

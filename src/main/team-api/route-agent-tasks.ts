@@ -6,6 +6,10 @@ import {
   ARTIFACT_REQUEST_CAPABILITY,
   ARTIFACT_REQUEST_ROUTE,
 } from "@openbot/contracts/team-protocol/artifact-request-v1";
+import {
+  MESSAGE_QUEUE_ONLY_CAPABILITY,
+  MESSAGE_QUEUE_ONLY_ROUTE,
+} from "@openbot/contracts/team-protocol/message-queue-only-v1";
 import { sourceText } from "@openbot/i18n/source";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import type { TeamApiAgentTasks } from "./dependencies";
@@ -60,6 +64,33 @@ export async function routeAgentTasks(
             ...(isString(body.taskId) ? { taskId: body.taskId } : {}),
             ...clientMessageId(body),
             createArtifact: true,
+          },
+          memberSender(member),
+          isString(body.timezone) ? body.timezone : undefined,
+        ),
+      ),
+    );
+  }
+  if (method === "POST" && url.pathname === MESSAGE_QUEUE_ONLY_ROUTE) {
+    if (!tasks || !capabilities.has(MESSAGE_QUEUE_ONLY_CAPABILITY)) return "unmatched";
+    const body = await readJson(request);
+    const agentId = stringField(body, "agentId");
+    if (hiddenAgentIds.has(agentId)) throw new HttpError(404, sourceText("error.team.agentNotFound"));
+    requireListedAgent(tasks, agentId);
+    requireAgentLevel(context, agentId, "chat");
+    return json(
+      202,
+      await runCauseEffect(
+        tasks.sendMessage(
+          {
+            agentId,
+            text: stringField(body, "text", true, INPUT_LIMITS.messageText),
+            attachmentDraftIds: stringArray(body, "attachmentDraftIds"),
+            replyToMessageId: nullableString(body, "replyToMessageId"),
+            ...(isString(body.taskId) ? { taskId: body.taskId } : {}),
+            ...clientMessageId(body),
+            ...(body.createArtifact === true ? { createArtifact: true } : {}),
+            queueOnly: true,
           },
           memberSender(member),
           isString(body.timezone) ? body.timezone : undefined,

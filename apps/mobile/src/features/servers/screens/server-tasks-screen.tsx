@@ -13,11 +13,13 @@ import Plus from "lucide-react-native/icons/plus";
 import { useCallback, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Pressable, View } from "react-native";
 import Animated from "react-native-reanimated";
+import { UsageSegments } from "@/features/agents/components/usage-segments";
 import { DRAFT_THREAD_ID } from "@/features/chat/components/chat-thread-menu";
 import { useServerThreadReads } from "@/features/chat/components/use-agent-thread-reads";
 import { TaskListRow } from "@/features/servers/components/task-list-row";
 import { useServerTasks } from "@/features/servers/model/use-server-tasks";
 import { useThreadActions } from "@/features/servers/model/use-thread-actions";
+import { saveTasksViewPreference, useTasksViewPreference } from "@/features/settings/model/tasks-view";
 import { useMobileWorkspaceSelector } from "@/features/workspace/context/mobile-workspace-context";
 import { AndroidHeaderButton } from "@/shared/components/android-header-button";
 import { LargeTitleScrollView } from "@/shared/components/large-title";
@@ -34,6 +36,18 @@ const SECTION_TITLE = {
   read: "mobile.server.threads.section.read",
   closed: "mobile.server.threads.section.closed",
 } as const satisfies Record<TasksSectionId, MobileTextKey>;
+
+/**
+ * The Board view, as on the desktop: four lanes in the order of work. A host without read marks has
+ * the same groups, so the board does not read them. A row's menu archives a task (to Done) or
+ * restores it, in place of the desktop drag.
+ */
+const BOARD_TITLE = {
+  ...SECTION_TITLE,
+  waiting: "mobile.server.threads.board.queued",
+  closed: "mobile.server.threads.board.done",
+} as const satisfies Record<TasksSectionId, MobileTextKey>;
+const BOARD_LANES: readonly TasksSectionId[] = ["needsYou", "working", "waiting", "closed"];
 
 /** The first rows that the list renders: more than a phone screen holds. */
 const INITIAL_ROWS = 16;
@@ -82,6 +96,8 @@ export function ServerTasksScreen() {
   const hasServer = serverName !== undefined;
   const { agents, tasks, online, supported, ready, retry } = useServerTasks(serverId, { agentId });
   const [showAllClosed, setShowAllClosed] = useState(false);
+  // This device keeps the List or Board choice, so the page opens again on the same view.
+  const view = useTasksViewPreference((state) => state.view);
   const threadActions = useThreadActions(serverId);
   const threadReads = useServerThreadReads(serverId, tasks).reads;
   const agentById = useMemo(() => new Map(agents.map((item) => [item.id, item])), [agents]);
@@ -144,17 +160,27 @@ export function ServerTasksScreen() {
     : null;
   const items = useMemo(() => {
     if (note) return [];
+    if (view === "board") {
+      // Every lane shows, also an empty one, so the board keeps its shape.
+      const sections = taskSections(shownTasks, showAllClosed);
+      return listItems(
+        BOARD_LANES.map(
+          (id): TasksSection => sections.find((section) => section.id === id) ?? { id, tasks: [], count: 0 },
+        ),
+        showAllClosed,
+      );
+    }
     const unread = unreadKey === null ? null : new Set(unreadKey.split("\n"));
     const isUnread = unread ? (task: AgentTask) => unread.has(task.id) : undefined;
     const sections = taskSections(shownTasks, showAllClosed, isUnread).filter((section) => section.tasks.length > 0);
     return listItems(sections, showAllClosed);
-  }, [note, shownTasks, showAllClosed, unreadKey]);
+  }, [note, shownTasks, showAllClosed, unreadKey, view]);
 
   const renderItem = ({ item }: { item: ThreadListItem }) =>
     item.kind === "header" ? (
       <View className="flex-row items-center gap-1.5 px-5 pt-3.5 pb-1.5">
         <Typography.Paragraph accessibilityRole="header" className="font-medium text-muted" style={typeScale.caption}>
-          {t(SECTION_TITLE[item.section])}
+          {t((view === "board" ? BOARD_TITLE : SECTION_TITLE)[item.section])}
         </Typography.Paragraph>
         <Typography.Paragraph className="text-muted opacity-60" style={typeScale.caption}>
           {item.count}
@@ -225,6 +251,19 @@ export function ServerTasksScreen() {
               <>
                 {largeTitle}
                 <View className="pt-1">
+                  {note ? null : (
+                    <View className="px-5 pb-1">
+                      <UsageSegments
+                        options={[
+                          { value: "list", label: t("mobile.server.threads.view.list") },
+                          { value: "board", label: t("mobile.server.threads.view.board") },
+                        ]}
+                        value={view}
+                        accessibilityLabel={t("mobile.server.threads.view.label")}
+                        onChange={(next) => void saveTasksViewPreference(next).catch(() => undefined)}
+                      />
+                    </View>
+                  )}
                   {note ? <EmptyNote text={note} /> : null}
                   {retry ? (
                     <Pressable accessibilityRole="button" className="px-5 py-2" onPress={retry}>

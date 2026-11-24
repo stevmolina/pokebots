@@ -36,7 +36,7 @@ function waitingTask(rows: "queue" | "preview" | "none"): AgentTask {
     progress: null,
     error: null,
     queuedMessages: rows === "none" ? [] : [{ deliveryId: delivery.id, text: TEXT, createdAt: CREATED }],
-    queue: rows === "queue" ? [delivery] : undefined,
+    ...(rows === "queue" ? { queue: [delivery] } : {}),
     createdAt: CREATED,
     updatedAt: CREATED,
     closedAt: null,

@@ -36,7 +36,7 @@ import {
   type ListFrame,
   type PinnedTileFrame,
 } from "@/features/workspace/model/chat-drag";
-import type { MobileSidebarItem } from "@/features/workspace/model/sidebar-layout";
+import { isMobileGroupHeading, type MobileSidebarItem } from "@/features/workspace/model/sidebar-layout";
 import { haptics } from "@/shared/lib/haptics";
 import { useReducedMotion } from "@/shared/lib/motion";
 import { isAndroid } from "@/shared/lib/platform";
@@ -175,8 +175,8 @@ export function ChatDragProvider({ screen, children }: PropsWithChildren<{ scree
     const list: ListFrame[] = [];
     let sectionId: string | null = null;
     for (const item of items) {
-      // "Needs you" and "Unread" are not sections of the layout.
-      if (item.kind === "waiting" || item.kind === "unread") {
+      // "Needs you", "Working", "Done" and "Unread" are not sections of the layout.
+      if (isMobileGroupHeading(item)) {
         sectionId = null;
         continue;
       }

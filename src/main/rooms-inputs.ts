@@ -8,9 +8,9 @@ const request = Schema.Union([
   Schema.Struct({ kind: Schema.Literal("list") }),
   Schema.Struct({ kind: Schema.Literal("create"), name: text(100), notice: text(2000) }),
   Schema.Struct({ kind: Schema.Literal("join"), invite: text(2048) }),
-  Schema.Struct({ kind: Schema.Literal("read"), roomId, since: count, thread: Schema.optional(count) }),
+  Schema.Struct({ kind: Schema.Literal("read"), roomId, since: count, thread: Schema.optionalKey(count) }),
   Schema.Struct({ kind: Schema.Literal("wait"), roomId, since: count }),
-  Schema.Struct({ kind: Schema.Literal("send"), roomId, body: text(10000), thread: Schema.optional(count) }),
+  Schema.Struct({ kind: Schema.Literal("send"), roomId, body: text(10000), thread: Schema.optionalKey(count) }),
   Schema.Struct({
     kind: Schema.Literal("memory"),
     roomId,

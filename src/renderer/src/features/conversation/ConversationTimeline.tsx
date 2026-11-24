@@ -69,6 +69,7 @@ import {
 import { cycleSpeechSpeed, speechSpeed } from "../speech/speech-speed";
 import { groupedMessageIds } from "./agent-message-timeline";
 import { ChatVisualReply, shownVisualReply } from "./ChatVisualReply";
+import { ComputerLiveViewChatCard } from "./ComputerLiveViewChatCard";
 import { ConversationBrowserTakeover } from "./ConversationBrowserTakeover";
 import { ConversationQuestionPrompt } from "./ConversationQuestionPrompt";
 import { chatSearchCanOpen, chatSearchOpensMessage } from "./chat-search";
@@ -743,6 +744,7 @@ export function ConversationTimeline() {
       : undefined;
   const mcpSignInReplied = createMemo(() => mcpSignInRepliedIds(timelineMessages()));
   const settingLinkMarker = (marker: ChatActionMarkerModel) => (marker.kind === "setting-link" ? marker : undefined);
+  const liveViewMarker = (marker: ChatActionMarkerModel) => (marker.kind === "computer-live-view" ? marker : undefined);
   /**
    * Only the newest note of an expired sign-in offers Sign in: a later message shows the sign-in worked.
    * The agent must still use that provider. OpenCode signs in with a key in settings, so its note has no
@@ -1215,30 +1217,46 @@ export function ConversationTimeline() {
                                                       <Show
                                                         when={settingLinkMarker(marker())}
                                                         fallback={
-                                                          <ChatActionMarker
-                                                            onOpenSkill={changeMarkerActions.onOpenSkill}
-                                                            marker={marker()}
-                                                            agents={props.agents}
-                                                            announce={arrives}
-                                                            routineAvailable={routineMarkerAvailable(
-                                                              marker(),
-                                                              availableRoutineIds(),
+                                                          <Show
+                                                            when={liveViewMarker(marker())}
+                                                            fallback={
+                                                              <ChatActionMarker
+                                                                onOpenSkill={changeMarkerActions.onOpenSkill}
+                                                                marker={marker()}
+                                                                agents={props.agents}
+                                                                announce={arrives}
+                                                                routineAvailable={routineMarkerAvailable(
+                                                                  marker(),
+                                                                  availableRoutineIds(),
+                                                                )}
+                                                                onSelectAgent={props.onSelectAgent}
+                                                                onOpenRoutine={openRoutineSettings}
+                                                                openRoutineThread={openRoutineThread}
+                                                                routineRunFailure={routineRunFailure}
+                                                                onOpenHostedSite={(url) =>
+                                                                  void openExternalMessageUrl(url)
+                                                                }
+                                                                onOpenLink={(url) => void openExternalMessageUrl(url)}
+                                                                onWithdrawFeedback={withdrawFeedback()}
+                                                                onRequestFeedbackChange={requestFeedbackChange()}
+                                                                onToggleRoutineRun={toggleRoutineRun}
+                                                                onToggleAgentMessage={toggleAgentMessage}
+                                                                agentMessageText={agentMessageText}
+                                                                instructions={changeMarkerActions.instructions}
+                                                                onOpenInstructions={
+                                                                  changeMarkerActions.onOpenInstructions
+                                                                }
+                                                                onSignInProvider={signInAction(message())}
+                                                              />
+                                                            }
+                                                          >
+                                                            {(liveView) => (
+                                                              <ComputerLiveViewChatCard
+                                                                machineId={liveView().machineId}
+                                                                onOpenLiveView={props.onOpenComputerLiveView}
+                                                              />
                                                             )}
-                                                            onSelectAgent={props.onSelectAgent}
-                                                            onOpenRoutine={openRoutineSettings}
-                                                            openRoutineThread={openRoutineThread}
-                                                            routineRunFailure={routineRunFailure}
-                                                            onOpenHostedSite={(url) => void openExternalMessageUrl(url)}
-                                                            onOpenLink={(url) => void openExternalMessageUrl(url)}
-                                                            onWithdrawFeedback={withdrawFeedback()}
-                                                            onRequestFeedbackChange={requestFeedbackChange()}
-                                                            onToggleRoutineRun={toggleRoutineRun}
-                                                            onToggleAgentMessage={toggleAgentMessage}
-                                                            agentMessageText={agentMessageText}
-                                                            instructions={changeMarkerActions.instructions}
-                                                            onOpenInstructions={changeMarkerActions.onOpenInstructions}
-                                                            onSignInProvider={signInAction(message())}
-                                                          />
+                                                          </Show>
                                                         }
                                                       >
                                                         {(link) => (

@@ -14,8 +14,8 @@ const room = Schema.Struct({
   notice: Schema.String,
   paused: Schema.Boolean,
   role: nullableText,
-  unread: Schema.optional(Schema.Number),
-  needs_you: Schema.optional(Schema.Number),
+  unread: Schema.optionalKey(Schema.Number),
+  needs_you: Schema.optionalKey(Schema.Number),
 });
 const message = Schema.Struct({
   id: Schema.Number,
@@ -42,13 +42,13 @@ const task = Schema.Struct({
   mine: Schema.Boolean,
 });
 const reply = Schema.Struct({
-  rooms: Schema.optional(Schema.Array(room)),
-  room: Schema.optional(room),
-  messages: Schema.optional(Schema.Array(message)),
-  memory: Schema.optional(Schema.NullOr(memory)),
-  agents: Schema.optional(Schema.Array(agent)),
-  tasks: Schema.optional(Schema.Array(task)),
-  invite: Schema.optional(Schema.String),
+  rooms: Schema.optionalKey(Schema.Array(room)),
+  room: Schema.optionalKey(room),
+  messages: Schema.optionalKey(Schema.Array(message)),
+  memory: Schema.optionalKey(Schema.NullOr(memory)),
+  agents: Schema.optionalKey(Schema.Array(agent)),
+  tasks: Schema.optionalKey(Schema.Array(task)),
+  invite: Schema.optionalKey(Schema.String),
 });
 
 class RoomsError extends Schema.TaggedError<RoomsError>()("RoomsError", { cause: Schema.Defect() }) {}

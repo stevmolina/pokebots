@@ -334,9 +334,10 @@ export function createAgentThreadTabs(options: AgentThreadTabsOptions) {
     attachmentDraftIds: string[],
     replyToMessageId: string | null = null,
     createArtifact?: boolean,
+    queueOnly?: boolean,
   ): Promise<boolean> {
     if (task(agentId, id)?.state === "closed" && !(await tasks.reopenTask(agentId, id))) return false;
-    return tasks.sendToTask(agentId, id, text, attachmentDraftIds, replyToMessageId, createArtifact);
+    return tasks.sendToTask(agentId, id, text, attachmentDraftIds, replyToMessageId, createArtifact, queueOnly);
   }
 
   /** The first message of a new session starts the thread, which takes its place as the main session. */

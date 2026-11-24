@@ -27,6 +27,7 @@ import {
   CONVERSATION_SUBAGENTS_ITEM_TYPE,
   channelRoutineRequest,
   channelRoutingConversationEvent,
+  computerLiveViewEvent,
   isAgentAnswer,
   isContextResetMarker,
   marketplaceSuggestionEvent,
@@ -71,6 +72,8 @@ export type ChatMessage =
   | { id: string; kind: "context-reset" }
   /** A saved MCP server of the host that an agent asked the user to sign in to, as the desktop card. */
   | { id: string; kind: "mcp-sign-in"; mcpServerId: string }
+  /** A cloud computer that an agent started. An owner or admin opens its live view from the card. */
+  | { id: string; kind: "computer-live-view"; machineId: string }
   /** A Marketplace app that the agent suggests. The user connects it from the card, or skips it. */
   | { id: string; kind: "app-suggestion"; appId: string }
   /** A routine created, changed, deleted, or run by the agent. The label matches the desktop marker. */
@@ -242,6 +245,7 @@ const projectedMemoryChanges = new WeakMap<ConversationMessage, ChatMessage>();
 const projectedRoutines = new WeakMap<ConversationMessage, ChatMessage>();
 const projectedResets = new WeakMap<ConversationMessage, ChatMessage>();
 const projectedSignIns = new WeakMap<ConversationMessage, ChatMessage>();
+const projectedLiveViews = new WeakMap<ConversationMessage, ChatMessage>();
 const projectedUpdates = new WeakMap<ConversationMessage, ChatMessage>();
 
 /**
@@ -553,6 +557,18 @@ export function projectChatMessages(
           id: message.id,
           kind: "mcp-sign-in",
           mcpServerId: signIn.mcpServerId,
+        })),
+      );
+      continue;
+    }
+    // A started cloud computer is a system message too. Like desktop, it shows as its card.
+    const liveView = computerLiveViewEvent(message);
+    if (liveView) {
+      result.push(
+        projectedMarker(projectedLiveViews, message, () => ({
+          id: message.id,
+          kind: "computer-live-view",
+          machineId: liveView.machineId,
         })),
       );
       continue;

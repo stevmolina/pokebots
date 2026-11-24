@@ -8,11 +8,14 @@ import { Typography } from "heroui-native";
 import CalendarClock from "lucide-react-native/icons/calendar-clock";
 import LibraryBig from "lucide-react-native/icons/library-big";
 import Monitor from "lucide-react-native/icons/monitor";
+import Pencil from "lucide-react-native/icons/pencil";
 import Puzzle from "lucide-react-native/icons/puzzle";
-import { Pressable, View } from "react-native";
+import { useState } from "react";
+import { View } from "react-native";
 import { AgentNotificationLevelRow } from "@/features/agents/components/agent-chat-settings";
 import { useAgentDelete } from "@/features/agents/components/agent-delete-section";
 import { BloubAvatarPreview } from "@/features/agents/components/bloub-avatar";
+import { UsageSegments } from "@/features/agents/components/usage-segments";
 import { agentSkillsQuery } from "@/features/agents/model/agent-skills-query";
 import { useQueryScope } from "@/features/auth/context/mobile-session-context";
 import { AgentSessionsSection } from "@/features/chat/components/agent-sessions-section";
@@ -44,14 +47,17 @@ type ProfilePage =
 const TASK_ROUTE = "task/[taskId]";
 const TASKS_ROUTE = "server-tasks";
 /** The sessions that the profile shows before "All sessions", as the profile of today's look. */
-const SESSIONS_SHOWN = 5;
+const SESSIONS_SHOWN = 3;
+
+/** The three tabs of the profile, as the desktop details pane. */
+type ProfileTab = "activity" | "library" | "settings";
 
 /**
- * The agent's profile in the new design, as the design preview draws it: the face, the name and an
- * Edit pill; then the agent's newest sessions, as the profile of today's look lists them (a tap opens
- * one and makes it the main session); then Model, Library and Computer; then "Set up" with the
- * routines and skills and their counts; then the notifications. More in the bar copies the agent's ID
- * and, for an owner or admin, deletes the agent.
+ * The agent's profile in the new design: the face and the name, then three tabs, as the desktop
+ * details pane. Activity has Model and Computer, the newest sessions (a tap opens one and makes it the
+ * main session) and the routines. Library has the files and the skills. Settings has the profile edit
+ * and the notifications. More in the bar copies the agent's ID and, for an owner or admin, deletes the
+ * agent.
  */
 export function AgentCalmProfile({ agent }: { agent: MobileAgent }) {
   const { t, format } = useText();
@@ -65,9 +71,20 @@ export function AgentCalmProfile({ agent }: { agent: MobileAgent }) {
   );
   const manageSkills = useMobileWorkspaceSelector((current) => current.canManageAgentSkills(serverId));
   const { deleting, ask } = useAgentDelete(agent);
+  const [tab, setTab] = useState<ProfileTab>("activity");
   // The stack that presents this sheet. The sheet has its own stack inside.
   const sheetStack = useNavigation().getParent();
-  const tasksSupported = useMobileWorkspaceSelector((current) => current.canUseTasks(serverId));
+  // While the server reconnects after a reload, its capabilities are not known yet. A task list that
+  // the phone kept for this agent shows the host has threads, so the Sessions card stays.
+  const hostHasTasks = useMobileWorkspaceSelector((current) => current.canUseTasks(serverId));
+  const keptTasks = useQuery({
+    queryKey: queryKeys.agentTasks(queryScope, serverId, agent.id),
+    enabled: false,
+    retry: false,
+    queryFn: () => workspace.loadAgentTasks(agent.id, serverId),
+    select: () => true,
+  }).data;
+  const tasksSupported = hostHasTasks || keptTasks === true;
   const mainId = useMainSession(serverId, agent.id) ?? MAIN_THREAD_ID;
   // The same reads as the Model, Routines and Skills pages, so each row shows what its page shows.
   const models = useQuery({
@@ -138,16 +155,43 @@ export function AgentCalmProfile({ agent }: { agent: MobileAgent }) {
         <Typography.Heading type="h3" align="center" numberOfLines={1}>
           {agent.name}
         </Typography.Heading>
-        <Pressable
-          accessibilityRole="button"
-          className="mt-1 min-h-9 items-center justify-center rounded-full bg-control px-5"
-          style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}
-          onPress={() => push("/agent-info/[agentId]/edit")}
-        >
-          <Typography.Paragraph weight="medium">{t("mobile.agent.profile.edit")}</Typography.Paragraph>
-        </Pressable>
       </View>
-      {tasksSupported ? (
+      <UsageSegments
+        options={[
+          { value: "activity", label: t("mobile.agent.profile.tab.activity") },
+          { value: "library", label: t("mobile.agent.profile.library") },
+          { value: "settings", label: t("mobile.agent.profile.tab.settings") },
+        ]}
+        value={tab}
+        accessibilityLabel={t("mobile.agent.profile.tab.label")}
+        onChange={setTab}
+      />
+      {tab === "activity" ? (
+        <SettingsSection>
+          {agent.provider && !agent.foreignProvider ? (
+            <SettingsRow
+              leading={<ProviderMark provider={agent.provider} size={22} />}
+              value={modelName ?? agent.model ?? providerDisplayName(agent.provider)}
+              onPress={() => push("/agent-info/[agentId]/models")}
+            >
+              <Typography.Paragraph>{t("mobile.agent.runtime.model")}</Typography.Paragraph>
+            </SettingsRow>
+          ) : null}
+          {computer === "hidden" ? null : (
+            <SettingsRow
+              leading={<RowIcon icon={Monitor} />}
+              disabled={computer === "disabled"}
+              onPress={() => {
+                void haptics.impact("soft");
+                router.push({ pathname: "/remote-desktop/[serverId]", params: { serverId } });
+              }}
+            >
+              <Typography.Paragraph>{t("mobile.agent.profile.computer")}</Typography.Paragraph>
+            </SettingsRow>
+          )}
+        </SettingsSection>
+      ) : null}
+      {tab === "activity" && tasksSupported ? (
         <AgentSessionsSection
           serverId={serverId}
           agentId={agent.id}
@@ -163,53 +207,43 @@ export function AgentCalmProfile({ agent }: { agent: MobileAgent }) {
           }}
         />
       ) : null}
-      <SettingsSection>
-        {agent.provider && !agent.foreignProvider ? (
+      {tab === "activity" ? (
+        <SettingsSection>
           <SettingsRow
-            leading={<ProviderMark provider={agent.provider} size={22} />}
-            value={modelName ?? agent.model ?? providerDisplayName(agent.provider)}
-            onPress={() => push("/agent-info/[agentId]/models")}
+            leading={<RowIcon icon={CalendarClock} />}
+            value={
+              activeRoutines === undefined
+                ? undefined
+                : t("mobile.workspace.preview.routinesActive", { count: activeRoutines })
+            }
+            onPress={() => push("/agent-info/[agentId]/routines")}
           >
-            <Typography.Paragraph>{t("mobile.agent.runtime.model")}</Typography.Paragraph>
+            <Typography.Paragraph>{t("mobile.agent.info.routines.title")}</Typography.Paragraph>
           </SettingsRow>
-        ) : null}
-        <SettingsRow leading={<RowIcon icon={LibraryBig} />} onPress={() => push("/agent-info/[agentId]/library")}>
-          <Typography.Paragraph>{t("mobile.agent.profile.library")}</Typography.Paragraph>
-        </SettingsRow>
-        {computer === "hidden" ? null : (
+        </SettingsSection>
+      ) : null}
+      {tab === "library" ? (
+        <SettingsSection>
+          <SettingsRow leading={<RowIcon icon={LibraryBig} />} onPress={() => push("/agent-info/[agentId]/library")}>
+            <Typography.Paragraph>{t("mobile.agent.profile.files")}</Typography.Paragraph>
+          </SettingsRow>
           <SettingsRow
-            leading={<RowIcon icon={Monitor} />}
-            disabled={computer === "disabled"}
-            onPress={() => {
-              void haptics.impact("soft");
-              router.push({ pathname: "/remote-desktop/[serverId]", params: { serverId } });
-            }}
+            leading={<RowIcon icon={Puzzle} />}
+            value={skillCount === undefined ? undefined : format.number(skillCount)}
+            onPress={() => push("/agent-info/[agentId]/skills")}
           >
-            <Typography.Paragraph>{t("mobile.agent.profile.computer")}</Typography.Paragraph>
+            <Typography.Paragraph>{t("mobile.agent.info.skills.title")}</Typography.Paragraph>
           </SettingsRow>
-        )}
-      </SettingsSection>
-      <SettingsSection title={t("mobile.workspace.preview.setUp")}>
-        <SettingsRow
-          leading={<RowIcon icon={CalendarClock} />}
-          value={
-            activeRoutines === undefined
-              ? undefined
-              : t("mobile.workspace.preview.routinesActive", { count: activeRoutines })
-          }
-          onPress={() => push("/agent-info/[agentId]/routines")}
-        >
-          <Typography.Paragraph>{t("mobile.agent.info.routines.title")}</Typography.Paragraph>
-        </SettingsRow>
-        <SettingsRow
-          leading={<RowIcon icon={Puzzle} />}
-          value={skillCount === undefined ? undefined : format.number(skillCount)}
-          onPress={() => push("/agent-info/[agentId]/skills")}
-        >
-          <Typography.Paragraph>{t("mobile.agent.info.skills.title")}</Typography.Paragraph>
-        </SettingsRow>
-      </SettingsSection>
-      {agent.notifications !== undefined && workspace.canSetAgentNotificationLevel(serverId) ? (
+        </SettingsSection>
+      ) : null}
+      {tab === "settings" ? (
+        <SettingsSection>
+          <SettingsRow leading={<RowIcon icon={Pencil} />} onPress={() => push("/agent-info/[agentId]/edit")}>
+            <Typography.Paragraph>{t("mobile.agent.profile.editProfile")}</Typography.Paragraph>
+          </SettingsRow>
+        </SettingsSection>
+      ) : null}
+      {tab === "settings" && agent.notifications !== undefined && workspace.canSetAgentNotificationLevel(serverId) ? (
         <SettingsSection footer={t("mobile.agent.profile.notificationsFooter")}>
           <AgentNotificationLevelRow agent={agent} />
         </SettingsSection>

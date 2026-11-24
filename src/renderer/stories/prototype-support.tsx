@@ -15,7 +15,10 @@ import { OpenBotPlayground } from "../src/preview/OpenBotPlayground";
  * The real app on the preview mock. `setup` adds data to the mock before the app reads it. The
  * startup splash fades as soon as the app is ready, so each page load does not play it through.
  */
-export function PrototypeApp(props: { options?: MockOpenBotOptions; setup?: (mock: MockOpenBotControls) => void }) {
+export function PrototypeApp(props: {
+  options?: MockOpenBotOptions | undefined;
+  setup?: (mock: MockOpenBotControls) => void;
+}) {
   skipStartupSplash();
   return (
     <OpenBotPlayground
