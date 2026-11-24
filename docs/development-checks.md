@@ -96,31 +96,33 @@ Its main jobs are:
 
 | Job | Runner | Commands |
 | --- | --- | --- |
-| Check | `ubuntu-latest` | `bun run knip:check`, `bun run check:assets`, `bun run check:doc-links`, `bun run check:desktop:static`, then `bun run i18n:check`, `bun run types:ratchet`, `bun run check:agent-context`, `bun run check:migrations` and `bun scripts/whats-new-translations.ts` in parallel |
-| Browser smoke | `ubuntu-latest` | `xvfb-run -a bun run test:browser`, then `xvfb-run -a bun run test:browser-agent-session` |
+| Check | `ubuntu-latest` | `bun run knip:check`, `bun run check:assets`, `bun run check:doc-links`, `bun run check:migrations`, then `bun run check:desktop:static`, `bun run i18n:check`, `bun run types:ratchet`, `bun run check:agent-context`, `bun scripts/whats-new-translations.ts` and the minimum app version and released schema checks in parallel |
+| Browser smoke (1/2, 2/2) | `ubuntu-latest` | Part 1: `xvfb-run -a bun run test:browser`, then `test:browser-agent-session`. Part 2: `test:browser-steps`, `test:browser-dialogs`, `test:browser-fingerprint` and `test:browser-ambiguous-targets` |
 | Tests (desktop 1/2, 2/2) | `ubuntu-latest` | `bun run test:desktop -- --shard=<n>/2` |
 | Signal E2E | `ubuntu-latest` | `bun run test:signal`, when `remote/` or `scripts/` changes |
 | Local scripts CLI E2E | `ubuntu-latest` | `bun run test:automation-cli` |
 | Team API routes E2E | `ubuntu-latest` | `bun run test:team-api-routes`, when desktop code changes |
-| Team API and reverse actions E2E | `ubuntu-latest` | `test:team-legacy-clients`, `test:team-protocol-v10`, `test:team-webrtc-wire-parity`, `test:remote-viewer-proxy`, `test:server-safe-mode`, `test:team-session-revoke`, `test:sign-in-relay-paste`, `test:server-mute`, `test:routine-pause-resume`, `test:agent-hide-restore`, `test:messaging-pause-resume`, `test:messaging-discord-access`, `test:messaging-discord-embeds`, `test:messaging-place-history`, `test:messaging-slack-ping-reply`, `test:turn-input`, `test:provider-update-busy`, `test:provider-update-after-app-upgrade`, `test:provider-runtime-remove`, `test:provider-exit-session`, `test:acp-subagents`, `test:codex-subagent-steps`, `test:subagent-status`, `test:codex-hung-app-server`, `test:codex-missing-rollout`, `test:codex-idle-thread-release`, `test:zip-attachments`, `test:mp4-attachments`, `test:svg-attachments`, `test:any-file-attachments`, `test:channel-notifications`, `test:memory-review` and `test:skill-revision`, each with `bun run` in its own step, when the `desktop` lane runs |
-| Provider fakes E2E | `ubuntu-latest` | `test:custom-agents`, `test:custom-agents:login-path`, `test:acp-directories`, `test:acp-flavors`, `test:acp-turn-stall`, `test:agent-database-host-start`, `test:acp-mcp-names`, `test:provider-conformance`, `test:opencode-expired-key`, `test:opencode-downgraded-session`, `test:cline-free-models`, `test:cline-plan-limit-failover` and `test:provider-transcript-replay`, each with `bun run` in its own step, when the `desktop` lane runs. The fake agents are in `scripts/provider-fakes/`; the replayed transcripts of released CLIs are in `scripts/provider-fakes/transcripts/`, and `bun scripts/record-provider-transcript.ts` records a new one |
+| Team API and reverse actions E2E (1/3 to 3/3) | `ubuntu-latest` | `test:team-legacy-clients`, `test:team-protocol-v10`, `test:team-webrtc-wire-parity`, `test:remote-viewer-proxy`, `test:server-safe-mode`, `test:team-session-revoke`, `test:sign-in-relay-paste`, `test:server-mute`, `test:routine-pause-resume`, `test:agent-hide-restore`, `test:messaging-pause-resume`, `test:messaging-discord-access`, `test:messaging-discord-embeds`, `test:messaging-place-history`, `test:messaging-slack-ping-reply`, `test:turn-input`, `test:provider-update-busy`, `test:provider-update-after-app-upgrade`, `test:provider-runtime-remove`, `test:provider-exit-session`, `test:acp-subagents`, `test:codex-subagent-steps`, `test:subagent-status`, `test:codex-hung-app-server`, `test:codex-missing-rollout`, `test:codex-idle-thread-release`, `test:zip-attachments`, `test:mp4-attachments`, `test:svg-attachments`, `test:any-file-attachments`, `test:channel-notifications`, `test:memory-review` and `test:skill-revision`, each with `bun run` in its own step, when the `desktop` lane runs. A matrix runs the steps on three runners: each step runs only on the shard that its `if` names |
+| Provider fakes E2E (1/2, 2/2) | `ubuntu-latest` | `test:custom-agents`, `test:custom-agents:login-path`, `test:acp-directories`, `test:acp-flavors`, `test:acp-turn-stall`, `test:agent-database-host-start`, `test:acp-mcp-names`, `test:provider-conformance`, `test:opencode-expired-key`, `test:opencode-downgraded-session`, `test:cline-free-models`, `test:cline-plan-limit-failover` and `test:provider-transcript-replay`, each with `bun run` in its own step, on two matrix shards, when the `desktop` lane runs. The fake agents are in `scripts/provider-fakes/`; the replayed transcripts of released CLIs are in `scripts/provider-fakes/transcripts/`, and `bun scripts/record-provider-transcript.ts` records a new one |
 | Surfaces | `ubuntu-latest` | Parallel groups described below, then `bun run remote:check:compose` |
-| API | `ubuntu-latest` | `bun run check:api`, including the local WorkOS provider and account-session E2E checks, then, for a pull request from this repository, upload `apps/auth-api/dist` |
+| API | `ubuntu-latest` | `bun run check:api` (`check:api:core` and `test:smtp-stall` in parallel: the SMTP test waits for about 100 s on timeouts), including the local WorkOS provider and account-session E2E checks, then, for a pull request from this repository, upload `apps/auth-api/dist` |
 | Storybook build | `ubuntu-latest` | `bun run build-storybook` |
 
 CI uses native GitHub Actions `parallel` groups. Each group waits for all its steps and fails
 if a step fails. The steps have separate logs. The groups run in this order:
 
-- `Check` completes `check:desktop:static` before it starts translation checks and the TypeScript
-  ratchet together. Both retain the `CODE` condition, so Markdown-only changes run only the link
-  check after setup. The desktop build still completes before `verify:preload`.
-- `Browser smoke` completes checkout, then runs `Set up Bun` and virtual-display installation
+- `Check` runs `check:desktop:static`, the translation checks and the TypeScript ratchet together.
+  They retain the `CODE` condition, so Markdown-only changes run only the link check after setup.
+  The desktop build still completes before `verify:preload`.
+- Each `Browser smoke` part completes checkout, then runs `Set up Bun` and virtual-display installation
   together. The smoke test starts only after both succeed.
 - `Surfaces` completes setup, then runs three groups: `mobile:typecheck` with
   `typecheck:team-client`; `typecheck:sites`, `typecheck:remote` and `typecheck:status`; and `typecheck:logging`,
   `typecheck:telemetry`, `typecheck:user-errors`, and `typecheck:i18n`. Each command uses `bun run`
   in its own step. Mobile generation stays inside `mobile:typecheck`. Compose validation starts
   after all groups succeed.
+
+To add a test to a sharded job, give its step the shard with the least time in the last run.
 
 The desktop test shards keep separate runners. The API checks, artifact uploads, and production
 deployment dependencies keep their existing order. Local commands do not change. Compare job
