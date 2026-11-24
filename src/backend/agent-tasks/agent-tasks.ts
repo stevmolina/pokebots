@@ -97,6 +97,13 @@ export interface AgentTasksHooks {
   turnActive(agentId: string, threadId: string): boolean;
   /** OpenBot archived finished tasks of one agent: their memory reviews start, and a waiting task lane can start. */
   archived(agentId: string, tasks: readonly AgentThreadRecord[]): Effect.Effect<void>;
+  /**
+   * As `archived`, for a synchronous caller that archived an idle thread to make room for a new one.
+   * The follow-up runs in the background.
+   */
+  archivedInBackground?(agentId: string, tasks: readonly AgentThreadRecord[]): void;
+  /** Whether a question, an approval or a browser takeover waits for a person in this thread. */
+  waitsForPerson?(agentId: string, threadId: string): boolean;
   /** A side thread updated the agent's last-used timestamp, so agent lists should refresh. */
   agentActivityChanged?(agentId: string): void;
   appendLaunchResult?(agentId: string, threadId: string, originMessageId: string, result: ConversationMessage): void;
@@ -404,7 +411,7 @@ export class AgentTasks implements TaskLanes {
       this.#conversation.registerTaskThread(agentId, existing.threadId);
       return this.#followRoutineName(existing, title);
     }
-    if (this.#store.openTaskIds(agentId).length >= INPUT_LIMITS.agentTasks) return null;
+    if (!this.#makeRoom(agentId)) return null;
     if (existing) {
       this.reopen(existing);
       const reopened = this.#store.task(existing.taskId);
@@ -556,9 +563,73 @@ export class AgentTasks implements TaskLanes {
     };
   }
 
-  /** The task list holds `INPUT_LIMITS.agentTasks` tasks, open ones first, so more open tasks could not be seen or stopped. */
+  /**
+   * The task list holds `INPUT_LIMITS.agentTasks` tasks, open ones first, so more open tasks could not be
+   * seen or stopped. When the list is full, the idle thread with the oldest activity is archived to make
+   * room. The error comes only when every open thread is busy.
+   */
   #requireRoom(agentId: string): void {
-    if (this.#store.openTaskIds(agentId).length >= INPUT_LIMITS.agentTasks) throw new AgentThreadLimitError();
+    if (!this.#makeRoom(agentId)) throw new AgentThreadLimitError();
+  }
+
+  /** Whether the agent has room for one more open thread, after it archived its oldest idle thread when needed. */
+  #makeRoom(agentId: string): boolean {
+    if (this.#store.openTaskIds(agentId).length < INPUT_LIMITS.agentTasks) return true;
+    const [oldest] = this.autoArchivable(agentId);
+    if (!oldest) return false;
+    logger.info("Archived the idle thread with the oldest activity to make room for a new thread.", { agentId });
+    this.#closeQuietly(oldest);
+    this.changed(agentId);
+    this.#hooks.archivedInBackground?.(agentId, [oldest]);
+    return true;
+  }
+
+  /**
+   * The open threads of this agent that an automatic archive can take, the oldest activity first: no
+   * turn runs, no message is queued or starts, no teammate's answer is awaited, and no question,
+   * approval or browser takeover waits for a person. A routine thread is included: the next run of the
+   * routine restores it.
+   */
+  autoArchivable(agentId: string): AgentThreadRecord[] {
+    const awaited = this.#awaitedTaskIds();
+    return this.#store
+      .openTaskIds(agentId)
+      .flatMap((taskId) => this.#store.task(taskId) ?? [])
+      .filter((task) => this.#autoArchivable(task, awaited))
+      .sort((left, right) => left.updatedAt.localeCompare(right.updatedAt) || left.taskId.localeCompare(right.taskId));
+  }
+
+  /**
+   * Archives these threads of one agent, as the person's Archive does, and sends one change event. A
+   * thread that became busy or had new activity after the caller chose it stays open. Returns the
+   * archived threads; the caller runs the `archived` follow-up for them.
+   */
+  autoArchive(agentId: string, chosen: readonly AgentThreadRecord[]): AgentThreadRecord[] {
+    const awaited = this.#awaitedTaskIds();
+    const archived: AgentThreadRecord[] = [];
+    for (const candidate of chosen) {
+      const task = this.#store.task(candidate.taskId);
+      if (!task || task.agentId !== agentId || task.updatedAt !== candidate.updatedAt) continue;
+      if (!this.#autoArchivable(task, awaited)) continue;
+      this.#closeQuietly(task);
+      archived.push(task);
+    }
+    if (archived.length > 0) this.changed(agentId);
+    return archived;
+  }
+
+  #awaitedTaskIds(): Set<string> {
+    return new Set(this.#mailbox.awaitedThreadRequests().map((request) => request.taskId));
+  }
+
+  #autoArchivable(task: AgentThreadRecord, awaited: ReadonlySet<string>): boolean {
+    return (
+      task.closedAt === null &&
+      this.#finished(task) &&
+      !this.#mailbox.laneActive(task.agentId, task.taskId) &&
+      !awaited.has(task.taskId) &&
+      this.#hooks.waitsForPerson?.(task.agentId, task.threadId) !== true
+    );
   }
 
   /** Removes a new task that took no message, because the move into it was refused. */
@@ -1044,6 +1115,11 @@ export class AgentTasks implements TaskLanes {
     const kept = Math.max(0, Math.min(AGENT_STARTED_FINISHED_KEPT, INPUT_LIMITS.agentTasks - 1 - others));
     const archived = finishedByAgent.slice(kept);
     if (open.length - archived.length >= INPUT_LIMITS.agentTasks) {
+      // The list is full of the person's threads: the idle one with the oldest activity makes room.
+      const planned = new Set(archived.map((task) => task.taskId));
+      const oldest = this.autoArchivable(targetId).find((task) => !planned.has(task.taskId));
+      if (oldest && open.length - archived.length - 1 < INPUT_LIMITS.agentTasks)
+        return { ok: true, archived: [...archived, oldest] };
       return {
         ok: false,
         error: sourceText("error.backend.threadOpenLimitReached", { count: INPUT_LIMITS.agentTasks }),
