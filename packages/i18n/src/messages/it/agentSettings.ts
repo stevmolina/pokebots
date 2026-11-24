@@ -11,7 +11,6 @@ export const messages = {
   "agentSettings.session.resetNamed": "Reimposta {name}",
   "agentSettings.label": "Impostazioni dell'agente",
   "agentSettings.title": "Impostazioni",
-  "agentSettings.backToDetails": "Torna ai dettagli",
   "agentSettings.closeDetails": "Chiudi i dettagli",
   "agentSettings.backToSettings": "Torna alle impostazioni",
   "agentSettings.permissions.title": "Permessi",
@@ -96,7 +95,6 @@ export const messages = {
   "agentSettings.backupModels.withAccount": "{model} · {account}",
   "agentSettings.backupModels.note":
     "Se un limite di utilizzo ferma {name} dopo l'inizio del lavoro, {name} continua lo stesso lavoro con il primo modello disponibile nell'ordine. Torna a {model} quando il limite termina, o 10 minuti dopo un errore del provider.",
-  "agentSettings.groups.brain": "Cervello",
   "agentSettings.groups.knows": "Cosa sa",
   "agentSettings.groups.does": "Cosa fa",
   "agentSettings.groups.rules": "Regole",
@@ -142,6 +140,8 @@ export const messages = {
   "agentSettings.avatar.autoColor": "Colore automatico dell'avatar",
   "agentSettings.avatar.autoInitial": "A",
   "agentSettings.avatar.hueColor": "Colore dell'avatar: {hue}",
+  "agentSettings.avatar.mascots": "Mascotte di Pokebots",
+  "agentSettings.avatar.mascotOption": "Mascotte {number}",
   "agentSettings.avatar.saveFailed": "Impossibile salvare l'avatar dell'agente.",
   "agentSettings.avatar.processFailed": "Impossibile elaborare l'avatar dell'agente.",
 
@@ -212,7 +212,6 @@ export const messages = {
   "agentSettings.links.tablesCount": { one: "{count} tabella", other: "{count} tabelle" },
   "agentSettings.links.files": "File",
   "agentSettings.links.routines": "Routine",
-  "agentSettings.links.library": "Libreria",
   "agentSettings.links.computer": "Computer",
   "agentSettings.links.computerActive": "In uso",
   "agentSettings.links.computerAsleep": "In sospensione",

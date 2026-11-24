@@ -11,7 +11,6 @@ export const messages = {
   "agentSettings.session.resetNamed": "重置 {name}",
   "agentSettings.label": "助手设置",
   "agentSettings.title": "设置",
-  "agentSettings.backToDetails": "返回详情",
   "agentSettings.closeDetails": "关闭详情",
   "agentSettings.backToSettings": "返回设置",
   "agentSettings.permissions.title": "权限",
@@ -89,7 +88,6 @@ export const messages = {
   "agentSettings.backupModels.withAccount": "{model} · {account}",
   "agentSettings.backupModels.note":
     "{name} 开始工作后若因用量上限停止，会用顺序中第一个可用的模型继续同一项工作。额度重置后会回到 {model}；出现服务商错误时，则在 10 分钟后回到 {model}。",
-  "agentSettings.groups.brain": "核心",
   "agentSettings.groups.knows": "已知",
   "agentSettings.groups.does": "行为",
   "agentSettings.groups.rules": "规则",
@@ -134,6 +132,8 @@ export const messages = {
   "agentSettings.avatar.autoColor": "自动头像颜色",
   "agentSettings.avatar.autoInitial": "A",
   "agentSettings.avatar.hueColor": "{hue} 头像颜色",
+  "agentSettings.avatar.mascots": "Pokebots 吉祥物",
+  "agentSettings.avatar.mascotOption": "吉祥物 {number}",
   "agentSettings.avatar.saveFailed": "无法保存助手头像。",
   "agentSettings.avatar.processFailed": "无法处理助手头像。",
 
@@ -199,7 +199,6 @@ export const messages = {
   "agentSettings.links.tablesCount": { one: "{count} 个表", other: "{count} 个表" },
   "agentSettings.links.files": "文件",
   "agentSettings.links.routines": "自动化任务",
-  "agentSettings.links.library": "资料库",
   "agentSettings.links.computer": "电脑",
   "agentSettings.links.computerActive": "使用中",
   "agentSettings.links.computerAsleep": "休眠中",

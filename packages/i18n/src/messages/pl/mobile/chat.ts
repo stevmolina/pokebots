@@ -699,6 +699,18 @@ export const messages = {
   "mobile.chat.threads.main": "Główny czat",
   "mobile.chat.sessions.title": "Sesje",
   "mobile.chat.sessions.new": "Nowa sesja",
+  "mobile.chat.sessionsTray.title": {
+    one: "{count} aktywna",
+    few: "{count} aktywne",
+    many: "{count} aktywnych",
+    other: "{count} aktywnej",
+  },
+  "mobile.chat.sessionsTray.label": {
+    one: "{count} aktywna sesja. Pokaż lub ukryj",
+    few: "{count} aktywne sesje. Pokaż lub ukryj",
+    many: "{count} aktywnych sesji. Pokaż lub ukryj",
+    other: "{count} aktywnej sesji. Pokaż lub ukryj",
+  },
   "mobile.chat.sessions.all": "Wszystkie sesje",
   "mobile.chat.threads.branchedFrom": "Odgałęzienie z: {title}",
   "mobile.chat.threads.branchedFromDeleted": "Odgałęzienie z usuniętego wątku",

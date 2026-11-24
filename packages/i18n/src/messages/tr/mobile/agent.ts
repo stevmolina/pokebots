@@ -64,6 +64,11 @@ export const messages = {
   "mobile.agent.menu.info": "Bilgi",
   "mobile.agent.profile.edit": "Düzenle",
   "mobile.agent.profile.library": "Kitaplık",
+  "mobile.agent.profile.files": "Dosyalar",
+  "mobile.agent.profile.editProfile": "Profili düzenle",
+  "mobile.agent.profile.tab.label": "Profil bölümleri",
+  "mobile.agent.profile.tab.activity": "Etkinlik",
+  "mobile.agent.profile.tab.settings": "Ayarlar",
   "mobile.agent.profile.computer": "Bilgisayar",
   "mobile.agent.profile.notificationsFooter":
     "Bu ajan bitirdiğinde veya sizi beklediğinde bildirim alın. Yalnızca sizin için, tüm cihazlarınızda.",
@@ -566,6 +571,8 @@ export const messages = {
   },
   "mobile.agent.list.unreadThreads": "Mesaj dizilerinde okunmamış mesajlar",
   "mobile.agent.list.waiting.title": "Size ihtiyacı var",
+  "mobile.agent.list.working.title": "Çalışıyor",
+  "mobile.agent.list.done.title": "Bitti",
   "mobile.agent.list.waiting.label": {
     one: "Size ihtiyacı var, {count} ajan",
     other: "Size ihtiyacı var, {count} ajan",

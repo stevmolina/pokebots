@@ -65,6 +65,11 @@ export const messages = {
   "mobile.agent.menu.info": "Informacje",
   "mobile.agent.profile.edit": "Edytuj",
   "mobile.agent.profile.library": "Biblioteka",
+  "mobile.agent.profile.files": "Pliki",
+  "mobile.agent.profile.editProfile": "Edytuj profil",
+  "mobile.agent.profile.tab.label": "Sekcje profilu",
+  "mobile.agent.profile.tab.activity": "Aktywność",
+  "mobile.agent.profile.tab.settings": "Ustawienia",
   "mobile.agent.profile.computer": "Komputer",
   "mobile.agent.profile.notificationsFooter":
     "Otrzymaj powiadomienie, gdy ten agent skończy lub będzie na Ciebie czekać. Tylko dla Ciebie, na wszystkich Twoich urządzeniach.",
@@ -598,6 +603,8 @@ export const messages = {
   },
   "mobile.agent.list.unreadThreads": "Nieprzeczytane wiadomości w wątkach",
   "mobile.agent.list.waiting.title": "Czeka na ciebie",
+  "mobile.agent.list.working.title": "Pracują",
+  "mobile.agent.list.done.title": "Gotowe",
   "mobile.agent.list.waiting.label": {
     one: "Czeka na ciebie: {count} agent",
     few: "Czeka na ciebie: {count} agentów",

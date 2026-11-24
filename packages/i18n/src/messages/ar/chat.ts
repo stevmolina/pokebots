@@ -2,6 +2,12 @@ import type { PartialTranslation } from "../../message";
 import type { messages as source } from "../en/chat";
 
 export const messages = {
+  "chat.workers.running": "قيد التشغيل",
+  "chat.workers.queued": "في الانتظار",
+  "chat.workers.runningCount": "{count} قيد التشغيل",
+  "chat.workers.queuedCount": "{count} في الانتظار",
+  "chat.workers.showAll": "عرض كل الجلسات النشطة ({count})",
+  "chat.workers.showOne": "طي إلى جلسة نشطة واحدة",
   "chat.activity.workingOnIt": "جارٍ العمل على ذلك…",
   "chat.activity.thinking": "جارٍ التفكير في الأمر…",
   "chat.activity.connectingDots": "جارٍ ربط الأفكار…",
@@ -138,6 +144,8 @@ export const messages = {
   },
   "chat.subagents.seconds": "{seconds} ث",
   "chat.subagents.minutes": "{minutes} د {seconds} ث",
+  "chat.subagents.hours": "{hours} س {minutes} د",
+  "chat.subagents.days": "{days} ي",
   "chat.subagents.open": "{title}، {state}. افتحه في الجانب.",
   "chat.trace.title": "التتبع",
   "chat.trace.search": "البحث في الخطوات",
@@ -532,7 +540,6 @@ export const messages = {
   "chat.actions.more": "إجراءات أخرى",
   "chat.menu.reply": "رد",
   "chat.menu.copy": "نسخ الرسالة",
-  "chat.menu.react": "تفاعل",
   "chat.menu.branch": "التفرع من هنا",
   "chat.menu.markUnread": "تعليم كغير مقروءة",
   "chat.menu.pin": "تثبيت",

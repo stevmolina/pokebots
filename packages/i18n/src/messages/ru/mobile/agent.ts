@@ -65,6 +65,11 @@ export const messages = {
   "mobile.agent.menu.info": "Информация",
   "mobile.agent.profile.edit": "Изменить",
   "mobile.agent.profile.library": "Библиотека",
+  "mobile.agent.profile.files": "Файлы",
+  "mobile.agent.profile.editProfile": "Изменить профиль",
+  "mobile.agent.profile.tab.label": "Разделы профиля",
+  "mobile.agent.profile.tab.activity": "Активность",
+  "mobile.agent.profile.tab.settings": "Настройки",
   "mobile.agent.profile.computer": "Компьютер",
   "mobile.agent.profile.notificationsFooter":
     "Получайте уведомление, когда агент закончит или будет ждать вас. Только для вас, на всех ваших устройствах.",
@@ -600,6 +605,8 @@ export const messages = {
   },
   "mobile.agent.list.unreadThreads": "Непрочитанные сообщения в ветках",
   "mobile.agent.list.waiting.title": "Нужны вы",
+  "mobile.agent.list.working.title": "В работе",
+  "mobile.agent.list.done.title": "Готово",
   "mobile.agent.list.waiting.label": {
     one: "Нужны вы: {count} агент",
     few: "Нужны вы: {count} агента",
