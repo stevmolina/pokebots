@@ -12,7 +12,8 @@ concurrency:
 jobs:
   release:
     name: Build iOS and upload to TestFlight
-    if: github.ref == 'refs/heads/main'
+    # Upstream-only: it posts or publishes to OpenBot targets. Pokebots has no such target yet.
+    if: github.repository == 'nightly-labs/openbot' && github.ref == 'refs/heads/main'
     runs-on: xcode-27
     timeout-minutes: 90
     environment: release-ios
