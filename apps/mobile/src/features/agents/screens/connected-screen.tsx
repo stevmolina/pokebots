@@ -410,9 +410,8 @@ function openFromMenu(href: Href): void {
 export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "pane" }) {
   const pane = variant === "pane";
   const { t, sourceText } = useText();
-  // Settings > Appearance > New design: the real list in the calm look of the design preview. The pane
-  // of a wide window keeps the current look.
-  const calm = useCalmLook() && !pane;
+  // The calm look is the only look, also in the pane of a wide window.
+  const calm = useCalmLook();
   const calmReady = useCalmLookStore((state) => state.ready);
   // All machines: one list of the agents of every server, as on the desktop.
   const allMachines = useAllMachinesShown();
