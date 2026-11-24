@@ -183,7 +183,7 @@ export function brandCatalog(path: string, code: string): CatalogResult {
       if (wouldChange > 0) kept[group] = (kept[group] ?? 0) + wouldChange;
       return text;
     }
-    const handle = key !== null && (KEPT_HANDLE.keys as readonly string[]).includes(key);
+    const handle = key !== null && KEPT_HANDLE.keys.some((kept) => kept === key);
     const result = brandStringValues(text, handle ? brandKeepingHandle : (value) => brandText(value, PRODUCT_NAME));
     changed += result.changed;
     if (handle) kept[KEPT_HANDLE.group] = (kept[KEPT_HANDLE.group] ?? 0) + (text.split(KEPT_HANDLE.handle).length - 1);
@@ -268,6 +268,13 @@ function dirtyCatalogs(root: string): string[] {
   ].filter((file) => file.endsWith(".ts") && existsSync(resolve(root, file)));
 }
 
+/** The text that a failed child process wrote, from the error that `execFileSync` throws. */
+function processOutput(error: unknown): string {
+  if (typeof error !== "object" || error === null) return String(error);
+  const stdout = "stdout" in error && typeof error.stdout === "string" ? error.stdout : "";
+  const stderr = "stderr" in error && typeof error.stderr === "string" ? error.stderr : "";
+  return `${stdout}${stderr}`;
+}
 /** Runs Biome on catalog files. The files change in place, so a failure here leaves the rewrite done. */
 function formatFiles(root: string, files: readonly string[]): { count: number; error: string | null } {
   const targets = [...new Set([...files, ...dirtyCatalogs(root)])].sort();
@@ -281,8 +288,7 @@ function formatFiles(root: string, files: readonly string[]): { count: number; e
         maxBuffer: 1 << 28,
       });
     } catch (error) {
-      const output = error as { stdout?: string; stderr?: string };
-      const text = `${output.stdout ?? ""}${output.stderr ?? ""}`.split("\n").slice(0, 60).join("\n");
+      const text = processOutput(error).split("\n").slice(0, 60).join("\n");
       return {
         count: start,
         error: `Biome stopped on a group of files. Fix what it names, then run the script again.\n${text}`,

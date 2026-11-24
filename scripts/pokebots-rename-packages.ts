@@ -341,6 +341,13 @@ function dirtySources(root: string): string[] {
   );
 }
 
+/** The text that a failed child process wrote, from the error that `execFileSync` throws. */
+function processOutput(error: unknown): string {
+  if (typeof error !== "object" || error === null) return String(error);
+  const stdout = "stdout" in error && typeof error.stdout === "string" ? error.stdout : "";
+  const stderr = "stderr" in error && typeof error.stderr === "string" ? error.stderr : "";
+  return `${stdout}${stderr}`;
+}
 /** Runs Biome on source files. The files change in place, so a failure here leaves the rewrite done. */
 function formatFiles(root: string, files: readonly string[]): { count: number; error: string | null } {
   const sources = [...new Set([...files.filter((file) => SOURCE_FILE.test(file)), ...dirtySources(root)])].sort();
@@ -354,8 +361,7 @@ function formatFiles(root: string, files: readonly string[]): { count: number; e
         maxBuffer: 1 << 28,
       });
     } catch (error) {
-      const output = error as { stdout?: string; stderr?: string };
-      const text = `${output.stdout ?? ""}${output.stderr ?? ""}`.split("\n").slice(0, 60).join("\n");
+      const text = processOutput(error).split("\n").slice(0, 60).join("\n");
       return {
         count: start,
         error: `Biome stopped on a group of files. Fix what it names, then run the script again.\n${text}`,
@@ -382,8 +388,14 @@ export function run(options: Options): PackagesReport {
       skipped.push({ file, reason: skip.reason, matches: text.split("@openbot/").length - 1 });
       continue;
     }
-    const result = file === LOCKFILE ? transformLockfile(text) : renameScopes(text, file);
-    if (file === LOCKFILE) lockStatus = (result as ReturnType<typeof transformLockfile>).aliasStatus;
+    let result: RewriteResult;
+    if (file === LOCKFILE) {
+      const lock = transformLockfile(text);
+      lockStatus = lock.aliasStatus;
+      result = lock;
+    } else {
+      result = renameScopes(text, file);
+    }
     for (const tag of result.tags) tags.push({ file, tag });
     if (result.code === text) continue;
     renamed += result.renamed;
