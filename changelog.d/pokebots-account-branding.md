@@ -1,0 +1,3 @@
+### Changed
+
+- Use Pokebots as the default account and web display brand, favicons, manifest metadata, and email copy while keeping canonical origins and self-hosted overrides unchanged.

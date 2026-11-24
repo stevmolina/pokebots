@@ -22,7 +22,7 @@ import { loadSiteChrome } from "../lib/site-locale";
 import { OPENBOT_SECURITY_HEADERS, openBotRootHead } from "../lib/site-metadata";
 import type { SiteChrome } from "../lib/site-text";
 
-const NOT_FOUND_TITLE = "Page not found · OpenBot";
+const NOT_FOUND_TITLE = "Page not found · Pokebots";
 
 // The 404 and error pages show the site header, which holds the plugin catalog of the menu. The
 // root route is in the first chunk of every page, `/app` included, so these pages load only when

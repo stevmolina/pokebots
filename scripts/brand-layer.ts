@@ -153,48 +153,6 @@ export const LITERAL_RULES: readonly LiteralRule[] = [
     find: 'const PRODUCT_NAME = "OpenBot";',
     replace: (name) => `const PRODUCT_NAME = ${JSON.stringify(name)};`,
   },
-  // Web client: the app name that its views show, and the name of a server that has none.
-  {
-    file: "src/renderer/src/features/web-client/WebWorkspace.tsx",
-    find: 'const WEB_APP_INFO: AppInfo = { name: "OpenBot",',
-    replace: (name) => `const WEB_APP_INFO: AppInfo = { name: ${JSON.stringify(name)},`,
-  },
-  {
-    file: "src/renderer/src/features/web-client/WebWorkspace.tsx",
-    find: 'workspace.state.host?.name ?? "OpenBot"',
-    replace: (name) => `workspace.state.host?.name ?? ${JSON.stringify(name)}`,
-  },
-  // Account Worker: the site header lockup, the web client title, the missing page title, and email sender name.
-  {
-    file: "apps/auth-api/src/components/brand/SiteLogoLink.tsx",
-    find: "<span>OpenBot</span>",
-    replace: (name) => `<span>${name}</span>`,
-  },
-  {
-    file: "apps/auth-api/src/routes/app.tsx",
-    find: '{ title: "OpenBot web" }',
-    replace: (name) => `{ title: ${JSON.stringify(`${name} web`)} }`,
-  },
-  {
-    file: "apps/auth-api/src/routes/app.tsx",
-    find: '{ name: "apple-mobile-web-app-title", content: "OpenBot" }',
-    replace: (name) => `{ name: "apple-mobile-web-app-title", content: ${JSON.stringify(name)} }`,
-  },
-  {
-    file: "apps/auth-api/src/routes/__root.tsx",
-    find: '"Page not found · OpenBot"',
-    replace: (name) => JSON.stringify(`Page not found · ${name}`),
-  },
-  {
-    file: "apps/auth-api/src/server/email-delivery.ts",
-    find: 'from: { name: "OpenBot",',
-    replace: (name) => `from: { name: ${JSON.stringify(name)},`,
-  },
-  {
-    file: "apps/auth-api/src/server/smtp-email-delivery.ts",
-    find: "`From: OpenBot <",
-    replace: (name) => `\`From: ${name} <`,
-  },
   // The included models in the provider lists, and the version names in Settings > Updates.
   {
     file: "packages/contracts/src/agent-providers.ts",
@@ -206,28 +164,16 @@ export const LITERAL_RULES: readonly LiteralRule[] = [
     find: "`OpenBot v${",
     replace: (name) => `\`${name} v\${`,
   },
-  // The agent share card: its button and its site.
   // Server names: the name a new server takes, and the name of a server that has none.
   {
     file: "src/renderer/src/features/servers/server-settings.tsx",
     find: 'const FALLBACK_SERVER_NAME = "OpenBot";',
     replace: (name) => `const FALLBACK_SERVER_NAME = ${JSON.stringify(name)};`,
   },
-  // Other names in the desktop and web views.
-  {
-    file: "src/renderer/src/features/web-client/WebPhoneAppScreen.tsx",
-    find: 'const PRODUCT_NAME = "OpenBot";',
-    replace: (name) => `const PRODUCT_NAME = ${JSON.stringify(name)};`,
-  },
   {
     file: "packages/ui/src/user-avatar.tsx",
     find: '|| "OpenBot";',
     replace: (name) => `|| ${JSON.stringify(name)};`,
-  },
-  {
-    file: "src/renderer/src/features/web-client/connection-log.ts",
-    find: '"OpenBot web connection log"',
-    replace: (name) => JSON.stringify(`${name} web connection log`),
   },
   {
     file: "packages/contracts/src/ipc-mcp-servers.ts",
@@ -259,12 +205,11 @@ export const LITERAL_RULES: readonly LiteralRule[] = [
 ];
 
 /**
- * Modules outside the catalogs whose string values are all branded: the email that the Worker sends,
- * the errors of shared links, and plugin descriptions. Their only "OpenBot" strings are text that a
+ * Modules outside the catalogs whose string values are all branded: shared link errors and plugin
+ * descriptions. Their only "OpenBot" strings are text that a
  * reader sees, never a path, a header or an identifier.
  */
 export const BRANDED_MODULES: readonly string[] = [
-  "apps/auth-api/src/server/email-templates.ts",
   "packages/contracts/src/invite-links.ts",
   "packages/contracts/src/marketplace-links.ts",
   "packages/contracts/src/plugin-links.ts",

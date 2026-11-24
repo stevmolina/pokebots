@@ -8,7 +8,7 @@ import previewStylesheet from "../../../../src/renderer/src/preview/preview.css?
 // collector skips `?url` imports.
 export const Route = createFileRoute("/app-preview")({
   head: () => ({
-    meta: [{ title: "OpenBot application preview" }, { name: "robots", content: "noindex, follow" }],
+    meta: [{ title: "Pokebots application preview" }, { name: "robots", content: "noindex, follow" }],
     links: [{ rel: "stylesheet", href: previewStylesheet }],
   }),
   headers: () => ({ "X-Robots-Tag": "noindex, follow" }),
