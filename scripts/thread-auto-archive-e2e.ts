@@ -1,8 +1,8 @@
 // Runs the real host, its agent service and its Team API on a temporary profile, with a Codex app-server
-// fixture. Checks that the host archives idle side threads by itself after 3 days with no activity, and
-// to make room for a new thread when an agent has the most open threads. A busy thread stays open, and
-// only a list of busy threads refuses a new one.
-// Run: bun scripts/thread-idle-archive-e2e.ts. Report: .openbot-build/thread-idle-archive-e2e/report.json.
+// fixture. Checks that the host archives idle side threads by itself (`thread-auto-archive-v1`): after
+// the idle time, when the linked GitHub pull requests are merged, and to make room for a new thread. A
+// busy thread stays open. The setting route is checked through the Team API.
+// Run: bun scripts/thread-auto-archive-e2e.ts. Report: .openbot-build/thread-auto-archive-e2e/report.json.
 import assert from "node:assert/strict";
 import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -14,6 +14,10 @@ import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
 import { TEAM_APP_VERSION_HEADER, TEAM_PROTOCOL_VERSION_HEADER } from "@openbot/contracts/team-protocol";
 import { AGENT_TASKS_ROUTES } from "@openbot/contracts/team-protocol/agent-tasks-v1";
 import { teamCapabilitiesForProtocol, teamCapabilityHeaders } from "@openbot/contracts/team-protocol/current";
+import {
+  THREAD_AUTO_ARCHIVE_CAPABILITY,
+  THREAD_AUTO_ARCHIVE_ROUTES,
+} from "@openbot/contracts/team-protocol/thread-auto-archive-v1";
 import { decodeTeamProtocolV2Json, type TeamProtocolV2Json } from "@openbot/contracts/team-protocol/v2";
 import { TEAM_PROTOCOL_V10 } from "@openbot/contracts/team-protocol/v10";
 import { sourceText } from "@openbot/i18n/source";
@@ -22,17 +26,17 @@ import { Effect } from "effect";
 import type { AgentBrowserHost } from "../src/backend/agent/turn-lifecycle";
 import type { TeamApiBrowser } from "../src/main/team-api/dependencies";
 
-const OUT = resolve(import.meta.dirname, "../.openbot-build/thread-idle-archive-e2e");
+const OUT = resolve(import.meta.dirname, "../.openbot-build/thread-auto-archive-e2e");
 const HOST_VERSION = "0.0.0-e2e";
 const DAY_MS = 24 * 60 * 60_000;
-const fixtureRoot = process.env.OPENBOT_THREAD_IDLE_ARCHIVE_FIXTURE_ROOT;
+const fixtureRoot = process.env.OPENBOT_THREAD_AUTO_ARCHIVE_FIXTURE_ROOT;
 if (!fixtureRoot) {
-  const root = await mkdtemp(join(tmpdir(), "openbot-thread-idle-archive-"));
+  const root = await mkdtemp(join(tmpdir(), "openbot-thread-auto-archive-"));
   const home = join(root, "home");
   try {
     // Bun resolves os.homedir() at startup. The host and provider adapters must see the fixture home.
     const child = Bun.spawn([process.execPath, import.meta.path], {
-      env: { ...process.env, HOME: home, USERPROFILE: home, OPENBOT_THREAD_IDLE_ARCHIVE_FIXTURE_ROOT: root },
+      env: { ...process.env, HOME: home, USERPROFILE: home, OPENBOT_THREAD_AUTO_ARCHIVE_FIXTURE_ROOT: root },
       stdin: "inherit",
       stdout: "inherit",
       stderr: "inherit",
@@ -53,7 +57,7 @@ process.env.OPENBOT_CODEX_PATH = fakeCodex;
 
 // The main process imports Electron for its windows and IPC. No check here opens a window.
 plugin({
-  name: "thread-idle-archive-electron-boundary",
+  name: "thread-auto-archive-electron-boundary",
   setup(build) {
     class Inert {}
     build.module("electron", () => ({
@@ -83,7 +87,9 @@ plugin({
 const { TeamApiServer } = await import("../src/main/team-api-server");
 const { AGENT_ACCESS_FILE, AgentAccessStore } = await import("../src/main/agent-access-store");
 const { TeamStore } = await import("../src/main/team-store");
-const { ThreadAutoArchiveScheduler } = await import("../src/main/thread-auto-archive");
+const { createThreadAutoArchiveControl, GitHubPullRequestStates, ThreadAutoArchiveScheduler } = await import(
+  "../src/main/thread-auto-archive"
+);
 const { AgentService } = await import("../src/backend/agent-service");
 const { AgentStore } = await import("../src/backend/agent-store");
 const { runCauseEffect } = await import("../src/backend/effect-boundary");
@@ -211,7 +217,10 @@ const mailbox = new MailboxStore(userData, store.sharedRoot, database);
 const sidebarLayout = new SidebarLayoutStore(join(userData, "sidebar-layout.json"));
 const team = new TeamStore(join(userData, "team.json"));
 const agentAccess = new AgentAccessStore(join(userData, AGENT_ACCESS_FILE));
+const preferencePath = join(userData, "openbot-thread-auto-archive-v1.json");
+const threadAutoArchive = createThreadAutoArchiveControl(preferencePath);
 const owner = { username: "test-owner", password: "e2e-owner-password" };
+const member = { username: "test-member", password: "e2e-member-password" };
 
 const agents = new AgentService({
   store,
@@ -234,19 +243,40 @@ const server = new TeamApiServer({
   hiddenAgents: agents,
   agentAccess,
   agentTasks: agents,
+  admin: { threadAutoArchive },
 });
 
+// GitHub: pull request 7 is merged, 8 is open. Each request is recorded, with whether it had the token.
+const githubRequests: Array<{ path: string; authorized: boolean }> = [];
+const fixtureToken = "ghu_fixture_connection_token";
+const githubFetch = (async (input: string | URL | Request, init?: RequestInit) => {
+  const url = new URL(String(input));
+  const headers = new Headers(init?.headers);
+  githubRequests.push({ path: url.pathname, authorized: headers.get("authorization") === `Bearer ${fixtureToken}` });
+  if (url.pathname === "/repos/acme/widgets/pulls/7")
+    return Response.json({ state: "closed", merged: true, merged_at: "2026-11-20T10:00:00Z" });
+  if (url.pathname === "/repos/acme/widgets/pulls/8") return Response.json({ state: "open", merged: false });
+  return new Response("{}", { status: 404 });
+}) as typeof fetch;
 let clock = Date.now();
-// The real scheduler with its 3-day default. The test moves its clock instead of waiting.
 const scheduler = new ThreadAutoArchiveScheduler({
-  sweep: (idleBefore) => agents.autoArchiveIdleThreads(idleBefore),
+  preference: () => threadAutoArchive.get(),
+  sweep: (policy) => agents.autoArchiveThreads(policy),
+  pullRequests: new GitHubPullRequestStates({
+    connectionToken: () => Effect.succeed(fixtureToken),
+    fetch: githubFetch,
+    ghPath: null,
+    now: () => clock,
+  }),
   now: () => clock,
 });
 
 interface Report {
   passed: boolean;
   checks: {
-    idleArchives?: { before3Days: number; after3Days: number; busyStaysOpen: boolean };
+    settingRoute?: { default: string; memberRefused: number; invalid: number; saved: boolean };
+    mergedPullRequestArchives?: { archived: string; githubCalls: number; cachedSecondSweep: boolean };
+    idleArchives?: { archived: number; busyStaysOpen: boolean };
     restore?: boolean;
     makeRoom?: { limit: number; archivedOldestIdle: string };
     allBusyRefuses?: { status: number };
@@ -293,6 +323,7 @@ async function waitFor<T>(name: string, read: () => Promise<T | undefined>, time
 const failures: unknown[] = [];
 try {
   await mkdir(userData, { recursive: true });
+  await runCauseEffect(threadAutoArchive.load());
   await runCauseEffect(team.initialize());
   await runCauseEffect(team.configure("Thread Archive E2E Host", owner.username, owner.password));
   assert.equal(await runCauseEffect(agentAccess.load()), true);
@@ -300,6 +331,35 @@ try {
   await runCauseEffect(agents.initialize());
   port = await runCauseEffect(server.start());
   const ownerToken = await login(owner);
+  const invite = await runCauseEffect(team.createInvite("member"));
+  await call(TEAM_API_ROUTES.join.server, 201, undefined, { inviteToken: invite.token, ...member });
+  const memberToken = await login(member);
+
+  // The setting, through the Team API. Only an owner or admin reads or changes it.
+  const serves = await call(TEAM_API_ROUTES.compatibility, 200);
+  assert.ok(JSON.stringify(serves).includes(THREAD_AUTO_ARCHIVE_CAPABILITY), "The host serves the capability.");
+  assert.deepEqual(await call(THREAD_AUTO_ARCHIVE_ROUTES.settings, 200, ownerToken, {}), {
+    idleDays: 3,
+    mergedPullRequests: true,
+  });
+  assert.equal((await request(THREAD_AUTO_ARCHIVE_ROUTES.settings, memberToken, {})).status, 403);
+  assert.equal(
+    (await request(THREAD_AUTO_ARCHIVE_ROUTES.update, memberToken, { idleDays: 0, mergedPullRequests: false })).status,
+    403,
+  );
+  assert.equal(
+    (await request(THREAD_AUTO_ARCHIVE_ROUTES.update, ownerToken, { idleDays: 2, mergedPullRequests: true })).status,
+    400,
+  );
+  assert.deepEqual(
+    await call(THREAD_AUTO_ARCHIVE_ROUTES.update, 200, ownerToken, { idleDays: 7, mergedPullRequests: false }),
+    { idleDays: 7, mergedPullRequests: false },
+  );
+  const reloaded = createThreadAutoArchiveControl(preferencePath);
+  await runCauseEffect(reloaded.load());
+  assert.deepEqual(reloaded.get(), { idleDays: 7, mergedPullRequests: false });
+  report.checks.settingRoute = { default: "3 days + pull requests", memberRefused: 403, invalid: 400, saved: true };
+
   const create = (name: string) =>
     runCauseEffect(
       agents.createAgentProfile({
@@ -332,20 +392,43 @@ try {
   const idleOne = await start(agent.id, "RUN IDLE-ONE");
   const idleTwo = await start(agent.id, "RUN IDLE-TWO");
   const busy = await start(agent.id, "HOLD BUSY");
-  await settled(agent.id, [idleOne.id, idleTwo.id], "idle");
+  const merged = await start(agent.id, "RUN PR-MERGED fixed in https://github.com/acme/widgets/pull/7");
+  const open = await start(agent.id, "RUN PR-OPEN see https://github.com/acme/widgets/pull/8");
+  const mixed = await start(
+    agent.id,
+    "RUN PR-MIXED https://github.com/acme/widgets/pull/7 and https://github.com/acme/widgets/pull/8",
+  );
+  await settled(agent.id, [idleOne.id, idleTwo.id, merged.id, open.id, mixed.id], "idle");
   await settled(agent.id, [busy.id], "running");
 
-  // Two days later nothing is archived: the default idle time is 3 days.
-  clock = Date.now() + 2 * DAY_MS;
-  assert.equal(await Effect.runPromise(scheduler.sweepNow()), 0);
-  for (const taskId of [idleOne.id, idleTwo.id]) assert.equal(await stateOf(agent.id, taskId), "idle");
-
-  // Four days later every idle thread is archived. The busy one stays open.
-  clock = Date.now() + 4 * DAY_MS;
-  assert.equal(await Effect.runPromise(scheduler.sweepNow()), 2);
-  for (const taskId of [idleOne.id, idleTwo.id]) assert.equal(await stateOf(agent.id, taskId), "closed");
+  // Pull request rule only: the thread whose one pull request is merged is archived.
+  await runCauseEffect(threadAutoArchive.set({ idleDays: 0, mergedPullRequests: true }));
+  const pullRequestSweep = await Effect.runPromise(scheduler.sweepNow());
+  assert.deepEqual(pullRequestSweep, { idle: 0, pullRequests: 1 });
+  assert.equal(await stateOf(agent.id, merged.id), "closed");
+  for (const taskId of [idleOne.id, idleTwo.id, open.id, mixed.id])
+    assert.equal(await stateOf(agent.id, taskId), "idle");
   assert.equal(await stateOf(agent.id, busy.id), "running");
-  report.checks.idleArchives = { before3Days: 0, after3Days: 2, busyStaysOpen: true };
+  assert.ok(githubRequests.length > 0 && githubRequests.every(({ authorized }) => authorized));
+  const firstCalls = githubRequests.length;
+  await Effect.runPromise(scheduler.sweepNow());
+  // Pull request 7 is known merged and 8 was read less than 10 minutes ago: no new GitHub call.
+  assert.equal(githubRequests.length, firstCalls);
+  report.checks.mergedPullRequestArchives = { archived: merged.id, githubCalls: firstCalls, cachedSecondSweep: true };
+
+  // Idle rule: two days later, with one idle day, every idle thread is archived. The busy one stays open.
+  await runCauseEffect(threadAutoArchive.set({ idleDays: 1, mergedPullRequests: false }));
+  clock = Date.now() + 2 * DAY_MS;
+  const idleSweep = await Effect.runPromise(scheduler.sweepNow());
+  assert.deepEqual(idleSweep, { idle: 4, pullRequests: 0 });
+  for (const taskId of [idleOne.id, idleTwo.id, open.id, mixed.id])
+    assert.equal(await stateOf(agent.id, taskId), "closed");
+  assert.equal(await stateOf(agent.id, busy.id), "running");
+  report.checks.idleArchives = { archived: 4, busyStaysOpen: true };
+
+  // Off: nothing more is archived.
+  await runCauseEffect(threadAutoArchive.set({ idleDays: 0, mergedPullRequests: false }));
+  assert.deepEqual(await Effect.runPromise(scheduler.sweepNow()), { idle: 0, pullRequests: 0 });
 
   // An archived thread can be restored.
   await call(AGENT_TASKS_ROUTES.reopen, 200, ownerToken, { agentId: agent.id, taskId: idleOne.id });

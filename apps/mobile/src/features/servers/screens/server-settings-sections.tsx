@@ -33,6 +33,7 @@ import {
   ServerMemoryReviewRow,
   ServerPersonalityRow,
   ServerSkillLearningRow,
+  ServerThreadAutoArchiveRows,
 } from "@/features/servers/components/server-learning-rows";
 import { TrailingValue } from "@/features/servers/components/trailing-value";
 import { SERVER_ROLE_LABEL_KEYS } from "@/features/servers/model/server-role";
@@ -322,7 +323,8 @@ function permitsAgentSettings(checks: ServerChecks, serverId: string): boolean {
     checks.canManageMemoryReview(serverId) ||
     checks.canManageSkillLearning(serverId) ||
     checks.canManageBrowsingMemory(serverId) ||
-    checks.canManageHomeAgentRules(serverId)
+    checks.canManageHomeAgentRules(serverId) ||
+    checks.canManageThreadAutoArchive(serverId)
   );
 }
 
@@ -401,6 +403,7 @@ export function ServerAgentsSection({ serverId }: { serverId: string }) {
     canManageSkillLearning,
     canManageBrowsingMemory,
     canManageHomeAgentRules,
+    canManageThreadAutoArchive,
   } = useMobileWorkspace();
   return (
     <>
@@ -410,6 +413,7 @@ export function ServerAgentsSection({ serverId }: { serverId: string }) {
       {canManageSkillLearning(serverId) ? <ServerSkillLearningRow serverId={serverId} /> : null}
       {canManageBrowsingMemory(serverId) ? <ServerBrowsingMemoryRow serverId={serverId} /> : null}
       {canManageHomeAgentRules(serverId) ? <ServerHomeAgentRulesRows key={serverId} serverId={serverId} /> : null}
+      {canManageThreadAutoArchive(serverId) ? <ServerThreadAutoArchiveRows key={serverId} serverId={serverId} /> : null}
     </>
   );
 }

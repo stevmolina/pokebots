@@ -1048,6 +1048,7 @@ function ServerSettings() {
           hostUpdate={{}}
           hostTimezone={{}}
           hostTurnLimits={{}}
+          threadAutoArchive={{}}
           hostPersonality={{}}
           hostMemoryLimit={{}}
           memoryReview={{}}

@@ -154,6 +154,7 @@ export const queryKeys = {
   memoryReview: (scope: QueryScope, serverId: string) => ["memory-review", ...scope, serverId],
   skillLearning: (scope: QueryScope, serverId: string) => ["skill-learning", ...scope, serverId],
   homeAgentRules: (scope: QueryScope, serverId: string) => ["home-agent-rules", ...scope, serverId],
+  threadAutoArchive: (scope: QueryScope, serverId: string) => ["thread-auto-archive", ...scope, serverId],
   browsingMemory: (scope: QueryScope, serverId: string) => ["browsing-memory", ...scope, serverId],
   serverPersonality: (scope: QueryScope, serverId: string) => ["server-personality", ...scope, serverId],
   serverRoles: (scope: QueryScope, serverId: string) => ["server-roles", ...scope, serverId],

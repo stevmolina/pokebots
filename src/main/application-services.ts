@@ -487,7 +487,13 @@ import { TeamWebRtcBridge } from "./team-webrtc-bridge";
 import { TeamWebRtcClientTransport } from "./team-webrtc-client-transport";
 import type { TeardownRegistry } from "./teardown-registry";
 import { THEME_PALETTE_DIRECTORY } from "./theme-palette-files";
-import { developmentDurationMs, ThreadAutoArchiveScheduler } from "./thread-auto-archive";
+import {
+  createThreadAutoArchiveControl,
+  developmentDurationMs,
+  GitHubPullRequestStates,
+  type ThreadAutoArchiveControl,
+  ThreadAutoArchiveScheduler,
+} from "./thread-auto-archive";
 import { TraceFile } from "./trace-file";
 import {
   macShipItDirectory,
@@ -563,6 +569,7 @@ const SERVER_PERSONALITY_PREFERENCE_FILE = "openbot-server-personality-v1.json";
 const PROMPT_CACHE_TTL_PREFERENCE_FILE = "openbot-prompt-cache-ttl-v1.json";
 const CLAUDE_USER_SETUP_PREFERENCE_FILE = "openbot-claude-user-setup-v1.json";
 const HOME_AGENT_RULES_PREFERENCE_FILE = "openbot-home-agent-rules-v1.json";
+const THREAD_AUTO_ARCHIVE_PREFERENCE_FILE = "openbot-thread-auto-archive-v1.json";
 const CLAUDE_AI_TOOLS_PREFERENCE_FILE = "openbot-claude-ai-tools-v1.json";
 const CRM_PREFERENCE_FILE = "openbot-crm-v1.json";
 const CLAUDE_COMPACT_WINDOW_PREFERENCE_FILE = "openbot-claude-compact-window-v1.json";
@@ -687,7 +694,7 @@ const TEARDOWN_ORDER = {
   bitwardenConnector: 106.5,
   // Before the agent service. It holds no file an agent reads; only a CLI run that waits is stopped.
   passwordManagers: 106.75,
-  // Before the agent service: a sweep archives threads through it.
+  // Before the GitHub connection and the agent service: a sweep reads both.
   threadAutoArchive: 106.9,
   // Before the agent service, so no agent is handed a token file that is being removed.
   githubConnector: 107,
@@ -846,6 +853,7 @@ export interface ApplicationServices {
   promptCacheTtl: PromptCacheTtlPreferenceStore;
   claudeUserSetup: ClaudeUserSetupControl;
   homeAgentRules: HomeAgentRulesControl;
+  threadAutoArchive: ThreadAutoArchiveControl;
   claudeAiTools: ClaudeAiToolsControl;
   claudeCompactWindow: ClaudeCompactWindowControl;
   providerEnvironment: ProviderEnvironmentControl;
@@ -1676,6 +1684,9 @@ export async function createApplicationServices({
     join(app.getPath("userData"), CLAUDE_USER_SETUP_PREFERENCE_FILE),
   );
   const homeAgentRules = createHomeAgentRulesControl(join(app.getPath("userData"), HOME_AGENT_RULES_PREFERENCE_FILE));
+  const threadAutoArchive = createThreadAutoArchiveControl(
+    join(app.getPath("userData"), THREAD_AUTO_ARCHIVE_PREFERENCE_FILE),
+  );
   const claudeAiTools = createClaudeAiToolsPreferenceStore(
     join(app.getPath("userData"), CLAUDE_AI_TOOLS_PREFERENCE_FILE),
   );
@@ -1728,6 +1739,7 @@ export async function createApplicationServices({
       promptCacheTtl.load(),
       claudeUserSetup.load(),
       homeAgentRules.load(),
+      threadAutoArchive.load(),
       claudeAiTools.load(),
       crmPreference.load(),
       claudeCompactWindow.load(),
@@ -2700,14 +2712,18 @@ export async function createApplicationServices({
    */
   const devThreadIdleMs = appVariant === "dev" ? developmentDurationMs(process.env.OPENBOT_DEV_THREAD_IDLE_MS) : null;
   const devThreadSweepMs = appVariant === "dev" ? developmentDurationMs(process.env.OPENBOT_DEV_THREAD_SWEEP_MS) : null;
-  const threadAutoArchive = new ThreadAutoArchiveScheduler({
-    sweep: (idleBefore) => service.autoArchiveIdleThreads(idleBefore),
+  const threadAutoArchiveScheduler = new ThreadAutoArchiveScheduler({
+    preference: () => threadAutoArchive.get(),
+    sweep: (policy) => service.autoArchiveThreads(policy),
+    pullRequests: new GitHubPullRequestStates({
+      connectionToken: () => githubConnector.accessToken().pipe(Effect.orElseSucceed(() => null)),
+    }),
     ...(devThreadIdleMs === null ? {} : { idleMs: devThreadIdleMs }),
     ...(devThreadSweepMs === null ? {} : { intervalMs: devThreadSweepMs }),
   });
-  threadAutoArchive.start();
+  threadAutoArchiveScheduler.start();
   teardown.push(TEARDOWN_ORDER.threadAutoArchive, "the automatic thread archive", () =>
-    Effect.runPromise(threadAutoArchive.close()),
+    Effect.runPromise(threadAutoArchiveScheduler.close()),
   );
   // The next turn of each agent uses the instructions of the new personality.
   serverPersonality.onChange(() => service.responseStyleChanged());
@@ -3967,6 +3983,7 @@ export async function createApplicationServices({
       promptCacheTtl,
       claudeUserSetup: claudeUserSetupSetting,
       homeAgentRules,
+      threadAutoArchive,
       claudeAiTools: claudeAiToolsSetting,
       claudeCompactWindow: claudeCompactWindowSetting,
       providerEnvironment: providerEnvironmentSetting,
@@ -5156,6 +5173,7 @@ export async function createApplicationServices({
     promptCacheTtl,
     claudeUserSetup: claudeUserSetupSetting,
     homeAgentRules,
+    threadAutoArchive,
     claudeAiTools: claudeAiToolsSetting,
     claudeCompactWindow: claudeCompactWindowSetting,
     providerEnvironment: providerEnvironmentSetting,

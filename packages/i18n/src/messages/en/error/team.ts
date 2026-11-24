@@ -85,6 +85,8 @@ export const messages = defineMessages("error.team", {
   "error.team.threadQueueUnsupported": "This connection cannot show the queue of a side thread.",
   "error.team.threadRequestsUnsupported": "This connection cannot show the requests of a side thread to other agents.",
   "error.team.hostTurnLimitsUnsupported": "This connection cannot show or change the thread limits of the server.",
+  "error.team.threadAutoArchiveUnsupported": "This server does not support the automatic thread archive.",
+  "error.team.threadAutoArchiveInvalid": "The automatic thread archive setting is not valid.",
   "error.team.usageLimitUnsupported": "This connection cannot show or change the usage limits of agents.",
   "error.team.hermesImportUnsupported": "This connection cannot import Hermes profiles from the server.",
   "error.team.providerDetectionUnsupported": "This connection cannot find the model servers and agents of the server.",

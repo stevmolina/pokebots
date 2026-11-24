@@ -367,6 +367,15 @@ export const messages = {
   "server.settings.agentTaskLimitDescription":
     "Le nombre de fils que chaque agent sans limite propre peut exécuter en même temps.",
   "server.settings.agentTaskLimitDefault": "Par défaut ({count})",
+  "server.settings.threadAutoArchiveIdle": "Archiver les fils inactifs",
+  "server.settings.threadAutoArchiveIdleDescription":
+    "Archive un fil après cette durée sans activité. Un fil en cours ou avec des messages en file d'attente reste ouvert. Vous pouvez restaurer un fil archivé.",
+  "server.settings.threadAutoArchiveIdleOff": "Désactivé",
+  "server.settings.threadAutoArchiveIdleDays": { one: "Après {count} jour", other: "Après {count} jours" },
+  "server.settings.threadAutoArchivePullRequests": "Archiver à la fusion des pull requests",
+  "server.settings.threadAutoArchivePullRequestsDescription":
+    "Archive un fil inactif quand chaque pull request GitHub qu'il lie est fusionnée ou fermée. Le serveur utilise sa connexion GitHub, la commande gh ou les dépôts publics.",
+  "server.settings.threadAutoArchiveLoadFailed": "Impossible de charger le réglage d'archivage des fils de ce serveur.",
   "server.settings.memoryLimit": "Souvenirs par agent",
   "server.settings.memoryLimitDescription": "Nombre de souvenirs que chaque agent de ce serveur peut conserver.",
   "server.settings.memoryLimitLoadFailed": "Impossible de charger la limite de souvenirs de ce serveur.",
