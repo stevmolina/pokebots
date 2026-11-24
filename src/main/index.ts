@@ -2140,7 +2140,12 @@ if (!hasSingleInstanceLock) {
         screen.on("display-metrics-changed", reconcileAgentDock);
         powerMonitor.on("resume", reconcileAgentDock);
       }
+      // Sleep fails the remote reads in flight and holds reconnects through the dark wakes. "resume" comes
+      // only at a wake that the user sees; an unlock or a user that becomes active also ends the hold.
+      powerMonitor.on("suspend", () => void Effect.runPromise(remoteServers.suspend()));
       powerMonitor.on("resume", () => void Effect.runPromise(remoteServers.wake()));
+      powerMonitor.on("unlock-screen", () => void Effect.runPromise(remoteServers.wakeIfSuspended()));
+      powerMonitor.on("user-did-become-active", () => void Effect.runPromise(remoteServers.wakeIfSuspended()));
       // A Slack socket can be dead after sleep without knowing it; reconnect instead of waiting for a ping.
       powerMonitor.on("resume", () => built.messaging.resume());
       powerMonitor.on("resume", renewHostSignal);
