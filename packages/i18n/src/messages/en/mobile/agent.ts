@@ -562,7 +562,6 @@ export const messages = defineMessages("mobile.agent", {
   "mobile.agent.machines.offline": "{name} is offline. Its agents show when it connects.",
   "mobile.agent.machines.empty": "No agents on your machines yet.",
   "mobile.agent.machines.onlineCount": "{count} of {total} online",
-  "mobile.agent.machines.switch": "Switch machine",
   "mobile.agent.machines.switchHint": "Shows your machines",
   "mobile.agent.list.waiting.label": { one: "Needs you, {count} agent", other: "Needs you, {count} agents" },
   "mobile.agent.list.unreadGroup.title": "Unread",

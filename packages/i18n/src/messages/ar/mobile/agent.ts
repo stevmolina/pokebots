@@ -631,6 +631,8 @@ export const messages = {
   "mobile.agent.machines.offlineShort": "غير متصل",
   "mobile.agent.machines.offline": "{name} غير متصل. يظهر وكلاؤه عند الاتصال.",
   "mobile.agent.machines.empty": "لا يوجد وكلاء على أجهزتك بعد.",
+  "mobile.agent.machines.onlineCount": "{count} من {total} متصل",
+  "mobile.agent.machines.switchHint": "يعرض أجهزتك",
   "mobile.agent.list.waiting.label": {
     zero: "يحتاج إليك، لا وكلاء",
     one: "يحتاج إليك، وكيل واحد",

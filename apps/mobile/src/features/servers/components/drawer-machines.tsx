@@ -1,15 +1,10 @@
-import { router } from "expo-router";
 import { Typography } from "heroui-native";
 import Check from "lucide-react-native/icons/check";
 import ChevronDown from "lucide-react-native/icons/chevron-down";
-import ChevronsUpDown from "lucide-react-native/icons/chevrons-up-down";
 import { type ReactElement, useCallback, useMemo } from "react";
-import { Pressable, ScrollView, View } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Pressable, View } from "react-native";
 import { usePreviewColors } from "@/features/design-preview/components/preview-parts";
-import { previewType } from "@/features/design-preview/model/preview-tokens";
 import { useAllMachinesShown } from "@/features/servers/components/all-machines";
-import { useAppDrawer } from "@/features/servers/components/app-drawer-shell";
 import { ServerAvatar } from "@/features/servers/components/server-avatar";
 import { AllMachinesMark } from "@/features/servers/components/server-mascot";
 import { setAllMachines } from "@/features/servers/model/all-machines";
@@ -149,28 +144,7 @@ export function MachineRow({
   );
 }
 
-/** Option A: a Machines section at the top of the drawer. */
-export function DrawerMachinesSection() {
-  const { t } = useText();
-  const colors = usePreviewColors();
-  const { closeDrawer } = useAppDrawer();
-  const { choices } = useMachineChoices();
-  if (choices.length < 2) return null;
-  return (
-    <View className="pb-2">
-      <Typography
-        style={[previewType.groupCaption, { color: colors.groupCaption, paddingHorizontal: 10, paddingBottom: 4 }]}
-      >
-        {t("mobile.agent.machines.title")}
-      </Typography>
-      {choices.map((choice) => (
-        <MachineRow key={choice.id} choice={choice} onChosen={closeDrawer} />
-      ))}
-    </View>
-  );
-}
-
-/** Option B: the drawer header as a large pill with the open machine. */
+/** The drawer header: a large pill with the open machine. It opens the machine list below it. */
 export function DrawerMachinePill({ open, onToggle }: { open: boolean; onToggle: () => void }) {
   const { t } = useText();
   const colors = usePreviewColors();
@@ -204,7 +178,7 @@ export function DrawerMachinePill({ open, onToggle }: { open: boolean; onToggle:
   );
 }
 
-/** Option B: the inline list under the pill. */
+/** The machine list under the pill: All machines and each server. */
 export function DrawerMachineList({ onChosen }: { onChosen: () => void }) {
   const { choices } = useMachineChoices();
   return (
@@ -213,62 +187,5 @@ export function DrawerMachineList({ onChosen }: { onChosen: () => void }) {
         <MachineRow key={choice.id} choice={choice} onChosen={onChosen} />
       ))}
     </View>
-  );
-}
-
-/** Option C: a compact switcher at the bottom of the drawer; it opens the machine sheet. */
-export function DrawerMachineFooter({ onOpen }: { onOpen: () => void }) {
-  const { t } = useText();
-  const colors = usePreviewColors();
-  const { current, choices } = useMachineChoices();
-  if (!current || choices.length < 2) return null;
-  return (
-    <Pressable
-      accessibilityRole="button"
-      accessibilityLabel={t("mobile.agent.machines.switch")}
-      accessibilityValue={{ text: current.label }}
-      onPress={() => {
-        void haptics.selection();
-        onOpen();
-      }}
-      className="mr-3 flex-row items-center gap-2.5 rounded-2xl bg-control px-2.5"
-      style={({ pressed }) => ({ height: 48, opacity: pressed ? 0.7 : 1 })}
-    >
-      {current.mark(28)}
-      <View className="min-w-0 flex-1">
-        <Typography.Paragraph className="font-medium" numberOfLines={1} style={typeScale.preview}>
-          {current.label}
-        </Typography.Paragraph>
-      </View>
-      <ChevronsUpDown size={16} color={colors.rowValue} strokeWidth={2} />
-    </Pressable>
-  );
-}
-
-/** Option C: the small sheet with All machines and each server. */
-export function MachinePickerSheet() {
-  const { t } = useText();
-  const colors = usePreviewColors();
-  const insets = useSafeAreaInsets();
-  const { choices } = useMachineChoices();
-  return (
-    <ScrollView
-      style={{ flex: 1, backgroundColor: colors.sheetBackground }}
-      alwaysBounceVertical={false}
-      contentContainerStyle={{ padding: 12, paddingTop: 24, paddingBottom: insets.bottom + 16, gap: 2 }}
-    >
-      <Typography
-        accessibilityRole="header"
-        style={[
-          previewType.rowTitle,
-          { color: colors.title, textAlign: "center", fontWeight: "600", paddingBottom: 12 },
-        ]}
-      >
-        {t("mobile.agent.machines.title")}
-      </Typography>
-      {choices.map((choice) => (
-        <MachineRow key={choice.id} choice={choice} size={34} onChosen={() => router.back()} />
-      ))}
-    </ScrollView>
   );
 }

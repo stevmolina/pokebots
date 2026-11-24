@@ -71,9 +71,8 @@ import { useReducedMotion } from "@/shared/lib/motion";
 import { isAndroid, longPressDelay } from "@/shared/lib/platform";
 import { currentText, useText } from "@/shared/lib/text";
 import { typeScale } from "@/shared/lib/type-scale";
-import { useMachinesSidebarOption } from "../model/machines-sidebar-option";
 import { DrawerHeaderBlur } from "./drawer-header-blur";
-import { DrawerMachineFooter, DrawerMachineList, DrawerMachinePill, DrawerMachinesSection } from "./drawer-machines";
+import { DrawerMachineList, DrawerMachinePill } from "./drawer-machines";
 import { ServerAvatar } from "./server-avatar";
 import { ServerDrawerIconButton } from "./server-drawer-icon-button";
 import { SERVER_ROW_HEIGHT, SortableServerList } from "./sortable-server-list";
@@ -190,7 +189,6 @@ export const ServerDrawerContent = memo(function ServerDrawerContent({
   const [dragging, setDragging] = useState(false);
   const [listOpen, setListOpen] = useState(false);
   const [headerHeight, setHeaderHeight] = useState(0);
-  const machinesOption = useMachinesSidebarOption((state) => state.option);
   const [machineListOpen, setMachineListOpen] = useState(false);
   // The iOS menu host sizes to its content, so a row in a menu gets the slot width explicitly.
   const [rowWidth, setRowWidth] = useState<number>();
@@ -444,7 +442,7 @@ export const ServerDrawerContent = memo(function ServerDrawerContent({
           }}
         >
           <View className="min-h-14 flex-row items-center justify-between gap-2 pl-3">
-            {machinesOption === "B" && servers.length > 1 && !editing && !editingTools ? (
+            {servers.length > 1 && !editing && !editingTools ? (
               <DrawerMachinePill open={machineListOpen} onToggle={() => setMachineListOpen((current) => !current)} />
             ) : activeServer ? (
               <Pressable
@@ -532,14 +530,10 @@ export const ServerDrawerContent = memo(function ServerDrawerContent({
           scrollEnabled={!dragging}
           showsVerticalScrollIndicator={false}
         >
-          {machinesOption === "A" && !editing && !editingTools ? <DrawerMachinesSection /> : null}
-          {machinesOption === "A" && !editing && !editingTools && servers.length > 1 ? <DrawerDivider /> : null}
-          {machinesOption === "B" ? (
-            <ServerListCollapse open={machineListOpen} reducedMotion={reducedMotion}>
-              <DrawerMachineList onChosen={() => setMachineListOpen(false)} />
-              <DrawerDivider />
-            </ServerListCollapse>
-          ) : null}
+          <ServerListCollapse open={machineListOpen} reducedMotion={reducedMotion}>
+            <DrawerMachineList onChosen={() => setMachineListOpen(false)} />
+            <DrawerDivider />
+          </ServerListCollapse>
           <ServerListCollapse open={showsList} reducedMotion={reducedMotion}>
             {editing ? (
               <SortableServerList
@@ -577,11 +571,6 @@ export const ServerDrawerContent = memo(function ServerDrawerContent({
         </ScrollView>
       </View>
 
-      {machinesOption === "C" ? (
-        <View className="pt-2">
-          <DrawerMachineFooter onOpen={() => onNavigate("/machine-picker")} />
-        </View>
-      ) : null}
       <View className="mr-3 flex-row items-center gap-2 pt-2">
         <View className="min-h-14 min-w-0 flex-1 flex-row items-center gap-2.5 rounded-2xl px-2 py-2">
           <ProfileAvatar neutral name={displayName} imageUrl={avatarUrl} size={36} />
@@ -714,7 +703,7 @@ function DrawerServerTools({
         ? { icon: Waypoints, label: t("mobile.app.route.workflows"), disabled: true }
         : null,
     brain: brain ? { icon: Brain, label: t("mobile.brain.title") } : null,
-    marketplace: { icon: Store, label: t("mobile.app.route.marketplace") },
+    marketplace: { icon: Store, label: t("mobile.workspace.preview.apps") },
     usage: { icon: ChartArea, label: t("mobile.app.route.usage"), value: values.usage },
     library:
       library === "hidden"

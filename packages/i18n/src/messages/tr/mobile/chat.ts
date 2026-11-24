@@ -244,6 +244,7 @@ export const messages = {
   "mobile.chat.camera.takePhoto": "Fotoğraf çek",
   "mobile.chat.camera.switch": "Kamerayı değiştir",
   "mobile.chat.header.info": "{name} için bilgi",
+  "mobile.chat.header.profile": "Ajan profili",
   "mobile.chat.header.actionsNeeded": "Gerekli işlemler",
   "mobile.chat.header.more": "Daha fazla",
   "mobile.chat.header.moreAttention": "Daha fazla, gerekli işlemler var",

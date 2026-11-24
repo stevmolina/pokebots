@@ -246,6 +246,7 @@ export const messages = {
   "mobile.chat.camera.takePhoto": "写真を撮る",
   "mobile.chat.camera.switch": "カメラを切り替え",
   "mobile.chat.header.info": "{name} の情報",
+  "mobile.chat.header.profile": "エージェントのプロフィール",
   "mobile.chat.header.actionsNeeded": "対応が必要です",
   "mobile.chat.header.more": "その他",
   "mobile.chat.header.moreAttention": "その他、対応が必要です",

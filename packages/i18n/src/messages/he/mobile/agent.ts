@@ -566,6 +566,8 @@ export const messages = {
   "mobile.agent.machines.offlineShort": "לא מחובר",
   "mobile.agent.machines.offline": "{name} לא מחובר. הסוכנים שלו יופיעו כשיתחבר.",
   "mobile.agent.machines.empty": "עדיין אין סוכנים במכונות שלך.",
+  "mobile.agent.machines.onlineCount": "{count} מתוך {total} מחוברים",
+  "mobile.agent.machines.switchHint": "מציג את המכונות שלך",
   "mobile.agent.list.waiting.label": {
     one: "דורש אותך, סוכן אחד",
     two: "דורשים אותך, שני סוכנים",

@@ -621,6 +621,8 @@ export const messages = {
   "mobile.agent.machines.offlineShort": "Не в сети",
   "mobile.agent.machines.offline": "{name} не в сети. Его агенты появятся после подключения.",
   "mobile.agent.machines.empty": "На ваших машинах пока нет агентов.",
+  "mobile.agent.machines.onlineCount": "В сети: {count} из {total}",
+  "mobile.agent.machines.switchHint": "Показывает ваши машины",
   "mobile.agent.list.waiting.label": {
     one: "Нужны вы: {count} агент",
     few: "Нужны вы: {count} агента",

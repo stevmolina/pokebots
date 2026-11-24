@@ -570,6 +570,8 @@ export const messages = {
   "mobile.agent.machines.offlineShort": "Offline",
   "mobile.agent.machines.offline": "{name} is offline. De agents verschijnen zodra het verbindt.",
   "mobile.agent.machines.empty": "Nog geen agents op je machines.",
+  "mobile.agent.machines.onlineCount": "{count} van {total} online",
+  "mobile.agent.machines.switchHint": "Toont je machines",
   "mobile.agent.list.waiting.label": {
     one: "Wacht op jou, {count} agent",
     other: "Wacht op jou, {count} agents",

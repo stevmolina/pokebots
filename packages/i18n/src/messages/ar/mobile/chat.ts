@@ -321,6 +321,7 @@ export const messages = {
   "mobile.chat.camera.takePhoto": "التقاط صورة",
   "mobile.chat.camera.switch": "تبديل الكاميرا",
   "mobile.chat.header.info": "معلومات {name}",
+  "mobile.chat.header.profile": "ملف الوكيل",
   "mobile.chat.header.actionsNeeded": "إجراءات مطلوبة",
   "mobile.chat.header.more": "المزيد",
   "mobile.chat.header.moreAttention": "المزيد، إجراءات مطلوبة",

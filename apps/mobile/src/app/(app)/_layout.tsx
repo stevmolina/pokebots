@@ -594,18 +594,6 @@ function AuthenticatedStack() {
         }}
       />
       <Stack.Screen
-        name="machine-picker"
-        // The list draws its own title.
-        options={{
-          contentStyle: { backgroundColor: sheetBackground },
-          headerShown: false,
-          presentation: "formSheet",
-          sheetAllowedDetents: [0.5],
-          sheetGrabberVisible: true,
-        }}
-      />
-      <Stack.Screen name="dev-machines-option" options={{ headerShown: false, animation: "none" }} />
-      <Stack.Screen
         name="section-form"
         // The header comes from the route's `_layout.tsx`: Android draws no header on a formSheet route.
         listeners={refocusNameField}

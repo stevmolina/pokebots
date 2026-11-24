@@ -570,6 +570,8 @@ export const messages = {
   "mobile.agent.machines.offlineShort": "オフライン",
   "mobile.agent.machines.offline": "{name} はオフラインです。接続するとエージェントが表示されます。",
   "mobile.agent.machines.empty": "マシンにまだエージェントがありません。",
+  "mobile.agent.machines.onlineCount": "{total} 台中 {count} 台がオンライン",
+  "mobile.agent.machines.switchHint": "マシンを表示します",
   "mobile.agent.list.waiting.label": { other: "対応が必要なエージェント {count} 件" },
   "mobile.agent.list.unreadGroup.title": "未読",
   "mobile.agent.list.unreadGroup.label": { other: "未読のチャット {count} 件" },
