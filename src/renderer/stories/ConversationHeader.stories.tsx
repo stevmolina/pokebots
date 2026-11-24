@@ -128,3 +128,26 @@ export const PinnedMessages: Story = { args: { pinnedMessages: pinnedMessages(ST
 export const ManyPinnedMessages: Story = { args: { pinnedMessages: pinnedMessages(MANY_STORY_PINS) } };
 /** A chat with no pin. The list says how to pin a message. */
 export const NoPinnedMessages: Story = { args: { pinnedMessages: pinnedMessages([]) } };
+/**
+ * A desktop chat with a long open session, in a 700px wide chat next to the details pane. The title
+ * ends in an ellipsis inside the pill, and the pill keeps clear of the side panel button.
+ */
+export const LongSessionTitle: Story = {
+  args: {
+    modelPicker: undefined,
+    sessionsInPane: true,
+    session: {
+      title: "Check today’s meeting with empirical and the transcript of google and wispr",
+      canStartNew: true,
+      onNew: fn(),
+    },
+    remoteControl: { enabled: true, active: false, visible: false, onOpen: fn() },
+  },
+  decorators: [
+    (Story) => (
+      <div style={{ width: "700px" }}>
+        <Story />
+      </div>
+    ),
+  ],
+};
