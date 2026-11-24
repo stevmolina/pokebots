@@ -249,9 +249,9 @@ const server = new TeamApiServer({
 // GitHub: pull request 7 is merged, 8 is open. Each request is recorded, with whether it had the token.
 const githubRequests: Array<{ path: string; authorized: boolean }> = [];
 const fixtureToken = "ghu_fixture_connection_token";
-const githubFetch = async (input: string, init: RequestInit): Promise<Response> => {
-  const url = new URL(input);
-  const headers = new Headers(init.headers);
+const githubFetch = async (input: string | URL | Request, init?: RequestInit): Promise<Response> => {
+  const url = new URL(String(input));
+  const headers = new Headers(init?.headers);
   githubRequests.push({ path: url.pathname, authorized: headers.get("authorization") === `Bearer ${fixtureToken}` });
   if (url.pathname === "/repos/acme/widgets/pulls/7")
     return Response.json({ state: "closed", merged: true, merged_at: "2026-11-20T10:00:00Z" });
