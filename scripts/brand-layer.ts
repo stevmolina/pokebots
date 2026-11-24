@@ -144,16 +144,6 @@ export const LITERAL_RULES: readonly LiteralRule[] = [
   },
   // Desktop renderer: the app name in System Settings, the setup error heading, and the share card.
   {
-    file: "src/renderer/src/features/computer-use/ComputerUsePermissionHelp.tsx",
-    find: 'const OPENBOT_APP_NAME = "OpenBot";',
-    replace: (name) => `const OPENBOT_APP_NAME = ${JSON.stringify(name)};`,
-  },
-  {
-    file: "src/renderer/src/features/onboarding/SetupReadError.tsx",
-    find: 'const PRODUCT_NAME = "OpenBot";',
-    replace: (name) => `const PRODUCT_NAME = ${JSON.stringify(name)};`,
-  },
-  {
     file: "packages/ui/src/features/account/AccountLogin.tsx",
     find: 'const PRODUCT_NAME = "OpenBot";',
     replace: (name) => `const PRODUCT_NAME = ${JSON.stringify(name)};`,
@@ -162,11 +152,6 @@ export const LITERAL_RULES: readonly LiteralRule[] = [
     file: "packages/ui/src/features/account/LanguageWheel.tsx",
     find: 'const PRODUCT_NAME = "OpenBot";',
     replace: (name) => `const PRODUCT_NAME = ${JSON.stringify(name)};`,
-  },
-  {
-    file: "src/renderer/src/features/agent-templates/agent-template-card.tsx",
-    find: 'context.fillText("OpenBot",',
-    replace: (name) => `context.fillText(${JSON.stringify(name)},`,
   },
   // Web client: the app name that its views show, and the name of a server that has none.
   {
@@ -217,37 +202,12 @@ export const LITERAL_RULES: readonly LiteralRule[] = [
     replace: (name) => JSON.stringify(`Included with ${name}`),
   },
   {
-    file: "src/renderer/src/features/onboarding/SetupProviderPicker.tsx",
-    find: 'const INCLUDED_DESCRIPTION = "Included with OpenBot";',
-    replace: (name) => `const INCLUDED_DESCRIPTION = ${JSON.stringify(`Included with ${name}`)};`,
-  },
-  {
     file: "packages/ui/src/features/settings/stores/updates-store.ts",
     find: "`OpenBot v${",
     replace: (name) => `\`${name} v\${`,
   },
   // The agent share card: its button and its site.
-  {
-    file: "src/renderer/src/features/agent-templates/agent-template-card.tsx",
-    find: 'const label = "Add to OpenBot";',
-    replace: (name) => `const label = ${JSON.stringify(`Add to ${name}`)};`,
-  },
-  {
-    file: "src/renderer/src/features/agent-templates/agent-template-card.tsx",
-    find: 'context.fillText("openbot.run",',
-    replace: (name) => `context.fillText(${JSON.stringify(name === "Pokebots" ? "pokebots.xyz" : "openbot.run")},`,
-  },
   // Server names: the name a new server takes, and the name of a server that has none.
-  {
-    file: "src/renderer/src/features/server-setup/ServerSetupScreen.tsx",
-    find: 'const PRODUCT_NAME = "OpenBot";',
-    replace: (name) => `const PRODUCT_NAME = ${JSON.stringify(name)};`,
-  },
-  {
-    file: "src/renderer/src/features/server-setup/ServerSetupScreen.tsx",
-    find: 'const DEFAULT_SERVER_NAME = "OpenBot";',
-    replace: (name) => `const DEFAULT_SERVER_NAME = ${JSON.stringify(name)};`,
-  },
   {
     file: "src/renderer/src/features/servers/server-settings.tsx",
     find: 'const FALLBACK_SERVER_NAME = "OpenBot";',
@@ -258,16 +218,6 @@ export const LITERAL_RULES: readonly LiteralRule[] = [
     file: "src/renderer/src/features/web-client/WebPhoneAppScreen.tsx",
     find: 'const PRODUCT_NAME = "OpenBot";',
     replace: (name) => `const PRODUCT_NAME = ${JSON.stringify(name)};`,
-  },
-  {
-    file: "src/renderer/src/platform.tsx",
-    find: 'name: "OpenBot",',
-    replace: (name) => `name: ${JSON.stringify(name)},`,
-  },
-  {
-    file: "src/renderer/src/features/servers/ServerDesktopPanel.tsx",
-    find: 'const REMOTE_HOST_GATEWAY_NAME = "OpenBot Remote Host Gateway";',
-    replace: (name) => `const REMOTE_HOST_GATEWAY_NAME = ${JSON.stringify(`${name} Remote Host Gateway`)};`,
   },
   {
     file: "packages/ui/src/user-avatar.tsx",
@@ -319,7 +269,6 @@ export const BRANDED_MODULES: readonly string[] = [
   "packages/contracts/src/marketplace-links.ts",
   "packages/contracts/src/plugin-links.ts",
   "packages/contracts/src/agent-template-links.ts",
-  "src/renderer/src/features/settings/marketplace-plugin-catalog.ts",
 ];
 
 /**
