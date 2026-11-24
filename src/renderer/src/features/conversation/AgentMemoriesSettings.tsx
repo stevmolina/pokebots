@@ -1,8 +1,8 @@
-import type { AgentMemorySelectionChange, AgentMemorySelectionState, MemoryEntry } from "@openbot/contracts/ipc";
-import { ConfirmDialog, toast } from "@openbot/ui";
-import { AGENT_DELETE_UNDO_MS } from "@openbot/ui/features/agents/AgentDeleteUndoToast";
-import { AgentMemoriesView } from "@openbot/ui/features/conversation/AgentMemoriesView";
-import { useText } from "@openbot/ui/text";
+import type { AgentMemorySelectionChange, AgentMemorySelectionState, MemoryEntry } from "@pokebots/contracts/ipc";
+import { ConfirmDialog, toast } from "@pokebots/ui";
+import { AGENT_DELETE_UNDO_MS } from "@pokebots/ui/features/agents/AgentDeleteUndoToast";
+import { AgentMemoriesView } from "@pokebots/ui/features/conversation/AgentMemoriesView";
+import { useText } from "@pokebots/ui/text";
 import { createEffect, createMemo, createSignal, onCleanup, Show, untrack } from "solid-js";
 import { actionToast } from "../../action-toast";
 import { desktopAnalytics } from "../../analytics";

@@ -4,7 +4,7 @@
 // Domain rules - a duplicate name, a reserved name, the count of servers - stay in `McpServerStore`,
 // stated once, so the local path and the remote path cannot disagree about them.
 
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import type {
   CancelMcpSignInInput,
   CompleteMcpSignInRelayInput,
@@ -16,8 +16,8 @@ import type {
   SaveMcpSignInAppInput,
   SetMcpServerEnabledInput,
   TestMcpServerInput,
-} from "@openbot/contracts/ipc";
-import { isBoolean, isString } from "@openbot/contracts/runtime-values";
+} from "@pokebots/contracts/ipc";
+import { isBoolean, isString } from "@pokebots/contracts/runtime-values";
 import { isObject, requireString } from "./validation";
 
 export function parseSaveMcpServer(value: unknown): SaveMcpServerInput {

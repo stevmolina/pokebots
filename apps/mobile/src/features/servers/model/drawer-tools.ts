@@ -1,4 +1,4 @@
-import { isString } from "@openbot/contracts/runtime-values";
+import { isString } from "@pokebots/contracts/runtime-values";
 import * as SecureStore from "expo-secure-store";
 import { create } from "zustand";
 

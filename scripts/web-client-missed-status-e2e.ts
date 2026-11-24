@@ -10,7 +10,7 @@
 import assert from "node:assert/strict";
 import { mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { createOpenBotLogger } from "@openbot/logging";
+import { createOpenBotLogger } from "@pokebots/logging";
 import { devices, webkit } from "playwright-core";
 
 const logger = createOpenBotLogger("web-client-missed-status-e2e");

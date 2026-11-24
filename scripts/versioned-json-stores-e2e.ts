@@ -14,7 +14,7 @@ import { randomUUID } from "node:crypto";
 import { mkdir, mkdtemp, readdir, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { basename, dirname, join, resolve } from "node:path";
-import { SIDEBAR_PEOPLE_SECTION_ID, SIDEBAR_UNASSIGNED_SECTION_ID } from "@openbot/contracts/ipc";
+import { SIDEBAR_PEOPLE_SECTION_ID, SIDEBAR_UNASSIGNED_SECTION_ID } from "@pokebots/contracts/ipc";
 import { Effect } from "effect";
 import { MemoryReviewCursors } from "../src/backend/agent/memory-review-cursors";
 import { readBrowserState } from "../src/backend/browser-state";

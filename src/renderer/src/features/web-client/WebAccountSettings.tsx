@@ -1,7 +1,7 @@
-import { type AppAppearance, isAppAppearance } from "@openbot/contracts/app-appearance";
-import type { AppLanguage } from "@openbot/contracts/app-language";
-import type { AvatarColor, CentralAuthUser, ServerSummary } from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
+import { type AppAppearance, isAppAppearance } from "@pokebots/contracts/app-appearance";
+import type { AppLanguage } from "@pokebots/contracts/app-language";
+import type { AvatarColor, CentralAuthUser, ServerSummary } from "@pokebots/contracts/ipc";
+import type { AppTextKey } from "@pokebots/i18n";
 import {
   Button,
   CreditCard,
@@ -19,23 +19,23 @@ import {
   Textarea,
   toast,
   UserRound,
-} from "@openbot/ui";
-import { documentColorScheme } from "@openbot/ui/document-color-scheme";
-import { AppearanceSelect } from "@openbot/ui/features/settings/AppearanceSelect";
-import { ACTION_SOUND_CHOICES, TASK_SOUND_CHOICES } from "@openbot/ui/features/settings/app-settings";
-import { ChatBackgroundSetting } from "@openbot/ui/features/settings/ChatBackgroundSetting";
-import { ChatBubbleStyleSelect } from "@openbot/ui/features/settings/ChatBubbleStyleSelect";
-import { OwnChatColorTrigger } from "@openbot/ui/features/settings/ChatColorSetting";
-import { LanguageSelect } from "@openbot/ui/features/settings/LanguageSelect";
-import { NotificationMatrix, NotificationScopeTitle } from "@openbot/ui/features/settings/NotificationMatrix";
-import { SendShortcutSelect } from "@openbot/ui/features/settings/SendShortcutSelect";
-import { SettingsDialogShell, type SettingsPagePlacement } from "@openbot/ui/features/settings/SettingsDialogShell";
-import { SettingsMachinesTab } from "@openbot/ui/features/settings/SettingsMachinesTab";
-import { SettingsProfileTab } from "@openbot/ui/features/settings/SettingsProfileTab";
-import { SidebarChatOrderSelect } from "@openbot/ui/features/settings/SidebarChatOrderSelect";
-import { SoundChoiceSelect } from "@openbot/ui/features/settings/SoundChoiceSelect";
-import { createSettingsProfileStore } from "@openbot/ui/features/settings/stores/profile-store";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/ui";
+import { documentColorScheme } from "@pokebots/ui/document-color-scheme";
+import { AppearanceSelect } from "@pokebots/ui/features/settings/AppearanceSelect";
+import { ACTION_SOUND_CHOICES, TASK_SOUND_CHOICES } from "@pokebots/ui/features/settings/app-settings";
+import { ChatBackgroundSetting } from "@pokebots/ui/features/settings/ChatBackgroundSetting";
+import { ChatBubbleStyleSelect } from "@pokebots/ui/features/settings/ChatBubbleStyleSelect";
+import { OwnChatColorTrigger } from "@pokebots/ui/features/settings/ChatColorSetting";
+import { LanguageSelect } from "@pokebots/ui/features/settings/LanguageSelect";
+import { NotificationMatrix, NotificationScopeTitle } from "@pokebots/ui/features/settings/NotificationMatrix";
+import { SendShortcutSelect } from "@pokebots/ui/features/settings/SendShortcutSelect";
+import { SettingsDialogShell, type SettingsPagePlacement } from "@pokebots/ui/features/settings/SettingsDialogShell";
+import { SettingsMachinesTab } from "@pokebots/ui/features/settings/SettingsMachinesTab";
+import { SettingsProfileTab } from "@pokebots/ui/features/settings/SettingsProfileTab";
+import { SidebarChatOrderSelect } from "@pokebots/ui/features/settings/SidebarChatOrderSelect";
+import { SoundChoiceSelect } from "@pokebots/ui/features/settings/SoundChoiceSelect";
+import { createSettingsProfileStore } from "@pokebots/ui/features/settings/stores/profile-store";
+import { useText } from "@pokebots/ui/text";
 import { createEffect, createSignal, onCleanup, Show } from "solid-js";
 import { readActionSoundChoice, setActionSoundChoice } from "../../action-sounds";
 import { setShowAgentSteps, useShowAgentSteps } from "../../agent-steps-preference";

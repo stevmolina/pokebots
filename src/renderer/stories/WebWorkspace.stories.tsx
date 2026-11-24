@@ -3,18 +3,18 @@ import {
   type AgentStatus,
   SIDEBAR_PEOPLE_SECTION_ID,
   SIDEBAR_UNASSIGNED_SECTION_ID,
-} from "@openbot/contracts/ipc";
-import type { RoomSummary, RoomsResult } from "@openbot/contracts/rooms";
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
-import { AGENT_TASKS_CAPABILITY, AGENT_TASKS_ROUTES } from "@openbot/contracts/team-protocol/agent-tasks-v1";
-import { AGENT_THREADS_CAPABILITY, AGENT_THREADS_ROUTES } from "@openbot/contracts/team-protocol/agent-threads-v1";
-import { PROVIDERS_ADMIN_ROUTES } from "@openbot/contracts/team-protocol/providers-v1";
-import { PROVIDERS_RUNTIMES_V2_ROUTES } from "@openbot/contracts/team-protocol/providers-v2";
-import { PROVIDERS_SIGN_IN_V3_ROUTES } from "@openbot/contracts/team-protocol/providers-v3";
-import { ROOMS_CAPABILITY, ROOMS_ROUTE } from "@openbot/contracts/team-protocol/rooms-v1";
-import type { TeamApiRequest } from "@openbot/team-client/team-api-requests";
-import { Toaster } from "@openbot/ui";
+} from "@pokebots/contracts/ipc";
+import type { RoomSummary, RoomsResult } from "@pokebots/contracts/rooms";
+import { isDynamicRecord } from "@pokebots/contracts/runtime-values";
+import { TEAM_API_ROUTES } from "@pokebots/contracts/team-api-routes";
+import { AGENT_TASKS_CAPABILITY, AGENT_TASKS_ROUTES } from "@pokebots/contracts/team-protocol/agent-tasks-v1";
+import { AGENT_THREADS_CAPABILITY, AGENT_THREADS_ROUTES } from "@pokebots/contracts/team-protocol/agent-threads-v1";
+import { PROVIDERS_ADMIN_ROUTES } from "@pokebots/contracts/team-protocol/providers-v1";
+import { PROVIDERS_RUNTIMES_V2_ROUTES } from "@pokebots/contracts/team-protocol/providers-v2";
+import { PROVIDERS_SIGN_IN_V3_ROUTES } from "@pokebots/contracts/team-protocol/providers-v3";
+import { ROOMS_CAPABILITY, ROOMS_ROUTE } from "@pokebots/contracts/team-protocol/rooms-v1";
+import type { TeamApiRequest } from "@pokebots/team-client/team-api-requests";
+import { Toaster } from "@pokebots/ui";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { saveRemoteWorkspaceFrame } from "../src/features/servers/remote-workspace-frame";
 import { WebWorkspace } from "../src/features/web-client/WebWorkspace";

@@ -1,4 +1,4 @@
-import type { QueueDelivery } from "@openbot/contracts/ipc";
+import type { QueueDelivery } from "@pokebots/contracts/ipc";
 import { GlassView } from "expo-glass-effect";
 import { router } from "expo-router";
 import { Typography } from "heroui-native";

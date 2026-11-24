@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { DatabaseSync } from "node:sqlite";
-import { AGENT_MEMORY_CONTEXT_BUDGET_BYTES, essentialMemoryBytes } from "@openbot/contracts/agent-memory-context";
+import { AGENT_MEMORY_CONTEXT_BUDGET_BYTES, essentialMemoryBytes } from "@pokebots/contracts/agent-memory-context";
 import { afterEach, describe, expect, it } from "vitest";
 import { databaseRows, requiredStringColumn } from "./database/database-rows";
 import { migrateOpenBotDatabase } from "./openbot-database-schema";

@@ -1,8 +1,8 @@
-import { AppLogo } from "@openbot/brand";
-import type { AppVariant, CentralAuthIssue, CentralAuthState } from "@openbot/contracts/ipc";
-import { Button } from "@openbot/ui";
-import { AccountLogin } from "@openbot/ui/features/account/AccountLogin";
-import { useText } from "@openbot/ui/text";
+import { AppLogo } from "@pokebots/brand";
+import type { AppVariant, CentralAuthIssue, CentralAuthState } from "@pokebots/contracts/ipc";
+import { Button } from "@pokebots/ui";
+import { AccountLogin } from "@pokebots/ui/features/account/AccountLogin";
+import { useText } from "@pokebots/ui/text";
 import { createEffect, createStore, onCleanup, onSettled, Show } from "solid-js";
 import {
   NO_ANSWER,

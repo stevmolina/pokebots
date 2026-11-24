@@ -14,10 +14,10 @@ import {
   type UsageCredits,
   usageQuotaForModel,
   withUsageCredits,
-} from "@openbot/contracts/ipc";
-import { decodeRecord } from "@openbot/contracts/ipc-decoding";
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
-import { USAGE_CREDITS_ROUTES } from "@openbot/contracts/team-protocol/usage-credits-v1";
+} from "@pokebots/contracts/ipc";
+import { decodeRecord } from "@pokebots/contracts/ipc-decoding";
+import { TEAM_API_ROUTES } from "@pokebots/contracts/team-api-routes";
+import { USAGE_CREDITS_ROUTES } from "@pokebots/contracts/team-protocol/usage-credits-v1";
 import { Effect, Schema } from "effect";
 import { listProviderAccounts, providerAccountUsage } from "./team-admin-requests";
 import type { TeamApiRequest } from "./team-api-requests";

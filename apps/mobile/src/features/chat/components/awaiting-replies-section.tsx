@@ -1,4 +1,4 @@
-import type { MobileTextKey } from "@openbot/i18n/mobile";
+import type { MobileTextKey } from "@pokebots/i18n/mobile";
 import { Button, Spinner, Typography } from "heroui-native";
 import { View } from "react-native";
 import { useCSSVariable } from "uniwind";

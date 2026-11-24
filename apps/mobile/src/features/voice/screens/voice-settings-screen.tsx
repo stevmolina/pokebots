@@ -1,6 +1,6 @@
-import { type CodexLiveVoice, cloudSpeechModel, SPEECH_SPEEDS, type SpeechVoice } from "@openbot/contracts/ipc";
-import { shortVoiceServerModel, voiceServerHost } from "@openbot/contracts/voice-server";
-import type { MobileTextKey, MobileTranslate } from "@openbot/i18n/mobile";
+import { type CodexLiveVoice, cloudSpeechModel, SPEECH_SPEEDS, type SpeechVoice } from "@pokebots/contracts/ipc";
+import { shortVoiceServerModel, voiceServerHost } from "@pokebots/contracts/voice-server";
+import type { MobileTextKey, MobileTranslate } from "@pokebots/i18n/mobile";
 import { isRunningInExpoGo } from "expo";
 import { router } from "expo-router";
 import { Button, Typography } from "heroui-native";

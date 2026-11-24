@@ -1,5 +1,5 @@
-import { articleGradient, articleGradientCss, articleGradientUniforms } from "@openbot/brand/article-gradient";
 import type { ShaderMount } from "@paper-design/shaders";
+import { articleGradient, articleGradientCss, articleGradientUniforms } from "@pokebots/brand/article-gradient";
 import { createEffect } from "solid-js";
 
 /** Uses the same stable mesh profile as the public article artwork. */

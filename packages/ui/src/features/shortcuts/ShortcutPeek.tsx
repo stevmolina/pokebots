@@ -4,7 +4,7 @@
  * of the message box. It does not take the focus or a click: the release of the key closes it.
  */
 
-import type { AppTextKey } from "@openbot/i18n";
+import type { AppTextKey } from "@pokebots/i18n";
 import { type JSX, Portal } from "@solidjs/web";
 import { createMemo, For, Show } from "solid-js";
 import { Keyboard } from "../../icons";

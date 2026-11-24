@@ -10,12 +10,12 @@ export const messages = {
   "error.workflow.conditionBranch": "Jede Verbindung einer Bedingung muss Ja oder Nein sein.",
   "error.workflow.duplicateEdge": "Diese zwei Schritte haben diese Verbindung bereits.",
   "error.workflow.serverTooOld":
-    "Dieser Server unterstützt keine Workflows. Aktualisiere OpenBot auf dem Computer, auf dem er läuft.",
+    "Dieser Server unterstützt keine Workflows. Aktualisiere Pokebots auf dem Computer, auf dem er läuft.",
   "error.workflow.nodeUnsupported":
-    "Diese Version von OpenBot kann Bild-, Datei- und Nachrichtenschritte noch nicht ausführen.",
-  "error.workflow.interrupted": "OpenBot wurde beendet, während dieser Schritt lief. Führe ihn erneut aus.",
+    "Diese Version von Pokebots kann Bild-, Datei- und Nachrichtenschritte noch nicht ausführen.",
+  "error.workflow.interrupted": "Pokebots wurde beendet, während dieser Schritt lief. Führe ihn erneut aus.",
   "error.workflow.agentMissing": "Wähle einen Agenten für diesen Schritt.",
-  "error.workflow.handoffFailed": "OpenBot konnte diesen Schritt nicht an seinen Agenten senden.",
+  "error.workflow.handoffFailed": "Pokebots konnte diesen Schritt nicht an seinen Agenten senden.",
   "error.workflow.agentStepEnded": "Die Nachricht an den Agenten wurde entfernt, bevor er antwortete.",
   "error.workflow.agentStepStopped":
     "Der Agent hat angehalten, bevor er auf diesen Schritt antwortete. Führe den Schritt erneut aus.",
@@ -30,7 +30,7 @@ export const messages = {
   "error.workflow.providerBusy":
     "Der Anbieter ist ausgelastet. Warte einige Minuten und führe den Schritt dann erneut aus.",
   "error.workflow.providerOffline":
-    "OpenBot konnte den Anbieter nicht erreichen. Prüfe die Internetverbindung und führe den Schritt dann erneut aus.",
+    "Pokebots konnte den Anbieter nicht erreichen. Prüfe die Internetverbindung und führe den Schritt dann erneut aus.",
   "error.workflow.modelBusy": "Eine andere Modellanfrage läuft. Führe den Schritt bald erneut aus.",
   "error.workflow.mediaFailed": "Das Modell konnte das Bild oder Video nicht erstellen. Führe den Schritt erneut aus.",
   "error.workflow.pictureMissing": "Das Bild ist nicht mehr auf dem Server. Sende es erneut.",
@@ -49,7 +49,7 @@ export const messages = {
   "error.workflow.outputPlaceMissing": "Wähle einen Messaging-Ort für diese Ausgabe.",
   "error.workflow.outputChannelMissing": "Wähle einen Kanal für diese Ausgabe.",
   "error.workflow.outputChannelFailed":
-    "OpenBot konnte das Ergebnis nicht im Kanal posten. Führe den Schritt erneut aus.",
+    "Pokebots konnte das Ergebnis nicht im Kanal posten. Führe den Schritt erneut aus.",
   "error.workflow.discordNoMessage":
     "Diese Ausgabe wirkt auf die Discord-Nachricht, die den Lauf gestartet hat. Starte den Lauf über eine Discord-Erwähnung oder wähle „Im Kanal posten“.",
   "error.workflow.slackNoMessage":
@@ -59,7 +59,7 @@ export const messages = {
   "error.workflow.outputConnectionOff":
     "Die Messaging-Verbindung dieser Ausgabe ist aus oder entfernt. Wähle erneut einen Ort.",
   "error.workflow.outputNotRunning": "Die Messaging-Verbindung läuft gerade nicht. Versuche es erneut, wenn sie läuft.",
-  "error.workflow.outputRefused": "Der Ort hat den Beitrag abgelehnt. Stelle sicher, dass OpenBot dort posten kann.",
+  "error.workflow.outputRefused": "Der Ort hat den Beitrag abgelehnt. Stelle sicher, dass Pokebots dort posten kann.",
   "error.workflow.outputUncertain":
     "Der Beitrag wurde unterwegs unterbrochen. Ein Teil kann schon am Ort sein. Sieh dort nach, bevor du es erneut versuchst.",
   "error.workflow.tooLarge":
@@ -86,7 +86,7 @@ export const messages = {
     "Die OpenBot-GitHub-App kann dieses Repository nicht ändern. Öffne GitHub und gib ihr Zugriff.",
   "error.workflow.githubLocked": "Diese Unterhaltung ist auf GitHub gesperrt.",
   "error.workflow.githubRefused": "GitHub hat die Änderung abgelehnt: {detail}",
-  "error.workflow.githubUnreachable": "OpenBot konnte GitHub nicht erreichen. Führe den Schritt erneut aus.",
+  "error.workflow.githubUnreachable": "Pokebots konnte GitHub nicht erreichen. Führe den Schritt erneut aus.",
   "error.workflow.githubUncertain":
     "Die Änderung wurde unterwegs unterbrochen. Sie kann schon auf GitHub sein. Sieh dort nach, bevor du den Schritt erneut ausführst.",
   "error.workflow.githubNoEvent": "GitHub hat kein Issue und keinen Pull Request, bei dem dieser Auslöser startet.",
@@ -99,7 +99,7 @@ export const messages = {
     "Sunra verwendet Eingabebilder nur mit einem persönlichen Konto. Wähle dein persönliches Konto in Sunra aus oder entferne die Bildverbindungen.",
   "error.workflow.sunraFailed": "Sunra konnte die Datei nicht erstellen: {reason}",
   "error.workflow.sunraTimeout":
-    "Sunra hat die Datei nicht rechtzeitig fertiggestellt. Sieh im Projekt OpenBot auf sunra.ai nach, bevor du den Schritt erneut ausführst.",
+    "Sunra hat die Datei nicht rechtzeitig fertiggestellt. Sieh im Projekt Pokebots auf sunra.ai nach, bevor du den Schritt erneut ausführst.",
   "error.workflow.higgsfieldSignIn": "Melde dich unter Apps bei Higgsfield an, um Higgsfield-Modelle zu verwenden.",
   "error.workflow.higgsfieldNoCredits":
     "Dein Higgsfield-Konto hat nicht genug Credits. Füge Credits unter higgsfield.ai/pricing hinzu und führe den Schritt dann erneut aus.",

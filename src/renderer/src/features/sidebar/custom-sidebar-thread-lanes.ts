@@ -1,6 +1,6 @@
-import type { AgentProfile } from "@openbot/ui/data";
-import { threadTabKey } from "@openbot/ui/features/conversation/threads/thread-types";
-import type { SidebarThreadLanes } from "@openbot/ui/features/sidebar/sidebar-types";
+import type { AgentProfile } from "@pokebots/ui/data";
+import { threadTabKey } from "@pokebots/ui/features/conversation/threads/thread-types";
+import type { SidebarThreadLanes } from "@pokebots/ui/features/sidebar/sidebar-types";
 import { createEffect } from "solid-js";
 import { useNavigation } from "../../navigation";
 import { useAgentTasks } from "../agent-tasks/agent-tasks-context";

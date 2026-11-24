@@ -3,8 +3,8 @@
 
 @import "heroui-native/styles";
 
-@import "@openbot/brand/tokens.css";
-@import "@openbot/brand/tokens-native.css";
+@import "@pokebots/brand/tokens.css";
+@import "@pokebots/brand/tokens-native.css";
 
 @theme inline {
   --color-sheet: var(--openbot-bg-sheet);

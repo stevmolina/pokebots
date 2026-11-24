@@ -27,7 +27,7 @@ import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { setTimeout as delay } from "node:timers/promises";
-import { createOpenBotLogger } from "@openbot/logging";
+import { createOpenBotLogger } from "@pokebots/logging";
 
 const logger = createOpenBotLogger("leaseweb-bootstrap-e2e");
 const BOOTSTRAP = join(import.meta.dirname, "leaseweb-bootstrap.sh");

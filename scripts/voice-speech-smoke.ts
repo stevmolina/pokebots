@@ -19,8 +19,8 @@ import {
   type SpeechAudio,
   type SpeechLanguage,
   type SpeechVoice,
-} from "@openbot/contracts/ipc";
-import { createOpenBotLogger } from "@openbot/logging";
+} from "@pokebots/contracts/ipc";
+import { createOpenBotLogger } from "@pokebots/logging";
 import { Effect } from "effect";
 import { SpeechPreferenceStore } from "../src/main/speech-preference-store";
 import { VoiceApiKeyStore } from "../src/main/voice-api-key-store";

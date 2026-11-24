@@ -1,6 +1,6 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import type { BrowserElement, BrowserSnapshot, BrowserTarget } from "@openbot/contracts/ipc";
-import { isString } from "@openbot/contracts/runtime-values";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
+import type { BrowserElement, BrowserSnapshot, BrowserTarget } from "@pokebots/contracts/ipc";
+import { isString } from "@pokebots/contracts/runtime-values";
 import { Effect } from "effect";
 import {
   assertBeforeDeadline,

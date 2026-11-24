@@ -18,7 +18,7 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import type { ConversationMessage, ConversationSnapshot } from "@openbot/contracts/ipc";
+import type { ConversationMessage, ConversationSnapshot } from "@pokebots/contracts/ipc";
 import { ConversationRuntime } from "../src/backend/agent/conversation-runtime";
 import { AgentStore } from "../src/backend/agent-store";
 import { runCauseEffect } from "../src/backend/effect-boundary";

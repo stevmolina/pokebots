@@ -1,5 +1,5 @@
-import { CalendarClock } from "@openbot/ui";
-import { ChatActionCard, type ChatActionCardProps } from "@openbot/ui/features/conversation/ChatActionCard";
+import { CalendarClock } from "@pokebots/ui";
+import { ChatActionCard, type ChatActionCardProps } from "@pokebots/ui/features/conversation/ChatActionCard";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 

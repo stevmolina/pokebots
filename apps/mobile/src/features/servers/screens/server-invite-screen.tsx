@@ -1,7 +1,7 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import { PERMANENT_INVITE_EXPIRES_AT_MS } from "@openbot/contracts/invite-links";
-import { normalizeEmailAddress } from "@openbot/contracts/validation";
-import { runTeamEffect } from "@openbot/team-client";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
+import { PERMANENT_INVITE_EXPIRES_AT_MS } from "@pokebots/contracts/invite-links";
+import { normalizeEmailAddress } from "@pokebots/contracts/validation";
+import { runTeamEffect } from "@pokebots/team-client";
 import * as Clipboard from "expo-clipboard";
 import { useLocalSearchParams } from "expo-router";
 import { Typography } from "heroui-native";

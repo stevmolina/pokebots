@@ -6,10 +6,10 @@ import {
   parseHostedServerList,
   parseHostedServerSummary,
   parseServerClaim,
-} from "@openbot/contracts/hosted-servers";
-import type { HostedServersDesktopApi } from "@openbot/contracts/ipc";
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { currentText } from "@openbot/ui/text";
+} from "@pokebots/contracts/hosted-servers";
+import type { HostedServersDesktopApi } from "@pokebots/contracts/ipc";
+import { isDynamicRecord, isString } from "@pokebots/contracts/runtime-values";
+import { currentText } from "@pokebots/ui/text";
 import type { AddServerResume } from "../servers/AddServerOverlay";
 import { savedPromotionCode } from "./web-billing";
 

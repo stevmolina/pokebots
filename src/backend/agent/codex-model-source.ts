@@ -5,7 +5,7 @@ import {
   DEFAULT_MODEL_SERVERS,
   PROVIDER_MODEL_SOURCE_NAME_LIMIT,
   type ProviderModelSource,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import { Effect } from "effect";
 import type { AgentClient } from "../agent-client";
 import { decodeRecordResponse, getRecord, getString, isRecord } from "../protocol";

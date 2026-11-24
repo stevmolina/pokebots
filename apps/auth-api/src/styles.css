@@ -1,14 +1,14 @@
 @import "@fontsource-variable/inter";
 @import "@fontsource-variable/inter/wght-italic.css";
 @import "tailwindcss";
-@import "@openbot/brand/tokens.css";
+@import "@pokebots/brand/tokens.css";
 /* Only the web client at /app sets the attribute that turns it on. The public pages stay dark. */
-@import "@openbot/brand/tokens-light.css";
-@import "@openbot/ui/stagger.css";
-@import "@openbot/ui/styles/sr-only.css";
+@import "@pokebots/brand/tokens-light.css";
+@import "@pokebots/ui/stagger.css";
+@import "@pokebots/ui/styles/sr-only.css";
 /* Pokebots: the brand look of generated agent faces. */
-@import "@openbot/ui/features/agents/pokebots-avatar.css";
-@import "@openbot/ui/styles/scroll-edges.css";
+@import "@pokebots/ui/features/agents/pokebots-avatar.css";
+@import "@pokebots/ui/styles/scroll-edges.css";
 
 /* Arial with the size and line metrics of Inter. Until Inter loads, the text takes the same space,
    so the hero does not move when the font changes. Inter is wider than the system font, and on a
@@ -38,7 +38,7 @@
     "Inter Variable", "Inter Variable Fallback", -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans Arabic",
     sans-serif;
   /* The site keeps the type scale that it was designed for. The app made its three small steps 1px
-   * larger, in @openbot/brand/tokens.css. */
+   * larger, in @pokebots/brand/tokens.css. */
   --openbot-text-sm: 12px;
   --openbot-text-md: 13px;
   --openbot-text-lg: 14px;
@@ -9129,7 +9129,7 @@ a {
   pointer-events: none;
 }
 
-/* The agent's own avatar from `@openbot/ui`. The hero in the selector outranks the generic
+/* The agent's own avatar from `@pokebots/ui`. The hero in the selector outranks the generic
    `.agent-avatar` size rule, which loads with the avatar's own code after this stylesheet. */
 .agent-share-hero .agent-share-avatar {
   --agent-share-avatar-size: clamp(100px, 16vh, 140px);

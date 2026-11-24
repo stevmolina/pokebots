@@ -1,5 +1,5 @@
-import { sidebarRecentChats } from "@openbot/ui/features/sidebar/sidebar-recent-chats";
-import type { SidebarChatItem, SidebarThreadEntry } from "@openbot/ui/features/sidebar/sidebar-types";
+import { sidebarRecentChats } from "@pokebots/ui/features/sidebar/sidebar-recent-chats";
+import type { SidebarChatItem, SidebarThreadEntry } from "@pokebots/ui/features/sidebar/sidebar-types";
 import { expect, it } from "vitest";
 
 function agentChat(id: string, name: string, updatedAt: string | null): SidebarChatItem {

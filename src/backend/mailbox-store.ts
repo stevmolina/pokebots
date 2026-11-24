@@ -1,9 +1,9 @@
 import { createHash, randomUUID } from "node:crypto";
 import { mkdir, readFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
-import { playableMediaKind } from "@openbot/contracts/attachment-files";
-import { rewriteAttachmentReferences } from "@openbot/contracts/attachment-references";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { playableMediaKind } from "@pokebots/contracts/attachment-files";
+import { rewriteAttachmentReferences } from "@pokebots/contracts/attachment-references";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import type {
   AgentRuntimeWorkItem,
   AgentTaskAwaitedReply,
@@ -21,7 +21,7 @@ import type {
   QueuedMessageReceipt,
   QueueSnapshot,
   QueueSteerFallback,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   AGENT_EXCHANGE_ITEM_TYPE,
   AGENT_RUNTIME_ATTENTION_LIMIT,
@@ -32,11 +32,11 @@ import {
   isConversationMessageSender,
   isMessageReaction,
   QUEUE_STEER_FALLBACKS,
-} from "@openbot/contracts/ipc";
-import { type DynamicRecord, isNumber, isOneOf, isString } from "@openbot/contracts/runtime-values";
-import { QueueEditRejectedError } from "@openbot/contracts/team-protocol/queue-edit-v1";
-import { sourceText } from "@openbot/i18n/source";
-import { redactText } from "@openbot/logging";
+} from "@pokebots/contracts/ipc";
+import { type DynamicRecord, isNumber, isOneOf, isString } from "@pokebots/contracts/runtime-values";
+import { QueueEditRejectedError } from "@pokebots/contracts/team-protocol/queue-edit-v1";
+import { sourceText } from "@pokebots/i18n/source";
+import { redactText } from "@pokebots/logging";
 import { Effect, Result } from "effect";
 import {
   AttachmentFiles,

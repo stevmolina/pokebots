@@ -13,7 +13,7 @@ import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { isDeepStrictEqual } from "node:util";
-import type { ConversationMessage } from "@openbot/contracts/ipc";
+import type { ConversationMessage } from "@pokebots/contracts/ipc";
 import { AgentStore } from "../src/backend/agent-store";
 import { databaseRows, requiredNumberColumn } from "../src/backend/database/database-rows";
 import { runCauseEffect } from "../src/backend/effect-boundary";

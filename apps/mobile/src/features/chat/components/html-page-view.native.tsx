@@ -1,4 +1,4 @@
-import { chatVisualAppTheme, chatVisualDocument } from "@openbot/contracts/chat-visual";
+import { chatVisualAppTheme, chatVisualDocument } from "@pokebots/contracts/chat-visual";
 import * as Linking from "expo-linking";
 import { useMemo, useRef } from "react";
 import { Platform, View } from "react-native";

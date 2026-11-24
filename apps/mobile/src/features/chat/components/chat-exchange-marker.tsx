@@ -1,5 +1,5 @@
-import type { AgentExchangeSummary } from "@openbot/contracts/ipc";
-import type { MobileTranslate } from "@openbot/i18n/mobile";
+import type { AgentExchangeSummary } from "@pokebots/contracts/ipc";
+import type { MobileTranslate } from "@pokebots/i18n/mobile";
 import { Link } from "expo-router";
 import { Typography } from "heroui-native";
 import ChevronDown from "lucide-react-native/icons/chevron-down";

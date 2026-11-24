@@ -1,9 +1,9 @@
-import { agentSteersTurns } from "@openbot/contracts/agent-providers";
-import { attachmentReferenceIds } from "@openbot/contracts/attachment-references";
-import type { AgentTask, QueueDelivery } from "@openbot/contracts/ipc";
-import { isQueueEditRejected } from "@openbot/contracts/team-protocol/queue-edit-v1";
-import type { AgentThreadQueue } from "@openbot/ui/features/conversation/threads/AgentThreadView";
-import { currentText } from "@openbot/ui/text";
+import { agentSteersTurns } from "@pokebots/contracts/agent-providers";
+import { attachmentReferenceIds } from "@pokebots/contracts/attachment-references";
+import type { AgentTask, QueueDelivery } from "@pokebots/contracts/ipc";
+import { isQueueEditRejected } from "@pokebots/contracts/team-protocol/queue-edit-v1";
+import type { AgentThreadQueue } from "@pokebots/ui/features/conversation/threads/AgentThreadView";
+import { currentText } from "@pokebots/ui/text";
 import { createEffect, createSignal } from "solid-js";
 import { actionToast } from "../../../action-toast";
 import {

@@ -1,5 +1,5 @@
-import type { SkillConversationEvent } from "@openbot/contracts/ipc";
-import { type DynamicRecord, isDynamicRecord } from "@openbot/contracts/runtime-values";
+import type { SkillConversationEvent } from "@pokebots/contracts/ipc";
+import { type DynamicRecord, isDynamicRecord } from "@pokebots/contracts/runtime-values";
 import { Effect } from "effect";
 import { type Zippable, zipSync } from "fflate";
 import { parse as parseYaml, stringify as stringifyYaml } from "yaml";

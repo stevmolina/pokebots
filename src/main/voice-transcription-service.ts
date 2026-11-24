@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 import { EventEmitter } from "node:events";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import {
   AUTOMATIC_VOICE_LANGUAGE,
   type CloudVoiceModelId,
@@ -26,9 +26,9 @@ import {
   type VoiceStreamAudio,
   type VoiceStreamTranscript,
   type VoiceTranscriptionResult,
-} from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger } from "@openbot/logging";
+} from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
+import { createOpenBotLogger } from "@pokebots/logging";
 import { Effect, Exit, Fiber, Scope, Semaphore } from "effect";
 import { savedKeyError, type VoiceApiKeyStore } from "./voice-api-key-store";
 import {

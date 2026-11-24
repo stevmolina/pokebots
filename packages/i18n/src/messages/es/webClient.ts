@@ -2,7 +2,7 @@ import type { PartialTranslation } from "../../message";
 import type { messages as source } from "../en/webClient";
 
 export const messages = {
-  "webClient.loading": "Cargando OpenBot…",
+  "webClient.loading": "Cargando Pokebots…",
   "webClient.loadingLine.wake": "Despertando a los agentes…",
   "webClient.loadingLine.coffee": "Sirviendo café a los agentes…",
   "webClient.loadingLine.tokens": "Contando tokens con los dedos…",
@@ -19,9 +19,9 @@ export const messages = {
   "webClient.login.responseInvalid": "La respuesta de inicio de sesión no es válida.",
   "webClient.pane.navigation": "Navegación del espacio de trabajo",
   "webClient.tab.settings": "Ajustes",
-  "webClient.phoneApp.title": "Usa la app de OpenBot",
+  "webClient.phoneApp.title": "Usa la app de Pokebots",
   "webClient.phoneApp.description":
-    "En el teléfono, OpenBot funciona mejor en la app. Inicia sesión con el mismo correo.",
+    "En el teléfono, Pokebots funciona mejor en la app. Inicia sesión con el mismo correo.",
   "webClient.phoneApp.ios": "Descargar para iPhone",
   "webClient.phoneApp.android": "Descargar para Android",
   "webClient.phoneApp.continue": "Seguir en el navegador",
@@ -30,18 +30,18 @@ export const messages = {
   "webClient.notice.hostsFailed": "No se pudieron cargar tus servidores",
   "webClient.notice.connectComputer": "Conecta un servidor",
   "webClient.connect.description":
-    "Ejecuta OpenBot en tu equipo para conversar con tus agentes desde este navegador. También puedes unirte a un servidor con una invitación.",
+    "Ejecuta Pokebots en tu equipo para conversar con tus agentes desde este navegador. También puedes unirte a un servidor con una invitación.",
   "webClient.connect.descriptionHosted":
-    "Crea un servidor alojado para conversar con tus agentes desde este navegador. También puedes ejecutar OpenBot en tu equipo o unirte a un servidor con una invitación.",
-  "webClient.connect.stepInstall": "Instala y abre OpenBot en tu equipo.",
+    "Crea un servidor alojado para conversar con tus agentes desde este navegador. También puedes ejecutar Pokebots en tu equipo o unirte a un servidor con una invitación.",
+  "webClient.connect.stepInstall": "Instala y abre Pokebots en tu equipo.",
   "webClient.connect.stepSignIn": "Inicia sesión con tu correo electrónico.",
   "webClient.connect.stepRemote": "Activa el acceso remoto.",
-  "webClient.notice.download": "Descargar OpenBot",
+  "webClient.notice.download": "Descargar Pokebots",
   "webClient.notice.createServer": "Crear un servidor alojado",
   "webClient.notice.join": "Unirse con una invitación",
   "webClient.notice.refreshHosts": "Actualizar servidores",
   "webClient.otherTab.title": "{name} está abierto en otra pestaña",
-  "webClient.otherTab.description": "OpenBot puede usar un servidor en una sola pestaña a la vez.",
+  "webClient.otherTab.description": "Pokebots puede usar un servidor en una sola pestaña a la vez.",
   "webClient.otherTab.useHere": "Usar aquí",
   "webClient.agent.modelsFailed": "No se pudieron cargar los modelos del servidor.",
   "webClient.agent.refreshFailed":
@@ -52,7 +52,7 @@ export const messages = {
   "webClient.error.desktopOnly": "Esta acción está disponible en la aplicación de escritorio.",
   "webClient.settings.general.title": "General",
   "webClient.settings.account.title": "Cuenta",
-  "webClient.settings.preferences.description": "Elige el idioma y los sonidos de OpenBot en este navegador.",
+  "webClient.settings.preferences.description": "Elige el idioma y los sonidos de Pokebots en este navegador.",
   "webClient.error.checkConversation": "Comprueba la conversación antes de volver a enviar.",
   "webClient.error.hostReported": "El servidor notificó un error. Comprueba la conversación y el estado del servidor.",
   "webClient.error.requestFailed": "La solicitud falló.",
@@ -84,14 +84,14 @@ export const messages = {
   "webClient.error.identityChanged": "La identidad del servidor cambió. Conexión rechazada.",
   "webClient.error.connectionUnavailable": "La conexión al servidor no está disponible.",
   "webClient.error.incompatible":
-    "Este servidor no es compatible con OpenBot web. Actualiza el servidor y recarga esta página.",
+    "Este servidor no es compatible con Pokebots web. Actualiza el servidor y recarga esta página.",
   "webClient.error.sendUnconfirmed": "La entrega del mensaje no está confirmada. Actualiza antes de volver a enviarlo.",
   "webClient.error.fileType": "Actualiza el servidor para adjuntar este tipo de archivo.",
   "webClient.error.uploadCancelled": "Se canceló la carga del archivo adjunto.",
   "webClient.error.duplication": "Este servidor no admite la duplicación de agentes.",
   "webClient.error.connectServerFirst": "Conéctate primero a este servidor.",
   "webClient.error.agentInstallNotAllowed":
-    "Solo un propietario o administrador puede añadir un agente aquí, y el servidor debe ejecutar una versión actual de OpenBot.",
+    "Solo un propietario o administrador puede añadir un agente aquí, y el servidor debe ejecutar una versión actual de Pokebots.",
   "webClient.error.linkDesktopOnly": "Este enlace solo se abre en la aplicación de escritorio.",
   "webClient.error.saveEndpointOffline": "Conéctate a tu servidor para guardar un endpoint.",
   "webClient.error.removeEndpointOffline": "Conéctate a tu servidor para eliminar un endpoint.",

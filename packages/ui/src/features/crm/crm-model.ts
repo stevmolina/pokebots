@@ -11,9 +11,9 @@ import type {
   CrmSourceKind,
   CrmStatus,
   CrmTextField,
-} from "@openbot/contracts/ipc";
-import { type DynamicRecord, isDynamicRecord } from "@openbot/contracts/runtime-values";
-import type { AppFormat, AppMessages, AppTextKey, AppTranslate } from "@openbot/i18n";
+} from "@pokebots/contracts/ipc";
+import { type DynamicRecord, isDynamicRecord } from "@pokebots/contracts/runtime-values";
+import type { AppFormat, AppMessages, AppTextKey, AppTranslate } from "@pokebots/i18n";
 import type { AgentProfile } from "../../data";
 
 /** An agent of the server, as the CRM shows it: in the owner fields, the proposals and the access list. */

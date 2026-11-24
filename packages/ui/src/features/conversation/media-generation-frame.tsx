@@ -1,5 +1,5 @@
-import type { ImageGenerationAspectRatio } from "@openbot/contracts/ipc";
-import { CircleAlert } from "@openbot/ui";
+import type { ImageGenerationAspectRatio } from "@pokebots/contracts/ipc";
+import { CircleAlert } from "@pokebots/ui";
 import { For } from "solid-js";
 
 export type MediaGenerationStatus = "generating" | "completed" | "failed" | "interrupted";

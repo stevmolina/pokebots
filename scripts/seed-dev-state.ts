@@ -4,10 +4,10 @@ import { lstat, mkdir, mkdtemp, readFile, readlink, rename, rm, writeFile } from
 import { homedir } from "node:os";
 import { dirname, join, parse, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
-import { serializeAttachmentReference } from "@openbot/contracts/attachment-references";
-import { serializeChatTagReference } from "@openbot/contracts/chat-tag-references";
-import { sortConversationMessages } from "@openbot/contracts/conversation-order";
-import { DEVELOPMENT_CLAUDE_DEFAULT, DEVELOPMENT_FREE_DEFAULT } from "@openbot/contracts/development-defaults";
+import { serializeAttachmentReference } from "@pokebots/contracts/attachment-references";
+import { serializeChatTagReference } from "@pokebots/contracts/chat-tag-references";
+import { sortConversationMessages } from "@pokebots/contracts/conversation-order";
+import { DEVELOPMENT_CLAUDE_DEFAULT, DEVELOPMENT_FREE_DEFAULT } from "@pokebots/contracts/development-defaults";
 import type {
   AgentModelId,
   AgentProviderId,
@@ -18,9 +18,9 @@ import type {
   ChannelTask,
   ConversationMessage,
   Routine,
-} from "@openbot/contracts/ipc";
-import { channelRoutingConversationEventItemType } from "@openbot/contracts/ipc";
-import { createOpenBotLogger, toLogValue } from "@openbot/logging";
+} from "@pokebots/contracts/ipc";
+import { channelRoutingConversationEventItemType } from "@pokebots/contracts/ipc";
+import { createOpenBotLogger, toLogValue } from "@pokebots/logging";
 import { strToU8, zipSync } from "fflate";
 import { z } from "zod";
 import { agentNamesById, displayMessageReferences } from "../src/backend/agent/delivery-content";

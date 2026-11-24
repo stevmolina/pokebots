@@ -1,4 +1,4 @@
-import type { ChannelIcon } from "@openbot/contracts/ipc";
+import type { ChannelIcon } from "@pokebots/contracts/ipc";
 import type { MobileAgent } from "@/features/workspace/model/workspace-types";
 
 export type ChatTarget =

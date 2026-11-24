@@ -3,7 +3,7 @@ import {
   THREAD_AUTO_ARCHIVE_IDLE_DAYS,
   type ThreadAutoArchiveIdleDays,
   type ThreadAutoArchiveSetting,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   Item,
   ItemActions,
@@ -16,8 +16,8 @@ import {
   SelectTrigger,
   SelectValue,
   Switch,
-} from "@openbot/ui";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/ui";
+import { useText } from "@pokebots/ui/text";
 import { createEffect, createSignal, Show, untrack } from "solid-js";
 
 /** The thread archive calls of one server's host. The desktop reaches them through main. */

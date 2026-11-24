@@ -1,7 +1,7 @@
-import type { MessageReaction } from "@openbot/contracts/ipc";
-import type { AgentMessage } from "@openbot/ui/data";
-import { BackgroundWorkers } from "@openbot/ui/features/conversation/BackgroundWorkers";
-import { SubagentLiveBar } from "@openbot/ui/features/conversation/Subagents";
+import type { MessageReaction } from "@pokebots/contracts/ipc";
+import type { AgentMessage } from "@pokebots/ui/data";
+import { BackgroundWorkers } from "@pokebots/ui/features/conversation/BackgroundWorkers";
+import { SubagentLiveBar } from "@pokebots/ui/features/conversation/Subagents";
 import type { JSX } from "@solidjs/web";
 import { createMemo } from "solid-js";
 import { agentAwaitingReplies } from "../../awaiting-replies";

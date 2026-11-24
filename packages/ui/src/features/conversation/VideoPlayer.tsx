@@ -1,4 +1,4 @@
-import { Button, Maximize2, Minimize2, Pause, Play, SeekSlider, Spinner, Volume2, VolumeX } from "@openbot/ui";
+import { Button, Maximize2, Minimize2, Pause, Play, SeekSlider, Spinner, Volume2, VolumeX } from "@pokebots/ui";
 import type { JSX } from "@solidjs/web";
 import { createStore, onCleanup, Show } from "solid-js";
 import { useText } from "../../text";

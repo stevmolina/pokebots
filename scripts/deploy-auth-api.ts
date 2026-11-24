@@ -2,7 +2,7 @@ import { spawn } from "node:child_process";
 import { existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { createOpenBotLogger, toLogValue } from "@openbot/logging";
+import { createOpenBotLogger, toLogValue } from "@pokebots/logging";
 import { readFcmServiceAccount } from "../apps/auth-api/src/server/android-notification-relay";
 import { readWebPushVapidConfig } from "../apps/auth-api/src/server/web-push-relay";
 

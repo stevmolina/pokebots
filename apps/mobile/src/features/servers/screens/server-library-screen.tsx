@@ -1,5 +1,5 @@
-import { canAdministerServer, libraryFolderPath, type StoredFileRow } from "@openbot/contracts/ipc";
-import type { MobileTextKey } from "@openbot/i18n/mobile";
+import { canAdministerServer, libraryFolderPath, type StoredFileRow } from "@pokebots/contracts/ipc";
+import type { MobileTextKey } from "@pokebots/i18n/mobile";
 import {
   FILE_TYPE_FILTER_VALUES,
   type FileType,
@@ -7,7 +7,7 @@ import {
   fileTypeCounts,
   fileTypeOf,
   queryFiles,
-} from "@openbot/team-client/stored-files";
+} from "@pokebots/team-client/stored-files";
 import { router, useLocalSearchParams } from "expo-router";
 import { Chip, Typography } from "heroui-native";
 import { useThemeColor } from "heroui-native/hooks";

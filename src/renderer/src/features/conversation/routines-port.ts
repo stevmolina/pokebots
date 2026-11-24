@@ -15,8 +15,8 @@ import {
   type RoutineSchedule,
   type SetRoutineResultDestinationInput,
   type TestRoutineInput,
-} from "@openbot/contracts/ipc";
-import type { EventRoutine, EventRoutineOwner, EventRoutineTriggerInput } from "@openbot/contracts/ipc-events";
+} from "@pokebots/contracts/ipc";
+import type { EventRoutine, EventRoutineOwner, EventRoutineTriggerInput } from "@pokebots/contracts/ipc-events";
 import type { EventRoutinesApi, RoutineWebhooksApi } from "./routine-webhooks-api";
 
 interface RoutineSaveInput {

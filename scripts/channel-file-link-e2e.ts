@@ -17,8 +17,8 @@ import assert from "node:assert/strict";
 import { mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { join, resolve } from "node:path";
-import { workspaceAccessEnforced } from "@openbot/contracts/ipc";
-import { translateFor } from "@openbot/i18n";
+import { workspaceAccessEnforced } from "@pokebots/contracts/ipc";
+import { translateFor } from "@pokebots/i18n";
 import { ChannelClient, connectChannelE2e, WAIT_MS, waitFor, writeReport } from "./channel-e2e-support";
 
 const OUT = resolve(import.meta.dirname, "../.openbot-build/channel-file-link-e2e");

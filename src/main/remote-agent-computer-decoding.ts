@@ -1,6 +1,6 @@
-import type { AgentComputerMachineList, AgentComputerStatus } from "@openbot/contracts/ipc";
-import { AGENT_COMPUTER_MACHINE_LIMIT, decodeAgentComputerAccountAllowance } from "@openbot/contracts/ipc";
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
+import type { AgentComputerMachineList, AgentComputerStatus } from "@pokebots/contracts/ipc";
+import { AGENT_COMPUTER_MACHINE_LIMIT, decodeAgentComputerAccountAllowance } from "@pokebots/contracts/ipc";
+import { isDynamicRecord, isString } from "@pokebots/contracts/runtime-values";
 
 const nullableString = (value: unknown): value is string | null => value === null || isString(value);
 

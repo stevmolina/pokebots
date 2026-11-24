@@ -10,20 +10,20 @@ import {
   type DiscoverModelsResult,
   detectedModelServerKey,
   type ProviderDetectionSettings,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   customAgentCheckInput,
   customAgentInput,
   formatAgentArgs,
-} from "@openbot/ui/features/custom-providers/custom-acp-agent-form";
-import { customProviderUpdate } from "@openbot/ui/features/custom-providers/custom-provider-form";
+} from "@pokebots/ui/features/custom-providers/custom-acp-agent-form";
+import { customProviderUpdate } from "@pokebots/ui/features/custom-providers/custom-provider-form";
 import type {
   DetectedProvider,
   DetectedProviderApi,
   ProviderDetection,
-} from "@openbot/ui/features/custom-providers/detected-providers";
-import type { ProviderDetectionSettingsValue } from "@openbot/ui/features/custom-providers/ProviderDetectionSettings";
-import { currentText } from "@openbot/ui/text";
+} from "@pokebots/ui/features/custom-providers/detected-providers";
+import type { ProviderDetectionSettingsValue } from "@pokebots/ui/features/custom-providers/ProviderDetectionSettings";
+import { currentText } from "@pokebots/ui/text";
 import { createStore } from "solid-js";
 import type { createCustomAgentsStore } from "../../custom-agents/stores/custom-agents-store";
 import type { createCustomProvidersStore } from "./custom-providers-store";
@@ -325,7 +325,7 @@ export function createProviderDetectionStore(options: ProviderDetectionStoreOpti
     // static import would bring those settings into the first chunk of the web client.
     return async (value, savedAgentId) => {
       const [{ checkResult }, result] = await Promise.all([
-        import("@openbot/ui/features/custom-providers/CustomAgentSettings"),
+        import("@pokebots/ui/features/custom-providers/CustomAgentSettings"),
         check(customAgentCheckInput(value, savedAgentId)),
       ]);
       return checkResult(result);

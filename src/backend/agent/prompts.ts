@@ -1,18 +1,18 @@
 import { randomUUID } from "node:crypto";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import type {
   AgentApprovalPermissions,
   AgentPromptQuestion,
   AgentPromptResolution,
   RespondToBrowserTakeoverInput,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   COMPUTER_USE_MCP_SERVER_NAME,
   isReservedMcpServerName,
   MCP_ELICITATION_DECISION_QUESTION_ID,
   vaultExpiryText,
-} from "@openbot/contracts/ipc";
-import { type DynamicRecord, isString } from "@openbot/contracts/runtime-values";
+} from "@pokebots/contracts/ipc";
+import { type DynamicRecord, isString } from "@pokebots/contracts/runtime-values";
 import {
   normalizeUiBlockSpec,
   UI_API_KEY_SCOPE_FIELD_ID,
@@ -23,8 +23,8 @@ import {
   type UiBlockSpec,
   type UiFormField,
   type UiVaultRequestField,
-} from "@openbot/contracts/ui-blocks";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/ui-blocks";
+import { sourceText } from "@pokebots/i18n/source";
 import type { SavedApiKey } from "../agent-api-keys";
 import type { BrowserToolArguments } from "../browser-tools";
 import { type DynamicToolResult, getArray, getRecord, getString, isRecord } from "../protocol";

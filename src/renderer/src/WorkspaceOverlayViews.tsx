@@ -1,9 +1,9 @@
-import type { AddedAgent, McpSignInState, ServerSummary } from "@openbot/contracts/ipc";
-import type { MarketplaceListingLink } from "@openbot/contracts/marketplace-links";
-import { MAC_APPS_LIMIT_CAPABILITY } from "@openbot/contracts/team-protocol/mac-apps-limit-v1";
-import { NewInstancePicker } from "@openbot/ui/components/NewInstancePicker";
-import type { BrowserViewRuntime } from "@openbot/ui/features/browser/BrowserLiveView";
-import type { MarketplaceAppsBlock } from "@openbot/ui/features/marketplace/marketplace-model";
+import type { AddedAgent, McpSignInState, ServerSummary } from "@pokebots/contracts/ipc";
+import type { MarketplaceListingLink } from "@pokebots/contracts/marketplace-links";
+import { MAC_APPS_LIMIT_CAPABILITY } from "@pokebots/contracts/team-protocol/mac-apps-limit-v1";
+import { NewInstancePicker } from "@pokebots/ui/components/NewInstancePicker";
+import type { BrowserViewRuntime } from "@pokebots/ui/features/browser/BrowserLiveView";
+import type { MarketplaceAppsBlock } from "@pokebots/ui/features/marketplace/marketplace-model";
 import type { ComponentProps } from "@solidjs/web";
 import { createMemo, Loading, omit, Show } from "solid-js";
 import type { AgentTemplateInstallCalls } from "./features/agent-templates/agent-templates-port";

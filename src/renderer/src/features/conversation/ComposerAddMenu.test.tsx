@@ -1,4 +1,4 @@
-import { ComposerAddMenu } from "@openbot/ui/features/conversation/ComposerAddMenu";
+import { ComposerAddMenu } from "@pokebots/ui/features/conversation/ComposerAddMenu";
 import { fireEvent, render, screen } from "@solidjs/testing-library";
 import { describe, expect, it, vi } from "vitest";
 

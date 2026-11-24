@@ -1,9 +1,9 @@
-import type { BrowserPreview, BrowserTab } from "@openbot/contracts/ipc";
-import { Button, Maximize2, Monitor, Skeleton, X } from "@openbot/ui";
-import { PanelResizer } from "@openbot/ui/components/PanelResizer";
-import { SETTINGS_PANEL_DEFAULT } from "@openbot/ui/components/SettingsPanel";
-import { useText } from "@openbot/ui/text";
-import { holdFlag } from "@openbot/ui/utils";
+import type { BrowserPreview, BrowserTab } from "@pokebots/contracts/ipc";
+import { Button, Maximize2, Monitor, Skeleton, X } from "@pokebots/ui";
+import { PanelResizer } from "@pokebots/ui/components/PanelResizer";
+import { SETTINGS_PANEL_DEFAULT } from "@pokebots/ui/components/SettingsPanel";
+import { useText } from "@pokebots/ui/text";
+import { holdFlag } from "@pokebots/ui/utils";
 import { createEffect, createMemo, createSignal, createStore, For, onSettled, Show, untrack } from "solid-js";
 
 /** The side panel has one width for all its panes, so this pane has the smallest width of the settings pane. */

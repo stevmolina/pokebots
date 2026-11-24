@@ -25,7 +25,7 @@ import {
   proto,
   type SignalDataSet,
   type SignalDataTypeMap,
-} from "@openbot/whatsapp/baileys";
+} from "@pokebots/whatsapp/baileys";
 import { Schema } from "effect";
 
 const SCHEMA_VERSION = 1;

@@ -1,8 +1,8 @@
 import {
   REMOTE_COMPUTER_USE_CAPABILITY,
   REMOTE_COMPUTER_USE_ROUTES,
-} from "@openbot/contracts/team-protocol/remote-computer-use-v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/team-protocol/remote-computer-use-v1";
+import { sourceText } from "@pokebots/i18n/source";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import type { RemoteComputerHost } from "../remote-computer-host";
 import { HttpError } from "./http-error";

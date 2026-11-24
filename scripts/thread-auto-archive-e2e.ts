@@ -7,20 +7,20 @@ import assert from "node:assert/strict";
 import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import { AGENT_PROVIDERS, type AgentTask, isAgentTask, isAgentTasksSnapshot } from "@openbot/contracts/ipc";
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
-import { TEAM_APP_VERSION_HEADER, TEAM_PROTOCOL_VERSION_HEADER } from "@openbot/contracts/team-protocol";
-import { AGENT_TASKS_ROUTES } from "@openbot/contracts/team-protocol/agent-tasks-v1";
-import { teamCapabilitiesForProtocol, teamCapabilityHeaders } from "@openbot/contracts/team-protocol/current";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
+import { AGENT_PROVIDERS, type AgentTask, isAgentTask, isAgentTasksSnapshot } from "@pokebots/contracts/ipc";
+import { isDynamicRecord, isString } from "@pokebots/contracts/runtime-values";
+import { TEAM_API_ROUTES } from "@pokebots/contracts/team-api-routes";
+import { TEAM_APP_VERSION_HEADER, TEAM_PROTOCOL_VERSION_HEADER } from "@pokebots/contracts/team-protocol";
+import { AGENT_TASKS_ROUTES } from "@pokebots/contracts/team-protocol/agent-tasks-v1";
+import { teamCapabilitiesForProtocol, teamCapabilityHeaders } from "@pokebots/contracts/team-protocol/current";
 import {
   THREAD_AUTO_ARCHIVE_CAPABILITY,
   THREAD_AUTO_ARCHIVE_ROUTES,
-} from "@openbot/contracts/team-protocol/thread-auto-archive-v1";
-import { decodeTeamProtocolV2Json, type TeamProtocolV2Json } from "@openbot/contracts/team-protocol/v2";
-import { TEAM_PROTOCOL_V10 } from "@openbot/contracts/team-protocol/v10";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/team-protocol/thread-auto-archive-v1";
+import { decodeTeamProtocolV2Json, type TeamProtocolV2Json } from "@pokebots/contracts/team-protocol/v2";
+import { TEAM_PROTOCOL_V10 } from "@pokebots/contracts/team-protocol/v10";
+import { sourceText } from "@pokebots/i18n/source";
 import { plugin } from "bun";
 import { Effect } from "effect";
 import type { AgentBrowserHost } from "../src/backend/agent/turn-lifecycle";

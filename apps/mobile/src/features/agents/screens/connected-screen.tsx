@@ -1,5 +1,5 @@
-import type { ChannelSummary, SidebarLayoutSnapshot } from "@openbot/contracts/ipc";
-import type { MobileTextKey } from "@openbot/i18n/mobile";
+import type { ChannelSummary, SidebarLayoutSnapshot } from "@pokebots/contracts/ipc";
+import type { MobileTextKey } from "@pokebots/i18n/mobile";
 import { GlassView } from "expo-glass-effect";
 import { type Href, router, Stack, useIsFocused } from "expo-router";
 import { Button, Typography } from "heroui-native";

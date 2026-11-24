@@ -1,16 +1,16 @@
-import { isOpenBillingStatus } from "@openbot/contracts/billing";
-import { DEFAULT_TEAM_MEMBER_LIMIT, INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import type { InviteSummary, TeamInviteSummary, TeamPresenceMember, TeamRole } from "@openbot/contracts/ipc";
+import { isOpenBillingStatus } from "@pokebots/contracts/billing";
+import { DEFAULT_TEAM_MEMBER_LIMIT, INPUT_LIMITS } from "@pokebots/contracts/input-limits";
+import type { InviteSummary, TeamInviteSummary, TeamPresenceMember, TeamRole } from "@pokebots/contracts/ipc";
 import {
   LICENSE_INCLUDED_USERS,
   LICENSE_MAX_USERS,
   type License,
   licenseMonthlyAmount,
   licensePlanOf,
-} from "@openbot/contracts/license";
-import { normalizeEmailAddress } from "@openbot/contracts/validation";
-import type { AppTextKey } from "@openbot/i18n";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/license";
+import { normalizeEmailAddress } from "@pokebots/contracts/validation";
+import type { AppTextKey } from "@pokebots/i18n";
+import { sourceText } from "@pokebots/i18n/source";
 import {
   Alert,
   AlertContent,
@@ -49,12 +49,12 @@ import {
   Text,
   Trash2,
   UserRound,
-} from "@openbot/ui";
-import { formatMinorMoney } from "@openbot/ui/features/billing/LicenseSection";
-import { MemberRoleMenu } from "@openbot/ui/features/servers/ServerRoles";
-import { teamMemberName } from "@openbot/ui/features/team/TeamPersonAvatar";
-import { useText } from "@openbot/ui/text";
-import { prefersReducedMotion } from "@openbot/ui/utils";
+} from "@pokebots/ui";
+import { formatMinorMoney } from "@pokebots/ui/features/billing/LicenseSection";
+import { MemberRoleMenu } from "@pokebots/ui/features/servers/ServerRoles";
+import { teamMemberName } from "@pokebots/ui/features/team/TeamPersonAvatar";
+import { useText } from "@pokebots/ui/text";
+import { prefersReducedMotion } from "@pokebots/ui/utils";
 import type { JSX } from "@solidjs/web";
 import { createEffect, createMemo, createSignal, createStore, For, onCleanup, Show, untrack } from "solid-js";
 import { desktopAnalytics } from "../../analytics";

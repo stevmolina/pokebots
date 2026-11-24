@@ -1,7 +1,7 @@
 // The custom agent payloads. `save` and `check` carry environment values, often an API key, so no
 // message here quotes a value.
 
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import {
   type CheckCustomAgentInput,
   CUSTOM_AGENT_LIMITS,
@@ -11,9 +11,9 @@ import {
   isCustomAgentId,
   isCustomAgentUsagePrompt,
   type SaveCustomAgentInput,
-} from "@openbot/contracts/ipc";
-import { isString } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/ipc";
+import { isString } from "@pokebots/contracts/runtime-values";
+import { sourceText } from "@pokebots/i18n/source";
 import { agentCommandForm } from "../../backend/acp-agent-command";
 import { isObject, requireString } from "./validation";
 

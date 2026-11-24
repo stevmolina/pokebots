@@ -6,7 +6,7 @@ import {
   type WorkflowGraph,
   type WorkflowNode,
   workflowLoopEdges,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import type { GraphPlace } from "./workflow-graph-edit";
 
 /**

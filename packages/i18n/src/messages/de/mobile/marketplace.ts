@@ -66,13 +66,13 @@ export const messages = {
   "mobile.marketplace.facts.accessMac": "Nur Mac",
   "mobile.marketplace.permission.admin": "Nur Eigentümer und Administratoren können aus dem Marketplace installieren.",
   "mobile.marketplace.permission.unavailable":
-    "Dieser Server ist offline, oder sein OpenBot ist dafür zu alt. Aktualisiere OpenBot auf dem Computer, der ihn ausführt.",
+    "Dieser Server ist offline, oder sein Pokebots ist dafür zu alt. Aktualisiere Pokebots auf dem Computer, der ihn ausführt.",
   "mobile.marketplace.error.agentUnsupported":
-    "Aktualisiere OpenBot auf dem Server, um Agenten aus dem Marketplace hinzuzufügen.",
+    "Aktualisiere Pokebots auf dem Server, um Agenten aus dem Marketplace hinzuzufügen.",
   "mobile.marketplace.error.agentUpdateUnsupported":
-    "Aktualisiere OpenBot auf dem Server, um Agenten aus dem Marketplace zu aktualisieren.",
+    "Aktualisiere Pokebots auf dem Server, um Agenten aus dem Marketplace zu aktualisieren.",
   "mobile.marketplace.error.signInUnsupported":
-    "Aktualisiere OpenBot auf dem Server, um dich vom Telefon aus bei Apps anzumelden.",
+    "Aktualisiere Pokebots auf dem Server, um dich vom Telefon aus bei Apps anzumelden.",
   "mobile.marketplace.agent.add": "Agenten hinzufügen",
   "mobile.marketplace.agent.adding": "Agent wird hinzugefügt",
   "mobile.marketplace.agent.update": "Agenten aktualisieren",
@@ -117,11 +117,11 @@ export const messages = {
   "mobile.marketplace.app.connectFailed": "Die App konnte nicht verbunden werden.",
   "mobile.marketplace.app.linkInvalid": "Verwende einen https-Link auf {hostname}.",
   "mobile.marketplace.app.docs": "Schlüssel holen",
-  "mobile.marketplace.app.local": "Diese App läuft auf dem Computer mit OpenBot. Richte sie auf diesem Computer ein.",
+  "mobile.marketplace.app.local": "Diese App läuft auf dem Computer mit Pokebots. Richte sie auf diesem Computer ein.",
   "mobile.marketplace.app.needsMac":
-    "Diese App funktioniert nur auf einem Mac, auf dem OpenBot läuft, und dieser Server ist kein Mac.",
+    "Diese App funktioniert nur auf einem Mac, auf dem Pokebots läuft, und dieser Server ist kein Mac.",
   "mobile.marketplace.app.relayUnsupported":
-    "Diese App verlangt eine Anmeldung im Browser. Aktualisiere OpenBot auf dem Server oder verbinde die App auf dem Computer.",
+    "Diese App verlangt eine Anmeldung im Browser. Aktualisiere Pokebots auf dem Server oder verbinde die App auf dem Computer.",
   "mobile.marketplace.app.waiting": "Warten auf die Anmeldeseite…",
   "mobile.marketplace.app.openAgain": "Anmeldeseite erneut öffnen",
   "mobile.marketplace.app.pasteHint":

@@ -5,7 +5,7 @@ import { EventEmitter } from "node:events";
 import { mkdtemp, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { encodeTeamProtocolV2FileChunk, encodeTeamProtocolV2Frame } from "@openbot/contracts/team-protocol/v2";
+import { encodeTeamProtocolV2FileChunk, encodeTeamProtocolV2Frame } from "@pokebots/contracts/team-protocol/v2";
 import { Effect } from "effect";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { TeamWebRtcBridge } from "./team-webrtc-bridge";

@@ -4,8 +4,8 @@ import {
   type HostAnalytics,
   type HostAnalyticsInput,
   WORKFLOWS_USAGE_ID,
-} from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
+} from "@pokebots/contracts/ipc";
+import type { AppTextKey } from "@pokebots/i18n";
 import {
   Button,
   ErrorReference,
@@ -16,8 +16,8 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@openbot/ui";
-import { AgentUsageReport } from "@openbot/ui/features/usage/AgentUsageReport";
+} from "@pokebots/ui";
+import { AgentUsageReport } from "@pokebots/ui/features/usage/AgentUsageReport";
 import {
   type UsageAgentLabel,
   type UsageMetric,
@@ -27,10 +27,10 @@ import {
   usagePeriodDays,
   usagePeriodLabels,
   usagePeriods,
-} from "@openbot/ui/features/usage/usage-format";
-import { PageHeader } from "@openbot/ui/features/window/PageHeader";
-import { useText } from "@openbot/ui/text";
-import { errorReference } from "@openbot/user-errors";
+} from "@pokebots/ui/features/usage/usage-format";
+import { PageHeader } from "@pokebots/ui/features/window/PageHeader";
+import { useText } from "@pokebots/ui/text";
+import { errorReference } from "@pokebots/user-errors";
 import type { JSX } from "@solidjs/web";
 import { createEffect, createStore, onSettled, Show } from "solid-js";
 import { desktopAnalytics } from "../../analytics";

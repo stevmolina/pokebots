@@ -19,32 +19,32 @@ import {
   decodeAgentAccessSnapshot,
   decodeServerAuditLog,
   type ServerAuditLog,
-} from "@openbot/contracts/ipc";
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
+} from "@pokebots/contracts/ipc";
+import { TEAM_API_ROUTES } from "@pokebots/contracts/team-api-routes";
 import {
   TEAM_APP_VERSION_HEADER,
   TEAM_CAPABILITIES_HEADER,
   TEAM_PROTOCOL_V1_WEBSOCKET,
   TEAM_PROTOCOL_VERSION_HEADER,
-} from "@openbot/contracts/team-protocol";
+} from "@pokebots/contracts/team-protocol";
 import {
   AGENT_ACCESS_CAPABILITY,
   AGENT_ACCESS_CODECS,
   AGENT_ACCESS_ROUTES,
   agentAccessEvent,
-} from "@openbot/contracts/team-protocol/agent-access-v1";
-import { AGENT_MEMORY_INCLUSION_ROUTE } from "@openbot/contracts/team-protocol/agent-memories-v1";
-import { CHAT_COLORS_ROUTES } from "@openbot/contracts/team-protocol/chat-colors-v1";
-import { teamCapabilitiesForProtocol } from "@openbot/contracts/team-protocol/current";
+} from "@pokebots/contracts/team-protocol/agent-access-v1";
+import { AGENT_MEMORY_INCLUSION_ROUTE } from "@pokebots/contracts/team-protocol/agent-memories-v1";
+import { CHAT_COLORS_ROUTES } from "@pokebots/contracts/team-protocol/chat-colors-v1";
+import { teamCapabilitiesForProtocol } from "@pokebots/contracts/team-protocol/current";
 import {
   SERVER_AUDIT_CAPABILITY,
   SERVER_AUDIT_CODECS,
   SERVER_AUDIT_ROUTES,
-} from "@openbot/contracts/team-protocol/server-audit-v1";
-import { STORAGE_ROUTES } from "@openbot/contracts/team-protocol/storage-v1";
-import { TEAM_PROTOCOL_V7 } from "@openbot/contracts/team-protocol/v7";
-import { TEAM_PROTOCOL_V9 } from "@openbot/contracts/team-protocol/v9";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/team-protocol/server-audit-v1";
+import { STORAGE_ROUTES } from "@pokebots/contracts/team-protocol/storage-v1";
+import { TEAM_PROTOCOL_V7 } from "@pokebots/contracts/team-protocol/v7";
+import { TEAM_PROTOCOL_V9 } from "@pokebots/contracts/team-protocol/v9";
+import { sourceText } from "@pokebots/i18n/source";
 import { plugin } from "bun";
 import { Effect } from "effect";
 import type { AgentBrowserHost } from "../src/backend/agent/turn-lifecycle";

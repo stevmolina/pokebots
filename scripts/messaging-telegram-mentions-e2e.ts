@@ -13,7 +13,7 @@ import type {
   TelegramCallMethod,
   TelegramCallParams,
   TelegramCallResult,
-} from "@openbot/contracts/signal-protocol/telegram-route";
+} from "@pokebots/contracts/signal-protocol/telegram-route";
 import { Effect } from "effect";
 import { runCauseEffect } from "../src/backend/effect-boundary";
 import {

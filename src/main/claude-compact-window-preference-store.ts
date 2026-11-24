@@ -2,8 +2,8 @@ import {
   type ClaudeCompactWindowSetting,
   DEFAULT_CLAUDE_COMPACT_WINDOW,
   isClaudeCompactWindowTokens,
-} from "@openbot/contracts/ipc";
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
+} from "@pokebots/contracts/ipc";
+import { isDynamicRecord } from "@pokebots/contracts/runtime-values";
 import { Effect, Semaphore } from "effect";
 import { PreferenceStore } from "./preference-file";
 

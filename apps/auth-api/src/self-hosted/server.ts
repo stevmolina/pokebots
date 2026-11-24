@@ -1,7 +1,7 @@
 import { existsSync, readFileSync, statSync } from "node:fs";
 import { dirname, join, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
-import { createOpenBotLogger } from "@openbot/logging";
+import { createOpenBotLogger } from "@pokebots/logging";
 import type { WorkerBindings } from "../server/types";
 import { drainWaitUntil, setSelfHostedEnv, waitUntil } from "./cloudflare-workers";
 import { openSelfHostedD1 } from "./d1-sqlite";

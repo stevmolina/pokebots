@@ -24,7 +24,7 @@ import { createServer as createTcpServer } from "node:net";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { promisify } from "node:util";
-import { sourceText } from "@openbot/i18n/source";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect } from "effect";
 import type { AgentClient } from "../src/backend/agent-client";
 import { resolveOpencodeCli } from "../src/backend/cli";

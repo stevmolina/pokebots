@@ -1,8 +1,8 @@
 // The routine flow group of the preview: links and positions in memory, over the mock's routines.
 // It runs no flow, so a step only exists when a story seeds one.
 
-import type { OpenBotDesktopApi, Routine, RoutineFlowLink, RoutineFlowStep, RoutineRun } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+import type { OpenBotDesktopApi, Routine, RoutineFlowLink, RoutineFlowStep, RoutineRun } from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
 
 interface MockRoutineFlowsSource {
   routines: Map<string, Routine[]>;

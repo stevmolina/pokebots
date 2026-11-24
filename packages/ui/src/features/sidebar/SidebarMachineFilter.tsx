@@ -12,7 +12,7 @@
  * the other machines still show.
  */
 
-import { Button } from "@openbot/ui";
+import { Button } from "@pokebots/ui";
 import type { JSX } from "@solidjs/web";
 import { createEffect, createMemo, For, Show } from "solid-js";
 import { useText } from "../../text";

@@ -1,4 +1,4 @@
-import type { WorkflowMediaSize } from "@openbot/contracts/ipc";
+import type { WorkflowMediaSize } from "@pokebots/contracts/ipc";
 import { nativeImage } from "electron";
 
 /**

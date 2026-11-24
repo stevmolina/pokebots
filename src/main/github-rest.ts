@@ -8,11 +8,11 @@ import type {
   WorkflowGitHubEvent,
   WorkflowGitHubLabel,
   WorkflowGitHubRepositoryOptions,
-} from "@openbot/contracts/ipc";
-import { WORKFLOW_GITHUB_OPTION_LIMIT } from "@openbot/contracts/ipc";
-import { type DynamicRecord, isDynamicRecord } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
-import { redactText } from "@openbot/logging";
+} from "@pokebots/contracts/ipc";
+import { WORKFLOW_GITHUB_OPTION_LIMIT } from "@pokebots/contracts/ipc";
+import { type DynamicRecord, isDynamicRecord } from "@pokebots/contracts/runtime-values";
+import { sourceText } from "@pokebots/i18n/source";
+import { redactText } from "@pokebots/logging";
 import { Effect, Option } from "effect";
 import { z } from "zod";
 import type { MessagingAdapterError } from "../backend/messaging/messaging-types";

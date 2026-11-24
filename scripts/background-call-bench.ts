@@ -15,7 +15,7 @@
 import { mkdirSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import type { Options } from "@anthropic-ai/claude-agent-sdk";
-import { type AgentModelOption, agentProviderDescriptor, isReasoningEffort } from "@openbot/contracts/ipc";
+import { type AgentModelOption, agentProviderDescriptor, isReasoningEffort } from "@pokebots/contracts/ipc";
 import { withBackgroundEffort } from "../src/backend/agent/background-model";
 import { generateTextWithoutTools, startToolless, stopToolless } from "../src/backend/agent/profile-generation";
 import type { AgentClient } from "../src/backend/agent-client";

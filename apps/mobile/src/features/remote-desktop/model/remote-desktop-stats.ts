@@ -1,4 +1,4 @@
-import { isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
+import { isDynamicRecord, isNumber, isString } from "@pokebots/contracts/runtime-values";
 import { useSyncExternalStore } from "react";
 
 // The connection stats of the open remote desktop, for the stats sheet. The viewer page sends

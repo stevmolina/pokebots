@@ -4,9 +4,9 @@
  * these, and the diagram workspace story shows the same chat when an agent is open.
  */
 
-import { serializeAttachmentReference } from "@openbot/contracts/attachment-references";
-import type { AvatarImageInput, UpdateAgentInput } from "@openbot/contracts/ipc";
-import type { AgentMessage as RendererAgentMessage } from "@openbot/ui/data";
+import { serializeAttachmentReference } from "@pokebots/contracts/attachment-references";
+import type { AvatarImageInput, UpdateAgentInput } from "@pokebots/contracts/ipc";
+import type { AgentMessage as RendererAgentMessage } from "@pokebots/ui/data";
 import { onCleanup, type ParentProps } from "solid-js";
 import { fn } from "storybook/test";
 import { AuthProvider } from "../src/features/account/account-context";

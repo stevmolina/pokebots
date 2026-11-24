@@ -1,11 +1,11 @@
-import type { ChannelSummary } from "@openbot/contracts/ipc";
-import { AGENT_NOTIFICATION_LEVELS_CAPABILITY } from "@openbot/contracts/team-protocol/agent-notification-levels-v1";
-import { AGENT_HIDDEN_CAPABILITY } from "@openbot/contracts/team-protocol/current";
-import { SIDEBAR_PINS_CAPABILITY } from "@openbot/contracts/team-protocol/sidebar-pins-v1";
-import { createRemoteConnectionRecovery, type RemoteRecoveryStatus } from "@openbot/team-client/remote-recovery";
-import { markRemoteSync } from "@openbot/team-client/sync-profile";
-import { currentText } from "@openbot/ui/text";
-import type { UserErrorDetails } from "@openbot/user-errors";
+import type { ChannelSummary } from "@pokebots/contracts/ipc";
+import { AGENT_NOTIFICATION_LEVELS_CAPABILITY } from "@pokebots/contracts/team-protocol/agent-notification-levels-v1";
+import { AGENT_HIDDEN_CAPABILITY } from "@pokebots/contracts/team-protocol/current";
+import { SIDEBAR_PINS_CAPABILITY } from "@pokebots/contracts/team-protocol/sidebar-pins-v1";
+import { createRemoteConnectionRecovery, type RemoteRecoveryStatus } from "@pokebots/team-client/remote-recovery";
+import { markRemoteSync } from "@pokebots/team-client/sync-profile";
+import { currentText } from "@pokebots/ui/text";
+import type { UserErrorDetails } from "@pokebots/user-errors";
 import {
   createEffect,
   createMemo,

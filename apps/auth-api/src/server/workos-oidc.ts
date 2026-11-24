@@ -1,5 +1,5 @@
-import { type DynamicRecord, isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { normalizeEmailAddress } from "@openbot/contracts/validation";
+import { type DynamicRecord, isDynamicRecord, isString } from "@pokebots/contracts/runtime-values";
+import { normalizeEmailAddress } from "@pokebots/contracts/validation";
 import { Effect, Schema } from "effect";
 import { createRemoteJWKSet, customFetch, jwtVerify } from "jose";
 

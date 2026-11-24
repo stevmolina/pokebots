@@ -1,5 +1,5 @@
-import { OPENBOT_COMMIT_TRAILER } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+import { OPENBOT_COMMIT_TRAILER } from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect } from "effect";
 import { z } from "zod";
 import type { DynamicToolCallParams } from "../protocol";

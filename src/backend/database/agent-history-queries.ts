@@ -5,7 +5,7 @@ import {
   CONTEXT_RESET_ITEM_TYPE,
   type ConversationTurnTrace,
   isConversationTurnTrace,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import { ORDER_KEY_COLUMNS, ORDER_KEY_DESC, ORDERED_THREAD_MESSAGES } from "./conversation-queries";
 import type { DatabaseCore } from "./database-core";
 import {

@@ -10,7 +10,7 @@ import {
   type MarketplaceSkillSummary,
   type OpenBotDesktopApi,
   type SkillSubmission,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   STORY_INSTALLED_SKILLS,
   STORY_MARKETPLACE_SKILL_DETAILS,

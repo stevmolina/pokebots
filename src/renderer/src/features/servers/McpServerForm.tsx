@@ -10,8 +10,8 @@ import {
   SlidingTabs,
   Text,
   Trash2,
-} from "@openbot/ui";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/ui";
+import { useText } from "@pokebots/ui/text";
 import type { JSX } from "@solidjs/web";
 import { createMemo, createStore, For, onCleanup, Show, untrack } from "solid-js";
 import { McpRelaySignIn } from "./McpRelaySignIn";

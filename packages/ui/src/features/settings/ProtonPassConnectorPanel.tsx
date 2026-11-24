@@ -1,4 +1,4 @@
-import type { PasswordManagerStatus } from "@openbot/contracts/ipc";
+import type { PasswordManagerStatus } from "@pokebots/contracts/ipc";
 import {
   Alert,
   AlertActions,
@@ -24,7 +24,7 @@ import {
   PlushLoader,
   SettingsSection,
   TriangleAlert,
-} from "@openbot/ui";
+} from "@pokebots/ui";
 import { createEffect, createSignal, Match, Show, Switch } from "solid-js";
 import { useText } from "../../text";
 import { ProtonPassTile } from "./brand-marks";

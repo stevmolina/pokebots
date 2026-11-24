@@ -1,4 +1,4 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import {
   type AgentEvent,
   type AskSideQuestionInput,
@@ -9,28 +9,28 @@ import {
   STORAGE_CAPABILITY,
   type TeamRealtimeEvent,
   type TestRoutineInput,
-} from "@openbot/contracts/ipc";
-import { AGENT_FOLDERS_CAPABILITY } from "@openbot/contracts/team-protocol/agent-folders-v1";
-import { AGENT_INSTRUCTIONS_CAPABILITY } from "@openbot/contracts/team-protocol/agent-instructions-v1";
-import { AGENT_MEMORY_LIMIT_CAPABILITY } from "@openbot/contracts/team-protocol/agent-memory-limit-v1";
+} from "@pokebots/contracts/ipc";
+import { AGENT_FOLDERS_CAPABILITY } from "@pokebots/contracts/team-protocol/agent-folders-v1";
+import { AGENT_INSTRUCTIONS_CAPABILITY } from "@pokebots/contracts/team-protocol/agent-instructions-v1";
+import { AGENT_MEMORY_LIMIT_CAPABILITY } from "@pokebots/contracts/team-protocol/agent-memory-limit-v1";
 import {
   decodeFeedbackWithdrawResult,
   FEEDBACK_WITHDRAW_CAPABILITY,
   FEEDBACK_WITHDRAW_ROUTES,
-} from "@openbot/contracts/team-protocol/feedback-withdraw-v1";
-import { LIVE_VOICE_CAPABILITY } from "@openbot/contracts/team-protocol/live-voice-v1";
-import { ROUTINE_PAUSE_REASONS_CAPABILITY } from "@openbot/contracts/team-protocol/routine-pause-reasons-v1";
-import { ROUTINE_RESULTS_CAPABILITY } from "@openbot/contracts/team-protocol/routine-results-v1";
+} from "@pokebots/contracts/team-protocol/feedback-withdraw-v1";
+import { LIVE_VOICE_CAPABILITY } from "@pokebots/contracts/team-protocol/live-voice-v1";
+import { ROUTINE_PAUSE_REASONS_CAPABILITY } from "@pokebots/contracts/team-protocol/routine-pause-reasons-v1";
+import { ROUTINE_RESULTS_CAPABILITY } from "@pokebots/contracts/team-protocol/routine-results-v1";
 import {
   decodeRoutineRunCommandResponse,
   ROUTINE_RUN_COMMAND_CAPABILITY,
   ROUTINE_RUN_COMMAND_ROUTES,
-} from "@openbot/contracts/team-protocol/routine-run-command-v1";
-import { ROUTINES_ONCE_CAPABILITY } from "@openbot/contracts/team-protocol/routines-once-v1";
-import { decodeSideQuestionResponse, SIDE_QUESTION_ROUTES } from "@openbot/contracts/team-protocol/side-question-v1";
-import { SKILL_LEARNING_ROUTES } from "@openbot/contracts/team-protocol/skill-learning-v1";
-import { WEBHOOK_AGENT_SECRET_CAPABILITY } from "@openbot/contracts/team-protocol/webhook-agent-secret-v1";
-import { runTeamEffect } from "@openbot/team-client";
+} from "@pokebots/contracts/team-protocol/routine-run-command-v1";
+import { ROUTINES_ONCE_CAPABILITY } from "@pokebots/contracts/team-protocol/routines-once-v1";
+import { decodeSideQuestionResponse, SIDE_QUESTION_ROUTES } from "@pokebots/contracts/team-protocol/side-question-v1";
+import { SKILL_LEARNING_ROUTES } from "@pokebots/contracts/team-protocol/skill-learning-v1";
+import { WEBHOOK_AGENT_SECRET_CAPABILITY } from "@pokebots/contracts/team-protocol/webhook-agent-secret-v1";
+import { runTeamEffect } from "@pokebots/team-client";
 import {
   deleteSharedTable,
   installAgentSkill,
@@ -45,9 +45,13 @@ import {
   setAgentSkillEnabled,
   uninstallAgentSkill,
   unpublishAgentTemplate,
-} from "@openbot/team-client/team-admin-requests";
-import { listInstalledSkills, type TeamApiRequest, teamAgentRoutinesApi } from "@openbot/team-client/team-api-requests";
-import { currentText } from "@openbot/ui/text";
+} from "@pokebots/team-client/team-admin-requests";
+import {
+  listInstalledSkills,
+  type TeamApiRequest,
+  teamAgentRoutinesApi,
+} from "@pokebots/team-client/team-api-requests";
+import { currentText } from "@pokebots/ui/text";
 import { Effect } from "effect";
 import { onCleanup } from "solid-js";
 import type { SkillCatalogCalls } from "../../skills-port";
@@ -102,9 +106,9 @@ function webHostAdmin(
       return {
         read: (agentId: string) =>
           runTeamEffect(readAgentSessionSettings(request(), agentId).pipe(Effect.mapError((error) => error.cause))),
-        set: (input: import("@openbot/contracts/ipc").SetAgentSessionSettingInput) =>
+        set: (input: import("@pokebots/contracts/ipc").SetAgentSessionSettingInput) =>
           runTeamEffect(setAgentSessionSetting(request(), input).pipe(Effect.mapError((error) => error.cause))),
-        reset: (input: import("@openbot/contracts/ipc").ResetAgentSessionSettingInput) =>
+        reset: (input: import("@pokebots/contracts/ipc").ResetAgentSessionSettingInput) =>
           runTeamEffect(resetAgentSessionSetting(request(), input).pipe(Effect.mapError((error) => error.cause))),
         ...(onHostEvent
           ? {

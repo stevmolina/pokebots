@@ -2,7 +2,7 @@ import { createHmac } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { redactText } from "@openbot/logging";
+import { redactText } from "@pokebots/logging";
 import { type Connection, connectClickHouse, credentials, type QueryResult, runQuery } from "./openpanel-sql";
 import { readScriptArguments } from "./script-arguments";
 

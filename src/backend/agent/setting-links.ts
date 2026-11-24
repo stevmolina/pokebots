@@ -1,4 +1,4 @@
-import { SETTING_LINK_IDS, type SettingLinkId } from "@openbot/contracts/ipc";
+import { SETTING_LINK_IDS, type SettingLinkId } from "@pokebots/contracts/ipc";
 
 /**
  * What `show_setting` tells the model about each setting. This text goes to the provider, not to a

@@ -1,6 +1,6 @@
-import type { AnalyticsModel } from "@openbot/contracts/ipc";
-import { agentProviderCliName, analyticsTokens, isAgentProvider } from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
+import type { AnalyticsModel } from "@pokebots/contracts/ipc";
+import { agentProviderCliName, analyticsTokens, isAgentProvider } from "@pokebots/contracts/ipc";
+import type { AppTextKey } from "@pokebots/i18n";
 import { currentText, type TextValue } from "../../text";
 
 type UsageText = Pick<TextValue, "t" | "format">;
@@ -89,4 +89,4 @@ export function usageSeriesColor(provider: string): string {
   return seriesColors[provider] ?? "var(--openbot-chart-series-other)";
 }
 
-export { type UsageSeriesRow, usageSeries, usageTotalSeries } from "@openbot/team-client/usage-series";
+export { type UsageSeriesRow, usageSeries, usageTotalSeries } from "@pokebots/team-client/usage-series";

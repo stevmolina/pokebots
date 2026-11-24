@@ -1,5 +1,5 @@
 import type { ClientSideConnection, ContentBlock, InitializeResponse } from "@agentclientprotocol/sdk";
-import { sourceText } from "@openbot/i18n/source";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect } from "effect";
 import { getString, isRecord } from "./protocol";
 import { providerCall, providerFailure } from "./provider-client-effects";

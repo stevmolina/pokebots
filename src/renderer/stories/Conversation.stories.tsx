@@ -1,15 +1,15 @@
-import { serializeAttachmentReference } from "@openbot/contracts/attachment-references";
-import type { AgentEvent, AttachmentSummary, DraftAttachment, QueueSnapshot } from "@openbot/contracts/ipc";
+import { serializeAttachmentReference } from "@pokebots/contracts/attachment-references";
+import type { AgentEvent, AttachmentSummary, DraftAttachment, QueueSnapshot } from "@pokebots/contracts/ipc";
 import {
   type ConversationUiBlock,
   type UiChoiceBlock,
   type UiConfirmBlock,
   uiBlockFallbackQuestions,
-} from "@openbot/contracts/ui-blocks";
-import type { AgentMessage as RendererAgentMessage, RoutineRunMarkerModel } from "@openbot/ui/data";
-import { BrowserTakeoverCard } from "@openbot/ui/features/conversation/ConversationPrompts";
-import type { VoicePhase } from "@openbot/ui/features/conversation/VoiceRecordingMorph";
-import { currentText } from "@openbot/ui/text";
+} from "@pokebots/contracts/ui-blocks";
+import type { AgentMessage as RendererAgentMessage, RoutineRunMarkerModel } from "@pokebots/ui/data";
+import { BrowserTakeoverCard } from "@pokebots/ui/features/conversation/ConversationPrompts";
+import type { VoicePhase } from "@pokebots/ui/features/conversation/VoiceRecordingMorph";
+import { currentText } from "@pokebots/ui/text";
 import { Portal } from "@solidjs/web";
 import { createEffect, createSignal, onCleanup, onSettled, Show } from "solid-js";
 import { fn } from "storybook/test";

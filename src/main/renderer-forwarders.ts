@@ -33,17 +33,17 @@ import {
   type VoiceModelStatus,
   type VoiceServerSettings,
   type VoiceStreamTranscript,
-} from "@openbot/contracts/ipc";
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
-import { AGENT_HIDDEN_ROUTES } from "@openbot/contracts/team-protocol/agent-hidden-v1";
-import { CHANNEL_ROUTES } from "@openbot/contracts/team-protocol/channels-v1";
+} from "@pokebots/contracts/ipc";
+import { TEAM_API_ROUTES } from "@pokebots/contracts/team-api-routes";
+import { AGENT_HIDDEN_ROUTES } from "@pokebots/contracts/team-protocol/agent-hidden-v1";
+import { CHANNEL_ROUTES } from "@pokebots/contracts/team-protocol/channels-v1";
 import {
   AGENT_HIDDEN_WORK_CAPABILITY,
   TEAM_CHANNEL_ATTENTION_CAPABILITY,
-} from "@openbot/contracts/team-protocol/current";
-import type { MachineAlertEvent } from "@openbot/contracts/team-protocol/machine-resources-v1";
-import type { AppFormat, AppTranslate } from "@openbot/i18n";
-import { redactText } from "@openbot/logging";
+} from "@pokebots/contracts/team-protocol/current";
+import type { MachineAlertEvent } from "@pokebots/contracts/team-protocol/machine-resources-v1";
+import type { AppFormat, AppTranslate } from "@pokebots/i18n";
+import { redactText } from "@pokebots/logging";
 import {
   type AgentNotificationChannel,
   agentEventAgentId,
@@ -54,12 +54,12 @@ import {
   notificationForUsageLimit,
   notificationRequestKey,
   teammateTurnCompleted,
-} from "@openbot/team-client/agent-notifications";
+} from "@pokebots/team-client/agent-notifications";
 import {
   channelForThread,
   channelReplyNotifications,
   newChannelReplies,
-} from "@openbot/team-client/channel-notifications";
+} from "@pokebots/team-client/channel-notifications";
 import { BrowserWindow, Notification } from "electron";
 import { isNoUpdateAnswer } from "../backend/agent/routine-quiet-runs";
 import type { AgentService } from "../backend/agent-service";
@@ -658,11 +658,11 @@ export function createRendererForwarders({
     }
   }
 
-  function forwardUpdateStatus(status: import("@openbot/contracts/ipc").UpdateStatus): void {
+  function forwardUpdateStatus(status: import("@pokebots/contracts/ipc").UpdateStatus): void {
     for (const window of appWindows()) sendToRenderer(window, IPC_ENDPOINTS.update.event, status);
   }
 
-  function forwardUpdatePreference(preference: import("@openbot/contracts/ipc").UpdatePreference): void {
+  function forwardUpdatePreference(preference: import("@pokebots/contracts/ipc").UpdatePreference): void {
     for (const window of appWindows()) sendToRenderer(window, IPC_ENDPOINTS.update.preference, preference);
   }
 
@@ -688,36 +688,36 @@ export function createRendererForwarders({
     for (const window of appWindows()) sendToRenderer(window, IPC_ENDPOINTS.voice.liveEvent, event);
   }
 
-  function forwardProviderRuntimeStatus(snapshot: import("@openbot/contracts/ipc").ProviderRuntimeSnapshot): void {
+  function forwardProviderRuntimeStatus(snapshot: import("@pokebots/contracts/ipc").ProviderRuntimeSnapshot): void {
     for (const window of appWindows()) sendToRenderer(window, IPC_ENDPOINTS.providerRuntimes.event, snapshot);
   }
 
-  function forwardGitHubConnectorStatus(status: import("@openbot/contracts/ipc").GitHubConnectorStatus): void {
+  function forwardGitHubConnectorStatus(status: import("@pokebots/contracts/ipc").GitHubConnectorStatus): void {
     for (const window of appWindows()) sendToRenderer(window, IPC_ENDPOINTS.githubConnector.changed, status);
   }
 
-  function forwardLinkAccountStatus(status: import("@openbot/contracts/ipc").LinkAccountStatus): void {
+  function forwardLinkAccountStatus(status: import("@pokebots/contracts/ipc").LinkAccountStatus): void {
     for (const window of appWindows()) sendToRenderer(window, IPC_ENDPOINTS.linkAccount.changed, status);
   }
 
   function forwardOnePasswordConnectorStatus(
-    status: import("@openbot/contracts/ipc").OnePasswordConnectorStatus,
+    status: import("@pokebots/contracts/ipc").OnePasswordConnectorStatus,
   ): void {
     for (const window of appWindows()) sendToRenderer(window, IPC_ENDPOINTS.onePasswordConnector.changed, status);
   }
 
-  function forwardBitwardenConnectorStatus(status: import("@openbot/contracts/ipc").BitwardenConnectorStatus): void {
+  function forwardBitwardenConnectorStatus(status: import("@pokebots/contracts/ipc").BitwardenConnectorStatus): void {
     for (const window of appWindows()) sendToRenderer(window, IPC_ENDPOINTS.bitwardenConnector.changed, status);
   }
-  function forwardPasswordManagerStatus(status: import("@openbot/contracts/ipc").PasswordManagerStatus): void {
+  function forwardPasswordManagerStatus(status: import("@pokebots/contracts/ipc").PasswordManagerStatus): void {
     for (const window of appWindows()) sendToRenderer(window, IPC_ENDPOINTS.passwordManagers.changed, status);
   }
 
-  function forwardVaultState(state: import("@openbot/contracts/ipc").VaultState): void {
+  function forwardVaultState(state: import("@pokebots/contracts/ipc").VaultState): void {
     for (const window of appWindows()) sendToRenderer(window, IPC_ENDPOINTS.vault.changed, state);
   }
 
-  function forwardHostStatus(status: import("@openbot/contracts/ipc").HostStatus): void {
+  function forwardHostStatus(status: import("@pokebots/contracts/ipc").HostStatus): void {
     const remoteServers = getRemoteServerManager();
     const servers = remoteServers ? withLocalHostSummary(remoteServers.list(), status) : null;
     for (const target of appWindows()) {
@@ -726,13 +726,13 @@ export function createRendererForwarders({
     }
   }
 
-  function forwardRemoteDesktopSessions(sessions: import("@openbot/contracts/ipc").RemoteDesktopSession[]): void {
+  function forwardRemoteDesktopSessions(sessions: import("@pokebots/contracts/ipc").RemoteDesktopSession[]): void {
     const window = getMainWindow();
     if (!window || window.isDestroyed()) return;
     sendToRenderer(window, IPC_ENDPOINTS.remoteDesktop.event, sessions);
   }
 
-  function forwardServers(servers: import("@openbot/contracts/ipc").ServerSummary[]): void {
+  function forwardServers(servers: import("@pokebots/contracts/ipc").ServerSummary[]): void {
     const host = getHostService();
     const summaries = host ? withLocalHostSummary(servers, host.getStatus()) : servers;
     for (const target of appWindows()) sendToRenderer(target, IPC_ENDPOINTS.servers.event, summaries);
@@ -740,7 +740,7 @@ export function createRendererForwarders({
 
   function forwardTeamPresence(
     serverId: string,
-    snapshot: import("@openbot/contracts/ipc").TeamPresenceSnapshot,
+    snapshot: import("@pokebots/contracts/ipc").TeamPresenceSnapshot,
   ): void {
     for (const target of appWindows()) {
       sendToRenderer(target, IPC_ENDPOINTS.servers.scopedPresence, { serverId, snapshot });
@@ -749,7 +749,7 @@ export function createRendererForwarders({
 
   function forwardDirectMessage(
     serverId: string,
-    event: import("@openbot/contracts/ipc").DirectMessageRealtimeEvent,
+    event: import("@pokebots/contracts/ipc").DirectMessageRealtimeEvent,
   ): void {
     const window = getMainWindow();
     if (!window || window.isDestroyed()) return;
@@ -758,7 +758,7 @@ export function createRendererForwarders({
 
   function forwardDirectTyping(
     serverId: string,
-    event: import("@openbot/contracts/ipc").DirectTypingRealtimeEvent,
+    event: import("@pokebots/contracts/ipc").DirectTypingRealtimeEvent,
   ): void {
     const window = getMainWindow();
     if (!window || window.isDestroyed()) return;
@@ -766,19 +766,19 @@ export function createRendererForwarders({
   }
 
   // Every window can show the chat that holds the attachment.
-  function forwardAttachmentDownload(progress: import("@openbot/contracts/ipc").AttachmentDownloadProgress): void {
+  function forwardAttachmentDownload(progress: import("@pokebots/contracts/ipc").AttachmentDownloadProgress): void {
     for (const target of appWindows())
       sendToRenderer(target, IPC_ENDPOINTS.agentAttachments.attachmentDownload, progress);
   }
 
   // The preload of the window that started the import knows its request id; the others drop it.
-  function forwardAttachmentImportProgress(progress: import("@openbot/contracts/ipc").AttachmentImportProgress): void {
+  function forwardAttachmentImportProgress(progress: import("@pokebots/contracts/ipc").AttachmentImportProgress): void {
     for (const target of appWindows()) sendToRenderer(target, IPC_ENDPOINTS.attachmentImports.importProgress, progress);
   }
 
   // Settings can open in any window; each one keeps the progress of its own server.
   function forwardInstanceTransferUploadProgress(
-    progress: import("@openbot/contracts/ipc").InstanceTransferUploadProgress,
+    progress: import("@pokebots/contracts/ipc").InstanceTransferUploadProgress,
   ): void {
     for (const target of appWindows()) sendToRenderer(target, IPC_ENDPOINTS.instanceTransfer.uploadProgress, progress);
   }

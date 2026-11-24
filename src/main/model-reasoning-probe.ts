@@ -8,7 +8,7 @@
 // Nothing is saved. A server that is not Ollama, or that does not answer, gives no answer, and its
 // models keep the efforts of their harness. No error and no log line names the address or the key.
 
-import { type DynamicRecord, isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
+import { type DynamicRecord, isDynamicRecord, isString } from "@pokebots/contracts/runtime-values";
 import { Effect, Schema } from "effect";
 import { readLimitedBody } from "../backend/limited-body";
 import type { CustomProviderConfig } from "../backend/opencode-config";

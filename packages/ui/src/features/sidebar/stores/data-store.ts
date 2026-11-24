@@ -12,7 +12,7 @@ import {
   sidebarFolderAncestors,
   sidebarFolderHeight,
   sidebarFolderParents,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import { createMemo, createSignal } from "solid-js";
 import type { AgentProfile } from "../../../data";
 import { currentText } from "../../../text";

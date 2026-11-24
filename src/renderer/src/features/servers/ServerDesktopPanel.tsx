@@ -1,5 +1,5 @@
-import type { HostStatus, ServerConnectionIssueCode, ServerSummary } from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
+import type { HostStatus, ServerConnectionIssueCode, ServerSummary } from "@pokebots/contracts/ipc";
+import type { AppTextKey } from "@pokebots/i18n";
 import {
   Badge,
   Item,
@@ -12,8 +12,8 @@ import {
   Monitor,
   SettingsSection,
   Text,
-} from "@openbot/ui";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/ui";
+import { useText } from "@pokebots/ui/text";
 import { Show } from "solid-js";
 import { RemoteControlPolicySection } from "./RemoteControlPolicySection";
 import { RemoteDesktopSetup } from "./RemoteDesktopSetup";

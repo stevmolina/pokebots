@@ -1,5 +1,5 @@
-import { CHAT_VISUAL_ITEM_TYPE_PREFIX } from "@openbot/contracts/chat-visual";
-import { sortConversationMessages } from "@openbot/contracts/conversation-order";
+import { CHAT_VISUAL_ITEM_TYPE_PREFIX } from "@pokebots/contracts/chat-visual";
+import { sortConversationMessages } from "@pokebots/contracts/conversation-order";
 import type {
   ConversationFileSearchPage,
   ConversationFileSearchResult,
@@ -9,7 +9,7 @@ import type {
   ConversationSearchPage,
   ConversationSnapshot,
   SentMessageStats,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   AGENT_WELCOME_ITEM_TYPE,
   CHANNEL_RESUME_ITEM_TYPE,
@@ -21,8 +21,8 @@ import {
   ROUTINE_RUN_EVENT_ITEM_TYPE_PREFIX,
   SETTING_LINK_ITEM_TYPE_PREFIX,
   SKILL_EVENT_ITEM_TYPE_PREFIX,
-} from "@openbot/contracts/ipc";
-import { type DynamicRecord, isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
+} from "@pokebots/contracts/ipc";
+import { type DynamicRecord, isDynamicRecord, isNumber, isString } from "@pokebots/contracts/runtime-values";
 import { COLLAPSE_WHITESPACE_FUNCTION, type DatabaseCore, LOWERCASE_FUNCTION } from "./database-core";
 import {
   databaseRow,

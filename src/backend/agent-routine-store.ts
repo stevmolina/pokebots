@@ -4,7 +4,7 @@ import type {
   RoutineRun,
   RoutineRunStatus,
   UpdateRoutineInput,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import type { OpenBotDatabase } from "./openbot-database";
 import {
   type DueRoutine,

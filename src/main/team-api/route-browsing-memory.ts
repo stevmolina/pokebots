@@ -1,9 +1,9 @@
-import { hostBrowsingMemory } from "@openbot/contracts/ipc";
+import { hostBrowsingMemory } from "@pokebots/contracts/ipc";
 import {
   BROWSING_MEMORY_CAPABILITY,
   BROWSING_MEMORY_ROUTES,
-} from "@openbot/contracts/team-protocol/browsing-memory-v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/team-protocol/browsing-memory-v1";
+import { sourceText } from "@pokebots/i18n/source";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import type { TeamApiAdmin } from "./dependencies";
 import { HttpError } from "./http-error";

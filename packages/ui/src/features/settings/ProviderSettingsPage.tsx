@@ -4,8 +4,8 @@
  * its key, its runtime, its use and its deletion, each as a settings card with at most one button on a row.
  */
 
-import { ProviderLogo } from "@openbot/brand";
-import { isManagedRuntimeProvider, type ManagedProviderId } from "@openbot/contracts/agent-providers";
+import { ProviderLogo } from "@pokebots/brand";
+import { isManagedRuntimeProvider, type ManagedProviderId } from "@pokebots/contracts/agent-providers";
 import {
   type AgentModelId,
   type AgentProviderId,
@@ -29,8 +29,8 @@ import {
   type ProviderUsageResetOutcome,
   type ProviderUsageResets,
   providerEnvironmentProblem,
-} from "@openbot/contracts/ipc";
-import type { AppFormat, AppMessages, AppTextKey, AppTranslate } from "@openbot/i18n";
+} from "@pokebots/contracts/ipc";
+import type { AppFormat, AppMessages, AppTextKey, AppTranslate } from "@pokebots/i18n";
 import {
   Badge,
   Button,
@@ -78,7 +78,7 @@ import {
   Trash2,
   UserRoundPlus,
   X,
-} from "@openbot/ui";
+} from "@pokebots/ui";
 import type { JSX } from "@solidjs/web";
 import { createEffect, createMemo, createSignal, createStore, For, onCleanup, Show, untrack } from "solid-js";
 import { ProviderAccountRenameField } from "../../components/ProviderAccountList";

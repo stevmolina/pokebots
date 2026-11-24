@@ -1,4 +1,4 @@
-import type { ConversationMessage } from "@openbot/contracts/ipc";
+import type { ConversationMessage } from "@pokebots/contracts/ipc";
 import type { WebRuntimeFactory } from "../features/web-client/web-client-context";
 import type { WebWorkspaceRuntime } from "../features/web-client/web-runtime";
 import { createMockOpenBot } from "./mock-openbot";

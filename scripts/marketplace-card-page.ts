@@ -9,9 +9,9 @@
 // The numbers below are the prototype's CSS lengths, in pixels of the 1200-wide card.
 
 import { BloubBot } from "@norbert_bodziony/bloub";
-import { APP_LOGO_CORNER, APP_LOGO_EYE_POINTS, APP_LOGO_SIZE } from "@openbot/brand/app-logo-shape";
-import { bloubAvatarProfile } from "@openbot/brand/bloub-avatar";
-import type { AvatarHue } from "@openbot/contracts/ipc";
+import { APP_LOGO_CORNER, APP_LOGO_EYE_POINTS, APP_LOGO_SIZE } from "@pokebots/brand/app-logo-shape";
+import { bloubAvatarProfile } from "@pokebots/brand/bloub-avatar";
+import type { AvatarHue } from "@pokebots/contracts/ipc";
 import { render } from "@solidjs/web";
 import { flush } from "solid-js";
 
@@ -125,7 +125,7 @@ async function drawMedia(context: CanvasRenderingContext2D, job: MarketplaceCard
 }
 
 /**
- * The resting Bloub as one SVG element: `createStaticAvatarSvg` in `@openbot/ui/bloub-avatar`. It is
+ * The resting Bloub as one SVG element: `createStaticAvatarSvg` in `@pokebots/ui/bloub-avatar`. It is
  * repeated here because that file is JSX, which this bundle cannot compile; `BloubBot` itself is
  * compiled already, so calling it as a function renders the same component.
  */

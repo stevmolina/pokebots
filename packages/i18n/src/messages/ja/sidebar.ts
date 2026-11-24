@@ -183,7 +183,7 @@ export const messages = {
   "sidebar.delete.pending": "削除中…",
   "sidebar.delete.title": "{name} を削除しますか？",
   "sidebar.delete.agentDescription":
-    "エージェントとその OpenBot の会話をアプリから削除します。キュー、メモリー、ルーティン、ワークスペースも削除されます。接続した CLI プロバイダーが別に保存している履歴は削除されません。",
+    "エージェントとその Pokebots の会話をアプリから削除します。キュー、メモリー、ルーティン、ワークスペースも削除されます。接続した CLI プロバイダーが別に保存している履歴は削除されません。",
   "sidebar.delete.channelDescription":
     "チャンネルを停止します。履歴は「削除済みのチャンネル」にプレビュー専用で残ります。そこから復元できます。メンバーのエージェントは残ります。",
   "sidebar.delete.sectionDescription":
@@ -197,7 +197,7 @@ export const messages = {
   "sidebar.announce.movedPinned": "ピン留めしたチャットを {total} 件中 {position} 番目に移動しました。",
   "sidebar.announce.personFallback": "ユーザー",
   "sidebar.announce.chatFallback": "チャット",
-  "sidebar.mobileApp.title": "モバイル版 OpenBot",
+  "sidebar.mobileApp.title": "モバイル版 Pokebots",
   "sidebar.storage.lowTitle": "ストレージがほぼいっぱいです",
   "sidebar.storage.fullTitle": "ストレージがいっぱいです",
   "sidebar.storage.body": "{server} で {total} 中 {used} を使用中です。",
@@ -216,5 +216,5 @@ export const messages = {
   "sidebar.machine.alertTo": "アラートは {name} に送信されます",
   "sidebar.machine.details": "詳細を表示",
   "sidebar.machine.dismiss": "次のアラートまで非表示",
-  "sidebar.community.followX": "X で OpenBot をフォロー",
+  "sidebar.community.followX": "X で Pokebots をフォロー",
 } as const satisfies PartialTranslation<typeof source>;

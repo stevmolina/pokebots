@@ -1,4 +1,4 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import {
   CONVERSATION_MEMORY_CHANGE_LIMIT,
   CONVERSATION_MEMORY_CHANGES_ITEM_TYPE,
@@ -6,8 +6,8 @@ import {
   type ConversationMemoryChangeAction,
   type ConversationMessage,
   countConversationMemoryChanges,
-} from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
 
 /**
  * The system message that shows the memory changes of a turn, after its answer, or null when there

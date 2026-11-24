@@ -1,4 +1,4 @@
-import { type DynamicRecord, isBoolean, isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
+import { type DynamicRecord, isBoolean, isDynamicRecord, isNumber, isString } from "@pokebots/contracts/runtime-values";
 import { Effect } from "effect";
 import { type BrowserOperationError, browserFailure } from "./browser-effects";
 

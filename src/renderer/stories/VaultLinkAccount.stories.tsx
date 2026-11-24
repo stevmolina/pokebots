@@ -1,4 +1,4 @@
-import { VaultLinkAccount } from "@openbot/ui/features/vault/VaultLinkAccount";
+import { VaultLinkAccount } from "@pokebots/ui/features/vault/VaultLinkAccount";
 import { untrack } from "solid-js";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";

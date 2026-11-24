@@ -35,7 +35,7 @@ import {
   type TeamPresenceSnapshot,
   type TeamRole,
   type TeamSessionSummary,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   decodeList,
   decodeRecord,
@@ -45,9 +45,9 @@ import {
   requiredBoolean,
   requiredNumber,
   requiredString,
-} from "@openbot/contracts/ipc-decoding";
-import { type DynamicRecord, isBoolean, isNumber, isOneOf, isString } from "@openbot/contracts/runtime-values";
-import { type ServerAppearance, serverAppearanceOrNull } from "@openbot/contracts/team-protocol/host-appearance-v1";
+} from "@pokebots/contracts/ipc-decoding";
+import { type DynamicRecord, isBoolean, isNumber, isOneOf, isString } from "@pokebots/contracts/runtime-values";
+import { type ServerAppearance, serverAppearanceOrNull } from "@pokebots/contracts/team-protocol/host-appearance-v1";
 
 const HOST_PHASES = ["unconfigured", "idle", "starting", "online", "stopping", "error"] as const;
 const TEAM_ROLES = ["owner", "admin", "member"] as const;

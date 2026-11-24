@@ -1,8 +1,8 @@
-import type { AppTextKey } from "@openbot/i18n";
-import { Button, Server, Store } from "@openbot/ui";
-import { CONNECTOR_LISTINGS } from "@openbot/ui/features/connectors/connector-catalog";
-import type { ConnectorId } from "@openbot/ui/features/connectors/connectors";
-import { waitForSettingRow } from "@openbot/ui/features/conversation/agent-setting-links";
+import type { AppTextKey } from "@pokebots/i18n";
+import { Button, Server, Store } from "@pokebots/ui";
+import { CONNECTOR_LISTINGS } from "@pokebots/ui/features/connectors/connector-catalog";
+import type { ConnectorId } from "@pokebots/ui/features/connectors/connectors";
+import { waitForSettingRow } from "@pokebots/ui/features/conversation/agent-setting-links";
 import { createEffect, createSignal, For, flush, onCleanup, Show } from "solid-js";
 import { useI18n } from "../../i18n-context";
 import { usePlatform } from "../../platform";

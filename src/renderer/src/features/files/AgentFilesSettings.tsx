@@ -1,5 +1,5 @@
-import { canPreviewAttachment, type StoredFileRow } from "@openbot/contracts/ipc";
-import { AgentFilesView } from "@openbot/ui/features/files/AgentFilesView";
+import { canPreviewAttachment, type StoredFileRow } from "@pokebots/contracts/ipc";
+import { AgentFilesView } from "@pokebots/ui/features/files/AgentFilesView";
 import type { FilesPort } from "./files-port";
 import type { StorageUsageResource } from "./storage-usage";
 

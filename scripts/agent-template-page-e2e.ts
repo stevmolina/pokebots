@@ -13,8 +13,8 @@ import { mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { createServer } from "node:net";
 import { resolve } from "node:path";
 import { promisify } from "node:util";
-import { isAgentTemplateSnapshot } from "@openbot/contracts/ipc";
-import { createOpenBotLogger } from "@openbot/logging";
+import { isAgentTemplateSnapshot } from "@pokebots/contracts/ipc";
+import { createOpenBotLogger } from "@pokebots/logging";
 import { chromium } from "playwright-core";
 import { resolvePackageBin } from "./package-bin";
 

@@ -1,4 +1,4 @@
-import type { AppFormat, AppTranslate } from "@openbot/i18n";
+import type { AppFormat, AppTranslate } from "@pokebots/i18n";
 import { createEffect, createSignal, For, onCleanup, untrack } from "solid-js";
 import { avatarHeadColor } from "../../bloub-avatar";
 import type { AgentProfile } from "../../data";

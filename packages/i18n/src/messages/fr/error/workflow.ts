@@ -10,12 +10,12 @@ export const messages = {
   "error.workflow.conditionBranch": "Chaque connexion d’une condition doit être oui ou non.",
   "error.workflow.duplicateEdge": "Ces deux étapes ont déjà cette connexion.",
   "error.workflow.serverTooOld":
-    "Ce serveur ne prend pas en charge les workflows. Mettez à jour OpenBot sur l’ordinateur qui l’exécute.",
+    "Ce serveur ne prend pas en charge les workflows. Mettez à jour Pokebots sur l’ordinateur qui l’exécute.",
   "error.workflow.nodeUnsupported":
-    "Cette version d’OpenBot ne peut pas encore exécuter les étapes d’image, de fichier et de message.",
-  "error.workflow.interrupted": "OpenBot s’est arrêté pendant cette étape. Relancez-la.",
+    "Cette version d’Pokebots ne peut pas encore exécuter les étapes d’image, de fichier et de message.",
+  "error.workflow.interrupted": "Pokebots s’est arrêté pendant cette étape. Relancez-la.",
   "error.workflow.agentMissing": "Choisissez un agent pour cette étape.",
-  "error.workflow.handoffFailed": "OpenBot n’a pas pu envoyer cette étape à son agent.",
+  "error.workflow.handoffFailed": "Pokebots n’a pas pu envoyer cette étape à son agent.",
   "error.workflow.agentStepEnded": "Le message à l’agent a été supprimé avant sa réponse.",
   "error.workflow.agentStepStopped": "L’agent s’est arrêté avant de répondre à cette étape. Relancez l’étape.",
   "error.workflow.conditionUnclear": "Le modèle n’a pas répondu oui ou non.",
@@ -28,7 +28,7 @@ export const messages = {
     "Le modèle de cette étape n’est pas disponible. Choisissez un autre modèle pour cette étape.",
   "error.workflow.providerBusy": "Le fournisseur est occupé. Attendez quelques minutes, puis relancez l’étape.",
   "error.workflow.providerOffline":
-    "OpenBot n’a pas pu joindre le fournisseur. Vérifiez la connexion internet, puis relancez l’étape.",
+    "Pokebots n’a pas pu joindre le fournisseur. Vérifiez la connexion internet, puis relancez l’étape.",
   "error.workflow.modelBusy": "Une autre requête au modèle est en cours. Relancez l’étape bientôt.",
   "error.workflow.mediaFailed": "Le modèle n’a pas pu créer l’image ou la vidéo. Relancez l’étape.",
   "error.workflow.pictureMissing": "L’image n’est plus sur le serveur. Envoyez-la de nouveau.",
@@ -45,7 +45,7 @@ export const messages = {
   "error.workflow.noDecision": "Cette étape n’attend pas de décision.",
   "error.workflow.outputPlaceMissing": "Choisissez un lieu de messagerie pour cette sortie.",
   "error.workflow.outputChannelMissing": "Choisissez un canal pour cette sortie.",
-  "error.workflow.outputChannelFailed": "OpenBot n’a pas pu publier le résultat dans le canal. Relancez l’étape.",
+  "error.workflow.outputChannelFailed": "Pokebots n’a pas pu publier le résultat dans le canal. Relancez l’étape.",
   "error.workflow.discordNoMessage":
     "Cette sortie agit sur le message Discord qui a lancé l’exécution. Lancez l’exécution depuis une mention Discord ou choisissez Publier dans un salon.",
   "error.workflow.slackNoMessage":
@@ -56,7 +56,7 @@ export const messages = {
     "La connexion de messagerie de cette sortie est désactivée ou supprimée. Choisissez à nouveau un lieu.",
   "error.workflow.outputNotRunning":
     "La connexion de messagerie ne fonctionne pas pour le moment. Réessayez quand elle fonctionne.",
-  "error.workflow.outputRefused": "Le lieu a refusé la publication. Vérifiez qu’OpenBot peut y publier.",
+  "error.workflow.outputRefused": "Le lieu a refusé la publication. Vérifiez qu’Pokebots peut y publier.",
   "error.workflow.outputUncertain":
     "La publication s’est arrêtée en chemin. Une partie peut déjà être dans le lieu. Vérifiez avant de réessayer.",
   "error.workflow.tooLarge":
@@ -82,7 +82,7 @@ export const messages = {
     "L’application GitHub d’OpenBot ne peut pas modifier ce dépôt. Ouvrez GitHub et donnez-lui l’accès.",
   "error.workflow.githubLocked": "Cette conversation est verrouillée sur GitHub.",
   "error.workflow.githubRefused": "GitHub a refusé la modification : {detail}",
-  "error.workflow.githubUnreachable": "OpenBot n’a pas pu joindre GitHub. Relancez l’étape.",
+  "error.workflow.githubUnreachable": "Pokebots n’a pas pu joindre GitHub. Relancez l’étape.",
   "error.workflow.githubUncertain":
     "La modification s’est arrêtée en chemin. Elle peut déjà être sur GitHub. Vérifiez avant de relancer l’étape.",
   "error.workflow.githubNoEvent": "GitHub n’a aucune issue ni pull request sur laquelle ce déclencheur démarre.",
@@ -95,7 +95,7 @@ export const messages = {
     "Sunra utilise les images d'entrée uniquement avec un compte personnel. Sélectionnez votre compte personnel dans Sunra ou retirez les connexions d'images.",
   "error.workflow.sunraFailed": "Sunra n'a pas pu créer le fichier : {reason}",
   "error.workflow.sunraTimeout":
-    "Sunra n'a pas terminé le fichier à temps. Regardez le projet OpenBot sur sunra.ai avant de relancer l'étape.",
+    "Sunra n'a pas terminé le fichier à temps. Regardez le projet Pokebots sur sunra.ai avant de relancer l'étape.",
   "error.workflow.higgsfieldSignIn": "Connectez-vous à Higgsfield dans Apps pour utiliser les modèles Higgsfield.",
   "error.workflow.higgsfieldNoCredits":
     "Votre compte Higgsfield n'a pas assez de crédits. Ajoutez des crédits sur higgsfield.ai/pricing, puis relancez l'étape.",

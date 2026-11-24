@@ -4,12 +4,12 @@ import {
   isQueuedAgentReply,
   type QueueDelivery,
   type QueueSnapshot,
-} from "@openbot/contracts/ipc";
-import { markdownPreviewText } from "@openbot/contracts/markdown-preview-text";
-import type { AgentMessage, AgentProfile } from "@openbot/ui/data";
-import type { AwaitingReplyItem, AwaitingReplyState } from "@openbot/ui/features/conversation/AwaitingReplies";
-import type { SidebarAgentWait } from "@openbot/ui/features/sidebar/sidebar-agent-states";
-import { currentText } from "@openbot/ui/text";
+} from "@pokebots/contracts/ipc";
+import { markdownPreviewText } from "@pokebots/contracts/markdown-preview-text";
+import type { AgentMessage, AgentProfile } from "@pokebots/ui/data";
+import type { AwaitingReplyItem, AwaitingReplyState } from "@pokebots/ui/features/conversation/AwaitingReplies";
+import type { SidebarAgentWait } from "@pokebots/ui/features/sidebar/sidebar-agent-states";
+import { currentText } from "@pokebots/ui/text";
 
 /**
  * The rows of the waiting block: which agents this agent asked, and where each answer is.

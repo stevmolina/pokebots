@@ -1,6 +1,6 @@
-import type { AccountSession, AvatarColor, AvatarImageInput } from "@openbot/contracts/ipc";
-import { isBoolean, isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
-import { currentText } from "@openbot/ui/text";
+import type { AccountSession, AvatarColor, AvatarImageInput } from "@pokebots/contracts/ipc";
+import { isBoolean, isDynamicRecord, isNumber, isString } from "@pokebots/contracts/runtime-values";
+import { currentText } from "@pokebots/ui/text";
 
 /**
  * The desktop Settings > Profile calls for a signed-in browser. They use the

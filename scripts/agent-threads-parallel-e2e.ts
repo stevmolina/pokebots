@@ -16,9 +16,9 @@ import { randomUUID } from "node:crypto";
 import { existsSync, mkdirSync, rmSync } from "node:fs";
 import { homedir } from "node:os";
 import { join, resolve } from "node:path";
-import { agentProviderDescriptor, isAgentProvider } from "@openbot/contracts/agent-providers";
-import { type AgentApproval, type AgentTask, DEFAULT_AGENT_ACCESS } from "@openbot/contracts/ipc";
-import { translateFor } from "@openbot/i18n";
+import { agentProviderDescriptor, isAgentProvider } from "@pokebots/contracts/agent-providers";
+import { type AgentApproval, type AgentTask, DEFAULT_AGENT_ACCESS } from "@pokebots/contracts/ipc";
+import { translateFor } from "@pokebots/i18n";
 import { argument, connectChannelE2e, WAIT_MS, waitFor, writeReport } from "./channel-e2e-support";
 
 declare global {

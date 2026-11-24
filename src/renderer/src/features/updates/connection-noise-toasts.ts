@@ -1,6 +1,6 @@
-import { sourceText } from "@openbot/i18n";
-import { useText } from "@openbot/ui/text";
-import { setToastErrorMute } from "@openbot/ui/toast";
+import { sourceText } from "@pokebots/i18n";
+import { useText } from "@pokebots/ui/text";
+import { setToastErrorMute } from "@pokebots/ui/toast";
 import { onSettled } from "solid-js";
 import { statusAlertsShown } from "./status-alerts";
 

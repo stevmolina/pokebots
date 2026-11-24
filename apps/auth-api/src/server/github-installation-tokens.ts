@@ -2,7 +2,7 @@ import {
   GITHUB_ROUTE_EVENTS,
   GITHUB_ROUTE_REPOSITORIES_LIMIT,
   type GitHubRouteRepository,
-} from "@openbot/contracts/signal-protocol/github-route";
+} from "@pokebots/contracts/signal-protocol/github-route";
 import { Effect, Result, Schema } from "effect";
 import { importPKCS8, SignJWT } from "jose";
 

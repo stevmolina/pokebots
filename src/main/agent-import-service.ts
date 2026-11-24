@@ -15,7 +15,7 @@ import { type ArchiveOperationError, archiveCall, archiveFailure, archiveSync } 
 import { createHash, randomUUID } from "node:crypto";
 import { mkdir, open, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import { AVATAR_IMAGE_LIMITS, INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { AVATAR_IMAGE_LIMITS, INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import {
   AGENT_IMPORT_LIMITS,
   type AgentImportChannel,
@@ -31,8 +31,8 @@ import {
   type CreateChannelRoutineInput,
   type CreateRoutineInput,
   isChannelDraft,
-} from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
 import type { AgentService } from "../backend/agent-service";
 import type { ChannelService } from "../backend/channel-service";
 import { runCauseEffect } from "../backend/effect-boundary";

@@ -34,7 +34,7 @@ import {
   UserAvatar,
   UserPlus,
   Zap,
-} from "@openbot/ui";
+} from "@pokebots/ui";
 import { Dynamic } from "@solidjs/web";
 import { createMemo, For, Show } from "solid-js";
 import { useText } from "../../text";

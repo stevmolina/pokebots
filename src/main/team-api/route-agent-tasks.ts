@@ -1,16 +1,16 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import { AGENT_TASK_LIMIT_MAX, type AgentTasksSnapshot, type TeamMemberSummary } from "@openbot/contracts/ipc";
-import { type DynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { AGENT_TASKS_CAPABILITY, AGENT_TASKS_ROUTES } from "@openbot/contracts/team-protocol/agent-tasks-v1";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
+import { AGENT_TASK_LIMIT_MAX, type AgentTasksSnapshot, type TeamMemberSummary } from "@pokebots/contracts/ipc";
+import { type DynamicRecord, isString } from "@pokebots/contracts/runtime-values";
+import { AGENT_TASKS_CAPABILITY, AGENT_TASKS_ROUTES } from "@pokebots/contracts/team-protocol/agent-tasks-v1";
 import {
   ARTIFACT_REQUEST_CAPABILITY,
   ARTIFACT_REQUEST_ROUTE,
-} from "@openbot/contracts/team-protocol/artifact-request-v1";
+} from "@pokebots/contracts/team-protocol/artifact-request-v1";
 import {
   MESSAGE_QUEUE_ONLY_CAPABILITY,
   MESSAGE_QUEUE_ONLY_ROUTE,
-} from "@openbot/contracts/team-protocol/message-queue-only-v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/team-protocol/message-queue-only-v1";
+import { sourceText } from "@pokebots/i18n/source";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import type { TeamApiAgentTasks } from "./dependencies";
 import { HttpError } from "./http-error";

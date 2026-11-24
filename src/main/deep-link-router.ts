@@ -20,10 +20,10 @@
  * front of a link kind it has never heard of.
  */
 
-import { parseAgentTemplateUrl } from "@openbot/contracts/agent-template-links";
-import { type InviteLinkOptions, parseInviteUrl } from "@openbot/contracts/invite-links";
-import { type MarketplaceListingLink, parseMarketplaceUrl } from "@openbot/contracts/marketplace-links";
-import { parsePluginUrl } from "@openbot/contracts/plugin-links";
+import { parseAgentTemplateUrl } from "@pokebots/contracts/agent-template-links";
+import { type InviteLinkOptions, parseInviteUrl } from "@pokebots/contracts/invite-links";
+import { type MarketplaceListingLink, parseMarketplaceUrl } from "@pokebots/contracts/marketplace-links";
+import { parsePluginUrl } from "@pokebots/contracts/plugin-links";
 
 export type DeepLink =
   | { kind: "invite"; url: string }

@@ -1,6 +1,6 @@
 import { appendFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import type { RemoteRequestRecord, RemoteSyncProfileSink } from "@openbot/team-client/sync-profile";
+import type { RemoteRequestRecord, RemoteSyncProfileSink } from "@pokebots/team-client/sync-profile";
 import { Effect, Semaphore } from "effect";
 
 const FILE_NAME = "dev-sync-profile.ndjson";

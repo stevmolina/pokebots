@@ -32,10 +32,10 @@ import type {
   SaveRoutineFlowPositionInput,
   StopRoutineFlowRunInput,
   UpdateRoutineFlowLinkInput,
-} from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger } from "@openbot/logging";
-import { nextValidRoutineOccurrence, routineOnceInstant } from "@openbot/team-client/routine-schedule";
+} from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
+import { createOpenBotLogger } from "@pokebots/logging";
+import { nextValidRoutineOccurrence, routineOnceInstant } from "@pokebots/team-client/routine-schedule";
 import { Context, Effect, Exit, Layer, ManagedRuntime, Schema, Scope, Semaphore } from "effect";
 import { quietRoutineRun } from "../agent/routine-quiet-runs";
 import { coalescedPasses } from "../coalesced-passes";

@@ -13,8 +13,8 @@ import {
   type LibraryFolderRefusalReason,
   type LibraryFoldersSnapshot,
   libraryFolderName,
-} from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect, Semaphore } from "effect";
 import { writeFileAtomically } from "./atomic-json-file";
 import { StoredStateFailure, storedIO, storedSync } from "./stored-state-effects";

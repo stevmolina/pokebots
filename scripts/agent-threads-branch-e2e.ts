@@ -15,15 +15,15 @@
 import assert from "node:assert/strict";
 import { mkdirSync } from "node:fs";
 import { resolve } from "node:path";
-import { agentProviderDescriptor, isAgentProvider } from "@openbot/contracts/agent-providers";
+import { agentProviderDescriptor, isAgentProvider } from "@pokebots/contracts/agent-providers";
 import type {
   AgentTask,
   AgentTasksSnapshot,
   ConversationMessage,
   ConversationSnapshot,
   QueueSnapshot,
-} from "@openbot/contracts/ipc";
-import { translateFor } from "@openbot/i18n";
+} from "@pokebots/contracts/ipc";
+import { translateFor } from "@pokebots/i18n";
 import { argument, connectChannelE2e, LONG_PROMPT, SHORT_PROMPT, waitFor, writeReport } from "./channel-e2e-support";
 
 const OUT = resolve(import.meta.dirname, "../.openbot-build/agent-threads-branch-e2e");

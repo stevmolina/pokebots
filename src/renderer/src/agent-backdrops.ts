@@ -1,7 +1,7 @@
-import { chatBackdropPage, chatBackdropRequesters } from "@openbot/contracts/chat-visual";
-import { toast } from "@openbot/ui";
-import { type ChatBackdropChoice, customBackdropChoice } from "@openbot/ui/features/conversation/chat-backdrop";
-import { currentText } from "@openbot/ui/text";
+import { chatBackdropPage, chatBackdropRequesters } from "@pokebots/contracts/chat-visual";
+import { toast } from "@pokebots/ui";
+import { type ChatBackdropChoice, customBackdropChoice } from "@pokebots/ui/features/conversation/chat-backdrop";
+import { currentText } from "@pokebots/ui/text";
 import { setChatBackdrop, useChatBackdrop } from "./chat-backdrop-preference";
 import { addCustomBackdrop, readCustomBackdrop } from "./custom-backdrops";
 

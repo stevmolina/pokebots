@@ -1,6 +1,6 @@
-import type { LibraryFolder } from "@openbot/contracts/ipc";
-import { Check, ChevronRight, DropdownMenu, Folder, FolderInput, FolderPlus, X } from "@openbot/ui";
-import { useText } from "@openbot/ui/text";
+import type { LibraryFolder } from "@pokebots/contracts/ipc";
+import { Check, ChevronRight, DropdownMenu, Folder, FolderInput, FolderPlus, X } from "@pokebots/ui";
+import { useText } from "@pokebots/ui/text";
 import { For, Show } from "solid-js";
 
 /** A folder of an agent with its level in the tree: 0 at the top. */

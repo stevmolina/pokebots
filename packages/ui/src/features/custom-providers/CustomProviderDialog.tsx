@@ -1,12 +1,12 @@
-import { ProviderLogo } from "@openbot/brand";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { ProviderLogo } from "@pokebots/brand";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import type {
   CustomProviderHarness,
   CustomProviderInputKind,
   CustomProviderReasoningEffort,
   ProviderRuntimeStatus,
   SaveCustomProviderInput,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   agentProviderName,
   CUSTOM_PROVIDER_DEFAULT_INPUTS,
@@ -14,8 +14,8 @@ import {
   CUSTOM_PROVIDER_LIMITS,
   CUSTOM_PROVIDER_REASONING_EFFORTS,
   DEFAULT_CUSTOM_PROVIDER_HARNESS,
-} from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
+} from "@pokebots/contracts/ipc";
+import type { AppTextKey } from "@pokebots/i18n";
 import {
   ArrowLeft,
   Button,
@@ -36,7 +36,7 @@ import {
   Spinner,
   Text,
   X,
-} from "@openbot/ui";
+} from "@pokebots/ui";
 import { createEffect, createSignal, createStore, Match, onSettled, Show, Switch, untrack } from "solid-js";
 import { createScrollFades } from "../../components/createScrollFades";
 import { REASONING_LABEL } from "../../components/ProviderModelPicker";

@@ -2,9 +2,9 @@ import { createHash, randomBytes, randomUUID } from "node:crypto";
 import { EventEmitter } from "node:events";
 import { chmod, mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
-import { companySignInErrorKey } from "@openbot/contracts/company-sign-in";
-import type { HostKeyHandover } from "@openbot/contracts/host-key-handover";
-import { parseHostedServerClaim } from "@openbot/contracts/hosted-servers";
+import { companySignInErrorKey } from "@pokebots/contracts/company-sign-in";
+import type { HostKeyHandover } from "@pokebots/contracts/host-key-handover";
+import { parseHostedServerClaim } from "@pokebots/contracts/hosted-servers";
 import type {
   AvatarColor,
   AvatarImageInput,
@@ -16,43 +16,43 @@ import type {
   MobileConnectedDevice,
   MobileConnectLink,
   MobileConnectTicket,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   decodeCompanySignInScimToken,
   decodeCompanySignInSettings,
   type TestCompanySignInInput,
   type TestCompanySignInResult,
-} from "@openbot/contracts/ipc";
-import { decodeRecord, requiredString } from "@openbot/contracts/ipc-decoding";
-import type { LiveActivityRelayPush } from "@openbot/contracts/live-activity-relay";
+} from "@pokebots/contracts/ipc";
+import { decodeRecord, requiredString } from "@pokebots/contracts/ipc-decoding";
+import type { LiveActivityRelayPush } from "@pokebots/contracts/live-activity-relay";
 import {
   createMobileConnectUrl,
   isMobileConnectHostBinding,
   type MobileConnectHostBinding,
-} from "@openbot/contracts/mobile-connect";
+} from "@pokebots/contracts/mobile-connect";
 import {
   decodeRemoteSession,
   decodeRemoteSessionTicket,
   type RemoteSession,
   type RemoteSessionTicket,
-} from "@openbot/contracts/remote-control-plane";
-import { isBoolean, isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
+} from "@pokebots/contracts/remote-control-plane";
+import { isBoolean, isDynamicRecord, isNumber, isString } from "@pokebots/contracts/runtime-values";
 import {
   GITHUB_REPOSITORY_NAME_PATTERN,
   type GitHubRouteRepository,
-} from "@openbot/contracts/signal-protocol/github-route";
-import { TELEGRAM_LINK_CODE_PATTERN } from "@openbot/contracts/signal-protocol/telegram-route";
+} from "@pokebots/contracts/signal-protocol/github-route";
+import { TELEGRAM_LINK_CODE_PATTERN } from "@pokebots/contracts/signal-protocol/telegram-route";
 import {
   REMOTE_TICKET_AUDIENCE,
   type RemoteMemberRole,
   type RemoteTicketClaims,
-} from "@openbot/contracts/signal-protocol/ticket";
-import type { ServerAppearance } from "@openbot/contracts/team-protocol/host-appearance-v1";
-import { workosSignInErrorKey } from "@openbot/contracts/workos-sign-in";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger, toLogValue } from "@openbot/logging";
-import { decodeIntegrationGrant } from "@openbot/team-client/integration-authorization";
-import { referenceFrom, safeReference } from "@openbot/user-errors";
+} from "@pokebots/contracts/signal-protocol/ticket";
+import type { ServerAppearance } from "@pokebots/contracts/team-protocol/host-appearance-v1";
+import { workosSignInErrorKey } from "@pokebots/contracts/workos-sign-in";
+import { sourceText } from "@pokebots/i18n/source";
+import { createOpenBotLogger, toLogValue } from "@pokebots/logging";
+import { decodeIntegrationGrant } from "@pokebots/team-client/integration-authorization";
+import { referenceFrom, safeReference } from "@pokebots/user-errors";
 import { Deferred, Duration, Effect, Exit, type Layer, Result, Schema, Semaphore } from "effect";
 import { createLocalJWKSet, jwtVerify } from "jose";
 import { z } from "zod";
@@ -189,7 +189,7 @@ const remoteTicketJwksSchema = z.object({
 });
 
 // The account API answers the same shape for a host credential and for a member session, so both
-// paths below decode it with the one function in `@openbot/contracts/remote-control-plane`.
+// paths below decode it with the one function in `@pokebots/contracts/remote-control-plane`.
 export type RemoteConnectionBootstrap = RemoteSessionTicket;
 
 /** Asks for the host's home Signal machine. Only the host peer asks; see `issueRemoteHostTicket`. */

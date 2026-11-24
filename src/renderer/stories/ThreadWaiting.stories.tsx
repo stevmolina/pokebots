@@ -1,5 +1,5 @@
-import type { AgentTask, QueueDelivery } from "@openbot/contracts/ipc";
-import { AgentThreadView } from "@openbot/ui/features/conversation/threads/AgentThreadView";
+import type { AgentTask, QueueDelivery } from "@pokebots/contracts/ipc";
+import { AgentThreadView } from "@pokebots/ui/features/conversation/threads/AgentThreadView";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { STORY_AGENT } from "../src/preview/fixtures";
 

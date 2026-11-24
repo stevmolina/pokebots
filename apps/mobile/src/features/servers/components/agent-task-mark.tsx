@@ -1,4 +1,4 @@
-import type { AgentTask } from "@openbot/contracts/ipc";
+import type { AgentTask } from "@pokebots/contracts/ipc";
 import Check from "lucide-react-native/icons/check";
 import Circle from "lucide-react-native/icons/circle";
 import X from "lucide-react-native/icons/x";

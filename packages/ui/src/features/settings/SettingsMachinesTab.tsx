@@ -1,8 +1,8 @@
-import type { ServerSummary } from "@openbot/contracts/ipc";
-import { Button, ChevronRight } from "@openbot/ui";
-import { MACHINE_STATE_LABEL } from "@openbot/ui/features/servers/MachinesPage";
-import { ServerMark } from "@openbot/ui/features/servers/ServerRail";
-import { useText } from "@openbot/ui/text";
+import type { ServerSummary } from "@pokebots/contracts/ipc";
+import { Button, ChevronRight } from "@pokebots/ui";
+import { MACHINE_STATE_LABEL } from "@pokebots/ui/features/servers/MachinesPage";
+import { ServerMark } from "@pokebots/ui/features/servers/ServerRail";
+import { useText } from "@pokebots/ui/text";
 import { For, Show } from "solid-js";
 
 export interface SettingsMachinesTabProps {

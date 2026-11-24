@@ -1,7 +1,7 @@
 import { env, waitUntil } from "cloudflare:workers";
-import { FEEDBACK_REPOSITORY, LEGACY_FEEDBACK_REPOSITORY } from "@openbot/contracts/feedback";
-import { HOSTING_DEVELOPER_KEY_HEADER } from "@openbot/contracts/hosted-servers";
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
+import { FEEDBACK_REPOSITORY, LEGACY_FEEDBACK_REPOSITORY } from "@pokebots/contracts/feedback";
+import { HOSTING_DEVELOPER_KEY_HEADER } from "@pokebots/contracts/hosted-servers";
+import { isDynamicRecord, isString } from "@pokebots/contracts/runtime-values";
 import { Effect } from "effect";
 import { type AccountAnalytics, createAccountAnalytics } from "./account-analytics";
 import { AccountAttribution } from "./account-attribution";

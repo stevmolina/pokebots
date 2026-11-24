@@ -1,6 +1,6 @@
-import SharedAgentSettingsPanel from "@openbot/ui/features/conversation/AgentSettingsPanel";
-import { AgentSessions } from "@openbot/ui/features/conversation/threads/AgentSessions";
-import type { ThreadItem } from "@openbot/ui/features/conversation/threads/thread-types";
+import SharedAgentSettingsPanel from "@pokebots/ui/features/conversation/AgentSettingsPanel";
+import { AgentSessions } from "@pokebots/ui/features/conversation/threads/AgentSessions";
+import type { ThreadItem } from "@pokebots/ui/features/conversation/threads/thread-types";
 import { fireEvent, render, screen, waitFor } from "@solidjs/testing-library";
 import { describe, expect, it, vi } from "vitest";
 import { STORY_AGENT, STORY_AGENT_STATUS, STORY_MODELS, storyRuntimeSettings } from "../../../stories/fixtures";

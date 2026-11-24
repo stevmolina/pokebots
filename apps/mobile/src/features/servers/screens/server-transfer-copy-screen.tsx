@@ -1,6 +1,6 @@
-import { AGENT_IMPORT_LIMITS, type RemoteInstanceTransferResult } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
-import { copiedTransferUpload } from "@openbot/team-client/team-api-requests";
+import { AGENT_IMPORT_LIMITS, type RemoteInstanceTransferResult } from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
+import { copiedTransferUpload } from "@pokebots/team-client/team-api-requests";
 import { useQuery } from "@tanstack/react-query";
 import { useLocalSearchParams } from "expo-router";
 import { Typography } from "heroui-native";

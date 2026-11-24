@@ -5,8 +5,8 @@
 import { constants } from "node:fs";
 import { lstat, mkdir, open, realpath } from "node:fs/promises";
 import { basename, isAbsolute, join, relative, resolve, sep } from "node:path";
-import { sourceText } from "@openbot/i18n/source";
-import { redactSecrets } from "@openbot/logging";
+import { sourceText } from "@pokebots/i18n/source";
+import { redactSecrets } from "@pokebots/logging";
 import { Effect } from "effect";
 import { z } from "zod";
 import type { DynamicToolResult } from "../protocol";

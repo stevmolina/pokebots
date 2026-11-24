@@ -7,11 +7,11 @@ import {
   decodeAgentInstructionsFileFromMain,
   isAgentMemory,
   type TeamRealtimeEvent,
-} from "@openbot/contracts/ipc";
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
-import { AGENT_INSTRUCTIONS_ROUTES } from "@openbot/contracts/team-protocol/agent-instructions-v1";
-import { AGENT_MEMORIES_CAPABILITY } from "@openbot/contracts/team-protocol/agent-memories-v1";
-import { runTeamEffect } from "@openbot/team-client";
+} from "@pokebots/contracts/ipc";
+import { TEAM_API_ROUTES } from "@pokebots/contracts/team-api-routes";
+import { AGENT_INSTRUCTIONS_ROUTES } from "@pokebots/contracts/team-protocol/agent-instructions-v1";
+import { AGENT_MEMORIES_CAPABILITY } from "@pokebots/contracts/team-protocol/agent-memories-v1";
+import { runTeamEffect } from "@pokebots/team-client";
 import {
   addAgentFolder,
   browseAgentFolders,
@@ -23,14 +23,14 @@ import {
   readAgentFolders,
   removeAgentFolder,
   setRoutineResultDestination,
-} from "@openbot/team-client/team-admin-requests";
+} from "@pokebots/team-client/team-admin-requests";
 import {
   type AgentMemoriesRequest,
   readAgentMemories,
   readAgentMemorySelection,
   setAgentMemoryInclusion,
   type TeamApiRequest,
-} from "@openbot/team-client/team-api-requests";
+} from "@pokebots/team-client/team-api-requests";
 import { Effect } from "effect";
 import type { AgentFoldersApi, AgentInstructionsApi } from "../conversation/agent-folders-port";
 import type { AgentMemoriesApi } from "../conversation/memories-port";

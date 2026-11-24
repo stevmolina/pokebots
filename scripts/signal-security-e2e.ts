@@ -19,19 +19,19 @@ import {
   GITHUB_EVENTS_PATH,
   GITHUB_ROUTE_AUDIENCE,
   GITHUB_SIGNATURE_HEADER,
-} from "@openbot/contracts/signal-protocol/github-route";
+} from "@pokebots/contracts/signal-protocol/github-route";
 import {
   createIngressQueueKeyPair,
   importIngressQueuePrivateKey,
   openQueuedDelivery,
-} from "@openbot/contracts/signal-protocol/ingress-queue";
-import { SLACK_EVENTS_PATH } from "@openbot/contracts/signal-protocol/slack-route";
-import { TELEGRAM_ROUTE_AUDIENCE, TELEGRAM_UPDATES_PATH } from "@openbot/contracts/signal-protocol/telegram-route";
+} from "@pokebots/contracts/signal-protocol/ingress-queue";
+import { SLACK_EVENTS_PATH } from "@pokebots/contracts/signal-protocol/slack-route";
+import { TELEGRAM_ROUTE_AUDIENCE, TELEGRAM_UPDATES_PATH } from "@pokebots/contracts/signal-protocol/telegram-route";
 import {
   REMOTE_TICKET_AUDIENCE,
   REMOTE_TICKET_PROTOCOL_VERSION,
   type RemoteTicketClaims,
-} from "@openbot/contracts/signal-protocol/ticket";
+} from "@pokebots/contracts/signal-protocol/ticket";
 import {
   STANDARD_WEBHOOKS_FORMAT,
   WEBHOOK_DELIVERY_ID_HEADER,
@@ -39,8 +39,8 @@ import {
   WEBHOOK_ROUTE_AUDIENCE,
   WEBHOOK_SIGNATURE_HEADER,
   WEBHOOK_TIMESTAMP_HEADER,
-} from "@openbot/contracts/signal-protocol/webhook-route";
-import { createOpenBotLogger } from "@openbot/logging";
+} from "@pokebots/contracts/signal-protocol/webhook-route";
+import { createOpenBotLogger } from "@pokebots/logging";
 import { exportJWK, type JWTPayload, SignJWT } from "jose";
 
 const ROOT = resolve(import.meta.dirname, "..");

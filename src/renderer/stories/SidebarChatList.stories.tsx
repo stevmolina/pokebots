@@ -3,16 +3,16 @@ import {
   SIDEBAR_PEOPLE_SECTION_ID,
   SIDEBAR_UNASSIGNED_SECTION_ID,
   type SidebarLayoutSnapshot,
-} from "@openbot/contracts/ipc";
-import type { AvatarMood } from "@openbot/ui/bloub-avatar";
-import { accountUsageProviderRows } from "@openbot/ui/features/account/account-usage-view";
-import type { Machine } from "@openbot/ui/features/servers/MachinesPage";
-import { Sidebar } from "@openbot/ui/features/sidebar/Sidebar";
+} from "@pokebots/contracts/ipc";
+import type { AvatarMood } from "@pokebots/ui/bloub-avatar";
+import { accountUsageProviderRows } from "@pokebots/ui/features/account/account-usage-view";
+import type { Machine } from "@pokebots/ui/features/servers/MachinesPage";
+import { Sidebar } from "@pokebots/ui/features/sidebar/Sidebar";
 import {
   SIDEBAR_DOCK_FOLDERS_VIEW_ID,
   type SidebarAgentState,
   sidebarSnoozeMarker,
-} from "@openbot/ui/features/sidebar/sidebar-types";
+} from "@pokebots/ui/features/sidebar/sidebar-types";
 import { createSignal } from "solid-js";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";

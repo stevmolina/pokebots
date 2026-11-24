@@ -1,8 +1,8 @@
-import { type InviteLinkOptions, parseInviteUrl, selfHostedApiOrigin } from "@openbot/contracts/invite-links";
-import type { AppFormat, MobileTranslate } from "@openbot/i18n/mobile";
-import { runTeamEffect } from "@openbot/team-client";
-import type { RemoteInvitePreview } from "@openbot/team-client/remote-directory";
-import type { UserErrorDetails } from "@openbot/user-errors";
+import { type InviteLinkOptions, parseInviteUrl, selfHostedApiOrigin } from "@pokebots/contracts/invite-links";
+import type { AppFormat, MobileTranslate } from "@pokebots/i18n/mobile";
+import { runTeamEffect } from "@pokebots/team-client";
+import type { RemoteInvitePreview } from "@pokebots/team-client/remote-directory";
+import type { UserErrorDetails } from "@pokebots/user-errors";
 import * as Clipboard from "expo-clipboard";
 import { type Href, router } from "expo-router";
 import { usePreventRemove } from "expo-router/react-navigation";

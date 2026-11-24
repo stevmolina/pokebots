@@ -1,7 +1,7 @@
-import { avatarHeadColor, avatarStyleForSeed } from "@openbot/brand/bloub-avatar";
-import { type AvatarMood, avatarMoodIsBusy, avatarMoodPresentation } from "@openbot/brand/bloub-avatar-motion";
-import { type PokebotsPortrait, pokebotsDefaultPortrait } from "@openbot/brand/pokebots-avatar";
-import type { AvatarColor, AvatarHue } from "@openbot/contracts/ipc";
+import { avatarHeadColor, avatarStyleForSeed } from "@pokebots/brand/bloub-avatar";
+import { type AvatarMood, avatarMoodIsBusy, avatarMoodPresentation } from "@pokebots/brand/bloub-avatar-motion";
+import { type PokebotsPortrait, pokebotsDefaultPortrait } from "@pokebots/brand/pokebots-avatar";
+import type { AvatarColor, AvatarHue } from "@pokebots/contracts/ipc";
 import { Canvas, Picture } from "@shopify/react-native-skia";
 import { Image } from "expo-image";
 import { useThemeColor } from "heroui-native/hooks";

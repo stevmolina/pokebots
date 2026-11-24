@@ -1,4 +1,4 @@
-import type { AppTranslate } from "@openbot/i18n";
+import type { AppTranslate } from "@pokebots/i18n";
 import { Effect } from "effect";
 import { type BrowserWindow, dialog, Notification } from "electron";
 import { showRetainedNotification } from "./desktop-notifications";

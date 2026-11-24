@@ -17,9 +17,9 @@ import {
   workflowGitHubEventItemKind,
   workflowGitHubTriggerRepositories,
   workflowListField,
-} from "@openbot/contracts/ipc";
-import { isOneOf } from "@openbot/contracts/runtime-values";
-import type { MobileTextKey } from "@openbot/i18n/mobile";
+} from "@pokebots/contracts/ipc";
+import { isOneOf } from "@pokebots/contracts/runtime-values";
+import type { MobileTextKey } from "@pokebots/i18n/mobile";
 
 /**
  * The GitHub settings of a trigger and of an output, as the desktop cards read and write them. The

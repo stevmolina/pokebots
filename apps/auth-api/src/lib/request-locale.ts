@@ -1,5 +1,5 @@
-import { isAppLanguage } from "@openbot/contracts/app-language";
-import type { TranslatedLocale } from "@openbot/i18n";
+import { isAppLanguage } from "@pokebots/contracts/app-language";
+import type { TranslatedLocale } from "@pokebots/i18n";
 import { createIsomorphicFn } from "@tanstack/solid-start";
 import { getCookie, getRequestHeader } from "@tanstack/solid-start/server";
 import { chosenSiteLocale, SITE_LOCALE_COOKIE } from "./site-paths";

@@ -22,22 +22,22 @@ import {
   parseSetMcpAccessInput,
   type ServerSummary,
   type TestMcpServerInput,
-} from "@openbot/contracts/ipc";
-import { TEAM_BROWSER_VIEW_CAPABILITY } from "@openbot/contracts/team-protocol/browser-view-v1";
-import type { TeamCurrentCapability } from "@openbot/contracts/team-protocol/current";
-import { MCP_ACCESS_CAPABILITY, MCP_ACCESS_ROUTES } from "@openbot/contracts/team-protocol/mcp-access-v1";
+} from "@pokebots/contracts/ipc";
+import { TEAM_BROWSER_VIEW_CAPABILITY } from "@pokebots/contracts/team-protocol/browser-view-v1";
+import type { TeamCurrentCapability } from "@pokebots/contracts/team-protocol/current";
+import { MCP_ACCESS_CAPABILITY, MCP_ACCESS_ROUTES } from "@pokebots/contracts/team-protocol/mcp-access-v1";
 import {
   MCP_SIGN_IN_APP_CAPABILITY,
   MCP_SIGN_IN_APP_ROUTES,
-} from "@openbot/contracts/team-protocol/mcp-sign-in-app-v1";
-import { MCP_SIGN_IN_CAPABILITY, MCP_SIGN_IN_ROUTES } from "@openbot/contracts/team-protocol/mcp-sign-in-v1";
-import { MCP_ROUTES } from "@openbot/contracts/team-protocol/mcp-v1";
+} from "@pokebots/contracts/team-protocol/mcp-sign-in-app-v1";
+import { MCP_SIGN_IN_CAPABILITY, MCP_SIGN_IN_ROUTES } from "@pokebots/contracts/team-protocol/mcp-sign-in-v1";
+import { MCP_ROUTES } from "@pokebots/contracts/team-protocol/mcp-v1";
 import {
   SIGN_IN_RELAY_DEEP_LINK_CAPABILITY,
   SIGN_IN_RELAY_DEEP_LINK_ROUTES,
-} from "@openbot/contracts/team-protocol/sign-in-relay-deep-link-v1";
-import { SIGN_IN_RELAY_CAPABILITY, SIGN_IN_RELAY_ROUTES } from "@openbot/contracts/team-protocol/sign-in-relay-v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/team-protocol/sign-in-relay-deep-link-v1";
+import { SIGN_IN_RELAY_CAPABILITY, SIGN_IN_RELAY_ROUTES } from "@pokebots/contracts/team-protocol/sign-in-relay-v1";
+import { sourceText } from "@pokebots/i18n/source";
 import type { AgentService } from "../../backend/agent-service";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import { MCP_STDIO_PROBE_TIMEOUT_MS } from "../../backend/mcp-probe";

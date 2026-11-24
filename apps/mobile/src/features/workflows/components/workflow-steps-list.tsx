@@ -1,5 +1,5 @@
-import type { WorkflowGraph, WorkflowNode } from "@openbot/contracts/ipc";
-import type { MobileTranslate } from "@openbot/i18n/mobile";
+import type { WorkflowGraph, WorkflowNode } from "@pokebots/contracts/ipc";
+import type { MobileTranslate } from "@pokebots/i18n/mobile";
 import { Typography } from "heroui-native";
 import CornerDownLeft from "lucide-react-native/icons/corner-down-left";
 import { useState } from "react";

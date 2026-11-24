@@ -5,7 +5,7 @@ import {
   type ChannelSummary,
   type ClientAgentSummary,
   type ServerNotificationLevel,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   type AgentNotificationChannel,
   agentEventAgentId,
@@ -13,9 +13,9 @@ import {
   agentNotificationLevel,
   notificationRequestKey,
   teammateTurnCompleted,
-} from "@openbot/team-client/agent-notifications";
-import { channelReplyNotifications } from "@openbot/team-client/channel-notifications";
-import type { TextValue } from "@openbot/ui/text";
+} from "@pokebots/team-client/agent-notifications";
+import { channelReplyNotifications } from "@pokebots/team-client/channel-notifications";
+import type { TextValue } from "@pokebots/ui/text";
 import { createSignal, onCleanup, untrack } from "solid-js";
 import { startActionSounds } from "../../action-sounds";
 import { playCompletionSoundForAgentEvent, unlockCompletionSound } from "../../completion-sound";

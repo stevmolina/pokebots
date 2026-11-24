@@ -1,5 +1,5 @@
-import type { RoomAgent, RoomMemory, RoomMessage, RoomSummary, RoomsResult, RoomTask } from "@openbot/contracts/rooms";
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
+import type { RoomAgent, RoomMemory, RoomMessage, RoomSummary, RoomsResult, RoomTask } from "@pokebots/contracts/rooms";
+import { isDynamicRecord } from "@pokebots/contracts/runtime-values";
 
 const text = (v: unknown): v is string => typeof v === "string";
 const nullableText = (v: unknown): v is string | null => v === null || text(v);

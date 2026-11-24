@@ -1,9 +1,9 @@
 import { createHash } from "node:crypto";
 import { mkdirSync, renameSync, rmSync, statSync } from "node:fs";
 import { join, resolve, sep } from "node:path";
-import { ATTACHMENT_LIMITS } from "@openbot/contracts/input-limits";
-import { createOpenBotLogger } from "@openbot/logging";
-import type { WAMessage } from "@openbot/whatsapp/baileys";
+import { ATTACHMENT_LIMITS } from "@pokebots/contracts/input-limits";
+import { createOpenBotLogger } from "@pokebots/logging";
+import type { WAMessage } from "@pokebots/whatsapp/baileys";
 import type { MessagingHistoryStore } from "../messaging-history-store";
 import type { ContextEntry, HistoryFilter, InboundFile } from "../messaging-types";
 import { downloadWhatsAppMedia } from "./whatsapp-media";

@@ -1,5 +1,5 @@
-import { BRAIN_CAPABILITY, BRAIN_ROUTE, brainRequestSchema } from "@openbot/contracts/brain";
-import { sourceText } from "@openbot/i18n/source";
+import { BRAIN_CAPABILITY, BRAIN_ROUTE, brainRequestSchema } from "@pokebots/contracts/brain";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect } from "effect";
 import type { BrainService } from "../../backend/brain-service";
 import type { TeamApiMcpServerOwners, TeamApiMcpServers } from "./dependencies";

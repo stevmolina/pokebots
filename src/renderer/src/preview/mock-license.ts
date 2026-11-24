@@ -1,4 +1,4 @@
-import type { LicenseDesktopApi } from "@openbot/contracts/ipc";
+import type { LicenseDesktopApi } from "@pokebots/contracts/ipc";
 import {
   LICENSE_INCLUDED_USERS,
   type LicensePlan,
@@ -6,8 +6,8 @@ import {
   type LicenseUser,
   licenseMonthlyAmount,
   licensePlanOf,
-} from "@openbot/contracts/license";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/license";
+import { sourceText } from "@pokebots/i18n/source";
 
 const DAY = 24 * 60 * 60_000;
 

@@ -6,7 +6,7 @@
  * bun run marketplace:build:plugins -- --check to verify.
  */
 
-import type { SkillCategory } from "@openbot/contracts/ipc";
+import type { SkillCategory } from "@pokebots/contracts/ipc";
 
 /** One credential the user types. It goes into a `header` (http) or an `env` value (stdio). */
 export interface MobilePluginAuthField {

@@ -1,7 +1,7 @@
-import type { WithdrawFeedbackStatus } from "@openbot/contracts/ipc";
-import { Heading, Text } from "@openbot/ui";
-import type { AgentProfile, ChatActionMarkerModel } from "@openbot/ui/data";
-import { ChatActionMarker } from "@openbot/ui/features/conversation/ChatActionMarker";
+import type { WithdrawFeedbackStatus } from "@pokebots/contracts/ipc";
+import { Heading, Text } from "@pokebots/ui";
+import type { AgentProfile, ChatActionMarkerModel } from "@pokebots/ui/data";
+import { ChatActionMarker } from "@pokebots/ui/features/conversation/ChatActionMarker";
 import { createSignal } from "solid-js";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";

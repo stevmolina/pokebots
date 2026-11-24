@@ -1,5 +1,5 @@
-import { canPreviewAttachment } from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
+import { canPreviewAttachment } from "@pokebots/contracts/ipc";
+import type { AppTextKey } from "@pokebots/i18n";
 import {
   Badge,
   Button,
@@ -23,9 +23,9 @@ import {
   Skeleton,
   Trash2,
   TriangleAlert,
-} from "@openbot/ui";
-import type { AgentProfile } from "@openbot/ui/data";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/ui";
+import type { AgentProfile } from "@pokebots/ui/data";
+import { useText } from "@pokebots/ui/text";
 import { Dynamic, type JSX } from "@solidjs/web";
 import { createMemo, createSignal, createStore, For, Show } from "solid-js";
 import { fileBadge } from "../conversation/AttachmentCards";

@@ -1,11 +1,11 @@
-import type { AgentTask } from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
-import { isAgentTaskActive, type TasksSectionId, taskSections } from "@openbot/team-client/agent-tasks";
-import { Button, Square } from "@openbot/ui";
-import type { AgentProfile } from "@openbot/ui/data";
-import { AgentAvatar } from "@openbot/ui/features/agents/AgentAvatar";
-import { AgentTaskMark, type AgentTaskWait, agentTaskStatus } from "@openbot/ui/features/conversation/AgentTasks";
-import { useText } from "@openbot/ui/text";
+import type { AgentTask } from "@pokebots/contracts/ipc";
+import type { AppTextKey } from "@pokebots/i18n";
+import { isAgentTaskActive, type TasksSectionId, taskSections } from "@pokebots/team-client/agent-tasks";
+import { Button, Square } from "@pokebots/ui";
+import type { AgentProfile } from "@pokebots/ui/data";
+import { AgentAvatar } from "@pokebots/ui/features/agents/AgentAvatar";
+import { AgentTaskMark, type AgentTaskWait, agentTaskStatus } from "@pokebots/ui/features/conversation/AgentTasks";
+import { useText } from "@pokebots/ui/text";
 import { createMemo, createSignal, createUniqueId, For, onCleanup, Show, untrack } from "solid-js";
 
 /** The closed tasks that the Done column shows before "Show all". */

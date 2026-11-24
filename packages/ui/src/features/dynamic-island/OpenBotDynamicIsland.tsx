@@ -1,5 +1,5 @@
-import { AppLogo } from "@openbot/brand";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { AppLogo } from "@pokebots/brand";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import type {
   AppVariant,
   DynamicIslandAction,
@@ -9,14 +9,14 @@ import type {
   DynamicIslandPresentation,
   DynamicIslandPromptItem,
   DynamicIslandTakeoverItem,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   DEFAULT_DYNAMIC_ISLAND_PREFERENCE,
   DYNAMIC_ISLAND_DEFAULT_COMPACT_HEIGHT,
   DYNAMIC_ISLAND_SIZE_LIMITS,
   dynamicIslandCompactHeight,
-} from "@openbot/contracts/ipc";
-import type { AppTextKey, AppTranslate } from "@openbot/i18n";
+} from "@pokebots/contracts/ipc";
+import type { AppTextKey, AppTranslate } from "@pokebots/i18n";
 import {
   ArrowUp,
   Badge,
@@ -37,10 +37,10 @@ import {
   Monitor,
   OctagonX,
   Spinner,
-} from "@openbot/ui";
-import { useText } from "@openbot/ui/text";
-import { prefersReducedMotion } from "@openbot/ui/utils";
-import type { UserErrorDetails } from "@openbot/user-errors";
+} from "@pokebots/ui";
+import { useText } from "@pokebots/ui/text";
+import { prefersReducedMotion } from "@pokebots/ui/utils";
+import type { UserErrorDetails } from "@pokebots/user-errors";
 import { Dynamic, type JSX } from "@solidjs/web";
 import {
   createEffect,

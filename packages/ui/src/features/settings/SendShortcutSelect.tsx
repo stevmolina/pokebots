@@ -1,5 +1,5 @@
-import type { AppTextKey } from "@openbot/i18n";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@openbot/ui";
+import type { AppTextKey } from "@pokebots/i18n";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@pokebots/ui";
 import type { JSX } from "@solidjs/web";
 import { useText } from "../../text";
 import { SEND_SHORTCUT_MODES, type SendShortcutMode } from "../conversation/send-shortcut";

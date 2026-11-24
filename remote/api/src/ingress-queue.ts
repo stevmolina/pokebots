@@ -3,7 +3,7 @@ import {
   type QueuedSignalMessage,
   type RouteHostState,
   sealQueuedDelivery,
-} from "@openbot/contracts/signal-protocol/ingress-queue";
+} from "@pokebots/contracts/signal-protocol/ingress-queue";
 import { Deferred, Effect } from "effect";
 
 /**

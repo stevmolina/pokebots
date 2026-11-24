@@ -1,15 +1,15 @@
-import type { RoutineLimitPolicy, RoutineRunPlace } from "@openbot/contracts/ipc";
-import { type EventFilter, type EventRoutine, isEventFilter } from "@openbot/contracts/ipc-events";
-import { type DynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { WEBHOOK_DELIVERY_BODY_BYTES_LIMIT } from "@openbot/contracts/signal-protocol/messages";
+import type { RoutineLimitPolicy, RoutineRunPlace } from "@pokebots/contracts/ipc";
+import { type EventFilter, type EventRoutine, isEventFilter } from "@pokebots/contracts/ipc-events";
+import { type DynamicRecord, isString } from "@pokebots/contracts/runtime-values";
+import { WEBHOOK_DELIVERY_BODY_BYTES_LIMIT } from "@pokebots/contracts/signal-protocol/messages";
 import {
   WEBHOOK_DELIVERY_ID_HEADER,
   WEBHOOK_MAX_CLOCK_SKEW_SECONDS,
   WEBHOOK_SIGNATURE_HEADER,
   WEBHOOK_TIMESTAMP_HEADER,
-} from "@openbot/contracts/signal-protocol/webhook-route";
-import { createOpenBotLogger } from "@openbot/logging";
-import { RoutineInputError } from "@openbot/team-client/routine-schedule";
+} from "@pokebots/contracts/signal-protocol/webhook-route";
+import { createOpenBotLogger } from "@pokebots/logging";
+import { RoutineInputError } from "@pokebots/team-client/routine-schedule";
 import { Effect } from "effect";
 import type { RoutineOperationFailed } from "./routine-scheduler";
 

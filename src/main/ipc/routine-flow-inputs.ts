@@ -13,7 +13,7 @@ import {
   type SaveRoutineFlowPositionInput,
   type StopRoutineFlowRunInput,
   type UpdateRoutineFlowLinkInput,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 
 export function parseSaveRoutineFlowPosition(value: unknown): SaveRoutineFlowPositionInput {
   if (!isSaveRoutineFlowPositionInput(value)) throw new Error("Invalid routine flow position.");

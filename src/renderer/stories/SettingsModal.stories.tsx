@@ -4,10 +4,10 @@ import type {
   MobileConnectedDevice,
   ServerSummary,
   UpdateStatus,
-} from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
-import { Button, Toaster, toast } from "@openbot/ui";
-import { DEFAULT_GENERAL_SETTINGS, type GeneralSettingsValue } from "@openbot/ui/features/settings/app-settings";
+} from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
+import { Button, Toaster, toast } from "@pokebots/ui";
+import { DEFAULT_GENERAL_SETTINGS, type GeneralSettingsValue } from "@pokebots/ui/features/settings/app-settings";
 import { createSignal, onCleanup } from "solid-js";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";

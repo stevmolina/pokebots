@@ -15,8 +15,8 @@ import {
   CONVERSATION_PLAN_ITEM_TYPE,
   CONVERSATION_SUBAGENTS_ITEM_TYPE,
   MARKETPLACE_SUGGESTION_ITEM_TYPE_PREFIX,
-} from "@openbot/contracts/ipc";
-import { type DynamicRecord, isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
+} from "@pokebots/contracts/ipc";
+import { type DynamicRecord, isDynamicRecord, isString } from "@pokebots/contracts/runtime-values";
 import { expect } from "e2e";
 import { WebSocket } from "ws";
 import { readyProvider, waitFor } from "./live-agent";

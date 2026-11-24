@@ -8,10 +8,10 @@ import type {
   VoiceLiveEvent,
   VoiceLiveSession,
   VoiceLiveStart,
-} from "@openbot/contracts/ipc";
-import { speechTextFromMarkdown } from "@openbot/contracts/speech-text";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger } from "@openbot/logging";
+} from "@pokebots/contracts/ipc";
+import { speechTextFromMarkdown } from "@pokebots/contracts/speech-text";
+import { sourceText } from "@pokebots/i18n/source";
+import { createOpenBotLogger } from "@pokebots/logging";
 import { Deferred, Effect, Fiber, Schema, Semaphore } from "effect";
 import type { AgentClient } from "../agent-client";
 import {

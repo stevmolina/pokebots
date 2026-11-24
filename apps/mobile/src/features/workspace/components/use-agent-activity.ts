@@ -1,4 +1,4 @@
-import type { AgentTasksSnapshot } from "@openbot/contracts/ipc";
+import type { AgentTasksSnapshot } from "@pokebots/contracts/ipc";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useMemo, useSyncExternalStore } from "react";
 import { useQueryScope } from "@/features/auth/context/mobile-session-context";

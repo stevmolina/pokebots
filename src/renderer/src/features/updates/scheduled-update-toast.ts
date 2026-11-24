@@ -1,7 +1,7 @@
-import type { UpdateStatus } from "@openbot/contracts/ipc";
-import { classifyFailure } from "@openbot/telemetry";
-import { toast } from "@openbot/ui";
-import { currentText } from "@openbot/ui/text";
+import type { UpdateStatus } from "@pokebots/contracts/ipc";
+import { classifyFailure } from "@pokebots/telemetry";
+import { toast } from "@pokebots/ui";
+import { currentText } from "@pokebots/ui/text";
 import { type Accessor, createEffect, onCleanup } from "solid-js";
 import { actionToast } from "../../action-toast";
 

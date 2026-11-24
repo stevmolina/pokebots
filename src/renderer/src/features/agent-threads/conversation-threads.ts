@@ -1,19 +1,19 @@
-import type { AgentApproval, AgentContextState, AgentEvent, AgentTask } from "@openbot/contracts/ipc";
-import { isAgentTaskActive, taskApproval } from "@openbot/team-client/agent-tasks";
-import type { AgentProfile } from "@openbot/ui/data";
-import type { AgentThreadOlderMessages } from "@openbot/ui/features/conversation/threads/AgentThreadView";
+import type { AgentApproval, AgentContextState, AgentEvent, AgentTask } from "@pokebots/contracts/ipc";
+import { isAgentTaskActive, taskApproval } from "@pokebots/team-client/agent-tasks";
+import type { AgentProfile } from "@pokebots/ui/data";
+import type { AgentThreadOlderMessages } from "@pokebots/ui/features/conversation/threads/AgentThreadView";
 import {
   sideThreadTabs,
   type ThreadListsInput,
   threadLists,
-} from "@openbot/ui/features/conversation/threads/thread-items";
+} from "@pokebots/ui/features/conversation/threads/thread-items";
 import {
   DRAFT_THREAD_ID,
   MAIN_THREAD_ID,
   type ThreadHeaderProps,
   type ThreadStatus,
-} from "@openbot/ui/features/conversation/threads/thread-types";
-import type { SidebarWaitReason } from "@openbot/ui/features/sidebar/sidebar-types";
+} from "@pokebots/ui/features/conversation/threads/thread-types";
+import type { SidebarWaitReason } from "@pokebots/ui/features/sidebar/sidebar-types";
 import type { AgentTasks } from "../agent-tasks/agent-tasks-state";
 import type {
   BrowserTakeoverRequest,

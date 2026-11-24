@@ -1,5 +1,5 @@
-import type { AgentEvent } from "@openbot/contracts/ipc";
-import type { DynamicIslandCoordinator } from "@openbot/team-client/dynamic-island-coordinator";
+import type { AgentEvent } from "@pokebots/contracts/ipc";
+import type { DynamicIslandCoordinator } from "@pokebots/team-client/dynamic-island-coordinator";
 import { createSignal, onCleanup, onSettled } from "solid-js";
 import { serversPort } from "./servers-port";
 

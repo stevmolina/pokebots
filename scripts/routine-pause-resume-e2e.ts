@@ -12,7 +12,7 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import type { AgentEvent, Routine, UpdateRoutineInput } from "@openbot/contracts/ipc";
+import type { AgentEvent, Routine, UpdateRoutineInput } from "@pokebots/contracts/ipc";
 import { Effect } from "effect";
 import { ConversationRuntime } from "../src/backend/agent/conversation-runtime";
 import { RoutineScheduler } from "../src/backend/agent/routine-scheduler";

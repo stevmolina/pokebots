@@ -1,8 +1,8 @@
 import {
   PROVIDER_DETECTION_CAPABILITY,
   PROVIDER_DETECTION_ROUTES,
-} from "@openbot/contracts/team-protocol/provider-detection-v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/team-protocol/provider-detection-v1";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect } from "effect";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import { parseDiscoverModels, parseProviderDetectionSettings } from "../ipc/provider-detection-inputs";

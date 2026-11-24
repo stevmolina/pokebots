@@ -1,5 +1,5 @@
-import { CHAT_HTML_PREVIEW_POLICY } from "@openbot/contracts/chat-preview";
-import { MarkdownMessageText } from "@openbot/ui/features/conversation/MarkdownMessageText";
+import { CHAT_HTML_PREVIEW_POLICY } from "@pokebots/contracts/chat-preview";
+import { MarkdownMessageText } from "@pokebots/ui/features/conversation/MarkdownMessageText";
 import { render, screen } from "@solidjs/testing-library";
 import { expect, it, vi } from "vitest";
 

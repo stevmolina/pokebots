@@ -1,14 +1,14 @@
-import type { CentralAuthUser } from "@openbot/contracts/ipc";
+import type { CentralAuthUser } from "@pokebots/contracts/ipc";
 import {
   heatLevel,
   heatmapMonths,
   heatmapWeeks,
   type ProfileDay,
   type ProfileStats,
-} from "@openbot/team-client/profile-stats";
-import { userInitials } from "@openbot/ui";
-import { usageCompact } from "@openbot/ui/features/usage/usage-format";
-import { currentText } from "@openbot/ui/text";
+} from "@pokebots/team-client/profile-stats";
+import { userInitials } from "@pokebots/ui";
+import { usageCompact } from "@pokebots/ui/features/usage/usage-format";
+import { currentText } from "@pokebots/ui/text";
 import { drawLogo, ellipsize, FONT } from "../agent-templates/agent-template-card";
 
 /*

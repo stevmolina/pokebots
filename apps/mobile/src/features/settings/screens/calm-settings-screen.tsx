@@ -1,4 +1,4 @@
-import { MOBILE_ATTACHMENT_BYTES } from "@openbot/team-client/remote-peer";
+import { MOBILE_ATTACHMENT_BYTES } from "@pokebots/team-client/remote-peer";
 import * as Application from "expo-application";
 import Constants from "expo-constants";
 import { Image } from "expo-image";

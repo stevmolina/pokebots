@@ -3,27 +3,27 @@ import type { messages as source } from "../../en/error/provider";
 
 export const messages = {
   "error.provider.mcpConfig":
-    "OpenBot, MCP sunucularını Codex yapılandırmasına kaydedemedi. Codex config.toml dosyanızın geçerli ve yazılabilir olduğunu denetleyin, ardından OpenBot'u yeniden başlatın.",
+    "Pokebots, MCP sunucularını Codex yapılandırmasına kaydedemedi. Codex config.toml dosyanızın geçerli ve yazılabilir olduğunu denetleyin, ardından Pokebots'u yeniden başlatın.",
   "error.provider.computerUseConfig":
-    "OpenBot, Bilgisayar Kullanımını Codex yapılandırmasına kaydedemedi. Codex config.toml dosyanızın geçerli ve yazılabilir olduğunu denetleyin, ardından OpenBot'u yeniden başlatın. Onsuz devam etmek için ekip arkadaşı ayarlarından Bilgisayar Kullanımını kapatabilirsiniz.",
+    "Pokebots, Bilgisayar Kullanımını Codex yapılandırmasına kaydedemedi. Codex config.toml dosyanızın geçerli ve yazılabilir olduğunu denetleyin, ardından Pokebots'u yeniden başlatın. Onsuz devam etmek için ekip arkadaşı ayarlarından Bilgisayar Kullanımını kapatabilirsiniz.",
   // Provider, provider runtime and custom endpoint errors.
-  "error.provider.codexUnresponsive": "Codex yanıt vermeyi bıraktı, bu yüzden OpenBot işlemini sonlandırdı.",
-  "error.provider.acpUnresponsive": "{provider} zamanında yanıt vermedi, bu yüzden OpenBot işlemini sonlandırdı.",
+  "error.provider.codexUnresponsive": "Codex yanıt vermeyi bıraktı, bu yüzden Pokebots işlemini sonlandırdı.",
+  "error.provider.acpUnresponsive": "{provider} zamanında yanıt vermedi, bu yüzden Pokebots işlemini sonlandırdı.",
   "error.provider.acpSignInLost":
-    "{provider} oturumunu kaybetti, bu yüzden OpenBot işlemini sonlandırdı. Mesajınızı yeniden gönderin.",
+    "{provider} oturumunu kaybetti, bu yüzden Pokebots işlemini sonlandırdı. Mesajınızı yeniden gönderin.",
   "error.provider.acpRefusedUntilRestart":
-    "{provider} bir mesajı reddetti, bu yüzden OpenBot işlemini sonlandırdı. Mesajınızı yeniden gönderin.",
+    "{provider} bir mesajı reddetti, bu yüzden Pokebots işlemini sonlandırdı. Mesajınızı yeniden gönderin.",
   "error.provider.acpServerLost": "{provider} bağlantısını kaybetti. Mesajınızı yeniden gönderin.",
-  "error.provider.acpServerLostEnded": "{provider} bağlantısını kaybetti, bu yüzden OpenBot işlemini sonlandırdı.",
+  "error.provider.acpServerLostEnded": "{provider} bağlantısını kaybetti, bu yüzden Pokebots işlemini sonlandırdı.",
   "error.provider.acpSettingsTimedOut": "{provider} zamanında yanıt vermedi. Biraz sonra yeniden deneyin.",
   "error.provider.acpPlanUsedUp":
     "{provider}, planınızın kullanım hakkının bittiğini bildiriyor. Başka bir model seçin veya {provider} planınızı yükseltin.",
   "error.provider.acpMcpNotLoaded":
-    "{provider}, OpenBot araçlarını yüklemedi; bu yüzden bu ajan onları kullanamıyor ve takım arkadaşlarına ulaşamıyor. Bir {provider} ekip politikası yerel MCP sunucularını engelleyebilir. Ekip yöneticinizden bunlara izin vermesini isteyin, ardından yeniden deneyin.",
+    "{provider}, Pokebots araçlarını yüklemedi; bu yüzden bu ajan onları kullanamıyor ve takım arkadaşlarına ulaşamıyor. Bir {provider} ekip politikası yerel MCP sunucularını engelleyebilir. Ekip yöneticinizden bunlara izin vermesini isteyin, ardından yeniden deneyin.",
   "error.provider.acpOwnMcpServerFailed":
-    "{provider}, {name} MCP sunucusunu başlatamadı, bu yüzden yanıt durdu. Bu sunucu OpenBot'ta değil, kendi {provider} ayarlarınızda. Sunucuyu orada kaldırın veya onarın, ardından yeni bir sohbet başlatın.",
+    "{provider}, {name} MCP sunucusunu başlatamadı, bu yüzden yanıt durdu. Bu sunucu Pokebots'ta değil, kendi {provider} ayarlarınızda. Sunucuyu orada kaldırın veya onarın, ardından yeni bir sohbet başlatın.",
   "error.provider.endpointsReadOnly":
-    "Kayıtlı uç noktalar OpenBot'un daha yeni bir sürümü tarafından yazılmış veya dosya okunamıyor. Bunları değiştirmek için OpenBot'u güncelleyin.",
+    "Kayıtlı uç noktalar Pokebots'un daha yeni bir sürümü tarafından yazılmış veya dosya okunamıyor. Bunları değiştirmek için Pokebots'u güncelleyin.",
   "error.provider.endpointNoSecureStorage":
     "Bu bilgisayarda güvenli depolama alanı yok, bu nedenle bir API anahtarı veya üstbilgi kaydedilemez. Bunları kaldırın veya kimlik bilgisi gerektirmeyen bir uç nokta kullanın.",
   "error.provider.endpointDuplicate":
@@ -34,14 +34,14 @@ export const messages = {
   "error.provider.endpointSecretUnreadable":
     "Bu bilgisayar kayıtlı API anahtarını ve üstbilgileri okuyamıyor. Hiçbirinin kaybolmaması için API anahtarını ve üstbilgileri tekrar girin.",
   "error.provider.discoveryTimeout": "{host} zamanında yanıt vermedi.",
-  "error.provider.discoveryUnreachable": "OpenBot {host} adresine bağlanamadı.",
+  "error.provider.discoveryUnreachable": "Pokebots {host} adresine bağlanamadı.",
   "error.provider.discoveryRedirect": "{host} bir yönlendirme gönderdi. Sunucunun nihai adresini girin.",
   "error.provider.discoveryRefused": "{host} isteği reddetti. API anahtarını ve üstbilgileri denetleyin.",
   "error.provider.discoveryHttp": "{host} HTTP {status} ile yanıt verdi.",
   "error.provider.discoveryTooLarge": "{host} kaynağından gelen model listesi çok büyük.",
   "error.provider.discoveryInvalid": "{host} OpenAI uyumlu bir model listesi göndermedi.",
   "error.provider.detectionSettingsReadOnly":
-    "Algılama ayarları OpenBot'un daha yeni bir sürümü tarafından yazılmış veya dosya okunamıyor. Bunları değiştirmek için OpenBot'u güncelleyin.",
+    "Algılama ayarları Pokebots'un daha yeni bir sürümü tarafından yazılmış veya dosya okunamıyor. Bunları değiştirmek için Pokebots'u güncelleyin.",
   "error.provider.detectionEntryInvalid":
     "Bir adres şifre içermeyen bir http:// veya https:// URL'si olmalı ve bir klasör mutlak bir yol olmalıdır.",
   "error.provider.detectionEntriesTooMany": "Çok fazla adres veya klasör var.",
@@ -49,7 +49,8 @@ export const messages = {
   "error.provider.credentialFileTooLarge": "Sağlayıcı kimlik bilgisi dosyası çok büyük.",
   "error.provider.environmentNameInvalid":
     "{name} geçerli bir değişken adı değil. Harf, rakam ve _ kullanın ve rakamla başlamayın.",
-  "error.provider.environmentNameReserved": "OpenBot bu sağlayıcı için {name} değerini ayarlar. Bu değişkeni kaldırın.",
+  "error.provider.environmentNameReserved":
+    "Pokebots bu sağlayıcı için {name} değerini ayarlar. Bu değişkeni kaldırın.",
   "error.provider.environmentNameDuplicate": "{name} listede birden fazla kez var.",
   "error.provider.environmentValueTooLong": "{name} değeri çok uzun.",
   "error.provider.environmentTooMany": "Bir sağlayıcının en fazla {limit} değişkeni olabilir.",
@@ -77,14 +78,14 @@ export const messages = {
   "error.provider.bunLicenseChecksum": "Bun lisansı sağlama toplamı (checksum) eşleşmiyor.",
   "error.provider.bunxDamaged": "Bun paket yöneticisi çalıştırıcısı eksik veya hasarlı.",
   "error.provider.releaseSourcesUnreachable":
-    "OpenBot sağlayıcı sürüm kaynaklarına ulaşamadı. Bağlantıyı kontrol edip tekrar deneyin.",
+    "Pokebots sağlayıcı sürüm kaynaklarına ulaşamadı. Bağlantıyı kontrol edip tekrar deneyin.",
   "error.provider.runtimesUnsupported": "Sağlayıcı çalışma zamanları bu platformda kullanılamıyor.",
-  "error.provider.closing": "OpenBot kapanıyor.",
+  "error.provider.closing": "Pokebots kapanıyor.",
   "error.provider.removeWhileOn": "İndirmesini kaldırmadan önce sağlayıcıyı kapatın.",
   "error.provider.removeWhileDownloading": "İndirmenin bitmesini bekleyin, sonra kaldırın.",
   "error.provider.removeIncomplete": "Bir program bu CLI'nin dosyalarını kullanıyor. Kapatın ve yeniden deneyin.",
   "error.provider.removeDownloadsFailed": "Şu sağlayıcıların CLI indirmeleri kaldırılamadı: {providers}.",
-  "error.provider.cliOverride": "OpenBot'ta güncelleme yapmadan önce açık CLI yolu geçersiz kılmasını kaldırın.",
+  "error.provider.cliOverride": "Pokebots'ta güncelleme yapmadan önce açık CLI yolu geçersiz kılmasını kaldırın.",
   "error.provider.runtimeUpdateIncomplete": "Çalışma zamanı güncellemesi tamamlanmadı.",
   "error.provider.downloadHttp": "Çalışma zamanı indirmesi HTTP {status} ile başarısız oldu.",
   "error.provider.downloadNoData": "Çalışma zamanı indirmesi veri döndürmedi.",
@@ -101,7 +102,7 @@ export const messages = {
   "error.provider.unexpectedVersion": "Sağlayıcı çalışma zamanı beklenmeyen bir sürüm döndürdü.",
   "error.provider.metadataNoData": "Çalışma zamanı meta veri indirmesi veri döndürmedi.",
   "error.provider.metadataTooLarge": "Çalışma zamanı meta verileri çok büyük.",
-  "error.provider.requestFailed": "OpenBot {url} adresini indiremedi. {reason}",
+  "error.provider.requestFailed": "Pokebots {url} adresini indiremedi. {reason}",
   "error.provider.installRecordMismatch": "Çalışma zamanı kurulum kaydı eşleşmiyor.",
   "error.provider.runtimeChecksum": "Sağlayıcı çalışma zamanı sağlama toplamı (checksum) eşleşmiyor.",
   "error.provider.codexReleaseShape": "Codex sürümü beklenmeyen bir yapıya sahip.",
@@ -143,28 +144,28 @@ export const messages = {
     "Sağlayıcı anahtarı, bir anahtarda bulunamayacak bir boşluk veya karakter içeriyor.",
   "error.provider.noModel": "Seçilen sağlayıcının kullanılabilir modeli yok.",
   "error.provider.noModelNamed": "{provider} sağlayıcısının kullanılabilir modeli yok.",
-  "error.provider.acpNoModels": "ACP CLI hiçbir ACP modeli tanıtmadı. OpenBot bir yedek model tahmin etmeyecektir.",
+  "error.provider.acpNoModels": "ACP CLI hiçbir ACP modeli tanıtmadı. Pokebots bir yedek model tahmin etmeyecektir.",
   "error.provider.endpointRemoveBusy": "Bu uç noktayı kaldırmadan önce etkin turun ve kuyruğun bitmesini bekleyin.",
-  "error.provider.codexOutdated": "Codex CLI {version} çok eski. OpenBot 0.156.0 veya daha yenisini gerektirir.",
+  "error.provider.codexOutdated": "Codex CLI {version} çok eski. Pokebots 0.156.0 veya daha yenisini gerektirir.",
   "error.provider.codexNotStarted": "Codex CLI bulundu ancak başlatılamadı.",
   "error.provider.codexNotStartedHint":
     "Codex CLI bulundu ancak başlatılamadı. Yeni bir terminalde `codex --version` komutunu çalıştırın.",
-  "error.provider.codexManagedNotStarted": "ChatGPT indirildi ancak başlatılamadı. OpenBot içinde yeniden indirin.",
-  "error.provider.codexMissing": "ChatGPT indirilmedi. Devam etmek için OpenBot içinde indirin.",
-  "error.provider.claudeOutdated": "Claude Code {version} çok eski. OpenBot 2.1.232 veya daha yenisini gerektirir.",
+  "error.provider.codexManagedNotStarted": "ChatGPT indirildi ancak başlatılamadı. Pokebots içinde yeniden indirin.",
+  "error.provider.codexMissing": "ChatGPT indirilmedi. Devam etmek için Pokebots içinde indirin.",
+  "error.provider.claudeOutdated": "Claude Code {version} çok eski. Pokebots 2.1.232 veya daha yenisini gerektirir.",
   "error.provider.claudeNotStarted": "Claude CLI bulundu ancak başlatılamadı.",
   "error.provider.claudeNotStartedHint":
     "Claude CLI bulundu ancak başlatılamadı. Yeni bir terminalde `claude --version` komutunu çalıştırın.",
-  "error.provider.claudeManagedNotStarted": "Claude indirildi ancak başlatılamadı. OpenBot içinde yeniden indirin.",
-  "error.provider.claudeMissing": "Claude indirilmedi. Devam etmek için OpenBot içinde indirin.",
-  "error.provider.grokOutdated": "Grok CLI {version} çok eski. OpenBot 1.0.5 veya daha yenisini gerektirir.",
+  "error.provider.claudeManagedNotStarted": "Claude indirildi ancak başlatılamadı. Pokebots içinde yeniden indirin.",
+  "error.provider.claudeMissing": "Claude indirilmedi. Devam etmek için Pokebots içinde indirin.",
+  "error.provider.grokOutdated": "Grok CLI {version} çok eski. Pokebots 1.0.5 veya daha yenisini gerektirir.",
   "error.provider.grokNotStarted": "Grok CLI bulundu ancak başlatılamadı.",
   "error.provider.grokNotStartedHint":
     "Grok CLI bulundu ancak başlatılamadı. Yeni bir terminalde `grok --version` komutunu çalıştırın.",
-  "error.provider.grokMissing": "Grok indirilmedi. Devam etmek için OpenBot içinde indirin.",
+  "error.provider.grokMissing": "Grok indirilmedi. Devam etmek için Pokebots içinde indirin.",
   "error.provider.opencodeNotStarted":
     "OpenCode başlatılamadı. Bir terminalde `opencode --version` komutunu çalıştırın.",
-  "error.provider.opencodeMissing": "OpenCode indirilmedi. Devam etmek için OpenBot içinde indirin.",
+  "error.provider.opencodeMissing": "OpenCode indirilmedi. Devam etmek için Pokebots içinde indirin.",
   "error.provider.codexVersionUnreadable": "Codex CLI sürümü okunamıyor.",
   "error.provider.claudeVersionUnreadable": "Claude CLI sürümü okunamıyor.",
   "error.provider.grokVersionUnreadable": "Grok CLI sürümü okunamıyor.",
@@ -173,14 +174,14 @@ export const messages = {
   "error.provider.connectBeforeProfile": "Bir profil oluşturmadan önce seçilen sağlayıcıyı bağlayın.",
   "error.provider.cliNotReady": "{provider} CLI hazır değil veya oturum açılmamış.",
   "error.provider.cliTimedOut":
-    "{provider} zamanında yanıt vermedi. Bilgisayar meşgul olabilir. OpenBot tekrar deneyecek.",
+    "{provider} zamanında yanıt vermedi. Bilgisayar meşgul olabilir. Pokebots tekrar deneyecek.",
   "error.provider.cliTimedOutRefresh":
     "{provider} zamanında yanıt vermedi. Bilgisayar meşgul olabilir. Tekrar denemek için sağlayıcıları yenileyin.",
   "error.provider.stoppedBeforeStart": "{provider}, bu mesaj başlamadan önce durdu. Mesajı yeniden gönderin.",
   "error.provider.sessionStartTimedOut":
-    "{provider} yeni bir sohbeti zamanında açamadı, bu yüzden bu mesaj başlamadı. OpenBot'u çalıştıran bilgisayarda Sağlayıcılar sayfasını açın, {provider} öğesini seçin ve Yeniden başlat'a tıklayın. Sonra tekrar deneyin.",
+    "{provider} yeni bir sohbeti zamanında açamadı, bu yüzden bu mesaj başlamadı. Pokebots'u çalıştıran bilgisayarda Sağlayıcılar sayfasını açın, {provider} öğesini seçin ve Yeniden başlat'a tıklayın. Sonra tekrar deneyin.",
   "error.provider.serviceUnreachable":
-    "{provider} hizmetine bağlanamıyor. İnternet bağlantınızı kontrol edin. OpenBot tekrar deneyecek.",
+    "{provider} hizmetine bağlanamıyor. İnternet bağlantınızı kontrol edin. Pokebots tekrar deneyecek.",
   "error.provider.serviceUnreachableRefresh":
     "{provider} hizmetine bağlanamıyor. İnternet bağlantınızı kontrol edin, ardından sağlayıcıları yenileyin.",
   "error.provider.acpStartTimedOut":
@@ -188,9 +189,9 @@ export const messages = {
   "error.provider.acpModelsTimedOut":
     "{provider} {seconds} sn içinde modellerini listelemedi. Bilgisayar meşgul olabilir.",
   "error.provider.startStopped":
-    "{provider} art arda birkaç kez başlamadı, bu yüzden OpenBot denemeyi bıraktı. Tekrar denemek için sağlayıcıları yenileyin.",
+    "{provider} art arda birkaç kez başlamadı, bu yüzden Pokebots denemeyi bıraktı. Tekrar denemek için sağlayıcıları yenileyin.",
   "error.provider.startPaused":
-    "{provider} art arda birkaç kez başlamadı. OpenBot bir sonraki mesajda veya rutinde yeniden deneyecek. Şimdi denemek için sağlayıcıları yenileyin.",
+    "{provider} art arda birkaç kez başlamadı. Pokebots bir sonraki mesajda veya rutinde yeniden deneyecek. Şimdi denemek için sağlayıcıları yenileyin.",
   "error.provider.tempDiskSpace":
     "{provider} başlamak için en az 1 GB boş disk alanı gerektirir. Yer açın, ardından sağlayıcıları yenileyin.",
   "error.provider.noCodeSignIn": "{provider} için kodla oturum açılamaz.",
@@ -202,19 +203,19 @@ export const messages = {
   "error.provider.codeLoginUnsupported":
     "Bu sunucu yapıştırılan bir kodla oturum açamaz. Sunucu bilgisayarında, onun tarayıcısında oturum açın.",
   "error.provider.claudeLoginNotSaved":
-    "Claude oturum açma bilgisini Mac'e kaydedemedi. OpenBot'un çalıştığı Mac'i yeniden başlatın, sonra Claude'u tekrar bağlayın.",
+    "Claude oturum açma bilgisini Mac'e kaydedemedi. Pokebots'un çalıştığı Mac'i yeniden başlatın, sonra Claude'u tekrar bağlayın.",
   "error.provider.cliBusyRetry":
     "{provider} CLI bir tur üzerinde çalışıyor. Bitmesini bekleyin, ardından tekrar deneyin.",
   "error.provider.cliSigningIn":
     "{provider} CLI oturum açıyor. Oturum açmayı tamamlayın veya iptal edin, ardından güncelleyin.",
   "error.provider.cliBusyUpdate":
     "{provider} CLI bir tur üzerinde çalışıyor. Bitmesini bekleyin, ardından güncelleyin.",
-  "error.provider.cliSelectFailed": "OpenBot kurulu yönetilen CLI'yi seçemedi.",
+  "error.provider.cliSelectFailed": "Pokebots kurulu yönetilen CLI'yi seçemedi.",
   "error.provider.noAuthenticatedAccount": "{provider} kimliği doğrulanmış bir hesap döndürmedi.",
   "error.provider.codexModelProvider":
     "Bu bilgisayardaki Codex başka bir model sağlayıcısı kullanıyor ve bu sağlayıcı ChatGPT oturumu veya OpenAI API anahtarı kullanmıyor. ChatGPT ajanları bu sağlayıcıyı şimdi kullanabilir. ChatGPT hesabınızı kullanmak için Codex model sağlayıcısını yeniden OpenAI olarak ayarlayın.",
   "error.provider.signInExpired": "{provider} oturumunuzun süresi doldu. Devam etmek için yeniden oturum açın.",
-  "error.provider.cliActivateFailed": "OpenBot yönetilen CLI'yi etkinleştiremedi.",
+  "error.provider.cliActivateFailed": "Pokebots yönetilen CLI'yi etkinleştiremedi.",
   "error.provider.noMainlandChinaSignIn": "{provider} için Çin anakarası oturum açma yok.",
   "error.provider.cliNewVersionNotStarted": "Yeni sürüm başlamadı.",
   "error.provider.cliBusyReconnect":
@@ -252,11 +253,11 @@ export const messages = {
   "error.provider.opencodeInvalidUpload":
     "OpenCode'un model sağlayıcısı geçersiz bir yükleme isteği bildirdi. Başka bir model seçin ve devam edin. Kayıtlı rutinleri yeniden oluşturmadan önce denetleyin.\n{detail}",
   "error.provider.opencodeUnreadableContent":
-    "Bu model, bu sohbetteki bir dosyayı veya görseli okuyamıyor. OpenBot, sohbet geçmişiyle yeni bir OpenCode oturumu başlattı. Mesajınızı dosya olmadan yeniden gönderin veya dosya okuyabilen bir model seçin. Bu modeli özel bir sağlayıcıya eklediyseniz, ayarlarında “Kabul eder” altındaki “Görseller” seçeneğini kaldırın.",
+    "Bu model, bu sohbetteki bir dosyayı veya görseli okuyamıyor. Pokebots, sohbet geçmişiyle yeni bir OpenCode oturumu başlattı. Mesajınızı dosya olmadan yeniden gönderin veya dosya okuyabilen bir model seçin. Bu modeli özel bir sağlayıcıya eklediyseniz, ayarlarında “Kabul eder” altındaki “Görseller” seçeneğini kaldırın.",
   "error.provider.opencodeOutOfMemory":
-    "Model sunucusunun belleği bu sohbet için yetmedi. Yeni bir sohbet başlatın ya da modeli daha küçük bir bağlam uzunluğuyla yükleyin ve OpenBot'taki sağlayıcı ayarlarına aynı pencereyi girin.",
+    "Model sunucusunun belleği bu sohbet için yetmedi. Yeni bir sohbet başlatın ya da modeli daha küçük bir bağlam uzunluğuyla yükleyin ve Pokebots'taki sağlayıcı ayarlarına aynı pencereyi girin.",
   "error.provider.opencodeContextTooSmall":
-    "Bu sohbet modelin bağlam penceresine sığmıyor. Ollama veya LM Studio'da modeli daha büyük bir bağlam uzunluğuyla yükleyin ve OpenBot'taki sağlayıcı ayarlarına aynı pencereyi girin. Ya da daha büyük bir model seçin.",
+    "Bu sohbet modelin bağlam penceresine sığmıyor. Ollama veya LM Studio'da modeli daha büyük bir bağlam uzunluğuyla yükleyin ve Pokebots'taki sağlayıcı ayarlarına aynı pencereyi girin. Ya da daha büyük bir model seçin.",
   "error.provider.opencodeFreeLimit":
     "Ücretsiz OpenCode modelleri kullanım sınırına ulaştı. Tüm ücretsiz modeller bu sınırı paylaşır. Devam etmek için OpenCode ayarlarına bir OpenCode Go anahtarı yapıştırın veya başka bir sağlayıcının modelini seçin.",
   "error.provider.opencodeProviderFailed":
@@ -270,13 +271,13 @@ export const messages = {
   "error.provider.opencodeModelNotServed":
     "Model sağlayıcısı bu modeli şu anda hesabınıza sunmuyor. Başka bir model seçin, ardından mesajınızı yeniden gönderin.",
   "error.provider.opencodeNetwork":
-    "OpenCode model sağlayıcısına bağlanamadı. OpenBot'u çalıştıran bilgisayarın ağ bağlantısını kontrol edin, ardından tekrar deneyin.\n{detail}",
+    "OpenCode model sağlayıcısına bağlanamadı. Pokebots'u çalıştıran bilgisayarın ağ bağlantısını kontrol edin, ardından tekrar deneyin.\n{detail}",
   "error.provider.codexStateBusy":
     "ChatGPT önceki bir başlatmadan sonra yerel geçmişini hâlâ hazırlıyor. Birkaç dakika bekleyin, sonra yeniden deneyin.",
   "error.provider.codexThreadInUse":
     "Bu sohbet başka bir Codex uygulamasında açık; örneğin Codex masaüstü uygulaması, Codex CLI veya bir IDE uzantısı. Bir Codex sohbetine aynı anda yalnızca bir uygulama yazabilir. Sohbeti o uygulamada kapatın, sonra mesajınızı yeniden gönderin.",
   "error.provider.realtimeLimitZero":
-    "OpenBot'un gerçek zamanlı CPU sınırı 0 olduğu için Linux sağlayıcıyı durdurdu. Bu sınır sisteminizden geliyor. rtkit'i kurup başlatın (`rtkit-daemon`), `systemctl --user restart xdg-desktop-portal` komutunu çalıştırın, ardından OpenBot'u yeniden başlatın. rtkit eksikken yalnızca xdg-desktop-portal'ı yeniden başlatmak işe yaramaz.",
+    "Pokebots'un gerçek zamanlı CPU sınırı 0 olduğu için Linux sağlayıcıyı durdurdu. Bu sınır sisteminizden geliyor. rtkit'i kurup başlatın (`rtkit-daemon`), `systemctl --user restart xdg-desktop-portal` komutunu çalıştırın, ardından Pokebots'u yeniden başlatın. rtkit eksikken yalnızca xdg-desktop-portal'ı yeniden başlatmak işe yaramaz.",
   "error.provider.cpuUnsupported":
     "Bu bilgisayarın işlemcisi bu sağlayıcıyı çalıştıramıyor. Başka bir sağlayıcı kullanın.",
   "error.provider.opencodeDatabaseNewer":
@@ -290,20 +291,20 @@ export const messages = {
   "error.provider.noAnswerAfterSteps":
     "{provider} bazı adımları uyguladı, sonra turu yanıt vermeden bitirdi. Aynı isteği yeniden göndermeden önce ajana ne yaptığını sorun.",
   "error.provider.acpRefusedNoReason": "{provider} yanıt vermeden durdu. Mesajı yeniden gönderin.",
-  "error.provider.chatgptPageFailed": "OpenBot ChatGPT bağlantı sayfasını açamadı.",
+  "error.provider.chatgptPageFailed": "Pokebots ChatGPT bağlantı sayfasını açamadı.",
   "error.provider.noneReady": "Hiçbir ajan sağlayıcısı hazır değil.",
   "error.provider.claudeTurnActive": "Bağlamını yenilemeden önce etkin Claude turunun bitmesini bekleyin.",
   "error.provider.codexLoginRequired":
     "Codex için ChatGPT aboneliğiyle oturum açmanız gerekir. `codex login` komutunu çalıştırın.",
-  "error.provider.cliUpdateFailed": "OpenBot {provider} CLI'sini güncelleyemedi. {reason}",
+  "error.provider.cliUpdateFailed": "Pokebots {provider} CLI'sini güncelleyemedi. {reason}",
   "error.provider.tryAgain": "Tekrar deneyin.",
   "error.provider.noAgentProcess": "{provider} bu ajan için çalışan bir işleme sahip değil.",
   "error.provider.stoppedBeforeAgentProcess": "{provider} ajanın işlemi başlamadan önce durdu.",
   "error.provider.archiveUnreadable": "Çalışma zamanı arşivi okunamıyor veya desteklenmeyen bir biçim kullanıyor.",
-  "error.provider.antigravityMissing": "Gemini indirilmedi. Devam etmek için OpenBot içinde indirin.",
+  "error.provider.antigravityMissing": "Gemini indirilmedi. Devam etmek için Pokebots içinde indirin.",
   "error.provider.antigravityNotStarted": "Gemini sunucusu bulundu ancak sürümü okunamıyor.",
   "error.provider.antigravityOverrideInvalid":
-    "OPENBOT_ANTIGRAVITY_PATH içindeki Gemini sunucusu yok veya çalıştırılabilir değil. Yolu düzeltin ya da değişkeni kaldırın, ardından OpenBot'u yeniden başlatın.",
+    "OPENBOT_ANTIGRAVITY_PATH içindeki Gemini sunucusu yok veya çalıştırılabilir değil. Yolu düzeltin ya da değişkeni kaldırın, ardından Pokebots'u yeniden başlatın.",
   "error.provider.antigravityVersionUnreadable": "Gemini sunucu sürümü okunamıyor.",
   "error.provider.antigravitySignIn": "Gemini'yi kullanmak için Google ile oturum açın.",
   "error.provider.antigravityModelAtCapacity":
@@ -323,9 +324,9 @@ export const messages = {
   "error.provider.antigravityNetwork":
     "Gemini'nin Google ile bağlantısı kesildi. Mesajınızı yeniden gönderin. ({cause})",
   "error.provider.antigravitySessionRejected":
-    "Gemini bu isteği reddetti ve nedenini belirtmedi. Buna sohbet geçmişindeki bir öğe, örneğin ajanın açtığı bir görsel neden olabilir. OpenBot, sohbet geçmişiyle yeni bir Gemini oturumu başlattı. Yeniden deneyin. Hata sürerse başka bir model seçin.",
+    "Gemini bu isteği reddetti ve nedenini belirtmedi. Buna sohbet geçmişindeki bir öğe, örneğin ajanın açtığı bir görsel neden olabilir. Pokebots, sohbet geçmişiyle yeni bir Gemini oturumu başlattı. Yeniden deneyin. Hata sürerse başka bir model seçin.",
   "error.provider.antigravityHistoryUnreadable":
-    "Gemini bu sohbetin kayıtlı geçmişini okuyamadı. OpenBot, sohbet geçmişiyle yeni bir Gemini oturumu başlattı. Mesajınızı yeniden gönderin.",
+    "Gemini bu sohbetin kayıtlı geçmişini okuyamadı. Pokebots, sohbet geçmişiyle yeni bir Gemini oturumu başlattı. Mesajınızı yeniden gönderin.",
   "error.provider.antigravityLocationUnsupported":
     "Google, bu ajanı çalıştıran bilgisayarın ağ konumundan Gemini'nin çalışmasına izin vermiyor. Gemini'yi başka bir bilgisayarda kullanın veya bu ajan için başka bir sağlayıcı seçin.\n{detail}",
   "error.provider.antigravityConnectionLost":
@@ -339,7 +340,7 @@ export const messages = {
   "error.provider.cursorArchivePath": "Cursor arşivi beklenmeyen bir dosya içeriyor.",
   "error.provider.cursorChecksum": "Cursor çalışma zamanı sağlama toplamı (checksum) eşleşmiyor.",
   "error.provider.cursorReleaseShape": "Cursor sürümü beklenmeyen bir yapıya sahip.",
-  "error.provider.cursorMissing": "Cursor indirilmedi. Devam etmek için OpenBot içinde indirin.",
+  "error.provider.cursorMissing": "Cursor indirilmedi. Devam etmek için Pokebots içinde indirin.",
   "error.provider.cursorNotStarted": "Cursor ajanı bulundu ancak sürümü okunamıyor.",
   "error.provider.cursorVersionUnreadable": "Cursor ajan sürümü okunamıyor.",
   "error.provider.cursorSignIn": "Cursor'ı kullanmak için Cursor ile oturum açın veya CURSOR_API_KEY ayarlayın.",
@@ -349,16 +350,16 @@ export const messages = {
   "error.provider.clinePackageMismatch": "Cline paketi çalışma zamanı kataloğuyla eşleşmiyor.",
   "error.provider.clineChecksum": "Cline çalışma zamanı sağlama toplamı (checksum) eşleşmiyor.",
   "error.provider.clineLicenseChecksum": "Cline lisansı sağlama toplamı (checksum) eşleşmiyor.",
-  "error.provider.clineMissing": "Cline indirilmedi. Devam etmek için OpenBot içinde indirin.",
-  "error.provider.clineOutdated": "Cline CLI {version} çok eski. OpenBot 3.0.68 veya daha yenisini gerektirir.",
+  "error.provider.clineMissing": "Cline indirilmedi. Devam etmek için Pokebots içinde indirin.",
+  "error.provider.clineOutdated": "Cline CLI {version} çok eski. Pokebots 3.0.68 veya daha yenisini gerektirir.",
   "error.provider.clineNotStarted": "Cline başlatılamadı. Bir terminalde `cline --version` komutunu çalıştırın.",
   "error.provider.clineVersionUnreadable": "Cline CLI sürümü okunamıyor.",
   "error.provider.clineSignIn": "Cline'ı kullanmak için Cline ile oturum açın veya CLINE_API_KEY ayarlayın.",
   "error.provider.kimiArchivePath": "Kimi arşivi beklenmeyen bir yola sahip.",
   "error.provider.kimiChecksum": "Kimi çalışma zamanı sağlama toplamı (checksum) eşleşmiyor.",
   "error.provider.kimiLicenseChecksum": "Kimi lisansı sağlama toplamı (checksum) eşleşmiyor.",
-  "error.provider.kimiMissing": "Kimi indirilmedi. Devam etmek için OpenBot içinde indirin.",
-  "error.provider.kimiOutdated": "Kimi CLI {version} çok eski. OpenBot 1.52.0 veya daha yenisini gerektirir.",
+  "error.provider.kimiMissing": "Kimi indirilmedi. Devam etmek için Pokebots içinde indirin.",
+  "error.provider.kimiOutdated": "Kimi CLI {version} çok eski. Pokebots 1.52.0 veya daha yenisini gerektirir.",
   "error.provider.kimiNotStarted": "Kimi başlatılamadı. Bir terminalde `kimi --version` komutunu çalıştırın.",
   "error.provider.kimiVersionUnreadable": "Kimi CLI sürümü okunamıyor.",
   "error.provider.kimiSignIn": "Kimi'yi kullanmak için Kimi Code ile oturum açın.",
@@ -376,14 +377,14 @@ export const messages = {
   "error.provider.hermesTurnFailed":
     "Hermes bu turu bitiremedi. Yanıtı bir neden veriyorsa onu izleyin. Vermiyorsa bu ajanın bir MCP sunucusu kullanılamıyor olabilir: Pazaryeri, Uygulamalar bölümünden kontrol edin, sonra mesajınızı yeniden gönderin.",
   "error.provider.hermesRefused":
-    "Hermes bu mesajı başlamadan önce reddetti. Yeniden gönderin. Hermes her mesajı reddediyorsa bu ajanı çalıştıran bilgisayarda OpenBot'u yeniden başlatın.",
+    "Hermes bu mesajı başlamadan önce reddetti. Yeniden gönderin. Hermes her mesajı reddediyorsa bu ajanı çalıştıran bilgisayarda Pokebots'u yeniden başlatın.",
   "error.provider.hermesConnectionLost":
     "Hermes bu mesaj sırasında bağlantısını kaybetti, bu yüzden işin bitip bitmediğini bilmiyor. Mesajı yeniden göndermeden önce ajanın ne yaptığını kontrol edin.",
   "error.provider.copilotThinkingRejected":
     "GitHub Copilot bu modeli kullanamadı: model, düşünme ayarını kabul etmedi. Bu ajan için başka bir model seçin, sonra mesajınızı yeniden gönderin.",
   "error.provider.usageLimitReached": "Hesap kullanım sınırına ulaştı.",
   "error.provider.claudeContextFull":
-    "Bu sohbet Claude için çok uzun hale geldi. OpenBot sohbet geçmişiyle yeni bir Claude Code oturumu başlattı. Tekrar deneyin.",
+    "Bu sohbet Claude için çok uzun hale geldi. Pokebots sohbet geçmişiyle yeni bir Claude Code oturumu başlattı. Tekrar deneyin.",
   "error.provider.claudeApiKeyNoCredit":
     "Anthropic API anahtarında API kredisi yok. Claude planı, API anahtarıyla yapılan istekleri ödemez. Anthropic Console'da kredi ekleyin ya da Ayarlar'da Claude'da oturum açıp ajanın model menüsünde Claude hesabını seçin.",
   "error.provider.claudeAccountNoCredit":
@@ -391,33 +392,33 @@ export const messages = {
   "error.provider.claudeServiceBlocked":
     "Claude hizmeti bu isteği engelledi. Bu genellikle Claude tarafında kısa süreli bir sorundur, hesabınızla ilgili değildir. Mesajı birkaç dakika sonra yeniden gönderin.",
   "error.provider.foreignReasoning":
-    "Farklı bir hesap veya API anahtarı aldığı için {provider} bu sohbetteki önceki akıl yürütmeyi kabul etmedi. OpenBot sohbet geçmişiyle yeni bir {provider} oturumu başlattı. Tekrar deneyin.",
+    "Farklı bir hesap veya API anahtarı aldığı için {provider} bu sohbetteki önceki akıl yürütmeyi kabul etmedi. Pokebots sohbet geçmişiyle yeni bir {provider} oturumu başlattı. Tekrar deneyin.",
   "error.provider.blankHistoryText":
-    "Kayıtlı geçmişinde boş bir mesaj olduğu için model bu sohbeti kabul etmedi. OpenBot sohbet geçmişiyle yeni bir {provider} oturumu başlattı. Tekrar deneyin.",
+    "Kayıtlı geçmişinde boş bir mesaj olduğu için model bu sohbeti kabul etmedi. Pokebots sohbet geçmişiyle yeni bir {provider} oturumu başlattı. Tekrar deneyin.",
   "error.provider.codexHistoryItemMissing":
-    "Kayıtlı geçmişindeki bir öğe eksik olduğu için Codex bu sohbete devam edemedi. OpenBot sohbet geçmişiyle yeni bir Codex oturumu başlattı. Tekrar deneyin.",
+    "Kayıtlı geçmişindeki bir öğe eksik olduğu için Codex bu sohbete devam edemedi. Pokebots sohbet geçmişiyle yeni bir Codex oturumu başlattı. Tekrar deneyin.",
   "error.provider.codexRequestRefused":
-    "{provider}, bu sohbetin isteğini reddetti ve nedenini belirtmedi. Bu, çok sayıda görsel içeren uzun bir sohbette olabilir. OpenBot, sohbet geçmişiyle yeni bir {provider} oturumu başlattı. Tekrar deneyin.",
+    "{provider}, bu sohbetin isteğini reddetti ve nedenini belirtmedi. Bu, çok sayıda görsel içeren uzun bir sohbette olabilir. Pokebots, sohbet geçmişiyle yeni bir {provider} oturumu başlattı. Tekrar deneyin.",
   "error.provider.codexAudioRefused":
-    "Model bu sohbetteki sesi kabul etmedi. OpenBot, sohbet geçmişiyle yeni bir Codex oturumu başlattı. Tekrar deneyin.",
+    "Model bu sohbetteki sesi kabul etmedi. Pokebots, sohbet geçmişiyle yeni bir Codex oturumu başlattı. Tekrar deneyin.",
   "error.provider.imageTooSmall":
-    "Görsel çok küçük olduğu için model bu sohbetteki bir görseli kabul etmedi. OpenBot, sohbet geçmişiyle yeni bir {provider} oturumu başlattı. Tekrar deneyin.",
+    "Görsel çok küçük olduğu için model bu sohbetteki bir görseli kabul etmedi. Pokebots, sohbet geçmişiyle yeni bir {provider} oturumu başlattı. Tekrar deneyin.",
   "error.provider.imageTooLarge":
-    "Görsel çok büyük olduğu için model bu sohbetteki bir görseli kabul etmedi. OpenBot, sohbet geçmişiyle yeni bir {provider} oturumu başlattı. Tekrar deneyin.",
+    "Görsel çok büyük olduğu için model bu sohbetteki bir görseli kabul etmedi. Pokebots, sohbet geçmişiyle yeni bir {provider} oturumu başlattı. Tekrar deneyin.",
   "error.provider.imageCountLimit":
-    "Sohbette çok fazla görsel olduğu için model bu sohbeti kabul etmedi. OpenBot, sohbet geçmişiyle yeni bir {provider} oturumu başlattı. Tekrar deneyin.",
+    "Sohbette çok fazla görsel olduğu için model bu sohbeti kabul etmedi. Pokebots, sohbet geçmişiyle yeni bir {provider} oturumu başlattı. Tekrar deneyin.",
   "error.provider.imageUnreadable":
-    "Model bu sohbetteki bir görseli okuyamadı. OpenBot, sohbet geçmişiyle yeni bir {provider} oturumu başlattı. Tekrar deneyin. Bir görsel gönderdiyseniz, başka bir görsel gönderin.",
+    "Model bu sohbetteki bir görseli okuyamadı. Pokebots, sohbet geçmişiyle yeni bir {provider} oturumu başlattı. Tekrar deneyin. Bir görsel gönderdiyseniz, başka bir görsel gönderin.",
   "error.provider.requestTooLarge":
-    "Bu sohbet, modele gönderilemeyecek kadar büyüdü. Bunun nedeni çoğu zaman sohbetteki görsellerdir. OpenBot, sohbet geçmişiyle yeni bir {provider} oturumu başlattı. Tekrar deneyin.",
+    "Bu sohbet, modele gönderilemeyecek kadar büyüdü. Bunun nedeni çoğu zaman sohbetteki görsellerdir. Pokebots, sohbet geçmişiyle yeni bir {provider} oturumu başlattı. Tekrar deneyin.",
   "error.provider.opencodeSessionRejected":
-    "OpenCode isteği reddetti ve nedenini belirtmedi. Bu, uzun bir sohbette veya model değişikliğinden sonra olabilir. OpenBot, sohbet geçmişiyle yeni bir OpenCode oturumu başlattı. Yeniden deneyin. Hata sürerse başka bir model veya daha düşük bir efor seçin.",
+    "OpenCode isteği reddetti ve nedenini belirtmedi. Bu, uzun bir sohbette veya model değişikliğinden sonra olabilir. Pokebots, sohbet geçmişiyle yeni bir OpenCode oturumu başlattı. Yeniden deneyin. Hata sürerse başka bir model veya daha düşük bir efor seçin.",
   "error.provider.opencodeCompactionFailed":
-    "Model, bağlam penceresinde yer açmak için bu uzun sohbeti özetleyemedi. OpenBot, sohbet geçmişiyle yeni bir OpenCode oturumu başlattı. Yeniden deneyin. Hata sürerse daha güçlü bir model seçin.",
+    "Model, bağlam penceresinde yer açmak için bu uzun sohbeti özetleyemedi. Pokebots, sohbet geçmişiyle yeni bir OpenCode oturumu başlattı. Yeniden deneyin. Hata sürerse daha güçlü bir model seçin.",
   "error.provider.museMcpStartupFault":
-    "Muse bir MCP sunucusunu başlatamadı ve bu oturumda MCP’yi engelledi. OpenBot, sohbet geçmişiyle yeni bir Muse oturumu başlattı. Tekrar deneyin. Hata devam ederse bu ajan için Bilgisayar Kullanımı’nı veya başarısız olan MCP sunucusunu kapatın.",
+    "Muse bir MCP sunucusunu başlatamadı ve bu oturumda MCP’yi engelledi. Pokebots, sohbet geçmişiyle yeni bir Muse oturumu başlattı. Tekrar deneyin. Hata devam ederse bu ajan için Bilgisayar Kullanımı’nı veya başarısız olan MCP sunucusunu kapatın.",
   "error.provider.claudeSessionMissing":
-    "Claude Code bu sohbetin kayıtlı oturumunu bulamadı. OpenBot sohbet geçmişiyle yeni bir Claude Code oturumu başlattı. Tekrar deneyin.",
+    "Claude Code bu sohbetin kayıtlı oturumunu bulamadı. Pokebots sohbet geçmişiyle yeni bir Claude Code oturumu başlattı. Tekrar deneyin.",
   "error.provider.grokSignIn": "Grok'u kullanmak için `grok login` komutunu çalıştırın veya XAI_API_KEY ayarlayın.",
   "error.provider.acpSignInTimedOut": "Oturum açma zaman aşımına uğradı.",
   "error.provider.acpSignInStopped": "Oturum açma tamamlanmadan önce durdu.",
@@ -428,7 +429,7 @@ export const messages = {
   "error.provider.acpSignInFailed": "Oturum açma tamamlanmadı.",
   "error.provider.acpSignInFailedReason": "Oturum açma tamamlanmadı: {reason}",
   "error.provider.acpSignInNetwork":
-    "Oturum açma, sağlayıcının sunucusuna ulaşamadı. OpenBot'u çalıştıran bilgisayarın ağ bağlantısını ve DNS ayarlarını kontrol edip yeniden deneyin.",
+    "Oturum açma, sağlayıcının sunucusuna ulaşamadı. Pokebots'u çalıştıran bilgisayarın ağ bağlantısını ve DNS ayarlarını kontrol edip yeniden deneyin.",
   "error.provider.acpSignOutFailed": "Oturum kapatma tamamlanmadı.",
   "error.provider.acpSignOutFailedReason": "Oturum kapatma tamamlanmadı: {reason}",
   "error.provider.acpSignInMethodMissing":
@@ -443,7 +444,7 @@ export const messages = {
   "error.provider.geminiAccountSettingsUnreadable":
     "Gemini bu hesabın ayar dosyasını açamıyor, bu yüzden oturum açamıyor. Bu hesabı kaldırın ve yeniden ekleyin.",
   "error.provider.geminiSettingsUnreadable":
-    "Gemini bu bilgisayarda ayar dosyasını açamıyor, bu yüzden oturum açamıyor. Gemini kullanan diğer uygulamaları kapatın, ardından OpenBot'u kapatıp yeniden açın.",
+    "Gemini bu bilgisayarda ayar dosyasını açamıyor, bu yüzden oturum açamıyor. Gemini kullanan diğer uygulamaları kapatın, ardından Pokebots'u kapatıp yeniden açın.",
   "error.provider.geminiVerificationRequired":
     "Gemini'nin yanıt verebilmesi için Google'ın hesabınızı doğrulaması gerekiyor. Google hesabınızı bir tarayıcıda doğrulayın, ardından mesajınızı yeniden gönderin.",
   "error.provider.keyProviderRefused":
@@ -457,7 +458,7 @@ export const messages = {
   "error.provider.modelServiceRefusedReason":
     "Model hizmeti isteği reddetti: {reason}. Başka bir model seçin veya hizmette bu modele erişiminizi kontrol edin.",
   "error.provider.messageTooLarge":
-    "OpenBot, {limit} MB'tan daha büyük bir mesaj gönderdiği için {provider} sağlayıcısını durdurdu.",
+    "Pokebots, {limit} MB'tan daha büyük bir mesaj gönderdiği için {provider} sağlayıcısını durdurdu.",
   "error.provider.customAgentIdInvalid":
     "Bir ajan kimliği küçük harfler, rakamlar veya `-` olmalıdır ve yerleşik bir sağlayıcının kimliği olamaz.",
   "error.provider.customAgentEnvInvalid":
@@ -469,17 +470,17 @@ export const messages = {
     "Bir bağımsız değişken satır sonu içeremez. En fazla 32 bağımsız değişken kullanın.",
   "error.provider.customAgentWindowsScript":
     "Bir .cmd veya .bat komutu bağımsız değişkenlerinde yalnızca harfler, rakamlar ve - _ . , : = @ + / \\ alabilir.",
-  "error.provider.customAgentNotFound": "OpenBot {command} komutunu bulamıyor. Komutun tam yolunu girin.",
+  "error.provider.customAgentNotFound": "Pokebots {command} komutunu bulamıyor. Komutun tam yolunu girin.",
   "error.provider.customAgentCheckTimedOut": "Ajan 20 saniye içinde yanıt vermedi.",
   "error.provider.customAgentCheckStopped": "Ajan yanıt vermeden önce durdu.",
-  "error.provider.customAgentProtocolVersion": "Ajan ACP sürüm {version} kullanıyor. OpenBot sürüm 1 kullanır.",
+  "error.provider.customAgentProtocolVersion": "Ajan ACP sürüm {version} kullanıyor. Pokebots sürüm 1 kullanır.",
   "error.provider.customAgentCheckFailed": "Ajan bir ACP ajanı olarak yanıt vermedi.",
   "error.provider.customAgentRemoveBusy": "Bu özel ajanı kaldırmadan önce etkin turun ve kuyruğun bitmesini bekleyin.",
   "error.provider.customAgentNone": "Hiçbir özel ajan kayıtlı değil.",
   "error.provider.customAgentMissing": "Bu özel ajan şu anda kayıtlı değil. Başka bir model seçin.",
   "error.provider.customAgentSignIn": "Ajanın kendi komutuyla oturum açın, ardından tekrar deneyin.",
   "error.provider.customAgentsReadOnly":
-    "Kayıtlı özel ajanlar OpenBot'un daha yeni bir sürümü tarafından yazılmış veya dosya okunamıyor. Bunları değiştirmek için OpenBot'u güncelleyin.",
+    "Kayıtlı özel ajanlar Pokebots'un daha yeni bir sürümü tarafından yazılmış veya dosya okunamıyor. Bunları değiştirmek için Pokebots'u güncelleyin.",
   "error.provider.customAgentNoSecureStorage":
     "Bu bilgisayarda güvenli depolama alanı yok, bu nedenle ortam değerleri kaydedilemez. Bunları kaldırıp tekrar deneyin.",
   "error.provider.customAgentNotSaved": "Bu özel ajan kayıtlı değil. Listeyi yenileyip tekrar deneyin.",
@@ -487,17 +488,17 @@ export const messages = {
     "{reason}. “Yalnızca çalışma alanı” bunu engelliyor. “Tam erişim”i deneyin.",
   "error.provider.customAgentTooMany": "En fazla {count} özel ajan kaydedebilirsiniz.",
   "error.provider.customAgentEnvValueMissing": "{name} için bir değer girin.",
-  "error.provider.off": "{provider}, OpenBot'ta kapalı. Önce sağlayıcı ayarlarından açın.",
+  "error.provider.off": "{provider}, Pokebots'ta kapalı. Önce sağlayıcı ayarlarından açın.",
   "error.provider.inUse": "Bir ajan {provider} kullanıyor. Bu sağlayıcıyı kapatmadan önce ajanın modelini değiştirin.",
   "error.provider.useBusy":
     "Sağlayıcı denetiminin veya oturum açma işleminin bitmesini bekleyin, ardından tekrar deneyin.",
   "error.provider.useSettingsReadOnly":
-    "Kayıtlı sağlayıcı ayarları okunamıyor. Bunları değiştirmeden önce OpenBot'u güncelleyin.",
-  "error.provider.useChangeFailed": "OpenBot sağlayıcı ayarını değiştiremedi.",
+    "Kayıtlı sağlayıcı ayarları okunamıyor. Bunları değiştirmeden önce Pokebots'u güncelleyin.",
+  "error.provider.useChangeFailed": "Pokebots sağlayıcı ayarını değiştiremedi.",
   "error.provider.accountsUnsupported": "{provider} yalnızca bir hesap destekler.",
   "error.provider.accountNeedsConnection": "Başka bir hesap eklemeden önce {provider} sağlayıcısına bağlanın.",
   "error.provider.usageResetUnsupported": "{provider} kullanım sınırlarını sıfırlayamaz.",
-  "error.provider.signOutUnsupported": "OpenBot {provider} oturumunun bağlantısını kesemiyor.",
+  "error.provider.signOutUnsupported": "Pokebots {provider} oturumunun bağlantısını kesemiyor.",
   "error.provider.usageResetNotConnected": "Kullanımını sıfırlamadan önce bu {provider} hesabında yeniden oturum açın.",
   "error.provider.accountLimit": "{provider} en fazla {limit} hesap destekler.",
   "error.provider.accountNotFound": "Bu {provider} hesabı bu bilgisayarda yok. Yenileyip tekrar deneyin.",
@@ -506,16 +507,16 @@ export const messages = {
   "error.provider.accountUsesKey":
     "Bu {provider} hesabı kayıtlı API anahtarını kullanır ve oturum açma içermez. Anahtarı Sunucu ayarları → Sağlayıcılar bölümünde değiştirin.",
   "error.provider.accountNeedsKey":
-    "Yeni bir {provider} hesabı için API anahtarı gerekir. Bu cihazda OpenBot'u güncelleyin, sonra hesabı yeniden ekleyin.",
+    "Yeni bir {provider} hesabı için API anahtarı gerekir. Bu cihazda Pokebots'u güncelleyin, sonra hesabı yeniden ekleyin.",
   "error.provider.accountKeyRefused":
     "{provider} bu API anahtarını kabul etmedi. Anahtarı kontrol edin, sonra tekrar deneyin.",
   "error.provider.accountKeyUnreachable":
-    "OpenBot, API anahtarını kontrol etmek için {provider} hizmetine ulaşamadı. İnternet bağlantısını kontrol edin, sonra tekrar deneyin.",
+    "Pokebots, API anahtarını kontrol etmek için {provider} hizmetine ulaşamadı. İnternet bağlantısını kontrol edin, sonra tekrar deneyin.",
   "error.provider.accountKeySignedOut":
     "{provider} bu hesabın API anahtarını artık kabul etmiyor. Hesaba yeni bir anahtar verin.",
   "error.provider.accountInUse": "Bu hesabı kullanan bir ajan çalışıyor. Ajan durduğunda tekrar deneyin.",
   "error.provider.accountsReadOnly":
-    "Kayıtlı sağlayıcı hesapları okunamıyor. Bunları değiştirmeden önce OpenBot'u güncelleyin.",
+    "Kayıtlı sağlayıcı hesapları okunamıyor. Bunları değiştirmeden önce Pokebots'u güncelleyin.",
   "error.provider.accountSignedOut": "Bu {provider} hesabının oturumu kapalı. Tekrar oturum açın.",
   "error.provider.sessionSettingUnavailable": "Bu ayar mevcut sağlayıcı oturumunda kullanılamıyor.",
   "error.provider.sessionSettingInvalid": "Bu değer bu ayar için kullanılamıyor.",
@@ -554,7 +555,7 @@ export const messages = {
   "error.provider.museConnectionFailed":
     "Muse bağlantısı başarısız oldu. Kayıtlı geçmişini kurtarmak için konuşmayı sürdürün.",
   "error.provider.museUnknownSession": "Bilinmeyen Muse oturumu.",
-  "error.provider.museInvalidToolResult": "Geçersiz OpenBot aracı sonucu.",
+  "error.provider.museInvalidToolResult": "Geçersiz Pokebots aracı sonucu.",
   "error.provider.museMcpRequired": "Muse oturum MCP sunucularını desteklemelidir.",
   "error.provider.museSessionMismatch": "Muse farklı bir oturum döndürdü.",
   "error.provider.museCompactRejected": "Muse sıkıştırmayı kabul etmedi.",

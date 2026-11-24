@@ -10,7 +10,7 @@ import {
   normalizeMessageContent,
   proto,
   type WAMessage,
-} from "@openbot/whatsapp/baileys";
+} from "@pokebots/whatsapp/baileys";
 import type { InboundAction, InboundFile, InboundMessage, MessageTarget } from "../messaging-types";
 import type { WhatsAppChatState } from "./whatsapp-chats";
 import { isOtherOpenBotPost } from "./whatsapp-loop-guard";

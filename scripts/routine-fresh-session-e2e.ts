@@ -31,7 +31,7 @@ import {
   COMPUTER_USE_MCP_SERVER_NAME,
   decodeUsageTokens,
   parseRoutineRunConversationEventItemType,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import { Effect } from "effect";
 import type { AgentBrowserHost } from "../src/backend/agent/turn-lifecycle";
 import { getRecord, getString } from "../src/backend/protocol";

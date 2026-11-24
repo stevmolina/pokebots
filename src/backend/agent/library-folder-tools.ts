@@ -1,4 +1,4 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import {
   LIBRARY_FOLDER_LIMITS,
   type LibraryFolder,
@@ -7,7 +7,7 @@ import {
   libraryFolderBranch,
   libraryFolderPath,
   libraryFolderTree,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import { Effect } from "effect";
 import { z } from "zod";
 import type { LibraryFoldersStore } from "../library-folders-store";

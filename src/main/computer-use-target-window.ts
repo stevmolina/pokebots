@@ -1,4 +1,4 @@
-import { type DynamicRecord, isDynamicRecord } from "@openbot/contracts/runtime-values";
+import { type DynamicRecord, isDynamicRecord } from "@pokebots/contracts/runtime-values";
 import type { Point, Rectangle } from "electron";
 import type { ObservedAction, ObservedPointer } from "./cua-driver-action-tap";
 import { HIGHLIGHT_OWNER_SHORT_ID } from "./cua-driver-daemon-client";

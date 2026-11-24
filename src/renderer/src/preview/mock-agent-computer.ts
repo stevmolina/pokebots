@@ -3,7 +3,7 @@ import {
   type AgentComputerStatus,
   DISCONNECTED_AGENT_COMPUTER,
   type OpenBotDesktopApi,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 
 /** The Agent Computer account of each server. Any key connects; the list has one running and one paused computer. */
 export function createMockAgentComputer(): OpenBotDesktopApi["agentComputer"] {

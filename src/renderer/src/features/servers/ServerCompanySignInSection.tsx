@@ -1,4 +1,4 @@
-import type { CompanySignInSettings, OpenBotDesktopApi } from "@openbot/contracts/ipc";
+import type { CompanySignInSettings, OpenBotDesktopApi } from "@pokebots/contracts/ipc";
 import {
   Badge,
   Button,
@@ -22,8 +22,8 @@ import {
   Text,
   toast,
   X,
-} from "@openbot/ui";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/ui";
+import { useText } from "@pokebots/ui/text";
 import { createEffect, createStore, Show } from "solid-js";
 import type { ServerSettingsSectionHost } from "./server-settings-section";
 

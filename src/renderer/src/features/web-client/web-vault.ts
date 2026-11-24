@@ -3,16 +3,16 @@ import {
   decodeHostVaultSecret,
   decodeHostVaultState,
   type VaultSaveInput,
-} from "@openbot/contracts/ipc";
-import { VAULT_IMPORT_CSV_LIMIT } from "@openbot/contracts/team-protocol/vault-import-v1";
-import { VAULT_ROUTES } from "@openbot/contracts/team-protocol/vault-v1";
-import { VAULT_V2_ROUTES } from "@openbot/contracts/team-protocol/vault-v2";
-import { VAULT_V3_ROUTES } from "@openbot/contracts/team-protocol/vault-v3";
-import { VAULT_V4_ROUTES } from "@openbot/contracts/team-protocol/vault-v4";
-import { runTeamEffect } from "@openbot/team-client";
-import { importHostVaultCsv } from "@openbot/team-client/team-admin-requests";
-import type { TeamApiRequest } from "@openbot/team-client/team-api-requests";
-import { currentText } from "@openbot/ui/text";
+} from "@pokebots/contracts/ipc";
+import { VAULT_IMPORT_CSV_LIMIT } from "@pokebots/contracts/team-protocol/vault-import-v1";
+import { VAULT_ROUTES } from "@pokebots/contracts/team-protocol/vault-v1";
+import { VAULT_V2_ROUTES } from "@pokebots/contracts/team-protocol/vault-v2";
+import { VAULT_V3_ROUTES } from "@pokebots/contracts/team-protocol/vault-v3";
+import { VAULT_V4_ROUTES } from "@pokebots/contracts/team-protocol/vault-v4";
+import { runTeamEffect } from "@pokebots/team-client";
+import { importHostVaultCsv } from "@pokebots/team-client/team-admin-requests";
+import type { TeamApiRequest } from "@pokebots/team-client/team-api-requests";
+import { currentText } from "@pokebots/ui/text";
 import { Effect } from "effect";
 import { remoteVaultCalls, type VaultCalls } from "../vault/vault-port";
 import { chooseFiles } from "./web-channels-runtime";

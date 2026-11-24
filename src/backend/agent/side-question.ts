@@ -1,5 +1,5 @@
-import { CHAT_VISUAL_ITEM_TYPE_PREFIX } from "@openbot/contracts/chat-visual";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { CHAT_VISUAL_ITEM_TYPE_PREFIX } from "@pokebots/contracts/chat-visual";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import {
   AGENT_WELCOME_ITEM_TYPE,
   type AgentSummary,
@@ -9,7 +9,7 @@ import {
   CONVERSATION_SUBAGENTS_ITEM_TYPE,
   type ConversationMessage,
   ROUTINE_QUIET_ANSWER_ITEM_TYPE,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import { tagSafe } from "./developer-instructions";
 
 /** The chat messages a side question reads, newest last. */

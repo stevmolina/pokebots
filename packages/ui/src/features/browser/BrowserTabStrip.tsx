@@ -1,7 +1,7 @@
-import type { BrowserTabProfile } from "@openbot/contracts/ipc";
-import { Button, buttonVariants, ChevronDown, ContextMenu, DropdownMenu, Tabs, X } from "@openbot/ui";
-import { useText } from "@openbot/ui/text";
-import { clamp, motionDuration, prefersReducedMotion } from "@openbot/ui/utils";
+import type { BrowserTabProfile } from "@pokebots/contracts/ipc";
+import { Button, buttonVariants, ChevronDown, ContextMenu, DropdownMenu, Tabs, X } from "@pokebots/ui";
+import { useText } from "@pokebots/ui/text";
+import { clamp, motionDuration, prefersReducedMotion } from "@pokebots/ui/utils";
 import { createEffect, createSignal, For, onSettled, Show } from "solid-js";
 import { createTabRow } from "../../components/createTabRow";
 import { browserProfileColor } from "./BrowserProfileColor";

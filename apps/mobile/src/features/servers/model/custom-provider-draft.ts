@@ -1,4 +1,4 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import {
   CUSTOM_PROVIDER_ID_PATTERN,
   type CustomProviderSummary,
@@ -9,8 +9,8 @@ import {
   isNewCustomProviderId,
   type SaveCustomProviderInput,
   type UpdateCustomProviderInput,
-} from "@openbot/contracts/ipc";
-import { isOneOf } from "@openbot/contracts/runtime-values";
+} from "@pokebots/contracts/ipc";
+import { isOneOf } from "@pokebots/contracts/runtime-values";
 import type { PairItem } from "@/features/servers/components/repeatable-fields";
 import type { MobileText } from "@/shared/lib/text";
 

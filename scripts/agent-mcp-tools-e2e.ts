@@ -12,8 +12,8 @@ import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from "node:http";
 import { homedir, tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import { GITHUB_CONNECTOR_MCP_SERVER_ID, type McpServerConfig } from "@openbot/contracts/ipc";
-import { createOpenBotLogger } from "@openbot/logging";
+import { GITHUB_CONNECTOR_MCP_SERVER_ID, type McpServerConfig } from "@pokebots/contracts/ipc";
+import { createOpenBotLogger } from "@pokebots/logging";
 import { Effect } from "effect";
 import { McpGateway } from "../src/backend/agent/mcp-gateway";
 import {

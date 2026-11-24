@@ -1,4 +1,4 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import {
   type AgentAccessLevel,
   type AgentSummary,
@@ -12,10 +12,10 @@ import {
   type DeleteChannelRoutineInput,
   isReleasedRoutineSchedule,
   type UpdateChannelRoutineInput,
-} from "@openbot/contracts/ipc";
-import { type DynamicRecord, isBoolean, isString } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
-import { RoutineInputError } from "@openbot/team-client/routine-schedule";
+} from "@pokebots/contracts/ipc";
+import { type DynamicRecord, isBoolean, isString } from "@pokebots/contracts/runtime-values";
+import { sourceText } from "@pokebots/i18n/source";
+import { RoutineInputError } from "@pokebots/team-client/routine-schedule";
 import {
   routineToolArguments,
   routineToolPolicies,

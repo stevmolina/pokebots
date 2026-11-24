@@ -3,8 +3,8 @@ import {
   type BillingCurrency,
   type BillingInterval,
   type BillingPlanId,
-} from "@openbot/contracts/billing";
-import { catalogCurrencies, type HostedServerCatalogPlan } from "@openbot/contracts/hosted-servers";
+} from "@pokebots/contracts/billing";
+import { catalogCurrencies, type HostedServerCatalogPlan } from "@pokebots/contracts/hosted-servers";
 import {
   LICENSE_BUNDLE_DISCOUNT_PERCENT,
   LICENSE_INCLUDED_USERS,
@@ -17,11 +17,11 @@ import {
   licenseMonthlyPrice,
   licenseOrderMonthly,
   type PricingOrder,
-} from "@openbot/contracts/license";
-import type { AppTextKey } from "@openbot/i18n";
-import { Button } from "@openbot/ui/button";
-import { RadioGroup } from "@openbot/ui/complex";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@openbot/ui/select";
+} from "@pokebots/contracts/license";
+import type { AppTextKey } from "@pokebots/i18n";
+import { Button } from "@pokebots/ui/button";
+import { RadioGroup } from "@pokebots/ui/complex";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@pokebots/ui/select";
 import { type JSX, Portal } from "@solidjs/web";
 import { type Accessor, createEffect, createMemo, createSignal, createUniqueId, For, Show, untrack } from "solid-js";
 import { RollingPrice } from "../../rolling-price";

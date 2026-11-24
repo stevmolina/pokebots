@@ -1,8 +1,8 @@
-import { serializeAttachmentReference } from "@openbot/contracts/attachment-references";
-import { serializeChatTagReference } from "@openbot/contracts/chat-tag-references";
-import type { DraftAttachment, InstalledSkill } from "@openbot/contracts/ipc";
-import type { ComposerBrowserTab, ComposerThread } from "@openbot/ui/data";
-import { ComposerEditor } from "@openbot/ui/features/conversation/ComposerEditor";
+import { serializeAttachmentReference } from "@pokebots/contracts/attachment-references";
+import { serializeChatTagReference } from "@pokebots/contracts/chat-tag-references";
+import type { DraftAttachment, InstalledSkill } from "@pokebots/contracts/ipc";
+import type { ComposerBrowserTab, ComposerThread } from "@pokebots/ui/data";
+import { ComposerEditor } from "@pokebots/ui/features/conversation/ComposerEditor";
 import { createSignal } from "solid-js";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";

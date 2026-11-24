@@ -11,8 +11,8 @@
 // the way back to the spent model, so the agent does not return to it at the reset.
 // Writes .openbot-build/channel-usage-limit-e2e/report.json.
 import assert from "node:assert/strict";
-import { agentProviderDescriptor, isAgentProvider } from "@openbot/contracts/agent-providers";
-import { type AgentSummary, type ChannelPage, MODEL_SWITCH_ITEM_TYPES } from "@openbot/contracts/ipc";
+import { agentProviderDescriptor, isAgentProvider } from "@pokebots/contracts/agent-providers";
+import { type AgentSummary, type ChannelPage, MODEL_SWITCH_ITEM_TYPES } from "@pokebots/contracts/ipc";
 import { argument, ChannelClient, connectChannelE2e, SHORT_PROMPT, waitFor, writeReport } from "./channel-e2e-support";
 
 interface Report {

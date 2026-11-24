@@ -3,9 +3,9 @@
 // computer as the person who acts. A joined server answers through `crm-v1`, which only its owners
 // and admins may use.
 
-import type { CrmActor } from "@openbot/contracts/ipc";
-import { CRM_CAPABILITY, CRM_ROUTES } from "@openbot/contracts/team-protocol/crm-v1";
-import { sourceText } from "@openbot/i18n/source";
+import type { CrmActor } from "@pokebots/contracts/ipc";
+import { CRM_CAPABILITY, CRM_ROUTES } from "@pokebots/contracts/team-protocol/crm-v1";
+import { sourceText } from "@pokebots/i18n/source";
 import {
   decodeRemoteCrmActivityPage,
   decodeRemoteCrmApplyResult,
@@ -13,7 +13,7 @@ import {
   decodeRemoteCrmOverview,
   decodeRemoteCrmPaymentPage,
   decodeRemoteCrmSettings,
-} from "@openbot/team-client/crm-decoding";
+} from "@pokebots/team-client/crm-decoding";
 import { Effect } from "effect";
 import type { CrmPeopleOperations } from "../../backend/crm/crm-handle";
 import { runCauseEffect } from "../../backend/effect-boundary";

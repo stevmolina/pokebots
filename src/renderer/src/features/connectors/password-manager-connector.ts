@@ -2,10 +2,10 @@ import {
   disconnectedPasswordManager,
   type PasswordManagerConnectMethod,
   type PasswordManagerStatus,
-} from "@openbot/contracts/ipc";
-import type { KeeperConnectorPanelProps } from "@openbot/ui/features/settings/KeeperConnectorPanel";
-import type { ProtonPassConnectorPanelProps } from "@openbot/ui/features/settings/ProtonPassConnectorPanel";
-import { currentText } from "@openbot/ui/text";
+} from "@pokebots/contracts/ipc";
+import type { KeeperConnectorPanelProps } from "@pokebots/ui/features/settings/KeeperConnectorPanel";
+import type { ProtonPassConnectorPanelProps } from "@pokebots/ui/features/settings/ProtonPassConnectorPanel";
+import { currentText } from "@pokebots/ui/text";
 import { createSignal, onCleanup, onSettled } from "solid-js";
 import {
   type ConnectorAnalyticsAction,

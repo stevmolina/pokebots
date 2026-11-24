@@ -1,8 +1,8 @@
 import {
   FEEDBACK_WITHDRAW_CAPABILITY,
   FEEDBACK_WITHDRAW_ROUTES,
-} from "@openbot/contracts/team-protocol/feedback-withdraw-v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/team-protocol/feedback-withdraw-v1";
+import { sourceText } from "@pokebots/i18n/source";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import { parseWithdrawFeedback } from "../ipc/agent-inputs";
 import type { TeamApiAgents } from "./dependencies";

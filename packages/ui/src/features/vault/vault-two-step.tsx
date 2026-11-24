@@ -3,14 +3,14 @@
 // to this window after it is saved. The window makes codes only from a key that the user typed in the
 // setup step and has not saved yet, so the user can check the key on the site before saving it.
 
-import type { VaultTwoStepCodes } from "@openbot/contracts/ipc";
+import type { VaultTwoStepCodes } from "@pokebots/contracts/ipc";
 import {
   groupedTwoStepCode,
   parseTwoStepKey,
   TWO_STEP_KEY_LIMIT,
   twoStepCode,
   twoStepRemainingMs,
-} from "@openbot/contracts/two-step-code";
+} from "@pokebots/contracts/two-step-code";
 import {
   Button,
   Copy,
@@ -28,7 +28,7 @@ import {
   RadialProgress,
   ShieldCheck,
   Text,
-} from "@openbot/ui";
+} from "@pokebots/ui";
 import { createMemo, createSignal, onSettled, Show } from "solid-js";
 import { useText } from "../../text";
 

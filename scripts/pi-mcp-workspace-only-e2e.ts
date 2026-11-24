@@ -10,7 +10,7 @@ import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import type { McpServerConfig } from "@openbot/contracts/ipc";
+import type { McpServerConfig } from "@pokebots/contracts/ipc";
 import { visibleDynamicTools } from "../src/backend/agent/tool-catalog";
 import type { AgentClient } from "../src/backend/agent-client";
 import { resolvePiCli } from "../src/backend/cli";

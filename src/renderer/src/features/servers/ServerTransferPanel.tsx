@@ -1,6 +1,6 @@
-import type { AgentProviderId } from "@openbot/contracts/agent-providers";
-import { CopyAgentsDialog, type CopyAgentsServer } from "@openbot/ui/features/transfer/CopyAgentsDialog";
-import { InstanceTransferView } from "@openbot/ui/features/transfer/InstanceTransferView";
+import type { AgentProviderId } from "@pokebots/contracts/agent-providers";
+import { CopyAgentsDialog, type CopyAgentsServer } from "@pokebots/ui/features/transfer/CopyAgentsDialog";
+import { InstanceTransferView } from "@pokebots/ui/features/transfer/InstanceTransferView";
 import { createSignal, Show, untrack } from "solid-js";
 import { createServerCopyStore, type ServerCopyCalls } from "./server-copy-store";
 import { createServerTransferStore, type ServerTransferCalls } from "./server-transfer-store";

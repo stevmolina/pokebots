@@ -1,4 +1,4 @@
-import type { BackgroundProcess } from "@openbot/contracts/ipc";
+import type { BackgroundProcess } from "@pokebots/contracts/ipc";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button, Typography } from "heroui-native";
 import Server from "lucide-react-native/icons/server";

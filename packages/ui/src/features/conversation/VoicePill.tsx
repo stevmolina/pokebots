@@ -1,9 +1,9 @@
-import type { AppTextKey } from "@openbot/i18n";
-import { Button, LabelTooltip, LabelTooltipTrigger, Mic, MicOff, X } from "@openbot/ui";
-import type { AgentProfile } from "@openbot/ui/data";
-import { AgentAvatar } from "@openbot/ui/features/agents/AgentAvatar";
-import { StopIcon } from "@openbot/ui/features/conversation/ConversationIcons";
-import { VoiceWaveform } from "@openbot/ui/features/conversation/VoiceRecordingMorph";
+import type { AppTextKey } from "@pokebots/i18n";
+import { Button, LabelTooltip, LabelTooltipTrigger, Mic, MicOff, X } from "@pokebots/ui";
+import type { AgentProfile } from "@pokebots/ui/data";
+import { AgentAvatar } from "@pokebots/ui/features/agents/AgentAvatar";
+import { StopIcon } from "@pokebots/ui/features/conversation/ConversationIcons";
+import { VoiceWaveform } from "@pokebots/ui/features/conversation/VoiceRecordingMorph";
 import {
   createMotion,
   GooFilter,
@@ -14,9 +14,9 @@ import {
   SNAPPY,
   SOFT,
   stagedCurve,
-} from "@openbot/ui/liquid";
-import { useText } from "@openbot/ui/text";
-import { clamp, mix } from "@openbot/ui/utils";
+} from "@pokebots/ui/liquid";
+import { useText } from "@pokebots/ui/text";
+import { clamp, mix } from "@pokebots/ui/utils";
 import type { JSX } from "@solidjs/web";
 import { createEffect, createUniqueId, onSettled, Show, untrack } from "solid-js";
 

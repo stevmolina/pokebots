@@ -1,6 +1,6 @@
 import type { DatabaseSync } from "node:sqlite";
-import type { ConversationMessage, MessagePinner } from "@openbot/contracts/ipc";
-import type { DynamicRecord } from "@openbot/contracts/runtime-values";
+import type { ConversationMessage, MessagePinner } from "@pokebots/contracts/ipc";
+import type { DynamicRecord } from "@pokebots/contracts/runtime-values";
 import {
   databaseRow,
   databaseRows,

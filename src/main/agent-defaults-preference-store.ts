@@ -4,8 +4,8 @@ import {
   DEFAULT_AGENT_DEFAULTS,
   isAutomationRunsPerHour,
   isPlanStartAfterMs,
-} from "@openbot/contracts/ipc";
-import { isBoolean, isDynamicRecord } from "@openbot/contracts/runtime-values";
+} from "@pokebots/contracts/ipc";
+import { isBoolean, isDynamicRecord } from "@pokebots/contracts/runtime-values";
 import { PreferenceStore } from "./preference-file";
 
 /**

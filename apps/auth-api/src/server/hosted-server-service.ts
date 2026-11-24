@@ -9,7 +9,7 @@ import {
   isOpenBillingStatus,
   memberLimitForPlan,
   storageTierOf,
-} from "@openbot/contracts/billing";
+} from "@pokebots/contracts/billing";
 import {
   HOSTED_BOAT_PLAN_SIZE,
   HOSTED_PLAN_SIZE,
@@ -28,11 +28,11 @@ import {
   type HostedServerSummary,
   hostedServerStorageGb,
   parseHostedServerName,
-} from "@openbot/contracts/hosted-servers";
-import { parseLicenseOrder } from "@openbot/contracts/license";
-import { isDynamicRecord, isOneOf, isString } from "@openbot/contracts/runtime-values";
-import type { RouteHostState } from "@openbot/contracts/signal-protocol/ingress-queue";
-import { sourceText } from "@openbot/i18n/source-english";
+} from "@pokebots/contracts/hosted-servers";
+import { parseLicenseOrder } from "@pokebots/contracts/license";
+import { isDynamicRecord, isOneOf, isString } from "@pokebots/contracts/runtime-values";
+import type { RouteHostState } from "@pokebots/contracts/signal-protocol/ingress-queue";
+import { sourceText } from "@pokebots/i18n/source-english";
 import { Context, Effect, Layer, Result, Schema } from "effect";
 import { SOLD_OUT_PLANS } from "../lib/pricing-page";
 import {

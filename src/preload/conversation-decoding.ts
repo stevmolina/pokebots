@@ -45,7 +45,7 @@ import {
   type QueueSnapshot,
   WITHDRAW_FEEDBACK_STATUSES,
   type WithdrawFeedbackResult,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   decodeRecord,
   guardedListDecoder,
@@ -54,12 +54,12 @@ import {
   requiredBoolean,
   requiredNumber,
   requiredString,
-} from "@openbot/contracts/ipc-decoding";
-import { isDynamicRecord, isNumber, isOneOf, isString } from "@openbot/contracts/runtime-values";
+} from "@pokebots/contracts/ipc-decoding";
+import { isDynamicRecord, isNumber, isOneOf, isString } from "@pokebots/contracts/runtime-values";
 import {
   type AgentActiveQueues,
   decodeAgentActiveQueues,
-} from "@openbot/contracts/team-protocol/agent-active-queues-v1";
+} from "@pokebots/contracts/team-protocol/agent-active-queues-v1";
 
 export function decodeAttachmentDownloadProgress(value: unknown): AttachmentDownloadProgress {
   const progress = decodeRecord(value, "attachment download progress");

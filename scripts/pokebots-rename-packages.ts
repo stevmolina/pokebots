@@ -74,6 +74,18 @@ export const SKIPPED_PATHS: readonly { readonly path: string; readonly reason: s
     reason: "Catalog files. Only comments name the old packages. `pokebots-rename-catalogs.ts` owns this folder.",
   },
   { path: "plans/", reason: "Historical plans. They describe the code as it was written." },
+  {
+    path: "scripts/pokebots-rename-packages.ts",
+    reason: "This script names the old scope in its own comments, patterns and messages.",
+  },
+  {
+    path: "scripts/pokebots-rename-catalogs.ts",
+    reason: "This script names the old scope in its own comments.",
+  },
+  {
+    path: "scripts/legacy-openbot-scope.ts",
+    reason: "The temporary alias list. It names the old scope on purpose.",
+  },
 ];
 
 /** Where the logging alias lives. Released migrations import this name, so it must keep resolving. */
@@ -114,6 +126,8 @@ export interface RewriteResult {
  */
 function isAliasLine(file: string, line: string, previous: string): boolean {
   if (line.includes(`"${ALIAS_NAME}": "${ALIAS_TARGET}"`)) return true; // package.json and bun.lock
+  // The temporary `@openbot/<package>` aliases of every package (`scripts/legacy-openbot-scope.ts`).
+  if (LEGACY_ALIAS_LINE.test(line)) return true;
   if (file === LOCKFILE && line.includes(LOCK_ALIAS_ENTRY)) return true;
   if (file === "electron.vite.config.ts" && line.trim() === `"${ALIAS_NAME}",` && previous.includes(ALIAS_COMMENT)) {
     return true;
@@ -147,6 +161,9 @@ export function renameScopes(code: string, file = ""): RewriteResult {
 }
 
 const LOCKFILE = "bun.lock";
+/** A root `package.json` or `bun.lock` line of the temporary alias: `"@openbot/x": "workspace:@pokebots/x@*"`. */
+const LEGACY_ALIAS_LINE =
+  /^\s*"@openbot\/([a-z0-9-]+)": (?:"workspace:@pokebots\/\1@\*"|\["@pokebots\/\1@workspace:[^"]+"\]),?$/;
 /** The lockfile entry that maps the alias to the renamed workspace package. */
 const LOCK_ALIAS_ENTRY = `"${ALIAS_NAME}": ["@pokebots/logging@workspace:packages/logging"],`;
 const ALIAS_COMMENT = "Released SQLite migrations keep this specifier. Bundle its workspace alias too.";

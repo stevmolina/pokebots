@@ -30,8 +30,8 @@ export default defineConfig(({ command }) => {
     resolve: {
       dedupe: ["solid-js", "@solidjs/web", "@solidjs/signals"],
       alias: {
-        "@openbot/renderer-preview": rendererPreviewAlias,
-        "@openbot/renderer-web": rendererWebAlias,
+        "@pokebots/renderer-preview": rendererPreviewAlias,
+        "@pokebots/renderer-web": rendererWebAlias,
         ...(selfHosted
           ? {
               "cloudflare:workers": fileURLToPath(new URL("./src/self-hosted/cloudflare-workers.ts", import.meta.url)),

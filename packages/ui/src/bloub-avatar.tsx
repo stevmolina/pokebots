@@ -1,7 +1,7 @@
 import { BloubBot } from "@norbert_bodziony/bloub";
-import { bloubAvatarProfile } from "@openbot/brand/bloub-avatar";
-import { POKEBOTS_LANDING_ARTWORK, pokebotsDefaultPortrait } from "@openbot/brand/pokebots-avatar";
-import type { AvatarColor, AvatarHue } from "@openbot/contracts/ipc";
+import { bloubAvatarProfile } from "@pokebots/brand/bloub-avatar";
+import { POKEBOTS_LANDING_ARTWORK, pokebotsDefaultPortrait } from "@pokebots/brand/pokebots-avatar";
+import type { AvatarColor, AvatarHue } from "@pokebots/contracts/ipc";
 import { render } from "@solidjs/web";
 import { flush } from "solid-js";
 import { POKEBOTS_PORTRAIT_IMAGES } from "./features/agents/pokebots-portraits";
@@ -9,7 +9,7 @@ import { POKEBOTS_PORTRAIT_IMAGES } from "./features/agents/pokebots-portraits";
 /**
  * When an avatar animates, which is a performance decision and not a state one: `hover` and `idle`
  * rest until a pointer or focus reaches them, `always` runs. What the avatar *expresses* is its
- * `AvatarMood` - see `@openbot/brand/bloub-avatar-motion`.
+ * `AvatarMood` - see `@pokebots/brand/bloub-avatar-motion`.
  */
 export type AvatarMotion = "hover" | "always" | "idle";
 export {
@@ -33,14 +33,14 @@ export {
   isAvatarColorChoice,
   SUPPORTED_AVATAR_SILHOUETTES,
   type SupportedAvatarSilhouetteId,
-} from "@openbot/brand/bloub-avatar";
+} from "@pokebots/brand/bloub-avatar";
 export {
   type AvatarMood,
   avatarMoodIsBusy,
   avatarMoodPresentation,
   SHAPE_SAFE_STATES,
   type ShapeSafeStateId,
-} from "@openbot/brand/bloub-avatar-motion";
+} from "@pokebots/brand/bloub-avatar-motion";
 
 export function createStaticAvatarSvg(
   seed: string,

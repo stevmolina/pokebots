@@ -1,4 +1,4 @@
-import { ComputerLiveViewCard } from "@openbot/ui/features/conversation/ComputerLiveViewCard";
+import { ComputerLiveViewCard } from "@pokebots/ui/features/conversation/ComputerLiveViewCard";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 

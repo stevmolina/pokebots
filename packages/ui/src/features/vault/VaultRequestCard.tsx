@@ -1,12 +1,12 @@
-import type { VaultItemKind, VaultSaveInput } from "@openbot/contracts/ipc";
+import type { VaultItemKind, VaultSaveInput } from "@pokebots/contracts/ipc";
 import {
   UI_API_KEY_SCOPE_FIELD_ID,
   type UiBlockStatus,
   type UiBlockValue,
   type UiVaultSavedItem,
-} from "@openbot/contracts/ui-blocks";
-import type { AppTextKey } from "@openbot/i18n";
-import { Button, CreditCard, KeyRound, UserRound } from "@openbot/ui";
+} from "@pokebots/contracts/ui-blocks";
+import type { AppTextKey } from "@pokebots/i18n";
+import { Button, CreditCard, KeyRound, UserRound } from "@pokebots/ui";
 import { createSignal, Match, onCleanup, Show, Switch } from "solid-js";
 import { useText } from "../../text";
 import { UiBlockCard } from "../conversation/ui-blocks/UiBlockCard";

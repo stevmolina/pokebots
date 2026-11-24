@@ -21,7 +21,7 @@ export const messages = {
   "error.agent.toolCallUnknownToolSuggest":
     "Das Werkzeug wurde nicht ausgeführt. tool_call hat kein Werkzeug mit diesem Namen gefunden. Der qualifizierte Name ist möglicherweise {name}. Wenn ja, sende den Aufruf mit diesem Namen erneut.",
   "error.agent.toolDescribeUnknownNames":
-    "tool_describe hat kein OpenBot-Werkzeug mit dem Namen {names} gefunden. Es beschreibt nur die OpenBot- und Browser-Werkzeuge, die openbot.tool_search auflistet, keine MCP-Werkzeuge.",
+    "tool_describe hat kein Pokebots-Werkzeug mit dem Namen {names} gefunden. Es beschreibt nur die Pokebots- und Browser-Werkzeuge, die openbot.tool_search auflistet, keine MCP-Werkzeuge.",
   "error.agent.toolDescribeDiscoveryNames":
     "Rufe {names} direkt auf. tool_describe beschreibt die Suchwerkzeuge nicht.",
   "error.agent.routineScheduleArgumentsInvalid":
@@ -47,7 +47,7 @@ export const messages = {
   "error.agent.instructionsTooLarge":
     "Die Anweisungsdatei ist zu groß, um sie hier zu öffnen. Kürze sie in einem Texteditor.",
   "error.agent.instructionsOutside":
-    "Die Anweisungsdatei verweist auf einen Ort außerhalb des Arbeitsbereichs des Agenten, daher öffnet OpenBot sie nicht.",
+    "Die Anweisungsdatei verweist auf einen Ort außerhalb des Arbeitsbereichs des Agenten, daher öffnet Pokebots sie nicht.",
   "error.agent.instructionsReadFailed": "Die Anweisungsdatei konnte nicht gelesen werden.",
   "error.agent.instructionsSaveFailed": "Die Anweisungsdatei konnte nicht gespeichert werden.",
   "error.agent.profileGenerationBusy": "Die Profilerstellung ist ausgelastet. Versuche es gleich noch einmal.",
@@ -102,19 +102,19 @@ export const messages = {
   "error.agent.changedWhileDuplicating": "Der Agent wurde während des Duplizierens geändert. Versuche es erneut.",
   "error.agent.duplicatedAgentGone": "Der duplizierte Agent existiert nicht mehr.",
   "error.agent.stateCorrupt":
-    "Der Agentenzustand ist beschädigt oder stammt aus einer neueren OpenBot-Version. Er wird nicht überschrieben.",
+    "Der Agentenzustand ist beschädigt oder stammt aus einer neueren Pokebots-Version. Er wird nicht überschrieben.",
   "error.agent.oldRoleField":
-    "Gespeicherte Agentenprofile verwenden das alte Feld role. Aktualisiere die Daten, bevor du OpenBot startest.",
+    "Gespeicherte Agentenprofile verwenden das alte Feld role. Aktualisiere die Daten, bevor du Pokebots startest.",
   "error.agent.duplicateIds": "Der Agentenzustand enthält doppelte Agenten-IDs. Er wird nicht überschrieben.",
-  "error.agent.copyNameFailed": "OpenBot konnte keinen eindeutigen Namen für die Agentenkopie erstellen.",
+  "error.agent.copyNameFailed": "Pokebots konnte keinen eindeutigen Namen für die Agentenkopie erstellen.",
   "error.agent.endpointRemoved":
     "Der von diesem Agenten verwendete Endpunkt wurde entfernt. Wähle ein anderes Modell für ihn.",
   "error.agent.turnStalled":
-    "{provider} reagiert nicht mehr, daher hat OpenBot diesen Durchlauf beendet. Sende die Nachricht erneut oder wähle ein anderes Modell.",
+    "{provider} reagiert nicht mehr, daher hat Pokebots diesen Durchlauf beendet. Sende die Nachricht erneut oder wähle ein anderes Modell.",
   "error.agent.promptCancelled":
     "{provider} hat diese Nachricht abgebrochen, bevor sie begann. Sende die Nachricht erneut.",
   "error.agent.toolLoopStopped":
-    "{provider} hat einen fehlgeschlagenen Schritt viele Male wiederholt, daher hat OpenBot diesen Durchgang beendet. Sende die Nachricht erneut oder wähle ein anderes Modell.",
+    "{provider} hat einen fehlgeschlagenen Schritt viele Male wiederholt, daher hat Pokebots diesen Durchgang beendet. Sende die Nachricht erneut oder wähle ein anderes Modell.",
   "error.agent.answerCutOff":
     "Der Agent hat angehalten, bevor er seine Antwort beendet hat, daher ist die Antwort nicht vollständig. Sende die Nachricht erneut.",
   "error.agent.compactionConnectionLost":
@@ -122,7 +122,7 @@ export const messages = {
   "error.agent.compactionConnectionLostAddress":
     "Die Verbindung brach ab, während der Agent seinen Kontext komprimierte. Daher wurde die Aufgabe angehalten. Prüfe deine Internetverbindung und ob {variable} unter Variablen in den {provider}-Einstellungen die API-Adresse deines Modelldienstes ist (oft mit /v1 am Ende). Sende dann eine Nachricht.",
   "error.agent.compactionLoopStopped":
-    "{provider} hat den Kontext immer wieder komprimiert, und jedes Mal blieb er zu voll, um weiterzumachen. Daher hat OpenBot diesen Durchlauf angehalten. Schalte die MCP-Server oder die Computersteuerung aus, die dieser Agent nicht braucht, und sende dann eine Nachricht. Wenn du oder der Agent geändert habt, wann {provider} komprimiert, mach diese Änderung rückgängig.",
+    "{provider} hat den Kontext immer wieder komprimiert, und jedes Mal blieb er zu voll, um weiterzumachen. Daher hat Pokebots diesen Durchlauf angehalten. Schalte die MCP-Server oder die Computersteuerung aus, die dieser Agent nicht braucht, und sende dann eine Nachricht. Wenn du oder der Agent geändert habt, wann {provider} komprimiert, mach diese Änderung rückgängig.",
   "error.agent.selectedGone": "Der gewählte Agent existiert nicht mehr.",
   "error.agent.profileEndpointsChanged":
     "Die benutzerdefinierten Endpunkte wurden während der Erstellung geändert. Versuche es erneut.",
@@ -143,16 +143,16 @@ export const messages = {
   "error.agent.deleteIncomplete":
     "Die Agentendaten konnten nicht vollständig entfernt werden. Versuche erneut, den Agenten zu löschen.",
   "error.agent.deleteFolderInUse":
-    "Die Arbeit eines anderen Agenten nutzt noch den Ordner dieses Agenten. Lösche den Agenten erneut, wenn diese Arbeit endet, oder nach einem Neustart von OpenBot.",
+    "Die Arbeit eines anderen Agenten nutzt noch den Ordner dieses Agenten. Lösche den Agenten erneut, wenn diese Arbeit endet, oder nach einem Neustart von Pokebots.",
   "error.agent.duplicationBusy": "Dieser Agent wird bereits dupliziert.",
   "error.agent.waitBeforeDuplicate":
     "Warte, bis der Agent fertig ist, und leere seine Warteschlange, bevor du ihn duplizierst.",
   "error.agent.saveOtherAgent": "Dieser Speichervorgang gehört zu einem anderen Agenten.",
   "error.agent.savedGone": "Der gespeicherte Agent existiert nicht mehr.",
   "error.agent.storedProfileUnreadable":
-    "Ein gespeichertes Agentenprofil hat einen unlesbaren Wert „{field}“. Aktualisiere die Daten, bevor du OpenBot startest.",
+    "Ein gespeichertes Agentenprofil hat einen unlesbaren Wert „{field}“. Aktualisiere die Daten, bevor du Pokebots startest.",
   "error.agent.storedProfileUnreadableId":
-    "Das gespeicherte Agentenprofil {id} hat einen unlesbaren Wert „{field}“. Aktualisiere die Daten, bevor du OpenBot startest.",
+    "Das gespeicherte Agentenprofil {id} hat einen unlesbaren Wert „{field}“. Aktualisiere die Daten, bevor du Pokebots startest.",
   "error.agent.queueEditRejected": "Änderung der Warteschlange abgelehnt: {reason}",
   "error.agent.computerUseLocalOnly":
     "Die Computersteuerung kann nur auf dem Computer geändert werden, auf dem der Agent läuft.",
@@ -186,7 +186,7 @@ export const messages = {
   "error.agent.lowMemoryServer":
     "Dieser Server hat wenig freien Arbeitsspeicher. Deine Nachricht wartet in der Warteschlange und startet, wenn Speicher frei ist.",
   "error.agent.workspaceOnlyToolMissing":
-    "„Nur Arbeitsbereich“ benötigt {tool}, das OpenBot nicht gefunden hat. Installiere es oder wähle „Voller Zugriff“ in den Agenteneinstellungen.",
+    "„Nur Arbeitsbereich“ benötigt {tool}, das Pokebots nicht gefunden hat. Installiere es oder wähle „Voller Zugriff“ in den Agenteneinstellungen.",
   "error.agent.codexSandboxUnavailable":
     "„Nur Arbeitsbereich“ braucht die Codex-Sandbox, die Codex auf diesem Computer nicht starten kann. Deshalb schlagen die Befehle des Agenten fehl. Wähle „Erst fragen“ oder „Voller Zugriff“ in den Agenteneinstellungen.",
   "error.agent.claudeSandboxUnavailable":
@@ -211,7 +211,7 @@ export const messages = {
   "error.agent.screenCaptureRegionOutside":
     "Der Bereich liegt nicht innerhalb eines Bildschirms. Verwende Desktop-Punkte innerhalb der Grenzen eines Bildschirms aus list_capture_sources.",
   "error.agent.screenCapturePermissionMissing":
-    "OpenBot hat keine Berechtigung zur Bildschirmaufnahme. Bitte den Benutzer, Systemeinstellungen → Datenschutz & Sicherheit → Bildschirm- & Systemaudioaufnahme zu öffnen, OpenBot zu aktivieren und OpenBot dann zu beenden und neu zu öffnen.",
+    "Pokebots hat keine Berechtigung zur Bildschirmaufnahme. Bitte den Benutzer, Systemeinstellungen → Datenschutz & Sicherheit → Bildschirm- & Systemaudioaufnahme zu öffnen, Pokebots zu aktivieren und Pokebots dann zu beenden und neu zu öffnen.",
   "error.agent.screenCaptureEmptyWindows":
     "Windows hat ein leeres Bild geliefert. Bitte den Benutzer, den Computer zu entsperren und geschützte Inhalte zu schließen. Auch eine Richtlinie der Organisation kann die Bildschirmaufnahme verhindern.",
   "error.agent.screenCaptureFailed": "Die Bildschirmaufnahme ist fehlgeschlagen. Versuche es erneut.",

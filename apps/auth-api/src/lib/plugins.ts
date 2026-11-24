@@ -8,9 +8,9 @@
 // This module holds no JSX, for the same reason `content-collection.ts` holds none: it is read by
 // the sitemap, which runs outside the renderer.
 
-import { SKILL_CATEGORY_LABELS } from "@openbot/contracts/ipc-skills";
-import { createPluginShareUrl } from "@openbot/contracts/plugin-links";
-import { type DynamicRecord, isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
+import { SKILL_CATEGORY_LABELS } from "@pokebots/contracts/ipc-skills";
+import { createPluginShareUrl } from "@pokebots/contracts/plugin-links";
+import { type DynamicRecord, isDynamicRecord, isString } from "@pokebots/contracts/runtime-values";
 import { MARKETPLACE_APPS_ROUTE } from "./marketplace-routes";
 import { PLUGIN_CATALOG_DETAILS, PLUGIN_CATALOG_INDEX, type PluginCatalogDetail } from "./plugin-catalog.generated";
 import { PLUGIN_INDEX_ROUTE } from "./plugin-pages";

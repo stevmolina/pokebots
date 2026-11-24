@@ -14,11 +14,11 @@
 // exception -- a mutation whose write is somebody else's job is the hazard this module exists to end.
 
 import { readFile } from "node:fs/promises";
-import type { ServerNotificationLevel, TeamRole } from "@openbot/contracts/ipc";
-import { LOCAL_SERVER_ID } from "@openbot/contracts/ipc";
-import { isString } from "@openbot/contracts/runtime-values";
-import type { ServerAppearance } from "@openbot/contracts/team-protocol/host-appearance-v1";
-import { sourceText } from "@openbot/i18n/source";
+import type { ServerNotificationLevel, TeamRole } from "@pokebots/contracts/ipc";
+import { LOCAL_SERVER_ID } from "@pokebots/contracts/ipc";
+import { isString } from "@pokebots/contracts/runtime-values";
+import type { ServerAppearance } from "@pokebots/contracts/team-protocol/host-appearance-v1";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect, Result, Semaphore } from "effect";
 import {
   isEmptyStoredFile,

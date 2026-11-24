@@ -1,4 +1,4 @@
-import { isMobileConnectDevelopmentHost } from "@openbot/contracts/mobile-connect";
+import { isMobileConnectDevelopmentHost } from "@pokebots/contracts/mobile-connect";
 
 export function buildContentSecurityPolicy(
   packaged: boolean,

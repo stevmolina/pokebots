@@ -1,4 +1,4 @@
-import { WORKFLOW_PORTS, type WorkflowDetail, type WorkflowNode } from "@openbot/contracts/ipc";
+import { WORKFLOW_PORTS, type WorkflowDetail, type WorkflowNode } from "@pokebots/contracts/ipc";
 import { useQueryClient } from "@tanstack/react-query";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { usePreventRemove } from "expo-router/react-navigation";

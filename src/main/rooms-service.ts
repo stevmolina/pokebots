@@ -1,6 +1,6 @@
-import type { RoomsRequest, RoomsResult } from "@openbot/contracts/rooms";
-import { sourceText } from "@openbot/i18n/source";
-import { redactSecrets, registerSecretValue } from "@openbot/logging";
+import type { RoomsRequest, RoomsResult } from "@pokebots/contracts/rooms";
+import { sourceText } from "@pokebots/i18n/source";
+import { redactSecrets, registerSecretValue } from "@pokebots/logging";
 import { Effect, Redacted, Schema } from "effect";
 import type { IntegrationCredential } from "../backend/integration-credential";
 import { readLimitedBody } from "../backend/limited-body";

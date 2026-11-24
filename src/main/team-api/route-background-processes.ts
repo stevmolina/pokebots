@@ -4,8 +4,8 @@ import {
   BACKGROUND_PROCESSES_CAPABILITY,
   BACKGROUND_PROCESSES_LIMIT,
   BACKGROUND_PROCESSES_ROUTES,
-} from "@openbot/contracts/team-protocol/background-processes-v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/team-protocol/background-processes-v1";
+import { sourceText } from "@pokebots/i18n/source";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import type { TeamApiBackgroundProcesses } from "./dependencies";
 import { HttpError } from "./http-error";
