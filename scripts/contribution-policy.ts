@@ -20,11 +20,12 @@ import { execFileSync } from "node:child_process";
 import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 
-// `openbotgit[bot]` is the OpenBot GitHub App. The account Worker gives its installation token only for
+// `pokebotsapp[bot]` is the Pokebots GitHub App. `openbotgit[bot]`, the earlier app, stays trusted: pull
+// requests and issues that it opened still count, and its installations keep working. The account Worker gives its installation token only for
 // repositories where the signed-in user can push (`apps/auth-api/src/server/github-installation-tokens.ts`).
 // Any signed-in account can also open a bug report or feature idea issue with it (`apps/auth-api/src/routes/v1/feedback.ts`),
 // but the Worker writes that title and body itself from checked feedback, in the sections of the form.
-const TRUSTED_BOTS = new Set(["infeld-ai[bot]", "dependabot[bot]", "openbotgit[bot]"]);
+const TRUSTED_BOTS = new Set(["infeld-ai[bot]", "dependabot[bot]", "pokebotsapp[bot]", "openbotgit[bot]"]);
 const TRUSTED_ASSOCIATIONS = new Set(["OWNER", "MEMBER", "COLLABORATOR"]);
 const TRUSTED_PERMISSIONS = new Set(["admin", "maintain", "write"]);
 const LABEL_EXTERNAL = "external";

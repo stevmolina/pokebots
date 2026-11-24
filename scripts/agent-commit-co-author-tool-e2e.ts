@@ -1,6 +1,6 @@
 // Checks the `set_commit_co_author` tool of issue #7579 through the real agent defaults settings, the
 // real preference file, agent store and agent service on a temporary user data folder, and the
-// developer instructions that an agent gets. An agent turns the OpenBot co-author trailer off and on
+// developer instructions that an agent gets. An agent turns the Pokebots co-author trailer off and on
 // again; a turn that no person started, a declined card and a card that nobody answers change nothing.
 // Each call goes through `handleSetCommitCoAuthorTool`, as the tool router sends it, with a card stub
 // that records the text and gives the owner's answer. The agent service is not initialized, so no
@@ -152,6 +152,11 @@ try {
     assert.ok(text.includes(OPENBOT_COMMIT_TRAILER));
     assert.ok(text.includes("openbot.set_commit_co_author"));
     assert.ok(text.includes(`trailer once: ${OPENBOT_COMMIT_TRAILER}\n`), "No period follows the trailer.");
+    assert.equal(
+      OPENBOT_COMMIT_TRAILER,
+      "Co-authored-by: Pokebots <360799014+pokebotsapp[bot]@users.noreply.github.com>",
+      "The trailer names the Pokebots app.",
+    );
     return { commitCoAuthor: true };
   });
 

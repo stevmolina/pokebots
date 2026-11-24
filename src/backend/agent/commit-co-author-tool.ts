@@ -28,7 +28,7 @@ export interface SetCommitCoAuthorToolOptions {
 }
 
 /**
- * `set_commit_co_author`: turns the OpenBot co-author trailer of agent commits off or on (#7579). The
+ * `set_commit_co_author`: turns the Pokebots co-author trailer of agent commits off or on (#7579). The
  * setting applies to every agent of this OpenBot, also on a server that other members use, so only the
  * owner approves it, and only for a person's request.
  */

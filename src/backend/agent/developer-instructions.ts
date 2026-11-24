@@ -737,7 +737,7 @@ export function developerInstructions(
     ...(agentDefaults.commitCoAuthor
       ? [
           // The trailer comes last, so that no period follows it.
-          `When the user asks to drop the OpenBot co-author trailer, call openbot.set_commit_co_author. Until then, when you create or amend a git commit, also with a message from the user, end its message with this trailer once: ${OPENBOT_COMMIT_TRAILER}`,
+          `When the user asks to drop the Pokebots co-author trailer, call openbot.set_commit_co_author. Until then, when you create or amend a git commit, even with a user's message, end its message with this trailer once: ${OPENBOT_COMMIT_TRAILER}`,
         ]
       : []),
     ...(options.memoriesInTurns

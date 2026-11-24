@@ -279,7 +279,7 @@ interface SentFacts {
 }
 
 /**
- * Feedback that the app sends to the account Worker, which opens it as an issue as `openbotgit[bot]`.
+ * Feedback that the app sends to the account Worker, which opens it as an issue as `pokebotsapp[bot]`.
  *
  * Most users are not developers, so the agent writes only the text in the user's words, and the app
  * adds the facts. A choice or a text that the chat does not show stays null or empty, and the issue

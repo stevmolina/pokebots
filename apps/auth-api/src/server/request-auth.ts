@@ -210,6 +210,15 @@ export function hostedSiteErrorResponse(error: unknown): Response {
 }
 
 /**
+ * A PEM from an environment variable. Dokploy keeps one line for each variable, so a key is stored
+ * with `\n` for each line break, as `POKEBOTS_INTEGRATION_PRIVATE_KEY` is. A key with real line breaks
+ * stays as it is.
+ */
+function pemFromEnvironment(value: string | undefined): string | undefined {
+  return value?.replaceAll("\\n", "\n").trim();
+}
+
+/**
  * One service for each key, so the imported key and the app ID are read once for each isolate. Only
  * resolved values are kept: workerd refuses a promise that another request made.
  */
@@ -218,7 +227,7 @@ let githubInstallationTokens: { key: string; service: GitHubInstallationTokens }
 export function requestGitHubInstallationTokens(): GitHubInstallationTokens {
   const bindings = requireWorkerBindings(env);
   const clientId = bindings.GITHUB_APP_CLIENT_ID?.trim();
-  const privateKey = bindings.GITHUB_APP_PRIVATE_KEY?.trim();
+  const privateKey = pemFromEnvironment(bindings.GITHUB_APP_PRIVATE_KEY);
   if (!clientId || !privateKey) {
     throw new GitHubInstallationTokensError(503, "github_app_unavailable", "The OpenBot GitHub App is not configured.");
   }
@@ -278,7 +287,7 @@ export function requestFeedbackGitHub(): GitHubInstallationTokens {
   if (!usesDedicatedFeedbackApp) return requestGitHubInstallationTokens();
   const bindings = requireWorkerBindings(env);
   const clientId = bindings.FEEDBACK_GITHUB_APP_CLIENT_ID?.trim();
-  const privateKey = bindings.FEEDBACK_GITHUB_APP_PRIVATE_KEY?.trim();
+  const privateKey = pemFromEnvironment(bindings.FEEDBACK_GITHUB_APP_PRIVATE_KEY);
   if (!clientId || !privateKey)
     throw new GitHubInstallationTokensError(503, "feedback_unavailable", "Feedback is not available.");
   if (feedbackGitHub?.clientId !== clientId || feedbackGitHub.privateKey !== privateKey) {
@@ -299,9 +308,9 @@ export function requestFeedbackGitHub(): GitHubInstallationTokens {
 /** The marks that prove which reports one account sent. See `feedbackOwner`. */
 export function requestFeedbackOwner(userId: string) {
   const bindings = requireWorkerBindings(env);
-  const privateKey = (
-    usesDedicatedFeedbackApp ? bindings.FEEDBACK_GITHUB_APP_PRIVATE_KEY : bindings.GITHUB_APP_PRIVATE_KEY
-  )?.trim();
+  const privateKey = usesDedicatedFeedbackApp
+    ? pemFromEnvironment(bindings.FEEDBACK_GITHUB_APP_PRIVATE_KEY)
+    : pemFromEnvironment(bindings.GITHUB_APP_PRIVATE_KEY);
   if (!privateKey)
     return Effect.fail(
       new GitHubInstallationTokensError(503, "github_app_unavailable", "The OpenBot GitHub App is not configured."),

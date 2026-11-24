@@ -28,6 +28,7 @@ import { sourceText } from "@openbot/i18n/source";
 import { Effect } from "effect";
 import { OpenBotDatabase } from "../src/backend/openbot-database";
 import { EXTERNAL_EVENT_END } from "../src/backend/webhook-trigger";
+import { githubEventFacts } from "../src/backend/workflows/github-matching";
 import type { WorkflowGitHubApi, WorkflowGitHubChange } from "../src/backend/workflows/workflow-github-api";
 import { WorkflowGitHubStore } from "../src/backend/workflows/workflow-github-store";
 import { WorkflowRunStore } from "../src/backend/workflows/workflow-run-store";
@@ -42,7 +43,9 @@ import {
 import { receiveGitHubDelivery } from "../src/main/github-relay";
 
 const OUT = resolve(import.meta.dirname, "../.openbot-build/github-workflow-e2e");
-const BOT = "openbotgit";
+const BOT = "pokebotsapp";
+/** The earlier app. Its mentions and its bot still count. */
+const LEGACY_BOT = "openbotgit";
 
 interface Report {
   checks: string[];
@@ -283,6 +286,28 @@ try {
   const ownBot = await send(comment("acme/app", 4, `${BOT}[bot]`, "Bot").body);
   const ownBotRow = await delivery(queue.summary.id, ownBot.deliveryId);
   check('"not a bot" refuses OpenBot\'s own bot', ownBotRow?.reason === "filter", ownBotRow);
+
+  // The earlier app's bot is still the bot of the loop guard, and both names are mentions.
+  const legacyFacts = githubEventFacts(
+    "issue_comment",
+    JSON.parse(comment("acme/app", 5, `${LEGACY_BOT}[bot]`, "Bot", `@${LEGACY_BOT} look`).body),
+    BOT,
+  );
+  check("the earlier app's bot still counts as the bot", legacyFacts?.causedByBot === true, legacyFacts);
+  for (const name of [LEGACY_BOT, BOT]) {
+    const mention = githubEventFacts(
+      "issue_comment",
+      JSON.parse(comment("acme/app", 6, "ana", "User", `Hi @${name}, look`).body),
+      BOT,
+    );
+    check(`a mention of @${name} is a mention`, mention?.events.includes("mention") === true, mention);
+  }
+  const noMention = githubEventFacts(
+    "issue_comment",
+    JSON.parse(comment("acme/app", 7, "ana", "User", "Hi @someone-else").body),
+    BOT,
+  );
+  check("a mention of another login is no mention", noMention?.events.includes("mention") === false, noMention);
 
   const chainRows = [];
   for (let index = 0; index < 4; index += 1) {
