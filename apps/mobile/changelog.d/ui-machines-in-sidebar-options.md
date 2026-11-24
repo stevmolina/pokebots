@@ -1,0 +1,1 @@
+- Options (draft): the machine switcher moves from home into the sidebar.
