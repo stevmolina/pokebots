@@ -1134,6 +1134,11 @@ export interface MobileWorkspaceContextValue {
   searchFiles: (query: string, serverId: string, cursor?: string) => Promise<ConversationFileSearchPage>;
   /** True when the host advertises `agent-tasks-v1`. A member who can message an agent can use its tasks. */
   canUsePokebotsIntegrations: (serverId: string) => boolean;
+  /**
+   * True when the host advertises `computer-live-view-v1`: any member asks it for the live view link of
+   * a chat card's machine, and it answers only for a machine that the member may open.
+   */
+  servesComputerLiveView: (serverId: string) => boolean;
   canUseRooms: (serverId: string) => boolean;
   canUseBrain: (serverId: string) => boolean;
   /** True when the host advertises agent-tasks-v1. */
@@ -1335,6 +1340,7 @@ export type MobileWorkspaceCapabilityCheck =
   | "canInstallAgentTemplate"
   | "canSearchFiles"
   | "canUsePokebotsIntegrations"
+  | "servesComputerLiveView"
   | "canUseRooms"
   | "canUseBrain"
   | "canUseTasks"

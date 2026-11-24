@@ -2423,9 +2423,13 @@ views only through human controls. Desktop, web and mobile clients keep machine 
 screen memory. Access loss clears the visible list. The phone does not put these lists or
 the API key in its offline workspace copy.
 When an agent starts a cloud machine, the chat gets a card that holds only the machine id.
-The live-view link is not in the chat, the agent's tool result or the offline copy. An owner
-or admin presses Open live view; their client then reads the link from the same owner or
-admin machine list and opens it at once, without saving it.
+The live-view link is not in the chat, the agent's tool result or the offline copy. When a
+person presses Open live view, their client asks the server for the link of that one machine.
+The server gives it only to an owner or admin for a machine of the server's Agent Computer
+key, or to the person whose own Pokebots account started the machine. To find that machine,
+the server reads the machine list of that person's account from Agent Computer with that
+person's account credential. The client opens the link at once and does not save it. An
+older server has only the owner or admin machine list.
 
 ### Second Brain
 

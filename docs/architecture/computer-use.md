@@ -499,23 +499,45 @@ posts a system card with the item type `computer-live-view:<machine id>`
 each machine and turn. A channel thread or a Slack, Discord, Telegram or WhatsApp thread gets no card. A
 card that cannot be posted does not fail `computer_start`: the agent still gets the machine id.
 
+`onStarted` answers true only when the chat shows the card. The `computer_start` result then has
+`live_view: "Open live view button in this chat"`; otherwise it says that this chat has no button and
+that the user opens the live view from Machines or Server settings > Cloud computers. The rule tells the
+agent to say where the live view is "as its live_view says", so an agent in a channel or a Slack thread
+does not point to a button that is not there.
+
+The machine of a turn can come from two Agent Computer accounts. When the person who sent the turn has a
+Pokebots account credential, `#computerAccount` in the tool router starts the machine on that account;
+otherwise the server's API key starts it. The key's machine list never has an account machine.
+
 ```mermaid
 flowchart LR
-  U["User: 'open the cloud agent' or work on it"] --> A["Agent calls computer_start"]
-  A --> R["Router posts card: computer-live-view:&lt;id&gt;"]
-  R --> C["Chat shows Open live view (owner or admin only)"]
-  C -->|press| L["Client reads machine list (IPC or agent-computer-v1 route)"]
-  L --> O["Client opens the link; nothing is saved"]
+  A["Agent calls computer_start"] --> R["Router posts card: computer-live-view:&lt;id&gt;"]
+  R --> C["Person presses Open live view"]
+  C --> H["Host: computerLiveViewUrl(person, id)"]
+  H --> O["Client opens the https link; nothing is saved"]
 ```
 
-The desktop renderer, the web client and mobile draw the card. `computerLiveViewOpener` in the
-renderer, and `ChatComputerLiveViewCard` on mobile, show the button only when the account may
-administer the server with `agent-computer-v1` (`serverCanAdminister` / `canManageAgentComputer`). At
-the press they call `machines(serverId)`, pick the card's id with `machineLiveViewUrl` (https only), and
-open the link: the desktop with the shell, the web client in a tab that opens at the press, mobile with
-`Linking`. A member sees the card with a note and no button. An older client shows the card's English
-status text. A machine that an account-scoped credential started is not in the host key's list; the
-card then says to open it from Machines.
+`computerLiveViewUrl` (`src/main/computer-live-view.ts`) is the one lookup. It reads the key's machine
+list only for an owner or admin, and the machine list of the person's own account with that person's
+credential (`memberComputerCredential` in `application-services.ts`, the same credential that the tool
+router uses). It answers the https link of the card's machine, or null. A list that fails is skipped; the
+lookup fails only when no list had the machine and one list failed.
+
+- Desktop on this computer: IPC `agentComputer.liveView` calls the lookup as the owner, with the
+  signed-in account's credential.
+- A joined server with `computer-live-view-v1`: IPC, the web client and mobile post
+  `POST /v1/agent-computer/live-view` with `{ machineId }`. Any member may ask; the host decides with the
+  member's role and account. The answer is `{ liveViewUrl }`, an https link or null.
+- A joined server without the capability (in the support window): the client keeps the old path, the
+  owner or admin machine list (`agent-computer-v1`) and `machineLiveViewUrl`.
+
+`computerLiveViewOpener` in the renderer and `ChatComputerLiveViewCard` on mobile show the button when the
+host has `computer-live-view-v1` (every person), or when the account may administer a host with
+`agent-computer-v1`. Otherwise a member sees the card with a note and no button. When the answer is null,
+the card says that the machine is gone or that another person's account started it. The desktop opens the
+link with the shell, the web client in a tab that opens at the press, mobile with `Linking`. Main, the
+preload and the shared port accept only https links and register each link for redaction. An older client
+shows the card's English status text.
 
 Repeatable proof: `bun scripts/computer-live-view-card-e2e.ts`, `bun scripts/agent-computer-e2e.ts`, `bun run test:team-api-routes`, and
 `bun scripts/coding-jobs-controller-smoke.ts`. They write JSON reports under `.openbot-build/`.

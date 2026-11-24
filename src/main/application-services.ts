@@ -127,6 +127,7 @@ import type {
 import {
   agentBrowserProfile,
   type ChannelCommand,
+  canAdministerServer,
   DEFAULT_APP_LANGUAGE,
   DEFAULT_DYNAMIC_ISLAND_PREFERENCE,
   decodeChannel,
@@ -254,6 +255,7 @@ import {
   createClaudeUserSetupPreferenceStore,
 } from "./claude-user-setup-preference-store";
 import { createComputerIdle } from "./computer-idle";
+import { computerLiveViewUrl } from "./computer-live-view";
 import {
   type ComputerUseActorDirectory,
   cachedComputerUseActorLabels,
@@ -2635,13 +2637,7 @@ export async function createApplicationServices({
     agentComputerKey: () => agentComputer.key(),
     agentComputerConnected: () =>
       agentComputer.key() !== null || currentIntegrationCredential(centralAuth, "computer") !== undefined,
-    agentComputerCredential: (memberId) => {
-      if (host.conversationSender()?.id === memberId) return currentIntegrationCredential(centralAuth, "computer");
-      const member = teamStore.memberAccounts().find((candidate) => candidate.memberId === memberId);
-      return member && joinedIntegrationAccess && centralAuth.integrationAccountsAvailable()
-        ? joinedIntegrationAccess.credentialForMember(member, { audience: "computer" })
-        : undefined;
-    },
+    agentComputerCredential: (memberId) => memberComputerCredential(memberId),
     agentApiKeys,
     localSkillTools: () => localSkillTools(skills),
     browserProfiles: () => agentBrowserProfiles,
@@ -3764,6 +3760,18 @@ export async function createApplicationServices({
     new URL(centralAuthApiUrl()).origin === "https://api.pokebots.xyz"
       ? new JoinedIntegrationAccess(teamStore, centralAuth, centralAuthApiUrl(), accountServiceFetch)
       : null;
+  /**
+   * The Pokebots account credential of a person for Agent Computer: this computer's own signed-in
+   * person, or a joined member through their integration grant. The tool router starts an
+   * account-scoped machine with it, and the live view route lists that person's machines with it.
+   */
+  function memberComputerCredential(memberId: string) {
+    if (host.conversationSender()?.id === memberId) return currentIntegrationCredential(centralAuth, "computer");
+    const member = teamStore.memberAccounts().find((candidate) => candidate.memberId === memberId);
+    return member && joinedIntegrationAccess && centralAuth.integrationAccountsAvailable()
+      ? joinedIntegrationAccess.credentialForMember(member, { audience: "computer" })
+      : undefined;
+  }
   // Small copies of image attachments, for the cards of the Workflows canvas here and on joined clients.
   const attachmentPreviews = new AttachmentPreviews(join(app.getPath("userData"), "attachment-previews"));
   const host = new HostService({
@@ -3816,6 +3824,14 @@ export async function createApplicationServices({
     rooms,
     // Present, so the host advertises `agent-computer-v1`. An owner or admin connects it with an API key.
     agentComputer,
+    // Present, so the host advertises `computer-live-view-v1`: the Open live view button of a chat card.
+    // An owner or admin opens the key's machines; each member opens the machines of their own account.
+    computerLiveView: (member, machineId) =>
+      computerLiveViewUrl(
+        agentComputer.api,
+        { canAdminister: canAdministerServer(member.role), credential: memberComputerCredential(member.id) },
+        machineId,
+      ),
     // Present, so the host advertises `password-managers-v1`. An owner or admin connects Proton Pass
     // with a sign-in on the host or with an agent access key. The routes are admin-only.
     passwordManagers,

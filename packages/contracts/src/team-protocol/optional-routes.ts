@@ -61,6 +61,7 @@ import { CLAUDE_AI_TOOLS_CODECS } from "./claude-ai-tools-v1";
 import { CLAUDE_COMPACT_WINDOW_CODECS } from "./claude-compact-window-v1";
 import { CLAUDE_USER_SETUP_CODECS } from "./claude-user-setup-v1";
 import { COMPUTER_ACTIVITY_CODECS } from "./computer-activity-v1";
+import { COMPUTER_LIVE_VIEW_CODECS } from "./computer-live-view-v1";
 import { COMPUTER_MANAGEMENT_CODECS } from "./computer-management-v1";
 import { CONNECTORS_CODECS } from "./connectors-v1";
 import { CONTEXT_COMPACT_CODECS } from "./context-compact-v1";
@@ -312,6 +313,7 @@ const CODECS: ReadonlyMap<string, OptionalRouteCodec> = new Map([
   ...BITWARDEN_CONNECTOR_CODECS,
   ...AGENT_COMPUTER_CODECS,
   ...COMPUTER_MANAGEMENT_CODECS,
+  ...COMPUTER_LIVE_VIEW_CODECS,
   ...ROOMS_CODECS,
   ...POKEBOTS_INTEGRATIONS_CODECS,
   ...BROWSER_COLOR_SCHEME_CODECS,

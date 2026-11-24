@@ -67,3 +67,11 @@ export function decodeComputerManagementResultFromMain(value: unknown): {
 export function decodeAgentComputerAllowanceFromMain(value: unknown) {
   return value === null ? null : decodeAgentComputerAccountAllowance(value);
 }
+
+/** A live view link from main: an https link, or null. Throws for any other value. */
+export function decodeComputerLiveViewFromMain(value: unknown): string | null {
+  if (value === null) return null;
+  if (!isString(value) || value.length > 2_048 || !/^https:\/\//u.test(value))
+    throw new Error("Invalid computer live view.");
+  return value;
+}

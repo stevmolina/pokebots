@@ -295,6 +295,7 @@
     "./team-protocol/remote-computer-terminal-v1": "./src/team-protocol/remote-computer-terminal-v1.ts",
     "./team-protocol/remote-computer-use-v1": "./src/team-protocol/remote-computer-use-v1.ts",
     "./team-protocol/computer-management-v1": "./src/team-protocol/computer-management-v1.ts",
+    "./team-protocol/computer-live-view-v1": "./src/team-protocol/computer-live-view-v1.ts",
     "./team-protocol/agent-computer-v1": "./src/team-protocol/agent-computer-v1.ts",
     "./team-protocol/host-key-rotation-v1": "./src/team-protocol/host-key-rotation-v1.ts",
     "./team-protocol/local-servers-v1": "./src/team-protocol/local-servers-v1.ts",

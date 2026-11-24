@@ -90,6 +90,7 @@ import { CLAUDE_USER_SETUP_CAPABILITY } from "./claude-user-setup-v1";
 import { CODEX_API_KEY_CAPABILITY } from "./codex-api-key-v1";
 import { COMPACT_RPC_CAPABILITY } from "./compact-rpc-v1";
 import { COMPUTER_ACTIVITY_CAPABILITY } from "./computer-activity-v1";
+import { COMPUTER_LIVE_VIEW_CAPABILITY } from "./computer-live-view-v1";
 import { COMPUTER_MANAGEMENT_CAPABILITY } from "./computer-management-v1";
 import { CONNECTORS_CAPABILITY } from "./connectors-v1";
 import { CONTEXT_COMPACT_CAPABILITY } from "./context-compact-v1";
@@ -860,6 +861,7 @@ const TEAM_CAPABILITY_REGISTRY = [
   [AGENT_TASK_SUBAGENTS_CAPABILITY, POKEBOTS],
   [REMOTE_COMPUTER_TERMINAL_CAPABILITY, POKEBOTS],
   [HOME_AGENT_RULES_CAPABILITY, V10],
+  [COMPUTER_LIVE_VIEW_CAPABILITY, POKEBOTS],
 ] as const satisfies readonly (readonly [string, TeamCapabilityPlacement])[];
 
 export const TEAM_CURRENT_CAPABILITIES = TEAM_CAPABILITY_REGISTRY.map(([capability]) => capability);

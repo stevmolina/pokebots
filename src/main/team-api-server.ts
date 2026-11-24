@@ -76,6 +76,7 @@ import { CLAUDE_API_KEY_CAPABILITY } from "@openbot/contracts/team-protocol/clau
 import { CLAUDE_COMPACT_WINDOW_CAPABILITY } from "@openbot/contracts/team-protocol/claude-compact-window-v1";
 import { CLAUDE_USER_SETUP_CAPABILITY } from "@openbot/contracts/team-protocol/claude-user-setup-v1";
 import { CODEX_API_KEY_CAPABILITY } from "@openbot/contracts/team-protocol/codex-api-key-v1";
+import { COMPUTER_LIVE_VIEW_CAPABILITY } from "@openbot/contracts/team-protocol/computer-live-view-v1";
 import { COMPUTER_MANAGEMENT_CAPABILITY } from "@openbot/contracts/team-protocol/computer-management-v1";
 import { CRM_CAPABILITY } from "@openbot/contracts/team-protocol/crm-v1";
 import {
@@ -1321,7 +1322,10 @@ export class TeamApiServer {
       if ((await routeBitwardenConnector(context, this.#options.bitwardenConnector)) === "handled") return;
       if ((await routePokebotsIntegrations(context, this.#options.pokebotsIntegrations)) === "handled") return;
       if ((await routeRooms(context, this.#options.rooms)) === "handled") return;
-      if ((await routeAgentComputer(context, this.#options.agentComputer)) === "handled") return;
+      if (
+        (await routeAgentComputer(context, this.#options.agentComputer, this.#options.computerLiveView)) === "handled"
+      )
+        return;
       if ((await routePasswordManagers(context, this.#options.passwordManagers)) === "handled") return;
       if ((await routeVault(context, this.#options.vault)) === "handled") return;
       if ((await routeVaultImport(context, this.#options.vault)) === "handled") return;
@@ -2959,6 +2963,7 @@ export class TeamApiServer {
         if (capability === ROOMS_CAPABILITY) return this.#options.rooms !== undefined;
         if (capability === COMPUTER_MANAGEMENT_CAPABILITY || capability === AGENT_COMPUTER_CAPABILITY)
           return this.#options.agentComputer !== undefined;
+        if (capability === COMPUTER_LIVE_VIEW_CAPABILITY) return this.#options.computerLiveView !== undefined;
         if (capability === PASSWORD_MANAGERS_CAPABILITY) return this.#options.passwordManagers !== undefined;
         if (capability === VAULT_CAPABILITY) return this.#options.vault !== undefined;
         if (capability === BROWSER_SECRET_VAULT_CAPABILITY) return this.#options.vault !== undefined;

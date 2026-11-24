@@ -117,6 +117,10 @@ import { BROWSING_MEMORY_CAPABILITY } from "@openbot/contracts/team-protocol/bro
 import { CHANNEL_ROUTES } from "@openbot/contracts/team-protocol/channels-v1";
 import { CHAT_HISTORY_CAPABILITY, CHAT_HISTORY_ROUTES } from "@openbot/contracts/team-protocol/chat-history-v1";
 import {
+  COMPUTER_LIVE_VIEW_CAPABILITY,
+  COMPUTER_LIVE_VIEW_ROUTE,
+} from "@openbot/contracts/team-protocol/computer-live-view-v1";
+import {
   COMPUTER_MANAGEMENT_CAPABILITY,
   COMPUTER_MANAGEMENT_ROUTE,
 } from "@openbot/contracts/team-protocol/computer-management-v1";
@@ -717,6 +721,7 @@ export function createHostRequestChecks(capabilities: ServerCapabilities): HostR
   return {
     canSearchFiles: (serverId) => has(serverId, CONVERSATION_FILE_SEARCH_CAPABILITY),
     canUsePokebotsIntegrations: (serverId: string) => has(serverId, POKEBOTS_INTEGRATIONS_CAPABILITY),
+    servesComputerLiveView: (serverId: string) => has(serverId, COMPUTER_LIVE_VIEW_CAPABILITY),
     canUseRooms: (serverId) => has(serverId, ROOMS_CAPABILITY) || has(serverId, POKEBOTS_INTEGRATIONS_CAPABILITY),
     canUseBrain: (serverId) => has(serverId, BRAIN_CAPABILITY) || has(serverId, POKEBOTS_INTEGRATIONS_CAPABILITY),
     canUseTasks: (serverId) => has(serverId, AGENT_TASKS_CAPABILITY),
@@ -954,10 +959,13 @@ export function createHostRequestActions({
             ? POKEBOTS_INTEGRATIONS_CAPABILITY
             : path === COMPUTER_MANAGEMENT_ROUTE
               ? COMPUTER_MANAGEMENT_CAPABILITY
-              : AGENT_COMPUTER_CAPABILITY,
+              : path === COMPUTER_LIVE_VIEW_ROUTE
+                ? COMPUTER_LIVE_VIEW_CAPABILITY
+                : AGENT_COMPUTER_CAPABILITY,
           "mobile.server.cloudComputers.unavailable",
         )(method, path, decode, body),
       checks.canUsePokebotsIntegrations,
+      checks.servesComputerLiveView,
     ),
     // Async, so a host without the capability rejects the promise and does not throw at the call.
     restartServerItself: async (serverId) => runTeamRequest(requestHostRestart(restartAdmin(serverId))),

@@ -115,6 +115,7 @@ import {
   decodeAgentComputerAllowanceFromMain,
   decodeAgentComputerMachineListFromMain,
   decodeAgentComputerStatusFromMain,
+  decodeComputerLiveViewFromMain,
   decodeComputerManagementResultFromMain,
 } from "./agent-computer-decoding";
 import {
@@ -1140,6 +1141,7 @@ const openbotApi: OpenBotDesktopApi = {
     test: decodeAgentComputerStatusFromMain,
     disconnect: decodeAgentComputerStatusFromMain,
     machines: decodeAgentComputerMachineListFromMain,
+    liveView: decodeComputerLiveViewFromMain,
   }),
   bitwardenConnector: bridgeGroup(IPC_ENDPOINTS.bitwardenConnector, {
     status: decodeBitwardenConnectorStatus,

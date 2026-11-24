@@ -17,6 +17,9 @@ type FixtureBody = typeof bodySchema.Type;
 export const FIXTURE_KEY = "demo_agent_computer_key_000000000000";
 export const FIXTURE_LIVE = "https://computer.example.invalid/live/demo-human-only";
 export const FIXTURE_BILLING = "https://computer.example.invalid/billing/demo-human-only";
+/** The bearer of one person's own Pokebots account. Its registry has only `account-machine`. */
+export const FIXTURE_ACCOUNT_KEY = "demo_agent_computer_account_00000000";
+export const FIXTURE_ACCOUNT_LIVE = "https://computer.example.invalid/live/account-human-only";
 export const FIXTURE_PNG = Buffer.from(
   "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jRZkAAAAASUVORK5CYII=",
   "base64",
@@ -34,7 +37,8 @@ export async function startAgentComputerFixture() {
       chunks.length ? JSON.parse(Buffer.concat(chunks).toString()) : {},
     );
     const path = req.url ?? "";
-    const authenticated = req.headers.authorization === `Bearer ${FIXTURE_KEY}`;
+    const account = req.headers.authorization === `Bearer ${FIXTURE_ACCOUNT_KEY}`;
+    const authenticated = account || req.headers.authorization === `Bearer ${FIXTURE_KEY}`;
     requests.push({ method: req.method ?? "", path, body, authenticated });
     const json = (value: unknown, status = 200) => {
       res.writeHead(status, { "Content-Type": "application/json" });
@@ -51,6 +55,19 @@ export async function startAgentComputerFixture() {
         pending.entered();
         await pending.wait;
       }
+      if (account)
+        return json({
+          machines: [
+            {
+              id: "account-machine",
+              context: "demo-project",
+              status: "running",
+              deadline_at: "2030-01-01T00:00:00.000Z",
+              live_view_url: FIXTURE_ACCOUNT_LIVE,
+              updated_at: null,
+            },
+          ],
+        });
       return json({
         machines: [
           {
@@ -69,7 +86,7 @@ export async function startAgentComputerFixture() {
         return json({ error: { code: "ALLOWANCE_EXHAUSTED", message: `Upgrade at ${FIXTURE_BILLING}?t=signed` } }, 402);
       if (body.context === "malformed") return json({ id: 4 });
       return json({
-        id: "demo-machine",
+        id: account ? "account-machine" : "demo-machine",
         context: body.context,
         // A new context gets the size asked for; the demo machine stays standard, like a real one.
         size: body.context === "demo-project" ? "standard" : (body.size ?? "standard"),
@@ -79,7 +96,7 @@ export async function startAgentComputerFixture() {
         existing: true,
         resumed: false,
         other_contexts: ["earlier-project"],
-        live_view_url: FIXTURE_LIVE,
+        live_view_url: account ? FIXTURE_ACCOUNT_LIVE : FIXTURE_LIVE,
         deadline_at: "2030-01-01T00:00:00.000Z",
         billing: {
           plan: "free",

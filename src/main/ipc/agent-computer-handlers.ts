@@ -2,6 +2,7 @@ import {
   decodeAgentComputerAllowanceFromHost,
   decodeAgentComputerMachineListFromHost,
   decodeAgentComputerStatusFromHost,
+  decodeComputerLiveViewFromHost,
   decodeComputerManagementResultFromHost,
 } from "../remote-agent-computer-decoding";
 // The Agent Computer account of a server: read its status, connect an API key, test it, disconnect,
@@ -12,8 +13,14 @@ import {
   AGENT_COMPUTER_KEY_INPUT_LIMIT,
   decodeAgentComputerAccountAllowance,
   decodeComputerManagementInput,
+  isComputerMachineId,
+  machineLiveViewUrl,
 } from "@openbot/contracts/ipc";
 import { AGENT_COMPUTER_CAPABILITY, AGENT_COMPUTER_ROUTES } from "@openbot/contracts/team-protocol/agent-computer-v1";
+import {
+  COMPUTER_LIVE_VIEW_CAPABILITY,
+  COMPUTER_LIVE_VIEW_ROUTE,
+} from "@openbot/contracts/team-protocol/computer-live-view-v1";
 import {
   COMPUTER_MANAGEMENT_CAPABILITY,
   COMPUTER_MANAGEMENT_ROUTE,
@@ -29,6 +36,7 @@ import { Effect } from "effect";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import type { AgentComputerService } from "../agent-computer-service";
 import type { CentralAuthManager } from "../central-auth-manager";
+import { computerLiveViewUrl } from "../computer-live-view";
 import { currentIntegrationCredential } from "../local-integration-credential";
 import type { ResponseDecoder } from "../remote-host-decoding";
 import type { RemoteRequestInit } from "../remote-server-client";
@@ -55,6 +63,11 @@ export interface AgentComputerIpcDependencies {
 }
 
 const decodeKey = stringPayload("apiKey", AGENT_COMPUTER_KEY_INPUT_LIMIT);
+
+function decodeMachineId(value: unknown): string {
+  if (typeof value !== "string" || !isComputerMachineId(value)) throw new Error("Invalid machine id.");
+  return value;
+}
 
 export function agentComputerIpcHandlers({
   agentComputer,
@@ -134,6 +147,34 @@ export function agentComputerIpcHandlers({
           const list = await post(serverId, AGENT_COMPUTER_ROUTES.machines, decodeAgentComputerMachineListFromHost);
           for (const machine of list.machines) if (machine.liveViewUrl) registerSecretValue(machine.liveViewUrl);
           return list;
+        },
+      }),
+      // The Open live view button of a chat card. This computer's person is its owner: the key's machines
+      // and the machines of their own signed-in account. A joined host decides who may open each machine
+      // (`computer-live-view-v1`); an older host has only the owner or admin machine list.
+      liveView: scopedHandler(decodeMachineId, {
+        local: (machineId) =>
+          runCauseEffect(
+            computerLiveViewUrl(
+              agentComputer.api,
+              { canAdminister: true, credential: currentIntegrationCredential(centralAuth, "computer") },
+              machineId,
+            ),
+          ),
+        remote: async (machineId, serverId) => {
+          if (remoteServers.supportsCapability(serverId, COMPUTER_LIVE_VIEW_CAPABILITY)) {
+            const url = await runCauseEffect(
+              remoteServers.request(serverId, COMPUTER_LIVE_VIEW_ROUTE, decodeComputerLiveViewFromHost, {
+                method: "POST",
+                body: { machineId },
+              }),
+            );
+            if (url) registerSecretValue(url);
+            return url;
+          }
+          const list = await post(serverId, AGENT_COMPUTER_ROUTES.machines, decodeAgentComputerMachineListFromHost);
+          for (const machine of list.machines) if (machine.liveViewUrl) registerSecretValue(machine.liveViewUrl);
+          return machineLiveViewUrl(list, machineId);
         },
       }),
     },

@@ -65,6 +65,7 @@ import {
   CLAUDE_USER_SETUP_ROUTES,
   decodeClaudeUserSetupResponse,
 } from "@openbot/contracts/team-protocol/claude-user-setup-v1";
+import { COMPUTER_LIVE_VIEW_CAPABILITY } from "@openbot/contracts/team-protocol/computer-live-view-v1";
 import { COMPUTER_MANAGEMENT_CAPABILITY } from "@openbot/contracts/team-protocol/computer-management-v1";
 import { CONNECTORS_CAPABILITY } from "@openbot/contracts/team-protocol/connectors-v1";
 import { CONTEXT_COMPACT_CAPABILITY } from "@openbot/contracts/team-protocol/context-compact-v1";
@@ -1178,8 +1179,10 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
   function hostRequest(serverId?: string): TeamApiRequest {
     return hostAdmin(serverId).request;
   }
-  const cloudComputers = createAgentComputerPort(hostRequest, () =>
-    workspace.state.capabilities.includes(POKEBOTS_INTEGRATIONS_CAPABILITY),
+  const cloudComputers = createAgentComputerPort(
+    hostRequest,
+    () => workspace.state.capabilities.includes(POKEBOTS_INTEGRATIONS_CAPABILITY),
+    () => workspace.state.capabilities.includes(COMPUTER_LIVE_VIEW_CAPABILITY),
   );
   // The events routes answer only an owner or admin. A member keeps the released routine routes.
   const eventsEnabled = () =>
@@ -4608,7 +4611,7 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                   onManageBrowserProfiles={browserProfiles() ? openBrowserProfileSettings : undefined}
                   onOpenNotificationSettings={(serverId) => openNotificationSettings(serverId)}
                   onOpenMcpSignIn={openMcpSignInFromChat()}
-                  onOpenComputerLiveView={computerLiveViewOpener(server(), cloudComputers.machines, openInBrowserTab)}
+                  onOpenComputerLiveView={computerLiveViewOpener(server(), cloudComputers.liveView, openInBrowserTab)}
                   mcpSignedIn={mcpSignedIn}
                   refreshMcpSignIns={refreshMcpSignInsFromChat}
                   onOpenUsage={(trigger) => {
