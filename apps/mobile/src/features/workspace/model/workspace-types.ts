@@ -427,6 +427,8 @@ export interface MobileWorkspaceContextValue {
   activeServer: MobileServer;
   activeAgents: MobileAgent[];
   hiddenAgents: MobileAgent[];
+  /** The hidden agents of each server, the phone's own list and the host's, for views of every server. */
+  hiddenAgentIdsByServer: Readonly<Record<string, readonly string[]>>;
   pinnedAgentIds: string[];
   pinnedChannelIds: string[];
   hiddenChannelIds: string[];
