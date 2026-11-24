@@ -105,7 +105,7 @@ export const messages = {
   "connector.slack.orchestratorNone": "Nog geen agent antwoordt",
   "connector.slack.orchestratorNoneDescription": "Voeg de Slack Orchestrator toe, anders krijgt Slack geen antwoord.",
   "connector.slack.inviteNote":
-    "Pokebots wordt zelf lid van elk openbaar kanaal, ook van elk nieuw kanaal. Nodig het uit voor een privékanaal: /invite @Pokebots.",
+    "Pokebots wordt zelf lid van elk openbaar kanaal, ook van elk nieuw kanaal. Nodig het uit voor een privékanaal: /invite @OpenBot.",
   "connector.slack.stepWorkspace": "Werkruimte",
   "connector.slack.stepAgent": "Agent",
   "connector.slack.connectTitle": "Verbind een Slack-werkruimte",

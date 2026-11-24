@@ -832,7 +832,7 @@ export const messages = {
     "Adicione o Orquestrador do Slack para que o Slack receba respostas.",
   "mobile.server.connectors.slack.addAgent": "Adicionar Orquestrador do Slack",
   "mobile.server.connectors.slack.note":
-    "O Pokebots entra automaticamente em todos os canais públicos, inclusive nos novos. Para um canal privado, convide-o: /invite @Pokebots.",
+    "O Pokebots entra automaticamente em todos os canais públicos, inclusive nos novos. Para um canal privado, convide-o: /invite @OpenBot.",
   "mobile.server.connectors.slack.disconnectTitle": "Desconectar {workspace}?",
   "mobile.server.connectors.slack.disconnectBody":
     "O Pokebots para de responder em {workspace} e remove o token do Slack de {host}.",

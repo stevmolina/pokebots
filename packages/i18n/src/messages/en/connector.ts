@@ -119,7 +119,7 @@ export const messages = defineMessages("connector", {
   "connector.slack.orchestratorNone": "No agent answers yet",
   "connector.slack.orchestratorNoneDescription": "Add the Slack Orchestrator, or Slack gets no answer.",
   "connector.slack.inviteNote":
-    "Pokebots joins every public channel by itself, and each new one. For a private channel, invite it: /invite @Pokebots.",
+    "Pokebots joins every public channel by itself, and each new one. For a private channel, invite it: /invite @OpenBot.",
   // The connect dialog. The steps show as numbers; screen readers read the names.
   "connector.slack.stepWorkspace": "Workspace",
   "connector.slack.stepAgent": "Agent",

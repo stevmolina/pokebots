@@ -818,7 +818,7 @@ export const messages = {
   "mobile.server.connectors.slack.orchestratorNone": "Slack Düzenleyicisini ekleyin, aksi takdirde Slack yanıt alamaz.",
   "mobile.server.connectors.slack.addAgent": "Slack Düzenleyicisini ekle",
   "mobile.server.connectors.slack.note":
-    "Pokebots her genel kanala ve her yeni kanala kendiliğinden katılır. Özel bir kanal için onu davet edin: /invite @Pokebots.",
+    "Pokebots her genel kanala ve her yeni kanala kendiliğinden katılır. Özel bir kanal için onu davet edin: /invite @OpenBot.",
   "mobile.server.connectors.slack.disconnectTitle": "{workspace} bağlantısı kesilsin mi?",
   "mobile.server.connectors.slack.disconnectBody":
     "Pokebots {workspace} içinde yanıt vermeyi durdurur ve Slack belirtecini {host} sunucusundan kaldırır.",

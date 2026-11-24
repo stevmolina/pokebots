@@ -909,7 +909,7 @@ export const messages = {
   "mobile.server.connectors.slack.orchestratorNone": "Добавьте Оркестратора Slack, иначе Slack не получит ответа.",
   "mobile.server.connectors.slack.addAgent": "Добавить Оркестратора Slack",
   "mobile.server.connectors.slack.note":
-    "Pokebots сам присоединяется ко всем публичным каналам и к каждому новому. В закрытый канал его нужно пригласить: /invite @Pokebots.",
+    "Pokebots сам присоединяется ко всем публичным каналам и к каждому новому. В закрытый канал его нужно пригласить: /invite @OpenBot.",
   "mobile.server.connectors.slack.disconnectTitle": "Отключить {workspace}?",
   "mobile.server.connectors.slack.disconnectBody":
     "Pokebots перестанет отвечать в {workspace} и удалит свой токен Slack с {host}.",

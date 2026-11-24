@@ -767,7 +767,7 @@ export const messages = {
   "mobile.server.connectors.slack.orchestratorNone": "请添加 Slack 调度助手，否则 Slack 中不会有人回答。",
   "mobile.server.connectors.slack.addAgent": "添加 Slack 调度助手",
   "mobile.server.connectors.slack.note":
-    "Pokebots 会自动加入所有公开频道，包括之后新建的。私有频道需要邀请它：/invite @Pokebots。",
+    "Pokebots 会自动加入所有公开频道，包括之后新建的。私有频道需要邀请它：/invite @OpenBot。",
   "mobile.server.connectors.slack.disconnectTitle": "断开 {workspace}？",
   "mobile.server.connectors.slack.disconnectBody":
     "Pokebots 将停止在 {workspace} 中回答，并从 {host} 删除其 Slack 令牌。",

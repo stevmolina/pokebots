@@ -110,7 +110,7 @@ export const messages = {
   "connector.slack.orchestratorNoneDescription":
     "Slack Orchestrator を追加してください。追加しないと、Slack に回答が届きません。",
   "connector.slack.inviteNote":
-    "Pokebots はすべての公開チャンネルと新しいチャンネルに自動で参加します。非公開チャンネルには招待してください: /invite @Pokebots",
+    "Pokebots はすべての公開チャンネルと新しいチャンネルに自動で参加します。非公開チャンネルには招待してください: /invite @OpenBot",
   "connector.slack.stepWorkspace": "ワークスペース",
   "connector.slack.stepAgent": "エージェント",
   "connector.slack.connectTitle": "Slack ワークスペースを接続",

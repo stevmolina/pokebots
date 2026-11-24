@@ -116,7 +116,7 @@ export const messages = {
   "connector.slack.orchestratorNone": "Noch kein Agent antwortet",
   "connector.slack.orchestratorNoneDescription": "Füge den Slack Orchestrator hinzu, sonst erhält Slack keine Antwort.",
   "connector.slack.inviteNote":
-    "Pokebots tritt allen öffentlichen Kanälen und jedem neuen Kanal automatisch bei. Lade ihn in einen privaten Kanal ein: /invite @Pokebots.",
+    "Pokebots tritt allen öffentlichen Kanälen und jedem neuen Kanal automatisch bei. Lade ihn in einen privaten Kanal ein: /invite @OpenBot.",
   "connector.slack.stepWorkspace": "Arbeitsbereich",
   "connector.slack.stepAgent": "Agent",
   "connector.slack.connectTitle": "Slack-Arbeitsbereich verbinden",

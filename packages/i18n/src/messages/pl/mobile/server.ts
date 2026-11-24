@@ -911,7 +911,7 @@ export const messages = {
   "mobile.server.connectors.slack.orchestratorNone": "Dodaj Slack Orchestrator, inaczej Slack nie dostanie odpowiedzi.",
   "mobile.server.connectors.slack.addAgent": "Dodaj Slack Orchestrator",
   "mobile.server.connectors.slack.note":
-    "Pokebots sam dołącza do każdego publicznego kanału, także do nowych. Do kanału prywatnego zaproś go: /invite @Pokebots.",
+    "Pokebots sam dołącza do każdego publicznego kanału, także do nowych. Do kanału prywatnego zaproś go: /invite @OpenBot.",
   "mobile.server.connectors.slack.disconnectTitle": "Odłączyć {workspace}?",
   "mobile.server.connectors.slack.disconnectBody":
     "Pokebots przestaje odpowiadać w obszarze roboczym {workspace} i usuwa swój token Slack z serwera {host}.",

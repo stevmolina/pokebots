@@ -126,7 +126,7 @@ export const messages = {
   "connector.slack.orchestratorNone": "אין עדיין סוכן שעונה",
   "connector.slack.orchestratorNoneDescription": "יש להוסיף את מתזמר Slack, אחרת Slack לא יקבל תשובה.",
   "connector.slack.inviteNote":
-    "Pokebots מצטרף בעצמו לכל ערוץ ציבורי, וגם לכל ערוץ חדש. לערוץ פרטי יש להזמין אותו: /invite @Pokebots.",
+    "Pokebots מצטרף בעצמו לכל ערוץ ציבורי, וגם לכל ערוץ חדש. לערוץ פרטי יש להזמין אותו: /invite @OpenBot.",
   // The connect dialog. The steps show as numbers; screen readers read the names.
   "connector.slack.stepWorkspace": "סביבת עבודה",
   "connector.slack.stepAgent": "סוכן",
