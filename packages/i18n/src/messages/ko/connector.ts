@@ -98,7 +98,7 @@ export const messages = {
   "connector.slack.orchestratorNone": "아직 답변하는 에이전트 없음",
   "connector.slack.orchestratorNoneDescription": "Slack 오케스트레이터를 추가하지 않으면 Slack에는 답변이 가지 않아요.",
   "connector.slack.inviteNote":
-    "Pokebots은 모든 공개 채널과 새로 생기는 채널에 스스로 참여해요. 비공개 채널에는 /invite @Pokebots으로 초대하세요.",
+    "Pokebots은 모든 공개 채널과 새로 생기는 채널에 스스로 참여해요. 비공개 채널에는 /invite @OpenBot으로 초대하세요.",
   "connector.slack.stepWorkspace": "워크스페이스",
   "connector.slack.stepAgent": "에이전트",
   "connector.slack.connectTitle": "Slack 워크스페이스 연결",

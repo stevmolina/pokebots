@@ -823,7 +823,7 @@ export const messages = {
     "Aggiungi lo Slack Orchestrator, altrimenti Slack non riceve risposta.",
   "mobile.server.connectors.slack.addAgent": "Aggiungi lo Slack Orchestrator",
   "mobile.server.connectors.slack.note":
-    "Pokebots entra da solo in ogni canale pubblico, compresi i nuovi. In un canale privato invitalo: /invite @Pokebots.",
+    "Pokebots entra da solo in ogni canale pubblico, compresi i nuovi. In un canale privato invitalo: /invite @OpenBot.",
   "mobile.server.connectors.slack.disconnectTitle": "Disconnettere {workspace}?",
   "mobile.server.connectors.slack.disconnectBody":
     "Pokebots smette di rispondere in {workspace} e rimuove da {host} il suo token Slack.",

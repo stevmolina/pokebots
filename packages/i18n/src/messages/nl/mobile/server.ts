@@ -790,7 +790,7 @@ export const messages = {
     "Voeg de Slack Orchestrator toe, anders krijgt Slack geen antwoord.",
   "mobile.server.connectors.slack.addAgent": "Slack Orchestrator toevoegen",
   "mobile.server.connectors.slack.note":
-    "Pokebots wordt zelf lid van elk openbaar kanaal, en van elk nieuw kanaal. Nodig hem uit voor een privékanaal: /invite @Pokebots.",
+    "Pokebots wordt zelf lid van elk openbaar kanaal, en van elk nieuw kanaal. Nodig hem uit voor een privékanaal: /invite @OpenBot.",
   "mobile.server.connectors.slack.disconnectTitle": "{workspace} ontkoppelen?",
   "mobile.server.connectors.slack.disconnectBody":
     "Pokebots stopt met antwoorden in {workspace} en verwijdert zijn Slack-token van {host}.",

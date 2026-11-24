@@ -129,7 +129,7 @@ export const messages = {
   "connector.slack.orchestratorNone": "لا يجيب أي وكيل بعد",
   "connector.slack.orchestratorNoneDescription": "أضف Slack Orchestrator، وإلا فلن يتلقى Slack أي إجابة.",
   "connector.slack.inviteNote":
-    "ينضم Pokebots بنفسه إلى كل قناة عامة، وإلى كل قناة جديدة. للقناة الخاصة، ادعه إليها: /invite @Pokebots.",
+    "ينضم Pokebots بنفسه إلى كل قناة عامة، وإلى كل قناة جديدة. للقناة الخاصة، ادعه إليها: /invite @OpenBot.",
   "connector.slack.stepWorkspace": "مساحة العمل",
   "connector.slack.stepAgent": "الوكيل",
   "connector.slack.connectTitle": "ربط مساحة عمل Slack",

@@ -781,7 +781,7 @@ export const messages = {
     "Slack Orchestrator를 추가하지 않으면 Slack에서 답변을 받을 수 없어요.",
   "mobile.server.connectors.slack.addAgent": "Slack Orchestrator 추가",
   "mobile.server.connectors.slack.note":
-    "Pokebots은 모든 공개 채널과 새로 생기는 채널에 자동으로 참여해요. 비공개 채널에는 /invite @Pokebots으로 초대하세요.",
+    "Pokebots은 모든 공개 채널과 새로 생기는 채널에 자동으로 참여해요. 비공개 채널에는 /invite @OpenBot으로 초대하세요.",
   "mobile.server.connectors.slack.disconnectTitle": "{workspace} 연결을 해제할까요?",
   "mobile.server.connectors.slack.disconnectBody":
     "Pokebots이 {workspace}에서 답변을 중지하고 {host}에서 Slack 토큰을 삭제해요.",

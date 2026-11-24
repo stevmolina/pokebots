@@ -115,7 +115,7 @@ export const messages = {
   "connector.slack.orchestratorNone": "还没有助手回答",
   "connector.slack.orchestratorNoneDescription": "请添加 Slack 调度助手，否则 Slack 中不会有人回答。",
   "connector.slack.inviteNote":
-    "Pokebots 会自动加入每个公开频道以及之后新建的公开频道。私有频道需要邀请：/invite @Pokebots。",
+    "Pokebots 会自动加入每个公开频道以及之后新建的公开频道。私有频道需要邀请：/invite @OpenBot。",
   // The connect dialog. The steps show as numbers; screen readers read the names.
   "connector.slack.stepWorkspace": "工作区",
   "connector.slack.stepAgent": "助手",

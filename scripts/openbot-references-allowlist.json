@@ -22,6 +22,10 @@
   ],
   "lines": [
     {
+      "pattern": "/invite @OpenBot\\b",
+      "reason": "The Slack app bot user is still named OpenBot (apps/slack-app manifests), so the invite command names that handle."
+    },
+    {
       "pattern": "~/OpenBot\\b|\\$HOME/OpenBot\\b|\\\"OpenBot\\\", \\\"(?:Bots|Shared|Agents|Workspaces|Attachments|backups)\\\"",
       "reason": "The released data folder ~/OpenBot."
     },

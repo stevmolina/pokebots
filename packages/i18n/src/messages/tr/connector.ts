@@ -129,7 +129,7 @@ export const messages = {
   "connector.slack.orchestratorNone": "Henüz yanıt veren bir ajan yok",
   "connector.slack.orchestratorNoneDescription": "Slack Düzenleyicisini ekleyin, aksi takdirde Slack yanıt alamaz.",
   "connector.slack.inviteNote":
-    "Pokebots her genel kanala ve her yeni kanala kendiliğinden katılır. Özel bir kanal için onu davet edin: /invite @Pokebots.",
+    "Pokebots her genel kanala ve her yeni kanala kendiliğinden katılır. Özel bir kanal için onu davet edin: /invite @OpenBot.",
   // Bağlanma iletişim kutusu. Adımlar sayı olarak gösterilir; ekran okuyucular adları okur.
   "connector.slack.stepWorkspace": "Çalışma alanı",
   "connector.slack.stepAgent": "Ajan",
