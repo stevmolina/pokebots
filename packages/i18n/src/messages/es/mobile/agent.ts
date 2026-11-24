@@ -568,6 +568,8 @@ export const messages = {
   "mobile.agent.machines.offlineShort": "Sin conexión",
   "mobile.agent.machines.offline": "{name} está sin conexión. Sus agentes aparecen cuando se conecta.",
   "mobile.agent.machines.empty": "Aún no hay agentes en tus máquinas.",
+  "mobile.agent.machines.onlineCount": "{count} de {total} en línea",
+  "mobile.agent.machines.switchHint": "Muestra tus máquinas",
   "mobile.agent.list.waiting.label": { one: "Te necesita, {count} agente", other: "Te necesitan, {count} agentes" },
   "mobile.agent.list.unreadGroup.title": "No leídos",
   "mobile.agent.list.unreadGroup.label": { one: "No leídos, {count} chat", other: "No leídos, {count} chats" },

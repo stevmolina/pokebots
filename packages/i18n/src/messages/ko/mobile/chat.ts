@@ -242,6 +242,7 @@ export const messages = {
   "mobile.chat.camera.takePhoto": "사진 찍기",
   "mobile.chat.camera.switch": "카메라 전환",
   "mobile.chat.header.info": "{name} 정보",
+  "mobile.chat.header.profile": "에이전트 프로필",
   "mobile.chat.header.actionsNeeded": "필요한 작업",
   "mobile.chat.header.more": "더 보기",
   "mobile.chat.header.moreAttention": "더 보기, 필요한 작업 있음",

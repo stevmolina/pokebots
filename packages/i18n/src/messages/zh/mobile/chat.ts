@@ -235,6 +235,7 @@ export const messages = {
   "mobile.chat.camera.takePhoto": "拍照",
   "mobile.chat.camera.switch": "切换相机",
   "mobile.chat.header.info": "{name} 的信息",
+  "mobile.chat.header.profile": "智能体资料",
   "mobile.chat.header.actionsNeeded": "需要处理",
   "mobile.chat.header.more": "更多",
   "mobile.chat.header.moreAttention": "更多，需要处理",

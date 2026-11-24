@@ -542,6 +542,8 @@ export const messages = {
   "mobile.agent.machines.offlineShort": "离线",
   "mobile.agent.machines.offline": "{name} 已离线。连接后会显示其智能体。",
   "mobile.agent.machines.empty": "你的机器上还没有智能体。",
+  "mobile.agent.machines.onlineCount": "{total} 台中 {count} 台在线",
+  "mobile.agent.machines.switchHint": "显示你的机器",
   "mobile.agent.list.waiting.label": { one: "需要你，{count} 个助手", other: "需要你，{count} 个助手" },
   "mobile.agent.list.unreadGroup.title": "未读",
   "mobile.agent.list.unreadGroup.label": { one: "未读，{count} 个聊天", other: "未读，{count} 个聊天" },

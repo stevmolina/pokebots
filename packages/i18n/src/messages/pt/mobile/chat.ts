@@ -246,6 +246,7 @@ export const messages = {
   "mobile.chat.camera.takePhoto": "Tirar foto",
   "mobile.chat.camera.switch": "Trocar câmera",
   "mobile.chat.header.info": "Informações de {name}",
+  "mobile.chat.header.profile": "Perfil do agente",
   "mobile.chat.header.actionsNeeded": "Ações necessárias",
   "mobile.chat.header.more": "Mais",
   "mobile.chat.header.moreAttention": "Mais, ações necessárias",

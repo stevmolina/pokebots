@@ -562,6 +562,8 @@ export const messages = {
   "mobile.agent.machines.offlineShort": "오프라인",
   "mobile.agent.machines.offline": "{name}이(가) 오프라인입니다. 연결되면 에이전트가 표시됩니다.",
   "mobile.agent.machines.empty": "아직 머신에 에이전트가 없습니다.",
+  "mobile.agent.machines.onlineCount": "{total}대 중 {count}대 온라인",
+  "mobile.agent.machines.switchHint": "내 머신을 표시합니다",
   "mobile.agent.list.waiting.label": { other: "확인 필요, 에이전트 {count}개" },
   "mobile.agent.list.unreadGroup.title": "읽지 않음",
   "mobile.agent.list.unreadGroup.label": { other: "읽지 않음, 채팅 {count}개" },

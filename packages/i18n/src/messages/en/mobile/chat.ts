@@ -243,6 +243,7 @@ export const messages = defineMessages("mobile.chat", {
   "mobile.chat.camera.takePhoto": "Take photo",
   "mobile.chat.camera.switch": "Switch camera",
   "mobile.chat.header.info": "Info for {name}",
+  "mobile.chat.header.profile": "Agent profile",
   "mobile.chat.header.actionsNeeded": "Actions needed",
   "mobile.chat.header.more": "More",
   "mobile.chat.header.moreAttention": "More, actions needed",

@@ -578,6 +578,8 @@ export const messages = {
   "mobile.agent.machines.offlineShort": "Offline",
   "mobile.agent.machines.offline": "{name} está offline. Os agentes aparecem quando ela se conectar.",
   "mobile.agent.machines.empty": "Ainda não há agentes nas suas máquinas.",
+  "mobile.agent.machines.onlineCount": "{count} de {total} online",
+  "mobile.agent.machines.switchHint": "Mostra suas máquinas",
   "mobile.agent.list.waiting.label": {
     one: "Precisa de você, {count} agente",
     other: "Precisam de você, {count} agentes",

@@ -63,7 +63,6 @@ import { useMobileSession } from "@/features/auth/context/mobile-session-context
 import { ChannelListRow } from "@/features/channels/components/channel-list";
 import { useChannels } from "@/features/channels/components/use-channels";
 import {
-  CalmBottomGrid,
   CalmGroupLabel,
   CalmHiddenLink,
   CalmUnreadPill,
@@ -83,7 +82,7 @@ import {
   useHomeSearch,
 } from "@/features/search/components/home-search";
 import { setHomeSearchUnavailable } from "@/features/search/model/home-search-request";
-import { AllMachinesList, MachineChips, useAllMachinesShown } from "@/features/servers/components/all-machines";
+import { AllMachinesList, useAllMachinesShown } from "@/features/servers/components/all-machines";
 import { useAppDrawer } from "@/features/servers/components/app-drawer-shell";
 import { PlanLimitsHeaderButton } from "@/features/servers/components/plan-limits-header-button";
 import { loadAllMachines, useAllMachines } from "@/features/servers/model/all-machines";
@@ -672,6 +671,7 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
   // insets add to a content container that already fills the screen, so iOS would scroll it.
   // Pins and a sidebar error still need the list header, so they keep the scene in the list.
   const showAgentsScene =
+    !allMachines &&
     hasSelectedServer &&
     activeServerOnline &&
     activeAgents.length === 0 &&
@@ -1160,10 +1160,9 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
                         title={t("mobile.agent.machines.all")}
                         above={<AppUpdateSpacer header={updateHeader} headerHeight={headerHeight} />}
                         accessibilityLabel={t("mobile.agent.machines.all")}
-                        onPress={() => router.push("/machines")}
+                        onPress={openDrawer}
                       />
                     )}
-                    <MachineChips />
                   </View>
                 }
                 ownsInset={scroll.ownsInset}
@@ -1266,7 +1265,6 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
                           </View>
                         ) : null}
                       </AgentListRowReveal>
-                      <MachineChips />
                       <PinnedAgentsGrid
                         agents={heroAgent ? pinnedAgents.filter((agent) => agent.id !== heroAgent.id) : pinnedAgents}
                         heroAgent={heroAgent}
@@ -1381,6 +1379,21 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
           </LargeTitleBar>
         )}
 
+        {/* The calm look names the open machine, or All machines, in the middle of the bar. */}
+        {calm && isIOS && headerActions && !pane && !search.open && !statusShows ? (
+          <View
+            pointerEvents="none"
+            style={{ position: "absolute", top: insets.top, left: 72, right: 72, height: 54, justifyContent: "center" }}
+          >
+            <Typography
+              numberOfLines={1}
+              style={{ fontSize: 17, lineHeight: 22, fontWeight: "600", color: iconColor, textAlign: "center" }}
+            >
+              {allMachines ? t("mobile.agent.machines.all") : activeServer.name}
+            </Typography>
+          </View>
+        ) : null}
+
         {/* The results lie over the bar's edge, so its blur cannot soften them; they have their own. */}
         {searchShows ? <HomeSearchResults search={search} barHeight={searchBarOffset} /> : null}
 
@@ -1388,7 +1401,6 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
         {searchShows && !updateHeader.expanded ? (
           <HomeSearchBar
             search={search}
-            leading={calm ? <CalmBottomGrid serverId={activeServer.id} /> : undefined}
             sideInset={calm ? previewSize.bottomBarInset : undefined}
             shortPlaceholder={calm}
           />
@@ -1449,7 +1461,7 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
                     accessibilityRole="button"
                     accessibilityLabel={t("mobile.agent.home.openProfile")}
                     hitSlop={6}
-                    onPress={() => router.push("/settings")}
+                    onPress={openDrawer}
                     style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
                   >
                     <ProfileAvatar neutral name={profileName} imageUrl={profilePhoto} size={34} />

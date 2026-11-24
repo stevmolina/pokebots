@@ -582,6 +582,8 @@ export const messages = {
   "mobile.agent.machines.offlineShort": "Çevrimdışı",
   "mobile.agent.machines.offline": "{name} çevrimdışı. Ajanları bağlandığında görünür.",
   "mobile.agent.machines.empty": "Makinelerinde henüz ajan yok.",
+  "mobile.agent.machines.onlineCount": "{total} makineden {count} tanesi çevrimiçi",
+  "mobile.agent.machines.switchHint": "Makinelerini gösterir",
   "mobile.agent.list.waiting.label": {
     one: "Size ihtiyacı var, {count} ajan",
     other: "Size ihtiyacı var, {count} ajan",

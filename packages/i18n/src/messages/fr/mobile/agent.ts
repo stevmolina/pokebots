@@ -580,6 +580,8 @@ export const messages = {
   "mobile.agent.machines.offlineShort": "Hors ligne",
   "mobile.agent.machines.offline": "{name} est hors ligne. Ses agents s'affichent à la connexion.",
   "mobile.agent.machines.empty": "Aucun agent sur vos machines pour l'instant.",
+  "mobile.agent.machines.onlineCount": "{count} sur {total} en ligne",
+  "mobile.agent.machines.switchHint": "Affiche vos machines",
   "mobile.agent.list.waiting.label": { one: "Besoin de vous, {count} agent", other: "Besoin de vous, {count} agents" },
   "mobile.agent.list.unreadGroup.title": "Non lues",
   "mobile.agent.list.unreadGroup.label": {

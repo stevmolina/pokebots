@@ -246,6 +246,7 @@ export const messages = {
   "mobile.chat.camera.takePhoto": "צילום תמונה",
   "mobile.chat.camera.switch": "החלפת מצלמה",
   "mobile.chat.header.info": "מידע על {name}",
+  "mobile.chat.header.profile": "פרופיל הסוכן",
   "mobile.chat.header.actionsNeeded": "נדרשות פעולות",
   "mobile.chat.header.more": "עוד",
   "mobile.chat.header.moreAttention": "עוד, נדרשות פעולות",
