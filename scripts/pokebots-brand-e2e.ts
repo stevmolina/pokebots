@@ -35,7 +35,7 @@ const BRAND_ENV = {
 };
 /** Modules that only join the area modules and hold no keys. */
 const JOIN_MODULES = new Set(["index.ts", "mobile.ts", "source.ts", "shared.ts"]);
-const KEPT = ["Shared with OpenBot", "OpenBot GitHub App", "OpenBot Mobile", "OpenBot Shared"];
+const KEPT = ["Shared with OpenBot", "OpenBot GitHub App", "OpenBot Mobile", "OpenBot Shared", "/invite @OpenBot"];
 
 const failures: string[] = [];
 const check = (ok: boolean, message: string) => {

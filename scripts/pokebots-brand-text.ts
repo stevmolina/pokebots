@@ -5,9 +5,9 @@
 /**
  * Phrases that keep "OpenBot": names of things outside this app that the text points the reader to.
  * The code makes the vault and the folder "Shared with OpenBot", the GitHub App and the phone app keep
- * their names, and "OpenBot Shared" is the `~/OpenBot/Shared` folder.
+ * their names, "OpenBot Shared" is the `~/OpenBot/Shared` folder, and `/invite @OpenBot` names the Slack bot user.
  */
-export const KEPT_PHRASES = /(?<!Shared with )OpenBot(?! GitHub App| Mobile\b| Shared\b)/g;
+export const KEPT_PHRASES = /(?<!Shared with |\/invite @)OpenBot(?! GitHub App| Mobile\b| Shared\b)/g;
 
 /** The product word in a piece of text, outside the kept phrases. The match is case-sensitive. */
 export function brandText(text: string, name: string): string {
