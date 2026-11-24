@@ -23,7 +23,7 @@ import {
 import Animated, { type SharedValue, useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated";
 import { scheduleOnRN } from "react-native-worklets";
 import { BloubAvatar } from "@/features/agents/components/bloub-avatar";
-import { useAppDrawer } from "@/features/servers/components/app-drawer-shell";
+import { useAppDrawer } from "@/features/servers/components/app-drawer-context";
 import type { MobileAgent } from "@/features/workspace/context/mobile-workspace-context";
 import {
   type ChatDropTarget,

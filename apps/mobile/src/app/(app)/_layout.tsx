@@ -24,7 +24,8 @@ import type { QuickActionTarget } from "@/features/quick-actions/model/quick-act
 import { shareOpenBot } from "@/features/quick-actions/model/share-app";
 import { setQuickActionNavigator } from "@/features/quick-actions/quick-actions-native";
 import { requestHomeSearch } from "@/features/search/model/home-search-request";
-import { AppDrawerShell, useAppDrawer } from "@/features/servers/components/app-drawer-shell";
+import { useAppDrawer } from "@/features/servers/components/app-drawer-context";
+import { AppDrawerShell } from "@/features/servers/components/app-drawer-shell";
 import { watchAndroidShares } from "@/features/share/model/android-share-watch";
 import { setShareSheetOpener } from "@/features/share/model/share-sheet-opener";
 import type { ShortcutOpenTarget } from "@/features/shortcuts/model/shortcut-target";

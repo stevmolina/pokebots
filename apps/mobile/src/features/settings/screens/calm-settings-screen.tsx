@@ -29,7 +29,7 @@ import { AppLogo } from "@/features/auth/components/app-logo";
 import { useMobileSession } from "@/features/auth/context/mobile-session-context";
 import { fileLimitText, MOBILE_LARGE_FILE_BYTES } from "@/features/chat/model/large-files";
 import { usePreviewColors } from "@/features/design-preview/components/preview-parts";
-import { useAppDrawer } from "@/features/servers/components/app-drawer-shell";
+import { useAppDrawer } from "@/features/servers/components/app-drawer-context";
 import { ServerAvatar } from "@/features/servers/components/server-avatar";
 import {
   SettingsContent,

@@ -1,22 +1,12 @@
 import { BlurView } from "expo-blur";
 import { type Href, router, usePathname } from "expo-router";
 import { useThemeColor } from "heroui-native/hooks";
-import {
-  createContext,
-  type PropsWithChildren,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { type PropsWithChildren, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Pressable, useWindowDimensions, View } from "react-native";
 import {
   Gesture,
   GestureDetector,
   GestureStateManager,
-  type PanGesture,
   type PanGestureConfig,
   usePanGesture,
 } from "react-native-gesture-handler";
@@ -33,6 +23,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { scheduleOnRN } from "react-native-worklets";
 import { useMobileSession } from "@/features/auth/context/mobile-session-context";
 import { AppDrawerShownOnUIContext } from "@/features/servers/components/app-drawer-activity";
+import { AppDrawerContext } from "@/features/servers/components/app-drawer-context";
 import { ServerDrawerContent } from "@/features/servers/components/server-drawer-content";
 import {
   useMobileWorkspaceActions,
@@ -44,15 +35,6 @@ import { isAndroid } from "@/shared/lib/platform";
 import { useText } from "@/shared/lib/text";
 import { END_X } from "@/shared/lib/text-direction";
 
-interface AppDrawerContextValue {
-  openDrawer: () => void;
-  closeDrawer: () => void;
-  openingGesture: PanGesture;
-  /** Turns off the pan that opens the drawer, for a screen whose own horizontal pans need it. */
-  setOpeningBlocked: (blocked: boolean) => void;
-}
-
-const AppDrawerContext = createContext<AppDrawerContextValue | null>(null);
 const DRAWER_SURFACE_MIN_RADIUS = 34;
 // The surface reaches its full corner radius after this part of the opening motion.
 const DRAWER_SURFACE_ROUNDING_PROGRESS = 0.15;
@@ -445,10 +427,4 @@ export function AppDrawerShell({ children }: PropsWithChildren) {
       </AppDrawerShownOnUIContext.Provider>
     </AppDrawerContext.Provider>
   );
-}
-
-export function useAppDrawer(): AppDrawerContextValue {
-  const value = useContext(AppDrawerContext);
-  if (!value) throw new Error("useAppDrawer must be used within AppDrawerShell.");
-  return value;
 }

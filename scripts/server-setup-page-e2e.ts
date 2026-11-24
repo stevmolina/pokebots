@@ -243,7 +243,7 @@ try {
       }
     });
     await tab.goto(`${origin}/`);
-    await tab.getByRole("heading", { name: "Sign in to OpenBot" }).waitFor();
+    await tab.getByRole("heading", { name: "Sign in to Pokebots" }).waitFor();
     await tab.getByLabel("Email").fill(EMAIL);
     await settledScreenshot(tab, join(OUT, "1-email.png"));
     await tab.getByRole("button", { name: "Send sign-in code" }).click();
@@ -269,7 +269,7 @@ try {
     await codeInput.fill(CODE.replace("-", ""));
     await tab.getByRole("heading", { name: `${SERVER_NAME} is online` }).waitFor({ timeout: 30_000 });
     await tab.getByText(`Signed in as ${EMAIL}`).waitFor();
-    const appLink = await tab.getByRole("link", { name: "Open OpenBot" }).getAttribute("href");
+    const appLink = await tab.getByRole("link", { name: "Open Pokebots" }).getAttribute("href");
     assert.equal(appLink, "https://openbot.run/app");
     await settledScreenshot(tab, join(OUT, "3-online.png"));
     assert.equal(hostStatus.serverName, SERVER_NAME);
