@@ -175,6 +175,8 @@ export class RemoteEventStream {
   readonly #startingHosts = new Set<string>();
   #appFocused = true;
   #enabled = false;
+  /** The computer sleeps or is in a dark wake. No reconnect starts until `wake`. */
+  #suspended = false;
 
   constructor(options: RemoteEventStreamOptions) {
     this.#appVersion = options.appVersion;
@@ -378,6 +380,7 @@ export class RemoteEventStream {
    * paused.
    */
   readonly wake = Effect.fn("RemoteEventStream.wake")(function* (this: RemoteEventStream) {
+    this.#suspended = false;
     if (!this.#enabled) return;
     for (const server of this.#servers.servers) {
       if (this.#authenticationPaused.has(server.id)) continue;
@@ -386,6 +389,19 @@ export class RemoteEventStream {
       else yield* this.restart(server.id);
     }
   }).bind(this);
+
+  /**
+   * The computer goes to sleep. macOS wakes it in the background about each 15 minutes (a dark wake),
+   * often with no network, and each reconnect then failed. Until `wake`, a retry that comes due does
+   * not connect: `wake` connects each host at once.
+   */
+  suspend(): void {
+    this.#suspended = true;
+  }
+
+  get suspended(): boolean {
+    return this.#suspended;
+  }
 
   /**
    * The user opened this host, so a reconnect that waits on its backoff runs now. The backoff keeps
@@ -455,6 +471,7 @@ export class RemoteEventStream {
   }
 
   readonly ensure = Effect.fn("RemoteEventStream.ensure")(function* (this: RemoteEventStream, serverId: string) {
+    if (this.#suspended) return;
     const server = this.#servers.find(serverId);
     if (server?.transport === "webrtc-v2") {
       if (
