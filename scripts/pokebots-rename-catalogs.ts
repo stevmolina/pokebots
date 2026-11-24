@@ -26,7 +26,7 @@
 // clients. The build-time brand layer still brands them in the built app, so the app shows the same
 // text as before. Remove an entry here only with the change that renames the thing it points to.
 import { execFileSync } from "node:child_process";
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, relative, resolve } from "node:path";
 import { brandStringValues, brandText } from "./brand-layer";
 
@@ -199,6 +199,7 @@ export interface CatalogsReport {
   readonly filesChanged: string[];
   readonly valuesChanged: number;
   readonly formatted: number | "skipped";
+  readonly formatError: string | null;
   /** Values left as "OpenBot" on purpose, by exception group, with the reason. */
   readonly kept: { readonly group: string; readonly reason: string; readonly values: number }[];
   /** Lines that still say "OpenBot" because of a kept phrase of the brand layer. */
@@ -240,10 +241,14 @@ function parseArguments(argv: readonly string[]): Options {
 }
 
 function catalogFiles(root: string): string[] {
-  const listed = execFileSync("git", ["-C", root, "ls-files", "-z", "--", CATALOG_DIRECTORY], {
-    encoding: "utf8",
-    maxBuffer: 1 << 26,
-  });
+  const listed = execFileSync(
+    "git",
+    ["-C", root, "ls-files", "-z", "--cached", "--others", "--exclude-standard", "--", CATALOG_DIRECTORY],
+    {
+      encoding: "utf8",
+      maxBuffer: 1 << 26,
+    },
+  );
   return listed
     .split("\0")
     .filter((file) => file.endsWith(".ts"))
@@ -253,12 +258,38 @@ function catalogFiles(root: string): string[] {
 /** The Bun that runs this script, so that Biome runs with the version the developer chose. */
 const BUN = process.versions.bun ? process.execPath : "bun";
 
-function formatFiles(root: string, files: readonly string[]): number {
+/** The catalog files with uncommitted changes. A run that stopped early leaves these. */
+function dirtyCatalogs(root: string): string[] {
+  const git = (args: readonly string[]): string =>
+    execFileSync("git", ["-C", root, ...args], { encoding: "utf8", maxBuffer: 1 << 26 });
+  return [
+    ...git(["diff", "--name-only", "HEAD", "--", CATALOG_DIRECTORY]).split("\n"),
+    ...git(["ls-files", "--others", "--exclude-standard", "--", CATALOG_DIRECTORY]).split("\n"),
+  ].filter((file) => file.endsWith(".ts") && existsSync(resolve(root, file)));
+}
+
+/** Runs Biome on catalog files. The files change in place, so a failure here leaves the rewrite done. */
+function formatFiles(root: string, files: readonly string[]): { count: number; error: string | null } {
+  const targets = [...new Set([...files, ...dirtyCatalogs(root)])].sort();
   // The command line has a length limit, so the paths go in groups. Each group is one Biome run.
-  for (let start = 0; start < files.length; start += 800) {
-    execFileSync(BUN, ["run", "check:paths", ...files.slice(start, start + 800)], { cwd: root, stdio: "ignore" });
+  for (let start = 0; start < targets.length; start += 800) {
+    try {
+      execFileSync(BUN, ["run", "check:paths", ...targets.slice(start, start + 800)], {
+        cwd: root,
+        encoding: "utf8",
+        stdio: ["ignore", "pipe", "pipe"],
+        maxBuffer: 1 << 28,
+      });
+    } catch (error) {
+      const output = error as { stdout?: string; stderr?: string };
+      const text = `${output.stdout ?? ""}${output.stderr ?? ""}`.split("\n").slice(0, 60).join("\n");
+      return {
+        count: start,
+        error: `Biome stopped on a group of files. Fix what it names, then run the script again.\n${text}`,
+      };
+    }
   }
-  return files.length;
+  return { count: targets.length, error: null };
 }
 
 const KEPT_PHRASE_NAMES = ["Shared with OpenBot", "OpenBot GitHub App", "OpenBot Mobile", "OpenBot Shared"] as const;
@@ -293,7 +324,13 @@ export function run(options: Options): CatalogsReport {
   }
 
   let formatted: CatalogsReport["formatted"] = "skipped";
-  if (!options.check && options.format && changed.length > 0) formatted = formatFiles(root, changed);
+  let formatError: string | null = null;
+  // Format on every run, not only when this run changed a file: an earlier run may have stopped before Biome.
+  if (!options.check && options.format) {
+    const result = formatFiles(root, changed);
+    formatted = result.count;
+    formatError = result.error;
+  }
 
   const groups = [
     ...KEPT_VALUES.map(({ group, reason }) => ({ group, reason })),
@@ -307,6 +344,7 @@ export function run(options: Options): CatalogsReport {
     filesChanged: changed,
     valuesChanged: values,
     formatted,
+    formatError,
     kept: groups.map(({ group, reason }) => ({ group, reason, values: kept[group] ?? 0 })),
     keptPhrases,
     commentLines,
@@ -330,6 +368,10 @@ function main(): void {
     lines.push("Next: run `scripts/pokebots-rename-packages.ts` and `bun install --frozen-lockfile`, then commit.");
   }
   process.stdout.write(`${lines.join("\n")}\n`);
+  if (report.formatError) {
+    process.stderr.write(`${report.formatError}\n`);
+    process.exitCode = 1;
+  }
   if (report.mode === "check" && report.filesChanged.length > 0) process.exitCode = 1;
 }
 

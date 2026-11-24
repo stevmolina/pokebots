@@ -33,7 +33,7 @@
 // - Catalog comments (`packages/i18n/src/messages/`), which the catalog script and the brand layer own.
 // - Historical plans (`plans/`).
 import { execFileSync } from "node:child_process";
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, relative, resolve } from "node:path";
 
 /** The workspace packages that take the new scope, by their name without the scope. */
@@ -97,6 +97,9 @@ const SCOPE = new RegExp(
   "g",
 );
 
+/** The text before a quoted specifier that makes it an import and not a service tag. */
+const IMPORT_CONTEXT = /(?:\bfrom|\bimport\s*\(?|\brequire\s*\(|\bdeclare\s+module|\bmock\s*\()\s*$/;
+
 export interface RewriteResult {
   readonly code: string;
   /** Scopes changed. */
@@ -126,10 +129,15 @@ export function renameScopes(code: string, file = ""): RewriteResult {
   const output = lines.map((line, index) => {
     if (!line.includes("@openbot/")) return line;
     if (isAliasLine(file, line, lines[index - 1] ?? "")) return line;
-    return line.replace(SCOPE, (match: string, _quote: string | undefined, name: string | undefined) => {
+    return line.replace(SCOPE, (match: string, _quote: string | undefined, name: string | undefined, at: number) => {
       if (name === undefined) {
-        tags.push(match.slice(1, -1));
-        return match;
+        // A quoted `@openbot/<package>/<Name>` is a tag, unless an import, a require or a module mock names it.
+        if (!IMPORT_CONTEXT.test(line.slice(0, at))) {
+          tags.push(match.slice(1, -1));
+          return match;
+        }
+        renamed += 1;
+        return match.replace("@openbot/", "@pokebots/");
       }
       renamed += 1;
       return `@pokebots/${name}`;
@@ -264,6 +272,7 @@ export interface PackagesReport {
     readonly status: "added" | "present" | "anchor-missing";
   }[];
   readonly formatted: number | "skipped";
+  readonly formatError: string | null;
   readonly remainingOldScope: { readonly file: string; readonly matches: number }[];
 }
 
@@ -303,10 +312,10 @@ function git(root: string, args: readonly string[]): string {
   return execFileSync("git", ["-C", root, ...args], { encoding: "utf8", maxBuffer: 1 << 28 });
 }
 
-/** The tracked text files that name an old scope. `-I` leaves out binary files. */
+/** The text files that name an old scope, tracked or new. `-I` leaves out binary files. */
 function filesWithOldScope(root: string): string[] {
   try {
-    return git(root, ["grep", "-lIz", "-e", "@openbot/", "--", "."])
+    return git(root, ["grep", "--untracked", "--exclude-standard", "-lIz", "-e", "@openbot/", "--", "."])
       .split("\0")
       .filter((file) => file !== "");
   } catch {
@@ -320,13 +329,40 @@ const SOURCE_FILE = /\.(?:[cm]?[jt]sx?)$/;
 /** The Bun that runs this script, so that an install uses the version the developer chose. */
 const BUN = process.versions.bun ? process.execPath : "bun";
 
-function formatFiles(root: string, files: readonly string[]): number {
-  const sources = files.filter((file) => SOURCE_FILE.test(file));
+/** The source files with uncommitted changes that name the new scope. A run that stopped early leaves these. */
+function dirtySources(root: string): string[] {
+  const tracked = git(root, ["diff", "--name-only", "HEAD"]).split("\n");
+  const added = git(root, ["ls-files", "--others", "--exclude-standard"]).split("\n");
+  return [...tracked, ...added].filter(
+    (file) =>
+      SOURCE_FILE.test(file) &&
+      existsSync(resolve(root, file)) &&
+      readFileSync(resolve(root, file), "utf8").includes("@pokebots/"),
+  );
+}
+
+/** Runs Biome on source files. The files change in place, so a failure here leaves the rewrite done. */
+function formatFiles(root: string, files: readonly string[]): { count: number; error: string | null } {
+  const sources = [...new Set([...files.filter((file) => SOURCE_FILE.test(file)), ...dirtySources(root)])].sort();
   // The command line has a length limit, so the paths go in groups. Each group is one Biome run.
   for (let start = 0; start < sources.length; start += 800) {
-    execFileSync(BUN, ["run", "check:paths", ...sources.slice(start, start + 800)], { cwd: root, stdio: "ignore" });
+    try {
+      execFileSync(BUN, ["run", "check:paths", ...sources.slice(start, start + 800)], {
+        cwd: root,
+        encoding: "utf8",
+        stdio: ["ignore", "pipe", "pipe"],
+        maxBuffer: 1 << 28,
+      });
+    } catch (error) {
+      const output = error as { stdout?: string; stderr?: string };
+      const text = `${output.stdout ?? ""}${output.stderr ?? ""}`.split("\n").slice(0, 60).join("\n");
+      return {
+        count: start,
+        error: `Biome stopped on a group of files. Fix what it names, then run the script again.\n${text}`,
+      };
+    }
   }
-  return sources.length;
+  return { count: sources.length, error: null };
 }
 
 export function run(options: Options): PackagesReport {
@@ -386,7 +422,13 @@ export function run(options: Options): PackagesReport {
   if (!options.check) for (const [file, text] of updates) writeFileSync(resolve(root, file), text);
 
   let formatted: PackagesReport["formatted"] = "skipped";
-  if (!options.check && options.format && changed.length > 0) formatted = formatFiles(root, changed);
+  let formatError: string | null = null;
+  // Format on every run, not only when this run changed a file: an earlier run may have stopped before Biome.
+  if (!options.check && options.format) {
+    const result = formatFiles(root, changed);
+    formatted = result.count;
+    formatError = result.error;
+  }
   // What still names an old scope after a write run, outside the skipped paths. Service tags stay, so
   // they show here too.
   const remaining: { file: string; matches: number }[] = [];
@@ -407,6 +449,7 @@ export function run(options: Options): PackagesReport {
     skipped,
     aliasEdits,
     formatted,
+    formatError,
     remainingOldScope: remaining,
   };
 }
@@ -430,6 +473,10 @@ function main(): void {
     lines.push("Next: run `scripts/pokebots-rename-catalogs.ts` and `bun install --frozen-lockfile`, then commit.");
   }
   process.stdout.write(`${lines.join("\n")}\n`);
+  if (report.formatError) {
+    process.stderr.write(`${report.formatError}\n`);
+    process.exitCode = 1;
+  }
   if (missing.length > 0) {
     process.stderr.write(
       `Alias anchor missing in: ${missing.map((edit) => edit.file).join(", ")}. Update ALIAS_EDITS.\n`,
