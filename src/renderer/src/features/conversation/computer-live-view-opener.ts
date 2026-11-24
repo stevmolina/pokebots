@@ -30,7 +30,7 @@ export function openWithShell(openUrl: (url: string) => unknown) {
 
 /**
  * Opens the link in a new browser tab. The tab opens at the press, before the link arrives, so a popup
- * blocker does not stop it; it closes again when there is no link.
+ * blocker does not stop it; it closes again when there is no link. A blocked tab is a failed open.
  */
 export function openInBrowserTab(link: Promise<string | null>): Promise<boolean> {
   const tab = window.open("about:blank", "_blank");
@@ -41,8 +41,9 @@ export function openInBrowserTab(link: Promise<string | null>): Promise<boolean>
         tab?.close();
         return false;
       }
-      if (tab) tab.location.replace(url);
-      else window.open(url, "_blank", "noopener,noreferrer");
+      // The browser blocked the tab: the card shows that the live view did not open.
+      if (!tab) throw new Error("The browser blocked the live view tab.");
+      tab.location.replace(url);
       return true;
     },
     (error: unknown) => {

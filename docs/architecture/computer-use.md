@@ -487,15 +487,18 @@ Mobile uses mounted screen state and does not cache bearer links in offline work
 ### Cloud agent requests and the live view card
 
 The base developer instructions (`CLOUD_AGENT_RULE` in `src/backend/agent/developer-instructions.ts`)
-tell every agent to call `computer_start` at once when the user says cloud agent, cloud machine or
-cloud computer, or asks to run work in the cloud. The agent does not offer the machine first. On
+tell every agent that cloud agent, cloud machine and cloud computer name the user's Agent Computer
+machine. Talk about it does not start it; the agent uses `computer_list` for its status. When the user
+asks the agent to open it or to do work on it, or to run work in the cloud, the agent calls
+`computer_start` at once, with the context of the existing machine when one fits. It does not offer it. On
 `NOT_CONNECTED` it says that an owner or admin can connect Agent Computer in Server settings > Cloud
 computers.
 
 After a successful start, `handleAgentComputerTool` calls `onStarted(machineId)`, and the tool router
 posts a system card with the item type `computer-live-view:<machine id>`
 (`packages/contracts/src/computer-live-view-events.ts`). The card holds no link. One card is posted for
-each machine and turn.
+each machine and turn. A channel thread or a Slack, Discord, Telegram or WhatsApp thread gets no card. A
+card that cannot be posted does not fail `computer_start`: the agent still gets the machine id.
 
 ```mermaid
 flowchart LR

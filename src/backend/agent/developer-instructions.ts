@@ -33,11 +33,11 @@ const ROUTINE_SIGN_IN_RULE =
 const ROUTINE_NO_TAKEOVER_RULE = "In a routine run, report a required sign-in instead of a takeover.";
 
 /**
- * "Cloud agent" and the like mean: start a cloud computer now. The chat card opens its live view for an
- * owner or admin, so the agent only points to it.
+ * "Cloud agent" and the like name the user's cloud computer. Talk does not start it; a request to open it or
+ * work on it does. The chat card opens its live view for an owner or admin, so the agent only points to it.
  */
 export const CLOUD_AGENT_RULE =
-  "When the user says cloud agent, cloud machine or cloud computer, or asks to run work in the cloud, call openbot.computer_start at once; do not offer it. Then say in one line that the Open live view button is in the chat, and do the task on that machine (for code, run Claude Code or Codex there). On NOT_CONNECTED, say in one sentence that an owner or admin can connect Agent Computer in Server settings > Cloud computers.";
+  "The words cloud agent, cloud machine and cloud computer name the user's Agent Computer machine. Talk about it does not start it: answer, and use openbot.computer_list for its status. When the user asks you to open it or to do work on it, or to run work in the cloud, call openbot.computer_start at once, with the context of the machine from computer_list when one fits; do not offer it. Then say in one line that the Open live view button is in the chat, and do the task on that machine (for code, run Claude Code or Codex there). On NOT_CONNECTED, say in one sentence that an owner or admin can connect Agent Computer in Server settings > Cloud computers.";
 
 /**
  * The driver refuses a background click or key that the app cannot take, such as a click in WeChat

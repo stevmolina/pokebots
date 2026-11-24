@@ -65,18 +65,30 @@ const agent: AgentSummary = {
 };
 
 try {
-  // 1. Every agent gets the rule: the phrases start a machine at once, with no offer.
+  // 1. Every agent gets the rule: the phrases name the machine; open it or work on it starts it at once, with no offer.
   for (const provider of ["codex", "claude"] as const) {
     const text = developerInstructions({ ...agent, provider }, "/shared", [], "/automation", DEFAULT_AGENT_DEFAULTS);
     assert.ok(text.includes(CLOUD_AGENT_RULE), `${provider} instructions have the cloud agent rule`);
   }
-  for (const phrase of ["cloud agent", "cloud machine", "cloud computer", "in the cloud", "at once", "do not offer", "Claude Code"])
+  for (const phrase of [
+    "cloud agent",
+    "cloud machine",
+    "cloud computer",
+    "in the cloud",
+    "at once",
+    "do not offer",
+    "Claude Code",
+  ])
     assert.ok(CLOUD_AGENT_RULE.includes(phrase), phrase);
   assert.match(CLOUD_AGENT_RULE, /Server settings > Cloud computers/u);
+  assert.match(CLOUD_AGENT_RULE, /asks you to open it or to do work on it/u);
+  assert.match(CLOUD_AGENT_RULE, /Talk about it does not start it/u);
   const start = AGENT_COMPUTER_TOOL_DEFINITIONS.find(({ name }) => name === "computer_start");
   assert.match(start?.description ?? "", /call this at once; do not offer it/u);
   assert.match(start?.description ?? "", /Open live view button/u);
-  checks.push("base developer instructions (codex, claude) and computer_start say: start at once, no offer");
+  checks.push(
+    "base developer instructions (codex, claude) and computer_start say: talk does not start it; open or work starts it at once, no offer",
+  );
 
   // 2. computer_start reports the machine id to the router; the agent's result has no live view link.
   const service = new AgentComputerService({ path: join(root, "credential.json"), cipher, baseUrl: fixture.baseUrl });
@@ -113,6 +125,22 @@ try {
   assert.equal(refused.success, false);
   assert.deepEqual(failed, []);
   checks.push("a failed computer_start posts no card");
+
+  // A card that cannot be posted does not hide the started machine from the agent.
+  const kept = await run(
+    handleAgentComputerTool(service.api, {
+      tool: "computer_start",
+      arguments: { context: "demo-project" },
+      workspacePath: workspace,
+      approve: () => Effect.succeed(false),
+      onStarted: () => {
+        throw new Error("card write failed");
+      },
+    }),
+  );
+  assert.equal(kept.success, true);
+  assert.match(JSON.stringify(kept), /demo-machine/u);
+  checks.push("a card post that throws still returns the started machine to the agent");
 
   // 3. The chat card: a completed system message whose item type holds the machine id only.
   const [machineId = ""] = started;

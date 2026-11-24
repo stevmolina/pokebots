@@ -85,7 +85,7 @@ export const AGENT_COMPUTER_TOOL_DEFINITIONS = [
   },
   {
     name: "computer_start",
-    description: `Start or resume the cloud computer for a context, and get its id. For a cloud agent, machine or computer, call this at once; do not offer it. ${MACHINE_RULES} The chat shows the human an Open live view button. Live view and billing links are human credentials and are not available to you. Work in visible windows ($DISPLAY is set) so the live view shows the work. Read ~/PLAYBOOK.md on the machine before a big task. briefing has more rules.`,
+    description: `Start or resume the cloud computer for a context, and get its id. When the user asks you to open the cloud agent (machine, computer) or to do work on it, call this at once; do not offer it. Talk about it does not start it. ${MACHINE_RULES} The chat shows the human an Open live view button. Live view and billing links are human credentials and are not available to you. Work in visible windows ($DISPLAY is set) so the live view shows the work. Read ~/PLAYBOOK.md on the machine before a big task. briefing has more rules.`,
     shape: startSchema.shape,
   },
   {
@@ -181,7 +181,8 @@ export const handleAgentComputerTool = Effect.fn("AgentComputerTools.handle")(fu
       case "computer_start": {
         const input = yield* parse(startSchema, request.arguments);
         const started = yield* api.start(input.context, input.size, { idempotencyKey: request.idempotencyKey });
-        request.onStarted?.(started.id);
+        // The machine runs already: a chat card that cannot be posted must not hide its id from the agent.
+        yield* Effect.try(() => request.onStarted?.(started.id)).pipe(Effect.ignore);
         return textResult({
           id: started.id,
           context: started.context,
