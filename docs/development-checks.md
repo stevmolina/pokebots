@@ -406,7 +406,11 @@ CI runs it in the `check` job.
 `bun run check:migrations` compares `src/backend/migrations/` with the pinned commits in
 `scripts/released-migration-sources.json` and each local stable `vMAJOR.MINOR.PATCH` tag. CI fetches
 the history and tags from Pokebots origin before the check. `--tag <tag>` adds one local release ref
-to the comparison. Commits from before the migration folder contribute no frozen files.
+to the comparison. Commits from before the migration folder contribute no frozen files. On a pull
+request, the check also freezes the migrations of the merge base with the base branch: CI reads
+`GITHUB_BASE_REF`, and `--base <ref>` does the same locally. A push to `main` compares with the tip
+before the push. Pokebots installs `main` commits with no
+tag, so a migration on `main` can already be in a user's database.
 
 The [database instructions](../src/backend/AGENTS.md#frozen-migrations) describe the rules and how to
 fix a released migration. The rule fixtures are in `scripts/check-frozen-migrations.test.ts`.

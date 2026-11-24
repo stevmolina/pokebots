@@ -365,6 +365,15 @@ export const messages = {
   "server.settings.agentTaskLimitDescription":
     "Cuántos hilos puede ejecutar a la vez cada agente que no tiene un límite propio.",
   "server.settings.agentTaskLimitDefault": "Predeterminado ({count})",
+  "server.settings.threadAutoArchiveIdle": "Archivar hilos inactivos",
+  "server.settings.threadAutoArchiveIdleDescription":
+    "Archiva un hilo tras este tiempo sin actividad. Un hilo que se ejecuta o tiene mensajes en cola sigue abierto. Puedes restaurar un hilo archivado.",
+  "server.settings.threadAutoArchiveIdleOff": "Desactivado",
+  "server.settings.threadAutoArchiveIdleDays": { one: "Tras {count} día", other: "Tras {count} días" },
+  "server.settings.threadAutoArchivePullRequests": "Archivar al fusionar pull requests",
+  "server.settings.threadAutoArchivePullRequestsDescription":
+    "Archiva un hilo inactivo cuando todas las pull requests de GitHub que enlaza están fusionadas o cerradas. El servidor usa su conexión con GitHub, el comando gh o los repositorios públicos.",
+  "server.settings.threadAutoArchiveLoadFailed": "No se pudo cargar el ajuste de archivo de hilos de este servidor.",
   "server.settings.memoryLimit": "Recuerdos por agente",
   "server.settings.memoryLimitDescription": "Cuántos recuerdos puede guardar cada agente en este servidor.",
   "server.settings.memoryLimitLoadFailed": "No se pudo cargar el límite de recuerdos de este servidor.",

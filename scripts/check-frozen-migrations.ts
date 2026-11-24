@@ -2,10 +2,17 @@
 //
 // Check the pinned history and all local stable release tags. CI fetches fork tags from origin.
 // `--tag <tag>` also checks the named ref, for example a release candidate.
+//
+// Pokebots builds are installed from commits of `main` with no tag, so a migration that `main` has may
+// already have run on a user's database. On a pull request, the check also freezes the migrations of
+// the commit where the branch left its base branch. In GitHub Actions it reads `GITHUB_BASE_REF` and
+// fetches that branch from origin. A push to `main` compares with the tip before the push.
+// `--base <ref>` does the same for a local ref, for example `--base origin/main`.
 
 import { execFileSync } from "node:child_process";
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import { z } from "zod";
 import { frozenMigrationProblems, MIGRATIONS_DIR } from "./frozen-migrations";
 import pinnedReleases from "./released-migration-sources.json";
 
@@ -16,6 +23,9 @@ function git(...args: string[]): string {
 const tagFlag = process.argv.indexOf("--tag");
 const extraTag = tagFlag === -1 ? undefined : process.argv[tagFlag + 1];
 if (tagFlag !== -1 && !extraTag) throw new Error("--tag needs a ref.");
+const baseFlag = process.argv.indexOf("--base");
+const baseArgument = baseFlag === -1 ? undefined : process.argv[baseFlag + 1];
+if (baseFlag !== -1 && !baseArgument) throw new Error("--base needs a ref.");
 
 const pinnedSources = new Map(Object.entries(pinnedReleases));
 const sources = [...pinnedSources];
@@ -30,6 +40,28 @@ for (const tag of git("tag", "--list", "v*").split("\n")) {
   }
 }
 if (extraTag) sources.push([extraTag, extraTag]);
+
+// A failed fetch or merge base stops the check: a base that cannot be read must not weaken it.
+const baseBranch = process.env.GITHUB_BASE_REF;
+let baseLabel = baseArgument ?? baseBranch;
+let baseCommit: string | undefined;
+if (baseArgument) {
+  baseCommit = git("merge-base", "HEAD", baseArgument).trim();
+} else if (baseBranch) {
+  git("fetch", "--no-tags", "origin", baseBranch);
+  baseCommit = git("merge-base", "HEAD", "FETCH_HEAD").trim();
+} else if (process.env.GITHUB_EVENT_NAME === "push" && process.env.GITHUB_REF === "refs/heads/main") {
+  // A push to `main` that skipped a pull request: compare with the tip before the push. A new
+  // branch has an all-zero `before`, so it has nothing to compare with.
+  const { before } = z
+    .object({ before: z.string() })
+    .parse(JSON.parse(readFileSync(process.env.GITHUB_EVENT_PATH ?? "", "utf8")));
+  if (/^[0-9a-f]{40}$/.test(before) && !/^0+$/.test(before)) {
+    baseLabel = "main before the push";
+    baseCommit = before;
+  }
+}
+if (baseCommit) sources.push([`${baseLabel}@${baseCommit.slice(0, 9)}`, baseCommit]);
 
 const current = new Map(
   readdirSync(MIGRATIONS_DIR).map((file) => [file, readFileSync(join(MIGRATIONS_DIR, file), "utf8")]),

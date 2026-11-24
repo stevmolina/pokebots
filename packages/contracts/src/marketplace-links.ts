@@ -140,7 +140,8 @@ export function parseMarketplaceUrl(value: string): MarketplaceListingLink {
   const prefix = `${OPENBOT_MARKETPLACE_PATH}/`;
   const canonical =
     url.protocol === "https:" && url.origin === OPENBOT_MARKETPLACE_ORIGIN && url.pathname.startsWith(prefix);
-  const customScheme = url.protocol === "openbot:" && url.hostname === OPENBOT_MARKETPLACE_HOST;
+  const customScheme =
+    (url.protocol === "openbot:" || url.protocol === "pokebots:") && url.hostname === OPENBOT_MARKETPLACE_HOST;
   if (
     (!canonical && !customScheme) ||
     url.username !== "" ||

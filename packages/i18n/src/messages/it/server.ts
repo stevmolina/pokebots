@@ -361,6 +361,16 @@ export const messages = {
   "server.settings.agentTaskLimitDescription":
     "Quanti thread può eseguire contemporaneamente ogni agente senza un limite proprio.",
   "server.settings.agentTaskLimitDefault": "Predefinito ({count})",
+  "server.settings.threadAutoArchiveIdle": "Archivia thread inattivi",
+  "server.settings.threadAutoArchiveIdleDescription":
+    "Archivia un thread dopo questo tempo senza attività. Un thread in esecuzione o con messaggi in coda resta aperto. Puoi ripristinare un thread archiviato.",
+  "server.settings.threadAutoArchiveIdleOff": "Disattivato",
+  "server.settings.threadAutoArchiveIdleDays": { one: "Dopo {count} giorno", other: "Dopo {count} giorni" },
+  "server.settings.threadAutoArchivePullRequests": "Archivia al merge delle pull request",
+  "server.settings.threadAutoArchivePullRequestsDescription":
+    "Archivia un thread inattivo quando ogni pull request GitHub collegata è unita o chiusa. Il server usa la sua connessione GitHub, il comando gh o i repository pubblici.",
+  "server.settings.threadAutoArchiveLoadFailed":
+    "Impossibile caricare l'impostazione di archiviazione dei thread di questo server.",
   "server.settings.memoryLimit": "Memorie per agente",
   "server.settings.memoryLimitDescription": "Quante memorie può conservare ogni agente su questo server.",
   "server.settings.memoryLimitLoadFailed": "Impossibile caricare il limite di memorie di questo server.",

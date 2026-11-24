@@ -64,7 +64,8 @@ jobs:
   upload:
     name: Upload Cloudflare preview
     needs: source
-    if: needs.source.outputs.pr_number
+    # Upstream-only: Pokebots deploys through Dokploy and has no Cloudflare preview account.
+    if: github.repository == 'nightly-labs/openbot' && needs.source.outputs.pr_number
     runs-on: ubuntu-latest
     timeout-minutes: 15
     environment: cloudflare-preview

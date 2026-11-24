@@ -312,6 +312,7 @@ import {
   parseGeneratedTaskTitle,
   taskTitle,
 } from "./agent-tasks/task-title";
+import { type PullRequestRef, type PullRequestStates, threadPullRequests } from "./agent-tasks/thread-pull-requests";
 import { type AgentThreadRecord, AgentThreadStore } from "./agent-threads/agent-thread-store";
 import { AgentWaitStore } from "./agent-waits/agent-wait-store";
 import { AgentWaits } from "./agent-waits/agent-waits";
@@ -652,6 +653,8 @@ function agentCreateKey(sender: ConversationMessageSender | undefined, operation
 const MAX_SECTION_TEAMMATES = 32;
 /** How long an archive waits for the provider to end the turn that it stopped. After it, the archive is refused. */
 const TASK_STOP_WAIT_MS = 15_000;
+/** The side threads whose linked pull requests the automatic archive keeps in memory. */
+const PULL_REQUEST_SCAN_CACHE_LIMIT = 2_000;
 /**
  * How long after a list that lacks an agent's model a `catalog.partialListAtStart` provider is asked
  * again. Grok 1.0.70 has its whole catalogue about a second after it starts on an expired sign-in.
@@ -723,6 +726,8 @@ export class AgentService extends EventEmitter<AgentServiceEvents> {
   readonly #hostedSites: HostedSiteCoordinator;
   readonly #conversation: ConversationRuntime;
   readonly #attention: AttentionRegistry;
+  /** The pull requests that each side thread links, by thread id, with the activity time that they were read at. */
+  readonly #pullRequestScans = new Map<string, { updatedAt: string; refs: PullRequestRef[] | null }>();
   readonly #images: ImageGenRuntime;
   readonly #threads: ThreadLifecycle;
   readonly #codexIdleSessions: CodexIdleSessions;
@@ -906,19 +911,11 @@ export class AgentService extends EventEmitter<AgentServiceEvents> {
           this.#drain.scheduleDrain(agentId);
         },
         turnActive: (agentId, threadId) => this.#store.database.readActiveTurnId(agentId, threadId) !== null,
-        // As `closeTask` does after its Stop: the plan continuation ends, and the memory review starts.
-        archived: Effect.fn("AgentService.archivedTasks")(function* (
-          this: AgentService,
-          agentId: string,
-          tasks: readonly AgentThreadRecord[],
-        ) {
-          for (const task of tasks) {
-            yield* this.#drain.endPlanContinuation(agentId, task.taskId);
-            yield* this.#memoryReview.threadClosed(agentId, task.threadId);
-          }
-          // A task lane that waited for a free task can start now.
-          this.#drain.scheduleDrain(agentId);
-        }).bind(this),
+        archived: (agentId, tasks) => this.#archivedThreadsFollowUp(agentId, tasks),
+        archivedInBackground: (agentId, tasks) =>
+          Effect.runFork(this.#archivedThreadsFollowUp(agentId, tasks).pipe(Effect.forkIn(this.#scope))),
+        // Read late: the attention registry is built further down this constructor.
+        waitsForPerson: (agentId, threadId) => this.#attention.hasAttentionForThread(agentId, threadId),
         agentActivityChanged: () => this.#emit({ type: "agents-changed", agents: this.listAgents() }),
       },
     });
@@ -7107,6 +7104,92 @@ export class AgentService extends EventEmitter<AgentServiceEvents> {
     // A task lane that waited for a free task can start now.
     this.#drain.scheduleDrain(task.agentId);
   }).bind(this);
+
+  /** As `closeTask` does after its Stop: the plan continuation ends, and the memory review starts. */
+  readonly #archivedThreadsFollowUp = Effect.fn("AgentService.archivedTasks")(function* (
+    this: AgentService,
+    agentId: string,
+    tasks: readonly AgentThreadRecord[],
+  ) {
+    for (const task of tasks) {
+      yield* this.#drain.endPlanContinuation(agentId, task.taskId);
+      yield* this.#memoryReview.threadClosed(agentId, task.threadId);
+    }
+    // A task lane that waited for a free task can start now.
+    this.#drain.scheduleDrain(agentId);
+  }).bind(this);
+
+  /**
+   * Archives the idle side threads of every agent, as the person's Archive does (`thread-auto-archive-v1`).
+   * A thread is idle when no turn runs, no message is queued, no teammate's answer is awaited, no
+   * question waits for a person and no provider session runs background work. An idle thread is
+   * archived when its last activity is before `idleBefore`, or when every GitHub pull request that its
+   * messages link is merged or closed. Each agent gets one change event.
+   */
+  readonly autoArchiveThreads = Effect.fn("AgentService.autoArchiveThreads")(function* (
+    this: AgentService,
+    policy: { idleBefore: string | null; pullRequests: PullRequestStates | null },
+  ): Effect.fn.Return<{ idle: number; pullRequests: number }> {
+    const result = { idle: 0, pullRequests: 0 };
+    if (policy.idleBefore === null && policy.pullRequests === null) return result;
+    for (const agent of this.#store.list()) {
+      if (this.#removal.deleting().has(agent.id)) continue;
+      const chosen: Array<{ task: AgentThreadRecord; reason: "idle" | "pullRequests" }> = [];
+      for (const task of this.#tasks.autoArchivable(agent.id)) {
+        let reason: "idle" | "pullRequests" | null =
+          policy.idleBefore !== null && task.updatedAt < policy.idleBefore ? "idle" : null;
+        if (!reason && policy.pullRequests) {
+          const refs = this.#threadPullRequests(task);
+          if (refs && refs.length > 0) {
+            let done = true;
+            for (const ref of refs) {
+              const state = yield* policy.pullRequests(ref);
+              if (state !== "merged" && state !== "closed") {
+                done = false;
+                break;
+              }
+            }
+            if (done) reason = "pullRequests";
+          }
+        }
+        if (!reason) continue;
+        // A provider job that runs in the background can still write to the thread.
+        if (yield* this.#threads.threadRunsBackgroundWork(task.threadId)) continue;
+        chosen.push({ task, reason });
+      }
+      if (chosen.length === 0) continue;
+      // The checks run again here, with no yield before the close, so no turn starts in between.
+      const archived = new Set(
+        this.#tasks
+          .autoArchive(
+            agent.id,
+            chosen.map(({ task }) => task),
+          )
+          .map((task) => task.taskId),
+      );
+      if (archived.size === 0) continue;
+      for (const { task, reason } of chosen) if (archived.has(task.taskId)) result[reason] += 1;
+      logger.info("Archived idle threads.", { agentId: agent.id, count: archived.size });
+      yield* this.#archivedThreadsFollowUp(
+        agent.id,
+        chosen.flatMap(({ task }) => (archived.has(task.taskId) ? [task] : [])),
+      );
+    }
+    return result;
+  }).bind(this);
+
+  /** The pull requests that the thread's messages link, read again only after new activity in the thread. */
+  #threadPullRequests(task: AgentThreadRecord): PullRequestRef[] | null {
+    const cached = this.#pullRequestScans.get(task.threadId);
+    if (cached?.updatedAt === task.updatedAt) return cached.refs;
+    const refs = threadPullRequests(this.#tasks.pullRequestTexts(task));
+    this.#pullRequestScans.set(task.threadId, { updatedAt: task.updatedAt, refs });
+    if (this.#pullRequestScans.size > PULL_REQUEST_SCAN_CACHE_LIMIT) {
+      const oldest = this.#pullRequestScans.keys().next().value;
+      if (oldest !== undefined) this.#pullRequestScans.delete(oldest);
+    }
+    return refs;
+  }
 
   reopenTask(input: AgentTaskInput): void {
     this.#tasks.reopen(this.#tasks.require(input.agentId, input.taskId));

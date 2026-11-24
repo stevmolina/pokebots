@@ -88,6 +88,8 @@ export const messages = {
     "Esta conexão não pode mostrar os pedidos de uma thread paralela para outros agentes.",
   "error.team.hostTurnLimitsUnsupported":
     "Esta conexão não pode mostrar nem alterar os limites de tópicos do servidor.",
+  "error.team.threadAutoArchiveUnsupported": "Este servidor não oferece o arquivamento automático de threads.",
+  "error.team.threadAutoArchiveInvalid": "A configuração de arquivamento automático de threads não é válida.",
   "error.team.usageLimitUnsupported": "Esta conexão não pode mostrar nem alterar os limites de uso dos agentes.",
   "error.team.hermesImportUnsupported": "Esta conexão não pode importar perfis do Hermes do servidor.",
   "error.team.providerDetectionUnsupported":

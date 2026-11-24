@@ -11,6 +11,8 @@
 import { cp, mkdir, readdir, readFile, rm, writeFile } from "node:fs/promises";
 import { join, relative, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
+import { runInNewContext } from "node:vm";
+import { parse } from "yaml";
 import type { MessageCatalog } from "../packages/i18n/src/message";
 import {
   BRANDED_MODULES,
@@ -213,8 +215,57 @@ check(accountDefaults.signalUrl, "The main process does not default to the brand
 check(accountDefaults.setNameKept, 'app.setName("OpenBot") changed. The data folder and the keychain item need it.');
 const withoutUrls = readBrandSettings({ OPENBOT_BRAND_NAME: "Pokebots" });
 check(
-  withoutUrls !== null && brandModule("src/main/index.ts", mainIndex, withoutUrls)?.code.startsWith("import") === true,
+  withoutUrls !== null && brandModule("src/main/index.ts", mainIndex, withoutUrls) === null,
   "The brand name alone adds account defaults.",
+);
+
+const serviceOverrideEnv = {
+  OPENBOT_AUTH_API_URL: "https://account.example.test",
+  OPENBOT_REMOTE_SIGNAL_URL: "wss://signal.example.test/v1/signal",
+};
+const serviceDefaultsCode = mainBranded.slice(0, mainBranded.indexOf(mainIndex));
+const runtimeProcess = { env: { ...serviceOverrideEnv } };
+runInNewContext(serviceDefaultsCode, { process: runtimeProcess });
+const customBuildProcess = { env: { OPENBOT_AUTH_API_URL: undefined, OPENBOT_REMOTE_SIGNAL_URL: undefined } };
+runInNewContext(serviceDefaultsCode, { process: customBuildProcess });
+check(
+  customBuildProcess.env.OPENBOT_AUTH_API_URL === BRAND_ENV.OPENBOT_BRAND_AUTH_API_URL &&
+    customBuildProcess.env.OPENBOT_REMOTE_SIGNAL_URL === BRAND_ENV.OPENBOT_BRAND_SIGNAL_URL,
+  "The custom build defaults do not take effect with no runtime settings.",
+);
+check(
+  runtimeProcess.env.OPENBOT_AUTH_API_URL === serviceOverrideEnv.OPENBOT_AUTH_API_URL &&
+    runtimeProcess.env.OPENBOT_REMOTE_SIGNAL_URL === serviceOverrideEnv.OPENBOT_REMOTE_SIGNAL_URL,
+  "A build default replaced an explicit runtime service setting.",
+);
+const desktop = parse(await readFile(join(ROOT, "electron-builder.yml"), "utf8"));
+const custom = parse(await readFile(join(ROOT, "electron-builder.custom.yml"), "utf8"));
+const runtime = await Bun.file(join(ROOT, "package.json")).json();
+const desktopIdentity = {
+  runtime: runtime.productName,
+  desktopId: desktop.appId,
+  desktopProduct: desktop.productName,
+  desktopDisplay: desktop.mac.extendInfo.CFBundleDisplayName,
+  customId: custom.appId,
+  customProduct: custom.productName,
+  customDisplay: custom.mac.extendInfo.CFBundleDisplayName,
+  customPublish: custom.publish,
+};
+check(
+  desktopIdentity.runtime === "OpenBot" &&
+    desktopIdentity.desktopId === "app.openbot.desktop" &&
+    desktopIdentity.desktopProduct === "OpenBot" &&
+    desktopIdentity.desktopDisplay === "Pokebots" &&
+    desktopIdentity.customId === "app.openbot.custom" &&
+    desktopIdentity.customProduct === "Pokebots" &&
+    desktopIdentity.customDisplay === "Pokebots" &&
+    desktopIdentity.customPublish === null,
+  "The desktop packaging display or identity metadata changed.",
+);
+const desktopHtml = await readFile(join(ROOT, "src/renderer/index.html"), "utf8");
+check(
+  desktopHtml.includes("<title>Pokebots</title>") && desktopHtml.includes("<noscript>Pokebots requires JavaScript"),
+  "The desktop HTML relies on the brand transform for its default name.",
 );
 
 // 4. The desktop HTML pages.
@@ -307,6 +358,7 @@ const report = {
   releaseNotes,
   feedback: { formPath, legacyIssue, sentIssue, withdrawnIssue },
   accountDefaults,
+  desktopIdentity,
   html,
   web,
 };

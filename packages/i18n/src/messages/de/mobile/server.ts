@@ -519,6 +519,16 @@ export const messages = {
   "mobile.server.settings.skillLearningOff": "Aus",
   "mobile.server.settings.skillLearningLoadFailed": "Die Einstellung „Fähigkeiten lernen“ konnte nicht geladen werden.",
   "mobile.server.settings.browsingMemory": "Aus meinem Browsen lernen",
+  "mobile.server.settings.threadAutoArchive": "Thread-Archiv",
+  "mobile.server.settings.threadAutoArchiveDescription":
+    "Archiviert einen Thread nach dieser Zeit ohne Aktivität oder wenn jeder verlinkte GitHub-Pull-Request gemergt oder geschlossen ist. Ein laufender Thread bleibt offen. Du kannst einen archivierten Thread wiederherstellen.",
+  "mobile.server.settings.threadAutoArchiveIdle": "Inaktive Threads archivieren",
+  "mobile.server.settings.threadAutoArchiveIdleOff": "Aus",
+  "mobile.server.settings.threadAutoArchiveIdleDays": { one: "Nach {count} Tag", other: "Nach {count} Tagen" },
+  "mobile.server.settings.threadAutoArchivePullRequests": "Bei gemergten Pull-Requests",
+  "mobile.server.settings.threadAutoArchiveLoadFailed": "Die Thread-Archiv-Einstellung konnte nicht geladen werden.",
+  "mobile.server.settings.threadAutoArchiveSaveFailed":
+    "Die Thread-Archiv-Einstellung konnte nicht gespeichert werden.",
   "mobile.server.settings.browsingMemoryDescription":
     "Wenn du den Browser eines Agenten steuerst, lernt der Agent aus den Seiten und Schaltflächen, die du nutzt, wie Websites funktionieren. Eingegebener Text wird nicht gespeichert.",
   "mobile.server.settings.browsingMemoryLoadFailed": "Die Browsing-Einstellung konnte nicht geladen werden.",

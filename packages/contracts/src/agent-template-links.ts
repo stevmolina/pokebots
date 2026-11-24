@@ -91,7 +91,8 @@ export function parseAgentTemplateUrl(value: string): string {
     url.protocol === "https:" &&
     url.origin === OPENBOT_AGENT_TEMPLATE_ORIGIN &&
     url.pathname.startsWith(OPENBOT_AGENT_TEMPLATE_PATH_PREFIX);
-  const customScheme = url.protocol === "openbot:" && url.hostname === OPENBOT_AGENT_TEMPLATE_HOST;
+  const customScheme =
+    (url.protocol === "openbot:" || url.protocol === "pokebots:") && url.hostname === OPENBOT_AGENT_TEMPLATE_HOST;
   if (
     (!canonical && !customScheme) ||
     url.username !== "" ||
