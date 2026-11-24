@@ -142,46 +142,7 @@ export const LITERAL_RULES: readonly LiteralRule[] = [
     find: "export const POKEBOTS_LANDING_ARTWORK = false;",
     replace: (name) => `export const POKEBOTS_LANDING_ARTWORK = ${name === "Pokebots"};`,
   },
-  // Desktop: notification titles, the browser picture-in-picture window, and the macOS app menu.
-  {
-    file: "src/main/index.ts",
-    find: 'new Notification({ title: "OpenBot",',
-    replace: (name) => `new Notification({ title: ${JSON.stringify(name)},`,
-  },
-  {
-    file: "src/main/ipc/notification-handlers.ts",
-    find: 'new Notification({ title: "OpenBot",',
-    replace: (name) => `new Notification({ title: ${JSON.stringify(name)},`,
-  },
-  {
-    file: "src/main/browser-picture-in-picture.ts",
-    find: 'title: "OpenBot Browser"',
-    replace: (name) => `title: ${JSON.stringify(`${name} Browser`)}`,
-  },
-  // The browser tab that a provider sign-in returns to.
-  {
-    file: "src/main/loopback-callback-server.ts",
-    find: "<title>OpenBot</title>",
-    replace: (name) => `<title>${name}</title>`,
-  },
-  // Electron labels the role from `app.name`, which stays "OpenBot" for the data folder. Its own
-  // label is English too, so this English label loses no translation.
-  {
-    file: "src/main/main-window.ts",
-    find: '{ role: "hide" }',
-    replace: (name) => `{ role: "hide", label: ${JSON.stringify(`Hide ${name}`)} }`,
-  },
   // Desktop renderer: the app name in System Settings, the setup error heading, and the share card.
-  {
-    file: "src/renderer/src/features/computer-use/ComputerUsePermissionHelp.tsx",
-    find: 'const OPENBOT_APP_NAME = "OpenBot";',
-    replace: (name) => `const OPENBOT_APP_NAME = ${JSON.stringify(name)};`,
-  },
-  {
-    file: "src/renderer/src/features/onboarding/SetupReadError.tsx",
-    find: 'const PRODUCT_NAME = "OpenBot";',
-    replace: (name) => `const PRODUCT_NAME = ${JSON.stringify(name)};`,
-  },
   {
     file: "packages/ui/src/features/account/AccountLogin.tsx",
     find: 'const PRODUCT_NAME = "OpenBot";',
@@ -192,11 +153,6 @@ export const LITERAL_RULES: readonly LiteralRule[] = [
     find: 'const PRODUCT_NAME = "OpenBot";',
     replace: (name) => `const PRODUCT_NAME = ${JSON.stringify(name)};`,
   },
-  {
-    file: "src/renderer/src/features/agent-templates/agent-template-card.tsx",
-    find: 'context.fillText("OpenBot",',
-    replace: (name) => `context.fillText(${JSON.stringify(name)},`,
-  },
   // The included models in the provider lists, and the version names in Settings > Updates.
   {
     file: "packages/contracts/src/agent-providers.ts",
@@ -204,67 +160,15 @@ export const LITERAL_RULES: readonly LiteralRule[] = [
     replace: (name) => JSON.stringify(`Included with ${name}`),
   },
   {
-    file: "src/renderer/src/features/onboarding/SetupProviderPicker.tsx",
-    find: 'const INCLUDED_DESCRIPTION = "Included with OpenBot";',
-    replace: (name) => `const INCLUDED_DESCRIPTION = ${JSON.stringify(`Included with ${name}`)};`,
-  },
-  {
     file: "packages/ui/src/features/settings/stores/updates-store.ts",
     find: "`OpenBot v${",
     replace: (name) => `\`${name} v\${`,
   },
-  // The agent share card: its button and its site.
-  {
-    file: "src/renderer/src/features/agent-templates/agent-template-card.tsx",
-    find: 'const label = "Add to OpenBot";',
-    replace: (name) => `const label = ${JSON.stringify(`Add to ${name}`)};`,
-  },
-  {
-    file: "src/renderer/src/features/agent-templates/agent-template-card.tsx",
-    find: 'context.fillText("openbot.run",',
-    replace: (name) => `context.fillText(${JSON.stringify(name === "Pokebots" ? "pokebots.xyz" : "openbot.run")},`,
-  },
   // Server names: the name a new server takes, and the name of a server that has none.
-  {
-    file: "src/renderer/src/features/server-setup/ServerSetupScreen.tsx",
-    find: 'const PRODUCT_NAME = "OpenBot";',
-    replace: (name) => `const PRODUCT_NAME = ${JSON.stringify(name)};`,
-  },
-  {
-    file: "src/renderer/src/features/server-setup/ServerSetupScreen.tsx",
-    find: 'const DEFAULT_SERVER_NAME = "OpenBot";',
-    replace: (name) => `const DEFAULT_SERVER_NAME = ${JSON.stringify(name)};`,
-  },
   {
     file: "src/renderer/src/features/servers/server-settings.tsx",
     find: 'const FALLBACK_SERVER_NAME = "OpenBot";',
     replace: (name) => `const FALLBACK_SERVER_NAME = ${JSON.stringify(name)};`,
-  },
-  {
-    file: "src/main/server-mode.ts",
-    find: 'const DEFAULT_SERVER_NAME = "OpenBot";',
-    replace: (name) => `const DEFAULT_SERVER_NAME = ${JSON.stringify(name)};`,
-  },
-  {
-    file: "src/main/host-service.ts",
-    find: '{ serverName: "OpenBot" }',
-    replace: (name) => `{ serverName: ${JSON.stringify(name)} }`,
-  },
-  {
-    file: "src/main/mobile-connect-host.ts",
-    find: '{ serverName: "OpenBot" }',
-    replace: (name) => `{ serverName: ${JSON.stringify(name)} }`,
-  },
-  // Other names in desktop views.
-  {
-    file: "src/renderer/src/platform.tsx",
-    find: 'name: "OpenBot",',
-    replace: (name) => `name: ${JSON.stringify(name)},`,
-  },
-  {
-    file: "src/renderer/src/features/servers/ServerDesktopPanel.tsx",
-    find: 'const REMOTE_HOST_GATEWAY_NAME = "OpenBot Remote Host Gateway";',
-    replace: (name) => `const REMOTE_HOST_GATEWAY_NAME = ${JSON.stringify(`${name} Remote Host Gateway`)};`,
   },
   {
     file: "packages/ui/src/user-avatar.tsx",
@@ -286,12 +190,6 @@ export const LITERAL_RULES: readonly LiteralRule[] = [
     find: `"OpenBot does not manage this provider's CLI."`,
     replace: (name) => JSON.stringify(`${name} does not manage this provider's CLI.`),
   },
-  // The names of the backup and diagnostics files that Settings saves.
-  {
-    file: "src/main/maintenance-service.ts",
-    find: "`OpenBot-",
-    replace: (name) => `\`${name}-`,
-  },
   // The toasts that ask the user to follow OpenBot on social networks and to star it on GitHub: a
   // branded build never shows them.
   {
@@ -307,11 +205,12 @@ export const LITERAL_RULES: readonly LiteralRule[] = [
 ];
 
 /**
- * Modules outside the catalogs whose string values are all branded: shared link errors and plugin
- * descriptions. Their only "OpenBot" strings are text that a
+ * Modules outside the catalogs whose string values are all branded: the email that the Worker sends,
+ * the errors of shared links, and plugin descriptions. Their only "OpenBot" strings are text that a
  * reader sees, never a path, a header or an identifier.
  */
 export const BRANDED_MODULES: readonly string[] = [
+  "apps/auth-api/src/server/email-templates.ts",
   "packages/contracts/src/invite-links.ts",
   "packages/contracts/src/marketplace-links.ts",
   "packages/contracts/src/plugin-links.ts",
@@ -378,7 +277,7 @@ function accountDefaults(settings: BrandSettings): string {
 
 /** The HTML of a desktop page with the product name in its title and its no-script text. */
 export function brandHtml(html: string, settings: BrandSettings): string {
-  return html.replace(/(<title>|<noscript>)OpenBot/g, (_match, tag: string) => `${tag}${settings.name}`);
+  return html.replace(/(<title>|<noscript>)(?:OpenBot|Pokebots)/g, (_match, tag: string) => `${tag}${settings.name}`);
 }
 
 /** The folder of web icons that replaces the account Worker's own, from the repository root. */

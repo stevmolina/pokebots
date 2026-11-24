@@ -62,7 +62,7 @@ try {
 } catch (error) {
   // Any other failure keeps Electron's own report, as before this file was the entry.
   if (!isDamagedInstallation(error)) throw error;
-  report("OpenBot cannot start: a program file is damaged or missing.", error);
+  report("Pokebots cannot start: a program file is damaged or missing.", error);
   if (runsAsServer()) {
     app.exit(1);
   } else {
