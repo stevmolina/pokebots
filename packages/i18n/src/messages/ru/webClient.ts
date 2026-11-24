@@ -49,6 +49,8 @@ export const messages = {
     "Результат не подтверждён. Закройте эту форму и проверьте сервер, прежде чем повторять.",
   "webClient.error.usageOffline": "Подключитесь к серверу, чтобы посмотреть использование.",
   "webClient.error.desktopOnly": "Это действие доступно в приложении для компьютера.",
+  "webClient.settings.general.title": "Общие",
+  "webClient.settings.account.title": "Аккаунт",
   "webClient.settings.preferences.description": "Выберите язык и звуки OpenBot в этом браузере.",
   "webClient.error.checkConversation": "Проверьте диалог, прежде чем отправлять снова.",
   "webClient.error.hostReported": "Сервер сообщил об ошибке. Проверьте диалог и состояние сервера.",

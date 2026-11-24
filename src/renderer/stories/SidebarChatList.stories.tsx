@@ -8,7 +8,11 @@ import type { AvatarMood } from "@openbot/ui/bloub-avatar";
 import { accountUsageProviderRows } from "@openbot/ui/features/account/account-usage-view";
 import type { Machine } from "@openbot/ui/features/servers/MachinesPage";
 import { Sidebar } from "@openbot/ui/features/sidebar/Sidebar";
-import type { SidebarAgentState } from "@openbot/ui/features/sidebar/sidebar-types";
+import {
+  SIDEBAR_DOCK_FOLDERS_VIEW_ID,
+  type SidebarAgentState,
+  sidebarSnoozeMarker,
+} from "@openbot/ui/features/sidebar/sidebar-types";
 import { createSignal } from "solid-js";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
@@ -254,7 +258,45 @@ export const MainAgentTile: Story = {
 
 /** A folder open in the dock, with the folder in it. */
 export const FolderOpen: Story = {
-  args: { collapsedSectionIds: [`dock:open:${haloRxId}`] },
+  args: { collapsedSectionIds: [SIDEBAR_DOCK_FOLDERS_VIEW_ID, `dock:open:${haloRxId}`] },
+};
+
+/**
+ * "Active": the chats by state. "Working" as rows with the last message; "Done", "Snoozed" and
+ * "Settled" as compact rows. A snoozed agent is faint and shows how long is left.
+ */
+export const ActiveWithSnoozed: Story = {
+  args: {
+    agentStates: {
+      [secondId]: { kind: "working" },
+      builder: { kind: "working" },
+      rebates: { kind: "unread", count: 1 },
+      empiq: { kind: "unread", count: 3 },
+      [firstId]: { kind: "unread", count: 2 },
+    },
+    agentMoods: { [secondId]: "working", builder: "working" },
+    channels: [],
+    collapsedSectionIds: [
+      sidebarSnoozeMarker("writer", Date.now() + 3 * 24 * 60 * 60_000),
+      sidebarSnoozeMarker("designer", Date.now() + 2 * 60 * 60_000),
+    ],
+  },
+};
+
+/**
+ * "Folders": every chat in its folder, also the ones that work, are done or are snoozed. Only
+ * "Needs you" stays on top.
+ */
+export const FoldersView: Story = {
+  args: {
+    ...ActiveWithSnoozed.args,
+    collapsedSectionIds: [
+      SIDEBAR_DOCK_FOLDERS_VIEW_ID,
+      `dock:open:${haloRxId}`,
+      `dock:open:${empiricalId}`,
+      `dock:open:${SIDEBAR_UNASSIGNED_SECTION_ID}`,
+    ],
+  },
 };
 
 /** No folders: the dock holds "Working" and "Settled". */
@@ -485,7 +527,7 @@ const bigFolderArgs = {
   agentMoods: {},
   channels: [],
   layout: bigFolderLayout,
-  collapsedSectionIds: [`dock:open:${developmentId}`],
+  collapsedSectionIds: [SIDEBAR_DOCK_FOLDERS_VIEW_ID, `dock:open:${developmentId}`],
 };
 
 /** The open folder holds seven agents and shows them all, with the other folders under it. */

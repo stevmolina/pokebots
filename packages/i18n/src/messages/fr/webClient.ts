@@ -50,6 +50,8 @@ export const messages = {
     "Le résultat n’est pas confirmé. Fermez ce formulaire et vérifiez le serveur avant de réessayer.",
   "webClient.error.usageOffline": "Connectez-vous à votre serveur pour voir l’utilisation.",
   "webClient.error.desktopOnly": "Cette action est disponible dans l’application de bureau.",
+  "webClient.settings.general.title": "Général",
+  "webClient.settings.account.title": "Compte",
   "webClient.settings.preferences.description": "Choisissez la langue et les sons d’OpenBot dans ce navigateur.",
   "webClient.error.checkConversation": "Vérifiez la conversation avant d’envoyer à nouveau.",
   "webClient.error.hostReported": "Le serveur a signalé une erreur. Vérifiez la conversation et l’état du serveur.",

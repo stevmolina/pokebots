@@ -116,6 +116,8 @@ export const messages = {
   "composer.send.hint.enter": "Sturen (Enter). Shift+Enter voegt een nieuwe regel toe.",
   "composer.send.hint.modEnterMac": "Sturen (⌘Enter). Enter voegt een nieuwe regel toe.",
   "composer.send.hint.modEnterWin": "Sturen (Ctrl+Enter). Enter voegt een nieuwe regel toe.",
+  "composer.send.hint.busySteer": "Bijsturen in deze beurt (Enter). {chord} zet het in de wachtrij voor erna.",
+  "composer.send.hint.busyQueue": "In de wachtrij voor na deze beurt (Enter). {chord} stuurt nu bij.",
   "composer.save.hint.enter": "Opslaan (Enter). Shift+Enter voegt een nieuwe regel toe.",
   "composer.save.hint.modEnterMac": "Opslaan (⌘Enter). Enter voegt een nieuwe regel toe.",
   "composer.save.hint.modEnterWin": "Opslaan (Ctrl+Enter). Enter voegt een nieuwe regel toe.",

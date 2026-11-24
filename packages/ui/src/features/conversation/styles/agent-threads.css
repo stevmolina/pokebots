@@ -38,7 +38,7 @@
   inset: 10px 0 auto;
   display: flex;
   width: fit-content;
-  max-width: min(440px, calc(100% - 10 * var(--openbot-space-4)));
+  max-width: min(440px, calc(100% - 12 * var(--openbot-space-4)));
   height: fit-content;
   align-items: center;
   gap: var(--openbot-space-1);
@@ -56,6 +56,9 @@
 }
 
 .conversation-header[data-session-pill] .conversation-title.ui-button {
+  /* Buttons keep their width by default. This one shrinks to the pill, so a long session title ends in
+   * an ellipsis inside the pill instead of running under the header buttons. */
+  flex: 0 1 auto;
   min-width: 0;
   /* Grok Bot's name pill is 40px tall with 8px before the face and 14px after the name. */
   height: 40px;
@@ -230,10 +233,11 @@
   flex: 1 1 auto;
 }
 
-.agent-sessions-count {
-  color: var(--openbot-text-muted);
-  font-size: var(--openbot-text-sm);
-  font-variant-numeric: tabular-nums;
+.agent-sessions-all.ui-button {
+  border-radius: 0;
+  border-top: 0.5px solid var(--openbot-border);
+  background: color-mix(in srgb, var(--openbot-bg-control) 45%, transparent);
+  color: var(--openbot-text-secondary);
 }
 
 .agent-sessions-chevron {

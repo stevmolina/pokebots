@@ -156,7 +156,7 @@ export interface AppLoadingScreenProps {
   /** What the screen waits for, for a screen reader. The default is the app load. */
   label?: string;
   /** The line under the plush in the `thinking` scene. The default is a joke status line that changes. */
-  title?: string;
+  title?: string | undefined;
   /**
    * When false, the crew rain in and hop out also when the app is ready at once, as on a window reload.
    * The default only fades a screen that was ready quickly.

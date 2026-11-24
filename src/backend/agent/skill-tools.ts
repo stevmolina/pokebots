@@ -26,7 +26,7 @@ const targetAgentId = z
   .trim()
   .min(1)
   .max(INPUT_LIMITS.identifier)
-  .describe("Stable id of the agent to change, from list_agents. Omit it to change your own agent.")
+  .describe("Agent id from list_agents; omit it for your own agent.")
   .optional();
 // An installed skill can come from the marketplace or GitHub too, so its id is not always a local
 // skill id. A GitHub id names a repository folder and can be long.

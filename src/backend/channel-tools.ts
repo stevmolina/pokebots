@@ -17,7 +17,7 @@ const handoff = {
   resources: z
     .array(z.string())
     .describe(
-      "Use browser when the task uses the shared browser, and workspace:<absolute path> for each folder it changes. Tasks that declare the same resource run one after the other. Omit it, or use none, when the task needs neither.",
+      "browser when the task uses the shared browser, and workspace:<absolute path> for each folder it changes; tasks with the same resource run in turn. Omit it, or none, when it needs neither.",
     )
     .optional(),
   dependencies: z.array(z.string()).optional(),

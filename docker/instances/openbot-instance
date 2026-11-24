@@ -16,6 +16,11 @@
 # for an install makes the container again. Root reports in /srv/openbot/<name>/update-status, which
 # the container can only read. The container never gets the Docker socket.
 #
+# Pokebots: `auto-update --all`, which openbot-instance-auto-update.timer runs every 10 minutes,
+# updates each instance by itself as the Mac app and the main VPS server do. It waits until no agent
+# works, backs up /data, makes the container again and checks that it comes back; when it does not,
+# it restores the backup and the old image.
+#
 # `backup` stops an instance, copies all of /data into one archive in OPENBOT_BACKUP_DIR, and starts
 # it again. `verify` unpacks a backup into a folder that no container mounts and checks it. `restore`
 # replaces /data with a backup and does not start the instance. Root never opens a database or
@@ -33,6 +38,7 @@ LOG_SOCKET=/var/lib/openbot-docker/dev/log
 UNIT_DIRECTORY=/etc/systemd/system
 UPDATE_UNIT=openbot-instance-update
 BACKUP_UNIT=openbot-instance-backup
+AUTO_UPDATE_UNIT=openbot-instance-auto-update
 LOCKS=/run
 # LXCFS shows each container its own CPU and memory limits in these files. See lxcfs.yaml.
 LXCFS=/var/lib/lxcfs
@@ -62,6 +68,10 @@ Usage: openbot-instance <command>
   upgrade <name> | --all      Pull the image and make the container again.
   update-request <name>       Run by openbot-instance-update@<name>.service when the app asks
                               for an update.
+  auto-update <name> | --all  Update to a newer image when no agent works, with a backup first
+                              and a restore when the new container does not come back. Needs
+                              OPENBOT_BACKUP_DIR; skips an instance with OPENBOT_TAG or
+                              OPENBOT_AUTO_UPDATE=off. openbot-instance-auto-update.timer runs it.
   run <name> <command>        Run `openbot <command>` in the instance, for example
                               status, login, mobile-connect or name.
   backup <name> [--verify]    Stop the instance, copy /data to OPENBOT_BACKUP_DIR, and start it
@@ -177,9 +187,12 @@ setup() {
   # Backups. The operator enables the timer of each instance.
   install -m 0644 "$HERE/$BACKUP_UNIT@.timer" "$UNIT_DIRECTORY/"
   sed "s#/opt/openbot-docker/instances/#$HERE/#" "$HERE/$BACKUP_UNIT@.service" >"$UNIT_DIRECTORY/$BACKUP_UNIT@.service"
+  # Automatic updates of all instances.
+  install -m 0644 "$HERE/$AUTO_UPDATE_UNIT.timer" "$UNIT_DIRECTORY/"
+  sed "s#/opt/openbot-docker/instances/#$HERE/#" "$HERE/$AUTO_UPDATE_UNIT.service" >"$UNIT_DIRECTORY/$AUTO_UPDATE_UNIT.service"
   systemctl daemon-reload
   systemctl start "$SLICE"
-  systemctl enable --now --quiet openbot-logrotate.timer
+  systemctl enable --now --quiet openbot-logrotate.timer "$AUTO_UPDATE_UNIT.timer"
   if ! cmp --silent "$HERE/openbot-rsyslog.conf" /etc/rsyslog.d/30-openbot-docker.conf || [ ! -S "$LOG_SOCKET" ]; then
     install -m 0644 "$HERE/openbot-rsyslog.conf" /etc/rsyslog.d/30-openbot-docker.conf
     rsyslogd -N1 >/dev/null || fail "rsyslog refuses /etc/rsyslog.d/30-openbot-docker.conf."
@@ -258,10 +271,16 @@ set_state() {
 }
 
 # The version label of an image or a container. Empty when it is missing or not a release version.
+# Pokebots images add a suffix, for example 0.73.0-custom; the release version is the part before it.
 release_version() {
   local version
   version=$(docker inspect --format '{{index .Config.Labels "org.opencontainers.image.version"}}' "$1" 2>/dev/null || true)
-  if [[ $version =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then echo "$version"; fi
+  if [[ $version =~ ^([0-9]+\.[0-9]+\.[0-9]+)(-[A-Za-z0-9.]+)?$ ]]; then echo "${BASH_REMATCH[1]}"; fi
+}
+
+# Version $1 is the same as or newer than version $2.
+version_at_least() {
+  [ "$(printf '%s\n%s\n' "$1" "$2" | sort -V | tail -n 1)" = "$1" ]
 }
 
 # Pulls the image of instance $1. Writes its version to staged.ready only when it is newer than the
@@ -366,6 +385,8 @@ create() {
   systemctl daemon-reload
   printf '# OPENBOT_DISK is the size of data.img, for information. See docs/docker.md to change it.\nOPENBOT_NAME=%s\nOPENBOT_CPUS=%s\nOPENBOT_MEM=%s\nOPENBOT_DISK=%s\n' \
     "$name" "$cpus" "$mem" "$disk" >"$env"
+  # Pokebots: the backups before each automatic update, so a new instance updates by itself too.
+  printf '# Backups before each automatic update (openbot-instance auto-update).\nOPENBOT_BACKUP_DIR=/srv/openbot-backups\nOPENBOT_BACKUP_KEEP=3\n' >>"$env"
   start "$name"
   echo "Sign in the instance: openbot-instance run $name login"
 }
@@ -698,6 +719,152 @@ prune_backups() {
   fi
 }
 
+auto_log() {
+  printf '[%s] [auto-update] %s: %s\n' "$(utc_now)" "$1" "$2"
+}
+
+# The /v1/status text of instance $1, or nothing when it does not answer.
+instance_status() {
+  docker exec "openbot-$1" curl -fsS --max-time 5 --unix-socket /run/openbot/control.sock \
+    http://localhost/v1/status 2>/dev/null || true
+}
+
+status_field() {
+  printf '%s\n' "$1" | sed -n "s/^$2=//p" | head -n 1
+}
+
+# Instance $1 runs no agent work, so a restart loses nothing. Newer images answer restart_ready. For
+# older ones, an agent CLI process means work; the provider servers that OpenBot keeps running
+# (`opencode serve`, `opencode acp`, `codex app-server`) do not.
+instance_idle() {
+  local name=$1 status=$2 ready busy
+  ready=$(status_field "$status" restart_ready)
+  if [ "$ready" = true ]; then return 0; fi
+  if [ "$ready" = false ]; then
+    auto_log "$name" "busy ($(status_field "$status" restart_blockers)); trying again later."
+    return 1
+  fi
+  busy=$(docker exec "openbot-$name" ps -eo comm=,args= 2>/dev/null |
+    grep -E '^(antigravity|claude|codex|cursor-agent|gemini|grok|opencode) ' |
+    grep -vE ' (serve|acp|app-server)( |$)' | cut -d ' ' -f 1 | sort -u | tr '\n' ' ' || true)
+  if [ -n "$busy" ]; then
+    auto_log "$name" "agents are working (${busy% }); trying again later."
+    return 1
+  fi
+}
+
+# Waits up to $4 seconds until instance $1 answers its status with version $2, and is online when $3
+# is 1.
+wait_healthy() {
+  local name=$1 version=$2 online=$3 deadline status
+  deadline=$((SECONDS + $4))
+  while [ "$SECONDS" -lt "$deadline" ]; do
+    if container_running "openbot-$name"; then
+      status=$(instance_status "$name")
+      if [ "$(status_field "$status" version)" = "$version" ] &&
+        { [ "$online" = 0 ] || [ "$(status_field "$status" server)" = online ]; }; then
+        return 0
+      fi
+    fi
+    sleep 5
+  done
+  return 1
+}
+
+# Updates instance $1 to the newest image of its env file when no agent works: pulls, backs up /data,
+# makes the container again and checks that it comes back. When it does not, it restores the backup
+# and the old image, and skips that image from then on. Holds the lock of the instance throughout.
+auto_update_one() {
+  local name=$1 env folder failed image pulled_id running_id running pulled before online=0 status
+  local made final archive rollback
+  env=$(env_file "$name")
+  folder=$DATA/$name
+  failed=$folder/auto-update-failed
+  if [ "$(setting "$name" OPENBOT_AUTO_UPDATE)" = off ]; then return 0; fi
+  # An administrator who chose a tag keeps it.
+  if grep -q '^OPENBOT_TAG=' "$env"; then return 0; fi
+  if [ -z "$(setting "$name" OPENBOT_BACKUP_DIR)" ]; then
+    auto_log "$name" "skipped: set OPENBOT_BACKUP_DIR in $env, so an update can be undone."
+    return 0
+  fi
+  lock_instance "$name"
+  container_running "openbot-$name" || return 0
+  compose "$name" pull --quiet || { auto_log "$name" "the image did not download."; return 1; }
+  image=$(compose "$name" config --images | head -n 1)
+  pulled_id=$(docker image inspect --format '{{.Id}}' "$image")
+  running_id=$(docker inspect --format '{{.Image}}' "openbot-$name")
+  if [ -z "$pulled_id" ] || [ -z "$running_id" ]; then
+    auto_log "$name" "skipped: the image $image or the container cannot be read."
+    return 1
+  fi
+  [ "$pulled_id" != "$running_id" ] || return 0
+  if [ -f "$failed" ] && [ "$(cat "$failed")" = "$pulled_id" ]; then return 0; fi
+  running=$(release_version "openbot-$name")
+  pulled=$(release_version "$image")
+  if [ -z "$running" ] || [ -z "$pulled" ]; then
+    auto_log "$name" "skipped: the version of the container ($running) or of $image ($pulled) is not known."
+    return 0
+  fi
+  # An older OpenBot cannot open a database that a newer one migrated.
+  if ! version_at_least "$pulled" "$running"; then
+    auto_log "$name" "skipped: $image is $pulled, older than the container ($running)."
+    return 0
+  fi
+  before=$(instance_status "$name")
+  instance_idle "$name" "$before" || return 0
+  [ "$(status_field "$before" server)" != online ] || online=1
+
+  auto_log "$name" "updating from $running to $pulled ($image)."
+  install -d -m 0700 "$folder/backup-status"
+  made=$(mktemp)
+  # shellcheck disable=SC2064 # The value is fixed now.
+  trap "rm -f -- '$made'" EXIT
+  (run_step "$folder/backup-status" backup backup_steps "$name" "$made") ||
+    { auto_log "$name" "the backup failed, so nothing changed."; return 1; }
+  final=$(cat "$made")
+  (verify_locked "$name" "$final") ||
+    { auto_log "$name" "the backup $final did not verify, so nothing changed."; return 1; }
+  prune_backups "$name" "$final"
+  rollback=openbot-instance-rollback:$name
+  docker tag "$running_id" "$rollback"
+
+  if (start "$name") && wait_healthy "$name" "$pulled" "$online" "${OPENBOT_UPDATE_HEALTH_TIMEOUT:-300}"; then
+    rm -f "$failed"
+    auto_log "$name" "updated to $pulled."
+    return 0
+  fi
+
+  auto_log "$name" "did not come back on $pulled; restoring $final and $running."
+  set_state "$failed" "$pulled_id"
+  archive=$(backup_archive "$final")
+  (restore_steps "$name" "$final" "$archive") || { auto_log "$name" "CRITICAL: the restore failed."; return 1; }
+  # The compose file names the new image, so the old one runs under its own tag. `up` goes to the
+  # new image again; the auto-update skips it until a newer one is published.
+  # Variables of the environment come before the env file in compose.
+  (export OPENBOT_IMAGE=${rollback%:*} OPENBOT_TAG=${rollback#*:} && start "$name") &&
+    wait_healthy "$name" "$running" "$online" 300 ||
+    { auto_log "$name" "CRITICAL: $running did not come back after the restore."; return 1; }
+  auto_log "$name" "back on $running with the data from before the update."
+  return 1
+}
+
+auto_update() {
+  [ "$(id -u)" -eq 0 ] || fail "Run auto-update as root."
+  if [ "${1:-}" != --all ]; then
+    check_name "${1:-}"
+    [ -f "$(env_file "$1")" ] || fail "There is no instance $1."
+    auto_update_one "$1"
+    return
+  fi
+  local env result=0
+  for env in "$HERE"/*.env; do
+    [ -e "$env" ] || continue
+    # Each instance in its own subshell: its lock and its failure end with it.
+    (auto_update_one "$(basename "$env" .env)") || result=1
+  done
+  return "$result"
+}
+
 verify() {
   [ "$#" -ge 1 ] || fail "Give the name of the instance."
   check_name "$1"
@@ -977,6 +1144,7 @@ case $command in
     fi
     ;;
   update-request) update_request "${1:-}" ;;
+  auto-update) auto_update "${1:-}" ;;
   backup) backup "$@" ;;
   verify) verify "$@" ;;
   restore) restore "$@" ;;

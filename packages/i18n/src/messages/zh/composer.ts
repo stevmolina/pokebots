@@ -108,6 +108,8 @@ export const messages = {
   "composer.send.hint.enter": "发送（Enter）。Shift+Enter 换行。",
   "composer.send.hint.modEnterMac": "发送（⌘Enter）。Enter 换行。",
   "composer.send.hint.modEnterWin": "发送（Ctrl+Enter）。Enter 换行。",
+  "composer.send.hint.busySteer": "引导本轮（Enter）。{chord} 排队到之后。",
+  "composer.send.hint.busyQueue": "排队到本轮之后（Enter）。{chord} 立即引导。",
   "composer.save.hint.enter": "保存（Enter）。Shift+Enter 换行。",
   "composer.save.hint.modEnterMac": "保存（⌘Enter）。Enter 换行。",
   "composer.save.hint.modEnterWin": "保存（Ctrl+Enter）。Enter 换行。",

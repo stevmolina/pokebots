@@ -227,7 +227,7 @@ async function startProxy(
         if (typeof value === "string") forwarded[name] = value;
       }
       const target = await fetch(`${state.upstream}${path}`, {
-        method: request.method,
+        method: request.method ?? "GET",
         headers: forwarded,
         redirect: "manual",
       });

@@ -2633,6 +2633,8 @@ export async function createApplicationServices({
     vaultItems: vault.items,
     linkWallet: linkAccount,
     agentComputerKey: () => agentComputer.key(),
+    agentComputerConnected: () =>
+      agentComputer.key() !== null || currentIntegrationCredential(centralAuth, "computer") !== undefined,
     agentComputerCredential: (memberId) => {
       if (host.conversationSender()?.id === memberId) return currentIntegrationCredential(centralAuth, "computer");
       const member = teamStore.memberAccounts().find((candidate) => candidate.memberId === memberId);

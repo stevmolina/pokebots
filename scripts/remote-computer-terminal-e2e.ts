@@ -22,6 +22,7 @@ import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
+import type { Transport } from "@modelcontextprotocol/sdk/shared/transport.js";
 import type { McpServerConfig, RemoteComputerServer } from "@openbot/contracts/ipc";
 import { type DynamicRecord, isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
 import { REMOTE_COMPUTER_USE_ROUTES } from "@openbot/contracts/team-protocol/remote-computer-use-v1";
@@ -140,10 +141,28 @@ const report: { passed: boolean; checks: string[]; samples: { command?: unknown;
   samples: {},
 };
 
+/** The SDK transport, with its optional members spelled the way `exactOptionalPropertyTypes` wants. */
+function asTransport(inner: StreamableHTTPClientTransport): Transport {
+  const transport: Transport = {
+    start: () => {
+      inner.onclose = () => transport.onclose?.();
+      inner.onerror = (error) => transport.onerror?.(error);
+      inner.onmessage = (message) => transport.onmessage?.(message);
+      return inner.start();
+    },
+    send: (message, options) => inner.send(message, options),
+    close: () => inner.close(),
+    setProtocolVersion: (version) => inner.setProtocolVersion(version),
+  };
+  return transport;
+}
+
 async function connect(url: string, bearer: string): Promise<Client> {
   const mcp = new Client({ name: "provider", version: "1" }, { capabilities: {} });
   await mcp.connect(
-    new StreamableHTTPClientTransport(new URL(url), { requestInit: { headers: { Authorization: bearer } } }),
+    asTransport(
+      new StreamableHTTPClientTransport(new URL(url), { requestInit: { headers: { Authorization: bearer } } }),
+    ),
   );
   return mcp;
 }

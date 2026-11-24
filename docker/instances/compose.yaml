@@ -3,7 +3,9 @@
 # docs/docker.md#several-instances-on-one-host.
 services:
   openbot:
-    image: ghcr.io/nightly-labs/openbot:${OPENBOT_TAG:-latest}
+    # Pokebots: the image that a push to main publishes (.github/workflows/server-image.yml).
+    # openbot-instance auto-update sets OPENBOT_IMAGE only to start a kept older image after a failed update.
+    image: ${OPENBOT_IMAGE:-ghcr.io/stevmolina/pokebots}:${OPENBOT_TAG:-latest}
     container_name: openbot-${OPENBOT_NAME:?}
     restart: unless-stopped
     security_opt:
@@ -11,6 +13,11 @@ services:
       - no-new-privileges:true
     shm_size: 1g
     stop_grace_period: 60s
+    # Pokebots: the account service of every friend server (docs/self-hosting.md).
+    environment:
+      OPENBOT_AUTH_API_URL: ${OPENBOT_AUTH_API_URL:-https://api.pokebots.xyz}
+      # The page that connects to Signal may open only this socket (content security policy).
+      OPENBOT_REMOTE_SIGNAL_URL: ${OPENBOT_REMOTE_SIGNAL_URL:-wss://signal.pokebots.xyz/v1/signal}
     cpus: ${OPENBOT_CPUS:?}
     mem_limit: ${OPENBOT_MEM:?}
     # No swap above the memory limit.

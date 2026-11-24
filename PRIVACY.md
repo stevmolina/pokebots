@@ -2422,6 +2422,10 @@ results and local coding-job files, registers them for secret redaction, and sho
 views only through human controls. Desktop, web and mobile clients keep machine lists in
 screen memory. Access loss clears the visible list. The phone does not put these lists or
 the API key in its offline workspace copy.
+When an agent starts a cloud machine, the chat gets a card that holds only the machine id.
+The live-view link is not in the chat, the agent's tool result or the offline copy. An owner
+or admin presses Open live view; their client then reads the link from the same owner or
+admin machine list and opens it at once, without saving it.
 
 ### Second Brain
 

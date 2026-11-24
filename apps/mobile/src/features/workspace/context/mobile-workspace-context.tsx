@@ -2666,6 +2666,11 @@ export function MobileWorkspaceProvider({ children }: PropsWithChildren) {
     () => agents.filter((agent) => agent.serverId === activeServer.id && hiddenAgentIds.includes(agent.id)),
     [agents, activeServer.id, hiddenAgentIds],
   );
+  const hiddenAgentIdsByServer = useMemo(() => {
+    const byServer: Record<string, readonly string[]> = {};
+    for (const [serverId, current] of Object.entries(visiblePreferences)) byServer[serverId] = current.hidden;
+    return byServer;
+  }, [visiblePreferences]);
   const state = useMemo<MobileWorkspaceState>(() => {
     /**
      * The checks of the role and the capabilities of a server. The workspace uses the capabilities of
@@ -2817,6 +2822,7 @@ export function MobileWorkspaceProvider({ children }: PropsWithChildren) {
       activeServer,
       activeAgents,
       hiddenAgents,
+      hiddenAgentIdsByServer,
       pinnedAgentIds,
       pinnedChannelIds,
       pinnedWorkflowIds,
@@ -2851,6 +2857,7 @@ export function MobileWorkspaceProvider({ children }: PropsWithChildren) {
     activeServer,
     activeAgents,
     hiddenAgents,
+    hiddenAgentIdsByServer,
     pinnedAgentIds,
     pinnedChannelIds,
     pinnedWorkflowIds,

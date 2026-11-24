@@ -603,6 +603,16 @@ export const messages = {
   "mobile.chat.threads.main": "הצ'אט הראשי",
   "mobile.chat.sessions.title": "סשנים",
   "mobile.chat.sessions.new": "סשן חדש",
+  "mobile.chat.sessionsTray.title": {
+    one: "פעיל אחד",
+    two: "שניים פעילים",
+    other: "{count} פעילים",
+  },
+  "mobile.chat.sessionsTray.label": {
+    one: "סשן פעיל אחד. הצגה או הסתרה",
+    two: "שני סשנים פעילים. הצגה או הסתרה",
+    other: "{count} סשנים פעילים. הצגה או הסתרה",
+  },
   "mobile.chat.sessions.all": "כל הסשנים",
   "mobile.chat.threads.branchedFrom": "הסתעף מ-{title}",
   "mobile.chat.threads.branchedFromDeleted": "הסתעף משרשור שנמחק",

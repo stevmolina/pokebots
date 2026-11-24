@@ -1,0 +1,12 @@
+# Updates every instance to a newer image when its agents are idle, with a backup first.
+# openbot-instance-auto-update.timer starts it. `setup` replaces /opt/openbot-docker/instances/ with
+# the folder of openbot-instance.
+[Unit]
+Description=Update OpenBot instances automatically
+After=docker.service network-online.target
+Requires=docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/opt/openbot-docker/instances/openbot-instance auto-update --all
+TimeoutStartSec=2h

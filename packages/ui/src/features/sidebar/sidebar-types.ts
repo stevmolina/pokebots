@@ -67,6 +67,50 @@ export const SIDEBAR_DOCK_WORKING_ID = "dock:working";
  * closes it, not as a `dock:open:` marker.
  */
 export const SIDEBAR_DOCK_DONE_ID = "dock:done";
+/**
+ * The "Snoozed" group of the dock: the agents that the user put away until a time. Like "Done", it is
+ * open by default and saved as a plain collapsed id when the user closes it.
+ */
+export const SIDEBAR_DOCK_SNOOZED_ID = "dock:snoozed";
+/**
+ * The chat list has two views: "Active" (the groups by state: Working, Done, Snoozed, then the rest)
+ * and "Folders" (every chat in its folder). This id in `collapsedSectionIds` records the "Folders"
+ * view; without it the list shows "Active".
+ */
+export const SIDEBAR_DOCK_FOLDERS_VIEW_ID = "dock:view:folders";
+/**
+ * A snoozed agent is saved in `collapsedSectionIds` as `dock:snooze:<agent id>@<until, ms since epoch>`.
+ * The snooze ends by itself when the time passes.
+ */
+export const SIDEBAR_SNOOZE_PREFIX = "dock:snooze:";
+
+/** The view of the chat list. */
+export type SidebarChatListView = "active" | "folders";
+
+/** The snooze markers of `collapsedSectionIds` that have not run out, as agent id to end time (ms). */
+export function sidebarSnoozes(collapsedSectionIds: readonly string[], now: number): Map<string, number> {
+  const snoozes = new Map<string, number>();
+  for (const id of collapsedSectionIds) {
+    const parsed = parseSidebarSnooze(id);
+    if (!parsed || parsed.until <= now) continue;
+    snoozes.set(parsed.agentId, Math.max(parsed.until, snoozes.get(parsed.agentId) ?? 0));
+  }
+  return snoozes;
+}
+
+/** The agent and end time of a snooze marker, or undefined for any other id. */
+export function parseSidebarSnooze(id: string): { agentId: string; until: number } | undefined {
+  if (!id.startsWith(SIDEBAR_SNOOZE_PREFIX)) return undefined;
+  const rest = id.slice(SIDEBAR_SNOOZE_PREFIX.length);
+  const at = rest.lastIndexOf("@");
+  if (at <= 0) return undefined;
+  const until = Number(rest.slice(at + 1));
+  return Number.isFinite(until) ? { agentId: rest.slice(0, at), until } : undefined;
+}
+
+export function sidebarSnoozeMarker(agentId: string, until: number): string {
+  return `${SIDEBAR_SNOOZE_PREFIX}${agentId}@${Math.round(until)}`;
+}
 
 /**
  * How the list orders the chats in the sections. Pins and "Needs you" come first in each order, and
@@ -406,6 +450,8 @@ export interface SidebarThreadEntry {
 
 export interface SidebarThreadLanes {
   threads: readonly SidebarThreadEntry[];
+  /** Latest non-closed side-thread activity time per agent id, including finished threads. */
+  latestThreadUpdatedAt?: Readonly<Record<string, string>> | undefined;
   /** The thread on screen, from `threadTabKey`. Null while no agent chat is on screen. */
   activeKey: string | null;
   /** The agents whose own chat has a reply that the user did not read. */

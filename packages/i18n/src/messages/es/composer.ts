@@ -115,6 +115,8 @@ export const messages = {
   "composer.send.hint.enter": "Enviar (Enter). Shift+Enter añade una línea.",
   "composer.send.hint.modEnterMac": "Enviar (⌘Enter). Enter añade una línea.",
   "composer.send.hint.modEnterWin": "Enviar (Ctrl+Enter). Enter añade una línea.",
+  "composer.send.hint.busySteer": "Guiar este turno (Enter). {chord} lo pone en cola para después.",
+  "composer.send.hint.busyQueue": "Poner en cola para después de este turno (Enter). {chord} lo envía ahora al turno.",
   "composer.save.hint.enter": "Guardar (Enter). Shift+Enter añade una línea.",
   "composer.save.hint.modEnterMac": "Guardar (⌘Enter). Enter añade una línea.",
   "composer.save.hint.modEnterWin": "Guardar (Ctrl+Enter). Enter añade una línea.",

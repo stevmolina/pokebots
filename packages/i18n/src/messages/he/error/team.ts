@@ -197,4 +197,6 @@ export const messages = {
   "error.team.backgroundProcessesUnsupported": "החיבור הזה לא תומך בתהליכי רקע.",
   "error.team.providerUseUnsupported": "החיבור הזה לא תומך בהפעלה ובכיבוי של ספקים.",
   "error.team.providerUseInvalid": "לספק הזה אין מתג הפעלה וכיבוי.",
+  "error.team.remoteComputerCallNotFound": "בקשת המחשב הזו הסתיימה או שייכת לסשן אחר.",
+  "error.team.remoteTerminalNeedsComputer": "קודם יש להפעיל שליטה במחשב עבור השרת הזה.",
 } as const satisfies PartialTranslation<typeof source>;

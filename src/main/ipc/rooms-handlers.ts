@@ -34,10 +34,8 @@ export function roomsIpcHandlers({
       execute: scopedHandler(
         (value): RoomsRequest & { account?: "linked" | IntegrationProfile | "manual" } => {
           const account = isObject(value) ? value.account : undefined;
-          return {
-            ...decodeRoomsRequest(value),
-            account: account === "linked" || account === "native" || account === "manual" ? account : undefined,
-          };
+          const input = decodeRoomsRequest(value);
+          return account === "linked" || account === "native" || account === "manual" ? { ...input, account } : input;
         },
         {
           local: ({ account, ...input }) => {

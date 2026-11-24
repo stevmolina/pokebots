@@ -2,6 +2,12 @@ import type { PartialTranslation } from "../../message";
 import type { messages as source } from "../en/chat";
 
 export const messages = {
+  "chat.workers.running": "运行中",
+  "chat.workers.queued": "排队中",
+  "chat.workers.runningCount": "{count} 个运行中",
+  "chat.workers.queuedCount": "{count} 个排队中",
+  "chat.workers.showAll": "显示全部 {count} 个活跃会话",
+  "chat.workers.showOne": "折叠为一个活跃会话",
   "chat.activity.workingOnIt": "正在处理…",
   "chat.activity.thinking": "正在思考…",
   "chat.activity.connectingDots": "正在梳理线索…",
@@ -61,6 +67,8 @@ export const messages = {
   "chat.subagents.stepCount": { other: "{count} 个步骤" },
   "chat.subagents.seconds": "{seconds} 秒",
   "chat.subagents.minutes": "{minutes} 分 {seconds} 秒",
+  "chat.subagents.hours": "{hours} 小时 {minutes} 分",
+  "chat.subagents.days": "{days} 天",
   "chat.subagents.open": "{title}，{state}。在侧边打开。",
   "chat.trace.title": "追踪",
   "chat.trace.search": "搜索步骤",
@@ -371,7 +379,6 @@ export const messages = {
   "chat.actions.more": "更多操作",
   "chat.menu.reply": "回复",
   "chat.menu.copy": "复制消息",
-  "chat.menu.react": "回应",
   "chat.menu.branch": "从这里分支",
   "chat.menu.markUnread": "标为未读",
   "chat.menu.pin": "置顶",
