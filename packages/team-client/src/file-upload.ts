@@ -202,7 +202,7 @@ export function createRemoteFileSender<E, R>(
  * The SHA-256 of `bytes` as hex. The platform hash runs off the page's main thread, so a large paste
  * does not freeze typing; the JavaScript hash is the fallback where `crypto.subtle` is missing.
  */
-export async function sha256Hex(bytes: Uint8Array<ArrayBuffer>): Promise<string> {
+async function sha256Hex(bytes: Uint8Array<ArrayBuffer>): Promise<string> {
   const subtle = globalThis.crypto?.subtle;
   const digest = subtle
     ? new Uint8Array(await subtle.digest("SHA-256", bytes).catch(() => sha256(bytes)))
