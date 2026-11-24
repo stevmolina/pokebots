@@ -13,7 +13,7 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import { LEGACY_OPENBOT_COMMIT_TRAILER, OPENBOT_COMMIT_TRAILER } from "@openbot/contracts/ipc";
+import { OPENBOT_COMMIT_TRAILER } from "@openbot/contracts/ipc";
 import { type DynamicRecord, isDynamicRecord } from "@openbot/contracts/runtime-values";
 import { sourceText } from "@openbot/i18n/source";
 import { Effect } from "effect";
@@ -151,13 +151,12 @@ try {
     const text = prompt();
     assert.ok(text.includes(OPENBOT_COMMIT_TRAILER));
     assert.ok(text.includes("openbot.set_commit_co_author"));
-    assert.ok(text.includes(`The trailer is: ${OPENBOT_COMMIT_TRAILER}\n`), "No period follows the trailer.");
+    assert.ok(text.includes(`trailer once: ${OPENBOT_COMMIT_TRAILER}\n`), "No period follows the trailer.");
     assert.equal(
       OPENBOT_COMMIT_TRAILER,
       "Co-authored-by: Pokebots <360799014+pokebotsapp[bot]@users.noreply.github.com>",
       "The trailer names the Pokebots app.",
     );
-    assert.ok(text.includes(LEGACY_OPENBOT_COMMIT_TRAILER), "The prompt still knows the older trailer.");
     return { commitCoAuthor: true };
   });
 
@@ -193,7 +192,6 @@ try {
     assert.equal(store.agentDefaults().commitCoAuthor, false);
     assert.equal(saved(), false, "The preference file keeps the change.");
     assert.ok(!prompt().includes(OPENBOT_COMMIT_TRAILER), "The prompt no longer asks for the trailer.");
-    assert.ok(!prompt().includes(LEGACY_OPENBOT_COMMIT_TRAILER), "The prompt no longer names the older trailer.");
     return value;
   });
 
