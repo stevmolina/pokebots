@@ -246,6 +246,11 @@ export const messages = {
   "mobile.server.threads.section.unread": "غير مقروءة",
   "mobile.server.threads.section.read": "مقروءة",
   "mobile.server.threads.section.closed": "مؤرشفة",
+  "mobile.server.threads.board.queued": "في الانتظار",
+  "mobile.server.threads.board.done": "مكتمل",
+  "mobile.server.threads.view.label": "عرض المهام",
+  "mobile.server.threads.view.list": "قائمة",
+  "mobile.server.threads.view.board": "لوحة",
   "mobile.server.threads.showAll": {
     zero: "عرض الكل ({count})",
     one: "عرض الكل ({count})",

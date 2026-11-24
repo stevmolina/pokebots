@@ -575,6 +575,14 @@ export const messages = {
   "mobile.chat.threads.main": "Hoofdchat",
   "mobile.chat.sessions.title": "Sessies",
   "mobile.chat.sessions.new": "Nieuwe sessie",
+  "mobile.chat.sessionsTray.title": {
+    one: "{count} actief",
+    other: "{count} actief",
+  },
+  "mobile.chat.sessionsTray.label": {
+    one: "{count} actieve sessie. Tonen of verbergen",
+    other: "{count} actieve sessies. Tonen of verbergen",
+  },
   "mobile.chat.sessions.all": "Alle sessies",
   "mobile.chat.threads.branchedFrom": "Afgetakt van {title}",
   "mobile.chat.threads.branchedFromDeleted": "Afgetakt van een verwijderde thread",

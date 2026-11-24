@@ -1,5 +1,6 @@
 import { sha256 } from "@noble/hashes/sha2.js";
 import { ARTIFACT_REQUEST_ROUTE } from "@openbot/contracts/team-protocol/artifact-request-v1";
+import { MESSAGE_QUEUE_ONLY_ROUTE } from "@openbot/contracts/team-protocol/message-queue-only-v1";
 import { Effect, Schema } from "effect";
 import { base64ToBytes, bytesToBase64 } from "./base64";
 import { copyTransfer } from "./instance-transfer-copy";
@@ -393,47 +394,59 @@ export const sendAgentTaskMessage = Effect.fn("TeamClient.sendAgentTaskMessage")
     replyToMessageId,
     clientMessageId,
     createArtifact,
+    queueOnly,
   }: AgentTaskInput & {
     text: string;
     attachmentDraftIds?: string[];
     replyToMessageId?: string;
     clientMessageId?: string;
     createArtifact?: boolean;
+    queueOnly?: boolean;
   },
 ): Effect.fn.Return<QueuedMessageReceipt, TeamRequestError> {
   return yield* teamCall(() =>
-    createArtifact
-      ? request("POST", ARTIFACT_REQUEST_ROUTE, decodeTaskReceipt, {
+    queueOnly
+      ? request("POST", MESSAGE_QUEUE_ONLY_ROUTE, decodeTaskReceipt, {
           agentId,
           taskId,
           text,
           attachmentDraftIds: attachmentDraftIds ?? [],
           ...(replyToMessageId ? { replyToMessageId } : {}),
           ...(clientMessageId ? { clientMessageId } : {}),
+          ...(createArtifact ? { createArtifact: true } : {}),
         })
-      : replyToMessageId
-        ? request("POST", AGENT_THREAD_REPLIES_ROUTES.send, decodeTaskReceipt, {
+      : createArtifact
+        ? request("POST", ARTIFACT_REQUEST_ROUTE, decodeTaskReceipt, {
             agentId,
             taskId,
             text,
             attachmentDraftIds: attachmentDraftIds ?? [],
-            replyToMessageId,
-            ...(clientMessageId === undefined ? {} : { clientMessageId }),
+            ...(replyToMessageId ? { replyToMessageId } : {}),
+            ...(clientMessageId ? { clientMessageId } : {}),
           })
-        : attachmentDraftIds?.length
-          ? request("POST", AGENT_THREAD_FILES_ROUTES.send, decodeTaskReceipt, {
+        : replyToMessageId
+          ? request("POST", AGENT_THREAD_REPLIES_ROUTES.send, decodeTaskReceipt, {
               agentId,
               taskId,
               text,
-              attachmentDraftIds,
+              attachmentDraftIds: attachmentDraftIds ?? [],
+              replyToMessageId,
               ...(clientMessageId === undefined ? {} : { clientMessageId }),
             })
-          : request("POST", AGENT_TASKS_ROUTES.send, decodeTaskReceipt, {
-              agentId,
-              taskId,
-              text,
-              ...(clientMessageId === undefined ? {} : { clientMessageId }),
-            }),
+          : attachmentDraftIds?.length
+            ? request("POST", AGENT_THREAD_FILES_ROUTES.send, decodeTaskReceipt, {
+                agentId,
+                taskId,
+                text,
+                attachmentDraftIds,
+                ...(clientMessageId === undefined ? {} : { clientMessageId }),
+              })
+            : request("POST", AGENT_TASKS_ROUTES.send, decodeTaskReceipt, {
+                agentId,
+                taskId,
+                text,
+                ...(clientMessageId === undefined ? {} : { clientMessageId }),
+              }),
   );
 });
 

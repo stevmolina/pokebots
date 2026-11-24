@@ -319,6 +319,11 @@ export const messages = {
   "mobile.server.threads.section.unread": "שלא נקראו",
   "mobile.server.threads.section.read": "נקראו",
   "mobile.server.threads.section.closed": "בארכיון",
+  "mobile.server.threads.board.queued": "בתור",
+  "mobile.server.threads.board.done": "הושלם",
+  "mobile.server.threads.view.label": "תצוגת משימות",
+  "mobile.server.threads.view.list": "רשימה",
+  "mobile.server.threads.view.board": "לוח",
   "mobile.server.threads.showAll": {
     one: "הצגת הכול ({count})",
     two: "הצגת הכול ({count})",

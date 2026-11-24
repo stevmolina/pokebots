@@ -282,6 +282,7 @@ export function createThreadComposerActions(deps: ThreadComposerActionsDeps) {
     typed: string,
     // The first message of a new thread starts the thread and opens it, so the key is read before the send.
     key = openDraftKey(),
+    queueOnly?: boolean,
   ): Promise<boolean> {
     // The files of the draft belong to the server on screen now; a switch during the import does not move them (#9123).
     const target = currentConversationTarget(deps.props);
@@ -303,6 +304,7 @@ export function createThreadComposerActions(deps: ThreadComposerActionsDeps) {
       attachments.filter((attachment) => referenced.has(attachment.id)).map((attachment) => attachment.id),
       replyToMessageId,
       key ? draft(key).createArtifact : false,
+      queueOnly,
     );
     if (!sent || !key) return sent;
     const known = new Set(attachments.map((attachment) => attachment.id));

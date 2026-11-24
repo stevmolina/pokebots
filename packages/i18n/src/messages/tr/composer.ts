@@ -117,6 +117,8 @@ export const messages = {
   "composer.send.hint.enter": "Gönder (Enter). Shift+Enter yeni satır ekler.",
   "composer.send.hint.modEnterMac": "Gönder (⌘Enter). Enter yeni satır ekler.",
   "composer.send.hint.modEnterWin": "Gönder (Ctrl+Enter). Enter yeni satır ekler.",
+  "composer.send.hint.busySteer": "Bu tura yön ver (Enter). {chord} sonrası için sıraya ekler.",
+  "composer.send.hint.busyQueue": "Bu turdan sonrası için sıraya ekle (Enter). {chord} şimdi yön verir.",
   "composer.save.hint.enter": "Kaydet (Enter). Shift+Enter yeni satır ekler.",
   "composer.save.hint.modEnterMac": "Kaydet (⌘Enter). Enter yeni satır ekler.",
   "composer.save.hint.modEnterWin": "Kaydet (Ctrl+Enter). Enter yeni satır ekler.",

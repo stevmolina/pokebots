@@ -25,6 +25,7 @@ import {
 import { AGENT_THREADS_CAPABILITY } from "@openbot/contracts/team-protocol/agent-threads-v1";
 import { MESSAGE_DELETE_CAPABILITY, MESSAGE_DELETE_ROUTES } from "@openbot/contracts/team-protocol/message-delete-v1";
 import { MESSAGE_PINS_CAPABILITY } from "@openbot/contracts/team-protocol/message-pins-v1";
+import { MESSAGE_QUEUE_ONLY_CAPABILITY } from "@openbot/contracts/team-protocol/message-queue-only-v1";
 import { runTeamEffect } from "@openbot/team-client";
 import {
   agentTaskControl,
@@ -80,6 +81,7 @@ function webAgentTasksPort(
   branchable: () => boolean,
   queued: () => boolean,
   requested: () => boolean,
+  queueOnlySupported: () => boolean,
 ): AgentTasksPort {
   const run = async <A>(call: (request: TeamApiRequest) => Effect.Effect<A, TeamRequestError>) =>
     runTeamEffect(call(request()).pipe(Effect.mapError((error) => error.cause)));
@@ -131,7 +133,10 @@ function webAgentTasksPort(
         ),
       ),
     startTask: (input) => run((host) => startAgentTask(host, input)),
-    sendToTask: (input) => run((host) => sendAgentTaskMessage(host, input)),
+    sendToTask: ({ queueOnly, ...input }) =>
+      run((host) =>
+        sendAgentTaskMessage(host, queueOnly && untrack(queueOnlySupported) ? { ...input, queueOnly: true } : input),
+      ),
     stopTask: (input) => run((host) => agentTaskControl(host, "stop", input)),
     closeTask: (input) => run((host) => agentTaskControl(host, "close", input)),
     reopenTask: (input) => run((host) => agentTaskControl(host, "reopen", input)),
@@ -162,7 +167,8 @@ export function createWebAgentThreads(options: {
   const branchable = () => workspace.state.capabilities.includes(AGENT_THREAD_BRANCHES_CAPABILITY);
   const queued = () => workspace.state.capabilities.includes(AGENT_THREAD_QUEUE_CAPABILITY);
   const requested = () => workspace.state.capabilities.includes(AGENT_THREAD_REQUESTS_CAPABILITY);
-  const port = webAgentTasksPort(options.request, branchable, queued, requested);
+  const queueOnlySupported = () => workspace.state.capabilities.includes(MESSAGE_QUEUE_ONLY_CAPABILITY);
+  const port = webAgentTasksPort(options.request, branchable, queued, requested, queueOnlySupported);
   const tasks = createAgentTasks({
     port: () => port,
     activeAgentId: () => workspace.state.selectedId ?? undefined,

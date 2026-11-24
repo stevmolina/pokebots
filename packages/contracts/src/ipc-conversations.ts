@@ -192,8 +192,8 @@ export interface SendMessageInput {
   createArtifact?: boolean;
   /**
    * The message waits in the queue and runs after the running turn, even when the agent steers each
-   * message sent while it works. Only this computer's host reads it. A joined server drops it and
-   * follows its own busy-message mode.
+   * message sent while it works. A joined server with `message-queue-only-v1` honors it too; older
+   * hosts drop it and follow their own busy-message mode.
    */
   queueOnly?: boolean;
 }

@@ -111,6 +111,8 @@ export const messages = defineMessages("composer", {
   "composer.send.hint.enter": "Send (Enter). Shift+Enter adds a new line.",
   "composer.send.hint.modEnterMac": "Send (⌘Enter). Enter adds a new line.",
   "composer.send.hint.modEnterWin": "Send (Ctrl+Enter). Enter adds a new line.",
+  "composer.send.hint.busySteer": "Steer into this turn (Enter). {chord} queues it for after.",
+  "composer.send.hint.busyQueue": "Queue for after this turn (Enter). {chord} steers it in now.",
   "composer.save.hint.enter": "Save (Enter). Shift+Enter adds a new line.",
   "composer.save.hint.modEnterMac": "Save (⌘Enter). Enter adds a new line.",
   "composer.save.hint.modEnterWin": "Save (Ctrl+Enter). Enter adds a new line.",

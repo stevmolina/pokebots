@@ -53,7 +53,12 @@ import { ComposerVoiceControls } from "@openbot/ui/features/conversation/VoiceRe
 import { useText } from "@openbot/ui/text";
 import { createEffect, createMemo, createSignal, createStore, Loading, lazy, onSettled, Show } from "solid-js";
 import { reportErrorBanner, reportNotification } from "../../error-reports";
-import { deviceSendShortcut, sendShortcutAriaKey, sendShortcutHintKey } from "../../send-shortcut-preference";
+import {
+  currentDevicePlatform,
+  deviceSendShortcut,
+  sendShortcutAriaKey,
+  sendShortcutHintKey,
+} from "../../send-shortcut-preference";
 import { readableAgentError } from "../agents/agent-error-text";
 import { customProviderRestartMessage } from "../custom-providers/custom-provider-restart";
 import { onShortcutCommand } from "../shortcuts/shortcut-commands";
@@ -133,6 +138,7 @@ export function ConversationComposer() {
     submitComposer,
     steerComposer,
     submitOpposite,
+    hostSteers,
     composerAnswersPrompt,
     submitting,
     rowDraftAttachments,
@@ -555,10 +561,16 @@ export function ConversationComposer() {
   };
   const sendKeyShortcuts = () =>
     voicePhase() === "recording" ? undefined : sendShortcutAriaKey(deviceSendShortcut(props.platform));
-  const sendTitle = () =>
-    voicePhase() === "recording"
-      ? undefined
-      : t(sendShortcutHintKey(deviceSendShortcut(props.platform), editingDeliveryId() ? "save" : "send"));
+  const sendTitle = () => {
+    if (voicePhase() === "recording") return undefined;
+    const shortcut = deviceSendShortcut(props.platform);
+    // While the agent works, Enter and Cmd+Enter (Ctrl+Enter) do opposite things: say which is which.
+    if (shortcut === "enter" && submitOnModEnter()) {
+      const chord = (props.platform ?? currentDevicePlatform()) === "darwin" ? "⌘Enter" : "Ctrl+Enter";
+      return t(hostSteers() ? "composer.send.hint.busySteer" : "composer.send.hint.busyQueue", { chord });
+    }
+    return t(sendShortcutHintKey(shortcut, editingDeliveryId() ? "save" : "send"));
+  };
   /** Send, or Stop while the agent works and the message box is empty. */
   const SendControl = () => (
     <ComposerSendControl

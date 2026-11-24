@@ -83,12 +83,14 @@ import {
   useHomeSearch,
 } from "@/features/search/components/home-search";
 import { setHomeSearchUnavailable } from "@/features/search/model/home-search-request";
+import { AllMachinesList, MachineChips, useAllMachinesShown } from "@/features/servers/components/all-machines";
 import { useAppDrawer } from "@/features/servers/components/app-drawer-shell";
 import { PlanLimitsHeaderButton } from "@/features/servers/components/plan-limits-header-button";
+import { loadAllMachines, useAllMachines } from "@/features/servers/model/all-machines";
 import { usePlanLimits } from "@/features/servers/model/plan-limits";
 import { saveChatOrderPreference, useChatOrderPreference } from "@/features/settings/model/chat-order";
 import { ConnectionHeaderStatus } from "@/features/workspace/components/connection-header-status";
-import { useWaitingAgentIds } from "@/features/workspace/components/use-agent-activity";
+import { useWaitingAgentIds, useWorkingAgentIds } from "@/features/workspace/components/use-agent-activity";
 import { useHomeThreadState } from "@/features/workspace/components/use-home-thread-state";
 import { useUnreadAgentIds, useUnreadCounts } from "@/features/workspace/components/use-live-workspace";
 import {
@@ -101,10 +103,12 @@ import { canAddChatPin } from "@/features/workspace/model/agent-pins";
 import type { DropChange } from "@/features/workspace/model/chat-drag";
 import { showsOnline } from "@/features/workspace/model/server-status";
 import {
+  isMobileGroupHeading,
   MOBILE_CHAT_ORDERS,
   type MobileChatOrder,
   type MobileSidebarItem,
   mobileChatOrderSortsSections,
+  mobileLaneItems,
   mobileSidebarItems,
   mobileUnreadItems,
   mobileWaitingItems,
@@ -410,6 +414,12 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
   // of a wide window keeps the current look.
   const calm = useCalmLook() && !pane;
   const calmReady = useCalmLookStore((state) => state.ready);
+  // All machines: one list of the agents of every server, as on the desktop.
+  const allMachines = useAllMachinesShown();
+  const allMachinesReady = useAllMachines((state) => state.ready);
+  useEffect(() => {
+    void loadAllMachines();
+  }, []);
   const calmColors = usePreviewColors();
   // The calm look shows the user's photo, or initials, in the profile button.
   const { session } = useMobileSession();
@@ -452,7 +462,7 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
   // The list comes in as the loader starts to roll up, so the two overlap instead of waiting in turn.
   // The list also waits for the saved chat order, so that it does not show in one order and then move.
   const chatOrderReady = useChatOrderPreference((state) => state.ready);
-  const listReady = !showLoader && !isLoaderPresent && chatOrderReady && calmReady;
+  const listReady = !showLoader && !isLoaderPresent && chatOrderReady && calmReady && allMachinesReady;
   // A new account gets the first-run flow in place of the empty home. The flow shows its own
   // connection state, so the loader does not cover it.
   const onboarding = useHomeOnboarding();
@@ -542,6 +552,17 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
   const sidebar = sidebarByServer[activeServer.id];
   // A waiting agent leaves its section for "Needs you". A pinned agent stays in its tile, which shows the same badge.
   const waitingAgentIds = useWaitingAgentIds();
+  // As on the desktop, an agent at work leaves its folder for "Working", and an agent that finished with
+  // a reply the user did not read goes to "Done". Both go back to their folder after that.
+  const workingAgentIds = useWorkingAgentIds();
+  // Loads the read marks of the agents' side threads for their badges. As on the desktop, an unread
+  // reply in a side thread also puts its agent in "Done", but adds no number to the count of a folder.
+  const activeAgentIds = useMemo(() => activeAgents.map((agent) => agent.id), [activeAgents]);
+  const threadUnread = useHomeThreadState(activeServer.id, activeAgentIds);
+  const unreadAgentIdSet = useMemo(
+    () => new Set([...unreadAgentIds, ...threadUnread.keys()]),
+    [unreadAgentIds, threadUnread],
+  );
   // This phone's own choice. "Recent activity" sorts each section by last activity with unread chats
   // on top. "Unread in a group" takes the unread chats out of their sections, under "Needs you";
   // "Unread first in folders" puts them first in each section. None of them changes the layout.
@@ -564,7 +585,12 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
   const items = useMemo(() => {
     if (dragging && chatOrder !== "manual" && heldItems.current) return heldItems.current;
     const layout = sidebar?.layout ?? null;
-    const listedAgents = unpinnedAgents.filter((agent) => !waitingAgentIds.has(agent.id));
+    const laneAgents = unpinnedAgents.filter((agent) => !waitingAgentIds.has(agent.id));
+    const workingAgents = laneAgents.filter((agent) => workingAgentIds.has(agent.id));
+    const doneAgents = laneAgents.filter((agent) => !workingAgentIds.has(agent.id) && unreadAgentIdSet.has(agent.id));
+    const listedAgents = laneAgents.filter(
+      (agent) => !workingAgentIds.has(agent.id) && !unreadAgentIdSet.has(agent.id),
+    );
     const listedChannels = openChannels.filter((channel) => !pinnedChannelIds.includes(channel.id));
     const unread = unreadChatIds;
     const grouped = chatOrder === "unread-group";
@@ -573,6 +599,8 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
         layout,
         unpinnedAgents.filter((agent) => waitingAgentIds.has(agent.id)),
       ),
+      ...mobileLaneItems("working", layout, workingAgents),
+      ...mobileLaneItems("done", layout, doneAgents),
       ...(grouped
         ? mobileUnreadItems(
             layout,
@@ -592,6 +620,8 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
     sidebar?.layout,
     unpinnedAgents,
     waitingAgentIds,
+    workingAgentIds,
+    unreadAgentIdSet,
     openChannels,
     pinnedChannelIds,
     chatOrder,
@@ -605,7 +635,7 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
     let current: string | null = null;
     for (const item of items) {
       if (item.kind === "section") current = item.id;
-      else if (item.kind === "waiting" || item.kind === "unread") current = null;
+      else if (isMobileGroupHeading(item)) current = null;
       else if (current) counts.set(current, (counts.get(current) ?? 0) + 1);
     }
     return counts;
@@ -717,7 +747,7 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
     const ids = new Set<string>();
     let sectionCollapsed = false;
     for (const item of items) {
-      if (item.kind === "waiting" || item.kind === "unread") sectionCollapsed = false;
+      if (isMobileGroupHeading(item)) sectionCollapsed = false;
       else if (item.kind === "section") {
         const hidden = item.ancestorIds.some((ancestorId) => collapsedSectionIds.has(ancestorId));
         if (hidden) ids.add(item.id);
@@ -730,17 +760,13 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
   // The read state changes on each message, so the counts become a string first: the map, and with it
   // `renderItem`, change only when the count of a closed folder changes.
   const unreadCounts = useUnreadCounts();
-  // Loads the read marks of the agents' side threads for their badges. As on the desktop, those
-  // threads add no number to the count of a folder.
-  const activeAgentIds = useMemo(() => activeAgents.map((agent) => agent.id), [activeAgents]);
-  useHomeThreadState(activeServer.id, activeAgentIds);
   const folderUnreadKey = useMemo(() => {
     if (!collapsedSectionIds.size) return "[]";
     const unread = new Set(unreadAgentIds);
     const counts = new Map<string, number>();
     let folderIds: readonly string[] = [];
     for (const item of items) {
-      if (item.kind === "waiting" || item.kind === "unread") folderIds = [];
+      if (isMobileGroupHeading(item)) folderIds = [];
       else if (item.kind === "section")
         folderIds = [...item.ancestorIds, item.id].filter((id) => collapsedSectionIds.has(id));
       else {
@@ -805,6 +831,13 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
           ) : (
             <AgentWaitingGroupHeader count={item.count} />
           )}
+        </AgentListRowReveal>
+      ) : item.kind === "working" || item.kind === "done" ? (
+        <AgentListRowReveal index={index + rowOffset} reveal={listReveal} skip={holdOpen}>
+          <CalmGroupLabel
+            title={t(item.kind === "working" ? "mobile.agent.list.working.title" : "mobile.agent.list.done.title")}
+            count={item.count}
+          />
         </AgentListRowReveal>
       ) : item.kind === "unread" ? (
         <AgentListRowReveal index={index + rowOffset} reveal={listReveal} skip={holdOpen}>
@@ -1113,6 +1146,32 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
                 style={{ paddingTop: insets.top + CROWD_TOP, paddingBottom: insets.bottom + 12 }}
                 afterWelcome={welcomeHandOff}
               />
+            ) : listReady && allMachines ? (
+              <AllMachinesList
+                header={
+                  <View>
+                    {calm ? (
+                      <>
+                        <AppUpdateSpacer header={updateHeader} headerHeight={headerHeight} />
+                        <View style={{ height: 12 }} />
+                      </>
+                    ) : (
+                      <LargeTitle
+                        scroll={scroll}
+                        title={t("mobile.agent.machines.all")}
+                        above={<AppUpdateSpacer header={updateHeader} headerHeight={headerHeight} />}
+                        accessibilityLabel={t("mobile.agent.machines.all")}
+                        onPress={() => router.push("/machines")}
+                      />
+                    )}
+                    <MachineChips />
+                  </View>
+                }
+                ownsInset={scroll.ownsInset}
+                onScroll={scroll.onScroll}
+                contentTop={scroll.ownsInset ? headerHeight : 0}
+                contentBottom={insets.bottom + HOME_SEARCH_HEIGHT + 24}
+              />
             ) : listReady ? (
               <ChatDragProvider screen={dragScreen}>
                 <Animated.FlatList
@@ -1208,6 +1267,7 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
                           </View>
                         ) : null}
                       </AgentListRowReveal>
+                      <MachineChips />
                       <PinnedAgentsGrid
                         agents={heroAgent ? pinnedAgents.filter((agent) => agent.id !== heroAgent.id) : pinnedAgents}
                         heroAgent={heroAgent}
@@ -1311,7 +1371,7 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
         {onboarding.active ? null : (
           <LargeTitleBar
             scroll={scroll}
-            title={activeServer.name}
+            title={allMachines ? t("mobile.agent.machines.all") : activeServer.name}
             blurTarget={barBlurTarget}
             // Over the backdrop the Android bar has no blur at rest: it fades in and out with the small title.
             androidSurfaceWithTitle={homeCard}

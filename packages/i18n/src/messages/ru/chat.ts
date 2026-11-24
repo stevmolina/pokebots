@@ -2,6 +2,12 @@ import type { PartialTranslation } from "../../message";
 import type { messages as source } from "../en/chat";
 
 export const messages = {
+  "chat.workers.running": "Выполняется",
+  "chat.workers.queued": "В очереди",
+  "chat.workers.runningCount": "Выполняется: {count}",
+  "chat.workers.queuedCount": "В очереди: {count}",
+  "chat.workers.showAll": "Показать все активные сеансы ({count})",
+  "chat.workers.showOne": "Свернуть до одного активного сеанса",
   "chat.activity.workingOnIt": "Работаю над этим…",
   "chat.activity.thinking": "Обдумываю…",
   "chat.activity.connectingDots": "Свожу всё воедино…",
@@ -106,6 +112,8 @@ export const messages = {
   "chat.subagents.stepCount": { one: "{count} шаг", few: "{count} шага", many: "{count} шагов", other: "{count} шага" },
   "chat.subagents.seconds": "{seconds} с",
   "chat.subagents.minutes": "{minutes} мин {seconds} с",
+  "chat.subagents.hours": "{hours} ч {minutes} мин",
+  "chat.subagents.days": "{days} д",
   "chat.subagents.open": "{title}, {state}. Открыть сбоку.",
   "chat.trace.title": "Трассировка",
   "chat.trace.search": "Искать шаги",
@@ -476,7 +484,6 @@ export const messages = {
   "chat.actions.more": "Другие действия",
   "chat.menu.reply": "Ответить",
   "chat.menu.copy": "Копировать сообщение",
-  "chat.menu.react": "Реакция",
   "chat.menu.branch": "Ответвить отсюда",
   "chat.menu.markUnread": "Не прочитано",
   "chat.menu.pin": "Закрепить",

@@ -49,7 +49,8 @@ function rememberReport(id: string | number, report: NotificationMetadata): void
  */
 function timed(data: SonnerExternalToast | undefined): SonnerExternalToast | undefined {
   if (data?.duration === undefined || data.duration <= TOAST_MAX_DURATION) return data;
-  return { ...data, duration: TOAST_MAX_DURATION, onAutoClose: data.onAutoClose ?? data.onDismiss };
+  const onAutoClose = data.onAutoClose ?? data.onDismiss;
+  return { ...data, duration: TOAST_MAX_DURATION, ...(onAutoClose === undefined ? {} : { onAutoClose }) };
 }
 type ToastContent = Parameters<typeof sonnerToast>[0];
 function timedToast(show: (message: ToastContent, data?: SonnerExternalToast) => string | number) {

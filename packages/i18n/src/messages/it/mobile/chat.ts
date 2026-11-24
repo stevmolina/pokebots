@@ -607,6 +607,14 @@ export const messages = {
   "mobile.chat.threads.main": "Chat principale",
   "mobile.chat.sessions.title": "Sessioni",
   "mobile.chat.sessions.new": "Nuova sessione",
+  "mobile.chat.sessionsTray.title": {
+    one: "{count} attiva",
+    other: "{count} attive",
+  },
+  "mobile.chat.sessionsTray.label": {
+    one: "{count} sessione attiva. Mostra o nascondi",
+    other: "{count} sessioni attive. Mostra o nascondi",
+  },
   "mobile.chat.sessions.all": "Tutte le sessioni",
   "mobile.chat.threads.branchedFrom": "Ramificato da {title}",
   "mobile.chat.threads.branchedFromDeleted": "Ramificato da un thread eliminato",

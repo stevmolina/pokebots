@@ -5,6 +5,7 @@ export * from "./app-appearance";
 export * from "./app-interface-size";
 export * from "./app-language";
 export * from "./app-logo-color";
+export * from "./computer-live-view-events";
 export * from "./ipc-acp-registry";
 export * from "./ipc-agent-access";
 export * from "./ipc-agent-admin";
