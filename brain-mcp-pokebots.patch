@@ -1,0 +1,246 @@
+diff --git a/src/auth/pokebots.ts b/src/auth/pokebots.ts
+new file mode 100644
+--- /dev/null
++++ b/src/auth/pokebots.ts
+@@ -0,0 +1,50 @@
++import { OAuthError } from '@modelcontextprotocol/server';
++import { decodeJwt, importSPKI, jwtVerify } from 'jose';
++
++const issuer = 'urn:pokebots:integrations';
++export const pokebotsScope = 'integration:use';
++
++export function isPokebotsPrincipal(id: string): boolean {
++  return id.startsWith('pokebots:');
++}
++
++export function claimsPokebotsIssuer(token: string): boolean {
++  try {
++    return decodeJwt(token).iss === issuer;
++  } catch {
++    return false;
++  }
++}
++
++export function createPokebotsVerifier(publicKeyPem: string | undefined) {
++  let key: Awaited<ReturnType<typeof importSPKI>> | undefined;
++
++  return async (token: string): Promise<{ principal: string; expiresAt: number }> => {
++    try {
++      if (!publicKeyPem) throw new Error();
++      key ??= await importSPKI(publicKeyPem.replace(/\\n/g, '\n').trim(), 'RS256');
++      const { payload } = await jwtVerify(token, key, {
++        algorithms: ['RS256'],
++        issuer,
++        audience: 'brain',
++        requiredClaims: ['sub', 'iat', 'exp', 'scope'],
++      });
++
++      const { aud, sub, iat, exp, scope, linked_workos_sub: linked } = payload;
++      const now = Math.floor(Date.now() / 1000);
++      if (
++        aud !== 'brain' || scope !== pokebotsScope ||
++        typeof sub !== 'string' || !/^pokebots:[A-Za-z0-9_-]{1,128}$(?![\s\S])/.test(sub) ||
++        typeof iat !== 'number' || !Number.isSafeInteger(iat) || iat > now ||
++        typeof exp !== 'number' || !Number.isSafeInteger(exp) || exp <= now || exp - iat > 300 ||
++        (linked !== undefined && (typeof linked !== 'string' || !/^user_[a-zA-Z0-9]+$(?![\s\S])/.test(linked)))
++      ) {
++        throw new Error();
++      }
++
++      return { principal: linked ?? sub, expiresAt: exp };
++    } catch {
++      throw new OAuthError('invalid_token', 'Invalid Pokebots integration token');
++    }
++  };
++}
+diff --git a/src/auth/workos.ts b/src/auth/workos.ts
+--- a/src/auth/workos.ts
++++ b/src/auth/workos.ts
+@@ -12,6 +12,7 @@
+ import { createRemoteJWKSet, jwtVerify, type JWTPayload } from 'jose';
+ import { OAuthError, type AuthInfo, type OAuthMetadata, type OAuthTokenVerifier } from '@modelcontextprotocol/server';
+ import { loadConfig } from '../config.js';
++import { claimsPokebotsIssuer, createPokebotsVerifier, isPokebotsPrincipal, pokebotsScope } from './pokebots.js';
+ 
+ let jwks: ReturnType<typeof createRemoteJWKSet> | undefined;
+ let metadata: OAuthMetadata | undefined;
+@@ -39,11 +40,25 @@
+   };
+ }
+ 
+-export function createTokenVerifier(): OAuthTokenVerifier {
++export function createTokenVerifier({ allowPokebots = false } = {}): OAuthTokenVerifier {
+   const config = loadConfig();
+ 
++  const verifyPokebots = createPokebotsVerifier(allowPokebots ? process.env.POKEBOTS_INTEGRATION_PUBLIC_KEY : undefined);
++
+   return {
+-    async verifyAccessToken(token: string): Promise<AuthInfo> {
++    async verifyAccessToken(token: string): Promise<BrainAuthInfo> {
++      if (claimsPokebotsIssuer(token)) {
++        const { principal, expiresAt } = await verifyPokebots(token);
++        return {
++          token,
++          clientId: 'pokebots',
++          scopes: [pokebotsScope],
++          expiresAt,
++          resource: new URL(config.mcpResourceUrl),
++          extra: { workosUserId: principal },
++        };
++      }
++
+       if (!jwks) {
+         const meta = await authorizationServerMetadata();
+         jwks = createRemoteJWKSet(new URL(meta.jwks_uri ?? `${config.authkitIssuer}/oauth2/jwks`));
+@@ -71,7 +86,9 @@
+         scope?: string;
+       };
+ 
+-      if (!claims.sub) throw new OAuthError('invalid_token', 'Token has no subject');
++      if (!claims.sub || isPokebotsPrincipal(claims.sub)) {
++        throw new OAuthError('invalid_token', 'Token has no valid WorkOS subject');
++      }
+ 
+       const info: BrainAuthInfo = {
+         token,
+diff --git a/src/index.ts b/src/index.ts
+--- a/src/index.ts
++++ b/src/index.ts
+@@ -104,7 +104,7 @@
+     }),
+   );
+ 
+-  const tokenVerifier = createTokenVerifier();
++  const tokenVerifier = createTokenVerifier({ allowPokebots: true });
+   const bearer = requireBearerAuth({
+     verifier: tokenVerifier,
+     resourceMetadataUrl: getOAuthProtectedResourceMetadataUrl(resourceUrl),
+@@ -143,7 +143,7 @@
+   // as a browser client. Only when the sessions database and a cookie secret
+   // are both configured; otherwise the server is exactly as before.
+   const web = loadWebConfig();
+-  if (web && sessionsEnabled()) mountWeb(app, web, tokenVerifier, landingRoot());
++  if (web && sessionsEnabled()) mountWeb(app, web, createTokenVerifier(), landingRoot());
+ 
+   // After every API and discovery route, so a file in site/ cannot shadow
+   // /mcp, /healthz, /readyz, /webhooks/github, or the OAuth documents.
+diff --git a/src/auth/access.ts b/src/auth/access.ts
+--- a/src/auth/access.ts
++++ b/src/auth/access.ts
+@@ -8,6 +8,7 @@
+  * without a deploy.
+  */
+ import { loadConfig } from '../config.js';
++import { isPokebotsPrincipal } from './pokebots.js';
+ import { db } from '../db/client.js';
+ import { appOctokit, githubLoginForAccountId, installationOctokit } from '../github/app.js';
+ import { resolveProfile } from '../profiles/index.js';
+@@ -44,6 +45,7 @@
+ 
+ /** The GitHub login behind a WorkOS user, via their linked GitHub identity. */
+ export async function githubLoginForWorkosUser(workosUserId: string): Promise<string | null> {
++  if (isPokebotsPrincipal(workosUserId)) return null;
+   const cached = readCache(identityCache, workosUserId);
+   if (cached !== undefined) return cached;
+ 
+diff --git a/src/auth/identity.ts b/src/auth/identity.ts
+--- a/src/auth/identity.ts
++++ b/src/auth/identity.ts
+@@ -4,6 +4,7 @@
+  * verified can open one; an unverified address gets nothing.
+  */
+ import { loadConfig } from '../config.js';
++import { isPokebotsPrincipal } from './pokebots.js';
+ 
+ export interface WorkosProfile {
+   id: string;
+@@ -15,6 +16,7 @@
+ const cache = new Map<string, { value: WorkosProfile | null; expiresAt: number }>();
+ 
+ export async function workosProfile(userId: string): Promise<WorkosProfile | null> {
++  if (isPokebotsPrincipal(userId)) return null;
+   const hit = cache.get(userId);
+   if (hit && hit.expiresAt > Date.now()) return hit.value;
+ 
+diff --git a/test/rest.test.ts b/test/rest.test.ts
+--- a/test/rest.test.ts
++++ b/test/rest.test.ts
+@@ -2,7 +2,7 @@
+ import type { Server } from 'node:http';
+ import type { AddressInfo } from 'node:net';
+ import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
+-import { exportJWK, generateKeyPair, SignJWT } from 'jose';
++import { exportJWK, exportSPKI, generateKeyPair, SignJWT } from 'jose';
+ 
+ process.env.SESSIONS_DATABASE_URL = process.env.DATABASE_URL;
+ process.env.WEB_SESSION_SECRET = 'rest-test-secret-0123456789abcdef-0123456789';
+@@ -33,7 +33,15 @@
+ let server: Server;
+ let base: string;
+ let key: Awaited<ReturnType<typeof generateKeyPair>>;
++let pokebotsKey: Awaited<ReturnType<typeof generateKeyPair>>;
+ const realFetch = globalThis.fetch;
++async function pokebotsToken(aud: string | string[], linked?: string) {
++  const now = Math.floor(Date.now() / 1000);
++  return new SignJWT({ scope: 'integration:use', linked_workos_sub: linked })
++    .setProtectedHeader({ alg: 'RS256' }).setSubject('pokebots:test_account')
++    .setIssuer('urn:pokebots:integrations').setAudience(aud)
++    .setIssuedAt(now).setExpirationTime(now + 300).sign(pokebotsKey.privateKey);
++}
+ const issuer = process.env.AUTHKIT_ISSUER!;
+ const audience = process.env.MCP_RESOURCE_URL!;
+ async function token(user = 'rest-owner', overrides: { exp?: number; aud?: string; iss?: string } = {}) {
+@@ -56,6 +64,8 @@
+ 
+ beforeAll(async () => {
+   key = await generateKeyPair('RS256');
++  pokebotsKey = await generateKeyPair('RS256');
++  vi.stubEnv('POKEBOTS_INTEGRATION_PUBLIC_KEY', (await exportSPKI(pokebotsKey.publicKey)).replace(/\n/g, '\\n'));
+   const jwk = { ...await exportJWK(key.publicKey), kid: 'rest-test', alg: 'RS256', use: 'sig' };
+   vi.stubGlobal('fetch', async (url: string | URL | Request, init?: RequestInit) => {
+     const target = String(url);
+@@ -69,7 +79,7 @@
+   });
+   request.mockImplementation(async (route: string, args: Record<string, string>) => {
+     if (route.endsWith('/collaborators/{username}')) {
+-      if (args.repo === 'alpha' && ['rest-reader', 'rest-writer'].includes(args.username!)) return { status: 204 };
++      if (args.repo === 'alpha' && ['rest-reader', 'rest-writer', 'user_TestReader'].includes(args.username!)) return { status: 204 };
+       throw Object.assign(new Error('missing'), { status: 404 });
+     }
+     if (route.endsWith('/permission')) return { data: { permission: ['rest-writer', 'rest-owner'].includes(args.username!) ? 'write' : 'read' } };
+@@ -94,10 +104,34 @@
+ });
+ afterAll(async () => {
+   if (server) await new Promise<void>((resolve) => server.close(() => resolve()));
+-  await clean(); await closeSessionsDb(); await closeDb(); vi.unstubAllGlobals();
++  await clean(); await closeSessionsDb(); await closeDb(); vi.unstubAllGlobals(); vi.unstubAllEnvs();
+ });
+ 
+ describe('REST authentication and errors', () => {
++  it('accepts native Pokebots tokens on REST and MCP and rejects other audiences', async () => {
++    const mcpPath = new URL(audience).pathname;
++    const headers = { authorization: `Bearer ${await pokebotsToken('brain')}` };
++    const response = await realFetch(`${base}/api/v1/brains`, { headers });
++    expect(response.status).toBe(200);
++    expect(await response.json()).toMatchObject({ brains: [] });
++    expect((await realFetch(`${base}${mcpPath}`, { headers })).status).toBe(405);
++
++    for (const aud of ['another-service', ['brain']]) {
++      const invalid = { authorization: `Bearer ${await pokebotsToken(aud)}` };
++      expect((await realFetch(`${base}/api/v1/brains`, { headers: invalid })).status).toBe(401);
++      expect((await realFetch(`${base}${mcpPath}`, { headers: invalid })).status).toBe(401);
++    }
++  });
++  it('uses a linked principal only within its existing brain permissions', async () => {
++    const headers = { authorization: `Bearer ${await pokebotsToken('brain', 'user_TestReader')}` };
++    const allowed = await realFetch(`${base}/api/v1/search?brain=${brain}&query=launch`, { headers });
++    expect(allowed.status).toBe(200);
++    const denied = await realFetch(`${base}/api/v1/search?brain=${otherBrain}&query=launch`, { headers });
++    expect(denied.status).toBe(404);
++    const native = { authorization: `Bearer ${await pokebotsToken('brain')}` };
++    const privateSession = await realFetch(`${base}/api/v1/sessions/show?session=rest-chat-1`, { headers: native });
++    expect(privateSession.status).toBe(422);
++  });
+   it('publishes OpenAPI without auth and describes every enabled operation', async () => {
+     const response = await realFetch(`${base}/api/v1/openapi.json`);
+     const doc = await response.json();

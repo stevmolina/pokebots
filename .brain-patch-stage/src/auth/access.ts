@@ -1,0 +1,253 @@
+/**
+ * Authorization.
+ *
+ * WorkOS answers *who this is*. The GitHub API answers *which brains they may
+ * read*. There is deliberately no second permission list in this database: a
+ * brain is a repo, and repo access is GitHub's to state. The answer is cached for
+ * a minute and re-checked on refresh, so someone removed from a repo loses access
+ * without a deploy.
+ */
+import { loadConfig } from '../config.js';
+import { isPokebotsPrincipal } from './pokebots.js';
+import { db } from '../db/client.js';
+import { appOctokit, githubLoginForAccountId, installationOctokit } from '../github/app.js';
+import { resolveProfile } from '../profiles/index.js';
+import { ToolRefusal } from '../tools/shared.js';
+import type { BrainRow } from '../types.js';
+
+/** Denied access to a brain. A ToolRefusal, so the caller reads it as a tool
+ * error and can correct the call rather than seeing a transport failure. */
+export class Forbidden extends ToolRefusal {}
+
+interface CacheEntry<T> {
+  value: T;
+  expiresAt: number;
+}
+
+const identityCache = new Map<string, CacheEntry<string | null>>();
+const accessCache = new Map<string, CacheEntry<boolean>>();
+const pushCache = new Map<string, CacheEntry<boolean>>();
+
+function readCache<T>(cache: Map<string, CacheEntry<T>>, key: string): T | undefined {
+  const hit = cache.get(key);
+  if (!hit) return undefined;
+  if (hit.expiresAt <= Date.now()) {
+    cache.delete(key);
+    return undefined;
+  }
+  return hit.value;
+}
+
+function writeCache<T>(cache: Map<string, CacheEntry<T>>, key: string, value: T, ttlMs: number): T {
+  cache.set(key, { value, expiresAt: Date.now() + ttlMs });
+  return value;
+}
+
+/** The GitHub login behind a WorkOS user, via their linked GitHub identity. */
+export async function githubLoginForWorkosUser(workosUserId: string): Promise<string | null> {
+  if (isPokebotsPrincipal(workosUserId)) return null;
+  const cached = readCache(identityCache, workosUserId);
+  if (cached !== undefined) return cached;
+
+  const config = loadConfig();
+  const response = await fetch(
+    `https://api.workos.com/user_management/users/${encodeURIComponent(workosUserId)}/identities`,
+    { headers: { Authorization: `Bearer ${config.workosApiKey}` } },
+  );
+  if (!response.ok) return writeCache(identityCache, workosUserId, null, 30_000);
+
+  const body = (await response.json()) as Array<{ idp_id?: string; provider?: string; type?: string }> | {
+    data?: Array<{ idp_id?: string; provider?: string }>;
+  };
+  const identities = Array.isArray(body) ? body : (body.data ?? []);
+  const github = identities.find((i) => /github/i.test(i.provider ?? ''));
+  if (!github?.idp_id) return writeCache(identityCache, workosUserId, null, 30_000);
+
+  const login = await githubLoginForAccountId(github.idp_id);
+  // Identity is stable; cache it longer than repo access, which is not.
+  return writeCache(identityCache, workosUserId, login, 15 * 60_000);
+}
+
+/** Does this GitHub login have read access to the brain's repo? */
+export async function canReadBrain(brain: BrainRow, githubLogin: string | null): Promise<boolean> {
+  if (!githubLogin) return false;
+  if (githubLogin.toLowerCase() === brain.owner_github_login.toLowerCase()) return true;
+  if (!brain.installation_id) return false;
+
+  const key = `${brain.id}::${githubLogin.toLowerCase()}`;
+  const cached = readCache(accessCache, key);
+  if (cached !== undefined) return cached;
+
+  const ttl = loadConfig().accessCacheTtlMs;
+  try {
+    const octokit = await installationOctokit(brain.installation_id);
+    const response = await octokit.request('GET /repos/{owner}/{repo}/collaborators/{username}', {
+      owner: brain.repo_owner,
+      repo: brain.repo_name,
+      username: githubLogin,
+    });
+    return writeCache(accessCache, key, response.status === 204, ttl);
+  } catch (error) {
+    const status = (error as { status?: number }).status;
+    if (status === 404) return writeCache(accessCache, key, false, ttl);
+    // A 403 means the App cannot answer the question, not that access exists.
+    // Fail closed and say so in the log rather than guessing.
+    console.error(
+      JSON.stringify({
+        level: 'warn',
+        at: 'access.canReadBrain',
+        brain: brain.id,
+        status,
+        message: 'collaborator check failed; denying',
+      }),
+    );
+    return writeCache(accessCache, key, false, 10_000);
+  }
+}
+
+/**
+ * Does this GitHub login have write (push) access to the brain's repo? Asked of
+ * GitHub the same way as read access, and cached for the same minute.
+ */
+export async function canWriteBrain(brain: BrainRow, githubLogin: string | null): Promise<boolean> {
+  if (!githubLogin) return false;
+  if (githubLogin.toLowerCase() === brain.owner_github_login.toLowerCase()) return true;
+  return githubSaysCanPush(brain, githubLogin);
+}
+
+/** The push question put to GitHub itself, with no owner shortcut. */
+async function githubSaysCanPush(brain: BrainRow, githubLogin: string): Promise<boolean> {
+  if (!brain.installation_id) return false;
+
+  const key = `${brain.id}::${githubLogin.toLowerCase()}`;
+  const cached = readCache(pushCache, key);
+  if (cached !== undefined) return cached;
+
+  const ttl = loadConfig().accessCacheTtlMs;
+  try {
+    const octokit = await installationOctokit(brain.installation_id);
+    const { data } = await octokit.request('GET /repos/{owner}/{repo}/collaborators/{username}/permission', {
+      owner: brain.repo_owner,
+      repo: brain.repo_name,
+      username: githubLogin,
+    });
+    // `permission` folds maintain into write; admin implies push.
+    const permission = (data as { permission?: string }).permission;
+    return writeCache(pushCache, key, permission === 'admin' || permission === 'write', ttl);
+  } catch (error) {
+    const status = (error as { status?: number }).status;
+    if (status === 404) return writeCache(pushCache, key, false, ttl);
+    console.error(
+      JSON.stringify({
+        level: 'warn',
+        at: 'access.canWriteBrain',
+        brain: brain.id,
+        status,
+        message: 'permission check failed; denying',
+      }),
+    );
+    return writeCache(pushCache, key, false, 10_000);
+  }
+}
+
+export async function getBrain(brainId: string): Promise<BrainRow | null> {
+  const { rows } = await db().query<BrainRow>('select * from brains where id = $1', [brainId]);
+  return rows[0] ?? null;
+}
+
+/** Every brain this WorkOS user may read, checked against GitHub each time. */
+export async function accessibleBrains(workosUserId: string): Promise<BrainRow[]> {
+  const login = await githubLoginForWorkosUser(workosUserId);
+  const { rows } = await db().query<BrainRow>('select * from brains order by id');
+  const allowed: BrainRow[] = [];
+  for (const brain of rows) {
+    if (brain.owner_workos_user_id === workosUserId || (await canReadBrain(brain, login))) {
+      allowed.push(brain);
+    }
+  }
+  return allowed;
+}
+
+/**
+ * Resolves the brain a call is scoped to and proves the caller may read it.
+ * Every tool goes through here; nothing else loads a brain row for a request.
+ */
+export async function requireBrain(workosUserId: string, requested?: string): Promise<BrainRow> {
+  if (requested) {
+    const brain = await getBrain(requested);
+    // Same message whether the brain is missing or merely forbidden: a caller
+    // must not be able to enumerate other tenants' brain ids.
+    const denied = new Forbidden(`No brain "${requested}" is available to you.`);
+    if (!brain) throw denied;
+    if (brain.owner_workos_user_id === workosUserId) return brain;
+    const login = await githubLoginForWorkosUser(workosUserId);
+    if (await canReadBrain(brain, login)) return brain;
+    throw denied;
+  }
+
+  const brains = await accessibleBrains(workosUserId);
+  if (brains.length === 1) return brains[0]!;
+  if (brains.length === 0) {
+    throw new Forbidden(
+      'You have no brains yet. Install the GitHub App on a markdown repo and register it as a brain.',
+    );
+  }
+  throw new Forbidden(
+    `Name a brain. Yours: ${brains.map((b) => b.id).join(', ')}.`,
+  );
+}
+
+/**
+ * requireBrain, then proves the caller may also push to the brain's repo. Used
+ * by writes that land without a pull request, such as adding a file.
+ */
+export async function requireBrainWriter(workosUserId: string, requested?: string): Promise<BrainRow> {
+  const brain = await requireBrain(workosUserId, requested);
+  if (brain.owner_workos_user_id === workosUserId) return brain;
+  const login = await githubLoginForWorkosUser(workosUserId);
+  if (await canWriteBrain(brain, login)) return brain;
+  throw new Forbidden(`You can read ${brain.id} but not write to it: adding files needs push access to its repo.`);
+}
+
+/**
+ * Is this caller the brain's owner? The registered WorkOS user, or the GitHub
+ * login the brain was registered under (case-insensitive), the same two ways
+ * the read and write checks above recognise an owner.
+ */
+export function isBrainOwner(brain: BrainRow, workosUserId: string, githubLogin: string | null): boolean {
+  if (brain.owner_workos_user_id === workosUserId) return true;
+  return !!githubLogin && githubLogin.toLowerCase() === brain.owner_github_login.toLowerCase();
+}
+
+/**
+ * May this write skip the pull request and commit straight to the default
+ * branch? Only when the brain's profile turns direct writes on, the caller is
+ * its owner, and GitHub itself says the caller's own login can push right now.
+ * The last check skips the owner shortcut on purpose: the owner columns are a
+ * registration-time snapshot, and an unreviewed commit to main should rest on
+ * what GitHub says today. Anything else gets a pull request.
+ */
+export async function directWriteAllowed(
+  brain: BrainRow,
+  workosUserId: string,
+  githubLogin: string | null,
+): Promise<boolean> {
+  if (!resolveProfile(brain.profile).directWrites) return false;
+  if (!githubLogin || !isBrainOwner(brain, workosUserId, githubLogin)) return false;
+  return githubSaysCanPush(brain, githubLogin);
+}
+
+/** Clears the caches. Used by offboarding, so revocation is immediate. */
+export function clearAccessCaches(brainId?: string): void {
+  if (!brainId) {
+    accessCache.clear();
+    pushCache.clear();
+    identityCache.clear();
+    return;
+  }
+  for (const cache of [accessCache, pushCache]) {
+    for (const key of cache.keys()) if (key.startsWith(`${brainId}::`)) cache.delete(key);
+  }
+}
+
+export { appOctokit };
