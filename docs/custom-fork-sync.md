@@ -50,7 +50,7 @@ Remove the aliases once no open branch imports `@openbot/`.
 
 ### New "OpenBot" references
 
-`bun run check:openbot-references` (the CI step "Check new OpenBot references") fails a pull request that
+`bun run check:openbot-references` (the CI step "Check for the old product name") fails a pull request that
 adds the word "OpenBot" or an `@openbot/` import to first-party code. It reads only the added lines, and
 `scripts/openbot-references-allowlist.json` lists the released identities that may keep the old name:
 data paths, keychain names, wire values, history and legal files. An `@openbot/` import is only a warning

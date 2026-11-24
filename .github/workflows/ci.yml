@@ -151,9 +151,9 @@ jobs:
         if: env.CODE == 'true'
         run: bun run check:migrations
 
-      # Fails when the pull request adds a new "OpenBot" word or `@openbot/` scope to first-party code.
+      # Fails when the pull request adds the old product name or `@openbot/` scope to first-party code.
       # The label `allow-openbot-references` skips it, for a pull request that brings upstream text on purpose.
-      - name: Check new OpenBot references
+      - name: Check for the old product name
         if: github.event_name == 'pull_request' && env.CODE == 'true' && !contains(github.event.pull_request.labels.*.name, 'allow-openbot-references')
         run: bun run check:openbot-references
 
