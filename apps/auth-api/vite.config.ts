@@ -126,6 +126,7 @@ function accountBrandPlugins(): Plugin[] {
   const siteMetadata = fileURLToPath(new URL("./src/lib/site-metadata.ts", import.meta.url));
   const explicitBrand = readBrandSettings(process.env);
   const webClientSource = fileURLToPath(new URL("../../src/renderer/src/features/web-client/", import.meta.url));
+  const catalogSource = fileURLToPath(new URL("../../packages/i18n/src/messages/", import.meta.url));
   const sharedDisplayModules = new Set(
     [
       "../../packages/brand/src/pokebots-avatar.ts",
@@ -140,7 +141,13 @@ function accountBrandPlugins(): Plugin[] {
       const path = id.split("?")[0];
       // The Docker build opts in to its existing canonical URL. Other account builds keep theirs.
       if (!path || (path.startsWith(accountSource) && !(explicitBrand && path === siteMetadata))) return null;
-      if (!explicitBrand && !path.startsWith(webClientSource) && !sharedDisplayModules.has(path)) return null;
+      if (
+        !explicitBrand &&
+        ![webClientSource, catalogSource].some((root) => path.startsWith(root)) &&
+        !sharedDisplayModules.has(path)
+      ) {
+        return null;
+      }
       return plugin.transform.call(this, code, id);
     },
     ...(explicitBrand ? { writeBundle: plugin.writeBundle } : {}),
