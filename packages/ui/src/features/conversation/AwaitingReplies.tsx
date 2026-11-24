@@ -35,6 +35,11 @@ export interface AwaitingReplyListProps {
   items: readonly AwaitingReplyItem[];
   /** The header text. The default is "Waiting for replies". */
   title?: string | undefined;
+  /**
+   * The header text when every row failed, so no answer comes. The default is "No replies".
+   * A channel sets it for its sub-tasks. When some rows replied, the header shows the failed count.
+   */
+  failedTitle?: string | undefined;
   /** The list starts collapsed when this is false. */
   defaultOpen?: boolean;
   /** Hides the block. It has a close button only when this is set and no agent still works. */
@@ -82,6 +87,23 @@ function AwaitingReplyList(props: AwaitingReplyListProps) {
   const [open, setOpen] = createSignal(untrack(() => props.defaultOpen ?? true));
   const total = () => props.items.length;
   const done = () => props.items.filter((item) => item.state === "replied").length;
+  const failed = () => props.items.filter((item) => item.state === "failed").length;
+  // Every agent replied or failed, so nothing more comes for these rows.
+  const settled = () => props.items.every((item) => item.state === "replied" || item.state === "failed");
+  // A failed row never counts as done, so a settled list with a failure names it in the header.
+  const allFailed = () => settled() && failed() === total();
+  const someFailed = () => settled() && failed() > 0 && !allFailed();
+  const title = () => {
+    if (allFailed()) return props.failedTitle ?? t("chat.awaiting.titleFailed");
+    if (someFailed()) return t("chat.awaiting.titlePartial", { failed: failed() });
+    return props.title ?? t("chat.awaiting.title");
+  };
+  const summary = () =>
+    settled() && failed() > 0
+      ? t("chat.awaiting.summaryFailed", { failed: failed(), total: total() })
+      : t("chat.awaiting.summary", { done: done(), total: total() });
+  // Nothing replied and nothing will, so "0/1" would say that an answer is still due.
+  const count = () => (allFailed() ? "" : t("chat.awaiting.count", { done: done(), total: total() }));
   // A wait comes before work, because the work cannot go on until the wait ends.
   const active = () => {
     const waiting = props.items.find((entry) => entry.wait);
@@ -123,8 +145,6 @@ function AwaitingReplyList(props: AwaitingReplyListProps) {
     if ((item.state !== "asked" && item.state !== "working") || !stop) return undefined;
     return () => stop(item.id);
   };
-  // Every agent replied or failed, so nothing more comes for these rows.
-  const settled = () => props.items.every((item) => item.state === "replied" || item.state === "failed");
   return (
     <section
       style={{ "--task-list-play-state": playState() }}
@@ -138,10 +158,10 @@ function AwaitingReplyList(props: AwaitingReplyListProps) {
           panelId={panelId}
           done={done()}
           total={total()}
-          title={props.title ?? t("chat.awaiting.title")}
+          title={title()}
           active={active()}
-          summary={t("chat.awaiting.summary", { done: done(), total: total() })}
-          count={t("chat.awaiting.count", { done: done(), total: total() })}
+          summary={summary()}
+          count={count()}
         />
         <Show when={settled() && props.onDismiss}>
           {(dismiss) => (

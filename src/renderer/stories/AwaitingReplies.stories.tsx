@@ -56,6 +56,38 @@ export const OneFailed: Story = {
   },
 };
 
+/** Every awaited reply failed. The header says so, the count is gone, and the block has a close button. */
+export const AllFailed: Story = {
+  args: {
+    onDismiss: fn(),
+    items: [
+      { id: "reply-research", agent: research, name: research.name, state: "failed" },
+      { id: "reply-sales", agent: sales, name: sales.name, state: "failed" },
+    ],
+  },
+};
+
+/** Nothing works any more and one reply failed. The header names the failure and the count stays. */
+export const SomeFailed: Story = {
+  args: {
+    onDismiss: fn(),
+    items: [
+      { ...researchReplied, detail: "Chief reads it next" },
+      { id: "reply-sales", agent: sales, name: sales.name, state: "failed" },
+    ],
+  },
+};
+
+/** Every awaited sub-task of a channel failed. */
+export const ChannelSubtasksFailed: Story = {
+  args: {
+    title: "Waiting for sub-tasks",
+    failedTitle: "Sub-tasks failed",
+    onDismiss: fn(),
+    items: [{ id: "task-research", agent: research, name: research.name, state: "failed" }],
+  },
+};
+
 /** Every agent is done, so the block has a close button. */
 export const AllReplied: Story = {
   args: {

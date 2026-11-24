@@ -117,6 +117,10 @@ import { BROWSING_MEMORY_CAPABILITY } from "@openbot/contracts/team-protocol/bro
 import { CHANNEL_ROUTES } from "@openbot/contracts/team-protocol/channels-v1";
 import { CHAT_HISTORY_CAPABILITY, CHAT_HISTORY_ROUTES } from "@openbot/contracts/team-protocol/chat-history-v1";
 import {
+  COMPUTER_LIVE_VIEW_CAPABILITY,
+  COMPUTER_LIVE_VIEW_ROUTE,
+} from "@openbot/contracts/team-protocol/computer-live-view-v1";
+import {
   COMPUTER_MANAGEMENT_CAPABILITY,
   COMPUTER_MANAGEMENT_ROUTE,
 } from "@openbot/contracts/team-protocol/computer-management-v1";
@@ -202,6 +206,7 @@ import {
   STORAGE_USER_FILES_ROUTES,
 } from "@openbot/contracts/team-protocol/storage-user-files-v1";
 import { STORAGE_ROUTES } from "@openbot/contracts/team-protocol/storage-v1";
+import { THREAD_AUTO_ARCHIVE_CAPABILITY } from "@openbot/contracts/team-protocol/thread-auto-archive-v1";
 import { USAGE_CREDITS_CAPABILITY } from "@openbot/contracts/team-protocol/usage-credits-v1";
 import type { TeamProtocolV1Capability } from "@openbot/contracts/team-protocol/v1";
 import type { TeamProtocolV2Json } from "@openbot/contracts/team-protocol/v2";
@@ -260,6 +265,7 @@ import {
   getHostPersonality,
   getHostReleaseStatus,
   getHostSkillLearning,
+  getHostThreadAutoArchive,
   getHostTimezone,
   getHostUpdateStatus,
   getRoutineResultDestination,
@@ -323,6 +329,7 @@ import {
   setHostMemoryReview,
   setHostPersonality,
   setHostSkillLearning,
+  setHostThreadAutoArchive,
   setHostTimezone,
   setHostUpdateSettings,
   setMcpServerEnabled,
@@ -535,6 +542,8 @@ type HostRequestActions = Pick<
   | "setSkillLearning"
   | "loadHomeAgentRules"
   | "setHomeAgentRules"
+  | "loadThreadAutoArchive"
+  | "setThreadAutoArchive"
   | "loadBrowsingMemory"
   | "setBrowsingMemory"
   | "loadServerPersonality"
@@ -717,6 +726,7 @@ export function createHostRequestChecks(capabilities: ServerCapabilities): HostR
   return {
     canSearchFiles: (serverId) => has(serverId, CONVERSATION_FILE_SEARCH_CAPABILITY),
     canUsePokebotsIntegrations: (serverId: string) => has(serverId, POKEBOTS_INTEGRATIONS_CAPABILITY),
+    servesComputerLiveView: (serverId: string) => has(serverId, COMPUTER_LIVE_VIEW_CAPABILITY),
     canUseRooms: (serverId) => has(serverId, ROOMS_CAPABILITY) || has(serverId, POKEBOTS_INTEGRATIONS_CAPABILITY),
     canUseBrain: (serverId) => has(serverId, BRAIN_CAPABILITY) || has(serverId, POKEBOTS_INTEGRATIONS_CAPABILITY),
     canUseTasks: (serverId) => has(serverId, AGENT_TASKS_CAPABILITY),
@@ -856,6 +866,8 @@ export function createHostRequestActions({
     capabilityApi(serverId, SKILL_LEARNING_CAPABILITY, "mobile.server.settings.learningUnsupported");
   const homeAgentRulesAdmin = (serverId: string) =>
     capabilityApi(serverId, HOME_AGENT_RULES_CAPABILITY, "error.team.homeAgentRulesUnsupported");
+  const threadAutoArchiveAdmin = (serverId: string) =>
+    capabilityApi(serverId, THREAD_AUTO_ARCHIVE_CAPABILITY, "error.team.threadAutoArchiveUnsupported");
   const browsingMemoryAdmin = (serverId: string) =>
     capabilityApi(serverId, BROWSING_MEMORY_CAPABILITY, "mobile.server.settings.learningUnsupported");
   /** Any member reads the personality; the host lets only an owner or admin set it. */
@@ -954,10 +966,13 @@ export function createHostRequestActions({
             ? POKEBOTS_INTEGRATIONS_CAPABILITY
             : path === COMPUTER_MANAGEMENT_ROUTE
               ? COMPUTER_MANAGEMENT_CAPABILITY
-              : AGENT_COMPUTER_CAPABILITY,
+              : path === COMPUTER_LIVE_VIEW_ROUTE
+                ? COMPUTER_LIVE_VIEW_CAPABILITY
+                : AGENT_COMPUTER_CAPABILITY,
           "mobile.server.cloudComputers.unavailable",
         )(method, path, decode, body),
       checks.canUsePokebotsIntegrations,
+      checks.servesComputerLiveView,
     ),
     // Async, so a host without the capability rejects the promise and does not throw at the call.
     restartServerItself: async (serverId) => runTeamRequest(requestHostRestart(restartAdmin(serverId))),
@@ -975,6 +990,10 @@ export function createHostRequestActions({
     loadHomeAgentRules: async (serverId) => runTeamRequest(getHostHomeAgentRules(homeAgentRulesAdmin(serverId))),
     setHomeAgentRules: async (preference, serverId) =>
       runTeamRequest(setHostHomeAgentRules(homeAgentRulesAdmin(serverId), preference)),
+    loadThreadAutoArchive: async (serverId) =>
+      runTeamRequest(getHostThreadAutoArchive(threadAutoArchiveAdmin(serverId))),
+    setThreadAutoArchive: async (setting, serverId) =>
+      runTeamRequest(setHostThreadAutoArchive(threadAutoArchiveAdmin(serverId), setting)),
     loadBrowsingMemory: async (serverId) => runTeamRequest(getHostBrowsingMemory(browsingMemoryAdmin(serverId))),
     setBrowsingMemory: async (enabled, serverId) =>
       runTeamRequest(setHostBrowsingMemory(browsingMemoryAdmin(serverId), enabled)),

@@ -1,3 +1,5 @@
+import "./service-endpoint-environment";
+
 import { uptime } from "node:os";
 import { join, resolve } from "node:path";
 import { parseInviteUrl, selfHostedApiOrigin } from "@openbot/contracts/invite-links";
@@ -928,6 +930,7 @@ function registerIpcHandlers({
   promptCacheTtl,
   claudeUserSetup,
   homeAgentRules,
+  threadAutoArchive,
   claudeAiTools,
   claudeCompactWindow,
   providerEnvironment,
@@ -1197,6 +1200,7 @@ function registerIpcHandlers({
       promptCacheTtl,
       claudeUserSetup,
       homeAgentRules,
+      threadAutoArchive,
       claudeAiTools,
       claudeCompactWindow,
       providerEnvironment,
@@ -1289,7 +1293,7 @@ function requestDesktopNotificationPermission(
       preference,
       showWelcome: () => {
         if (!Notification.isSupported()) return;
-        showRetainedNotification(new Notification({ title: "OpenBot", body: translate("notification.welcome") }));
+        showRetainedNotification(new Notification({ title: "Pokebots", body: translate("notification.welcome") }));
       },
     }),
   );

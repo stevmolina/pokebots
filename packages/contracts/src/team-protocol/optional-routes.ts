@@ -61,6 +61,7 @@ import { CLAUDE_AI_TOOLS_CODECS } from "./claude-ai-tools-v1";
 import { CLAUDE_COMPACT_WINDOW_CODECS } from "./claude-compact-window-v1";
 import { CLAUDE_USER_SETUP_CODECS } from "./claude-user-setup-v1";
 import { COMPUTER_ACTIVITY_CODECS } from "./computer-activity-v1";
+import { COMPUTER_LIVE_VIEW_CODECS } from "./computer-live-view-v1";
 import { COMPUTER_MANAGEMENT_CODECS } from "./computer-management-v1";
 import { CONNECTORS_CODECS } from "./connectors-v1";
 import { CONTEXT_COMPACT_CODECS } from "./context-compact-v1";
@@ -161,6 +162,7 @@ import { SKILLS_ADMIN_CODECS } from "./skills-admin-v1";
 import { STORAGE_CHANNEL_CODECS } from "./storage-channel-v1";
 import { STORAGE_DISK_CODECS } from "./storage-disk-v1";
 import { STORAGE_USER_FILES_CODECS } from "./storage-user-files-v1";
+import { THREAD_AUTO_ARCHIVE_CODECS } from "./thread-auto-archive-v1";
 import { THREAD_MESSAGE_SEARCH_CODECS } from "./thread-message-search-v1";
 import { USAGE_CREDITS_CODECS } from "./usage-credits-v1";
 import { VAULT_IMPORT_CODECS } from "./vault-import-v1";
@@ -266,6 +268,7 @@ const CODECS: ReadonlyMap<string, OptionalRouteCodec> = new Map([
   ...ROUTINE_RUN_COMMAND_CODECS,
   ...CLAUDE_USER_SETUP_CODECS,
   ...HOME_AGENT_RULES_CODECS,
+  ...THREAD_AUTO_ARCHIVE_CODECS,
   ...CLAUDE_AI_TOOLS_CODECS,
   ...ARTIFACT_REQUEST_CODECS,
   ...MESSAGE_QUEUE_ONLY_CODECS,
@@ -312,6 +315,7 @@ const CODECS: ReadonlyMap<string, OptionalRouteCodec> = new Map([
   ...BITWARDEN_CONNECTOR_CODECS,
   ...AGENT_COMPUTER_CODECS,
   ...COMPUTER_MANAGEMENT_CODECS,
+  ...COMPUTER_LIVE_VIEW_CODECS,
   ...ROOMS_CODECS,
   ...POKEBOTS_INTEGRATIONS_CODECS,
   ...BROWSER_COLOR_SCHEME_CODECS,

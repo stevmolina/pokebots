@@ -61,7 +61,7 @@ export function formatConnectionLog(
   context: { now: number; userAgent: string; build: string },
 ): string {
   const lines = [
-    "OpenBot web connection log",
+    "Pokebots web connection log",
     `taken: ${new Date(context.now).toISOString()}`,
     `build: ${context.build}`,
     `device: ${context.userAgent}`,

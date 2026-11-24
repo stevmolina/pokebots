@@ -8,13 +8,14 @@ import type { ConversationProps } from "./conversation-types";
 
 export interface ComputerLiveViewChatCardProps {
   machineId: string;
-  /** Absent for a person who may not manage the server's cloud computers. */
+  /** Absent where this person cannot open live views: a member on a host without `computer-live-view-v1`. */
   onOpenLiveView?: ConversationProps["onOpenComputerLiveView"];
 }
 
 /**
  * The card of a cloud computer that an agent started. Open live view asks the server for the link only
- * at the press, through the owner or admin machine list, and opens it. The link is never kept here.
+ * at the press, and the server answers it only to a person who may open that machine. The link is never
+ * kept here.
  */
 export function ComputerLiveViewChatCard(props: ComputerLiveViewChatCardProps) {
   const { t } = useText();

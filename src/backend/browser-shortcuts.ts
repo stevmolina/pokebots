@@ -116,7 +116,7 @@ export interface ChatContextMenuParams {
  * entry. Anywhere else keeps no menu, so the window does not pop a menu with nothing useful in it.
  */
 /** An http or https address: the only links that the built-in browser opens from the menu. */
-export function webPageLink(url: string): boolean {
+function webPageLink(url: string): boolean {
   const page = URL.parse(url);
   return page?.protocol === "http:" || page?.protocol === "https:";
 }

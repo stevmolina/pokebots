@@ -26,7 +26,7 @@ const BRANDED_MANIFEST_KEYS = new Set(["name", "short_name", "description"]);
  */
 export function webServiceWorker(env: Readonly<Record<string, string | undefined>> = process.env): Plugin {
   const brand = readBrandSettings(env);
-  const appName = brand?.name ?? "OpenBot";
+  const appName = brand?.name ?? "Pokebots";
   const workerSource = (template: string, buildId: string, assetPaths: readonly string[]) =>
     // Function replacers, so that a `$` in a value is not read as a replacement pattern.
     template

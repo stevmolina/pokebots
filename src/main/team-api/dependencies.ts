@@ -73,6 +73,7 @@ import type {
   SidebarLayoutSnapshot,
   SidebarPin,
   SidebarPinsSnapshot,
+  TeamMemberSummary,
   TeamPresenceSnapshot,
   UpdateHostIdentityInput,
   VoiceLiveEvent,
@@ -112,6 +113,7 @@ import type { RemoteComputerHost } from "../remote-computer-host";
 import type { RemoteScreenGateway } from "../remote-screen-gateway";
 import type { SignInRelayHost } from "../sign-in-relay-host";
 import type { TeamStore } from "../team-store";
+import type { ThreadAutoArchiveControl } from "../thread-auto-archive";
 import type { VaultService } from "../vault-service";
 
 type TeamApiAgentMethods = Pick<
@@ -617,6 +619,8 @@ export interface TeamApiAdmin {
   /** `claude-user-setup-v1`: whether this computer's Claude agents load the Claude Code setup of its user. */
   claudeUserSetup?: ClaudeUserSetupControl;
   homeAgentRules?: HomeAgentRulesControl;
+  /** `thread-auto-archive-v1`: when this computer archives the side threads of its agents by itself. */
+  threadAutoArchive?: ThreadAutoArchiveControl;
   /** `claude-ai-tools-v1`: whether this computer's Claude agents get the claude.ai tools of its Claude sign-in. */
   claudeAiTools?: ClaudeAiToolsControl;
   /** `claude-compact-window-v1`: the size at which Claude Code compacts the chats of this computer's agents. */
@@ -763,6 +767,15 @@ export type TeamApiAgentComputer = Pick<
   "status" | "connect" | "test" | "disconnect" | "machines" | "manage"
 >;
 
+/**
+ * `computer-live-view-v1`: the live view link of one machine for the member who asks. The host decides
+ * who may open which machine (`computerLiveViewUrl`).
+ */
+export type TeamApiComputerLiveView = (
+  member: TeamMemberSummary,
+  machineId: string,
+) => Effect.Effect<string | null, { readonly cause: unknown }>;
+
 /** `bitwarden-connector-v1`: the Bitwarden connection of this host, by an API key and the master password. */
 export type TeamApiBitwardenConnector = Pick<BitwardenConnectorService, "status" | "connectWithApiKey" | "disconnect">;
 
@@ -807,6 +820,8 @@ export interface TeamApiOptions {
   rooms?: RoomsService;
   pokebotsIntegrations?: PokebotsIntegrationRoutes;
   agentComputer?: TeamApiAgentComputer | undefined;
+  /** `computer-live-view-v1`: the live view link of one machine that this member may open, or null. */
+  computerLiveView?: TeamApiComputerLiveView | undefined;
   passwordManagers?: TeamApiPasswordManagers | undefined;
   vault?: TeamApiVault | undefined;
   providerHostSignIns?: TeamApiProviderHostSignIns | undefined;

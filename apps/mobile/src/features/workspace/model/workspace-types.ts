@@ -152,6 +152,7 @@ import type {
   StartWhatsAppLinkInput,
   StorageDisk,
   StorageUsage,
+  ThreadAutoArchiveSetting,
   UninstallSkillInput,
   UpdateAgentAdminSettingsInput,
   UpdateAgentBackupModelsInput,
@@ -568,6 +569,10 @@ export interface MobileWorkspaceContextValue {
   canManageHomeAgentRules: (serverId: string) => boolean;
   loadHomeAgentRules: (serverId: string) => Promise<HomeAgentRulesSetting>;
   setHomeAgentRules: (preference: HomeAgentRulesPreference, serverId: string) => Promise<HomeAgentRulesSetting>;
+  /** An owner or admin of an online host that serves `thread-auto-archive-v1`. The host checks the role again. */
+  canManageThreadAutoArchive: (serverId: string) => boolean;
+  loadThreadAutoArchive: (serverId: string) => Promise<ThreadAutoArchiveSetting>;
+  setThreadAutoArchive: (setting: ThreadAutoArchiveSetting, serverId: string) => Promise<ThreadAutoArchiveSetting>;
   canManageBrowsingMemory: (serverId: string) => boolean;
   /** "Learn from my browsing". Off deletes what the host recorded. */
   loadBrowsingMemory: (serverId: string) => Promise<HostBrowsingMemory>;
@@ -1134,6 +1139,11 @@ export interface MobileWorkspaceContextValue {
   searchFiles: (query: string, serverId: string, cursor?: string) => Promise<ConversationFileSearchPage>;
   /** True when the host advertises `agent-tasks-v1`. A member who can message an agent can use its tasks. */
   canUsePokebotsIntegrations: (serverId: string) => boolean;
+  /**
+   * True when the host advertises `computer-live-view-v1`: any member asks it for the live view link of
+   * a chat card's machine, and it answers only for a machine that the member may open.
+   */
+  servesComputerLiveView: (serverId: string) => boolean;
   canUseRooms: (serverId: string) => boolean;
   canUseBrain: (serverId: string) => boolean;
   /** True when the host advertises agent-tasks-v1. */
@@ -1335,6 +1345,7 @@ export type MobileWorkspaceCapabilityCheck =
   | "canInstallAgentTemplate"
   | "canSearchFiles"
   | "canUsePokebotsIntegrations"
+  | "servesComputerLiveView"
   | "canUseRooms"
   | "canUseBrain"
   | "canUseTasks"
@@ -1367,6 +1378,7 @@ type ServerCheckKey =
   | "canManageMemoryReview"
   | "canManageSkillLearning"
   | "canManageHomeAgentRules"
+  | "canManageThreadAutoArchive"
   | "canManageBrowsingMemory"
   | "canManageServerPersonality"
   | "servesServerPersonality"
@@ -1435,6 +1447,7 @@ type MobileWorkspaceStateKey =
   | "activeServer"
   | "activeAgents"
   | "hiddenAgents"
+  | "hiddenAgentIdsByServer"
   | "pinnedAgentIds"
   | "pinnedChannelIds"
   | "pinnedWorkflowIds"

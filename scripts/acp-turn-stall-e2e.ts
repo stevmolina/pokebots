@@ -36,6 +36,8 @@ const STALL_MS = 1_500;
 const TOOL_MS = STALL_MS * 3;
 const CHUNK_GAP_MS = 500;
 const FIRST_UPDATE_MS = 1_000;
+/** The grace of a stop that the agent ignores. The default, 10 s, made each stop case wait 10 s. */
+const STOP_GRACE_MS = 1_000;
 /** The stall limit of the retry cases: long enough for a margin of 400 ms around each notice. */
 const RETRY_STALL_MS = 4_000;
 /** OpenCode's wait before a model retry, just over the plain stall limit, as OpenBot measures it. */
@@ -98,6 +100,7 @@ async function open(
     argv: ["acp"],
     env: {},
     signInMessage: "Sign in to the fake agent.",
+    stopGraceMs: STOP_GRACE_MS,
     ...(turnStallMs !== null ? { turnStallMs } : {}),
     ...(customEndpoint ? { customEndpoint } : {}),
     ...(firstUpdateMs ? { firstUpdateMs } : {}),

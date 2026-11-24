@@ -76,6 +76,7 @@ import { CLAUDE_API_KEY_CAPABILITY } from "@openbot/contracts/team-protocol/clau
 import { CLAUDE_COMPACT_WINDOW_CAPABILITY } from "@openbot/contracts/team-protocol/claude-compact-window-v1";
 import { CLAUDE_USER_SETUP_CAPABILITY } from "@openbot/contracts/team-protocol/claude-user-setup-v1";
 import { CODEX_API_KEY_CAPABILITY } from "@openbot/contracts/team-protocol/codex-api-key-v1";
+import { COMPUTER_LIVE_VIEW_CAPABILITY } from "@openbot/contracts/team-protocol/computer-live-view-v1";
 import { COMPUTER_MANAGEMENT_CAPABILITY } from "@openbot/contracts/team-protocol/computer-management-v1";
 import { CRM_CAPABILITY } from "@openbot/contracts/team-protocol/crm-v1";
 import {
@@ -266,6 +267,7 @@ import { withSkillSuggestionNames } from "@openbot/contracts/team-protocol/skill
 import { STORAGE_CHANNEL_CAPABILITY } from "@openbot/contracts/team-protocol/storage-channel-v1";
 import { STORAGE_DISK_CAPABILITY } from "@openbot/contracts/team-protocol/storage-disk-v1";
 import { STORAGE_USER_FILES_CAPABILITY } from "@openbot/contracts/team-protocol/storage-user-files-v1";
+import { THREAD_AUTO_ARCHIVE_CAPABILITY } from "@openbot/contracts/team-protocol/thread-auto-archive-v1";
 import {
   TEAM_UI_BLOCK_AUTO_ANSWER_CAPABILITY,
   withUiBlockAutoAnswers,
@@ -479,6 +481,7 @@ import { routeSkillSuggestionSave } from "./team-api/route-skill-suggestion-save
 import { routeSkillsAdmin } from "./team-api/route-skills-admin";
 import { routeStorage } from "./team-api/route-storage";
 import { routeTeam } from "./team-api/route-team";
+import { routeThreadAutoArchive } from "./team-api/route-thread-auto-archive";
 import { routeThreadMessageSearch } from "./team-api/route-thread-message-search";
 import { routeUsageCredits } from "./team-api/route-usage-credits";
 import { routeVault } from "./team-api/route-vault";
@@ -1321,7 +1324,10 @@ export class TeamApiServer {
       if ((await routeBitwardenConnector(context, this.#options.bitwardenConnector)) === "handled") return;
       if ((await routePokebotsIntegrations(context, this.#options.pokebotsIntegrations)) === "handled") return;
       if ((await routeRooms(context, this.#options.rooms)) === "handled") return;
-      if ((await routeAgentComputer(context, this.#options.agentComputer)) === "handled") return;
+      if (
+        (await routeAgentComputer(context, this.#options.agentComputer, this.#options.computerLiveView)) === "handled"
+      )
+        return;
       if ((await routePasswordManagers(context, this.#options.passwordManagers)) === "handled") return;
       if ((await routeVault(context, this.#options.vault)) === "handled") return;
       if ((await routeVaultImport(context, this.#options.vault)) === "handled") return;
@@ -1449,6 +1455,7 @@ export class TeamApiServer {
       if ((await routePromptCacheTtl(context, this.#options.admin)) === "handled") return;
       if ((await routeClaudeUserSetup(context, this.#options.admin)) === "handled") return;
       if ((await routeHomeAgentRules(context, this.#options.admin)) === "handled") return;
+      if ((await routeThreadAutoArchive(context, this.#options.admin)) === "handled") return;
       if ((await routeClaudeAiTools(context, this.#options.admin)) === "handled") return;
       if ((await routeClaudeCompactWindow(context, this.#options.admin)) === "handled") return;
       if ((await routeProviderEnvironment(context, this.#options.admin)) === "handled") return;
@@ -2959,6 +2966,7 @@ export class TeamApiServer {
         if (capability === ROOMS_CAPABILITY) return this.#options.rooms !== undefined;
         if (capability === COMPUTER_MANAGEMENT_CAPABILITY || capability === AGENT_COMPUTER_CAPABILITY)
           return this.#options.agentComputer !== undefined;
+        if (capability === COMPUTER_LIVE_VIEW_CAPABILITY) return this.#options.computerLiveView !== undefined;
         if (capability === PASSWORD_MANAGERS_CAPABILITY) return this.#options.passwordManagers !== undefined;
         if (capability === VAULT_CAPABILITY) return this.#options.vault !== undefined;
         if (capability === BROWSER_SECRET_VAULT_CAPABILITY) return this.#options.vault !== undefined;
@@ -3088,6 +3096,7 @@ export class TeamApiServer {
         if (capability === PROMPT_CACHE_TTL_CAPABILITY) return this.#options.admin?.promptCacheTtl !== undefined;
         if (capability === CLAUDE_USER_SETUP_CAPABILITY) return this.#options.admin?.claudeUserSetup !== undefined;
         if (capability === HOME_AGENT_RULES_CAPABILITY) return this.#options.admin?.homeAgentRules !== undefined;
+        if (capability === THREAD_AUTO_ARCHIVE_CAPABILITY) return this.#options.admin?.threadAutoArchive !== undefined;
         if (capability === CLAUDE_AI_TOOLS_CAPABILITY) return this.#options.admin?.claudeAiTools !== undefined;
         if (capability === CLAUDE_COMPACT_WINDOW_CAPABILITY)
           return this.#options.admin?.claudeCompactWindow !== undefined;

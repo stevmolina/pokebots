@@ -127,6 +127,7 @@ import type {
 import {
   agentBrowserProfile,
   type ChannelCommand,
+  canAdministerServer,
   DEFAULT_APP_LANGUAGE,
   DEFAULT_DYNAMIC_ISLAND_PREFERENCE,
   decodeChannel,
@@ -254,6 +255,7 @@ import {
   createClaudeUserSetupPreferenceStore,
 } from "./claude-user-setup-preference-store";
 import { createComputerIdle } from "./computer-idle";
+import { computerLiveViewUrl } from "./computer-live-view";
 import {
   type ComputerUseActorDirectory,
   cachedComputerUseActorLabels,
@@ -487,6 +489,13 @@ import { TeamWebRtcBridge } from "./team-webrtc-bridge";
 import { TeamWebRtcClientTransport } from "./team-webrtc-client-transport";
 import type { TeardownRegistry } from "./teardown-registry";
 import { THEME_PALETTE_DIRECTORY } from "./theme-palette-files";
+import {
+  createThreadAutoArchiveControl,
+  developmentDurationMs,
+  GitHubPullRequestStates,
+  type ThreadAutoArchiveControl,
+  ThreadAutoArchiveScheduler,
+} from "./thread-auto-archive";
 import { TraceFile } from "./trace-file";
 import {
   macShipItDirectory,
@@ -562,6 +571,7 @@ const SERVER_PERSONALITY_PREFERENCE_FILE = "openbot-server-personality-v1.json";
 const PROMPT_CACHE_TTL_PREFERENCE_FILE = "openbot-prompt-cache-ttl-v1.json";
 const CLAUDE_USER_SETUP_PREFERENCE_FILE = "openbot-claude-user-setup-v1.json";
 const HOME_AGENT_RULES_PREFERENCE_FILE = "openbot-home-agent-rules-v1.json";
+const THREAD_AUTO_ARCHIVE_PREFERENCE_FILE = "openbot-thread-auto-archive-v1.json";
 const CLAUDE_AI_TOOLS_PREFERENCE_FILE = "openbot-claude-ai-tools-v1.json";
 const CRM_PREFERENCE_FILE = "openbot-crm-v1.json";
 const CLAUDE_COMPACT_WINDOW_PREFERENCE_FILE = "openbot-claude-compact-window-v1.json";
@@ -686,6 +696,8 @@ const TEARDOWN_ORDER = {
   bitwardenConnector: 106.5,
   // Before the agent service. It holds no file an agent reads; only a CLI run that waits is stopped.
   passwordManagers: 106.75,
+  // Before the GitHub connection and the agent service: a sweep reads both.
+  threadAutoArchive: 106.9,
   // Before the agent service, so no agent is handed a token file that is being removed.
   githubConnector: 107,
   // Before the agent service, so no payment wait outlives the agents that asked for it.
@@ -843,6 +855,7 @@ export interface ApplicationServices {
   promptCacheTtl: PromptCacheTtlPreferenceStore;
   claudeUserSetup: ClaudeUserSetupControl;
   homeAgentRules: HomeAgentRulesControl;
+  threadAutoArchive: ThreadAutoArchiveControl;
   claudeAiTools: ClaudeAiToolsControl;
   claudeCompactWindow: ClaudeCompactWindowControl;
   providerEnvironment: ProviderEnvironmentControl;
@@ -1673,6 +1686,9 @@ export async function createApplicationServices({
     join(app.getPath("userData"), CLAUDE_USER_SETUP_PREFERENCE_FILE),
   );
   const homeAgentRules = createHomeAgentRulesControl(join(app.getPath("userData"), HOME_AGENT_RULES_PREFERENCE_FILE));
+  const threadAutoArchive = createThreadAutoArchiveControl(
+    join(app.getPath("userData"), THREAD_AUTO_ARCHIVE_PREFERENCE_FILE),
+  );
   const claudeAiTools = createClaudeAiToolsPreferenceStore(
     join(app.getPath("userData"), CLAUDE_AI_TOOLS_PREFERENCE_FILE),
   );
@@ -1725,6 +1741,7 @@ export async function createApplicationServices({
       promptCacheTtl.load(),
       claudeUserSetup.load(),
       homeAgentRules.load(),
+      threadAutoArchive.load(),
       claudeAiTools.load(),
       crmPreference.load(),
       claudeCompactWindow.load(),
@@ -2635,13 +2652,7 @@ export async function createApplicationServices({
     agentComputerKey: () => agentComputer.key(),
     agentComputerConnected: () =>
       agentComputer.key() !== null || currentIntegrationCredential(centralAuth, "computer") !== undefined,
-    agentComputerCredential: (memberId) => {
-      if (host.conversationSender()?.id === memberId) return currentIntegrationCredential(centralAuth, "computer");
-      const member = teamStore.memberAccounts().find((candidate) => candidate.memberId === memberId);
-      return member && joinedIntegrationAccess && centralAuth.integrationAccountsAvailable()
-        ? joinedIntegrationAccess.credentialForMember(member, { audience: "computer" })
-        : undefined;
-    },
+    agentComputerCredential: (memberId) => memberComputerCredential(memberId),
     agentApiKeys,
     localSkillTools: () => localSkillTools(skills),
     browserProfiles: () => agentBrowserProfiles,
@@ -2691,6 +2702,25 @@ export async function createApplicationServices({
     tables,
   });
   teardown.push(TEARDOWN_ORDER.service, "the agent service", () => runCauseEffect(service.stop()));
+  /*
+   * The host archives the idle side threads of its agents by itself, also for the members of a joined
+   * server. A development build can shorten the idle time and the interval, so a check does not wait for days.
+   */
+  const devThreadIdleMs = appVariant === "dev" ? developmentDurationMs(process.env.OPENBOT_DEV_THREAD_IDLE_MS) : null;
+  const devThreadSweepMs = appVariant === "dev" ? developmentDurationMs(process.env.OPENBOT_DEV_THREAD_SWEEP_MS) : null;
+  const threadAutoArchiveScheduler = new ThreadAutoArchiveScheduler({
+    preference: () => threadAutoArchive.get(),
+    sweep: (policy) => service.autoArchiveThreads(policy),
+    pullRequests: new GitHubPullRequestStates({
+      connectionToken: () => githubConnector.accessToken().pipe(Effect.orElseSucceed(() => null)),
+    }),
+    ...(devThreadIdleMs === null ? {} : { idleMs: devThreadIdleMs }),
+    ...(devThreadSweepMs === null ? {} : { intervalMs: devThreadSweepMs }),
+  });
+  threadAutoArchiveScheduler.start();
+  teardown.push(TEARDOWN_ORDER.threadAutoArchive, "the automatic thread archive", () =>
+    Effect.runPromise(threadAutoArchiveScheduler.close()),
+  );
   // The next turn of each agent uses the instructions of the new personality.
   serverPersonality.onChange(() => service.responseStyleChanged());
   hostTurnLimits.onChange(() => service.turnLimitsChanged());
@@ -3764,6 +3794,18 @@ export async function createApplicationServices({
     new URL(centralAuthApiUrl()).origin === "https://api.pokebots.xyz"
       ? new JoinedIntegrationAccess(teamStore, centralAuth, centralAuthApiUrl(), accountServiceFetch)
       : null;
+  /**
+   * The Pokebots account credential of a person for Agent Computer: this computer's own signed-in
+   * person, or a joined member through their integration grant. The tool router starts an
+   * account-scoped machine with it, and the live view route lists that person's machines with it.
+   */
+  function memberComputerCredential(memberId: string) {
+    if (host.conversationSender()?.id === memberId) return currentIntegrationCredential(centralAuth, "computer");
+    const member = teamStore.memberAccounts().find((candidate) => candidate.memberId === memberId);
+    return member && joinedIntegrationAccess && centralAuth.integrationAccountsAvailable()
+      ? joinedIntegrationAccess.credentialForMember(member, { audience: "computer" })
+      : undefined;
+  }
   // Small copies of image attachments, for the cards of the Workflows canvas here and on joined clients.
   const attachmentPreviews = new AttachmentPreviews(join(app.getPath("userData"), "attachment-previews"));
   const host = new HostService({
@@ -3816,6 +3858,14 @@ export async function createApplicationServices({
     rooms,
     // Present, so the host advertises `agent-computer-v1`. An owner or admin connects it with an API key.
     agentComputer,
+    // Present, so the host advertises `computer-live-view-v1`: the Open live view button of a chat card.
+    // An owner or admin opens the key's machines; each member opens the machines of their own account.
+    computerLiveView: (member, machineId) =>
+      computerLiveViewUrl(
+        agentComputer.api,
+        { canAdminister: canAdministerServer(member.role), credential: memberComputerCredential(member.id) },
+        machineId,
+      ),
     // Present, so the host advertises `password-managers-v1`. An owner or admin connects Proton Pass
     // with a sign-in on the host or with an agent access key. The routes are admin-only.
     passwordManagers,
@@ -3949,6 +3999,7 @@ export async function createApplicationServices({
       promptCacheTtl,
       claudeUserSetup: claudeUserSetupSetting,
       homeAgentRules,
+      threadAutoArchive,
       claudeAiTools: claudeAiToolsSetting,
       claudeCompactWindow: claudeCompactWindowSetting,
       providerEnvironment: providerEnvironmentSetting,
@@ -5138,6 +5189,7 @@ export async function createApplicationServices({
     promptCacheTtl,
     claudeUserSetup: claudeUserSetupSetting,
     homeAgentRules,
+    threadAutoArchive,
     claudeAiTools: claudeAiToolsSetting,
     claudeCompactWindow: claudeCompactWindowSetting,
     providerEnvironment: providerEnvironmentSetting,

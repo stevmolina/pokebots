@@ -417,7 +417,7 @@ async function runChecks(browser: Browser, base: string, setSuffix: (value: stri
       await push("this is not json");
       const second = await notifications();
       assert.ok(
-        second.some((item) => item.title === "OpenBot" && item.tag === ""),
+        second.some((item) => item.title === "Pokebots" && item.tag === ""),
         "no generic notification for a bad payload",
       );
       await push(JSON.stringify({ v: 2, title: "Future", body: "x", path: "/app" }));

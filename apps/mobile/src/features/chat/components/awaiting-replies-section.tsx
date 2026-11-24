@@ -54,19 +54,24 @@ export function AwaitingRepliesSection({
     agents.find((candidate) => candidate.id === agentId)?.name ?? t("mobile.chat.queue.replyAgentFallback");
   // The rows list a wait first, so the first row names the teammate that needs the person.
   const needsYou = rows[0]?.wait ? rows[0] : undefined;
+  // A failed row never replies, so a settled list with a failure says so in place of "Waiting".
+  const failed = rows.filter((row) => row.state === "failed").length;
+  const allFailed = !pending && failed === rows.length;
+  const settledTitle = allFailed
+    ? t("mobile.chat.queue.repliesFailedTitle")
+    : !pending && failed > 0
+      ? t("mobile.chat.queue.repliesPartialTitle", { failed })
+      : t("mobile.chat.queue.repliesTitle");
+  const footer = allFailed
+    ? t("mobile.chat.queue.repliesFailedFooter", { name })
+    : pending
+      ? t("mobile.chat.queue.repliesWaitForAll", { name })
+      : t("mobile.chat.queue.repliesReadNext", { name });
   return (
     <>
       <SettingsSection
-        title={
-          needsYou
-            ? t("mobile.chat.queue.repliesNeedsYou", { name: agentName(needsYou.agentId) })
-            : t("mobile.chat.queue.repliesTitle")
-        }
-        footer={
-          pending
-            ? t("mobile.chat.queue.repliesWaitForAll", { name })
-            : t("mobile.chat.queue.repliesReadNext", { name })
-        }
+        title={needsYou ? t("mobile.chat.queue.repliesNeedsYou", { name: agentName(needsYou.agentId) }) : settledTitle}
+        footer={footer}
       >
         {rows.map((row) => {
           const agent = agents.find((candidate) => candidate.id === row.agentId);

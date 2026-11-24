@@ -88,6 +88,8 @@ export const messages = {
     "Esta conexión no puede mostrar las solicitudes de un hilo lateral a otros agentes.",
   "error.team.hostTurnLimitsUnsupported":
     "Esta conexión no puede mostrar ni cambiar los límites de hilos del servidor.",
+  "error.team.threadAutoArchiveUnsupported": "Este servidor no admite el archivo automático de hilos.",
+  "error.team.threadAutoArchiveInvalid": "El ajuste de archivo automático de hilos no es válido.",
   "error.team.usageLimitUnsupported": "Esta conexión no puede mostrar ni cambiar los límites de uso de los agentes.",
   "error.team.hermesImportUnsupported": "Esta conexión no puede importar perfiles de Hermes desde el servidor.",
   "error.team.providerDetectionUnsupported":

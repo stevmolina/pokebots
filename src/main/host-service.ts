@@ -138,6 +138,7 @@ interface HostServiceOptions {
   rooms?: ForwardedApiOptions["rooms"];
   pokebotsIntegrations?: ForwardedApiOptions["pokebotsIntegrations"];
   agentComputer?: ForwardedApiOptions["agentComputer"];
+  computerLiveView?: ForwardedApiOptions["computerLiveView"];
   passwordManagers?: ForwardedApiOptions["passwordManagers"];
   vault?: ForwardedApiOptions["vault"];
   providerHostSignIns?: ForwardedApiOptions["providerHostSignIns"];
@@ -515,6 +516,7 @@ export class HostService extends EventEmitter<HostEvents> {
       ...(options.rooms === undefined ? {} : { rooms: options.rooms }),
       ...(options.pokebotsIntegrations ? { pokebotsIntegrations: options.pokebotsIntegrations } : {}),
       ...(options.agentComputer === undefined ? {} : { agentComputer: options.agentComputer }),
+      ...(options.computerLiveView === undefined ? {} : { computerLiveView: options.computerLiveView }),
       ...(options.passwordManagers === undefined ? {} : { passwordManagers: options.passwordManagers }),
       ...(options.vault === undefined ? {} : { vault: options.vault }),
       ...(options.providerHostSignIns === undefined ? {} : { providerHostSignIns: options.providerHostSignIns }),
@@ -1123,7 +1125,7 @@ export class HostService extends EventEmitter<HostEvents> {
     // change starts the next route sync, so the host is not made a second time here.
     if (this.#boundAccountId !== this.#signedInAccountId()) return;
     if (!this.#options.store.configured) {
-      yield* this.configure({ serverName: "OpenBot" }, true);
+      yield* this.configure({ serverName: "Pokebots" }, true);
       return;
     }
     const register = this.#options.registerRemoteHost;

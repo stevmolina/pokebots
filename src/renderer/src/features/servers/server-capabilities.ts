@@ -28,6 +28,7 @@ export function serverSupportsCapability(
     (capability === "pokebots-integrations-v1" ||
       capability === "rooms-v1" ||
       capability === "home-agent-rules-v1" ||
+      capability === "thread-auto-archive-v1" ||
       capability === "brain-v1" ||
       capability === "remote-desktop-setup" ||
       capability === "channel-chats-v1" ||
@@ -55,6 +56,7 @@ export function serverSupportsCapability(
       capability === "onepassword-connector-v1" ||
       capability === "bitwarden-connector-v1" ||
       capability === "agent-computer-v1" ||
+      capability === "computer-live-view-v1" ||
       capability === "password-managers-v1" ||
       capability === "whatsapp-connector-v1" ||
       capability === "vault-v1" ||

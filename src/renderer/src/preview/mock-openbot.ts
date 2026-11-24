@@ -103,6 +103,7 @@ import {
   DEFAULT_REMOTE_NETWORK_ROUTE,
   DEFAULT_REMOTE_SESSION_REUSE_PREFERENCE,
   DEFAULT_SKILL_LEARNING_MODE,
+  DEFAULT_THREAD_AUTO_ARCHIVE,
   DEFAULT_TRANSPARENT_WINDOW,
   type DirectConversationSnapshot,
   type DirectMessageRealtimeEvent,
@@ -159,6 +160,7 @@ import {
   parseBrowserProxyAddress,
   parseProviderModelVisibilityChange,
   parseSetMcpAccessInput,
+  parseThreadAutoArchiveSetting,
   providerEnvironmentProblem,
   type QueueDelivery,
   type QueuedMessageReceipt,
@@ -187,6 +189,7 @@ import {
   type SteerQueuedMessageInput,
   sameCustomProviderOrigin,
   type TeamPresenceSnapshot,
+  type ThreadAutoArchiveSetting,
   type UpdateAgentInput,
   type UpdatePreference,
   type UpdateQueuedMessageInput,
@@ -550,6 +553,7 @@ export function createMockOpenBot(options: MockOpenBotOptions = {}): MockOpenBot
   let machineAlerts: MachineAlertSettings = { ...DEFAULT_MACHINE_ALERT_SETTINGS, diskPercent: 80 };
   let promptCacheTtl: PromptCacheTtlSetting = { ...DEFAULT_PROMPT_CACHE_TTL };
   let homeAgentRules: HomeAgentRulesSetting = { enabled: false, files: [], availableFiles: ["agents.md", "proof.md"] };
+  let threadAutoArchive: ThreadAutoArchiveSetting = { ...DEFAULT_THREAD_AUTO_ARCHIVE };
   let claudeUserSetup: ClaudeUserSetupSetting = { ...DEFAULT_CLAUDE_USER_SETUP };
   let claudeAiTools: ClaudeAiToolsSetting = { ...DEFAULT_CLAUDE_AI_TOOLS };
   let claudeCompactWindow: ClaudeCompactWindowSetting = { ...DEFAULT_CLAUDE_COMPACT_WINDOW };
@@ -3854,6 +3858,11 @@ export function createMockOpenBot(options: MockOpenBotOptions = {}): MockOpenBot
         return clone(promptCacheTtl);
       },
       // Preview has one host, so every server shares one switch.
+      getThreadAutoArchive: async () => clone(threadAutoArchive),
+      setThreadAutoArchive: async (setting) => {
+        threadAutoArchive = parseThreadAutoArchiveSetting(setting);
+        return clone(threadAutoArchive);
+      },
       getHomeAgentRules: async () => clone(homeAgentRules),
       setHomeAgentRules: async (preference) => {
         homeAgentRules = { ...homeAgentRules, ...preference };

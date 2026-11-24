@@ -105,7 +105,12 @@ function outcomeToast(kind: "error" | "warning") {
   return (message: Parameters<typeof sonnerToast>[0], options?: ExternalToast) => {
     const { report, error, fallback, ...data } = options ?? {};
     const given = data.description;
-    if (kind === "error" && mutedError(message, given)) return data.id ?? "muted-error";
+    // The words of `error` count too, for a toast that shows them under its own title.
+    const errorWords =
+      error !== undefined && given === undefined && fallback !== undefined
+        ? currentText().errorMessage(error, fallback)
+        : undefined;
+    if (kind === "error" && mutedError(message, given ?? errorWords)) return data.id ?? "muted-error";
     if (error !== undefined) data.description = withReference(error, data.description, fallback);
     if (kind === "error" && data.action === undefined) {
       const action = actionForError(message, given);

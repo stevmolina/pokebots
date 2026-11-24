@@ -597,11 +597,11 @@ export function WorkspaceConversation(props: { account: () => CentralAuthUser; o
             setSkillsMarketplaceOpen(true);
           };
         })()}
-        // The cloud computer card reads the live view link from the owner or admin machine list, as
-        // Machines does, and opens it with the shell. A member gets no button.
+        // The cloud computer card asks main for the live view link at the press and opens it with the
+        // shell. Main asks this computer's service or the joined host, which decides who may open it.
         onOpenComputerLiveView={computerLiveViewOpener(
           activeServer(),
-          (serverId) => appPort().agentComputer.machines(serverId),
+          (machineId, serverId) => appPort().agentComputer.liveView(machineId, serverId),
           openWithShell((url) => appPort().openUrl(url)),
         )}
         mcpSignedIn={(mcpServerId) => {

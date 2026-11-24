@@ -5,8 +5,8 @@ description: Open a pull request for a finished branch and squash-merge it to ma
 
 # Ship
 
-Use the verification already done for the change. Merge low-risk changes as soon as GitHub
-permits it. PR CI and automated reviews are background feedback.
+Use the verification already done for the change. Turn on auto-merge for low-risk changes. GitHub merges them when the required check
+passes. Automated reviews are background feedback.
 
 1. Read `AGENTS.md` and the instructions for changed directories. Check `git status` and
    `git branch --show-current`. Work on a branch separate from `main`.
@@ -20,11 +20,19 @@ permits it. PR CI and automated reviews are background feedback.
    `gh pr view <pr> --json state,isDraft,mergeable,headRefOid`. If GitHub reports
    `CONFLICTING`, merge `origin/main` into the branch, resolve the conflict and push.
    If GitHub reports `UNKNOWN`, query again when it has calculated the merge state.
-5. Merge the reviewed head with `gh pr merge <pr> --squash --match-head-commit <head-sha>`.
-   Pending checks, failed advisory checks and automated review status do not hold up the
-   merge. If GitHub refuses the merge, report the reason. Do not use `--admin`, force-push
-   or change branch protection.
-6. Check `gh pr view <pr> --json state,mergeCommit` for `MERGED`. Report the PR, merge commit
+5. Turn on auto-merge for the reviewed head:
+   `gh pr merge <pr> --squash --auto --match-head-commit <head-sha>`. `main` requires the
+   check `All required checks pass`, and GitHub merges when it passes. Automated reviews do
+   not hold up the merge. Do not use `--admin`, force-push or change branch protection.
+6. Do not wait for CI in a foreground loop (`sleep`, `until`, repeated `gh pr checks`).
+   Start one background command, `gh pr checks <pr> --watch --fail-fast --interval 30`, or
+   `watch_pull_request` in T3. Then continue other work or end the turn. The end of the
+   watch wakes you.
+7. When a required check fails, read `gh run view <run> --log-failed`, fix the cause and push.
+   For a flaky job, use `gh run rerun <run> --failed` one time. When the failure is in files
+   that the PR does not change, it comes from `main`: fix `main` in a separate PR. Do not
+   ask the user to merge with a failed required check.
+8. Check `gh pr view <pr> --json state,mergeCommit` for `MERGED`. Report the PR, merge commit
    and verification. Follow the after-merge instructions in `AGENTS.md` for app changes.
 
 Ask before merging changes that can lose user data, expose secrets or be hard to reverse.

@@ -1295,7 +1295,7 @@ export function configureApplicationMenu(
             },
           },
           { type: "separator" },
-          { role: "hide" },
+          { role: "hide", label: "Hide Pokebots" },
           { role: "hideOthers" },
           { role: "unhide" },
           { type: "separator" },

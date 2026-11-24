@@ -5,7 +5,7 @@ import tailwindcss from "@tailwindcss/vite";
 import { tanstackStart } from "@tanstack/solid-start/plugin/vite";
 import { defineConfig, type Plugin } from "vite";
 import { lazyLanguageCatalogs } from "../../packages/i18n/src/vite-plugin";
-import { brandPlugins } from "../../scripts/brand-layer";
+import { BRAND_NAME_ENV, brandPlugins, readBrandSettings } from "../../scripts/brand-layer";
 import { tailwindPropertyFallbackRemoval } from "../../scripts/tailwind-property-fallback";
 import { scopedPseudoElementReset, webClientStylesheet } from "../../scripts/web-stylesheet";
 import { contentImages } from "./content-images";
@@ -82,8 +82,7 @@ export default defineConfig(({ command }) => {
       allowedHosts: [".openbot.localhost", ".trycloudflare.com"],
     },
     plugins: [
-      // Empty unless `OPENBOT_BRAND_NAME` is set: the product name of a self-hosted Worker.
-      ...brandPlugins(fileURLToPath(new URL("../..", import.meta.url))),
+      ...accountBrandPlugins(),
       developmentLanGuard(),
       developmentApnsProxy(),
       ...(selfHosted
@@ -120,6 +119,40 @@ export default defineConfig(({ command }) => {
     ],
   };
 });
+
+function accountBrandPlugins(): Plugin[] {
+  const root = fileURLToPath(new URL("../..", import.meta.url));
+  const accountSource = fileURLToPath(new URL("./src/", import.meta.url));
+  const siteMetadata = fileURLToPath(new URL("./src/lib/site-metadata.ts", import.meta.url));
+  const explicitBrand = readBrandSettings(process.env);
+  const webClientSource = fileURLToPath(new URL("../../src/renderer/src/features/web-client/", import.meta.url));
+  const catalogSource = fileURLToPath(new URL("../../packages/i18n/src/messages/", import.meta.url));
+  const sharedDisplayModules = new Set(
+    [
+      "../../packages/brand/src/pokebots-avatar.ts",
+      "../../packages/ui/src/features/account/AccountLogin.tsx",
+      "../../packages/ui/src/features/account/LanguageWheel.tsx",
+    ].map((path) => fileURLToPath(new URL(path, import.meta.url))),
+  );
+  return brandPlugins(root, { ...process.env, [BRAND_NAME_ENV]: explicitBrand?.name ?? "Pokebots" }).map((plugin) => ({
+    name: plugin.name,
+    enforce: plugin.enforce,
+    transform(code, id) {
+      const path = id.split("?")[0];
+      // The Docker build opts in to its existing canonical URL. Other account builds keep theirs.
+      if (!path || (path.startsWith(accountSource) && !(explicitBrand && path === siteMetadata))) return null;
+      if (
+        !explicitBrand &&
+        ![webClientSource, catalogSource].some((root) => path.startsWith(root)) &&
+        !sharedDisplayModules.has(path)
+      ) {
+        return null;
+      }
+      return plugin.transform.call(this, code, id);
+    },
+    ...(explicitBrand ? { writeBundle: plugin.writeBundle } : {}),
+  }));
+}
 
 /**
  * The route tree and the parts of each route that are not split off (`head`, `loader`): the browser
