@@ -205,12 +205,11 @@ export const LITERAL_RULES: readonly LiteralRule[] = [
 ];
 
 /**
- * Modules outside the catalogs whose string values are all branded: the email that the Worker sends,
- * the errors of shared links, and plugin descriptions. Their only "OpenBot" strings are text that a
+ * Modules outside the catalogs whose string values are all branded: shared link errors and plugin
+ * descriptions. Their only "OpenBot" strings are text that a
  * reader sees, never a path, a header or an identifier.
  */
 export const BRANDED_MODULES: readonly string[] = [
-  "apps/auth-api/src/server/email-templates.ts",
   "packages/contracts/src/invite-links.ts",
   "packages/contracts/src/marketplace-links.ts",
   "packages/contracts/src/plugin-links.ts",
