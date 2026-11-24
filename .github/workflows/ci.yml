@@ -150,13 +150,36 @@ jobs:
         if: env.CODE == 'true'
         run: bun run check:migrations
 
-      # The desktop check (about 85 s) and the translation check (about 100 s) are the two long steps,
-      # so they run side by side.
+      # The desktop check and the released schema check are the two long steps, so they run side by
+      # side. The translation check and the ratchets run in `catalogs`, on their own runner: on one
+      # runner with 4 vCPUs, the three long checks together took longer than two runners.
       - parallel:
           - name: Check desktop application
             if: env.CODE == 'true'
             run: bun run check:desktop:static
 
+          # Fails after a release that changed the database schema until `releases.json` has it. It
+          # takes about 50 s, so it runs only when the database code changes: a new migration must be
+          # tested from every released schema. The history step gets the commits for `git archive`.
+          - name: Check released database schemas
+            if: needs.detect.result != 'success' || needs.detect.outputs.schema == 'true'
+            run: bun scripts/released-schema-fixtures.ts --check
+
+  catalogs:
+    # Split from `Check` for time: these checks read only the working tree, not the git history.
+    name: Catalogs and ratchets
+    needs: detect
+    if: ${{ !cancelled() && (needs.detect.result != 'success' || needs.detect.outputs.code == 'true') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Bun
+        uses: ./.github/actions/setup-bun
+
+      - parallel:
           - name: Check translation catalogs
             if: env.CODE == 'true'
             run: bun run i18n:check
@@ -176,13 +199,6 @@ jobs:
           - name: Check minimum app versions
             if: env.CODE == 'true'
             run: bun run check:app-minimum-version
-
-          # Fails after a release that changed the database schema until `releases.json` has it. It
-          # takes about 50 s, so it runs only when the database code changes: a new migration must be
-          # tested from every released schema. The history step gets the commits for `git archive`.
-          - name: Check released database schemas
-            if: needs.detect.result != 'success' || needs.detect.outputs.schema == 'true'
-            run: bun scripts/released-schema-fixtures.ts --check
 
   browser:
     # The smoke test starts the real Electron binary and opens windows, so it
@@ -1469,7 +1485,7 @@ jobs:
     # fails this one.
     name: All required checks pass
     if: always()
-    needs: [detect, check, browser, tests-desktop, signal-e2e, automation-cli-e2e, team-api-routes-e2e, reverse-actions-e2e, provider-fakes-e2e, surfaces, mobile-share-sender-e2e, mobile-ota-e2e, api, storybook]
+    needs: [detect, check, catalogs, browser, tests-desktop, signal-e2e, automation-cli-e2e, team-api-routes-e2e, reverse-actions-e2e, provider-fakes-e2e, surfaces, mobile-share-sender-e2e, mobile-ota-e2e, api, storybook]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -1496,7 +1512,7 @@ jobs:
     # `apps/auth-api`, which `api` already covers: mobile, the site router, the
     # team client and the remote stack all consume the account API, so a red
     # Surfaces is the signal that this deploy is the thing about to break them.
-    needs: [check, browser, tests-desktop, signal-e2e, automation-cli-e2e, team-api-routes-e2e, reverse-actions-e2e, provider-fakes-e2e, api, storybook, surfaces, mobile-share-sender-e2e]
+    needs: [check, catalogs, browser, tests-desktop, signal-e2e, automation-cli-e2e, team-api-routes-e2e, reverse-actions-e2e, provider-fakes-e2e, api, storybook, surfaces, mobile-share-sender-e2e]
     runs-on: ubuntu-latest
     timeout-minutes: 15
     environment: cloudflare-production

@@ -96,7 +96,8 @@ Its main jobs are:
 
 | Job | Runner | Commands |
 | --- | --- | --- |
-| Check | `ubuntu-latest` | `bun run knip:check`, `bun run check:assets`, `bun run check:doc-links`, `bun run check:migrations`, then `bun run check:desktop:static`, `bun run i18n:check`, `bun run types:ratchet`, `bun run check:agent-context`, `bun scripts/whats-new-translations.ts` and the minimum app version and released schema checks in parallel |
+| Check | `ubuntu-latest` | `bun run knip:check`, `bun run check:assets`, `bun run check:doc-links`, `bun run check:migrations`, then `bun run check:desktop:static` and the released schema check in parallel |
+| Catalogs and ratchets | `ubuntu-latest` | `bun run i18n:check`, `bun run types:ratchet`, `bun run check:agent-context`, `bun scripts/whats-new-translations.ts` and `bun run check:app-minimum-version` in parallel, when code changes |
 | Browser smoke (1/2, 2/2) | `ubuntu-latest` | Part 1: `xvfb-run -a bun run test:browser`. Part 2: `test:browser-agent-session` first, then `test:browser-steps`, `test:browser-dialogs`, `test:browser-fingerprint` and `test:browser-ambiguous-targets` |
 | Tests (desktop 1/2, 2/2) | `ubuntu-latest` | `bun run test:desktop -- --shard=<n>/2` |
 | Signal E2E | `ubuntu-latest` | `bun run test:signal`, when `remote/` or `scripts/` changes |
@@ -111,8 +112,8 @@ Its main jobs are:
 CI uses native GitHub Actions `parallel` groups. Each group waits for all its steps and fails
 if a step fails. The steps have separate logs. The groups run in this order:
 
-- `Check` runs `check:desktop:static`, the translation checks and the TypeScript ratchet together.
-  They retain the `CODE` condition, so Markdown-only changes run only the link check after setup.
+- `Check` runs `check:desktop:static` and the released schema check together, and `Catalogs and
+  ratchets` runs its five checks together. They retain the `CODE` condition, so Markdown-only changes run only the link check after setup.
   The desktop build still completes before `verify:preload`.
 - Each `Browser smoke` part completes checkout, then runs `Set up Bun` and virtual-display installation
   together. The smoke test starts only after both succeed.
