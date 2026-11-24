@@ -42,10 +42,12 @@ import {
   editorTextOffset,
   insertLineBreak,
   insertPlainText,
+  mapSerializedOffset,
   mentionTokenAtCaretBoundary,
   placeCaretAtChildOffset,
   placeCaretAtEnd,
   placeSerializedCaret,
+  placeSerializedSelection,
   rangeFromTextOffsets,
   readEditorSelection,
   restoreEditorSelection,
@@ -178,6 +180,7 @@ interface ComposerEditorProps {
 }
 
 export type { ComposerPasteResult, ComposerSelection } from "./composer-dom";
+export { changedRange } from "./composer-dom";
 
 export interface QuoteRequest {
   id: number;
@@ -606,10 +609,12 @@ export function ComposerEditor(props: ComposerEditorProps) {
       const editorChanges = contentChanged || tagsChange;
       // Only a change of the editor's content can move its caret or scroll position. A read of either
       // lays out the page, and this effect runs for each list that loads while a conversation opens.
-      const selection =
-        editorChanges && !draftChanged && editor.ownerDocument.activeElement === editor
-          ? readEditorSelection(editor)
-          : null;
+      const focused = !draftChanged && editor.ownerDocument.activeElement === editor;
+      const selection = editorChanges && focused ? readEditorSelection(editor) : null;
+      // A text change from outside, such as a pasted file that lands while the person types, can add text
+      // before the caret. The caret then moves with the text it was in, not to the same visible offset.
+      const textBefore = focused && value !== lastEmittedValue ? serializeEditor(editor) : null;
+      const serializedSelection = textBefore === null ? null : serializedEditorSelection(editor);
       const scrollTop = draftChanged ? 0 : editorChanges ? editor.scrollTop : null;
       const focusRequested = focusRequest > lastFocusRequest;
       if (draftChanged) savedCaret = null;
@@ -630,7 +635,13 @@ export function ComposerEditor(props: ComposerEditorProps) {
         if (mcpChanged) syncMcpTokens(editor, mcpServers);
         if (referencesChanged) syncReferenceTokens(editor, browserTabs, threads);
       }
-      if (selection) {
+      if (textBefore !== null && serializedSelection) {
+        placeSerializedSelection(editor, {
+          start: mapSerializedOffset(textBefore, value, serializedSelection.start),
+          end: mapSerializedOffset(textBefore, value, serializedSelection.end),
+        });
+        scheduleCaretScroll();
+      } else if (selection) {
         restoreEditorSelection(editor, selection);
         scheduleCaretScroll();
       }
@@ -1152,6 +1163,7 @@ export function ComposerEditor(props: ComposerEditorProps) {
         if (!surface?.isConnected || editor !== surface || props.agentId !== agentId || props.value !== result.value)
           return;
         if (surface.ownerDocument.activeElement !== surface) return;
+        if (result.caret === undefined) return;
         placeSerializedCaret(surface, result.caret);
         scheduleCaretScroll();
       });

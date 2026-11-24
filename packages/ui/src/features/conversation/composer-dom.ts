@@ -13,10 +13,27 @@ export interface ComposerSelection {
 
 export interface ComposerPasteResult {
   value: string;
-  caret: number;
+  /** Undefined when the person typed during the paste: their caret stays where it is. */
+  caret?: number | undefined;
 }
 
 export function placeSerializedCaret(editor: HTMLDivElement, position: number): void {
+  placeSerializedSelection(editor, { start: position, end: position });
+}
+
+/** Selects the serialized offsets `selection` of the draft in the editor. */
+export function placeSerializedSelection(editor: HTMLDivElement, selection: ComposerSelection): void {
+  const start = visibleOffset(editor, selection.start);
+  const end = selection.end === selection.start ? start : visibleOffset(editor, selection.end);
+  const range = rangeFromTextOffsets(editor, start, end);
+  if (!range) return;
+  const nativeSelection = editor.ownerDocument.getSelection();
+  nativeSelection?.removeAllRanges();
+  nativeSelection?.addRange(range);
+}
+
+/** The visible text offset of the serialized offset `position`, where each inline token counts once. */
+function visibleOffset(editor: HTMLDivElement, position: number): number {
   let remaining = position;
   let visible = 0;
   for (const segment of editorSegments(editor)) {
@@ -29,11 +46,29 @@ export function placeSerializedCaret(editor: HTMLDivElement, position: number): 
     remaining -= serializedLength;
     visible += text ? serializedLength : 1;
   }
-  const range = rangeFromTextOffsets(editor, visible, visible);
-  if (!range) return;
-  const selection = editor.ownerDocument.getSelection();
-  selection?.removeAllRanges();
-  selection?.addRange(range);
+  return visible;
+}
+
+/**
+ * Moves the serialized offset `position` of `before` through the change to `after`: an edit after it
+ * keeps it, an edit before it shifts it, and an edit across it puts it at the end of the new text.
+ */
+export function mapSerializedOffset(before: string, after: string, position: number): number {
+  const { prefix, suffix } = changedRange(before, after);
+  if (position <= prefix) return position;
+  if (position >= before.length - suffix) return position + after.length - before.length;
+  return after.length - suffix;
+}
+
+/** The lengths of the start and end that `before` and `after` share. The edit is between them. */
+export function changedRange(before: string, after: string): { prefix: number; suffix: number } {
+  const shorter = Math.min(before.length, after.length);
+  let prefix = 0;
+  while (prefix < shorter && before[prefix] === after[prefix]) prefix += 1;
+  let suffix = 0;
+  while (suffix < shorter - prefix && before[before.length - 1 - suffix] === after[after.length - 1 - suffix])
+    suffix += 1;
+  return { prefix, suffix };
 }
 
 /** Offsets in the serialized draft, including the complete identity of each inline token. */

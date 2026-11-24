@@ -15,6 +15,7 @@ import { ComposerEditor } from "@pokebots/ui/features/conversation/ComposerEdito
 import { createSignal } from "solid-js";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
+import { insertAtSelection } from "../src/features/conversation/composer-draft";
 import desktopScreenshot from "./assets/remote-desktop-mac-mock.png";
 import { STORY_AGENTS } from "./fixtures";
 
@@ -73,6 +74,8 @@ function Composer(props: {
   uploads?: ComposerUploadFile[];
   text: string;
   width: string;
+  /** A paste of a file lands after this delay, as an upload over the network does. */
+  pasteDelayMs?: number;
 }) {
   const [attachments, setAttachments] = createSignal(props.attachments);
   // Retry starts the file again with no bytes reported; remove drops it.
@@ -112,6 +115,22 @@ function Composer(props: {
             disabled={false}
             onValueChange={setValue}
             onSubmit={fn()}
+            onPasteFiles={
+              props.pasteDelayMs === undefined
+                ? undefined
+                : async (files, selection) => {
+                    const before = value();
+                    await new Promise((resolve) => setTimeout(resolve, props.pasteDelayMs));
+                    const added = files.map((file, index) =>
+                      image(`pasted-${Date.now()}-${index}`, desktopScreenshot, file.name || "image.png"),
+                    );
+                    setAttachments((current) => [...current, ...added]);
+                    const inserted = added.map((file) => serializeAttachmentReference(file.name, file.id)).join(" ");
+                    const result = insertAtSelection(value(), inserted, { before, selection });
+                    setValue(result.value);
+                    return result;
+                  }
+            }
           />
         </div>
       </div>
@@ -182,6 +201,14 @@ export const ComposerWhileFilesUpload: Story = {
 /** A failed file keeps its chip, with the reason and Retry. Send waits until it is sent again or removed. */
 export const ComposerUploadFailed: Story = {
   render: () => <Composer attachments={[brief]} uploads={[failedArchive, startingPhoto]} text="" width="760px" />,
+};
+
+/**
+ * Paste an image, then keep typing while it uploads (2 s here). The image lands where it was pasted,
+ * and the caret stays at the end of the typed text.
+ */
+export const ComposerPasteWhileTyping: Story = {
+  render: () => <Composer attachments={[]} text="Look at " width="640px" pasteDelayMs={2000} />,
 };
 
 export const ComposerNarrow: Story = {

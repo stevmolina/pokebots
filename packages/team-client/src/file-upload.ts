@@ -7,6 +7,7 @@ import {
 } from "@pokebots/contracts/team-protocol/v2";
 import { sourceText } from "@pokebots/i18n/source";
 import { Deferred, Effect, Schema } from "effect";
+import { base64ToBytes } from "./base64";
 
 export class FileTransferError extends Schema.TaggedError<FileTransferError>()("FileTransferError", {
   message: Schema.String,
@@ -159,12 +160,11 @@ export function createRemoteFileSender<E, R>(
     }
     const maxBytes = Math.min(input.maxBytes ?? MOBILE_ATTACHMENT_BYTES, TEAM_PROTOCOL_V2_MAX_FILE_BYTES);
     if (input.base64.length > Math.ceil(maxBytes / 3) * 4) return yield* tooLarge();
-    const decoded = yield* Effect.try({ try: () => atob(input.base64), catch: fileTransferError });
-    const bytes = Uint8Array.from(decoded, (character) => character.charCodeAt(0));
+    const bytes = yield* Effect.try({ try: () => base64ToBytes(input.base64), catch: fileTransferError });
     if (bytes.length > maxBytes) return yield* tooLarge();
     return {
       size: bytes.length,
-      sha256: Array.from(sha256(bytes), (byte) => byte.toString(16).padStart(2, "0")).join(""),
+      sha256: yield* Effect.promise(() => sha256Hex(bytes)),
       read: (offset: number, length: number) => Effect.succeed(bytes.subarray(offset, offset + length)),
     };
   });
@@ -196,4 +196,16 @@ export function createRemoteFileSender<E, R>(
       pending.clear();
     },
   };
+}
+
+/**
+ * The SHA-256 of `bytes` as hex. The platform hash runs off the page's main thread, so a large paste
+ * does not freeze typing; the JavaScript hash is the fallback where `crypto.subtle` is missing.
+ */
+async function sha256Hex(bytes: Uint8Array<ArrayBuffer>): Promise<string> {
+  const subtle = globalThis.crypto?.subtle;
+  const digest = subtle
+    ? new Uint8Array(await subtle.digest("SHA-256", bytes).catch(() => sha256(bytes)))
+    : sha256(bytes);
+  return Array.from(digest, (byte) => byte.toString(16).padStart(2, "0")).join("");
 }

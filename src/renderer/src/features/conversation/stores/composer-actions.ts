@@ -67,18 +67,53 @@ export interface PastePreview {
 /** A paste that imports faster than this shows no preview, so the row does not flash. */
 const PASTE_PREVIEW_DELAY_MS = 150;
 
+/** The longest side of a paste preview. The row shows a small thumbnail, so a larger one only costs time. */
+const PASTE_PREVIEW_PIXELS = 256;
+
+/**
+ * A small `data:` URL thumbnail of `blob`. The browser decodes and scales the image off the main thread,
+ * so a large screenshot does not freeze typing, as a full-size `data:` URL of several megabytes does.
+ * Null when the platform cannot decode it this way; the caller then reads the whole file.
+ */
+async function pasteThumbnail(blob: Blob): Promise<string | null> {
+  if (typeof createImageBitmap !== "function") return null;
+  try {
+    const bitmap = await createImageBitmap(blob, { resizeWidth: PASTE_PREVIEW_PIXELS, resizeQuality: "medium" });
+    try {
+      // Some engines ignore the resize options, so the canvas scales the bitmap too.
+      const scale = Math.min(1, PASTE_PREVIEW_PIXELS / Math.max(bitmap.width, bitmap.height, 1));
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+      canvas.height = Math.max(1, Math.round(bitmap.height * scale));
+      const context = canvas.getContext("2d");
+      if (!context) return null;
+      context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+      return canvas.toDataURL("image/png");
+    } finally {
+      bitmap.close();
+    }
+  } catch {
+    return null;
+  }
+}
+
+function readDataUrl(blob: Blob): Promise<string | null> {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(typeof reader.result === "string" ? reader.result : null);
+    reader.onerror = () => resolve(null);
+    reader.readAsDataURL(blob);
+  });
+}
+
 /** The local previews of the raster images in `files`. A file that cannot be read gets none. */
 async function readPastePreviews(files: readonly File[], draftKey: string): Promise<PastePreview[]> {
   const previews = await Promise.all(
     files.map(async (file) => {
       const type = rasterImageMimeType(file.name);
       if (!type) return null;
-      const url = await new Promise<string | null>((resolve) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(typeof reader.result === "string" ? reader.result : null);
-        reader.onerror = () => resolve(null);
-        reader.readAsDataURL(new Blob([file], { type }));
-      });
+      const blob = new Blob([file], { type });
+      const url = (await pasteThumbnail(blob)) ?? (await readDataUrl(blob));
       return url ? { id: crypto.randomUUID(), draftKey, name: file.name, url } : null;
     }),
   );
