@@ -506,6 +506,15 @@ export const messages = {
   "mobile.server.settings.skillLearningOff": "Desactivado",
   "mobile.server.settings.skillLearningLoadFailed": "No se pudo cargar el ajuste de aprendizaje de habilidades.",
   "mobile.server.settings.browsingMemory": "Aprender de mi navegación",
+  "mobile.server.settings.threadAutoArchive": "Archivo de hilos",
+  "mobile.server.settings.threadAutoArchiveDescription":
+    "Archiva un hilo tras este tiempo sin actividad, o cuando todas las pull requests de GitHub que enlaza están fusionadas o cerradas. Un hilo que se ejecuta sigue abierto. Puedes restaurar un hilo archivado.",
+  "mobile.server.settings.threadAutoArchiveIdle": "Archivar hilos inactivos",
+  "mobile.server.settings.threadAutoArchiveIdleOff": "Desactivado",
+  "mobile.server.settings.threadAutoArchiveIdleDays": { one: "Tras {count} día", other: "Tras {count} días" },
+  "mobile.server.settings.threadAutoArchivePullRequests": "Al fusionar pull requests",
+  "mobile.server.settings.threadAutoArchiveLoadFailed": "No se pudo cargar el ajuste de archivo de hilos.",
+  "mobile.server.settings.threadAutoArchiveSaveFailed": "No se pudo guardar el ajuste de archivo de hilos.",
   "mobile.server.settings.browsingMemoryDescription":
     "Cuando controlas el navegador de un agente, el agente aprende cómo funcionan los sitios a partir de las páginas y los botones que usas. El texto que escribes no se guarda.",
   "mobile.server.settings.browsingMemoryLoadFailed": "No se pudo cargar el ajuste de navegación.",

@@ -93,6 +93,7 @@ import { SIDEBAR_PINS_CAPABILITY } from "@openbot/contracts/team-protocol/sideba
 import { SIGN_IN_RELAY_CAPABILITY } from "@openbot/contracts/team-protocol/sign-in-relay-v1";
 import { SKILL_LEARNING_CAPABILITY } from "@openbot/contracts/team-protocol/skill-learning-v1";
 import { SKILLS_ADMIN_CAPABILITY } from "@openbot/contracts/team-protocol/skills-admin-v1";
+import { THREAD_AUTO_ARCHIVE_CAPABILITY } from "@openbot/contracts/team-protocol/thread-auto-archive-v1";
 import { UI_BLOCK_PREVIEW_EDIT_CAPABILITY } from "@openbot/contracts/team-protocol/ui-block-preview-edit-v1";
 import type { TeamProtocolV2Json } from "@openbot/contracts/team-protocol/v2";
 import { VAULT_IMPORT_CAPABILITY } from "@openbot/contracts/team-protocol/vault-import-v1";
@@ -2722,6 +2723,7 @@ export function MobileWorkspaceProvider({ children }: PropsWithChildren) {
           servers.find((candidate) => candidate.id === serverId)?.role === "owner" &&
           administers(serverId, HOME_AGENT_RULES_CAPABILITY),
         canManageBrowsingMemory: (serverId) => administers(serverId, BROWSING_MEMORY_CAPABILITY),
+        canManageThreadAutoArchive: (serverId) => administers(serverId, THREAD_AUTO_ARCHIVE_CAPABILITY),
         canManageServerPersonality: (serverId) => administers(serverId, HOST_PERSONALITY_CAPABILITY),
         servesServerPersonality: (serverId) => {
           const server = servers.find((candidate) => candidate.id === serverId);

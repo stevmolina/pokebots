@@ -618,6 +618,11 @@ export class AgentTasks implements TaskLanes {
     return archived;
   }
 
+  /** The texts of the thread's messages that name a GitHub pull request, for the automatic archive. */
+  pullRequestTexts(task: AgentThreadRecord): string[] {
+    return this.#store.pullRequestTexts(task.threadId);
+  }
+
   #awaitedTaskIds(): Set<string> {
     return new Set(this.#mailbox.awaitedThreadRequests().map((request) => request.taskId));
   }

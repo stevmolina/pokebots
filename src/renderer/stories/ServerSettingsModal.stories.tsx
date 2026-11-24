@@ -4,6 +4,7 @@ import {
   type BrowserProfileSummary,
   type BrowserProxyComputer,
   type BrowserProxySummary,
+  DEFAULT_THREAD_AUTO_ARCHIVE,
   type HomeAgentRuleFile,
   type HomeAgentRulesPreference,
   type HostStatus,
@@ -11,8 +12,10 @@ import {
   nextBrowserProfileHue,
   parseBrowserProxyAddress,
   type ServerAuditEntry,
+  type ThreadAutoArchiveSetting,
 } from "@openbot/contracts/ipc";
 import { HOME_AGENT_RULES_CAPABILITY } from "@openbot/contracts/team-protocol/home-agent-rules-v1";
+import { THREAD_AUTO_ARCHIVE_CAPABILITY } from "@openbot/contracts/team-protocol/thread-auto-archive-v1";
 import { sourceText } from "@openbot/i18n/source";
 import { Toaster } from "@openbot/ui";
 import { createSignal, createStore } from "solid-js";
@@ -110,6 +113,45 @@ function hostRulesStory(capabilities: string[]): Story {
 
 export const JoinedHostRules = hostRulesStory(["host-turn-limits-v1", HOME_AGENT_RULES_CAPABILITY]);
 export const JoinedHostBeforeHostRules = hostRulesStory(["host-turn-limits-v1"]);
+
+function threadArchiveStory(capabilities: string[]): Story {
+  return {
+    args: {
+      server: {
+        ...remoteServer,
+        compatibility: {
+          localAppVersion: "0.0.0-story",
+          hostAppVersion: "0.0.0-story",
+          localProtocol: { minimum: 1, maximum: 10 },
+          hostProtocol: { minimum: 1, maximum: 10 },
+          negotiatedProtocol: 10,
+          capabilities,
+        },
+      },
+      initialSection: "agents",
+      hostTurnLimits: {},
+    },
+    render: (args) => {
+      const [setting, setSetting] = createSignal<ThreadAutoArchiveSetting>({ ...DEFAULT_THREAD_AUTO_ARCHIVE });
+      return (
+        <ServerSettingsStory
+          settings={{
+            ...args,
+            threadAutoArchive: {
+              calls: {
+                getThreadAutoArchive: async () => setting(),
+                setThreadAutoArchive: async (value) => setSetting(value),
+              },
+            },
+          }}
+        />
+      );
+    },
+  };
+}
+
+export const JoinedThreadAutoArchive = threadArchiveStory(["host-turn-limits-v1", THREAD_AUTO_ARCHIVE_CAPABILITY]);
+export const JoinedHostBeforeThreadAutoArchive = threadArchiveStory(["host-turn-limits-v1"]);
 
 export const LocalFirstSetup: Story = {
   args: {
