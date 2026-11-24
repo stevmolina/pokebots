@@ -76,7 +76,8 @@ interface CachedState {
 export interface GitHubPullRequestStatesOptions {
   /** The token of the host's GitHub connection, or null when it has none. Never logged. */
   connectionToken: () => Effect.Effect<string | null>;
-  fetch?: typeof fetch;
+  /** Calls the GitHub REST API. Defaults to the global `fetch`. */
+  fetch?: (url: string, init: RequestInit) => Promise<Response>;
   /** The `gh` command, or null to look for it on `PATH`. */
   ghPath?: string | null;
   now?: () => number;
