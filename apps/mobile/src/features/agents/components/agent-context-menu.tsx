@@ -306,6 +306,7 @@ function OpenAgentMenu({
     title: t(isMuted ? "mobile.agent.menu.unmute" : "mobile.agent.menu.mute"),
     image: isMuted ? "bell" : "bell.slash",
   };
+  const wakeAction: MenuAction = { id: "unsnooze", title: t("mobile.agent.snooze.wake"), image: "sun.max" };
   const actions: MenuAction[] = [
     {
       id: "read",
@@ -327,7 +328,7 @@ function OpenAgentMenu({
         { id: "snooze-hour", title: t("mobile.agent.snooze.hour"), image: "clock" },
         { id: "snooze-tomorrow", title: t("mobile.agent.snooze.tomorrow"), image: "sunrise" },
         { id: "snooze-week", title: t("mobile.agent.snooze.week"), image: "calendar" },
-        ...(isSnoozed ? [{ id: "unsnooze", title: t("mobile.agent.snooze.wake"), image: "sun.max" }] : []),
+        ...(isSnoozed ? [wakeAction] : []),
       ],
     },
     { id: "hide", title: t("mobile.agent.menu.hide"), image: "eye.slash" },

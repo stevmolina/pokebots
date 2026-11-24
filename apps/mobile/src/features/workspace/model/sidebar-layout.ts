@@ -190,7 +190,7 @@ export function mobileLaneItems(
 ): MobileSidebarItem[] {
   if (agents.length === 0) return [];
   // "Snoozed" keeps the given order: the snooze that ends first is first.
-  const items =
+  const items: MobileChatItem[] =
     lane === "snoozed"
       ? agents.map((agent) => ({ kind: "agent" as const, id: agent.id, agent }))
       : chatItems(layout, agents, []);
