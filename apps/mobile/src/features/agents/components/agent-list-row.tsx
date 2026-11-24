@@ -13,7 +13,7 @@ import {
   useMemo,
   useState,
 } from "react";
-import { StyleSheet, View } from "react-native";
+import { ActivityIndicator, StyleSheet, View } from "react-native";
 import Animated, {
   Easing,
   interpolate,
@@ -123,6 +123,43 @@ interface AgentListRowProps {
   index?: number;
   /** A small mark after the name, such as the server of the agent in All machines. */
   mark?: ReactNode;
+  /** The lane of the "Active" list: a rounded working card, or a faint snoozed row. */
+  lane?: "working" | "snoozed" | undefined;
+  /** The end of the snooze of a snoozed row, in ms since epoch. */
+  snoozedUntil?: number | undefined;
+  /** The minute clock of the list, for the time a card has worked or a snooze has left. */
+  now?: number | undefined;
+}
+
+type ListTranslate = ReturnType<typeof useText>["t"];
+type ListFormat = ReturnType<typeof useText>["format"];
+
+/** A short span of time, as the desktop list writes it: now, minutes, hours, or days. */
+function shortSpan(ms: number, t: ListTranslate, format: ListFormat): string {
+  const minutes = Math.floor(ms / 60_000);
+  if (minutes < 1) return t("mobile.agent.list.elapsed.now");
+  if (minutes < 60) return t("mobile.agent.list.elapsed.minutes", { value: format.number(minutes) });
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return t("mobile.agent.list.elapsed.hours", { value: format.number(hours) });
+  return t("mobile.agent.list.elapsed.days", { value: format.number(Math.floor(hours / 24)) });
+}
+
+/** What a lane row shows in place of the time: how long a card has worked, or how long a snooze has left. */
+function laneNote(
+  props: Pick<AgentListRowProps, "agent" | "lane" | "snoozedUntil" | "now">,
+  t: ListTranslate,
+  format: ListFormat,
+): string | null {
+  const now = props.now ?? Date.now();
+  if (props.lane === "snoozed" && props.snoozedUntil) {
+    // A snooze counts up to the next minute, so it never shows "now" while it lasts.
+    return shortSpan(Math.max(60_000, Math.ceil((props.snoozedUntil - now) / 60_000) * 60_000), t, format);
+  }
+  if (props.lane === "working") {
+    const since = props.agent.updatedAt ? Date.parse(props.agent.updatedAt) : Number.NaN;
+    return Number.isNaN(since) ? "" : shortSpan(Math.max(0, now - since), t, format);
+  }
+  return null;
 }
 
 /**
@@ -155,17 +192,17 @@ export const AgentListRow = memo(function AgentListRow({ scrolling = false, inde
   return chrome ? <InteractiveAgentListRow {...props} /> : <PlainAgentListRow {...props} />;
 });
 
-function PlainAgentListRow({ agent, leftInset = 20, rightInset = 20 }: AgentListRowProps) {
+function PlainAgentListRow({ agent, leftInset = 20, rightInset = 20, ...lane }: AgentListRowProps) {
   return (
     <Link href={{ pathname: "/chat/[agentId]", params: { agentId: agent.id } }} asChild>
       <Link.Trigger>
-        <AgentRowBody agent={agent} leftInset={leftInset} rightInset={rightInset} />
+        <AgentRowBody agent={agent} leftInset={leftInset} rightInset={rightInset} {...lane} />
       </Link.Trigger>
     </Link>
   );
 }
 
-function InteractiveAgentListRow({ agent, leftInset = 20, rightInset = 20 }: AgentListRowProps) {
+function InteractiveAgentListRow({ agent, leftInset = 20, rightInset = 20, ...lane }: AgentListRowProps) {
   const pinBlocked = useMobileWorkspaceSelector(
     ({ pinnedAgentIds, pinnedChannelIds }) => !canToggleChatPin(pinnedAgentIds, pinnedChannelIds, agent.id),
   );
@@ -185,6 +222,7 @@ function InteractiveAgentListRow({ agent, leftInset = 20, rightInset = 20 }: Age
       agent={agent}
       leftInset={leftInset}
       rightInset={rightInset}
+      {...lane}
       onPressIn={agentChatPreview.onPressIn}
       onLongPress={holdMenu.onLongPress}
       onPressOut={holdMenu.onPressOut}
@@ -225,6 +263,9 @@ function AgentRowBody({
   onPressOut,
   measurer,
   mark,
+  lane,
+  snoozedUntil,
+  now,
 }: AgentListRowProps & {
   onPress?: ComponentProps<typeof ChatLinkPressable>["onPress"];
   onPressIn?: () => void;
@@ -232,7 +273,7 @@ function AgentRowBody({
   onPressOut?: () => void;
   measurer?: ReactNode;
 }) {
-  const { t } = useText();
+  const { t, format } = useText();
   const background = useChatRowBackground(agent.id);
   const selected = useChatRowSelected(agent.id);
   const { toggleAgentPinAnimated, transition } = useAgentPinTransition();
@@ -279,9 +320,25 @@ function AgentRowBody({
       {waitBadge}
     </AgentPinAvatar>
   );
-  const openLabel = agent.title.trim()
+  const note = laneNote({ agent, lane, snoozedUntil, now }, t, format);
+  const card = lane === "working";
+  const snoozed = lane === "snoozed" && note !== null;
+  const baseLabel = agent.title.trim()
     ? t("mobile.agent.list.openWithTitle", { name: agent.name, title: agent.title.trim() })
     : t("mobile.agent.list.open", { name: agent.name });
+  const openLabel = snoozed
+    ? t("mobile.agent.list.withState", { label: baseLabel, state: t("mobile.agent.list.snoozedFor", { time: note }) })
+    : baseLabel;
+  const trailing = waitReason ? (
+    <AgentWaitChip reason={waitReason} />
+  ) : card ? (
+    <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+      <ActivityIndicator size="small" color={calmColors.accent} />
+      {note ? <Typography style={[previewType.rowTime, { color: calmColors.preview }]}>{note}</Typography> : null}
+    </View>
+  ) : (
+    <Typography style={[previewType.rowTime, { color: calmColors.time }]}>{note ?? agent.updatedLabel}</Typography>
+  );
 
   return (
     <ChatLinkPressable
@@ -323,11 +380,29 @@ function AgentRowBody({
               alignItems: "center",
               // The chat open beside the list keeps its highlight.
               backgroundColor: selected ? background : calmColors.background,
-              opacity: pressed ? 0.58 : 1,
+              opacity: pressed ? 0.58 : snoozed ? 0.55 : 1,
               paddingLeft: previewSize.rowAvatarInset,
               paddingRight: previewSize.rowTrailingInset,
             }}
           >
+            {card ? (
+              // "Working" of the "Active" list: each agent is a rounded card, as in the B3 design.
+              <View
+                pointerEvents="none"
+                style={{
+                  position: "absolute",
+                  top: 4,
+                  bottom: 4,
+                  left: previewSize.rowAvatarInset - 10,
+                  right: previewSize.rowTrailingInset - 10,
+                  borderRadius: 16,
+                  borderWidth: StyleSheet.hairlineWidth,
+                  borderColor: calmColors.groupSeparator,
+                  backgroundColor: calmColors.groupBackground,
+                  boxShadow: "0 1px 3px rgba(0, 0, 0, 0.06)",
+                }}
+              />
+            ) : null}
             {avatar}
             <View style={{ flex: 1, minWidth: 0, marginLeft: previewSize.rowTextGap }}>
               <View style={{ flexDirection: "row", alignItems: "flex-start", gap: previewSize.rowTrailingGap }}>
@@ -339,13 +414,7 @@ function AgentRowBody({
                 </Typography>
                 {mark}
                 <View style={{ flex: 1 }} />
-                {waitReason ? (
-                  <AgentWaitChip reason={waitReason} />
-                ) : (
-                  <Typography style={[previewType.rowTime, { color: calmColors.time }]}>
-                    {agent.updatedLabel}
-                  </Typography>
-                )}
+                {trailing}
               </View>
               <View style={{ flexDirection: "row", alignItems: "center", gap: previewSize.rowTrailingGap }}>
                 <Typography
@@ -368,7 +437,7 @@ function AgentRowBody({
             className="min-h-20 w-full flex-row items-center gap-3 py-1"
             style={{
               backgroundColor: background,
-              opacity: pressed ? 0.58 : 1,
+              opacity: pressed ? 0.58 : snoozed ? 0.55 : 1,
               paddingLeft: leftInset,
               paddingRight: rightInset,
             }}
@@ -394,7 +463,7 @@ function AgentRowBody({
                     <AgentWaitChip reason={waitReason} />
                   ) : (
                     <Typography.Paragraph className="text-muted" style={typeScale.caption}>
-                      {agent.updatedLabel}
+                      {note ?? agent.updatedLabel}
                     </Typography.Paragraph>
                   )}
                 </View>
