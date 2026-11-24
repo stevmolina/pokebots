@@ -26,3 +26,31 @@ The T3 schedule **Daily Pokebots upstream sync** is disabled.
 Run the [Pokebots release dry run](RELEASING.md#pokebots-release-dry-run) for an isolated source
 preflight. Confirm signing and channel ownership before adding a release path. Keep the 60-day
 Team API support window and the existing update paths during a compatibility release.
+
+## Apply the Pokebots rename scripts to a branch
+
+Two scripts make the Pokebots rename repeatable. Each one is safe to run again: a second run changes
+nothing. Use them to bring any branch to the renamed state, and to fix the conflicts that the rename
+causes.
+
+| Script | What it does |
+| --- | --- |
+| `scripts/pokebots-rename-packages.ts` | Renames the 15 workspace packages and 2 build aliases from `@openbot/*` to `@pokebots/*` in imports, manifests, config, scripts and docs. Rewrites `bun.lock` as text. Keeps the logging alias for frozen migrations, the Effect service tags, `src/backend/migrations/`, catalog comments and `plans/`. Then sorts and wraps imports with Biome. |
+| `scripts/pokebots-rename-catalogs.ts` | Puts "Pokebots" in the catalog message values with the rules of `scripts/brand-layer.ts`. Keeps the values listed in the script: service account names, installed components and paths, the Slack `/invite @OpenBot` handle, and English `error.` and `status.` text. |
+
+Both scripts take `--check` (change nothing, exit 1 when a rewrite is pending), `--no-format`,
+`--root <dir>` and `--report <file>`. The JSON report goes to `.openbot-build/` by default.
+
+### Bring a branch up to date
+
+1. Before you merge `main`, run both scripts on your branch, then `bun install --frozen-lockfile`.
+   Commit the result. `main` made the same edit, so git finds nothing to resolve in those lines.
+2. Merge `main`.
+3. If a merge still conflicts, resolve the real conflicts by hand. For `bun.lock`, take the version
+   from `main` (`git checkout origin/main -- bun.lock`) and run `bun install` after step 4.
+4. Run both scripts again, then `bun install`, then commit. The scripts rename any old name that
+   your side of a conflict brought back.
+
+If `bun install --frozen-lockfile` fails after the scripts, the lockfile and a `package.json` disagree.
+Run `bun install` and commit the new `bun.lock`. Do not run `bun install` first on a lockfile that still
+has the old names: Bun cannot rename a workspace in place, so it resolves every version again.
