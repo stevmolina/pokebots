@@ -269,6 +269,7 @@ export const BRANDED_MODULES: readonly string[] = [
   "packages/contracts/src/marketplace-links.ts",
   "packages/contracts/src/plugin-links.ts",
   "packages/contracts/src/agent-template-links.ts",
+  "src/renderer/src/features/settings/marketplace-plugin-catalog.ts",
 ];
 
 /**
