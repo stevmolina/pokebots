@@ -64,6 +64,11 @@ export const messages = {
   "mobile.agent.menu.info": "معلومات",
   "mobile.agent.profile.edit": "تعديل",
   "mobile.agent.profile.library": "المكتبة",
+  "mobile.agent.profile.files": "الملفات",
+  "mobile.agent.profile.editProfile": "تعديل الملف الشخصي",
+  "mobile.agent.profile.tab.label": "أقسام الملف الشخصي",
+  "mobile.agent.profile.tab.activity": "النشاط",
+  "mobile.agent.profile.tab.settings": "الإعدادات",
   "mobile.agent.profile.computer": "الكمبيوتر",
   "mobile.agent.profile.notificationsFooter":
     "احصل على إشعار عندما ينتهي هذا الوكيل أو ينتظرك. لك وحدك، على كل أجهزتك.",
@@ -608,6 +613,8 @@ export const messages = {
   },
   "mobile.agent.list.unreadThreads": "رسائل غير مقروءة في السلاسل",
   "mobile.agent.list.waiting.title": "يحتاج إليك",
+  "mobile.agent.list.working.title": "قيد العمل",
+  "mobile.agent.list.done.title": "مكتمل",
   "mobile.agent.list.waiting.label": {
     zero: "يحتاج إليك، لا وكلاء",
     one: "يحتاج إليك، وكيل واحد",

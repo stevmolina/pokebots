@@ -65,6 +65,11 @@ export const messages = {
   "mobile.agent.menu.info": "Info",
   "mobile.agent.profile.edit": "Modifica",
   "mobile.agent.profile.library": "Libreria",
+  "mobile.agent.profile.files": "File",
+  "mobile.agent.profile.editProfile": "Modifica profilo",
+  "mobile.agent.profile.tab.label": "Sezioni del profilo",
+  "mobile.agent.profile.tab.activity": "Attività",
+  "mobile.agent.profile.tab.settings": "Impostazioni",
   "mobile.agent.profile.computer": "Computer",
   "mobile.agent.profile.notificationsFooter":
     "Ricevi un avviso quando questo agente finisce o ti aspetta. Solo per te, su tutti i tuoi dispositivi.",
@@ -552,6 +557,8 @@ export const messages = {
   "mobile.agent.list.unread": { one: "{count} messaggio non letto", other: "{count} messaggi non letti" },
   "mobile.agent.list.unreadThreads": "Messaggi non letti nei thread",
   "mobile.agent.list.waiting.title": "Ha bisogno di te",
+  "mobile.agent.list.working.title": "Al lavoro",
+  "mobile.agent.list.done.title": "Fatto",
   "mobile.agent.list.waiting.label": {
     one: "Ha bisogno di te, {count} agente",
     other: "Hanno bisogno di te, {count} agenti",

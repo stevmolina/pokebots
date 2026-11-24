@@ -472,8 +472,6 @@ export const messages = {
   "error.backend.taskTitleRequired": "Donnez un titre court à la tâche.",
   "error.backend.taskToolInvalid":
     "Donnez à la tâche un titre de 120 caractères au plus et des consignes qui disent quoi faire.",
-  "error.backend.taskOwnChatOnly":
-    "Lancez une tâche uniquement depuis votre propre discussion. Un canal, une conversation de messagerie ou une autre tâche ne peut pas en lancer.",
   "error.backend.taskUnfinishedLimit":
     "Cet agent a déjà {count} tâches non terminées. Lancez une autre tâche quand l’une d’elles se termine.",
   "error.backend.taskOpenLimitReached":

@@ -65,6 +65,11 @@ export const messages = {
   "mobile.agent.menu.info": "Info",
   "mobile.agent.profile.edit": "Bewerken",
   "mobile.agent.profile.library": "Bibliotheek",
+  "mobile.agent.profile.files": "Bestanden",
+  "mobile.agent.profile.editProfile": "Profiel bewerken",
+  "mobile.agent.profile.tab.label": "Profielonderdelen",
+  "mobile.agent.profile.tab.activity": "Activiteit",
+  "mobile.agent.profile.tab.settings": "Instellingen",
   "mobile.agent.profile.computer": "Computer",
   "mobile.agent.profile.notificationsFooter":
     "Krijg een melding als deze agent klaar is of op je wacht. Alleen voor jou, op al je apparaten.",
@@ -554,6 +559,8 @@ export const messages = {
   "mobile.agent.list.unread": { one: "{count} ongelezen bericht", other: "{count} ongelezen berichten" },
   "mobile.agent.list.unreadThreads": "Ongelezen berichten in threads",
   "mobile.agent.list.waiting.title": "Wacht op jou",
+  "mobile.agent.list.working.title": "Bezig",
+  "mobile.agent.list.done.title": "Klaar",
   "mobile.agent.list.waiting.label": {
     one: "Wacht op jou, {count} agent",
     other: "Wacht op jou, {count} agents",

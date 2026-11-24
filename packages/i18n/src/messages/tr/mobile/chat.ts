@@ -604,6 +604,14 @@ export const messages = {
   "mobile.chat.threads.main": "Ana sohbet",
   "mobile.chat.sessions.title": "Oturumlar",
   "mobile.chat.sessions.new": "Yeni oturum",
+  "mobile.chat.sessionsTray.title": {
+    one: "{count} etkin",
+    other: "{count} etkin",
+  },
+  "mobile.chat.sessionsTray.label": {
+    one: "{count} etkin oturum. Göster veya gizle",
+    other: "{count} etkin oturum. Göster veya gizle",
+  },
   "mobile.chat.sessions.all": "Tüm oturumlar",
   "mobile.chat.threads.branchedFrom": "Dallandırıldığı yer: {title}",
   "mobile.chat.threads.branchedFromDeleted": "Silinmiş bir mesaj dizisinden dallandırıldı",

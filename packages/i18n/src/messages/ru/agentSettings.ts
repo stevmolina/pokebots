@@ -12,7 +12,6 @@ export const messages = {
   "agentSettings.session.resetNamed": "Сбросить {name}",
   "agentSettings.label": "Настройки агента",
   "agentSettings.title": "Настройки",
-  "agentSettings.backToDetails": "Назад к описанию",
   "agentSettings.closeDetails": "Закрыть описание",
   "agentSettings.backToSettings": "Назад к настройкам",
   "agentSettings.permissions.title": "Доступ",
@@ -119,7 +118,6 @@ export const messages = {
   "agentSettings.backupModels.withAccount": "{model} · {account}",
   "agentSettings.backupModels.note":
     "Если лимит использования остановит {name} после начала работы, {name} продолжит ту же работу на первой доступной модели из списка. Когда лимит закончится или через 10 минут после ошибки провайдера, {name} вернётся к {model}.",
-  "agentSettings.groups.brain": "Мозг",
   "agentSettings.groups.knows": "Знает",
   "agentSettings.groups.does": "Делает",
   "agentSettings.groups.rules": "Правила",
@@ -165,6 +163,8 @@ export const messages = {
   "agentSettings.avatar.autoColor": "Автоматический цвет аватара",
   "agentSettings.avatar.autoInitial": "А",
   "agentSettings.avatar.hueColor": "Цвет аватара: {hue}",
+  "agentSettings.avatar.mascots": "Талисманы Pokebots",
+  "agentSettings.avatar.mascotOption": "Талисман {number}",
   "agentSettings.avatar.saveFailed": "Не удалось сохранить аватар агента.",
   "agentSettings.avatar.processFailed": "Не удалось обработать аватар агента.",
 
@@ -250,7 +250,6 @@ export const messages = {
   },
   "agentSettings.links.files": "Файлы",
   "agentSettings.links.routines": "Автозадачи",
-  "agentSettings.links.library": "Библиотека",
   "agentSettings.links.computer": "Компьютер",
   "agentSettings.links.computerActive": "Используется",
   "agentSettings.links.computerAsleep": "В спящем режиме",

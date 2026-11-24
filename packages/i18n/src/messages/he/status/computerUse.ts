@@ -10,4 +10,9 @@ export const messages = {
   "status.computerUse.driverMissing": "גרסת OpenBot הזו אינה כוללת מנהל התקן של שליטה במחשב.",
   "status.computerUse.progressActing": "משתמש באפליקציה במחשב הזה…",
   "status.computerUse.progressDeciding": "מחליט על הצעד הבא באפליקציה…",
+  "status.computerUse.mainChat": "הצ'אט הראשי",
+  "status.computerUse.anotherAgent": "סוכן אחר",
+  "status.computerUse.joinedServer": "שרת מצורף",
+  "status.computerUse.unnamedThread": "שרשור צדדי",
+  "status.computerUse.thisApp": "האפליקציה הזו",
 } as const satisfies PartialTranslation<typeof source>;

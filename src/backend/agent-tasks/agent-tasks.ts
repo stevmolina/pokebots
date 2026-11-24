@@ -915,7 +915,7 @@ export class AgentTasks implements TaskLanes {
         replyToMessageId: null,
         ...(launch
           ? { agentTaskRequest: launch.request, expectsReply: false }
-          : { taskRequesterIds, taskFromExternalChat }),
+          : { ...(taskRequesterIds === undefined ? {} : { taskRequesterIds }), taskFromExternalChat }),
         idempotencyKey,
       })
       .pipe(

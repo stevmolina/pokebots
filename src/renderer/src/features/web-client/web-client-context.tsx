@@ -1224,11 +1224,12 @@ export function createWebWorkspace(
           if (connected && draft.host?.hostId === connected.hostId) {
             // A host with `host-appearance-v1` sends its look itself; the account copy can be older.
             // An account server from before `host-appearance-v1` lists none.
+            const { appearance: connectedAppearance, ...host } = connected;
             const appearance =
-              connected.appearance !== undefined && !draft.capabilities.includes(HOST_APPEARANCE_CAPABILITY)
-                ? connected.appearance
+              connectedAppearance !== undefined && !draft.capabilities.includes(HOST_APPEARANCE_CAPABILITY)
+                ? connectedAppearance
                 : draft.host.appearance;
-            draft.host = { ...connected, appearance };
+            draft.host = appearance === undefined ? host : { ...host, appearance };
           }
           draft.hosts = hosts;
           draft.hostsLoaded = true;

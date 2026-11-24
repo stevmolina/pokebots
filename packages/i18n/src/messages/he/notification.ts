@@ -29,6 +29,8 @@ export const messages = {
   "notification.machineAlert.memory": "{server}: הזיכרון בשימוש של {percent}",
   "notification.machineAlert.cpu": "{server}: ה-CPU עמוס ב-{percent}",
   "notification.machineAlert.body": "הערך עבר את סף ההתראה של {level}. אפשר לראות בהגדרות השרת > אחסון.",
+  "notification.remoteComputer.title": "סוכן ב-{server} משתמש במחשב הזה",
+  "notification.remoteComputer.body": "כדי לעצור אותו, לחץ על ״עצירה״ בחלון של OpenBot.",
   "notification.test": "ההתראות פועלות.",
   "notification.welcome": "OpenBot יודיע לך כאן כשסוכן יזדקק לך.",
   "notification.toast.region": "התראות",

@@ -119,7 +119,7 @@ async function startProxy(
         return;
       }
       const target = await fetch(`${upstream}${request.url ?? "/"}`, {
-        method: request.method,
+        method: request.method ?? "GET",
         redirect: "manual",
       });
       const headers = new Headers(target.headers);
