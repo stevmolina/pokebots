@@ -7,7 +7,7 @@
 #   scripts/custom-build-install.sh --no-install   build only
 #
 # The build follows `electron-builder.custom.yml`. The brand settings below make the text say
-# Pokebots and make the app use the self-hosted account service (`scripts/brand-layer.ts`).
+# Pokebots and make the app use the self-hosted account service (`scripts/service-defaults.ts`).
 # It uses the Bun version in `package.json` (`packageManager`) and Node 24. When the Bun on PATH is
 # another version, the script downloads the pinned one into `.openbot-build/bun-<version>` (git
 # ignores it) and uses it for this run only.
@@ -56,9 +56,8 @@ fi
 echo "Bun $(bun --version), Node $(node --version), commit $(git rev-parse --short HEAD)"
 
 unset ELECTRON_RUN_AS_NODE
-# The brand layer of `bun run build`: the product name, and the account service and Signal that the
-# app uses when nothing else is set at start.
-export OPENBOT_BRAND_NAME="Pokebots"
+# The account service and Signal that the app uses when nothing else is set at start
+# (`scripts/service-defaults.ts`). The text says Pokebots in the source, so no name is set here.
 export OPENBOT_BRAND_AUTH_API_URL="https://api.pokebots.xyz"
 export OPENBOT_BRAND_SIGNAL_URL="wss://signal.pokebots.xyz/v1/signal"
 bun install --frozen-lockfile

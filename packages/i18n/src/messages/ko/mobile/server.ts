@@ -643,11 +643,11 @@ export const messages = {
   "mobile.server.connectors.github.connectedAs": "@{login}(으)로 연결됨",
   "mobile.server.connectors.github.chooseRepositories": "저장소 선택",
   "mobile.server.connectors.github.repositoriesFooter":
-    "에이전트는 OpenBot GitHub 앱이 설치된 저장소만 사용할 수 있어요.",
+    "에이전트는 Pokebots GitHub 앱이 설치된 저장소만 사용할 수 있어요.",
   "mobile.server.connectors.github.repositoriesTitle": "저장소",
   "mobile.server.connectors.github.repositoriesLoading": "GitHub에서 저장소를 읽는 중",
   "mobile.server.connectors.github.repositoriesFailed": "Pokebots에서 GitHub의 저장소를 읽지 못했어요.",
-  "mobile.server.connectors.github.noRepositories": "OpenBot GitHub 앱이 설치된 저장소가 아직 없어요.",
+  "mobile.server.connectors.github.noRepositories": "Pokebots GitHub 앱이 설치된 저장소가 아직 없어요.",
   "mobile.server.connectors.github.moreRepositories": {
     other: "저장소 {count}개 더 있음",
   },
@@ -660,7 +660,7 @@ export const messages = {
   "mobile.server.connectors.github.disconnect": "GitHub 연결 해제",
   "mobile.server.connectors.github.disconnectTitle": "GitHub 연결을 해제할까요?",
   "mobile.server.connectors.github.disconnectBody":
-    "{host}에서 @{login}의 로그인 정보가 삭제되고, 모든 에이전트가 GitHub 도구, gh, git을 사용할 수 없게 돼요. 이후 GitHub가 열리면 OpenBot 접근 권한을 취소할 수 있어요.",
+    "{host}에서 @{login}의 로그인 정보가 삭제되고, 모든 에이전트가 GitHub 도구, gh, git을 사용할 수 없게 돼요. 이후 GitHub가 열리면 Pokebots 접근 권한을 취소할 수 있어요.",
   "mobile.server.connectors.onePassword.title": "1Password",
   "mobile.server.connectors.onePassword.description":
     "서비스 계정을 통해 {host}의 Pokebots과 전용 1Password 보관함을 공유하면, {host}의 에이전트가 브라우저에서 사이트에 로그인할 수 있어요.",
@@ -750,24 +750,24 @@ export const messages = {
     "{host}에서 액세스 키가 삭제돼요. 보관함과 로그인 항목은 {name} 계정에 남아 있어요.",
   "mobile.server.connectors.slack.title": "Slack",
   "mobile.server.connectors.slack.description":
-    "Slack에서 @OpenBot을 멘션하거나 다이렉트 메시지를 보낼 수 있어요. Slack Orchestrator가 알맞은 에이전트에게 물어보고 답변해요.",
+    "Slack에서 @Pokebots을 멘션하거나 다이렉트 메시지를 보낼 수 있어요. Slack Orchestrator가 알맞은 에이전트에게 물어보고 답변해요.",
   "mobile.server.connectors.slack.attention": {
     other: "워크스페이스 {count}개 확인 필요",
   },
   "mobile.server.connectors.slack.connect": "Slack 연결",
   "mobile.server.connectors.slack.connectFooter":
-    "Slack이 브라우저에서 열려요. 오른쪽 위에서 워크스페이스를 선택한 다음 허용을 누르세요. OpenBot은 OpenBot이라는 앱 하나를 설치하고 모든 공개 채널에 참여해요.",
+    "Slack이 브라우저에서 열려요. 오른쪽 위에서 워크스페이스를 선택한 다음 허용을 누르세요. Pokebots은 Pokebots이라는 앱 하나를 설치하고 모든 공개 채널에 참여해요.",
   "mobile.server.connectors.slack.add": "워크스페이스 추가",
   "mobile.server.connectors.slack.limit": {
     other: "워크스페이스는 최대 {count}개까지 연결할 수 있어요.",
   },
   "mobile.server.connectors.slack.workspaceTitle": "워크스페이스",
-  "mobile.server.connectors.slack.workspaceDescription": "@OpenBot을 멘션하거나 다이렉트 메시지를 보내세요.",
+  "mobile.server.connectors.slack.workspaceDescription": "@Pokebots을 멘션하거나 다이렉트 메시지를 보내세요.",
   "mobile.server.connectors.slack.missingScopes":
     "Pokebots에 Slack에서 다음 권한이 없어요: {scopes}. 워크스페이스 연결을 해제한 다음 다시 연결해 주세요.",
   "mobile.server.connectors.slack.retryAt": "Slack이 Pokebots에 대기를 요청했어요. {time}에 다시 시도해요.",
   "mobile.server.connectors.slack.helpInvalidToken":
-    "Slack이 이 워크스페이스에서 OpenBot을 더 이상 허용하지 않아요. 앱이 삭제되었을 수 있어요. 워크스페이스를 다시 연결해 주세요.",
+    "Slack이 이 워크스페이스에서 Pokebots을 더 이상 허용하지 않아요. 앱이 삭제되었을 수 있어요. 워크스페이스를 다시 연결해 주세요.",
   "mobile.server.connectors.slack.helpSecretStorage":
     "Pokebots이 {host}에 저장된 토큰을 읽을 수 없어요. 워크스페이스 연결을 해제한 다음 다시 연결해 주세요.",
   "mobile.server.connectors.slack.helpRelay":
@@ -781,7 +781,7 @@ export const messages = {
     "Slack Orchestrator를 추가하지 않으면 Slack에서 답변을 받을 수 없어요.",
   "mobile.server.connectors.slack.addAgent": "Slack Orchestrator 추가",
   "mobile.server.connectors.slack.note":
-    "Pokebots은 모든 공개 채널과 새로 생기는 채널에 자동으로 참여해요. 비공개 채널에는 /invite @OpenBot으로 초대하세요.",
+    "Pokebots은 모든 공개 채널과 새로 생기는 채널에 자동으로 참여해요. 비공개 채널에는 /invite @Pokebots으로 초대하세요.",
   "mobile.server.connectors.slack.disconnectTitle": "{workspace} 연결을 해제할까요?",
   "mobile.server.connectors.slack.disconnectBody":
     "Pokebots이 {workspace}에서 답변을 중지하고 {host}에서 Slack 토큰을 삭제해요.",
@@ -789,29 +789,29 @@ export const messages = {
   "mobile.server.connectors.slack.disconnectDeleted": "Slack Orchestrator와 해당 대화가 Pokebots에서 삭제돼요.",
   "mobile.server.connectors.slack.agentPromptTitle": "Slack Orchestrator를 추가할까요?",
   "mobile.server.connectors.slack.agentPromptBody":
-    "이 새 에이전트가 {workspace}에서 @OpenBot에게 보내는 모든 요청에 답변해요.",
+    "이 새 에이전트가 {workspace}에서 @Pokebots에게 보내는 모든 요청에 답변해요.",
   "mobile.server.connectors.slack.installFailed": "Slack 설치가 완료되지 않았어요. 다시 시도해 주세요.",
   "mobile.server.connectors.discord.title": "Discord",
   "mobile.server.connectors.discord.description":
-    "Discord 서버의 채널에서 @OpenBot을 멘션할 수 있어요. Discord Orchestrator가 알맞은 에이전트에게 물어보고 답변해요.",
+    "Discord 서버의 채널에서 @Pokebots을 멘션할 수 있어요. Discord Orchestrator가 알맞은 에이전트에게 물어보고 답변해요.",
   "mobile.server.connectors.discord.attention": {
     other: "Discord 서버 {count}개 확인 필요",
   },
   "mobile.server.connectors.discord.connect": "Discord 연결",
   "mobile.server.connectors.discord.connectFooter":
-    "Discord가 브라우저에서 열려요. Discord 서버를 선택한 다음 승인을 누르세요. OpenBot은 OpenBot이라는 봇 하나를 추가해요.",
+    "Discord가 브라우저에서 열려요. Discord 서버를 선택한 다음 승인을 누르세요. Pokebots은 Pokebots이라는 봇 하나를 추가해요.",
   "mobile.server.connectors.discord.add": "Discord 서버 추가",
   "mobile.server.connectors.discord.limit": {
     other: "Discord 서버는 최대 {count}개까지 연결할 수 있어요.",
   },
   "mobile.server.connectors.discord.workspaceTitle": "Discord 서버",
   "mobile.server.connectors.discord.workspaceDescription":
-    "채널에서 @OpenBot을 멘션하세요. 이어가려면 OpenBot의 메시지에 답장하세요.",
+    "채널에서 @Pokebots을 멘션하세요. 이어가려면 Pokebots의 메시지에 답장하세요.",
   "mobile.server.connectors.discord.missingScopes":
     "Pokebots에 Discord에서 다음 권한이 없어요: {scopes}. Discord 서버 연결을 해제한 다음 다시 연결해 주세요.",
   "mobile.server.connectors.discord.retryAt": "Discord가 Pokebots에 대기를 요청했어요. {time}에 다시 시도해요.",
   "mobile.server.connectors.discord.helpInvalidToken":
-    "Discord가 이 Discord 서버에서 OpenBot을 더 이상 허용하지 않아요. 봇이 삭제되었을 수 있어요. Discord 서버를 다시 연결해 주세요.",
+    "Discord가 이 Discord 서버에서 Pokebots을 더 이상 허용하지 않아요. 봇이 삭제되었을 수 있어요. Discord 서버를 다시 연결해 주세요.",
   "mobile.server.connectors.discord.helpSecretStorage":
     "Pokebots이 {host}에 저장된 토큰을 읽을 수 없어요. Discord 서버 연결을 해제한 다음 다시 연결해 주세요.",
   "mobile.server.connectors.discord.helpRelay":
@@ -832,7 +832,7 @@ export const messages = {
   "mobile.server.connectors.discord.disconnectDeleted": "Discord Orchestrator와 해당 대화가 Pokebots에서 삭제돼요.",
   "mobile.server.connectors.discord.agentPromptTitle": "Discord Orchestrator를 추가할까요?",
   "mobile.server.connectors.discord.agentPromptBody":
-    "이 새 에이전트가 {workspace}에서 @OpenBot에게 보내는 모든 요청에 답변해요.",
+    "이 새 에이전트가 {workspace}에서 @Pokebots에게 보내는 모든 요청에 답변해요.",
   "mobile.server.connectors.discord.installFailed": "Discord 승인이 완료되지 않았어요. 다시 시도해 주세요.",
   "mobile.server.connectors.telegram.title": "Telegram",
   "mobile.server.connectors.telegram.description":
@@ -1310,13 +1310,13 @@ export const messages = {
     "이 빌드에서는 릴리스를 확인할 수 없어요. 호스트 관리자에게 호환되는 릴리스를 확인해 달라고 요청하세요.",
   "mobile.server.update.externalTitle": "호스트에서 설치를 관리해요",
   "mobile.server.update.path.hostManager":
-    "모든 사용자가 대기 상태일 때 OpenBot Host Manager가 업데이트를 설치해요. 업데이트가 시작되지 않으면 호스트 관리자에게 Host Manager 상태를 확인해 달라고 요청하세요.",
+    "모든 사용자가 대기 상태일 때 Pokebots Host Manager가 업데이트를 설치해요. 업데이트가 시작되지 않으면 호스트 관리자에게 Host Manager 상태를 확인해 달라고 요청하세요.",
   "mobile.server.update.path.hosted":
     "호스팅 서비스가 백그라운드에서 업데이트를 다운로드해요. 다운로드된 업데이트는 서버가 다음에 시작될 때 적용돼요. 서버를 중지했다가 재개하기 전에 진행 중인 작업이 끝나기를 기다리세요. 이전 버전에서 바뀌지 않으면 호스트 관리자에게 문의하세요.",
   "mobile.server.update.path.system":
     "호스트에서 sudo openbot update를 실행해 최신 릴리스를 설치하세요. 이 명령은 Pokebots을 중지해요. 먼저 진행 중인 작업이 끝나기를 기다리세요. 자동 다운로드는 다음 부팅 때 설치돼요.",
   "mobile.server.update.path.container":
-    "Docker 호스트에서 새 OpenBot 이미지를 가져오고 같은 데이터 볼륨으로 컨테이너를 다시 만드세요. 먼저 진행 중인 작업이 끝나기를 기다리세요. 데이터를 보존하려면 기존 볼륨을 유지하세요.",
+    "Docker 호스트에서 새 Pokebots 이미지를 가져오고 같은 데이터 볼륨으로 컨테이너를 다시 만드세요. 먼저 진행 중인 작업이 끝나기를 기다리세요. 데이터를 보존하려면 기존 볼륨을 유지하세요.",
   "mobile.server.update.path.manual":
     "이 설치본은 스스로 교체할 수 없어요. 호스트 관리자에게 github.com/nightly-labs/openbot/releases에서 호환되는 릴리스를 설치해 달라고 요청하세요. 기존 Pokebots 데이터는 유지하세요.",
   "mobile.server.update.path.unavailable": "개발 빌드예요. 업데이트를 확인하려면 설치된 Pokebots 릴리스를 사용하세요.",
@@ -1339,7 +1339,7 @@ export const messages = {
     "{name} 사용자가 서버 멤버의 업데이트를 껐어요. Pokebots을 업데이트하거나 설정을 켜 달라고 요청하세요.",
   "mobile.server.update.managedTitle": "Host Manager가 업데이트를 관리해요",
   "mobile.server.update.managedDescription":
-    "OpenBot Host Manager가 {name}을(를) 업데이트해요. 호스트 관리자에게 문의하세요.",
+    "Pokebots Host Manager가 {name}을(를) 업데이트해요. 호스트 관리자에게 문의하세요.",
   "mobile.server.update.unsupportedTitle": "{name}은(는) 스스로 업데이트할 수 없어요",
   "mobile.server.update.unsupportedDescription":
     "이 Pokebots 빌드에는 업데이터가 없어요. {name}에 새 버전을 설치하세요.",

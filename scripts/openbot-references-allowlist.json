@@ -1,0 +1,39 @@
+{
+  "paths": [
+    { "path": "CHANGELOG.md", "reason": "Release history names the product as it was called." },
+    { "path": "LICENSE", "reason": "Licence text names the upstream project." },
+    { "path": "NOTICE", "reason": "Notices name the upstream project." },
+    { "path": "changelog.d/", "reason": "Release notes describe upstream behaviour and the rename itself." },
+    { "path": "plans/", "reason": "Historical plans describe the code as it was written." },
+    { "path": "docs/", "reason": "Documentation describes upstream OpenBot, the fork and the released identities." },
+    { "path": "AGENTS.md", "reason": "Repository guidance explains the fork and its released identities." },
+    { "path": "README.md", "reason": "Prose about the fork and upstream." },
+    { "path": "src/backend/migrations/", "reason": "Released SQLite migrations are frozen." },
+    { "path": "vendor/", "reason": "Vendored third-party sources and patches." },
+    { "path": "scripts/openbot-references-allowlist.json", "reason": "This file." },
+    { "path": "scripts/check-openbot-references.ts", "reason": "The check names what it looks for." },
+    { "path": "scripts/legacy-openbot-scope.ts", "reason": "The temporary alias list names the old scope." },
+    { "path": "scripts/pokebots-rename-packages.ts", "reason": "The rename script names the old scope." },
+    { "path": "scripts/pokebots-rename-catalogs.ts", "reason": "The rename script names the old product word." },
+    { "path": "scripts/pokebots-brand-text.ts", "reason": "The text rules name the old product word." },
+    { "path": "scripts/pokebots-brand-e2e.ts", "reason": "The e2e checks that the old word is gone and names it." },
+    { "path": "scripts/frozen-migrations.ts", "reason": "The frozen-migration import list allows `@openbot/logging`." },
+    { "path": "scripts/check-frozen-migrations.test.ts", "reason": "Fixtures for the frozen-migration import list." }
+  ],
+  "lines": [
+    {
+      "pattern": "~/OpenBot\\b|\\$HOME/OpenBot\\b|\\\"OpenBot\\\", \\\"(?:Bots|Shared|Agents|Workspaces|Attachments|backups)\\\"",
+      "reason": "The released data folder ~/OpenBot."
+    },
+    {
+      "pattern": "OpenBot Safe Storage|OpenBot Dev\\b",
+      "reason": "The released keychain item and the dev profile name."
+    },
+    { "pattern": "OpenBot Host Manager|OpenBot Docker", "reason": "Installed components keep their released names." },
+    {
+      "pattern": "app\\.setName\\(\\\"OpenBot\\\"\\)",
+      "reason": "The data folder and the keychain item come from the app name."
+    },
+    { "pattern": "@openbot\\/logging", "reason": "Released migrations import this specifier." }
+  ]
+}

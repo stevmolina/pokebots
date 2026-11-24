@@ -51,7 +51,7 @@ export const messages = {
   "mobile.app.update.later": "나중에",
   "mobile.app.update.failedTitle": "업데이트할 수 없음",
   "mobile.app.update.restartFailed": "업데이트를 마치려면 Pokebots을 닫았다가 다시 여세요.",
-  "mobile.app.update.storeFailed": "App Store 또는 Google Play에서 OpenBot을 업데이트하세요.",
+  "mobile.app.update.storeFailed": "App Store 또는 Google Play에서 Pokebots을 업데이트하세요.",
   "mobile.app.update.whatsNew": "새로운 기능",
   "mobile.app.update.hideWhatsNew": "숨기기",
   "mobile.app.update.releaseTitle": "Pokebots {version}",

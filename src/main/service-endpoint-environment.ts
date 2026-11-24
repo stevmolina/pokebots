@@ -1,4 +1,4 @@
-/** Read an explicit setting before the brand layer fills in missing values. */
+/** Read an explicit setting before the build defaults fill in missing values. */
 function readEndpoint(legacyName: string, aliasName: string): string | undefined {
   const legacy = process.env[legacyName];
   const alias = process.env[aliasName];

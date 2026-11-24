@@ -51,7 +51,7 @@ export const messages = {
   "mobile.app.update.later": "Sonra",
   "mobile.app.update.failedTitle": "Güncellenemedi",
   "mobile.app.update.restartFailed": "Güncellemeyi bitirmek için Pokebots'u kapatıp yeniden açın.",
-  "mobile.app.update.storeFailed": "App Store veya Google Play'i açıp OpenBot'u oradan güncelleyin.",
+  "mobile.app.update.storeFailed": "App Store veya Google Play'i açıp Pokebots'u oradan güncelleyin.",
   "mobile.app.update.whatsNew": "Yenilikler",
   "mobile.app.update.hideWhatsNew": "Gizle",
   "mobile.app.update.releaseTitle": "Pokebots {version}",

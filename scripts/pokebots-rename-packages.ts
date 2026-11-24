@@ -30,7 +30,7 @@
 //   capitalised name after the package. The tag is an identity at runtime, not an import.
 // - Frozen SQLite migrations (`src/backend/migrations/`) and the checker that enforces their import
 //   list: a released migration keeps its exact source and imports `@openbot/logging`.
-// - Catalog comments (`packages/i18n/src/messages/`), which the catalog script and the brand layer own.
+// - Catalog comments (`packages/i18n/src/messages/`), which the catalog script owns.
 // - Historical plans (`plans/`).
 import { execFileSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
@@ -82,6 +82,11 @@ export const SKIPPED_PATHS: readonly { readonly path: string; readonly reason: s
     path: "scripts/pokebots-rename-catalogs.ts",
     reason: "This script names the old scope in its own comments.",
   },
+  { path: "changelog.d/", reason: "Release notes describe the rename and name the old scope on purpose." },
+  { path: "apps/mobile/changelog.d/", reason: "Release notes describe the rename and name the old scope on purpose." },
+  { path: "docs/custom-fork-sync.md", reason: "This guide explains the rename and the temporary old-scope aliases." },
+  { path: "scripts/check-openbot-references.ts", reason: "The check names the old scope it looks for." },
+  { path: "scripts/openbot-references-allowlist.json", reason: "The allowlist names the old scope it allows." },
   {
     path: "scripts/legacy-openbot-scope.ts",
     reason: "The temporary alias list. It names the old scope on purpose.",

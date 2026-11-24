@@ -135,7 +135,7 @@ export const messages = defineMessages("files", {
   "files.storage.largestChats": "Largest chats",
   "files.storage.files": "Files",
   "files.storage.rowLabel": "{name}, {size}",
-  "files.storage.measuringFolder": "Measuring the OpenBot folder…",
+  "files.storage.measuringFolder": "Measuring the Pokebots folder…",
   "files.storage.measured": "Measured {time}",
   "files.storage.free": "{size} free on this disk",
   "files.storage.justNow": "just now",

@@ -560,7 +560,7 @@ export const messages = {
   "settings.updates.managed.description":
     "Updates voor deze Mac worden automatisch beheerd door Pokebots Host Manager. Alle gebruikers delen dezelfde Pokebots-app en worden samen bijgewerkt wanneer geregistreerde gebruikers inactief zijn.",
   "settings.updates.target.latest": "De nieuwste update van Pokebots",
-  "settings.updates.host.upToDate": "Up-to-date. OpenBot Host Manager houdt deze Mac bij.",
+  "settings.updates.host.upToDate": "Up-to-date. Pokebots Host Manager houdt deze Mac bij.",
   "settings.updates.host.ready": "{target} is gedownload. Wacht tot de andere gebruikers van deze Mac inactief zijn.",
   "settings.updates.host.installing": "{target} installeren…",
   "settings.updates.host.failed": "De beheerde update is mislukt. Neem contact op met de beheerder van deze Mac.",

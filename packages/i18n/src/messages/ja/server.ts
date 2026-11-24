@@ -553,13 +553,13 @@ export const messages = {
     "このビルドではリリースを確認できません。互換性のあるリリースを確認するよう、ホストの管理者に依頼してください。",
   "server.update.externalTitle": "インストールはホストが管理します",
   "server.update.path.hostManager":
-    "OpenBot Host Manager は、すべてのユーザーがアイドル状態のときにアップデートをインストールします。アップデートが始まらない場合は、Host Manager の状態を確認するようホストの管理者に依頼してください。",
+    "Pokebots Host Manager は、すべてのユーザーがアイドル状態のときにアップデートをインストールします。アップデートが始まらない場合は、Host Manager の状態を確認するようホストの管理者に依頼してください。",
   "server.update.path.hosted":
     "ホスティングサービスはバックグラウンドでアップデートをダウンロードします。ダウンロードしたアップデートは、次にサーバーが起動したときに適用されます。サーバーを停止して再開する前に、実行中の作業が終わるのを待ってください。古いバージョンのままの場合は、ホストの管理者に連絡してください。",
   "server.update.path.system":
     "ホストで sudo openbot update を実行して、最新のリリースをインストールしてください。このコマンドは Pokebots を停止します。先に実行中の作業が終わるのを待ってください。自動ダウンロードされたアップデートは次回の起動時にインストールされます。",
   "server.update.path.container":
-    "Docker ホストで新しい OpenBot イメージを pull し、同じデータボリュームでコンテナーを再作成してください。先に実行中の作業が終わるのを待ってください。データを保持するため、既存のボリュームはそのまま残してください。",
+    "Docker ホストで新しい Pokebots イメージを pull し、同じデータボリュームでコンテナーを再作成してください。先に実行中の作業が終わるのを待ってください。データを保持するため、既存のボリュームはそのまま残してください。",
   "server.update.path.manual":
     "このインストールは自分自身を置き換えられません。github.com/nightly-labs/openbot/releases から互換性のあるリリースをインストールするよう、ホストの管理者に依頼してください。既存の Pokebots のデータは残してください。",
   "server.update.path.unavailable":
@@ -584,7 +584,7 @@ export const messages = {
     "{name} のユーザーが、サーバーメンバーからのアップデートをオフにしました。Pokebots をアップデートするか、設定をオンにするよう依頼してください。",
   "server.update.managedTitle": "アップデートは Host Manager が管理しています",
   "server.update.managedDescription":
-    "OpenBot Host Manager が {name} をアップデートします。ホストの管理者に連絡してください。",
+    "Pokebots Host Manager が {name} をアップデートします。ホストの管理者に連絡してください。",
   "server.update.unsupportedTitle": "{name} は自身をアップデートできません",
   "server.update.unsupportedDescription":
     "この Pokebots ビルドにはアップデーターがありません。{name} に新しいバージョンをインストールしてください。",

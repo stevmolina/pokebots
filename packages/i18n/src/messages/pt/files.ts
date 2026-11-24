@@ -136,7 +136,7 @@ export const messages = {
   "files.storage.largestChats": "Maiores chats",
   "files.storage.files": "Arquivos",
   "files.storage.rowLabel": "{name}, {size}",
-  "files.storage.measuringFolder": "Medindo a pasta do OpenBot…",
+  "files.storage.measuringFolder": "Medindo a pasta do Pokebots…",
   "files.storage.measured": "Medido {time}",
   "files.storage.free": "{size} livres neste disco",
   "files.storage.justNow": "agora mesmo",

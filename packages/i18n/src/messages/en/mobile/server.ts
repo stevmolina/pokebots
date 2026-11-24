@@ -995,7 +995,7 @@ export const messages = defineMessages("mobile.server", {
   "mobile.server.connectors.github.disconnect": "Disconnect GitHub",
   "mobile.server.connectors.github.disconnectTitle": "Disconnect GitHub?",
   "mobile.server.connectors.github.disconnectBody":
-    "This removes the sign-in of @{login} from {host}, and every agent loses the GitHub tools, gh and git. Then GitHub opens, where you can revoke OpenBot.",
+    "This removes the sign-in of @{login} from {host}, and every agent loses the GitHub tools, gh and git. Then GitHub opens, where you can revoke Pokebots.",
   "mobile.server.connectors.onePassword.title": "1Password",
   "mobile.server.connectors.onePassword.description":
     "Share a dedicated 1Password vault with Pokebots on {host} through a service account, so agents on {host} can sign in to sites in its browser.",
@@ -1093,28 +1093,28 @@ export const messages = defineMessages("mobile.server", {
   // {workspace} is the Slack workspace name.
   "mobile.server.connectors.slack.title": "Slack",
   "mobile.server.connectors.slack.description":
-    "People mention @OpenBot in Slack or send it a direct message. The Slack Orchestrator asks the right agent and answers.",
+    "People mention @Pokebots in Slack or send it a direct message. The Slack Orchestrator asks the right agent and answers.",
   "mobile.server.connectors.slack.attention": {
     one: "{count} workspace needs attention",
     other: "{count} workspaces need attention",
   },
   "mobile.server.connectors.slack.connect": "Connect Slack",
   "mobile.server.connectors.slack.connectFooter":
-    "Slack opens in a browser. Select the workspace in the top-right corner, then Allow. OpenBot installs one app, named OpenBot, and it joins every public channel.",
+    "Slack opens in a browser. Select the workspace in the top-right corner, then Allow. Pokebots installs one app, named Pokebots, and it joins every public channel.",
   "mobile.server.connectors.slack.add": "Add workspace",
   "mobile.server.connectors.slack.limit": {
     one: "You can connect a maximum of {count} workspace.",
     other: "You can connect a maximum of {count} workspaces.",
   },
   "mobile.server.connectors.slack.workspaceTitle": "Workspace",
-  "mobile.server.connectors.slack.workspaceDescription": "People mention @OpenBot or send it a direct message.",
+  "mobile.server.connectors.slack.workspaceDescription": "People mention @Pokebots or send it a direct message.",
   // {scopes} lists Slack permissions, such as "chat:write and users:read".
   "mobile.server.connectors.slack.missingScopes":
     "Pokebots does not have these permissions in Slack: {scopes}. Disconnect the workspace, then connect it again.",
   // {time} is a time, such as 14:30.
   "mobile.server.connectors.slack.retryAt": "Slack asked Pokebots to wait. It tries again at {time}.",
   "mobile.server.connectors.slack.helpInvalidToken":
-    "Slack no longer accepts OpenBot in this workspace. It may have been uninstalled. Connect the workspace again.",
+    "Slack no longer accepts Pokebots in this workspace. It may have been uninstalled. Connect the workspace again.",
   "mobile.server.connectors.slack.helpSecretStorage":
     "Pokebots cannot read the saved tokens on {host}. Disconnect the workspace, then connect it again.",
   "mobile.server.connectors.slack.helpRelay":
@@ -1126,7 +1126,7 @@ export const messages = defineMessages("mobile.server", {
   "mobile.server.connectors.slack.orchestratorNone": "Add the Slack Orchestrator, or Slack gets no answer.",
   "mobile.server.connectors.slack.addAgent": "Add Slack Orchestrator",
   "mobile.server.connectors.slack.note":
-    "Pokebots joins every public channel by itself, and each new one. For a private channel, invite it: /invite @OpenBot.",
+    "Pokebots joins every public channel by itself, and each new one. For a private channel, invite it: /invite @Pokebots.",
   "mobile.server.connectors.slack.disconnectTitle": "Disconnect {workspace}?",
   "mobile.server.connectors.slack.disconnectBody":
     "Pokebots stops answering in {workspace} and removes its Slack token from {host}.",
@@ -1135,20 +1135,20 @@ export const messages = defineMessages("mobile.server", {
     "The Slack Orchestrator and its conversations are deleted from Pokebots.",
   "mobile.server.connectors.slack.agentPromptTitle": "Add the Slack Orchestrator?",
   "mobile.server.connectors.slack.agentPromptBody":
-    "This new agent answers everything that people send to @OpenBot in {workspace}.",
+    "This new agent answers everything that people send to @Pokebots in {workspace}.",
   "mobile.server.connectors.slack.installFailed": "Slack did not finish the install. Try again.",
   // Discord: a Discord server adds the one OpenBot bot. Always write "Discord server": "server" alone
   // is an OpenBot server. {workspace} is the Discord server name.
   "mobile.server.connectors.discord.title": "Discord",
   "mobile.server.connectors.discord.description":
-    "People mention @OpenBot in a channel of a Discord server. The Discord Orchestrator asks the right agent and answers.",
+    "People mention @Pokebots in a channel of a Discord server. The Discord Orchestrator asks the right agent and answers.",
   "mobile.server.connectors.discord.attention": {
     one: "{count} Discord server needs attention",
     other: "{count} Discord servers need attention",
   },
   "mobile.server.connectors.discord.connect": "Connect Discord",
   "mobile.server.connectors.discord.connectFooter":
-    "Discord opens in a browser. Select the Discord server, then Authorize. OpenBot adds one bot, named OpenBot.",
+    "Discord opens in a browser. Select the Discord server, then Authorize. Pokebots adds one bot, named Pokebots.",
   "mobile.server.connectors.discord.add": "Add Discord server",
   "mobile.server.connectors.discord.limit": {
     one: "You can connect a maximum of {count} Discord server.",
@@ -1156,14 +1156,14 @@ export const messages = defineMessages("mobile.server", {
   },
   "mobile.server.connectors.discord.workspaceTitle": "Discord server",
   "mobile.server.connectors.discord.workspaceDescription":
-    "Mention @OpenBot in a channel. Reply to OpenBot to continue.",
+    "Mention @Pokebots in a channel. Reply to Pokebots to continue.",
   // {scopes} lists Discord permissions.
   "mobile.server.connectors.discord.missingScopes":
     "Pokebots does not have these permissions in Discord: {scopes}. Disconnect the Discord server, then connect it again.",
   // {time} is a time, such as 14:30.
   "mobile.server.connectors.discord.retryAt": "Discord asked Pokebots to wait. It tries again at {time}.",
   "mobile.server.connectors.discord.helpInvalidToken":
-    "Discord no longer accepts OpenBot in this Discord server. It may have been removed. Connect the Discord server again.",
+    "Discord no longer accepts Pokebots in this Discord server. It may have been removed. Connect the Discord server again.",
   "mobile.server.connectors.discord.helpSecretStorage":
     "Pokebots cannot read the saved tokens on {host}. Disconnect the Discord server, then connect it again.",
   "mobile.server.connectors.discord.helpRelay":
@@ -1184,7 +1184,7 @@ export const messages = defineMessages("mobile.server", {
     "The Discord Orchestrator and its conversations are deleted from Pokebots.",
   "mobile.server.connectors.discord.agentPromptTitle": "Add the Discord Orchestrator?",
   "mobile.server.connectors.discord.agentPromptBody":
-    "This new agent answers everything that people send to @OpenBot in {workspace}.",
+    "This new agent answers everything that people send to @Pokebots in {workspace}.",
   "mobile.server.connectors.discord.installFailed": "Discord did not finish the authorization. Try again.",
   // Telegram: each chat adds the one OpenBot bot, and the Telegram Orchestrator answers all chats.
   // {chat} is the Telegram chat name.
@@ -1860,13 +1860,13 @@ export const messages = defineMessages("mobile.server", {
     "Release checks are not available for this build. Ask the host administrator to check for a compatible release.",
   "mobile.server.update.externalTitle": "The host controls installation",
   "mobile.server.update.path.hostManager":
-    "OpenBot Host Manager installs updates when all users are idle. Ask the host administrator to check the Host Manager status if an update does not start.",
+    "Pokebots Host Manager installs updates when all users are idle. Ask the host administrator to check the Host Manager status if an update does not start.",
   "mobile.server.update.path.hosted":
     "The hosted service downloads updates in the background. A downloaded update starts when the server next starts. Wait for active work to finish before you stop and resume the server. If it stays on an old version, contact the host administrator.",
   "mobile.server.update.path.system":
     "On the host, run sudo openbot update to install the latest release. This command stops Pokebots. Wait for active work to finish first. Automatic downloads install at the next boot.",
   "mobile.server.update.path.container":
-    "On the Docker host, pull the new OpenBot image and create the container again with the same data volumes. Wait for active work to finish first. Keep the existing volumes to preserve your data.",
+    "On the Docker host, pull the new Pokebots image and create the container again with the same data volumes. Wait for active work to finish first. Keep the existing volumes to preserve your data.",
   "mobile.server.update.path.manual":
     "This installation cannot replace itself. Ask the host administrator to install the compatible release from github.com/nightly-labs/openbot/releases. Keep the existing Pokebots data.",
   "mobile.server.update.path.unavailable":
@@ -1889,7 +1889,7 @@ export const messages = defineMessages("mobile.server", {
   "mobile.server.update.disabledDescription":
     "The user of {name} turned off updates from server members. Ask them to update Pokebots or to turn the setting on.",
   "mobile.server.update.managedTitle": "A Host Manager controls updates",
-  "mobile.server.update.managedDescription": "OpenBot Host Manager updates {name}. Contact the host administrator.",
+  "mobile.server.update.managedDescription": "Pokebots Host Manager updates {name}. Contact the host administrator.",
   "mobile.server.update.unsupportedTitle": "{name} cannot update itself",
   "mobile.server.update.unsupportedDescription": "This Pokebots build has no updater. Install a new version on {name}.",
   "mobile.server.update.restarting": "Restarting…",

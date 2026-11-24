@@ -23,7 +23,7 @@ export const messages = defineMessages("error.billing", {
   "error.billing.noLicense": "This account has no license.",
   // Billing details and VAT errors.
   "error.billing.countryRequired":
-    "Give your billing country before you pay. Update OpenBot to do this, then try again.",
+    "Give your billing country before you pay. Update Pokebots to do this, then try again.",
   "error.billing.detailsInvalid": "Check the country and the VAT ID. The VAT ID must be one of the selected country.",
   "error.billing.vatIdInvalid":
     "The EU VAT system does not know this VAT ID. Check the number, or continue without a VAT ID.",

@@ -227,7 +227,7 @@ export const messages = {
   "workflow.discord.server": "サーバー",
   "workflow.discord.chooseServer": "サーバーを選択",
   "workflow.discord.event": "イベント",
-  "workflow.discord.event.mention": "OpenBot へのメンション",
+  "workflow.discord.event.mention": "Pokebots へのメンション",
   "workflow.discord.anyChannel": "すべてのチャンネル",
   "workflow.discord.roles": "ロール",
   "workflow.discord.anyRole": "すべてのロール",

@@ -677,11 +677,11 @@ export const messages = {
   "mobile.server.connectors.github.connectedAs": "@{login} olarak bağlandı",
   "mobile.server.connectors.github.chooseRepositories": "Depoları seç",
   "mobile.server.connectors.github.repositoriesFooter":
-    "Ajanlar yalnızca OpenBot GitHub Uygulamasının yüklü olduğu depoları kullanabilir.",
+    "Ajanlar yalnızca Pokebots GitHub Uygulamasının yüklü olduğu depoları kullanabilir.",
   "mobile.server.connectors.github.repositoriesTitle": "Depolar",
   "mobile.server.connectors.github.repositoriesLoading": "Depolar GitHub'dan okunuyor",
   "mobile.server.connectors.github.repositoriesFailed": "Pokebots depoları GitHub'dan okuyamadı.",
-  "mobile.server.connectors.github.noRepositories": "OpenBot GitHub Uygulaması henüz bir depoya yüklenmedi.",
+  "mobile.server.connectors.github.noRepositories": "Pokebots GitHub Uygulaması henüz bir depoya yüklenmedi.",
   "mobile.server.connectors.github.moreRepositories": {
     one: "Ve {count} depo daha",
     other: "Ve {count} depo daha",
@@ -695,7 +695,7 @@ export const messages = {
   "mobile.server.connectors.github.disconnect": "GitHub bağlantısını kes",
   "mobile.server.connectors.github.disconnectTitle": "GitHub bağlantısı kesilsin mi?",
   "mobile.server.connectors.github.disconnectBody":
-    "Bu işlem @{login} oturumunu {host} üzerinden kaldırır ve tüm ajanlar GitHub araçlarını, gh ve git erişimini kaybeder. Ardından OpenBot yetkisini kaldırabileceğiniz GitHub açılır.",
+    "Bu işlem @{login} oturumunu {host} üzerinden kaldırır ve tüm ajanlar GitHub araçlarını, gh ve git erişimini kaybeder. Ardından Pokebots yetkisini kaldırabileceğiniz GitHub açılır.",
   "mobile.server.connectors.onePassword.title": "1Password",
   "mobile.server.connectors.onePassword.description":
     "Ayrı bir 1Password kasasını bir hizmet hesabıyla {host} üzerindeki Pokebots ile paylaşın; böylece {host} üzerindeki ajanlar onun tarayıcısında sitelere oturum açabilir.",
@@ -785,14 +785,14 @@ export const messages = {
     "{host} kendi erişim anahtarını siler. Kasa ve içindeki girişler {name} hesabınızda kalır.",
   "mobile.server.connectors.slack.title": "Slack",
   "mobile.server.connectors.slack.description":
-    "Kullanıcılar Slack'te @OpenBot'tan bahseder veya doğrudan mesaj gönderir. Slack Düzenleyicisi doğru ajana sorar ve yanıtlar.",
+    "Kullanıcılar Slack'te @Pokebots'tan bahseder veya doğrudan mesaj gönderir. Slack Düzenleyicisi doğru ajana sorar ve yanıtlar.",
   "mobile.server.connectors.slack.attention": {
     one: "{count} çalışma alanı için işlem gerekiyor",
     other: "{count} çalışma alanı için işlem gerekiyor",
   },
   "mobile.server.connectors.slack.connect": "Slack'e bağlan",
   "mobile.server.connectors.slack.connectFooter":
-    "Slack bir tarayıcıda açılır. Sağ üst köşeden çalışma alanını seçin, ardından İzin Ver'e dokunun. OpenBot, OpenBot adında bir uygulama yükler ve bu uygulama her genel kanala katılır.",
+    "Slack bir tarayıcıda açılır. Sağ üst köşeden çalışma alanını seçin, ardından İzin Ver'e dokunun. Pokebots, Pokebots adında bir uygulama yükler ve bu uygulama her genel kanala katılır.",
   "mobile.server.connectors.slack.add": "Çalışma alanı ekle",
   "mobile.server.connectors.slack.limit": {
     one: "En fazla {count} çalışma alanı bağlayabilirsiniz.",
@@ -800,12 +800,12 @@ export const messages = {
   },
   "mobile.server.connectors.slack.workspaceTitle": "Çalışma alanı",
   "mobile.server.connectors.slack.workspaceDescription":
-    "Kullanıcılar @OpenBot'tan bahseder veya doğrudan mesaj gönderir.",
+    "Kullanıcılar @Pokebots'tan bahseder veya doğrudan mesaj gönderir.",
   "mobile.server.connectors.slack.missingScopes":
     "Pokebots Slack'te şu izinlere sahip değil: {scopes}. Çalışma alanı bağlantısını kesin, ardından tekrar bağlayın.",
   "mobile.server.connectors.slack.retryAt": "Slack Pokebots'tan beklemesini istedi. {time} saatinde tekrar deneyecek.",
   "mobile.server.connectors.slack.helpInvalidToken":
-    "Slack artık bu çalışma alanında OpenBot'u kabul etmiyor. Kaldırılmış olabilir. Çalışma alanını tekrar bağlayın.",
+    "Slack artık bu çalışma alanında Pokebots'u kabul etmiyor. Kaldırılmış olabilir. Çalışma alanını tekrar bağlayın.",
   "mobile.server.connectors.slack.helpSecretStorage":
     "Pokebots {host} üzerindeki kayıtlı belirteçleri okuyamıyor. Çalışma alanı bağlantısını kesin, ardından tekrar bağlayın.",
   "mobile.server.connectors.slack.helpRelay":
@@ -818,7 +818,7 @@ export const messages = {
   "mobile.server.connectors.slack.orchestratorNone": "Slack Düzenleyicisini ekleyin, aksi takdirde Slack yanıt alamaz.",
   "mobile.server.connectors.slack.addAgent": "Slack Düzenleyicisini ekle",
   "mobile.server.connectors.slack.note":
-    "Pokebots her genel kanala ve her yeni kanala kendiliğinden katılır. Özel bir kanal için onu davet edin: /invite @OpenBot.",
+    "Pokebots her genel kanala ve her yeni kanala kendiliğinden katılır. Özel bir kanal için onu davet edin: /invite @Pokebots.",
   "mobile.server.connectors.slack.disconnectTitle": "{workspace} bağlantısı kesilsin mi?",
   "mobile.server.connectors.slack.disconnectBody":
     "Pokebots {workspace} içinde yanıt vermeyi durdurur ve Slack belirtecini {host} sunucusundan kaldırır.",
@@ -826,18 +826,18 @@ export const messages = {
   "mobile.server.connectors.slack.disconnectDeleted": "Slack Düzenleyicisi ve konuşmaları Pokebots'tan silinir.",
   "mobile.server.connectors.slack.agentPromptTitle": "Slack Düzenleyicisi eklensin mi?",
   "mobile.server.connectors.slack.agentPromptBody":
-    "Bu yeni ajan, {workspace} içinde @OpenBot'a gönderilen her şeyi yanıtlar.",
+    "Bu yeni ajan, {workspace} içinde @Pokebots'a gönderilen her şeyi yanıtlar.",
   "mobile.server.connectors.slack.installFailed": "Slack yüklemeyi tamamlamadı. Tekrar deneyin.",
   "mobile.server.connectors.discord.title": "Discord",
   "mobile.server.connectors.discord.description":
-    "Kullanıcılar bir Discord sunucusunun kanalında @OpenBot'tan bahseder. Discord Düzenleyicisi doğru ajana sorar ve yanıtlar.",
+    "Kullanıcılar bir Discord sunucusunun kanalında @Pokebots'tan bahseder. Discord Düzenleyicisi doğru ajana sorar ve yanıtlar.",
   "mobile.server.connectors.discord.attention": {
     one: "{count} Discord sunucusu için işlem gerekiyor",
     other: "{count} Discord sunucusu için işlem gerekiyor",
   },
   "mobile.server.connectors.discord.connect": "Discord'a bağlan",
   "mobile.server.connectors.discord.connectFooter":
-    "Discord bir tarayıcıda açılır. Discord sunucusunu seçin, ardından Yetkilendir'e dokunun. OpenBot, OpenBot adında bir bot ekler.",
+    "Discord bir tarayıcıda açılır. Discord sunucusunu seçin, ardından Yetkilendir'e dokunun. Pokebots, Pokebots adında bir bot ekler.",
   "mobile.server.connectors.discord.add": "Discord sunucusu ekle",
   "mobile.server.connectors.discord.limit": {
     one: "En fazla {count} Discord sunucusu bağlayabilirsiniz.",
@@ -845,13 +845,13 @@ export const messages = {
   },
   "mobile.server.connectors.discord.workspaceTitle": "Discord sunucusu",
   "mobile.server.connectors.discord.workspaceDescription":
-    "Bir kanalda @OpenBot'tan bahsedin. Devam etmek için OpenBot'a yanıt verin.",
+    "Bir kanalda @Pokebots'tan bahsedin. Devam etmek için Pokebots'a yanıt verin.",
   "mobile.server.connectors.discord.missingScopes":
     "Pokebots Discord'da şu izinlere sahip değil: {scopes}. Discord sunucusu bağlantısını kesin, ardından tekrar bağlayın.",
   "mobile.server.connectors.discord.retryAt":
     "Discord Pokebots'tan beklemesini istedi. {time} saatinde tekrar deneyecek.",
   "mobile.server.connectors.discord.helpInvalidToken":
-    "Discord artık bu Discord sunucusunda OpenBot'u kabul etmiyor. Kaldırılmış olabilir. Discord sunucusunu tekrar bağlayın.",
+    "Discord artık bu Discord sunucusunda Pokebots'u kabul etmiyor. Kaldırılmış olabilir. Discord sunucusunu tekrar bağlayın.",
   "mobile.server.connectors.discord.helpSecretStorage":
     "Pokebots {host} üzerindeki kayıtlı belirteçleri okuyamıyor. Discord sunucusu bağlantısını kesin, ardından tekrar bağlayın.",
   "mobile.server.connectors.discord.helpRelay":
@@ -872,7 +872,7 @@ export const messages = {
   "mobile.server.connectors.discord.disconnectDeleted": "Discord Düzenleyicisi ve konuşmaları Pokebots'tan silinir.",
   "mobile.server.connectors.discord.agentPromptTitle": "Discord Düzenleyicisi eklensin mi?",
   "mobile.server.connectors.discord.agentPromptBody":
-    "Bu yeni ajan, {workspace} içinde @OpenBot'a gönderilen her şeyi yanıtlar.",
+    "Bu yeni ajan, {workspace} içinde @Pokebots'a gönderilen her şeyi yanıtlar.",
   "mobile.server.connectors.discord.installFailed": "Discord yetkilendirmeyi tamamlamadı. Tekrar deneyin.",
   "mobile.server.connectors.telegram.title": "Telegram",
   "mobile.server.connectors.telegram.description":
@@ -1361,13 +1361,13 @@ export const messages = {
     "Bu derleme için sürüm denetimleri kullanılamıyor. Ana makine yöneticisinden uyumlu bir sürümü kontrol etmesini isteyin.",
   "mobile.server.update.externalTitle": "Kurulumu ana makine yönetir",
   "mobile.server.update.path.hostManager":
-    "OpenBot Host Manager, tüm kullanıcılar boştayken güncellemeleri yükler. Bir güncelleme başlamazsa ana makine yöneticisinden Host Manager durumunu kontrol etmesini isteyin.",
+    "Pokebots Host Manager, tüm kullanıcılar boştayken güncellemeleri yükler. Bir güncelleme başlamazsa ana makine yöneticisinden Host Manager durumunu kontrol etmesini isteyin.",
   "mobile.server.update.path.hosted":
     "Barındırılan hizmet güncellemeleri arka planda indirir. İndirilen bir güncelleme, sunucu bir sonraki başlatılışında başlar. Sunucuyu durdurup sürdürmeden önce etkin çalışmanın bitmesini bekleyin. Sunucu eski bir sürümde kalırsa ana makine yöneticisiyle iletişime geçin.",
   "mobile.server.update.path.system":
     "En son sürümü yüklemek için ana makinede sudo openbot update komutunu çalıştırın. Bu komut Pokebots'u durdurur. Önce etkin çalışmanın bitmesini bekleyin. Otomatik indirmeler bir sonraki önyüklemede yüklenir.",
   "mobile.server.update.path.container":
-    "Docker ana makinesinde yeni OpenBot görüntüsünü çekin ve kapsayıcıyı aynı veri birimleriyle yeniden oluşturun. Önce etkin çalışmanın bitmesini bekleyin. Verilerinizi korumak için mevcut birimleri saklayın.",
+    "Docker ana makinesinde yeni Pokebots görüntüsünü çekin ve kapsayıcıyı aynı veri birimleriyle yeniden oluşturun. Önce etkin çalışmanın bitmesini bekleyin. Verilerinizi korumak için mevcut birimleri saklayın.",
   "mobile.server.update.path.manual":
     "Bu kurulum kendini değiştiremez. Ana makine yöneticisinden uyumlu sürümü github.com/nightly-labs/openbot/releases adresinden yüklemesini isteyin. Mevcut Pokebots verilerini saklayın.",
   "mobile.server.update.path.unavailable":
@@ -1391,7 +1391,7 @@ export const messages = {
     "{name} kullanıcısı sunucu üyelerinin güncelleme yapmasını kapattı. Pokebots uygulamasını güncellemesini veya ayarı açmasını isteyin.",
   "mobile.server.update.managedTitle": "Güncellemeleri Pokebots Host Manager yönetiyor",
   "mobile.server.update.managedDescription":
-    "OpenBot Host Manager, {name} sunucusunu günceller. Ana makine yöneticisiyle iletişime geçin.",
+    "Pokebots Host Manager, {name} sunucusunu günceller. Ana makine yöneticisiyle iletişime geçin.",
   "mobile.server.update.unsupportedTitle": "{name} kendini güncelleyemiyor",
   "mobile.server.update.unsupportedDescription":
     "Bu Pokebots derlemesinde güncelleyici yok. {name} üzerine yeni bir sürüm yükleyin.",

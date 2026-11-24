@@ -230,7 +230,7 @@ export const messages = {
   "workflow.discord.server": "服务器",
   "workflow.discord.chooseServer": "选择服务器",
   "workflow.discord.event": "事件",
-  "workflow.discord.event.mention": "提及 OpenBot",
+  "workflow.discord.event.mention": "提及 Pokebots",
   "workflow.discord.anyChannel": "任意频道",
   "workflow.discord.roles": "拥有身份组",
   "workflow.discord.anyRole": "任意身份组",

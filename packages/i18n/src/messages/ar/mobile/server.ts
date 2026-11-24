@@ -961,7 +961,7 @@ export const messages = {
   "mobile.server.connectors.github.disconnect": "قطع اتصال GitHub",
   "mobile.server.connectors.github.disconnectTitle": "هل تريد قطع اتصال GitHub؟",
   "mobile.server.connectors.github.disconnectBody":
-    "يزيل هذا تسجيل دخول @{login} من {host}، ويفقد كل وكيل أدوات GitHub وgh وgit. ثم يُفتح GitHub، حيث يمكنك إلغاء وصول OpenBot.",
+    "يزيل هذا تسجيل دخول @{login} من {host}، ويفقد كل وكيل أدوات GitHub وgh وgit. ثم يُفتح GitHub، حيث يمكنك إلغاء وصول Pokebots.",
   "mobile.server.connectors.onePassword.title": "1Password",
   "mobile.server.connectors.onePassword.description":
     "شارك خزنة 1Password مخصصة مع Pokebots على {host} عبر حساب خدمة، ليتمكن الوكلاء على {host} من تسجيل الدخول إلى المواقع في متصفحه.",
@@ -1064,7 +1064,7 @@ export const messages = {
     "يحذف {host} مفتاح الوصول الخاص به. تبقى الخزنة وبيانات تسجيل الدخول فيها في حساب {name} الخاص بك.",
   "mobile.server.connectors.slack.title": "Slack",
   "mobile.server.connectors.slack.description":
-    "يذكر الأشخاص @OpenBot في Slack أو يرسلون إليه رسالة مباشرة. يسأل Slack Orchestrator الوكيل المناسب ويرد.",
+    "يذكر الأشخاص @Pokebots في Slack أو يرسلون إليه رسالة مباشرة. يسأل Slack Orchestrator الوكيل المناسب ويرد.",
   "mobile.server.connectors.slack.attention": {
     zero: "لا توجد مساحات عمل تحتاج إلى انتباه",
     one: "مساحة عمل واحدة تحتاج إلى انتباه",
@@ -1075,7 +1075,7 @@ export const messages = {
   },
   "mobile.server.connectors.slack.connect": "ربط Slack",
   "mobile.server.connectors.slack.connectFooter":
-    "يُفتح Slack في متصفح. اختر مساحة العمل في الزاوية العلوية، ثم Allow. يثبّت OpenBot تطبيقًا واحدًا باسم OpenBot، وينضم إلى كل قناة عامة.",
+    "يُفتح Slack في متصفح. اختر مساحة العمل في الزاوية العلوية، ثم Allow. يثبّت Pokebots تطبيقًا واحدًا باسم Pokebots، وينضم إلى كل قناة عامة.",
   "mobile.server.connectors.slack.add": "إضافة مساحة عمل",
   "mobile.server.connectors.slack.limit": {
     zero: "لا يمكنك ربط أي مساحة عمل.",
@@ -1086,12 +1086,12 @@ export const messages = {
     other: "يمكنك ربط {count} مساحة عمل كحد أقصى.",
   },
   "mobile.server.connectors.slack.workspaceTitle": "مساحة العمل",
-  "mobile.server.connectors.slack.workspaceDescription": "يذكر الأشخاص @OpenBot أو يرسلون إليه رسالة مباشرة.",
+  "mobile.server.connectors.slack.workspaceDescription": "يذكر الأشخاص @Pokebots أو يرسلون إليه رسالة مباشرة.",
   "mobile.server.connectors.slack.missingScopes":
     "لا يملك Pokebots هذه الأذونات في Slack: {scopes}. اقطع اتصال مساحة العمل، ثم اربطها مجددًا.",
   "mobile.server.connectors.slack.retryAt": "طلب Slack من Pokebots الانتظار. سيعيد المحاولة في {time}.",
   "mobile.server.connectors.slack.helpInvalidToken":
-    "لم يعد Slack يقبل OpenBot في مساحة العمل هذه. ربما أُلغي تثبيته. اربط مساحة العمل مجددًا.",
+    "لم يعد Slack يقبل Pokebots في مساحة العمل هذه. ربما أُلغي تثبيته. اربط مساحة العمل مجددًا.",
   "mobile.server.connectors.slack.helpSecretStorage":
     "لا يستطيع Pokebots قراءة الرموز المميزة المحفوظة على {host}. اقطع اتصال مساحة العمل، ثم اربطها مجددًا.",
   "mobile.server.connectors.slack.helpRelay":
@@ -1103,7 +1103,7 @@ export const messages = {
   "mobile.server.connectors.slack.orchestratorNone": "أضف Slack Orchestrator، وإلا فلن يتلقى Slack أي إجابة.",
   "mobile.server.connectors.slack.addAgent": "إضافة Slack Orchestrator",
   "mobile.server.connectors.slack.note":
-    "ينضم Pokebots إلى كل قناة عامة بنفسه، وإلى كل قناة جديدة. للقناة الخاصة، ادعه: /invite @OpenBot.",
+    "ينضم Pokebots إلى كل قناة عامة بنفسه، وإلى كل قناة جديدة. للقناة الخاصة، ادعه: /invite @Pokebots.",
   "mobile.server.connectors.slack.disconnectTitle": "هل تريد قطع اتصال {workspace}؟",
   "mobile.server.connectors.slack.disconnectBody":
     "يتوقف Pokebots عن الرد في {workspace} ويزيل رمز Slack المميز من {host}.",
@@ -1111,11 +1111,11 @@ export const messages = {
   "mobile.server.connectors.slack.disconnectDeleted": "يُحذف Slack Orchestrator ومحادثاته من Pokebots.",
   "mobile.server.connectors.slack.agentPromptTitle": "هل تريد إضافة Slack Orchestrator؟",
   "mobile.server.connectors.slack.agentPromptBody":
-    "يرد هذا الوكيل الجديد على كل ما يرسله الأشخاص إلى @OpenBot في {workspace}.",
+    "يرد هذا الوكيل الجديد على كل ما يرسله الأشخاص إلى @Pokebots في {workspace}.",
   "mobile.server.connectors.slack.installFailed": "لم يُكمل Slack التثبيت. أعد المحاولة.",
   "mobile.server.connectors.discord.title": "Discord",
   "mobile.server.connectors.discord.description":
-    "يذكر الأشخاص @OpenBot في قناة على خادم Discord. يسأل Discord Orchestrator الوكيل المناسب ويرد.",
+    "يذكر الأشخاص @Pokebots في قناة على خادم Discord. يسأل Discord Orchestrator الوكيل المناسب ويرد.",
   "mobile.server.connectors.discord.attention": {
     zero: "لا توجد خوادم Discord تحتاج إلى انتباه",
     one: "خادم Discord واحد يحتاج إلى انتباه",
@@ -1126,7 +1126,7 @@ export const messages = {
   },
   "mobile.server.connectors.discord.connect": "ربط Discord",
   "mobile.server.connectors.discord.connectFooter":
-    "يُفتح Discord في متصفح. اختر خادم Discord، ثم Authorize. يضيف OpenBot بوتًا واحدًا باسم OpenBot.",
+    "يُفتح Discord في متصفح. اختر خادم Discord، ثم Authorize. يضيف Pokebots بوتًا واحدًا باسم Pokebots.",
   "mobile.server.connectors.discord.add": "إضافة خادم Discord",
   "mobile.server.connectors.discord.limit": {
     zero: "لا يمكنك ربط أي خادم Discord.",
@@ -1137,12 +1137,12 @@ export const messages = {
     other: "يمكنك ربط {count} خادم Discord كحد أقصى.",
   },
   "mobile.server.connectors.discord.workspaceTitle": "خادم Discord",
-  "mobile.server.connectors.discord.workspaceDescription": "اذكر @OpenBot في قناة. رد على OpenBot للمتابعة.",
+  "mobile.server.connectors.discord.workspaceDescription": "اذكر @Pokebots في قناة. رد على Pokebots للمتابعة.",
   "mobile.server.connectors.discord.missingScopes":
     "لا يملك Pokebots هذه الأذونات في Discord: {scopes}. اقطع اتصال خادم Discord، ثم اربطه مجددًا.",
   "mobile.server.connectors.discord.retryAt": "طلب Discord من Pokebots الانتظار. سيعيد المحاولة في {time}.",
   "mobile.server.connectors.discord.helpInvalidToken":
-    "لم يعد Discord يقبل OpenBot في خادم Discord هذا. ربما أُزيل. اربط خادم Discord مجددًا.",
+    "لم يعد Discord يقبل Pokebots في خادم Discord هذا. ربما أُزيل. اربط خادم Discord مجددًا.",
   "mobile.server.connectors.discord.helpSecretStorage":
     "لا يستطيع Pokebots قراءة الرموز المميزة المحفوظة على {host}. اقطع اتصال خادم Discord، ثم اربطه مجددًا.",
   "mobile.server.connectors.discord.helpRelay":
@@ -1161,7 +1161,7 @@ export const messages = {
   "mobile.server.connectors.discord.disconnectDeleted": "يُحذف Discord Orchestrator ومحادثاته من Pokebots.",
   "mobile.server.connectors.discord.agentPromptTitle": "هل تريد إضافة Discord Orchestrator؟",
   "mobile.server.connectors.discord.agentPromptBody":
-    "يرد هذا الوكيل الجديد على كل ما يرسله الأشخاص إلى @OpenBot في {workspace}.",
+    "يرد هذا الوكيل الجديد على كل ما يرسله الأشخاص إلى @Pokebots في {workspace}.",
   "mobile.server.connectors.discord.installFailed": "لم يُكمل Discord التفويض. أعد المحاولة.",
   "mobile.server.connectors.telegram.title": "Telegram",
   "mobile.server.connectors.telegram.description":
@@ -1854,13 +1854,13 @@ export const messages = {
     "التحقق من الإصدارات غير متاح لهذا الإصدار. اطلب من مسؤول المضيف التحقق من وجود إصدار متوافق.",
   "mobile.server.update.externalTitle": "المضيف يتحكم في التثبيت",
   "mobile.server.update.path.hostManager":
-    "يثبّت OpenBot Host Manager التحديثات عندما يكون كل المستخدمين في وضع الخمول. اطلب من مسؤول المضيف التحقق من حالة Host Manager إذا لم يبدأ التحديث.",
+    "يثبّت Pokebots Host Manager التحديثات عندما يكون كل المستخدمين في وضع الخمول. اطلب من مسؤول المضيف التحقق من حالة Host Manager إذا لم يبدأ التحديث.",
   "mobile.server.update.path.hosted":
     "تنزّل الخدمة المستضافة التحديثات في الخلفية. يبدأ التحديث المنزّل عند تشغيل الخادم في المرة التالية. انتظر انتهاء العمل النشط قبل إيقاف الخادم واستئنافه. إذا بقي على إصدار قديم، فاتصل بمسؤول المضيف.",
   "mobile.server.update.path.system":
     "على المضيف، شغّل sudo openbot update لتثبيت أحدث إصدار. يوقف هذا الأمر Pokebots. انتظر انتهاء العمل النشط أولًا. تُثبّت التنزيلات التلقائية عند الإقلاع التالي.",
   "mobile.server.update.path.container":
-    "على مضيف Docker، اسحب صورة OpenBot الجديدة وأنشئ الحاوية مجددًا بوحدات تخزين البيانات نفسها. انتظر انتهاء العمل النشط أولًا. أبقِ وحدات التخزين الحالية للحفاظ على بياناتك.",
+    "على مضيف Docker، اسحب صورة Pokebots الجديدة وأنشئ الحاوية مجددًا بوحدات تخزين البيانات نفسها. انتظر انتهاء العمل النشط أولًا. أبقِ وحدات التخزين الحالية للحفاظ على بياناتك.",
   "mobile.server.update.path.manual":
     "لا يستطيع هذا التثبيت استبدال نفسه. اطلب من مسؤول المضيف تثبيت الإصدار المتوافق من github.com/nightly-labs/openbot/releases. أبقِ بيانات Pokebots الحالية.",
   "mobile.server.update.path.unavailable": "هذا إصدار تطوير. استخدم إصدار Pokebots مثبّتًا للتحقق من وجود تحديثات.",
@@ -1882,7 +1882,7 @@ export const messages = {
   "mobile.server.update.disabledDescription":
     "عطّل مستخدم {name} التحديثات من أعضاء الخادم. اطلب منه تحديث Pokebots أو تفعيل الإعداد.",
   "mobile.server.update.managedTitle": "يتحكم Host Manager في التحديثات",
-  "mobile.server.update.managedDescription": "يحدّث OpenBot Host Manager {name}. اتصل بمسؤول المضيف.",
+  "mobile.server.update.managedDescription": "يحدّث Pokebots Host Manager {name}. اتصل بمسؤول المضيف.",
   "mobile.server.update.unsupportedTitle": "لا يستطيع {name} تحديث نفسه",
   "mobile.server.update.unsupportedDescription":
     "لا يحتوي إصدار Pokebots هذا على أداة تحديث. ثبّت إصدارًا جديدًا على {name}.",

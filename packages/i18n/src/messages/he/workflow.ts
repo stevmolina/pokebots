@@ -223,7 +223,7 @@ export const messages = {
   "workflow.discord.server": "שרת",
   "workflow.discord.chooseServer": "בחירת שרת",
   "workflow.discord.event": "אירוע",
-  "workflow.discord.event.mention": "OpenBot תויג",
+  "workflow.discord.event.mention": "Pokebots תויג",
   "workflow.discord.anyChannel": "כל ערוץ",
   "workflow.discord.roles": "בעל תפקיד",
   "workflow.discord.anyRole": "כל תפקיד",

@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { type SpawnSyncReturns, spawnSync } from "node:child_process";
 import { mkdir } from "node:fs/promises";
-import { brandModule } from "./brand-layer";
+import { withServiceDefaults } from "./service-defaults";
 
 const index = await Bun.file("src/main/index.ts").text();
 const startupImport = 'import "./service-endpoint-environment";';
@@ -38,8 +38,7 @@ const entry = `
 import "./src/main/service-endpoint-environment";
 process.stdout.write(JSON.stringify([process.env.OPENBOT_AUTH_API_URL, process.env.OPENBOT_REMOTE_SIGNAL_URL]));
 `;
-const branded = brandModule("src/main/index.ts", entry, {
-  name: "Pokebots",
+const branded = withServiceDefaults("src/main/index.ts", entry, {
   authApiUrl: authDefault,
   signalUrl: signalDefault,
 });
@@ -47,7 +46,7 @@ assert.ok(branded);
 
 const results: string[] = [];
 for (const test of cases) {
-  const run: SpawnSyncReturns<string> = spawnSync(process.execPath, ["--no-env-file", "-e", branded.code], {
+  const run: SpawnSyncReturns<string> = spawnSync(process.execPath, ["--no-env-file", "-e", branded], {
     env: test.env,
     encoding: "utf8",
   });

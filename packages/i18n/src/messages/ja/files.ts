@@ -129,7 +129,7 @@ export const messages = {
   "files.storage.largestChats": "サイズの大きいチャット",
   "files.storage.files": "ファイル",
   "files.storage.rowLabel": "{name}、{size}",
-  "files.storage.measuringFolder": "OpenBot フォルダーを計測しています…",
+  "files.storage.measuringFolder": "Pokebots フォルダーを計測しています…",
   "files.storage.measured": "{time}に計測",
   "files.storage.free": "このディスクの空き容量 {size}",
   "files.storage.justNow": "たった今",

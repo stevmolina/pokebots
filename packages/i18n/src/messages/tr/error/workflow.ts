@@ -73,9 +73,9 @@ export const messages = {
   "error.workflow.githubChoseNothing": "Model bu depodan hiçbir etiket veya kişi seçmedi.",
   "error.workflow.githubNotConnected": "Bu iş akışını çalıştıran bilgisayarda GitHub'ı bağlayın.",
   "error.workflow.githubNoAccess":
-    "OpenBot GitHub Uygulaması bu depoyu veya öğeyi göremiyor. GitHub'ı açın ve uygulamaya erişim verin.",
+    "Pokebots GitHub Uygulaması bu depoyu veya öğeyi göremiyor. GitHub'ı açın ve uygulamaya erişim verin.",
   "error.workflow.githubNoWrite":
-    "OpenBot GitHub Uygulaması bu depoyu değiştiremiyor. GitHub'ı açın ve uygulamaya erişim verin.",
+    "Pokebots GitHub Uygulaması bu depoyu değiştiremiyor. GitHub'ı açın ve uygulamaya erişim verin.",
   "error.workflow.githubLocked": "Bu konuşma GitHub'da kilitli.",
   "error.workflow.githubRefused": "GitHub değişikliği reddetti: {detail}",
   "error.workflow.githubUnreachable": "Pokebots GitHub'a ulaşamadı. Adımı yeniden çalıştırın.",

@@ -53,7 +53,7 @@ export const messages = defineMessages("mobile.app", {
   "mobile.app.update.later": "Later",
   "mobile.app.update.failedTitle": "Could not update",
   "mobile.app.update.restartFailed": "Close Pokebots and open it again to finish the update.",
-  "mobile.app.update.storeFailed": "Open the App Store or Google Play and update OpenBot there.",
+  "mobile.app.update.storeFailed": "Open the App Store or Google Play and update Pokebots there.",
   "mobile.app.update.whatsNew": "What's new",
   "mobile.app.update.hideWhatsNew": "Hide",
   "mobile.app.update.releaseTitle": "Pokebots {version}",

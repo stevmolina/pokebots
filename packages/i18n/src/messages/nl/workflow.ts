@@ -219,7 +219,7 @@ export const messages = {
   "workflow.discord.server": "Server",
   "workflow.discord.chooseServer": "Kies server",
   "workflow.discord.event": "Gebeurtenis",
-  "workflow.discord.event.mention": "OpenBot genoemd",
+  "workflow.discord.event.mention": "Pokebots genoemd",
   "workflow.discord.anyChannel": "Elk kanaal",
   "workflow.discord.roles": "Heeft rol",
   "workflow.discord.anyRole": "Elke rol",

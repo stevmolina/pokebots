@@ -572,13 +572,13 @@ export const messages = {
     "La ricerca delle versioni non è disponibile per questa build. Chiedi all'amministratore dell'host di cercare una versione compatibile.",
   "server.update.externalTitle": "L'host controlla l'installazione",
   "server.update.path.hostManager":
-    "OpenBot Host Manager installa gli aggiornamenti quando tutti gli utenti sono inattivi. Se un aggiornamento non parte, chiedi all'amministratore dell'host di controllare lo stato di Host Manager.",
+    "Pokebots Host Manager installa gli aggiornamenti quando tutti gli utenti sono inattivi. Se un aggiornamento non parte, chiedi all'amministratore dell'host di controllare lo stato di Host Manager.",
   "server.update.path.hosted":
     "Il servizio ospitato scarica gli aggiornamenti in background. Un aggiornamento scaricato parte al prossimo avvio del server. Attendi la fine del lavoro in corso prima di fermare e riprendere il server. Se resta su una versione vecchia, contatta l'amministratore dell'host.",
   "server.update.path.system":
     "Sull'host, esegui sudo openbot update per installare l'ultima versione. Questo comando ferma Pokebots. Attendi prima la fine del lavoro in corso. Gli aggiornamenti scaricati automaticamente si installano al prossimo avvio.",
   "server.update.path.container":
-    "Sull'host Docker, scarica la nuova immagine di OpenBot e crea di nuovo il container con gli stessi volumi di dati. Attendi prima la fine del lavoro in corso. Mantieni i volumi esistenti per conservare i tuoi dati.",
+    "Sull'host Docker, scarica la nuova immagine di Pokebots e crea di nuovo il container con gli stessi volumi di dati. Attendi prima la fine del lavoro in corso. Mantieni i volumi esistenti per conservare i tuoi dati.",
   "server.update.path.manual":
     "Questa installazione non può aggiornarsi da sola. Chiedi all'amministratore dell'host di installare la versione compatibile da github.com/nightly-labs/openbot/releases. Mantieni i dati di Pokebots esistenti.",
   "server.update.path.unavailable":
@@ -601,7 +601,7 @@ export const messages = {
   "server.update.disabledDescription":
     "L'utente di {name} ha disattivato gli aggiornamenti dai membri del server. Chiedigli di aggiornare Pokebots o di riattivare l'impostazione.",
   "server.update.managedTitle": "Gli aggiornamenti sono controllati da un Host Manager",
-  "server.update.managedDescription": "OpenBot Host Manager aggiorna {name}. Contatta l'amministratore dell'host.",
+  "server.update.managedDescription": "Pokebots Host Manager aggiorna {name}. Contatta l'amministratore dell'host.",
   "server.update.unsupportedTitle": "{name} non può aggiornarsi da solo",
   "server.update.unsupportedDescription":
     "Questa build di Pokebots non ha un sistema di aggiornamento. Installa una nuova versione su {name}.",

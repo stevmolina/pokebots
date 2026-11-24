@@ -132,7 +132,7 @@ export const messages = {
   "files.storage.largestChats": "En büyük sohbetler",
   "files.storage.files": "Dosyalar",
   "files.storage.rowLabel": "{name}, {size}",
-  "files.storage.measuringFolder": "OpenBot klasörü ölçülüyor…",
+  "files.storage.measuringFolder": "Pokebots klasörü ölçülüyor…",
   "files.storage.measured": "Ölçüldü: {time}",
   "files.storage.free": "Bu diskte {size} boş alan",
   "files.storage.justNow": "az önce",

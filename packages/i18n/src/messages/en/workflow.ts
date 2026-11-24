@@ -229,7 +229,7 @@ export const messages = defineMessages("workflow", {
   "workflow.discord.server": "Server",
   "workflow.discord.chooseServer": "Choose server",
   "workflow.discord.event": "Event",
-  "workflow.discord.event.mention": "OpenBot mentioned",
+  "workflow.discord.event.mention": "Pokebots mentioned",
   "workflow.discord.anyChannel": "Any channel",
   "workflow.discord.roles": "Has role",
   "workflow.discord.anyRole": "Any role",

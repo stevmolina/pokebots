@@ -34,7 +34,7 @@ In `stevmolina/pokebots`, open **Actions → Pokebots release dry run → Run wo
 select a branch. GitHub makes the manual trigger available after the workflow reaches the
 default branch.
 
-The run checks release text, version comparison fixtures, the Pokebots brand layer, and the
+The run checks release text, version comparison fixtures, the Pokebots text and service defaults, and the
 custom desktop package config. Download the
 `pokebots-release-dry-run-<run-id>-<attempt>` Actions artifact for the commit, version, check
 reports, package config, license, notices and SHA-256 checksums. The artifact expires after seven
@@ -106,8 +106,7 @@ These still name upstream and wait for a Pokebots target:
   SHA-256. `remote-desktop-runtime.yml` can build a Pokebots copy. Choose one.
 - `apps/mobile/app.json` names the Expo owner `openbot`, `updates.openbot.run` and the
   `applinks:openbot.run` domain. The personal iPhone build turns these off.
-- `package.json`, `scripts/github-app/manifest.json`, `scripts/release-health.ts` and
-  `scripts/brand-layer.ts` name `nightly-labs/openbot` for links, the GitHub App and feedback. The
+- `package.json`, `scripts/github-app/manifest.json`, `scripts/release-health.ts` name `nightly-labs/openbot` for links and the GitHub App. The
   rename pull requests own these.
 - `ci.yml` checks out the private `nightly-labs/openbot-laser-flow` repository only when the secret
   `LASER_FLOW_DEPLOY_KEY` exists. Pokebots has no such secret, so the step is skipped.
