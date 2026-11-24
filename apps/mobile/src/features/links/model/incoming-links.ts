@@ -36,8 +36,8 @@ function parseIncomingLink(value: string): IncomingLink {
 }
 
 /**
- * The session is not loaded when the system opens a link, so an `openbot://join` link for any
- * self-hosted account service counts as an invitation here. The add-server screen checks it again
+ * The session is not loaded when the system opens a link, so `openbot://join` and `pokebots://join`
+ * links for self-hosted account services count as invitations here. The add-server screen checks them
  * with the service of the session, and refuses a link for another service.
  */
 function isInviteLink(value: string): boolean {
@@ -49,7 +49,7 @@ function isInviteLink(value: string): boolean {
   }
   try {
     const url = new URL(value);
-    if (url.protocol !== "openbot:") return false;
+    if (url.protocol !== "openbot:" && url.protocol !== "pokebots:") return false;
     parseInviteUrl(value, { selfHostedApiOrigin: selfHostedApiOrigin(url.searchParams.get("api") ?? undefined) });
     return true;
   } catch {

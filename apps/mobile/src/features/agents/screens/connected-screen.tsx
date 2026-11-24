@@ -83,8 +83,10 @@ import {
   useHomeSearch,
 } from "@/features/search/components/home-search";
 import { setHomeSearchUnavailable } from "@/features/search/model/home-search-request";
+import { AllMachinesList, MachineChips, useAllMachinesShown } from "@/features/servers/components/all-machines";
 import { useAppDrawer } from "@/features/servers/components/app-drawer-shell";
 import { PlanLimitsHeaderButton } from "@/features/servers/components/plan-limits-header-button";
+import { loadAllMachines, useAllMachines } from "@/features/servers/model/all-machines";
 import { usePlanLimits } from "@/features/servers/model/plan-limits";
 import { saveChatOrderPreference, useChatOrderPreference } from "@/features/settings/model/chat-order";
 import { ConnectionHeaderStatus } from "@/features/workspace/components/connection-header-status";
@@ -408,10 +410,15 @@ function openFromMenu(href: Href): void {
 export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "pane" }) {
   const pane = variant === "pane";
   const { t, sourceText } = useText();
-  // Settings > Appearance > New design: the real list in the calm look of the design preview. The pane
-  // of a wide window keeps the current look.
-  const calm = useCalmLook() && !pane;
+  // The calm look is the only look, also in the pane of a wide window.
+  const calm = useCalmLook();
   const calmReady = useCalmLookStore((state) => state.ready);
+  // All machines: one list of the agents of every server, as on the desktop.
+  const allMachines = useAllMachinesShown();
+  const allMachinesReady = useAllMachines((state) => state.ready);
+  useEffect(() => {
+    void loadAllMachines();
+  }, []);
   const calmColors = usePreviewColors();
   // The calm look shows the user's photo, or initials, in the profile button.
   const { session } = useMobileSession();
@@ -454,7 +461,7 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
   // The list comes in as the loader starts to roll up, so the two overlap instead of waiting in turn.
   // The list also waits for the saved chat order, so that it does not show in one order and then move.
   const chatOrderReady = useChatOrderPreference((state) => state.ready);
-  const listReady = !showLoader && !isLoaderPresent && chatOrderReady && calmReady;
+  const listReady = !showLoader && !isLoaderPresent && chatOrderReady && calmReady && allMachinesReady;
   // A new account gets the first-run flow in place of the empty home. The flow shows its own
   // connection state, so the loader does not cover it.
   const onboarding = useHomeOnboarding();
@@ -1138,6 +1145,32 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
                 style={{ paddingTop: insets.top + CROWD_TOP, paddingBottom: insets.bottom + 12 }}
                 afterWelcome={welcomeHandOff}
               />
+            ) : listReady && allMachines ? (
+              <AllMachinesList
+                header={
+                  <View>
+                    {calm ? (
+                      <>
+                        <AppUpdateSpacer header={updateHeader} headerHeight={headerHeight} />
+                        <View style={{ height: 12 }} />
+                      </>
+                    ) : (
+                      <LargeTitle
+                        scroll={scroll}
+                        title={t("mobile.agent.machines.all")}
+                        above={<AppUpdateSpacer header={updateHeader} headerHeight={headerHeight} />}
+                        accessibilityLabel={t("mobile.agent.machines.all")}
+                        onPress={() => router.push("/machines")}
+                      />
+                    )}
+                    <MachineChips />
+                  </View>
+                }
+                ownsInset={scroll.ownsInset}
+                onScroll={scroll.onScroll}
+                contentTop={scroll.ownsInset ? headerHeight : 0}
+                contentBottom={insets.bottom + HOME_SEARCH_HEIGHT + 24}
+              />
             ) : listReady ? (
               <ChatDragProvider screen={dragScreen}>
                 <Animated.FlatList
@@ -1233,6 +1266,7 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
                           </View>
                         ) : null}
                       </AgentListRowReveal>
+                      <MachineChips />
                       <PinnedAgentsGrid
                         agents={heroAgent ? pinnedAgents.filter((agent) => agent.id !== heroAgent.id) : pinnedAgents}
                         heroAgent={heroAgent}
@@ -1336,7 +1370,7 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
         {onboarding.active ? null : (
           <LargeTitleBar
             scroll={scroll}
-            title={activeServer.name}
+            title={allMachines ? t("mobile.agent.machines.all") : activeServer.name}
             blurTarget={barBlurTarget}
             // Over the backdrop the Android bar has no blur at rest: it fades in and out with the small title.
             androidSurfaceWithTitle={homeCard}

@@ -152,6 +152,7 @@ import type {
   StartWhatsAppLinkInput,
   StorageDisk,
   StorageUsage,
+  ThreadAutoArchiveSetting,
   UninstallSkillInput,
   UpdateAgentAdminSettingsInput,
   UpdateAgentBackupModelsInput,
@@ -427,6 +428,8 @@ export interface MobileWorkspaceContextValue {
   activeServer: MobileServer;
   activeAgents: MobileAgent[];
   hiddenAgents: MobileAgent[];
+  /** The hidden agents of each server, the phone's own list and the host's, for views of every server. */
+  hiddenAgentIdsByServer: Readonly<Record<string, readonly string[]>>;
   pinnedAgentIds: string[];
   pinnedChannelIds: string[];
   hiddenChannelIds: string[];
@@ -566,6 +569,10 @@ export interface MobileWorkspaceContextValue {
   canManageHomeAgentRules: (serverId: string) => boolean;
   loadHomeAgentRules: (serverId: string) => Promise<HomeAgentRulesSetting>;
   setHomeAgentRules: (preference: HomeAgentRulesPreference, serverId: string) => Promise<HomeAgentRulesSetting>;
+  /** An owner or admin of an online host that serves `thread-auto-archive-v1`. The host checks the role again. */
+  canManageThreadAutoArchive: (serverId: string) => boolean;
+  loadThreadAutoArchive: (serverId: string) => Promise<ThreadAutoArchiveSetting>;
+  setThreadAutoArchive: (setting: ThreadAutoArchiveSetting, serverId: string) => Promise<ThreadAutoArchiveSetting>;
   canManageBrowsingMemory: (serverId: string) => boolean;
   /** "Learn from my browsing". Off deletes what the host recorded. */
   loadBrowsingMemory: (serverId: string) => Promise<HostBrowsingMemory>;
@@ -1365,6 +1372,7 @@ type ServerCheckKey =
   | "canManageMemoryReview"
   | "canManageSkillLearning"
   | "canManageHomeAgentRules"
+  | "canManageThreadAutoArchive"
   | "canManageBrowsingMemory"
   | "canManageServerPersonality"
   | "servesServerPersonality"
@@ -1433,6 +1441,7 @@ type MobileWorkspaceStateKey =
   | "activeServer"
   | "activeAgents"
   | "hiddenAgents"
+  | "hiddenAgentIdsByServer"
   | "pinnedAgentIds"
   | "pinnedChannelIds"
   | "pinnedWorkflowIds"

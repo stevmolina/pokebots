@@ -90,6 +90,9 @@ export const messages = {
     "Diese Verbindung kann die Anfragen eines Nebenthreads an andere Agenten nicht anzeigen.",
   "error.team.hostTurnLimitsUnsupported":
     "Diese Verbindung kann die Thread-Limits des Servers nicht anzeigen oder ändern.",
+  "error.team.threadAutoArchiveUnsupported":
+    "Dieser Server unterstützt das automatische Archivieren von Threads nicht.",
+  "error.team.threadAutoArchiveInvalid": "Die Einstellung für das automatische Archivieren von Threads ist ungültig.",
   "error.team.usageLimitUnsupported":
     "Diese Verbindung kann die Nutzungslimits von Agenten nicht anzeigen oder ändern.",
   "error.team.hermesImportUnsupported": "Diese Verbindung kann keine Hermes-Profile vom Server importieren.",

@@ -54,6 +54,7 @@ import { BloubAvatarThumbnail } from "@/features/agents/components/bloub-avatar"
 import { ChatActivityRow, type ChatActivitySpec } from "@/features/chat/components/chat-activity-row";
 import { ChatAppSuggestion } from "@/features/chat/components/chat-app-suggestion";
 import { type ApprovalDecision, approvalTitle, ChatApprovalCard } from "@/features/chat/components/chat-approval-card";
+import { ChatComputerLiveViewCard } from "@/features/chat/components/chat-computer-live-view-card";
 import { ChatExchangeGroup, ChatExchangeMarker } from "@/features/chat/components/chat-exchange-marker";
 import { ChatMarkdown, chatMarkdownHasTable } from "@/features/chat/components/chat-markdown";
 import { ChatMcpSignInCard } from "@/features/chat/components/chat-mcp-sign-in-card";
@@ -980,6 +981,8 @@ const MessageRow = memo(function MessageRow({
         muted={muted}
         onContinue={actions.sendCardText}
       />
+    ) : message.kind === "computer-live-view" ? (
+      <ChatComputerLiveViewCard key={message.id} serverId={serverId} machineId={message.machineId} />
     ) : message.kind === "subagents" ? (
       <ChatSubagents key={message.id} message={message} onOpen={shared.openSubagents} />
     ) : message.kind === "memory-changes" ? (

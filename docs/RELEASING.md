@@ -47,6 +47,71 @@ uses read-only repository access and has no release or deployment jobs.
 The inherited desktop release workflow runs only on `nightly-labs/openbot`. Use the Pokebots
 dry run for this fork. The next sections describe upstream publishing and signing.
 
+## Pokebots versions and tags
+
+Pokebots has its own version sequence. Nothing in this section creates a tag, a release or a
+package. Do those only after the release owner confirms the channel, the signing and the publish
+credentials.
+
+**What clients accept today.** Each number below is from the source on 2026-11-24.
+
+| Surface | Version now | How it is installed | Minimum version |
+| --- | --- | --- | --- |
+| Desktop and host | `0.73.0` (`package.json`) | The Mac app: the launchd job builds a commit of `main` and ignores versions (`scripts/custom-auto-update.sh`). A server: `openbot-hosted-update` moves only to a newer `X.Y.Z`. | `null` (`APP_MINIMUM_VERSIONS`) |
+| iPhone and Android | `1.4.11` (`apps/mobile/app.json`) | The personal iPhone build has no update feed (`apps/mobile/app.config.js` turns OTA off). Store builds need a new store version. | `null` |
+
+**Scheme.**
+
+- Desktop and host share one stable version, `MAJOR.MINOR.PATCH`. The first Pokebots release is
+  `1.0.0`. It is newer than every upstream `0.x` release and than the `0.73.0` that installs have
+  now (`scripts/release-version-cases.json` has the case `1.0.0` against `0.99.99`). A Pokebots
+  number cannot meet an upstream number, so a tag that upstream also uses cannot appear.
+- The tag is `v<version>`, for example `v1.0.0`. `check-frozen-migrations.ts` and the release
+  scripts read only this form. Use `bun run release:major` for `1.0.0`, then `release:minor` and
+  `release:patch`.
+- A release candidate is a branch build or a `--tag <ref>` check. It is not a tag.
+- The iPhone and Android app keep their own sequence. The next store version after `1.4.11` is
+  `1.5.0`. Their tags (`mobile-build/`, `android-v<version>`) do not change.
+- Do not raise a minimum app version until a Pokebots release is at least 60 days old. Then follow
+  [Minimum app versions](#minimum-app-version).
+- When you tag a release, add `"v<version>": "<commit>"` to
+  `scripts/released-migration-sources.json` in the same pull request. The frozen-migration check
+  then keeps that commit even if the tag is moved or deleted.
+
+**Check before the first tag.** Run `bun scripts/release-version-comparator-e2e.ts`. Then test the
+version order on a real Mac install, a real server and a phone build. Do not trust the comparator
+alone.
+
+## Upstream targets that Pokebots does not use
+
+Daily upstream merges are stopped, so these files can still name OpenBot targets. The ones that
+publish or post are gated to `nightly-labs/openbot` with `github.repository`. A gated job is
+skipped in `stevmolina/pokebots`: `release.yml`, `release-regression.yml`, `release-health.yml`,
+`release-upgrade-history.yml`, `status-page.yml`, `provider-cli-canary.yml`, `provider-live-e2e.yml`,
+`publish-android-apk.yml`, `release-android-apk.yml`, `release-android.yml`, `release-ios.yml`,
+`mobile-ota.yml`, `mobile-updates-deploy.yml`, `mobile-release-announcement.yml` and the Cloudflare
+preview upload. The Cloudflare production deploy in `ci.yml` is already off for this repository.
+
+These still name upstream and wait for a Pokebots target:
+
+- `electron-builder.yml` publishes to `nightly-labs/openbot`. Only the gated `release.yml` uses it.
+  The Pokebots build uses `electron-builder.custom.yml`, which has no feed.
+- `scripts/install-server.sh`, `scripts/hosting/openbot-hosted-update`,
+  `scripts/hosting/leaseweb-pool.ts`, `scripts/host-manager-macos.ts` and `nix/package.nix` download
+  the newest upstream release. Pokebots has no release to point them at.
+- `docker/compose.yaml` and `docs/docker.md` name `ghcr.io/nightly-labs/openbot`. The Pokebots image
+  is `ghcr.io/stevmolina/pokebots`, from `server-image.yml`. Point the compose file at it after the
+  image is public and tested.
+- `native-runtime.lock.json` takes the remote desktop runtime from upstream releases, checked by
+  SHA-256. `remote-desktop-runtime.yml` can build a Pokebots copy. Choose one.
+- `apps/mobile/app.json` names the Expo owner `openbot`, `updates.openbot.run` and the
+  `applinks:openbot.run` domain. The personal iPhone build turns these off.
+- `package.json`, `scripts/github-app/manifest.json`, `scripts/release-health.ts` and
+  `scripts/brand-layer.ts` name `nightly-labs/openbot` for links, the GitHub App and feedback. The
+  rename pull requests own these.
+- `ci.yml` checks out the private `nightly-labs/openbot-laser-flow` repository only when the secret
+  `LASER_FLOW_DEPLOY_KEY` exists. Pokebots has no such secret, so the step is skipped.
+
 ## One-time GitHub setup
 
 Create the `release` environment in `nightly-labs/openbot`, then add these environment secrets:

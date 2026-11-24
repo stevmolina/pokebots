@@ -30,6 +30,11 @@ Each migration is one file in `migrations/`: `<4-digit version>-<name>.ts`, whic
 `bun run check:migrations` (CI job Check) compares the folder with the pinned release commits and
 each stable `vMAJOR.MINOR.PATCH` tag. CI fetches history and tags from the Pokebots repository.
 Keep the pinned commits and published release tags available at their original revisions.
+Pokebots builds install from `main` with no tag, so on a pull request the check also freezes every
+migration that the base branch had when the branch left it, and a push to `main` freezes the tip
+before the push. Fix a migration that `main` has with a
+new migration, as for a tagged one. After each Pokebots release, add its tag and commit to
+`scripts/released-migration-sources.json`.
 
 - A file that the tag has must not change, move or go away. `registry.ts` and the `migration.ts`
   type are the only exceptions. This includes helpers in a migration file and `runtime-values.ts`.

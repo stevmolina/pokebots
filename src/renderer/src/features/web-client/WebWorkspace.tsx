@@ -27,6 +27,7 @@ import {
   decodeHostTurnLimits,
   LEGACY_RESPONSE_STYLE,
   type McpSignInState,
+  parseThreadAutoArchiveSetting,
   type RoutineFields,
   type ServerConnectionState,
   type ServerSummary,
@@ -111,6 +112,7 @@ import { SIDE_QUESTION_CAPABILITY } from "@openbot/contracts/team-protocol/side-
 import { SIGN_IN_RELAY_CAPABILITY } from "@openbot/contracts/team-protocol/sign-in-relay-v1";
 import { SKILL_LEARNING_CAPABILITY } from "@openbot/contracts/team-protocol/skill-learning-v1";
 import { STORAGE_CHANNEL_CAPABILITY } from "@openbot/contracts/team-protocol/storage-channel-v1";
+import { THREAD_AUTO_ARCHIVE_ROUTES } from "@openbot/contracts/team-protocol/thread-auto-archive-v1";
 import { THREAD_MESSAGE_SEARCH_CAPABILITY } from "@openbot/contracts/team-protocol/thread-message-search-v1";
 import { VAULT_IMPORT_CAPABILITY } from "@openbot/contracts/team-protocol/vault-import-v1";
 import { VAULT_CAPABILITY } from "@openbot/contracts/team-protocol/vault-v1";
@@ -287,6 +289,7 @@ import { hostMessagingApi } from "../connectors/host-messaging-port";
 import { hostWhatsAppPort } from "../connectors/whatsapp-connector";
 import { Conversation, createConversationController } from "../conversation/Conversation";
 import { clearStoredQueueEdit } from "../conversation/composer-draft";
+import { computerLiveViewOpener, openInBrowserTab } from "../conversation/computer-live-view-opener";
 import { ConversationControllerProvider } from "../conversation/conversation-controller-context";
 import { composerDraftKey } from "../conversation/conversation-keys";
 import type {
@@ -320,6 +323,7 @@ import type { HostMemoryReviewCalls } from "../servers/ServerMemoryReviewSetting
 import type { HostAgentAccessCalls } from "../servers/ServerRolesSection";
 import type { ServerHostedSitesOptions, ServerSettingsSection } from "../servers/ServerSettingsModal";
 import type { HostSkillLearningCalls } from "../servers/ServerSkillLearningSetting";
+import type { HostThreadAutoArchiveCalls } from "../servers/ServerThreadAutoArchiveSetting";
 import type { HostTimezoneCalls } from "../servers/ServerTimezoneSetting";
 import type { HostTurnLimitsCalls } from "../servers/ServerTurnLimitsSetting";
 import type { HostUpdateCalls } from "../servers/ServerUpdatePanel";
@@ -455,7 +459,7 @@ const CONNECTING_STATUS: AgentStatus = {
  * What the web client reports as its build. The browser has no main process to ask, and the web frame
  * uses the macOS geometry.
  */
-const WEB_APP_INFO: AppInfo = { name: "OpenBot", version: "web", platform: "darwin", variant: "production" };
+const WEB_APP_INFO: AppInfo = { name: "Pokebots", version: "web", platform: "darwin", variant: "production" };
 /** Below this width the web shows one pane at a time; see `web-client.css`. */
 const PHONE_QUERY = "(max-width: 720px)";
 /** The account whose queue edit the browser may hold under `QUEUE_EDIT_STORAGE_KEY`. */
@@ -1908,6 +1912,15 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
       hostRequest(serverId)("POST", HOST_TURN_LIMITS_ROUTES.update, decodeHostTurnLimits, {
         turnLimit,
         agentTaskLimit,
+      }),
+  };
+  const hostThreadAutoArchiveCalls: HostThreadAutoArchiveCalls = {
+    getThreadAutoArchive: async (serverId) =>
+      hostRequest(serverId)("POST", THREAD_AUTO_ARCHIVE_ROUTES.settings, parseThreadAutoArchiveSetting, {}),
+    setThreadAutoArchive: async ({ idleDays, mergedPullRequests }, serverId) =>
+      hostRequest(serverId)("POST", THREAD_AUTO_ARCHIVE_ROUTES.update, parseThreadAutoArchiveSetting, {
+        idleDays,
+        mergedPullRequests,
       }),
   };
   const hostPersonalityCalls: HostPersonalityCalls = {
@@ -3803,7 +3816,7 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                       ) || channels.hasUnread()
                     }
                     view={layout.sidebarView()}
-                    serverName={workspace.state.host?.name ?? "OpenBot"}
+                    serverName={workspace.state.host?.name ?? "Pokebots"}
                     largeTitle={phone()}
                     onOpenServers={phone() ? openPhoneServers : undefined}
                     serverUpdate={(() => {
@@ -4184,6 +4197,7 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                         hostUpdate={{ calls: hostUpdateCalls }}
                         hostTimezone={{ calls: hostTimezoneCalls }}
                         hostTurnLimits={{ calls: hostTurnLimitsCalls }}
+                        threadAutoArchive={{ calls: hostThreadAutoArchiveCalls }}
                         hostPersonality={{ calls: hostPersonalityCalls }}
                         hostMemoryLimit={{ calls: hostMemoryLimitCalls }}
                         memoryReview={{ calls: hostMemoryReviewCalls }}
@@ -4607,6 +4621,7 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                   onManageBrowserProfiles={browserProfiles() ? openBrowserProfileSettings : undefined}
                   onOpenNotificationSettings={(serverId) => openNotificationSettings(serverId)}
                   onOpenMcpSignIn={openMcpSignInFromChat()}
+                  onOpenComputerLiveView={computerLiveViewOpener(server(), cloudComputers.machines, openInBrowserTab)}
                   mcpSignedIn={mcpSignedIn}
                   refreshMcpSignIns={refreshMcpSignInsFromChat}
                   onOpenUsage={(trigger) => {

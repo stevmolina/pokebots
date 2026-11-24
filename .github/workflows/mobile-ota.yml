@@ -61,7 +61,8 @@ concurrency:
 jobs:
   update:
     name: ${{ inputs.action }} (${{ inputs.platform }}, ${{ inputs.channel }})
-    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/mobile-hotfix/')
+    # Upstream-only: it posts or publishes to OpenBot targets. Pokebots has no such target yet.
+    if: github.repository == 'nightly-labs/openbot' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/mobile-hotfix/'))
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     environment: release-mobile-ota

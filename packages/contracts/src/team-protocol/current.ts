@@ -209,6 +209,7 @@ import { STORAGE_CHANNEL_CAPABILITY } from "./storage-channel-v1";
 import { STORAGE_DISK_CAPABILITY } from "./storage-disk-v1";
 import { STORAGE_USER_FILES_CAPABILITY } from "./storage-user-files-v1";
 import { TEAM_SUBAGENTS_CAPABILITY } from "./subagents-v1";
+import { THREAD_AUTO_ARCHIVE_CAPABILITY } from "./thread-auto-archive-v1";
 import { THREAD_MESSAGE_SEARCH_CAPABILITY } from "./thread-message-search-v1";
 import { TEAM_UI_BLOCK_AUTO_ANSWER_CAPABILITY } from "./ui-block-auto-answer-v1";
 import { UI_BLOCK_PREVIEW_EDIT_CAPABILITY } from "./ui-block-preview-edit-v1";
@@ -514,6 +515,7 @@ export {
   TEAM_UI_BLOCKS_CAPABILITY,
   TEAM_USAGE_TERTIARY_CAPABILITY,
   TEAM_VIDEO_GENERATION_CAPABILITY,
+  THREAD_AUTO_ARCHIVE_CAPABILITY,
   THREAD_MESSAGE_SEARCH_CAPABILITY,
   UI_BLOCK_PREVIEW_EDIT_CAPABILITY,
   USAGE_CREDITS_CAPABILITY,
@@ -859,6 +861,7 @@ const TEAM_CAPABILITY_REGISTRY = [
   [COMPACT_RPC_CAPABILITY, POKEBOTS],
   [AGENT_TASK_SUBAGENTS_CAPABILITY, POKEBOTS],
   [REMOTE_COMPUTER_TERMINAL_CAPABILITY, POKEBOTS],
+  [THREAD_AUTO_ARCHIVE_CAPABILITY, POKEBOTS],
   [HOME_AGENT_RULES_CAPABILITY, V10],
 ] as const satisfies readonly (readonly [string, TeamCapabilityPlacement])[];
 

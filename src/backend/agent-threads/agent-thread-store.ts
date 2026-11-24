@@ -249,6 +249,32 @@ export class AgentThreadStore {
     ).map((row) => requiredStringColumn(row, "thread_id"));
   }
 
+  /**
+   * The text of the person's and the agent's messages in this thread that name a GitHub pull request
+   * address, oldest first. Tool output is left out: a listing of many pull requests does not belong to
+   * the thread.
+   */
+  pullRequestTexts(threadId: string): string[] {
+    return databaseRows(
+      this.#database.connection
+        .prepare(
+          `SELECT message_json FROM projection_thread_messages
+           WHERE thread_id = ? AND author IN ('user', 'assistant', 'agent')
+             AND message_json LIKE '%github.com/%/pull/%'
+           ORDER BY created_at, ordinal`,
+        )
+        .all(threadId),
+    ).flatMap((row) => {
+      try {
+        const { text } = decodeConversationMessageJson(requiredStringColumn(row, "message_json"));
+        return text ? [text] : [];
+      } catch {
+        // A row that no longer decodes names no pull request.
+        return [];
+      }
+    });
+  }
+
   /** The titles of all threads of this agent, open and archived. */
   titles(agentId: string): string[] {
     return databaseRows(

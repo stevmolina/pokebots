@@ -634,6 +634,7 @@ import type {
   UpdateHostIdentityInput,
   UpdateTeamMemberInput,
 } from "./ipc-team-host";
+import type { ThreadAutoArchiveSetting } from "./ipc-thread-auto-archive";
 import type { VaultImportResult, VaultSaveInput, VaultSecretRequest, VaultState, VaultTwoStepCodes } from "./ipc-vault";
 import type {
   SpeechApiKeyInput,
@@ -1542,6 +1543,12 @@ export const IPC_ENDPOINTS = {
     getHomeAgentRules: scopedQuery<HomeAgentRulesSetting, "required">()("host-admin:get-home-agent-rules"),
     setHomeAgentRules: scopedRequest<HomeAgentRulesPreference, HomeAgentRulesSetting, "required">()(
       "host-admin:set-home-agent-rules",
+    ),
+    // When the host archives the side threads of its agents by itself (`thread-auto-archive-v1`).
+    // An owner or admin sets it.
+    getThreadAutoArchive: scopedQuery<ThreadAutoArchiveSetting, "required">()("host-admin:get-thread-auto-archive"),
+    setThreadAutoArchive: scopedRequest<ThreadAutoArchiveSetting, ThreadAutoArchiveSetting, "required">()(
+      "host-admin:set-thread-auto-archive",
     ),
     // Whether the Claude agents of the server get the Artifact tools and the claude.ai connectors of
     // the host's Claude Code sign-in (`claude-ai-tools-v1`). An owner or admin sets it.

@@ -4,6 +4,7 @@ WORKDIR /app
 COPY . .
 RUN bun install --frozen-lockfile --ignore-scripts
 ARG SOURCE_COMMIT=development
+# Keep the image on its existing self-hosted brand and endpoint profile.
 ENV SELF_HOSTED=1 OPENBOT_BRAND_NAME=Pokebots
 ENV OPENBOT_BRAND_AUTH_API_URL=https://api.pokebots.xyz
 ENV OPENBOT_BRAND_SIGNAL_URL=wss://signal.pokebots.xyz/v1/signal

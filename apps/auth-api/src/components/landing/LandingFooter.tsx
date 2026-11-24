@@ -73,7 +73,7 @@ export function LandingFooter() {
               aria-label={chrome().text.home}
             >
               <AppLogo variant="production" class="landing-footer-logo" />
-              <span>OpenBot</span>
+              <span>Pokebots</span>
             </Link>
 
             <p class="landing-footer-description">{text().description}</p>

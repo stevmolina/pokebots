@@ -55,9 +55,11 @@ import {
   parseHostTurnLimitsInput,
   parseProviderModelVisibilityChange,
   parseProviderModelVisibilityProvider,
+  parseThreadAutoArchiveSetting,
   type ServerAuditLog,
   type ServerAuditName,
   type ServerSummary,
+  type ThreadAutoArchiveSetting,
   UPDATE_RESTART_MODES,
   type UpdateHostIdentityInput,
   type UpdateRestartMode,
@@ -133,6 +135,10 @@ import {
 } from "@openbot/contracts/team-protocol/provider-environment-v1";
 import { SERVER_AUDIT_CAPABILITY, SERVER_AUDIT_ROUTES } from "@openbot/contracts/team-protocol/server-audit-v1";
 import { SKILL_LEARNING_CAPABILITY, SKILL_LEARNING_ROUTES } from "@openbot/contracts/team-protocol/skill-learning-v1";
+import {
+  THREAD_AUTO_ARCHIVE_CAPABILITY,
+  THREAD_AUTO_ARCHIVE_ROUTES,
+} from "@openbot/contracts/team-protocol/thread-auto-archive-v1";
 import { sourceText } from "@openbot/i18n/source";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import { type AgentAccessStore, agentAccessSnapshot } from "../agent-access-store";
@@ -160,6 +166,7 @@ import type { ServerAuditStore } from "../server-audit-store";
 import { parseServerPersonality, type ServerPersonalityPreferenceStore } from "../server-personality-preference-store";
 import { parseServerTimezone, type ServerTimezonePreferenceStore } from "../server-timezone-preference-store";
 import type { SkillLearningPreferenceStore } from "../skill-learning-preference-store";
+import type { ThreadAutoArchiveControl } from "../thread-auto-archive";
 import { parseAgentMemoryLimitPreference, parseHostUpdateSettings, parseMemoryReviewPreference } from "./app-inputs";
 import type { IpcGroupHandlers } from "./define-ipc-group";
 import { scopedHandler, scopedQueryHandler } from "./scoped-handler";
@@ -197,6 +204,7 @@ interface HostAdminIpcDependencies {
   promptCacheTtl: Pick<PromptCacheTtlPreferenceStore, "get" | "set">;
   claudeUserSetup: ClaudeUserSetupControl;
   homeAgentRules: HomeAgentRulesControl;
+  threadAutoArchive: ThreadAutoArchiveControl;
   claudeAiTools: ClaudeAiToolsControl;
   claudeCompactWindow: ClaudeCompactWindowControl;
   providerEnvironment: Pick<ProviderEnvironmentControl, "get" | "set">;
@@ -230,6 +238,7 @@ export function hostAdminIpcHandlers({
   promptCacheTtl,
   claudeUserSetup,
   homeAgentRules,
+  threadAutoArchive,
   claudeAiTools,
   claudeCompactWindow,
   providerEnvironment,
@@ -302,6 +311,14 @@ export function hostAdminIpcHandlers({
       throw new Error(sourceText("error.team.homeAgentRulesUnsupported"));
     return runCauseEffect(
       remoteServers.request(serverId, route, decodeHomeAgentRulesFromHost, { method: "POST", body }),
+    );
+  }
+
+  function remoteThreadAutoArchive(serverId: string, route: string, body: Partial<ThreadAutoArchiveSetting>) {
+    if (!remoteServers.supportsCapability(serverId, THREAD_AUTO_ARCHIVE_CAPABILITY))
+      throw new Error(sourceText("error.team.threadAutoArchiveUnsupported"));
+    return runCauseEffect(
+      remoteServers.request(serverId, route, parseThreadAutoArchiveSetting, { method: "POST", body }),
     );
   }
 
@@ -586,6 +603,14 @@ export function hostAdminIpcHandlers({
       setHomeAgentRules: scopedHandler(parseHomeAgentRulesPreference, {
         local: (preference) => runCauseEffect(homeAgentRules.set(preference)),
         remote: (preference, serverId) => remoteHomeAgentRules(serverId, HOME_AGENT_RULES_ROUTES.update, preference),
+      }),
+      getThreadAutoArchive: scopedQueryHandler({
+        local: () => threadAutoArchive.get(),
+        remote: (serverId) => remoteThreadAutoArchive(serverId, THREAD_AUTO_ARCHIVE_ROUTES.settings, {}),
+      }),
+      setThreadAutoArchive: scopedHandler(parseThreadAutoArchiveSetting, {
+        local: (setting) => runCauseEffect(threadAutoArchive.set(setting)),
+        remote: (setting, serverId) => remoteThreadAutoArchive(serverId, THREAD_AUTO_ARCHIVE_ROUTES.update, setting),
       }),
       getClaudeUserSetup: scopedQueryHandler({
         local: () => claudeUserSetup.get(),

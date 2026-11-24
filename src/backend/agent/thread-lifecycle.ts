@@ -216,6 +216,8 @@ export interface ThreadLifecycleOptions {
   agentEnvironment?: (inherited?: NodeJS.ProcessEnv) => Readonly<Record<string, string>>;
   /** Whether a password vault is connected, read at each start and resume of a session. */
   passwordVaultConnected?: () => boolean;
+  /** Whether an Agent Computer can start, read at each start and resume of a session. */
+  agentComputerConnected?: () => boolean;
   /** What the Vault holds, read at each start and resume of a session. */
   /** What the Vault holds for the agent with this id. */
   vaultItems?: (agentId: string) => VaultContents;
@@ -272,6 +274,7 @@ export class ThreadLifecycle {
   readonly #mcpProxiedServerIds: (configs: readonly McpServerConfig[]) => readonly string[];
   readonly #agentEnvironment: () => Readonly<Record<string, string>>;
   readonly #passwordVaultConnected: () => boolean;
+  readonly #agentComputerConnected: () => boolean;
   readonly #vaultItems: (agentId: string) => VaultContents;
   readonly #serverHost: boolean;
   readonly #homeAgentRules: () => HomeAgentRulesPreference;
@@ -334,6 +337,7 @@ export class ThreadLifecycle {
     this.#mcpProxiedServerIds = options.mcpProxiedServerIds ?? (() => []);
     this.#agentEnvironment = options.agentEnvironment ?? (() => ({}));
     this.#passwordVaultConnected = options.passwordVaultConnected ?? (() => false);
+    this.#agentComputerConnected = options.agentComputerConnected ?? (() => false);
     this.#vaultItems = options.vaultItems ?? (() => ({ available: false, cards: false, contacts: false }));
     this.#serverHost = options.serverHost ?? false;
     this.#homeAgentRules = options.homeAgentRules ?? (() => DEFAULT_HOME_AGENT_RULES_PREFERENCE);
@@ -1532,6 +1536,7 @@ export class ThreadLifecycle {
         agentComputerUseEnabled(agent) && !mcpServers.some((config) => config.id === COMPUTER_USE_MCP_SERVER_ID),
       sideThread,
       passwordVault: this.#passwordVaultConnected(),
+      agentComputer: this.#agentComputerConnected(),
       vaultItems: this.#vaultItems(agent.id),
       serverHost: this.#serverHost,
       hostedStorageGb: this.#hostedStorageGb(),
@@ -1924,6 +1929,11 @@ export class ThreadLifecycle {
   mainRunsBackgroundWork(agent: AgentSummary): Effect.Effect<boolean> {
     if (agent.threadId === null) return Effect.succeed(false);
     return this.#runsBackgroundWork(agent.threadId, RUNTIME_RELOADED_ON_RESUME);
+  }
+
+  /** Whether a loaded provider session of this side thread runs background work, such as a background command. */
+  threadRunsBackgroundWork(threadId: string): Effect.Effect<boolean> {
+    return this.#runsBackgroundWork(threadId);
   }
 
   /**

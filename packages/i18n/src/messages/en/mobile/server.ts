@@ -635,6 +635,15 @@ export const messages = defineMessages("mobile.server", {
   "mobile.server.settings.homeAgentRulesMissing": "{file} (unavailable)",
   "mobile.server.settings.homeAgentRulesLoadFailed": "Could not load host rules.",
   "mobile.server.settings.homeAgentRulesSaveFailed": "Could not save host rules.",
+  "mobile.server.settings.threadAutoArchive": "Thread archive",
+  "mobile.server.settings.threadAutoArchiveDescription":
+    "Archive a thread after this time with no activity, or when every GitHub pull request that it links is merged or closed. A thread that runs stays open. You can restore an archived thread.",
+  "mobile.server.settings.threadAutoArchiveIdle": "Archive idle threads",
+  "mobile.server.settings.threadAutoArchiveIdleOff": "Off",
+  "mobile.server.settings.threadAutoArchiveIdleDays": { one: "After {count} day", other: "After {count} days" },
+  "mobile.server.settings.threadAutoArchivePullRequests": "When pull requests merge",
+  "mobile.server.settings.threadAutoArchiveLoadFailed": "Could not load the thread archive setting.",
+  "mobile.server.settings.threadAutoArchiveSaveFailed": "Could not save the thread archive setting.",
   "mobile.server.settings.browsingMemoryDescription":
     "When you control an agent's browser, the agent learns how sites work from the pages and buttons you use. Typed text is not kept.",
   "mobile.server.settings.browsingMemoryLoadFailed": "Could not load the browsing setting.",

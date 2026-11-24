@@ -61,6 +61,7 @@ import {
   COMPUTER_USE_MCP_SERVER_ID,
   channelAllowsBrowser,
   channelBrowserAgent,
+  computerLiveViewItemType,
   isMessageReaction,
   isSettingLinkId,
   marketplaceSuggestionItemType,
@@ -3101,6 +3102,7 @@ export class OpenBotToolRouter {
       tool: params.tool,
       arguments: params.arguments,
       workspacePath: agent.workspacePath,
+      onStarted: (machineId) => this.#postComputerLiveViewCard(agent.id, threadId, params.turnId, machineId),
       approve: (reason) =>
         this.#attention
           .awaitToolApproval(
@@ -3222,6 +3224,30 @@ export class OpenBotToolRouter {
       text: sourceText("status.agent.mcpSignInRequested", { name: config.name }),
       eventType: "mcp.sign_in_requested",
       detail: { mcpServerId: config.id },
+    });
+  }
+
+  /**
+   * The card with an Open live view button for a cloud computer that an agent started. It holds only the
+   * machine id: the client reads the live view link when the person presses the button, through the
+   * owner or admin machine list. One for each machine and turn. A channel or a Slack, Discord, Telegram
+   * or WhatsApp thread gets none: its readers are not only the people who may open the live view.
+   */
+  #postComputerLiveViewCard(agentId: string, threadId: string, turnId: string, machineId: string): void {
+    if (this.#channels.store.channelForThread(threadId) || this.#messaging.store.linkForThread(threadId)) return;
+    let itemType: string;
+    try {
+      itemType = computerLiveViewItemType({ machineId });
+    } catch {
+      return;
+    }
+    const messages = this.#conversation.ensureSnapshot(agentId, threadId).messages;
+    if (messages.some((message) => message.turnId === turnId && message.itemType === itemType)) return;
+    this.#postSystemCard(agentId, threadId, turnId, {
+      itemType,
+      text: sourceText("status.agent.computerLiveViewReady"),
+      eventType: "computer.live_view_ready",
+      detail: { machineId },
     });
   }
 
@@ -3413,7 +3439,12 @@ export class OpenBotToolRouter {
       itemType: string;
       text: string;
       eventType: string;
-      detail: { appId: string } | { mcpServerId: string } | { settingId: string } | Record<string, never>;
+      detail:
+        | { appId: string }
+        | { mcpServerId: string }
+        | { settingId: string }
+        | { machineId: string }
+        | Record<string, never>;
     },
   ): void {
     const snapshot = structuredClone(this.#conversation.ensureSnapshot(agentId, threadId));

@@ -127,6 +127,7 @@ export const messages = defineMessages("status.agent", {
   "status.agent.agentComputerDestroyApproval": "Delete the cloud computer {id} and everything on it.",
   "status.agent.mcpToolCall": "Run the tool {tool} of the MCP server {name}.",
   "status.agent.mcpSignInRequested": "The MCP server {name} needs a sign-in. Sign in from Marketplace, Apps, {name}.",
+  "status.agent.computerLiveViewReady": "The agent started a cloud computer. Open its live view from Machines.",
   "status.agent.uiBlockClosedByMessage": "Closed by a new message",
   "status.agent.vaultAdded": "Saved to Vault: {name}",
   "status.agent.vaultUpdated": "Changed in Vault: {name}",

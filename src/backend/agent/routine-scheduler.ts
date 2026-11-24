@@ -229,10 +229,11 @@ export class RoutineScheduler implements RoutineDueSource {
    * Whether any routine run is executing right now. Scheduled future runs do not count: they
    * resume from durable rows after a restart. An executing run also holds a turn or a delivery,
    * which the wider activity check sees, so this covers the gap between the run firing and that
-   * work appearing.
+   * work appearing. The runs of the agents that `skipAgent` names do not count.
    */
-  hasActiveRuns(): boolean {
+  hasActiveRuns(skipAgent?: (agentId: string) => boolean): boolean {
     for (const agent of this.#hooks.listAgents()) {
+      if (skipAgent?.(agent.id)) continue;
       for (const routine of this.#routines.listRecords(agent.id)) {
         if (this.#routines.activeRuns(agent.id, routine.id).length > 0) return true;
       }

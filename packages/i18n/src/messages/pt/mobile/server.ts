@@ -507,6 +507,17 @@ export const messages = {
   "mobile.server.settings.skillLearningLoadFailed":
     "Não foi possível carregar a configuração de aprendizado de habilidades.",
   "mobile.server.settings.browsingMemory": "Aprender com minha navegação",
+  "mobile.server.settings.threadAutoArchive": "Arquivamento de threads",
+  "mobile.server.settings.threadAutoArchiveDescription":
+    "Arquiva um thread após este tempo sem atividade, ou quando cada pull request do GitHub que ele cita está mesclado ou fechado. Um thread em execução fica aberto. Você pode restaurar um thread arquivado.",
+  "mobile.server.settings.threadAutoArchiveIdle": "Arquivar threads inativos",
+  "mobile.server.settings.threadAutoArchiveIdleOff": "Desligado",
+  "mobile.server.settings.threadAutoArchiveIdleDays": { one: "Após {count} dia", other: "Após {count} dias" },
+  "mobile.server.settings.threadAutoArchivePullRequests": "Ao mesclar pull requests",
+  "mobile.server.settings.threadAutoArchiveLoadFailed":
+    "Não foi possível carregar a configuração de arquivamento de threads.",
+  "mobile.server.settings.threadAutoArchiveSaveFailed":
+    "Não foi possível salvar a configuração de arquivamento de threads.",
   "mobile.server.settings.browsingMemoryDescription":
     "Quando você controla o navegador de um agente, o agente aprende como os sites funcionam pelas páginas e botões que você usa. O texto digitado não é guardado.",
   "mobile.server.settings.browsingMemoryLoadFailed": "Não foi possível carregar a configuração de navegação.",

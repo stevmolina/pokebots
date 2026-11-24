@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "OpenBot",
+    "name": "Pokebots",
     "slug": "openbot",
     "platforms": ["ios", "android"],
     "version": "1.4.11",
@@ -14,7 +14,7 @@
       "supportsTablet": true,
       "associatedDomains": ["applinks:openbot.run"],
       "infoPlist": {
-        "NSLocalNetworkUsageDescription": "Allow OpenBot to connect to your desktop during local development.",
+        "NSLocalNetworkUsageDescription": "Allow Pokebots to connect to your desktop during local development.",
         "NSAppTransportSecurity": {
           "NSAllowsLocalNetworking": true
         },
@@ -66,8 +66,8 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "Allow OpenBot to use your camera to scan QR codes.",
-          "microphonePermission": "Allow OpenBot to use the microphone to dictate messages.",
+          "cameraPermission": "Allow Pokebots to use your camera to scan QR codes.",
+          "microphonePermission": "Allow Pokebots to use the microphone to dictate messages.",
           "recordAudioAndroid": false,
           "barcodeScannerEnabled": true
         }
@@ -75,16 +75,16 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "Allow OpenBot to access the photos you choose to share.",
-          "cameraPermission": "Allow OpenBot to use your camera to add photos.",
-          "microphonePermission": "Allow OpenBot to use the microphone to dictate messages."
+          "photosPermission": "Allow Pokebots to access the photos you choose to share.",
+          "cameraPermission": "Allow Pokebots to use your camera to add photos.",
+          "microphonePermission": "Allow Pokebots to use the microphone to dictate messages."
         }
       ],
       [
         "expo-media-library",
         {
-          "photosPermission": "Allow OpenBot to access the photos you choose to share.",
-          "savePhotosPermission": "Allow OpenBot to save images and videos you download from a chat to your photo library.",
+          "photosPermission": "Allow Pokebots to access the photos you choose to share.",
+          "savePhotosPermission": "Allow Pokebots to save images and videos you download from a chat to your photo library.",
           "granularPermissions": ["photo"]
         }
       ],
@@ -111,7 +111,7 @@
       [
         "expo-local-authentication",
         {
-          "faceIDPermission": "Allow OpenBot to use Face ID to unlock the app."
+          "faceIDPermission": "Allow Pokebots to use Face ID to unlock the app."
         }
       ],
       [
@@ -207,15 +207,15 @@
       [
         "expo-speech-recognition",
         {
-          "microphonePermission": "Allow OpenBot to use the microphone to dictate messages.",
-          "speechRecognitionPermission": "Allow OpenBot to turn your speech into message text."
+          "microphonePermission": "Allow Pokebots to use the microphone to dictate messages.",
+          "speechRecognitionPermission": "Allow Pokebots to turn your speech into message text."
         }
       ],
       [
         "@config-plugins/react-native-webrtc",
         {
-          "cameraPermission": "Allow OpenBot to use your camera to scan QR codes.",
-          "microphonePermission": "Allow OpenBot to use the microphone to dictate messages."
+          "cameraPermission": "Allow Pokebots to use your camera to scan QR codes.",
+          "microphonePermission": "Allow Pokebots to use the microphone to dictate messages."
         }
       ],
       [

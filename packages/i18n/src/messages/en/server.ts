@@ -467,6 +467,15 @@ export const messages = defineMessages("server", {
   "server.settings.agentTaskLimitDescription":
     "How many threads each agent can run at the same time when the agent has no limit of its own.",
   "server.settings.agentTaskLimitDefault": "Default ({count})",
+  "server.settings.threadAutoArchiveIdle": "Archive idle threads",
+  "server.settings.threadAutoArchiveIdleDescription":
+    "Archive a thread after this time with no activity. A thread that runs or has queued messages stays open. You can restore an archived thread.",
+  "server.settings.threadAutoArchiveIdleOff": "Off",
+  "server.settings.threadAutoArchiveIdleDays": { one: "After {count} day", other: "After {count} days" },
+  "server.settings.threadAutoArchivePullRequests": "Archive when pull requests merge",
+  "server.settings.threadAutoArchivePullRequestsDescription":
+    "Archive an idle thread when every GitHub pull request that it links is merged or closed. The server uses its GitHub connection, the gh command, or public repositories.",
+  "server.settings.threadAutoArchiveLoadFailed": "Could not load the thread archive setting of this server.",
   "server.settings.memoryLimit": "Memories per agent",
   "server.settings.memoryLimitDescription": "How many memories each agent on this server can keep.",
   "server.settings.memoryLimitLoadFailed": "Could not load the memory limit of this server.",

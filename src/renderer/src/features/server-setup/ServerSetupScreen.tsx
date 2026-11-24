@@ -16,9 +16,9 @@ import {
 } from "./server-setup-port";
 
 const APP_URL = "https://openbot.run/app";
-const PRODUCT_NAME = "OpenBot";
+const PRODUCT_NAME = "Pokebots";
 /** The name of a server before its first publish, as in `ServerMode`. */
-const DEFAULT_SERVER_NAME = "OpenBot";
+const DEFAULT_SERVER_NAME = "Pokebots";
 /** How often the page asks again while the account loads or the server starts. */
 const STATUS_POLL_MS = 2_000;
 /** How often the page asks again after an error. The server retries the account service by itself. */

@@ -703,6 +703,24 @@ export class AttentionRegistry {
   }
 
   /**
+   * Whether a question, an approval or a browser takeover waits in this thread of the agent, also a
+   * detached question. An automatic archive leaves such a thread open, so the person can still answer.
+   */
+  hasAttentionForThread(agentId: string, publicThreadId: string): boolean {
+    return (
+      [...this.#prompts.values()].some(
+        (pending) => pending.agentId === agentId && pending.publicThreadId === publicThreadId,
+      ) ||
+      [...this.#approvals.values()].some(
+        (pending) => pending.approval.agentId === agentId && pending.approval.threadId === publicThreadId,
+      ) ||
+      [...this.#takeovers.values()].some(
+        (pending) => pending.request.agentId === agentId && pending.request.threadId === publicThreadId,
+      )
+    );
+  }
+
+  /**
    * What the agent's running turn waits for from a person. A detached question is left out: no turn
    * waits for its answer.
    */

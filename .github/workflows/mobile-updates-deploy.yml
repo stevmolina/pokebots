@@ -20,7 +20,8 @@ concurrency:
 jobs:
   deploy:
     name: Deploy the update Worker
-    if: github.ref == 'refs/heads/main'
+    # Upstream-only: it posts or publishes to OpenBot targets. Pokebots has no such target yet.
+    if: github.repository == 'nightly-labs/openbot' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     environment: cloudflare-production
