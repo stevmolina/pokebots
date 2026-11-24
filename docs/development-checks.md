@@ -97,7 +97,7 @@ Its main jobs are:
 | Job | Runner | Commands |
 | --- | --- | --- |
 | Check | `ubuntu-latest` | `bun run knip:check`, `bun run check:assets`, `bun run check:doc-links`, `bun run check:migrations`, then `bun run check:desktop:static`, `bun run i18n:check`, `bun run types:ratchet`, `bun run check:agent-context`, `bun scripts/whats-new-translations.ts` and the minimum app version and released schema checks in parallel |
-| Browser smoke (1/2, 2/2) | `ubuntu-latest` | Part 1: `xvfb-run -a bun run test:browser`, then `test:browser-agent-session`. Part 2: `test:browser-steps`, `test:browser-dialogs`, `test:browser-fingerprint` and `test:browser-ambiguous-targets` |
+| Browser smoke (1/2, 2/2) | `ubuntu-latest` | Part 1: `xvfb-run -a bun run test:browser`. Part 2: `test:browser-agent-session` first, then `test:browser-steps`, `test:browser-dialogs`, `test:browser-fingerprint` and `test:browser-ambiguous-targets` |
 | Tests (desktop 1/2, 2/2) | `ubuntu-latest` | `bun run test:desktop -- --shard=<n>/2` |
 | Signal E2E | `ubuntu-latest` | `bun run test:signal`, when `remote/` or `scripts/` changes |
 | Local scripts CLI E2E | `ubuntu-latest` | `bun run test:automation-cli` |
