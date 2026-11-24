@@ -70,6 +70,7 @@ import {
   type CustomAgentSummary,
   type CustomProviderResult,
   type CustomProviderSummary,
+  canAdministerServer,
   DEFAULT_AGENT_DEFAULTS,
   decodeHostPasswordManagerList,
   decodeHostPasswordManagerStatus,
@@ -256,6 +257,10 @@ import {
   CLAUDE_USER_SETUP_ROUTES,
 } from "@openbot/contracts/team-protocol/claude-user-setup-v1";
 import { CODEX_API_KEY_CAPABILITY } from "@openbot/contracts/team-protocol/codex-api-key-v1";
+import {
+  COMPUTER_LIVE_VIEW_CAPABILITY,
+  COMPUTER_LIVE_VIEW_ROUTE,
+} from "@openbot/contracts/team-protocol/computer-live-view-v1";
 import {
   COMPUTER_MANAGEMENT_CAPABILITY,
   COMPUTER_MANAGEMENT_ROUTE,
@@ -491,7 +496,7 @@ import { sourceText } from "@openbot/i18n/source";
 import { createOpenBotLogger } from "@openbot/logging";
 import { createAgentComputerPort } from "@openbot/team-client/agent-computer";
 import { RoutineInputError } from "@openbot/team-client/routine-schedule";
-import { Effect, Result } from "effect";
+import { Effect, Redacted, Result } from "effect";
 import { strToU8, unzipSync, zipSync } from "fflate";
 import { ForbiddenAttentionAnswer, InactiveAttentionRequest } from "../src/backend/agent/inactive-attention-request";
 import { SteerUnsupportedError } from "../src/backend/agent/queue-controls";
@@ -540,6 +545,7 @@ import {
   claudeUserSetupControl,
   createClaudeUserSetupPreferenceStore,
 } from "../src/main/claude-user-setup-preference-store";
+import { computerLiveViewUrl } from "../src/main/computer-live-view";
 import { createCustomProviderChanges } from "../src/main/custom-provider-changes";
 import { CustomProviderStore } from "../src/main/custom-provider-store";
 import { githubSkillSource } from "../src/main/github-skill-source";
@@ -585,7 +591,13 @@ import { TeamApiServer } from "../src/main/team-api-server";
 import { TeamStore } from "../src/main/team-store";
 import { VaultService } from "../src/main/vault-service";
 import { VaultStore } from "../src/main/vault-store";
-import { FIXTURE_KEY, startAgentComputerFixture } from "./agent-computer-fixture";
+import {
+  FIXTURE_ACCOUNT_KEY,
+  FIXTURE_ACCOUNT_LIVE,
+  FIXTURE_KEY,
+  FIXTURE_LIVE,
+  startAgentComputerFixture,
+} from "./agent-computer-fixture";
 import { emptyInstanceTransferService } from "./instance-transfer-e2e-fixture";
 
 const OUT = resolve(import.meta.dirname, "../.openbot-build/team-api-routes-e2e");
@@ -2698,6 +2710,9 @@ async function runRouteChecks() {
     // REST account encryption is tested in agent-computer-e2e. Here only route wiring is tested.
     cipher: { encrypt: (value) => Buffer.from(value), decrypt: (value) => value.toString() },
   });
+  // The member whose own Pokebots account started a machine (`#computerAccount` in the tool router). The
+  // host resolves that account's credential as `memberComputerCredential` does in application-services.
+  let computerAccountMember: string | null = null;
   await Effect.runPromise(libraryStore.initialize());
   // As in application-services: each saved folder change is an agent event (library-folders-events-v1).
   libraryStore.onChanged(() => {
@@ -2778,6 +2793,18 @@ async function runRouteChecks() {
       testMcpServer: () => Effect.succeed({ toolCount: 0, error: null }),
     },
     agentComputer,
+    computerLiveView: (member, machineId) =>
+      computerLiveViewUrl(
+        agentComputer.api,
+        {
+          canAdminister: canAdministerServer(member.role),
+          credential:
+            member.id === computerAccountMember
+              ? { audience: "computer", bearer: Effect.succeed(Redacted.make(FIXTURE_ACCOUNT_KEY)) }
+              : undefined,
+        },
+        machineId,
+      ),
     appVersion: APP_VERSION,
     agentImport,
     libraryFolders,
@@ -3694,6 +3721,79 @@ async function runRouteChecks() {
         {},
       );
     }
+    // computer-live-view-v1: the Open live view button of a chat card. Bob's own account started
+    // `account-machine`; the host key started `demo-machine`. Each person gets only what they may open.
+    computerAccountMember = bobId;
+    const liveViewAs = (token: string | undefined, machineId: string, capabilities = [COMPUTER_LIVE_VIEW_CAPABILITY]) =>
+      call("POST", COMPUTER_LIVE_VIEW_ROUTE, {
+        protocol: 9,
+        capabilities,
+        ...(token === undefined ? {} : { token }),
+        json: { machineId },
+      });
+    const liveViewUrl = (reply: Awaited<ReturnType<typeof liveViewAs>>) =>
+      reply.status === 200 ? field(reply.body, "liveViewUrl") : `status ${reply.status}`;
+    const bobAccount = await liveViewAs(bobToken, "account-machine");
+    const bobKey = await liveViewAs(bobToken, "demo-machine");
+    const adaKey = await liveViewAs(adaToken, "demo-machine");
+    const adaAccount = await liveViewAs(adaToken, "account-machine");
+    check(
+      "the member whose account started a machine opens its live view; key machines stay owner or admin",
+      liveViewUrl(bobAccount) === FIXTURE_ACCOUNT_LIVE &&
+        liveViewUrl(bobKey) === null &&
+        liveViewUrl(adaKey) === FIXTURE_LIVE &&
+        liveViewUrl(adaAccount) === null,
+      {
+        bobAccount: liveViewUrl(bobAccount) === FIXTURE_ACCOUNT_LIVE,
+        bobKey: liveViewUrl(bobKey) === null,
+        adaKey: liveViewUrl(adaKey) === FIXTURE_LIVE,
+        adaAccount: liveViewUrl(adaAccount) === null,
+      },
+    );
+    const anonymousLiveView = await liveViewAs(undefined, "account-machine");
+    const unsupportedLiveView = await liveViewAs(bobToken, "account-machine", []);
+    const invalidLiveView = await liveViewAs(bobToken, "https://computer.example.invalid/live");
+    check(
+      "the live view route needs authentication, the capability and a machine id",
+      anonymousLiveView.status === 401 && unsupportedLiveView.status === 400 && invalidLiveView.status === 400,
+      { anonymous: anonymousLiveView.status, unsupported: unsupportedLiveView.status, invalid: invalidLiveView.status },
+    );
+    const memberPort = (servesLiveView: boolean) =>
+      createAgentComputerPort(
+        () => async (method, path, decode, body) => {
+          const reply = await call(method, path, {
+            protocol: 9,
+            capabilities: [AGENT_COMPUTER_CAPABILITY, COMPUTER_LIVE_VIEW_CAPABILITY],
+            token: bobToken,
+            json: body,
+          });
+          if (reply.status !== 200) throw new Error(`status ${reply.status}`);
+          return decode(reply.body);
+        },
+        undefined,
+        () => servesLiveView,
+      );
+    const portLink = await memberPort(true).liveView("account-machine", serverId);
+    const oldHostPath = await memberPort(false)
+      .liveView("account-machine", serverId)
+      .then(
+        () => "opened",
+        (error: unknown) => (error instanceof Error ? error.message : "failed"),
+      );
+    check(
+      "the shared web/mobile port opens the member's machine through the real host; the old path is admin-only",
+      portLink === FIXTURE_ACCOUNT_LIVE && oldHostPath === "status 403",
+      { portLink: portLink === FIXTURE_ACCOUNT_LIVE, oldHostPath },
+    );
+    check(
+      "live view answers never carry a key",
+      [bobAccount, bobKey, adaKey, adaAccount].every(
+        (reply) =>
+          !JSON.stringify(reply.body).includes(FIXTURE_KEY) &&
+          !JSON.stringify(reply.body).includes(FIXTURE_ACCOUNT_KEY),
+      ),
+      {},
+    );
     const disconnected = await call("POST", AGENT_COMPUTER_ROUTES.disconnect, options);
     check(
       "an admin disconnects Agent Computer and the host forgets the key",

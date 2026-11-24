@@ -1,4 +1,4 @@
-import { machineLiveViewUrl } from "@openbot/contracts/ipc";
+import { httpsLiveViewUrl } from "@openbot/contracts/ipc";
 import { Button, Typography } from "heroui-native";
 import { useThemeColor } from "heroui-native/hooks";
 import Monitor from "lucide-react-native/icons/monitor";
@@ -9,9 +9,11 @@ import { haptics } from "@/shared/lib/haptics";
 import { useText } from "@/shared/lib/text";
 
 /**
- * The card of a cloud computer that an agent started, as on desktop. Open live view reads the link from
- * the host's owner or admin machine list at the press and opens it; the link is never kept in the chat,
- * in state or in the offline copy. A member, or a host without `agent-computer-v1`, gets no button.
+ * The card of a cloud computer that an agent started, as on desktop. Open live view asks the host for the
+ * link at the press and opens it; the link is never kept in the chat, in state or in the offline copy. A
+ * host with `computer-live-view-v1` answers any member, but only for a machine that the member may open:
+ * the key's machines for an owner or admin, and the machines of the member's own account. On an older
+ * host only an owner or admin gets the button, and the link comes from the machine list.
  */
 export const ChatComputerLiveViewCard = memo(function ChatComputerLiveViewCard({
   serverId,
@@ -22,12 +24,12 @@ export const ChatComputerLiveViewCard = memo(function ChatComputerLiveViewCard({
 }) {
   const { t } = useText();
   const [iconColor] = useThemeColor(["muted"]);
-  const { canManageAgentComputer } = useMobileWorkspace();
+  const { canManageAgentComputer, servesComputerLiveView } = useMobileWorkspace();
   const { agentComputer: api } = useMobileWorkspaceActions();
   const [busy, setBusy] = useState(false);
   const [note, setNote] = useState<string | null>(null);
   const locked = useRef(false);
-  const canOpen = canManageAgentComputer(serverId);
+  const canOpen = servesComputerLiveView(serverId) || canManageAgentComputer(serverId);
 
   async function open() {
     if (locked.current) return;
@@ -36,7 +38,7 @@ export const ChatComputerLiveViewCard = memo(function ChatComputerLiveViewCard({
     setNote(null);
     void haptics.selection();
     try {
-      const url = machineLiveViewUrl(await api.machines(serverId), machineId);
+      const url = httpsLiveViewUrl(await api.liveView(machineId, serverId));
       if (!url) setNote(t("mobile.chat.computerLiveView.notFound"));
       else await Linking.openURL(url);
     } catch {

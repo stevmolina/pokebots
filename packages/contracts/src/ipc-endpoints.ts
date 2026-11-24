@@ -1622,6 +1622,8 @@ export const IPC_ENDPOINTS = {
     test: scopedQuery<AgentComputerStatus, "required">()("agent-computer:test"),
     disconnect: scopedQuery<AgentComputerStatus, "required">()("agent-computer:disconnect"),
     machines: scopedQuery<AgentComputerMachineList, "required">()("agent-computer:machines"),
+    /** The https live view link of one machine (the payload is its id) that this person may open, or null. */
+    liveView: scopedRequest<string, string | null, "required">()("agent-computer:live-view"),
   },
   bitwardenConnector: {
     status: request<undefined, BitwardenConnectorStatus>()("bitwarden-connector:status"),

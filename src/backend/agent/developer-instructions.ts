@@ -34,10 +34,12 @@ const ROUTINE_NO_TAKEOVER_RULE = "In a routine run, report a required sign-in in
 
 /**
  * "Cloud agent" and the like name the user's cloud computer. Talk does not start it; a request to open it or
- * work on it does. The chat card opens its live view for an owner or admin, so the agent only points to it.
+ * work on it does. The agent never has the live view link. The `live_view` of the `computer_start` result
+ * says where the user opens it: the chat card, or Machines in a channel or a Slack, Discord, Telegram or
+ * WhatsApp thread, which get no card.
  */
 export const CLOUD_AGENT_RULE =
-  "Cloud agent, cloud machine and cloud computer mean the user's cloud computer. Talk about it starts nothing. When asked to open it or to work on it, call openbot.computer_start at once with its context from computer_list; do not offer it. Say the Open live view button is in the chat, then work there.";
+  "Cloud agent, cloud machine and cloud computer mean the user's cloud computer. Talk about it starts nothing. When asked to open it or to work on it, call openbot.computer_start at once with its context from computer_list; do not offer it. Say where the live view is, as its live_view says, then work there.";
 
 /**
  * The driver refuses a background click or key that the app cannot take, such as a click in WeChat
@@ -711,7 +713,7 @@ export function developerInstructions(
       : []),
     "Your files, commands, browser, and Computer Use run on the one computer that runs this OpenBot. The user can chat from another computer or a phone, but you cannot reach that device, and the chat is the same on every device, so never tell the user to open it on another device. For work on another computer, say that an agent on that computer's OpenBot can do it.",
     // A model offered a cloud desktop ("Want me to start one?") when the user had asked for a cloud agent.
-    // The live view link never reaches the agent: OpenBot shows an Open live view button in the chat.
+    // The live view link never reaches the agent: computer_start says where the user opens it.
     ...(options.agentComputer ? [CLOUD_AGENT_RULE] : []),
     ...(options.sideThread
       ? [

@@ -3230,25 +3230,27 @@ export class OpenBotToolRouter {
   /**
    * The card with an Open live view button for a cloud computer that an agent started. It holds only the
    * machine id: the client reads the live view link when the person presses the button, through the
-   * owner or admin machine list. One for each machine and turn. A channel or a Slack, Discord, Telegram
-   * or WhatsApp thread gets none: its readers are not only the people who may open the live view.
+   * host's `computer-live-view-v1` route. One for each machine and turn. A channel or a Slack, Discord,
+   * Telegram or WhatsApp thread gets none: its readers are not only the people who may open the live
+   * view. True when the chat shows the card, so `computer_start` tells the agent where the live view is.
    */
-  #postComputerLiveViewCard(agentId: string, threadId: string, turnId: string, machineId: string): void {
-    if (this.#channels.store.channelForThread(threadId) || this.#messaging.store.linkForThread(threadId)) return;
+  #postComputerLiveViewCard(agentId: string, threadId: string, turnId: string, machineId: string): boolean {
+    if (this.#channels.store.channelForThread(threadId) || this.#messaging.store.linkForThread(threadId)) return false;
     let itemType: string;
     try {
       itemType = computerLiveViewItemType({ machineId });
     } catch {
-      return;
+      return false;
     }
     const messages = this.#conversation.ensureSnapshot(agentId, threadId).messages;
-    if (messages.some((message) => message.turnId === turnId && message.itemType === itemType)) return;
+    if (messages.some((message) => message.turnId === turnId && message.itemType === itemType)) return true;
     this.#postSystemCard(agentId, threadId, turnId, {
       itemType,
       text: sourceText("status.agent.computerLiveViewReady"),
       eventType: "computer.live_view_ready",
       detail: { machineId },
     });
+    return true;
   }
 
   /**

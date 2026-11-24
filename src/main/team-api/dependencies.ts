@@ -73,6 +73,7 @@ import type {
   SidebarLayoutSnapshot,
   SidebarPin,
   SidebarPinsSnapshot,
+  TeamMemberSummary,
   TeamPresenceSnapshot,
   UpdateHostIdentityInput,
   VoiceLiveEvent,
@@ -766,6 +767,15 @@ export type TeamApiAgentComputer = Pick<
   "status" | "connect" | "test" | "disconnect" | "machines" | "manage"
 >;
 
+/**
+ * `computer-live-view-v1`: the live view link of one machine for the member who asks. The host decides
+ * who may open which machine (`computerLiveViewUrl`).
+ */
+export type TeamApiComputerLiveView = (
+  member: TeamMemberSummary,
+  machineId: string,
+) => Effect.Effect<string | null, { readonly cause: unknown }>;
+
 /** `bitwarden-connector-v1`: the Bitwarden connection of this host, by an API key and the master password. */
 export type TeamApiBitwardenConnector = Pick<BitwardenConnectorService, "status" | "connectWithApiKey" | "disconnect">;
 
@@ -810,6 +820,8 @@ export interface TeamApiOptions {
   rooms?: RoomsService;
   pokebotsIntegrations?: PokebotsIntegrationRoutes;
   agentComputer?: TeamApiAgentComputer | undefined;
+  /** `computer-live-view-v1`: the live view link of one machine that this member may open, or null. */
+  computerLiveView?: TeamApiComputerLiveView | undefined;
   passwordManagers?: TeamApiPasswordManagers | undefined;
   vault?: TeamApiVault | undefined;
   providerHostSignIns?: TeamApiProviderHostSignIns | undefined;

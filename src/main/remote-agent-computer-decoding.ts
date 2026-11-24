@@ -67,3 +67,11 @@ export function decodeComputerManagementResultFromHost(value: unknown): {
 export function decodeAgentComputerAllowanceFromHost(value: unknown) {
   return decodeAgentComputerAccountAllowance(value);
 }
+
+/** The `computer-live-view-v1` answer: an https live view link, or null. Throws for any other value. */
+export function decodeComputerLiveViewFromHost(value: unknown): string | null {
+  if (!isDynamicRecord(value) || !nullableString(value.liveViewUrl)) throw new Error("Invalid computer live view.");
+  const url = value.liveViewUrl;
+  if (url !== null && (url.length > 2_048 || !/^https:\/\//u.test(url))) throw new Error("Invalid computer live view.");
+  return url;
+}

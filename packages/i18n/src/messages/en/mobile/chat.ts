@@ -393,7 +393,7 @@ export const messages = defineMessages("mobile.chat", {
   "mobile.chat.computerLiveView.subtitle": "Machine {id}",
   "mobile.chat.computerLiveView.open": "Open live view",
   "mobile.chat.computerLiveView.notFound":
-    "This server's cloud computer list does not have this machine. Open it from Server settings, Cloud computers.",
+    "You cannot open this live view. The machine is gone, or another person's account started it.",
   "mobile.chat.computerLiveView.failed": "Could not open the live view. Try again.",
   "mobile.chat.computerLiveView.unavailable": "An owner or admin of this server can open the live view.",
   "mobile.chat.browserSecret.signInBlockedTitle": "Sign in on your computer",

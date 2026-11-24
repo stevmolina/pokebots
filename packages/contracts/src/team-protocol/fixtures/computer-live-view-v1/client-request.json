@@ -1,0 +1,6 @@
+{
+  "method": "POST",
+  "path": "/v1/agent-computer/live-view",
+  "capabilities": ["computer-live-view-v1"],
+  "body": { "machineId": "machine-example" }
+}

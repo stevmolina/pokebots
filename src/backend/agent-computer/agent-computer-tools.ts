@@ -71,6 +71,12 @@ const publishSchema = z.strictObject({
 const MACHINE_RULES =
   "A cloud computer is the user's Ubuntu desktop with passwordless sudo; change anything on it. At deadline_at it pauses with everything kept: publish results before then, and computer_start the same context to go on. Runtime is billed to the user.";
 
+/** The `live_view` of a `computer_start` result when the chat shows the Open live view card. */
+export const COMPUTER_LIVE_VIEW_IN_CHAT = "Open live view button in this chat";
+/** The same in a channel or a Slack, Discord, Telegram or WhatsApp thread, which get no card. */
+export const COMPUTER_LIVE_VIEW_ELSEWHERE =
+  "No button in this chat: the user opens it from Machines, or Server settings > Cloud computers";
+
 export const AGENT_COMPUTER_TOOL_DEFINITIONS = [
   {
     name: "computer_list",
@@ -79,7 +85,7 @@ export const AGENT_COMPUTER_TOOL_DEFINITIONS = [
   },
   {
     name: "computer_start",
-    description: `Start or resume the cloud computer of a context; returns its id. ${MACHINE_RULES} The chat shows the user a live view button; live view and billing links are not for you. Work in visible windows ($DISPLAY is set). Read ~/PLAYBOOK.md before a big task. briefing has more rules.`,
+    description: `Start or resume the cloud computer of a context; returns its id. ${MACHINE_RULES} live_view says where the user sees it; live view and billing links are not for you. Work in visible windows ($DISPLAY is set). Read ~/PLAYBOOK.md before a big task. briefing has more rules.`,
     shape: startSchema.shape,
   },
   {
@@ -138,9 +144,10 @@ export interface AgentComputerToolRequest {
   approve: (reason: string) => Effect.Effect<boolean>;
   /**
    * Called after `computer_start` started or resumed a machine, with its id only. The router posts the
-   * chat card whose button reads the live view link on the person's own client.
+   * chat card whose button reads the live view link on the person's own client. True when the chat
+   * shows that card; false in a thread that gets no card, such as a channel or a Slack thread.
    */
-  onStarted?: ((machineId: string) => void) | undefined;
+  onStarted?: ((machineId: string) => boolean) | undefined;
 }
 
 /** A small text file comes back as text too, so the agent need not read it again. */
@@ -175,9 +182,13 @@ export const handleAgentComputerTool = Effect.fn("AgentComputerTools.handle")(fu
         const input = yield* parse(startSchema, request.arguments);
         const started = yield* api.start(input.context, input.size, { idempotencyKey: request.idempotencyKey });
         // The machine runs already: a chat card that cannot be posted must not hide its id from the agent.
-        yield* Effect.try(() => request.onStarted?.(started.id)).pipe(Effect.ignore);
+        const card = yield* Effect.try(() => request.onStarted?.(started.id) === true).pipe(
+          Effect.orElseSucceed(() => false),
+        );
         return textResult({
           id: started.id,
+          // Where the user opens the live view. The link itself never reaches the agent.
+          live_view: card ? COMPUTER_LIVE_VIEW_IN_CHAT : COMPUTER_LIVE_VIEW_ELSEWHERE,
           context: started.context,
           size: started.size ?? "standard",
           size_note: started.size_note,

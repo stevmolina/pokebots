@@ -64,5 +64,7 @@ export function createMockAgentComputer(): OpenBotDesktopApi["agentComputer"] {
       return DISCONNECTED_AGENT_COMPUTER;
     },
     machines: async (serverId) => ({ machines: status(serverId).connected ? registry.map((row) => ({ ...row })) : [] }),
+    // As the host: the preview person may open each machine of the list, as if their own account started it.
+    liveView: async (machineId) => registry.find((row) => row.id === machineId)?.liveViewUrl ?? null,
   };
 }

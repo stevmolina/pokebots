@@ -1,21 +1,31 @@
-import { type AgentComputerMachineList, machineLiveViewUrl, type ServerSummary } from "@openbot/contracts/ipc";
+import { httpsLiveViewUrl, type ServerSummary } from "@openbot/contracts/ipc";
 import { AGENT_COMPUTER_CAPABILITY } from "@openbot/contracts/team-protocol/agent-computer-v1";
-import { serverCanAdminister } from "../servers/server-capabilities";
+import { COMPUTER_LIVE_VIEW_CAPABILITY } from "@openbot/contracts/team-protocol/computer-live-view-v1";
+import { serverCanAdminister, serverSupportsCapability } from "../servers/server-capabilities";
 
 /**
- * The Open live view action of the chat's cloud computer card, or undefined where this account may not
- * manage the server's cloud computers (a member, or a host without `agent-computer-v1`). The link comes
- * from the owner or admin machine list at the press and goes only to `open`: it is never kept in the
- * conversation, a cache or a log.
+ * The Open live view action of the chat's cloud computer card, or undefined where this account cannot
+ * open it. With `computer-live-view-v1` (this computer, or a joined host that has it), every person gets
+ * the button and the host answers the link only for a machine that this person may open: the key's
+ * machines for an owner or admin, and the machines of the person's own account. An older host has only
+ * the owner or admin machine list, so a member there gets no button. The link goes only to `open`: it is
+ * never kept in the conversation, a cache or a log.
  */
 export function computerLiveViewOpener(
   server: ServerSummary | undefined,
-  machines: (serverId: string) => Promise<AgentComputerMachineList>,
+  liveView: (machineId: string, serverId: string) => Promise<string | null>,
   open: (link: Promise<string | null>) => Promise<boolean>,
 ): ((machineId: string) => Promise<boolean>) | undefined {
-  if (!serverCanAdminister(server, AGENT_COMPUTER_CAPABILITY)) return undefined;
+  if (
+    !server ||
+    !(
+      serverSupportsCapability(server, COMPUTER_LIVE_VIEW_CAPABILITY) ||
+      serverCanAdminister(server, AGENT_COMPUTER_CAPABILITY)
+    )
+  )
+    return undefined;
   const serverId = server.id;
-  return (machineId) => open(machines(serverId).then((list) => machineLiveViewUrl(list, machineId)));
+  return (machineId) => open(liveView(machineId, serverId).then(httpsLiveViewUrl));
 }
 
 /** Opens the link with the shell of the desktop app. */
