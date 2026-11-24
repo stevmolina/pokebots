@@ -288,8 +288,11 @@ const Conversation = createSimpleContext({
           conversation.loading = true;
           conversation.loadError = null;
         });
-        void conversationPort()
-          .agent.readConversationPage({ agentId, anchor: { type: "latest" }, limit: 50 }, serverId)
+        // The person waits for this chat: the thread lists of the other agents wait for it.
+        void agentTasks
+          .foregroundRead(
+            conversationPort().agent.readConversationPage({ agentId, anchor: { type: "latest" }, limit: 50 }, serverId),
+          )
           .then((page) => {
             if (!scopeIsCurrent() || conversationPageRequests.get(agentId) !== pageRequest) return;
             updateConversation(agentId, (conversation) => {
