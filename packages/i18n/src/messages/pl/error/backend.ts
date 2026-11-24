@@ -448,8 +448,6 @@ export const messages = {
   "error.backend.taskTitleRequired": "Nadaj zadaniu krótki tytuł.",
   "error.backend.taskToolInvalid":
     "Nadaj zadaniu tytuł o długości maksymalnie 120 znaków i opis, który mówi, co zrobić.",
-  "error.backend.taskOwnChatOnly":
-    "Zadanie możesz rozpocząć tylko z własnego czatu. Kanał, rozmowa w komunikatorze ani inne zadanie nie mogą go rozpocząć.",
   "error.backend.taskUnfinishedLimit":
     "Liczba niezakończonych zadań tego agenta: {count}. Rozpocznij kolejne zadanie, gdy jedno z nich się zakończy.",
   "error.backend.taskOpenLimitReached":

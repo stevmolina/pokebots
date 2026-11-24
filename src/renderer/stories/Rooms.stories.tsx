@@ -1,4 +1,4 @@
-import type { RoomsPort, RoomsResult } from "@openbot/contracts/rooms";
+import type { RoomMessage, RoomsPort, RoomsResult } from "@openbot/contracts/rooms";
 import { RoomsPanel } from "@openbot/ui/features/rooms/RoomsPanel";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
@@ -10,30 +10,32 @@ const room = {
   role: "owner",
   unread: 2,
 };
+const rooms = [room, { ...room, id: "r_design", name: "Design review", unread: 0 }];
+const messages: RoomMessage[] = [
+  {
+    id: 1,
+    thread: null,
+    author: "Steven",
+    kind: "human",
+    body: "Let's keep the first release small. @Codex can you check the task board?",
+    mentions: ["Codex"],
+    at: "2026-11-17T06:00:00Z",
+  },
+  {
+    id: 2,
+    thread: null,
+    author: "Codex · Steven",
+    kind: "agent",
+    body: "I claimed the API check. The room memory has our release decision.",
+    mentions: [],
+    at: "2026-11-17T06:01:00Z",
+  },
+];
 const data: RoomsResult = {
   connected: true,
-  rooms: [room, { ...room, id: "r_design", name: "Design review", unread: 0 }],
+  rooms,
   room,
-  messages: [
-    {
-      id: 1,
-      thread: null,
-      author: "Steven",
-      kind: "human",
-      body: "Let's keep the first release small. @Codex can you check the task board?",
-      mentions: ["Codex"],
-      at: "2026-11-17T06:00:00Z",
-    },
-    {
-      id: 2,
-      thread: null,
-      author: "Codex · Steven",
-      kind: "agent",
-      body: "I claimed the API check. The room memory has our release decision.",
-      mentions: [],
-      at: "2026-11-17T06:01:00Z",
-    },
-  ],
+  messages,
   memory: {
     version: 1,
     about: "Coordinate the Friday release.",
@@ -55,8 +57,8 @@ const data: RoomsResult = {
 };
 const request: RoomsPort = async (input) => {
   if (input.kind === "wait") return new Promise(() => {});
-  if (input.kind === "list") return { connected: true, rooms: data.rooms };
-  if (input.kind === "read") return { connected: true, room, messages: data.messages };
+  if (input.kind === "list") return { connected: true, rooms };
+  if (input.kind === "read") return { connected: true, room, messages };
   return data;
 };
 const meta = { title: "Features/Rooms", component: RoomsPanel, parameters: { layout: "fullscreen" } } satisfies Meta<
@@ -74,7 +76,7 @@ export const Paused: Story = {
     const paused: RoomsPort = async (input) => {
       if (input.kind === "wait") return new Promise(() => {});
       if (input.kind === "list") return { connected: true, rooms: [pausedRoom] };
-      if (input.kind === "read") return { connected: true, room: pausedRoom, messages: data.messages };
+      if (input.kind === "read") return { connected: true, room: pausedRoom, messages };
       return { ...data, room: pausedRoom };
     };
     return <RoomsPanel request={paused} onConnect={() => {}} />;

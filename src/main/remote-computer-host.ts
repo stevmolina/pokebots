@@ -4,6 +4,7 @@ import { createServer, type Server as HttpServer, type IncomingMessage, type Ser
 import { basename, join } from "node:path";
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
+import type { Transport } from "@modelcontextprotocol/sdk/shared/transport.js";
 import {
   CallToolRequestSchema,
   type CallToolResult,
@@ -109,6 +110,21 @@ interface PendingCall {
 }
 
 type Operation = { operation: "list-tools" } | { operation: "call-tool"; tool: string; arguments: string };
+
+/** The SDK transport, with its optional members spelled the way `exactOptionalPropertyTypes` wants. */
+function asTransport(inner: StreamableHTTPServerTransport): Transport {
+  const transport: Transport = {
+    start: () => {
+      inner.onclose = () => transport.onclose?.();
+      inner.onerror = (error) => transport.onerror?.(error);
+      inner.onmessage = (message, extra) => transport.onmessage?.(message, extra);
+      return inner.start();
+    },
+    send: (message, options) => inner.send(message, options),
+    close: () => inner.close(),
+  };
+  return transport;
+}
 
 export class RemoteComputerHost {
   readonly #secret = randomBytes(32);
@@ -497,7 +513,7 @@ export class RemoteComputerHost {
     );
     const transport = new StreamableHTTPServerTransport({});
     yield* Effect.gen(function* () {
-      yield* remoteComputerCall(() => mcp.connect(transport));
+      yield* remoteComputerCall(() => mcp.connect(asTransport(transport)));
       const body = yield* readJsonBody(request, MAX_BODY_BYTES).pipe(
         Effect.mapError(({ cause }) => new RemoteComputerError({ cause })),
       );

@@ -72,7 +72,7 @@ export function agentAwaitingReplies(input: AgentAwaitingInput): AwaitingReplyIt
       rows.push({
         ...rowFor(delivery.recipientAgentId, state, id),
         taskTitle: previewText(message.body),
-        since: message.createdAt,
+        ...(message.createdAt === undefined ? {} : { since: message.createdAt }),
         ...(wait ? { wait } : {}),
       });
     }

@@ -43,4 +43,20 @@ export const messages = {
   "computerUse.help.revealFailed": "לא ניתן היה להציג את האפליקציה ב-Finder.",
   "computerUse.help.dragFailed": "לא ניתן היה לגרור את האפליקציה.",
   "computerUse.highlight.working": "OpenBot עובד ב-{title}",
+  "computerUse.remote.title": "סוכנים בשרתים שלך",
+  "computerUse.remote.description":
+    "מאפשר לסוכנים שלך בשרת לראות את המחשב הזה ולשלוט בו. זה עובד רק בשרת שבו אתה החבר היחיד. מי שמפעיל את השרת יכול גם הוא להגיע למחשב הזה כל עוד האפשרות פועלת.",
+  "computerUse.remote.switchLabel": "לאפשר לסוכנים ב-{server} להשתמש במחשב הזה",
+  "computerUse.remote.on": "פועל",
+  "computerUse.remote.off": "כבוי",
+  "computerUse.remote.offline": "לא מחובר",
+  "computerUse.remote.unsupported": "השרת הזה צריך קודם עדכון",
+  "computerUse.remote.error": "OpenBot לא הצליח לשנות את ההגדרה הזו.",
+  "computerUse.remote.inUse": "סוכן ב-{server} משתמש במחשב הזה",
+  "computerUse.remote.stop": "עצירה",
+  "computerUse.remote.terminalLabel": "לאפשר להם גם להריץ פקודות ולהעתיק קבצים לכאן",
+  "computerUse.remote.terminalSwitchLabel": "לאפשר לסוכנים ב-{server} להריץ פקודות ולהעתיק קבצים במחשב הזה",
+  "computerUse.remote.terminalHint":
+    "הם פועלים בשמך, עם הקבצים וההתחברויות שלך. כל שימוש מוצג בחלון הזה, ו״עצירה״ מסיימת אותו. האפשרות נכבית כשהמתג הראשון נכבה.",
+  "computerUse.remote.terminalUnsupported": "השרת הזה צריך עדכון כדי להריץ כאן פקודות",
 } as const satisfies PartialTranslation<typeof source>;

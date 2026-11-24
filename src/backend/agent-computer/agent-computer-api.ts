@@ -144,7 +144,7 @@ export class AgentComputerApi {
     this: AgentComputerApi,
     context: string,
     size?: AgentComputerSize,
-    options?: { idempotencyKey?: string },
+    options?: { idempotencyKey?: string | undefined },
   ) {
     const answer = yield* this.#json(
       "POST",

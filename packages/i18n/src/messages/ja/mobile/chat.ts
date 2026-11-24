@@ -595,6 +595,12 @@ export const messages = {
   "mobile.chat.threads.main": "メインチャット",
   "mobile.chat.sessions.title": "セッション",
   "mobile.chat.sessions.new": "新しいセッション",
+  "mobile.chat.sessionsTray.title": {
+    other: "{count} 件アクティブ",
+  },
+  "mobile.chat.sessionsTray.label": {
+    other: "アクティブなセッション {count} 件。表示または非表示",
+  },
   "mobile.chat.sessions.all": "すべてのセッション",
   "mobile.chat.threads.branchedFrom": "{title} から分岐",
   "mobile.chat.threads.branchedFromDeleted": "削除されたスレッドから分岐",

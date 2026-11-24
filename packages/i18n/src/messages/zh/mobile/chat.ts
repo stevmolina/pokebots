@@ -576,6 +576,12 @@ export const messages = {
   "mobile.chat.threads.main": "主聊天",
   "mobile.chat.sessions.title": "会话",
   "mobile.chat.sessions.new": "新会话",
+  "mobile.chat.sessionsTray.title": {
+    other: "{count} 个活跃",
+  },
+  "mobile.chat.sessionsTray.label": {
+    other: "{count} 个活跃会话。显示或隐藏",
+  },
   "mobile.chat.sessions.all": "所有会话",
   "mobile.chat.threads.branchedFrom": "分支自 {title}",
   "mobile.chat.threads.branchedFromDeleted": "分支自已删除的话题",

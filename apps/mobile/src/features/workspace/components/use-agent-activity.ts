@@ -137,7 +137,8 @@ export function useWorkingAgentIds(): ReadonlySet<string> {
   const online = useMobileWorkspaceSelector((workspace) => showsOnline(workspace.activeServer));
   const serverId = useMobileWorkspaceSelector((workspace) => workspace.activeServer.id);
   const queryScope = useQueryScope();
-  const queryCache = useQueryClient().getQueryCache();
+  const queryClient = useQueryClient();
+  const queryCache = queryClient.getQueryCache();
   const selectOwn = useCallback(() => {
     if (!online) return "";
     const activities = liveState.get().activityByServer[serverId] ?? {};
@@ -158,14 +159,11 @@ export function useWorkingAgentIds(): ReadonlySet<string> {
   );
   const selectThreads = useCallback(() => {
     if (!online) return "";
-    const ids = queryCache
-      .findAll({ queryKey: [...queryKeys.serverTasks(queryScope, serverId), "agent"] })
-      .flatMap((query) => {
-        const snapshot = query.state.data as AgentTasksSnapshot | undefined;
-        return snapshot?.tasks.some((task) => task.state === "running") ? [snapshot.agentId] : [];
-      });
+    const ids = queryClient
+      .getQueriesData<AgentTasksSnapshot>({ queryKey: [...queryKeys.serverTasks(queryScope, serverId), "agent"] })
+      .flatMap(([, snapshot]) => (snapshot?.tasks.some((task) => task.state === "running") ? [snapshot.agentId] : []));
     return [...new Set(ids)].sort().join("\n");
-  }, [queryCache, online, queryScope, serverId]);
+  }, [queryClient, online, queryScope, serverId]);
   const threads = useSyncExternalStore(subscribeTasks, selectThreads);
   return useMemo(
     () => new Set([...(own ? own.split("\n") : []), ...(threads ? threads.split("\n") : [])]),

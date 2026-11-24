@@ -2,6 +2,12 @@ import type { PartialTranslation } from "../../message";
 import type { messages as source } from "../en/chat";
 
 export const messages = {
+  "chat.workers.running": "실행 중",
+  "chat.workers.queued": "대기 중",
+  "chat.workers.runningCount": "{count}개 실행 중",
+  "chat.workers.queuedCount": "{count}개 대기 중",
+  "chat.workers.showAll": "활성 세션 {count}개 모두 보기",
+  "chat.workers.showOne": "활성 세션 하나로 접기",
   "chat.activity.workingOnIt": "작업 중…",
   "chat.activity.thinking": "생각을 정리하는 중…",
   "chat.activity.connectingDots": "단서를 연결하는 중…",
@@ -61,6 +67,8 @@ export const messages = {
   "chat.subagents.stepCount": { other: "{count}단계" },
   "chat.subagents.seconds": "{seconds}초",
   "chat.subagents.minutes": "{minutes}분 {seconds}초",
+  "chat.subagents.hours": "{hours}시간 {minutes}분",
+  "chat.subagents.days": "{days}일",
   "chat.subagents.open": "{title}, {state}. 옆에서 열기.",
   "chat.trace.title": "트레이스",
   "chat.trace.search": "단계 검색",
@@ -372,7 +380,6 @@ export const messages = {
   "chat.actions.more": "추가 작업",
   "chat.menu.reply": "답장",
   "chat.menu.copy": "메시지 복사",
-  "chat.menu.react": "반응",
   "chat.menu.branch": "여기서 분기",
   "chat.menu.markUnread": "읽지 않음으로 표시",
   "chat.menu.pin": "고정",

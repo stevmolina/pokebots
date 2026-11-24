@@ -2,6 +2,12 @@ import type { PartialTranslation } from "../../message";
 import type { messages as source } from "../en/chat";
 
 export const messages = {
+  "chat.workers.running": "実行中",
+  "chat.workers.queued": "待機中",
+  "chat.workers.runningCount": "{count} 件実行中",
+  "chat.workers.queuedCount": "{count} 件待機中",
+  "chat.workers.showAll": "アクティブなセッションをすべて表示（{count} 件）",
+  "chat.workers.showOne": "アクティブなセッション 1 件に折りたたむ",
   "chat.activity.workingOnIt": "作業しています…",
   "chat.activity.thinking": "よく考えています…",
   "chat.activity.connectingDots": "点と点をつないでいます…",
@@ -61,6 +67,8 @@ export const messages = {
   "chat.subagents.stepCount": { other: "{count} ステップ" },
   "chat.subagents.seconds": "{seconds}秒",
   "chat.subagents.minutes": "{minutes}分{seconds}秒",
+  "chat.subagents.hours": "{hours}時間{minutes}分",
+  "chat.subagents.days": "{days}日",
   "chat.subagents.open": "{title}、{state}。サイドで開く。",
   "chat.trace.title": "トレース",
   "chat.trace.search": "ステップを検索",
@@ -365,7 +373,6 @@ export const messages = {
   "chat.actions.more": "その他の操作",
   "chat.menu.reply": "返信",
   "chat.menu.copy": "メッセージをコピー",
-  "chat.menu.react": "リアクション",
   "chat.menu.branch": "ここから分岐",
   "chat.menu.markUnread": "未読にする",
   "chat.menu.pin": "ピン留め",

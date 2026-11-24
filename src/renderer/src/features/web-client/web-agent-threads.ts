@@ -133,12 +133,9 @@ function webAgentTasksPort(
         ),
       ),
     startTask: (input) => run((host) => startAgentTask(host, input)),
-    sendToTask: (input) =>
+    sendToTask: ({ queueOnly, ...input }) =>
       run((host) =>
-        sendAgentTaskMessage(host, {
-          ...input,
-          ...(input.queueOnly && untrack(queueOnlySupported) ? { queueOnly: true } : { queueOnly: undefined }),
-        }),
+        sendAgentTaskMessage(host, queueOnly && untrack(queueOnlySupported) ? { ...input, queueOnly: true } : input),
       ),
     stopTask: (input) => run((host) => agentTaskControl(host, "stop", input)),
     closeTask: (input) => run((host) => agentTaskControl(host, "close", input)),

@@ -2,6 +2,12 @@ import type { PartialTranslation } from "../../message";
 import type { messages as source } from "../en/chat";
 
 export const messages = {
+  "chat.workers.running": "Läuft",
+  "chat.workers.queued": "Wartet",
+  "chat.workers.runningCount": "{count} laufen",
+  "chat.workers.queuedCount": "{count} warten",
+  "chat.workers.showAll": "Alle {count} aktiven Sitzungen zeigen",
+  "chat.workers.showOne": "Auf eine aktive Sitzung reduzieren",
   "chat.activity.workingOnIt": "Wird bearbeitet…",
   "chat.activity.thinking": "Wird durchdacht…",
   "chat.activity.connectingDots": "Zusammenhänge werden erkannt…",
@@ -61,6 +67,8 @@ export const messages = {
   "chat.subagents.stepCount": { one: "{count} Schritt", other: "{count} Schritte" },
   "chat.subagents.seconds": "{seconds} s",
   "chat.subagents.minutes": "{minutes} min {seconds} s",
+  "chat.subagents.hours": "{hours} h {minutes} min",
+  "chat.subagents.days": "{days} T",
   "chat.subagents.open": "{title}, {state}. Seitlich öffnen.",
   "chat.trace.title": "Trace",
   "chat.trace.search": "Schritte suchen",
@@ -396,7 +404,6 @@ export const messages = {
   "chat.actions.more": "Weitere Aktionen",
   "chat.menu.reply": "Antworten",
   "chat.menu.copy": "Nachricht kopieren",
-  "chat.menu.react": "Reagieren",
   "chat.menu.branch": "Hier abzweigen",
   "chat.menu.markUnread": "Als ungelesen markieren",
   "chat.menu.pin": "Anheften",

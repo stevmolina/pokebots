@@ -11,7 +11,6 @@ export const messages = {
   "agentSettings.session.resetNamed": "إعادة ضبط {name}",
   "agentSettings.label": "إعدادات الوكيل",
   "agentSettings.title": "الإعدادات",
-  "agentSettings.backToDetails": "العودة إلى التفاصيل",
   "agentSettings.closeDetails": "إغلاق التفاصيل",
   "agentSettings.backToSettings": "العودة إلى الإعدادات",
   "agentSettings.permissions.title": "الأذونات",
@@ -128,7 +127,6 @@ export const messages = {
   "agentSettings.backupModels.withAccount": "{model} · {account}",
   "agentSettings.backupModels.note":
     "عندما يوقف حدّ الاستخدام {name} بعد أن يبدأ العمل، يتابع {name} العمل نفسه على أول نموذج متاح في الترتيب. ويعود إلى {model} عند انتهاء الحد، أو بعد 10 دقائق من خطأ المزوّد.",
-  "agentSettings.groups.brain": "العقل",
   "agentSettings.groups.knows": "المعرفة",
   "agentSettings.groups.does": "القدرات",
   "agentSettings.groups.rules": "القواعد",
@@ -173,6 +171,8 @@ export const messages = {
   "agentSettings.avatar.autoColor": "لون تلقائي للصورة الرمزية",
   "agentSettings.avatar.autoInitial": "ت",
   "agentSettings.avatar.hueColor": "لون الصورة الرمزية {hue}",
+  "agentSettings.avatar.mascots": "تمائم Pokebots",
+  "agentSettings.avatar.mascotOption": "التميمة {number}",
   "agentSettings.avatar.saveFailed": "تعذّر حفظ صورة الوكيل الرمزية.",
   "agentSettings.avatar.processFailed": "تعذّرت معالجة صورة الوكيل الرمزية.",
 
@@ -261,7 +261,6 @@ export const messages = {
   },
   "agentSettings.links.files": "الملفات",
   "agentSettings.links.routines": "المهام الدورية",
-  "agentSettings.links.library": "المكتبة",
   "agentSettings.links.computer": "الكمبيوتر",
   "agentSettings.links.computerActive": "قيد الاستخدام",
   "agentSettings.links.computerAsleep": "في وضع السكون",
