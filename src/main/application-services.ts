@@ -487,6 +487,7 @@ import { TeamWebRtcBridge } from "./team-webrtc-bridge";
 import { TeamWebRtcClientTransport } from "./team-webrtc-client-transport";
 import type { TeardownRegistry } from "./teardown-registry";
 import { THEME_PALETTE_DIRECTORY } from "./theme-palette-files";
+import { developmentDurationMs, ThreadAutoArchiveScheduler } from "./thread-auto-archive";
 import { TraceFile } from "./trace-file";
 import {
   macShipItDirectory,
@@ -686,6 +687,8 @@ const TEARDOWN_ORDER = {
   bitwardenConnector: 106.5,
   // Before the agent service. It holds no file an agent reads; only a CLI run that waits is stopped.
   passwordManagers: 106.75,
+  // Before the agent service: a sweep archives threads through it.
+  threadAutoArchive: 106.9,
   // Before the agent service, so no agent is handed a token file that is being removed.
   githubConnector: 107,
   // Before the agent service, so no payment wait outlives the agents that asked for it.
@@ -2691,6 +2694,21 @@ export async function createApplicationServices({
     tables,
   });
   teardown.push(TEARDOWN_ORDER.service, "the agent service", () => runCauseEffect(service.stop()));
+  /*
+   * The host archives the idle side threads of its agents by itself, also for the members of a joined
+   * server. A development build can shorten the idle time and the interval, so a check does not wait for days.
+   */
+  const devThreadIdleMs = appVariant === "dev" ? developmentDurationMs(process.env.OPENBOT_DEV_THREAD_IDLE_MS) : null;
+  const devThreadSweepMs = appVariant === "dev" ? developmentDurationMs(process.env.OPENBOT_DEV_THREAD_SWEEP_MS) : null;
+  const threadAutoArchive = new ThreadAutoArchiveScheduler({
+    sweep: (idleBefore) => service.autoArchiveIdleThreads(idleBefore),
+    ...(devThreadIdleMs === null ? {} : { idleMs: devThreadIdleMs }),
+    ...(devThreadSweepMs === null ? {} : { intervalMs: devThreadSweepMs }),
+  });
+  threadAutoArchive.start();
+  teardown.push(TEARDOWN_ORDER.threadAutoArchive, "the automatic thread archive", () =>
+    Effect.runPromise(threadAutoArchive.close()),
+  );
   // The next turn of each agent uses the instructions of the new personality.
   serverPersonality.onChange(() => service.responseStyleChanged());
   hostTurnLimits.onChange(() => service.turnLimitsChanged());

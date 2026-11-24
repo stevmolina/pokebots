@@ -906,19 +906,11 @@ export class AgentService extends EventEmitter<AgentServiceEvents> {
           this.#drain.scheduleDrain(agentId);
         },
         turnActive: (agentId, threadId) => this.#store.database.readActiveTurnId(agentId, threadId) !== null,
-        // As `closeTask` does after its Stop: the plan continuation ends, and the memory review starts.
-        archived: Effect.fn("AgentService.archivedTasks")(function* (
-          this: AgentService,
-          agentId: string,
-          tasks: readonly AgentThreadRecord[],
-        ) {
-          for (const task of tasks) {
-            yield* this.#drain.endPlanContinuation(agentId, task.taskId);
-            yield* this.#memoryReview.threadClosed(agentId, task.threadId);
-          }
-          // A task lane that waited for a free task can start now.
-          this.#drain.scheduleDrain(agentId);
-        }).bind(this),
+        archived: (agentId, tasks) => this.#archivedThreadsFollowUp(agentId, tasks),
+        archivedInBackground: (agentId, tasks) =>
+          Effect.runFork(this.#archivedThreadsFollowUp(agentId, tasks).pipe(Effect.forkIn(this.#scope))),
+        // Read late: the attention registry is built further down this constructor.
+        waitsForPerson: (agentId, threadId) => this.#attention.hasAttentionForThread(agentId, threadId),
         agentActivityChanged: () => this.#emit({ type: "agents-changed", agents: this.listAgents() }),
       },
     });
@@ -7106,6 +7098,51 @@ export class AgentService extends EventEmitter<AgentServiceEvents> {
     yield* this.#memoryReview.threadClosed(task.agentId, task.threadId);
     // A task lane that waited for a free task can start now.
     this.#drain.scheduleDrain(task.agentId);
+  }).bind(this);
+
+  /** As `closeTask` does after its Stop: the plan continuation ends, and the memory review starts. */
+  readonly #archivedThreadsFollowUp = Effect.fn("AgentService.archivedTasks")(function* (
+    this: AgentService,
+    agentId: string,
+    tasks: readonly AgentThreadRecord[],
+  ) {
+    for (const task of tasks) {
+      yield* this.#drain.endPlanContinuation(agentId, task.taskId);
+      yield* this.#memoryReview.threadClosed(agentId, task.threadId);
+    }
+    // A task lane that waited for a free task can start now.
+    this.#drain.scheduleDrain(agentId);
+  }).bind(this);
+
+  /**
+   * Archives the idle side threads of every agent whose last activity is before `idleBefore`, as the
+   * person's Archive does. A thread is idle when no turn runs, no message is queued, no teammate's
+   * answer is awaited, no question waits for a person and no provider session runs background work.
+   * Each agent gets one change event. Returns how many threads were archived.
+   */
+  readonly autoArchiveIdleThreads = Effect.fn("AgentService.autoArchiveIdleThreads")(function* (
+    this: AgentService,
+    idleBefore: string,
+  ): Effect.fn.Return<number> {
+    let total = 0;
+    for (const agent of this.#store.list()) {
+      if (this.#removal.deleting().has(agent.id)) continue;
+      const chosen: AgentThreadRecord[] = [];
+      for (const task of this.#tasks.autoArchivable(agent.id)) {
+        if (task.updatedAt >= idleBefore) continue;
+        // A provider job that runs in the background can still write to the thread.
+        if (yield* this.#threads.threadRunsBackgroundWork(task.threadId)) continue;
+        chosen.push(task);
+      }
+      if (chosen.length === 0) continue;
+      // The checks run again here, with no yield before the close, so no turn starts in between.
+      const archived = this.#tasks.autoArchive(agent.id, chosen);
+      if (archived.length === 0) continue;
+      total += archived.length;
+      logger.info("Archived idle threads.", { agentId: agent.id, count: archived.length });
+      yield* this.#archivedThreadsFollowUp(agent.id, archived);
+    }
+    return total;
   }).bind(this);
 
   reopenTask(input: AgentTaskInput): void {
