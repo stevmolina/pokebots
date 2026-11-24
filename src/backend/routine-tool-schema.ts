@@ -5,7 +5,7 @@ import { WEBHOOK_EVENT_TYPE_MAX_LENGTH, WEBHOOK_FILTERS_LIMIT } from "./webhook-
 
 const ROUTINE_TIME_PATTERN = /^([01]\d|2[0-3]):[0-5]\d$/;
 
-const routineTimeSchema = z.string().regex(ROUTINE_TIME_PATTERN).describe("Local time in HH:mm format.");
+const routineTimeSchema = z.string().regex(ROUTINE_TIME_PATTERN).describe("Local HH:mm.");
 const routineDaySelectionSchema = z.discriminatedUnion("kind", [
   z.object({ kind: z.literal("every-day") }).strict(),
   z.object({ kind: z.literal("days-of-week"), days: z.array(z.number().int().min(0).max(6)).min(1) }).strict(),
@@ -34,7 +34,7 @@ export const routineScheduleZodSchema = z
         kind: z.literal("interval"),
         amount: z.number().int().min(1).max(100_000),
         unit: z.enum(["minutes", "hours", "days"]),
-        anchorAt: z.string().describe("An ISO 8601 date-time anchoring the interval."),
+        anchorAt: z.string().describe("ISO 8601 start of the interval."),
       })
       .strict(),
     z
@@ -52,13 +52,11 @@ export const routineScheduleZodSchema = z
         date: z
           .string()
           .regex(/^\d{4}-\d{2}-\d{2}$/)
-          .describe("Local date in YYYY-MM-DD format."),
+          .describe("Local YYYY-MM-DD."),
         time: routineTimeSchema,
       })
       .strict()
-      .describe(
-        "One run at this local date and time, such as a reminder. The routine then pauses and does not repeat.",
-      ),
+      .describe("One run at this local date and time, such as a reminder; then the routine pauses."),
   ])
   .describe("Routine schedule. Weekdays use 0 for Sunday through 6 for Saturday; clock values use HH:mm local time.");
 
@@ -67,28 +65,28 @@ export const routineScheduleZodSchema = z
  * that leans on the chat ("check the mail as before") leaves the run without the way to do it.
  */
 export const ROUTINE_INSTRUCTION_RULE =
-  "Each run starts a new session that sees only the newest chat messages, so write an instruction that a reader with no chat can follow. Name the service and the tool to use, such as openbot_browser for a website with the site and its signed-in tab, or the MCP tool or teammate. Also name the account, the steps, what to report and where, and when to report nothing. Do not write 'as before' or refer to the chat.";
+  "Each run is a new session that sees only the newest chat messages: write it for a reader with no chat, never 'as before'. Name the service and tool (such as openbot_browser and its signed-in site tab, an MCP tool or a teammate), the account, the steps, what to report and where, and when to report nothing.";
+
+/** The short form of `ROUTINE_INSTRUCTION_RULE` for schemas; the routine guidance has the full rule. */
+export const ROUTINE_INSTRUCTION_SUMMARY =
+  "A run is a new session with no chat: name the service and tool, account, steps, what to report where, and when to report nothing.";
 
 export const routineInstructionZodSchema = z
   .string()
   .min(1)
   .max(INPUT_LIMITS.routineInstruction)
-  .describe(`What each run does. ${ROUTINE_INSTRUCTION_RULE}`);
+  .describe(`What each run does. ${ROUTINE_INSTRUCTION_SUMMARY}`);
 
 export const routineLimitPolicyZodSchema = z
   .enum(ROUTINE_LIMIT_POLICIES)
-  .describe(
-    "What a run does while the agent's provider account is at its usage limit: wait runs it after the reset, skip drops it. New routines use wait. A one-time schedule always uses wait.",
-  );
+  .describe("At the provider usage limit: wait (default; always for once) runs it after the reset, skip drops it.");
 
 const ROUTINE_MISSED_POLICY_MEANING =
-  "What the routine does with occurrences that came due while OpenBot or its server was off: skip records and drops them, run-once runs the newest one when OpenBot starts and records the others.";
+  "Runs that came due while OpenBot or its server was off: skip records and drops them; run-once runs the newest at start and records the rest.";
 
 export const routineMissedPolicyZodSchema = z
   .enum(ROUTINE_MISSED_POLICIES)
-  .describe(
-    `${ROUTINE_MISSED_POLICY_MEANING} With no value, a one-time schedule uses run-once and other schedules use skip.`,
-  );
+  .describe(`${ROUTINE_MISSED_POLICY_MEANING} Default: run-once for once, else skip.`);
 
 /** The update tools already say that a field left out keeps its saved value. */
 export const routineMissedPolicyUpdateZodSchema = z
@@ -97,7 +95,7 @@ export const routineMissedPolicyUpdateZodSchema = z
 
 export const routineRunPlaceZodSchema = z
   .enum(ROUTINE_RUN_PLACES)
-  .describe("chat (default) or the routine's own thread. Use thread only when the user asks.");
+  .describe("chat (default), or thread only when the user asks.");
 
 export const webhookEventTypeZodSchema = z
   .string()
