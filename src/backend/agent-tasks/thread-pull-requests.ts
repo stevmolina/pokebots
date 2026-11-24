@@ -17,7 +17,7 @@ export type PullRequestState = "open" | "merged" | "closed" | "unknown";
 export type PullRequestStates = (ref: PullRequestRef) => Effect.Effect<PullRequestState>;
 
 /** A thread that names more pull requests than this is a review or a list: the pull request rule skips it. */
-export const THREAD_PULL_REQUEST_LIMIT = 10;
+const THREAD_PULL_REQUEST_LIMIT = 10;
 
 const PULL_REQUEST_URL =
   /https?:\/\/(?:www\.)?github\.com\/([A-Za-z0-9](?:[A-Za-z0-9-]{0,38}))\/([A-Za-z0-9._-]{1,100})\/pull\/(\d{1,9})(?![\d])/g;
