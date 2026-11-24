@@ -612,13 +612,13 @@ export const messages = {
   "server.update.releaseUnavailable": "当前版本不支持发布检查。请联系主机管理员检查兼容版本。",
   "server.update.externalTitle": "安装由主机控制",
   "server.update.path.hostManager":
-    "OpenBot Host Manager 会在所有用户空闲时安装更新。如果更新没有开始，请联系主机管理员检查 Host Manager 状态。",
+    "Pokebots Host Manager 会在所有用户空闲时安装更新。如果更新没有开始，请联系主机管理员检查 Host Manager 状态。",
   "server.update.path.hosted":
     "托管服务会在后台下载更新。已下载的更新会在服务器下次启动时生效。停止并恢复服务器前请先等待进行中的工作结束。如果版本一直停留在旧版，请联系主机管理员。",
   "server.update.path.system":
     "在主机上运行 sudo openbot update 以安装最新版本。该命令会停止 Pokebots，请先等待进行中的工作结束。自动下载的更新会在下次启动时安装。",
   "server.update.path.container":
-    "在 Docker 主机上拉取新的 OpenBot 镜像，并使用相同的数据卷重新创建容器。请先等待进行中的工作结束。保留原有数据卷，以免数据丢失。",
+    "在 Docker 主机上拉取新的 Pokebots 镜像，并使用相同的数据卷重新创建容器。请先等待进行中的工作结束。保留原有数据卷，以免数据丢失。",
   "server.update.path.manual":
     "该安装方式无法自我更新。请联系主机管理员从 github.com/nightly-labs/openbot/releases 安装兼容版本，并保留现有的 Pokebots 数据。",
   "server.update.path.unavailable": "这是开发构建。请使用已安装的 Pokebots 正式版本检查更新。",
@@ -639,7 +639,7 @@ export const messages = {
   "server.update.disabledTitle": "远程更新已关闭",
   "server.update.disabledDescription": "{name} 的用户已关闭来自服务器成员的更新。请联系其更新 Pokebots 或开启该设置。",
   "server.update.managedTitle": "更新由 Host Manager 控制",
-  "server.update.managedDescription": "OpenBot Host Manager 负责更新 {name}。请联系主机管理员。",
+  "server.update.managedDescription": "Pokebots Host Manager 负责更新 {name}。请联系主机管理员。",
   "server.update.unsupportedTitle": "{name} 无法自我更新",
   "server.update.unsupportedDescription": "该 Pokebots 构建没有更新器，请在 {name} 上安装新版本。",
   "server.update.restarting": "正在重启…",

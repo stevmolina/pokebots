@@ -60,7 +60,7 @@ import { openChatFromPane, useChatListPane } from "@/features/agents/components/
 import { reportMobileNotification } from "@/features/analytics/failure-reports";
 import { MobileSearchResults, SearchCaption } from "@/features/search/components/mobile-search-results";
 import { setHomeSearchOpener } from "@/features/search/model/home-search-request";
-import { useAppDrawer } from "@/features/servers/components/app-drawer-shell";
+import { useAppDrawer } from "@/features/servers/components/app-drawer-context";
 import { TaskListRow } from "@/features/servers/components/task-list-row";
 import { taskStartId } from "@/features/servers/model/task-start-id";
 import { useServerTasks } from "@/features/servers/model/use-server-tasks";

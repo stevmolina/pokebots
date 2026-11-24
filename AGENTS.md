@@ -360,10 +360,11 @@ app (`/Applications/Pokebots.app`), which `electron-builder.custom.yml` builds. 
   app changes for approval. After approval, it waits up to 10 minutes for local agents to finish,
   quits the app, installs the build, and opens it. It keeps the 3 newest backups in
   `~/OpenBot/backups/` and restores the previous app if the new app fails to start.
-- The current build uses `scripts/brand-layer.ts` during the source rename.
-  `scripts/custom-build-install.sh` sets `OPENBOT_BRAND_NAME`, `OPENBOT_BRAND_AUTH_API_URL` and
-  `OPENBOT_BRAND_SIGNAL_URL` for the build. When the build warns that the brand layer did not find a
-  literal, update `LITERAL_RULES` and run `bun scripts/pokebots-brand-e2e.ts`.
+- The source says "Pokebots"; no build step renames text. `scripts/custom-build-install.sh` sets
+  `OPENBOT_BRAND_AUTH_API_URL` and `OPENBOT_BRAND_SIGNAL_URL` for the build, and
+  `scripts/service-defaults.ts` makes the app use them when nothing else is set at start.
+  `bun run check:openbot-references` fails when new first-party code adds "OpenBot" or an `@openbot/`
+  import outside `scripts/openbot-references-allowlist.json`.
 - Do not build or install the app yourself after a merge, and do not ask Steven to quit it. Builds
   from agent sessions stopped when the session ended, and they raced each other.
 - After a merge, wait for the job. `scripts/custom-auto-update-setup.sh --status` shows the
@@ -386,6 +387,8 @@ app (`/Applications/Pokebots.app`), which `electron-builder.custom.yml` builds. 
   merges when it passes. Do not poll CI in a foreground loop; use one background
   `gh pr checks <pr> --watch --fail-fast`. Follow [ship](.agents/skills/ship/SKILL.md).
   Ask for approval before merging a change that can lose user data, expose secrets, or be hard to reverse.
+- A PR must be up to date with `main` to merge. `update-auto-merge-prs.yml` merges `main` into each
+  auto-merge PR that falls behind and restarts CI, so use `--auto` and do not rebase by hand.
 - Write the PR body from `.github/PULL_REQUEST_TEMPLATE.md`. Organization members and users with
   write access do not sign the Contributor License Agreement. An author who must sign sends a signed
   PDF by email. Never sign, fill in, or send the agreement for the author.

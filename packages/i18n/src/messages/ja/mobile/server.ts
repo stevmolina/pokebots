@@ -685,7 +685,7 @@ export const messages = {
   "mobile.server.connectors.github.disconnect": "GitHub を切断",
   "mobile.server.connectors.github.disconnectTitle": "GitHub を切断しますか？",
   "mobile.server.connectors.github.disconnectBody":
-    "{host} から @{login} のサインインが削除され、すべてのエージェントが GitHub のツール、gh、git を使えなくなります。その後 GitHub が開き、OpenBot のアクセスを取り消せます。",
+    "{host} から @{login} のサインインが削除され、すべてのエージェントが GitHub のツール、gh、git を使えなくなります。その後 GitHub が開き、Pokebots のアクセスを取り消せます。",
   "mobile.server.connectors.onePassword.title": "1Password",
   "mobile.server.connectors.onePassword.description":
     "サービスアカウントを通じて専用の 1Password 保管庫を {host} 上の Pokebots と共有すると、{host} のエージェントがそのブラウザーでサイトにサインインできます。",
@@ -776,21 +776,21 @@ export const messages = {
     "{host} はアクセスキーを削除します。保管庫とそのログインは {name} アカウントに残ります。",
   "mobile.server.connectors.slack.title": "Slack",
   "mobile.server.connectors.slack.description":
-    "Slack で @OpenBot をメンションするか、ダイレクトメッセージを送ります。Slack Orchestrator が適切なエージェントに依頼して回答します。",
+    "Slack で @Pokebots をメンションするか、ダイレクトメッセージを送ります。Slack Orchestrator が適切なエージェントに依頼して回答します。",
   "mobile.server.connectors.slack.attention": { other: "{count} 件のワークスペースに対応が必要です" },
   "mobile.server.connectors.slack.connect": "Slack を接続",
   "mobile.server.connectors.slack.connectFooter":
-    "ブラウザーで Slack が開きます。右上でワークスペースを選び、「許可する」を押します。OpenBot は OpenBot という名前のアプリを 1 つインストールし、そのアプリはすべての公開チャンネルに参加します。",
+    "ブラウザーで Slack が開きます。右上でワークスペースを選び、「許可する」を押します。Pokebots は Pokebots という名前のアプリを 1 つインストールし、そのアプリはすべての公開チャンネルに参加します。",
   "mobile.server.connectors.slack.add": "ワークスペースを追加",
   "mobile.server.connectors.slack.limit": { other: "接続できるワークスペースは最大 {count} 件です。" },
   "mobile.server.connectors.slack.workspaceTitle": "ワークスペース",
   "mobile.server.connectors.slack.workspaceDescription":
-    "@OpenBot をメンションするか、ダイレクトメッセージを送ります。",
+    "@Pokebots をメンションするか、ダイレクトメッセージを送ります。",
   "mobile.server.connectors.slack.missingScopes":
     "Pokebots には Slack で次の権限がありません: {scopes}。ワークスペースを切断してから、もう一度接続してください。",
   "mobile.server.connectors.slack.retryAt": "Slack から待機するよう求められました。{time} に再試行します。",
   "mobile.server.connectors.slack.helpInvalidToken":
-    "Slack はこのワークスペースで OpenBot を受け付けなくなりました。アンインストールされた可能性があります。ワークスペースをもう一度接続してください。",
+    "Slack はこのワークスペースで Pokebots を受け付けなくなりました。アンインストールされた可能性があります。ワークスペースをもう一度接続してください。",
   "mobile.server.connectors.slack.helpSecretStorage":
     "Pokebots は {host} に保存されたトークンを読み取れません。ワークスペースを切断してから、もう一度接続してください。",
   "mobile.server.connectors.slack.helpRelay":
@@ -812,25 +812,25 @@ export const messages = {
   "mobile.server.connectors.slack.disconnectDeleted": "Slack Orchestrator とその会話は Pokebots から削除されます。",
   "mobile.server.connectors.slack.agentPromptTitle": "Slack Orchestrator を追加しますか？",
   "mobile.server.connectors.slack.agentPromptBody":
-    "この新しいエージェントは、{workspace} で @OpenBot に送られたすべてのメッセージに回答します。",
+    "この新しいエージェントは、{workspace} で @Pokebots に送られたすべてのメッセージに回答します。",
   "mobile.server.connectors.slack.installFailed": "Slack でインストールが完了しませんでした。もう一度お試しください。",
   "mobile.server.connectors.discord.title": "Discord",
   "mobile.server.connectors.discord.description":
-    "Discord サーバーのチャンネルで @OpenBot をメンションします。Discord Orchestrator が適切なエージェントに依頼して回答します。",
+    "Discord サーバーのチャンネルで @Pokebots をメンションします。Discord Orchestrator が適切なエージェントに依頼して回答します。",
   "mobile.server.connectors.discord.attention": { other: "{count} 件の Discord サーバーに対応が必要です" },
   "mobile.server.connectors.discord.connect": "Discord を接続",
   "mobile.server.connectors.discord.connectFooter":
-    "ブラウザーで Discord が開きます。Discord サーバーを選び、「認証」を押します。OpenBot は OpenBot という名前のボットを 1 つ追加します。",
+    "ブラウザーで Discord が開きます。Discord サーバーを選び、「認証」を押します。Pokebots は Pokebots という名前のボットを 1 つ追加します。",
   "mobile.server.connectors.discord.add": "Discord サーバーを追加",
   "mobile.server.connectors.discord.limit": { other: "接続できる Discord サーバーは最大 {count} 件です。" },
   "mobile.server.connectors.discord.workspaceTitle": "Discord サーバー",
   "mobile.server.connectors.discord.workspaceDescription":
-    "チャンネルで @OpenBot をメンションします。続けるには OpenBot に返信します。",
+    "チャンネルで @Pokebots をメンションします。続けるには Pokebots に返信します。",
   "mobile.server.connectors.discord.missingScopes":
     "Pokebots には Discord で次の権限がありません: {scopes}。Discord サーバーを切断してから、もう一度接続してください。",
   "mobile.server.connectors.discord.retryAt": "Discord から待機するよう求められました。{time} に再試行します。",
   "mobile.server.connectors.discord.helpInvalidToken":
-    "Discord はこの Discord サーバーで OpenBot を受け付けなくなりました。削除された可能性があります。Discord サーバーをもう一度接続してください。",
+    "Discord はこの Discord サーバーで Pokebots を受け付けなくなりました。削除された可能性があります。Discord サーバーをもう一度接続してください。",
   "mobile.server.connectors.discord.helpSecretStorage":
     "Pokebots は {host} に保存されたトークンを読み取れません。Discord サーバーを切断してから、もう一度接続してください。",
   "mobile.server.connectors.discord.helpRelay":
@@ -851,7 +851,7 @@ export const messages = {
   "mobile.server.connectors.discord.disconnectDeleted": "Discord Orchestrator とその会話は Pokebots から削除されます。",
   "mobile.server.connectors.discord.agentPromptTitle": "Discord Orchestrator を追加しますか？",
   "mobile.server.connectors.discord.agentPromptBody":
-    "この新しいエージェントは、{workspace} で @OpenBot に送られたすべてのメッセージに回答します。",
+    "この新しいエージェントは、{workspace} で @Pokebots に送られたすべてのメッセージに回答します。",
   "mobile.server.connectors.discord.installFailed": "Discord で認証が完了しませんでした。もう一度お試しください。",
   "mobile.server.connectors.telegram.title": "Telegram",
   "mobile.server.connectors.telegram.description":
@@ -1339,13 +1339,13 @@ export const messages = {
     "このビルドではリリースを確認できません。互換性のあるリリースを確認するよう、ホストの管理者に依頼してください。",
   "mobile.server.update.externalTitle": "インストールはホストが管理します",
   "mobile.server.update.path.hostManager":
-    "OpenBot Host Manager は、すべてのユーザーがアイドル状態のときにアップデートをインストールします。アップデートが始まらない場合は、Host Manager の状態を確認するようホストの管理者に依頼してください。",
+    "Pokebots Host Manager は、すべてのユーザーがアイドル状態のときにアップデートをインストールします。アップデートが始まらない場合は、Host Manager の状態を確認するようホストの管理者に依頼してください。",
   "mobile.server.update.path.hosted":
     "ホスティングサービスはバックグラウンドでアップデートをダウンロードします。ダウンロードしたアップデートは、次にサーバーが起動したときに適用されます。サーバーを停止して再開する前に、実行中の作業が終わるのを待ってください。古いバージョンのままの場合は、ホストの管理者に連絡してください。",
   "mobile.server.update.path.system":
     "ホストで sudo openbot update を実行して、最新のリリースをインストールしてください。このコマンドは Pokebots を停止します。先に実行中の作業が終わるのを待ってください。自動ダウンロードされたアップデートは次回の起動時にインストールされます。",
   "mobile.server.update.path.container":
-    "Docker ホストで新しい OpenBot イメージを pull し、同じデータボリュームでコンテナーを再作成してください。先に実行中の作業が終わるのを待ってください。データを保持するため、既存のボリュームはそのまま残してください。",
+    "Docker ホストで新しい Pokebots イメージを pull し、同じデータボリュームでコンテナーを再作成してください。先に実行中の作業が終わるのを待ってください。データを保持するため、既存のボリュームはそのまま残してください。",
   "mobile.server.update.path.manual":
     "このインストールは自分自身を置き換えられません。github.com/nightly-labs/openbot/releases から互換性のあるリリースをインストールするよう、ホストの管理者に依頼してください。既存の Pokebots のデータは残してください。",
   "mobile.server.update.path.unavailable":
@@ -1370,7 +1370,7 @@ export const messages = {
     "{name} のユーザーが、サーバーメンバーからのアップデートをオフにしました。Pokebots をアップデートするか、設定をオンにするよう依頼してください。",
   "mobile.server.update.managedTitle": "アップデートは Host Manager が管理しています",
   "mobile.server.update.managedDescription":
-    "OpenBot Host Manager が {name} をアップデートします。ホストの管理者に連絡してください。",
+    "Pokebots Host Manager が {name} をアップデートします。ホストの管理者に連絡してください。",
   "mobile.server.update.unsupportedTitle": "{name} は自身をアップデートできません",
   "mobile.server.update.unsupportedDescription":
     "この Pokebots ビルドにはアップデーターがありません。{name} に新しいバージョンをインストールしてください。",

@@ -532,7 +532,7 @@ export const messages = {
   "settings.updates.managed.description":
     "这台 Mac 的更新由 Pokebots Host Manager 自动管理。所有用户共用同一个 Pokebots 应用，并在已注册用户空闲时一起更新。",
   "settings.updates.target.latest": "最新的 Pokebots 更新",
-  "settings.updates.host.upToDate": "已是最新。OpenBot Host Manager 会保持这台 Mac 更新。",
+  "settings.updates.host.upToDate": "已是最新。Pokebots Host Manager 会保持这台 Mac 更新。",
   "settings.updates.host.ready": "{target} 已下载，正在等待这台 Mac 上的其他用户空闲。",
   "settings.updates.host.installing": "正在安装 {target}…",
   "settings.updates.host.failed": "托管更新失败，请联系这台 Mac 的管理员。",

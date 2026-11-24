@@ -571,13 +571,13 @@ export const messages = {
     "A verificação de versões não está disponível nesta compilação. Peça ao administrador do computador anfitrião para buscar uma versão compatível.",
   "server.update.externalTitle": "O computador anfitrião controla a instalação",
   "server.update.path.hostManager":
-    "O OpenBot Host Manager instala atualizações quando todos os usuários estão ociosos. Se uma atualização não iniciar, peça ao administrador do computador anfitrião para verificar o status do Host Manager.",
+    "O Pokebots Host Manager instala atualizações quando todos os usuários estão ociosos. Se uma atualização não iniciar, peça ao administrador do computador anfitrião para verificar o status do Host Manager.",
   "server.update.path.hosted":
     "O serviço hospedado baixa atualizações em segundo plano. Uma atualização baixada inicia na próxima inicialização do servidor. Aguarde o trabalho ativo terminar antes de parar e retomar o servidor. Se ele continuar em uma versão antiga, contate o administrador do computador anfitrião.",
   "server.update.path.system":
     "No computador anfitrião, execute sudo openbot update para instalar a versão mais recente. Este comando interrompe o Pokebots. Aguarde o trabalho ativo terminar primeiro. Downloads automáticos são instalados na próxima inicialização.",
   "server.update.path.container":
-    "No computador anfitrião do Docker, baixe a nova imagem do OpenBot e crie o contêiner de novo com os mesmos volumes de dados. Aguarde o trabalho ativo terminar primeiro. Mantenha os volumes existentes para preservar seus dados.",
+    "No computador anfitrião do Docker, baixe a nova imagem do Pokebots e crie o contêiner de novo com os mesmos volumes de dados. Aguarde o trabalho ativo terminar primeiro. Mantenha os volumes existentes para preservar seus dados.",
   "server.update.path.manual":
     "Esta instalação não pode se substituir. Peça ao administrador do computador anfitrião para instalar a versão compatível de github.com/nightly-labs/openbot/releases. Mantenha os dados existentes do Pokebots.",
   "server.update.path.unavailable":
@@ -601,7 +601,7 @@ export const messages = {
     "O usuário de {name} desativou as atualizações por membros do servidor. Peça que atualize o Pokebots ou ative a opção.",
   "server.update.managedTitle": "Um Host Manager controla as atualizações",
   "server.update.managedDescription":
-    "O OpenBot Host Manager atualiza {name}. Entre em contato com o administrador do computador anfitrião.",
+    "O Pokebots Host Manager atualiza {name}. Entre em contato com o administrador do computador anfitrião.",
   "server.update.unsupportedTitle": "{name} não pode se atualizar sozinho",
   "server.update.unsupportedDescription":
     "Esta compilação do Pokebots não tem um atualizador. Instale uma nova versão em {name}.",

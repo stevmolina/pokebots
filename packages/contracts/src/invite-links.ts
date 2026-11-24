@@ -141,7 +141,7 @@ export function parseInviteUrl(value: string, options: InviteLinkOptions = {}): 
   try {
     url = new URL(value);
   } catch {
-    throw new Error("Enter a valid OpenBot invitation link.");
+    throw new Error("Enter a valid Pokebots invitation link.");
   }
 
   const canonical =
@@ -158,7 +158,7 @@ export function parseInviteUrl(value: string, options: InviteLinkOptions = {}): 
     url.hash !== "" ||
     !hasOnlyInviteFields(url.searchParams)
   ) {
-    throw new Error("The OpenBot invitation link is invalid.");
+    throw new Error("The Pokebots invitation link is invalid.");
   }
 
   const payload: InviteLinkPayload = {
@@ -209,7 +209,7 @@ function validatePayload(payload: InviteLinkPayload, options: InviteLinkOptions)
     !BASE64URL_SECRET_PATTERN.test(payload.fingerprint) ||
     !BASE64URL_SECRET_PATTERN.test(payload.token)
   ) {
-    throw new Error("The OpenBot invitation link is invalid.");
+    throw new Error("The Pokebots invitation link is invalid.");
   }
 }
 

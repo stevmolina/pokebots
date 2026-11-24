@@ -1,15 +1,11 @@
 import { createHash } from "node:crypto";
-import { readFileSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
-import { isDynamicRecord } from "@pokebots/contracts/runtime-values";
+import { readFileSync } from "node:fs";
 import type { Plugin } from "vite";
-import { brandText, readBrandSettings } from "../../scripts/brand-layer";
 
 const TEMPLATE = new URL("./service-worker/app-sw.js", import.meta.url);
 /** The file name at the site root. A script at the root may take the scope `/app`. */
 export const WEB_SERVICE_WORKER_FILE = "app-sw.js";
-const MANIFEST_FILE = "site.webmanifest";
-const BRANDED_MANIFEST_KEYS = new Set(["name", "short_name", "description"]);
+const APP_NAME = "Pokebots";
 
 /**
  * Emits `app-sw.js`, the service worker of the web client, into the client build. Its build id is a
@@ -21,12 +17,9 @@ const BRANDED_MANIFEST_KEYS = new Set(["name", "short_name", "description"]);
  * `vite dev` serves the same file at the same address with the build id `dev`. The worker keeps no
  * `/assets/` file there, because the dev server has none, and it answers `/app` from the network, so it
  * hides no edit. It is there so that push and the update prompt can be tried while developing.
- *
- * With `OPENBOT_BRAND_NAME` set, the worker's app name and the manifest's names carry the brand name.
  */
-export function webServiceWorker(env: Readonly<Record<string, string | undefined>> = process.env): Plugin {
-  const brand = readBrandSettings(env);
-  const appName = brand?.name ?? "Pokebots";
+export function webServiceWorker(): Plugin {
+  const appName = APP_NAME;
   const workerSource = (template: string, buildId: string, assetPaths: readonly string[]) =>
     // Function replacers, so that a `$` in a value is not read as a replacement pattern.
     template
@@ -57,24 +50,6 @@ export function webServiceWorker(env: Readonly<Record<string, string | undefined
       const assetPaths = names.filter((name) => name.startsWith("assets/")).map((name) => encodeURI(`/${name}`));
       const source = workerSource(template, hash.digest("hex").slice(0, 16), assetPaths);
       this.emitFile({ type: "asset", fileName: WEB_SERVICE_WORKER_FILE, source });
-    },
-    // The public folder, with the manifest, is copied before the bundle is written.
-    writeBundle(options) {
-      if (!brand || !options.dir || this.environment.name !== "client") return;
-      const path = join(options.dir, MANIFEST_FILE);
-      try {
-        const manifest = JSON.parse(readFileSync(path, "utf8"));
-        if (!isDynamicRecord(manifest)) throw new Error("The manifest is not an object.");
-        const branded = Object.fromEntries(
-          Object.entries(manifest).map(([key, value]) => [
-            key,
-            BRANDED_MANIFEST_KEYS.has(key) && typeof value === "string" ? brandText(value, brand.name) : value,
-          ]),
-        );
-        writeFileSync(path, `${JSON.stringify(branded, null, 2)}\n`);
-      } catch (error) {
-        this.warn(`The brand layer could not change ${MANIFEST_FILE}: ${String(error)}`);
-      }
     },
   };
 }

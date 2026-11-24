@@ -977,7 +977,7 @@ export const messages = {
   "mobile.server.connectors.github.disconnect": "ניתוק GitHub",
   "mobile.server.connectors.github.disconnectTitle": "לנתק את GitHub?",
   "mobile.server.connectors.github.disconnectBody":
-    "הפעולה מסירה את ההתחברות של @{login} מ-{host}, וכל סוכן מאבד את כלי GitHub, את gh ואת git. אחר כך GitHub נפתח, ושם אפשר לבטל את ההרשאה של OpenBot.",
+    "הפעולה מסירה את ההתחברות של @{login} מ-{host}, וכל סוכן מאבד את כלי GitHub, את gh ואת git. אחר כך GitHub נפתח, ושם אפשר לבטל את ההרשאה של Pokebots.",
   "mobile.server.connectors.onePassword.title": "1Password",
   "mobile.server.connectors.onePassword.description":
     "שיתוף כספת 1Password ייעודית עם Pokebots ב-{host} דרך חשבון שירות, כדי שסוכנים ב-{host} יוכלו להתחבר לאתרים בדפדפן שלו.",
@@ -1080,7 +1080,7 @@ export const messages = {
   // {workspace} is the Slack workspace name.
   "mobile.server.connectors.slack.title": "Slack",
   "mobile.server.connectors.slack.description":
-    "אנשים מזכירים את @OpenBot ב-Slack או שולחים לו הודעה ישירה. Slack Orchestrator פונה לסוכן המתאים ועונה.",
+    "אנשים מזכירים את @Pokebots ב-Slack או שולחים לו הודעה ישירה. Slack Orchestrator פונה לסוכן המתאים ועונה.",
   "mobile.server.connectors.slack.attention": {
     one: "סביבת עבודה אחת דורשת טיפול",
     two: "שתי סביבות עבודה דורשות טיפול",
@@ -1088,7 +1088,7 @@ export const messages = {
   },
   "mobile.server.connectors.slack.connect": "חיבור Slack",
   "mobile.server.connectors.slack.connectFooter":
-    "Slack נפתח בדפדפן. יש לבחור את סביבת העבודה בפינה הימנית העליונה, ואז Allow. OpenBot מתקין אפליקציה אחת בשם OpenBot, והיא מצטרפת לכל ערוץ ציבורי.",
+    "Slack נפתח בדפדפן. יש לבחור את סביבת העבודה בפינה הימנית העליונה, ואז Allow. Pokebots מתקין אפליקציה אחת בשם Pokebots, והיא מצטרפת לכל ערוץ ציבורי.",
   "mobile.server.connectors.slack.add": "הוספת סביבת עבודה",
   "mobile.server.connectors.slack.limit": {
     one: "אפשר לחבר לכל היותר סביבת עבודה אחת.",
@@ -1096,14 +1096,14 @@ export const messages = {
     other: "אפשר לחבר לכל היותר {count} סביבות עבודה.",
   },
   "mobile.server.connectors.slack.workspaceTitle": "סביבת עבודה",
-  "mobile.server.connectors.slack.workspaceDescription": "אנשים מזכירים את @OpenBot או שולחים לו הודעה ישירה.",
+  "mobile.server.connectors.slack.workspaceDescription": "אנשים מזכירים את @Pokebots או שולחים לו הודעה ישירה.",
   // {scopes} lists Slack permissions, such as "chat:write and users:read".
   "mobile.server.connectors.slack.missingScopes":
     "ל-Pokebots אין את ההרשאות האלה ב-Slack: {scopes}. יש לנתק את סביבת העבודה ולחבר אותה שוב.",
   // {time} is a time, such as 14:30.
   "mobile.server.connectors.slack.retryAt": "Slack ביקש מ-Pokebots להמתין. הוא ינסה שוב בשעה {time}.",
   "mobile.server.connectors.slack.helpInvalidToken":
-    "Slack כבר לא מקבל את OpenBot בסביבת העבודה הזו. ייתכן שהוא הוסר. יש לחבר את סביבת העבודה שוב.",
+    "Slack כבר לא מקבל את Pokebots בסביבת העבודה הזו. ייתכן שהוא הוסר. יש לחבר את סביבת העבודה שוב.",
   "mobile.server.connectors.slack.helpSecretStorage":
     "Pokebots לא יכול לקרוא את האסימונים השמורים ב-{host}. יש לנתק את סביבת העבודה ולחבר אותה שוב.",
   "mobile.server.connectors.slack.helpRelay":
@@ -1124,13 +1124,13 @@ export const messages = {
   "mobile.server.connectors.slack.disconnectDeleted": "Slack Orchestrator והשיחות שלו נמחקים מ-Pokebots.",
   "mobile.server.connectors.slack.agentPromptTitle": "להוסיף את Slack Orchestrator?",
   "mobile.server.connectors.slack.agentPromptBody":
-    "הסוכן החדש הזה עונה על כל מה שאנשים שולחים אל @OpenBot ב-{workspace}.",
+    "הסוכן החדש הזה עונה על כל מה שאנשים שולחים אל @Pokebots ב-{workspace}.",
   "mobile.server.connectors.slack.installFailed": "Slack לא סיים את ההתקנה. אפשר לנסות שוב.",
   // Discord: a Discord server adds the one OpenBot bot. Always write "Discord server": "server" alone
   // is an OpenBot server. {workspace} is the Discord server name.
   "mobile.server.connectors.discord.title": "Discord",
   "mobile.server.connectors.discord.description":
-    "אנשים מזכירים את @OpenBot בערוץ של שרת Discord. Discord Orchestrator פונה לסוכן המתאים ועונה.",
+    "אנשים מזכירים את @Pokebots בערוץ של שרת Discord. Discord Orchestrator פונה לסוכן המתאים ועונה.",
   "mobile.server.connectors.discord.attention": {
     one: "שרת Discord אחד דורש טיפול",
     two: "שני שרתי Discord דורשים טיפול",
@@ -1138,7 +1138,7 @@ export const messages = {
   },
   "mobile.server.connectors.discord.connect": "חיבור Discord",
   "mobile.server.connectors.discord.connectFooter":
-    "Discord נפתח בדפדפן. יש לבחור את שרת Discord, ואז Authorize. OpenBot מוסיף בוט אחד בשם OpenBot.",
+    "Discord נפתח בדפדפן. יש לבחור את שרת Discord, ואז Authorize. Pokebots מוסיף בוט אחד בשם Pokebots.",
   "mobile.server.connectors.discord.add": "הוספת שרת Discord",
   "mobile.server.connectors.discord.limit": {
     one: "אפשר לחבר לכל היותר שרת Discord אחד.",
@@ -1146,14 +1146,15 @@ export const messages = {
     other: "אפשר לחבר לכל היותר {count} שרתי Discord.",
   },
   "mobile.server.connectors.discord.workspaceTitle": "שרת Discord",
-  "mobile.server.connectors.discord.workspaceDescription": "יש להזכיר את @OpenBot בערוץ. כדי להמשיך, משיבים ל-OpenBot.",
+  "mobile.server.connectors.discord.workspaceDescription":
+    "יש להזכיר את @Pokebots בערוץ. כדי להמשיך, משיבים ל-Pokebots.",
   // {scopes} lists Discord permissions.
   "mobile.server.connectors.discord.missingScopes":
     "ל-Pokebots אין את ההרשאות האלה ב-Discord: {scopes}. יש לנתק את שרת Discord ולחבר אותו שוב.",
   // {time} is a time, such as 14:30.
   "mobile.server.connectors.discord.retryAt": "Discord ביקש מ-Pokebots להמתין. הוא ינסה שוב בשעה {time}.",
   "mobile.server.connectors.discord.helpInvalidToken":
-    "Discord כבר לא מקבל את OpenBot בשרת Discord הזה. ייתכן שהוא הוסר. יש לחבר את שרת Discord שוב.",
+    "Discord כבר לא מקבל את Pokebots בשרת Discord הזה. ייתכן שהוא הוסר. יש לחבר את שרת Discord שוב.",
   "mobile.server.connectors.discord.helpSecretStorage":
     "Pokebots לא יכול לקרוא את האסימונים השמורים ב-{host}. יש לנתק את שרת Discord ולחבר אותו שוב.",
   "mobile.server.connectors.discord.helpRelay":
@@ -1173,7 +1174,7 @@ export const messages = {
   "mobile.server.connectors.discord.disconnectDeleted": "Discord Orchestrator והשיחות שלו נמחקים מ-Pokebots.",
   "mobile.server.connectors.discord.agentPromptTitle": "להוסיף את Discord Orchestrator?",
   "mobile.server.connectors.discord.agentPromptBody":
-    "הסוכן החדש הזה עונה על כל מה שאנשים שולחים אל @OpenBot ב-{workspace}.",
+    "הסוכן החדש הזה עונה על כל מה שאנשים שולחים אל @Pokebots ב-{workspace}.",
   "mobile.server.connectors.discord.installFailed": "Discord לא סיים את ההרשאה. אפשר לנסות שוב.",
   // Telegram: each chat adds the one OpenBot bot, and the Telegram Orchestrator answers all chats.
   // {chat} is the Telegram chat name.
@@ -1830,13 +1831,13 @@ export const messages = {
     "בדיקת גרסאות לא זמינה בבנייה הזו. יש לבקש ממנהל המארח לבדוק אם יש גרסה תואמת.",
   "mobile.server.update.externalTitle": "המארח שולט בהתקנה",
   "mobile.server.update.path.hostManager":
-    "OpenBot Host Manager מתקין עדכונים כשכל המשתמשים לא פעילים. אם עדכון לא מתחיל, יש לבקש ממנהל המארח לבדוק את הסטטוס של Host Manager.",
+    "Pokebots Host Manager מתקין עדכונים כשכל המשתמשים לא פעילים. אם עדכון לא מתחיל, יש לבקש ממנהל המארח לבדוק את הסטטוס של Host Manager.",
   "mobile.server.update.path.hosted":
     "השירות המארח מוריד עדכונים ברקע. עדכון שהורד מתחיל כשהשרת מתחיל בפעם הבאה. יש להמתין לסיום עבודה פעילה לפני שעוצרים וממשיכים את השרת. אם הוא נשאר בגרסה ישנה, יש לפנות למנהל המארח.",
   "mobile.server.update.path.system":
     "במארח, יש להריץ sudo openbot update כדי להתקין את הגרסה האחרונה. הפקודה עוצרת את Pokebots. קודם יש להמתין לסיום עבודה פעילה. הורדות אוטומטיות מותקנות באתחול הבא.",
   "mobile.server.update.path.container":
-    "במארח Docker, יש למשוך את תמונת OpenBot החדשה וליצור את הקונטיינר מחדש עם אותם כוני נתונים. קודם יש להמתין לסיום עבודה פעילה. כדי לשמור את הנתונים, יש להשאיר את הכוננים הקיימים.",
+    "במארח Docker, יש למשוך את תמונת Pokebots החדשה וליצור את הקונטיינר מחדש עם אותם כוני נתונים. קודם יש להמתין לסיום עבודה פעילה. כדי לשמור את הנתונים, יש להשאיר את הכוננים הקיימים.",
   "mobile.server.update.path.manual":
     "ההתקנה הזו לא יכולה להחליף את עצמה. יש לבקש ממנהל המארח להתקין את הגרסה התואמת מ-github.com/nightly-labs/openbot/releases. יש להשאיר את נתוני Pokebots הקיימים.",
   "mobile.server.update.path.unavailable": "זו בנייה לפיתוח. כדי לבדוק עדכונים, יש להשתמש בגרסת Pokebots מותקנת.",
@@ -1858,7 +1859,7 @@ export const messages = {
   "mobile.server.update.disabledDescription":
     "המשתמש של {name} כיבה עדכונים מחברי השרת. יש לבקש ממנו לעדכן את Pokebots או להפעיל את ההגדרה.",
   "mobile.server.update.managedTitle": "Host Manager שולט בעדכונים",
-  "mobile.server.update.managedDescription": "OpenBot Host Manager מעדכן את {name}. יש לפנות למנהל המארח.",
+  "mobile.server.update.managedDescription": "Pokebots Host Manager מעדכן את {name}. יש לפנות למנהל המארח.",
   "mobile.server.update.unsupportedTitle": "{name} לא יכול לעדכן את עצמו",
   "mobile.server.update.unsupportedDescription":
     "לבנייה הזו של Pokebots אין מנגנון עדכון. יש להתקין גרסה חדשה ב-{name}.",

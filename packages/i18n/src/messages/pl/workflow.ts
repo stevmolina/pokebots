@@ -242,7 +242,7 @@ export const messages = {
   "workflow.discord.server": "Serwer",
   "workflow.discord.chooseServer": "Wybierz serwer",
   "workflow.discord.event": "Zdarzenie",
-  "workflow.discord.event.mention": "Wzmianka o OpenBot",
+  "workflow.discord.event.mention": "Wzmianka o Pokebots",
   "workflow.discord.anyChannel": "Dowolny kanał",
   "workflow.discord.roles": "Ma rolę",
   "workflow.discord.anyRole": "Dowolna rola",

@@ -43,7 +43,7 @@ interface MachineChoice {
 }
 
 /** All machines (with two servers or more) and each server, with the open one marked. */
-export function useMachineChoices(): { choices: MachineChoice[]; current: MachineChoice | undefined } {
+function useMachineChoices(): { choices: MachineChoice[]; current: MachineChoice | undefined } {
   const { t } = useText();
   const servers = useMobileWorkspaceSelector((current) => current.servers);
   const activeServerId = useMobileWorkspaceSelector((current) => current.activeServer.id);
@@ -90,15 +90,7 @@ export function useMachineChoices(): { choices: MachineChoice[]; current: Machin
 }
 
 /** One machine row: the mark with an online dot, the name, the state and agent count, a check. */
-export function MachineRow({
-  choice,
-  onChosen,
-  size = 30,
-}: {
-  choice: MachineChoice;
-  onChosen?: () => void;
-  size?: number;
-}) {
+function MachineRow({ choice, onChosen, size = 30 }: { choice: MachineChoice; onChosen?: () => void; size?: number }) {
   const colors = usePreviewColors();
   return (
     <Pressable

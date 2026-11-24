@@ -573,7 +573,7 @@ export const messages = {
   "settings.updates.managed.description":
     "Aktualizacjami tego Maca automatycznie zarządza Pokebots Host Manager. Wszyscy użytkownicy korzystają z tej samej aplikacji Pokebots i są aktualizowani razem, gdy zarejestrowani użytkownicy są bezczynni.",
   "settings.updates.target.latest": "Najnowsza aktualizacja Pokebots",
-  "settings.updates.host.upToDate": "Aktualne. OpenBot Host Manager utrzymuje tego Maca w aktualnej wersji.",
+  "settings.updates.host.upToDate": "Aktualne. Pokebots Host Manager utrzymuje tego Maca w aktualnej wersji.",
   "settings.updates.host.ready": "Pobrano: {target}. Oczekiwanie, aż inni użytkownicy tego Maca będą bezczynni.",
   "settings.updates.host.installing": "Instalowanie: {target}…",
   "settings.updates.host.failed":

@@ -1,7 +1,9 @@
 import { generateKeyPairSync, randomBytes, sign, verify } from "node:crypto";
 import { EventEmitter } from "node:events";
+import { inflateRaw } from "node:zlib";
 import type { AgentEvent, TeamRealtimeEvent } from "@pokebots/contracts/ipc";
 import { isDynamicRecord, isNumber, isString } from "@pokebots/contracts/runtime-values";
+import { COMPACT_RPC_CAPABILITY, compressedRpcResult } from "@pokebots/contracts/team-protocol/compact-rpc-v1";
 import {
   decodeTeamProtocolSupportExpanded,
   teamCapabilitiesForProtocol,
@@ -21,8 +23,10 @@ import {
 import {
   decodeTeamProtocolV2AuthFrame,
   decodeTeamProtocolV2EventFrame,
+  decodeTeamProtocolV2Json,
   decodeTeamProtocolV2RpcFrame,
   encodeTeamProtocolV2Frame,
+  TEAM_PROTOCOL_V2_MAX_JSON_FRAME_BYTES,
   type TeamProtocolV2AuthFrame,
   type TeamProtocolV2Json,
   type TeamProtocolV2RpcFrame,
@@ -51,6 +55,7 @@ import { LOCAL_TEAM_PROTOCOL, transportFailure } from "./remote-server-connectio
 import {
   type RemoteFileProgress,
   RemoteWorkflowError,
+  remoteCall,
   remoteDecode,
   toRemoteWorkflowError,
 } from "./remote-service-effects";
@@ -162,11 +167,23 @@ type DataListener = (
 function developmentLink(listener: DataListener, halfRoundTripMs: number, downlinkKbps: number): DataListener {
   if (halfRoundTripMs <= 0 && downlinkKbps <= 0) return listener;
   let linkFreeAt = 0;
+  // One queue in arrival order. With a speed, the delays differ, and a timer for each message could
+  // fire out of order in the same millisecond: a moved part of a frame stopped the connection.
+  const arriving: { at: number; deliver: () => void }[] = [];
+  let draining = false;
+  const drain = () => {
+    while (arriving[0] && arriving[0].at <= performance.now()) arriving.shift()?.deliver();
+    draining = arriving[0] !== undefined;
+    if (arriving[0]) setTimeout(drain, arriving[0].at - performance.now());
+  };
   return (hostId, channel, data) => {
     const now = performance.now();
     const bytes = typeof data === "string" ? Buffer.byteLength(data) : data.byteLength;
     linkFreeAt = Math.max(now, linkFreeAt) + (downlinkKbps > 0 ? (bytes * 8) / downlinkKbps : 0);
-    setTimeout(() => listener(hostId, channel, data), linkFreeAt - now + halfRoundTripMs);
+    arriving.push({ at: linkFreeAt + halfRoundTripMs, deliver: () => listener(hostId, channel, data) });
+    if (draining) return;
+    draining = true;
+    setTimeout(drain, linkFreeAt + halfRoundTripMs - now);
   };
 }
 
@@ -260,6 +277,11 @@ export class TeamWebRtcClientTransport extends EventEmitter<TeamWebRtcClientTran
   #signalUrl: string | null = null;
   /** Hosted servers that start. Signal holds an attempt for them until the host connects. */
   readonly #waitForHost = new Set<string>();
+  /**
+   * The computer sleeps, or is in a dark wake with no user. The network is often down then, and
+   * timers stop during sleep, so a request or a connect from then can wait until the next wake.
+   */
+  #suspended = false;
 
   constructor(options: TeamWebRtcClientTransportOptions) {
     super();
@@ -484,6 +506,42 @@ export class TeamWebRtcClientTransport extends EventEmitter<TeamWebRtcClientTran
   }
 
   /**
+   * The computer goes to sleep. Each request in flight fails now as a dropped connection, so the
+   * renderer reads again after the reconnect instead of waiting until the wake. Each connection and
+   * attempt closes, and its session stays for the next attempt. Until `resume`, only `connect` and
+   * `retry` start an attempt: a request fails at once as a dropped connection.
+   */
+  readonly suspend = Effect.fn("TeamWebRtcClient.suspend")(function* (
+    this: TeamWebRtcClientTransport,
+  ): Effect.fn.Return<void, RemoteWorkflowError> {
+    this.#suspended = true;
+    return yield* this.#owned(
+      Effect.forEach(
+        [...this.#active.entries()],
+        ([hostId, active]) =>
+          Effect.gen({ self: this }, function* () {
+            if (this.#active.get(hostId) !== active) return;
+            // An attempt that waits for the channel fails, and its own cleanup closes the peer.
+            if (!active.connected) {
+              active.cancelConnectionWait?.(
+                new TeamWebRtcConnectError("host_disconnected", sourceText("error.remote.hostDisconnected")),
+              );
+              return;
+            }
+            this.#onDisconnected(hostId);
+            yield* TeamClientBridge.use((bridge) => bridge.disconnect(hostId)).pipe(Effect.ignore);
+          }),
+        { concurrency: "unbounded", discard: true },
+      ),
+    );
+  }).bind(this);
+
+  /** The user can see the computer again. Requests connect again as before `suspend`. */
+  resume(): void {
+    this.#suspended = false;
+  }
+
+  /**
    * Whether the data channel to this host is up and authenticated. `connect` resolves either way,
    * and only the first of the two announces itself with a `connected` event, so a caller that has
    * to reconcile its own state with the transport's needs to be able to ask.
@@ -614,6 +672,7 @@ export class TeamWebRtcClientTransport extends EventEmitter<TeamWebRtcClientTran
             })
           : null;
         const requestId = crypto.randomUUID();
+        const compressResponse = this.#hostCapabilities.get(hostId)?.includes(COMPACT_RPC_CAPABILITY) === true;
         const frame = yield* remoteDecode(() =>
           encodeTeamProtocolV2Frame({
             version: 2,
@@ -646,6 +705,9 @@ export class TeamWebRtcClientTransport extends EventEmitter<TeamWebRtcClientTran
               ),
               ...(bodyTransferId ? { bodyTransferId } : {}),
               ...(init.contentType ? { contentType: init.contentType } : {}),
+              // compact-rpc-v1: a host that advertises it sends a large JSON body deflated. A host
+              // without it never gets the field.
+              ...(compressResponse ? { compressResponse: true } : {}),
             },
           }),
         );
@@ -693,6 +755,23 @@ export class TeamWebRtcClientTransport extends EventEmitter<TeamWebRtcClientTran
         const fileRecord = isDynamicRecord(envelope.file) ? envelope.file : null;
         const transferId = fileRecord && isString(fileRecord.transferId) ? fileRecord.transferId : null;
         const file = transferId ? yield* this.#files.consume(hostId, transferId) : undefined;
+        // The body inflates in this request only. The frame handler resolved it already, so the answers
+        // behind it do not wait, and a body that does not inflate fails this request, not the connection.
+        const compressed = compressResponse && !file ? compressedRpcResult(envelope) : null;
+        const wireBody = compressed
+          ? yield* remoteCall(() => inflateRpcBody(compressed.deflated)).pipe(
+              Effect.mapError(
+                () =>
+                  new RemoteWorkflowError({
+                    cause: new TeamWebRtcRequestError(
+                      502,
+                      "protocol_error",
+                      "The host returned an invalid compressed body.",
+                    ),
+                  }),
+              ),
+            )
+          : envelope.body;
         // The envelope check above catches a frame that is not shaped like a response. This catches a
         // well-formed frame whose *body* the released V3 adapter refuses, which is the same kind of
         // failure and has to carry the same code: a plain error here reads to the caller as an ordinary
@@ -702,7 +781,7 @@ export class TeamWebRtcClientTransport extends EventEmitter<TeamWebRtcClientTran
           ? null
           : yield* remoteDecode(() =>
               sideRoute
-                ? sideRoute.response(path, status, envelope.body, {
+                ? sideRoute.response(path, status, wireBody, {
                     historyExtent: true,
                     channelAttention: true,
                     agentTaskUiBlocks: true,
@@ -715,7 +794,7 @@ export class TeamWebRtcClientTransport extends EventEmitter<TeamWebRtcClientTran
                     mcpManyServers: true,
                     routineResultsWhatsApp: true,
                   })
-                : decodeTeamProtocolV10WebRtcHttpResponse(method, path, status, envelope.body),
+                : decodeTeamProtocolV10WebRtcHttpResponse(method, path, status, wireBody),
             ).pipe(
               Effect.mapError(
                 () =>
@@ -729,7 +808,7 @@ export class TeamWebRtcClientTransport extends EventEmitter<TeamWebRtcClientTran
               ),
             );
         // The frozen response codec leaves the skill name of a skill question out; the wire body has it.
-        if (this.#sendsSkillSuggestionNames(hostId)) addSkillSuggestionNames(body, envelope.body);
+        if (this.#sendsSkillSuggestionNames(hostId)) addSkillSuggestionNames(body, wireBody);
         if (
           method === "GET" &&
           path === "/v1/compatibility" &&
@@ -1002,6 +1081,11 @@ export class TeamWebRtcClientTransport extends EventEmitter<TeamWebRtcClientTran
     if (connecting) return yield* Deferred.await(connecting);
     const retry = this.#connectRetries.get(hostId);
     if (retry && !retryNow && Date.now() < retry.retryAt) return yield* retry.failure;
+    // A dark wake has no user, and often no network. The reconnect after the wake reads again.
+    if (this.#suspended && !retryNow)
+      return yield* new RemoteWorkflowError({
+        cause: new TeamWebRtcRequestError(503, "remote_disconnected", sourceText("error.remote.hostDisconnected")),
+      });
     // `stop` closes only the attempts that exist when it starts, and it waits for this operation. A
     // later attempt would open a peer during shutdown, or wait 30 s after `stop` removed the listeners.
     if (this.#stopping)
@@ -1735,6 +1819,27 @@ class TeamWebRtcConnectError extends Schema.TaggedError<TeamWebRtcConnectError>(
     const failure = transportFailure(code, message);
     super({ code, message: failure.message, reference: failure.reference });
   }
+}
+
+/**
+ * compact-rpc-v1: the JSON body of a compressed answer. zlib inflates on its thread pool, not on the
+ * main thread. A body above the JSON frame limit fails.
+ */
+function inflateRpcBody(deflated: string): Promise<TeamProtocolV2Json> {
+  return new Promise((resolve, reject) => {
+    inflateRaw(
+      Buffer.from(deflated, "base64url"),
+      { maxOutputLength: TEAM_PROTOCOL_V2_MAX_JSON_FRAME_BYTES },
+      (error, bytes) => {
+        if (error) return reject(error);
+        try {
+          resolve(decodeTeamProtocolV2Json(JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(bytes))));
+        } catch (cause) {
+          reject(cause);
+        }
+      },
+    );
+  });
 }
 
 function authenticationFrame(data: string): TeamProtocolV2AuthFrame | null {

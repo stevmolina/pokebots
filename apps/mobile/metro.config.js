@@ -80,12 +80,4 @@ uniwindConfig.resolver.resolveRequest = (context, moduleName, platform) => {
   return uniwindResolveRequest(context, moduleName, platform);
 };
 
-// Steven's fork: a Pokebots build (`OPENBOT_BRAND_NAME`) shows the brand name in the text. Without the
-// variable the configuration stays as above. See `metro-brand-transformer.js`.
-if (process.env.OPENBOT_BRAND_NAME?.trim()) {
-  process.env.OPENBOT_BRAND_UPSTREAM_TRANSFORMER = uniwindConfig.transformer.babelTransformerPath;
-  uniwindConfig.transformer.babelTransformerPath = path.join(__dirname, "metro-brand-transformer.js");
-  uniwindConfig.cacheVersion = `${uniwindConfig.cacheVersion}:brand=${process.env.OPENBOT_BRAND_NAME.trim()}`;
-}
-
 module.exports = uniwindConfig;

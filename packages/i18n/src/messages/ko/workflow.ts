@@ -227,7 +227,7 @@ export const messages = {
   "workflow.discord.server": "서버",
   "workflow.discord.chooseServer": "서버 선택",
   "workflow.discord.event": "이벤트",
-  "workflow.discord.event.mention": "OpenBot 멘션",
+  "workflow.discord.event.mention": "Pokebots 멘션",
   "workflow.discord.anyChannel": "모든 채널",
   "workflow.discord.roles": "역할",
   "workflow.discord.anyRole": "모든 역할",

@@ -664,13 +664,13 @@ export const messages = {
     "בדיקות גרסה אינן זמינות עבור המהדורה הזו. יש לבקש ממנהל המארח לבדוק אם יש גרסה תואמת.",
   "server.update.externalTitle": "המארח שולט בהתקנה",
   "server.update.path.hostManager":
-    "OpenBot Host Manager מתקין עדכונים כשכל המשתמשים לא פעילים. אם עדכון אינו מתחיל, יש לבקש ממנהל המארח לבדוק את מצב Host Manager.",
+    "Pokebots Host Manager מתקין עדכונים כשכל המשתמשים לא פעילים. אם עדכון אינו מתחיל, יש לבקש ממנהל המארח לבדוק את מצב Host Manager.",
   "server.update.path.hosted":
     "השירות המתארח מוריד עדכונים ברקע. עדכון שהורד מתחיל כשהשרת מופעל בפעם הבאה. יש להמתין לסיום עבודה פעילה לפני עצירת השרת והמשכו. אם הוא נשאר בגרסה ישנה, יש ליצור קשר עם מנהל המארח.",
   "server.update.path.system":
     "במארח, יש להריץ sudo openbot update כדי להתקין את הגרסה האחרונה. הפקודה עוצרת את Pokebots. יש להמתין קודם לסיום עבודה פעילה. הורדות אוטומטיות מותקנות באתחול הבא.",
   "server.update.path.container":
-    "במארח Docker, יש למשוך את תמונת OpenBot החדשה וליצור את הקונטיינר מחדש עם אותם כרכי נתונים. יש להמתין קודם לסיום עבודה פעילה. יש לשמור את הכרכים הקיימים כדי לשמור על הנתונים.",
+    "במארח Docker, יש למשוך את תמונת Pokebots החדשה וליצור את הקונטיינר מחדש עם אותם כרכי נתונים. יש להמתין קודם לסיום עבודה פעילה. יש לשמור את הכרכים הקיימים כדי לשמור על הנתונים.",
   "server.update.path.manual":
     "ההתקנה הזו אינה יכולה להחליף את עצמה. יש לבקש ממנהל המארח להתקין את הגרסה התואמת מ-github.com/nightly-labs/openbot/releases. יש לשמור על נתוני Pokebots הקיימים.",
   "server.update.path.unavailable": "זוהי מהדורת פיתוח. יש להשתמש במהדורה מותקנת של Pokebots כדי לבדוק עדכונים.",
@@ -692,7 +692,7 @@ export const messages = {
   "server.update.disabledDescription":
     "המשתמש של {name} כיבה עדכונים מחברי השרת. יש לבקש ממנו לעדכן את Pokebots או להפעיל את ההגדרה.",
   "server.update.managedTitle": "Host Manager שולט בעדכונים",
-  "server.update.managedDescription": "OpenBot Host Manager מעדכן את {name}. יש ליצור קשר עם מנהל המארח.",
+  "server.update.managedDescription": "Pokebots Host Manager מעדכן את {name}. יש ליצור קשר עם מנהל המארח.",
   "server.update.unsupportedTitle": "{name} אינו יכול לעדכן את עצמו",
   "server.update.unsupportedDescription": "במהדורה הזו של Pokebots אין מנגנון עדכון. יש להתקין גרסה חדשה ב-{name}.",
   "server.update.restarting": "מופעל מחדש…",

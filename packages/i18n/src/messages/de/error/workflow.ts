@@ -81,9 +81,9 @@ export const messages = {
   "error.workflow.githubChoseNothing": "Das Modell hat kein Label und keine Person dieses Repositorys gewählt.",
   "error.workflow.githubNotConnected": "Verbinde GitHub auf dem Computer, auf dem dieser Workflow läuft.",
   "error.workflow.githubNoAccess":
-    "Die OpenBot-GitHub-App kann dieses Repository oder Element nicht sehen. Öffne GitHub und gib ihr Zugriff.",
+    "Die Pokebots-GitHub-App kann dieses Repository oder Element nicht sehen. Öffne GitHub und gib ihr Zugriff.",
   "error.workflow.githubNoWrite":
-    "Die OpenBot-GitHub-App kann dieses Repository nicht ändern. Öffne GitHub und gib ihr Zugriff.",
+    "Die Pokebots-GitHub-App kann dieses Repository nicht ändern. Öffne GitHub und gib ihr Zugriff.",
   "error.workflow.githubLocked": "Diese Unterhaltung ist auf GitHub gesperrt.",
   "error.workflow.githubRefused": "GitHub hat die Änderung abgelehnt: {detail}",
   "error.workflow.githubUnreachable": "Pokebots konnte GitHub nicht erreichen. Führe den Schritt erneut aus.",

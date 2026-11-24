@@ -546,7 +546,7 @@ export const messages = {
   "settings.updates.managed.description":
     "이 Mac의 업데이트는 Pokebots Host Manager가 자동으로 관리해요. 모든 사용자가 같은 Pokebots 앱을 공유하며, 등록된 사용자가 모두 유휴 상태일 때 함께 업데이트돼요.",
   "settings.updates.target.latest": "최신 Pokebots 업데이트",
-  "settings.updates.host.upToDate": "최신 상태예요. OpenBot Host Manager가 이 Mac을 최신으로 유지해요.",
+  "settings.updates.host.upToDate": "최신 상태예요. Pokebots Host Manager가 이 Mac을 최신으로 유지해요.",
   "settings.updates.host.ready":
     "{target}을(를) 다운로드했어요. 이 Mac의 다른 사용자가 유휴 상태가 되기를 기다리는 중이에요.",
   "settings.updates.host.installing": "{target} 설치 중…",

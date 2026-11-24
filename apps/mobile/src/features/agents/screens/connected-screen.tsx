@@ -41,6 +41,7 @@ import {
   useChatDropTarget,
 } from "@/features/agents/components/chat-drag";
 import { ChatListRail } from "@/features/agents/components/chat-list-rail";
+import { ChatListViewSwitch } from "@/features/agents/components/chat-list-view-switch";
 import { EmptyAgentsScene, type WelcomeHandOff } from "@/features/agents/components/empty-agents-scene";
 import {
   HOME_CARD_RADIUS,
@@ -83,10 +84,11 @@ import {
 } from "@/features/search/components/home-search";
 import { setHomeSearchUnavailable } from "@/features/search/model/home-search-request";
 import { AllMachinesList, useAllMachinesShown } from "@/features/servers/components/all-machines";
-import { useAppDrawer } from "@/features/servers/components/app-drawer-shell";
+import { useAppDrawer } from "@/features/servers/components/app-drawer-context";
 import { PlanLimitsHeaderButton } from "@/features/servers/components/plan-limits-header-button";
 import { loadAllMachines, useAllMachines } from "@/features/servers/model/all-machines";
 import { usePlanLimits } from "@/features/servers/model/plan-limits";
+import { snoozeKey, useChatListView } from "@/features/settings/model/chat-list-view";
 import { saveChatOrderPreference, useChatOrderPreference } from "@/features/settings/model/chat-order";
 import { ConnectionHeaderStatus } from "@/features/workspace/components/connection-header-status";
 import { useWaitingAgentIds, useWorkingAgentIds } from "@/features/workspace/components/use-agent-activity";
@@ -231,6 +233,16 @@ function CollapsingRow({ collapsed, children }: { collapsed: boolean; children: 
   );
 }
 
+/** The time now, read again once a minute: a snooze ends by itself, and a working card counts its minutes. */
+function useMinuteClock(): number {
+  const [now, setNow] = useState(Date.now);
+  useEffect(() => {
+    const timer = setInterval(() => setNow(Date.now()), 60_000);
+    return () => clearInterval(timer);
+  }, []);
+  return now;
+}
+
 const TransitioningChatRow = memo(function TransitioningChatRow({
   agent,
   channel,
@@ -241,7 +253,15 @@ const TransitioningChatRow = memo(function TransitioningChatRow({
   collapsed,
   scrolling,
   holdOpen,
+  lane,
+  snoozedUntil,
+  now,
 }: ChatRowTarget & {
+  /** The lane of an agent row: a working card, or a faint snoozed row with the time left. */
+  lane?: "working" | "snoozed" | undefined;
+  snoozedUntil?: number | undefined;
+  /** The minute clock, for the time a card has worked or a snooze has left. */
+  now?: number | undefined;
   index: number;
   reveal: AgentListRevealState;
   collapsed: boolean;
@@ -257,7 +277,16 @@ const TransitioningChatRow = memo(function TransitioningChatRow({
       <Animated.View collapsable={false} entering={isTarget ? ROW_ENTER : undefined}>
         <AgentListRowReveal index={index} reveal={reveal} skip={isTarget || holdOpen}>
           {agent ? (
-            <AgentListRow agent={agent} leftInset={15} rightInset={24} scrolling={scrolling} index={index} />
+            <AgentListRow
+              agent={agent}
+              leftInset={15}
+              rightInset={24}
+              scrolling={scrolling}
+              index={index}
+              lane={lane}
+              snoozedUntil={snoozedUntil}
+              now={now}
+            />
           ) : channel && serverId && channelAgents ? (
             <ChannelListRow
               channel={channel}
@@ -576,6 +605,10 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
           ]),
     [chatOrder, unreadAgentIds, openChannels],
   );
+  // "Active" | "Folders" over the list, and the snoozed agents: this phone's own choice, as on the desktop.
+  const chatListView = useChatListView((state) => state.view);
+  const snoozes = useChatListView((state) => state.snoozes);
+  const snoozeNow = useMinuteClock();
   const [dragging, setDragging] = useState(false);
   // As on the desktop, an order other than manual holds still during a drag: a reply then does not move the rows
   // under the finger. The list takes the new order when the drag ends.
@@ -584,11 +617,24 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
     if (dragging && chatOrder !== "manual" && heldItems.current) return heldItems.current;
     const layout = sidebar?.layout ?? null;
     const laneAgents = unpinnedAgents.filter((agent) => !waitingAgentIds.has(agent.id));
-    const workingAgents = laneAgents.filter((agent) => workingAgentIds.has(agent.id));
-    const doneAgents = laneAgents.filter((agent) => !workingAgentIds.has(agent.id) && unreadAgentIdSet.has(agent.id));
-    const listedAgents = laneAgents.filter(
-      (agent) => !workingAgentIds.has(agent.id) && !unreadAgentIdSet.has(agent.id),
-    );
+    // "Folders" shows every chat in its folder; only "Needs you" stays on top.
+    const lanes = chatListView === "active";
+    const snoozeEnd = (agent: MobileAgent) => snoozes[snoozeKey(agent.serverId, agent.id)] ?? 0;
+    const workingAgents = lanes ? laneAgents.filter((agent) => workingAgentIds.has(agent.id)) : [];
+    // As on the desktop, a working agent stays in "Working"; the snooze that ends first is first.
+    const snoozedAgents = lanes
+      ? laneAgents
+          .filter((agent) => !workingAgentIds.has(agent.id) && snoozeEnd(agent) > snoozeNow)
+          .sort((a, b) => snoozeEnd(a) - snoozeEnd(b))
+      : [];
+    const snoozedIds = new Set(snoozedAgents.map((agent) => agent.id));
+    const doneAgents = lanes
+      ? laneAgents.filter(
+          (agent) => !workingAgentIds.has(agent.id) && !snoozedIds.has(agent.id) && unreadAgentIdSet.has(agent.id),
+        )
+      : [];
+    const laned = new Set([...workingAgents, ...snoozedAgents, ...doneAgents].map((agent) => agent.id));
+    const listedAgents = laneAgents.filter((agent) => !laned.has(agent.id));
     const listedChannels = openChannels.filter((channel) => !pinnedChannelIds.includes(channel.id));
     const unread = unreadChatIds;
     const grouped = chatOrder === "unread-group";
@@ -598,6 +644,7 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
         unpinnedAgents.filter((agent) => waitingAgentIds.has(agent.id)),
       ),
       ...mobileLaneItems("working", layout, workingAgents),
+      ...mobileLaneItems("snoozed", layout, snoozedAgents),
       ...mobileLaneItems("done", layout, doneAgents),
       ...(grouped
         ? mobileUnreadItems(
@@ -625,6 +672,9 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
     chatOrder,
     unreadChatIds,
     dragging,
+    chatListView,
+    snoozes,
+    snoozeNow,
     t,
   ]);
   // The calm look shows the number of chats beside each folder name: the chats right under it.
@@ -831,10 +881,16 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
             <AgentWaitingGroupHeader count={item.count} />
           )}
         </AgentListRowReveal>
-      ) : item.kind === "working" || item.kind === "done" ? (
+      ) : item.kind === "working" || item.kind === "done" || item.kind === "snoozed" ? (
         <AgentListRowReveal index={index + rowOffset} reveal={listReveal} skip={holdOpen}>
           <CalmGroupLabel
-            title={t(item.kind === "working" ? "mobile.agent.list.working.title" : "mobile.agent.list.done.title")}
+            title={t(
+              item.kind === "working"
+                ? "mobile.agent.list.working.title"
+                : item.kind === "snoozed"
+                  ? "mobile.agent.list.snoozed.title"
+                  : "mobile.agent.list.done.title",
+            )}
             count={item.count}
           />
         </AgentListRowReveal>
@@ -881,6 +937,9 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
       ) : (
         <TransitioningChatRow
           agent={item.agent}
+          lane={item.lane}
+          snoozedUntil={item.lane === "snoozed" ? snoozes[snoozeKey(item.agent.serverId, item.agent.id)] : undefined}
+          now={item.lane ? snoozeNow : undefined}
           index={index + rowOffset}
           reveal={listReveal}
           collapsed={collapsedRowIds.has(item.id)}
@@ -900,6 +959,8 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
       rowOffset,
       scrolling,
       sectionChatCounts,
+      snoozeNow,
+      snoozes,
       t,
       toggleSection,
       visibleSectionIds,
@@ -1285,6 +1346,7 @@ export function ConnectedScreen({ variant = "screen" }: { variant?: "screen" | "
                             ))
                           : null}
                       </PinnedAgentsGrid>
+                      {hasSelectedServer && !sidebar?.error && activeAgents.length > 0 ? <ChatListViewSwitch /> : null}
                       <HomeCardTop
                         card={homeCard}
                         background={cardBackground}

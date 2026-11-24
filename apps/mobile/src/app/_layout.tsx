@@ -32,6 +32,7 @@ import { loadAppearance, useAppearance } from "@/features/settings/model/appeara
 import { loadChatBackdrop } from "@/features/settings/model/chat-backdrop";
 import { loadChatBackground } from "@/features/settings/model/chat-background";
 import { loadChatDetailPreferences } from "@/features/settings/model/chat-details";
+import { loadChatListView } from "@/features/settings/model/chat-list-view";
 import { loadChatOrderPreference } from "@/features/settings/model/chat-order";
 import { loadChatPullPreference, loadChatSwipePreference } from "@/features/settings/model/chat-swipe";
 import { loadDictationLanguage } from "@/features/settings/model/dictation-language";
@@ -261,6 +262,7 @@ export default function RootLayout() {
       void loadChatDetailPreferences().catch(() => undefined);
       void loadFullVisualPreference().catch(() => undefined);
       void loadChatOrderPreference().catch(() => undefined);
+      void loadChatListView().catch(() => undefined);
       void loadTasksViewPreference().catch(() => undefined);
       void loadChatSwipePreference().catch(() => undefined);
       void loadChatPullPreference().catch(() => undefined);

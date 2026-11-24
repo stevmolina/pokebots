@@ -41,7 +41,7 @@ import {
   ONBOARDING_ROLES,
 } from "@/features/onboarding/model/onboarding-roles";
 import { hostedServerCalls } from "@/features/servers/api/hosted-servers";
-import { useAppDrawer } from "@/features/servers/components/app-drawer-shell";
+import { useAppDrawer } from "@/features/servers/components/app-drawer-context";
 import {
   refreshHostedServerAvailability,
   useHostedServerAvailability,

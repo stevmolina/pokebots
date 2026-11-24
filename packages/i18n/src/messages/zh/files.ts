@@ -126,7 +126,7 @@ export const messages = {
   "files.storage.largestChats": "最大的对话",
   "files.storage.files": "文件",
   "files.storage.rowLabel": "{name}，{size}",
-  "files.storage.measuringFolder": "正在统计 OpenBot 文件夹…",
+  "files.storage.measuringFolder": "正在统计 Pokebots 文件夹…",
   "files.storage.measured": "统计于 {time}",
   "files.storage.free": "该磁盘剩余 {size}",
   "files.storage.justNow": "刚刚",

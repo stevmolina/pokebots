@@ -3,10 +3,10 @@ import { defineMessages } from "../../../message";
 export const messages = defineMessages("error.auth", {
   // Errors from the OpenBot account service.
   "error.auth.serviceUnavailable":
-    "OpenBot could not reach the account service. Check that the API is running, then try again.",
+    "Pokebots could not reach the account service. Check that the API is running, then try again.",
   "error.auth.networkBlocked":
-    "A firewall or proxy on this network blocked OpenBot from reaching {host}. Ask your network administrator to allow {host}, then try again.",
-  "error.auth.signInFirst": "Sign in to OpenBot first.",
+    "A firewall or proxy on this network blocked Pokebots from reaching {host}. Ask your network administrator to allow {host}, then try again.",
+  "error.auth.signInFirst": "Sign in to Pokebots first.",
   "error.auth.integrationAccountAlreadyLinked": "This integration account is already linked.",
   "error.auth.integrationTokenInvalid": "The integration token request is invalid.",
   "error.auth.integrationTokensUnavailable": "Integration tokens are unavailable.",
@@ -17,18 +17,18 @@ export const messages = defineMessages("error.auth", {
   "error.auth.codeNotVerified": "The sign-in code could not be verified.",
   "error.auth.serviceError": "The account service returned an error.",
   "error.auth.serviceUnreachable":
-    "OpenBot could not reach the account service. Check your connection, then try again.",
+    "Pokebots could not reach the account service. Check your connection, then try again.",
   "error.auth.serviceTimeout": "The account service did not answer in time. Try again.",
   "error.auth.serviceStatus": "The account service returned an error ({status}). Try again later.",
   "error.auth.invalidHostedServer": "The account service returned an invalid hosted server.",
   "error.auth.invalidServerClaim": "The account service returned an invalid server claim.",
-  "error.auth.codeNotSent": "OpenBot could not send the sign-in code.",
+  "error.auth.codeNotSent": "Pokebots could not send the sign-in code.",
   "error.auth.deliveryTimeout":
-    "OpenBot could not confirm delivery in time. The code may still arrive; check delivery before sending again.",
+    "Pokebots could not confirm delivery in time. The code may still arrive; check delivery before sending again.",
   "error.auth.deliveryInterrupted":
-    "The connection ended before OpenBot confirmed delivery. Check delivery to avoid sending another code.",
+    "The connection ended before Pokebots confirmed delivery. Check delivery to avoid sending another code.",
   "error.auth.deliveryUnknown":
-    "OpenBot could not confirm whether the sign-in code was sent. Check delivery before sending again.",
+    "Pokebots could not confirm whether the sign-in code was sent. Check delivery before sending again.",
   // Company sign-in, which the company's provider does in the browser.
   "error.auth.companySignInFailed": "The company sign-in did not finish. Try again.",
   "error.auth.companySignInCancelled": "The company sign-in was cancelled.",
@@ -38,9 +38,9 @@ export const messages = defineMessages("error.auth", {
   "error.auth.companySignInAccountDisabled": "Your company turned off this account. Ask your administrator.",
   "error.auth.companySignInOff": "Company sign-in is off for this email.",
   "error.auth.companySignInEmailMissing": "Your company account did not give a verified email address.",
-  "error.auth.companySignInUnavailable": "This OpenBot cannot open a browser for the company sign-in.",
+  "error.auth.companySignInUnavailable": "This Pokebots cannot open a browser for the company sign-in.",
   "error.auth.companySignInProviderRejected": "The provider did not accept the client ID or secret.",
-  "error.auth.companySignInTokenInvalid": "The provider gave a sign-in that OpenBot cannot check.",
+  "error.auth.companySignInTokenInvalid": "The provider gave a sign-in that Pokebots cannot check.",
   "error.auth.companySignInProviderUnreachable": "The company sign-in provider did not answer.",
   "error.auth.companySignInDomainTaken": "One of these domains already signs in through another server.",
   "error.auth.companySignInNoServer": "Start this server before you set up company sign-in.",
@@ -52,7 +52,7 @@ export const messages = defineMessages("error.auth", {
   "error.auth.workosSignInUnavailable": "WorkOS sign-in is not configured.",
   "error.auth.workosSignInEmailMissing": "WorkOS did not give a verified email address.",
   "error.auth.workosSignInProviderRejected": "WorkOS could not complete the sign-in.",
-  "error.auth.workosSignInTokenInvalid": "OpenBot could not verify the sign-in.",
+  "error.auth.workosSignInTokenInvalid": "Pokebots could not verify the sign-in.",
   "error.auth.workosSignInProviderUnreachable": "WorkOS did not answer.",
   "error.auth.workosSignInRequired": "Continue in the browser to sign in with WorkOS.",
 });

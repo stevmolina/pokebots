@@ -44,7 +44,7 @@ import { serverAdminPort, serversPort } from "./servers-port";
  * a failed write.
  */
 /** The generated name when the account gives no usable one. Its slug is long enough for a host address. */
-const FALLBACK_SERVER_NAME = "OpenBot";
+const FALLBACK_SERVER_NAME = "Pokebots";
 
 /**
  * A name for a server that the user publishes before naming it, such as "Ann’s server". The first

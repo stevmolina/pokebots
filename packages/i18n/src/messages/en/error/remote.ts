@@ -19,10 +19,10 @@ export const messages = defineMessages("error.remote", {
   "error.remote.sessionCapacity": "The host already has four active sessions.",
   "error.remote.linuxNeedsX11": "Remote desktop on Linux needs an X11 session. Wayland is not supported.",
   "error.remote.runtimeMissing":
-    "The Sunshine and Moonlight Web runtime is missing or is not supported on this host. Install the full OpenBot release on a Mac, a Windows x64 host or a Linux x64 host, then restart OpenBot.",
+    "The Sunshine and Moonlight Web runtime is missing or is not supported on this host. Install the full Pokebots release on a Mac, a Windows x64 host or a Linux x64 host, then restart Pokebots.",
   "error.remote.testActive": "A remote desktop test is active. Try again when it ends.",
   "error.remote.screenRecordingDenied":
-    "The host has not allowed OpenBot to record its screen. Grant screen recording on the host, then try again.",
+    "The host has not allowed Pokebots to record its screen. Grant screen recording on the host, then try again.",
   "error.remote.windowsSessionDisconnected":
     "The Windows session on the host is disconnected, so it has no screen to share. Sign in to Windows at the screen of the host, then try again.",
   // The remote desktop viewer decoded no frame for 20 seconds: the connection cannot carry the stream.
@@ -44,7 +44,7 @@ export const messages = defineMessages("error.remote", {
   "error.remote.moonlightStartFailed":
     "Moonlight Web did not start on the host. Check the remote desktop logs on the host, then try again.",
   "error.remote.pairingFailed":
-    "Moonlight could not pair with Sunshine on the host. Try again. If the problem continues, restart OpenBot on the host.",
+    "Moonlight could not pair with Sunshine on the host. Try again. If the problem continues, restart Pokebots on the host.",
   "error.remote.runtimeStartFailed":
     "The remote desktop runtime did not start on the host. Check the remote desktop logs on the host, then try again.",
   "error.remote.hostUnreachable": "The host is not reachable.",
@@ -52,7 +52,7 @@ export const messages = defineMessages("error.remote", {
   "error.remote.invalidData": "The host returned invalid data.",
   "error.remote.unsafeData": "The host returned data that this app could not safely use.",
   "error.remote.requestFailedStatus": "Remote server request failed ({status}).",
-  "error.remote.appUpdateRequired": "Update this OpenBot app before connecting to the host.",
+  "error.remote.appUpdateRequired": "Update this Pokebots app before connecting to the host.",
   "error.remote.identityNotVerified": "The server identity could not be verified.",
   "error.remote.webRtcUnavailable": "The WebRTC transport is unavailable.",
   "error.remote.invalidCompatibility": "The host returned invalid compatibility information.",
@@ -70,8 +70,8 @@ export const messages = defineMessages("error.remote", {
   "error.remote.inviteAcceptedOtherHost": "The account service accepted a different host.",
   "error.remote.inviteIdentityChanged": "The invitation host identity changed while it was accepted.",
   "error.remote.localServerRemove": "The local server cannot be removed.",
-  "error.remote.desktopSetupHostUpdate": "Update OpenBot on the host to check remote desktop setup.",
-  "error.remote.desktopTestHostUpdate": "Update OpenBot on the host to test remote desktop setup.",
+  "error.remote.desktopSetupHostUpdate": "Update Pokebots on the host to check remote desktop setup.",
+  "error.remote.desktopTestHostUpdate": "Update Pokebots on the host to test remote desktop setup.",
   "error.remote.viewerProxyUnavailable": "The local remote viewer proxy is unavailable.",
   "error.remote.viewerTransportInvalid": "The remote viewer transport is invalid.",
   "error.remote.viewerProxyNoPort": "The local remote viewer proxy did not get a port.",
@@ -89,9 +89,9 @@ export const messages = defineMessages("error.remote", {
   "error.remote.requestTimeout": "The remote request timed out.",
   "error.remote.requestFailed": "The remote request failed.",
   "error.remote.hostKeyMissing":
-    "OpenBot cannot verify this server because its security key is missing or changed. Ask the server owner to check the server.",
+    "Pokebots cannot verify this server because its security key is missing or changed. Ask the server owner to check the server.",
   "error.remote.connectionNotStarted":
-    "OpenBot could not start the connection to this server. If this continues, quit OpenBot and open it again.",
+    "Pokebots could not start the connection to this server. If this continues, quit Pokebots and open it again.",
   "error.remote.hostDidNotConnect": "The WebRTC host did not connect.",
   "error.remote.connectionCancelled": "The remote connection was cancelled.",
   "error.remote.hostDisconnected":
@@ -144,11 +144,11 @@ export const messages = defineMessages("error.remote", {
   "error.remote.permanentInviteNoEmail": "Permanent invitations cannot be sent by email.",
   "error.remote.selfHostedInviteNoEmail":
     "An invitation from a self-hosted account service cannot be sent by email. Copy the link.",
-  "error.remote.inviteOtherService": "This invitation belongs to another OpenBot service.",
+  "error.remote.inviteOtherService": "This invitation belongs to another Pokebots service.",
   "error.remote.inviteFingerprintMismatch": "The invitation host identity does not match its fingerprint.",
   "error.remote.inviteHostKeyMissing": "The invitation host key is missing.",
   "error.remote.inviteKeyConflict": "The invitation conflicts with the trusted host key.",
-  "error.remote.serviceRequestFailed": "The OpenBot service request failed.",
+  "error.remote.serviceRequestFailed": "The Pokebots service request failed.",
   "error.remote.downloadTimeout": "The attachment download timed out. Try again.",
   "error.remote.attachmentConnectionClosed": "The attachment connection closed.",
   "error.remote.tooManyDownloads": "Too many attachment downloads.",
@@ -183,9 +183,9 @@ export const messages = defineMessages("error.remote", {
   // Signal refusals, by the code in the Signal error frame. The client maps the code, not the text.
   "error.remote.hostBusy": "The host is busy with another connection. Try again in a moment.",
   "error.remote.signalPermissionDenied": "Your account does not have access to this host. Ask the owner for access.",
-  "error.remote.signalRateLimited": "Too many connection attempts. OpenBot tries again in {seconds} seconds.",
+  "error.remote.signalRateLimited": "Too many connection attempts. Pokebots tries again in {seconds} seconds.",
   "error.remote.signalProtocolError":
-    "Signal and this app do not agree on the connection protocol. Update OpenBot, then try again.",
+    "Signal and this app do not agree on the connection protocol. Update Pokebots, then try again.",
   "error.remote.signalRefused": "Signal refused the connection.",
   "error.remote.signalClosed": "The connection to Signal closed before the host answered.",
   "error.remote.relayUnavailable": "Signal sent no relay servers for this connection. Try again later.",
@@ -193,20 +193,20 @@ export const messages = defineMessages("error.remote", {
   "error.remote.iceFailed": "A direct connection to the host could not be made. A firewall, VPN or proxy can block it.",
   "error.remote.iceDisconnected": "The direct connection to the host was lost.",
   // Account service (control plane) refusals, by their error code.
-  "error.remote.directoryUnreachable": "OpenBot could not reach the OpenBot service. Check your connection.",
-  "error.remote.directoryTimeout": "The OpenBot service did not answer in time. Try again.",
+  "error.remote.directoryUnreachable": "Pokebots could not reach the Pokebots service. Check your connection.",
+  "error.remote.directoryTimeout": "The Pokebots service did not answer in time. Try again.",
   "error.remote.inviteAlreadyUsed": "This invitation was already used. Ask for a new invitation.",
   "error.remote.inviteNotFound": "This invitation does not exist or has expired. Ask for a new invitation.",
   "error.remote.licenseUsersFull":
     "The server owner's license has no free user. Ask the owner to add a user to the license.",
   "error.remote.memberLimitReached": "This host has reached its member limit. Ask the owner to make space.",
-  "error.remote.hostNotRegistered": "This host is no longer registered with the OpenBot service.",
+  "error.remote.hostNotRegistered": "This host is no longer registered with the Pokebots service.",
   "error.remote.membershipEnded": "You are no longer a member of this host. Ask the owner for a new invitation.",
   "error.remote.membershipChanged":
     "Someone changed this member at the same time. Load the members again and try again.",
   "error.remote.accountSessionInactive": "Your sign-in is no longer active. Sign in again.",
   "error.remote.hostOtherAccount": "This host belongs to another account.",
-  "error.remote.remoteNotConfigured": "Remote connections are not set up on this OpenBot service.",
+  "error.remote.remoteNotConfigured": "Remote connections are not set up on this Pokebots service.",
   "error.remote.hostRefused": "The host refused the request ({status}).",
   // Channel actions on mobile.
   "error.remote.formUnavailable": "This form is no longer available.",
@@ -216,15 +216,15 @@ export const messages = defineMessages("error.remote", {
   "error.remote.channelDeleteUnsupported": "Update this desktop server to delete channels.",
   "error.remote.historyRefreshFailed": "The message was sent, but chat history could not refresh.",
   "error.remote.taskHistoryRefreshFailed": "The task was changed, but chat history could not refresh.",
-  "error.remote.serverNotLoaded": "OpenBot could not load the server. Try again.",
+  "error.remote.serverNotLoaded": "Pokebots could not load the server. Try again.",
   // Servers that the desktop app starts on this computer.
   "error.remote.localServerNotStarted":
-    "The server on this computer did not start. Try again. If it does not start, restart OpenBot on this computer.",
+    "The server on this computer did not start. Try again. If it does not start, restart Pokebots on this computer.",
   "error.remote.localServerNotFound": "This server is not on this computer.",
   "error.remote.localServerAccountRemovalFailed":
     "The server is deleted on its computer, but the account still lists it. Delete it again to remove it from the account.",
   "error.remote.localServerLimit":
     "You can have at most {limit} servers on this computer. Delete one to create another.",
   "error.remote.localServersReadOnly":
-    "This version of OpenBot cannot read the list of servers on this computer. Update OpenBot.",
+    "This version of Pokebots cannot read the list of servers on this computer. Update Pokebots.",
 });

@@ -140,7 +140,7 @@ export const messages = {
   "files.storage.largestChats": "Grootste chats",
   "files.storage.files": "Bestanden",
   "files.storage.rowLabel": "{name}, {size}",
-  "files.storage.measuringFolder": "OpenBot-map meten…",
+  "files.storage.measuringFolder": "Pokebots-map meten…",
   "files.storage.measured": "Gemeten {time}",
   "files.storage.free": "{size} vrij op deze schijf",
   "files.storage.justNow": "zojuist",

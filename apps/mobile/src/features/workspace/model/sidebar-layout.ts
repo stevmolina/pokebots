@@ -15,6 +15,8 @@ export type MobileSidebarItem =
   | { kind: "working"; id: string; count: number }
   /** The heading of the "Done" lane: the agents that finished with a reply that the user did not read. */
   | { kind: "done"; id: string; count: number }
+  /** The heading of the "Snoozed" lane: the agents that the user put away until a time. */
+  | { kind: "snoozed"; id: string; count: number }
   /** The heading of the "Unread" group of the `unread-group` order. */
   | { kind: "unread"; id: string; count: number }
   | {
@@ -32,7 +34,13 @@ export type MobileSidebarItem =
       custom: boolean;
       empty: boolean;
     }
-  | { kind: "agent"; id: string; agent: MobileAgent }
+  | {
+      kind: "agent";
+      id: string;
+      agent: MobileAgent;
+      /** The lane the row shows in: a working card, or a faint snoozed row with the time left. */
+      lane?: "working" | "snoozed";
+    }
   | { kind: "channel"; id: string; channel: ChannelSummary };
 
 type MobileChatItem = Extract<MobileSidebarItem, { kind: "agent" | "channel" }>;
@@ -176,21 +184,32 @@ export function mobileWaitingItems(layout: SidebarLayoutSnapshot | null, agents:
  * keeps each agent's place, so an agent returns to its folder when it is read.
  */
 export function mobileLaneItems(
-  lane: "working" | "done",
+  lane: "working" | "done" | "snoozed",
   layout: SidebarLayoutSnapshot | null,
   agents: MobileAgent[],
 ): MobileSidebarItem[] {
   if (agents.length === 0) return [];
-  const items = chatItems(layout, agents, []);
+  // "Snoozed" keeps the given order: the snooze that ends first is first.
+  const items: MobileChatItem[] =
+    lane === "snoozed"
+      ? agents.map((agent) => ({ kind: "agent" as const, id: agent.id, agent }))
+      : chatItems(layout, agents, []);
   const sorted = lane === "done" ? byRecent(items) : items;
-  return [{ kind: lane, id: `lane:${lane}`, count: sorted.length }, ...sorted];
+  const rows = lane === "done" ? sorted : sorted.map((item) => (item.kind === "agent" ? { ...item, lane } : item));
+  return [{ kind: lane, id: `lane:${lane}`, count: rows.length }, ...rows];
 }
 
 /** True for the heading of a group above the folders, such as "Needs you" or "Working". */
 export function isMobileGroupHeading(
   item: MobileSidebarItem,
-): item is Extract<MobileSidebarItem, { kind: "waiting" | "unread" | "working" | "done" }> {
-  return item.kind === "waiting" || item.kind === "unread" || item.kind === "working" || item.kind === "done";
+): item is Extract<MobileSidebarItem, { kind: "waiting" | "unread" | "working" | "done" | "snoozed" }> {
+  return (
+    item.kind === "waiting" ||
+    item.kind === "unread" ||
+    item.kind === "working" ||
+    item.kind === "done" ||
+    item.kind === "snoozed"
+  );
 }
 
 /** The "Unread" group of the `unread-group` order, above the sections, by last activity. */

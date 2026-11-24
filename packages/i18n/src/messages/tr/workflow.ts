@@ -230,7 +230,7 @@ export const messages = {
   "workflow.discord.server": "Sunucu",
   "workflow.discord.chooseServer": "Sunucu seç",
   "workflow.discord.event": "Olay",
-  "workflow.discord.event.mention": "OpenBot anıldı",
+  "workflow.discord.event.mention": "Pokebots anıldı",
   "workflow.discord.anyChannel": "Herhangi bir kanal",
   "workflow.discord.roles": "Rolü var",
   "workflow.discord.anyRole": "Herhangi bir rol",

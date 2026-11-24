@@ -1,6 +1,6 @@
 /*
  * The Pokebots mark, which a Pokebots build shows in place of the OpenBot mark. `AppLogo` calls it
- * when the brand layer turns `POKEBOTS_LANDING_ARTWORK` on, so the daily upstream merge touches only
+ * when `POKEBOTS_LANDING_ARTWORK` is on, so the daily upstream merge touches only
  * the two lines that call it there.
  */
 

@@ -688,11 +688,11 @@ export const messages = {
   "mobile.server.connectors.github.connectedAs": "Connecté en tant que @{login}",
   "mobile.server.connectors.github.chooseRepositories": "Choisir les dépôts",
   "mobile.server.connectors.github.repositoriesFooter":
-    "Les agents peuvent utiliser uniquement les dépôts où l’app GitHub OpenBot est installée.",
+    "Les agents peuvent utiliser uniquement les dépôts où l’app GitHub Pokebots est installée.",
   "mobile.server.connectors.github.repositoriesTitle": "Dépôts",
   "mobile.server.connectors.github.repositoriesLoading": "Lecture des dépôts depuis GitHub",
   "mobile.server.connectors.github.repositoriesFailed": "Pokebots n’a pas pu lire les dépôts depuis GitHub.",
-  "mobile.server.connectors.github.noRepositories": "L’app GitHub OpenBot n’est encore installée sur aucun dépôt.",
+  "mobile.server.connectors.github.noRepositories": "L’app GitHub Pokebots n’est encore installée sur aucun dépôt.",
   "mobile.server.connectors.github.moreRepositories": {
     one: "Et {count} autre dépôt",
     other: "Et {count} autres dépôts",
@@ -706,7 +706,7 @@ export const messages = {
   "mobile.server.connectors.github.disconnect": "Déconnecter GitHub",
   "mobile.server.connectors.github.disconnectTitle": "Déconnecter GitHub ?",
   "mobile.server.connectors.github.disconnectBody":
-    "Cela supprime la connexion de @{login} de {host}, et tous les agents perdent les outils GitHub, gh et git. GitHub s’ouvre ensuite, et vous pouvez y révoquer OpenBot.",
+    "Cela supprime la connexion de @{login} de {host}, et tous les agents perdent les outils GitHub, gh et git. GitHub s’ouvre ensuite, et vous pouvez y révoquer Pokebots.",
   "mobile.server.connectors.onePassword.title": "1Password",
   "mobile.server.connectors.onePassword.description":
     "Partagez un coffre 1Password dédié avec Pokebots sur {host} via un compte de service, pour que les agents de {host} puissent se connecter aux sites dans son navigateur.",
@@ -797,14 +797,14 @@ export const messages = {
     "{host} supprime sa clé d’accès. Le coffre et ses identifiants restent dans votre compte {name}.",
   "mobile.server.connectors.slack.title": "Slack",
   "mobile.server.connectors.slack.description":
-    "Les utilisateurs mentionnent @OpenBot dans Slack ou lui envoient un message direct. Le Slack Orchestrator sollicite le bon agent et répond.",
+    "Les utilisateurs mentionnent @Pokebots dans Slack ou lui envoient un message direct. Le Slack Orchestrator sollicite le bon agent et répond.",
   "mobile.server.connectors.slack.attention": {
     one: "{count} espace de travail demande votre attention",
     other: "{count} espaces de travail demandent votre attention",
   },
   "mobile.server.connectors.slack.connect": "Connecter Slack",
   "mobile.server.connectors.slack.connectFooter":
-    "Slack s’ouvre dans un navigateur. Sélectionnez l’espace de travail en haut à droite, puis Autoriser. OpenBot installe une app nommée OpenBot, et elle rejoint chaque canal public.",
+    "Slack s’ouvre dans un navigateur. Sélectionnez l’espace de travail en haut à droite, puis Autoriser. Pokebots installe une app nommée Pokebots, et elle rejoint chaque canal public.",
   "mobile.server.connectors.slack.add": "Ajouter un espace de travail",
   "mobile.server.connectors.slack.limit": {
     one: "Vous pouvez connecter au maximum {count} espace de travail.",
@@ -812,12 +812,12 @@ export const messages = {
   },
   "mobile.server.connectors.slack.workspaceTitle": "Espace de travail",
   "mobile.server.connectors.slack.workspaceDescription":
-    "Les utilisateurs mentionnent @OpenBot ou lui envoient un message direct.",
+    "Les utilisateurs mentionnent @Pokebots ou lui envoient un message direct.",
   "mobile.server.connectors.slack.missingScopes":
     "Pokebots n’a pas ces autorisations dans Slack : {scopes}. Déconnectez l’espace de travail, puis connectez-le à nouveau.",
   "mobile.server.connectors.slack.retryAt": "Slack a demandé à Pokebots de patienter. Nouvel essai à {time}.",
   "mobile.server.connectors.slack.helpInvalidToken":
-    "Slack n’accepte plus OpenBot dans cet espace de travail. Il a peut-être été désinstallé. Connectez à nouveau l’espace de travail.",
+    "Slack n’accepte plus Pokebots dans cet espace de travail. Il a peut-être été désinstallé. Connectez à nouveau l’espace de travail.",
   "mobile.server.connectors.slack.helpSecretStorage":
     "Pokebots ne peut pas lire les jetons enregistrés sur {host}. Déconnectez l’espace de travail, puis connectez-le à nouveau.",
   "mobile.server.connectors.slack.helpRelay":
@@ -840,18 +840,18 @@ export const messages = {
     "Le Slack Orchestrator et ses conversations sont supprimés d’Pokebots.",
   "mobile.server.connectors.slack.agentPromptTitle": "Ajouter le Slack Orchestrator ?",
   "mobile.server.connectors.slack.agentPromptBody":
-    "Ce nouvel agent répond à tout ce que les utilisateurs envoient à @OpenBot dans {workspace}.",
+    "Ce nouvel agent répond à tout ce que les utilisateurs envoient à @Pokebots dans {workspace}.",
   "mobile.server.connectors.slack.installFailed": "Slack n’a pas terminé l’installation. Réessayez.",
   "mobile.server.connectors.discord.title": "Discord",
   "mobile.server.connectors.discord.description":
-    "Les utilisateurs mentionnent @OpenBot dans un canal d’un serveur Discord. Le Discord Orchestrator sollicite le bon agent et répond.",
+    "Les utilisateurs mentionnent @Pokebots dans un canal d’un serveur Discord. Le Discord Orchestrator sollicite le bon agent et répond.",
   "mobile.server.connectors.discord.attention": {
     one: "{count} serveur Discord demande votre attention",
     other: "{count} serveurs Discord demandent votre attention",
   },
   "mobile.server.connectors.discord.connect": "Connecter Discord",
   "mobile.server.connectors.discord.connectFooter":
-    "Discord s’ouvre dans un navigateur. Sélectionnez le serveur Discord, puis Autoriser. OpenBot ajoute un bot nommé OpenBot.",
+    "Discord s’ouvre dans un navigateur. Sélectionnez le serveur Discord, puis Autoriser. Pokebots ajoute un bot nommé Pokebots.",
   "mobile.server.connectors.discord.add": "Ajouter un serveur Discord",
   "mobile.server.connectors.discord.limit": {
     one: "Vous pouvez connecter au maximum {count} serveur Discord.",
@@ -859,12 +859,12 @@ export const messages = {
   },
   "mobile.server.connectors.discord.workspaceTitle": "Serveur Discord",
   "mobile.server.connectors.discord.workspaceDescription":
-    "Mentionnez @OpenBot dans un canal. Répondez à OpenBot pour continuer.",
+    "Mentionnez @Pokebots dans un canal. Répondez à Pokebots pour continuer.",
   "mobile.server.connectors.discord.missingScopes":
     "Pokebots n’a pas ces autorisations dans Discord : {scopes}. Déconnectez le serveur Discord, puis connectez-le à nouveau.",
   "mobile.server.connectors.discord.retryAt": "Discord a demandé à Pokebots de patienter. Nouvel essai à {time}.",
   "mobile.server.connectors.discord.helpInvalidToken":
-    "Discord n’accepte plus OpenBot sur ce serveur Discord. Il a peut-être été retiré. Connectez à nouveau le serveur Discord.",
+    "Discord n’accepte plus Pokebots sur ce serveur Discord. Il a peut-être été retiré. Connectez à nouveau le serveur Discord.",
   "mobile.server.connectors.discord.helpSecretStorage":
     "Pokebots ne peut pas lire les jetons enregistrés sur {host}. Déconnectez le serveur Discord, puis connectez-le à nouveau.",
   "mobile.server.connectors.discord.helpRelay":
@@ -887,7 +887,7 @@ export const messages = {
     "Le Discord Orchestrator et ses conversations sont supprimés d’Pokebots.",
   "mobile.server.connectors.discord.agentPromptTitle": "Ajouter le Discord Orchestrator ?",
   "mobile.server.connectors.discord.agentPromptBody":
-    "Ce nouvel agent répond à tout ce que les utilisateurs envoient à @OpenBot dans {workspace}.",
+    "Ce nouvel agent répond à tout ce que les utilisateurs envoient à @Pokebots dans {workspace}.",
   "mobile.server.connectors.discord.installFailed": "Discord n’a pas terminé l’autorisation. Réessayez.",
   "mobile.server.connectors.telegram.title": "Telegram",
   "mobile.server.connectors.telegram.description":
@@ -1388,13 +1388,13 @@ export const messages = {
     "La recherche de versions n’est pas disponible pour ce build. Demandez à l’administrateur de l’hôte de rechercher une version compatible.",
   "mobile.server.update.externalTitle": "L’hôte contrôle l’installation",
   "mobile.server.update.path.hostManager":
-    "OpenBot Host Manager installe les mises à jour quand tous les utilisateurs sont inactifs. Si une mise à jour ne démarre pas, demandez à l’administrateur de l’hôte de vérifier l’état de Host Manager.",
+    "Pokebots Host Manager installe les mises à jour quand tous les utilisateurs sont inactifs. Si une mise à jour ne démarre pas, demandez à l’administrateur de l’hôte de vérifier l’état de Host Manager.",
   "mobile.server.update.path.hosted":
     "Le service hébergé télécharge les mises à jour en arrière-plan. Une mise à jour téléchargée s’applique au prochain démarrage du serveur. Attendez la fin du travail en cours avant d’arrêter puis de reprendre le serveur. S’il reste sur une ancienne version, contactez l’administrateur de l’hôte.",
   "mobile.server.update.path.system":
     "Sur l’hôte, exécutez sudo openbot update pour installer la dernière version. Cette commande arrête Pokebots. Attendez d’abord la fin du travail en cours. Les téléchargements automatiques s’installent au prochain démarrage.",
   "mobile.server.update.path.container":
-    "Sur l’hôte Docker, récupérez la nouvelle image OpenBot et recréez le conteneur avec les mêmes volumes de données. Attendez d’abord la fin du travail en cours. Conservez les volumes existants pour préserver vos données.",
+    "Sur l’hôte Docker, récupérez la nouvelle image Pokebots et recréez le conteneur avec les mêmes volumes de données. Attendez d’abord la fin du travail en cours. Conservez les volumes existants pour préserver vos données.",
   "mobile.server.update.path.manual":
     "Cette installation ne peut pas se remplacer elle-même. Demandez à l’administrateur de l’hôte d’installer la version compatible depuis github.com/nightly-labs/openbot/releases. Conservez les données Pokebots existantes.",
   "mobile.server.update.path.unavailable":
@@ -1418,7 +1418,7 @@ export const messages = {
     "L’utilisateur de {name} a désactivé les mises à jour par les membres du serveur. Demandez-lui de mettre à jour Pokebots ou d’activer ce réglage.",
   "mobile.server.update.managedTitle": "Un Host Manager contrôle les mises à jour",
   "mobile.server.update.managedDescription":
-    "OpenBot Host Manager met à jour {name}. Contactez l’administrateur de l’hôte.",
+    "Pokebots Host Manager met à jour {name}. Contactez l’administrateur de l’hôte.",
   "mobile.server.update.unsupportedTitle": "{name} ne peut pas se mettre à jour",
   "mobile.server.update.unsupportedDescription":
     "Ce build d’Pokebots n’a pas de programme de mise à jour. Installez une nouvelle version sur {name}.",

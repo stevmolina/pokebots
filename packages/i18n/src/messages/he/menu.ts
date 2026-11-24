@@ -8,6 +8,7 @@ export const messages = {
   "menu.actualSize": "גודל בפועל",
   "menu.zoomIn": "הגדלה",
   "menu.zoomOut": "הקטנה",
+  "menu.openLinkInPanel": "פתיחת הקישור בחלונית הצד",
   "menu.copyLink": "העתקת קישור",
   "menu.copyImage": "העתקת תמונה",
   "menu.quit": "יציאה מ-Pokebots",

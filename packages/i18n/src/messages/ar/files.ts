@@ -214,7 +214,7 @@ export const messages = {
   "files.storage.largestChats": "أكبر الدردشات",
   "files.storage.files": "الملفات",
   "files.storage.rowLabel": "{name}، {size}",
-  "files.storage.measuringFolder": "جارٍ قياس مجلد OpenBot…",
+  "files.storage.measuringFolder": "جارٍ قياس مجلد Pokebots…",
   "files.storage.measured": "تم القياس {time}",
   "files.storage.free": "{size} متاحة على هذا القرص",
   "files.storage.justNow": "الآن",

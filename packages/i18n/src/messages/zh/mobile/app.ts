@@ -52,7 +52,7 @@ export const messages = {
   "mobile.app.update.later": "稍后",
   "mobile.app.update.failedTitle": "无法更新",
   "mobile.app.update.restartFailed": "关闭 Pokebots 并重新打开以完成更新。",
-  "mobile.app.update.storeFailed": "请打开 App Store 或 Google Play 更新 OpenBot。",
+  "mobile.app.update.storeFailed": "请打开 App Store 或 Google Play 更新 Pokebots。",
   "mobile.app.update.whatsNew": "新功能",
   "mobile.app.update.hideWhatsNew": "收起",
   "mobile.app.update.releaseTitle": "Pokebots {version}",

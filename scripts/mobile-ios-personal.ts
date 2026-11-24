@@ -42,8 +42,8 @@ const env: NodeJS.ProcessEnv = {
   DEVELOPER_DIR: process.env.DEVELOPER_DIR ?? XCODE_DEVELOPER_DIR,
   OPENBOT_IOS_PERSONAL: "1",
   OPENBOT_IOS_PERSONAL_NAME: process.env.OPENBOT_IOS_PERSONAL_NAME ?? "Pokebots",
-  // The Pokebots look: the app icon, the splash, the colors, and "Pokebots" in place of "OpenBot" in
-  // the text (`apps/mobile/metro-brand-transformer.js`). Set it to an empty value for the OpenBot look.
+  // The Pokebots look: the app icon, the splash and the colors (`apps/mobile/app.config.js`). Set it to an
+  // empty value for the OpenBot look. The text says Pokebots in the source.
   OPENBOT_BRAND_NAME: process.env.OPENBOT_BRAND_NAME ?? "Pokebots",
   EXPO_PUBLIC_APP_ENV: "production",
 };

@@ -1,6 +1,6 @@
 // Checks bundled artwork and image exports in this worktree's real dev renderer. It sets one
 // photo on an agent with no photo, checks that it loads, then removes only that test photo.
-// Start with OPENBOT_BRAND_NAME=Pokebots bun run dev, then run:
+// Start with bun run dev, then run:
 // bun scripts/pokebots-artwork-e2e.ts --allow-mutations
 // Writes PNG exports, screenshots and report.json under .openbot-build/pokebots-artwork-e2e/.
 import assert from "node:assert/strict";
@@ -10,7 +10,6 @@ import { join, resolve } from "node:path";
 import { avatarHeadColor } from "@pokebots/brand/bloub-avatar";
 import { POKEBOTS_PORTRAITS, pokebotsDefaultPortrait } from "@pokebots/brand/pokebots-avatar";
 import type { AvatarColor, AvatarHue, ClientAgentSummary } from "@pokebots/contracts/ipc";
-import { brandModule, readBrandSettings } from "./brand-layer";
 import { connectChannelE2e } from "./channel-e2e-support";
 
 const root = resolve(import.meta.dirname, "..");
@@ -57,13 +56,8 @@ try {
     report.assets[portrait] = createHash("sha256").update(bytes).digest("hex");
   }
   const source = await readFile(join(root, "packages/brand/src/pokebots-avatar.ts"), "utf8");
-  const settings = readBrandSettings({ OPENBOT_BRAND_NAME: "Pokebots" });
-  assert.ok(settings);
-  assert.ok(brandModule("packages/brand/src/pokebots-avatar.ts", source, settings)?.code.includes("ARTWORK = true;"));
-  const otherBrand = readBrandSettings({ OPENBOT_BRAND_NAME: "Other" });
-  assert.ok(otherBrand);
-  assert.equal(brandModule("packages/brand/src/pokebots-avatar.ts", source, otherBrand), null);
-  report.checks.push("Only the Pokebots Vite brand enables landing artwork.");
+  assert.ok(source.includes("POKEBOTS_LANDING_ARTWORK = true;"));
+  report.checks.push("The source enables the Pokebots landing artwork.");
 
   // Drive the real onboarding form, then cancel the unsaved draft.
   await page.getByRole("button", { name: "New agent or channel", exact: true }).click();
@@ -123,7 +117,7 @@ try {
     const brand: { POKEBOTS_LANDING_ARTWORK: boolean } = await import(
       `/@fs${repositoryRoot}/packages/brand/src/pokebots-avatar.ts`
     );
-    if (!brand.POKEBOTS_LANDING_ARTWORK) throw new Error("Restart the dev app with OPENBOT_BRAND_NAME=Pokebots.");
+    if (!brand.POKEBOTS_LANDING_ARTWORK) throw new Error("Restart the dev app: the landing artwork is off.");
     const results = [];
     for (const hue of [215, 150, 30, 280] as const) {
       const svg = avatars.createStaticAvatarSvg("artwork-e2e", hue);

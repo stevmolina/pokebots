@@ -8,6 +8,13 @@ import { useAgentPinTransition } from "@/features/agents/components/agent-pin-tr
 import { useChatSectionMenu } from "@/features/agents/components/use-chat-section-menu";
 import { showFailureAlert } from "@/features/analytics/failure-reports";
 import {
+  snoozeAgent,
+  snoozeKey,
+  snoozeUntil,
+  unsnoozeAgent,
+  useChatListView,
+} from "@/features/settings/model/chat-list-view";
+import {
   setSyncedNotificationLevels,
   useSyncedNotificationLevels,
 } from "@/features/settings/model/notification-levels";
@@ -105,6 +112,16 @@ function useAgentMenuActions(agent: MobileAgent) {
         );
       });
   };
+  // A snooze puts the agent in "Snoozed" of the "Active" list until the time; it wakes up by itself.
+  const isSnoozed = useChatListView((state) => (state.snoozes[snoozeKey(agent.serverId, agent.id)] ?? 0) > Date.now());
+  const handleSnooze = (choice: "hour" | "tomorrow" | "week") => {
+    snoozeAgent(agent.serverId, agent.id, snoozeUntil(choice));
+    void haptics.selection();
+  };
+  const handleUnsnooze = () => {
+    unsnoozeAgent(agent.serverId, agent.id);
+    void haptics.selection();
+  };
   const handleHide = () => {
     workspace().hideAgent(agent.id);
     void haptics.impact();
@@ -120,10 +137,13 @@ function useAgentMenuActions(agent: MobileAgent) {
     canPin,
     canMute,
     isMuted,
+    isSnoozed,
     sectionMenu,
     handleRead,
     handlePin,
     handleMute,
+    handleSnooze,
+    handleUnsnooze,
     handleHide,
     handleInfo,
     handleCopyId,
@@ -140,10 +160,13 @@ function useAgentContextMenu(agent: MobileAgent) {
     canPin,
     canMute,
     isMuted,
+    isSnoozed,
     sectionMenu,
     handleRead,
     handlePin,
     handleMute,
+    handleSnooze,
+    handleUnsnooze,
     handleHide,
     handleInfo,
     handleCopyId,
@@ -163,6 +186,22 @@ function useAgentContextMenu(agent: MobileAgent) {
           {t(isMuted ? "mobile.agent.menu.unmute" : "mobile.agent.menu.mute")}
         </Link.MenuAction>
       ) : null}
+      <Link.Menu icon="moon.zzz" title={t("mobile.agent.snooze.menu")}>
+        <Link.MenuAction icon="clock" onPress={() => handleSnooze("hour")}>
+          {t("mobile.agent.snooze.hour")}
+        </Link.MenuAction>
+        <Link.MenuAction icon="sunrise" onPress={() => handleSnooze("tomorrow")}>
+          {t("mobile.agent.snooze.tomorrow")}
+        </Link.MenuAction>
+        <Link.MenuAction icon="calendar" onPress={() => handleSnooze("week")}>
+          {t("mobile.agent.snooze.week")}
+        </Link.MenuAction>
+        {isSnoozed ? (
+          <Link.MenuAction icon="sun.max" onPress={handleUnsnooze}>
+            {t("mobile.agent.snooze.wake")}
+          </Link.MenuAction>
+        ) : null}
+      </Link.Menu>
       <Link.MenuAction icon="eye.slash" onPress={handleHide}>
         {t("mobile.agent.menu.hide")}
       </Link.MenuAction>
@@ -249,10 +288,13 @@ function OpenAgentMenu({
     canPin,
     canMute,
     isMuted,
+    isSnoozed,
     sectionMenu,
     handleRead,
     handlePin,
     handleMute,
+    handleSnooze,
+    handleUnsnooze,
     handleHide,
     handleInfo,
     handleCopyId,
@@ -264,6 +306,7 @@ function OpenAgentMenu({
     title: t(isMuted ? "mobile.agent.menu.unmute" : "mobile.agent.menu.mute"),
     image: isMuted ? "bell" : "bell.slash",
   };
+  const unsnoozeAction: MenuAction = { id: "unsnooze", title: t("mobile.agent.snooze.wake"), image: "sun.max" };
   const actions: MenuAction[] = [
     {
       id: "read",
@@ -277,6 +320,17 @@ function OpenAgentMenu({
       attributes: { disabled: !canPin },
     },
     ...(canMute ? [muteAction] : []),
+    {
+      id: "snooze",
+      title: t("mobile.agent.snooze.menu"),
+      image: "moon.zzz",
+      subactions: [
+        { id: "snooze-hour", title: t("mobile.agent.snooze.hour"), image: "clock" },
+        { id: "snooze-tomorrow", title: t("mobile.agent.snooze.tomorrow"), image: "sunrise" },
+        { id: "snooze-week", title: t("mobile.agent.snooze.week"), image: "calendar" },
+        ...(isSnoozed ? [unsnoozeAction] : []),
+      ],
+    },
     { id: "hide", title: t("mobile.agent.menu.hide"), image: "eye.slash" },
     ...sectionMenu.androidActions,
     { id: "info", title: t("mobile.agent.menu.info"), image: "info.circle" },
@@ -295,6 +349,10 @@ function OpenAgentMenu({
     read: handleRead,
     pin: handlePin,
     mute: handleMute,
+    "snooze-hour": () => handleSnooze("hour"),
+    "snooze-tomorrow": () => handleSnooze("tomorrow"),
+    "snooze-week": () => handleSnooze("week"),
+    unsnooze: handleUnsnooze,
     hide: handleHide,
     info: handleInfo,
     copy: handleCopyId,

@@ -196,7 +196,7 @@ const PlushAvatar = memo(function PlushAvatar({
   // The fur and the felt decor reach past the avatar box, as on the desktop.
   const drawn = size * PLUSH_BODY_SCALE;
   const pixels = plushPixels(drawn, PixelRatio.get());
-  // This fork's native artwork uses the same selection as the Vite brand layer. Custom photos
+  // This fork's native artwork uses the same selection as the desktop and web apps. Custom photos
   // are handled by AgentPhoto, and saved face choices keep the original renderer below.
   const portrait = pokebotsDefaultPortrait(shown.seed, avatarHeadColor(shown.seed, shown.hue, shown.color));
   if (portrait) {

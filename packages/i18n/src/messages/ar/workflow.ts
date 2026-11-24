@@ -248,7 +248,7 @@ export const messages = {
   "workflow.discord.server": "الخادم",
   "workflow.discord.chooseServer": "اختيار خادم",
   "workflow.discord.event": "الحدث",
-  "workflow.discord.event.mention": "تمت الإشارة إلى OpenBot",
+  "workflow.discord.event.mention": "تمت الإشارة إلى Pokebots",
   "workflow.discord.anyChannel": "أي قناة",
   "workflow.discord.roles": "لديه دور",
   "workflow.discord.anyRole": "أي دور",

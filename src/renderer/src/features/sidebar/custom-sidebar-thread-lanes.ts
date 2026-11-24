@@ -16,6 +16,8 @@ export function useCustomSidebarThreadLanes(input: {
   activeServerId: () => string;
   /** The agent whose chat shows now, or undefined while a channel or a person shows. */
   shownAgent: () => AgentProfile | undefined;
+  /** The agent works now. Its thread list loads before the others. */
+  working: (agentId: string) => boolean;
 }): () => SidebarThreadLanes {
   const { openAgentThread } = useNavigation();
   const agentTasks = useAgentTasks();
@@ -23,7 +25,8 @@ export function useCustomSidebarThreadLanes(input: {
   const threadActivity = createThreadActivity();
   /**
    * The lanes list the threads of every agent, so each agent's thread list loads once per server.
-   * Events keep a loaded list current.
+   * Events keep a loaded list current. These lists load in the background, a few at a time and after
+   * the open chat: on a joined server, 50 list reads at once made the chat wait behind them.
    */
   const requestedThreadLists = new Set<string>();
   createEffect(
@@ -35,11 +38,11 @@ export function useCustomSidebarThreadLanes(input: {
             .filter((key) => !requestedThreadLists.has(key))
         : [],
     (keys) => {
-      for (const key of keys) {
-        requestedThreadLists.add(key);
-        const agentId = key.slice(key.indexOf("/") + 1);
-        if (!agentTasks.snapshot(agentId)) void agentTasks.loadTasks(agentId);
-      }
+      for (const key of keys) requestedThreadLists.add(key);
+      agentTasks.loadTasksInBackground(
+        keys.map((key) => key.slice(key.indexOf("/") + 1)),
+        input.working,
+      );
     },
   );
   return () => {

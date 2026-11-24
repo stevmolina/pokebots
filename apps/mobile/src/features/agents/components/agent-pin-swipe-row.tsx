@@ -8,7 +8,7 @@ import { GestureDetector } from "react-native-gesture-handler";
 import ReanimatedSwipeable from "react-native-gesture-handler/ReanimatedSwipeable";
 import Animated, { type SharedValue, useAnimatedStyle } from "react-native-reanimated";
 import { ChatDragArea, type useChatDrag } from "@/features/agents/components/chat-drag";
-import { useAppDrawer } from "@/features/servers/components/app-drawer-shell";
+import { useAppDrawer } from "@/features/servers/components/app-drawer-context";
 import { useReducedMotion } from "@/shared/lib/motion";
 import { useText } from "@/shared/lib/text";
 import { END_X } from "@/shared/lib/text-direction";

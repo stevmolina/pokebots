@@ -631,13 +631,13 @@ export const messages = {
     "Releasecontroles zijn niet beschikbaar voor deze build. Vraag de beheerder van de host om naar een compatibele release te zoeken.",
   "server.update.externalTitle": "De host regelt de installatie",
   "server.update.path.hostManager":
-    "OpenBot Host Manager installeert updates wanneer alle gebruikers inactief zijn. Vraag de beheerder van de host om de status van Host Manager te controleren als een update niet start.",
+    "Pokebots Host Manager installeert updates wanneer alle gebruikers inactief zijn. Vraag de beheerder van de host om de status van Host Manager te controleren als een update niet start.",
   "server.update.path.hosted":
     "De hostingdienst downloadt updates op de achtergrond. Een gedownloade update start de volgende keer dat de server start. Wacht tot actief werk klaar is voordat je de server stopt en hervat. Blijft hij op een oude versie, neem dan contact op met de beheerder van de host.",
   "server.update.path.system":
     "Voer op de host sudo openbot update uit om de nieuwste release te installeren. Deze opdracht stopt Pokebots. Wacht eerst tot actief werk klaar is. Automatische downloads worden bij de volgende opstart geïnstalleerd.",
   "server.update.path.container":
-    "Haal op de Docker-host de nieuwe OpenBot-image op en maak de container opnieuw met dezelfde datavolumes. Wacht eerst tot actief werk klaar is. Behoud de bestaande volumes om je gegevens te bewaren.",
+    "Haal op de Docker-host de nieuwe Pokebots-image op en maak de container opnieuw met dezelfde datavolumes. Wacht eerst tot actief werk klaar is. Behoud de bestaande volumes om je gegevens te bewaren.",
   "server.update.path.manual":
     "Deze installatie kan zichzelf niet vervangen. Vraag de beheerder van de host om de compatibele release te installeren vanaf github.com/nightly-labs/openbot/releases. Behoud de bestaande Pokebots-gegevens.",
   "server.update.path.unavailable":
@@ -661,7 +661,7 @@ export const messages = {
     "De gebruiker van {name} heeft updates van serverleden uitgezet. Vraag diegene om Pokebots bij te werken of de instelling aan te zetten.",
   "server.update.managedTitle": "Een Host Manager regelt updates",
   "server.update.managedDescription":
-    "OpenBot Host Manager werkt {name} bij. Neem contact op met de beheerder van de host.",
+    "Pokebots Host Manager werkt {name} bij. Neem contact op met de beheerder van de host.",
   "server.update.unsupportedTitle": "{name} kan zichzelf niet bijwerken",
   "server.update.unsupportedDescription":
     "Deze Pokebots-build heeft geen updater. Installeer een nieuwe versie op {name}.",

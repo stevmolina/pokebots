@@ -114,10 +114,12 @@ export function WorkspaceSidebar(props: { peopleEnabled: boolean }) {
   const { selectAgent, selectDirectMember, setGlobalSearchVisibility, chatHistory } = useNavigation();
   const agentTasks = useAgentTasks();
   const agentThreads = useAgentThreads();
+  const { agentStates: sidebarAgentStates, agentMoods } = createAgentActivity();
   const threadLanes = useCustomSidebarThreadLanes({
     agentList,
     activeServerId,
     shownAgent: () => (activeDirectMember() || channels.state.selectedId ? undefined : activeAgent()),
+    working: (agentId) => sidebarAgentStates()[agentId]?.kind === "working",
   });
   const pages = useWorkspaceSidebarPages();
   const windowPage = useWindowPage();
@@ -194,8 +196,6 @@ export function WorkspaceSidebar(props: { peopleEnabled: boolean }) {
       if (channelOpenInRoutines) layout.setSidebarView("agents");
     },
   );
-
-  const { agentStates: sidebarAgentStates, agentMoods } = createAgentActivity();
 
   /* A wait in a channel thread goes to the channel instead. Selecting the channel opens the view
    * that answers it. */

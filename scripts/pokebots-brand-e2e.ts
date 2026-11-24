@@ -1,43 +1,41 @@
-// Runs the real brand layer (`scripts/brand-layer.ts`) the way the Vite builds run it, over every
-// `@pokebots/i18n` catalog module and every visible literal outside the catalogs, and checks:
-// - with `OPENBOT_BRAND_NAME=Pokebots`, no catalog value keeps the product word "OpenBot", except
-//   the kept phrases; every key stays; each `openbot.run` and `openbot://` stays;
-// - each literal rule and the account defaults of the main process apply;
-// - the installable web app gets the Pokebots name and icons, and only the web output changes;
-// - with the setting off, the layer gives no Vite plugin, so the builds are the same as without it.
-// The catalogs load from a copy of `packages/i18n/src` under `.openbot-build`, with each catalog
-// module replaced by the code the plugin gives the bundler.
+// Checks that the source says "Pokebots" where a person reads it, and that the custom build still takes its
+// account service defaults:
+// - no catalog value or What's New note keeps the product word "OpenBot", except the kept phrases of
+//   `scripts/pokebots-brand-text.ts`; every `openbot.run` and `openbot://` address stays;
+// - the visible literals that the build-time rewrite once changed now say Pokebots in the source;
+// - the HTML pages, the web app manifest and the web icons say Pokebots;
+// - `scripts/service-defaults.ts` gives no plugin without a setting, applies the account service and
+//   Signal defaults to the main process, and never replaces a setting made at start.
 // `bun scripts/pokebots-brand-e2e.ts`. Writes .openbot-build/pokebots-brand-e2e/report.json.
-import { cp, mkdir, readdir, readFile, rm, writeFile } from "node:fs/promises";
+import { mkdir, readdir, readFile, rm, writeFile } from "node:fs/promises";
 import { join, relative, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import { runInNewContext } from "node:vm";
 import { parse } from "yaml";
 import type { MessageCatalog } from "../packages/i18n/src/message";
-import {
-  BRANDED_MODULES,
-  brandHtml,
-  brandModule,
-  brandPlugins,
-  brandText,
-  LITERAL_RULES,
-  RELEASE_NOTES_FILES,
-  readBrandSettings,
-  WEB_ICON_FILES,
-} from "./brand-layer";
+import { KEPT_PHRASES } from "./pokebots-brand-text";
+import { readServiceDefaults, serviceDefaultsPlugins, withServiceDefaults } from "./service-defaults";
 
 const ROOT = resolve(import.meta.dirname, "..");
 const OUT = join(ROOT, ".openbot-build/pokebots-brand-e2e");
 const I18N_SOURCE = join(ROOT, "packages/i18n/src");
-const MIRROR = join(OUT, "i18n-src");
+const RELEASE_NOTES_FILES = /^src\/renderer\/src\/features\/updates\/(whats-new-releases|whats-new\/[a-z]{2})\.json$/;
+const WEB_ICON_FILES = [
+  "favicon.ico",
+  "favicon-32x32.png",
+  "apple-touch-icon.png",
+  "icon-192x192.png",
+  "icon-512x512.png",
+  "icon-maskable-192x192.png",
+  "icon-maskable-512x512.png",
+] as const;
 const BRAND_ENV = {
-  OPENBOT_BRAND_NAME: "Pokebots",
   OPENBOT_BRAND_AUTH_API_URL: "https://api.pokebots.xyz",
   OPENBOT_BRAND_SIGNAL_URL: "wss://signal.pokebots.xyz/v1/signal",
 };
 /** Modules that only join the area modules and hold no keys. */
 const JOIN_MODULES = new Set(["index.ts", "mobile.ts", "source.ts", "shared.ts"]);
-const KEPT = ["Shared with OpenBot", "OpenBot GitHub App", "OpenBot Mobile", "OpenBot Shared"];
+const KEPT = ["Shared with OpenBot", "OpenBot GitHub App", "OpenBot Mobile", "OpenBot Shared", "/invite @OpenBot"];
 
 const failures: string[] = [];
 const check = (ok: boolean, message: string) => {
@@ -72,158 +70,115 @@ function count(text: string, word: string): number {
   return text.split(word).length - 1;
 }
 
-// 1. Off: no plugin, and no settings.
+// 1. Off: no plugin without a setting. The old name setting does nothing.
 const off = {
-  pluginsWithoutSetting: brandPlugins(ROOT, {}).length,
-  pluginsWithBlankSetting: brandPlugins(ROOT, { OPENBOT_BRAND_NAME: "  " }).length,
+  pluginsWithoutSetting: serviceDefaultsPlugins(ROOT, {}).length,
+  pluginsWithOldNameSetting: serviceDefaultsPlugins(ROOT, { OPENBOT_BRAND_NAME: "Pokebots" }).length,
 };
-check(off.pluginsWithoutSetting === 0, "The brand layer gives a plugin without OPENBOT_BRAND_NAME.");
-check(off.pluginsWithBlankSetting === 0, "The brand layer gives a plugin for a blank OPENBOT_BRAND_NAME.");
+check(off.pluginsWithoutSetting === 0, "The service defaults give a plugin without a setting.");
+check(off.pluginsWithOldNameSetting === 0, "OPENBOT_BRAND_NAME alone gives a plugin.");
 
-// 2. On: the real plugin over every catalog module.
-const settings = readBrandSettings(BRAND_ENV);
-if (!settings) throw new Error("The brand settings did not read.");
-const [plugin] = brandPlugins(ROOT, BRAND_ENV);
-if (!plugin) throw new Error("The brand layer gave no plugin.");
-const warnings: string[] = [];
-const pluginContext = { warn: (message: string) => warnings.push(message) };
-
-await rm(OUT, { recursive: true, force: true });
-await mkdir(OUT, { recursive: true });
-await cp(I18N_SOURCE, MIRROR, { recursive: true });
-
+// 2. The catalogs: every module loads, and no value keeps the product word outside the kept phrases.
 const catalogFiles = await walk(join(I18N_SOURCE, "messages"));
-let transformedModules = 0;
 let comparedModules = 0;
 let keys = 0;
-let valuesBefore = 0;
-let valuesBranded = 0;
-let wordBefore = 0;
-let wordAfter = 0;
-const keptPhrases: Record<string, number> = {};
+let valuesWithAddress = 0;
 const leftovers: string[] = [];
-for (const file of catalogFiles) {
-  const code = await readFile(file, "utf8");
-  const result = plugin.transform.call(pluginContext, code, file);
-  if (result) {
-    transformedModules += 1;
-    await writeFile(join(MIRROR, relative(I18N_SOURCE, file)), result.code);
-  }
-}
+const keptPhrases: Record<string, number> = {};
 for (const file of catalogFiles) {
   const name = file.split("/").pop() ?? "";
   if (JOIN_MODULES.has(name)) continue;
   const path = relative(I18N_SOURCE, file);
-  const original: { messages?: MessageCatalog } = await import(pathToFileURL(file).href);
-  const branded: { messages?: MessageCatalog } = await import(pathToFileURL(join(MIRROR, path)).href);
-  if (!original.messages || !branded.messages) {
+  const module: { messages?: MessageCatalog } = await import(pathToFileURL(file).href);
+  if (!module.messages) {
     failures.push(`${path} has no messages export.`);
     continue;
   }
   comparedModules += 1;
-  const before = messageValues(original.messages);
-  const after = messageValues(branded.messages);
-  keys += Object.keys(original.messages).length;
-  check(
-    JSON.stringify(Object.keys(original.messages)) === JSON.stringify(Object.keys(branded.messages)),
-    `${path}: the keys changed.`,
-  );
-  for (const [key, text] of before) {
-    const result = after.get(key) ?? "";
-    valuesBefore += text.includes("OpenBot") ? 1 : 0;
-    valuesBranded += result !== text ? 1 : 0;
-    wordBefore += count(text, "OpenBot");
-    wordAfter += count(result, "OpenBot");
-    check(result === brandText(text, settings.name), `${path} ${key}: the value is not the expected branded text.`);
-    for (const address of ["openbot.run", "openbot://"]) {
-      check(count(result, address) === count(text, address), `${path} ${key}: an ${address} address changed.`);
-    }
-    let rest = result;
+  keys += Object.keys(module.messages).length;
+  for (const [key, text] of messageValues(module.messages)) {
+    if (text.includes("openbot.run") || text.includes("openbot://")) valuesWithAddress += 1;
+    let rest = text;
     for (const phrase of KEPT) {
       const found = count(rest, phrase);
       if (found > 0) keptPhrases[phrase] = (keptPhrases[phrase] ?? 0) + found;
       rest = rest.replaceAll(phrase, "");
     }
-    if (rest.includes("OpenBot")) leftovers.push(`${path} ${key}: ${result}`);
+    if (rest.replace(KEPT_PHRASES, "") !== rest) leftovers.push(`${path} ${key}: ${text}`);
   }
 }
 check(leftovers.length === 0, `${leftovers.length} catalog values still show "OpenBot" outside the kept phrases.`);
 check(comparedModules > 800, `Only ${comparedModules} catalog modules were compared.`);
+check(valuesWithAddress > 0, "No catalog value keeps an openbot.run or openbot:// address.");
 
-// 3. Literals outside the catalogs, the email module, and the account defaults of the main process.
-const literalResults: { file: string; find: string; found: boolean }[] = [];
-const files = new Set([...LITERAL_RULES.map((rule) => rule.file), ...BRANDED_MODULES]);
-const outsideCatalogs: Record<string, { changed: boolean; missing: readonly string[]; openBotLeft: number }> = {};
-for (const file of files) {
-  const code = await readFile(join(ROOT, file), "utf8");
-  for (const rule of LITERAL_RULES.filter((candidate) => candidate.file === file)) {
-    literalResults.push({ file, find: rule.find, found: code.includes(rule.find) });
-  }
-  const result = plugin.transform.call(pluginContext, code, join(ROOT, file));
-  outsideCatalogs[file] = {
-    changed: result !== null && result.code !== code,
-    missing: brandModule(file, code, settings)?.missing ?? [],
-    openBotLeft: count(result?.code ?? code, '"OpenBot"'),
-  };
-  check(result !== null && result.code !== code, `${file}: the brand layer changed nothing.`);
+// 3. Literals outside the catalogs: the source says Pokebots.
+const literals: { file: string; expected: string; found: boolean }[] = [];
+for (const [file, expected] of [
+  ["packages/contracts/src/feedback.ts", 'FEEDBACK_REPOSITORY = "stevmolina/pokebots"'],
+  ["apps/auth-api/src/lib/site-metadata.ts", 'OPENBOT_SITE_URL = "https://pokebots.xyz/"'],
+  ["packages/brand/src/pokebots-avatar.ts", "POKEBOTS_LANDING_ARTWORK = true"],
+  ["packages/ui/src/features/account/AccountLogin.tsx", 'PRODUCT_NAME = "Pokebots"'],
+  ["packages/ui/src/features/account/LanguageWheel.tsx", 'PRODUCT_NAME = "Pokebots"'],
+  ["packages/contracts/src/agent-providers.ts", '"Included with Pokebots"'],
+  ["packages/ui/src/features/settings/stores/updates-store.ts", "`Pokebots v${"],
+  ["src/renderer/src/features/servers/server-settings.tsx", 'FALLBACK_SERVER_NAME = "Pokebots"'],
+  ["packages/ui/src/user-avatar.tsx", '|| "Pokebots"'],
+  ["packages/contracts/src/ipc-mcp-servers.ts", "`Pokebots already uses the name "],
+  ["src/main/ipc/provider-handlers.ts", "Pokebots does not manage this provider's CLI."],
+  [
+    "src/renderer/src/features/provider-updates/provider-runtime-store.ts",
+    "Pokebots does not manage this provider's CLI.",
+  ],
+  ["packages/contracts/src/invite-links.ts", "The Pokebots invitation link is invalid."],
+  ["packages/contracts/src/marketplace-links.ts", "The Pokebots Marketplace link is invalid."],
+  ["packages/contracts/src/plugin-links.ts", "The Pokebots plugin link is invalid."],
+  ["packages/contracts/src/agent-template-links.ts", "The Pokebots agent link is invalid."],
+] as const) {
+  const found = (await readFile(join(ROOT, file), "utf8")).includes(expected);
+  literals.push({ file, expected, found });
+  check(found, `${file}: ${expected} is not in the file.`);
 }
-for (const literal of literalResults) check(literal.found, `${literal.file}: ${literal.find} is not in the file.`);
-// The release notes of What's New: the build copies them by URL, so the plugin brands the copies in
-// the output folder. It finds them by their shape, keeps "OpenBot" only in the kept phrases, keeps
-// valid JSON, and leaves other JSON assets as they are.
-const notesOut = join(OUT, "release-notes");
-await rm(notesOut, { recursive: true, force: true });
-await mkdir(join(notesOut, "assets"), { recursive: true });
-const otherAsset = '[{"name":"OpenBot"}]\n';
-await writeFile(join(notesOut, "assets/other-x1.json"), otherAsset);
+
+// 4. What's New notes: no product word outside the kept phrases, and valid JSON.
 const UPDATES = "src/renderer/src/features/updates";
 const noteFiles = [
   ...(await readdir(join(ROOT, UPDATES))).map((name) => `${UPDATES}/${name}`),
   ...(await readdir(join(ROOT, UPDATES, "whats-new"))).map((name) => `${UPDATES}/whats-new/${name}`),
 ].filter((path) => RELEASE_NOTES_FILES.test(path));
 check(noteFiles.length > 1, "No What's New files were found.");
+const releaseNotes: Record<string, number> = {};
 for (const file of noteFiles) {
-  const name = file.split("/").at(-1)?.replace(".json", "-hash1.json") ?? "";
-  await cp(join(ROOT, file), join(notesOut, "assets", name));
+  const text = await readFile(join(ROOT, file), "utf8");
+  check(Array.isArray(JSON.parse(text)), `${file}: the file is not JSON.`);
+  let rest = text;
+  for (const phrase of KEPT) rest = rest.replaceAll(phrase, "");
+  releaseNotes[file] = count(rest, "OpenBot");
+  check(releaseNotes[file] === 0, `${file}: "OpenBot" is left outside the kept phrases.`);
 }
-plugin.writeBundle.call(pluginContext, { dir: notesOut });
-const words = (text: string) => count(text, "OpenBot") - KEPT.reduce((sum, phrase) => sum + count(text, phrase), 0);
-const releaseNotes: Record<string, { before: number; after: number }> = {};
-for (const file of noteFiles) {
-  const name = file.split("/").at(-1)?.replace(".json", "-hash1.json") ?? "";
-  const before = await readFile(join(ROOT, file), "utf8");
-  const after = await readFile(join(notesOut, "assets", name), "utf8");
-  releaseNotes[file] = { before: words(before), after: words(after) };
-  check(words(after) === 0, `${file}: "OpenBot" is left outside the kept phrases.`);
-  check(Array.isArray(JSON.parse(after)), `${file}: the branded file is not JSON.`);
-}
-check(
-  Object.values(releaseNotes).some((note) => note.before > 0),
-  "The What's New files had no OpenBot to brand.",
-);
-check((await readFile(join(notesOut, "assets/other-x1.json"), "utf8")) === otherAsset, "Another JSON asset changed.");
-check(warnings.length === 0, `The plugin warned: ${warnings.join(" | ")}`);
+
+// 5. The account service defaults of the main process.
 const mainIndex = await readFile(join(ROOT, "src/main/index.ts"), "utf8");
-const mainBranded = brandModule("src/main/index.ts", mainIndex, settings)?.code ?? "";
+const defaults = readServiceDefaults(BRAND_ENV);
+if (!defaults) throw new Error("The service defaults did not read.");
+const mainWithDefaults = withServiceDefaults("src/main/index.ts", mainIndex, defaults) ?? "";
 const accountDefaults = {
-  authApiUrl: mainBranded.startsWith('process.env.OPENBOT_AUTH_API_URL ??= "https://api.pokebots.xyz";\n'),
-  signalUrl: mainBranded.includes('process.env.OPENBOT_REMOTE_SIGNAL_URL ??= "wss://signal.pokebots.xyz/v1/signal";\n'),
-  setNameKept: mainBranded.includes('app.setName("OpenBot");'),
+  authApiUrl: mainWithDefaults.startsWith('process.env.OPENBOT_AUTH_API_URL ??= "https://api.pokebots.xyz";\n'),
+  signalUrl: mainWithDefaults.includes(
+    'process.env.OPENBOT_REMOTE_SIGNAL_URL ??= "wss://signal.pokebots.xyz/v1/signal";\n',
+  ),
+  setNameKept: mainWithDefaults.includes('app.setName("OpenBot");'),
 };
-check(accountDefaults.authApiUrl, "The main process does not default to the branded account service.");
-check(accountDefaults.signalUrl, "The main process does not default to the branded Signal.");
+check(accountDefaults.authApiUrl, "The main process does not default to the custom account service.");
+check(accountDefaults.signalUrl, "The main process does not default to the custom Signal.");
 check(accountDefaults.setNameKept, 'app.setName("OpenBot") changed. The data folder and the keychain item need it.');
-const withoutUrls = readBrandSettings({ OPENBOT_BRAND_NAME: "Pokebots" });
-check(
-  withoutUrls !== null && brandModule("src/main/index.ts", mainIndex, withoutUrls) === null,
-  "The brand name alone adds account defaults.",
-);
+check(withServiceDefaults("src/main/other.ts", "x", defaults) === null, "Another module got account defaults.");
+check(readServiceDefaults({}) === null, "The service defaults read with no setting.");
 
 const serviceOverrideEnv = {
   OPENBOT_AUTH_API_URL: "https://account.example.test",
   OPENBOT_REMOTE_SIGNAL_URL: "wss://signal.example.test/v1/signal",
 };
-const serviceDefaultsCode = mainBranded.slice(0, mainBranded.indexOf(mainIndex));
+const serviceDefaultsCode = mainWithDefaults.slice(0, mainWithDefaults.indexOf(mainIndex));
 const runtimeProcess = { env: { ...serviceOverrideEnv } };
 runInNewContext(serviceDefaultsCode, { process: runtimeProcess });
 const customBuildProcess = { env: { OPENBOT_AUTH_API_URL: undefined, OPENBOT_REMOTE_SIGNAL_URL: undefined } };
@@ -262,30 +217,17 @@ check(
     desktopIdentity.customPublish === null,
   "The desktop packaging display or identity metadata changed.",
 );
-const desktopHtml = await readFile(join(ROOT, "src/renderer/index.html"), "utf8");
-check(
-  desktopHtml.includes("<title>Pokebots</title>") && desktopHtml.includes("<noscript>Pokebots requires JavaScript"),
-  "The desktop HTML relies on the brand transform for its default name.",
-);
 
-// 4. The desktop HTML pages.
-const html: Record<string, { before: number; after: number }> = {};
+// 6. The desktop HTML pages.
+const html: Record<string, number> = {};
 for (const name of (await readdir(join(ROOT, "src/renderer"))).filter((file) => file.endsWith(".html"))) {
   const page = await readFile(join(ROOT, "src/renderer", name), "utf8");
-  const branded = brandHtml(page, settings);
-  html[name] = { before: count(page, ">OpenBot"), after: count(branded, ">OpenBot") };
-  check(!branded.includes(">OpenBot"), `src/renderer/${name} still shows OpenBot.`);
+  html[name] = count(page, ">OpenBot");
+  check(html[name] === 0, `src/renderer/${name} still shows OpenBot.`);
 }
 
-// 5. The installable web app: the plugin brands a copy of the Worker's static files after a build
-// writes them, and leaves an output folder without a manifest alone.
-const webOut = join(OUT, "web-client");
-await cp(join(ROOT, "apps/auth-api/public"), webOut, { recursive: true });
-const workerOut = join(OUT, "worker");
-await mkdir(workerOut, { recursive: true });
-plugin.writeBundle.call(pluginContext, { dir: webOut });
-plugin.writeBundle.call(pluginContext, { dir: workerOut });
-const manifest = await readFile(join(webOut, "site.webmanifest"), "utf8");
+// 7. The installable web app: the manifest and the icons are the Pokebots ones in the source.
+const manifest = await readFile(join(ROOT, "apps/auth-api/public/site.webmanifest"), "utf8");
 const manifestHas = (field: string, value: string) =>
   manifest.includes(`${JSON.stringify(field)}: ${JSON.stringify(value)}`);
 check(
@@ -296,23 +238,19 @@ check(manifestHas("start_url", "/app"), "The web app manifest lost its start URL
 const webIcons: Record<string, boolean> = {};
 for (const file of WEB_ICON_FILES) {
   const [built, brand] = await Promise.all([
-    readFile(join(webOut, file)),
+    readFile(join(ROOT, "apps/auth-api/public", file)),
     readFile(join(ROOT, "build/custom/web", file)),
   ]);
   webIcons[file] = built.equals(brand);
   check(webIcons[file], `The web app ${file} is not the Pokebots icon.`);
 }
-check((await readdir(workerOut)).length === 0, "The brand layer wrote into an output folder without a web app.");
 const web = { manifest: JSON.parse(manifest), icons: webIcons };
 
-const feedbackPath = "packages/contracts/src/feedback.ts";
-const feedbackSource = await readFile(join(ROOT, feedbackPath), "utf8");
-const brandedFeedback = plugin.transform.call(pluginContext, feedbackSource, join(ROOT, feedbackPath));
-if (!brandedFeedback) throw new Error("The feedback module did not get a brand transform.");
-await cp(join(ROOT, "packages/contracts/src/runtime-values.ts"), join(OUT, "runtime-values.ts"));
-await writeFile(join(OUT, "feedback.ts"), brandedFeedback.code);
+await rm(OUT, { recursive: true, force: true });
+await mkdir(OUT, { recursive: true });
+
 const feedback: typeof import("../packages/contracts/src/feedback") = await import(
-  pathToFileURL(join(OUT, "feedback.ts")).href
+  pathToFileURL(join(ROOT, "packages/contracts/src/feedback.ts")).href
 );
 const formPath = new URL(feedback.featureRequestFormUrl({ title: "Synthetic brand check" })).pathname;
 check(formPath === "/stevmolina/pokebots/issues/new", "The feedback form does not open the Pokebots repository.");
@@ -340,21 +278,16 @@ const report = {
   passed: failures.length === 0,
   failures,
   off,
-  settings,
+  defaults,
   catalogs: {
     files: catalogFiles.length,
-    transformedModules,
     comparedModules,
     keys,
-    valuesWithOpenBot: valuesBefore,
-    valuesBranded,
-    productWordBefore: wordBefore,
-    productWordAfter: wordAfter,
+    valuesWithAddress,
     keptPhrases,
     leftovers: leftovers.slice(0, 50),
   },
-  literals: literalResults,
-  outsideCatalogs,
+  literals,
   releaseNotes,
   feedback: { formPath, legacyIssue, sentIssue, withdrawnIssue },
   accountDefaults,
@@ -363,7 +296,6 @@ const report = {
   web,
 };
 await writeFile(join(OUT, "report.json"), `${JSON.stringify(report, null, 2)}\n`);
-await rm(MIRROR, { recursive: true, force: true });
 const summary = { passed: report.passed, failures, catalogs: { ...report.catalogs, leftovers: undefined } };
 process.stdout.write(`${JSON.stringify(summary, null, 2)}\nReport: ${relative(ROOT, join(OUT, "report.json"))}\n`);
 if (!report.passed) process.exit(1);

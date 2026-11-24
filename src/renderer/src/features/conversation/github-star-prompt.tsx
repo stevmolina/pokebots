@@ -10,6 +10,9 @@ const TOAST_ID = "github-star-prompt";
 
 let shownThisSession = false;
 
+/** Pokebots does not ask its users to star the OpenBot repository. */
+const PROMPT_ENABLED: boolean = false;
+
 /** True after the star toast showed in this app session. Other prompts then wait for a later one. */
 export function githubStarPromptShownThisSession(): boolean {
   return shownThisSession;
@@ -21,6 +24,7 @@ export function githubStarPromptShownThisSession(): boolean {
  * Blocked storage counts nothing, so a user never gets the question on each start.
  */
 export function noteAgentMessageSent(): void {
+  if (!PROMPT_ENABLED) return;
   let sent: number;
   try {
     const saved = window.localStorage.getItem(STORAGE_KEY);
