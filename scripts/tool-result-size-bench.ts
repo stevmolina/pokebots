@@ -131,6 +131,7 @@ async function measureGitHubProxy(): Promise<Record<string, number>> {
     upstreamUrl: `http://127.0.0.1:${await listen(upstream)}/mcp`,
     secret: () => "bench-secret",
     userToken: () => Effect.succeed("bench-user-token"),
+    userTokenFromOtherApp: () => false,
     botToken: () => null,
     canRead: () => Effect.succeed(null),
     refused: () => Effect.void,

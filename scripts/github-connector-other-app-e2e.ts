@@ -4,7 +4,8 @@
 //  - A token set of the earlier app with no `clientId` is not refreshed with the new Client ID. It works
 //    until it expires. Then the connection shows Reconnect, and the stored file keeps both tokens.
 //  - The revoke page of a sign-in is the page of the app that issued it.
-//  - A token set of the earlier app that never expires keeps the connection as it was.
+//  - A token set of the earlier app that never expires keeps the connection as it was, until GitHub
+//    refuses it with HTTP 401. Then the connection shows Reconnect.
 //  - A token set of the new app is refreshed with the new Client ID.
 // Run: `bun scripts/github-connector-other-app-e2e.ts`.
 // Writes .openbot-build/github-connector-other-app-e2e/report.json.
@@ -49,6 +50,8 @@ async function runCase(
   name: string,
   record: Omit<GitHubConnectorRecord, "login" | "userId" | "avatarUrl">,
   expected: { state: GitHubConnectorStatus["state"]; tokenRequests: string[]; revokeClientId: string },
+  /** Makes a GitHub API call that the stub refuses with HTTP 401, as GitHub does for a revoked token. */
+  refuseApiCall = false,
 ) {
   const directory = await mkdtemp(join(root, "case-"));
   const path = join(directory, "github.json");
@@ -67,6 +70,7 @@ async function runCase(
         refresh_token_expires_in: 15_811_200,
       });
     }
+    if (refuseApiCall) return Response.json({ message: "Bad credentials" }, { status: 401 });
     return Response.json({ message: "stub" }, { status: 503 });
   };
   const service = new GitHubConnectorService({
@@ -82,6 +86,7 @@ async function runCase(
   service.onChanged((status) => states.push(status.state));
   await runCauseEffect(service.load());
   // The check runs in the background: wait for the state or the request, not for elapsed time.
+  if (refuseApiCall) await runCauseEffect(service.repositories()).catch(() => undefined);
   const settled = () =>
     expected.state === "expired"
       ? service.status().state === "expired"
@@ -137,6 +142,14 @@ try {
     { accessToken: "ghu_old", accessTokenExpiresAt: null, refreshToken: null, refreshTokenExpiresAt: null },
     { state: "connected", tokenRequests: [], revokeClientId: LEGACY_GITHUB_APP_CLIENT_ID },
   );
+
+  const refused = await runCase(
+    "A token set of the earlier app that never expires shows Reconnect once GitHub refuses it with HTTP 401",
+    { accessToken: "ghu_old", accessTokenExpiresAt: null, refreshToken: null, refreshTokenExpiresAt: null },
+    { state: "expired", tokenRequests: [], revokeClientId: LEGACY_GITHUB_APP_CLIENT_ID },
+    true,
+  );
+  assert.equal(refused.accessToken, "ghu_old", "The access token stays in the file.");
 
   const current = await runCase(
     "A token set of the new app is refreshed with the new Client ID",

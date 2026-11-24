@@ -845,10 +845,22 @@ export class GitHubConnectorService {
   /**
    * GitHub refused `token` with HTTP 401. A revoke on GitHub does not change the expiry time of the
    * token, so the stored user token is refreshed now. GitHub rejects the refresh of a revoked sign-in,
-   * which then shows as expired with Reconnect. A refusal of another token changes nothing.
+   * which then shows as expired with Reconnect. A token of the earlier app has no refresh with this
+   * Client ID, and GitHub has refused it, so it expires at once, even when it has no expiry time.
+   * A refusal of another token changes nothing.
    */
   readonly #refused = Effect.fn("GitHubConnector.refused")(function* (this: GitHubConnectorService, token: string) {
-    if (this.#disposed || this.#store.read()?.accessToken !== token || !this.#agentConnected()) return;
+    const record = this.#store.read();
+    if (this.#disposed || !record || record.accessToken !== token || !this.#agentConnected()) return;
+    if (this.#fromOtherApp(record)) {
+      const expire = this.#serialize(() =>
+        Effect.gen({ self: this }, function* () {
+          if (!this.#disposed && this.#store.read() === record) yield* this.#expireEffect();
+        }),
+      );
+      yield* Effect.forkIn(this.#owned(expire), this.#scope);
+      return;
+    }
     yield* Effect.forkIn(this.#owned(this.#refresh()), this.#scope);
   });
 
@@ -1016,6 +1028,10 @@ export class GitHubConnectorService {
       upstreamUrl: GITHUB_CONNECTOR_MCP_SERVER_URL,
       secret: () => this.#mcpProxySecret,
       userToken: () => this.accessToken(),
+      userTokenFromOtherApp: () => {
+        const record = this.#store.read();
+        return record !== null && this.#fromOtherApp(record);
+      },
       botToken: (owner, name) => this.#botTokens.forRepository(owner, name),
       canRead: (owner, name, signal) => this.#canRead(owner, name, signal),
       refused: (token) => this.#refused(token),
