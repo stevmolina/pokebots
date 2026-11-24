@@ -381,8 +381,10 @@ app (`/Applications/Pokebots.app`), which `electron-builder.custom.yml` builds. 
 
 ## Pull requests
 
-- Open PRs for finished work without asking. Merge low-risk changes as soon as GitHub permits it.
-  PR checks and reviews run in the background. Follow [ship](.agents/skills/ship/SKILL.md).
+- Open PRs for finished work without asking. For low-risk changes, turn on auto-merge
+  (`gh pr merge <pr> --squash --auto`): `main` requires `All required checks pass`, and GitHub
+  merges when it passes. Do not poll CI in a foreground loop; use one background
+  `gh pr checks <pr> --watch --required`. Follow [ship](.agents/skills/ship/SKILL.md).
   Ask for approval before merging a change that can lose user data, expose secrets, or be hard to reverse.
 - Write the PR body from `.github/PULL_REQUEST_TEMPLATE.md`. Organization members and users with
   write access do not sign the Contributor License Agreement. An author who must sign sends a signed
