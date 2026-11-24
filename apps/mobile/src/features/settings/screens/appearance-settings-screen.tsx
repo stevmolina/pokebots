@@ -8,8 +8,7 @@ import { useRef, useState } from "react";
 import { Pressable, View } from "react-native";
 import { useUniwind } from "uniwind";
 import { UsageSegments } from "@/features/agents/components/usage-segments";
-import { saveCalmLook, useCalmLook, useCalmLookStore } from "@/features/design-preview/model/calm-look";
-import { DESIGN_PREVIEW_ALLOWED } from "@/features/design-preview/model/preview-switch";
+import { useCalmLook } from "@/features/design-preview/model/calm-look";
 import { readableOn } from "@/features/onboarding/model/onboarding-colors";
 import { AppIconSection } from "@/features/settings/components/app-icon-row";
 import { AppearancePreview } from "@/features/settings/components/appearance-preview";
@@ -45,7 +44,7 @@ import {
 import { saveTextSize, useTextSize } from "@/features/settings/model/text-size";
 import { saveFullVisualPreference, useFullVisualPreference } from "@/features/settings/model/visual-preview";
 import { PauseSlider } from "@/features/voice/components/pause-slider";
-import { IS_POKEBOTS_PERSONAL_BUILD } from "@/shared/lib/app-brand";
+import { APP_BRAND } from "@/shared/lib/app-brand";
 import { haptics } from "@/shared/lib/haptics";
 import { useText } from "@/shared/lib/text";
 
@@ -94,10 +93,9 @@ export function AppearanceSettingsScreen() {
       {tab === "theme" ? (
         <>
           <ThemeSection />
-          {DESIGN_PREVIEW_ALLOWED ? <CalmLookSection dark={dark} /> : null}
           <TextSizeSection />
           {/* The Pokebots build has one icon: the other icons are the OpenBot logo colors. */}
-          {IS_POKEBOTS_PERSONAL_BUILD ? null : <AppIconSection />}
+          {APP_BRAND === "pokebots" ? null : <AppIconSection />}
         </>
       ) : null}
       {tab === "colors" ? (
@@ -497,33 +495,6 @@ function TextSizeSection() {
           }}
         />
       </View>
-    </SettingsSection>
-  );
-}
-
-/** The "New design" switch: home in the calm look of the design preview. Dev and Pokebots builds only. */
-function CalmLookSection({ dark }: { dark: boolean }) {
-  const { t } = useText();
-  const { on, ready, saving } = useCalmLookStore();
-  const [error, setError] = useState<string | null>(null);
-  return (
-    <SettingsSection footer={error ?? t("mobile.settings.appearance.calmLookFooter")}>
-      <SettingsRow>
-        <SettingsSwitch
-          value={on}
-          disabled={!ready || saving}
-          label={t("mobile.settings.appearance.calmLook")}
-          dark={dark}
-          onValueChange={(next) => {
-            setError(null);
-            void haptics.selection();
-            void saveCalmLook(next).catch(() => {
-              setError(t("mobile.settings.saveFailed"));
-              void haptics.notification("error");
-            });
-          }}
-        />
-      </SettingsRow>
     </SettingsSection>
   );
 }
