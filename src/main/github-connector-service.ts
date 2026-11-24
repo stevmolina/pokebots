@@ -107,7 +107,7 @@ interface PendingSignIn {
  * for redaction before it is used.
  *
  * `gh` has one token for each host, so it keeps the user token: GitHub shows its work as "user with
- * OpenBotGit". `git` and the MCP tools use the bot token of each repository where the user can push.
+ * PokebotsApp". `git` and the MCP tools use the bot token of each repository where the user can push.
  */
 export class GitHubConnectorService {
   readonly #app: GitHubAppConfig | null;
@@ -308,6 +308,8 @@ export class GitHubConnectorService {
       this.#pending = null;
       this.#generation += 1;
       const hadRecord = this.#store.read() !== null;
+      // Read before the record goes: the revoke page is the one of the app that issued the tokens.
+      const { revokeUrl } = this.pages();
       yield* this.#serialize(() =>
         Effect.gen({ self: this }, function* () {
           yield* this.#store.clear();
@@ -320,7 +322,6 @@ export class GitHubConnectorService {
       this.#error = null;
       this.#emitStatus();
       this.#syncAgentAccess();
-      const { revokeUrl } = this.pages();
       if (hadRecord && revokeUrl && opensPage) yield* Effect.forkIn(this.#owned(this.#open(revokeUrl)), this.#scope);
       return this.status();
     },
@@ -397,9 +398,12 @@ export class GitHubConnectorService {
   pages(): { installUrl: string | null; revokeUrl: string | null } {
     const app = this.#app;
     if (!app) return { installUrl: null, revokeUrl: null };
+    // A sign-in of the earlier app is revoked on that app's page, not on the page of the configured app.
+    const record = this.#store.read();
+    const issuer = record ? (record.clientId ?? LEGACY_GITHUB_APP_CLIENT_ID) : app.clientId;
     return {
       installUrl: `https://github.com/apps/${app.slug}/installations/new`,
-      revokeUrl: `https://github.com/settings/connections/applications/${encodeURIComponent(app.clientId)}`,
+      revokeUrl: `https://github.com/settings/connections/applications/${encodeURIComponent(issuer)}`,
     };
   }
 
@@ -878,6 +882,8 @@ export class GitHubConnectorService {
     // A disconnect, a new sign-in or a shutdown that ran during the refresh wins.
     const current = () => !this.#disposed && this.#generation === generation && this.#store.read() === record;
     return yield* Effect.gen({ self: this }, function* () {
+      // A token of the earlier app has no refresh with this Client ID. It works until it expires.
+      if (this.#fromOtherApp(record) && !this.#accessTokenExpired(record)) return record;
       if (!record.refreshToken || !this.#canRefresh(record)) {
         yield* this.#serialize(() =>
           Effect.gen({ self: this }, function* () {

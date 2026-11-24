@@ -36,7 +36,7 @@ const MISSING_PERMISSION = "Resource not accessible by integration";
 /** For the agent, which tells the user. GitHub needs `administration: write` to create a repository. */
 const REPOSITORY_CREATION_HINT =
   'OpenBot cannot create repositories for this owner. GitHub needs the "Administration: write" permission of the ' +
-  "OpenBotGit app on that account. An owner of the account installs OpenBotGit there, or approves its pending " +
+  "PokebotsApp on that account. An owner of the account installs PokebotsApp there, or approves its pending " +
   "permission request, in GitHub settings: Applications > Installed GitHub Apps (for an organization, in the " +
   "organization settings). Organization policy can also block repository creation. Tell the user this, and do " +
   "not try another credential. The user can also create the repository on github.com.";

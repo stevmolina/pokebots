@@ -1,8 +1,9 @@
 // Checks what the GitHub connection does with a stored sign-in of the earlier GitHub App ("OpenBotGit")
 // after the move to "PokebotsApp", through the real connector service, store and encrypted file on a
 // temporary folder. Only the network is a stub: it records each request and never reaches GitHub.
-//  - A token set of the earlier app with no `clientId` is not refreshed with the new Client ID. When it
-//    is due, the connection shows Reconnect, and the stored file keeps both tokens.
+//  - A token set of the earlier app with no `clientId` is not refreshed with the new Client ID. It works
+//    until it expires. Then the connection shows Reconnect, and the stored file keeps both tokens.
+//  - The revoke page of a sign-in is the page of the app that issued it.
 //  - A token set of the earlier app that never expires keeps the connection as it was.
 //  - A token set of the new app is refreshed with the new Client ID.
 // Run: `bun scripts/github-connector-other-app-e2e.ts`.
@@ -47,7 +48,7 @@ const results: Case[] = [];
 async function runCase(
   name: string,
   record: Omit<GitHubConnectorRecord, "login" | "userId" | "avatarUrl">,
-  expected: { state: GitHubConnectorStatus["state"]; tokenRequests: string[] },
+  expected: { state: GitHubConnectorStatus["state"]; tokenRequests: string[]; revokeClientId: string },
 ) {
   const directory = await mkdtemp(join(root, "case-"));
   const path = join(directory, "github.json");
@@ -89,7 +90,9 @@ async function runCase(
   // One more turn, so a request that should not go out has its chance to.
   await new Promise((done) => setTimeout(done, 100));
   const state = service.status().state;
+  const revokeUrl = service.pages().revokeUrl ?? "";
   await runCauseEffect(service.dispose());
+  assert.ok(revokeUrl.endsWith(`/${expected.revokeClientId}`), `${name}: revoke page ${revokeUrl}`);
   assert.equal(state, expected.state, `${name}: state`);
   assert.deepEqual(tokenRequests, expected.tokenRequests, `${name}: token requests`);
   // The stored file still holds what it held, for the refresh that did not run.
@@ -104,15 +107,27 @@ async function runCase(
 
 try {
   const due = NOW + 5 * 60_000;
-  const legacy = await runCase(
-    "A token set of the earlier app that is due shows Reconnect and is not sent to GitHub",
+  const early = await runCase(
+    "A token set of the earlier app that is due soon still works and is not sent to GitHub",
     {
       accessToken: "ghu_old",
       accessTokenExpiresAt: due,
       refreshToken: "ghr_old",
       refreshTokenExpiresAt: NOW + 86_400_000,
     },
-    { state: "expired", tokenRequests: [] },
+    { state: "connected", tokenRequests: [], revokeClientId: LEGACY_GITHUB_APP_CLIENT_ID },
+  );
+  assert.equal(early.accessToken, "ghu_old", "The access token stays in the file.");
+
+  const legacy = await runCase(
+    "A token set of the earlier app that expired shows Reconnect and is not sent to GitHub",
+    {
+      accessToken: "ghu_old",
+      accessTokenExpiresAt: NOW - 1_000,
+      refreshToken: "ghr_old",
+      refreshTokenExpiresAt: NOW + 86_400_000,
+    },
+    { state: "expired", tokenRequests: [], revokeClientId: LEGACY_GITHUB_APP_CLIENT_ID },
   );
   assert.equal(legacy.accessToken, "ghu_old", "The access token stays in the file.");
   assert.equal(legacy.refreshToken, "ghr_old", "The refresh token stays in the file.");
@@ -120,7 +135,7 @@ try {
   await runCase(
     "A token set of the earlier app that never expires keeps the connection",
     { accessToken: "ghu_old", accessTokenExpiresAt: null, refreshToken: null, refreshTokenExpiresAt: null },
-    { state: "connected", tokenRequests: [] },
+    { state: "connected", tokenRequests: [], revokeClientId: LEGACY_GITHUB_APP_CLIENT_ID },
   );
 
   const current = await runCase(
@@ -132,7 +147,7 @@ try {
       refreshTokenExpiresAt: NOW + 86_400_000,
       clientId: app.clientId,
     },
-    { state: "connected", tokenRequests: [app.clientId] },
+    { state: "connected", tokenRequests: [app.clientId], revokeClientId: app.clientId },
   );
   assert.equal(current.accessToken, "ghu_refreshed", "The refreshed token is stored.");
   assert.equal(current.clientId, app.clientId, "The Client ID stays in the file.");
