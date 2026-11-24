@@ -1,0 +1,71 @@
+name: Update auto-merge PRs
+
+# `main` requires a pull request to be up to date before it merges (strict required checks), so a
+# pull request always passes CI on the exact code that lands. This workflow keeps auto-merge pull
+# requests current: after every push to `main`, it merges `main` into each open pull request that
+# has auto-merge on and is behind, then starts CI on the new head. The next one merges, `main`
+# moves, and the rest update again. Agents only turn on auto-merge; nobody rebases by hand.
+#
+# A push made with `GITHUB_TOKEN` does not start `pull_request` workflows, but `workflow_dispatch`
+# is the one event that it can start. So this workflow dispatches `ci.yml` on the updated branch;
+# the check runs attach to the new head commit, which is what the required check reads. The
+# dispatch runs every lane except `surfaces`, which only a `pull_request` run does.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: write
+  pull-requests: write
+
+# A newer push replaces the run in progress: it lists the pull requests again anyway.
+concurrency:
+  group: update-auto-merge-prs
+  cancel-in-progress: true
+
+jobs:
+  update:
+    name: Update pull requests that are behind main
+    if: github.repository == 'stevmolina/pokebots'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Merge main into auto-merge pull requests
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -uo pipefail
+          # Open, ready pull requests from this repository with auto-merge on. A fork cannot take
+          # a branch update from this token.
+          prs="$(gh pr list --repo "$REPO" --base main --state open --limit 100 \
+            --json number,isDraft,isCrossRepository,headRefName,autoMergeRequest \
+            --jq '.[] | select(.isDraft == false and .isCrossRepository == false and .autoMergeRequest != null) | "\(.number) \(.headRefName)"')"
+          if [[ -z "$prs" ]]; then
+            echo "No auto-merge pull requests."
+            exit 0
+          fi
+          while read -r number branch; do
+            behind="$(gh api "repos/$REPO/compare/main...$(jq -rn --arg b "$branch" '$b|@uri')" --jq '.behind_by')" || {
+              echo "::warning::PR #$number: could not compare with main."
+              continue
+            }
+            if [[ "$behind" == "0" ]]; then
+              echo "PR #$number is up to date."
+              continue
+            fi
+            echo "PR #$number is $behind commit(s) behind main. Updating."
+            # A merge update, not a rebase: it keeps the author's commits and needs no force push.
+            if ! gh api -X PUT "repos/$REPO/pulls/$number/update-branch" 2>&1; then
+              echo "::warning::PR #$number: update failed (merge conflict, or a workflow file that this token cannot write). Left as it is."
+              continue
+            fi
+            # Stop CI runs for the old head, then start CI on the new one.
+            for run in $(gh run list --repo "$REPO" --workflow ci.yml --branch "$branch" --event workflow_dispatch --json databaseId,status --jq '.[] | select(.status != "completed") | .databaseId'); do
+              gh run cancel "$run" --repo "$REPO" || true
+            done
+            gh workflow run ci.yml --repo "$REPO" --ref "$branch" || echo "::warning::PR #$number: could not start CI."
+          done <<<"$prs"

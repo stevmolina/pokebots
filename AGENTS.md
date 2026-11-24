@@ -387,6 +387,8 @@ app (`/Applications/Pokebots.app`), which `electron-builder.custom.yml` builds. 
   merges when it passes. Do not poll CI in a foreground loop; use one background
   `gh pr checks <pr> --watch --fail-fast`. Follow [ship](.agents/skills/ship/SKILL.md).
   Ask for approval before merging a change that can lose user data, expose secrets, or be hard to reverse.
+- A PR must be up to date with `main` to merge. `update-auto-merge-prs.yml` merges `main` into each
+  auto-merge PR that falls behind and restarts CI, so use `--auto` and do not rebase by hand.
 - Write the PR body from `.github/PULL_REQUEST_TEMPLATE.md`. Organization members and users with
   write access do not sign the Contributor License Agreement. An author who must sign sends a signed
   PDF by email. Never sign, fill in, or send the agreement for the author.

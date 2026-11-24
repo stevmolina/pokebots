@@ -20,9 +20,11 @@ passes. Automated reviews are background feedback.
    `gh pr view <pr> --json state,isDraft,mergeable,headRefOid`. If GitHub reports
    `CONFLICTING`, merge `origin/main` into the branch, resolve the conflict and push.
    If GitHub reports `UNKNOWN`, query again when it has calculated the merge state.
-5. Turn on auto-merge for the reviewed head:
-   `gh pr merge <pr> --squash --auto --match-head-commit <head-sha>`. `main` requires the
-   check `All required checks pass`, and GitHub merges when it passes. Automated reviews do
+5. Turn on auto-merge: `gh pr merge <pr> --squash --auto`. Do not pass `--match-head-commit`:
+   the head moves when the update workflow merges `main` into the PR. `main` requires the
+   check `All required checks pass` and an up-to-date branch. The workflow
+   `update-auto-merge-prs.yml` merges `main` into every auto-merge PR that falls behind and
+   restarts CI, so do not rebase or update the branch by hand. GitHub merges when the check passes. Automated reviews do
    not hold up the merge. Do not use `--admin`, force-push or change branch protection.
 6. Do not wait for CI in a foreground loop (`sleep`, `until`, repeated `gh pr checks`).
    Start one background command, `gh pr checks <pr> --watch --fail-fast --interval 30`, or
