@@ -287,6 +287,7 @@ import { hostMessagingApi } from "../connectors/host-messaging-port";
 import { hostWhatsAppPort } from "../connectors/whatsapp-connector";
 import { Conversation, createConversationController } from "../conversation/Conversation";
 import { clearStoredQueueEdit } from "../conversation/composer-draft";
+import { computerLiveViewOpener, openInBrowserTab } from "../conversation/computer-live-view-opener";
 import { ConversationControllerProvider } from "../conversation/conversation-controller-context";
 import { composerDraftKey } from "../conversation/conversation-keys";
 import type {
@@ -4607,6 +4608,7 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                   onManageBrowserProfiles={browserProfiles() ? openBrowserProfileSettings : undefined}
                   onOpenNotificationSettings={(serverId) => openNotificationSettings(serverId)}
                   onOpenMcpSignIn={openMcpSignInFromChat()}
+                  onOpenComputerLiveView={computerLiveViewOpener(server(), cloudComputers.machines, openInBrowserTab)}
                   mcpSignedIn={mcpSignedIn}
                   refreshMcpSignIns={refreshMcpSignInsFromChat}
                   onOpenUsage={(trigger) => {
