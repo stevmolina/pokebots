@@ -405,6 +405,14 @@ export function AgentThreadView(props: AgentThreadViewProps) {
   const attention = children(() => props.attention);
   const [sending, setSending] = createSignal(false);
   const [addMenuOpen, setAddMenuOpen] = createSignal(false);
+  // The close button of the waiting block hides settled rows only. A row that starts again shows again.
+  const [hiddenAwaiting, setHiddenAwaiting] = createSignal<ReadonlySet<string>>(new Set());
+  const visibleAwaiting = createMemo(() => {
+    const hidden = hiddenAwaiting();
+    return (props.awaiting ?? []).filter(
+      (row) => !(hidden.has(row.id) && (row.state === "replied" || row.state === "failed")),
+    );
+  });
   const [reactionMessageId, setReactionMessageId] = createSignal<string | null>(null);
   const [expandedEmojiId, setExpandedEmojiId] = createSignal<string | null>(null);
   const [skillPickerRequest, setSkillPickerRequest] = createSignal(0);
@@ -1320,9 +1328,17 @@ export function AgentThreadView(props: AgentThreadViewProps) {
               );
             }}
           </ComposerStackCard>
-          <ComposerStackCard when={props.awaiting?.length ? props.awaiting : undefined}>
+          <ComposerStackCard when={visibleAwaiting().length ? visibleAwaiting() : undefined}>
             {(items) => (
-              <AwaitingReplies items={items()} onOpenAgent={props.onOpenWaitingAgent ?? props.onSelectAgent} />
+              <AwaitingReplies
+                items={items()}
+                onOpenAgent={props.onOpenWaitingAgent ?? props.onSelectAgent}
+                onDismiss={() => {
+                  setHiddenAwaiting((ids) => new Set([...ids, ...items().map((row) => row.id)]));
+                  // The close button leaves with the block, so the focus goes back to the composer.
+                  setReplyFocus((value) => value + 1);
+                }}
+              />
             )}
           </ComposerStackCard>
           <Show when={props.queue}>
