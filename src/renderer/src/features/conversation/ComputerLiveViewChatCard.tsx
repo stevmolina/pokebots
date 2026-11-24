@@ -2,6 +2,7 @@ import type { AgentMessage } from "@openbot/ui/data";
 import { ComputerLiveViewCard } from "@openbot/ui/features/conversation/ComputerLiveViewCard";
 import { useText } from "@openbot/ui/text";
 import { createSignal } from "solid-js";
+import { openWithPage } from "./computer-live-view-opener";
 import { useConversationViewScope } from "./conversation-scope";
 import type { ConversationProps } from "./conversation-types";
 
@@ -17,14 +18,21 @@ export interface ComputerLiveViewChatCardProps {
  */
 export function ComputerLiveViewChatCard(props: ComputerLiveViewChatCardProps) {
   const { t } = useText();
+  const { props: view, canOpenInBuiltInBrowser, openInBuiltInBrowser } = useConversationViewScope();
   const [busy, setBusy] = createSignal(false);
   const [note, setNote] = createSignal<string | undefined>(undefined);
-  const open = async (opener: NonNullable<ConversationProps["onOpenComputerLiveView"]>) => {
+  const inPanel = openWithPage(openInBuiltInBrowser);
+  // Open live view follows the "Open external links in" setting, as a chat link does: on this
+  // computer's server it opens in the built-in browser. On a joined server the browser runs on the
+  // host and other members can see its tabs, so only the explicit side panel button opens it there.
+  const panelByDefault = () =>
+    view.openLinksInBrowser === true && view.server?.kind !== "remote" && canOpenInBuiltInBrowser();
+  const open = async (opener: NonNullable<ConversationProps["onOpenComputerLiveView"]>, here?: typeof inPanel) => {
     if (busy()) return;
     setBusy(true);
     setNote(undefined);
     try {
-      if (!(await opener(props.machineId))) setNote(t("chat.computerLiveView.notFound"));
+      if (!(await opener(props.machineId, here))) setNote(t("chat.computerLiveView.notFound"));
     } catch {
       setNote(t("chat.computerLiveView.failed"));
     } finally {
@@ -39,7 +47,15 @@ export function ComputerLiveViewChatCard(props: ComputerLiveViewChatCardProps) {
         props.onOpenLiveView
           ? () => {
               const opener = props.onOpenLiveView;
-              if (opener) void open(opener);
+              if (opener) void open(opener, panelByDefault() ? inPanel : undefined);
+            }
+          : undefined
+      }
+      onOpenInPanel={
+        props.onOpenLiveView && canOpenInBuiltInBrowser() && !panelByDefault()
+          ? () => {
+              const opener = props.onOpenLiveView;
+              if (opener) void open(opener, inPanel);
             }
           : undefined
       }

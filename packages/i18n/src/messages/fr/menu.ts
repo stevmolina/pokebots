@@ -10,6 +10,7 @@ export const messages = {
   "menu.actualSize": "Taille réelle",
   "menu.zoomIn": "Zoom avant",
   "menu.zoomOut": "Zoom arrière",
+  "menu.openLinkInPanel": "Ouvrir le lien dans le panneau latéral",
   "menu.copyLink": "Copier le lien",
   "menu.copyImage": "Copier l’image",
   "menu.quit": "Quitter OpenBot",

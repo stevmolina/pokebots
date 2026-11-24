@@ -150,6 +150,22 @@
     "zh"
   ],
   "chat.computerLiveView.open": ["ar", "de", "es", "fr", "he", "it", "ja", "ko", "nl", "pl", "pt", "ru", "tr", "zh"],
+  "chat.computerLiveView.openInPanel": [
+    "ar",
+    "de",
+    "es",
+    "fr",
+    "he",
+    "it",
+    "ja",
+    "ko",
+    "nl",
+    "pl",
+    "pt",
+    "ru",
+    "tr",
+    "zh"
+  ],
   "chat.computerLiveView.subtitle": [
     "ar",
     "de",

@@ -8,19 +8,35 @@ import { serverCanAdminister } from "../servers/server-capabilities";
  * from the owner or admin machine list at the press and goes only to `open`: it is never kept in the
  * conversation, a cache or a log.
  */
+/** Opens a live view link that is on its way. Resolves false when there is no link. */
+export type LiveViewLinkOpen = (link: Promise<string | null>) => Promise<boolean>;
+
+/**
+ * `open` is where the client opens the link by default; the card can pass another one, such as the
+ * built-in browser, for one press.
+ */
 export function computerLiveViewOpener(
   server: ServerSummary | undefined,
   machines: (serverId: string) => Promise<AgentComputerMachineList>,
-  open: (link: Promise<string | null>) => Promise<boolean>,
-): ((machineId: string) => Promise<boolean>) | undefined {
+  open: LiveViewLinkOpen,
+): ((machineId: string, openHere?: LiveViewLinkOpen) => Promise<boolean>) | undefined {
   if (!serverCanAdminister(server, AGENT_COMPUTER_CAPABILITY)) return undefined;
   const serverId = server.id;
-  return (machineId) => open(machines(serverId).then((list) => machineLiveViewUrl(list, machineId)));
+  return (machineId, openHere) =>
+    (openHere ?? open)(machines(serverId).then((list) => machineLiveViewUrl(list, machineId)));
+}
+
+/** Opens the link with `openPage`, such as the built-in browser. */
+export function openWithPage(openPage: (url: string) => Promise<boolean>): LiveViewLinkOpen {
+  return async (link) => {
+    const url = await link;
+    return url ? openPage(url) : false;
+  };
 }
 
 /** Opens the link with the shell of the desktop app. */
-export function openWithShell(openUrl: (url: string) => unknown) {
-  return async (link: Promise<string | null>): Promise<boolean> => {
+export function openWithShell(openUrl: (url: string) => unknown): LiveViewLinkOpen {
+  return async (link) => {
     const url = await link;
     if (!url) return false;
     await openUrl(url);
@@ -32,7 +48,7 @@ export function openWithShell(openUrl: (url: string) => unknown) {
  * Opens the link in a new browser tab. The tab opens at the press, before the link arrives, so a popup
  * blocker does not stop it; it closes again when there is no link. A blocked tab is a failed open.
  */
-export function openInBrowserTab(link: Promise<string | null>): Promise<boolean> {
+export const openInBrowserTab: LiveViewLinkOpen = (link) => {
   const tab = window.open("about:blank", "_blank");
   if (tab) tab.opener = null;
   return link.then(
@@ -51,4 +67,4 @@ export function openInBrowserTab(link: Promise<string | null>): Promise<boolean>
       throw error;
     },
   );
-}
+};

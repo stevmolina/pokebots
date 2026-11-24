@@ -79,6 +79,7 @@ export function isToggleDevToolsShortcut(input: BrowserShortcutInput): boolean {
 export type ChatEditAction = "undo" | "redo" | "cut" | "copy" | "paste" | "pasteAndMatchStyle" | "delete" | "selectAll";
 
 export type ChatContextMenuItem =
+  | { kind: "open-link-in-panel" }
   | { kind: "copy-link" }
   | { kind: "copy-image" }
   | { kind: "separator" }
@@ -110,15 +111,23 @@ export interface ChatContextMenuParams {
 /**
  * The native items a right-click offers in chat. An editable field gets spelling suggestions and
  * the full edit menu, each entry enabled from the field's edit state. Selected text elsewhere gets
- * copy and select-all, a link gets a copy-link entry first, and a loaded image gets a copy-image
+ * copy and select-all, a link gets a copy-link entry first (after "Open Link in Side Panel" for an
+ * http or https page), and a loaded image gets a copy-image
  * entry. Anywhere else keeps no menu, so the window does not pop a menu with nothing useful in it.
  */
+/** An http or https address: the only links that the built-in browser opens from the menu. */
+export function webPageLink(url: string): boolean {
+  const page = URL.parse(url);
+  return page?.protocol === "http:" || page?.protocol === "https:";
+}
+
 export function chatContextMenuItems(params: ChatContextMenuParams): ChatContextMenuItem[] {
   const items: ChatContextMenuItem[] = [];
   const separate = () => {
     if (items.length > 0) items.push({ kind: "separator" });
   };
   const edit = (action: ChatEditAction, enabled: boolean) => items.push({ kind: "edit", action, enabled });
+  if (params.linkURL && webPageLink(params.linkURL)) items.push({ kind: "open-link-in-panel" });
   if (params.linkURL) items.push({ kind: "copy-link" });
   if (params.mediaType === "image" && params.hasImageContents) items.push({ kind: "copy-image" });
   const flags = params.editFlags;

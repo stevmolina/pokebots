@@ -671,6 +671,11 @@ function attachAppInput(
     Menu.buildFromTemplate(
       items.map((item) => {
         if (item.kind === "separator") return { type: "separator" } as const;
+        if (item.kind === "open-link-in-panel")
+          return {
+            label: t("menu.openLinkInPanel"),
+            click: () => sendToRenderer(window, IPC_ENDPOINTS.app.openLinkInPanel, params.linkURL),
+          };
         if (item.kind === "copy-link")
           return {
             label: t("menu.copyLink"),

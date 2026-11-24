@@ -1454,6 +1454,8 @@ export function createMockOpenBot(options: MockOpenBotOptions = {}): MockOpenBot
     onOpenSettings: () => () => undefined,
     onOpenUpdateSettings: () => () => undefined,
     onRunShortcut: () => () => undefined,
+    // The preview has no native menu, so no link opens in the side panel from it.
+    onOpenLinkInPanel: () => () => undefined,
     // The preview is one page, so a chat cannot open in a window of its own.
     openChatWindow: async () => undefined,
     getChatWindows: async () => [],

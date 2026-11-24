@@ -31,6 +31,7 @@ import {
   decodeDiscoverModelsResult,
   decodeHostedServer,
   decodeInstalledFonts,
+  decodeLinkInPanelUrl,
   decodeMobileConnectedDevices,
   decodeMobileConnectTicket,
   decodeNotificationOpenedEvent,
@@ -647,6 +648,25 @@ describe("app decoding", () => {
 
   it.each(malformed)("rejects %s", (_name, decode, value) => {
     expect(() => decode(value)).toThrow(/^Invalid /);
+  });
+});
+
+// "Open Link in Side Panel" sends a chat link to the built-in browser. Only an http or https page
+// reaches the renderer: a file, script or app address would open something other than a web page.
+describe("link in side panel", () => {
+  it.each(["https://example.com/live?token=abc", "http://localhost:6080/vnc.html"])("keeps %s", (url) => {
+    expect(decodeLinkInPanelUrl(url)).toBe(url);
+  });
+
+  it.each([
+    ["a file address", "file:///etc/passwd"],
+    ["a script address", "javascript:alert(1)"],
+    ["an app address", "openbot://settings"],
+    ["text that is no address", "not a link"],
+    ["a number", 42],
+    ["an address that is too long", `https://example.com/${"a".repeat(32_768)}`],
+  ])("rejects %s", (_name, value) => {
+    expect(() => decodeLinkInPanelUrl(value)).toThrow(/^Invalid /);
   });
 });
 

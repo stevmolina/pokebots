@@ -10,6 +10,7 @@ export const messages = defineMessages("menu", {
   "menu.actualSize": "Actual Size",
   "menu.zoomIn": "Zoom In",
   "menu.zoomOut": "Zoom Out",
+  "menu.openLinkInPanel": "Open Link in Side Panel",
   "menu.copyLink": "Copy Link",
   "menu.copyImage": "Copy Image",
   "menu.quit": "Quit OpenBot",

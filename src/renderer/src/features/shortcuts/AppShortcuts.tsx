@@ -8,6 +8,7 @@ import { playActionSound } from "../../action-sounds";
 import { appPort } from "../../app-port";
 import { useLayout } from "../../layout";
 import { useSendShortcutMode } from "../../send-shortcut-preference";
+import { openLinkInPanel } from "../conversation/link-panel-handlers";
 import { watchModifierHold } from "./modifier-hold";
 import { installShortcutKeys, onShortcutCommand, runMenuCommand } from "./shortcut-commands";
 
@@ -86,7 +87,15 @@ export function AppShortcuts(props: {
       onShortcutCommand("focusComposer", () => focusComposerEditor(document)),
       onShortcutCommand("typeToComposer", () => focusComposerEditor(document)),
     ];
-    if (props.nativeMenu) removals.push(appPort().onRunShortcut(runMenuCommand));
+    if (props.nativeMenu) {
+      removals.push(
+        appPort().onRunShortcut(runMenuCommand),
+        // No chat on screen can show the page, so it opens as a chat link does with no setting.
+        appPort().onOpenLinkInPanel((url) => {
+          void openLinkInPanel(url).then((opened) => (opened ? undefined : appPort().openUrl(url)));
+        }),
+      );
+    }
     return () => {
       for (const remove of removals) remove();
     };

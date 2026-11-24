@@ -8,6 +8,7 @@ export const messages = {
   "menu.actualSize": "실제 크기",
   "menu.zoomIn": "확대",
   "menu.zoomOut": "축소",
+  "menu.openLinkInPanel": "사이드 패널에서 링크 열기",
   "menu.copyLink": "링크 복사",
   "menu.copyImage": "이미지 복사",
   "menu.quit": "OpenBot 종료",
