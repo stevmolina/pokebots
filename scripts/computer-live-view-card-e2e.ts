@@ -65,29 +65,34 @@ const agent: AgentSummary = {
 };
 
 try {
-  // 1. Every agent gets the rule: the phrases name the machine; open it or work on it starts it at once, with no offer.
+  // 1. Every agent on a server with Agent Computer gets the rule: the phrases name the machine; a request to
+  // open it or work on it starts it at once, with no offer. Without Agent Computer, the rule is left out.
   for (const provider of ["codex", "claude"] as const) {
-    const text = developerInstructions({ ...agent, provider }, "/shared", [], "/automation", DEFAULT_AGENT_DEFAULTS);
-    assert.ok(text.includes(CLOUD_AGENT_RULE), `${provider} instructions have the cloud agent rule`);
+    const base = { sideThread: false, memoriesInTurns: true, teammatesInTurns: true, homeSkills: [] };
+    const on = developerInstructions({ ...agent, provider }, "/shared", [], "/automation", DEFAULT_AGENT_DEFAULTS, {
+      ...base,
+      agentComputer: true,
+    });
+    const off = developerInstructions(
+      { ...agent, provider },
+      "/shared",
+      [],
+      "/automation",
+      DEFAULT_AGENT_DEFAULTS,
+      base,
+    );
+    assert.ok(on.includes(CLOUD_AGENT_RULE), `${provider} instructions have the cloud agent rule`);
+    assert.ok(!off.includes(CLOUD_AGENT_RULE), `${provider} instructions without Agent Computer leave it out`);
   }
-  for (const phrase of [
-    "cloud agent",
-    "cloud machine",
-    "cloud computer",
-    "in the cloud",
-    "at once",
-    "do not offer",
-    "Claude Code",
-  ])
+  for (const phrase of ["Cloud agent", "cloud machine", "cloud computer", "at once", "do not offer", "computer_list"])
     assert.ok(CLOUD_AGENT_RULE.includes(phrase), phrase);
-  assert.match(CLOUD_AGENT_RULE, /Server settings > Cloud computers/u);
-  assert.match(CLOUD_AGENT_RULE, /asks you to open it or to do work on it/u);
-  assert.match(CLOUD_AGENT_RULE, /Talk about it does not start it/u);
+  assert.match(CLOUD_AGENT_RULE, /Talk about it starts nothing/u);
+  assert.match(CLOUD_AGENT_RULE, /open it or to work on it/u);
   const start = AGENT_COMPUTER_TOOL_DEFINITIONS.find(({ name }) => name === "computer_start");
-  assert.match(start?.description ?? "", /call this at once; do not offer it/u);
-  assert.match(start?.description ?? "", /Open live view button/u);
+  assert.match(start?.description ?? "", /live view button/u);
+  assert.doesNotMatch(start?.description ?? "", /live_view_url/u);
   checks.push(
-    "base developer instructions (codex, claude) and computer_start say: talk does not start it; open or work starts it at once, no offer",
+    "with Agent Computer, every agent gets the rule: talk starts nothing; open or work starts it at once, no offer",
   );
 
   // 2. computer_start reports the machine id to the router; the agent's result has no live view link.

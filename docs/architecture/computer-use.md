@@ -487,12 +487,11 @@ Mobile uses mounted screen state and does not cache bearer links in offline work
 ### Cloud agent requests and the live view card
 
 The base developer instructions (`CLOUD_AGENT_RULE` in `src/backend/agent/developer-instructions.ts`)
-tell every agent that cloud agent, cloud machine and cloud computer name the user's Agent Computer
-machine. Talk about it does not start it; the agent uses `computer_list` for its status. When the user
-asks the agent to open it or to do work on it, or to run work in the cloud, the agent calls
-`computer_start` at once, with the context of the existing machine when one fits. It does not offer it. On
-`NOT_CONNECTED` it says that an owner or admin can connect Agent Computer in Server settings > Cloud
-computers.
+say that cloud agent, cloud machine and cloud computer name the user's Agent Computer machine. Talk
+about it starts nothing. When the user asks the agent to open it or to work on it, the agent calls
+`computer_start` at once, with the context of the existing machine from `computer_list`, and does not
+offer it first. The rule is in the instructions only while the server can start a machine: it has an
+Agent Computer key, or the signed-in account gives a computer credential (`agentComputerConnected`).
 
 After a successful start, `handleAgentComputerTool` calls `onStarted(machineId)`, and the tool router
 posts a system card with the item type `computer-live-view:<machine id>`
@@ -502,7 +501,7 @@ card that cannot be posted does not fail `computer_start`: the agent still gets 
 
 ```mermaid
 flowchart LR
-  U["User: 'cloud agent'"] --> A["Agent calls computer_start"]
+  U["User: 'open the cloud agent' or work on it"] --> A["Agent calls computer_start"]
   A --> R["Router posts card: computer-live-view:&lt;id&gt;"]
   R --> C["Chat shows Open live view (owner or admin only)"]
   C -->|press| L["Client reads machine list (IPC or agent-computer-v1 route)"]

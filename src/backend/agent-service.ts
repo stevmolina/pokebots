@@ -598,6 +598,8 @@ export interface AgentServiceOptions {
    * The built-in `computer_*` tools and coding jobs use it.
    */
   agentComputerKey?: () => string | null;
+  /** Whether an agent can start an Agent Computer: the server key or the user's account. */
+  agentComputerConnected?: () => boolean;
   agentComputerCredential?: (memberId: string) => IntegrationCredential<"computer"> | undefined;
   /** The Link account of this computer, or `null`. Agents ask it for one-time cards. */
   linkWallet?: LinkWallet | null;
@@ -1529,6 +1531,7 @@ export class AgentService extends EventEmitter<AgentServiceEvents> {
       mcpProxiedServerIds: (configs) => this.#mcp.proxiedServerIds(configs),
       ...(credentials.agentEnvironment ? { agentEnvironment: credentials.agentEnvironment } : {}),
       passwordVaultConnected: () => options.passwordVault?.connected() ?? false,
+      agentComputerConnected: () => options.agentComputerConnected?.() ?? options.agentComputerKey?.() != null,
       vaultItems: (agentId) => ({
         available: options.vaultItems?.ready() ?? false,
         cards: options.vaultItems?.hasCards(agentId) ?? false,

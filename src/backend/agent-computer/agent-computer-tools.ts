@@ -79,7 +79,7 @@ export const AGENT_COMPUTER_TOOL_DEFINITIONS = [
   },
   {
     name: "computer_start",
-    description: `Start or resume the cloud computer of a context; returns its id. When the user asks you to open the cloud agent (machine, computer) or to do work on it, call this at once; do not offer it. Talk about it does not start it. ${MACHINE_RULES} The chat shows the human an Open live view button; live view and billing links are not for you. Work in visible windows ($DISPLAY is set). Read ~/PLAYBOOK.md before a big task. briefing has more rules.`,
+    description: `Start or resume the cloud computer of a context; returns its id. ${MACHINE_RULES} The chat shows the user a live view button; live view and billing links are not for you. Work in visible windows ($DISPLAY is set). Read ~/PLAYBOOK.md before a big task. briefing has more rules.`,
     shape: startSchema.shape,
   },
   {
