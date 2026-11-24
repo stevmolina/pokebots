@@ -1,14 +1,13 @@
 import { router } from "expo-router";
 import { Typography } from "heroui-native";
 import Check from "lucide-react-native/icons/check";
-import LayoutGrid from "lucide-react-native/icons/layout-grid";
 import { type ReactElement, useCallback, useMemo } from "react";
 import { Pressable, ScrollView, View } from "react-native";
 import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { AgentMachineRow } from "@/features/agents/components/agent-list-row";
 import { usePreviewColors } from "@/features/design-preview/components/preview-parts";
-import { previewProfile, previewType } from "@/features/design-preview/model/preview-tokens";
+import { previewType } from "@/features/design-preview/model/preview-tokens";
 import { ServerAvatar } from "@/features/servers/components/server-avatar";
 import { AllMachinesMark } from "@/features/servers/components/server-mascot";
 import { setAllMachines, useAllMachines } from "@/features/servers/model/all-machines";
@@ -60,90 +59,6 @@ function useAllMachineAgents(): MobileAgent[] {
       })
       .sort((a, b) => time(b) - time(a));
   }, [agents, servers, hidden]);
-}
-
-/**
- * The machine chips over home: the Machines grid button, "All" and each server. The open one is
- * filled, as the filter chips of the desktop sidebar. Shown only with two servers or more.
- */
-export function MachineChips() {
-  const { t } = useText();
-  const colors = usePreviewColors();
-  const servers = useMobileWorkspaceSelector((current) => current.servers);
-  const activeServerId = useMobileWorkspaceSelector((current) => current.activeServer.id);
-  const allShown = useAllMachinesShown();
-  const openServer = useOpenServer();
-  if (servers.length < 2) return null;
-  const chip = (key: string, active: boolean, label: string, mark: ReactElement, onPress: () => void) => (
-    <Pressable
-      key={key}
-      accessibilityRole="button"
-      accessibilityState={{ selected: active }}
-      accessibilityLabel={label}
-      onPress={() => {
-        void haptics.selection();
-        onPress();
-      }}
-      style={({ pressed }) => ({
-        minHeight: previewProfile.chipHeight,
-        paddingLeft: 6,
-        paddingRight: 12,
-        borderRadius: previewProfile.chipHeight / 2,
-        backgroundColor: active ? colors.strongFill : colors.softFill,
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 6,
-        opacity: pressed ? 0.7 : 1,
-      })}
-    >
-      {mark}
-      <Typography
-        numberOfLines={1}
-        style={[previewType.chip, { color: active ? colors.pageBackground : colors.title }]}
-      >
-        {label}
-      </Typography>
-    </Pressable>
-  );
-  return (
-    <ScrollView
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      contentContainerStyle={{ gap: previewProfile.chipGap, paddingHorizontal: 16, paddingVertical: 6 }}
-    >
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel={t("mobile.agent.machines.open")}
-        onPress={() => {
-          void haptics.selection();
-          router.push("/machines");
-        }}
-        style={({ pressed }) => ({
-          width: previewProfile.chipHeight,
-          height: previewProfile.chipHeight,
-          borderRadius: previewProfile.chipHeight / 2,
-          backgroundColor: colors.softFill,
-          alignItems: "center",
-          justifyContent: "center",
-          opacity: pressed ? 0.7 : 1,
-        })}
-      >
-        <LayoutGrid size={17} color={colors.title} />
-      </Pressable>
-      {chip("all", allShown, t("mobile.agent.machines.allShort"), <AllMachinesMark size={22} />, () =>
-        setAllMachines(true),
-      )}
-      {servers.map((server) =>
-        chip(
-          server.id,
-          !allShown && server.id === activeServerId,
-          server.name,
-          <ServerAvatar server={server} size={22} showStatus={false} />,
-          () => openServer(server.id),
-        ),
-      )}
-    </ScrollView>
-  );
 }
 
 /**
