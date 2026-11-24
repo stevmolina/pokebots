@@ -1,0 +1,367 @@
+diff --git a/rooms/agent_api.py b/rooms/agent_api.py
+--- a/rooms/agent_api.py
++++ b/rooms/agent_api.py
+@@ -23,6 +23,7 @@
+ from starlette.responses import JSONResponse, PlainTextResponse, Response
+ 
+ from . import tasks
++from .auth import claims_pokebots_issuer
+ from .memory import NEXT_READ_MEMORY, PART_MAX
+ from .notify import MAX_WAIT, TooManyWaits
+ from .store import (
+@@ -260,6 +261,8 @@
+     paths: dict[str, Any] = {}
+ 
+     async def verify_user_token(token: str):
++        if claims_pokebots_issuer(token):
++            return await mcp.auth.verify_token(token)
+         verified = await mcp.auth.verify_token(token)
+         if (
+             verified is None
+@@ -338,7 +341,7 @@
+                             # verifier also accepts the original WorkOS access token.
+                             verified = await verify_user_token(token)
+                             claims = verified.claims if verified else {}
+-                            if claims and claims.get("sub") and claims.get("email"):
++                            if claims and claims.get("sub") and claims.get("email") is not None:
+                                 user = store.ensure_user(
+                                     str(claims["sub"]),
+                                     str(claims["email"]),
+diff --git a/rooms/auth.py b/rooms/auth.py
+--- a/rooms/auth.py
++++ b/rooms/auth.py
+@@ -10,10 +10,14 @@
+ from __future__ import annotations
+ 
+ import logging
++import re
+ import time
+ from typing import Any
+ 
+ import httpx
++import jwt
++from cryptography.hazmat.primitives.asymmetric.rsa import RSAPublicKey
++from cryptography.hazmat.primitives.serialization import load_pem_public_key
+ from fastmcp.server.auth import AuthProvider, TokenVerifier
+ from fastmcp.server.auth.auth import AccessToken
+ from fastmcp.server.auth.providers.jwt import JWTVerifier, StaticTokenVerifier
+@@ -68,7 +72,7 @@
+             log.warning("workos user lookup error %s", type(exc).__name__)
+             return None
+         if r.status_code == 404:
+-            log.info("workos user not found sub=%s", sub)
++            log.info("workos user not found")
+             self._cache[sub] = (time.time() + DENY_CACHE_TTL, None)
+             return None
+         if r.status_code != 200:
+@@ -82,7 +86,7 @@
+             return None
+         email = (user.get("email") or "").strip().lower()
+         if user.get("email_verified") is not True or not email:
+-            log.info("denied unverified sub=%s", sub)
++            log.info("denied unverified user")
+             self._cache[sub] = (time.time() + DENY_CACHE_TTL, None)
+             return None
+         identity = {"sub": sub, "email": email, "name": display_name(user)}
+@@ -117,7 +121,7 @@
+     )
+ 
+ 
+-def user_verifier(settings: Settings) -> TokenVerifier:
++def legacy_user_verifier(settings: Settings) -> TokenVerifier:
+     if settings.dev:
+         return dev_verifier(settings)
+     inner = JWTVerifier(
+@@ -127,6 +131,94 @@
+         audience=settings.mcp_url,
+     )
+     return WorkOSUserVerifier(inner, settings.workos_api_key)
++
++
++POKEBOTS_ISSUER = "urn:pokebots:integrations"
++POKEBOTS_SUBJECT = re.compile(r"pokebots:[A-Za-z0-9_-]{1,128}")
++WORKOS_SUBJECT = re.compile(r"user_[a-zA-Z0-9]+")
++
++
++def claims_pokebots_issuer(token: str) -> bool:
++    try:
++        claims = jwt.decode(token, options={"verify_signature": False})
++    except (jwt.PyJWTError, ValueError):
++        return False
++    return claims.get("iss") == POKEBOTS_ISSUER
++
++
++class IntegrationVerifier(TokenVerifier):
++    def __init__(self, legacy: TokenVerifier, public_pem: str):
++        super().__init__()
++        self.legacy = legacy
++        self.key: RSAPublicKey | None = None
++        if public_pem.strip():
++            try:
++                key = load_pem_public_key(public_pem.replace("\\n", "\n").strip().encode())
++            except ValueError:
++                raise SystemExit("Invalid POKEBOTS_INTEGRATION_PUBLIC_KEY") from None
++            if not isinstance(key, RSAPublicKey):
++                raise SystemExit("POKEBOTS_INTEGRATION_PUBLIC_KEY must be an RSA public key")
++            self.key = key
++
++    async def verify_token(self, token: str) -> AccessToken | None:
++        if not claims_pokebots_issuer(token):
++            return await self.legacy.verify_token(token)
++        if self.key is None:
++            return None
++        try:
++            claims = jwt.decode(
++                token,
++                self.key,
++                algorithms=["RS256"],
++                issuer=POKEBOTS_ISSUER,
++                audience="rooms",
++                options={
++                    "require": ["iss", "aud", "sub", "iat", "exp", "scope"],
++                    "strict_aud": True,
++                    "verify_iat": False,
++                    "verify_exp": False,
++                },
++            )
++        except (jwt.PyJWTError, ValueError, TypeError, OverflowError):
++            return None
++
++        sub, iat, exp = claims["sub"], claims["iat"], claims["exp"]
++        if (
++            not isinstance(sub, str)
++            or not POKEBOTS_SUBJECT.fullmatch(sub)
++            or claims["scope"] != "integration:use"
++            or type(iat) is not int
++            or type(exp) is not int
++            or not 0 <= iat <= time.time() < exp <= (1 << 53) - 1
++            or exp - iat > 300
++        ):
++            return None
++
++        linked = claims.get("linked_workos_sub")
++        if "linked_workos_sub" in claims:
++            if (
++                not isinstance(linked, str)
++                or not WORKOS_SUBJECT.fullmatch(linked)
++                or not isinstance(self.legacy, WorkOSUserVerifier)
++            ):
++                return None
++            identity = await self.legacy.lookup(linked)
++            if identity is None:
++                return None
++        else:
++            identity = {"sub": sub, "email": "", "name": "Pokebots user"}
++
++        return AccessToken(
++            token=token,
++            client_id="pokebots",
++            scopes=["integration:use"],
++            expires_at=exp,
++            claims=identity,
++        )
++
++
++def user_verifier(settings: Settings) -> TokenVerifier:
++    return IntegrationVerifier(legacy_user_verifier(settings), settings.pokebots_integration_public_key)
+ 
+ 
+ def build_auth(
+diff --git a/rooms/config.py b/rooms/config.py
+--- a/rooms/config.py
++++ b/rooms/config.py
+@@ -36,6 +36,7 @@
+     host: str = "0.0.0.0"
+     port: int = 8080
+     log_level: str = "INFO"
++    pokebots_integration_public_key: str = ""
+ 
+     @property
+     def mcp_url(self) -> str:
+@@ -57,6 +58,7 @@
+             raise SystemExit(f"unknown AUTH_MODE {mode!r}; use 'workos' or 'dev'")
+         s = cls(
+             auth_mode=mode,
++            pokebots_integration_public_key=os.getenv("POKEBOTS_INTEGRATION_PUBLIC_KEY", ""),
+             base_url=os.getenv("MCP_BASE_URL", "http://localhost:8080").strip().rstrip("/"),
+             authkit_domain=os.getenv("AUTHKIT_DOMAIN", "").strip().rstrip("/"),
+             workos_api_key=os.getenv("WORKOS_API_KEY", "").strip(),
+diff --git a/rooms/store.py b/rooms/store.py
+--- a/rooms/store.py
++++ b/rooms/store.py
+@@ -817,7 +817,7 @@
+         )
+         c.execute("DELETE FROM join_requests WHERE room_id = ? AND user_id = ?", (room_id, user_id))
+         c.execute(
+-            "DELETE FROM email_invites WHERE room_id = ? AND email = (SELECT email FROM users WHERE id = ?)",
++            "DELETE FROM email_invites WHERE room_id = ? AND email = (SELECT email FROM users WHERE id = ? AND email <> '')",
+             (room_id, user_id),
+         )
+ 
+@@ -937,7 +937,7 @@
+ 
+     def _email_invite_for(self, c: sqlite3.Connection, user_id: str, room_id: str) -> dict[str, Any] | None:
+         r = c.execute(
+-            "SELECT e.* FROM email_invites e JOIN users u ON u.email = e.email"
++            "SELECT e.* FROM email_invites e JOIN users u ON u.email = e.email AND u.email <> ''"
+             " WHERE u.id = ? AND e.room_id = ? AND e.expires_at > ?",
+             (user_id, room_id, self.now()),
+         ).fetchone()
+@@ -993,7 +993,7 @@
+         """Rooms that invited this person's email and that they are not in yet."""
+         rows = self.db.all(
+             "SELECT e.id, e.room_id, r.name AS room_name, e.invited_by, w.name AS inviter, e.created_at"
+-            " FROM email_invites e JOIN users u ON u.email = e.email JOIN rooms r ON r.id = e.room_id"
++            " FROM email_invites e JOIN users u ON u.email = e.email AND u.email <> '' JOIN rooms r ON r.id = e.room_id"
+             " JOIN users w ON w.id = e.invited_by"
+             " WHERE u.id = ? AND e.expires_at > ?"
+             " AND NOT EXISTS (SELECT 1 FROM members m WHERE m.room_id = e.room_id AND m.user_id = u.id)"
+@@ -1004,7 +1004,7 @@
+ 
+     def _my_email_invite(self, c: sqlite3.Connection, user_id: str, invite_id: int) -> dict[str, Any]:
+         r = c.execute(
+-            "SELECT e.* FROM email_invites e JOIN users u ON u.email = e.email"
++            "SELECT e.* FROM email_invites e JOIN users u ON u.email = e.email AND u.email <> ''"
+             " WHERE e.id = ? AND u.id = ? AND e.expires_at > ?",
+             (int(invite_id), user_id, self.now()),
+         ).fetchone()
+diff --git a/rooms/tools.py b/rooms/tools.py
+--- a/rooms/tools.py
++++ b/rooms/tools.py
+@@ -339,8 +339,8 @@
+         token = get_access_token()
+         claims = (token.claims or {}) if token else {}
+         sub = str(claims.get("sub") or "")
+-        email = str(claims.get("email") or "")
+-        if not sub or not email:
++        email = claims.get("email")
++        if not sub or not isinstance(email, str):
+             raise ToolError("not signed in")
+         return store.ensure_user(sub, email, str(claims.get("name") or ""))
+ 
+diff --git a/tests/conftest.py b/tests/conftest.py
+--- a/tests/conftest.py
++++ b/tests/conftest.py
+@@ -7,6 +7,7 @@
+ import sqlite3
+ import threading
+ import time
++from contextlib import contextmanager
+ from dataclasses import dataclass
+ from pathlib import Path
+ from typing import Any
+@@ -125,6 +126,12 @@
+         cookie_secure=False,
+         log_level="WARNING",
+     )
++    with run_live(settings, port) as server:
++        yield server
++
++
++@contextmanager
++def run_live(settings: Settings, port: int):
+     mcp = build_server(settings)
+     config = uvicorn.Config(
+         mcp.http_app(), host="127.0.0.1", port=port, log_level="warning", timeout_graceful_shutdown=1
+@@ -139,9 +146,11 @@
+         time.sleep(0.05)
+     # Rate limits get their own test; keep them out of the way elsewhere.
+     mcp.rooms_app.store.limits = {k: (100_000, w) for k, (_, w) in mcp.rooms_app.store.limits.items()}
+-    yield Live(url=url, app=mcp.rooms_app, db_path=db_path)
+-    server.should_exit = True
+-    thread.join(timeout=5)
++    try:
++        yield Live(url=settings.base_url, app=mcp.rooms_app, db_path=settings.db_path)
++    finally:
++        server.should_exit = True
++        thread.join(timeout=5)
+ 
+ 
+ async def make_room(live: Live, owner: str, name: str = "Test room", notice: str = "") -> str:
+diff --git a/tests/test_pokebots_integration.py b/tests/test_pokebots_integration.py
+new file mode 100644
+--- /dev/null
++++ b/tests/test_pokebots_integration.py
+@@ -0,0 +1,82 @@
++from __future__ import annotations
++
++import time
++
++import httpx
++import jwt
++from fastmcp import Client
++from fastmcp.client.auth import BearerAuth
++from fastmcp.server.auth.providers.jwt import RSAKeyPair
++
++from conftest import _free_port, run_live
++from rooms import auth
++from rooms.config import Settings
++from test_wake_and_auth import AUD, ISS, _jwt_setup
++
++
++async def test_pokebots_rest_and_mcp(tmp_path, monkeypatch):
++    integration_keys = RSAKeyPair.generate()
++    workos_keys, _, workos, lookups = _jwt_setup()
++    monkeypatch.setattr(auth, "legacy_user_verifier", lambda _: workos)
++    port = _free_port()
++    settings = Settings(
++        base_url=f"http://127.0.0.1:{port}",
++        authkit_domain=ISS,
++        db_path=str(tmp_path / "rooms.db"),
++        pokebots_integration_public_key=integration_keys.public_key.replace("\n", "\\n"),
++    )
++    now = int(time.time())
++    issuer = "urn:pokebots:integrations"
++    subject = "pokebots:account_1"
++
++    def token(**overrides):
++        claims = dict(
++            iss=issuer, aud="rooms", sub=subject, iat=now, exp=now + 120,
++            scope="integration:use", email="ana@example.com",
++        )
++        claims.update(overrides)
++        return jwt.encode(claims, integration_keys.private_key.get_secret_value(), algorithm="RS256")
++
++    with run_live(settings, port) as live:
++        async with httpx.AsyncClient(base_url=live.url + "/api/v1") as rest:
++            workos_token = workos_keys.create_token(subject="user_01", issuer=ISS, audience=AUD)
++            rest.headers["Authorization"] = f"Bearer {workos_token}"
++            legacy = await rest.post("/rooms", json={"name": "Legacy room"})
++            assert legacy.status_code == 200
++            legacy_id = legacy.json()["room"]["id"]
++            store = live.app.store
++            store.ensure_user("user_owner", "owner@example.com", "Owner")
++            invite_room = store.create_room("user_owner", "Invite room")
++            store.invite_email("user_owner", invite_room["id"], "ana@example.com")
++            native_token = token()
++            rest.headers["Authorization"] = f"Bearer {native_token}"
++            native = await rest.post("/rooms", json={"name": "Native room"})
++            assert native.status_code == 200
++            native_id = native.json()["room"]["id"]
++            assert (await rest.get(f"/rooms/{native_id}")).status_code == 200
++            assert (await rest.get(f"/rooms/{legacy_id}")).status_code == 404
++            assert live.app.store.my_email_invites(subject) == []
++            assert live.app.store.get_user(subject)["email"] == ""
++
++            async with Client(live.url + "/mcp", auth=BearerAuth(native_token)) as mcp:
++                listing = await mcp.call_tool("rooms_list")
++                assert [room["id"] for room in listing.structured_content["rooms"]] == [native_id]
++
++            linked = token(linked_workos_sub="user_01")
++            rest.headers["Authorization"] = f"Bearer {linked}"
++            assert (await rest.get(f"/rooms/{legacy_id}")).status_code == 200
++            assert (await rest.get(f"/rooms/{native_id}")).status_code == 404
++            async with Client(live.url + "/mcp", auth=BearerAuth(linked)) as mcp:
++                listing = await mcp.call_tool("rooms_list")
++                assert [room["id"] for room in listing.structured_content["rooms"]] == [legacy_id]
++
++            for bad in [
++                token(aud="other"), token(aud=["rooms"]), token(iss="other"),
++                token(sub="user_01"), token(iat=True), token(iat=now + 60),
++                token(exp=str(now + 120)), token(exp=now + 301), token(exp=now),
++                token(scope="integration:use extra"), token(linked_workos_sub="user_bad-id"),
++                jwt.encode({"iss": issuer}, "test-key" * 5, algorithm="HS256"),
++            ]:
++                rest.headers["Authorization"] = f"Bearer {bad}"
++                assert (await rest.get("/rooms")).status_code == 401
++            assert len(lookups) == 1
