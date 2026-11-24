@@ -78,6 +78,7 @@ import { FEEDBACK_WITHDRAW_CODECS } from "./feedback-withdraw-v1";
 import { FOCUS_USE_CODECS } from "./focus-use-v1";
 import { GITHUB_SKILLS_CODECS } from "./github-skills-v1";
 import { HERMES_IMPORT_CODECS } from "./hermes-import-v1";
+import { HOME_AGENT_RULES_CODECS } from "./home-agent-rules-v1";
 import { HOST_ADMIN_CODECS } from "./host-admin-v1";
 import { HOST_APPEARANCE_CODECS } from "./host-appearance-v1";
 import { HOST_KEY_ROTATION_CODECS } from "./host-key-rotation-v1";
@@ -263,6 +264,7 @@ const CODECS: ReadonlyMap<string, OptionalRouteCodec> = new Map([
   ...ROUTINES_ONCE_CODECS,
   ...ROUTINE_RUN_COMMAND_CODECS,
   ...CLAUDE_USER_SETUP_CODECS,
+  ...HOME_AGENT_RULES_CODECS,
   ...CLAUDE_AI_TOOLS_CODECS,
   ...ARTIFACT_REQUEST_CODECS,
   ...CLAUDE_COMPACT_WINDOW_CODECS,
