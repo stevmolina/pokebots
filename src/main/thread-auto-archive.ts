@@ -20,7 +20,7 @@ import { PreferenceStore } from "./preference-file";
 const logger = createOpenBotLogger("thread-auto-archive");
 
 /** How often the host looks for side threads to archive. */
-export const THREAD_AUTO_ARCHIVE_INTERVAL_MS = 5 * 60_000;
+const THREAD_AUTO_ARCHIVE_INTERVAL_MS = 5 * 60_000;
 /** The first sweep waits for the start of the agents. */
 const FIRST_SWEEP_DELAY_MS = 60_000;
 const DAY_MS = 24 * 60 * 60_000;
