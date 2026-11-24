@@ -330,6 +330,7 @@ import { HostedServerStartRetry } from "./hosted-server-start-retry";
 import { HostedSiteDesktopService } from "./hosted-site-service";
 import { IdleRestart } from "./idle-restart";
 import { loadIngressQueueKey } from "./ingress-queue-key";
+import { createHomeAgentRulesControl, type HomeAgentRulesControl } from "./home-agent-rules-preference-store";
 import { InstanceTransferService } from "./instance-transfer-service";
 import { InterfaceSizeService } from "./interface-size-service";
 import { prepareToolRuntimeForTest } from "./ipc/mcp-server-handlers";
@@ -840,6 +841,7 @@ export interface ApplicationServices {
   serverPersonality: ServerPersonalityPreferenceStore;
   promptCacheTtl: PromptCacheTtlPreferenceStore;
   claudeUserSetup: ClaudeUserSetupControl;
+  homeAgentRules: HomeAgentRulesControl;
   claudeAiTools: ClaudeAiToolsControl;
   claudeCompactWindow: ClaudeCompactWindowControl;
   providerEnvironment: ProviderEnvironmentControl;
@@ -1669,6 +1671,7 @@ export async function createApplicationServices({
   const claudeUserSetup = createClaudeUserSetupPreferenceStore(
     join(app.getPath("userData"), CLAUDE_USER_SETUP_PREFERENCE_FILE),
   );
+  const homeAgentRules = createHomeAgentRulesControl(join(app.getPath("userData"), "openbot-home-agent-rules-v1.json"));
   const claudeAiTools = createClaudeAiToolsPreferenceStore(
     join(app.getPath("userData"), CLAUDE_AI_TOOLS_PREFERENCE_FILE),
   );
@@ -1720,6 +1723,7 @@ export async function createApplicationServices({
       serverPersonality.load(),
       promptCacheTtl.load(),
       claudeUserSetup.load(),
+      homeAgentRules.load(),
       claudeAiTools.load(),
       crmPreference.load(),
       claudeCompactWindow.load(),
@@ -2542,6 +2546,7 @@ export async function createApplicationServices({
     // Only a dev build leads with the OpenCode development model; a packaged app keeps the
     // built-in default.
     developmentDefaults: appVariant === "dev",
+    homeAgentRules: homeAgentRules.preference,
     credentials: {
       apiKey: (provider) => providerCredentials.get(provider),
       accountKeys: {
@@ -3934,6 +3939,7 @@ export async function createApplicationServices({
       browsingMemory,
       promptCacheTtl,
       claudeUserSetup: claudeUserSetupSetting,
+      homeAgentRules,
       claudeAiTools: claudeAiToolsSetting,
       claudeCompactWindow: claudeCompactWindowSetting,
       providerEnvironment: providerEnvironmentSetting,
@@ -5121,6 +5127,7 @@ export async function createApplicationServices({
     serverPersonality,
     promptCacheTtl,
     claudeUserSetup: claudeUserSetupSetting,
+    homeAgentRules,
     claudeAiTools: claudeAiToolsSetting,
     claudeCompactWindow: claudeCompactWindowSetting,
     providerEnvironment: providerEnvironmentSetting,

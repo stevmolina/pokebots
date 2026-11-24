@@ -1,3 +1,4 @@
+import type { HomeAgentRulesPreference } from "@openbot/contracts/ipc";
 import { createHash, randomUUID } from "node:crypto";
 import { EventEmitter } from "node:events";
 import { readFile } from "node:fs/promises";
@@ -405,6 +406,7 @@ interface AgentServiceEvents {
 }
 
 export interface AgentServiceOptions {
+  homeAgentRules?: () => HomeAgentRulesPreference;
   store: AgentStore;
   mailbox: MailboxStore;
   browser: AgentBrowserHost;
@@ -1501,6 +1503,7 @@ export class AgentService extends EventEmitter<AgentServiceEvents> {
       hasTakeover: (agentId, threadId, tabId) => this.#attention.browserTakeoverBlocks(agentId, threadId, tabId),
     });
     this.#threads = new ThreadLifecycle({
+      ...(options.homeAgentRules ? { homeAgentRules: options.homeAgentRules } : {}),
       store,
       mailbox,
       conversation: this.#conversation,

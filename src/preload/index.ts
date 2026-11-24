@@ -100,6 +100,7 @@ import {
   type ServerSummary,
   type Untyped,
 } from "@openbot/contracts/ipc";
+import { decodeHomeAgentRulesFromMain } from "./home-agent-rules-decoding";
 import {
   decodeAgentWebhookSecret,
   decodeEventActivity,
@@ -1382,6 +1383,8 @@ const openbotApi: OpenBotDesktopApi = {
     getPromptCacheTtl: decodePromptCacheTtlSetting,
     setPromptCacheTtl: decodePromptCacheTtlSetting,
     getClaudeUserSetup: decodeClaudeUserSetupSetting,
+    getHomeAgentRules: decodeHomeAgentRulesFromMain,
+    setHomeAgentRules: decodeHomeAgentRulesFromMain,
     setClaudeUserSetup: decodeClaudeUserSetupSetting,
     getClaudeAiTools: decodeClaudeAiToolsSetting,
     setClaudeAiTools: decodeClaudeAiToolsSetting,

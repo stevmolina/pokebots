@@ -109,6 +109,7 @@ import { FOCUS_USE_CAPABILITY } from "./focus-use-v1";
 import { GITHUB_SKILLS_CAPABILITY } from "./github-skills-v1";
 import { HERMES_IMPORT_CAPABILITY } from "./hermes-import-v1";
 import { TEAM_HISTORY_EXTENT_CAPABILITY } from "./history-extent-v1";
+import { HOME_AGENT_RULES_CAPABILITY } from "./home-agent-rules-v1";
 import { HOST_ADMIN_CAPABILITY } from "./host-admin-v1";
 import { HOST_APPEARANCE_CAPABILITY } from "./host-appearance-v1";
 import { HOST_KEY_ROTATION_CAPABILITY } from "./host-key-rotation-v1";
@@ -408,6 +409,7 @@ export {
   EVENTS_CAPABILITY,
   FEEDBACK_WITHDRAW_CAPABILITY,
   FOCUS_USE_CAPABILITY,
+  HOME_AGENT_RULES_CAPABILITY,
   HOST_ADMIN_CAPABILITY,
   HOST_APPEARANCE_CAPABILITY,
   HOST_KEY_ROTATION_CAPABILITY,
@@ -852,6 +854,7 @@ const TEAM_CAPABILITY_REGISTRY = [
   [BROWSER_COLOR_SCHEME_CAPABILITY, POKEBOTS],
   [COMPACT_RPC_CAPABILITY, POKEBOTS],
   [AGENT_TASK_SUBAGENTS_CAPABILITY, POKEBOTS],
+  [HOME_AGENT_RULES_CAPABILITY, POKEBOTS],
 ] as const satisfies readonly (readonly [string, TeamCapabilityPlacement])[];
 
 export const TEAM_CURRENT_CAPABILITIES = TEAM_CAPABILITY_REGISTRY.map(([capability]) => capability);

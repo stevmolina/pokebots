@@ -27,6 +27,8 @@ import {
   decodeHostWhatsAppOverview,
   decodeServerAuditLog,
   type HiddenAgentsSnapshot,
+  type HomeAgentRulesPreference,
+  type HomeAgentRulesSetting,
   type HostDiscordAccessInput,
   type HostSetDiscordAccessInput,
   isAgentColors,
@@ -89,6 +91,10 @@ import { CUSTOM_PROVIDER_EDIT_ROUTES } from "@openbot/contracts/team-protocol/cu
 import { CUSTOM_PROVIDER_HARNESS_CHOICE_ROUTES } from "@openbot/contracts/team-protocol/custom-provider-harness-choice-v1";
 import type { CUSTOM_PROVIDER_HARNESS_ROUTES } from "@openbot/contracts/team-protocol/custom-provider-harness-v1";
 import { DISCORD_ACCESS_ROUTES } from "@openbot/contracts/team-protocol/discord-access-v1";
+import {
+  decodeHomeAgentRulesResponse,
+  HOME_AGENT_RULES_ROUTES,
+} from "@openbot/contracts/team-protocol/home-agent-rules-v1";
 import { HOST_APPEARANCE_ROUTES, type ServerAppearance } from "@openbot/contracts/team-protocol/host-appearance-v1";
 import { HOST_KEY_ROTATION_ROUTES } from "@openbot/contracts/team-protocol/host-key-rotation-v1";
 import { HOST_MEMBER_UPDATE_ROUTES } from "@openbot/contracts/team-protocol/host-member-update-v1";
@@ -1073,6 +1079,26 @@ export function setHostClaudeCompactWindow(
 ): Effect.Effect<ClaudeCompactWindowSetting, TeamAdminRequestError> {
   return adminCall(() =>
     request("POST", CLAUDE_COMPACT_WINDOW_ROUTES.update, decodeClaudeCompactWindowResponse, { tokens }),
+  );
+}
+
+/** `home-agent-rules-v1`: host opt-in and selected `~/.agents/rules` files for all providers. */
+export function getHostHomeAgentRules(
+  request: TeamApiRequest,
+): Effect.Effect<HomeAgentRulesSetting, TeamAdminRequestError> {
+  return adminCall(() => request("POST", HOME_AGENT_RULES_ROUTES.settings, decodeHomeAgentRulesResponse, {}));
+}
+
+/** `home-agent-rules-v1`: saves the host opt-in and selected `~/.agents/rules` file names. */
+export function setHostHomeAgentRules(
+  request: TeamApiRequest,
+  preference: HomeAgentRulesPreference,
+): Effect.Effect<HomeAgentRulesSetting, TeamAdminRequestError> {
+  return adminCall(() =>
+    request("POST", HOME_AGENT_RULES_ROUTES.update, decodeHomeAgentRulesResponse, {
+      enabled: preference.enabled,
+      files: [...preference.files],
+    }),
   );
 }
 

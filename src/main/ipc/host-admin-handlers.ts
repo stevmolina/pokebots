@@ -135,6 +135,13 @@ import type { BrowsingMemoryPreferenceStore } from "../browsing-memory-preferenc
 import type { ClaudeAiToolsControl } from "../claude-ai-tools-preference-store";
 import type { ClaudeCompactWindowControl } from "../claude-compact-window-preference-store";
 import type { ClaudeUserSetupControl } from "../claude-user-setup-preference-store";
+import type { HomeAgentRulesControl } from "../home-agent-rules-preference-store";
+import { type HomeAgentRulesPreference, parseHomeAgentRulesPreference } from "@openbot/contracts/ipc";
+import {
+  decodeHomeAgentRulesResponse,
+  HOME_AGENT_RULES_CAPABILITY,
+  HOME_AGENT_RULES_ROUTES,
+} from "@openbot/contracts/team-protocol/home-agent-rules-v1";
 import type { HostService } from "../host-service";
 import type { HostTurnLimitsPreferenceStore } from "../host-turn-limits-preference-store";
 import type { MachineAlertMonitor } from "../machine-alerts";
@@ -184,6 +191,7 @@ interface HostAdminIpcDependencies {
   machineAlerts: Pick<MachineAlertMonitor, "alerts" | "setAlerts" | "canBeResponsible">;
   promptCacheTtl: Pick<PromptCacheTtlPreferenceStore, "get" | "set">;
   claudeUserSetup: ClaudeUserSetupControl;
+  homeAgentRules: HomeAgentRulesControl;
   claudeAiTools: ClaudeAiToolsControl;
   claudeCompactWindow: ClaudeCompactWindowControl;
   providerEnvironment: Pick<ProviderEnvironmentControl, "get" | "set">;
@@ -216,6 +224,7 @@ export function hostAdminIpcHandlers({
   machineAlerts,
   promptCacheTtl,
   claudeUserSetup,
+  homeAgentRules,
   claudeAiTools,
   claudeCompactWindow,
   providerEnvironment,
@@ -283,6 +292,14 @@ export function hostAdminIpcHandlers({
       remoteServers.request(serverId, route, decodePromptCacheTtlSetting, { method: "POST", body }),
     );
   }
+  function remoteHomeAgentRules(serverId: string, route: string, body: Partial<HomeAgentRulesPreference>) {
+    if (!remoteServers.supportsCapability(serverId, HOME_AGENT_RULES_CAPABILITY))
+      throw new Error(sourceText("error.team.homeAgentRulesUnsupported"));
+    return runCauseEffect(
+      remoteServers.request(serverId, route, decodeHomeAgentRulesResponse, { method: "POST", body }),
+    );
+  }
+
   function remoteClaudeUserSetup(serverId: string, route: string, body: { enabled?: boolean }) {
     if (!remoteServers.supportsCapability(serverId, CLAUDE_USER_SETUP_CAPABILITY))
       throw new Error(sourceText("error.team.claudeUserSetupUnsupported"));
@@ -556,6 +573,14 @@ export function hostAdminIpcHandlers({
       setPromptCacheTtl: scopedHandler(parsePromptCacheTtl, {
         local: (ttl) => runCauseEffect(promptCacheTtl.set(ttl)),
         remote: (ttl, serverId) => remotePromptCacheTtl(serverId, PROMPT_CACHE_TTL_ROUTES.update, { ttl }),
+      }),
+      getHomeAgentRules: scopedQueryHandler({
+        local: () => runCauseEffect(homeAgentRules.get()),
+        remote: (serverId) => remoteHomeAgentRules(serverId, HOME_AGENT_RULES_ROUTES.settings, {}),
+      }),
+      setHomeAgentRules: scopedHandler(parseHomeAgentRulesPreference, {
+        local: (preference) => runCauseEffect(homeAgentRules.set(preference)),
+        remote: (preference, serverId) => remoteHomeAgentRules(serverId, HOME_AGENT_RULES_ROUTES.update, preference),
       }),
       getClaudeUserSetup: scopedQueryHandler({
         local: () => claudeUserSetup.get(),
