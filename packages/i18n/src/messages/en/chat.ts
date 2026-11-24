@@ -496,6 +496,7 @@ export const messages = defineMessages("chat", {
   "chat.computerLiveView.title": "Cloud computer",
   "chat.computerLiveView.subtitle": "Machine {id}",
   "chat.computerLiveView.open": "Open live view",
+  "chat.computerLiveView.openInPanel": "Open in side panel",
   "chat.computerLiveView.notFound":
     "You cannot open this live view. The machine is gone, or another person's account started it.",
   "chat.computerLiveView.failed": "Could not open the live view. Try again, or open it from Machines.",

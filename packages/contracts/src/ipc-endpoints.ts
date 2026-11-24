@@ -866,6 +866,9 @@ export const IPC_ENDPOINTS = {
     // A native menu item of a keyboard shortcut that the renderer owns, such as New Chat. The item
     // only shows the key; a click sends the command to the focused window.
     runShortcut: event<AppShortcutCommand>()("app:run-shortcut"),
+    // "Open Link in Side Panel" of the native menu of a chat link. Main sends the http or https address
+    // to the window, and its open chat shows the page in the built-in browser.
+    openLinkInPanel: event<string>()("app:open-link-in-panel"),
     openExternal: request<ExternalDestination, void>()("app:open-external"),
     // Read only. The social toast asks for it to know how long and how much the user used OpenBot.
     getSentMessageStats: request<undefined, SentMessageStats>()("app:get-sent-message-stats"),
