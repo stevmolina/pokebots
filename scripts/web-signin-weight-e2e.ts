@@ -178,8 +178,8 @@ async function throttled(bytes: number): Promise<void> {
   await new Promise((done) => setTimeout(done, linkFreeAt - Date.now()));
 }
 
-async function readBody(request: IncomingMessage): Promise<Blob | undefined> {
-  if (request.method === "GET" || request.method === "HEAD") return undefined;
+async function readBody(request: IncomingMessage): Promise<Blob | null> {
+  if (request.method === "GET" || request.method === "HEAD") return null;
   const chunks: Uint8Array<ArrayBuffer>[] = [];
   for await (const chunk of request) chunks.push(new Uint8Array(Buffer.from(chunk)));
   return new Blob(chunks);
@@ -201,7 +201,7 @@ async function forward(request: IncomingMessage, response: ServerResponse, upstr
     else headers.set(name, Array.isArray(value) ? value.join(", ") : value);
   }
   const answer = await fetch(target, {
-    method: request.method,
+    method: request.method ?? "GET",
     headers,
     body: await readBody(request),
     redirect: "manual",

@@ -49,7 +49,7 @@ function SidebarChatRows(rowsProps: {
   chats: readonly SidebarChatItem[];
   compact?: boolean | undefined;
   card?: boolean | undefined;
-  note?: (chat: SidebarChatItem) => string | undefined;
+  note?: ((chat: SidebarChatItem) => string | undefined) | undefined;
 }) {
   return (
     <div

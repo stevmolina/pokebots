@@ -51,7 +51,7 @@ export function SidebarAgentContextMenu(menuProps: {
   pinned: boolean;
   userHidden?: boolean;
   /** Set on a pinned agent that is not the tile at the top: the item moves it before the tile's agent. */
-  mainAgentId?: string;
+  mainAgentId?: string | undefined;
 }) {
   const { chatPinnedItems, customSectionById, openDelete, props, snoozeAgent, snoozedAgents, unsnoozeAgent } =
     useSidebarScope();
