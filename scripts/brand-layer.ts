@@ -318,8 +318,8 @@ export function brandModule(path: string, code: string, settings: BrandSettings)
 
 /**
  * Statements that set the account service of a branded build when the start did not. They go before
- * the imports of `src/main/index.ts`. Imports run first, but no imported module reads these
- * variables when it loads: `index.ts` and the services it builds read them later.
+ * the imports of `src/main/index.ts`. The first import resolves explicit aliases before these
+ * statements run. The endpoint readers run later.
  */
 function accountDefaults(settings: BrandSettings): string {
   const lines: string[] = [];
