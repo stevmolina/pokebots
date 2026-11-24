@@ -933,12 +933,35 @@ export class RemoteServerManager extends EventEmitter<RemoteServerEvents> {
   ) {
     this.#appFocused = focused;
     this.#syncFocusUse();
+    // Focus needs a user, so the computer is awake also when no wake event came.
+    if (focused && this.#events.suspended) yield* this.wake();
     yield* this.#events.setAppFocused(focused);
   }).bind(this);
 
   /** The computer woke from sleep. Each host reconnects at once instead of after its backoff. */
   readonly wake = Effect.fn("RemoteManager.wake")(function* (this: RemoteServerManager) {
+    this.#webrtcTransport?.resume();
     yield* this.#events.wake();
+  }).bind(this);
+
+  /**
+   * The screen unlocked or the user became active. After a sleep this is a wake that the user sees,
+   * also when the wake event did not come. Without a sleep, nothing changes.
+   */
+  readonly wakeIfSuspended = Effect.fn("RemoteManager.wakeIfSuspended")(function* (this: RemoteServerManager) {
+    if (this.#events.suspended) yield* this.wake();
+  }).bind(this);
+
+  /**
+   * The computer goes to sleep. A read in flight fails now, as a dropped connection, and the chat
+   * reads again after the reconnect at wake. Before, a read stayed open through the sleep, and the
+   * deadline did not run, so it ended only at the wake, up to many minutes later. No reconnect
+   * starts in the dark wakes between, when the network is often down.
+   */
+  readonly suspend = Effect.fn("RemoteManager.suspend")(function* (this: RemoteServerManager) {
+    this.#events.suspend();
+    const transport = this.#webrtcTransport;
+    if (transport) yield* transport.suspend().pipe(Effect.ignore);
   }).bind(this);
 
   /** A file on this server was deleted, so a copy of it must not be shown again. */
