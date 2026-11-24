@@ -10,6 +10,7 @@ on:
 permissions:
   contents: read
 
+# `update-auto-merge-prs.yml` also starts this workflow by hand on a PR that it brought up to date.
 # A new PR push cancels the old run. On main, a run always completes, and only the newest commit
 # waits for it: GitHub cancels an older waiting run. Merges come faster than one run takes, so each
 # run tests all the commits merged since the last run, and runner use does not grow with each merge.
