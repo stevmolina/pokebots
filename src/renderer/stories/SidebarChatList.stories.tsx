@@ -6,11 +6,13 @@ import {
 } from "@pokebots/contracts/ipc";
 import type { AvatarMood } from "@pokebots/ui/bloub-avatar";
 import { accountUsageProviderRows } from "@pokebots/ui/features/account/account-usage-view";
+import type { ThreadItem, ThreadStatus } from "@pokebots/ui/features/conversation/threads/thread-types";
 import type { Machine } from "@pokebots/ui/features/servers/MachinesPage";
 import { Sidebar } from "@pokebots/ui/features/sidebar/Sidebar";
 import {
   SIDEBAR_DOCK_FOLDERS_VIEW_ID,
   type SidebarAgentState,
+  type SidebarAgentThreads,
   sidebarSnoozeMarker,
 } from "@pokebots/ui/features/sidebar/sidebar-types";
 import { createSignal } from "solid-js";
@@ -296,6 +298,53 @@ export const FoldersView: Story = {
       `dock:open:${empiricalId}`,
       `dock:open:${SIDEBAR_UNASSIGNED_SECTION_ID}`,
     ],
+  },
+};
+
+function liveThread(id: string, title: string, minutes: number, status: ThreadStatus, unread = 0): ThreadItem {
+  return { id, kind: "side", title, updatedAt: minutesAgo(minutes), status, unread };
+}
+
+/** Side threads of three agents: many live ones, one live and one failed, and only idle ones. */
+const liveThreads: Record<string, ThreadItem[]> = {
+  builder: [
+    liveThread("b-mockups", "Thread instances in the sidebar", 2, { kind: "working" }),
+    liveThread("b-ci", "Merge the CI speed PR", 6, { kind: "waiting", reason: "approval" }),
+    liveThread("b-cloud", "Cloud agent live view", 9, { kind: "working" }),
+    liveThread("b-mobile", "Mobile layout fix", 20, { kind: "idle" }, 1),
+    liveThread("b-video", "Demo video, 45 second cut", 31, { kind: "queued" }),
+    liveThread("b-replies", "Awaiting replies fix", 3 * 60, { kind: "failed" }),
+    liveThread("b-logs", "Side question: deploy logs", 26 * 60, { kind: "idle" }),
+  ],
+  [secondId]: [
+    liveThread("s-files", "Export both MP4 files", 4, { kind: "working" }),
+    liveThread("s-old", "Old storyboard", 2 * 24 * 60, { kind: "idle" }),
+  ],
+  rebates: [
+    liveThread("r-report", "October rebate report", 3 * 60, { kind: "idle" }),
+    liveThread("r-tiers", "Tier file check", 2 * 24 * 60, { kind: "idle" }),
+  ],
+};
+
+const liveAgentThreads: SidebarAgentThreads = {
+  threads: (agentId) => liveThreads[agentId] ?? [],
+  openId: () => undefined,
+  load: fn(),
+  onOpen: fn(),
+  onNew: fn(),
+};
+
+/**
+ * Live threads under their agents: the threads that work, wait or have unread replies show by
+ * themselves, three at a time with a "Show N more" pill. An agent with only idle threads shows none
+ * until its chevron or a hover opens them.
+ */
+export const LiveThreads: Story = {
+  args: {
+    agentStates: { builder: { kind: "working" }, [secondId]: { kind: "working" } },
+    agentMoods: { builder: "working", [secondId]: "working" },
+    channels: [],
+    agentThreads: liveAgentThreads,
   },
 };
 
