@@ -5,8 +5,8 @@
  * builds the workflow has the same cursor while the canvas plays its change.
  */
 
-import type { TeamPresenceMember } from "@openbot/contracts/ipc";
-import { Button, LabelTooltipTrigger } from "@openbot/ui";
+import type { TeamPresenceMember } from "@pokebots/contracts/ipc";
+import { Button, LabelTooltipTrigger } from "@pokebots/ui";
 import { For, Show } from "solid-js";
 import { avatarHeadColor } from "../../bloub-avatar";
 import { useText } from "../../text";

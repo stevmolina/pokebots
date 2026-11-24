@@ -1,5 +1,5 @@
-import { emptyAnalyticsTotals, type HostAnalytics, type MachineMetrics } from "@openbot/contracts/ipc";
-import { UsageMachineMeter } from "@openbot/ui/features/usage/UsageMachineMeter";
+import { emptyAnalyticsTotals, type HostAnalytics, type MachineMetrics } from "@pokebots/contracts/ipc";
+import { UsageMachineMeter } from "@pokebots/ui/features/usage/UsageMachineMeter";
 import { onCleanup } from "solid-js";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";

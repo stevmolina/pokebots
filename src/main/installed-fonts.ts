@@ -1,6 +1,6 @@
 import { execFile } from "node:child_process";
-import { isAppFontFamily } from "@openbot/contracts/app-appearance";
-import { createOpenBotLogger, toLogValue } from "@openbot/logging";
+import { isAppFontFamily } from "@pokebots/contracts/app-appearance";
+import { createOpenBotLogger, toLogValue } from "@pokebots/logging";
 import { Effect, Result, Schema } from "effect";
 
 const logger = createOpenBotLogger("installed-fonts");

@@ -1,5 +1,5 @@
-import { sourceText } from "@openbot/i18n/source";
-import { registerSecretValue } from "@openbot/logging";
+import { sourceText } from "@pokebots/i18n/source";
+import { registerSecretValue } from "@pokebots/logging";
 import { Effect, Redacted } from "effect";
 import { z } from "zod";
 import type { IntegrationCredential } from "../backend/integration-credential";

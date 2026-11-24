@@ -1,6 +1,6 @@
-import { type CrmSettings, DEFAULT_CRM_SETTINGS } from "@openbot/contracts/ipc";
-import { isBoolean, isDynamicRecord } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
+import { type CrmSettings, DEFAULT_CRM_SETTINGS } from "@pokebots/contracts/ipc";
+import { isBoolean, isDynamicRecord } from "@pokebots/contracts/runtime-values";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect } from "effect";
 import { CrmError, type CrmSettingsStore } from "../backend/crm/crm-handle";
 import { PreferenceStore } from "./preference-file";

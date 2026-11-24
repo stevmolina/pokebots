@@ -1,6 +1,6 @@
-import { attachmentFileExtension, attachmentMimeTypeForName } from "@openbot/contracts/attachment-files";
-import { isHtmlPageFile } from "@openbot/contracts/chat-visual";
-import { type AttachmentSummary, filePreviewKindForFile } from "@openbot/contracts/ipc";
+import { attachmentFileExtension, attachmentMimeTypeForName } from "@pokebots/contracts/attachment-files";
+import { isHtmlPageFile } from "@pokebots/contracts/chat-visual";
+import { type AttachmentSummary, filePreviewKindForFile } from "@pokebots/contracts/ipc";
 import type { CodePreviewEntry } from "./code-preview-store";
 
 /** The preview screen kinds that show a whole file. Images, audio and video show in the chat. */

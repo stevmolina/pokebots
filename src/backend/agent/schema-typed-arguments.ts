@@ -1,4 +1,4 @@
-import { type DynamicRecord, isDynamicRecord } from "@openbot/contracts/runtime-values";
+import { type DynamicRecord, isDynamicRecord } from "@pokebots/contracts/runtime-values";
 
 /** What a text value can become: a number, a boolean, null, or a JSON array or object. */
 type TypedText = number | boolean | null | readonly unknown[] | DynamicRecord;

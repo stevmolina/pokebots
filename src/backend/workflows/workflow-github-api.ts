@@ -9,8 +9,8 @@ import type {
   WorkflowGitHubCloseReason,
   WorkflowGitHubEvent,
   WorkflowGitHubRepositoryOptions,
-} from "@openbot/contracts/ipc";
-import type { DynamicRecord } from "@openbot/contracts/runtime-values";
+} from "@pokebots/contracts/ipc";
+import type { DynamicRecord } from "@pokebots/contracts/runtime-values";
 import type { Effect } from "effect";
 
 /** GitHub refuses a longer comment, review or issue text. */

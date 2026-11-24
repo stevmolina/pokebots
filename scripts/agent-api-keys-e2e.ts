@@ -18,9 +18,9 @@ import assert from "node:assert/strict";
 import { lstat, mkdir, mkdtemp, readFile, rm, stat, symlink, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import type { AgentEvent, ConversationSnapshot } from "@openbot/contracts/ipc";
-import { type UiBlockSpec, uiBlockAnswersFromResponse } from "@openbot/contracts/ui-blocks";
-import { redactText } from "@openbot/logging";
+import type { AgentEvent, ConversationSnapshot } from "@pokebots/contracts/ipc";
+import { type UiBlockSpec, uiBlockAnswersFromResponse } from "@pokebots/contracts/ui-blocks";
+import { redactText } from "@pokebots/logging";
 import { Effect } from "effect";
 import { AttentionRegistry, type PromptResponder } from "../src/backend/agent/attention-registry";
 import {

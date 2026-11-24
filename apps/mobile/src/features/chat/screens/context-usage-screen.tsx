@@ -1,4 +1,4 @@
-import type { AgentContextCategory } from "@openbot/contracts/ipc";
+import type { AgentContextCategory } from "@pokebots/contracts/ipc";
 import { useLocalSearchParams } from "expo-router";
 import { Typography } from "heroui-native";
 import { View } from "react-native";

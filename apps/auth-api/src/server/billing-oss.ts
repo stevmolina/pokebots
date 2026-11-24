@@ -1,6 +1,6 @@
-import { isBillingAmount } from "@openbot/contracts/billing";
-import { isEuVatCountry, VAT_SELLER_COUNTRY } from "@openbot/contracts/billing-details";
-import { isOneOf } from "@openbot/contracts/runtime-values";
+import { isBillingAmount } from "@pokebots/contracts/billing";
+import { isEuVatCountry, VAT_SELLER_COUNTRY } from "@pokebots/contracts/billing-details";
+import { isOneOf } from "@pokebots/contracts/runtime-values";
 import { Effect, Option, Schema } from "effect";
 import { type BillingError, BillingOperationError, billingCall } from "./billing-errors";
 import { withoutTax } from "./billing-sales";

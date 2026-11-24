@@ -14,8 +14,8 @@ import type {
   CustomProviderSummary,
   MessagingConnection,
   MessagingPlatform,
-} from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
+} from "@pokebots/contracts/ipc";
+import type { AppTextKey } from "@pokebots/i18n";
 import {
   Alert,
   AlertContent,
@@ -37,7 +37,7 @@ import {
   Text,
   Trash2,
   TriangleAlert,
-} from "@openbot/ui";
+} from "@pokebots/ui";
 import type { JSX } from "@solidjs/web";
 import { For, Match, Show, Switch } from "solid-js";
 import { ProviderModelPicker } from "../../components/ProviderModelPicker";

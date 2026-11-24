@@ -1,5 +1,5 @@
-import type { MarketplaceAgentDetail, MarketplaceAgentRoutine, MarketplaceSkillSummary } from "@openbot/contracts/ipc";
-import { isMarketplaceAgentId, isMarketplaceSkillSlug } from "@openbot/contracts/marketplace-links";
+import type { MarketplaceAgentDetail, MarketplaceAgentRoutine, MarketplaceSkillSummary } from "@pokebots/contracts/ipc";
+import { isMarketplaceAgentId, isMarketplaceSkillSlug } from "@pokebots/contracts/marketplace-links";
 import { createServerFn } from "@tanstack/solid-start";
 import { runApiEffect } from "../server/effect-runtime";
 

@@ -7,7 +7,7 @@
  * data: a value of the wrong shape makes the event match nothing.
  */
 
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import {
   isGitHubRepositoryName,
   WORKFLOW_GITHUB_EVENTS,
@@ -18,7 +18,7 @@ import {
   workflowGitHubEventItemKind,
   workflowGitHubTriggerRepositories,
   workflowListField,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   type DynamicRecord,
   isBoolean,
@@ -26,7 +26,7 @@ import {
   isNumber,
   isOneOf,
   isString,
-} from "@openbot/contracts/runtime-values";
+} from "@pokebots/contracts/runtime-values";
 import { EXTERNAL_EVENT_END, EXTERNAL_EVENT_START } from "../webhook-trigger";
 
 /** The parts of one GitHub event that the triggers, the loop guard and the run text read. */
@@ -109,14 +109,16 @@ export function githubEventFacts(name: string, body: unknown, bot: string | null
   const actor = text(sender?.login);
   if (!actor) return null;
   const action = text(body.action);
-  const botLogin = bot ? `${bot}[bot]`.toLowerCase() : null;
+  const slugs = bot ? botSlugs(bot) : [];
+  const botLogins = slugs.map((slug) => `${slug}[bot]`.toLowerCase());
   const base = {
     repository: fullName,
     actor,
     actorIsBot: isBotAccount(sender),
-    causedByBot: botLogin !== null && actor.toLowerCase() === botLogin,
+    causedByBot: botLogins.includes(actor.toLowerCase()),
   };
-  const mentions = (value: unknown) => bot !== null && isString(value) && mentionPattern(bot).test(value);
+  const mentionRegExp = slugs.length > 0 ? mentionPattern(slugs) : null;
+  const mentions = (value: unknown) => mentionRegExp !== null && isString(value) && mentionRegExp.test(value);
 
   if (name === "issues" || name === "pull_request") {
     const pullRequest = name === "pull_request";
@@ -388,9 +390,22 @@ function isBotAccount(user: unknown): boolean {
   return record(user)?.type === "Bot";
 }
 
-function mentionPattern(bot: string): RegExp {
-  const escaped = bot.replace(/[.*+?^${}()|[\]\\]/gu, "\\$&");
-  return new RegExp(`(^|[^A-Za-z0-9_/-])@${escaped}(?![A-Za-z0-9_-])`, "iu");
+/**
+ * The slug of the earlier GitHub App, `openbotgit`. A workflow that people wrote for it, with a mention
+ * or an assignment, and an item or a comment of that bot in a loop, still count after the switch to the
+ * Pokebots app.
+ */
+const LEGACY_GITHUB_APP_SLUGS = ["openbotgit"];
+
+/** The slug of the configured app and the legacy slugs, each once. */
+function botSlugs(bot: string): string[] {
+  const current = bot.toLowerCase();
+  return [current, ...LEGACY_GITHUB_APP_SLUGS.filter((slug) => slug !== current)];
+}
+
+function mentionPattern(slugs: string[]): RegExp {
+  const escaped = slugs.map((slug) => slug.replace(/[.*+?^${}()|[\]\\]/gu, "\\$&")).join("|");
+  return new RegExp(`(^|[^A-Za-z0-9_/-])@(?:${escaped})(?![A-Za-z0-9_-])`, "iu");
 }
 
 /** The data with each string cut to a length that keeps the payload under the limit. */

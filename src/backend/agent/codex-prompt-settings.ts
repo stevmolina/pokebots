@@ -1,5 +1,5 @@
 import { basename, dirname } from "node:path";
-import type { DynamicRecord } from "@openbot/contracts/runtime-values";
+import type { DynamicRecord } from "@pokebots/contracts/runtime-values";
 import { getArray, getRecord, getString, isRecord } from "../protocol";
 
 /**

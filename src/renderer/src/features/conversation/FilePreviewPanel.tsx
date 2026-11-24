@@ -1,4 +1,4 @@
-import SharedFilePreviewPanel from "@openbot/ui/features/conversation/FilePreviewPanel";
+import SharedFilePreviewPanel from "@pokebots/ui/features/conversation/FilePreviewPanel";
 import type { ComponentProps } from "@solidjs/web";
 import { readSidePanelWidth, resetSidePanelWidth, saveSidePanelWidth } from "../../components/side-panel-width";
 

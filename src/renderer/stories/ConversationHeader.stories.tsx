@@ -1,5 +1,5 @@
-import { ConversationHeader } from "@openbot/ui/features/conversation/ConversationHeader";
-import type { PinnedMessageItem } from "@openbot/ui/features/conversation/PinnedMessages";
+import { ConversationHeader } from "@pokebots/ui/features/conversation/ConversationHeader";
+import type { PinnedMessageItem } from "@pokebots/ui/features/conversation/PinnedMessages";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { STORY_AGENT, STORY_AGENT_STATUS, STORY_AGENTS, STORY_MODELS, storyRuntimeSettings } from "./fixtures";

@@ -1,4 +1,4 @@
-import { ProviderLogo } from "@openbot/brand";
+import { ProviderLogo } from "@pokebots/brand";
 import type {
   AccountUsage,
   AccountUsageWindow,
@@ -14,7 +14,7 @@ import type {
   ForeignProviderId,
   ProviderAccountStatus,
   ProviderRuntimeStatus,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   agentProviderCliName,
   agentProviderName,
@@ -26,9 +26,9 @@ import {
   isReasoningEffort,
   PICKER_PROVIDERS,
   providerDisplayName,
-} from "@openbot/contracts/ipc";
-import type { AppTextKey, AppTranslate } from "@openbot/i18n";
-import { planLimitWindowKind, spentUsageWindow } from "@openbot/team-client/plan-limits";
+} from "@pokebots/contracts/ipc";
+import type { AppTextKey, AppTranslate } from "@pokebots/i18n";
+import { planLimitWindowKind, spentUsageWindow } from "@pokebots/team-client/plan-limits";
 import {
   Badge,
   Button,
@@ -52,9 +52,9 @@ import {
   Text,
   Tooltip,
   Zap,
-} from "@openbot/ui";
-import { ContentExitMotion } from "@openbot/ui/menu-motion";
-import { cx } from "@openbot/ui/utils";
+} from "@pokebots/ui";
+import { ContentExitMotion } from "@pokebots/ui/menu-motion";
+import { cx } from "@pokebots/ui/utils";
 import type { JSX } from "@solidjs/web";
 import { createEffect, createMemo, createSignal, For, onSettled, Show, untrack } from "solid-js";
 import { formatUsageReset, usageWindowLabel } from "../features/account/account-usage-view";

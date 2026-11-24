@@ -14,8 +14,8 @@
 // Writes .openbot-build/agent-backdrop-e2e/report.json and screenshots.
 import assert from "node:assert/strict";
 import { resolve } from "node:path";
-import { CHAT_BACKDROP_ITEM_TYPE } from "@openbot/contracts/chat-visual";
-import { translateFor } from "@openbot/i18n";
+import { CHAT_BACKDROP_ITEM_TYPE } from "@pokebots/contracts/chat-visual";
+import { translateFor } from "@pokebots/i18n";
 import type { Page } from "playwright-core";
 import { argument, ChannelClient, connectChannelE2e, queueBusy, waitFor, writeReport } from "./channel-e2e-support";
 

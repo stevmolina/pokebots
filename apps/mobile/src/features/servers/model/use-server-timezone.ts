@@ -1,4 +1,4 @@
-import type { HostTimezoneSettings } from "@openbot/contracts/ipc";
+import type { HostTimezoneSettings } from "@pokebots/contracts/ipc";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useQueryScope } from "@/features/auth/context/mobile-session-context";
 import { useMobileWorkspace, useMobileWorkspaceActions } from "@/features/workspace/context/mobile-workspace-context";

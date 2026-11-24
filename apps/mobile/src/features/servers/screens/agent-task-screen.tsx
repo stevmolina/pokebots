@@ -1,7 +1,7 @@
-import { avatarHeadColor } from "@openbot/brand/bloub-avatar";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import type { AgentTask, RespondToPromptInput } from "@openbot/contracts/ipc";
-import { retryOperationIds } from "@openbot/team-client/retry-operation-id";
+import { avatarHeadColor } from "@pokebots/brand/bloub-avatar";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
+import type { AgentTask, RespondToPromptInput } from "@pokebots/contracts/ipc";
+import { retryOperationIds } from "@pokebots/team-client/retry-operation-id";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import * as Crypto from "expo-crypto";
 import { isLiquidGlassAvailable } from "expo-glass-effect";

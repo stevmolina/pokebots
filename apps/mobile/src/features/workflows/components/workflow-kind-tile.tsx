@@ -1,4 +1,4 @@
-import type { WorkflowNodeKind, WorkflowTriggerType } from "@openbot/contracts/ipc";
+import type { WorkflowNodeKind, WorkflowTriggerType } from "@pokebots/contracts/ipc";
 import type { LucideIcon } from "lucide-react-native";
 import AtSign from "lucide-react-native/icons/at-sign";
 import Bot from "lucide-react-native/icons/bot";

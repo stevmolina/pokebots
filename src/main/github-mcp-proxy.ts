@@ -20,8 +20,8 @@ import {
   ListToolsRequestSchema,
   ReadResourceRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { createOpenBotLogger, toLogValue } from "@openbot/logging";
+import { isDynamicRecord, isString } from "@pokebots/contracts/runtime-values";
+import { createOpenBotLogger, toLogValue } from "@pokebots/logging";
 import { runCauseEffect } from "../backend/effect-boundary";
 import { readJsonBody } from "../backend/local-mcp-bridge";
 import { cutModelText, MCP_RESULT_MORE, MCP_RESULT_TEXT_LIMIT } from "../backend/model-text-limit";
@@ -36,10 +36,16 @@ const MISSING_PERMISSION = "Resource not accessible by integration";
 /** For the agent, which tells the user. GitHub needs `administration: write` to create a repository. */
 const REPOSITORY_CREATION_HINT =
   'OpenBot cannot create repositories for this owner. GitHub needs the "Administration: write" permission of the ' +
-  "OpenBotGit app on that account. An owner of the account installs OpenBotGit there, or approves its pending " +
+  "PokebotsApp on that account. An owner of the account installs PokebotsApp there, or approves its pending " +
   "permission request, in GitHub settings: Applications > Installed GitHub Apps (for an organization, in the " +
   "organization settings). Organization policy can also block repository creation. Tell the user this, and do " +
   "not try another credential. The user can also create the repository on github.com.";
+/** The same call with a sign-in of the earlier GitHub App: installing PokebotsApp does not change that token. */
+const REPOSITORY_CREATION_RECONNECT_HINT =
+  "OpenBot cannot create repositories with this GitHub sign-in, which the earlier GitHub App issued. Tell the " +
+  "user to reconnect GitHub in OpenBot: Marketplace > Apps > GitHub. The new sign-in uses PokebotsApp. Then an " +
+  "owner of the account installs PokebotsApp there, or approves its pending permission request. Do not try " +
+  "another credential. The user can also create the repository on github.com.";
 /** A refusal or a missing item in GitHub's text, which is also how GitHub hides a repository from the app. */
 const NOT_FOUND_OR_REFUSED = /\b40[34]\b|Not Found/u;
 /** A rate limit answer is not about access. */
@@ -58,6 +64,8 @@ export interface GitHubMcpProxyOptions {
   secret: () => string;
   /** The user token, or null while the connection is not active. */
   userToken: () => Effect.Effect<string | null, GitHubOperationError>;
+  /** Whether the user token came from the earlier GitHub App, so that its hints say to reconnect. */
+  userTokenFromOtherApp: () => boolean;
   /** The bot token of `owner/name`, or null when the user token applies. */
   botToken: (owner: string, name: string) => string | null;
   /** Whether the user token can read `owner/name`, or null when that is not known. */
@@ -253,7 +261,8 @@ export class GitHubMcpProxy {
           const result = yield* this.#call(token, (client) =>
             client.callTool(params, undefined, requestOptions(extra.signal)),
           );
-          if (params.name === "create_repository") addRepositoryCreationHint(result);
+          if (params.name === "create_repository")
+            addRepositoryCreationHint(result, token === userToken && this.#options.userTokenFromOtherApp());
           // A bot token exists only where the app is installed, so only a user token call can need the hint.
           const unseen =
             token === userToken &&
@@ -360,12 +369,16 @@ function isRefused(error: unknown): boolean {
 }
 
 /** Explains a refusal that the app's permissions cause, because GitHub's own text does not say what to do. */
-function addRepositoryCreationHint(result: Awaited<ReturnType<Client["callTool"]>>): void {
+function addRepositoryCreationHint(result: Awaited<ReturnType<Client["callTool"]>>, reconnect: boolean): void {
   if (result.isError !== true || !Array.isArray(result.content)) return;
   const refused = result.content.some(
     (item) => isDynamicRecord(item) && isString(item.text) && item.text.includes(MISSING_PERMISSION),
   );
-  if (refused) result.content.push({ type: "text", text: REPOSITORY_CREATION_HINT });
+  if (refused)
+    result.content.push({
+      type: "text",
+      text: reconnect ? REPOSITORY_CREATION_RECONNECT_HINT : REPOSITORY_CREATION_HINT,
+    });
 }
 
 /** An error that can mean that GitHub hides the repository from the app, as GitHub's text says nothing more. */

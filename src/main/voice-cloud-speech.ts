@@ -6,8 +6,8 @@ import {
   type SpeechLanguage,
   VOICE_KEY_PROVIDER_NAMES,
   type XaiSpeechVoice,
-} from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect, Option, Schema } from "effect";
 import { readLimitedBody } from "../backend/limited-body";
 import { VoiceOperationError } from "./voice-model-service";

@@ -5,8 +5,8 @@ import {
   type AppLogoColor,
   DEFAULT_APP_LOGO_COLOR,
   isAppLogoColor,
-} from "@openbot/contracts/app-logo-color";
-import type { MobileTextKey } from "@openbot/i18n/mobile";
+} from "@pokebots/contracts/app-logo-color";
+import type { MobileTextKey } from "@pokebots/i18n/mobile";
 import { type NativeModule, requireOptionalNativeModule } from "expo";
 import { create } from "zustand";
 

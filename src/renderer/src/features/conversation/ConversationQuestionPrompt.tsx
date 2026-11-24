@@ -1,5 +1,5 @@
-import { UI_BLOCK_PREVIEW_EDIT_CAPABILITY } from "@openbot/contracts/team-protocol/ui-block-preview-edit-v1";
-import type { QuestionPromptComposerAnswer } from "@openbot/ui/components/QuestionPromptBubble";
+import { UI_BLOCK_PREVIEW_EDIT_CAPABILITY } from "@pokebots/contracts/team-protocol/ui-block-preview-edit-v1";
+import type { QuestionPromptComposerAnswer } from "@pokebots/ui/components/QuestionPromptBubble";
 import { createMemo, Loading, Show } from "solid-js";
 import { deviceSendShortcut } from "../../send-shortcut-preference";
 import { serverSupportsCapability } from "../servers/server-capabilities";

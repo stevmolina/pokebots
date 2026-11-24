@@ -19,25 +19,25 @@ import { mkdtemp, rm } from "node:fs/promises";
 import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import type { CrmChange, CrmSource, CrmSourceKind } from "@openbot/contracts/ipc";
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
+import type { CrmChange, CrmSource, CrmSourceKind } from "@pokebots/contracts/ipc";
+import { TEAM_API_ROUTES } from "@pokebots/contracts/team-api-routes";
 import {
   TEAM_APP_VERSION_HEADER,
   TEAM_CAPABILITIES_HEADER,
   TEAM_PROTOCOL_VERSION_HEADER,
-} from "@openbot/contracts/team-protocol";
-import { CRM_CODECS, CRM_ROUTES } from "@openbot/contracts/team-protocol/crm-v1";
-import { teamCapabilitiesForProtocol } from "@openbot/contracts/team-protocol/current";
-import { TEAM_PROTOCOL_V9 } from "@openbot/contracts/team-protocol/v9";
-import { sourceText } from "@openbot/i18n/source";
-import { redactText, teeLogLines } from "@openbot/logging";
+} from "@pokebots/contracts/team-protocol";
+import { CRM_CODECS, CRM_ROUTES } from "@pokebots/contracts/team-protocol/crm-v1";
+import { teamCapabilitiesForProtocol } from "@pokebots/contracts/team-protocol/current";
+import { TEAM_PROTOCOL_V9 } from "@pokebots/contracts/team-protocol/v9";
+import { sourceText } from "@pokebots/i18n/source";
+import { redactText, teeLogLines } from "@pokebots/logging";
 import {
   decodeRemoteCrmActivityPage,
   decodeRemoteCrmApplyResult,
   decodeRemoteCrmCustomerPage,
   decodeRemoteCrmOverview,
   decodeRemoteCrmPaymentPage,
-} from "@openbot/team-client/crm-decoding";
+} from "@pokebots/team-client/crm-decoding";
 import { plugin } from "bun";
 import { Effect } from "effect";
 import type { AgentBrowserHost } from "../src/backend/agent/turn-lifecycle";

@@ -15,7 +15,7 @@ import { join } from "node:path";
 import {
   decodeTeamProtocolV2FileChunk,
   decodeTeamProtocolV2FileControlFrame,
-} from "@openbot/contracts/team-protocol/v2";
+} from "@pokebots/contracts/team-protocol/v2";
 import { Effect, Result } from "effect";
 import { RemoteWorkflowError } from "../src/main/remote-service-effects";
 import type { TeamWebRtcBridge } from "../src/main/team-webrtc-bridge";

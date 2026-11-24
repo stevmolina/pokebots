@@ -3,19 +3,19 @@ import {
   eventFilterDraft,
   eventFilterDraftsValid,
   eventFiltersFromDrafts,
-} from "@openbot/contracts/event-filter-value";
+} from "@pokebots/contracts/event-filter-value";
 import type {
   EventFilter,
   EventRoutine,
   EventRoutineOwner,
   RoutineWebhookTrigger,
-} from "@openbot/contracts/ipc-events";
+} from "@pokebots/contracts/ipc-events";
 import {
   RoutineWebhookCard,
   type RoutineWebhookCardProps,
   type RoutineWebhookCardState,
-} from "@openbot/ui/features/conversation/RoutineWebhookCard";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/ui/features/conversation/RoutineWebhookCard";
+import { useText } from "@pokebots/ui/text";
 import { createEffect, createMemo, createStore } from "solid-js";
 import type { EventRoutinesApi } from "./routine-webhooks-api";
 import { agentRoutinesPort } from "./routines-port";

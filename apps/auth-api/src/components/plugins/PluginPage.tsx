@@ -1,4 +1,4 @@
-import { createOpenBotPluginUrl, createWebAppPluginPath, pluginLinkText } from "@openbot/contracts/plugin-links";
+import { createOpenBotPluginUrl, createWebAppPluginPath, pluginLinkText } from "@pokebots/contracts/plugin-links";
 import type { JSX } from "@solidjs/web";
 import { Link } from "@tanstack/solid-router";
 import { For, onSettled, Show } from "solid-js";

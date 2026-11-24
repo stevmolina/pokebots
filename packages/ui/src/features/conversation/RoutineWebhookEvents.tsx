@@ -1,5 +1,5 @@
-import { type EventFilterDraft, eventFilterPointerValid } from "@openbot/contracts/event-filter-value";
-import { Button, ChevronDown, ChevronRight, IconButton, Input, Plus, SlidersHorizontal, Text, X } from "@openbot/ui";
+import { type EventFilterDraft, eventFilterPointerValid } from "@pokebots/contracts/event-filter-value";
+import { Button, ChevronDown, ChevronRight, IconButton, Input, Plus, SlidersHorizontal, Text, X } from "@pokebots/ui";
 import { createSignal, createUniqueId, For, onSettled, Show } from "solid-js";
 import { useText } from "../../text";
 

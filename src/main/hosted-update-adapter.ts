@@ -3,7 +3,7 @@ import { writeFileSync } from "node:fs";
 import { readFile, stat, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { setTimeout as delay } from "node:timers/promises";
-import { isNewerRelease } from "@openbot/contracts/release-version";
+import { isNewerRelease } from "@pokebots/contracts/release-version";
 import type { ProgressInfo, UpdateInfo } from "electron-updater";
 import { fetchLatestLinuxRelease } from "./host-release-service";
 import type { UpdateAdapter, UpdateCancellationToken, UpdateCheckOutcome } from "./update-service";

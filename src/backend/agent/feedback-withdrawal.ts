@@ -3,10 +3,10 @@ import {
   feedbackSentIssue,
   feedbackSentItemType,
   feedbackWithdrawnItemType,
-} from "@openbot/contracts/feedback";
-import type { ConversationMessage, WithdrawFeedbackInput } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger, toLogValue } from "@openbot/logging";
+} from "@pokebots/contracts/feedback";
+import type { ConversationMessage, WithdrawFeedbackInput } from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
+import { createOpenBotLogger, toLogValue } from "@pokebots/logging";
 import { Effect } from "effect";
 import type { AgentStore } from "../agent-store";
 import type { AgentTasks } from "../agent-tasks/agent-tasks";

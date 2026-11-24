@@ -1,8 +1,8 @@
-import type { MarketplaceAgentSummary, MarketplaceSkillSummary } from "@openbot/contracts/ipc";
-import { createMarketplaceShareUrl, type MarketplaceListingLink } from "@openbot/contracts/marketplace-links";
-import type { TranslatedLocale } from "@openbot/i18n";
-import { ShieldCheck } from "@openbot/ui/icons";
-import { TextProvider, useText } from "@openbot/ui/text";
+import type { MarketplaceAgentSummary, MarketplaceSkillSummary } from "@pokebots/contracts/ipc";
+import { createMarketplaceShareUrl, type MarketplaceListingLink } from "@pokebots/contracts/marketplace-links";
+import type { TranslatedLocale } from "@pokebots/i18n";
+import { ShieldCheck } from "@pokebots/ui/icons";
+import { TextProvider, useText } from "@pokebots/ui/text";
 import type { JSX } from "@solidjs/web";
 import { Link } from "@tanstack/solid-router";
 import { createSignal, Loading, lazy, Match, onSettled, Show, Switch } from "solid-js";
@@ -12,7 +12,7 @@ import { SiteHeader } from "../landing/SiteHeader";
 
 // Browser-only, as on the shared agent page: the Worker renders an empty box and the browser draws it.
 const AgentAvatar = lazy(() =>
-  import("@openbot/ui/features/agents/AgentAvatar").then((module) => ({ default: module.AgentAvatar })),
+  import("@pokebots/ui/features/agents/AgentAvatar").then((module) => ({ default: module.AgentAvatar })),
 );
 
 /** The page around every Marketplace screen: the site header and footer, and the catalog of the page's language. */

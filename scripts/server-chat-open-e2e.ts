@@ -22,7 +22,7 @@
 import assert from "node:assert/strict";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { createOpenBotLogger } from "@openbot/logging";
+import { createOpenBotLogger } from "@pokebots/logging";
 import type { Page } from "playwright-core";
 import { argument, WAIT_MS } from "./channel-e2e-support";
 import { type AutomationSession, assertMutationAllowed, connectToDevApp } from "./dev-automation/cdp-client";

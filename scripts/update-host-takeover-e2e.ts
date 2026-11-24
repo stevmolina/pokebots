@@ -12,8 +12,8 @@ import assert from "node:assert/strict";
 import { EventEmitter } from "node:events";
 import { mkdir, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
-import type { UpdateStatus } from "@openbot/contracts/ipc";
-import { createOpenBotLogger } from "@openbot/logging";
+import type { UpdateStatus } from "@pokebots/contracts/ipc";
+import { createOpenBotLogger } from "@pokebots/logging";
 import { Effect } from "effect";
 import type { ProgressInfo, UpdateInfo } from "electron-updater";
 import {

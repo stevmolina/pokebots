@@ -16,40 +16,40 @@ import {
   type ProviderRuntimeStatus,
   type SaveCustomProviderInput,
   type UpdateCustomProviderInput,
-} from "@openbot/contracts/ipc";
-import { Text } from "@openbot/ui";
-import type { ProviderAccountActions } from "@openbot/ui/components/provider-accounts";
-import { servesCustomProvider } from "@openbot/ui/components/provider-row";
-import type { AccountUsageProviderRow } from "@openbot/ui/features/account/account-usage-view";
+} from "@pokebots/contracts/ipc";
+import { Text } from "@pokebots/ui";
+import type { ProviderAccountActions } from "@pokebots/ui/components/provider-accounts";
+import { servesCustomProvider } from "@pokebots/ui/components/provider-row";
+import type { AccountUsageProviderRow } from "@pokebots/ui/features/account/account-usage-view";
 import {
   AcpRegistrySettings,
   type AcpRegistrySettingsApi,
-} from "@openbot/ui/features/custom-providers/AcpRegistrySettings";
+} from "@pokebots/ui/features/custom-providers/AcpRegistrySettings";
 import {
   CustomAgentSettings,
   type CustomAgentSettingsApi,
-} from "@openbot/ui/features/custom-providers/CustomAgentSettings";
-import { CustomProviderDialog } from "@openbot/ui/features/custom-providers/CustomProviderDialog";
-import { CustomProviderPresetDialog } from "@openbot/ui/features/custom-providers/CustomProviderPresetDialog";
-import { savedCustomProviderDraft } from "@openbot/ui/features/custom-providers/custom-provider-form";
-import { localServerProbes, presetSetupProvider } from "@openbot/ui/features/custom-providers/custom-provider-presets";
-import { DetectedProviderSetup } from "@openbot/ui/features/custom-providers/DetectedProviderSetup";
-import { DetectedProviders } from "@openbot/ui/features/custom-providers/DetectedProviders";
+} from "@pokebots/ui/features/custom-providers/CustomAgentSettings";
+import { CustomProviderDialog } from "@pokebots/ui/features/custom-providers/CustomProviderDialog";
+import { CustomProviderPresetDialog } from "@pokebots/ui/features/custom-providers/CustomProviderPresetDialog";
+import { savedCustomProviderDraft } from "@pokebots/ui/features/custom-providers/custom-provider-form";
+import { localServerProbes, presetSetupProvider } from "@pokebots/ui/features/custom-providers/custom-provider-presets";
+import { DetectedProviderSetup } from "@pokebots/ui/features/custom-providers/DetectedProviderSetup";
+import { DetectedProviders } from "@pokebots/ui/features/custom-providers/DetectedProviders";
 import type {
   DetectedProvider,
   DetectedProviderApi,
   ProviderDetection,
-} from "@openbot/ui/features/custom-providers/detected-providers";
+} from "@pokebots/ui/features/custom-providers/detected-providers";
 import {
   ProviderDetectionSettings,
   type ProviderDetectionSettingsValue,
-} from "@openbot/ui/features/custom-providers/ProviderDetectionSettings";
+} from "@pokebots/ui/features/custom-providers/ProviderDetectionSettings";
 import {
   isKeyDialogProvider,
   type KeyDialogProvider,
   OpenCodeKeyDialog,
   type ProviderKeyApi,
-} from "@openbot/ui/features/settings/OpenCodeKeyDialog";
+} from "@pokebots/ui/features/settings/OpenCodeKeyDialog";
 import {
   type ProviderClaudeAiTools,
   type ProviderClaudeCompactWindow,
@@ -60,8 +60,8 @@ import {
   type ProviderPromptCache,
   type ProviderSettingsDetail,
   ProviderSettingsPage,
-} from "@openbot/ui/features/settings/ProviderSettingsPage";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/ui/features/settings/ProviderSettingsPage";
+import { useText } from "@pokebots/ui/text";
 import type { JSX } from "@solidjs/web";
 import { createEffect, createMemo, createSignal, createStore, Show, untrack } from "solid-js";
 import { ProviderSignInDialogs } from "../../components/ProviderSignInDialogs";

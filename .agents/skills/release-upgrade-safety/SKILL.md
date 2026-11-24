@@ -23,7 +23,7 @@ This runs *before* `docs/RELEASING.md`, which stays authoritative for the publis
   Run the narrowest test file named by a gate and lint the changed files. Do not run the repo-wide
   `bun run lint` or `bun run typecheck`: CI runs them.
 - **If gate C or D fired, confirm the mobile typecheck passed.** `apps/mobile` depends on
-  `@openbot/contracts`, which is exactly what those two gates change. The CI Surfaces job runs `typecheck:mobile`.
+  `@pokebots/contracts`, which is exactly what those two gates change. The CI Surfaces job runs `typecheck:mobile`.
 - It never runs `bun run dev:seed` or `dev:reset` — both destroy the developer's own profile — and
   never `pkill -f`, which kills other sessions' work mid-write.
 

@@ -4,7 +4,7 @@ import {
   type SidebarLayoutSnapshot,
   type SidebarPin,
   sidebarPinKey,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import { moveSidebarChat } from "./sidebar-layout";
 
 /** A chat that the user drags: an agent or a channel, from the pinned tiles or from the list. */

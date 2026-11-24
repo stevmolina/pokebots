@@ -2,7 +2,7 @@ import { execFile } from "node:child_process";
 import { cpus, totalmem } from "node:os";
 import { join } from "node:path";
 import { monitorEventLoopDelay } from "node:perf_hooks";
-import type { AgentEvent } from "@openbot/contracts/ipc";
+import type { AgentEvent } from "@pokebots/contracts/ipc";
 import { Effect, Exit, Option, Schema, Scope, Semaphore } from "effect";
 import {
   app,

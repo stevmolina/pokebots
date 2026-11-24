@@ -3,7 +3,6 @@ import { Typography } from "heroui-native";
 import ChevronDown from "lucide-react-native/icons/chevron-down";
 import ChevronRight from "lucide-react-native/icons/chevron-right";
 import ChevronUp from "lucide-react-native/icons/chevron-up";
-import LayoutGrid from "lucide-react-native/icons/layout-grid";
 import { type RefObject, useMemo, useRef, useSyncExternalStore } from "react";
 import { type FlatList, type ListViewToken, Pressable, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -13,7 +12,7 @@ import { haptics } from "@/shared/lib/haptics";
 import { useText } from "@/shared/lib/text";
 import { MIRROR_IN_RTL } from "@/shared/lib/text-direction";
 import { previewSize as size, previewType as type } from "../model/preview-tokens";
-import { PreviewCircleButton, usePreviewColors } from "./preview-parts";
+import { usePreviewColors } from "./preview-parts";
 
 /*
  * The pieces of the real home in the calm look (Settings > Appearance > New design). The home screen
@@ -71,22 +70,6 @@ export function CalmHiddenLink({ count }: { count: number }) {
       <Typography style={[type.section, { color: colors.sectionCount }]}>{format.number(count)}</Typography>
       <ChevronRight size={16} color={colors.sectionCount} strokeWidth={1.8} style={MIRROR_IN_RTL} />
     </Pressable>
-  );
-}
-
-/** The grid button beside the search field: the apps, agents and skills of the server. */
-export function CalmBottomGrid({ serverId }: { serverId: string }) {
-  const { t } = useText();
-  const colors = usePreviewColors();
-  const { height } = useBottomFieldMetrics();
-  return (
-    <PreviewCircleButton
-      label={t("mobile.workspace.preview.apps")}
-      size={height}
-      onPress={() => router.push({ pathname: "/server-marketplace", params: { serverId } })}
-    >
-      <LayoutGrid size={21} color={colors.icon} strokeWidth={1.8} />
-    </PreviewCircleButton>
   );
 }
 

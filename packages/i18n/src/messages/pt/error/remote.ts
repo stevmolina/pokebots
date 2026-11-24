@@ -20,10 +20,10 @@ export const messages = {
   "error.remote.linuxNeedsX11":
     "A área de trabalho remota no Linux precisa de uma sessão X11. Não há suporte para Wayland.",
   "error.remote.runtimeMissing":
-    "O ambiente de execução do Sunshine e do Moonlight Web está ausente ou não é compatível com este computador anfitrião. Instale a versão completa do OpenBot em um Mac, um computador anfitrião Windows x64 ou Linux x64 e reinicie o OpenBot.",
+    "O ambiente de execução do Sunshine e do Moonlight Web está ausente ou não é compatível com este computador anfitrião. Instale a versão completa do Pokebots em um Mac, um computador anfitrião Windows x64 ou Linux x64 e reinicie o Pokebots.",
   "error.remote.testActive": "Um teste de área de trabalho remota está ativo. Tente novamente quando terminar.",
   "error.remote.screenRecordingDenied":
-    "O computador anfitrião não permitiu que o OpenBot grave a tela. Conceda a permissão de gravação de tela no computador anfitrião e tente novamente.",
+    "O computador anfitrião não permitiu que o Pokebots grave a tela. Conceda a permissão de gravação de tela no computador anfitrião e tente novamente.",
   "error.remote.windowsSessionDisconnected":
     "A sessão do Windows no computador anfitrião está desconectada, então não há tela para compartilhar. Entre no Windows na tela do computador anfitrião e tente novamente.",
   "error.remote.streamTooSlowLowerQuality":
@@ -42,7 +42,7 @@ export const messages = {
   "error.remote.moonlightStartFailed":
     "O Moonlight Web não iniciou no computador anfitrião. Verifique os logs da área de trabalho remota no computador anfitrião e tente novamente.",
   "error.remote.pairingFailed":
-    "O Moonlight não conseguiu parear com o Sunshine no computador anfitrião. Tente novamente. Se o problema continuar, reinicie o OpenBot no computador anfitrião.",
+    "O Moonlight não conseguiu parear com o Sunshine no computador anfitrião. Tente novamente. Se o problema continuar, reinicie o Pokebots no computador anfitrião.",
   "error.remote.runtimeStartFailed":
     "O ambiente de execução da área de trabalho remota não iniciou no computador anfitrião. Verifique os logs da área de trabalho remota no computador anfitrião e tente novamente.",
   "error.remote.hostUnreachable": "Não é possível acessar o computador anfitrião.",
@@ -51,7 +51,7 @@ export const messages = {
   "error.remote.unsafeData":
     "O computador anfitrião retornou dados que este aplicativo não conseguiu usar com segurança.",
   "error.remote.requestFailedStatus": "A solicitação ao servidor remoto falhou ({status}).",
-  "error.remote.appUpdateRequired": "Atualize este aplicativo OpenBot antes de conectar ao computador anfitrião.",
+  "error.remote.appUpdateRequired": "Atualize este aplicativo Pokebots antes de conectar ao computador anfitrião.",
   "error.remote.identityNotVerified": "Não foi possível verificar a identidade do servidor.",
   "error.remote.webRtcUnavailable": "O transporte WebRTC está indisponível.",
   "error.remote.invalidCompatibility": "O computador anfitrião retornou informações de compatibilidade inválidas.",
@@ -70,9 +70,9 @@ export const messages = {
   "error.remote.inviteIdentityChanged": "A identidade do computador anfitrião mudou durante a aceitação do convite.",
   "error.remote.localServerRemove": "O servidor local não pode ser removido.",
   "error.remote.desktopSetupHostUpdate":
-    "Atualize o OpenBot no computador anfitrião para verificar a configuração da área de trabalho remota.",
+    "Atualize o Pokebots no computador anfitrião para verificar a configuração da área de trabalho remota.",
   "error.remote.desktopTestHostUpdate":
-    "Atualize o OpenBot no computador anfitrião para testar a configuração da área de trabalho remota.",
+    "Atualize o Pokebots no computador anfitrião para testar a configuração da área de trabalho remota.",
   "error.remote.viewerProxyUnavailable": "O proxy local do visualizador remoto está indisponível.",
   "error.remote.viewerTransportInvalid": "O transporte do visualizador remoto é inválido.",
   "error.remote.viewerProxyNoPort": "O proxy local do visualizador remoto não obteve uma porta.",
@@ -91,9 +91,9 @@ export const messages = {
   "error.remote.requestTimeout": "O tempo da solicitação remota esgotou.",
   "error.remote.requestFailed": "A solicitação remota falhou.",
   "error.remote.hostKeyMissing":
-    "O OpenBot não pode verificar este servidor porque a chave de segurança dele está ausente ou mudou. Peça ao proprietário do servidor para verificá-lo.",
+    "O Pokebots não pode verificar este servidor porque a chave de segurança dele está ausente ou mudou. Peça ao proprietário do servidor para verificá-lo.",
   "error.remote.connectionNotStarted":
-    "O OpenBot não conseguiu iniciar a conexão com este servidor. Se isso continuar, feche o OpenBot e abra-o novamente.",
+    "O Pokebots não conseguiu iniciar a conexão com este servidor. Se isso continuar, feche o Pokebots e abra-o novamente.",
   "error.remote.hostDidNotConnect": "O computador anfitrião WebRTC não se conectou.",
   "error.remote.connectionCancelled": "A conexão remota foi cancelada.",
   "error.remote.hostDisconnected":
@@ -147,12 +147,12 @@ export const messages = {
   "error.remote.permanentInviteNoEmail": "Convites permanentes não podem ser enviados por e-mail.",
   "error.remote.selfHostedInviteNoEmail":
     "Um convite de um serviço de conta auto-hospedado não pode ser enviado por e-mail. Copie o link.",
-  "error.remote.inviteOtherService": "Este convite pertence a outro serviço do OpenBot.",
+  "error.remote.inviteOtherService": "Este convite pertence a outro serviço do Pokebots.",
   "error.remote.inviteFingerprintMismatch":
     "A identidade do computador anfitrião do convite não corresponde à sua impressão digital.",
   "error.remote.inviteHostKeyMissing": "A chave do computador anfitrião do convite está ausente.",
   "error.remote.inviteKeyConflict": "O convite entra em conflito com a chave confiável do computador anfitrião.",
-  "error.remote.serviceRequestFailed": "A solicitação ao serviço do OpenBot falhou.",
+  "error.remote.serviceRequestFailed": "A solicitação ao serviço do Pokebots falhou.",
   "error.remote.downloadTimeout": "O tempo para baixar o anexo esgotou. Tente novamente.",
   "error.remote.attachmentConnectionClosed": "A conexão do anexo foi fechada.",
   "error.remote.tooManyDownloads": "Há downloads de anexos demais.",
@@ -187,9 +187,9 @@ export const messages = {
   "error.remote.hostBusy": "O computador anfitrião está ocupado com outra conexão. Tente novamente em instantes.",
   "error.remote.signalPermissionDenied":
     "Sua conta não tem acesso a este computador anfitrião. Peça acesso ao proprietário.",
-  "error.remote.signalRateLimited": "Muitas tentativas de conexão. O OpenBot tenta novamente em {seconds} segundos.",
+  "error.remote.signalRateLimited": "Muitas tentativas de conexão. O Pokebots tenta novamente em {seconds} segundos.",
   "error.remote.signalProtocolError":
-    "O Signal e este aplicativo usam protocolos de conexão incompatíveis. Atualize o OpenBot e tente novamente.",
+    "O Signal e este aplicativo usam protocolos de conexão incompatíveis. Atualize o Pokebots e tente novamente.",
   "error.remote.signalRefused": "O Signal recusou a conexão.",
   "error.remote.signalClosed": "A conexão com o Signal foi fechada antes de o computador anfitrião responder.",
   "error.remote.relayUnavailable":
@@ -197,22 +197,22 @@ export const messages = {
   "error.remote.iceFailed":
     "Não foi possível estabelecer uma conexão direta com o computador anfitrião. Um firewall, VPN ou proxy pode bloqueá-la.",
   "error.remote.iceDisconnected": "A conexão direta com o computador anfitrião foi perdida.",
-  "error.remote.directoryUnreachable": "O OpenBot não conseguiu acessar o serviço do OpenBot. Verifique sua conexão.",
-  "error.remote.directoryTimeout": "O serviço do OpenBot não respondeu a tempo. Tente novamente.",
+  "error.remote.directoryUnreachable": "O Pokebots não conseguiu acessar o serviço do Pokebots. Verifique sua conexão.",
+  "error.remote.directoryTimeout": "O serviço do Pokebots não respondeu a tempo. Tente novamente.",
   "error.remote.inviteAlreadyUsed": "Este convite já foi usado. Peça um novo convite.",
   "error.remote.inviteNotFound": "Este convite não existe ou expirou. Peça um novo convite.",
   "error.remote.licenseUsersFull":
     "A licença do proprietário do servidor não tem usuários livres. Peça ao proprietário para adicionar um usuário à licença.",
   "error.remote.memberLimitReached":
     "Este computador anfitrião atingiu o limite de membros. Peça ao proprietário para liberar espaço.",
-  "error.remote.hostNotRegistered": "Este computador anfitrião não está mais registrado no serviço do OpenBot.",
+  "error.remote.hostNotRegistered": "Este computador anfitrião não está mais registrado no serviço do Pokebots.",
   "error.remote.membershipEnded":
     "Você não é mais membro deste computador anfitrião. Peça um novo convite ao proprietário.",
   "error.remote.membershipChanged":
     "Outra pessoa alterou este membro ao mesmo tempo. Carregue os membros novamente e tente de novo.",
   "error.remote.accountSessionInactive": "Seu login não está mais ativo. Entre novamente.",
   "error.remote.hostOtherAccount": "Este computador anfitrião pertence a outra conta.",
-  "error.remote.remoteNotConfigured": "As conexões remotas não estão configuradas neste serviço do OpenBot.",
+  "error.remote.remoteNotConfigured": "As conexões remotas não estão configuradas neste serviço do Pokebots.",
   "error.remote.hostRefused": "O computador anfitrião recusou a solicitação ({status}).",
   "error.remote.formUnavailable": "Este formulário não está mais disponível.",
   "error.remote.hostedServerRemoval": "Use a seção Cobrança para excluir um servidor hospedado.",
@@ -221,9 +221,9 @@ export const messages = {
   "error.remote.channelDeleteUnsupported": "Atualize este servidor no computador para excluir canais.",
   "error.remote.historyRefreshFailed": "A mensagem foi enviada, mas não foi possível atualizar o histórico do chat.",
   "error.remote.taskHistoryRefreshFailed": "A tarefa foi alterada, mas não foi possível atualizar o histórico do chat.",
-  "error.remote.serverNotLoaded": "O OpenBot não conseguiu carregar o servidor. Tente novamente.",
+  "error.remote.serverNotLoaded": "O Pokebots não conseguiu carregar o servidor. Tente novamente.",
   "error.remote.localServerNotStarted":
-    "O servidor neste computador não iniciou. Tente novamente. Se ele não iniciar, reinicie o OpenBot neste computador.",
+    "O servidor neste computador não iniciou. Tente novamente. Se ele não iniciar, reinicie o Pokebots neste computador.",
   "error.remote.localServerAccountRemovalFailed":
     "O servidor foi excluído no computador dele, mas a conta ainda o mostra. Exclua de novo para removê-lo da conta.",
 } as const satisfies PartialTranslation<typeof source>;

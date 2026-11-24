@@ -1,7 +1,7 @@
-import { isGithubSkillId } from "@openbot/contracts/ipc";
-import { GITHUB_SKILLS_CAPABILITY } from "@openbot/contracts/team-protocol/github-skills-v1";
-import { SKILLS_ADMIN_CAPABILITY, SKILLS_ADMIN_ROUTES } from "@openbot/contracts/team-protocol/skills-admin-v1";
-import { sourceText } from "@openbot/i18n/source";
+import { isGithubSkillId } from "@pokebots/contracts/ipc";
+import { GITHUB_SKILLS_CAPABILITY } from "@pokebots/contracts/team-protocol/github-skills-v1";
+import { SKILLS_ADMIN_CAPABILITY, SKILLS_ADMIN_ROUTES } from "@pokebots/contracts/team-protocol/skills-admin-v1";
+import { sourceText } from "@pokebots/i18n/source";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import { parseInstallSkill, parseSetEnabledSkill, parseUninstallSkill } from "../ipc/app-inputs";
 import type { TeamApiAdmin } from "./dependencies";

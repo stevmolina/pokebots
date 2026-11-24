@@ -1,18 +1,18 @@
-import { isAvatarMimeType } from "@openbot/contracts/avatar-images";
-import { parseBillingPortalRequest, parseBillingStorageRequest } from "@openbot/contracts/billing";
-import { parseBillingDetailsRequest } from "@openbot/contracts/billing-details";
-import { WEB_APP_COMPANY_SIGN_IN_ERROR_PARAM } from "@openbot/contracts/company-sign-in";
-import { parseHostedServerLifecycleInput } from "@openbot/contracts/hosted-servers";
+import { isAvatarMimeType } from "@pokebots/contracts/avatar-images";
+import { parseBillingPortalRequest, parseBillingStorageRequest } from "@pokebots/contracts/billing";
+import { parseBillingDetailsRequest } from "@pokebots/contracts/billing-details";
+import { WEB_APP_COMPANY_SIGN_IN_ERROR_PARAM } from "@pokebots/contracts/company-sign-in";
+import { parseHostedServerLifecycleInput } from "@pokebots/contracts/hosted-servers";
 import {
   LICENSE_UNAVAILABLE_STATE,
   parseLicenseCheckoutRequest,
   parseLicensePlanRequest,
   parseLicenseRenewalRequest,
   parseLicenseUsersRequest,
-} from "@openbot/contracts/license";
-import { parsePromotionCode } from "@openbot/contracts/promotion-code";
-import { type DynamicRecord, isBoolean, isNumber, isString } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source-english";
+} from "@pokebots/contracts/license";
+import { parsePromotionCode } from "@pokebots/contracts/promotion-code";
+import { type DynamicRecord, isBoolean, isNumber, isString } from "@pokebots/contracts/runtime-values";
+import { sourceText } from "@pokebots/i18n/source-english";
 import { Cause, Effect } from "effect";
 import { type AccountAttribution, requestFirstTouch } from "./account-attribution";
 import { type AuthService, AuthServiceError, readAnalyticsAnswer, readChatColor } from "./auth-service";

@@ -5,9 +5,9 @@ import {
   VOICE_AUDIO_LIMITS,
   VOICE_MODELS,
   VOICE_STREAM_LIMITS,
-} from "@openbot/contracts/ipc";
-import type { VoicePhase } from "@openbot/ui/features/conversation/VoicePill";
-import { currentText } from "@openbot/ui/text";
+} from "@pokebots/contracts/ipc";
+import type { VoicePhase } from "@pokebots/ui/features/conversation/VoicePill";
+import { currentText } from "@pokebots/ui/text";
 import { createEffect, createStore, onCleanup } from "solid-js";
 import { desktopAnalytics } from "../../../analytics";
 import { encodePcm16, recordingToSamples, recordingToWav } from "../../../voice-recording";

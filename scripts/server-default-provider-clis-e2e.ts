@@ -9,7 +9,7 @@ import assert from "node:assert/strict";
 import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import type { ManagedProviderId } from "@openbot/contracts/agent-providers";
+import type { ManagedProviderId } from "@pokebots/contracts/agent-providers";
 import { Effect } from "effect";
 import { runCauseEffect } from "../src/backend/effect-boundary";
 import { ProviderRuntimeManager } from "../src/main/provider-runtime-manager";

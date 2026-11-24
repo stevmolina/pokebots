@@ -1,6 +1,6 @@
-import { hostMemoryReview, isMemoryReviewInterval } from "@openbot/contracts/ipc";
-import { MEMORY_REVIEW_CAPABILITY, MEMORY_REVIEW_ROUTES } from "@openbot/contracts/team-protocol/memory-review-v1";
-import { sourceText } from "@openbot/i18n/source";
+import { hostMemoryReview, isMemoryReviewInterval } from "@pokebots/contracts/ipc";
+import { MEMORY_REVIEW_CAPABILITY, MEMORY_REVIEW_ROUTES } from "@pokebots/contracts/team-protocol/memory-review-v1";
+import { sourceText } from "@pokebots/i18n/source";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import type { TeamApiAdmin } from "./dependencies";
 import { HttpError } from "./http-error";

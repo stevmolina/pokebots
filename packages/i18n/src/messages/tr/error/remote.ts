@@ -18,10 +18,10 @@ export const messages = {
   "error.remote.sessionCapacity": "Ana makinede zaten dört etkin oturum var.",
   "error.remote.linuxNeedsX11": "Linux'ta uzak masaüstü bir X11 oturumuna ihtiyaç duyar. Wayland desteklenmez.",
   "error.remote.runtimeMissing":
-    "Sunshine ve Moonlight Web çalışma zamanı eksik veya bu ana makinede desteklenmiyor. Mac, Windows x64 veya Linux x64 ana makinesine tam OpenBot sürümünü yükleyin, ardından OpenBot'u yeniden başlatın.",
+    "Sunshine ve Moonlight Web çalışma zamanı eksik veya bu ana makinede desteklenmiyor. Mac, Windows x64 veya Linux x64 ana makinesine tam Pokebots sürümünü yükleyin, ardından Pokebots'u yeniden başlatın.",
   "error.remote.testActive": "Bir uzak masaüstü testi etkin. Bittiğinde tekrar deneyin.",
   "error.remote.screenRecordingDenied":
-    "Ana makine OpenBot'un ekranını kaydetmesine izin vermedi. Ana makinede ekran kaydı izni verin, ardından tekrar deneyin.",
+    "Ana makine Pokebots'un ekranını kaydetmesine izin vermedi. Ana makinede ekran kaydı izni verin, ardından tekrar deneyin.",
   "error.remote.windowsSessionDisconnected":
     "Ana makinedeki Windows oturumunun bağlantısı kesik, bu yüzden paylaşılacak ekran yok. Ana makinenin ekranında Windows'ta oturum açın, ardından tekrar deneyin.",
   "error.remote.streamTooSlowLowerQuality":
@@ -40,7 +40,7 @@ export const messages = {
   "error.remote.moonlightStartFailed":
     "Moonlight Web ana makinede başlamadı. Ana makinedeki uzak masaüstü günlüklerini kontrol edin, ardından tekrar deneyin.",
   "error.remote.pairingFailed":
-    "Moonlight, ana makinedeki Sunshine ile eşleşemedi. Tekrar deneyin. Sorun devam ederse ana makinede OpenBot'u yeniden başlatın.",
+    "Moonlight, ana makinedeki Sunshine ile eşleşemedi. Tekrar deneyin. Sorun devam ederse ana makinede Pokebots'u yeniden başlatın.",
   "error.remote.runtimeStartFailed":
     "Uzak masaüstü çalışma zamanı ana makinede başlamadı. Ana makinedeki uzak masaüstü günlüklerini kontrol edin, ardından tekrar deneyin.",
   "error.remote.hostUnreachable": "Ana makineye ulaşılamıyor.",
@@ -48,7 +48,7 @@ export const messages = {
   "error.remote.invalidData": "Ana makine geçersiz veri döndürdü.",
   "error.remote.unsafeData": "Ana makine bu uygulamanın güvenle kullanamayacağı veri döndürdü.",
   "error.remote.requestFailedStatus": "Uzak sunucu isteği başarısız oldu ({status}).",
-  "error.remote.appUpdateRequired": "Ana makineye bağlanmadan önce bu OpenBot uygulamasını güncelleyin.",
+  "error.remote.appUpdateRequired": "Ana makineye bağlanmadan önce bu Pokebots uygulamasını güncelleyin.",
   "error.remote.identityNotVerified": "Sunucu kimliği doğrulanamadı.",
   "error.remote.webRtcUnavailable": "WebRTC iletimi kullanılamıyor.",
   "error.remote.invalidCompatibility": "Ana makine geçersiz uyumluluk bilgisi döndürdü.",
@@ -67,9 +67,9 @@ export const messages = {
   "error.remote.inviteIdentityChanged": "Davet ana makine kimliği kabul edilirken değişti.",
   "error.remote.localServerRemove": "Yerel sunucu kaldırılamaz.",
   "error.remote.desktopSetupHostUpdate":
-    "Uzak masaüstü kurulumunu kontrol etmek için ana makinedeki OpenBot'u güncelleyin.",
+    "Uzak masaüstü kurulumunu kontrol etmek için ana makinedeki Pokebots'u güncelleyin.",
   "error.remote.desktopTestHostUpdate":
-    "Uzak masaüstü kurulumunu test etmek için ana makinedeki OpenBot'u güncelleyin.",
+    "Uzak masaüstü kurulumunu test etmek için ana makinedeki Pokebots'u güncelleyin.",
   "error.remote.viewerProxyUnavailable": "Yerel uzak görüntüleyici vekili kullanılamıyor.",
   "error.remote.viewerTransportInvalid": "Uzak görüntüleyici iletimi geçersiz.",
   "error.remote.viewerProxyNoPort": "Yerel uzak görüntüleyici vekili bir bağlantı noktası alamadı.",
@@ -87,9 +87,9 @@ export const messages = {
   "error.remote.requestTimeout": "Uzak istek zaman aşımına uğradı.",
   "error.remote.requestFailed": "Uzak istek başarısız oldu.",
   "error.remote.hostKeyMissing":
-    "Güvenlik anahtarı eksik olduğu veya değiştiği için OpenBot bu sunucuyu doğrulayamıyor. Sunucu sahibinden sunucuyu kontrol etmesini isteyin.",
+    "Güvenlik anahtarı eksik olduğu veya değiştiği için Pokebots bu sunucuyu doğrulayamıyor. Sunucu sahibinden sunucuyu kontrol etmesini isteyin.",
   "error.remote.connectionNotStarted":
-    "OpenBot bu sunucuyla bağlantıyı başlatamadı. Sorun devam ederse OpenBot'tan çıkın ve yeniden açın.",
+    "Pokebots bu sunucuyla bağlantıyı başlatamadı. Sorun devam ederse Pokebots'tan çıkın ve yeniden açın.",
   "error.remote.hostDidNotConnect": "WebRTC ana makinesi bağlanmadı.",
   "error.remote.connectionCancelled": "Uzak bağlantı iptal edildi.",
   "error.remote.hostDisconnected":
@@ -142,11 +142,11 @@ export const messages = {
   "error.remote.permanentInviteNoEmail": "Kalıcı davetler e-posta ile gönderilemez.",
   "error.remote.selfHostedInviteNoEmail":
     "Kendi kendine barındırılan bir hesap hizmetinden gelen bir davet e-posta ile gönderilemez. Bağlantıyı kopyalayın.",
-  "error.remote.inviteOtherService": "Bu davet başka bir OpenBot hizmetine ait.",
+  "error.remote.inviteOtherService": "Bu davet başka bir Pokebots hizmetine ait.",
   "error.remote.inviteFingerprintMismatch": "Davet ana makine kimliği parmak iziyle eşleşmiyor.",
   "error.remote.inviteHostKeyMissing": "Davet ana makine anahtarı eksik.",
   "error.remote.inviteKeyConflict": "Davet güvenilen ana makine anahtarıyla çakışıyor.",
-  "error.remote.serviceRequestFailed": "OpenBot hizmet isteği başarısız oldu.",
+  "error.remote.serviceRequestFailed": "Pokebots hizmet isteği başarısız oldu.",
   "error.remote.downloadTimeout": "Ek indirme zaman aşımına uğradı. Tekrar deneyin.",
   "error.remote.attachmentConnectionClosed": "Ek bağlantısı kapandı.",
   "error.remote.tooManyDownloads": "Çok fazla ek indirmesi.",
@@ -180,29 +180,29 @@ export const messages = {
   "error.remote.dataChannelFailed": "{kind} kanalı başarısız oldu.",
   "error.remote.hostBusy": "Ana makine başka bir bağlantıyla meşgul. Biraz sonra tekrar deneyin.",
   "error.remote.signalPermissionDenied": "Hesabınızın bu ana makineye erişimi yok. Sahibinden erişim isteyin.",
-  "error.remote.signalRateLimited": "Çok fazla bağlantı denemesi. OpenBot {seconds} saniye içinde tekrar deneyecek.",
+  "error.remote.signalRateLimited": "Çok fazla bağlantı denemesi. Pokebots {seconds} saniye içinde tekrar deneyecek.",
   "error.remote.signalProtocolError":
-    "Signal ve bu uygulama bağlantı protokolünde uyuşmuyor. OpenBot'u güncelleyin, ardından tekrar deneyin.",
+    "Signal ve bu uygulama bağlantı protokolünde uyuşmuyor. Pokebots'u güncelleyin, ardından tekrar deneyin.",
   "error.remote.signalRefused": "Signal bağlantıyı reddetti.",
   "error.remote.signalClosed": "Signal ile bağlantı, ana makine yanıt vermeden kapandı.",
   "error.remote.relayUnavailable": "Signal bu bağlantı için aktarma sunucusu göndermedi. Daha sonra tekrar deneyin.",
   "error.remote.iceFailed":
     "Ana makineyle doğrudan bağlantı kurulamadı. Bir güvenlik duvarı, VPN veya proxy bunu engelleyebilir.",
   "error.remote.iceDisconnected": "Ana makineyle doğrudan bağlantı kesildi.",
-  "error.remote.directoryUnreachable": "OpenBot, OpenBot hizmetine ulaşamadı. Bağlantınızı kontrol edin.",
-  "error.remote.directoryTimeout": "OpenBot hizmeti zamanında yanıt vermedi. Tekrar deneyin.",
+  "error.remote.directoryUnreachable": "Pokebots, Pokebots hizmetine ulaşamadı. Bağlantınızı kontrol edin.",
+  "error.remote.directoryTimeout": "Pokebots hizmeti zamanında yanıt vermedi. Tekrar deneyin.",
   "error.remote.inviteAlreadyUsed": "Bu davet zaten kullanıldı. Yeni bir davet isteyin.",
   "error.remote.inviteNotFound": "Bu davet yok veya süresi doldu. Yeni bir davet isteyin.",
   "error.remote.licenseUsersFull":
     "Sunucu sahibinin lisansında boş kullanıcı yok. Sahibinden lisansa kullanıcı eklemesini isteyin.",
   "error.remote.memberLimitReached": "Bu ana makine üye sınırına ulaştı. Sahibinden yer açmasını isteyin.",
-  "error.remote.hostNotRegistered": "Bu ana makine artık OpenBot hizmetine kayıtlı değil.",
+  "error.remote.hostNotRegistered": "Bu ana makine artık Pokebots hizmetine kayıtlı değil.",
   "error.remote.membershipEnded": "Artık bu ana makinenin üyesi değilsiniz. Sahibinden yeni bir davet isteyin.",
   "error.remote.membershipChanged":
     "Başka biri bu üyeyi aynı anda değiştirdi. Üyeleri yeniden yükleyin ve tekrar deneyin.",
   "error.remote.accountSessionInactive": "Oturumunuz artık etkin değil. Tekrar oturum açın.",
   "error.remote.hostOtherAccount": "Bu ana makine başka bir hesaba ait.",
-  "error.remote.remoteNotConfigured": "Bu OpenBot hizmetinde uzak bağlantılar ayarlanmamış.",
+  "error.remote.remoteNotConfigured": "Bu Pokebots hizmetinde uzak bağlantılar ayarlanmamış.",
   "error.remote.hostRefused": "Ana makine isteği reddetti ({status}).",
   // Channel actions on mobile.
   "error.remote.formUnavailable": "Bu form artık kullanılamıyor.",
@@ -212,9 +212,9 @@ export const messages = {
   "error.remote.channelDeleteUnsupported": "Kanalları silmek için bu masaüstü sunucusunu güncelleyin.",
   "error.remote.historyRefreshFailed": "Mesaj gönderildi, ancak sohbet geçmişi yenilenemedi.",
   "error.remote.taskHistoryRefreshFailed": "Görev değiştirildi, ancak sohbet geçmişi yenilenemedi.",
-  "error.remote.serverNotLoaded": "OpenBot sunucuyu yükleyemedi. Tekrar deneyin.",
+  "error.remote.serverNotLoaded": "Pokebots sunucuyu yükleyemedi. Tekrar deneyin.",
   "error.remote.localServerNotStarted":
-    "Bu bilgisayardaki sunucu başlamadı. Tekrar deneyin. Başlamazsa OpenBot'u bu bilgisayarda yeniden başlatın.",
+    "Bu bilgisayardaki sunucu başlamadı. Tekrar deneyin. Başlamazsa Pokebots'u bu bilgisayarda yeniden başlatın.",
   "error.remote.localServerAccountRemovalFailed":
     "Sunucu kendi bilgisayarında silindi ancak hesap onu hâlâ listeliyor. Hesaptan kaldırmak için yeniden silin.",
 } as const satisfies PartialTranslation<typeof source>;

@@ -1,4 +1,4 @@
-import type { AgentTask } from "@openbot/contracts/ipc";
+import type { AgentTask } from "@pokebots/contracts/ipc";
 import { Typography } from "heroui-native";
 import type { LucideIcon } from "lucide-react-native";
 import BookOpen from "lucide-react-native/icons/book-open";

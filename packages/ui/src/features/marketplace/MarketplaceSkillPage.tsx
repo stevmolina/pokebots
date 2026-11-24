@@ -3,7 +3,7 @@ import {
   isRemovableSkill,
   type MarketplaceSkillDetail,
   type MarketplaceSkillSummary,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   Button,
   ExternalLink,
@@ -19,11 +19,11 @@ import {
   SettingsSection,
   Switch,
   Text,
-} from "@openbot/ui";
-import { skillExamplePrompt, skillInstructions } from "@openbot/ui/components/SkillPreview";
-import { AgentAvatar } from "@openbot/ui/features/agents/AgentAvatar";
-import { MarkdownMessageText } from "@openbot/ui/features/conversation/MarkdownMessageText";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/ui";
+import { skillExamplePrompt, skillInstructions } from "@pokebots/ui/components/SkillPreview";
+import { AgentAvatar } from "@pokebots/ui/features/agents/AgentAvatar";
+import { MarkdownMessageText } from "@pokebots/ui/features/conversation/MarkdownMessageText";
+import { useText } from "@pokebots/ui/text";
 import { createEffect, createSignal, For, Show } from "solid-js";
 import { IntegrationPage, type IntegrationStatus } from "../settings/IntegrationLayout";
 import { AddToAgents, type DialogSkill } from "./MarketplaceAgentsDialog";

@@ -4,10 +4,10 @@ import {
   attachmentMimeTypeForName,
   isSupportedAttachmentName,
   isSupportedAttachmentNameFor,
-} from "@openbot/contracts/attachment-files";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import { TEAM_PROTOCOL_V2_MAX_FILE_BYTES } from "@openbot/contracts/team-protocol/v2";
-import { MOBILE_ATTACHMENT_BYTES, type RemoteFileUpload } from "@openbot/team-client/remote-peer";
+} from "@pokebots/contracts/attachment-files";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
+import { TEAM_PROTOCOL_V2_MAX_FILE_BYTES } from "@pokebots/contracts/team-protocol/v2";
+import { MOBILE_ATTACHMENT_BYTES, type RemoteFileUpload } from "@pokebots/team-client/remote-peer";
 import * as Crypto from "expo-crypto";
 import * as DocumentPicker from "expo-document-picker";
 import { Directory, File, Paths } from "expo-file-system";

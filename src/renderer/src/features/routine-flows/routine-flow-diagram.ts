@@ -12,8 +12,8 @@ import {
   type RoutineRunStatus,
   routineFlowAgentKey,
   routineFlowRoutineKey,
-} from "@openbot/contracts/ipc";
-import type { AgentProfile } from "@openbot/ui/data";
+} from "@pokebots/contracts/ipc";
+import type { AgentProfile } from "@pokebots/ui/data";
 import type {
   Diagram,
   DiagramEdge,
@@ -23,7 +23,7 @@ import type {
   DiagramRun,
   DiagramRunStatus,
   DiagramStepRun,
-} from "@openbot/ui/features/diagrams/diagram-model";
+} from "@pokebots/ui/features/diagrams/diagram-model";
 
 const COLUMN = 360;
 const ROUTINE_ROW = 300;

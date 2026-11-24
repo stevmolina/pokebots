@@ -1,9 +1,9 @@
-import { parseThreadAutoArchiveSetting, type ThreadAutoArchiveSetting } from "@openbot/contracts/ipc";
+import { parseThreadAutoArchiveSetting, type ThreadAutoArchiveSetting } from "@pokebots/contracts/ipc";
 import {
   THREAD_AUTO_ARCHIVE_CAPABILITY,
   THREAD_AUTO_ARCHIVE_ROUTES,
-} from "@openbot/contracts/team-protocol/thread-auto-archive-v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/team-protocol/thread-auto-archive-v1";
+import { sourceText } from "@pokebots/i18n/source";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import type { TeamApiAdmin } from "./dependencies";
 import { HttpError } from "./http-error";

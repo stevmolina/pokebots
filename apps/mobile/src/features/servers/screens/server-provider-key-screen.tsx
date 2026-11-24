@@ -1,4 +1,4 @@
-import { type AgentProviderId, agentProviderName, isAgentProvider } from "@openbot/contracts/ipc";
+import { type AgentProviderId, agentProviderName, isAgentProvider } from "@pokebots/contracts/ipc";
 import { useQueryClient } from "@tanstack/react-query";
 import { router, useLocalSearchParams } from "expo-router";
 import { Typography } from "heroui-native";

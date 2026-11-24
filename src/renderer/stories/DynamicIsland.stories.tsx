@@ -3,9 +3,9 @@ import type {
   DynamicIslandAgentIdentity,
   DynamicIslandPresentation,
   DynamicIslandPromptItem,
-} from "@openbot/contracts/ipc";
-import type { DynamicIslandViewState } from "@openbot/ui";
-import { OpenBotDynamicIsland } from "@openbot/ui/features/dynamic-island/OpenBotDynamicIsland";
+} from "@pokebots/contracts/ipc";
+import type { DynamicIslandViewState } from "@pokebots/ui";
+import { OpenBotDynamicIsland } from "@pokebots/ui/features/dynamic-island/OpenBotDynamicIsland";
 import type { JSX } from "@solidjs/web";
 import { createMemo, createSignal } from "solid-js";
 import { fn } from "storybook/test";

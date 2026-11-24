@@ -1,7 +1,7 @@
 // The page uses the diagram page layout. Its stylesheet comes before the canvas stylesheets.
-import "@openbot/ui/features/diagrams/diagrams.css";
-import { WORKFLOWS_CAPABILITY } from "@openbot/contracts/team-protocol/workflows-v1";
-import { useText } from "@openbot/ui/text";
+import "@pokebots/ui/features/diagrams/diagrams.css";
+import { WORKFLOWS_CAPABILITY } from "@pokebots/contracts/team-protocol/workflows-v1";
+import { useText } from "@pokebots/ui/text";
 import { Show } from "solid-js";
 import { useAuth } from "../account/account-context";
 import { useAgents } from "../agents/agents-context";

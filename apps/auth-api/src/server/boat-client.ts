@@ -1,4 +1,4 @@
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
+import { isDynamicRecord, isString } from "@pokebots/contracts/runtime-values";
 import { Context, Effect, Layer, Schema } from "effect";
 import { hexToBytes, importHmacSha256Key } from "./crypto";
 

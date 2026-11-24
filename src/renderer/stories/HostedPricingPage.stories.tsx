@@ -1,5 +1,5 @@
-import type { BillingDetailsDraft } from "@openbot/ui/features/billing/BillingDetailsFields";
-import { HostedPricingPage } from "@openbot/ui/features/servers/HostedPricingPage";
+import type { BillingDetailsDraft } from "@pokebots/ui/features/billing/BillingDetailsFields";
+import { HostedPricingPage } from "@pokebots/ui/features/servers/HostedPricingPage";
 import { createSignal } from "solid-js";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { MOCK_HOSTED_SERVER_CATALOG } from "../src/preview/mock-hosted-servers";

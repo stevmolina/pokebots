@@ -4,7 +4,7 @@
  * in the user's browser and the list never shows it as text.
  */
 
-import { Button, ExternalLink } from "@openbot/ui";
+import { Button, ExternalLink } from "@pokebots/ui";
 import { For, Show } from "solid-js";
 import { useText } from "../../text";
 import { type ComputerAction, ComputerControls } from "./ComputerControls";

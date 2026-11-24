@@ -1,10 +1,10 @@
-import { fileReferenceName } from "@openbot/brand/file-reference";
-import { attachmentMimeTypeForName, playableMediaKind } from "@openbot/contracts/attachment-files";
-import { removeAttachmentReferences } from "@openbot/contracts/attachment-references";
-import { chatPreviewKind } from "@openbot/contracts/chat-preview";
-import type { AttachmentSummary, InstalledSkill, MessageReaction } from "@openbot/contracts/ipc";
-import { canPreviewAttachment, MESSAGE_REACTIONS, MORE_MESSAGE_REACTIONS } from "@openbot/contracts/ipc";
-import { parseSelectionInstruction } from "@openbot/contracts/selection-instruction";
+import { fileReferenceName } from "@pokebots/brand/file-reference";
+import { attachmentMimeTypeForName, playableMediaKind } from "@pokebots/contracts/attachment-files";
+import { removeAttachmentReferences } from "@pokebots/contracts/attachment-references";
+import { chatPreviewKind } from "@pokebots/contracts/chat-preview";
+import type { AttachmentSummary, InstalledSkill, MessageReaction } from "@pokebots/contracts/ipc";
+import { canPreviewAttachment, MESSAGE_REACTIONS, MORE_MESSAGE_REACTIONS } from "@pokebots/contracts/ipc";
+import { parseSelectionInstruction } from "@pokebots/contracts/selection-instruction";
 import {
   AudioLines,
   type BubbleVariant,
@@ -21,8 +21,8 @@ import {
   PinOff,
   Trash2,
   Wallpaper,
-} from "@openbot/ui";
-import { prefersReducedMotion } from "@openbot/ui/utils";
+} from "@pokebots/ui";
+import { prefersReducedMotion } from "@pokebots/ui/utils";
 import type { JSX } from "@solidjs/web";
 import {
   createEffect,

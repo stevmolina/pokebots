@@ -1,6 +1,6 @@
-import { classifyFailure } from "@openbot/telemetry";
-import { BrowserTakeoverCard } from "@openbot/ui/features/conversation/ConversationPrompts";
-import { useText } from "@openbot/ui/text";
+import { classifyFailure } from "@pokebots/telemetry";
+import { BrowserTakeoverCard } from "@pokebots/ui/features/conversation/ConversationPrompts";
+import { useText } from "@pokebots/ui/text";
 import { Loading, Show } from "solid-js";
 import { actionToast } from "../../action-toast";
 import { usePlatform } from "../../platform";

@@ -5,7 +5,7 @@ import {
   type WhatsAppOverview,
   type WhatsAppPairingRequest,
   type WhatsAppSender,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import type { UseQueryResult } from "@tanstack/react-query";
 import { router } from "expo-router";
 import { Typography } from "heroui-native";

@@ -6,17 +6,17 @@ import type {
   MessagingDesktopApi,
   MessagingOverview,
   MessagingRole,
-} from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
-import type { AgentProfile } from "@openbot/ui/data";
+} from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
+import type { AgentProfile } from "@pokebots/ui/data";
 import type {
   DiscordAccessControl,
   SlackOrchestratorChoice,
   SlackOrchestratorModels,
   WorkspacePlatform,
-} from "@openbot/ui/features/settings/SlackIntegrationPanel";
-import type { TelegramChatPlace } from "@openbot/ui/features/settings/TelegramIntegrationPanel";
-import { currentText } from "@openbot/ui/text";
+} from "@pokebots/ui/features/settings/SlackIntegrationPanel";
+import type { TelegramChatPlace } from "@pokebots/ui/features/settings/TelegramIntegrationPanel";
+import { currentText } from "@pokebots/ui/text";
 import { createSignal, createStore, untrack } from "solid-js";
 import {
   type ConnectorAnalyticsAction,

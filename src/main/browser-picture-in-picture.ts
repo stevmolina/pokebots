@@ -1,4 +1,4 @@
-import type { BrowserBounds, BrowserPictureInPictureEvent } from "@openbot/contracts/ipc";
+import type { BrowserBounds, BrowserPictureInPictureEvent } from "@pokebots/contracts/ipc";
 import { Effect, Schema } from "effect";
 import { BrowserWindow, screen, WebContentsView } from "electron";
 import type { BrowserHost } from "../backend/browser-host";

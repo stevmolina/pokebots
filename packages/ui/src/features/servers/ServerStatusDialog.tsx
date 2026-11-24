@@ -1,5 +1,5 @@
-import type { HostedServerIssue } from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
+import type { HostedServerIssue } from "@pokebots/contracts/ipc";
+import type { AppTextKey } from "@pokebots/i18n";
 import type { JSX } from "@solidjs/web";
 import { createEffect, createMemo, createSignal, For, Show } from "solid-js";
 import { ConfirmDialog } from "../../confirm-dialog";

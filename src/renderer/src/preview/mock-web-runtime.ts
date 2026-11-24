@@ -1,7 +1,7 @@
-import { CHANNEL_CHATS_CAPABILITY } from "@openbot/contracts/ipc";
-import { MESSAGE_DELETE_CAPABILITY } from "@openbot/contracts/team-protocol/message-delete-v1";
-import { MESSAGE_PINS_CAPABILITY } from "@openbot/contracts/team-protocol/message-pins-v1";
-import { ROUTINE_FLOWS_CAPABILITY } from "@openbot/contracts/team-protocol/routine-flows-v1";
+import { CHANNEL_CHATS_CAPABILITY } from "@pokebots/contracts/ipc";
+import { MESSAGE_DELETE_CAPABILITY } from "@pokebots/contracts/team-protocol/message-delete-v1";
+import { MESSAGE_PINS_CAPABILITY } from "@pokebots/contracts/team-protocol/message-pins-v1";
+import { ROUTINE_FLOWS_CAPABILITY } from "@pokebots/contracts/team-protocol/routine-flows-v1";
 import type { WebRuntimeFactory } from "../features/web-client/web-client-context";
 import type { WebRuntimeEvents, WebWorkspaceRuntime } from "../features/web-client/web-runtime";
 import { createMockOpenBot, type MockOpenBotControls } from "./mock-openbot";

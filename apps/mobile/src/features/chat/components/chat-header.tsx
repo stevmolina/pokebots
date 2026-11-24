@@ -223,7 +223,15 @@ export const ChatHeader = memo(function ChatHeader({
     title: t("mobile.chat.sessions.title"),
     image: "bubble.left.and.bubble.right",
   };
+  // The name opens the sessions, so the agent's profile is the first item of More.
+  const profileShown = plainChat && target.kind === "agent" && Boolean(pillMenu);
+  const profileAction: MenuAction = {
+    id: "profile",
+    title: t("mobile.chat.header.profile"),
+    image: "person.crop.circle",
+  };
   const moreActions: MenuAction[] = [
+    ...(profileShown ? [profileAction] : []),
     ...(sessionsMenu ? [sessionsAction] : []),
     ...(browserShown ? [browserAction] : []),
     ...(pinsShown ? [pinsAction] : []),
@@ -233,7 +241,10 @@ export const ChatHeader = memo(function ChatHeader({
     ...(attention ? [{ id: "attention-section", title: "", displayInline: true, subactions: [attentionAction] }] : []),
   ];
   const onMoreAction = (id: string) => {
-    if (id === "sessions") sessionsMenu?.open();
+    if (id === "profile") {
+      void haptics.impact("soft");
+      router.push({ pathname: "/agent-info/[agentId]", params: { agentId: target.id, serverId: target.serverId } });
+    } else if (id === "sessions") sessionsMenu?.open();
     else if (id === "attention") openChannelActions();
     else if (id === "browser") openBrowser();
     else if (id === "pins") openPins();
@@ -402,8 +413,8 @@ export const ChatHeader = memo(function ChatHeader({
     );
 
   // The new design centers the name pill between Back and More, as the design preview does. The pill is
-  // drawn over the bar, not set as the native bar's title view: that view took the touches of Back, so
-  // Back did nothing under the new design. The pill stays narrower than the space between the buttons.
+  // not the native title view, which took the touches of Back, and not a view drawn over the bar, which
+  // the bar covers, so a tap on it did nothing. It is a left bar item as wide as the space to More.
   const centerTitle = isIOS && calm && !verticalBar;
   const centeredPillWidth = Math.max(120, width - insets.left - insets.right - 2 * (NATIVE_BAR_HEIGHT + 32));
 
@@ -421,11 +432,23 @@ export const ChatHeader = memo(function ChatHeader({
             hidden={splitDetailRoot || accessibilityHidden}
             onPress={goBack}
           />
-          {verticalBar || centerTitle ? null : (
+          {verticalBar ? null : (
             <Stack.Toolbar.View hidesSharedBackground hidden={accessibilityHidden}>
-              <View className="flex-row" style={{ height: NATIVE_BAR_HEIGHT }}>
-                {titlePill}
-              </View>
+              {centerTitle ? (
+                // The pill is a bar item, so the bar does not take its touches. Its slot spans from Back to
+                // More, and the pill sits in the middle of that slot.
+                <View
+                  className="flex-row items-center justify-center"
+                  pointerEvents="box-none"
+                  style={{ height: NATIVE_BAR_HEIGHT, width: centeredPillWidth }}
+                >
+                  {titlePill}
+                </View>
+              ) : (
+                <View className="flex-row" style={{ height: NATIVE_BAR_HEIGHT }}>
+                  {titlePill}
+                </View>
+              )}
             </Stack.Toolbar.View>
           )}
         </Stack.Toolbar>
@@ -470,7 +493,7 @@ export const ChatHeader = memo(function ChatHeader({
           surface={calm ? "sheet" : "canvas"}
           style={{ height: topInset + 82, left: 0, position: "absolute", right: 0, top: 0, zIndex: 10 }}
         />
-        {verticalBar || centerTitle ? (
+        {verticalBar ? (
           <View
             className="absolute z-20 flex-row"
             pointerEvents={accessibilityHidden ? "none" : "box-none"}
@@ -480,19 +503,11 @@ export const ChatHeader = memo(function ChatHeader({
               top: barTop,
               left: insets.left + 16,
               right: insets.right + 16,
-              height: verticalBar ? BAR_BUTTON_SIZE : NATIVE_BAR_HEIGHT,
+              height: BAR_BUTTON_SIZE,
               justifyContent: calm ? "center" : undefined,
-              // The voice mode covers the chat: the title hides, as the native bar items do.
-              opacity: centerTitle && accessibilityHidden ? 0 : 1,
             }}
           >
-            {centerTitle ? (
-              <View className="flex-row" style={{ height: NATIVE_BAR_HEIGHT, maxWidth: centeredPillWidth }}>
-                {titlePill}
-              </View>
-            ) : (
-              titlePill
-            )}
+            {titlePill}
           </View>
         ) : null}
       </>

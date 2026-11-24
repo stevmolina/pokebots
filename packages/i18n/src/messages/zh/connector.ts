@@ -18,7 +18,7 @@ export const messages = {
   "connector.github.repositoriesDescription": "助手只能使用已安装 OpenBot GitHub App 的仓库。",
   "connector.github.chooseRepositories": "选择仓库",
   "connector.github.repositoriesLoading": "正在从 GitHub 读取仓库",
-  "connector.github.repositoriesFailed": "OpenBot 无法从 GitHub 读取仓库。",
+  "connector.github.repositoriesFailed": "Pokebots 无法从 GitHub 读取仓库。",
   "connector.github.noRepositories": "尚未在任何仓库上安装 OpenBot GitHub App。",
   // {count} is a number, such as 12.
   "connector.github.moreRepositories": { one: "还有 {count} 个仓库", other: "还有 {count} 个仓库" },
@@ -30,7 +30,7 @@ export const messages = {
   "connector.github.expiredTitle": "GitHub 连接已过期",
   "connector.github.expiredDescription": "以 @{login} 重新连接，即可让助手继续使用 GitHub。",
   "connector.github.reconnect": "重新连接",
-  "connector.github.actionFailed": "OpenBot 无法更改 GitHub 连接。",
+  "connector.github.actionFailed": "Pokebots 无法更改 GitHub 连接。",
   // The status next to the name at the top of the GitHub page.
   "connector.github.statusConnected": "已连接",
   "connector.github.statusConnecting": "连接中",
@@ -44,7 +44,7 @@ export const messages = {
   // The connect dialog. The steps show as numbers; screen readers read the names.
   "connector.github.stepSignIn": "登录",
   "connector.github.stepConnected": "已连接",
-  "connector.github.requestingCode": "OpenBot 正在向 GitHub 请求验证码。",
+  "connector.github.requestingCode": "Pokebots 正在向 GitHub 请求验证码。",
   // {code} is the code to type on GitHub, such as WDJB-MJHT.
   "connector.github.codeLabel": "验证码 {code}",
   "connector.github.failedTitle": "GitHub 未连接成功",
@@ -77,7 +77,7 @@ export const messages = {
   "connector.dangerZone": "危险操作",
 
   "connector.statusUnknown": "未知",
-  "connector.readFailed": "OpenBot 无法读取该连接的状态。",
+  "connector.readFailed": "Pokebots 无法读取该连接的状态。",
   // Marketplace > Apps > Slack: a workspace installs the one OpenBot app, and the Slack
   // Orchestrator agent receives each request, asks the team and answers.
   "connector.slack.title": "Slack",
@@ -100,9 +100,10 @@ export const messages = {
   "connector.slack.disconnectWorkspace": "断开连接",
   "connector.slack.disconnectAllTitle": "断开 Slack",
   "connector.slack.disconnectAllSummary": "所有工作区都将断开，其他人无法再通过 @OpenBot 联系你的助手。",
-  "connector.slack.disconnectAllSummaryOrchestrator": "所有工作区都将断开，Slack 调度助手及其对话将从 OpenBot 中删除。",
-  "connector.slack.missingScopes": "OpenBot 在 Slack 中缺少这些权限：{scopes}。请断开该工作区后重新连接。",
-  "connector.slack.retryAt": "Slack 要求 OpenBot 等待，将于 {time} 重试。",
+  "connector.slack.disconnectAllSummaryOrchestrator":
+    "所有工作区都将断开，Slack 调度助手及其对话将从 Pokebots 中删除。",
+  "connector.slack.missingScopes": "Pokebots 在 Slack 中缺少这些权限：{scopes}。请断开该工作区后重新连接。",
+  "connector.slack.retryAt": "Slack 要求 Pokebots 等待，将于 {time} 重试。",
   "connector.slack.reconnect": "重新连接",
   "connector.slack.pause": "暂停",
   "connector.slack.resume": "恢复",
@@ -114,7 +115,7 @@ export const messages = {
   "connector.slack.orchestratorNone": "还没有助手回答",
   "connector.slack.orchestratorNoneDescription": "请添加 Slack 调度助手，否则 Slack 中不会有人回答。",
   "connector.slack.inviteNote":
-    "OpenBot 会自动加入每个公开频道以及之后新建的公开频道。私有频道需要邀请：/invite @OpenBot。",
+    "Pokebots 会自动加入每个公开频道以及之后新建的公开频道。私有频道需要邀请：/invite @OpenBot。",
   // The connect dialog. The steps show as numbers; screen readers read the names.
   "connector.slack.stepWorkspace": "工作区",
   "connector.slack.stepAgent": "助手",
@@ -134,15 +135,15 @@ export const messages = {
   "connector.slack.orchestratorDoesDelegate": "把每项任务交给最合适的助手",
   "connector.slack.orchestratorDoesAnswer": "把答案发到 Slack 话题中",
   "connector.slack.orchestratorModel": "模型",
-  "connector.slack.doneTitle": "OpenBot 已加入 {workspace}",
+  "connector.slack.doneTitle": "Pokebots 已加入 {workspace}",
   "connector.slack.doneDescription": "在任意公开频道中提及 @OpenBot，或给它发私信。",
   "connector.slack.done": "完成",
   "connector.slack.disconnectTitle": "断开 {workspace}？",
-  "connector.slack.disconnectDescription": "OpenBot 将停止在 {workspace} 中回答，并从这台电脑删除其 Slack 令牌。",
-  "connector.slack.disconnectDescriptionHost": "OpenBot 将停止在 {workspace} 中回答，并从 {host} 删除其 Slack 令牌。",
+  "connector.slack.disconnectDescription": "Pokebots 将停止在 {workspace} 中回答，并从这台电脑删除其 Slack 令牌。",
+  "connector.slack.disconnectDescriptionHost": "Pokebots 将停止在 {workspace} 中回答，并从 {host} 删除其 Slack 令牌。",
   "connector.slack.disconnectEffect": "{workspace} 中的人将无法再通过 @OpenBot 联系你的助手。",
-  "connector.slack.removeEffectKept": "对话和 Slack 调度助手会保留在 OpenBot 中。",
-  "connector.slack.removeEffectDeleted": "Slack 调度助手及其对话将从 OpenBot 中删除。",
+  "connector.slack.removeEffectKept": "对话和 Slack 调度助手会保留在 Pokebots 中。",
+  "connector.slack.removeEffectDeleted": "Slack 调度助手及其对话将从 Pokebots 中删除。",
   "connector.slack.keep": "保持连接",
   "connector.slack.close": "关闭",
 
@@ -176,9 +177,10 @@ export const messages = {
   "connector.discord.disconnectAllTitle": "断开 Discord",
   "connector.discord.disconnectAllSummary": "所有服务器都将断开，其他人无法再通过 @OpenBot 联系你的助手。",
   "connector.discord.disconnectAllSummaryOrchestrator":
-    "所有服务器都将断开，Discord 调度助手及其对话将从 OpenBot 中删除。",
-  "connector.discord.missingScopes": "OpenBot 在 Discord 中缺少这些权限：{scopes}。请断开该 Discord 服务器后重新连接。",
-  "connector.discord.retryAt": "Discord 要求 OpenBot 等待，将于 {time} 重试。",
+    "所有服务器都将断开，Discord 调度助手及其对话将从 Pokebots 中删除。",
+  "connector.discord.missingScopes":
+    "Pokebots 在 Discord 中缺少这些权限：{scopes}。请断开该 Discord 服务器后重新连接。",
+  "connector.discord.retryAt": "Discord 要求 Pokebots 等待，将于 {time} 重试。",
   "connector.discord.reconnect": "重新连接",
   "connector.discord.pause": "暂停",
   "connector.discord.resume": "恢复",
@@ -189,7 +191,7 @@ export const messages = {
     "该助手接收来自 Discord 的所有请求。简单的问题它自己回答，其余的交给合适的助手处理，并在频道中回复答案。",
   "connector.discord.orchestratorNone": "还没有助手回答",
   "connector.discord.orchestratorNoneDescription": "请添加 Discord 调度助手，否则 Discord 中不会有人回答。",
-  "connector.discord.channelsNote": "OpenBot 能看到其角色可见的频道。",
+  "connector.discord.channelsNote": "Pokebots 能看到其角色可见的频道。",
   // The connect dialog. The steps show as numbers; screen readers read the names.
   "connector.discord.stepWorkspace": "Discord 服务器",
   "connector.discord.stepAgent": "助手",
@@ -209,15 +211,16 @@ export const messages = {
   "connector.discord.orchestratorDoesDelegate": "把每项任务交给最合适的助手",
   "connector.discord.orchestratorDoesAnswer": "在 Discord 频道中回复答案",
   "connector.discord.orchestratorModel": "模型",
-  "connector.discord.doneTitle": "OpenBot 已加入 {workspace}",
+  "connector.discord.doneTitle": "Pokebots 已加入 {workspace}",
   "connector.discord.doneDescription": "在频道中提及 @OpenBot，回复 OpenBot 可继续对话。",
   "connector.discord.done": "完成",
   "connector.discord.disconnectTitle": "断开 {workspace}？",
-  "connector.discord.disconnectDescription": "OpenBot 将停止在 {workspace} 中回答，并从这台电脑移除 Discord 连接。",
-  "connector.discord.disconnectDescriptionHost": "OpenBot 将停止在 {workspace} 中回答，并从 {host} 移除 Discord 连接。",
+  "connector.discord.disconnectDescription": "Pokebots 将停止在 {workspace} 中回答，并从这台电脑移除 Discord 连接。",
+  "connector.discord.disconnectDescriptionHost":
+    "Pokebots 将停止在 {workspace} 中回答，并从 {host} 移除 Discord 连接。",
   "connector.discord.disconnectEffect": "{workspace} 中的人将无法再通过 @OpenBot 联系你的助手。",
-  "connector.discord.removeEffectKept": "对话和 Discord 调度助手会保留在 OpenBot 中。",
-  "connector.discord.removeEffectDeleted": "Discord 调度助手及其对话将从 OpenBot 中删除。",
+  "connector.discord.removeEffectKept": "对话和 Discord 调度助手会保留在 Pokebots 中。",
+  "connector.discord.removeEffectDeleted": "Discord 调度助手及其对话将从 Pokebots 中删除。",
   "connector.discord.keep": "保持连接",
   "connector.discord.close": "关闭",
 
@@ -226,15 +229,15 @@ export const messages = {
   // {count} is the number of Discord servers: two or more.
   "connector.discord.summaryMany": { other: "{count} 个 Discord 服务器 · 由 Discord 调度助手回答" },
   // Who can use OpenBot in one Discord server: the members with one of the chosen Discord roles.
-  "connector.discord.accessTitle": "谁可以使用 OpenBot",
-  "connector.discord.accessDescription": "OpenBot 只回答这些人。其他人的提及会被忽略。",
+  "connector.discord.accessTitle": "谁可以使用 Pokebots",
+  "connector.discord.accessDescription": "Pokebots 只回答这些人。其他人的提及会被忽略。",
   "connector.discord.accessEveryone": "服务器中的所有人",
-  "connector.discord.accessEveryoneDescription": "凡是能在 OpenBot 可见的频道中发消息的人，都可以提及它。",
+  "connector.discord.accessEveryoneDescription": "凡是能在 Pokebots 可见的频道中发消息的人，都可以提及它。",
   // {roles} is a list of Discord role names, such as "Admin and Moderator".
   "connector.discord.accessRoles": "拥有 {roles} 的成员",
   "connector.discord.accessChoose": "选择角色",
   // {workspace} is the Discord server name.
-  "connector.discord.accessDialogTitle": "谁可以在 {workspace} 中使用 OpenBot？",
+  "connector.discord.accessDialogTitle": "谁可以在 {workspace} 中使用 Pokebots？",
   "connector.discord.accessDialogDescription": "不选择任何角色时，所有人都可以提及 OpenBot。",
   "connector.discord.accessLoading": "正在加载角色…",
   "connector.discord.accessLoadFailed": "Discord 角色未能加载",
@@ -243,12 +246,12 @@ export const messages = {
   "connector.discord.accessRoleDeleted": "{role}（已删除）",
   "connector.discord.accessSave": "保存",
   // {host} is the joined server's name.
-  "connector.discord.accessHostUpdate": "请更新 {host} 上的 OpenBot，以选择角色。",
+  "connector.discord.accessHostUpdate": "请更新 {host} 上的 Pokebots，以选择角色。",
   // Marketplace > Apps > Telegram: each chat adds the one OpenBot bot, and the Telegram
   // Orchestrator agent receives the messages of all chats, asks the team and answers.
   "connector.telegram.title": "Telegram",
   "connector.telegram.description":
-    "把 OpenBot 机器人加入 Telegram 群组，或与它开启私聊。Telegram 调度助手会找到合适的助手来回答。",
+    "把 Pokebots 机器人加入 Telegram 群组，或与它开启私聊。Telegram 调度助手会找到合适的助手来回答。",
   "connector.telegram.statusConnected": "已连接",
   "connector.telegram.statusAttention": "需要关注",
   // {count} is the number of linked Telegram chats.
@@ -271,22 +274,22 @@ export const messages = {
   "connector.telegram.chatsTitle": "聊天",
   "connector.telegram.groupDescription": "人们提及机器人或回复它的消息。",
   "connector.telegram.directDescription": "该聊天中的所有消息都会交给 Telegram 调度助手。",
-  "connector.telegram.helpRemoved": "OpenBot 机器人已不在该聊天中。请断开该聊天，然后重新添加机器人。",
+  "connector.telegram.helpRemoved": "Pokebots 机器人已不在该聊天中。请断开该聊天，然后重新添加机器人。",
   "connector.telegram.helpRelayUnavailable":
-    "OpenBot 无法在这台电脑上接收 Telegram 消息。请先登录，在服务器设置中为这台电脑命名，并保持 OpenBot 开着。",
+    "Pokebots 无法在这台电脑上接收 Telegram 消息。请先登录，在服务器设置中为这台电脑命名，并保持 Pokebots 开着。",
   "connector.telegram.helpRelayUnavailableHost":
-    "{host} 上的 OpenBot 无法接收 Telegram 消息。请在 {host} 上登录，在服务器设置中为该服务器命名，并保持 OpenBot 开着。",
-  "connector.telegram.helpError": "OpenBot 无法连接到该聊天。请重新连接，或断开该聊天。",
+    "{host} 上的 Pokebots 无法接收 Telegram 消息。请在 {host} 上登录，在服务器设置中为该服务器命名，并保持 Pokebots 开着。",
+  "connector.telegram.helpError": "Pokebots 无法连接到该聊天。请重新连接，或断开该聊天。",
   "connector.telegram.helpNotLinked": "此聊天未关联到此服务器。选择“重新连接”进行关联。",
-  "connector.telegram.retryAt": "Telegram 要求 OpenBot 等待，将于 {time} 重试。",
+  "connector.telegram.retryAt": "Telegram 要求 Pokebots 等待，将于 {time} 重试。",
   "connector.telegram.pause": "暂停",
   "connector.telegram.resume": "恢复",
   "connector.telegram.reconnect": "重新连接",
   "connector.telegram.disconnectChat": "断开连接",
   "connector.telegram.disconnectAllTitle": "断开 Telegram",
-  "connector.telegram.disconnectAllSummary": "所有聊天都将断开，其他人无法再通过 OpenBot 机器人联系你的助手。",
+  "connector.telegram.disconnectAllSummary": "所有聊天都将断开，其他人无法再通过 Pokebots 机器人联系你的助手。",
   "connector.telegram.disconnectAllSummaryOrchestrator":
-    "所有聊天都将断开，Telegram 调度助手及其对话将从 OpenBot 中删除。",
+    "所有聊天都将断开，Telegram 调度助手及其对话将从 Pokebots 中删除。",
   // {action} is a button, such as Pause; {name} is the chat name.
   "connector.telegram.rowAction": "{action}：{name}",
   "connector.telegram.linkChat": "关联聊天",
@@ -294,7 +297,7 @@ export const messages = {
   "connector.telegram.openDirectChat": "开启私聊",
   "connector.telegram.orchestratorTitle": "Telegram 调度助手",
   "connector.telegram.orchestratorDescription":
-    "该助手接收来自你所有 Telegram 聊天中发给 OpenBot 的消息。简单的问题它自己回答，其余的交给合适的助手处理，并把答案发在聊天中。",
+    "该助手接收来自你所有 Telegram 聊天中发给 Pokebots 的消息。简单的问题它自己回答，其余的交给合适的助手处理，并把答案发在聊天中。",
   "connector.telegram.orchestratorNone": "还没有助手回答",
   "connector.telegram.orchestratorNoneDescription": "请添加 Telegram 调度助手，否则 Telegram 中不会有人回答。",
   "connector.telegram.mentionNote": "在群组中请提及机器人或回复它的消息；在私聊中所有消息都会发给机器人。",
@@ -303,7 +306,7 @@ export const messages = {
   "connector.telegram.stepAgent": "助手",
   "connector.telegram.connectTitle": "关联 Telegram 聊天",
   "connector.telegram.connectDescription":
-    "把 OpenBot 机器人加入群组，或与它开启私聊。一个机器人即可服务你的所有聊天。",
+    "把 Pokebots 机器人加入群组，或与它开启私聊。一个机器人即可服务你的所有聊天。",
   "connector.telegram.connectStepBrowser": "Telegram 会在浏览器中打开",
   "connector.telegram.connectStepPick": "选择群组，或在私聊中点击“开始”",
   "connector.telegram.connectStepReturn": "聊天关联完成后该对话框会继续",
@@ -311,20 +314,20 @@ export const messages = {
   "connector.telegram.agentStepTitle": "添加 Telegram 调度助手",
   // {chat} is the Telegram chat name.
   "connector.telegram.agentStepDescription":
-    "这个新助手会回答 {chat} 中以及你之后关联的每个聊天中发给 OpenBot 的消息。",
+    "这个新助手会回答 {chat} 中以及你之后关联的每个聊天中发给 Pokebots 的消息。",
   "connector.telegram.orchestratorName": "Telegram 调度助手",
   "connector.telegram.orchestratorRole": "在 Telegram 中回答并调度团队",
-  "connector.telegram.orchestratorDoesReceive": "优先接收所有发给 OpenBot 的 Telegram 消息",
+  "connector.telegram.orchestratorDoesReceive": "优先接收所有发给 Pokebots 的 Telegram 消息",
   "connector.telegram.orchestratorDoesDelegate": "把每项任务交给最合适的助手",
   "connector.telegram.orchestratorDoesAnswer": "把答案发到 Telegram 聊天中",
   "connector.telegram.orchestratorModel": "模型",
-  "connector.telegram.doneTitle": "OpenBot 已加入 {chat}",
+  "connector.telegram.doneTitle": "Pokebots 已加入 {chat}",
   "connector.telegram.done": "完成",
   "connector.telegram.disconnectTitle": "断开 {chat}？",
-  "connector.telegram.leaveDescription": "OpenBot 机器人会退出 {chat}，OpenBot 将停止在那里回答。",
-  "connector.telegram.disconnectEffect": "{chat} 中的人将无法再通过 OpenBot 机器人联系你的助手。",
-  "connector.telegram.removeEffectKept": "对话和 Telegram 调度助手会保留在 OpenBot 中。",
-  "connector.telegram.removeEffectDeleted": "这是最后一个聊天，因此 Telegram 调度助手及其对话将从 OpenBot 中删除。",
+  "connector.telegram.leaveDescription": "Pokebots 机器人会退出 {chat}，Pokebots 将停止在那里回答。",
+  "connector.telegram.disconnectEffect": "{chat} 中的人将无法再通过 Pokebots 机器人联系你的助手。",
+  "connector.telegram.removeEffectKept": "对话和 Telegram 调度助手会保留在 Pokebots 中。",
+  "connector.telegram.removeEffectDeleted": "这是最后一个聊天，因此 Telegram 调度助手及其对话将从 Pokebots 中删除。",
   "connector.telegram.keep": "保持连接",
   "connector.telegram.close": "关闭",
   "connector.whatsapp.title": "WhatsApp",
@@ -352,13 +355,13 @@ export const messages = {
   "connector.whatsapp.actionFailed": "WhatsApp 没有接受该更改",
   "connector.whatsapp.numbersTitle": "号码",
   "connector.whatsapp.linkNumber": "关联号码",
-  "connector.whatsapp.ownNumberNote": "你的“给自己发消息”聊天和你允许的人可以联系 OpenBot。",
-  "connector.whatsapp.dedicatedNote": "你允许的人可以联系 OpenBot。其他人会收到一个代码，需要把它交给你。",
+  "connector.whatsapp.ownNumberNote": "你的“给自己发消息”聊天和你允许的人可以联系 Pokebots。",
+  "connector.whatsapp.dedicatedNote": "你允许的人可以联系 Pokebots。其他人会收到一个代码，需要把它交给你。",
   "connector.whatsapp.helpLoggedOut": "WhatsApp 已把这台电脑从已关联的设备中移除。请重新关联该号码。",
   "connector.whatsapp.helpLoggedOutHost": "WhatsApp 已把这台服务器从已关联的设备中移除。请重新关联该号码。",
-  "connector.whatsapp.helpError": "OpenBot 无法通过该号码连接 WhatsApp。请重新连接，或断开该号码。",
-  "connector.whatsapp.helpKeysUnreadable": "OpenBot 无法读取该号码已保存的密钥。请重新关联该号码。",
-  "connector.whatsapp.retryAt": "WhatsApp 要求 OpenBot 等待，将于 {time} 重试。",
+  "connector.whatsapp.helpError": "Pokebots 无法通过该号码连接 WhatsApp。请重新连接，或断开该号码。",
+  "connector.whatsapp.helpKeysUnreadable": "Pokebots 无法读取该号码已保存的密钥。请重新关联该号码。",
+  "connector.whatsapp.retryAt": "WhatsApp 要求 Pokebots 等待，将于 {time} 重试。",
   "connector.whatsapp.pause": "暂停",
   "connector.whatsapp.resume": "恢复",
   "connector.whatsapp.reconnect": "重新连接",
@@ -367,21 +370,21 @@ export const messages = {
   "connector.whatsapp.disconnectAllTitle": "断开 WhatsApp",
   "connector.whatsapp.disconnectAllSummary": "所有号码都将断开，其他人无法再通过 WhatsApp 联系你的助手。",
   "connector.whatsapp.disconnectAllSummaryOrchestrator":
-    "所有号码都将断开，WhatsApp 调度助手及其对话将从 OpenBot 中删除。",
+    "所有号码都将断开，WhatsApp 调度助手及其对话将从 Pokebots 中删除。",
   // {action} is a button, such as Pause; {name} is the WhatsApp number or a person's name.
   "connector.whatsapp.rowAction": "{action}：{name}",
   "connector.whatsapp.ownNumber": "个人号码",
   "connector.whatsapp.ownNumberDescription":
-    "只有你的“给自己发消息”聊天和你允许的人可以发消息。其他人不会收到回复。关闭后，OpenBot 会给陌生人回复一个代码。",
+    "只有你的“给自己发消息”聊天和你允许的人可以发消息。其他人不会收到回复。关闭后，Pokebots 会给陌生人回复一个代码。",
   "connector.whatsapp.workingMessage": "“正在处理…”消息",
   "connector.whatsapp.workingMessageDescription":
-    "代理工作时，OpenBot 会发送这条消息，随后用回答替换它。等待之前请求的新请求也会收到一条等待消息。关闭后只发送回答。",
+    "代理工作时，Pokebots 会发送这条消息，随后用回答替换它。等待之前请求的新请求也会收到一条等待消息。关闭后只发送回答。",
   "connector.whatsapp.statusReactions": "状态表情回应",
   "connector.whatsapp.statusReactionsDescription":
-    "消息到达时，OpenBot 会用 👀 回应；回答准备好后用 ✅ 回应。关闭后不发送任何表情回应。",
+    "消息到达时，Pokebots 会用 👀 回应；回答准备好后用 ✅ 回应。关闭后不发送任何表情回应。",
   "connector.whatsapp.orchestratorTitle": "WhatsApp 调度助手",
   "connector.whatsapp.orchestratorDescription":
-    "该助手接收你所有已关联号码中发给 OpenBot 的消息。简单的问题它自己回答，其余的交给合适的助手处理，并在 WhatsApp 中回答。",
+    "该助手接收你所有已关联号码中发给 Pokebots 的消息。简单的问题它自己回答，其余的交给合适的助手处理，并在 WhatsApp 中回答。",
   "connector.whatsapp.orchestratorNone": "还没有助手回答",
   "connector.whatsapp.orchestratorNoneDescription": "请添加 WhatsApp 调度助手，否则 WhatsApp 中不会有人回答。",
   "connector.whatsapp.note": "在个人号码上，请在“给自己发消息”聊天中发消息。你允许的人给该号码发消息。",
@@ -394,10 +397,10 @@ export const messages = {
   "connector.whatsapp.kindLabel": "号码",
   "connector.whatsapp.kindPersonal": "我的个人号码",
   "connector.whatsapp.kindPersonalDescription":
-    "OpenBot 只回答你的“给自己发消息”聊天和你允许的人。其他人不会收到回复。",
-  "connector.whatsapp.kindDedicated": "OpenBot 专用号码",
+    "Pokebots 只回答你的“给自己发消息”聊天和你允许的人。其他人不会收到回复。",
+  "connector.whatsapp.kindDedicated": "Pokebots 专用号码",
   "connector.whatsapp.kindDedicatedDescription":
-    "OpenBot 会用这个号码回复每个陌生人一个代码，需要把它交给你。你在这里批准他们。",
+    "Pokebots 会用这个号码回复每个陌生人一个代码，需要把它交给你。你在这里批准他们。",
   "connector.whatsapp.methodLabel": "关联方式",
   "connector.whatsapp.methodQr": "二维码",
   "connector.whatsapp.methodCode": "配对码",
@@ -423,26 +426,26 @@ export const messages = {
   "connector.whatsapp.failedTimeout": "代码在手机使用前已过期。",
   "connector.whatsapp.failedRefused": "WhatsApp 拒绝了关联。请等待几分钟后重试。",
   "connector.whatsapp.failedBusy": "另一个关联正在进行。请等待它结束后重试。",
-  "connector.whatsapp.failedUnavailable": "OpenBot 无法连接 WhatsApp。请检查网络连接。",
+  "connector.whatsapp.failedUnavailable": "Pokebots 无法连接 WhatsApp。请检查网络连接。",
   "connector.whatsapp.tryAgain": "重试",
   "connector.whatsapp.agentStepTitle": "添加 WhatsApp 调度助手",
   // {number} is the WhatsApp number or its name.
   "connector.whatsapp.agentStepDescription":
-    "这个新助手会回答 {number} 以及你之后关联的每个号码上发给 OpenBot 的消息。",
+    "这个新助手会回答 {number} 以及你之后关联的每个号码上发给 Pokebots 的消息。",
   "connector.whatsapp.orchestratorName": "WhatsApp 调度助手",
   "connector.whatsapp.orchestratorRole": "在 WhatsApp 中回答并调度团队",
-  "connector.whatsapp.orchestratorDoesReceive": "优先接收所有发给 OpenBot 的 WhatsApp 消息",
+  "connector.whatsapp.orchestratorDoesReceive": "优先接收所有发给 Pokebots 的 WhatsApp 消息",
   "connector.whatsapp.orchestratorDoesDelegate": "把每项任务交给最合适的助手",
   "connector.whatsapp.orchestratorDoesAnswer": "在 WhatsApp 聊天中回答",
   "connector.whatsapp.orchestratorModel": "模型",
-  "connector.whatsapp.doneTitle": "OpenBot 已关联到 {number}",
+  "connector.whatsapp.doneTitle": "Pokebots 已关联到 {number}",
   "connector.whatsapp.done": "完成",
   "connector.whatsapp.disconnectTitle": "断开 {number}？",
   "connector.whatsapp.disconnectDescription":
-    "OpenBot 会在 {number} 上退出 WhatsApp。如果 OpenBot 之前处于关闭状态，还需在 WhatsApp >“已关联的设备”中移除该设备。",
+    "Pokebots 会在 {number} 上退出 WhatsApp。如果 Pokebots 之前处于关闭状态，还需在 WhatsApp >“已关联的设备”中移除该设备。",
   "connector.whatsapp.disconnectEffect": "其他人将无法再通过 {number} 联系你的助手。",
-  "connector.whatsapp.removeEffectKept": "对话和 WhatsApp 调度助手会保留在 OpenBot 中。",
-  "connector.whatsapp.removeEffectDeleted": "这是最后一个号码，因此 WhatsApp 调度助手及其对话将从 OpenBot 中删除。",
+  "connector.whatsapp.removeEffectKept": "对话和 WhatsApp 调度助手会保留在 Pokebots 中。",
+  "connector.whatsapp.removeEffectDeleted": "这是最后一个号码，因此 WhatsApp 调度助手及其对话将从 Pokebots 中删除。",
   "connector.whatsapp.keep": "保持关联",
   "connector.whatsapp.close": "关闭",
   // Who can give work through one number: contacts by phone number, and groups.
@@ -463,7 +466,7 @@ export const messages = {
   "connector.whatsapp.groupDescription": "该群组中的人提及这个号码或回复它的消息时，可以给你的助手分配工作。",
   "connector.whatsapp.groupSearch": "搜索群组",
   "connector.whatsapp.groupsLoading": "正在读取群组…",
-  "connector.whatsapp.groupsLoadFailed": "OpenBot 无法读取群组",
+  "connector.whatsapp.groupsLoadFailed": "Pokebots 无法读取群组",
   "connector.whatsapp.groupsEmpty": "该号码不在任何群组中。",
   "connector.whatsapp.groupsNoMatch": "没有该名称的群组。",
   "connector.whatsapp.groupAdded": "已添加",
@@ -478,9 +481,9 @@ export const messages = {
   // Marketplace > 1Password: a vault that the user shares with OpenBot through a service account.
   "connector.onePassword.title": "1Password",
   "connector.onePassword.description":
-    "通过服务账号把一个专用的 1Password 保险库共享给 OpenBot，让助手可以在 OpenBot 浏览器中登录网站。",
+    "通过服务账号把一个专用的 1Password 保险库共享给 Pokebots，让助手可以在 Pokebots 浏览器中登录网站。",
   "connector.onePassword.howItWorks":
-    "连接时会在你的 1Password 账号中创建“Shared with OpenBot”保险库，以及一个只能读取该保险库的服务账号。OpenBot 在这台电脑的浏览器中填充已保存的登录信息，因此只会共享你移入该保险库的条目。助手永远看不到密码。",
+    "连接时会在你的 1Password 账号中创建“Shared with OpenBot”保险库，以及一个只能读取该保险库的服务账号。Pokebots 在这台电脑的浏览器中填充已保存的登录信息，因此只会共享你移入该保险库的条目。助手永远看不到密码。",
   "connector.onePassword.connect": "连接 1Password",
   // The three setup steps before a connection, each with the one button it needs.
   "connector.onePassword.setupTitle": "设置",
@@ -489,18 +492,18 @@ export const messages = {
   "connector.onePassword.stepCliInstalling": "正在从 1Password 下载 1Password CLI",
   // {version} is a version number, such as 2.39.0.
   "connector.onePassword.stepCliReady": "已安装版本 {version}。",
-  "connector.onePassword.stepCliMissing": "OpenBot 会从 1Password 下载到自己的文件夹，不需要管理员密码。",
-  "connector.onePassword.stepCliManual": "OpenBot 无法在这台电脑上安装它。请从 1Password 安装后再回到该页面。",
+  "connector.onePassword.stepCliMissing": "Pokebots 会从 1Password 下载到自己的文件夹，不需要管理员密码。",
+  "connector.onePassword.stepCliManual": "Pokebots 无法在这台电脑上安装它。请从 1Password 安装后再回到该页面。",
   "connector.onePassword.installCli": "安装",
   "connector.onePassword.stepAppTitle": "开启 CLI 集成",
   "connector.onePassword.stepAppDescription": "在 1Password 应用中打开“设置 > 开发者”，开启“与 1Password CLI 集成”。",
   "connector.onePassword.stepAppReady": "1Password 应用已允许 CLI 创建共享保险库。",
   "connector.onePassword.openApp": "打开 1Password",
-  "connector.onePassword.openAppFailed": "OpenBot 无法打开 1Password。",
+  "connector.onePassword.openAppFailed": "Pokebots 无法打开 1Password。",
   "connector.onePassword.checkAgain": "重新检查",
   "connector.onePassword.stepVaultTitle": "创建共享保险库",
   "connector.onePassword.stepVaultDescription":
-    "OpenBot 会创建“Shared with OpenBot”保险库和一个只能读取它的服务账号。1Password 会请求你批准。",
+    "Pokebots 会创建“Shared with OpenBot”保险库和一个只能读取它的服务账号。1Password 会请求你批准。",
   "connector.onePassword.useTokenDescription": "不走这些步骤，改为粘贴 1Password.com 上的服务账号令牌。",
   "connector.onePassword.useTokenAction": "使用令牌",
   "connector.onePassword.tokenLabel": "服务账号令牌",
@@ -509,7 +512,7 @@ export const messages = {
   "connector.onePassword.approveInApp": "请在 1Password 应用中批准该请求",
   "connector.onePassword.cancel": "取消",
   "connector.onePassword.chooseAccountTitle": "选择账号",
-  "connector.onePassword.chooseAccountDescription": "OpenBot 会在你选择的账号中创建共享保险库。",
+  "connector.onePassword.chooseAccountDescription": "Pokebots 会在你选择的账号中创建共享保险库。",
   "connector.onePassword.useAccount": "使用该账号",
   "connector.onePassword.vaultTitle": "共享保险库",
   "connector.onePassword.vaultDescription": "在 1Password 中把登录信息移入该保险库，助手即可用它登录。移出后即停止。",
@@ -519,15 +522,15 @@ export const messages = {
   "connector.onePassword.disconnect": "断开连接",
   "connector.onePassword.disconnectTitle": "断开 1Password",
   "connector.onePassword.disconnectSummary":
-    "OpenBot 会忘记该令牌。保险库和服务账号仍保留在 1Password 中，如不再需要请在那里删除。",
-  "connector.onePassword.actionFailed": "OpenBot 无法更改 1Password 连接。",
+    "Pokebots 会忘记该令牌。保险库和服务账号仍保留在 1Password 中，如不再需要请在那里删除。",
+  "connector.onePassword.actionFailed": "Pokebots 无法更改 1Password 连接。",
   "connector.onePassword.statusConnected": "已连接",
   "connector.onePassword.statusConnecting": "连接中",
   // The same page for the connection of a joined server. {host} is the server name, such as Studio.
   "connector.onePassword.descriptionHost":
-    "通过服务账号把一个专用的 1Password 保险库共享给 {host} 上的 OpenBot，让 {host} 上的助手可以在其浏览器中登录网站。",
+    "通过服务账号把一个专用的 1Password 保险库共享给 {host} 上的 Pokebots，让 {host} 上的助手可以在其浏览器中登录网站。",
   "connector.onePassword.howItWorksHost":
-    "{host} 使用服务账号令牌连接。请在 1Password.com 上创建一个只能读取你共享给 OpenBot 的保险库的服务账号，然后把它的令牌粘贴到这里。{host} 会校验并保存该令牌，这台电脑不保存。助手永远看不到密码。",
+    "{host} 使用服务账号令牌连接。请在 1Password.com 上创建一个只能读取你共享给 Pokebots 的保险库的服务账号，然后把它的令牌粘贴到这里。{host} 会校验并保存该令牌，这台电脑不保存。助手永远看不到密码。",
   "connector.onePassword.disconnectSummaryHost":
     "{host} 会忘记该令牌。保险库和服务账号仍保留在 1Password 中，如不再需要请在那里删除。",
   "connector.bitwarden.title": "Bitwarden",
@@ -535,24 +538,24 @@ export const messages = {
   "connector.bitwarden.setup":
     "请安装 Bitwarden CLI 并用 bw login 登录。创建一个名为 Shared with OpenBot 的文件夹，只把允许助手使用的登录信息放进去。运行 bw unlock --raw，把会话密钥粘贴到下方。请勿粘贴主密码。",
   "connector.bitwarden.scope":
-    "这台电脑上的所有助手都可以使用 Shared with OpenBot 中匹配的登录信息。OpenBot 只按精确的 HTTPS 来源匹配，不会使用需要主密码提示或自定义 URI 匹配规则的条目。",
+    "这台电脑上的所有助手都可以使用 Shared with OpenBot 中匹配的登录信息。Pokebots 只按精确的 HTTPS 来源匹配，不会使用需要主密码提示或自定义 URI 匹配规则的条目。",
   "connector.bitwarden.session":
-    "会话密钥只保存在内存中。连续 8 小时未使用保险库或 OpenBot 退出后，需要重新连接。断开只停止 OpenBot 的访问，不会锁定其他 Bitwarden 客户端。",
+    "会话密钥只保存在内存中。连续 8 小时未使用保险库或 Pokebots 退出后，需要重新连接。断开只停止 Pokebots 的访问，不会锁定其他 Bitwarden 客户端。",
   "connector.bitwarden.sessionKey": "Bitwarden 会话密钥",
   "connector.bitwarden.connect": "连接 Bitwarden",
   "connector.bitwarden.disconnect": "断开 Bitwarden",
   "connector.bitwarden.disconnectAction": "断开",
   "connector.bitwarden.disconnectSummary":
-    "OpenBot 会忘记会话密钥。代理将无法再从 Bitwarden 填写登录信息。其他 Bitwarden 客户端保持解锁状态。",
+    "Pokebots 会忘记会话密钥。代理将无法再从 Bitwarden 填写登录信息。其他 Bitwarden 客户端保持解锁状态。",
   "connector.bitwarden.disconnectSummaryHost":
     "{host} 会删除 API 密钥和主密码。{host} 上的代理将无法再从 Bitwarden 填写登录信息。",
   "connector.bitwarden.connected": "已连接",
-  "connector.bitwarden.actionFailed": "OpenBot 无法更改 Bitwarden 连接。",
+  "connector.bitwarden.actionFailed": "Pokebots 无法更改 Bitwarden 连接。",
   "connector.bitwarden.descriptionHost": "在 {host} 上用 Bitwarden 或 Vaultwarden 填充浏览器登录信息。",
   "connector.bitwarden.setupHost":
     "{host} 使用自己的 Bitwarden CLI 登录。请在你的保险库中创建一个名为 Shared with OpenBot 的文件夹，只把允许助手使用的登录信息放进去。在网页版保险库中打开“设置 › 安全 › 密钥”，查看你的 API 密钥。然后在下方填写服务器地址、client_id、client_secret 和你的主密码。",
   "connector.bitwarden.scopeHost":
-    "{host} 上的所有助手都可以使用 Shared with OpenBot 中匹配的登录信息。OpenBot 只按精确的 HTTPS 来源匹配，不会使用需要主密码提示或自定义 URI 匹配规则的条目。",
+    "{host} 上的所有助手都可以使用 Shared with OpenBot 中匹配的登录信息。Pokebots 只按精确的 HTTPS 来源匹配，不会使用需要主密码提示或自定义 URI 匹配规则的条目。",
   "connector.bitwarden.sessionHost":
     "{host} 会加密保存 API 密钥和主密码，因此重启后可以再次解锁。这台电脑不保存它们。断开连接会把它们从 {host} 上移除。{host} 必须能通过 HTTPS 访问该服务器地址。",
   "connector.bitwarden.serverUrl": "服务器地址",
@@ -574,18 +577,18 @@ export const messages = {
   "connector.protonPass.keyPlaceholder": "pst_…",
   "connector.protonPass.setupTitle": "设置",
   "connector.protonPass.setupDescription":
-    "“连接”会在浏览器中打开 Proton 登录。然后 OpenBot 创建共享保管库，并只保留它的只读密钥。",
+    "“连接”会在浏览器中打开 Proton 登录。然后 Pokebots 创建共享保管库，并只保留它的只读密钥。",
   "connector.protonPass.setupDescriptionHost":
     "“连接”会在浏览器中打开 Proton 登录。然后 {host} 创建共享保管库，并只保留它的只读密钥。",
   "connector.protonPass.vaultName": "Shared with OpenBot",
-  "connector.protonPass.vaultSetup": "连接时 OpenBot 会创建此保管库。将登录信息移入其中即可共享。",
+  "connector.protonPass.vaultSetup": "连接时 Pokebots 会创建此保管库。将登录信息移入其中即可共享。",
   "connector.protonPass.showSteps": "显示步骤",
   "connector.protonPass.stepsLabel": "连接步骤",
   "connector.protonPass.stepSignIn": "登录",
   "connector.protonPass.stepVault": "创建共享保管库",
   "connector.protonPass.stepDone": "完成",
   "connector.protonPass.signInTitle": "登录 Proton",
-  "connector.protonPass.signInStarting": "OpenBot 正在开始登录。Proton 页面会在浏览器中打开。",
+  "connector.protonPass.signInStarting": "Pokebots 正在开始登录。Proton 页面会在浏览器中打开。",
   "connector.protonPass.signInDescription": "登录页面已在浏览器中打开。Proton 会要求输入密码和第二重验证。",
   "connector.protonPass.signInDescriptionHost":
     "{host} 的登录页面已在浏览器中打开。Proton 会要求输入密码和第二重验证。",
@@ -594,7 +597,7 @@ export const messages = {
   "connector.protonPass.extraPasswordLabel": "额外密码",
   "connector.protonPass.continue": "继续",
   "connector.protonPass.setupStepTitle": "正在创建共享保管库",
-  "connector.protonPass.setupStepDescription": "OpenBot 创建保管库“{vault}”及其只读密钥，然后退出你的 Proton 会话。",
+  "connector.protonPass.setupStepDescription": "Pokebots 创建保管库“{vault}”及其只读密钥，然后退出你的 Proton 会话。",
   "connector.protonPass.doneTitle": "Proton Pass 已连接",
   "connector.protonPass.doneDescription": "将登录信息移入“{vault}”，智能体即可用它们登录。",
   "connector.protonPass.failedTitle": "Proton Pass 未连接",
@@ -621,24 +624,24 @@ export const messages = {
   "connector.protonPass.keyNoExpiry": "只读。永不过期。",
   "connector.protonPass.disconnectTitle": "断开 Proton Pass",
   "connector.protonPass.disconnectSummary":
-    "OpenBot 会删除它在这台电脑上的访问密钥。保管库及其登录信息保留在你的 Proton 账户中。",
+    "Pokebots 会删除它在这台电脑上的访问密钥。保管库及其登录信息保留在你的 Proton 账户中。",
   "connector.protonPass.disconnectSummaryHost":
-    "OpenBot 会删除它在 {host} 上的访问密钥。保管库及其登录信息保留在你的 Proton 账户中。",
+    "Pokebots 会删除它在 {host} 上的访问密钥。保管库及其登录信息保留在你的 Proton 账户中。",
   "connector.protonPass.disconnect": "断开连接",
-  "connector.protonPass.actionFailed": "OpenBot 无法更改 Proton Pass 连接。",
+  "connector.protonPass.actionFailed": "Pokebots 无法更改 Proton Pass 连接。",
   "connector.keeper.title": "Keeper",
   "connector.keeper.description": "让智能体使用共享 Keeper 文件夹中的登录信息登录网站。",
   "connector.keeper.descriptionHost": "让 {host} 上的智能体使用共享 Keeper 文件夹中的登录信息登录网站。",
   "connector.keeper.connect": "连接",
   "connector.keeper.setupTitle": "登录",
   "connector.keeper.setupDescription":
-    "输入你的 Keeper 邮箱和主密码。OpenBot 只会把它们交给 Keeper Commander 一次，不会保存。Keeper Commander 是 Keeper 的命令行工具。",
+    "输入你的 Keeper 邮箱和主密码。Pokebots 只会把它们交给 Keeper Commander 一次，不会保存。Keeper Commander 是 Keeper 的命令行工具。",
   "connector.keeper.setupDescriptionHost":
     "输入你的 Keeper 邮箱和主密码。{host} 只会把它们交给 Keeper Commander 一次，不会保存。Keeper Commander 是 Keeper 的命令行工具。",
   "connector.keeper.emailLabel": "邮箱",
   "connector.keeper.passwordLabel": "主密码",
   "connector.keeper.folderName": "Shared with OpenBot",
-  "connector.keeper.folderSetup": "连接时 OpenBot 会在你的保险库中创建此文件夹。将登录信息移入其中即可共享。",
+  "connector.keeper.folderSetup": "连接时 Pokebots 会在你的保险库中创建此文件夹。将登录信息移入其中即可共享。",
   "connector.keeper.showSteps": "显示步骤",
   "connector.keeper.stepsLabel": "连接步骤",
   "connector.keeper.stepSignIn": "登录",
@@ -656,7 +659,7 @@ export const messages = {
   "connector.keeper.codeWrong": "验证码不正确。请重新输入。",
   "connector.keeper.continue": "继续",
   "connector.keeper.setupStepTitle": "正在创建共享文件夹",
-  "connector.keeper.setupStepDescription": "OpenBot 会在你的保险库中创建文件夹“{folder}”，并为此设备开启登录。",
+  "connector.keeper.setupStepDescription": "Pokebots 会在你的保险库中创建文件夹“{folder}”，并为此设备开启登录。",
   "connector.keeper.doneTitle": "Keeper 已连接",
   "connector.keeper.doneDescription": "将登录信息移入“{folder}”，智能体即可用它们登录。",
   "connector.keeper.failedTitle": "Keeper 未连接",
@@ -676,9 +679,9 @@ export const messages = {
   "connector.keeper.loginsLoading": "正在统计登录信息…",
   "connector.keeper.disconnectTitle": "断开 Keeper",
   "connector.keeper.disconnectSummary":
-    "OpenBot 会结束它在这台电脑上的 Keeper 会话。文件夹及其登录信息保留在你的 Keeper 保险库中。",
+    "Pokebots 会结束它在这台电脑上的 Keeper 会话。文件夹及其登录信息保留在你的 Keeper 保险库中。",
   "connector.keeper.disconnectSummaryHost":
-    "OpenBot 会结束它在 {host} 上的 Keeper 会话。文件夹及其登录信息保留在你的 Keeper 保险库中。",
+    "Pokebots 会结束它在 {host} 上的 Keeper 会话。文件夹及其登录信息保留在你的 Keeper 保险库中。",
   "connector.keeper.disconnect": "断开连接",
-  "connector.keeper.actionFailed": "OpenBot 无法更改 Keeper 连接。",
+  "connector.keeper.actionFailed": "Pokebots 无法更改 Keeper 连接。",
 } as const satisfies PartialTranslation<typeof source>;

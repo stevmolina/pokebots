@@ -15,9 +15,9 @@
 import assert from "node:assert/strict";
 import { mkdirSync } from "node:fs";
 import { resolve } from "node:path";
-import { agentProviderDescriptor, isAgentProvider } from "@openbot/contracts/agent-providers";
-import type { AgentTask, AgentTasksSnapshot, QueueSnapshot } from "@openbot/contracts/ipc";
-import { translateFor } from "@openbot/i18n";
+import { agentProviderDescriptor, isAgentProvider } from "@pokebots/contracts/agent-providers";
+import type { AgentTask, AgentTasksSnapshot, QueueSnapshot } from "@pokebots/contracts/ipc";
+import { translateFor } from "@pokebots/i18n";
 import type { Locator } from "playwright-core";
 import { argument, connectChannelE2e, LONG_PROMPT, SHORT_PROMPT, waitFor, writeReport } from "./channel-e2e-support";
 

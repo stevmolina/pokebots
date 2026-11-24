@@ -12,7 +12,7 @@
 // Electron-free, with the cipher injected.
 
 import { readFile } from "node:fs/promises";
-import { sourceText } from "@openbot/i18n/source";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect, Result, Schema, Semaphore } from "effect";
 import {
   isEmptyStoredFile,

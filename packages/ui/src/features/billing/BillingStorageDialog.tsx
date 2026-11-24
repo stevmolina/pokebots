@@ -1,4 +1,4 @@
-import { type BillingServerPlan, type BillingStorageUpgradeTier, serverStorageGb } from "@openbot/contracts/billing";
+import { type BillingServerPlan, type BillingStorageUpgradeTier, serverStorageGb } from "@pokebots/contracts/billing";
 import { createStore } from "solid-js";
 import { useText } from "../../text";
 import type { BillingStore } from "./billing-store";

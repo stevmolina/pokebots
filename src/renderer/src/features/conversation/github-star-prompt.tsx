@@ -1,5 +1,5 @@
-import { toast } from "@openbot/ui";
-import { GitHubStarToast } from "@openbot/ui/features/github-star/GitHubStarToast";
+import { toast } from "@pokebots/ui";
+import { GitHubStarToast } from "@pokebots/ui/features/github-star/GitHubStarToast";
 import { createSignal } from "solid-js";
 import { appPort } from "../../app-port";
 

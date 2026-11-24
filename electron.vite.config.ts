@@ -6,6 +6,7 @@ import { defineConfig, externalizeDepsPlugin } from "electron-vite";
 import { lazyLanguageCatalogs } from "./packages/i18n/src/vite-plugin";
 import { brandPlugins } from "./scripts/brand-layer";
 import { devWorktree } from "./scripts/dev-worktree-vite-plugin";
+import { LEGACY_SCOPE_NAMES } from "./scripts/legacy-openbot-scope";
 import { tailwindPropertyFallbackRemoval } from "./scripts/tailwind-property-fallback";
 
 const rendererPort = readRendererPort(process.env.OPENBOT_DEV_RENDERER_PORT);
@@ -26,15 +27,19 @@ export default defineConfig({
       ...brand,
       externalizeDepsPlugin({
         exclude: [
-          "@openbot/brand",
-          "@openbot/contracts",
-          "@openbot/i18n",
+          "@pokebots/brand",
+          "@pokebots/contracts",
+          "@pokebots/i18n",
+          // Released SQLite migrations keep this specifier. Bundle its workspace alias too.
           "@openbot/logging",
-          "@openbot/team-client",
-          "@openbot/telemetry",
-          "@openbot/user-errors",
+          "@pokebots/logging",
+          "@pokebots/team-client",
+          "@pokebots/telemetry",
+          "@pokebots/user-errors",
           // Its vendored Baileys source is TypeScript too. Baileys' own dependencies stay external.
-          "@openbot/whatsapp",
+          "@pokebots/whatsapp",
+          // Temporary: the old `@openbot/<package>` names of open branches (scripts/legacy-openbot-scope.ts).
+          ...LEGACY_SCOPE_NAMES,
         ],
       }),
     ],
@@ -61,7 +66,7 @@ export default defineConfig({
   },
   preload: {
     // A sandboxed preload can only require Electron, so the bundle holds zod, which the contracts import.
-    plugins: [...brand, externalizeDepsPlugin({ exclude: ["@openbot/contracts", "zod"] })],
+    plugins: [...brand, externalizeDepsPlugin({ exclude: ["@pokebots/contracts", "zod"] })],
     build: {
       watch: devWatch,
       rollupOptions: {

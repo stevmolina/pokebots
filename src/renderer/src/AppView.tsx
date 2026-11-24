@@ -1,6 +1,6 @@
-import { AppLoadingScreen } from "@openbot/ui/features/account/AppLoadingScreen";
-import { UpdateRequiredScreen } from "@openbot/ui/features/updates/UpdateRequiredScreen";
-import { useText } from "@openbot/ui/text";
+import { AppLoadingScreen } from "@pokebots/ui/features/account/AppLoadingScreen";
+import { UpdateRequiredScreen } from "@pokebots/ui/features/updates/UpdateRequiredScreen";
+import { useText } from "@pokebots/ui/text";
 import type { JSX } from "@solidjs/web";
 import { createEffect, createMemo, createSignal, Loading, Show } from "solid-js";
 import { appPort } from "./app-port";

@@ -1,11 +1,11 @@
-import type { RemoteAuthEvent } from "@openbot/contracts/signal-protocol/auth-events";
+import type { RemoteAuthEvent } from "@pokebots/contracts/signal-protocol/auth-events";
 import {
   DISCORD_UPLOAD_BYTES_LIMIT,
   type DiscordApiErrorBody,
   type DiscordApiErrorCode,
   type DiscordApiRequest,
-} from "@openbot/contracts/signal-protocol/discord-api";
-import { DISCORD_API_PATH } from "@openbot/contracts/signal-protocol/discord-route";
+} from "@pokebots/contracts/signal-protocol/discord-api";
+import { DISCORD_API_PATH } from "@pokebots/contracts/signal-protocol/discord-route";
 import {
   GITHUB_DELIVERY_BODY_BYTES_LIMIT,
   GITHUB_DELIVERY_HEADER,
@@ -15,12 +15,12 @@ import {
   GITHUB_EVENTS_PATH,
   GITHUB_SIGNATURE_HEADER,
   GITHUB_SIGNATURE_PATTERN,
-} from "@openbot/contracts/signal-protocol/github-route";
+} from "@pokebots/contracts/signal-protocol/github-route";
 import {
   WEBHOOK_DELIVERY_BODY_BYTES_LIMIT,
   type WebhookDeliveryStatus,
-} from "@openbot/contracts/signal-protocol/messages";
-import { SLACK_EVENTS_PATH } from "@openbot/contracts/signal-protocol/slack-route";
+} from "@pokebots/contracts/signal-protocol/messages";
+import { SLACK_EVENTS_PATH } from "@pokebots/contracts/signal-protocol/slack-route";
 import {
   TELEGRAM_BOT_ID_PATTERN,
   TELEGRAM_CHAT_ID_PATTERN,
@@ -31,7 +31,7 @@ import {
   TELEGRAM_UPDATES_PATH,
   TELEGRAM_UPLOADS_PATH,
   type TelegramUploadAnswer,
-} from "@openbot/contracts/signal-protocol/telegram-route";
+} from "@pokebots/contracts/signal-protocol/telegram-route";
 import {
   STANDARD_WEBHOOK_HEADER_SETS,
   STANDARD_WEBHOOK_SIGNATURE_PATTERN,
@@ -45,7 +45,7 @@ import {
   WEBHOOK_TIMESTAMP_HEADER,
   WEBHOOK_TIMESTAMP_PATTERN,
   type WebhookSignatureFormat,
-} from "@openbot/contracts/signal-protocol/webhook-route";
+} from "@pokebots/contracts/signal-protocol/webhook-route";
 import { Effect, type ManagedRuntime, Result } from "effect";
 import { Elysia } from "elysia";
 import { z } from "zod";

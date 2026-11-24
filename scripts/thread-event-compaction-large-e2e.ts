@@ -26,8 +26,8 @@ import { existsSync, mkdirSync, rmSync, statfsSync, statSync, writeFileSync } fr
 import { join, resolve } from "node:path";
 import { createInterface } from "node:readline";
 import { DatabaseSync } from "node:sqlite";
-import type { ConversationMessage } from "@openbot/contracts/ipc";
-import { type DynamicRecord, isDynamicRecord, isNumber } from "@openbot/contracts/runtime-values";
+import type { ConversationMessage } from "@pokebots/contracts/ipc";
+import { type DynamicRecord, isDynamicRecord, isNumber } from "@pokebots/contracts/runtime-values";
 import { Duration, Effect } from "effect";
 import { AgentStore } from "../src/backend/agent-store";
 import { runCauseEffect } from "../src/backend/effect-boundary";

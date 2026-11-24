@@ -1,5 +1,5 @@
 import { SHAPE_BY_ID, type ShapeId } from "@norbert_bodziony/bloub";
-import type { AvatarHue } from "@openbot/contracts/ipc-agent-identity";
+import type { AvatarHue } from "@pokebots/contracts/ipc-agent-identity";
 
 /*
  * The Pokebots look of a generated agent face. The fork keeps the upstream plush engine, which shows

@@ -1,6 +1,6 @@
 import { readFile } from "node:fs/promises";
-import { isAvatarMimeType, isValidAvatarImage } from "@openbot/contracts/avatar-images";
-import { AVATAR_IMAGE_LIMITS, INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { isAvatarMimeType, isValidAvatarImage } from "@pokebots/contracts/avatar-images";
+import { AVATAR_IMAGE_LIMITS, INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import {
   CHANNEL_CHATS_CAPABILITY,
   CHANNEL_DELETE_CAPABILITY,
@@ -13,18 +13,18 @@ import {
   isReleasedRoutineSchedule,
   parseChannelCommand,
   parseChannelRead,
-} from "@openbot/contracts/ipc";
-import type { DynamicRecord } from "@openbot/contracts/runtime-values";
+} from "@pokebots/contracts/ipc";
+import type { DynamicRecord } from "@pokebots/contracts/runtime-values";
 import {
   CHANNEL_PICTURE_CAPABILITY,
   CHANNEL_PICTURE_ROUTES,
-} from "@openbot/contracts/team-protocol/channel-picture-v1";
-import { CHANNEL_ROUTES, channelRequest, isChannelSettingsRoute } from "@openbot/contracts/team-protocol/channels-v1";
+} from "@pokebots/contracts/team-protocol/channel-picture-v1";
+import { CHANNEL_ROUTES, channelRequest, isChannelSettingsRoute } from "@pokebots/contracts/team-protocol/channels-v1";
 import {
   CHANNEL_SEEN_SUBTASKS_CAPABILITY,
   CHANNEL_TASK_WAITS_CAPABILITY,
-} from "@openbot/contracts/team-protocol/current";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/team-protocol/current";
+import { sourceText } from "@pokebots/i18n/source";
 import type { ChannelService } from "../../backend/channel-service";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import {

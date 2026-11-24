@@ -1,4 +1,4 @@
-import { canAdministerServer } from "@openbot/contracts/ipc";
+import { canAdministerServer } from "@pokebots/contracts/ipc";
 import { router } from "expo-router";
 import { Button, Typography } from "heroui-native";
 import { useThemeColor } from "heroui-native/hooks";

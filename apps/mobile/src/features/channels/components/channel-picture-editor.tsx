@@ -1,11 +1,11 @@
-import { AVATAR_HUE_CHOICES, avatarHueSwatch } from "@openbot/brand/bloub-avatar";
+import { AVATAR_HUE_CHOICES, avatarHueSwatch } from "@pokebots/brand/bloub-avatar";
 import {
   type AvatarHue,
   CHANNEL_ICON_NAMES,
   type ChannelDraft,
   type ChannelIconName,
   type ChannelSummary,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import * as Crypto from "expo-crypto";
 import { Button, Typography } from "heroui-native";
 import { useThemeColor } from "heroui-native/hooks";

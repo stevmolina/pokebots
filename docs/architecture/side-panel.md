@@ -33,7 +33,7 @@ mode map.
 
 1. Add a label key `conversation.sidePanel.pane.<id>` to each catalog in
    `packages/i18n/src/messages/*/conversation.ts`. Read [docs/i18n.md](../i18n.md) first.
-2. Add the pane to `SIDE_PANEL_PANES` with its label key and an icon from `@openbot/ui`. The
+2. Add the pane to `SIDE_PANEL_PANES` with its label key and an icon from `@pokebots/ui`. The
    order of the record is the order of the launcher and of the Add menu.
 3. Show the content in `ConversationPanels.tsx` when `activeRightPanel()` is the pane id. Keep the
    content component, its store, and its calls in the owning feature. Give a shared component typed

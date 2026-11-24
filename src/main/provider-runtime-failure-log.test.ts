@@ -3,8 +3,8 @@
 import { mkdtemp, rm } from "node:fs/promises";
 import { homedir, tmpdir } from "node:os";
 import { join } from "node:path";
-import type { ProviderRuntimeSnapshot } from "@openbot/contracts/ipc";
-import { teeLogLines } from "@openbot/logging";
+import type { ProviderRuntimeSnapshot } from "@pokebots/contracts/ipc";
+import { teeLogLines } from "@pokebots/logging";
 import { afterEach, describe, expect, it } from "vitest";
 import { runCauseEffect } from "../backend/effect-boundary";
 import { ProviderRuntimeManager } from "./provider-runtime-manager";

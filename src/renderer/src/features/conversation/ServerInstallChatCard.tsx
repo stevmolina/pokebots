@@ -1,5 +1,5 @@
-import type { ServerSummary } from "@openbot/contracts/ipc";
-import { ServerInstallCard, type ServerInstallCardStep } from "@openbot/ui/features/conversation/ServerInstallCard";
+import type { ServerSummary } from "@pokebots/contracts/ipc";
+import { ServerInstallCard, type ServerInstallCardStep } from "@pokebots/ui/features/conversation/ServerInstallCard";
 import { createMemo, createSignal, onSettled, untrack } from "solid-js";
 import { retryNewServer } from "../servers/new-server-retry";
 

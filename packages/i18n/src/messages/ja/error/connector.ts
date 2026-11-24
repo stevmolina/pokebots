@@ -2,31 +2,31 @@ import type { PartialTranslation } from "../../../message";
 import type { messages as source } from "../../en/error/connector";
 
 export const messages = {
-  "error.connector.githubUnavailable": "このビルドの OpenBot には GitHub App がありません。",
+  "error.connector.githubUnavailable": "このビルドの Pokebots には GitHub App がありません。",
   "error.connector.githubDenied": "GitHub へのサインインが拒否されました。",
   "error.connector.githubCodeExpired": "GitHub のコードの有効期限が切れました。もう一度 GitHub に接続してください。",
   "error.connector.githubDeviceFlowDisabled": "この GitHub App はデバイスでのサインインを許可していません。",
   "error.connector.githubClientUnknown": "GitHub はこの GitHub App の Client ID を認識していません。",
   "error.connector.githubUnexpected": "GitHub から予期しない応答がありました: {detail}",
-  "error.connector.githubUnreachable": "OpenBot は GitHub に接続できません: {detail}",
+  "error.connector.githubUnreachable": "Pokebots は GitHub に接続できません: {detail}",
   "error.connector.githubExpired": "GitHub の接続の有効期限が切れました。もう一度 GitHub に接続してください。",
   "error.connector.githubFileUnreadable": "GitHub の接続ファイルを読み取れません。",
   "error.connector.githubFileTooLarge": "GitHub の接続ファイルが大きすぎます。",
   "error.connector.onePasswordCliMissing":
-    "OpenBot は 1Password CLI を見つけられません。インストールして 1Password アプリで連携をオンにするか、サービスアカウントのトークンを使用してください。",
+    "Pokebots は 1Password CLI を見つけられません。インストールして 1Password アプリで連携をオンにするか、サービスアカウントのトークンを使用してください。",
   "error.connector.onePasswordCliInstallFailed":
-    "OpenBot は 1Password CLI をインストールできませんでした。インターネット接続を確認してから、もう一度お試しください。",
+    "Pokebots は 1Password CLI をインストールできませんでした。インターネット接続を確認してから、もう一度お試しください。",
   "error.connector.onePasswordCliSignedOut":
     "1Password CLI はサインインしていません。1Password アプリで連携をオンにしてから、もう一度接続してください。",
   "error.connector.onePasswordAppUnreachable":
-    "OpenBot が 1Password アプリに接続できません。1Password を開いてロックを解除してください。「設定」>「開発者」で「1Password CLI と連携」がオンになっていることを確認し、もう一度お試しください。",
+    "Pokebots が 1Password アプリに接続できません。1Password を開いてロックを解除してください。「設定」>「開発者」で「1Password CLI と連携」がオンになっていることを確認し、もう一度お試しください。",
   "error.connector.onePasswordCliFailed": "1Password CLI が失敗しました: {detail}",
   "error.connector.onePasswordCliForbidden":
     "この 1Password アカウントには、共有保管庫やサービスアカウントを作成する権限がありません。アカウントのオーナーまたは管理者にこの権限を依頼するか、サービスアカウントのトークンを受け取って「トークンを使う」をクリックしてください。",
   "error.connector.onePasswordUnexpected": "1Password から予期しない応答がありました: {detail}",
   "error.connector.onePasswordTokenRejected": "1Password はサービスアカウントのトークンを受け付けませんでした。",
   "error.connector.onePasswordUnreachable":
-    "OpenBot は 1Password に接続できませんでした。インターネット接続を確認してから、もう一度お試しください。",
+    "Pokebots は 1Password に接続できませんでした。インターネット接続を確認してから、もう一度お試しください。",
   "error.connector.onePasswordRateLimited":
     "1Password へのリクエストが多すぎます。数分待ってから、もう一度お試しください。",
   "error.connector.onePasswordNoVault":
@@ -36,7 +36,7 @@ export const messages = {
   "error.connector.bitwardenFailed":
     "Bitwarden を読み取れませんでした。bw CLI をインストールし、サインインしてロックを解除し、Shared with OpenBot という名前のフォルダーを 1 つ作成してください。新しいセッションキーで接続してください。",
   "error.connector.bitwardenCliMissing":
-    "OpenBot が Bitwarden CLI を見つけられません。bw をインストールし、新しいターミナルで動くことを確認してから、もう一度接続してください。",
+    "Pokebots が Bitwarden CLI を見つけられません。bw をインストールし、新しいターミナルで動くことを確認してから、もう一度接続してください。",
   "error.connector.bitwardenFolderMissing":
     "Bitwarden には Shared with OpenBot という名前のフォルダーがちょうど 1 つ必要です。作成するか余分なフォルダーを削除してから、もう一度接続してください。",
   "error.connector.bitwardenHostInput":
@@ -46,7 +46,7 @@ export const messages = {
   "error.connector.bitwardenCliInstallFailed":
     "このサーバーに Bitwarden CLI をインストールできませんでした。ネットワーク接続を確認してから、もう一度接続してください。",
   "error.connector.bitwardenFileUnreadable": "Bitwarden の接続ファイルを読み取れません。",
-  "error.connector.passwordManagerUnknown": "OpenBot はこのパスワードマネージャーに対応していません。",
+  "error.connector.passwordManagerUnknown": "Pokebots はこのパスワードマネージャーに対応していません。",
   "error.connector.passwordManagerMethod": "このパスワードマネージャーはこの方法では接続できません。",
   "error.connector.passwordManagerNoSignIn": "サインインページが開いていません。もう一度接続してください。",
   "error.connector.protonPassFailed": "Proton Pass に接続できませんでした。もう一度接続してください。",
@@ -84,7 +84,7 @@ export const messages = {
   "error.connector.keeperThrottled":
     "Keeper から次のサインインまで数分待つよう求められました。後でもう一度接続してください。",
   "error.connector.keeperPersistentLogin":
-    "Keeper の管理者が OpenBot に必要な「Stay logged in」をオフにしています。許可を依頼してから、もう一度接続してください。",
+    "Keeper の管理者が Pokebots に必要な「Stay logged in」をオフにしています。許可を依頼してから、もう一度接続してください。",
   "error.connector.keeperSignInTimeout": "Keeper へのサインインに時間がかかりすぎました。もう一度接続してください。",
   "error.connector.keeperFileUnreadable": "Keeper の接続ファイルを読み取れません。",
 } as const satisfies PartialTranslation<typeof source>;

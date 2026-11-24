@@ -1,5 +1,5 @@
-import type { BillingServerPlan, BillingSubscriptionStatus } from "@openbot/contracts/billing";
-import type { MobileTextKey } from "@openbot/i18n/mobile";
+import type { BillingServerPlan, BillingSubscriptionStatus } from "@pokebots/contracts/billing";
+import type { MobileTextKey } from "@pokebots/i18n/mobile";
 import { useFocusEffect } from "expo-router";
 import { Button, Typography } from "heroui-native";
 import { useThemeColor } from "heroui-native/hooks";

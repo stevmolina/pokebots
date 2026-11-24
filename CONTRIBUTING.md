@@ -7,7 +7,7 @@ review.
 
 These rules apply to people outside the `nightly-labs` organization. Organization members and
 users with write access to this repository skip them. So do their agents, which act as
-`openbotgit[bot]` through the OpenBot GitHub App.
+`pokebotsapp[bot]` through the Pokebots GitHub App (`openbotgit[bot]` before 2026-11-24).
 
 You can open a pull request without an issue for:
 

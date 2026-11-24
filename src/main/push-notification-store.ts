@@ -1,20 +1,20 @@
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
+import { isDynamicRecord, isString } from "@pokebots/contracts/runtime-values";
 import {
   ANDROID_PUSH_NOTIFICATIONS_CODECS,
   ANDROID_PUSH_NOTIFICATIONS_ROUTES,
   type AndroidPushNotificationRegistration,
-} from "@openbot/contracts/team-protocol/push-notifications-android-v1";
+} from "@pokebots/contracts/team-protocol/push-notifications-android-v1";
 import {
   PUSH_NOTIFICATION_SOUNDS,
   PUSH_NOTIFICATIONS_CODECS,
   PUSH_NOTIFICATIONS_ROUTES,
   type PushNotificationRegistration,
-} from "@openbot/contracts/team-protocol/push-notifications-v1";
+} from "@pokebots/contracts/team-protocol/push-notifications-v1";
 import {
   WEB_PUSH_NOTIFICATIONS_CODECS,
   WEB_PUSH_NOTIFICATIONS_ROUTES,
   type WebPushNotificationRegistration,
-} from "@openbot/contracts/team-protocol/push-notifications-web-v1";
+} from "@pokebots/contracts/team-protocol/push-notifications-web-v1";
 import { Effect, Result, Semaphore } from "effect";
 import { isMissingFileError } from "../backend/file-errors";
 import { type PreferenceFileFailure, readPreferenceFile, writePreferenceFile } from "./preference-file";

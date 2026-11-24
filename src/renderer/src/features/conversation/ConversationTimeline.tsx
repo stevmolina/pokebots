@@ -1,50 +1,50 @@
-import type { AgentProviderId } from "@openbot/contracts/agent-providers";
-import { chatVisualReply } from "@openbot/contracts/chat-visual";
-import type { AgentApproval, ConversationMessageSender, MessageReaction } from "@openbot/contracts/ipc";
-import { FEEDBACK_WITHDRAW_CAPABILITY } from "@openbot/contracts/team-protocol/feedback-withdraw-v1";
-import type { ConversationUiBlock } from "@openbot/contracts/ui-blocks";
-import { feedbackApproval } from "@openbot/team-client/feedback-approval";
-import { Button, toast } from "@openbot/ui";
-import type { AgentMessage, ChatActionMarkerModel, MessageKind } from "@openbot/ui/data";
-import { ChannelActivityIndicator, type ChannelWorker } from "@openbot/ui/features/channels/ChannelActivityIndicator";
-import { AgentActivityIndicator, nextAgentActivityLabel } from "@openbot/ui/features/conversation/AgentActivity";
-import { AgentChatEmptyState } from "@openbot/ui/features/conversation/AgentChatEmptyState";
+import type { AgentProviderId } from "@pokebots/contracts/agent-providers";
+import { chatVisualReply } from "@pokebots/contracts/chat-visual";
+import type { AgentApproval, ConversationMessageSender, MessageReaction } from "@pokebots/contracts/ipc";
+import { FEEDBACK_WITHDRAW_CAPABILITY } from "@pokebots/contracts/team-protocol/feedback-withdraw-v1";
+import type { ConversationUiBlock } from "@pokebots/contracts/ui-blocks";
+import { feedbackApproval } from "@pokebots/team-client/feedback-approval";
+import { Button, toast } from "@pokebots/ui";
+import type { AgentMessage, ChatActionMarkerModel, MessageKind } from "@pokebots/ui/data";
+import { ChannelActivityIndicator, type ChannelWorker } from "@pokebots/ui/features/channels/ChannelActivityIndicator";
+import { AgentActivityIndicator, nextAgentActivityLabel } from "@pokebots/ui/features/conversation/AgentActivity";
+import { AgentChatEmptyState } from "@pokebots/ui/features/conversation/AgentChatEmptyState";
 import {
   type AgentStep,
   AgentStepsDisclosure,
   type AgentStepsTrace,
-} from "@openbot/ui/features/conversation/AgentSteps";
-import { AttachmentCards } from "@openbot/ui/features/conversation/AttachmentCards";
-import { agentActivityExitDelay, agentActivityExitDuration } from "@openbot/ui/features/conversation/activity-timing";
-import { UsageLimitAskCard } from "@openbot/ui/features/conversation/BackupModels";
-import { branchPointIds } from "@openbot/ui/features/conversation/branch-points";
-import { ChatActionMarker } from "@openbot/ui/features/conversation/ChatActionMarker";
-import { type ChatMessageAuthor, ChatMessageRow } from "@openbot/ui/features/conversation/ChatMessageRow";
-import { ChatRowBoundary } from "@openbot/ui/features/conversation/ChatRowBoundary";
-import { ChatScrollRail, createChatScrollRail } from "@openbot/ui/features/conversation/ChatScrollRail";
-import { ChatSearch } from "@openbot/ui/features/conversation/ChatSearch";
-import { ContextCompactionMarker, type ContextCompactionView } from "@openbot/ui/features/conversation/ContextUsage";
-import { dayMarkerLabel } from "@openbot/ui/features/conversation/chat-day-markers";
-import { CHAT_TIME_GAP_MS, continuesSenderRun } from "@openbot/ui/features/conversation/chat-grouping";
-import { markdownPlainText } from "@openbot/ui/features/conversation/MarkdownMessageText";
-import { ReplyReturnButton, ScrollToLatestButton } from "@openbot/ui/features/conversation/MessageNavigation";
+} from "@pokebots/ui/features/conversation/AgentSteps";
+import { AttachmentCards } from "@pokebots/ui/features/conversation/AttachmentCards";
+import { agentActivityExitDelay, agentActivityExitDuration } from "@pokebots/ui/features/conversation/activity-timing";
+import { UsageLimitAskCard } from "@pokebots/ui/features/conversation/BackupModels";
+import { branchPointIds } from "@pokebots/ui/features/conversation/branch-points";
+import { ChatActionMarker } from "@pokebots/ui/features/conversation/ChatActionMarker";
+import { type ChatMessageAuthor, ChatMessageRow } from "@pokebots/ui/features/conversation/ChatMessageRow";
+import { ChatRowBoundary } from "@pokebots/ui/features/conversation/ChatRowBoundary";
+import { ChatScrollRail, createChatScrollRail } from "@pokebots/ui/features/conversation/ChatScrollRail";
+import { ChatSearch } from "@pokebots/ui/features/conversation/ChatSearch";
+import { ContextCompactionMarker, type ContextCompactionView } from "@pokebots/ui/features/conversation/ContextUsage";
+import { dayMarkerLabel } from "@pokebots/ui/features/conversation/chat-day-markers";
+import { CHAT_TIME_GAP_MS, continuesSenderRun } from "@pokebots/ui/features/conversation/chat-grouping";
+import { markdownPlainText } from "@pokebots/ui/features/conversation/MarkdownMessageText";
+import { ReplyReturnButton, ScrollToLatestButton } from "@pokebots/ui/features/conversation/MessageNavigation";
 import {
   DeleteMessageDialog,
   MessageActions,
   MessageMenu,
   MessageMenuItems,
   type MessageMenuItemsProps,
-} from "@openbot/ui/features/conversation/MessageRendering";
-import { countableTimelineMessage } from "@openbot/ui/features/conversation/new-message-tally";
-import { ownMessageAuthor } from "@openbot/ui/features/conversation/own-bubble";
-import { PendingSendStatus } from "@openbot/ui/features/conversation/PendingSendStatus";
-import { SubagentDock, SubagentGroup } from "@openbot/ui/features/conversation/Subagents";
-import { TaskList } from "@openbot/ui/features/conversation/TaskList";
-import { MAIN_THREAD_ID } from "@openbot/ui/features/conversation/threads/thread-types";
-import { UnreadMessagesBanner, UnreadMessagesDivider } from "@openbot/ui/features/conversation/UnreadMessages";
-import { VoicePlayer } from "@openbot/ui/features/conversation/VoicePlayer";
-import { teamMemberName } from "@openbot/ui/features/team/TeamPersonAvatar";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/ui/features/conversation/MessageRendering";
+import { countableTimelineMessage } from "@pokebots/ui/features/conversation/new-message-tally";
+import { ownMessageAuthor } from "@pokebots/ui/features/conversation/own-bubble";
+import { PendingSendStatus } from "@pokebots/ui/features/conversation/PendingSendStatus";
+import { SubagentDock, SubagentGroup } from "@pokebots/ui/features/conversation/Subagents";
+import { TaskList } from "@pokebots/ui/features/conversation/TaskList";
+import { MAIN_THREAD_ID } from "@pokebots/ui/features/conversation/threads/thread-types";
+import { UnreadMessagesBanner, UnreadMessagesDivider } from "@pokebots/ui/features/conversation/UnreadMessages";
+import { VoicePlayer } from "@pokebots/ui/features/conversation/VoicePlayer";
+import { teamMemberName } from "@pokebots/ui/features/team/TeamPersonAvatar";
+import { useText } from "@pokebots/ui/text";
 import { createEffect, createMemo, createSignal, For, Loading, onSettled, Show, untrack } from "solid-js";
 import { useShowAgentSteps } from "../../agent-steps-preference";
 import { planItems, planTitle, replacedPlanIds } from "../../app-message-projection";

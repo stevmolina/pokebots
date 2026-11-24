@@ -8,7 +8,7 @@ import {
   DEFAULT_EXTERNAL_LINK_PREFERENCE,
   type ExternalLinkTarget,
   type QuitGuard,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 /** Which chord sends a message. Re-exported here so settings state can name the same type. */
 import type { SendShortcutMode } from "../conversation/send-shortcut";
 

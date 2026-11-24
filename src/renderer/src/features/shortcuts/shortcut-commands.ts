@@ -11,13 +11,13 @@
  * their own listeners. They match the same entries of the shortcut list.
  */
 
-import { APP_SHORTCUT_COMMANDS, type AppShortcutCommand } from "@openbot/contracts/app-shortcut";
+import { APP_SHORTCUT_COMMANDS, type AppShortcutCommand } from "@pokebots/contracts/app-shortcut";
 import {
   isEditableTarget,
   matchShortcut,
   type ShortcutId,
   type ShortcutPlatform,
-} from "@openbot/ui/features/shortcuts/shortcut-registry";
+} from "@pokebots/ui/features/shortcuts/shortcut-registry";
 
 /** A menu command, or a printable key typed while nothing takes text: it goes to the message box. */
 export type ShortcutCommand = AppShortcutCommand | "typeToComposer";

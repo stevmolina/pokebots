@@ -1,15 +1,15 @@
 import { chmod, copyFile, stat } from "node:fs/promises";
 import { extname } from "node:path";
-import { parseWhatsAppPhoneNumber } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
-import { WhatsAppStoreUnreadable } from "@openbot/whatsapp/auth-store";
+import { parseWhatsAppPhoneNumber } from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
+import { WhatsAppStoreUnreadable } from "@pokebots/whatsapp/auth-store";
 import {
   type AnyMessageContent,
   isJidGroup,
   type MiscMessageGenerationOptions,
   type WAMessage,
   type WAMessageKey,
-} from "@openbot/whatsapp/baileys";
+} from "@pokebots/whatsapp/baileys";
 import { Effect, Result } from "effect";
 import { imageSize } from "../../image-size";
 import type { MessagingAnswerFile } from "../messaging-threads";

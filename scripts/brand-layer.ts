@@ -13,7 +13,7 @@
 //   OPENBOT_BRAND_NAME=Pokebots bunx dotenvx run -f .env.self-hosted -- bun ../../scripts/deploy-auth-api.ts
 //
 // What it changes:
-// - Each value in the `@openbot/i18n` catalogs (`packages/i18n/src/messages`). Keys stay, and so do
+// - Each value in the `@pokebots/i18n` catalogs (`packages/i18n/src/messages`). Keys stay, and so do
 //   the lowercase `openbot.run` and `openbot://` addresses, identifiers and environment names,
 //   because the replacement is case-sensitive. The phrases in `KEPT_PHRASES` stay too: they name a
 //   thing that keeps its real name, such as the vault "Shared with OpenBot" that the code makes.

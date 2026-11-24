@@ -1,14 +1,14 @@
 import { createHash, randomUUID } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { basename } from "node:path";
-import { attachmentMimeTypeForName } from "@openbot/contracts/attachment-files";
+import { attachmentMimeTypeForName } from "@pokebots/contracts/attachment-files";
 import {
   CHAT_BACKDROP_ITEM_TYPE,
   chatVisualItemType,
   withChatBackdropBubbles,
   withChatBackdropRequesters,
-} from "@openbot/contracts/chat-visual";
-import { sortConversationMessages } from "@openbot/contracts/conversation-order";
+} from "@pokebots/contracts/chat-visual";
+import { sortConversationMessages } from "@pokebots/contracts/conversation-order";
 import {
   BUG_REPORT_AREAS,
   BUG_REPORT_SEVERITIES,
@@ -32,14 +32,14 @@ import {
   parseFeedback,
   type SimilarFeedbackIssue,
   withFeedbackPhone,
-} from "@openbot/contracts/feedback";
+} from "@pokebots/contracts/feedback";
 import {
   installServerCommand,
   parseHostedServerName,
   type ServerClaim,
   serverInstallItemType,
-} from "@openbot/contracts/hosted-servers";
-import { ATTACHMENT_LIMITS, INPUT_LIMITS } from "@openbot/contracts/input-limits";
+} from "@pokebots/contracts/hosted-servers";
+import { ATTACHMENT_LIMITS, INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import type {
   AgentApproval,
   AgentModelChoice,
@@ -52,7 +52,7 @@ import type {
   McpServerConfig,
   SidebarLayoutSnapshot,
   UpdateAgentInput,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   agentComputerUseEnabled,
   agentNewChatAllowed,
@@ -73,11 +73,11 @@ import {
   skillConversationEventItemType,
   VAULT_CHANGE_ITEM_TYPE,
   workspaceAccessEnforced,
-} from "@openbot/contracts/ipc";
-import { isOneOf, isString } from "@openbot/contracts/runtime-values";
-import { isUiBlockId, normalizeUiBlockSpec } from "@openbot/contracts/ui-blocks";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger, maskIdentifiers, redactText, registerSecretValue, toLogValue } from "@openbot/logging";
+} from "@pokebots/contracts/ipc";
+import { isOneOf, isString } from "@pokebots/contracts/runtime-values";
+import { isUiBlockId, normalizeUiBlockSpec } from "@pokebots/contracts/ui-blocks";
+import { sourceText } from "@pokebots/i18n/source";
+import { createOpenBotLogger, maskIdentifiers, redactText, registerSecretValue, toLogValue } from "@pokebots/logging";
 import { Effect, Result } from "effect";
 import { z } from "zod";
 import type { AgentApiKeys, SavedApiKey } from "../agent-api-keys";
@@ -2615,7 +2615,7 @@ export class OpenBotToolRouter {
         return openBotToolResult({
           status: "connected",
           app: args.app,
-          next: 'GitHub is already connected for every agent of this server, so no card shows. Do not ask the user to connect it again. Use the GitHub MCP tools; when they are not in your tool list, search your tools for github, or use gh and git, which this connection signs in. When GitHub refuses access to a repository (HTTP 403, "Resource not accessible by integration", "Write access to repository not granted", or "Not Found" for a repository that exists, but not a rate limit), the OpenBotGit app is not installed on it or does not have the permission. Then tell the user: in OpenBot, open Marketplace > Apps > GitHub > Choose repositories, install OpenBotGit on the owner of the repository and select it, then send the request again. To create repositories, an owner of the account also approves the permission request of OpenBotGit on GitHub, in Settings > Applications > Installed GitHub Apps (for an organization, in its settings). Do not try another credential. When something else fails, tell the user in one sentence and call openbot.send_feedback.',
+          next: 'GitHub is already connected for every agent of this server, so no card shows. Do not ask the user to connect it again. Use the GitHub MCP tools; when they are not in your tool list, search your tools for github, or use gh and git, which this connection signs in. When GitHub refuses access to a repository (HTTP 403, "Resource not accessible by integration", "Write access to repository not granted", or "Not Found" for a repository that exists, but not a rate limit), the PokebotsApp app is not installed on it or does not have the permission. Then tell the user: in OpenBot, open Marketplace > Apps > GitHub > Choose repositories, install PokebotsApp on the owner of the repository and select it, then send the request again. When that does not help, the sign-in may predate PokebotsApp: tell the user to reconnect GitHub in Marketplace > Apps > GitHub. To create repositories, an owner of the account also approves the permission request of PokebotsApp on GitHub, in Settings > Applications > Installed GitHub Apps (for an organization, in its settings). Do not try another credential. When something else fails, tell the user in one sentence and call openbot.send_feedback.',
         });
       // Slack, Discord, Telegram and WhatsApp have no MCP server: the messaging tools reach a connected one (#9696).
       // A paused or stopped connection still gets the card, which shows its Resume or Reconnect action.

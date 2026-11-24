@@ -2,15 +2,15 @@ import {
   GITHUB_ROUTE_EVENTS,
   GITHUB_ROUTE_REPOSITORIES_LIMIT,
   type GitHubRouteRepository,
-} from "@openbot/contracts/signal-protocol/github-route";
+} from "@pokebots/contracts/signal-protocol/github-route";
 import { Effect, Result, Schema } from "effect";
 import { importPKCS8, SignJWT } from "jose";
 
 /**
- * Installation tokens of the OpenBot GitHub App for one signed-in GitHub user.
+ * Installation tokens of the Pokebots GitHub App for one signed-in GitHub user.
  *
- * A user token (`ghu_`) makes GitHub show "user with OpenBotGit". An installation token (`ghs_`)
- * makes GitHub show `openbotgit[bot]`, but it needs the app's private key, which only this Worker
+ * A user token (`ghu_`) makes GitHub show "user with PokebotsApp". An installation token (`ghs_`)
+ * makes GitHub show `pokebotsapp[bot]`, but it needs the app's private key, which only this Worker
  * holds. An installation token can do everything that the installation allows, so this service
  * gives one only for the repositories where the user of the token can push, and never with
  * `administration`. GitHub limits a user token to what its user can do. It does not limit an
@@ -142,8 +142,11 @@ const MAX_COMMENT_PAGES = 10;
 const SIMILAR_ISSUES = 5;
 /** Enough of an issue for the agent to see what a new report adds to it. */
 const SIMILAR_SUMMARY_LENGTH = 300;
-/** The app's slug. Its issues show `openbotgit[bot]`; reports add to those issues only. */
-const FEEDBACK_APP = "openbotgit";
+/**
+ * The slug of the shared app, for a feedback repository that has no dedicated feedback app. Its issues
+ * show `pokebotsapp[bot]`; reports add to those issues only.
+ */
+const FEEDBACK_APP = "pokebotsapp";
 
 /** An issue that the app opened. */
 export interface GitHubIssue {
@@ -277,7 +280,7 @@ export class GitHubInstallationTokens {
   }).bind(this);
 
   /**
-   * Opens an issue as `openbotgit[bot]` in a repository of the app's own installation. The token can
+   * Opens an issue as `pokebotsapp[bot]` in a repository of the app's own installation. The token can
    * only write issues of that one repository, and it is dropped after the request.
    */
   readonly openIssue = Effect.fn("GitHubInstallationTokens.openIssue")(function* (
@@ -291,7 +294,7 @@ export class GitHubInstallationTokens {
   }).bind(this);
 
   /**
-   * Adds a comment as `openbotgit[bot]` to an open issue that the app opened, not to a pull request or
+   * Adds a comment as `pokebotsapp[bot]` to an open issue that the app opened, not to a pull request or
    * an issue of a person, such as a status page issue. Another, closed, locked or missing issue fails
    * with `issue_not_open`, so the app can open a new issue instead.
    */

@@ -1,5 +1,5 @@
-import type { HostedServerEntryPoint } from "@openbot/contracts/hosted-servers";
-import type { PricingOrder } from "@openbot/contracts/license";
+import type { HostedServerEntryPoint } from "@pokebots/contracts/hosted-servers";
+import type { PricingOrder } from "@pokebots/contracts/license";
 import { createEffect, createSignal } from "solid-js";
 import type { AddServerResume } from "../servers/AddServerOverlay";
 import { createWebHostedServerCalls } from "./web-hosted-servers";

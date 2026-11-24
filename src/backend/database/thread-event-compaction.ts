@@ -1,6 +1,6 @@
 import type { DatabaseSync } from "node:sqlite";
-import type { ConversationMessage, ConversationSnapshot } from "@openbot/contracts/ipc";
-import type { DynamicRecord } from "@openbot/contracts/runtime-values";
+import type { ConversationMessage, ConversationSnapshot } from "@pokebots/contracts/ipc";
+import type { DynamicRecord } from "@pokebots/contracts/runtime-values";
 import type { DatabaseCore } from "./database-core";
 import { databaseRow, objectValue, requiredNumberColumn, requiredStringColumn } from "./database-rows";
 import { withTransaction } from "./sqlite-transaction";

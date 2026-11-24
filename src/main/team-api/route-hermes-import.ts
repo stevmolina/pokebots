@@ -1,6 +1,6 @@
-import { parseApplyHermesImportInput } from "@openbot/contracts/ipc";
-import { HERMES_IMPORT_CAPABILITY, HERMES_IMPORT_ROUTES } from "@openbot/contracts/team-protocol/hermes-import-v1";
-import { sourceText } from "@openbot/i18n/source";
+import { parseApplyHermesImportInput } from "@pokebots/contracts/ipc";
+import { HERMES_IMPORT_CAPABILITY, HERMES_IMPORT_ROUTES } from "@pokebots/contracts/team-protocol/hermes-import-v1";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect } from "effect";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import type { TeamApiHermesImport } from "./dependencies";

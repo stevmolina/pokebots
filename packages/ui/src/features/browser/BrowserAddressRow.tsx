@@ -1,4 +1,4 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import {
   Button,
   CircleDot,
@@ -12,15 +12,15 @@ import {
   TriangleAlert,
   UserRound,
   Waypoints,
-} from "@openbot/ui";
-import { AgentAvatar } from "@openbot/ui/features/agents/AgentAvatar";
+} from "@pokebots/ui";
+import { AgentAvatar } from "@pokebots/ui/features/agents/AgentAvatar";
 import {
   BrowserBackIcon,
   BrowserForwardIcon,
   BrowserReloadIcon,
   BrowserStopIcon,
-} from "@openbot/ui/features/conversation/ConversationIcons";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/ui/features/conversation/ConversationIcons";
+import { useText } from "@pokebots/ui/text";
 import { createMemo, createStore, createUniqueId, flush, Show } from "solid-js";
 import { BrowserPageMenu } from "./BrowserPageMenu";
 import { BrowserProfileDot } from "./BrowserProfileColor";

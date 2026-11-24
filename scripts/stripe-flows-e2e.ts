@@ -93,9 +93,9 @@ import {
   parseBillingLookupKey,
   storageTierGb,
   storageTierOf,
-} from "@openbot/contracts/billing";
-import { type BillingDetailsRequest, VAT_TAX_RATE } from "@openbot/contracts/billing-details";
-import { DEFAULT_TEAM_MEMBER_LIMIT } from "@openbot/contracts/input-limits";
+} from "@pokebots/contracts/billing";
+import { type BillingDetailsRequest, VAT_TAX_RATE } from "@pokebots/contracts/billing-details";
+import { DEFAULT_TEAM_MEMBER_LIMIT } from "@pokebots/contracts/input-limits";
 import {
   LICENSE_INCLUDED_USERS,
   LICENSE_LOOKUP_KEYS,
@@ -115,7 +115,7 @@ import {
   licensePeriodAmount,
   licensePlanPrice,
   ORDER_METADATA,
-} from "@openbot/contracts/license";
+} from "@pokebots/contracts/license";
 import { type Browser, chromium } from "playwright-core";
 import { z } from "zod";
 import { readLocalRuntimeVars } from "../apps/auth-api/src/server/runtime-env";

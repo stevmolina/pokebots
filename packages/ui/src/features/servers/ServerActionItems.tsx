@@ -1,6 +1,6 @@
-import { canAdministerServer, type ServerNotificationLevel, type ServerSummary } from "@openbot/contracts/ipc";
-import type { AppFormat, AppTextKey, AppTranslate } from "@openbot/i18n";
-import { Bell, BellOff, ChevronRight, type ContextMenu, EyeOff, LogOut, RotateCcw, Trash2 } from "@openbot/ui";
+import { canAdministerServer, type ServerNotificationLevel, type ServerSummary } from "@pokebots/contracts/ipc";
+import type { AppFormat, AppTextKey, AppTranslate } from "@pokebots/i18n";
+import { Bell, BellOff, ChevronRight, type ContextMenu, EyeOff, LogOut, RotateCcw, Trash2 } from "@pokebots/ui";
 import { For, Show } from "solid-js";
 import { useText } from "../../text";
 

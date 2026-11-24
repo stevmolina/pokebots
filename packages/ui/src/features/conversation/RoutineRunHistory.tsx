@@ -6,10 +6,10 @@ import {
   type RoutineResultDeliveryReason,
   type RoutineResultDeliveryStatus,
   type RoutineRunFields,
-} from "@openbot/contracts/ipc";
-import type { EventActivity, EventRoutineRef, ListEventActivityInput } from "@openbot/contracts/ipc-events";
-import type { AppMessages, AppTextKey } from "@openbot/i18n";
-import { Button, Check, CirclePause, Clock3, Minus, Text, TriangleAlert, X } from "@openbot/ui";
+} from "@pokebots/contracts/ipc";
+import type { EventActivity, EventRoutineRef, ListEventActivityInput } from "@pokebots/contracts/ipc-events";
+import type { AppMessages, AppTextKey } from "@pokebots/i18n";
+import { Button, Check, CirclePause, Clock3, Minus, Text, TriangleAlert, X } from "@pokebots/ui";
 import { createEffect, createSignal, createUniqueId, For, Match, Show, Switch, untrack } from "solid-js";
 import { type TextValue, useText } from "../../text";
 

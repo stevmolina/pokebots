@@ -1,4 +1,4 @@
-import type { AgentStatus, BrowserTakeoverRequest, CentralAuthUser } from "@openbot/contracts/ipc";
+import type { AgentStatus, BrowserTakeoverRequest, CentralAuthUser } from "@pokebots/contracts/ipc";
 import { createMemo, Show } from "solid-js";
 import { useNavigation } from "../../navigation";
 import { usePlatform } from "../../platform";

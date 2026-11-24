@@ -10,7 +10,7 @@
  * The compact sidebar has no room for the heading; the rows keep their order and their badges.
  */
 
-import { CheckCheck, ContextMenu, EyeOff } from "@openbot/ui";
+import { CheckCheck, ContextMenu, EyeOff } from "@pokebots/ui";
 import type { JSX } from "@solidjs/web";
 import { For, Match, Show, Switch } from "solid-js";
 import { useText } from "../../text";

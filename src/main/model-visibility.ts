@@ -10,14 +10,14 @@ import type {
   CustomProviderSummary,
   ProviderModelVisibility,
   ProviderModelVisibilityChange,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   DEFAULT_CUSTOM_PROVIDER_HARNESS,
   isCustomProviderContextWindow,
   isCustomProviderMaxOutput,
   OPENCODE_RECOMMENDED_FREE_MODELS,
-} from "@openbot/contracts/ipc";
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
+} from "@pokebots/contracts/ipc";
+import { isDynamicRecord, isString } from "@pokebots/contracts/runtime-values";
 import { Clock, Effect, Result, Semaphore } from "effect";
 import { encodedModelId } from "../backend/encoded-model-id";
 import { isMissingFileError } from "../backend/file-errors";

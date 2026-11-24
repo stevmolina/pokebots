@@ -13,11 +13,11 @@ import {
   parseBrowserProxyAddress,
   type ServerAuditEntry,
   type ThreadAutoArchiveSetting,
-} from "@openbot/contracts/ipc";
-import { HOME_AGENT_RULES_CAPABILITY } from "@openbot/contracts/team-protocol/home-agent-rules-v1";
-import { THREAD_AUTO_ARCHIVE_CAPABILITY } from "@openbot/contracts/team-protocol/thread-auto-archive-v1";
-import { sourceText } from "@openbot/i18n/source";
-import { Toaster } from "@openbot/ui";
+} from "@pokebots/contracts/ipc";
+import { HOME_AGENT_RULES_CAPABILITY } from "@pokebots/contracts/team-protocol/home-agent-rules-v1";
+import { THREAD_AUTO_ARCHIVE_CAPABILITY } from "@pokebots/contracts/team-protocol/thread-auto-archive-v1";
+import { sourceText } from "@pokebots/i18n/source";
+import { Toaster } from "@pokebots/ui";
 import { createSignal, createStore } from "solid-js";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";

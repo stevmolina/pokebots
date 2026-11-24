@@ -2,9 +2,9 @@ import {
   parseSpreadsheet,
   SPREADSHEET_MAX_COLUMNS,
   SPREADSHEET_MAX_ROWS,
-} from "@openbot/contracts/spreadsheet-workbook";
-import { Button } from "@openbot/ui";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/contracts/spreadsheet-workbook";
+import { Button } from "@pokebots/ui";
+import { useText } from "@pokebots/ui/text";
 import { createMemo, createSignal, For, Show } from "solid-js";
 
 export interface SpreadsheetFilePreviewProps {

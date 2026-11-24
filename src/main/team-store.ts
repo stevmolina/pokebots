@@ -11,10 +11,10 @@ import { constants } from "node:fs";
 import { copyFile, mkdir, readFile, rm } from "node:fs/promises";
 import { basename, dirname, join } from "node:path";
 import { promisify } from "node:util";
-import { avatarFileExtension, isAvatarMimeType, isValidAvatarImage } from "@openbot/contracts/avatar-images";
-import { type HostKeyHandover, hostKeyHandoverStatement } from "@openbot/contracts/host-key-handover";
-import { DEFAULT_TEAM_MEMBER_LIMIT, INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import { permanentInviteExpiresAt } from "@openbot/contracts/invite-links";
+import { avatarFileExtension, isAvatarMimeType, isValidAvatarImage } from "@pokebots/contracts/avatar-images";
+import { type HostKeyHandover, hostKeyHandoverStatement } from "@pokebots/contracts/host-key-handover";
+import { DEFAULT_TEAM_MEMBER_LIMIT, INPUT_LIMITS } from "@pokebots/contracts/input-limits";
+import { permanentInviteExpiresAt } from "@pokebots/contracts/invite-links";
 import {
   type AvatarColor,
   type AvatarImageInput,
@@ -24,11 +24,11 @@ import {
   type TeamMemberSummary,
   type TeamRole,
   type TeamSessionSummary,
-} from "@openbot/contracts/ipc";
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { type ServerAppearance, serverAppearanceOrNull } from "@openbot/contracts/team-protocol/host-appearance-v1";
-import { normalizeEmailAddress, slugifyTeamServerName } from "@openbot/contracts/validation";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/ipc";
+import { isDynamicRecord, isString } from "@pokebots/contracts/runtime-values";
+import { type ServerAppearance, serverAppearanceOrNull } from "@pokebots/contracts/team-protocol/host-appearance-v1";
+import { normalizeEmailAddress, slugifyTeamServerName } from "@pokebots/contracts/validation";
+import { sourceText } from "@pokebots/i18n/source";
 import { Context, Deferred, Effect, Layer, Result, Schema } from "effect";
 import {
   isEmptyStoredFile,

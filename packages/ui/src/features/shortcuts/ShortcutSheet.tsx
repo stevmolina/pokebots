@@ -4,7 +4,7 @@
  * key the app does not have.
  */
 
-import type { AppTextKey } from "@openbot/i18n";
+import type { AppTextKey } from "@pokebots/i18n";
 import type { JSX } from "@solidjs/web";
 import { createMemo, createSignal, For, Show } from "solid-js";
 import { IconButton } from "../../button";

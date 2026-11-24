@@ -1,14 +1,14 @@
-import type { MarketplaceAgentSkill, MarketplaceSkillSummary } from "@openbot/contracts/ipc";
-import type { SkillCategory } from "@openbot/contracts/ipc-skills";
+import type { MarketplaceAgentSkill, MarketplaceSkillSummary } from "@pokebots/contracts/ipc";
+import type { SkillCategory } from "@pokebots/contracts/ipc-skills";
 import {
   createOpenBotMarketplaceUrl,
   createWebAppMarketplacePath,
   type MarketplaceListingLink,
-} from "@openbot/contracts/marketplace-links";
-import type { AppTranslate, TranslatedLocale } from "@openbot/i18n";
-import { routineScheduleSummary } from "@openbot/ui/features/conversation/routine-schedule-ui";
-import { CATEGORY_LABELS } from "@openbot/ui/features/marketplace/marketplace-listing";
-import { type TextValue, useText } from "@openbot/ui/text";
+} from "@pokebots/contracts/marketplace-links";
+import type { AppTranslate, TranslatedLocale } from "@pokebots/i18n";
+import { routineScheduleSummary } from "@pokebots/ui/features/conversation/routine-schedule-ui";
+import { CATEGORY_LABELS } from "@pokebots/ui/features/marketplace/marketplace-listing";
+import { type TextValue, useText } from "@pokebots/ui/text";
 import type { JSX } from "@solidjs/web";
 import { Link } from "@tanstack/solid-router";
 import { For, onSettled, Show } from "solid-js";

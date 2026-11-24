@@ -1,13 +1,13 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import {
   type AgentTask,
   type ConversationMessage,
   isQueuedAgentReply,
   type QueueDelivery,
   routineRunsTurn,
-} from "@openbot/contracts/ipc";
-import { isQueueEditRejected } from "@openbot/contracts/team-protocol/queue-edit-v1";
-import { type MobileTextKey, sourceText } from "@openbot/i18n/mobile";
+} from "@pokebots/contracts/ipc";
+import { isQueueEditRejected } from "@pokebots/contracts/team-protocol/queue-edit-v1";
+import { type MobileTextKey, sourceText } from "@pokebots/i18n/mobile";
 import { replaceEqualDeep, useQuery, useQueryClient } from "@tanstack/react-query";
 import * as Crypto from "expo-crypto";
 import * as SecureStore from "expo-secure-store";

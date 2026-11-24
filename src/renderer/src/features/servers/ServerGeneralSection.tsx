@@ -1,5 +1,5 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import type { AvatarImageInput, ServerAppearance } from "@openbot/contracts/ipc";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
+import type { AvatarImageInput, ServerAppearance } from "@pokebots/contracts/ipc";
 import {
   Button,
   buttonVariants,
@@ -16,13 +16,13 @@ import {
   Popover,
   SettingsSection,
   Text,
-} from "@openbot/ui";
-import { avatarImageDataUrl, normalizeAvatarFile } from "@openbot/ui/avatar-image";
-import { LeaveServerDialog } from "@openbot/ui/features/servers/LeaveServerDialog";
-import { ServerAppearancePicker } from "@openbot/ui/features/servers/ServerAppearancePicker";
-import { ServerLogo } from "@openbot/ui/features/servers/ServerLogo";
-import { ServerPlushLogo } from "@openbot/ui/server-plush-logo";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/ui";
+import { avatarImageDataUrl, normalizeAvatarFile } from "@pokebots/ui/avatar-image";
+import { LeaveServerDialog } from "@pokebots/ui/features/servers/LeaveServerDialog";
+import { ServerAppearancePicker } from "@pokebots/ui/features/servers/ServerAppearancePicker";
+import { ServerLogo } from "@pokebots/ui/features/servers/ServerLogo";
+import { ServerPlushLogo } from "@pokebots/ui/server-plush-logo";
+import { useText } from "@pokebots/ui/text";
 import type { JSX } from "@solidjs/web";
 import { type Accessor, createStore, Show, snapshot } from "solid-js";
 import { actionToast } from "../../action-toast";

@@ -295,7 +295,7 @@ export const messages = {
   "sidebar.delete.pending": "جارٍ الحذف…",
   "sidebar.delete.title": "حذف {name}؟",
   "sidebar.delete.agentDescription":
-    "يزيل هذا الوكيل ومحادثته في OpenBot من التطبيق. تُحذف قائمة انتظاره وذكرياته ومهامه الدورية ومساحة العمل الخاصة به. لا يُحذف السجل الذي يخزّنه مزوّد CLI المتصل بشكل منفصل.",
+    "يزيل هذا الوكيل ومحادثته في Pokebots من التطبيق. تُحذف قائمة انتظاره وذكرياته ومهامه الدورية ومساحة العمل الخاصة به. لا يُحذف السجل الذي يخزّنه مزوّد CLI المتصل بشكل منفصل.",
   "sidebar.delete.channelDescription":
     "يوقف هذا القناة. يبقى سجلها في «القنوات المحذوفة» للمعاينة فقط. يمكنك استعادتها من هناك. يُحتفَظ بالوكلاء الأعضاء.",
   "sidebar.delete.sectionDescription":
@@ -309,7 +309,7 @@ export const messages = {
   "sidebar.announce.movedPinned": "تم نقل الدردشة المثبّتة إلى الموضع {position} من {total}.",
   "sidebar.announce.personFallback": "شخص",
   "sidebar.announce.chatFallback": "دردشة",
-  "sidebar.mobileApp.title": "OpenBot للهاتف المحمول",
+  "sidebar.mobileApp.title": "Pokebots للهاتف المحمول",
   "sidebar.storage.lowTitle": "التخزين ممتلئ تقريبًا",
   "sidebar.storage.fullTitle": "التخزين ممتلئ",
   "sidebar.storage.body": "تم استخدام {used} من {total} على {server}.",
@@ -327,5 +327,5 @@ export const messages = {
   "sidebar.machine.alertTo": "يذهب التنبيه إلى {name}",
   "sidebar.machine.details": "عرض التفاصيل",
   "sidebar.machine.dismiss": "إخفاء حتى التنبيه التالي",
-  "sidebar.community.followX": "متابعة OpenBot على X",
+  "sidebar.community.followX": "متابعة Pokebots على X",
 } as const satisfies PartialTranslation<typeof source>;

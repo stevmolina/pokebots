@@ -1,6 +1,6 @@
-import { CHAT_BACKGROUND_PRESETS, CHAT_COLOR_PRESETS, type ChatColorPresetId } from "@openbot/brand/chat-colors";
-import { APP_INTERFACE_SIZES, type AppInterfaceSize, type AvatarColor, isAvatarColor } from "@openbot/contracts/ipc";
-import type { MobileTextKey } from "@openbot/i18n/mobile";
+import { CHAT_BACKGROUND_PRESETS, CHAT_COLOR_PRESETS, type ChatColorPresetId } from "@pokebots/brand/chat-colors";
+import { APP_INTERFACE_SIZES, type AppInterfaceSize, type AvatarColor, isAvatarColor } from "@pokebots/contracts/ipc";
+import type { MobileTextKey } from "@pokebots/i18n/mobile";
 import { Typography } from "heroui-native";
 import { useThemeColor } from "heroui-native/hooks";
 import Check from "lucide-react-native/icons/check";

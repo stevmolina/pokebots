@@ -1,6 +1,6 @@
 import { tintRamp } from "@norbert_bodziony/bloub/plush";
-import { type ServerPlushColor, serverPlushColor, serverPlushHex } from "@openbot/brand/bloub-avatar";
-import type { ServerAppearance, ServerAppearanceShape } from "@openbot/contracts/team-protocol/host-appearance-v1";
+import { type ServerPlushColor, serverPlushColor, serverPlushHex } from "@pokebots/brand/bloub-avatar";
+import type { ServerAppearance, ServerAppearanceShape } from "@pokebots/contracts/team-protocol/host-appearance-v1";
 import type { JSX } from "@solidjs/web";
 import { createEffect, createSignal } from "solid-js";
 import ambre from "./assets/plush/server/ambre.webp";

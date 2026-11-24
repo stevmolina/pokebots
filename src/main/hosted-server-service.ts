@@ -15,16 +15,16 @@ import {
   parseHostedServerSummary,
   parseServerClaim,
   type ServerClaim,
-} from "@openbot/contracts/hosted-servers";
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/hosted-servers";
+import { isDynamicRecord } from "@pokebots/contracts/runtime-values";
+import { sourceText } from "@pokebots/i18n/source";
 import {
   createHostedServerStatusCheck,
   createHostedServerWake,
   type HostedServerAvailability,
   type HostedServerWakeResponse,
   WAKE_RECONNECT_STATES,
-} from "@openbot/team-client/hosted-server-wake";
+} from "@pokebots/team-client/hosted-server-wake";
 import { Effect, type Layer } from "effect";
 import {
   type AccountRequestClient,

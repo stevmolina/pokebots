@@ -1,15 +1,15 @@
-import { fileReferenceName, isFileReference } from "@openbot/brand/file-reference";
-import { attachmentReferenceAt } from "@openbot/contracts/attachment-references";
+import { fileReferenceName, isFileReference } from "@pokebots/brand/file-reference";
+import { attachmentReferenceAt } from "@pokebots/contracts/attachment-references";
 import {
   blockChatMath,
   chatMathBlockInterrupts,
   chatMathBlockStart,
   chatMathStart,
   inlineChatMath,
-} from "@openbot/contracts/chat-math";
-import { chatPreviewKind } from "@openbot/contracts/chat-preview";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import { Button, Checkbox } from "@openbot/ui";
+} from "@pokebots/contracts/chat-math";
+import { chatPreviewKind } from "@pokebots/contracts/chat-preview";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
+import { Button, Checkbox } from "@pokebots/ui";
 import { Dynamic } from "@solidjs/web";
 import { Marked, type Token, type Tokens, type TokensList } from "marked";
 import { createMemo, createSignal, For, onCleanup, Show } from "solid-js";

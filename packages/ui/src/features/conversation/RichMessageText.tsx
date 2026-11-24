@@ -1,9 +1,9 @@
-import { type ChatTagKind, chatTagReferences } from "@openbot/contracts/chat-tag-references";
-import type { AttachmentSummary } from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
-import { AppWindow, Blocks, Button, Puzzle, Split, TextQuote } from "@openbot/ui";
-import { ReferenceChip } from "@openbot/ui/reference-chip";
-import { usesTouchLayout } from "@openbot/ui/utils";
+import { type ChatTagKind, chatTagReferences } from "@pokebots/contracts/chat-tag-references";
+import type { AttachmentSummary } from "@pokebots/contracts/ipc";
+import type { AppTextKey } from "@pokebots/i18n";
+import { AppWindow, Blocks, Button, Puzzle, Split, TextQuote } from "@pokebots/ui";
+import { ReferenceChip } from "@pokebots/ui/reference-chip";
+import { usesTouchLayout } from "@pokebots/ui/utils";
 import type { JSX } from "@solidjs/web";
 import { createMemo, createSignal, createUniqueId, For, Show, untrack } from "solid-js";
 import type { ComposerAgent, ComposerSkill, MessageCitation } from "../../data";

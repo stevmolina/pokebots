@@ -1,4 +1,4 @@
-import type { SpeechAudio, SpeechLanguage } from "@openbot/contracts/ipc";
+import type { SpeechAudio, SpeechLanguage } from "@pokebots/contracts/ipc";
 import { createStore } from "solid-js";
 import { speechPort } from "./speech-port";
 import { partBudget, SpeechParts } from "./speech-text";

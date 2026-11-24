@@ -1,4 +1,4 @@
-import { AGENT_PROVIDERS, type AgentProviderId } from "@openbot/contracts/agent-providers";
+import { AGENT_PROVIDERS, type AgentProviderId } from "@pokebots/contracts/agent-providers";
 import { Schema } from "effect";
 
 /**

@@ -15,8 +15,8 @@ import {
   MP4_ATTACHMENT_EXTENSIONS,
   SVG_ATTACHMENT_EXTENSIONS,
   supportedAttachmentExtensions,
-} from "@openbot/contracts/attachment-files";
-import { ATTACHMENT_LIMITS, INPUT_LIMITS } from "@openbot/contracts/input-limits";
+} from "@pokebots/contracts/attachment-files";
+import { ATTACHMENT_LIMITS, INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import {
   type DownloadAttachmentsInput,
   decodeWorkspaceDirectory,
@@ -25,8 +25,8 @@ import {
   LOCAL_SERVER_ID,
   type OpenAttachmentInput,
   type OpenStoredFileInput,
-} from "@openbot/contracts/ipc";
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
+} from "@pokebots/contracts/ipc";
+import { TEAM_API_ROUTES } from "@pokebots/contracts/team-api-routes";
 import {
   TEAM_ANY_FILE_ATTACHMENTS_CAPABILITY,
   TEAM_EML_ATTACHMENTS_CAPABILITY,
@@ -34,13 +34,13 @@ import {
   TEAM_MP4_ATTACHMENTS_CAPABILITY,
   TEAM_SVG_ATTACHMENTS_CAPABILITY,
   TEAM_ZIP_ATTACHMENTS_CAPABILITY,
-} from "@openbot/contracts/team-protocol/current";
+} from "@pokebots/contracts/team-protocol/current";
 import {
   WORKSPACE_DIRECTORY_CAPABILITY,
   WORKSPACE_DIRECTORY_ROUTES,
-} from "@openbot/contracts/team-protocol/workspace-directory-v1";
-import type { AppTranslate } from "@openbot/i18n";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/team-protocol/workspace-directory-v1";
+import type { AppTranslate } from "@pokebots/i18n";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect, Schema } from "effect";
 import { app, type BrowserWindow, dialog, type OpenDialogOptions, shell } from "electron";
 import { type Zippable, zip } from "fflate";

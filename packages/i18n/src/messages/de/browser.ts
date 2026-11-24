@@ -58,8 +58,8 @@ export const messages = {
   "browser.pip.reattach": "Browser wieder an die rechte Seitenleiste andocken",
   "browser.pip.reattachTitle": "Browser wieder andocken",
   "browser.pip.close": "Browser-Popup schließen",
-  "browser.pip.reattachFailed": "OpenBot konnte den Browser nicht wieder andocken.",
-  "browser.pip.closeFailed": "OpenBot konnte das Browser-Popup nicht schließen.",
+  "browser.pip.reattachFailed": "Pokebots konnte den Browser nicht wieder andocken.",
+  "browser.pip.closeFailed": "Pokebots konnte das Browser-Popup nicht schließen.",
   "browser.popupBlocked.title": "Popup blockiert",
   "browser.popupBlocked.dismiss": "Popup-Meldung schließen",
   "browser.liveView.label": "Live-Ansicht der Seite auf dem Server",
@@ -98,17 +98,17 @@ export const messages = {
   "browser.secret.failed":
     "Die Anfrage konnte nicht abgeschlossen werden. Prüfe die Verbindung und versuche es erneut.",
   "browser.secret.vaultSkip.agentScript":
-    "OpenBot hat deine gespeicherten Zugangsdaten nicht verwendet, weil der Agent ein Skript auf dieser Seite ausgeführt hat. Bitte den Agenten, die Seite neu zu laden und es noch einmal zu versuchen.",
+    "Pokebots hat deine gespeicherten Zugangsdaten nicht verwendet, weil der Agent ein Skript auf dieser Seite ausgeführt hat. Bitte den Agenten, die Seite neu zu laden und es noch einmal zu versuchen.",
   "browser.secret.vaultSkip.fieldKind":
-    "OpenBot hat deine gespeicherten Zugangsdaten nicht verwendet, weil der Agent das falsche Feld auf der Seite gewählt hat.",
+    "Pokebots hat deine gespeicherten Zugangsdaten nicht verwendet, weil der Agent das falsche Feld auf der Seite gewählt hat.",
   "browser.secret.vaultSkip.loginChoice":
-    "OpenBot hat keine gespeicherten Zugangsdaten verwendet, weil der Agent keine der für diese Website gespeicherten Zugangsdaten gewählt hat. Sag dem Agenten, welches Konto er verwenden soll.",
+    "Pokebots hat keine gespeicherten Zugangsdaten verwendet, weil der Agent keine der für diese Website gespeicherten Zugangsdaten gewählt hat. Sag dem Agenten, welches Konto er verwenden soll.",
   "browser.secret.vaultSkip.noPassword":
-    "OpenBot hat deine gespeicherten Zugangsdaten nicht verwendet, weil sie kein Passwort für diese Website enthalten.",
+    "Pokebots hat deine gespeicherten Zugangsdaten nicht verwendet, weil sie kein Passwort für diese Website enthalten.",
   "browser.secret.vaultSkip.noAuthenticatorKey":
-    "OpenBot hat deine gespeicherten Zugangsdaten nicht verwendet, weil sie keinen Authenticator-Schlüssel enthalten.",
+    "Pokebots hat deine gespeicherten Zugangsdaten nicht verwendet, weil sie keinen Authenticator-Schlüssel enthalten.",
   "browser.secret.vaultSkip.vaultUnreadable":
-    "OpenBot hat keine gespeicherten Zugangsdaten verwendet, weil dein Passwort-Manager nicht gelesen werden konnte.",
+    "Pokebots hat keine gespeicherten Zugangsdaten verwendet, weil dein Passwort-Manager nicht gelesen werden konnte.",
   "browser.error.openAddress": "Die Adresse konnte in diesem Tab nicht geöffnet werden.",
   "browser.error.channelNoBrowserMember": "Kein Mitglied kann in diesem Kanal einen neuen Tab öffnen.",
   "browser.error.closeTab": "Der Browser-Tab konnte nicht geschlossen werden.",
@@ -170,22 +170,22 @@ export const messages = {
   "browser.signIn.local": "Auf diesem Computer anmelden",
   "browser.signIn.title": "Bei {site} anmelden",
   "browser.signIn.description":
-    "Manche Websites lehnen eine Anmeldung von einem Server ab. Melde dich auf diesem Computer an, und OpenBot sendet die Anmeldung für {site} an {server}. Alle Agenten und Mitglieder auf {server} können sie dann im Browser verwenden.",
+    "Manche Websites lehnen eine Anmeldung von einem Server ab. Melde dich auf diesem Computer an, und Pokebots sendet die Anmeldung für {site} an {server}. Alle Agenten und Mitglieder auf {server} können sie dann im Browser verwenden.",
   "browser.signIn.windowOpen":
-    "Melde dich in dem geöffneten Fenster an. OpenBot sendet die Anmeldung, wenn sie fertig ist. Wenn das Fenster offen bleibt, wähle Fertig.",
+    "Melde dich in dem geöffneten Fenster an. Pokebots sendet die Anmeldung, wenn sie fertig ist. Wenn das Fenster offen bleibt, wähle Fertig.",
   "browser.signIn.windowClosed":
     "Das Anmeldefenster ist geschlossen. Wähle Fertig, um die Anmeldung zu senden, oder öffne das Fenster erneut.",
   "browser.signIn.reopen": "Anmeldefenster öffnen",
   "browser.signIn.sending": "Wird an {server} gesendet…",
   "browser.signIn.sent": "Bei {site} auf {server} angemeldet",
   "browser.signIn.notFound":
-    "OpenBot hat keine Anmeldung für {site} gefunden. Melde dich im Fenster an und wähle dann Fertig.",
+    "Pokebots hat keine Anmeldung für {site} gefunden. Melde dich im Fenster an und wähle dann Fertig.",
   "browser.signIn.stillSignedOut":
     "{server} zeigt für {site} noch eine Anmeldeseite. Schließe die Anmeldung im Fenster ab.",
-  "browser.signIn.failed": "OpenBot konnte die Anmeldung nicht senden.",
+  "browser.signIn.failed": "Pokebots konnte die Anmeldung nicht senden.",
   "browser.profiles.title": "Browser-Profile",
   "browser.profiles.subtitle":
-    "Jedes Profil behält eigene Anmeldungen, Cookies und Website-Daten auf dem Computer, auf dem OpenBot läuft.",
+    "Jedes Profil behält eigene Anmeldungen, Cookies und Website-Daten auf dem Computer, auf dem Pokebots läuft.",
   "browser.profiles.label": "Browser-Profile",
   "browser.profiles.newName": "Profilname",
   "browser.profiles.create": "Hinzufügen",
@@ -204,8 +204,8 @@ export const messages = {
   "browser.profiles.deleteDescription":
     "Dies löscht die Anmeldungen, Cookies und Website-Daten des Profils. Seine offenen Tabs werden geschlossen.",
   "browser.profiles.deleteAgents": "Diese Agenten wechseln zum gemeinsamen Profil: {agents}.",
-  "browser.profiles.failed": "OpenBot konnte die Browser-Profile nicht ändern.",
-  "browser.profiles.loadFailed": "OpenBot konnte die Browser-Profile nicht laden.",
+  "browser.profiles.failed": "Pokebots konnte die Browser-Profile nicht ändern.",
+  "browser.profiles.loadFailed": "Pokebots konnte die Browser-Profile nicht laden.",
   "browser.profiles.tabLabel": "Profil: {name}",
   "browser.profiles.tabLabelProxy": "Profil: {name} · Proxy: {proxy}",
   "browser.profiles.agentTabLabel": "Eigenes Profil des Agenten",
@@ -220,7 +220,7 @@ export const messages = {
   "browser.proxies.addTitle": "Proxy hinzufügen",
   "browser.proxies.editTitle": "{name} bearbeiten",
   "browser.proxies.dialogDescription":
-    "Verwende socks5, http oder https. Benutzername und Passwort sind bei jedem Typ optional. Das Passwort bleibt verschlüsselt auf dem Computer, auf dem OpenBot läuft.",
+    "Verwende socks5, http oder https. Benutzername und Passwort sind bei jedem Typ optional. Das Passwort bleibt verschlüsselt auf dem Computer, auf dem Pokebots läuft.",
   "browser.proxies.address": "Adresse",
   "browser.proxies.addressPlaceholder": "socks5://user:password@host:1080",
   "browser.proxies.deleteUsed": {
@@ -230,7 +230,7 @@ export const messages = {
   "browser.proxies.deleteUnused": "Kein Profil nutzt diesen Proxy.",
   "browser.proxies.failing": "{name} antwortet nicht",
   "browser.proxies.signInRefused": "{name} hat die Anmeldung abgelehnt",
-  "browser.proxies.unsupported": "Dieser Server kann keine Proxys verwenden. Aktualisiere OpenBot auf dem Server.",
+  "browser.proxies.unsupported": "Dieser Server kann keine Proxys verwenden. Aktualisiere Pokebots auf dem Server.",
   "browser.proxies.yourComputer": "Dein Computer",
   "browser.proxies.memberComputer": "Computer von {name}",
   "browser.proxies.unknownComputer": "Computer eines Mitglieds",
@@ -241,7 +241,7 @@ export const messages = {
   "browser.proxies.offlineBadge": "{name} ist offline",
   "browser.proxies.shareTitle": "Verbindung dieses Computers teilen?",
   "browser.proxies.shareDescription":
-    "Die Profile, die deinen Computer verwenden, öffnen öffentliche Websites über die Internetverbindung dieses Computers. Das funktioniert nur, solange OpenBot hier geöffnet ist. Der Server kann keine Adressen in deinem lokalen Netzwerk öffnen.",
+    "Die Profile, die deinen Computer verwenden, öffnen öffentliche Websites über die Internetverbindung dieses Computers. Das funktioniert nur, solange Pokebots hier geöffnet ist. Der Server kann keine Adressen in deinem lokalen Netzwerk öffnen.",
   "browser.proxies.share": "Teilen",
   "browser.proxies.stopSharing": "Teilen beenden",
   "browser.proxies.closesTabs": {

@@ -1,15 +1,15 @@
-import type { LocalBrowserSecretResponse, QueueDelivery, QueueHold } from "@openbot/contracts/ipc";
-import { ArrowUp, Button, ChevronDown, ChevronUp } from "@openbot/ui";
-import type { ComposerAgent, ComposerMcpServer, ComposerSkill } from "@openbot/ui/data";
-import { AgentAvatar } from "@openbot/ui/features/agents/AgentAvatar";
-import type { BrowserSecretVault } from "@openbot/ui/features/conversation/BrowserSecretCard";
-import { ComposerEditor } from "@openbot/ui/features/conversation/ComposerEditor";
-import { StopIcon } from "@openbot/ui/features/conversation/ConversationIcons";
-import { QueuePanel } from "@openbot/ui/features/conversation/QueuePanel";
-import type { SendShortcut } from "@openbot/ui/features/conversation/send-shortcut";
-import { EASE_OUT, ISLAND_CLOSE, ISLAND_OPEN, type Spring, springKeyframes } from "@openbot/ui/spring-motion";
-import { useText } from "@openbot/ui/text";
-import { mix, prefersReducedMotion } from "@openbot/ui/utils";
+import type { LocalBrowserSecretResponse, QueueDelivery, QueueHold } from "@pokebots/contracts/ipc";
+import { ArrowUp, Button, ChevronDown, ChevronUp } from "@pokebots/ui";
+import type { ComposerAgent, ComposerMcpServer, ComposerSkill } from "@pokebots/ui/data";
+import { AgentAvatar } from "@pokebots/ui/features/agents/AgentAvatar";
+import type { BrowserSecretVault } from "@pokebots/ui/features/conversation/BrowserSecretCard";
+import { ComposerEditor } from "@pokebots/ui/features/conversation/ComposerEditor";
+import { StopIcon } from "@pokebots/ui/features/conversation/ConversationIcons";
+import { QueuePanel } from "@pokebots/ui/features/conversation/QueuePanel";
+import type { SendShortcut } from "@pokebots/ui/features/conversation/send-shortcut";
+import { EASE_OUT, ISLAND_CLOSE, ISLAND_OPEN, type Spring, springKeyframes } from "@pokebots/ui/spring-motion";
+import { useText } from "@pokebots/ui/text";
+import { mix, prefersReducedMotion } from "@pokebots/ui/utils";
 import { createEffect, createSignal, flush, onSettled, Show, untrack } from "solid-js";
 import { type BrowserIslandContent, BrowserIslandFace, browserIslandKey } from "./BrowserIsland";
 import {

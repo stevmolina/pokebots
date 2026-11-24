@@ -1,4 +1,4 @@
-import { sourceText } from "@openbot/i18n/source-english";
+import { sourceText } from "@pokebots/i18n/source-english";
 import { Effect } from "effect";
 import { AuthServiceError } from "./auth-service";
 import { randomToken, sha256 } from "./crypto";

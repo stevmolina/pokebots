@@ -1,4 +1,4 @@
-import { MESSAGE_REACTIONS, MORE_MESSAGE_REACTIONS } from "@openbot/contracts/ipc";
+import { MESSAGE_REACTIONS, MORE_MESSAGE_REACTIONS } from "@pokebots/contracts/ipc";
 import { router } from "expo-router";
 import { Typography } from "heroui-native";
 import Copy from "lucide-react-native/icons/copy";

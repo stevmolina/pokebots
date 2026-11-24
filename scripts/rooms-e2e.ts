@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import { ROOMS_CODECS, ROOMS_ROUTE } from "@openbot/contracts/team-protocol/rooms-v1";
+import { ROOMS_CODECS, ROOMS_ROUTE } from "@pokebots/contracts/team-protocol/rooms-v1";
 import { Effect } from "effect";
 import { decodeRoomsResultFromHost } from "../src/main/remote-rooms-decoding";
 import { RoomsService } from "../src/main/rooms-service";

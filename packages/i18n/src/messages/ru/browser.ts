@@ -60,8 +60,8 @@ export const messages = {
   "browser.pip.reattach": "Вернуть браузер в правую боковую панель",
   "browser.pip.reattachTitle": "Вернуть браузер",
   "browser.pip.close": "Закрыть окно браузера",
-  "browser.pip.reattachFailed": "OpenBot не удалось вернуть браузер в боковую панель.",
-  "browser.pip.closeFailed": "OpenBot не удалось закрыть окно браузера.",
+  "browser.pip.reattachFailed": "Pokebots не удалось вернуть браузер в боковую панель.",
+  "browser.pip.closeFailed": "Pokebots не удалось закрыть окно браузера.",
   "browser.popupBlocked.title": "Всплывающее окно заблокировано",
   "browser.popupBlocked.dismiss": "Скрыть сообщение о всплывающем окне",
   "browser.liveView.label": "Страница на сервере в реальном времени",
@@ -98,17 +98,17 @@ export const messages = {
   "browser.secret.takeOver": "Взять управление",
   "browser.secret.failed": "Не удалось выполнить запрос. Проверьте соединение и повторите попытку.",
   "browser.secret.vaultSkip.agentScript":
-    "OpenBot не использовал ваши сохранённые учётные данные, потому что агент запустил скрипт на этой странице. Чтобы их использовать, попросите агента перезагрузить страницу и попробовать снова.",
+    "Pokebots не использовал ваши сохранённые учётные данные, потому что агент запустил скрипт на этой странице. Чтобы их использовать, попросите агента перезагрузить страницу и попробовать снова.",
   "browser.secret.vaultSkip.fieldKind":
-    "OpenBot не использовал ваши сохранённые учётные данные, потому что агент выбрал не то поле на странице.",
+    "Pokebots не использовал ваши сохранённые учётные данные, потому что агент выбрал не то поле на странице.",
   "browser.secret.vaultSkip.loginChoice":
-    "OpenBot не использовал сохранённые учётные данные, потому что агент не выбрал ни одни из учётных данных, сохранённых для этого сайта. Скажите агенту, какой аккаунт использовать.",
+    "Pokebots не использовал сохранённые учётные данные, потому что агент не выбрал ни одни из учётных данных, сохранённых для этого сайта. Скажите агенту, какой аккаунт использовать.",
   "browser.secret.vaultSkip.noPassword":
-    "OpenBot не использовал ваши сохранённые учётные данные, потому что в них нет пароля для этого сайта.",
+    "Pokebots не использовал ваши сохранённые учётные данные, потому что в них нет пароля для этого сайта.",
   "browser.secret.vaultSkip.noAuthenticatorKey":
-    "OpenBot не использовал ваши сохранённые учётные данные, потому что в них нет ключа аутентификатора.",
+    "Pokebots не использовал ваши сохранённые учётные данные, потому что в них нет ключа аутентификатора.",
   "browser.secret.vaultSkip.vaultUnreadable":
-    "OpenBot не использовал сохранённые учётные данные, потому что не смог прочитать ваш менеджер паролей.",
+    "Pokebots не использовал сохранённые учётные данные, потому что не смог прочитать ваш менеджер паролей.",
   "browser.error.openAddress": "Не удалось открыть адрес в этой вкладке.",
   "browser.error.channelNoBrowserMember": "Ни один участник не может открыть новую вкладку в этом канале.",
   "browser.error.closeTab": "Не удалось закрыть вкладку браузера.",
@@ -172,20 +172,20 @@ export const messages = {
   "browser.signIn.local": "Войти на этом компьютере",
   "browser.signIn.title": "Вход в {site}",
   "browser.signIn.description":
-    "Некоторые сайты отклоняют вход с сервера. Войдите на этом компьютере, и OpenBot отправит вход в {site} на {server}. Все агенты и участники на {server} смогут использовать его в браузере.",
+    "Некоторые сайты отклоняют вход с сервера. Войдите на этом компьютере, и Pokebots отправит вход в {site} на {server}. Все агенты и участники на {server} смогут использовать его в браузере.",
   "browser.signIn.windowOpen":
-    "Войдите в открывшемся окне. OpenBot отправит вход, когда он будет выполнен. Если окно останется открытым, выберите «Готово».",
+    "Войдите в открывшемся окне. Pokebots отправит вход, когда он будет выполнен. Если окно останется открытым, выберите «Готово».",
   "browser.signIn.windowClosed":
     "Окно входа закрыто. Выберите «Готово», чтобы отправить вход, или откройте окно снова.",
   "browser.signIn.reopen": "Открыть окно входа",
   "browser.signIn.sending": "Отправка на {server}…",
   "browser.signIn.sent": "Выполнен вход в {site} на {server}",
-  "browser.signIn.notFound": "OpenBot не нашёл вход в {site}. Войдите в окне, затем выберите «Готово».",
+  "browser.signIn.notFound": "Pokebots не нашёл вход в {site}. Войдите в окне, затем выберите «Готово».",
   "browser.signIn.stillSignedOut": "{server} всё ещё показывает страницу входа в {site}. Завершите вход в окне.",
-  "browser.signIn.failed": "OpenBot не удалось отправить вход.",
+  "browser.signIn.failed": "Pokebots не удалось отправить вход.",
   "browser.profiles.title": "Профили браузера",
   "browser.profiles.subtitle":
-    "Каждый профиль хранит свои входы в аккаунты, cookie и данные сайтов на компьютере, где работает OpenBot.",
+    "Каждый профиль хранит свои входы в аккаунты, cookie и данные сайтов на компьютере, где работает Pokebots.",
   "browser.profiles.label": "Профили браузера",
   "browser.profiles.newName": "Имя профиля",
   "browser.profiles.create": "Добавить",
@@ -214,8 +214,8 @@ export const messages = {
   "browser.profiles.deleteDescription":
     "Это удалит входы в аккаунты, cookie и данные сайтов этого профиля. Его открытые вкладки закроются.",
   "browser.profiles.deleteAgents": "Эти агенты перейдут на общий профиль: {agents}.",
-  "browser.profiles.failed": "OpenBot не удалось изменить профили браузера.",
-  "browser.profiles.loadFailed": "OpenBot не удалось загрузить профили браузера.",
+  "browser.profiles.failed": "Pokebots не удалось изменить профили браузера.",
+  "browser.profiles.loadFailed": "Pokebots не удалось загрузить профили браузера.",
   "browser.profiles.tabLabel": "Профиль: {name}",
   "browser.profiles.tabLabelProxy": "Профиль: {name} · Прокси: {proxy}",
   "browser.profiles.agentTabLabel": "Собственный профиль агента",
@@ -235,7 +235,7 @@ export const messages = {
   "browser.proxies.addTitle": "Добавить прокси",
   "browser.proxies.editTitle": "Изменить «{name}»",
   "browser.proxies.dialogDescription":
-    "Используйте socks5, http или https. Имя пользователя и пароль необязательны для любого типа. Пароль хранится в зашифрованном виде на компьютере, где работает OpenBot.",
+    "Используйте socks5, http или https. Имя пользователя и пароль необязательны для любого типа. Пароль хранится в зашифрованном виде на компьютере, где работает Pokebots.",
   "browser.proxies.address": "Адрес",
   "browser.proxies.addressPlaceholder": "socks5://user:password@host:1080",
   "browser.proxies.deleteUsed": {
@@ -247,7 +247,7 @@ export const messages = {
   "browser.proxies.deleteUnused": "Ни один профиль не использует этот прокси.",
   "browser.proxies.failing": "{name} не отвечает",
   "browser.proxies.signInRefused": "{name} отклонил вход",
-  "browser.proxies.unsupported": "Этот сервер не может использовать прокси. Обновите OpenBot на этом сервере.",
+  "browser.proxies.unsupported": "Этот сервер не может использовать прокси. Обновите Pokebots на этом сервере.",
   "browser.proxies.yourComputer": "Ваш компьютер",
   "browser.proxies.memberComputer": "Компьютер участника {name}",
   "browser.proxies.unknownComputer": "Компьютер участника",
@@ -258,7 +258,7 @@ export const messages = {
   "browser.proxies.offlineBadge": "{name} не в сети",
   "browser.proxies.shareTitle": "Поделиться подключением этого компьютера?",
   "browser.proxies.shareDescription":
-    "Профили, которые используют ваш компьютер, открывают общедоступные сайты через интернет-подключение этого компьютера. Это работает, только пока OpenBot открыт здесь. Сервер не может открывать адреса в вашей локальной сети.",
+    "Профили, которые используют ваш компьютер, открывают общедоступные сайты через интернет-подключение этого компьютера. Это работает, только пока Pokebots открыт здесь. Сервер не может открывать адреса в вашей локальной сети.",
   "browser.proxies.share": "Поделиться",
   "browser.proxies.stopSharing": "Перестать делиться",
   "browser.proxies.closesTabs": {

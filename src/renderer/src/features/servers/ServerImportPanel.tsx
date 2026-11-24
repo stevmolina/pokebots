@@ -4,20 +4,20 @@ import type {
   AgentImportSkillSource,
   HermesImportPreview,
   OpenBotDesktopApi,
-} from "@openbot/contracts/ipc";
-import { classifyFailure } from "@openbot/telemetry";
-import { AgentImportSources } from "@openbot/ui/features/import/AgentImportSources";
+} from "@pokebots/contracts/ipc";
+import { classifyFailure } from "@pokebots/telemetry";
+import { AgentImportSources } from "@pokebots/ui/features/import/AgentImportSources";
 import {
   type AgentImportPhase,
   type AgentImportSetup,
   AgentImportView,
-} from "@openbot/ui/features/import/AgentImportView";
+} from "@pokebots/ui/features/import/AgentImportView";
 import {
   type HermesImportPhase,
   type HermesImportSelection,
   HermesImportView,
-} from "@openbot/ui/features/import/HermesImportView";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/ui/features/import/HermesImportView";
+import { useText } from "@pokebots/ui/text";
 import { createEffect, createSignal, createStore, Match, onSettled, Switch } from "solid-js";
 import { actionToast } from "../../action-toast";
 

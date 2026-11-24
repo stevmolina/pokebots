@@ -1,7 +1,7 @@
 import { existsSync, readFileSync, statSync } from "node:fs";
 import { dirname, join, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
-import { createOpenBotLogger } from "@openbot/logging";
+import { createOpenBotLogger } from "@pokebots/logging";
 import type { WorkerBindings } from "../server/types";
 import { drainWaitUntil, setSelfHostedEnv, waitUntil } from "./cloudflare-workers";
 import { openSelfHostedD1 } from "./d1-sqlite";
@@ -69,7 +69,7 @@ const DEFAULT_RUNTIME_VARS: Readonly<Record<string, string>> = {
   HOSTED_SERVERS_ENABLED: "false",
   HOSTED_SERVERS_ALLOWED_USER_IDS: "*",
   LICENSE_TRIAL_END: "2026-12-01T00:00:00Z",
-  GITHUB_APP_CLIENT_ID: "Iv23lik5pzHz70cb0RUL",
+  GITHUB_APP_CLIENT_ID: "Iv23liqjDfmQETt7RBIr",
   APNS_TEAM_ID: "8A47NKRZSJ",
   APNS_TOPIC: "run.openbot.mobile",
 };

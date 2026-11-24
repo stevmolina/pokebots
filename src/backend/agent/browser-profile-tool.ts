@@ -1,4 +1,4 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import {
   type AgentBrowserProfile,
   type AgentSummary,
@@ -7,9 +7,9 @@ import {
   BROWSER_PROFILE_NAME_MAX,
   sameAgentBrowserProfile,
   type UpdateAgentBrowserProfileInput,
-} from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger } from "@openbot/logging";
+} from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
+import { createOpenBotLogger } from "@pokebots/logging";
 import { Effect } from "effect";
 import { z } from "zod";
 import type { DynamicToolCallParams } from "../protocol";

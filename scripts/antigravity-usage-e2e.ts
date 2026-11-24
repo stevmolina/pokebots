@@ -17,7 +17,7 @@ import { chmod, mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises
 import { createServer, type IncomingMessage } from "node:http";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import { type AccountUsage, isAccountUsage, usageGroupForModel, usageQuotaForModel } from "@openbot/contracts/ipc";
+import { type AccountUsage, isAccountUsage, usageGroupForModel, usageQuotaForModel } from "@pokebots/contracts/ipc";
 import { normalizeAccountUsage } from "../src/backend/agent/account-usage";
 import type { AgentClient } from "../src/backend/agent-client";
 import { type AgentCliInfo, resolveAntigravityCli } from "../src/backend/cli";

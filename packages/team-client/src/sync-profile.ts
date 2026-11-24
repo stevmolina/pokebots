@@ -8,7 +8,7 @@
 // or analytics. They stay in the sink's memory, or in the development file that desktop main writes.
 // A failure keeps only its `errorReference` code, such as `http/503` or `error/RemotePeerError`.
 
-import { errorReference } from "@openbot/user-errors/reference";
+import { errorReference } from "@pokebots/user-errors/reference";
 import { Cause, type Exit } from "effect";
 
 export { markRemoteSync } from "./sync-marks";

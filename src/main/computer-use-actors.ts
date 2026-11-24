@@ -4,8 +4,8 @@
 // an agent reads and the label on each agent cursor need the agent's name and the thread's title,
 // which only the agent service knows, so the main process passes a directory in.
 
-import type { AvatarColor } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+import type { AvatarColor } from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect } from "effect";
 import {
   COMPUTER_USE_REMOTE_ACTOR_KEY,

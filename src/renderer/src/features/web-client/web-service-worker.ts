@@ -1,4 +1,4 @@
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
+import { isDynamicRecord } from "@pokebots/contracts/runtime-values";
 
 /**
  * The service worker of the web client. `apps/auth-api/service-worker/app-sw.js` is its code, and the

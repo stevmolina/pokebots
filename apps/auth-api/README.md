@@ -219,10 +219,12 @@ write-only server client. Keep both in the encrypted `.env.production` for local
 the `cloudflare-production` GitHub Environment for CI. Both deployment paths check these values
 before remote changes. Test deployments do not send account analytics.
 
-`GITHUB_APP_PRIVATE_KEY` is the OpenBot GitHub App's private key as a PKCS #8 PEM. GitHub gives a
-PKCS #1 key; convert it with `openssl pkcs8 -topk8 -nocrypt -in <key>.pem`. With the key, the
-Worker gives the desktop installation tokens, so GitHub shows `openbotgit[bot]` as the author of an
-agent's work. The key also lets `POST /v1/feedback` open an approved bug report or feature idea from the app as
+`GITHUB_APP_PRIVATE_KEY` is the private key of the GitHub App whose client ID is `GITHUB_APP_CLIENT_ID`,
+as a PKCS #8 PEM. GitHub gives a PKCS #1 key; convert it with `openssl pkcs8 -topk8 -nocrypt -in <key>.pem`.
+The frozen Worker in `wrangler.jsonc` keeps the OpenBotGit client ID, so its key is the OpenBotGit key, and
+GitHub shows `openbotgit[bot]` as the author of an agent's work. The PokebotsApp key belongs to the
+self-hosted service (`api.pokebots.xyz` on Dokploy), where agents' work shows as `pokebotsapp[bot]`. A key and a
+client ID of two different apps make every installation-token request fail. The key also lets `POST /v1/feedback` open an approved bug report or feature idea from the app as
 an issue in `nightly-labs/openbot`, for any signed-in account, three times a minute (`FEEDBACK_RATE_LIMITER`) and 10 times a UTC day (`feedback_daily_counts` in D1). The Worker does not store or log the text. With `sameAs`, the report is a comment on that open app issue. Before the card, `POST /v1/feedback/similar` finds open app issues with a similar title, three times a minute for each account (the same limiter, with its own key); the title is in the body, so request logs do not keep it. Each report ends with a hidden owner mark
 (`feedback-owner.ts`): a random value and an HMAC of it and the account ID, with a key that HKDF derives
 from the app key. `POST /v1/feedback/withdraw` takes `{ number }` and, for the account whose mark ends

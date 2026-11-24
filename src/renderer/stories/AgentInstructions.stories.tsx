@@ -1,8 +1,8 @@
-import type { AgentInstructionFileName, AgentInstructionsFile } from "@openbot/contracts/ipc";
+import type { AgentInstructionFileName, AgentInstructionsFile } from "@pokebots/contracts/ipc";
 import {
   type AgentInstructionsCalls,
   AgentInstructionsView,
-} from "@openbot/ui/features/conversation/AgentInstructionsView";
+} from "@pokebots/ui/features/conversation/AgentInstructionsView";
 import { untrack } from "solid-js";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";

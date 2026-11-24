@@ -3,7 +3,7 @@ import {
   SIDEBAR_DOCK_FOLDERS_VIEW_ID,
   sidebarSnoozeMarker,
   sidebarSnoozes,
-} from "@openbot/ui/features/sidebar/sidebar-types";
+} from "@pokebots/ui/features/sidebar/sidebar-types";
 import { describe, expect, it } from "vitest";
 
 describe("sidebar snoozes", () => {

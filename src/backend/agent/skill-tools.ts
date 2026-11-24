@@ -1,4 +1,4 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import type {
   CreateLocalSkillInput,
   InstalledSkill,
@@ -8,9 +8,9 @@ import type {
   SetEnabledSkillInput,
   SkillConversationEvent,
   UninstallSkillInput,
-} from "@openbot/contracts/ipc";
-import { GITHUB_SKILL_ID_MAX_LENGTH } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/ipc";
+import { GITHUB_SKILL_ID_MAX_LENGTH } from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect } from "effect";
 import { z } from "zod";
 import { ToolOperationFailed, toolStep } from "./tool-operation";

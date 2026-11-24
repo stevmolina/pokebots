@@ -5,7 +5,7 @@ import type {
   CompanySignInSettings,
   MobileConnectLink,
   OpenBotDesktopApi,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import { clone, type Listener, type MockRuntime } from "./mock-support";
 
 export interface MockAuthOptions {

@@ -1,4 +1,4 @@
-import { prefersReducedMotion } from "@openbot/ui/utils";
+import { prefersReducedMotion } from "@pokebots/ui/utils";
 import { onCleanup } from "solid-js";
 
 /** The input row is 28px with one line of text and 48px with two. */

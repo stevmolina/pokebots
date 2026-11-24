@@ -7,10 +7,10 @@ import {
   MessageCirclePlus,
   PanelRight,
   Pin,
-} from "@openbot/ui";
-import { createScrollFades } from "@openbot/ui/components/createScrollFades";
-import { sidebarMessageTime } from "@openbot/ui/features/sidebar/sidebar-filtering";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/ui";
+import { createScrollFades } from "@pokebots/ui/components/createScrollFades";
+import { sidebarMessageTime } from "@pokebots/ui/features/sidebar/sidebar-filtering";
+import { useText } from "@pokebots/ui/text";
 import { For, onSettled, Show } from "solid-js";
 import { ThreadStatusMark } from "./ThreadStatusMark";
 import { ThreadTitle } from "./ThreadTitle";

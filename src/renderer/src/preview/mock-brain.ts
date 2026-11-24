@@ -1,4 +1,4 @@
-import type { BrainRequest, BrainResponse } from "@openbot/contracts/brain";
+import type { BrainRequest, BrainResponse } from "@pokebots/contracts/brain";
 
 const base = {
   page: "wiki/decisions.md",

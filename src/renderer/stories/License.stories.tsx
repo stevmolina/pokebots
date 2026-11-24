@@ -1,10 +1,10 @@
-import type { BillingDetails } from "@openbot/contracts/billing-details";
-import type { LicenseDesktopApi } from "@openbot/contracts/ipc";
-import { type License, type LicensePlan, type LicenseState, licenseMonthlyAmount } from "@openbot/contracts/license";
-import { BillingPanel } from "@openbot/ui/features/billing/BillingPanel";
-import { createBillingStore } from "@openbot/ui/features/billing/billing-store";
-import { LicenseSection } from "@openbot/ui/features/billing/LicenseSection";
-import { createLicenseStore } from "@openbot/ui/features/billing/license-store";
+import type { BillingDetails } from "@pokebots/contracts/billing-details";
+import type { LicenseDesktopApi } from "@pokebots/contracts/ipc";
+import { type License, type LicensePlan, type LicenseState, licenseMonthlyAmount } from "@pokebots/contracts/license";
+import { BillingPanel } from "@pokebots/ui/features/billing/BillingPanel";
+import { createBillingStore } from "@pokebots/ui/features/billing/billing-store";
+import { LicenseSection } from "@pokebots/ui/features/billing/LicenseSection";
+import { createLicenseStore } from "@pokebots/ui/features/billing/license-store";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { createMockBilling, previewBillingServers } from "../src/preview/mock-billing";
 import { createMockLicense, previewLicenseUsers } from "../src/preview/mock-license";

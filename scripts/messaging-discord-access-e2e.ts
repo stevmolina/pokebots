@@ -9,14 +9,14 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import { DISCORD_GATEWAY_INTENTS, DISCORD_MESSAGE_CONTENT_INTENT } from "@openbot/contracts/discord-app";
-import { isDiscordRoleList } from "@openbot/contracts/ipc";
+import { DISCORD_GATEWAY_INTENTS, DISCORD_MESSAGE_CONTENT_INTENT } from "@pokebots/contracts/discord-app";
+import { isDiscordRoleList } from "@pokebots/contracts/ipc";
 import {
   decodeDiscordApiError,
   decodeDiscordChannels,
   decodeDiscordDelivery,
   decodeDiscordHistory,
-} from "@openbot/contracts/signal-protocol/discord-api";
+} from "@pokebots/contracts/signal-protocol/discord-api";
 import { Effect } from "effect";
 import { type DiscordRestRequest, DiscordTransportError, makeDiscordApi } from "../remote/api/src/discord-api";
 import { DiscordState } from "../remote/api/src/discord-events";

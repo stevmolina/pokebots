@@ -1,6 +1,6 @@
-import type { OpenBotDesktopApi, VoiceLiveEvent } from "@openbot/contracts/ipc";
-import type { VoicePhase } from "@openbot/ui/features/conversation/VoicePill";
-import { currentText } from "@openbot/ui/text";
+import type { OpenBotDesktopApi, VoiceLiveEvent } from "@pokebots/contracts/ipc";
+import type { VoicePhase } from "@pokebots/ui/features/conversation/VoicePill";
+import { currentText } from "@pokebots/ui/text";
 import { createStore, onCleanup } from "solid-js";
 import { SPEECH_LEVEL_COUNT } from "../../speech/speech-playback";
 import { voiceCaptureError } from "../voice-status";

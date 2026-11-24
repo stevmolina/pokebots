@@ -5,8 +5,8 @@ import {
   type WorkflowGitHubHistory,
   type WorkflowSummary,
   type WorkflowVersion,
-} from "@openbot/contracts/ipc";
-import type { WorkflowRunView } from "@openbot/ui/features/workflows/workflow-run-view";
+} from "@pokebots/contracts/ipc";
+import type { WorkflowRunView } from "@pokebots/ui/features/workflows/workflow-run-view";
 
 /** The open workflow as the host has it. */
 export interface StoredWorkflow {

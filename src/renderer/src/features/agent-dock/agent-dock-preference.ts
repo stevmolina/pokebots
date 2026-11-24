@@ -5,8 +5,8 @@ import {
   type AgentDockEdge,
   type AgentDockOffset,
   type AgentDockSeatRef,
-} from "@openbot/contracts/ipc";
-import { agentDockSeatKey } from "@openbot/ui/features/agent-dock/AgentDock";
+} from "@pokebots/contracts/ipc";
+import { agentDockSeatKey } from "@pokebots/ui/features/agent-dock/AgentDock";
 import { createSignal } from "solid-js";
 import { z } from "zod";
 

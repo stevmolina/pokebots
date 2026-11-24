@@ -1,5 +1,5 @@
-import { buttonVariants, DropdownMenu, Ellipsis } from "@openbot/ui";
-import { useText } from "@openbot/ui/text";
+import { buttonVariants, DropdownMenu, Ellipsis } from "@pokebots/ui";
+import { useText } from "@pokebots/ui/text";
 import { createSignal, Show } from "solid-js";
 import { BrowserShortcutHint } from "./BrowserTabIcon";
 import { type BrowserFullViewProps, browserPageDark, browserTabStoppable } from "./browser-full-view-types";

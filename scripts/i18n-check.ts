@@ -1,10 +1,10 @@
 import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, relative, resolve, sep } from "node:path";
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
-import type { Message, PluralMessage } from "@openbot/i18n";
-import { TRANSLATED_LOCALES } from "@openbot/i18n";
-import { matchingSourceKeys } from "@openbot/i18n/source";
-import { createOpenBotLogger } from "@openbot/logging";
+import { isDynamicRecord } from "@pokebots/contracts/runtime-values";
+import type { Message, PluralMessage } from "@pokebots/i18n";
+import { TRANSLATED_LOCALES } from "@pokebots/i18n";
+import { matchingSourceKeys } from "@pokebots/i18n/source";
+import { createOpenBotLogger } from "@pokebots/logging";
 
 // Checks the catalogs in packages/i18n/src/messages. See docs/i18n.md.
 //

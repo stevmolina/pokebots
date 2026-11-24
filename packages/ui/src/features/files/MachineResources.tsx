@@ -10,8 +10,8 @@ import {
   machineMetricPercent,
   machineMetricTone,
   type TeamMemberSummary,
-} from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
+} from "@pokebots/contracts/ipc";
+import type { AppTextKey } from "@pokebots/i18n";
 import {
   Progress,
   Select,
@@ -21,8 +21,8 @@ import {
   SelectValue,
   SliderField,
   TriangleAlert,
-} from "@openbot/ui";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/ui";
+import { useText } from "@pokebots/ui/text";
 import { createMemo, createSignal, createUniqueId, For, Show } from "solid-js";
 import { MACHINE_METRIC_ICONS, MACHINE_METRIC_LABELS, useMachineMetricDetail } from "./machine-metric";
 

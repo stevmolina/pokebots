@@ -1,6 +1,6 @@
-import { httpsLiveViewUrl, type ServerSummary } from "@openbot/contracts/ipc";
-import { AGENT_COMPUTER_CAPABILITY } from "@openbot/contracts/team-protocol/agent-computer-v1";
-import { COMPUTER_LIVE_VIEW_CAPABILITY } from "@openbot/contracts/team-protocol/computer-live-view-v1";
+import { httpsLiveViewUrl, type ServerSummary } from "@pokebots/contracts/ipc";
+import { AGENT_COMPUTER_CAPABILITY } from "@pokebots/contracts/team-protocol/agent-computer-v1";
+import { COMPUTER_LIVE_VIEW_CAPABILITY } from "@pokebots/contracts/team-protocol/computer-live-view-v1";
 import { serverCanAdminister, serverSupportsCapability } from "../servers/server-capabilities";
 
 /**

@@ -37,26 +37,26 @@ export const messages = {
   "status.agent.sendIdea": "Isto vira uma issue pública no GitHub. Seu nome não aparece.",
   "status.agent.feedbackRecentErrors": "Erros recentes no chat:",
   "status.agent.feedbackSameAs": "Adiciona à issue #{issue}",
-  "status.agent.feedbackSent": "Enviado para a equipe do OpenBot: {title}",
+  "status.agent.feedbackSent": "Enviado para a equipe do Pokebots: {title}",
   "status.agent.feedbackWithdrawn": "Removido do GitHub: {title}",
   "status.agent.feedbackWithdrawCommand": "Remover o relato #{issue} do GitHub",
   "status.agent.feedbackWithdrawReason":
     "Ninguém mais poderá ver este relato no GitHub. Não é possível desfazer. Para corrigi-lo, o agente pode enviar um relato corrigido.",
   "status.agent.feedbackWithdrawing": "Removendo seu relato do GitHub…",
   "status.agent.serverInstallCommand":
-    "Criar um comando de uso único que instala o OpenBot em outro computador como o servidor {name} e o conecta à sua conta. O agente o executa lá.",
+    "Criar um comando de uso único que instala o Pokebots em outro computador como o servidor {name} e o conecta à sua conta. O agente o executa lá.",
   "status.agent.serverInstallCard": "Comando de instalação para o servidor {name}",
   "status.agent.browserProfileNamed":
     "Mover {agents} para o perfil do navegador {profile}. Eles recebem os logins e cookies dele. As abas abertas deles fecham.",
-  "status.agent.commitCoAuthorOff": "Parar de adicionar o OpenBot como coautor nos commits de todos os agentes.",
-  "status.agent.commitCoAuthorOn": "Voltar a adicionar o OpenBot como coautor nos commits de todos os agentes.",
+  "status.agent.commitCoAuthorOff": "Parar de adicionar o Pokebots como coautor nos commits de todos os agentes.",
+  "status.agent.commitCoAuthorOn": "Voltar a adicionar o Pokebots como coautor nos commits de todos os agentes.",
   "status.agent.browserProfileNew":
     "Criar o novo perfil do navegador {profile} e mover {agents} para ele. Ele não tem logins. As abas abertas deles fecham.",
   "status.agent.browserProfileShared":
     "Mover {agents} para o perfil do navegador compartilhado. Eles recebem os logins e cookies dele. As abas abertas deles fecham.",
   "status.agent.browserProfileOwn":
     "Dar a cada um de {agents} um perfil do navegador próprio. As abas abertas deles fecham.",
-  "status.agent.feedbackSending": "Enviando seu feedback para a equipe do OpenBot…",
+  "status.agent.feedbackSending": "Enviando seu feedback para a equipe do Pokebots…",
   "status.agent.workflowDelete":
     "Excluir o fluxo de trabalho {title} com suas execuções e versões. Suas etapas abertas param.",
   "status.agent.deleteAgents": "Excluir {agents} com seus chats e arquivos. Não é possível desfazer.",

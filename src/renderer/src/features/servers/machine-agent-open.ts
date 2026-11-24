@@ -1,5 +1,5 @@
-import { classifyFailure } from "@openbot/telemetry";
-import { useText } from "@openbot/ui/text";
+import { classifyFailure } from "@pokebots/telemetry";
+import { useText } from "@pokebots/ui/text";
 import { actionToast } from "../../action-toast";
 import { useNavigation } from "../../navigation";
 import { useServerSelection } from "./server-selection";

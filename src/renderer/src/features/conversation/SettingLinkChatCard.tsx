@@ -1,13 +1,13 @@
-import type { SettingLinkId } from "@openbot/contracts/ipc";
-import type { AgentMessage } from "@openbot/ui/data";
+import type { SettingLinkId } from "@pokebots/contracts/ipc";
+import type { AgentMessage } from "@pokebots/ui/data";
 import {
   AGENT_SETTING_LINK_ROWS,
   AGENT_SETTINGS_PAGE_TITLE,
   type AgentSettingLinkId,
   isAgentSettingLinkId,
-} from "@openbot/ui/features/conversation/agent-setting-links";
-import { SettingLinkCard } from "@openbot/ui/features/conversation/SettingLinkCard";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/ui/features/conversation/agent-setting-links";
+import { SettingLinkCard } from "@pokebots/ui/features/conversation/SettingLinkCard";
+import { useText } from "@pokebots/ui/text";
 import { usePlatform } from "../../platform";
 import { appSettingLinkTarget } from "../settings/setting-link-targets";
 import { navItem } from "../settings/settings-tabs";

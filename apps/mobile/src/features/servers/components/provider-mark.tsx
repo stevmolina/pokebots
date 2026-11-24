@@ -1,5 +1,5 @@
-import { providerLogoShape } from "@openbot/brand/provider-logo-shape";
-import type { AgentProviderId } from "@openbot/contracts/ipc";
+import { providerLogoShape } from "@pokebots/brand/provider-logo-shape";
+import type { AgentProviderId } from "@pokebots/contracts/ipc";
 import { useThemeColor } from "heroui-native/hooks";
 import Svg, { Path } from "react-native-svg";
 import { useCSSVariable } from "uniwind";

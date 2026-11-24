@@ -1,5 +1,5 @@
 {
-  "name": "@openbot/auth-api",
+  "name": "@pokebots/auth-api",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -24,8 +24,8 @@
   "dependencies": {
     "@fontsource-variable/inter": "catalog:",
     "@kobalte/core": "catalog:",
-    "@openbot/brand": "workspace:*",
-    "@openbot/contracts": "workspace:*",
+    "@pokebots/brand": "workspace:*",
+    "@pokebots/contracts": "workspace:*",
     "@openpanel/web": "catalog:",
     "@paper-design/shaders": "catalog:",
     "@solidjs/signals": "catalog:",
@@ -38,7 +38,7 @@
     "solid-js": "2.0.0",
     "yaml": "catalog:",
     "zod": "catalog:",
-    "@openbot/ui": "workspace:*",
+    "@pokebots/ui": "workspace:*",
     "effect": "catalog:"
   },
   "devDependencies": {

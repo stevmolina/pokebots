@@ -9,11 +9,11 @@ import type {
   SetMcpServerEnabledInput,
   SignOutMcpServerInput,
   TestMcpServerInput,
-} from "@openbot/contracts/ipc";
-import { GITHUB_CONNECTOR_MCP_SERVER_ID, mcpConfigErrors, normalizeMcpConfig } from "@openbot/contracts/ipc";
-import { withoutMcpAccountFragment } from "@openbot/contracts/mcp-accounts";
-import { matchingSourceKeys, sourceText } from "@openbot/i18n/source";
-import { type Logger, redactSecrets, toLogValue } from "@openbot/logging";
+} from "@pokebots/contracts/ipc";
+import { GITHUB_CONNECTOR_MCP_SERVER_ID, mcpConfigErrors, normalizeMcpConfig } from "@pokebots/contracts/ipc";
+import { withoutMcpAccountFragment } from "@pokebots/contracts/mcp-accounts";
+import { matchingSourceKeys, sourceText } from "@pokebots/i18n/source";
+import { type Logger, redactSecrets, toLogValue } from "@pokebots/logging";
 import { Effect, Result, Schema } from "effect";
 import type { AgentProvider } from "../agent-client";
 import { causeHelpers } from "../effect-boundary";

@@ -1,8 +1,8 @@
 import { randomBytes, randomUUID } from "node:crypto";
 import { mkdir, rm } from "node:fs/promises";
 import { basename, join } from "node:path";
-import { DISCORD_ORCHESTRATOR_AVATAR } from "@openbot/contracts/discord-app";
-import { ATTACHMENT_LIMITS, INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { DISCORD_ORCHESTRATOR_AVATAR } from "@pokebots/contracts/discord-app";
+import { ATTACHMENT_LIMITS, INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import type {
   AddMessagingOrchestratorInput,
   AddTelegramOrchestratorInput,
@@ -26,16 +26,16 @@ import type {
   WhatsAppLinkState,
   WhatsAppOverview,
   WhatsAppSender,
-} from "@openbot/contracts/ipc";
-import { MESSAGING_CONNECTION_STATES, MESSAGING_LIMITS } from "@openbot/contracts/ipc";
-import { isDynamicRecord, isOneOf, isString } from "@openbot/contracts/runtime-values";
-import type { DiscordEmbed } from "@openbot/contracts/signal-protocol/discord-api";
-import { TELEGRAM_LINK_CODE_TTL_SECONDS } from "@openbot/contracts/signal-protocol/telegram-route";
-import { SLACK_ORCHESTRATOR_AVATAR } from "@openbot/contracts/slack-app";
-import { TELEGRAM_ORCHESTRATOR_AVATAR } from "@openbot/contracts/telegram-app";
-import { WHATSAPP_ORCHESTRATOR_AVATAR } from "@openbot/contracts/whatsapp-app";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger, redactPostText, redactText } from "@openbot/logging";
+} from "@pokebots/contracts/ipc";
+import { MESSAGING_CONNECTION_STATES, MESSAGING_LIMITS } from "@pokebots/contracts/ipc";
+import { isDynamicRecord, isOneOf, isString } from "@pokebots/contracts/runtime-values";
+import type { DiscordEmbed } from "@pokebots/contracts/signal-protocol/discord-api";
+import { TELEGRAM_LINK_CODE_TTL_SECONDS } from "@pokebots/contracts/signal-protocol/telegram-route";
+import { SLACK_ORCHESTRATOR_AVATAR } from "@pokebots/contracts/slack-app";
+import { TELEGRAM_ORCHESTRATOR_AVATAR } from "@pokebots/contracts/telegram-app";
+import { WHATSAPP_ORCHESTRATOR_AVATAR } from "@pokebots/contracts/whatsapp-app";
+import { sourceText } from "@pokebots/i18n/source";
+import { createOpenBotLogger, redactPostText, redactText } from "@pokebots/logging";
 import { Deferred, Effect, Exit, Result, Schedule, Schema, Scope } from "effect";
 import type { AgentLifecycleFailed } from "../agent-service";
 import { causeHelpers } from "../effect-boundary";

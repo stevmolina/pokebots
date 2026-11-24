@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import { join } from "node:path";
-import { expandAttachmentReferences } from "@openbot/contracts/attachment-references";
-import { chatTagReferences, expandChatTagReferences } from "@openbot/contracts/chat-tag-references";
+import { expandAttachmentReferences } from "@pokebots/contracts/attachment-references";
+import { chatTagReferences, expandChatTagReferences } from "@pokebots/contracts/chat-tag-references";
 import type {
   AgentSummary,
   AgentWait,
@@ -11,9 +11,9 @@ import type {
   QueueDelivery,
   RoutineRun,
   WorkflowRunSource,
-} from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
-import { redactSecrets, redactText } from "@openbot/logging";
+} from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
+import { redactSecrets, redactText } from "@pokebots/logging";
 import { wokenWaitsPromptText } from "../agent-waits/agent-waits";
 import { homeSkillRoot, homeSkillTagSlug } from "../home-skills";
 import type { DeliveryContext } from "../mailbox-store";

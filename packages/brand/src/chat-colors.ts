@@ -1,4 +1,4 @@
-import type { AvatarColor } from "@openbot/contracts/ipc";
+import type { AvatarColor } from "@pokebots/contracts/ipc";
 
 /**
  * The 11 chat colors that the desktop picker and the mobile settings offer as presets. A desktop

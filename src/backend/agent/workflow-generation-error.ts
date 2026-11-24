@@ -1,5 +1,5 @@
-import { sourceText } from "@openbot/i18n/source";
-import { classifyFailure } from "@openbot/telemetry";
+import { sourceText } from "@pokebots/i18n/source";
+import { classifyFailure } from "@pokebots/telemetry";
 import type { AgentProvider } from "../agent-client";
 import { providerLabel } from "./thread-items";
 

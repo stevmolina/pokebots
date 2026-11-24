@@ -1,4 +1,4 @@
-import type { ServerSummary } from "@openbot/contracts/ipc";
+import type { ServerSummary } from "@pokebots/contracts/ipc";
 import type {
   AgentWebhookSecret,
   EventActivity,
@@ -14,8 +14,8 @@ import type {
   SetWebhookSecretInput,
   WebhookSecret,
   WebhookTestResult,
-} from "@openbot/contracts/ipc-events";
-import { runTeamEffect } from "@openbot/team-client";
+} from "@pokebots/contracts/ipc-events";
+import { runTeamEffect } from "@pokebots/team-client";
 import {
   deleteEventRoutine,
   getEventStatus,
@@ -28,8 +28,8 @@ import {
   sendEventRoutineTestEvent,
   setEventRoutineSecret,
   testEventRoutine,
-} from "@openbot/team-client/team-admin-requests";
-import type { TeamApiRequest } from "@openbot/team-client/team-api-requests";
+} from "@pokebots/team-client/team-admin-requests";
+import type { TeamApiRequest } from "@pokebots/team-client/team-api-requests";
 import { Effect } from "effect";
 import {
   remoteRoutineRecovery,

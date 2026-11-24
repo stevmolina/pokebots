@@ -14,9 +14,9 @@ import {
   type ConversationQuestionPrompt,
   channelRoutineRequest,
   channelRoutingConversationEvent,
-} from "@openbot/contracts/ipc";
-import type { AgentMessage, AgentProfile } from "@openbot/ui/data";
-import type { ChannelWorker } from "@openbot/ui/features/channels/ChannelActivityIndicator";
+} from "@pokebots/contracts/ipc";
+import type { AgentMessage, AgentProfile } from "@pokebots/ui/data";
+import type { ChannelWorker } from "@pokebots/ui/features/channels/ChannelActivityIndicator";
 import { toAgentMessage, toAgentMessages } from "../../app-message-projection";
 
 /** A row with no text, no attachment and no question has nothing to draw. */

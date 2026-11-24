@@ -1,9 +1,9 @@
 {
-  "name": "OpenBotGit",
-  "url": "https://github.com/nightly-labs/openbot",
-  "description": "Gives OpenBot agents your repositories, issues and pull requests, through the GitHub MCP server, gh and git. The sign-in stays on the computer that runs OpenBot.",
+  "name": "PokebotsApp",
+  "url": "https://github.com/stevmolina/pokebots",
+  "description": "Gives Pokebots agents your repositories, issues and pull requests, through the GitHub MCP server, gh and git. The sign-in stays on the computer that runs Pokebots.",
   "public": true,
-  "hook_attributes": { "url": "https://signal.openbot.run/v1/github/events", "active": true },
+  "hook_attributes": { "url": "https://signal.pokebots.xyz/v1/github/events", "active": true },
   "request_oauth_on_install": false,
   "setup_on_update": false,
   "default_permissions": {

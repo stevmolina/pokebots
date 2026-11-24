@@ -94,6 +94,8 @@
     "BILLING_COUNTRY_REQUIRED": "true",
     // The public Client ID of the OpenBotGit GitHub App. Its private key is the optional secret
     // GITHUB_APP_PRIVATE_KEY (PKCS #8). Without the key, agents act on GitHub as the signed-in user.
+    // The Pokebots account service (`src/self-hosted/server.ts`) uses PokebotsApp instead. Keep this id
+    // with this Worker's key: the two must be the same app.
     "GITHUB_APP_CLIENT_ID": "Iv23lik5pzHz70cb0RUL",
     // The private repository where a withdrawn feedback issue moves, as `owner/name`. The GitHub App
     // needs Issues write access to it. Empty, the app can withdraw a comment, but not an issue.

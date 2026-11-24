@@ -1,4 +1,4 @@
-import { sourceText } from "@openbot/i18n/source";
+import { sourceText } from "@pokebots/i18n/source";
 import {
   createRemoteConnectionRecovery,
   type RemoteConnectionFailure,
@@ -6,13 +6,13 @@ import {
   type RemoteRecoveryStatus,
   type RemoteTeamDirectoryClient,
   remoteConnectionFailureDetails,
-} from "@openbot/team-client";
+} from "@pokebots/team-client";
 import {
   REMOTE_PEER_LOST_AFTER_MS,
   type RemoteTeamConnectionUpdate,
   type RemoteTeamEvent,
-} from "@openbot/team-client/remote-peer";
-import { errorReference } from "@openbot/user-errors/reference";
+} from "@pokebots/team-client/remote-peer";
+import { errorReference } from "@pokebots/user-errors/reference";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
 import { MobileConnectionAnalytics } from "@/features/analytics/connection";
 import { mobileAnalytics } from "@/features/analytics/mobile-analytics";

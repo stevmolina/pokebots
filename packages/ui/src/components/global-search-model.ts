@@ -1,8 +1,8 @@
-import { agentMentionRank } from "@openbot/contracts/agent-mention-rank";
-import { expandAttachmentReferences } from "@openbot/contracts/attachment-references";
-import { expandChatTagReferences } from "@openbot/contracts/chat-tag-references";
-import type { Settings } from "@openbot/ui";
-import type { AgentMessage, AgentProfile } from "@openbot/ui/data";
+import { agentMentionRank } from "@pokebots/contracts/agent-mention-rank";
+import { expandAttachmentReferences } from "@pokebots/contracts/attachment-references";
+import { expandChatTagReferences } from "@pokebots/contracts/chat-tag-references";
+import type { Settings } from "@pokebots/ui";
+import type { AgentMessage, AgentProfile } from "@pokebots/ui/data";
 import { type Accessor, createEffect, createMemo, createSignal, onCleanup } from "solid-js";
 import { normalizedSearchText } from "./global-search-text";
 

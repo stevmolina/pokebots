@@ -1,6 +1,6 @@
-import type { BrowserColorScheme, BrowserControlSession, BrowserTab, BrowserTabProfile } from "@openbot/contracts/ipc";
-import type { AppTranslate } from "@openbot/i18n";
-import type { AgentProfile } from "@openbot/ui/data";
+import type { BrowserColorScheme, BrowserControlSession, BrowserTab, BrowserTabProfile } from "@pokebots/contracts/ipc";
+import type { AppTranslate } from "@pokebots/i18n";
+import type { AgentProfile } from "@pokebots/ui/data";
 import type { JSX } from "@solidjs/web";
 import type { BrowserViewRuntime } from "./BrowserLiveView";
 import type { BrowserHistoryEntry } from "./browser-suggestions";

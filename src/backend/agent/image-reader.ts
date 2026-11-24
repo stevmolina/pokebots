@@ -1,4 +1,4 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import { z } from "zod";
 
 /** `read_image` opens no larger file: a 48-megapixel phone photo is about 20 MB. */

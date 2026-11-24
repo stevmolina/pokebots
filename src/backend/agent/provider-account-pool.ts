@@ -1,4 +1,4 @@
-import type { AccountUsageLimit, AccountUsageWindow } from "@openbot/contracts/ipc";
+import type { AccountUsageLimit, AccountUsageWindow } from "@pokebots/contracts/ipc";
 
 /** One account that the pool can use, with its last usage reading for the agent's model. */
 export interface PoolCandidate {

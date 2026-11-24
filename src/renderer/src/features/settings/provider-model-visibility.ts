@@ -1,6 +1,11 @@
-import type { AgentModelId, AgentProviderId, OpenBotDesktopApi, ProviderModelVisibility } from "@openbot/contracts/ipc";
-import type { ProviderModelVisibilityControl } from "@openbot/ui/features/settings/ProviderSettingsPage";
-import { useText } from "@openbot/ui/text";
+import type {
+  AgentModelId,
+  AgentProviderId,
+  OpenBotDesktopApi,
+  ProviderModelVisibility,
+} from "@pokebots/contracts/ipc";
+import type { ProviderModelVisibilityControl } from "@pokebots/ui/features/settings/ProviderSettingsPage";
+import { useText } from "@pokebots/ui/text";
 import { createEffect, createStore, untrack } from "solid-js";
 
 /** The model list calls of one server's host. The desktop reaches them through main. */

@@ -8,8 +8,8 @@
  * fields. A run reads none of them, and a host keeps fields as they are.
  */
 
-import { WORKFLOW_GROUP_FIELDS } from "@openbot/contracts/ipc";
-import { Button, Image as ImageIcon, Input, Layers } from "@openbot/ui";
+import { WORKFLOW_GROUP_FIELDS } from "@pokebots/contracts/ipc";
+import { Button, Image as ImageIcon, Input, Layers } from "@pokebots/ui";
 import { For, Show } from "solid-js";
 import { useText } from "../../text";
 import {

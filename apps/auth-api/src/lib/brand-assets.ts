@@ -1,11 +1,11 @@
 // The logo files of the /brand page, as SVG text. The page shows them, the Worker serves each one at
 // `/brand/<file>.svg`, and the browser draws the PNG files and the zip from the same text.
 //
-// The shapes come from `@openbot/brand`, and the layout of the logo with its name from the Figma
+// The shapes come from `@pokebots/brand`, and the layout of the logo with its name from the Figma
 // "Logo" board. No JSX and no DOM here: the Worker imports this module.
 
-import { APP_LOGO_CORNER, APP_LOGO_EYE_POINTS, APP_LOGO_SIZE } from "@openbot/brand/app-logo-shape";
-import { WORDMARK_PATHS, WORDMARK_WIDTH } from "@openbot/brand/wordmark-shape";
+import { APP_LOGO_CORNER, APP_LOGO_EYE_POINTS, APP_LOGO_SIZE } from "@pokebots/brand/app-logo-shape";
+import { WORDMARK_PATHS, WORDMARK_WIDTH } from "@pokebots/brand/wordmark-shape";
 import { BRAND_ROUTE } from "./brand-page";
 
 export const BRAND_ZIP_FILE = "openbot-brand.zip";
@@ -15,7 +15,7 @@ type IconShape = "rounded" | "square";
 type Ink = "dark" | "light";
 export type BrandSpace = "tight" | "safe";
 
-// The colors of the brand tokens in `@openbot/brand/tokens.css`. A file must not depend on a page's CSS.
+// The colors of the brand tokens in `@pokebots/brand/tokens.css`. A file must not depend on a page's CSS.
 const FILL: Record<IconColor, string> = { lilac: "#d6adf2", white: "#ffffff", black: "#040007" };
 const EYE: Record<IconColor, string> = { lilac: "#040007", white: "#040007", black: "#ffffff" };
 const INK: Record<Ink, string> = { dark: "#040007", light: "#ffffff" };

@@ -1,7 +1,7 @@
 // The one GitHub sign-in of this computer, encrypted at rest by the operating system.
 
 import { readFile, rm } from "node:fs/promises";
-import { sourceText } from "@openbot/i18n/source";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect, Result, Semaphore } from "effect";
 import { z } from "zod";
 import { writeJsonFileAtomically } from "../backend/atomic-json-file";
@@ -13,6 +13,11 @@ const githubConnectorRecordSchema = z.object({
   accessTokenExpiresAt: z.number().nullable(),
   refreshToken: z.string().min(1).nullable(),
   refreshTokenExpiresAt: z.number().nullable(),
+  /**
+   * The Client ID of the app that issued the tokens. A record from before the field is the earlier app's.
+   * A token set of another app than the configured one cannot be refreshed: it works until it expires.
+   */
+  clientId: z.string().min(1).nullish(),
   login: z.string().min(1),
   userId: z.number(),
   avatarUrl: z.string().nullable(),

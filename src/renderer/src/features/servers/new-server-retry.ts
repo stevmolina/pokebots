@@ -1,4 +1,4 @@
-import type { ServerSummary } from "@openbot/contracts/ipc";
+import type { ServerSummary } from "@pokebots/contracts/ipc";
 import { onSettled, untrack } from "solid-js";
 
 /** How often the app connects again to a new server that has a retryable issue. */

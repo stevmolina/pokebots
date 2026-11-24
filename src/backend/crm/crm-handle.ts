@@ -12,7 +12,7 @@ import type {
   CrmSettings,
   CrmSourceConnectInput,
   CrmSourceInput,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import { type Effect, Schema } from "effect";
 
 /**

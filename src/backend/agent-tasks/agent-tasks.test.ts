@@ -1,7 +1,7 @@
 import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import type { AgentSummary } from "@openbot/contracts/ipc";
+import type { AgentSummary } from "@pokebots/contracts/ipc";
 import { Effect } from "effect";
 import { afterEach, expect, it, vi } from "vitest";
 import { ConversationRuntime } from "../agent/conversation-runtime";

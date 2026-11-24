@@ -122,7 +122,7 @@ export const messages = {
   "files.storage.allFiles": "Todos os arquivos",
   "files.storage.allFilesOn": "Todos os arquivos em {host}",
   "files.storage.allFilesDescription": "Arquivos de todos os agentes e chats",
-  "files.storage.openBotOn": "OpenBot em {host}",
+  "files.storage.openBotOn": "Pokebots em {host}",
   "files.storage.measuring": "Medindo…",
   "files.storage.measureAgain": "Medir novamente",
   "files.storage.measuringStorage": "Medindo armazenamento",
@@ -131,7 +131,7 @@ export const messages = {
   "files.storage.byType": "Armazenamento por tipo",
   "files.storage.emptyTitle": "Nada armazenado ainda",
   "files.storage.emptyDescription":
-    "Os espaços de trabalho dos agentes, os arquivos dos chats e o histórico de chats aparecem aqui quando você começa a usar o OpenBot.",
+    "Os espaços de trabalho dos agentes, os arquivos dos chats e o histórico de chats aparecem aqui quando você começa a usar o Pokebots.",
   "files.storage.agents": "Agentes",
   "files.storage.largestChats": "Maiores chats",
   "files.storage.files": "Arquivos",
@@ -142,7 +142,7 @@ export const messages = {
   "files.storage.justNow": "agora mesmo",
   "files.storage.minutesAgo": "há {minutes} min",
   "files.storage.hoursAgo": "há {hours} h",
-  "files.storage.updateServer": "Atualize o OpenBot neste servidor para ver seu armazenamento.",
+  "files.storage.updateServer": "Atualize o Pokebots neste servidor para ver seu armazenamento.",
   "files.storage.openFailed": "Não foi possível abrir “{name}”",
   "files.storage.tryAgain": "Tente novamente.",
   "files.machine.title": "Máquina",
@@ -173,12 +173,12 @@ export const messages = {
   "files.cleanup.title": "Limpar",
   "files.cleanup.canBeCleared": "{size} podem ser liberados",
   "files.cleanup.description.caches":
-    "Cópias de arquivos do servidor. O OpenBot as baixa novamente quando você as abre.",
+    "Cópias de arquivos do servidor. O Pokebots as baixa novamente quando você as abre.",
   "files.cleanup.description.logs": "Registros de diagnóstico. Novos registros começam imediatamente.",
   "files.cleanup.description.runtimes":
-    "Versões anteriores da CLI dos provedores que nenhum agente usa. O OpenBot mantém a versão em uso.",
+    "Versões anteriores da CLI dos provedores que nenhum agente usa. O Pokebots mantém a versão em uso.",
   "files.cleanup.description.runtimeDownloads":
-    "Os downloads da CLI de {providers} e as versões anteriores da CLI, se houver. Nenhum agente os usa: esses provedores estão desativados ou usam a CLI que você instalou. O OpenBot baixa uma CLI de novo quando um provedor precisa dela.",
+    "Os downloads da CLI de {providers} e as versões anteriores da CLI, se houver. Nenhum agente os usa: esses provedores estão desativados ou usam a CLI que você instalou. O Pokebots baixa uma CLI de novo quando um provedor precisa dela.",
   "files.cleanup.clear": "Limpar",
   "files.cleanup.clearCategory": "Limpar {category}",
   "files.cleanup.confirm.caches": "Limpar arquivos do servidor em cache?",

@@ -2,8 +2,8 @@ import { execFile } from "node:child_process";
 import { existsSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { homedir, userInfo } from "node:os";
 import { join } from "node:path";
-import type { UpdateStatus } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+import type { UpdateStatus } from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
 
 const stateDirectory = join(homedir(), ".local", "state", "pokebots-autoupdate");
 

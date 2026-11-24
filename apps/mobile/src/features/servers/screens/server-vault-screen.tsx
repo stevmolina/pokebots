@@ -5,8 +5,8 @@ import type {
   VaultHostImportResult,
   VaultItemSummary,
   VaultLoginSummary,
-} from "@openbot/contracts/ipc";
-import { VAULT_IMPORT_CSV_LIMIT } from "@openbot/contracts/team-protocol/vault-import-v1";
+} from "@pokebots/contracts/ipc";
+import { VAULT_IMPORT_CSV_LIMIT } from "@pokebots/contracts/team-protocol/vault-import-v1";
 import * as DocumentPicker from "expo-document-picker";
 import { File } from "expo-file-system";
 import { router, useLocalSearchParams } from "expo-router";

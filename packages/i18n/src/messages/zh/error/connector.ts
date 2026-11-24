@@ -3,29 +3,29 @@ import type { messages as source } from "../../en/error/connector";
 
 export const messages = {
   // The built-in GitHub connection: the device flow, the token refresh and the stored file.
-  "error.connector.githubUnavailable": "该版本的 OpenBot 不包含 GitHub App。",
+  "error.connector.githubUnavailable": "该版本的 Pokebots 不包含 GitHub App。",
   "error.connector.githubDenied": "GitHub 登录被拒绝。",
   "error.connector.githubCodeExpired": "GitHub 验证码已过期，请重新连接 GitHub。",
   "error.connector.githubDeviceFlowDisabled": "该 GitHub App 不允许使用设备码登录。",
   "error.connector.githubClientUnknown": "GitHub 不认识该 GitHub App 的客户端 ID。",
   "error.connector.githubUnexpected": "GitHub 返回了意外的响应：{detail}",
-  "error.connector.githubUnreachable": "OpenBot 无法连接 GitHub：{detail}",
+  "error.connector.githubUnreachable": "Pokebots 无法连接 GitHub：{detail}",
   "error.connector.githubExpired": "GitHub 连接已过期，请重新连接 GitHub。",
   "error.connector.githubFileUnreadable": "GitHub 连接文件无法读取。",
   "error.connector.githubFileTooLarge": "GitHub 连接文件过大。",
   // The 1Password connection: the CLI that creates the service account, the token and the stored file.
   "error.connector.onePasswordCliMissing":
-    "OpenBot 找不到 1Password CLI。请安装它并在 1Password 应用中开启集成，或改用服务账号令牌。",
-  "error.connector.onePasswordCliInstallFailed": "OpenBot 无法安装 1Password CLI，请检查网络连接后重试。",
+    "Pokebots 找不到 1Password CLI。请安装它并在 1Password 应用中开启集成，或改用服务账号令牌。",
+  "error.connector.onePasswordCliInstallFailed": "Pokebots 无法安装 1Password CLI，请检查网络连接后重试。",
   "error.connector.onePasswordCliSignedOut": "1Password CLI 未登录。请在 1Password 应用中开启集成后重新连接。",
   "error.connector.onePasswordAppUnreachable":
-    "OpenBot 无法连接到 1Password 应用。请打开 1Password 并解锁。在“设置 > 开发者”中确认已开启“与 1Password CLI 集成”，然后重试。",
+    "Pokebots 无法连接到 1Password 应用。请打开 1Password 并解锁。在“设置 > 开发者”中确认已开启“与 1Password CLI 集成”，然后重试。",
   "error.connector.onePasswordCliFailed": "1Password CLI 执行失败：{detail}",
   "error.connector.onePasswordCliForbidden":
     "你的 1Password 账户不允许你创建共享保险库或服务账号。请向账户的所有者或管理员申请此权限，或向他们索取服务账号令牌，然后点击“使用令牌”。",
   "error.connector.onePasswordUnexpected": "1Password 返回了意外的响应：{detail}",
   "error.connector.onePasswordTokenRejected": "1Password 未接受该服务账号令牌。",
-  "error.connector.onePasswordUnreachable": "OpenBot 无法连接到 1Password，请检查网络连接后重试。",
+  "error.connector.onePasswordUnreachable": "Pokebots 无法连接到 1Password，请检查网络连接后重试。",
   "error.connector.onePasswordRateLimited": "1Password 收到的请求过多，请等待几分钟后重试。",
   "error.connector.onePasswordNoVault": "该服务账号无法读取任何保险库。请授予其保险库访问权限后重试。",
   "error.connector.onePasswordFileUnreadable": "1Password 连接文件无法读取。",
@@ -33,7 +33,7 @@ export const messages = {
   "error.connector.bitwardenFailed":
     "无法读取 Bitwarden。请安装 bw CLI、登录并解锁，然后创建一个名为 Shared with OpenBot 的文件夹，用新的会话密钥连接。",
   "error.connector.bitwardenCliMissing":
-    "OpenBot 找不到 Bitwarden CLI。请安装 bw，确认它在新终端中可以运行，然后重新连接。",
+    "Pokebots 找不到 Bitwarden CLI。请安装 bw，确认它在新终端中可以运行，然后重新连接。",
   "error.connector.bitwardenFolderMissing":
     "Bitwarden 必须只有一个名为 Shared with OpenBot 的文件夹。请创建它或删除多余的文件夹，然后重新连接。",
   "error.connector.bitwardenHostInput": "请填写 HTTPS 服务器地址、API 密钥的 client_id 和 client_secret，以及主密码。",
@@ -41,7 +41,7 @@ export const messages = {
     "无法在该服务器上打开 Bitwarden。请检查服务器地址、API 密钥和主密码，并确认有一个文件夹名为 Shared with OpenBot，然后重新连接。",
   "error.connector.bitwardenCliInstallFailed": "无法在该服务器上安装 Bitwarden CLI。请检查它的网络连接，然后重新连接。",
   "error.connector.bitwardenFileUnreadable": "Bitwarden 连接文件无法读取。",
-  "error.connector.passwordManagerUnknown": "OpenBot 不支持此密码管理器。",
+  "error.connector.passwordManagerUnknown": "Pokebots 不支持此密码管理器。",
   "error.connector.passwordManagerMethod": "此密码管理器不能以这种方式连接。",
   "error.connector.passwordManagerNoSignIn": "没有打开的登录页面。请重新连接。",
   "error.connector.protonPassFailed": "无法连接 Proton Pass。请重新连接。",
@@ -72,7 +72,7 @@ export const messages = {
   "error.connector.keeperLocked": "Keeper 已锁定此账户或此设备。请打开 Keeper 解锁，然后重新连接。",
   "error.connector.keeperThrottled": "Keeper 要求在下次登录前等待几分钟。请稍后重新连接。",
   "error.connector.keeperPersistentLogin":
-    "你的 Keeper 管理员关闭了 OpenBot 需要的“Stay logged in”。请让管理员允许，然后重新连接。",
+    "你的 Keeper 管理员关闭了 Pokebots 需要的“Stay logged in”。请让管理员允许，然后重新连接。",
   "error.connector.keeperSignInTimeout": "登录 Keeper 用时过长。请重新连接。",
   "error.connector.keeperFileUnreadable": "无法读取 Keeper 连接文件。",
 } as const satisfies PartialTranslation<typeof source>;

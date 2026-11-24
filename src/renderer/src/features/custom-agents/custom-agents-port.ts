@@ -8,7 +8,7 @@ import {
   LOCAL_SERVER_ID,
   type OpenBotDesktopApi,
   type SaveCustomAgentInput,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 
 /** What the custom agents context reaches in main: the ACP agents the user added. */
 interface CustomAgentsPort {

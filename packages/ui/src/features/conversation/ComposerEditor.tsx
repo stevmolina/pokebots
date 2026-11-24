@@ -1,14 +1,14 @@
-import { rankAgentMentions } from "@openbot/contracts/agent-mention-rank";
-import { attachmentReferenceIds, expandAttachmentReferences } from "@openbot/contracts/attachment-references";
+import { rankAgentMentions } from "@pokebots/contracts/agent-mention-rank";
+import { attachmentReferenceIds, expandAttachmentReferences } from "@pokebots/contracts/attachment-references";
 import {
   EVERYONE_MENTION,
   expandChatTagReferences,
   serializeChatTagReference,
-} from "@openbot/contracts/chat-tag-references";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import type { DraftAttachment } from "@openbot/contracts/ipc";
-import { AppWindow, Badge, Blocks, Listbox, Puzzle, Split, UsersRound } from "@openbot/ui";
-import { usesTouchLayout } from "@openbot/ui/utils";
+} from "@pokebots/contracts/chat-tag-references";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
+import type { DraftAttachment } from "@pokebots/contracts/ipc";
+import { AppWindow, Badge, Blocks, Listbox, Puzzle, Split, UsersRound } from "@pokebots/ui";
+import { usesTouchLayout } from "@pokebots/ui/utils";
 import { Dynamic, type JSX, Portal } from "@solidjs/web";
 import {
   createEffect,

@@ -1,6 +1,6 @@
-import { CHAT_VISUAL_PAGE_LIMIT, isChatVisualMimeType } from "@openbot/contracts/chat-visual";
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
-import { customBackdropId } from "@openbot/ui/features/conversation/chat-backdrop";
+import { CHAT_VISUAL_PAGE_LIMIT, isChatVisualMimeType } from "@pokebots/contracts/chat-visual";
+import { isDynamicRecord } from "@pokebots/contracts/runtime-values";
+import { customBackdropId } from "@pokebots/ui/features/conversation/chat-backdrop";
 import { createSignal } from "solid-js";
 import { useChatBackdrop } from "./chat-backdrop-preference";
 

@@ -1,9 +1,9 @@
 import assert from "node:assert/strict";
 import { mkdir, writeFile } from "node:fs/promises";
-import { createAgentTemplateShareUrl, createOpenBotAgentTemplateUrl } from "@openbot/contracts/agent-template-links";
-import { createInviteUrl, createOpenBotInviteUrl, parseInviteUrl } from "@openbot/contracts/invite-links";
-import { createMarketplaceShareUrl, createOpenBotMarketplaceUrl } from "@openbot/contracts/marketplace-links";
-import { createOpenBotPluginUrl, createPluginShareUrl } from "@openbot/contracts/plugin-links";
+import { createAgentTemplateShareUrl, createOpenBotAgentTemplateUrl } from "@pokebots/contracts/agent-template-links";
+import { createInviteUrl, createOpenBotInviteUrl, parseInviteUrl } from "@pokebots/contracts/invite-links";
+import { createMarketplaceShareUrl, createOpenBotMarketplaceUrl } from "@pokebots/contracts/marketplace-links";
+import { createOpenBotPluginUrl, createPluginShareUrl } from "@pokebots/contracts/plugin-links";
 import { readIncomingLink, redirectIncomingLink } from "../apps/mobile/src/features/links/model/incoming-links";
 import { findDeepLink, parseDeepLink } from "../src/main/deep-link-router";
 

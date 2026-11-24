@@ -4,8 +4,8 @@
  * row, and the settings of that type follow it, so a card keeps its layout when the type changes.
  */
 
-import type { MessagingPlatform } from "@openbot/contracts/ipc";
-import { Bot, ChevronDown, DropdownMenu, Hash, Input } from "@openbot/ui";
+import type { MessagingPlatform } from "@pokebots/contracts/ipc";
+import { Bot, ChevronDown, DropdownMenu, Hash, Input } from "@pokebots/ui";
 import type { JSX } from "@solidjs/web";
 import { For, Show, untrack } from "solid-js";
 import { useText } from "../../text";

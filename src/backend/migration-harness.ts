@@ -12,8 +12,8 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { DatabaseSync, type SQLInputValue, type SQLOutputValue } from "node:sqlite";
-import type { DynamicRecord } from "@openbot/contracts/runtime-values";
-import { isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
+import type { DynamicRecord } from "@pokebots/contracts/runtime-values";
+import { isDynamicRecord, isNumber, isString } from "@pokebots/contracts/runtime-values";
 import { Schema } from "effect";
 import { migrateOpenBotDatabase } from "./openbot-database-schema";
 

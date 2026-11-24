@@ -6,17 +6,17 @@ import {
   agentDefaultChoiceValues,
   type OpenBotDesktopApi,
   type UpdateAgentDefaultsInput,
-} from "@openbot/contracts/ipc";
-import { HOME_AGENT_RULES_CAPABILITY } from "@openbot/contracts/team-protocol/home-agent-rules-v1";
-import { THREAD_AUTO_ARCHIVE_CAPABILITY } from "@openbot/contracts/team-protocol/thread-auto-archive-v1";
-import { Alert, AlertContent, AlertDescription, ItemGroup, SettingsSection } from "@openbot/ui";
-import type { RoleAgent } from "@openbot/ui/features/servers/ServerRoles";
+} from "@pokebots/contracts/ipc";
+import { HOME_AGENT_RULES_CAPABILITY } from "@pokebots/contracts/team-protocol/home-agent-rules-v1";
+import { THREAD_AUTO_ARCHIVE_CAPABILITY } from "@pokebots/contracts/team-protocol/thread-auto-archive-v1";
+import { Alert, AlertContent, AlertDescription, ItemGroup, SettingsSection } from "@pokebots/ui";
+import type { RoleAgent } from "@pokebots/ui/features/servers/ServerRoles";
 import {
   type AgentDefaultsAgent,
   agentDefaultSettingTitle,
   SettingsAgentsTab,
-} from "@openbot/ui/features/settings/SettingsAgentsTab";
-import { currentText, useText } from "@openbot/ui/text";
+} from "@pokebots/ui/features/settings/SettingsAgentsTab";
+import { currentText, useText } from "@pokebots/ui/text";
 import type { JSX } from "@solidjs/web";
 import { createEffect, createStore, onSettled, Show, untrack } from "solid-js";
 import { actionToast } from "../../action-toast";

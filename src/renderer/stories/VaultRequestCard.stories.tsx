@@ -1,7 +1,7 @@
-import type { VaultItemKind, VaultSaveInput } from "@openbot/contracts/ipc";
-import { cardBrand, vaultExpiryText } from "@openbot/contracts/ipc";
-import { UI_API_KEY_SCOPE_FIELD_ID, type UiBlockStatus, type UiVaultSavedItem } from "@openbot/contracts/ui-blocks";
-import { VaultRequestCard } from "@openbot/ui/features/vault/VaultRequestCard";
+import type { VaultItemKind, VaultSaveInput } from "@pokebots/contracts/ipc";
+import { cardBrand, vaultExpiryText } from "@pokebots/contracts/ipc";
+import { UI_API_KEY_SCOPE_FIELD_ID, type UiBlockStatus, type UiVaultSavedItem } from "@pokebots/contracts/ui-blocks";
+import { VaultRequestCard } from "@pokebots/ui/features/vault/VaultRequestCard";
 import { createSignal } from "solid-js";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 

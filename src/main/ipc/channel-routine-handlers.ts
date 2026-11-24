@@ -5,16 +5,16 @@ import {
   decodeChannelRoutineRun,
   decodeChannelRoutineRuns,
   decodeChannelRoutines,
-} from "@openbot/contracts/ipc";
-import { CHANNEL_ROUTES } from "@openbot/contracts/team-protocol/channels-v1";
-import { ROUTINES_ONCE_CAPABILITY } from "@openbot/contracts/team-protocol/routines-once-v1";
+} from "@pokebots/contracts/ipc";
+import { CHANNEL_ROUTES } from "@pokebots/contracts/team-protocol/channels-v1";
+import { ROUTINES_ONCE_CAPABILITY } from "@pokebots/contracts/team-protocol/routines-once-v1";
 import {
   createOnceChannelRoutine,
   isOnceSchedule,
   listOnceChannelRoutines,
   requireReleasedScheduleOn,
   updateChannelRoutineOnce,
-} from "@openbot/team-client/routines-once";
+} from "@pokebots/team-client/routines-once";
 import type { AgentService } from "../../backend/agent-service";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import { decodeVoid } from "../remote-host-decoding";

@@ -1,4 +1,4 @@
-import type { MobileTranslate } from "@openbot/i18n/mobile";
+import type { MobileTranslate } from "@pokebots/i18n/mobile";
 import type { Href } from "expo-router";
 import { Typography } from "heroui-native";
 import type { LucideIcon } from "lucide-react-native";
@@ -72,6 +72,7 @@ import { isAndroid, longPressDelay } from "@/shared/lib/platform";
 import { currentText, useText } from "@/shared/lib/text";
 import { typeScale } from "@/shared/lib/type-scale";
 import { DrawerHeaderBlur } from "./drawer-header-blur";
+import { DrawerMachineList, DrawerMachinePill } from "./drawer-machines";
 import { ServerAvatar } from "./server-avatar";
 import { ServerDrawerIconButton } from "./server-drawer-icon-button";
 import { SERVER_ROW_HEIGHT, SortableServerList } from "./sortable-server-list";
@@ -188,6 +189,7 @@ export const ServerDrawerContent = memo(function ServerDrawerContent({
   const [dragging, setDragging] = useState(false);
   const [listOpen, setListOpen] = useState(false);
   const [headerHeight, setHeaderHeight] = useState(0);
+  const [machineListOpen, setMachineListOpen] = useState(false);
   // The iOS menu host sizes to its content, so a row in a menu gets the slot width explicitly.
   const [rowWidth, setRowWidth] = useState<number>();
   const activeServer = servers.find((server) => server.id === activeServerId);
@@ -289,6 +291,7 @@ export const ServerDrawerContent = memo(function ServerDrawerContent({
     setEditingTools(false);
     setDragging(false);
     setListOpen(false);
+    setMachineListOpen(false);
   }, [open]);
 
   // The plus button opens the plans and the account's hosted servers when the account can have
@@ -439,7 +442,9 @@ export const ServerDrawerContent = memo(function ServerDrawerContent({
           }}
         >
           <View className="min-h-14 flex-row items-center justify-between gap-2 pl-3">
-            {activeServer ? (
+            {servers.length > 1 && !editing && !editingTools ? (
+              <DrawerMachinePill open={machineListOpen} onToggle={() => setMachineListOpen((current) => !current)} />
+            ) : activeServer ? (
               <Pressable
                 accessibilityRole="button"
                 accessibilityHint={t("mobile.server.drawer.serverListHint")}
@@ -525,6 +530,10 @@ export const ServerDrawerContent = memo(function ServerDrawerContent({
           scrollEnabled={!dragging}
           showsVerticalScrollIndicator={false}
         >
+          <ServerListCollapse open={machineListOpen} reducedMotion={reducedMotion}>
+            <DrawerMachineList onChosen={() => setMachineListOpen(false)} />
+            <DrawerDivider />
+          </ServerListCollapse>
           <ServerListCollapse open={showsList} reducedMotion={reducedMotion}>
             {editing ? (
               <SortableServerList
@@ -694,7 +703,7 @@ function DrawerServerTools({
         ? { icon: Waypoints, label: t("mobile.app.route.workflows"), disabled: true }
         : null,
     brain: brain ? { icon: Brain, label: t("mobile.brain.title") } : null,
-    marketplace: { icon: Store, label: t("mobile.app.route.marketplace") },
+    marketplace: { icon: Store, label: t("mobile.workspace.preview.apps") },
     usage: { icon: ChartArea, label: t("mobile.app.route.usage"), value: values.usage },
     library:
       library === "hidden"

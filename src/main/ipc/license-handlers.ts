@@ -6,8 +6,8 @@ import {
   parseLicensePlanRequest,
   parseLicenseRenewalRequest,
   parseLicenseUsersRequest,
-} from "@openbot/contracts/license";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/license";
+import { sourceText } from "@pokebots/i18n/source";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import type { LicenseDesktopService } from "../license-service";
 import { handler, type IpcGroupHandlers, payloadHandler } from "./define-ipc-group";

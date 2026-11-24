@@ -1,4 +1,4 @@
-import { ServerInstallCard, type ServerInstallCardStep } from "@openbot/ui/features/conversation/ServerInstallCard";
+import { ServerInstallCard, type ServerInstallCardStep } from "@pokebots/ui/features/conversation/ServerInstallCard";
 import { createSignal, onSettled } from "solid-js";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";

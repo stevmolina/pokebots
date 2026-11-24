@@ -1,4 +1,4 @@
-import { POKEBOTS_HUE_COLORS } from "@openbot/brand/pokebots-avatar";
+import { POKEBOTS_HUE_COLORS } from "@pokebots/brand/pokebots-avatar";
 import Constants from "expo-constants";
 import { Uniwind } from "uniwind";
 

@@ -1,8 +1,8 @@
-import { focusComposerEditor } from "@openbot/ui/features/conversation/composer-focus";
-import { ShortcutPeek, type ShortcutPeekExtra } from "@openbot/ui/features/shortcuts/ShortcutPeek";
-import { ShortcutSheet } from "@openbot/ui/features/shortcuts/ShortcutSheet";
-import type { ShortcutId, ShortcutPlatform } from "@openbot/ui/features/shortcuts/shortcut-registry";
-import { sidebarChatStep } from "@openbot/ui/features/sidebar/sidebar-chat-step";
+import { focusComposerEditor } from "@pokebots/ui/features/conversation/composer-focus";
+import { ShortcutPeek, type ShortcutPeekExtra } from "@pokebots/ui/features/shortcuts/ShortcutPeek";
+import { ShortcutSheet } from "@pokebots/ui/features/shortcuts/ShortcutSheet";
+import type { ShortcutId, ShortcutPlatform } from "@pokebots/ui/features/shortcuts/shortcut-registry";
+import { sidebarChatStep } from "@pokebots/ui/features/sidebar/sidebar-chat-step";
 import { createMemo, createSignal, onSettled } from "solid-js";
 import { playActionSound } from "../../action-sounds";
 import { appPort } from "../../app-port";

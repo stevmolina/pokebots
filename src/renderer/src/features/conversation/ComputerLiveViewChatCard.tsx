@@ -1,6 +1,6 @@
-import type { AgentMessage } from "@openbot/ui/data";
-import { ComputerLiveViewCard } from "@openbot/ui/features/conversation/ComputerLiveViewCard";
-import { useText } from "@openbot/ui/text";
+import type { AgentMessage } from "@pokebots/ui/data";
+import { ComputerLiveViewCard } from "@pokebots/ui/features/conversation/ComputerLiveViewCard";
+import { useText } from "@pokebots/ui/text";
 import { createSignal } from "solid-js";
 import { useConversationViewScope } from "./conversation-scope";
 import type { ConversationProps } from "./conversation-types";

@@ -69,7 +69,7 @@ safe to replay. Keep domain retry and recovery rules at their existing owners.
    renders, and passes a value down as a prop when two of them would otherwise derive it twice. A
    component that assembles another one's props is how the god controller grew back last time.
 9. Do not add temporary compatibility paths without a removal condition and a test for that condition. Team API protocol adapters stay while a release in the support window speaks their protocol (root `AGENTS.md`, `packages/contracts/AGENTS.md`).
-10. Log through `@openbot/logging` (`ts-log` Logger), never bare `console.*` - Biome's `noConsole`
+10. Log through `@pokebots/logging` (`ts-log` Logger), never bare `console.*` - Biome's `noConsole`
     enforces this in `src`, `scripts` and `packages`. The remote-desktop build recipe scripts that the
     `noConsole` override in `biome.json` excludes are exempt. The `Require a recipe version bump` step
     of `.github/workflows/remote-desktop-runtime.yml` lists them: any edit to them, cosmetic or not, forces `remoteDesktop.recipeVersion` up and a full
@@ -117,6 +117,10 @@ safe to replay. Keep domain retry and recovery rules at their existing owners.
     reachable: `pages` lists the targets and `--page=<target-id|url-substring>` drives any of them, so
     the app window is the default rather than a limit. Page URLs reach the diagnostics and the
     snapshot document only through `describeTarget`.
+
+The root workspace alias `@openbot/logging` resolves to `@pokebots/logging`. Keep the alias
+while any migration imports it. Electron bundles both names. The release fixture exporter
+links both scopes to the archived packages so each schema runs with its own source.
 
 SQLite migration history starts at the frozen version 8 compatibility baseline. Keep the baseline
 schema unchanged and append every later migration in numeric order. A new database runs the same

@@ -10,7 +10,7 @@ import {
   isJSONRPCResultResponse,
   type RequestId,
 } from "@modelcontextprotocol/sdk/types.js";
-import { sourceText } from "@openbot/i18n/source";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect } from "effect";
 import { cliSpawnTarget } from "./cli";
 import { type ProviderClientOperationError, providerCall, providerFailure } from "./provider-client-effects";

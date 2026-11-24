@@ -22,7 +22,7 @@ import { execFileSync } from "node:child_process";
 import { copyFile, cp, mkdir, mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import { createOpenBotLogger } from "@openbot/logging";
+import { createOpenBotLogger } from "@pokebots/logging";
 
 const logger = createOpenBotLogger("compile-macos-icon");
 const sourcePath = resolve("build/icon-production.icon");

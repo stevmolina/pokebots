@@ -1,4 +1,4 @@
-import { type ChatBackdropChoice, isChatBackdropChoice } from "@openbot/ui/features/conversation/chat-backdrop";
+import { type ChatBackdropChoice, isChatBackdropChoice } from "@pokebots/ui/features/conversation/chat-backdrop";
 import { createSignal } from "solid-js";
 
 const CHAT_BACKDROP_STORAGE_KEY = "openbot:chat-backdrop";

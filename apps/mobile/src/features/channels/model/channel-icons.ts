@@ -4,8 +4,8 @@ import {
   type ChannelIcon,
   type ChannelIconName,
   isAvatarHue,
-} from "@openbot/contracts/ipc";
-import type { MobileTextKey } from "@openbot/i18n/mobile";
+} from "@pokebots/contracts/ipc";
+import type { MobileTextKey } from "@pokebots/i18n/mobile";
 import type { LucideIcon } from "lucide-react-native";
 import BookOpen from "lucide-react-native/icons/book-open";
 import Brain from "lucide-react-native/icons/brain";

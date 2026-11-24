@@ -1,8 +1,8 @@
-import { isString } from "@openbot/contracts/runtime-values";
-import { remoteHostFingerprint } from "@openbot/team-client";
+import { isString } from "@pokebots/contracts/runtime-values";
+import { remoteHostFingerprint } from "@pokebots/team-client";
 
 // Categorical hues shared with the desktop server rail (--openbot-file-blue/-orange/-teal/-pink and
-// --openbot-success). @openbot/brand ships tokens as CSS only, so JS keeps a copy.
+// --openbot-success). @pokebots/brand ships tokens as CSS only, so JS keeps a copy.
 const SERVER_ACCENTS = ["#74b9ff", "#f0a06a", "#6bc7d9", "#d98ac9", "#31cf76"] as const;
 
 /** The accent follows the server, so a move, join, or leave does not recolor other servers. */

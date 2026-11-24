@@ -160,7 +160,7 @@ shows a black root as if no video came. `xsetroot` gives it an arrow pointer, be
 `scripts/hosting/openbot-desktop` starts Openbox on the agent display, with the configuration and
 the flat light theme in `scripts/hosting/desktop/`. Before Openbox starts, `hsetroot` draws the
 background: the dark color of the app (`#1a1a1a`) with the OpenBot logo (`desktop/openbot-logo.png`,
-the lilac logo with a light name from `@openbot/brand`) in the center, at each display size. Without
+the lilac logo with a light name from `@pokebots/brand`) in the center, at each display size. Without
 `hsetroot`, the white root stays, because a dark screen with no logo looks like no video.
 
 Windows get title bars, and a click focuses and raises a window. A right-click on the empty screen or
@@ -480,7 +480,7 @@ A timed-out or unsuccessful shell command fails the coding adapter.
 The optional `agent-computer-v1` Team API routes require an owner or admin and the negotiated
 capability. Old hosts hide the controls. Desktop IPC routes to the local service or joined host.
 Host response decoders and preload response decoders have independent implementations.
-`@openbot/team-client/agent-computer` supplies the request port for web and mobile. Server
+`@pokebots/team-client/agent-computer` supplies the request port for web and mobile. Server
 settings injects that port into the view. Machines drops old responses after access changes.
 Mobile uses mounted screen state and does not cache bearer links in offline workspace data.
 

@@ -1,7 +1,7 @@
 // The live two-step code of a Vault login, as an authenticator app shows it: the digits in two groups
 // and a ring that empties until the next code. A tap copies the code.
 
-import { groupedTwoStepCode } from "@openbot/contracts/two-step-code";
+import { groupedTwoStepCode } from "@pokebots/contracts/two-step-code";
 import * as Clipboard from "expo-clipboard";
 import { Typography } from "heroui-native";
 import Check from "lucide-react-native/icons/check";

@@ -1,4 +1,4 @@
-import { attachmentFileExtension } from "@openbot/contracts/attachment-files";
+import { attachmentFileExtension } from "@pokebots/contracts/attachment-files";
 import { Platform } from "react-native";
 
 /**

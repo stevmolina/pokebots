@@ -6,7 +6,7 @@ import {
   SHAPES,
   type ShapeId,
 } from "@norbert_bodziony/bloub";
-import { type AvatarColor, type AvatarHue, nearestAvatarHue } from "@openbot/contracts/ipc-agent-identity";
+import { type AvatarColor, type AvatarHue, nearestAvatarHue } from "@pokebots/contracts/ipc-agent-identity";
 import {
   POKEBOTS_HUE_COLORS,
   POKEBOTS_LANDING_ARTWORK,

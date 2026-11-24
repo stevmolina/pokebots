@@ -4,11 +4,11 @@ import {
   type FeedbackFacts,
   type FeedbackHost,
   type SimilarFeedbackIssue,
-} from "@openbot/contracts/feedback";
-import type { CentralAuthState } from "@openbot/contracts/ipc";
-import { decodeRecord, requiredNumber, requiredString } from "@openbot/contracts/ipc-decoding";
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { createOpenBotLogger, toLogValue } from "@openbot/logging";
+} from "@pokebots/contracts/feedback";
+import type { CentralAuthState } from "@pokebots/contracts/ipc";
+import { decodeRecord, requiredNumber, requiredString } from "@pokebots/contracts/ipc-decoding";
+import { isDynamicRecord, isString } from "@pokebots/contracts/runtime-values";
+import { createOpenBotLogger, toLogValue } from "@pokebots/logging";
 import { Effect } from "effect";
 import { app } from "electron";
 import { version as developmentVersion } from "../../package.json";
@@ -59,7 +59,7 @@ function similarIssues(value: unknown): SimilarFeedbackIssue[] {
 
 /**
  * Sends approved feedback with the account session. The account service opens the issue as
- * `openbotgit[bot]`, so the user needs no GitHub account, and the issue does not name the account.
+ * `pokebotsapp[bot]`, so the user needs no GitHub account, and the issue does not name the account.
  */
 export function feedbackSender(auth: FeedbackAuth): AgentFeedback {
   return {

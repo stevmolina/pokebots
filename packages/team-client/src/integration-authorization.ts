@@ -1,5 +1,5 @@
-import { isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
-import { POKEBOTS_INTEGRATIONS_ROUTES } from "@openbot/contracts/team-protocol/pokebots-integrations-v1";
+import { isDynamicRecord, isNumber, isString } from "@pokebots/contracts/runtime-values";
+import { POKEBOTS_INTEGRATIONS_ROUTES } from "@pokebots/contracts/team-protocol/pokebots-integrations-v1";
 import { Effect, Schema, Semaphore } from "effect";
 
 class IntegrationAuthorizationError extends Schema.TaggedError<IntegrationAuthorizationError>()(

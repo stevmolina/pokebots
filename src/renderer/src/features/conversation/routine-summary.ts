@@ -1,8 +1,11 @@
-import type { RoutineFields, RoutineSchedule } from "@openbot/contracts/ipc";
-import type { EventRoutine, RoutineWebhookTriggerInput } from "@openbot/contracts/ipc-events";
-import { routineDraftSummary } from "@openbot/ui/features/conversation/routine-schedule-draft";
-import { routineOnceCompleted, routineScheduleToDraft } from "@openbot/ui/features/conversation/routine-schedule-saved";
-import { type RoutineText, routineScheduleSummary } from "@openbot/ui/features/conversation/routine-schedule-ui";
+import type { RoutineFields, RoutineSchedule } from "@pokebots/contracts/ipc";
+import type { EventRoutine, RoutineWebhookTriggerInput } from "@pokebots/contracts/ipc-events";
+import { routineDraftSummary } from "@pokebots/ui/features/conversation/routine-schedule-draft";
+import {
+  routineOnceCompleted,
+  routineScheduleToDraft,
+} from "@pokebots/ui/features/conversation/routine-schedule-saved";
+import { type RoutineText, routineScheduleSummary } from "@pokebots/ui/features/conversation/routine-schedule-ui";
 import type { RoutineEditorRecord } from "./routines-port";
 
 export function isEventRoutine(routine: RoutineEditorRecord): routine is EventRoutine {

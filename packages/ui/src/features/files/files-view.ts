@@ -1,11 +1,11 @@
 /*
  * Display helpers for the Files and storage views (issue #496). The row and usage shapes are the IPC
- * contract in `@openbot/contracts/ipc`; labels, grouping and filters stay here, beside the views.
+ * contract in `@pokebots/contracts/ipc`; labels, grouping and filters stay here, beside the views.
  */
 
-import type { StorageBreakdown, StorageCategory, StoredFileRow } from "@openbot/contracts/ipc";
-import type { AppFormat, AppTextKey, AppTranslate } from "@openbot/i18n";
-import type { FileSort, FileTypeFilter } from "@openbot/team-client/stored-files";
+import type { StorageBreakdown, StorageCategory, StoredFileRow } from "@pokebots/contracts/ipc";
+import type { AppFormat, AppTextKey, AppTranslate } from "@pokebots/i18n";
+import type { FileSort, FileTypeFilter } from "@pokebots/team-client/stored-files";
 
 export type {
   AgentStorageRow,
@@ -17,7 +17,7 @@ export type {
   StoredFileRow,
   StoredFileSource,
   StoredFileStatus,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 
 export type StoredFileAction = "open" | "reveal" | "download" | "show-in-chat" | "delete" | "retry";
 
@@ -102,7 +102,7 @@ export {
   fileTypeCounts,
   fileTypeOf,
   queryFiles,
-} from "@openbot/team-client/stored-files";
+} from "@pokebots/team-client/stored-files";
 
 export const FILE_TYPE_FILTERS: ReadonlyArray<{ value: FileTypeFilter; label: AppTextKey }> = [
   { value: "all", label: "files.type.all" },

@@ -1,5 +1,5 @@
-import type { AppInfo, CentralAuthUser } from "@openbot/contracts/ipc";
-import { isBoolean, isDynamicRecord, isNumber } from "@openbot/contracts/runtime-values";
+import type { AppInfo, CentralAuthUser } from "@pokebots/contracts/ipc";
+import { isBoolean, isDynamicRecord, isNumber } from "@pokebots/contracts/runtime-values";
 import {
   ANALYTICS_GENERATIONS,
   analyticsOnByDefault,
@@ -10,8 +10,8 @@ import {
   openPanelTransport,
   ReportQueue,
   safeProperties,
-} from "@openbot/telemetry";
-import { indexedReportStorage } from "@openbot/telemetry/browser";
+} from "@pokebots/telemetry";
+import { indexedReportStorage } from "@pokebots/telemetry/browser";
 import { Effect } from "effect";
 import { version } from "../../../package.json";
 

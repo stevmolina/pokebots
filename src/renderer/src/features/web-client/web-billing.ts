@@ -1,18 +1,18 @@
-import { parseBillingSessionUrl, parseBillingState } from "@openbot/contracts/billing";
-import { parseBillingDetails } from "@openbot/contracts/billing-details";
+import { parseBillingSessionUrl, parseBillingState } from "@pokebots/contracts/billing";
+import { parseBillingDetails } from "@pokebots/contracts/billing-details";
 import {
   PRICING_ORDER_PARAMS,
   type PricingOrder,
   parseLicenseCheckoutUrl,
   parseLicenseState,
   parsePricingOrder,
-} from "@openbot/contracts/license";
-import { readPromotionCode } from "@openbot/contracts/promotion-code";
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import type { BillingDetailsCalls } from "@openbot/ui/features/billing/BillingDetailsFields";
-import type { BillingCalls } from "@openbot/ui/features/billing/billing-store";
-import type { LicenseCalls } from "@openbot/ui/features/billing/license-store";
-import { currentText } from "@openbot/ui/text";
+} from "@pokebots/contracts/license";
+import { readPromotionCode } from "@pokebots/contracts/promotion-code";
+import { isDynamicRecord, isString } from "@pokebots/contracts/runtime-values";
+import type { BillingDetailsCalls } from "@pokebots/ui/features/billing/BillingDetailsFields";
+import type { BillingCalls } from "@pokebots/ui/features/billing/billing-store";
+import type { LicenseCalls } from "@pokebots/ui/features/billing/license-store";
+import { currentText } from "@pokebots/ui/text";
 
 const REQUEST_TIMEOUT_MS = 15_000;
 

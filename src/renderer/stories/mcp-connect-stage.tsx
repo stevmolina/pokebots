@@ -10,12 +10,12 @@
  * listing installs, behind the same connect attempt, so "never answers" is what waiting looks like.
  */
 
-import type { McpServerConfig, McpTestResult } from "@openbot/contracts/ipc";
-import type { McpKeyFlow } from "@openbot/contracts/mcp-connect-flows";
-import { Button, Text } from "@openbot/ui";
-import type { McpConnectSubject } from "@openbot/ui/features/settings/McpConnectShell";
-import type { MarketplacePluginApp } from "@openbot/ui/features/settings/marketplace-plugins";
-import { holdFlag } from "@openbot/ui/utils";
+import type { McpServerConfig, McpTestResult } from "@pokebots/contracts/ipc";
+import type { McpKeyFlow } from "@pokebots/contracts/mcp-connect-flows";
+import { Button, Text } from "@pokebots/ui";
+import type { McpConnectSubject } from "@pokebots/ui/features/settings/McpConnectShell";
+import type { MarketplacePluginApp } from "@pokebots/ui/features/settings/marketplace-plugins";
+import { holdFlag } from "@pokebots/ui/utils";
 import type { JSX } from "@solidjs/web";
 import { createSignal, onCleanup, Show } from "solid-js";
 import { createPluginAppConfig } from "../src/features/settings/marketplace-plugin-catalog";

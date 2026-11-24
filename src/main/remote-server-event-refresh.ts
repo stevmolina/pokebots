@@ -28,10 +28,13 @@ import {
   type ProviderModelSourceEntry,
   type TeamMemberSummary,
   withModelSources,
-} from "@openbot/contracts/ipc";
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
-import { AGENT_USAGE_LIMIT_ROUTES, type AgentUsageLimits } from "@openbot/contracts/team-protocol/agent-usage-limit-v1";
-import { PROVIDER_MODEL_SOURCE_ROUTES } from "@openbot/contracts/team-protocol/provider-model-source-v1";
+} from "@pokebots/contracts/ipc";
+import { TEAM_API_ROUTES } from "@pokebots/contracts/team-api-routes";
+import {
+  AGENT_USAGE_LIMIT_ROUTES,
+  type AgentUsageLimits,
+} from "@pokebots/contracts/team-protocol/agent-usage-limit-v1";
+import { PROVIDER_MODEL_SOURCE_ROUTES } from "@pokebots/contracts/team-protocol/provider-model-source-v1";
 import { Deferred, Effect, Result } from "effect";
 import { decodeAgentSummaries, decodeQueueSnapshot, decodeRemoteAgentUsageLimits } from "./remote-agent-decoding";
 import { decodeConversationPageFromHost } from "./remote-conversation-decoding";

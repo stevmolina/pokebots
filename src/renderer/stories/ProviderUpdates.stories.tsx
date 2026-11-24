@@ -1,10 +1,10 @@
-import { isManagedRuntimeProvider, type ManagedProviderId } from "@openbot/contracts/agent-providers";
-import type { AgentProviderId, ProviderRuntimeStatus } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
-import { Button, Checkbox, Heading, Text, Toaster, toast } from "@openbot/ui";
-import type { ProviderPickerOption } from "@openbot/ui/components/ProviderPicker";
-import { ProviderPicker } from "@openbot/ui/components/ProviderPicker";
-import { type ProviderUpdate, providerUpdatesToAnnounce } from "@openbot/ui/features/provider-updates/provider-update";
+import { isManagedRuntimeProvider, type ManagedProviderId } from "@pokebots/contracts/agent-providers";
+import type { AgentProviderId, ProviderRuntimeStatus } from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
+import { Button, Checkbox, Heading, Text, Toaster, toast } from "@pokebots/ui";
+import type { ProviderPickerOption } from "@pokebots/ui/components/ProviderPicker";
+import { ProviderPicker } from "@pokebots/ui/components/ProviderPicker";
+import { type ProviderUpdate, providerUpdatesToAnnounce } from "@pokebots/ui/features/provider-updates/provider-update";
 import { createEffect, createSignal, createUniqueId, onCleanup, onSettled, Show, untrack } from "solid-js";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import {

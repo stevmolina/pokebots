@@ -1,4 +1,4 @@
-import type { RoomMemory, RoomMessage, RoomSummary, RoomsRequest, RoomsResult } from "@openbot/contracts/rooms";
+import type { RoomMemory, RoomMessage, RoomSummary, RoomsRequest, RoomsResult } from "@pokebots/contracts/rooms";
 import * as Clipboard from "expo-clipboard";
 import { router, Stack, useIsFocused, useLocalSearchParams } from "expo-router";
 import { Button, Typography } from "heroui-native";

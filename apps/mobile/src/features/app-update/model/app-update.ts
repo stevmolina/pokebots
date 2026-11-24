@@ -3,7 +3,7 @@ import {
   MOBILE_CHANGELOG_PATH,
   type MobileReleaseNotes,
   parseMobileReleaseNotes,
-} from "@openbot/contracts/mobile-features";
+} from "@pokebots/contracts/mobile-features";
 import { useQuery } from "@tanstack/react-query";
 import * as SecureStore from "expo-secure-store";
 import * as Updates from "expo-updates";

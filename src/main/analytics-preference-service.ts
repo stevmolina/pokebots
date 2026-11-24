@@ -1,5 +1,5 @@
-import type { CentralAuthState, CentralAuthUser } from "@openbot/contracts/ipc";
-import { createOpenBotLogger, toLogValue } from "@openbot/logging";
+import type { CentralAuthState, CentralAuthUser } from "@pokebots/contracts/ipc";
+import { createOpenBotLogger, toLogValue } from "@pokebots/logging";
 import { Effect, Semaphore } from "effect";
 import {
   readAnalyticsPreference,
