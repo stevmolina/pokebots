@@ -10,7 +10,7 @@ import {
 import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
 import { decodeQueueEditRequest, type QueueEditRequest } from "@openbot/contracts/team-protocol/queue-edit-v1";
 import { skillExamplePrompt } from "@openbot/ui/components/SkillPreview";
-import type { ComposerSelection } from "@openbot/ui/features/conversation/ComposerEditor";
+import { type ComposerSelection, changedRange } from "@openbot/ui/features/conversation/ComposerEditor";
 import type { ComposerDraft } from "./conversation-types";
 
 export const EMPTY_DRAFT: ComposerDraft = {
@@ -226,21 +226,35 @@ export function rowAttachments(text: string, attachments: readonly DraftAttachme
 }
 
 /**
- * Puts `inserted` at the selection when the text is still `before`, else at the end. Returns the text
- * and the caret after the inserted text.
+ * Puts `inserted` where the paste happened. Text typed while the files import moves that place: an
+ * edit after it keeps it, an edit before it shifts it. Only an edit across it, or no known place,
+ * puts the text at the end. `caret` is after the inserted text when the draft did not change, and
+ * undefined when it did: the person is typing, so their caret stays where it is.
  */
 export function insertAtSelection(
   current: string,
   inserted: string,
   at: { before: string; selection: ComposerSelection } | undefined,
-): { value: string; caret: number } {
-  const selection = at && current === at.before ? at.selection : undefined;
-  if (!selection) {
+): { value: string; caret?: number } {
+  const start = at ? pasteOffset(at.before, current, at.selection) : undefined;
+  if (start === undefined) {
     const value = [current, inserted].filter(Boolean).join(" ");
-    return { value, caret: value.length };
+    return { value, ...(at && current !== at.before ? {} : { caret: value.length }) };
   }
-  const value = `${current.slice(0, selection.start)}${inserted}${current.slice(selection.end)}`;
-  return { value, caret: selection.start + inserted.length };
+  // An unchanged draft still holds the selection, which the paste replaces.
+  const end = current === at?.before ? at.selection.end : start;
+  const value = `${current.slice(0, start)}${inserted}${current.slice(end)}`;
+  return current === at?.before ? { value, caret: start + inserted.length } : { value };
+}
+
+/** Where the paste at `selection` of `before` lands in `current`, or undefined when an edit crossed it. */
+function pasteOffset(before: string, current: string, selection: ComposerSelection): number | undefined {
+  if (current === before) return selection.start;
+  const { prefix, suffix } = changedRange(before, current);
+  // The edit changed before[prefix, before.length - suffix).
+  if (prefix >= selection.start) return selection.start;
+  if (before.length - suffix <= selection.start) return selection.start + current.length - before.length;
+  return undefined;
 }
 
 /**
@@ -251,7 +265,7 @@ export function insertPastedText(
   current: string,
   text: string,
   at: { before: string; selection: ComposerSelection } | undefined,
-): { value: string; caret: number } | undefined {
+): { value: string; caret?: number } | undefined {
   const result = insertAtSelection(current, text, at);
   const over = result.value.length - INPUT_LIMITS.messageText;
   if (over <= 0) return result;
