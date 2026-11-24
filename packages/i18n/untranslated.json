@@ -5675,22 +5675,6 @@
     "tr",
     "zh"
   ],
-  "mobile.settings.appearance.calmLook": ["ar", "de", "es", "fr", "he", "it", "ja", "ko", "nl", "pl", "ru", "tr", "zh"],
-  "mobile.settings.appearance.calmLookFooter": [
-    "ar",
-    "de",
-    "es",
-    "fr",
-    "he",
-    "it",
-    "ja",
-    "ko",
-    "nl",
-    "pl",
-    "ru",
-    "tr",
-    "zh"
-  ],
   "mobile.agent.home.openProfile": ["ar", "de", "es", "fr", "he", "it", "ja", "ko", "nl", "pl", "ru", "tr", "zh"],
   "mobile.chat.header.moreSessions": ["ar", "de", "es", "fr", "he", "it", "ja", "ko", "nl", "pl", "ru", "tr", "zh"],
   "mobile.agent.calmModel.moreSettings": ["ar", "de", "es", "fr", "he", "it", "ja", "ko", "nl", "pl", "ru", "tr", "zh"],
