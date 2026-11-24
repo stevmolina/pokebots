@@ -2,12 +2,19 @@ import type { AgentEvent, AgentTask, AgentTasksSnapshot, ConversationSnapshot } 
 import type { AppTextKey } from "@pokebots/i18n";
 import { retryOperationIds } from "@pokebots/team-client/retry-operation-id";
 import { currentText } from "@pokebots/ui/text";
-import { createEffect, createMemo, createStore, untrack } from "solid-js";
+import { createEffect, createMemo, createStore, onCleanup, untrack } from "solid-js";
 import { actionToast } from "../../action-toast";
 import { desktopAnalytics } from "../../analytics";
 import { isRoutineSteerRefusal } from "../../routine-steer-refusal";
 import { createScopeGuard } from "../../scope-lifetime";
 import type { AgentTasksPort } from "./agent-tasks-port";
+import { createBackgroundReads } from "./background-reads";
+
+/**
+ * The thread lists that load at the same time in the background. Each list is a few requests one after
+ * the other, so this is also the number of background requests in flight.
+ */
+const BACKGROUND_LIST_READS = 3;
 
 export type AgentTaskEvent = Extract<
   AgentEvent,
@@ -136,6 +143,8 @@ export function createAgentTasks(options: AgentTasksOptions) {
     aroundReadable,
   } = options;
   const scopeIsCurrent = createScopeGuard();
+  const backgroundReads = createBackgroundReads(BACKGROUND_LIST_READS);
+  onCleanup(backgroundReads.clear);
   const [state, setState] = createStore<AgentTasksState>({ snapshots: {}, conversations: {}, unread: {}, history: {} });
   const listRequests = new Map<string, number>();
   const readRequests = new Map<string, number>();
@@ -504,7 +513,7 @@ export function createAgentTasks(options: AgentTasksOptions) {
     if (staleQueue || (known && snapshot.tasks.some((task) => task.branch === undefined && !known.has(task.id))))
       void loadTasks(snapshot.agentId);
     // The host sends no event when a read mark moves, so a changed list reads the marks again.
-    else if (unreadKey(snapshot) !== before) loadUnread(snapshot.agentId);
+    else if (unreadKey(snapshot) !== before) void loadUnread(snapshot.agentId);
   }
 
   /** What a thread's unread count can follow: the threads, their states and their last changes. */
@@ -518,8 +527,16 @@ export function createAgentTasks(options: AgentTasksOptions) {
     else applyDelta(event);
   }
 
-  /** Reads an agent's thread list. Resolves true when this read is the newest list. */
+  /** Reads an agent's thread list, then its unread counts. Resolves true when this read is the newest list. */
   function loadTasks(agentId: string): Promise<boolean> {
+    return readList(agentId).then((loaded) => {
+      if (loaded) void loadUnread(agentId);
+      return loaded;
+    });
+  }
+
+  /** Reads an agent's thread list only. Resolves true when this read is the newest list. */
+  function readList(agentId: string): Promise<boolean> {
     const request = (listRequests.get(agentId) ?? 0) + 1;
     listRequests.set(agentId, request);
     return port()
@@ -527,7 +544,6 @@ export function createAgentTasks(options: AgentTasksOptions) {
       .then((snapshot) => {
         if (!scopeIsCurrent() || listRequests.get(agentId) !== request) return false;
         setSnapshot(snapshot);
-        loadUnread(agentId);
         return true;
       })
       .catch((error) => {
@@ -556,9 +572,32 @@ export function createAgentTasks(options: AgentTasksOptions) {
     }),
     ({ agentId, shown, running }) => {
       if (!shown) return;
-      for (const id of new Set([...(agentId ? [agentId] : []), ...running])) void loadTasks(id);
+      // The open agent's list goes before the lists that load in the background.
+      if (agentId) void backgroundReads.foreground(loadTasks(agentId));
+      for (const id of running) if (id !== agentId) void loadTasks(id);
     },
   );
+
+  /**
+   * Reads the lists of agents that are not open, a few at a time, after the foreground reads. An agent
+   * whose list loaded meanwhile, from a read or an event, is not read again. The `first` agents go to
+   * the front, such as the agents that work now.
+   */
+  function loadTasksInBackground(agentIds: readonly string[], first: (agentId: string) => boolean = () => false): void {
+    for (const agentId of agentIds) {
+      if (untrack(() => state.snapshots[agentId])) continue;
+      backgroundReads.queue(
+        agentId,
+        async () => {
+          if (!scopeIsCurrent() || untrack(() => state.snapshots[agentId])) return;
+          // The read keeps its place until the unread counts arrive: they are one more request.
+          if (await readList(agentId)) await loadUnread(agentId);
+        },
+        // An effect callback calls this: the agent's state is input here, not a dependency.
+        untrack(() => first(agentId)),
+      );
+    }
+  }
 
   /** Starts a read of the marks of an agent. A read that started before it has an older count. */
   function nextUnreadRequest(agentId: string): number {
@@ -578,12 +617,12 @@ export function createAgentTasks(options: AgentTasksOptions) {
    * Reads the person's read mark of each open thread of an agent. A failure keeps the old counts: the
    * next list reads them again.
    */
-  function loadUnread(agentId: string): void {
+  function loadUnread(agentId: string): Promise<void> {
     // An event handler runs this too: the capability is input here, not a dependency.
     const list = untrack(readable) ? port().listTaskReads : undefined;
-    if (!list) return;
+    if (!list) return Promise.resolve();
     const request = nextUnreadRequest(agentId);
-    void list(agentId)
+    return list(agentId)
       .then((reads) => {
         if (!scopeIsCurrent() || unreadRequests.get(agentId) !== request) return;
         setState((current) => {
@@ -888,7 +927,7 @@ export function createAgentTasks(options: AgentTasksOptions) {
         if (readMarks.get(taskId) !== throughMessageId) return;
         marking.delete(taskId);
         readMarks.delete(taskId);
-        if (scopeIsCurrent()) loadUnread(agentId);
+        if (scopeIsCurrent()) void loadUnread(agentId);
       });
   }
 
@@ -1029,6 +1068,9 @@ export function createAgentTasks(options: AgentTasksOptions) {
     applyEvent,
     reload,
     loadTasks,
+    loadTasksInBackground,
+    /** Holds the background list reads until `read` ends. For a read that the person waits for, such as a chat. */
+    foregroundRead: backgroundReads.foreground,
     openTask,
     showConversations,
     startTask,

@@ -167,11 +167,23 @@ type DataListener = (
 function developmentLink(listener: DataListener, halfRoundTripMs: number, downlinkKbps: number): DataListener {
   if (halfRoundTripMs <= 0 && downlinkKbps <= 0) return listener;
   let linkFreeAt = 0;
+  // One queue in arrival order. With a speed, the delays differ, and a timer for each message could
+  // fire out of order in the same millisecond: a moved part of a frame stopped the connection.
+  const arriving: { at: number; deliver: () => void }[] = [];
+  let draining = false;
+  const drain = () => {
+    while (arriving[0] && arriving[0].at <= performance.now()) arriving.shift()?.deliver();
+    draining = arriving[0] !== undefined;
+    if (arriving[0]) setTimeout(drain, arriving[0].at - performance.now());
+  };
   return (hostId, channel, data) => {
     const now = performance.now();
     const bytes = typeof data === "string" ? Buffer.byteLength(data) : data.byteLength;
     linkFreeAt = Math.max(now, linkFreeAt) + (downlinkKbps > 0 ? (bytes * 8) / downlinkKbps : 0);
-    setTimeout(() => listener(hostId, channel, data), linkFreeAt - now + halfRoundTripMs);
+    arriving.push({ at: linkFreeAt + halfRoundTripMs, deliver: () => listener(hostId, channel, data) });
+    if (draining) return;
+    draining = true;
+    setTimeout(drain, linkFreeAt + halfRoundTripMs - now);
   };
 }
 
