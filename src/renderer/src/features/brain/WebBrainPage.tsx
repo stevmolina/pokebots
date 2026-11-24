@@ -1,10 +1,11 @@
-import { BRAIN_ROUTE, decodeBrainResponse } from "@openbot/contracts/brain";
+import { BRAIN_ROUTE, type BrainRequest, decodeBrainResponse } from "@openbot/contracts/brain";
 import type { McpServerConfig } from "@openbot/contracts/ipc";
 import {
   integrationRequest,
   POKEBOTS_BRAIN_ID,
   POKEBOTS_INTEGRATIONS_ROUTES,
 } from "@openbot/contracts/team-protocol/pokebots-integrations-v1";
+import type { TeamProtocolV2Json } from "@openbot/contracts/team-protocol/v2";
 import { listMcpServers } from "@openbot/team-client/team-admin-requests";
 import type { TeamApiRequest } from "@openbot/team-client/team-api-requests";
 import { BrainPanel } from "@openbot/ui/features/brain/BrainPanel";
@@ -12,6 +13,13 @@ import { Effect } from "effect";
 import { createEffect, createSignal, Show } from "solid-js";
 
 import { IntegrationProfiles } from "../integrations/IntegrationProfiles";
+
+/** The request as Team API JSON. An optional field that the panel did not set stays out of the body. */
+function brainRequestJson(input: BrainRequest): { [key: string]: TeamProtocolV2Json } {
+  const json: { [key: string]: TeamProtocolV2Json } = {};
+  for (const [key, value] of Object.entries(input)) if (value !== undefined) json[key] = value;
+  return json;
+}
 
 export function WebBrainPage(props: { request: TeamApiRequest; onConnect: () => void; builtIn: boolean }) {
   const [connection, setConnection] = createSignal<string | null>(null);
@@ -53,12 +61,12 @@ export function WebBrainPage(props: { request: TeamApiRequest; onConnect: () => 
             accountControls={controls}
             request={(input) =>
               account === "manual"
-                ? props.request("POST", BRAIN_ROUTE, decodeBrainResponse, input)
+                ? props.request("POST", BRAIN_ROUTE, decodeBrainResponse, brainRequestJson(input))
                 : props.request(
                     "POST",
                     POKEBOTS_INTEGRATIONS_ROUTES.brain,
                     decodeBrainResponse,
-                    integrationRequest(input, account === "native" ? account : undefined),
+                    integrationRequest(brainRequestJson(input), account === "native" ? account : undefined),
                   )
             }
             onConnect={props.onConnect}

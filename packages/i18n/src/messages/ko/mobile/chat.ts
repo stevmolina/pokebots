@@ -590,6 +590,12 @@ export const messages = {
   "mobile.chat.threads.main": "메인 채팅",
   "mobile.chat.sessions.title": "세션",
   "mobile.chat.sessions.new": "새 세션",
+  "mobile.chat.sessionsTray.title": {
+    other: "{count}개 활성",
+  },
+  "mobile.chat.sessionsTray.label": {
+    other: "활성 세션 {count}개. 보기 또는 숨기기",
+  },
   "mobile.chat.sessions.all": "모든 세션",
   "mobile.chat.threads.branchedFrom": "{title}에서 분기됨",
   "mobile.chat.threads.branchedFromDeleted": "삭제된 스레드에서 분기됨",

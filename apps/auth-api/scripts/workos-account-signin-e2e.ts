@@ -347,7 +347,7 @@ interface WorkosTestRequest {
   returnTo?: string;
   clientState?: string;
   clientChallenge?: string;
-  code?: string | null;
+  code?: string | null | undefined;
   codeVerifier?: string;
   deviceId?: string;
   deviceName?: string;

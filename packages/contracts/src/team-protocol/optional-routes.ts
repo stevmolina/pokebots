@@ -104,6 +104,7 @@ import { MCP_SIGN_IN_CODECS } from "./mcp-sign-in-v1";
 import { MEMORY_REVIEW_CODECS } from "./memory-review-v1";
 import { MESSAGE_DELETE_CODECS } from "./message-delete-v1";
 import { MESSAGE_PINS_CODECS } from "./message-pins-v1";
+import { MESSAGE_QUEUE_ONLY_CODECS } from "./message-queue-only-v1";
 import { MODEL_STEERING_CODECS } from "./model-steering-v1";
 import { MODEL_VISIBILITY_CODECS } from "./model-visibility-v1";
 import { ONEPASSWORD_CONNECTOR_CODECS } from "./onepassword-connector-v1";
@@ -267,6 +268,7 @@ const CODECS: ReadonlyMap<string, OptionalRouteCodec> = new Map([
   ...HOME_AGENT_RULES_CODECS,
   ...CLAUDE_AI_TOOLS_CODECS,
   ...ARTIFACT_REQUEST_CODECS,
+  ...MESSAGE_QUEUE_ONLY_CODECS,
   ...CLAUDE_COMPACT_WINDOW_CODECS,
   ...PROVIDER_ENVIRONMENT_CODECS,
   ...PROVIDER_ACCOUNT_MODELS_CODECS,

@@ -692,6 +692,18 @@ export const messages = {
   "mobile.chat.threads.main": "Основной чат",
   "mobile.chat.sessions.title": "Сеансы",
   "mobile.chat.sessions.new": "Новый сеанс",
+  "mobile.chat.sessionsTray.title": {
+    one: "{count} активный",
+    few: "{count} активных",
+    many: "{count} активных",
+    other: "{count} активного",
+  },
+  "mobile.chat.sessionsTray.label": {
+    one: "{count} активный сеанс. Показать или скрыть",
+    few: "{count} активных сеанса. Показать или скрыть",
+    many: "{count} активных сеансов. Показать или скрыть",
+    other: "{count} активного сеанса. Показать или скрыть",
+  },
   "mobile.chat.sessions.all": "Все сеансы",
   "mobile.chat.threads.branchedFrom": "Ответвление от: {title}",
   "mobile.chat.threads.branchedFromDeleted": "Ответвление от удалённой ветки",

@@ -140,6 +140,7 @@ import { MEMORY_REVIEW_CAPABILITY } from "./memory-review-v1";
 import { TEAM_MESSAGE_CLIENT_ID_CAPABILITY } from "./message-client-id-v1";
 import { MESSAGE_DELETE_CAPABILITY } from "./message-delete-v1";
 import { MESSAGE_PINS_CAPABILITY } from "./message-pins-v1";
+import { MESSAGE_QUEUE_ONLY_CAPABILITY } from "./message-queue-only-v1";
 import { MISTRAL_CODE_SIGN_IN_CAPABILITY } from "./mistral-code-sign-in-v1";
 import { MODEL_STEERING_CAPABILITY } from "./model-steering-v1";
 import { MODEL_VISIBILITY_CAPABILITY } from "./model-visibility-v1";
@@ -848,6 +849,7 @@ const TEAM_CAPABILITY_REGISTRY = [
   [CLAUDE_AI_TOOLS_CAPABILITY, POKEBOTS],
   [ARTIFACT_REQUEST_CAPABILITY, POKEBOTS],
   [CLAUDE_ARTIFACT_REQUEST_CAPABILITY, POKEBOTS],
+  [MESSAGE_QUEUE_ONLY_CAPABILITY, POKEBOTS],
   [REMOTE_COMPUTER_USE_CAPABILITY, POKEBOTS],
   [AGENT_COMPUTER_CAPABILITY, POKEBOTS],
   [ROOMS_CAPABILITY, POKEBOTS],

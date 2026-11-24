@@ -74,7 +74,7 @@ import { CHANNEL_TOOL_DEFINITIONS } from "./channel-tools";
 import { MESSAGING_TOOL_DEFINITIONS } from "./messaging/messaging-tools";
 import { ROUTINE_FLOW_TOOL_DEFINITIONS } from "./routine-flows/routine-flow-tools";
 import {
-  ROUTINE_INSTRUCTION_RULE,
+  ROUTINE_INSTRUCTION_SUMMARY,
   routineInstructionZodSchema,
   routineLimitPolicyZodSchema,
   routineMissedPolicyUpdateZodSchema,
@@ -168,12 +168,7 @@ const uiActionSchema = z.strictObject({
   id: uiBlockIdSchema,
   label: uiLabelSchema,
   style: z.enum(["primary", "secondary", "ghost", "danger"]).optional().describe("The default is secondary."),
-  confirm: z
-    .boolean()
-    .optional()
-    .describe(
-      "The desktop and web apps ask the user again before they send this action. An app that shows only the plain question does not.",
-    ),
+  confirm: z.boolean().optional().describe("Apps that draw the card ask the user again before sending this action."),
 });
 const uiStringOptionsSchema = (max: number) => z.array(uiLabelSchema).min(1).max(max);
 
@@ -242,7 +237,7 @@ export const askUiToolSchema = z.object({
 const apiKeyNameSchema = z
   .string()
   .regex(API_KEY_NAME_PATTERN)
-  .describe("The environment variable name of the key, such as OPENAI_API_KEY: A-Z, 0-9 and _, up to 64 characters.");
+  .describe("Environment variable name, such as OPENAI_API_KEY: A-Z, 0-9 and _, up to 64.");
 
 export const requestApiKeyToolSchema = z.strictObject({
   name: apiKeyNameSchema,
@@ -341,7 +336,7 @@ export const OPENBOT_TOOL_DEFINITIONS: readonly OpenBotToolDefinition[] = [
   {
     name: "attach_files_to_response",
     description:
-      'Attach existing local files, such as screenshots, charts, reports or ZIP archives, to the current response for the user. OpenBot copies each file and shows image previews in the conversation. Pass folder, such as "Reports/2026", only when the user or your instructions name a Library folder; a missing folder is made.',
+      'Attach existing local files (screenshots, charts, reports, ZIPs) to your response. OpenBot copies them and previews images. Pass folder, such as "Reports/2026", only when the user or your instructions name a Library folder; a missing folder is made.',
     shape: {
       paths: z.array(z.string().min(1).max(INPUT_LIMITS.path)).min(1).max(INPUT_LIMITS.attachments),
       folder: libraryFolderArgument.optional(),
@@ -361,12 +356,12 @@ export const OPENBOT_TOOL_DEFINITIONS: readonly OpenBotToolDefinition[] = [
   },
   {
     name: "html_preview",
-    description: `Draw an HTML page out of view and get a screenshot, the content height and the console output. The user does not see it. Use it to check a page before you call html_render, and correct what the screenshot or the console shows. ${VISUAL_PAGE_RULES}`,
+    description: `Draw an HTML page out of view and get a screenshot, the content height and the console output. The user does not see it. Use it to check a page before you call html_render, and correct what the screenshot or the console shows. The page rules of html_render apply.`,
     shape: htmlPreviewToolSchema.shape,
   },
   {
     name: "html_render",
-    description: `Show a finished HTML page (chart, table, diagram, collage, mockup) in this conversation, above your final text reply; call it before you write that reply. The user already sees the page, so the reply must not announce it or restate it: add only what the page does not say. In a channel, each member who reads the channel sees it. OpenBot fits the frame to the page height. A height lower than the page caps the frame, and the rest scrolls in it. ${VISUAL_PAGE_RULES} ${VISUAL_PAGE_ACTIONS}`,
+    description: `Show a finished HTML page (chart, table, diagram, collage, mockup) in this conversation, above your final text reply; call it before you write that reply. The user already sees the page, so the reply must not announce it or restate it: add only what the page does not say. In a channel, each member who reads the channel sees it. The frame fits the page height; a lower height caps it, and the rest scrolls. ${VISUAL_PAGE_RULES} ${VISUAL_PAGE_ACTIONS}`,
     shape: htmlRenderToolSchema.shape,
   },
   {
@@ -494,13 +489,13 @@ export const OPENBOT_TOOL_DEFINITIONS: readonly OpenBotToolDefinition[] = [
   {
     name: "update_profile",
     description:
-      "Update a local OpenBot agent’s name, title, description, avatar, provider, model, reasoning effort, account, backup models, access, Computer Use, or notifications from the user’s request. You can restrict access to workspace and turn Computer Use off; only the user can widen them again. For an avatar color, use avatarHue. For an image, use avatarPath with a PNG, JPEG, or WebP copy up to 512 KB. Call list_models before you change a model, an account, or the backup models. A new model, provider or account applies from the agent's next turn; other fields apply now. While it works, access with a provider change fails. backupModels replaces the whole list. To give several agents the same settings, use update_agents.",
+      "Update a local OpenBot agent’s name, title, description, avatar, provider, model, reasoning effort, account, backup models, access, Computer Use, or notifications from the user’s request. You can restrict access to workspace and turn Computer Use off; only the user can widen them again. For an avatar color, use avatarHue. For an image, use avatarPath. Call list_models before you change a model, an account, or the backup models. A new model, provider or account applies from the agent's next turn; other fields apply now. While it works, access with a provider change fails. backupModels replaces the whole list. For several agents, use update_agents.",
     shape: updateProfileToolSchema.shape,
   },
   {
     name: "update_agents",
     description:
-      "Give several local OpenBot agents the same provider, model, reasoning effort, access, Computer Use, or notifications setting in one call, from the user's request. Each agent gets the checks of update_profile and its own change, one after the other. A failure for one agent does not stop the others and does not undo the earlier changes. The result has updated and failed counts and, for each agent id, ok with its new settings or the error. A provider or model that list_models does not list fails the whole call. Tell the user which agents failed and why. You can restrict access to workspace and turn Computer Use off; only the user can widen them again. Call list_models before you change a model.",
+      "Give several local OpenBot agents the same provider, model, reasoning effort, access, Computer Use, or notifications setting in one call, from the user's request. Each agent gets the checks of update_profile, one after the other; one failure does not stop or undo the others. The result has updated and failed counts and, for each agent id, ok with its new settings or the error. A provider or model that list_models does not list fails the whole call. Tell the user which agents failed and why. Only the user can widen access or turn Computer Use on. Call list_models before you change a model.",
     shape: updateAgentsToolSchema.shape,
   },
   {
@@ -524,7 +519,7 @@ export const OPENBOT_TOOL_DEFINITIONS: readonly OpenBotToolDefinition[] = [
   {
     name: "start_new_chat",
     description:
-      "Start a new chat for yourself when this chat is long and its earlier messages no longer matter, or when a routine asks for it. Each message then sends less context. Before you call it, keep what you need: use remember, or write notes to a file in your workspace. The user still sees the earlier messages; you do not. The new chat starts when this turn ends and your queue is empty or holds only routine runs. When another queued message runs first, the request ends; call it again. It works only in your own chat, and only when the user allows it in your settings.",
+      "Start a new chat for yourself when this chat is long and its earlier messages no longer matter, or when a routine asks for it. Before you call it, keep what you need: use remember, or write notes to a file in your workspace. The user still sees the earlier messages; you do not. The new chat starts when this turn ends and your queue is empty or holds only routine runs. When another queued message runs first, the request ends; call it again. It works only in your own chat, and only when the user allows it in your settings.",
     shape: {},
   },
   {
@@ -535,7 +530,7 @@ export const OPENBOT_TOOL_DEFINITIONS: readonly OpenBotToolDefinition[] = [
   },
   {
     name: "create_routine",
-    description: `Create a scheduled routine, one agent's instruction, for this agent or for another local agent when agentId is provided. For several steps in one graph, use edit_workflow. It is active by default. Without a timezone, it uses the timezone of the person whose message this turn answers, or the server timezone when that is unknown. Interval, advanced-every, and custom schedules must not run more often than every 3 minutes. For a one-time reminder or task, use a once schedule: it runs one time and then pauses the routine. When the user asks you to check in on your own or to be proactive, create a heartbeat: a routine named Heartbeat that runs every 2 hours, whose instruction lists what to check, reports only what needs the user's attention in a few lines, and calls ${ROUTINE_NO_UPDATE_TOOL} when nothing does.`,
+    description: `Create a scheduled routine, one agent's instruction, for this agent or for another local agent when agentId is provided. For several steps in one graph, use edit_workflow. It is active by default. Without a timezone, it uses the timezone of the person this turn answers, else the server's. For a one-time reminder or task, use a once schedule. To check in proactively when asked, create Heartbeat: every 2 hours, it lists what to check, reports only what needs the user, and else calls ${ROUTINE_NO_UPDATE_TOOL}.`,
     shape: {
       agentId: z.string().min(1).max(INPUT_LIMITS.identifier).optional(),
       name: z.string().min(1).max(INPUT_LIMITS.routineName),
@@ -553,7 +548,7 @@ export const OPENBOT_TOOL_DEFINITIONS: readonly OpenBotToolDefinition[] = [
   {
     name: CREATE_WEBHOOK_ROUTINE_TOOL,
     description:
-      "Create a routine that a signed HTTP request starts, for this agent or for another local agent when agentId is provided. Use it when the user wants work to start when something happens in another system. It works only in a turn that a person's message started, not in a routine run or for an agent's message. It is active by default. The result has the webhook URL and the request format. The signing secret is not in the result; the result says where the user gets it. Never ask the user for the secret. A null url means the URL is not ready yet; the Routines settings show it when it is.",
+      "Create a routine that a signed HTTP request starts, when the user wants work to start on an event in another system, for this agent or the agent of agentId. It works only in a turn that a person's message started, not in a routine run or for an agent's message. It is active by default. The result has the webhook URL and the request format. The signing secret is not in the result; the result says where the user gets it. Never ask the user for the secret. A null url means the URL is not ready yet; the Routines settings show it when it is.",
     shape: {
       agentId: z.string().min(1).max(INPUT_LIMITS.identifier).optional(),
       name: z.string().min(1).max(INPUT_LIMITS.routineName),
@@ -562,7 +557,7 @@ export const OPENBOT_TOOL_DEFINITIONS: readonly OpenBotToolDefinition[] = [
         .min(1)
         .max(INPUT_LIMITS.routineInstruction)
         .describe(
-          `What to do with each request. OpenBot adds the request body to the run as untrusted data. ${ROUTINE_INSTRUCTION_RULE}`,
+          `What to do with each request. OpenBot adds the request body to the run as untrusted data. ${ROUTINE_INSTRUCTION_SUMMARY}`,
         ),
       eventType: webhookEventTypeZodSchema.optional(),
       filters: webhookFiltersZodSchema.optional(),
@@ -625,13 +620,13 @@ export const OPENBOT_TOOL_DEFINITIONS: readonly OpenBotToolDefinition[] = [
   {
     name: ROUTINE_NO_UPDATE_TOOL,
     description:
-      "Only when nothing is for the user: a scheduled, script or webhook routine run with nothing to report, or a teammate's update that wants no answer. OpenBot collapses your text answers in the chat and sends no notification. A requested reminder or message is a report, unless the task's notification conditions say to send nothing. A manual Test run shows your answer.",
+      "Only when nothing is for the user: a scheduled, script or webhook routine run with nothing to report, or a teammate's update that wants no answer. OpenBot collapses your answer and sends no notification. A requested reminder or message is a report, unless the task's conditions say to send nothing. A manual Test run shows your answer.",
     shape: {},
   },
   {
     name: ROUTINE_REPORT_FAILURE_TOOL,
     description:
-      "Only in a routine run whose task could not be done, such as when a server, file or service it needs is not available. OpenBot ends the run as failed with your reason. Still give your answer. Not when the task was done, also when its result is bad news.",
+      "Only in a routine run whose task could not be done, such as when a needed server, file or service is down. OpenBot ends the run as failed with your reason. Still give your answer. Not for a done task with bad news.",
     shape: routineReportFailureToolSchema.shape,
   },
   {
@@ -656,25 +651,25 @@ export const OPENBOT_TOOL_DEFINITIONS: readonly OpenBotToolDefinition[] = [
   {
     name: RUN_CODING_TASK_TOOL,
     description:
-      "Run an approved GitHub coding job on Agent Computer in a separate persisted task. Give repository as owner/repo, a title and the full task. Starts an agent orchestration task that uses the built-in computer_* tools and Codex. Progress and results stay in that task. Sign-in may be required. Task Stop interrupts orchestration; remote background commands require explicit stop and verification in the task. Does not grant permission to publish or merge.",
+      "Run an approved GitHub coding job on Agent Computer in its own persisted task, with Codex and the computer_* tools. Give repository (owner/repo), a title and the full task. Progress, results and any sign-in stay in that task. Task Stop ends orchestration, not remote commands: stop and verify those in the task. It grants no publish or merge.",
     shape: runCodingTaskToolSchema.shape,
   },
   {
     name: START_TASK_TOOL,
     description:
-      "Open a side task for long, independent work the user requested while this chat stays open. Default to this for a new session for that work. Give it a short title and a complete brief. The brief is its first message. It has its own context, progress and stop. Results stay in the task. Start from your chat, another task, a channel or messaging. Tasks share the agent task limits.",
+      "Open a side task for long, independent work the user asked for while this chat stays open; the default for a new session. Give a short title and a complete brief, its first message. It has its own context, progress, stop and results. Start it from your chat, a task, a channel or messaging; tasks share the agent task limits.",
     shape: startTaskToolSchema.shape,
   },
   {
     name: START_AGENT_TASK_TOOL,
     description:
-      "Launch independent work in a fresh side thread of an agent on this host. Omit agentId to use yourself. Give a complete brief because the new thread starts without this chat's history. Include the requested checks and evidence in the brief. Returns threadId as soon as the task is queued. OpenBot posts the result in the chat that launched it. Use it for independent work the user requested and continue or end this turn while the task runs.",
+      "Start independent work the user asked for in a new side thread of an agent on this host (omit agentId for yourself). The thread has no chat history: give a complete brief with the checks and evidence wanted. Returns threadId once queued; OpenBot posts the result in this chat. Continue or end your turn meanwhile.",
     shape: startAgentTaskToolSchema.shape,
   },
   {
     name: STOP_AGENT_TASK_TOOL,
     description:
-      "Stop the run that openbot.start_agent_task launched from this chat. Pass its returned threadId. A stopping status means OpenBot still waits for the provider or for result delivery.",
+      "Stop a run that openbot.start_agent_task started from this chat, by its threadId. stopping means OpenBot still waits for the provider or the result.",
     shape: stopAgentTaskToolSchema.shape,
   },
   ...MEMORY_RECALL_TOOL_DEFINITIONS,
@@ -691,7 +686,7 @@ export const OPENBOT_TOOL_DEFINITIONS: readonly OpenBotToolDefinition[] = [
   {
     name: "forget_memory",
     description:
-      "Stage deletion of one saved memory when the user asks you to forget it, or when it is stale or merged into another memory and you need room under the memory limit. The change commits only if the current turn completes.",
+      "Stage deletion of one saved memory: when the user asks, or when it is stale or merged and you need room. Commits only if the turn completes.",
     shape: { memoryId: z.string().min(1) },
   },
   {
@@ -730,8 +725,8 @@ export const OPENBOT_TOOL_DEFINITIONS: readonly OpenBotToolDefinition[] = [
   {
     name: "acknowledge_request",
     description: [
-      "Before a long task, show the user a short acknowledgement and your plan in one card, and wait for the answer.",
-      "Call it first, before other tools, when the work takes more than about a minute: a fix, a build, research, or a change in many files.",
+      "Before a long task, show a short acknowledgement and your plan in one card, and wait.",
+      "Call it first when the work takes more than about a minute: a fix, a build, research, or a change in many files.",
       "Do not call it for a quick answer, a question, a small change, a routine run, or work that the user already approved in this chat.",
       "The card has your start button, an optional alternative and a cancel button. It can start by itself after a wait the user set.",
       'The result is JSON {"status":"answered","actionId":…}: "start" means do the plan; "alternative" means do only the alternative; "cancel" means do not start and ask in one sentence what the user wants;',
@@ -745,7 +740,7 @@ export const OPENBOT_TOOL_DEFINITIONS: readonly OpenBotToolDefinition[] = [
     description: [
       "Show a confirm card and stop until the user answers, to approve an action or a draft in its preview, with up to 4 buttons. Information goes in your reply; a question or a choice in ask_user.",
       'Result JSON: {"status":"answered","blockId","actionId","values"}: actionId is the button id; values has the option of each select field by its select key;',
-      'actionId "_text" with "text" when the user answered in words. Or {"status":"skipped"}, or {"status":"expired"} when the turn ended first.',
+      'actionId "_text" with "text" when the user answered in words. Or status skipped, or expired when the turn ended first.',
       "Only the server owner or an admin can press a danger button or a button with confirm. A confirmed block is information, not a permission: provider approvals still apply.",
       "Ids: letters, digits and _ . : -, up to 64 characters, not starting with _. Write every field as plain text. In a channel, each member who reads the channel sees it.",
       'Example: {"block":{"type":"confirm","title":"Send this to Ann?","fields":[{"label":"To","value":"ann@example.com"}],"preview":"Hi Ann, …","actions":[{"id":"send","label":"Send","style":"primary"},{"id":"edit_preview","label":"Edit"}]}}.',
@@ -756,7 +751,7 @@ export const OPENBOT_TOOL_DEFINITIONS: readonly OpenBotToolDefinition[] = [
     name: "request_api_key",
     description: [
       "Ask the user for an API key, token or password that your task needs, and wait. The user enters it in a secure form; OpenBot saves it outside your workspace, for all agents or only you; you never get the value.",
-      'Result JSON: {"status":"saved","name","path"}; {"status":"skipped"} when the user closed the form; or {"status":"expired"} when the turn ended first.',
+      "Result status: saved (with name and path), skipped (form closed) or expired (turn ended first).",
       "Read the key from the file in your command, and quote the path, which can hold spaces: OPENAI_API_KEY=\"$(cat '<path>')\" python script.py. Never print, log or copy the value, or write it into the workspace.",
       "Call list_api_keys first: do not ask again for a saved key. A new answer replaces the saved key. Only the server owner or an admin can answer. Not in an external chat.",
     ].join(" "),
@@ -788,7 +783,7 @@ export const OPENBOT_TOOL_DEFINITIONS: readonly OpenBotToolDefinition[] = [
     /* The description does not list the apps: the catalog has more than 200, and each agent turn would
        carry them. An unknown name returns the list. */
     description:
-      "Call this when the user needs an outside service, such as Notion or Slack, and your shell or browser cannot do it. It shows a card in the chat to connect the app; only the user connects it. For an installed app, it tests it and returns the fix, such as a Sign in card or setup steps. An unknown name returns the list of apps.",
+      "Use it when the user needs an outside service, such as Notion or Slack, that your shell or browser cannot reach. It shows a connect card; only the user connects. For an installed app, it tests it and returns the fix, such as a Sign in card or setup steps. An unknown name returns the list of apps.",
     shape: {
       app: z.string().min(1).max(63).describe("The app id, such as notion or brave-search."),
     },
@@ -868,7 +863,7 @@ export const OPENBOT_TOOL_DEFINITIONS: readonly OpenBotToolDefinition[] = [
   {
     name: "react_to_user_message",
     description:
-      "Add one emoji reaction to the current user message for a clear emotional moment, such as a win, affection, gratitude, humor, sadness, disappointment or frustration. An emoji in the written answer is not a reaction.",
+      "Add one emoji reaction to the current user message for a clear emotional moment, such as a win, gratitude, humor, sadness or frustration. An emoji in the written answer is not a reaction.",
     shape: { emoji: z.string().min(1).max(64).describe("Exactly one complete Unicode emoji.") },
   },
   {
@@ -890,7 +885,7 @@ export const OPENBOT_TOOL_DEFINITIONS: readonly OpenBotToolDefinition[] = [
   {
     name: "send_message",
     description:
-      "Queue an asynchronous message and optional local files for one or more OpenBot agents. On a reply, pass the original message id as replyToMessageId. Pass newThread: true (with optional threadTitle) to open a side thread for each recipient, or taskId to continue one open side thread of a single recipient.",
+      "Queue an asynchronous message and optional local files for one or more OpenBot agents. On a reply, pass the original message id as replyToMessageId.",
     shape: {
       recipientAgentIds: z.array(z.string()).min(1).max(32),
       text: z.string().min(1).max(100_000),
@@ -899,13 +894,13 @@ export const OPENBOT_TOOL_DEFINITIONS: readonly OpenBotToolDefinition[] = [
       expectsReply: z
         .boolean()
         .describe(
-          "True, the default, for a request, question or delegated task: OpenBot sends the recipient's result back. False for information that the recipient must not answer, such as a status or your own reply to a task; it ends the exchange.",
+          "True (default) for a request, question or delegated task: OpenBot sends the recipient's result back. False for information the recipient must not answer, such as a status or your reply to a task; it ends the exchange.",
         )
         .optional(),
       newThread: z
         .boolean()
         .describe(
-          "True to open a fresh side thread for each recipient instead of their main chat. Returns each recipient's taskId for follow-ups. Cannot be combined with taskId or replyToMessageId.",
+          "Open a new side thread per recipient, not the main chat; returns each taskId. Not with taskId or replyToMessageId.",
         )
         .optional(),
       threadTitle: z
@@ -913,14 +908,12 @@ export const OPENBOT_TOOL_DEFINITIONS: readonly OpenBotToolDefinition[] = [
         .trim()
         .min(1)
         .max(INPUT_LIMITS.agentTaskTitle)
-        .describe("Optional short title for a new side thread. Implies newThread: true.")
+        .describe("Title of a new side thread; implies newThread.")
         .optional(),
       taskId: z
         .string()
         .nullable()
-        .describe(
-          "Optional open side thread id of a single recipient to continue. Cannot be combined with newThread or threadTitle.",
-        )
+        .describe("Open side thread of one recipient to continue. Not with newThread.")
         .optional(),
     },
   },

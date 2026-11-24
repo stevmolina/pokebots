@@ -735,11 +735,20 @@ export function createAgentTasks(options: AgentTasksOptions) {
     attachmentDraftIds: string[] = [],
     replyToMessageId: string | null = null,
     createArtifact?: boolean,
+    queueOnly?: boolean,
   ): Promise<boolean> {
     // The sent message and the answer come after the part around an old message, so the thread shows
     // its latest messages again.
     void loadLatest(agentId, taskId);
-    const message = sendIds([agentId, taskId, text, attachmentDraftIds, replyToMessageId, createArtifact === true]);
+    const message = sendIds([
+      agentId,
+      taskId,
+      text,
+      attachmentDraftIds,
+      replyToMessageId,
+      createArtifact === true,
+      queueOnly === true,
+    ]);
     const receipt = await runAction(
       () =>
         port().sendToTask({
@@ -749,6 +758,7 @@ export function createAgentTasks(options: AgentTasksOptions) {
           ...(attachmentDraftIds.length ? { attachmentDraftIds } : {}),
           ...(replyToMessageId ? { replyToMessageId } : {}),
           ...(createArtifact ? { createArtifact: true } : {}),
+          ...(queueOnly ? { queueOnly: true } : {}),
           clientMessageId: message.id,
         }),
       "conversation.threads.error.send",

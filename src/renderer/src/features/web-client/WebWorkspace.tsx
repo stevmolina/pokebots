@@ -287,6 +287,7 @@ import { hostMessagingApi } from "../connectors/host-messaging-port";
 import { hostWhatsAppPort } from "../connectors/whatsapp-connector";
 import { Conversation, createConversationController } from "../conversation/Conversation";
 import { clearStoredQueueEdit } from "../conversation/composer-draft";
+import { computerLiveViewOpener, openInBrowserTab } from "../conversation/computer-live-view-opener";
 import { ConversationControllerProvider } from "../conversation/conversation-controller-context";
 import { composerDraftKey } from "../conversation/conversation-keys";
 import type {
@@ -4607,6 +4608,7 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                   onManageBrowserProfiles={browserProfiles() ? openBrowserProfileSettings : undefined}
                   onOpenNotificationSettings={(serverId) => openNotificationSettings(serverId)}
                   onOpenMcpSignIn={openMcpSignInFromChat()}
+                  onOpenComputerLiveView={computerLiveViewOpener(server(), cloudComputers.machines, openInBrowserTab)}
                   mcpSignedIn={mcpSignedIn}
                   refreshMcpSignIns={refreshMcpSignInsFromChat}
                   onOpenUsage={(trigger) => {
@@ -4711,6 +4713,7 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                     clientMessageId,
                     _voice,
                     createArtifact,
+                    queueOnly,
                   ) => {
                     // A sent prompt is what a notification later reports, so the browser asks here, from the user's action.
                     requestWebNotificationPermission();
@@ -4718,7 +4721,7 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                     // A send for a host the user has left would reach the one they opened instead.
                     if (!id || (target && target.serverId !== server()?.id))
                       return { error: t("webClient.error.checkConversation") };
-                    return workspace.send(id, text, attachments, replyTo, clientMessageId, createArtifact);
+                    return workspace.send(id, text, attachments, replyTo, clientMessageId, createArtifact, queueOnly);
                   }}
                   onMarkRead={workspace.markRead}
                   onMarkUnread={markUnreadFrom()}

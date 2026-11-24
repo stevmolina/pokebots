@@ -104,11 +104,24 @@ export function createThreadActivity() {
     return result.sort((left, right) => (right.updatedAt ?? "").localeCompare(left.updatedAt ?? ""));
   });
 
+  /** Latest open side-thread activity time per agent, including finished threads. */
+  const latestThreadUpdatedAt = createMemo((): Readonly<Record<string, string>> => {
+    const latest: Record<string, string> = {};
+    for (const agent of agentList()) {
+      for (const task of tasks.snapshot(agent.id)?.tasks ?? []) {
+        if (task.state === "closed" || !task.updatedAt) continue;
+        const previous = latest[agent.id];
+        if (!previous || Date.parse(task.updatedAt) > Date.parse(previous)) latest[agent.id] = task.updatedAt;
+      }
+    }
+    return latest;
+  });
+
   /** The agents with a reply that the user did not read, in their own chat or a side thread. */
   const unreadAgentIds = createMemo(() => {
     const unread = agentUnreadReplies();
     return new Set(Object.keys(unread).filter((agentId) => (unread[agentId] ?? 0) > 0));
   });
 
-  return { entries, threadStatus, unreadAgentIds };
+  return { entries, latestThreadUpdatedAt, threadStatus, unreadAgentIds };
 }

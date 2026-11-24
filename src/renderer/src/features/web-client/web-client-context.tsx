@@ -1224,11 +1224,12 @@ export function createWebWorkspace(
           if (connected && draft.host?.hostId === connected.hostId) {
             // A host with `host-appearance-v1` sends its look itself; the account copy can be older.
             // An account server from before `host-appearance-v1` lists none.
+            const { appearance: connectedAppearance, ...host } = connected;
             const appearance =
-              connected.appearance !== undefined && !draft.capabilities.includes(HOST_APPEARANCE_CAPABILITY)
-                ? connected.appearance
+              connectedAppearance !== undefined && !draft.capabilities.includes(HOST_APPEARANCE_CAPABILITY)
+                ? connectedAppearance
                 : draft.host.appearance;
-            draft.host = { ...connected, appearance };
+            draft.host = appearance === undefined ? host : { ...host, appearance };
           }
           draft.hosts = hosts;
           draft.hostsLoaded = true;
@@ -2384,6 +2385,7 @@ export function createWebWorkspace(
     replyToMessageId: string | null = null,
     clientMessageId?: string,
     createArtifact?: boolean,
+    queueOnly?: boolean,
   ): Promise<{ messageId: string } | { error: string }> {
     const { t, errorMessage } = currentText();
     if (state.status !== "online") return { error: t("chat.errorStatus.send") };
@@ -2391,7 +2393,15 @@ export function createWebWorkspace(
     const current = generation;
     let messageId: string;
     try {
-      messageId = await runtime.send(id, text, attachmentDraftIds, replyToMessageId, clientMessageId, createArtifact);
+      messageId = await runtime.send(
+        id,
+        text,
+        attachmentDraftIds,
+        replyToMessageId,
+        clientMessageId,
+        createArtifact,
+        queueOnly,
+      );
     } catch (error) {
       return { error: errorMessage(error, t("webClient.error.deliveryUnconfirmed")) };
     }

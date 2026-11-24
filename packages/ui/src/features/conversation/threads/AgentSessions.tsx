@@ -7,7 +7,6 @@ import {
   DropdownMenu,
   Ellipsis,
   Input,
-  List,
   PanelRight,
   PencilLine,
   Plus,
@@ -157,11 +156,11 @@ function SessionRow(props: AgentSessionsProps & { session: ThreadItem }) {
 }
 
 /** The sessions that the card shows before "All sessions". */
-const SESSIONS_SHOWN = 5;
+const SESSIONS_SHOWN = 3;
 
 /**
  * The sessions of an agent, working first and then newest first. A click on a row opens that session.
- * "New session" starts one. "All sessions" shows the rest and the archived sessions.
+ * "+ New" starts one. "All N sessions" shows the rest and the archived sessions.
  */
 export function AgentSessions(props: AgentSessionsProps) {
   const { t, format } = useText();
@@ -172,23 +171,27 @@ export function AgentSessions(props: AgentSessionsProps) {
   const more = () => props.sessions.length > SESSIONS_SHOWN || props.archived.length > 0;
   return (
     <section class="settings-link-section agent-sessions" aria-labelledby={titleId}>
-      <h3 id={titleId} class="settings-link-section-title">
-        {t("conversation.sessions.title")}
-      </h3>
-      <div class="settings-link-group settings-link-group-inset agent-sessions-list">
-        <For each={shown()} keyed={(session) => session.id}>
-          {(session) => <SessionRow {...props} session={session()} />}
-        </For>
+      <div class="settings-link-section-header">
+        <h3 id={titleId} class="settings-link-section-title">
+          {t("conversation.sessions.title")}
+        </h3>
         <Button
           variant="ghost"
+          size="sm"
           type="button"
-          class="agent-sessions-action"
+          class="agent-settings-section-action"
+          aria-label={t("conversation.sessions.new")}
           disabled={!props.canStartNew}
           onClick={() => props.onNew()}
         >
           <Plus aria-hidden="true" />
-          <span>{t("conversation.sessions.new")}</span>
+          <span>{t("conversation.sessions.newShort")}</span>
         </Button>
+      </div>
+      <div class="settings-link-group settings-link-group-inset agent-sessions-list">
+        <For each={shown()} keyed={(session) => session.id}>
+          {(session) => <SessionRow {...props} session={session()} />}
+        </For>
         <Show when={more()}>
           <Button
             variant="ghost"
@@ -197,9 +200,7 @@ export function AgentSessions(props: AgentSessionsProps) {
             aria-expanded={all() ? "true" : "false"}
             onClick={() => setAll((open) => !open)}
           >
-            <List aria-hidden="true" />
-            <span>{t("conversation.sessions.all")}</span>
-            <span class="agent-sessions-count">{format.number(props.sessions.length + props.archived.length)}</span>
+            <span>{t("conversation.sessions.allCount", { count: props.sessions.length + props.archived.length })}</span>
             <ChevronRight class="agent-sessions-chevron" aria-hidden="true" />
           </Button>
         </Show>

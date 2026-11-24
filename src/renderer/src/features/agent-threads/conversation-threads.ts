@@ -118,8 +118,8 @@ export function conversationThreads(input: ConversationThreadsInput): Conversati
       newerMessages: newerMessages(task.id),
       focusMessage: focus?.taskId === task.id ? focus : undefined,
       approval: sideApproval,
-      onSend: (text, attachmentDraftIds, replyToMessageId, createArtifact) =>
-        tabs.send(agentId, task.id, text, attachmentDraftIds, replyToMessageId, createArtifact),
+      onSend: (text, attachmentDraftIds, replyToMessageId, createArtifact, queueOnly) =>
+        tabs.send(agentId, task.id, text, attachmentDraftIds, replyToMessageId, createArtifact, queueOnly),
       onStop: () => tasks.stopTask(agentId, task.id),
       onRead: (messageId) => tasks.markTaskRead(agentId, task.id, messageId),
       onRespondApproval: (decision, options) =>
@@ -190,9 +190,9 @@ export function conversationThreads(input: ConversationThreadsInput): Conversati
     approval,
     acceptsFiles: tasks.filesAccepted(),
     acceptsReplies: tasks.repliable(),
-    onSend: (text, attachmentDraftIds, replyToMessageId, createArtifact) =>
+    onSend: (text, attachmentDraftIds, replyToMessageId, createArtifact, queueOnly) =>
       open
-        ? tabs.send(agentId, open.id, text, attachmentDraftIds, replyToMessageId, createArtifact)
+        ? tabs.send(agentId, open.id, text, attachmentDraftIds, replyToMessageId, createArtifact, queueOnly)
         : tabs.sendDraft(agentId, text, attachmentDraftIds),
     onStop: () => {
       if (open) tasks.stopTask(agentId, open.id);

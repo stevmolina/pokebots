@@ -18,13 +18,8 @@ import {
   type AgentComputerFailed,
 } from "./agent-computer-api";
 
-const machineId = z.string().trim().min(1).max(200).describe("The machine id, from computer_start or computer_list.");
-const remotePath = z
-  .string()
-  .trim()
-  .min(1)
-  .max(4_096)
-  .describe("An absolute path on the machine, such as /home/user/out.mp4.");
+const machineId = z.string().trim().min(1).max(200).describe("Id from computer_start or computer_list.");
+const remotePath = z.string().trim().min(1).max(4_096).describe("Absolute path on the machine.");
 
 const startSchema = z.strictObject({
   context: z
@@ -32,18 +27,18 @@ const startSchema = z.strictObject({
     .trim()
     .regex(AGENT_COMPUTER_CONTEXT_PATTERN)
     .describe(
-      "A label for the machine: lowercase letters, digits and -, up to 32. The same label resumes the same machine, with its files and logins. Reuse a label from other_contexts or computer_list; a new label creates a new machine.",
+      "Machine label: a-z, 0-9 and -, up to 32. The same label resumes that machine with its files and logins; a new label makes a new machine. Labels are in other_contexts and computer_list.",
     ),
   size: z
     .enum(AGENT_COMPUTER_SIZES)
     .optional()
     .describe(
-      'Used only when the context gets a new machine. "standard" (default): 2 vCPU. "large": 8 vCPU, for Blender renders, video encodes and screen recordings; it uses 2.5 runtime minutes per minute. An existing machine keeps its size: use a new context for another size.',
+      'Only for a new machine. "standard" (default): 2 vCPU. "large": 8 vCPU for renders and video; it uses 2.5 runtime minutes per minute. For another size, use a new context.',
     ),
 });
 const bashSchema = z.strictObject({
   id: machineId,
-  cmd: z.string().min(1).max(100_000).describe("The command. It runs in bash -lc."),
+  cmd: z.string().min(1).max(100_000).describe("Runs in bash -lc."),
   timeout_s: z
     .number()
     .int()
@@ -51,9 +46,9 @@ const bashSchema = z.strictObject({
     .max(AGENT_COMPUTER_BASH_TIMEOUT_MAX)
     .optional()
     .describe(
-      `Seconds to wait, 1-${AGENT_COMPUTER_BASH_TIMEOUT_MAX}. The default is 120. Run longer jobs with nohup … & and poll.`,
+      `Seconds to wait, 1-${AGENT_COMPUTER_BASH_TIMEOUT_MAX}, default 120. For longer jobs use nohup … & and poll.`,
     ),
-  cwd: z.string().trim().min(1).max(4_096).optional().describe("The working directory. The default is /home/user."),
+  cwd: z.string().trim().min(1).max(4_096).optional().describe("Default /home/user."),
 });
 const idSchema = z.strictObject({ id: machineId });
 const getFileSchema = z.strictObject({
@@ -65,63 +60,61 @@ const getFileSchema = z.strictObject({
     .min(1)
     .max(1_024)
     .optional()
-    .describe("Where to save it, relative to your workspace. The default is computer-files/<file name>."),
+    .describe("Path in your workspace. Default computer-files/<file name>."),
 });
 const publishSchema = z.strictObject({
   id: machineId,
   path: remotePath,
-  filename: z.string().trim().min(1).max(255).optional().describe("The download name. The default is the file name."),
+  filename: z.string().trim().min(1).max(255).optional().describe("Download name. Default: the file name."),
 });
 
 const MACHINE_RULES =
-  "A cloud computer is an Ubuntu desktop with passwordless sudo that belongs to the user's Agent Computer account; install and change anything on it. It pauses itself at deadline_at with everything kept: publish what the user needs before then, and call computer_start with the same context to go on. Runtime minutes are billed on the user's plan.";
+  "A cloud computer is the user's Ubuntu desktop with passwordless sudo; change anything on it. At deadline_at it pauses with everything kept: publish results before then, and computer_start the same context to go on. Runtime is billed to the user.";
 
 export const AGENT_COMPUTER_TOOL_DEFINITIONS = [
   {
     name: "computer_list",
-    description:
-      "List the cloud computers of this OpenBot server's Agent Computer account: id, context, size, status (running or paused), deadline_at and updated_at. Read-only; it wakes nothing.",
+    description: "List this server's cloud computers: id, context, size, status, deadline_at, updated_at. Read-only.",
     shape: {},
   },
   {
     name: "computer_start",
-    description: `Start or resume the cloud computer for a context, and get its id. ${MACHINE_RULES} The human opens the live view from Machines in OpenBot. Live view and billing links are human credentials and are not available to you. Work in visible windows ($DISPLAY is set) so the live view shows the work. Read ~/PLAYBOOK.md on the machine before a big task. briefing has more rules.`,
+    description: `Start or resume the cloud computer of a context; returns its id. ${MACHINE_RULES} The chat shows the user a live view button; live view and billing links are not for you. Work in visible windows ($DISPLAY is set). Read ~/PLAYBOOK.md before a big task. briefing has more rules.`,
     shape: startSchema.shape,
   },
   {
     name: "computer_bash",
     description:
-      "Run a shell command on a running cloud computer and wait for it: stdout, stderr, exit_code, timed_out. After MACHINE_PAUSED, call computer_start with the same context, then run it again.",
+      "Run a shell command on a running cloud computer and wait: stdout, stderr, exit_code, timed_out. After MACHINE_PAUSED, computer_start the same context and run it again.",
     shape: bashSchema.shape,
   },
   {
     name: "computer_screenshot",
-    description:
-      "See the desktop of a running cloud computer now, as an image. Only you see it; it is not posted in the chat.",
+    description: "See a running cloud computer's desktop as an image. Only you see it.",
     shape: idSchema.shape,
   },
   {
     name: "computer_get_file",
     description:
-      "Copy one file, up to 1 MiB, from a cloud computer into your workspace. The result has the saved path, and the text of a small text file. Attach it to your answer with attach_files_to_response. For a larger file, use computer_publish.",
+      "Copy one file (up to 1 MiB) from a cloud computer into your workspace; returns its path and the text of a small text file. Attach it with attach_files_to_response. For larger files, use computer_publish.",
     shape: getFileSchema.shape,
   },
   {
     name: "computer_publish",
     description:
-      "Upload one file from a cloud computer and get a download link that expires (expires_at). Use it for a large result, such as a video, that the user needs.",
+      "Upload a file from a cloud computer and get a download link that expires at expires_at. Use it for large results, such as videos.",
     shape: publishSchema.shape,
   },
   {
     name: "computer_stop",
     description:
-      "Pause a cloud computer when the work is done or waits for the user. Everything on it is kept, and runtime billing stops. computer_start with the same context resumes it.",
+      "Pause a cloud computer when work is done or waits for the user. It keeps everything and stops billing; computer_start the same context resumes it.",
     shape: idSchema.shape,
   },
   {
     name: "computer_destroy",
     description:
-      "Delete a cloud computer and everything on it, including its files and logins. It cannot be undone. Only when the user asks for it; to end work, use computer_stop. The user approves it.",
+      "Delete a cloud computer with all its files and logins; it cannot be undone. Only when the user asks; to end work, use computer_stop. The user approves it.",
     shape: idSchema.shape,
   },
 ] as const;
@@ -143,6 +136,11 @@ export interface AgentComputerToolRequest {
   idempotencyKey?: string;
   /** Asks the user to approve a change, with `reason` as the question. True when approved. */
   approve: (reason: string) => Effect.Effect<boolean>;
+  /**
+   * Called after `computer_start` started or resumed a machine, with its id only. The router posts the
+   * chat card whose button reads the live view link on the person's own client.
+   */
+  onStarted?: ((machineId: string) => void) | undefined;
 }
 
 /** A small text file comes back as text too, so the agent need not read it again. */
@@ -176,6 +174,8 @@ export const handleAgentComputerTool = Effect.fn("AgentComputerTools.handle")(fu
       case "computer_start": {
         const input = yield* parse(startSchema, request.arguments);
         const started = yield* api.start(input.context, input.size, { idempotencyKey: request.idempotencyKey });
+        // The machine runs already: a chat card that cannot be posted must not hide its id from the agent.
+        yield* Effect.try(() => request.onStarted?.(started.id)).pipe(Effect.ignore);
         return textResult({
           id: started.id,
           context: started.context,

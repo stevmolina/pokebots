@@ -54,6 +54,7 @@ import { BloubAvatarThumbnail } from "@/features/agents/components/bloub-avatar"
 import { ChatActivityRow, type ChatActivitySpec } from "@/features/chat/components/chat-activity-row";
 import { ChatAppSuggestion } from "@/features/chat/components/chat-app-suggestion";
 import { type ApprovalDecision, approvalTitle, ChatApprovalCard } from "@/features/chat/components/chat-approval-card";
+import { ChatComputerLiveViewCard } from "@/features/chat/components/chat-computer-live-view-card";
 import { ChatExchangeGroup, ChatExchangeMarker } from "@/features/chat/components/chat-exchange-marker";
 import { ChatMarkdown, chatMarkdownHasTable } from "@/features/chat/components/chat-markdown";
 import { ChatMcpSignInCard } from "@/features/chat/components/chat-mcp-sign-in-card";
@@ -132,6 +133,7 @@ import { ChatFileActionsContext, type OpenMessageFile, useMessageFileOpener } fr
 import { ChatImageGallery } from "./chat-image-gallery";
 import { ChatImageGeneration, imageGenerationStatus } from "./chat-image-generation";
 import { ChatImageViewerProvider, isStackImage, isViewableImage } from "./chat-image-viewer";
+import { ChatListEndContext } from "./chat-list-end";
 import { ChatMessageActionsButton, ChatMessageReactions, useMessageActions } from "./chat-message-actions";
 import { ChatMessageGesture } from "./chat-message-gesture";
 import { ChatOutboxStatus, OutboxMessageMenu, type OutboxRowStatus } from "./chat-outbox-status";
@@ -979,6 +981,8 @@ const MessageRow = memo(function MessageRow({
         muted={muted}
         onContinue={actions.sendCardText}
       />
+    ) : message.kind === "computer-live-view" ? (
+      <ChatComputerLiveViewCard key={message.id} serverId={serverId} machineId={message.machineId} />
     ) : message.kind === "subagents" ? (
       <ChatSubagents key={message.id} message={message} onOpen={shared.openSubagents} />
     ) : message.kind === "memory-changes" ? (
@@ -2278,6 +2282,11 @@ export const ChatMessageList = memo(function ChatMessageList({
     onScrollBeginDrag,
     onScrollEndDrag,
   } = motion;
+  // A footer part that grows, such as the open sessions tray, scrolls the list to its end once laid
+  // out, so it does not sit under the composer.
+  const revealListEnd = useCallback(() => {
+    requestAnimationFrame(() => void listRef.current?.scrollToEnd({ animated: !reducedMotion }));
+  }, [listRef, reducedMotion]);
   const list = useMemo(
     () => (
       <KeyboardAwareLegendList
@@ -2454,7 +2463,9 @@ export const ChatMessageList = memo(function ChatMessageList({
                       <ChatTimeRevealContext value={timeReveal}>
                         <ChatTimesMountedContext value={timesMounted}>
                           <ListHeaderContext value={listHeader}>
-                            <ListFooterContext value={listFooter}>{list}</ListFooterContext>
+                            <ListFooterContext value={listFooter}>
+                              <ChatListEndContext value={revealListEnd}>{list}</ChatListEndContext>
+                            </ListFooterContext>
                           </ListHeaderContext>
                         </ChatTimesMountedContext>
                       </ChatTimeRevealContext>

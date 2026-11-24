@@ -16,7 +16,6 @@ export const messages = defineMessages("rooms", {
   "rooms.message": "Message. Use @name to mention someone.",
   "rooms.send": "Send",
   "rooms.reply": "Reply",
-  "rooms.thread": "Thread",
   "rooms.all": "All messages",
   "rooms.memory": "Room memory",
   "rooms.about": "About",

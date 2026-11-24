@@ -234,6 +234,11 @@ export const messages = {
   "mobile.server.threads.section.unread": "Непрочитанные",
   "mobile.server.threads.section.read": "Прочитанные",
   "mobile.server.threads.section.closed": "В архиве",
+  "mobile.server.threads.board.queued": "В очереди",
+  "mobile.server.threads.board.done": "Готово",
+  "mobile.server.threads.view.label": "Вид задач",
+  "mobile.server.threads.view.list": "Список",
+  "mobile.server.threads.view.board": "Доска",
   "mobile.server.threads.showAll": { one: "Показать все ({count})", other: "Показать все ({count})" },
   "mobile.server.drawer.threadsUnread": {
     one: "{count} непрочитанная",

@@ -598,6 +598,8 @@ export interface AgentServiceOptions {
    * The built-in `computer_*` tools and coding jobs use it.
    */
   agentComputerKey?: () => string | null;
+  /** Whether an agent can start an Agent Computer: the server key or the user's account. */
+  agentComputerConnected?: () => boolean;
   agentComputerCredential?: (memberId: string) => IntegrationCredential<"computer"> | undefined;
   /** The Link account of this computer, or `null`. Agents ask it for one-time cards. */
   linkWallet?: LinkWallet | null;
@@ -916,6 +918,7 @@ export class AgentService extends EventEmitter<AgentServiceEvents> {
           // A task lane that waited for a free task can start now.
           this.#drain.scheduleDrain(agentId);
         }).bind(this),
+        agentActivityChanged: () => this.#emit({ type: "agents-changed", agents: this.listAgents() }),
       },
     });
     this.#messageDeletion = new MessageDeletion({
@@ -1528,6 +1531,7 @@ export class AgentService extends EventEmitter<AgentServiceEvents> {
       mcpProxiedServerIds: (configs) => this.#mcp.proxiedServerIds(configs),
       ...(credentials.agentEnvironment ? { agentEnvironment: credentials.agentEnvironment } : {}),
       passwordVaultConnected: () => options.passwordVault?.connected() ?? false,
+      agentComputerConnected: () => options.agentComputerConnected?.() ?? options.agentComputerKey?.() != null,
       vaultItems: (agentId) => ({
         available: options.vaultItems?.ready() ?? false,
         cards: options.vaultItems?.hasCards(agentId) ?? false,
@@ -2435,7 +2439,17 @@ export class AgentService extends EventEmitter<AgentServiceEvents> {
   }
 
   listAgents(): AgentSummary[] {
-    return this.#duplication.visibleAgents(this.#store.list());
+    const threadTimes = this.#tasks?.latestUpdatedAtByAgent();
+    return this.#duplication.visibleAgents(this.#store.list()).map((agent) => {
+      const threadUpdatedAt = threadTimes?.get(agent.id);
+      if (!threadUpdatedAt) return agent;
+      if (agent.updatedAt) {
+        const agentMs = Date.parse(agent.updatedAt);
+        const threadMs = Date.parse(threadUpdatedAt);
+        if (!Number.isNaN(agentMs) && (Number.isNaN(threadMs) || threadMs <= agentMs)) return agent;
+      }
+      return { ...agent, updatedAt: threadUpdatedAt };
+    });
   }
 
   /** The folder that every local agent can change, beside its own workspace. */

@@ -74,7 +74,7 @@ export interface ServerConnectionNoticeProps {
   /** False when another loading screen already covers the window: the first load then shows only its inline notice. */
   screen?: boolean;
   /** Puts recovery controls in the loading screen that already covers this notice. */
-  onLoadingNotice?: (notice: JSX.Element) => void;
+  onLoadingNotice?: ((notice: JSX.Element) => void) | undefined;
   onRetry: () => void;
   onManage?: () => void;
   /** The offer of a hosted server, for the user's own computer that is offline. */

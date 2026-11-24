@@ -48,6 +48,8 @@ export const messages = {
   "webClient.agent.unconfirmed": "결과를 확인하지 못했어요. 이 양식을 닫고 서버를 확인한 후 다시 시도해 주세요.",
   "webClient.error.usageOffline": "사용량을 보려면 서버에 연결해 주세요.",
   "webClient.error.desktopOnly": "이 작업은 데스크톱 앱에서 할 수 있어요.",
+  "webClient.settings.general.title": "일반",
+  "webClient.settings.account.title": "계정",
   "webClient.settings.preferences.description": "이 브라우저에서 OpenBot의 언어와 소리를 선택하세요.",
   "webClient.error.checkConversation": "다시 보내기 전에 대화를 확인해 주세요.",
   "webClient.error.hostReported": "서버에서 오류가 발생했어요. 대화와 서버 상태를 확인해 주세요.",

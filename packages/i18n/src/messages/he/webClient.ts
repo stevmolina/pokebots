@@ -47,6 +47,8 @@ export const messages = {
   "webClient.agent.unconfirmed": "התוצאה לא אושרה. יש לסגור את הטופס ולבדוק את השרת לפני ניסיון נוסף.",
   "webClient.error.usageOffline": "יש להתחבר לשרת כדי להציג את השימוש.",
   "webClient.error.desktopOnly": "הפעולה זמינה באפליקציית שולחן העבודה.",
+  "webClient.settings.general.title": "כללי",
+  "webClient.settings.account.title": "חשבון",
   "webClient.settings.preferences.description": "אפשר לבחור את השפה והצלילים של OpenBot בדפדפן הזה.",
   "webClient.error.checkConversation": "יש לבדוק את השיחה לפני שליחה נוספת.",
   "webClient.error.hostReported": "השרת דיווח על שגיאה. יש לבדוק את השיחה ואת מצב השרת.",

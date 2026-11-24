@@ -2,6 +2,12 @@ import type { PartialTranslation } from "../../message";
 import type { messages as source } from "../en/chat";
 
 export const messages = {
+  "chat.workers.running": "Actief",
+  "chat.workers.queued": "In wachtrij",
+  "chat.workers.runningCount": "{count} actief",
+  "chat.workers.queuedCount": "{count} in wachtrij",
+  "chat.workers.showAll": "Toon alle {count} actieve sessies",
+  "chat.workers.showOne": "Inklappen tot één actieve sessie",
   "chat.activity.workingOnIt": "Ermee bezig…",
   "chat.activity.thinking": "Even goed nadenken…",
   "chat.activity.connectingDots": "De puntjes verbinden…",
@@ -61,6 +67,8 @@ export const messages = {
   "chat.subagents.stepCount": { one: "{count} stap", other: "{count} stappen" },
   "chat.subagents.seconds": "{seconds} s",
   "chat.subagents.minutes": "{minutes} min {seconds} s",
+  "chat.subagents.hours": "{hours} u {minutes} min",
+  "chat.subagents.days": "{days} d",
   "chat.subagents.open": "{title}, {state}. Openen aan de zijkant.",
   "chat.trace.title": "Trace",
   "chat.trace.search": "Stappen zoeken",
@@ -381,7 +389,6 @@ export const messages = {
   "chat.actions.more": "Meer acties",
   "chat.menu.reply": "Antwoorden",
   "chat.menu.copy": "Bericht kopiëren",
-  "chat.menu.react": "Reageren",
   "chat.menu.branch": "Hier aftakken",
   "chat.menu.markUnread": "Markeer als ongelezen",
   "chat.menu.pin": "Vastmaken",

@@ -469,8 +469,6 @@ export const messages = {
   "error.backend.taskTitleRequired": "Dê um título curto à tarefa.",
   "error.backend.taskToolInvalid":
     "Dê à tarefa um título de no máximo 120 caracteres e uma instrução que diga o que fazer.",
-  "error.backend.taskOwnChatOnly":
-    "Inicie uma tarefa só a partir do seu próprio chat. Um canal, uma conversa de mensagens ou outra tarefa não pode iniciar uma.",
   "error.backend.taskUnfinishedLimit":
     "Este agente já tem {count} tarefas não concluídas. Inicie outra tarefa quando uma delas terminar.",
   "error.backend.taskOpenLimitReached":

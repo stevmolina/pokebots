@@ -18,9 +18,13 @@ function threadTimesOf(threads: readonly SidebarThreadEntry[]): Map<string, numb
 }
 
 /** The last activity of a chat: an agent's last message or thread change, a channel's last message. */
-function chatTime(item: SidebarChatItem, threadTimes: ReadonlyMap<string, number>): number {
+function chatTime(
+  item: SidebarChatItem,
+  threadTimes: ReadonlyMap<string, number>,
+  latestThreadUpdatedAt: Readonly<Record<string, string>>,
+): number {
   return item.kind === "agent"
-    ? Math.max(timeOf(item.agent.updatedAt), threadTimes.get(item.id) ?? 0)
+    ? Math.max(timeOf(item.agent.updatedAt), threadTimes.get(item.id) ?? 0, timeOf(latestThreadUpdatedAt[item.id]))
     : timeOf(item.channel.lastMessage?.at ?? item.channel.createdAt);
 }
 
@@ -32,9 +36,14 @@ function chatTime(item: SidebarChatItem, threadTimes: ReadonlyMap<string, number
 export function sidebarRecentChats(
   chats: readonly SidebarChatItem[],
   threads: readonly SidebarThreadEntry[] = [],
+  latestThreadUpdatedAt: Readonly<Record<string, string>> = {},
 ): SidebarChatItem[] {
   const threadTimes = threadTimesOf(threads);
-  const timed = chats.map((item, index) => ({ item, index, at: chatTime(item, threadTimes) }));
+  const timed = chats.map((item, index) => ({
+    item,
+    index,
+    at: chatTime(item, threadTimes, latestThreadUpdatedAt),
+  }));
   return timed.sort((left, right) => right.at - left.at || left.index - right.index).map((entry) => entry.item);
 }
 

@@ -1,0 +1,11 @@
+# Checks for a newer image every 10 minutes. `setup` enables it. Turn it off for one instance with
+# OPENBOT_AUTO_UPDATE=off in its env file, or for all with `systemctl disable --now` on this timer.
+[Unit]
+Description=Check for OpenBot instance updates every 10 minutes
+
+[Timer]
+OnCalendar=*:0/10
+RandomizedDelaySec=2min
+
+[Install]
+WantedBy=timers.target
