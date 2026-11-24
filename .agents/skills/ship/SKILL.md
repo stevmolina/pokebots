@@ -25,7 +25,7 @@ passes. Automated reviews are background feedback.
    check `All required checks pass`, and GitHub merges when it passes. Automated reviews do
    not hold up the merge. Do not use `--admin`, force-push or change branch protection.
 6. Do not wait for CI in a foreground loop (`sleep`, `until`, repeated `gh pr checks`).
-   Start one background command, `gh pr checks <pr> --watch --required --interval 30`, or
+   Start one background command, `gh pr checks <pr> --watch --fail-fast --interval 30`, or
    `watch_pull_request` in T3. Then continue other work or end the turn. The end of the
    watch wakes you.
 7. When a required check fails, read `gh run view <run> --log-failed`, fix the cause and push.
