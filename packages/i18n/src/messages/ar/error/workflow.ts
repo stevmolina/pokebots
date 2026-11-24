@@ -66,8 +66,8 @@ export const messages = {
   "error.workflow.githubChoseNothing": "لم يختر النموذج أي تسمية أو شخص من هذا المستودع.",
   "error.workflow.githubNotConnected": "اربط GitHub على الحاسوب الذي يشغّل سير العمل هذا.",
   "error.workflow.githubNoAccess":
-    "لا يستطيع تطبيق OpenBot على GitHub رؤية هذا المستودع أو العنصر. افتح GitHub وامنحه الوصول.",
-  "error.workflow.githubNoWrite": "لا يستطيع تطبيق OpenBot على GitHub تغيير هذا المستودع. افتح GitHub وامنحه الوصول.",
+    "لا يستطيع تطبيق Pokebots على GitHub رؤية هذا المستودع أو العنصر. افتح GitHub وامنحه الوصول.",
+  "error.workflow.githubNoWrite": "لا يستطيع تطبيق Pokebots على GitHub تغيير هذا المستودع. افتح GitHub وامنحه الوصول.",
   "error.workflow.githubLocked": "هذه المحادثة مقفلة على GitHub.",
   "error.workflow.githubRefused": "رفض GitHub التغيير: {detail}",
   "error.workflow.githubUnreachable": "تعذّر على Pokebots الوصول إلى GitHub. شغّل الخطوة مرة أخرى.",

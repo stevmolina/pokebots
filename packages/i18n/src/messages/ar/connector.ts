@@ -69,7 +69,7 @@ export const messages = {
   "connector.github.disconnectConfirmTitle": "هل تريد قطع اتصال GitHub؟",
   "connector.github.disconnectConfirmDescription": "يزيل قطع الاتصال تسجيل دخول @{login} من هذا الحاسوب.",
   "connector.github.disconnectEffectTools": "يفقد كل وكيل أدوات GitHub وgh وgit.",
-  "connector.github.disconnectEffectRevoke": "ثم يُفتح GitHub حيث يمكنك إلغاء وصول OpenBot.",
+  "connector.github.disconnectEffectRevoke": "ثم يُفتح GitHub حيث يمكنك إلغاء وصول Pokebots.",
   "connector.github.disconnectEffectKept": "تبقى الدردشات والملفات وذاكرة الوكلاء على هذا الحاسوب.",
   "connector.github.descriptionHost":
     "يمكن لكل وكيل على {host} استخدام مستودعات GitHub ومشكلاتها وطلبات الدمج الخاصة بك، واستخدام gh وgit.",
@@ -91,7 +91,7 @@ export const messages = {
 
   "connector.slack.title": "Slack",
   "connector.slack.description":
-    "يذكر الأشخاص @OpenBot في Slack أو يرسلون إليه رسالة مباشرة. يسأل Slack Orchestrator الوكيل المناسب ويجيب.",
+    "يذكر الأشخاص @Pokebots في Slack أو يرسلون إليه رسالة مباشرة. يسأل Slack Orchestrator الوكيل المناسب ويجيب.",
   "connector.slack.statusConnected": "متصل",
   "connector.slack.statusAttention": "يحتاج إلى انتباه",
   "connector.slack.summaryConnected": "{workspace} · يجيب Slack Orchestrator",
@@ -109,11 +109,11 @@ export const messages = {
   "connector.slack.addAgent": "إضافة وكيل",
   "connector.slack.actionFailed": "لم يقبل Slack التغيير",
   "connector.slack.workspaceTitle": "مساحات العمل",
-  "connector.slack.workspaceDescription": "يذكر الأشخاص @OpenBot أو يرسلون إليه رسالة مباشرة.",
+  "connector.slack.workspaceDescription": "يذكر الأشخاص @Pokebots أو يرسلون إليه رسالة مباشرة.",
   "connector.slack.disconnectWorkspace": "قطع الاتصال",
   "connector.slack.disconnectAllTitle": "قطع اتصال Slack",
   "connector.slack.disconnectAllSummary":
-    "يُقطع اتصال كل مساحات العمل. لن يتمكن الأشخاص بعد ذلك من الوصول إلى وكلائك عبر @OpenBot.",
+    "يُقطع اتصال كل مساحات العمل. لن يتمكن الأشخاص بعد ذلك من الوصول إلى وكلائك عبر @Pokebots.",
   "connector.slack.disconnectAllSummaryOrchestrator":
     "يُقطع اتصال كل مساحات العمل. يُحذف Slack Orchestrator ومحادثاته من Pokebots.",
   "connector.slack.missingScopes":
@@ -129,19 +129,19 @@ export const messages = {
   "connector.slack.orchestratorNone": "لا يجيب أي وكيل بعد",
   "connector.slack.orchestratorNoneDescription": "أضف Slack Orchestrator، وإلا فلن يتلقى Slack أي إجابة.",
   "connector.slack.inviteNote":
-    "ينضم Pokebots بنفسه إلى كل قناة عامة، وإلى كل قناة جديدة. للقناة الخاصة، ادعه إليها: /invite @OpenBot.",
+    "ينضم Pokebots بنفسه إلى كل قناة عامة، وإلى كل قناة جديدة. للقناة الخاصة، ادعه إليها: /invite @Pokebots.",
   "connector.slack.stepWorkspace": "مساحة العمل",
   "connector.slack.stepAgent": "الوكيل",
   "connector.slack.connectTitle": "ربط مساحة عمل Slack",
   "connector.slack.connectDescription":
-    "يثبّت OpenBot تطبيقًا واحدًا باسم OpenBot في مساحة العمل، وينضم إلى كل قناة عامة.",
+    "يثبّت Pokebots تطبيقًا واحدًا باسم Pokebots في مساحة العمل، وينضم إلى كل قناة عامة.",
   "connector.slack.connectStepBrowser": "يُفتح Slack في المتصفح",
   "connector.slack.connectStepAllow": "اختر مساحة العمل في الزاوية العلوية، ثم Allow",
   "connector.slack.connectStepReturn": "يتابع مربع الحوار هذا عندما ينتهي Slack",
   "connector.slack.connectInSlack": "الربط في Slack",
   "connector.slack.connectWaiting": "في انتظار Slack. أكمل التثبيت في المتصفح.",
   "connector.slack.agentStepTitle": "إضافة Slack Orchestrator",
-  "connector.slack.agentStepDescription": "يجيب هذا الوكيل الجديد عن كل ما يرسله الأشخاص إلى @OpenBot في {workspace}.",
+  "connector.slack.agentStepDescription": "يجيب هذا الوكيل الجديد عن كل ما يرسله الأشخاص إلى @Pokebots في {workspace}.",
   "connector.slack.orchestratorName": "Slack Orchestrator",
   "connector.slack.orchestratorRole": "يجيب في Slack ويسأل الفريق",
   "connector.slack.orchestratorDoesReceive": "يستقبل كل طلب من Slack أولًا",
@@ -149,12 +149,12 @@ export const messages = {
   "connector.slack.orchestratorDoesAnswer": "ينشر الإجابة في سلسلة Slack",
   "connector.slack.orchestratorModel": "النموذج",
   "connector.slack.doneTitle": "Pokebots موجود في {workspace}",
-  "connector.slack.doneDescription": "اذكر @OpenBot في أي قناة عامة، أو أرسل إليه رسالة مباشرة.",
+  "connector.slack.doneDescription": "اذكر @Pokebots في أي قناة عامة، أو أرسل إليه رسالة مباشرة.",
   "connector.slack.done": "تم",
   "connector.slack.disconnectTitle": "هل تريد قطع اتصال {workspace}؟",
   "connector.slack.disconnectDescription": "يتوقف Pokebots عن الإجابة في {workspace} ويزيل رمز Slack من هذا الحاسوب.",
   "connector.slack.disconnectDescriptionHost": "يتوقف Pokebots عن الإجابة في {workspace} ويزيل رمز Slack من {host}.",
-  "connector.slack.disconnectEffect": "لن يتمكن الأشخاص في {workspace} بعد ذلك من الوصول إلى وكلائك عبر @OpenBot.",
+  "connector.slack.disconnectEffect": "لن يتمكن الأشخاص في {workspace} بعد ذلك من الوصول إلى وكلائك عبر @Pokebots.",
   "connector.slack.removeEffectKept": "تبقى المحادثات وSlack Orchestrator في Pokebots.",
   "connector.slack.removeEffectDeleted": "يُحذف Slack Orchestrator ومحادثاته من Pokebots.",
   "connector.slack.keep": "إبقاء الاتصال",
@@ -179,7 +179,7 @@ export const messages = {
 
   "connector.discord.title": "Discord",
   "connector.discord.description":
-    "يذكر الأشخاص @OpenBot في قناة على خادم Discord. يسأل Discord Orchestrator الوكيل المناسب ويجيب.",
+    "يذكر الأشخاص @Pokebots في قناة على خادم Discord. يسأل Discord Orchestrator الوكيل المناسب ويجيب.",
   "connector.discord.statusConnected": "متصل",
   "connector.discord.statusAttention": "يحتاج إلى انتباه",
   "connector.discord.summaryConnected": "{workspace} · يجيب Discord Orchestrator",
@@ -197,11 +197,11 @@ export const messages = {
   "connector.discord.addAgent": "إضافة وكيل",
   "connector.discord.actionFailed": "لم يقبل Discord التغيير",
   "connector.discord.workspaceTitle": "خوادم Discord",
-  "connector.discord.workspaceDescription": "اذكر @OpenBot في قناة. ردّ على OpenBot للمتابعة.",
+  "connector.discord.workspaceDescription": "اذكر @Pokebots في قناة. ردّ على Pokebots للمتابعة.",
   "connector.discord.disconnectWorkspace": "قطع الاتصال",
   "connector.discord.disconnectAllTitle": "قطع اتصال Discord",
   "connector.discord.disconnectAllSummary":
-    "يُقطع اتصال كل الخوادم. لن يتمكن الأشخاص بعد ذلك من الوصول إلى وكلائك عبر @OpenBot.",
+    "يُقطع اتصال كل الخوادم. لن يتمكن الأشخاص بعد ذلك من الوصول إلى وكلائك عبر @Pokebots.",
   "connector.discord.disconnectAllSummaryOrchestrator":
     "يُقطع اتصال كل الخوادم. يُحذف Discord Orchestrator ومحادثاته من Pokebots.",
   "connector.discord.missingScopes":
@@ -220,7 +220,7 @@ export const messages = {
   "connector.discord.stepWorkspace": "خادم Discord",
   "connector.discord.stepAgent": "الوكيل",
   "connector.discord.connectTitle": "ربط خادم Discord",
-  "connector.discord.connectDescription": "يضيف OpenBot بوتًا واحدًا باسم OpenBot إلى خادم Discord.",
+  "connector.discord.connectDescription": "يضيف Pokebots بوتًا واحدًا باسم Pokebots إلى خادم Discord.",
   "connector.discord.connectStepBrowser": "يُفتح Discord في المتصفح",
   "connector.discord.connectStepAllow": "اختر الخادم، ثم Authorize",
   "connector.discord.connectStepReturn": "يتابع مربع الحوار هذا عندما ينتهي Discord",
@@ -228,7 +228,7 @@ export const messages = {
   "connector.discord.connectWaiting": "في انتظار Discord. أكمل التفويض في المتصفح.",
   "connector.discord.agentStepTitle": "إضافة Discord Orchestrator",
   "connector.discord.agentStepDescription":
-    "يجيب هذا الوكيل الجديد عن كل ما يرسله الأشخاص إلى @OpenBot في {workspace}.",
+    "يجيب هذا الوكيل الجديد عن كل ما يرسله الأشخاص إلى @Pokebots في {workspace}.",
   "connector.discord.orchestratorName": "Discord Orchestrator",
   "connector.discord.orchestratorRole": "يجيب في Discord ويسأل الفريق",
   "connector.discord.orchestratorDoesReceive": "يستقبل كل طلب من Discord أولًا",
@@ -236,14 +236,14 @@ export const messages = {
   "connector.discord.orchestratorDoesAnswer": "يردّ بالإجابة في قناة Discord",
   "connector.discord.orchestratorModel": "النموذج",
   "connector.discord.doneTitle": "Pokebots موجود في {workspace}",
-  "connector.discord.doneDescription": "اذكر @OpenBot في قناة. ردّ على OpenBot للمتابعة.",
+  "connector.discord.doneDescription": "اذكر @Pokebots في قناة. ردّ على Pokebots للمتابعة.",
   "connector.discord.done": "تم",
   "connector.discord.disconnectTitle": "هل تريد قطع اتصال {workspace}؟",
   "connector.discord.disconnectDescription":
     "يتوقف Pokebots عن الإجابة في {workspace} ويزيل اتصال Discord من هذا الحاسوب.",
   "connector.discord.disconnectDescriptionHost":
     "يتوقف Pokebots عن الإجابة في {workspace} ويزيل اتصال Discord من {host}.",
-  "connector.discord.disconnectEffect": "لن يتمكن الأشخاص في {workspace} بعد ذلك من الوصول إلى وكلائك عبر @OpenBot.",
+  "connector.discord.disconnectEffect": "لن يتمكن الأشخاص في {workspace} بعد ذلك من الوصول إلى وكلائك عبر @Pokebots.",
   "connector.discord.removeEffectKept": "تبقى المحادثات وDiscord Orchestrator في Pokebots.",
   "connector.discord.removeEffectDeleted": "يُحذف Discord Orchestrator ومحادثاته من Pokebots.",
   "connector.discord.keep": "إبقاء الاتصال",
@@ -272,7 +272,7 @@ export const messages = {
   "connector.discord.accessRoles": "الأعضاء ذوو الأدوار {roles}",
   "connector.discord.accessChoose": "اختيار الأدوار",
   "connector.discord.accessDialogTitle": "من يمكنه استخدام Pokebots في {workspace}؟",
-  "connector.discord.accessDialogDescription": "إذا لم تختر أي دور، يمكن للجميع ذكر OpenBot.",
+  "connector.discord.accessDialogDescription": "إذا لم تختر أي دور، يمكن للجميع ذكر Pokebots.",
   "connector.discord.accessLoading": "جارٍ تحميل الأدوار…",
   "connector.discord.accessLoadFailed": "لم يتم تحميل أدوار Discord",
   "connector.discord.accessNoRoles": "لا توجد في هذا الخادم أدوار للاختيار.",

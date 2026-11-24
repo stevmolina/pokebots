@@ -18,7 +18,8 @@ const FIRST_SHOW_DAYS = 2;
 const FIRST_SHOW_MESSAGES = 10;
 /** A closed toast comes back 7 days after the first show, then 30 days after the second. Then never. */
 const RETRY_DAYS = [7, 30] as const;
-const MAX_SHOWS = RETRY_DAYS.length + 1;
+/** Pokebots does not ask its users to follow OpenBot, so the toast never shows. */
+const MAX_SHOWS = 0;
 /** The database count is read at most this often while a user does not qualify yet. */
 const STATS_READ_INTERVAL_MS = 10 * 60 * 1000;
 /** The toast closes itself this long after the user follows. */

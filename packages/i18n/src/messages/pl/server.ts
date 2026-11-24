@@ -623,13 +623,13 @@ export const messages = {
     "Sprawdzanie wydań jest niedostępne dla tej kompilacji. Poproś administratora hosta o sprawdzenie zgodnego wydania.",
   "server.update.externalTitle": "Instalacją zarządza host",
   "server.update.path.hostManager":
-    "OpenBot Host Manager instaluje aktualizacje, gdy wszyscy użytkownicy są bezczynni. Jeśli aktualizacja się nie zaczyna, poproś administratora hosta o sprawdzenie stanu Host Managera.",
+    "Pokebots Host Manager instaluje aktualizacje, gdy wszyscy użytkownicy są bezczynni. Jeśli aktualizacja się nie zaczyna, poproś administratora hosta o sprawdzenie stanu Host Managera.",
   "server.update.path.hosted":
     "Usługa hostingu pobiera aktualizacje w tle. Pobrana aktualizacja zostanie zastosowana przy następnym uruchomieniu serwera. Poczekaj na zakończenie aktywnej pracy, zanim zatrzymasz i wznowisz serwer. Jeśli serwer pozostaje na starej wersji, skontaktuj się z administratorem hosta.",
   "server.update.path.system":
     "Na hoście uruchom sudo openbot update, aby zainstalować najnowsze wydanie. To polecenie zatrzymuje Pokebots. Najpierw poczekaj na zakończenie aktywnej pracy. Automatycznie pobrane aktualizacje instalują się przy następnym rozruchu.",
   "server.update.path.container":
-    "Na hoście Docker pobierz nowy obraz OpenBot i utwórz kontener ponownie z tymi samymi woluminami danych. Najpierw poczekaj na zakończenie aktywnej pracy. Zachowaj istniejące woluminy, aby nie stracić danych.",
+    "Na hoście Docker pobierz nowy obraz Pokebots i utwórz kontener ponownie z tymi samymi woluminami danych. Najpierw poczekaj na zakończenie aktywnej pracy. Zachowaj istniejące woluminy, aby nie stracić danych.",
   "server.update.path.manual":
     "Ta instalacja nie może sama się zastąpić. Poproś administratora hosta o zainstalowanie zgodnego wydania z github.com/nightly-labs/openbot/releases. Zachowaj istniejące dane Pokebots.",
   "server.update.path.unavailable":
@@ -653,7 +653,7 @@ export const messages = {
     "Użytkownik serwera {name} wyłączył aktualizacje od członków serwera. Poproś go o zaktualizowanie Pokebots lub włączenie tego ustawienia.",
   "server.update.managedTitle": "Aktualizacjami zarządza Host Manager",
   "server.update.managedDescription":
-    "OpenBot Host Manager aktualizuje serwer {name}. Skontaktuj się z administratorem hosta.",
+    "Pokebots Host Manager aktualizuje serwer {name}. Skontaktuj się z administratorem hosta.",
   "server.update.unsupportedTitle": "{name} nie może się sam zaktualizować",
   "server.update.unsupportedDescription":
     "Ta kompilacja Pokebots nie ma aktualizatora. Zainstaluj nową wersję na serwerze {name}.",

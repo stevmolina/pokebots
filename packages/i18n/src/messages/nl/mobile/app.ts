@@ -51,7 +51,7 @@ export const messages = {
   "mobile.app.update.later": "Later",
   "mobile.app.update.failedTitle": "Bijwerken mislukt",
   "mobile.app.update.restartFailed": "Sluit Pokebots en open het opnieuw om de update af te ronden.",
-  "mobile.app.update.storeFailed": "Open de App Store of Google Play en werk OpenBot daar bij.",
+  "mobile.app.update.storeFailed": "Open de App Store of Google Play en werk Pokebots daar bij.",
   "mobile.app.update.whatsNew": "Wat is er nieuw",
   "mobile.app.update.hideWhatsNew": "Verbergen",
   "mobile.app.update.releaseTitle": "Pokebots {version}",

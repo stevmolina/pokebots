@@ -569,7 +569,7 @@ export const messages = defineMessages("settings", {
   "settings.updates.managed.description":
     "Updates for this Mac are managed automatically by Pokebots Host Manager. All users share the same Pokebots application and are updated together when registered users are idle.",
   "settings.updates.target.latest": "The latest Pokebots update",
-  "settings.updates.host.upToDate": "Up to date. OpenBot Host Manager keeps this Mac current.",
+  "settings.updates.host.upToDate": "Up to date. Pokebots Host Manager keeps this Mac current.",
   "settings.updates.host.ready": "{target} is downloaded. Waiting for the other users of this Mac to be idle.",
   "settings.updates.host.installing": "Installing {target}…",
   "settings.updates.host.failed": "The managed update failed. Contact the administrator of this Mac.",

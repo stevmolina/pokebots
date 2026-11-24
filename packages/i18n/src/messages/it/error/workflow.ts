@@ -77,9 +77,9 @@ export const messages = {
   "error.workflow.githubChoseNothing": "Il modello non ha scelto nessuna etichetta o persona di questo repository.",
   "error.workflow.githubNotConnected": "Collega GitHub sul computer che esegue questo workflow.",
   "error.workflow.githubNoAccess":
-    "La GitHub App di OpenBot non vede questo repository o elemento. Apri GitHub e concedile l'accesso.",
+    "La GitHub App di Pokebots non vede questo repository o elemento. Apri GitHub e concedile l'accesso.",
   "error.workflow.githubNoWrite":
-    "La GitHub App di OpenBot non può modificare questo repository. Apri GitHub e concedile l'accesso.",
+    "La GitHub App di Pokebots non può modificare questo repository. Apri GitHub e concedile l'accesso.",
   "error.workflow.githubLocked": "Questa conversazione è bloccata su GitHub.",
   "error.workflow.githubRefused": "GitHub ha rifiutato la modifica: {detail}",
   "error.workflow.githubUnreachable": "Pokebots non è riuscito a raggiungere GitHub. Esegui di nuovo il passaggio.",

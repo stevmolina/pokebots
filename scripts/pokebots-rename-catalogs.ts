@@ -1,9 +1,8 @@
 // Writes the product name "Pokebots" into the message values of the i18n catalogs
-// (`packages/i18n/src/messages`), using the rules of the build-time brand layer
-// (`scripts/brand-layer.ts`), and keeps the exceptions that the reviewed catalog branch kept. A second
-// run changes nothing.
+// (`packages/i18n/src/messages`) and into the What's New notes (`src/renderer/src/features/updates`),
+// with the rules of `scripts/pokebots-brand-text.ts`. A second run changes nothing.
 //
-//   bun scripts/pokebots-rename-catalogs.ts              rewrite the catalogs, then wrap long lines
+//   bun scripts/pokebots-rename-catalogs.ts              rewrite the files, then wrap long lines
 //   bun scripts/pokebots-rename-catalogs.ts --check      change nothing; exit 1 when a rewrite is pending
 //   bun scripts/pokebots-rename-catalogs.ts --no-format  skip the Biome step
 //   bun scripts/pokebots-rename-catalogs.ts --root <dir> work on another checkout of this repository
@@ -13,183 +12,32 @@
 // `scripts/pokebots-rename-packages.ts`, then `bun install`, then commit. See
 // `docs/custom-fork-sync.md#apply-the-pokebots-rename-scripts-to-a-branch`.
 //
-// The rules are the brand layer's own, imported and not copied (`brandStringValues` and `brandText`):
 // - Only string values change. A string followed by `:` is a key and stays; so do comments.
 // - The match is case-sensitive "OpenBot". Lowercase `openbot.run`, `openbot://`, identifiers and
 //   environment names stay.
-// - `KEPT_PHRASES` in the brand layer stay: "Shared with OpenBot", "OpenBot GitHub App",
-//   "OpenBot Mobile" and "OpenBot Shared" name things that keep their names.
-//
-// What this script adds are the exceptions in `KEPT_VALUES`, `KEPT_HANDLE` and `KEPT_ENGLISH_PREFIXES`.
-// The branch that put "Pokebots" in the catalogs left those values as they were, because they name a
-// service account, an installed component or a folder, or they are English text that hosts send to
-// clients. The build-time brand layer still brands them in the built app, so the app shows the same
-// text as before. Remove an entry here only with the change that renames the thing it points to.
+// - `KEPT_PHRASES` stay: "Shared with OpenBot", "OpenBot GitHub App", "OpenBot Mobile" and
+//   "OpenBot Shared" name things that keep their names.
 import { execFileSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, relative, resolve } from "node:path";
-import { brandStringValues, brandText } from "./brand-layer";
+import { brandStringValues, brandText } from "./pokebots-brand-text";
 
 export const PRODUCT_NAME = "Pokebots";
 const CATALOG_DIRECTORY = "packages/i18n/src/messages/";
+const NOTES_DIRECTORY = "src/renderer/src/features/updates/";
 
-/** Values that keep the product word "OpenBot" in every language, grouped by why. */
-export const KEPT_VALUES: readonly {
-  readonly group: string;
-  readonly reason: string;
-  readonly keys: readonly string[];
-}[] = [
-  {
-    group: "service-account-names",
-    reason:
-      "The Discord bot, the Slack app and the GitHub App are named OpenBot in those services. People mention, invite or revoke them by that name.",
-    keys: [
-      "connector.discord.accessDialogDescription",
-      "connector.discord.agentStepDescription",
-      "connector.discord.connectDescription",
-      "connector.discord.description",
-      "connector.discord.disconnectAllSummary",
-      "connector.discord.disconnectEffect",
-      "connector.discord.doneDescription",
-      "connector.discord.workspaceDescription",
-      "connector.github.disconnectEffectRevoke",
-      "connector.github.noRepositories",
-      "connector.github.repositoriesDescription",
-      "connector.slack.agentStepDescription",
-      "connector.slack.connectDescription",
-      "connector.slack.description",
-      "connector.slack.disconnectAllSummary",
-      "connector.slack.disconnectEffect",
-      "connector.slack.doneDescription",
-      "connector.slack.workspaceDescription",
-      "error.workflow.githubNoAccess",
-      "error.workflow.githubNoWrite",
-      "mobile.server.connectors.discord.agentPromptBody",
-      "mobile.server.connectors.discord.connectFooter",
-      "mobile.server.connectors.discord.description",
-      "mobile.server.connectors.discord.helpInvalidToken",
-      "mobile.server.connectors.discord.workspaceDescription",
-      "mobile.server.connectors.github.disconnectBody",
-      "mobile.server.connectors.github.noRepositories",
-      "mobile.server.connectors.github.repositoriesFooter",
-      "mobile.server.connectors.slack.agentPromptBody",
-      "mobile.server.connectors.slack.connectFooter",
-      "mobile.server.connectors.slack.description",
-      "mobile.server.connectors.slack.helpInvalidToken",
-      "mobile.server.connectors.slack.workspaceDescription",
-      "mobile.workflow.discord.event.mention",
-      "mobile.workflow.trigger.discordHint",
-      "mobile.workflow.trigger.slackHint",
-      "mobile.workflow.trigger.telegramHint",
-      "workflow.discord.event.mention",
-    ],
-  },
-  {
-    group: "installed-components-and-paths",
-    reason:
-      "The OpenBot Host Manager and the OpenBot Docker image are installed under those names, `~/OpenBot` is a real folder, and the store listing of the phone app is still OpenBot.",
-    keys: [
-      "files.storage.measuringFolder",
-      "mobile.app.update.storeFailed",
-      "mobile.server.update.managedDescription",
-      "mobile.server.update.path.container",
-      "mobile.server.update.path.hostManager",
-      "server.update.managedDescription",
-      "server.update.path.container",
-      "server.update.path.hostManager",
-      "settings.updates.host.upToDate",
-    ],
-  },
-];
-
-/**
- * Values whose text is branded except the Slack handle that a person types: `/invite @OpenBot` names the
- * Slack app, so the handle stays and the sentence around it says Pokebots.
- */
-export const KEPT_HANDLE = {
-  group: "slack-invite-handle",
-  reason: "`/invite @OpenBot` names the Slack app. The rest of the sentence takes the new name.",
-  handle: "@OpenBot",
-  keys: ["connector.slack.inviteNote", "mobile.server.connectors.slack.note"],
-} as const;
-
-/**
- * Keys with these prefixes keep "OpenBot" in the English catalog only. A host sends the English error and
- * status text to its clients, and released clients show it as it is, so the English wording is part of the
- * wire. The other languages take the new name.
- */
-export const KEPT_ENGLISH_PREFIXES = {
-  group: "english-wire-text",
-  reason: "English error and status text that hosts send to clients. Other languages are branded.",
-  language: "en",
-  prefixes: ["error.", "status."],
-} as const;
-
-const KEPT_KEY_GROUP = new Map<string, string>(
-  KEPT_VALUES.flatMap((entry) => entry.keys.map((key) => [key, entry.group] as const)),
-);
-/** A catalog entry starts at a line with a double-quoted key at the first indent. */
-const ENTRY_START = /^ {2}"([^"\n]+)":/;
-
-/** The group that keeps this entry's value as it is, or null when the entry takes the new name. */
-export function keptGroup(language: string, key: string): string | null {
-  const group = KEPT_KEY_GROUP.get(key);
-  if (group) return group;
-  if (
-    language === KEPT_ENGLISH_PREFIXES.language &&
-    KEPT_ENGLISH_PREFIXES.prefixes.some((prefix) => key.startsWith(prefix))
-  ) {
-    return KEPT_ENGLISH_PREFIXES.group;
-  }
-  return null;
-}
-
-/** The text of a value with "OpenBot" replaced, except the Slack handle. */
-function brandKeepingHandle(text: string): string {
-  return text
-    .split(KEPT_HANDLE.handle)
-    .map((part) => brandText(part, PRODUCT_NAME))
-    .join(KEPT_HANDLE.handle);
-}
+/** The What's New notes: the English file and one file per language. */
+const RELEASE_NOTES_FILES = /^src\/renderer\/src\/features\/updates\/(whats-new-releases|whats-new\/[a-z]{2})\.json$/;
 
 export interface CatalogResult {
   readonly code: string;
   /** String values changed. */
   readonly changed: number;
-  /** String values left as they were, by group. */
-  readonly kept: Record<string, number>;
 }
 
-/**
- * The catalog module with the product name in its values. The module is cut at each entry, so that
- * an entry that is kept can be left out and every other entry goes through the brand layer's own
- * `brandStringValues` as it is.
- */
-export function brandCatalog(path: string, code: string): CatalogResult {
-  const language = path.slice(CATALOG_DIRECTORY.length).split("/")[0] ?? "";
-  const kept: Record<string, number> = {};
-  let changed = 0;
-  const chunks: { key: string | null; lines: string[] }[] = [{ key: null, lines: [] }];
-  for (const line of code.split("\n")) {
-    const entry = ENTRY_START.exec(line);
-    if (entry) chunks.push({ key: entry[1] ?? null, lines: [line] });
-    else chunks[chunks.length - 1]?.lines.push(line);
-  }
-  const output = chunks.map(({ key, lines }) => {
-    const text = lines.join("\n");
-    const group = key === null ? null : keptGroup(language, key);
-    if (group) {
-      const wouldChange = brandStringValues(text, (value) => brandText(value, PRODUCT_NAME)).changed;
-      if (wouldChange > 0) kept[group] = (kept[group] ?? 0) + wouldChange;
-      return text;
-    }
-    const handle = key !== null && KEPT_HANDLE.keys.some((kept) => kept === key);
-    const result = brandStringValues(text, handle ? brandKeepingHandle : (value) => brandText(value, PRODUCT_NAME));
-    changed += result.changed;
-    if (handle) kept[KEPT_HANDLE.group] = (kept[KEPT_HANDLE.group] ?? 0) + (text.split(KEPT_HANDLE.handle).length - 1);
-    return result.code;
-  });
-  return { code: output.join("\n"), changed, kept };
+/** The module or JSON file with the product name in its string values. */
+export function brandCatalog(code: string): CatalogResult {
+  return brandStringValues(code, (value) => brandText(value, PRODUCT_NAME));
 }
 
 export interface CatalogsReport {
@@ -200,11 +48,9 @@ export interface CatalogsReport {
   readonly valuesChanged: number;
   readonly formatted: number | "skipped";
   readonly formatError: string | null;
-  /** Values left as "OpenBot" on purpose, by exception group, with the reason. */
-  readonly kept: { readonly group: string; readonly reason: string; readonly values: number }[];
-  /** Lines that still say "OpenBot" because of a kept phrase of the brand layer. */
+  /** Lines that still say "OpenBot" because of a kept phrase. */
   readonly keptPhrases: Record<string, number>;
-  /** Comment lines with "OpenBot". The brand layer never changes comments. */
+  /** Comment lines with "OpenBot". The script never changes comments. */
   readonly commentLines: number;
 }
 
@@ -243,7 +89,18 @@ function parseArguments(argv: readonly string[]): Options {
 function catalogFiles(root: string): string[] {
   const listed = execFileSync(
     "git",
-    ["-C", root, "ls-files", "-z", "--cached", "--others", "--exclude-standard", "--", CATALOG_DIRECTORY],
+    [
+      "-C",
+      root,
+      "ls-files",
+      "-z",
+      "--cached",
+      "--others",
+      "--exclude-standard",
+      "--",
+      CATALOG_DIRECTORY,
+      NOTES_DIRECTORY,
+    ],
     {
       encoding: "utf8",
       maxBuffer: 1 << 26,
@@ -251,7 +108,7 @@ function catalogFiles(root: string): string[] {
   );
   return listed
     .split("\0")
-    .filter((file) => file.endsWith(".ts"))
+    .filter((file) => (file.startsWith(CATALOG_DIRECTORY) && file.endsWith(".ts")) || RELEASE_NOTES_FILES.test(file))
     .sort();
 }
 
@@ -263,9 +120,9 @@ function dirtyCatalogs(root: string): string[] {
   const git = (args: readonly string[]): string =>
     execFileSync("git", ["-C", root, ...args], { encoding: "utf8", maxBuffer: 1 << 26 });
   return [
-    ...git(["diff", "--name-only", "HEAD", "--", CATALOG_DIRECTORY]).split("\n"),
-    ...git(["ls-files", "--others", "--exclude-standard", "--", CATALOG_DIRECTORY]).split("\n"),
-  ].filter((file) => file.endsWith(".ts") && existsSync(resolve(root, file)));
+    ...git(["diff", "--name-only", "HEAD", "--", CATALOG_DIRECTORY, NOTES_DIRECTORY]).split("\n"),
+    ...git(["ls-files", "--others", "--exclude-standard", "--", CATALOG_DIRECTORY, NOTES_DIRECTORY]).split("\n"),
+  ].filter((file) => (file.endsWith(".ts") || file.endsWith(".json")) && existsSync(resolve(root, file)));
 }
 
 /** The text that a failed child process wrote, from the error that `execFileSync` throws. */
@@ -304,15 +161,13 @@ export function run(options: Options): CatalogsReport {
   const { root } = options;
   const files = catalogFiles(root);
   const changed: string[] = [];
-  const kept: Record<string, number> = {};
   let values = 0;
   const keptPhrases: Record<string, number> = {};
   let commentLines = 0;
 
   for (const file of files) {
     const code = readFileSync(resolve(root, file), "utf8");
-    const result = brandCatalog(file, code);
-    for (const [group, count] of Object.entries(result.kept)) kept[group] = (kept[group] ?? 0) + count;
+    const result = brandCatalog(code);
     if (result.code !== code) {
       changed.push(file);
       values += result.changed;
@@ -338,11 +193,6 @@ export function run(options: Options): CatalogsReport {
     formatError = result.error;
   }
 
-  const groups = [
-    ...KEPT_VALUES.map(({ group, reason }) => ({ group, reason })),
-    { group: KEPT_HANDLE.group, reason: KEPT_HANDLE.reason },
-    { group: KEPT_ENGLISH_PREFIXES.group, reason: KEPT_ENGLISH_PREFIXES.reason },
-  ];
   return {
     root,
     mode: options.check ? "check" : "write",
@@ -351,7 +201,6 @@ export function run(options: Options): CatalogsReport {
     valuesChanged: values,
     formatted,
     formatError,
-    kept: groups.map(({ group, reason }) => ({ group, reason, values: kept[group] ?? 0 })),
     keptPhrases,
     commentLines,
   };
@@ -366,7 +215,6 @@ function main(): void {
   }
   const lines = [
     `${report.mode === "check" ? "Would change" : "Changed"} ${report.filesChanged.length} of ${report.catalogFiles} catalog files (${report.valuesChanged} values).`,
-    `Kept on purpose: ${report.kept.map((entry) => `${entry.group} ${entry.values}`).join(", ")}.`,
     `Formatted ${report.formatted} files.`,
   ];
   if (options.report) lines.push(`Report: ${relative(process.cwd(), options.report)}`);

@@ -128,7 +128,7 @@ export const messages = {
   "files.storage.largestChats": "용량이 큰 채팅",
   "files.storage.files": "파일",
   "files.storage.rowLabel": "{name}, {size}",
-  "files.storage.measuringFolder": "OpenBot 폴더 측정 중…",
+  "files.storage.measuringFolder": "Pokebots 폴더 측정 중…",
   "files.storage.measured": "{time} 측정",
   "files.storage.free": "이 디스크에 {size} 남음",
   "files.storage.justNow": "방금",

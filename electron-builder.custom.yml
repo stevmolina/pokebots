@@ -3,16 +3,16 @@
 # `bun run package` (package.json), with this config and the brand settings:
 #   bun run voice:prepare-runtime && bun run prepare:remote-desktop-runtime &&
 #   bun run verify:remote-desktop-runtime && bun run prepare:cua-driver && bun run prepare:macos-photo-picker &&
-#   OPENBOT_BRAND_NAME=Pokebots OPENBOT_BRAND_AUTH_API_URL=https://api.pokebots.xyz \
+#   OPENBOT_BRAND_AUTH_API_URL=https://api.pokebots.xyz \
 #   OPENBOT_BRAND_SIGNAL_URL=wss://signal.pokebots.xyz/v1/signal bun run build &&
 #   bunx electron-builder --dir --mac --arm64 --config electron-builder.custom.yml
 # It differs from `electron-builder.yml` in these ways: no `openbot:` link handler, no update feed,
 # no signing or notarization, output in `dist-custom`, the name "Pokebots", and a blue icon so it is
 # easy to tell from the official lavender app.
 # The name: `productName` names the bundle, the Dock tile, the menu bar and the privacy lists of
-# System Settings. The text inside the app says Pokebots because of the brand layer
-# (`scripts/brand-layer.ts`), which `bun run build` runs when `OPENBOT_BRAND_NAME` is set. The same
-# build also defaults to the self-hosted account service `api.pokebots.xyz` and its Signal.
+# System Settings. The text inside the app says Pokebots in the source. `bun run build` also
+# defaults to the self-hosted account service `api.pokebots.xyz` and its Signal when
+# `OPENBOT_BRAND_AUTH_API_URL` is set (`scripts/service-defaults.ts`).
 # The legacy icon: `build/custom/icon-custom.icns` (the first Pokebots app's blue headphones
 # plush) for Finder and the Dock, and `build/custom/icon-pokebots.png` in place of the release
 # icons that the app shows in the Dock while it runs. There is no

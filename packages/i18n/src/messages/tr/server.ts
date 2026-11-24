@@ -578,13 +578,13 @@ export const messages = {
     "Bu derleme için sürüm denetimleri kullanılamıyor. Ana makine yöneticisinden uyumlu bir sürümü kontrol etmesini isteyin.",
   "server.update.externalTitle": "Kurulumu ana makine yönetir",
   "server.update.path.hostManager":
-    "OpenBot Host Manager, tüm kullanıcılar boştayken güncellemeleri yükler. Bir güncelleme başlamazsa ana makine yöneticisinden Host Manager durumunu kontrol etmesini isteyin.",
+    "Pokebots Host Manager, tüm kullanıcılar boştayken güncellemeleri yükler. Bir güncelleme başlamazsa ana makine yöneticisinden Host Manager durumunu kontrol etmesini isteyin.",
   "server.update.path.hosted":
     "Barındırılan hizmet güncellemeleri arka planda indirir. İndirilen bir güncelleme, sunucu bir sonraki başlatılışında başlar. Sunucuyu durdurup sürdürmeden önce etkin çalışmanın bitmesini bekleyin. Sunucu eski bir sürümde kalırsa ana makine yöneticisiyle iletişime geçin.",
   "server.update.path.system":
     "En son sürümü yüklemek için ana makinede sudo openbot update komutunu çalıştırın. Bu komut Pokebots'u durdurur. Önce etkin çalışmanın bitmesini bekleyin. Otomatik indirmeler bir sonraki önyüklemede yüklenir.",
   "server.update.path.container":
-    "Docker ana makinesinde yeni OpenBot görüntüsünü çekin ve kapsayıcıyı aynı veri birimleriyle yeniden oluşturun. Önce etkin çalışmanın bitmesini bekleyin. Verilerinizi korumak için mevcut birimleri saklayın.",
+    "Docker ana makinesinde yeni Pokebots görüntüsünü çekin ve kapsayıcıyı aynı veri birimleriyle yeniden oluşturun. Önce etkin çalışmanın bitmesini bekleyin. Verilerinizi korumak için mevcut birimleri saklayın.",
   "server.update.path.manual":
     "Bu kurulum kendini değiştiremez. Ana makine yöneticisinden uyumlu sürümü github.com/nightly-labs/openbot/releases adresinden yüklemesini isteyin. Mevcut Pokebots verilerini saklayın.",
   "server.update.path.unavailable":
@@ -608,7 +608,7 @@ export const messages = {
     "{name} kullanıcısı sunucu üyelerinin güncelleme yapmasını kapattı. Pokebots uygulamasını güncellemesini veya ayarı açmasını isteyin.",
   "server.update.managedTitle": "Güncellemeleri Pokebots Host Manager yönetiyor",
   "server.update.managedDescription":
-    "OpenBot Host Manager, {name} sunucusunu günceller. Ana makine yöneticisiyle iletişime geçin.",
+    "Pokebots Host Manager, {name} sunucusunu günceller. Ana makine yöneticisiyle iletişime geçin.",
   "server.update.unsupportedTitle": "{name} kendini güncelleyemiyor",
   "server.update.unsupportedDescription":
     "Bu Pokebots derlemesinde güncelleyici yok. {name} üzerine yeni bir sürüm yükleyin.",

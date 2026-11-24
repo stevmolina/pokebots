@@ -36,7 +36,7 @@ causes.
 | Script | What it does |
 | --- | --- |
 | `scripts/pokebots-rename-packages.ts` | Renames the 15 workspace packages and 2 build aliases from `@pokebots/*` to `@pokebots/*` in imports, manifests, config, scripts and docs. Rewrites `bun.lock` as text. Keeps the logging alias for frozen migrations, the Effect service tags, `src/backend/migrations/`, catalog comments and `plans/`. Then sorts and wraps imports with Biome. |
-| `scripts/pokebots-rename-catalogs.ts` | Puts "Pokebots" in the catalog message values with the rules of `scripts/brand-layer.ts`. Keeps the values listed in the script: service account names, installed components and paths, the Slack `/invite @OpenBot` handle, and English `error.` and `status.` text. |
+| `scripts/pokebots-rename-catalogs.ts` | Puts "Pokebots" in every catalog message value and What's New note, with the rules of `scripts/pokebots-brand-text.ts`. It keeps the phrases "Shared with OpenBot", "OpenBot GitHub App", "OpenBot Mobile" and "OpenBot Shared". |
 
 Both scripts take `--check` (change nothing, exit 1 when a rewrite is pending), `--no-format`,
 `--root <dir>` and `--report <file>`. The JSON report goes to `.openbot-build/` by default.
@@ -47,6 +47,15 @@ Open branches still add new `@openbot/<package>` imports. Until they merge, the 
 keeps an alias for each package (`"@openbot/x": "workspace:@pokebots/x@*"`), so the old name resolves
 to the same package in TypeScript, Vite, Metro and Bun. `scripts/legacy-openbot-scope.ts` lists them.
 Remove the aliases once no open branch imports `@openbot/`.
+
+### New "OpenBot" references
+
+`bun run check:openbot-references` (the CI step "Check new OpenBot references") fails a pull request that
+adds the word "OpenBot" or an `@openbot/` import to first-party code. It reads only the added lines, and
+`scripts/openbot-references-allowlist.json` lists the released identities that may keep the old name:
+data paths, keychain names, wire values, history and legal files. An `@openbot/` import is only a warning
+while `scripts/legacy-openbot-scope.ts` exists. A pull request that brings upstream text on purpose, such
+as the daily upstream sync, takes the label `allow-openbot-references`, and CI skips the check.
 
 ### Bring a branch up to date
 

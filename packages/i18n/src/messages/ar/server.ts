@@ -721,13 +721,13 @@ export const messages = {
     "التحقق من الإصدارات غير متاح لهذا الإصدار. اطلب من مسؤول المضيف التحقق من وجود إصدار متوافق.",
   "server.update.externalTitle": "يتحكم المضيف في التثبيت",
   "server.update.path.hostManager":
-    "يثبّت OpenBot Host Manager التحديثات عندما يكون كل المستخدمين خاملين. اطلب من مسؤول المضيف التحقق من حالة Host Manager إذا لم يبدأ التحديث.",
+    "يثبّت Pokebots Host Manager التحديثات عندما يكون كل المستخدمين خاملين. اطلب من مسؤول المضيف التحقق من حالة Host Manager إذا لم يبدأ التحديث.",
   "server.update.path.hosted":
     "تنزّل الخدمة المستضافة التحديثات في الخلفية. يبدأ التحديث الذي تم تنزيله عند البدء التالي للخادم. انتظر انتهاء العمل النشط قبل إيقاف الخادم واستئنافه. إذا بقي على إصدار قديم، فتواصل مع مسؤول المضيف.",
   "server.update.path.system":
     "على المضيف، شغّل sudo openbot update لتثبيت أحدث إصدار. يوقف هذا الأمر Pokebots. انتظر انتهاء العمل النشط أولًا. تُثبَّت التنزيلات التلقائية عند الإقلاع التالي.",
   "server.update.path.container":
-    "على مضيف Docker، اسحب صورة OpenBot الجديدة وأنشئ الحاوية مرة أخرى بأحجام البيانات نفسها. انتظر انتهاء العمل النشط أولًا. احتفظ بالأحجام الحالية للحفاظ على بياناتك.",
+    "على مضيف Docker، اسحب صورة Pokebots الجديدة وأنشئ الحاوية مرة أخرى بأحجام البيانات نفسها. انتظر انتهاء العمل النشط أولًا. احتفظ بالأحجام الحالية للحفاظ على بياناتك.",
   "server.update.path.manual":
     "لا يستطيع هذا التثبيت استبدال نفسه. اطلب من مسؤول المضيف تثبيت الإصدار المتوافق من github.com/nightly-labs/openbot/releases. احتفظ ببيانات Pokebots الحالية.",
   "server.update.path.unavailable": "هذا إصدار تطوير. استخدم إصدارًا مثبّتًا من Pokebots للتحقق من وجود تحديثات.",
@@ -749,7 +749,7 @@ export const messages = {
   "server.update.disabledDescription":
     "أوقف مستخدم {name} التحديثات من أعضاء الخادم. اطلب منه تحديث Pokebots أو تشغيل الإعداد.",
   "server.update.managedTitle": "يتحكم Host Manager في التحديثات",
-  "server.update.managedDescription": "يحدّث OpenBot Host Manager الخادم {name}. تواصل مع مسؤول المضيف.",
+  "server.update.managedDescription": "يحدّث Pokebots Host Manager الخادم {name}. تواصل مع مسؤول المضيف.",
   "server.update.unsupportedTitle": "لا يستطيع {name} تحديث نفسه",
   "server.update.unsupportedDescription":
     "لا يحتوي هذا الإصدار من Pokebots على أداة تحديث. ثبّت إصدارًا جديدًا على {name}.",

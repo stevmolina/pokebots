@@ -627,13 +627,13 @@ export const messages = {
     "이 빌드에서는 릴리스를 확인할 수 없어요. 호스트 관리자에게 호환되는 릴리스를 확인해 달라고 요청하세요.",
   "server.update.externalTitle": "호스트가 설치를 제어해요",
   "server.update.path.hostManager":
-    "모든 사용자가 대기 상태일 때 OpenBot Host Manager가 업데이트를 설치해요. 업데이트가 시작되지 않으면 호스트 관리자에게 Host Manager 상태를 확인해 달라고 요청하세요.",
+    "모든 사용자가 대기 상태일 때 Pokebots Host Manager가 업데이트를 설치해요. 업데이트가 시작되지 않으면 호스트 관리자에게 Host Manager 상태를 확인해 달라고 요청하세요.",
   "server.update.path.hosted":
     "호스팅 서비스가 백그라운드에서 업데이트를 다운로드해요. 다운로드한 업데이트는 서버가 다음에 시작될 때 적용돼요. 서버를 중지했다가 재개하기 전에 진행 중인 작업이 끝나기를 기다려 주세요. 계속 예전 버전이면 호스트 관리자에게 문의하세요.",
   "server.update.path.system":
     "호스트에서 sudo openbot update를 실행해 최신 릴리스를 설치하세요. 이 명령은 Pokebots을 중지해요. 먼저 진행 중인 작업이 끝나기를 기다려 주세요. 자동 다운로드는 다음 부팅 때 설치돼요.",
   "server.update.path.container":
-    "Docker 호스트에서 새 OpenBot 이미지를 가져온 후 같은 데이터 볼륨으로 컨테이너를 다시 만드세요. 먼저 진행 중인 작업이 끝나기를 기다려 주세요. 데이터를 보존하려면 기존 볼륨을 유지하세요.",
+    "Docker 호스트에서 새 Pokebots 이미지를 가져온 후 같은 데이터 볼륨으로 컨테이너를 다시 만드세요. 먼저 진행 중인 작업이 끝나기를 기다려 주세요. 데이터를 보존하려면 기존 볼륨을 유지하세요.",
   "server.update.path.manual":
     "이 설치본은 스스로 교체할 수 없어요. 호스트 관리자에게 github.com/nightly-labs/openbot/releases의 호환되는 릴리스를 설치해 달라고 요청하세요. 기존 Pokebots 데이터는 유지하세요.",
   "server.update.path.unavailable": "개발 빌드예요. 업데이트를 확인하려면 설치된 Pokebots 릴리스를 사용하세요.",
@@ -655,7 +655,8 @@ export const messages = {
   "server.update.disabledDescription":
     "{name}의 사용자가 서버 멤버의 업데이트를 꺼 두었어요. Pokebots을 업데이트하거나 설정을 켜 달라고 요청하세요.",
   "server.update.managedTitle": "Host Manager가 업데이트를 제어해요",
-  "server.update.managedDescription": "OpenBot Host Manager가 {name}을(를) 업데이트해요. 호스트 관리자에게 문의하세요.",
+  "server.update.managedDescription":
+    "Pokebots Host Manager가 {name}을(를) 업데이트해요. 호스트 관리자에게 문의하세요.",
   "server.update.unsupportedTitle": "{name}은(는) 스스로 업데이트할 수 없어요",
   "server.update.unsupportedDescription": "이 Pokebots 빌드에는 업데이터가 없어요. {name}에 새 버전을 설치하세요.",
   "server.update.restarting": "다시 시작하는 중…",

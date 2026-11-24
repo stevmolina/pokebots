@@ -508,6 +508,7 @@
     "check:app-minimum-version": "bun scripts/check-app-minimum-version.ts",
     "check:agent-context": "bun scripts/agent-context-budget.ts",
     "check:migrations": "bun scripts/check-frozen-migrations.ts",
+    "check:openbot-references": "bun scripts/check-openbot-references.ts",
     "verify:preload": "bun scripts/verify-preload-bundle.ts",
     "package": "bun run voice:prepare-runtime && bun run prepare:remote-desktop-runtime && bun run verify:remote-desktop-runtime && bun run prepare:cua-driver && bun run prepare:macos-photo-picker && bun run build && electron-builder --dir --mac --config.mac.identity=null --config.mac.notarize=false",
     "verify:package": "bun scripts/verify-macos-package.ts",

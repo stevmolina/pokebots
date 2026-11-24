@@ -51,7 +51,7 @@ export const messages = {
   "mobile.app.update.later": "لاحقًا",
   "mobile.app.update.failedTitle": "تعذّر التحديث",
   "mobile.app.update.restartFailed": "أغلق Pokebots وافتحه مرة أخرى لإكمال التحديث.",
-  "mobile.app.update.storeFailed": "افتح App Store أو Google Play وحدّث OpenBot من هناك.",
+  "mobile.app.update.storeFailed": "افتح App Store أو Google Play وحدّث Pokebots من هناك.",
   "mobile.app.update.whatsNew": "ما الجديد",
   "mobile.app.update.hideWhatsNew": "إخفاء",
   "mobile.app.update.releaseTitle": "Pokebots {version}",

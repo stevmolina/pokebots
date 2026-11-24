@@ -4,14 +4,14 @@ import solidPlugin from "@solidjs/vite-plugin";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig, externalizeDepsPlugin } from "electron-vite";
 import { lazyLanguageCatalogs } from "./packages/i18n/src/vite-plugin";
-import { brandPlugins } from "./scripts/brand-layer";
 import { devWorktree } from "./scripts/dev-worktree-vite-plugin";
 import { LEGACY_SCOPE_NAMES } from "./scripts/legacy-openbot-scope";
+import { serviceDefaultsPlugins } from "./scripts/service-defaults";
 import { tailwindPropertyFallbackRemoval } from "./scripts/tailwind-property-fallback";
 
 const rendererPort = readRendererPort(process.env.OPENBOT_DEV_RENDERER_PORT);
-// Empty unless `OPENBOT_BRAND_NAME` is set: the product name of a custom build (`scripts/brand-layer.ts`).
-const brand = brandPlugins(fileURLToPath(new URL(".", import.meta.url)));
+// Empty unless `OPENBOT_BRAND_AUTH_API_URL` is set: the account service of a custom build (`scripts/service-defaults.ts`).
+const serviceDefaults = serviceDefaultsPlugins(fileURLToPath(new URL(".", import.meta.url)));
 
 // `bun run dev` rebuilds the main process and preload scripts when a file changes (`--watch`); a
 // production build ignores this. Do not watch installed packages: Bun links them to one shared
@@ -24,7 +24,7 @@ export default defineConfig({
   main: {
     // Workspace sources ship as TypeScript and must be bundled for the packaged app.
     plugins: [
-      ...brand,
+      ...serviceDefaults,
       externalizeDepsPlugin({
         exclude: [
           "@pokebots/brand",
@@ -66,7 +66,7 @@ export default defineConfig({
   },
   preload: {
     // A sandboxed preload can only require Electron, so the bundle holds zod, which the contracts import.
-    plugins: [...brand, externalizeDepsPlugin({ exclude: ["@pokebots/contracts", "zod"] })],
+    plugins: [...serviceDefaults, externalizeDepsPlugin({ exclude: ["@pokebots/contracts", "zod"] })],
     build: {
       watch: devWatch,
       rollupOptions: {
@@ -86,7 +86,7 @@ export default defineConfig({
     // The Solid Performance panel tracks record each effect run under `vite dev`, and make a send
     // in a chat drop frames that the built app does not drop. Set this to true for a trace.
     plugins: [
-      ...brand,
+      ...serviceDefaults,
       solidPlugin({ performanceTracks: false }),
       tailwindcss({ optimize: false }),
       tailwindPropertyFallbackRemoval(),
