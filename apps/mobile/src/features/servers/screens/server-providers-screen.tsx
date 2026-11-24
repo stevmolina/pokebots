@@ -1,4 +1,4 @@
-import { isAgentProvider, providerDisplayName } from "@openbot/contracts/ipc";
+import { isAgentProvider, providerDisplayName } from "@pokebots/contracts/ipc";
 import { router, useLocalSearchParams } from "expo-router";
 import { Typography } from "heroui-native";
 import Plus from "lucide-react-native/icons/plus";

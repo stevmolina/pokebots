@@ -1,24 +1,24 @@
-import { createScrollFades } from "@openbot/ui/components/createScrollFades";
-import type { AgentMessage } from "@openbot/ui/data";
-import type { RoutineRunToggleMarkerModel } from "@openbot/ui/features/conversation/ChatActionMarker";
+import { createScrollFades } from "@pokebots/ui/components/createScrollFades";
+import type { AgentMessage } from "@pokebots/ui/data";
+import type { RoutineRunToggleMarkerModel } from "@pokebots/ui/features/conversation/ChatActionMarker";
 import {
   calculateChatScrollMargin,
   chatHistoryBoundaryReached,
   createChatVirtualizer,
-} from "@openbot/ui/features/conversation/createChatVirtualizer";
-import { scrollToLatestMessage } from "@openbot/ui/features/conversation/MessageNavigation";
+} from "@pokebots/ui/features/conversation/createChatVirtualizer";
+import { scrollToLatestMessage } from "@pokebots/ui/features/conversation/MessageNavigation";
 import {
   anchorNewMessages,
   countableTimelineMessage,
   type NewMessageTally,
   silentAgentAnswer,
   tallyNewMessages,
-} from "@openbot/ui/features/conversation/new-message-tally";
+} from "@pokebots/ui/features/conversation/new-message-tally";
 import {
   scrollToUnreadBoundary,
   unreadMessagesDividerIsVisible,
-} from "@openbot/ui/features/conversation/UnreadMessages";
-import { currentText } from "@openbot/ui/text";
+} from "@pokebots/ui/features/conversation/UnreadMessages";
+import { currentText } from "@pokebots/ui/text";
 import type { VirtualItem } from "@tanstack/virtual-core";
 import { createEffect, createMemo, createSignal, onCleanup, untrack } from "solid-js";
 import { formatMessageTime } from "../../../app-message-projection";

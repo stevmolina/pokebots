@@ -1,4 +1,4 @@
-import type { AgentTemplateDetail } from "@openbot/contracts/ipc";
+import type { AgentTemplateDetail } from "@pokebots/contracts/ipc";
 import { createFileRoute, notFound } from "@tanstack/solid-router";
 import { AgentTemplateNotSharedPage } from "../../components/agents/AgentTemplateNotSharedPage";
 import { AgentTemplatePage } from "../../components/agents/AgentTemplatePage";
@@ -18,8 +18,8 @@ async function loadAgentTemplate(templateId: string): Promise<AgentTemplateDetai
  * head runs, because `head` stays in the bundle of every page (see routes/compare/$slug.tsx).
  */
 async function agentTemplateHead(template: AgentTemplateDetail, siteUrl: string) {
-  const { AGENT_TEMPLATE_CARD } = await import("@openbot/contracts/ipc-agent-templates");
-  const { markdownPreviewText } = await import("@openbot/contracts/markdown-preview-text");
+  const { AGENT_TEMPLATE_CARD } = await import("@pokebots/contracts/ipc-agent-templates");
+  const { markdownPreviewText } = await import("@pokebots/contracts/markdown-preview-text");
   const url = new URL(agentTemplatePath(template.id), siteUrl).toString();
   const title = `${template.name} — OpenBot agent`;
   const description = template.title || markdownPreviewText(template.description).slice(0, 200);

@@ -1,5 +1,5 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import { sourceText } from "@openbot/i18n/source";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
+import { sourceText } from "@pokebots/i18n/source";
 
 /**
  * The Slack Orchestrator: the agent that receives every new Slack conversation of a workspace. It

@@ -15,7 +15,7 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import type { GitHubConnectorStatus } from "@openbot/contracts/ipc";
+import type { GitHubConnectorStatus } from "@pokebots/contracts/ipc";
 import { runCauseEffect } from "../src/backend/effect-boundary";
 import { githubAppConfig, LEGACY_GITHUB_APP_CLIENT_ID } from "../src/main/github-connector-config";
 import { GitHubConnectorService } from "../src/main/github-connector-service";

@@ -16,9 +16,9 @@ import {
   type McpAccessLevel,
   type McpServerConfig,
   type TeamMemberSummary,
-} from "@openbot/contracts/ipc";
-import { MCP_MEMBER_ACCESS_CAPABILITY } from "@openbot/contracts/team-protocol/current";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/ipc";
+import { MCP_MEMBER_ACCESS_CAPABILITY } from "@pokebots/contracts/team-protocol/current";
+import { sourceText } from "@pokebots/i18n/source";
 import { mcpOAuthAccountKey } from "../../backend/mcp-oauth-provider";
 import type { TeamApiMcpServerOwners } from "./dependencies";
 import { HttpError } from "./http-error";

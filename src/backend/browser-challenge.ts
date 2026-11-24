@@ -1,5 +1,5 @@
-import type { BrowserChallenge } from "@openbot/contracts/ipc";
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
+import type { BrowserChallenge } from "@pokebots/contracts/ipc";
+import { isDynamicRecord, isString } from "@pokebots/contracts/runtime-values";
 import { Effect, Option } from "effect";
 import type { WebContents } from "electron";
 import {

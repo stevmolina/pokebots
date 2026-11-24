@@ -1,10 +1,10 @@
-import { brainRequestSchema } from "@openbot/contracts/brain";
+import { brainRequestSchema } from "@pokebots/contracts/brain";
 import {
   POKEBOTS_BRAIN_ID,
   POKEBOTS_INTEGRATIONS_CAPABILITY,
   POKEBOTS_INTEGRATIONS_ROUTES,
-} from "@openbot/contracts/team-protocol/pokebots-integrations-v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/team-protocol/pokebots-integrations-v1";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect, Result } from "effect";
 import { AgentComputerApi } from "../../backend/agent-computer/agent-computer-api";
 import type { BrainService } from "../../backend/brain-service";

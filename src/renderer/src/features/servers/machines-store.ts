@@ -3,8 +3,8 @@ import type {
   ConversationReadState,
   ServerSummary,
   SidebarLayoutSnapshot,
-} from "@openbot/contracts/ipc";
-import type { Machine, MachineAgents, MachineState } from "@openbot/ui/features/servers/MachinesPage";
+} from "@pokebots/contracts/ipc";
+import type { Machine, MachineAgents, MachineState } from "@pokebots/ui/features/servers/MachinesPage";
 import { createEffect, createMemo, createStore, onCleanup, onSettled } from "solid-js";
 import { serversPort } from "./servers-port";
 

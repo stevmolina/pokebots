@@ -1,4 +1,4 @@
-import type { ChannelSummary } from "@openbot/contracts/ipc";
+import type { ChannelSummary } from "@pokebots/contracts/ipc";
 import { router } from "expo-router";
 import { Spinner, Typography } from "heroui-native";
 import { Pressable, View } from "react-native";

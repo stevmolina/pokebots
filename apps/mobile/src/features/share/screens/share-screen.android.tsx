@@ -1,5 +1,5 @@
-import { attachmentMimeTypeForName } from "@openbot/contracts/attachment-files";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { attachmentMimeTypeForName } from "@pokebots/contracts/attachment-files";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import { router, useNavigation } from "expo-router";
 import { StackActions } from "expo-router/react-navigation";
 import { Typography } from "heroui-native";

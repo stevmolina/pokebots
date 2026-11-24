@@ -7,7 +7,7 @@ export const messages = {
   "mobile.chat.artifact.remove": "Retirer le mode Artifact",
   "mobile.chat.dictation.microphoneOffTitle": "L’accès au micro est désactivé",
   "mobile.chat.dictation.microphoneOffMessage":
-    "Pour dicter un message, autorisez OpenBot à utiliser le micro et la reconnaissance vocale dans Réglages.",
+    "Pour dicter un message, autorisez Pokebots à utiliser le micro et la reconnaissance vocale dans Réglages.",
   "mobile.chat.dictation.stopped": "Dictée arrêtée",
   "mobile.chat.dictation.tryAgain": "Réessayez.",
   "mobile.chat.dictation.unavailable": "La dictée n’est pas disponible",
@@ -152,7 +152,7 @@ export const messages = {
   "mobile.chat.attachment.openFailed": "Impossible d’ouvrir la pièce jointe",
   "mobile.chat.attachment.photosNeedUpdate": "L’enregistrement de photos nécessite la dernière version de l’app.",
   "mobile.chat.attachment.photosPermission":
-    "Autorisez OpenBot à ajouter des photos dans Réglages pour enregistrer cette image.",
+    "Autorisez Pokebots à ajouter des photos dans Réglages pour enregistrer cette image.",
   "mobile.chat.attachment.imageUnavailable": "L’image n’est pas disponible. Réessayez.",
   "mobile.chat.attachment.saveImageFailed": "Impossible d’enregistrer l’image",
   "mobile.chat.attachment.copyImageFailed": "Impossible de copier l’image",
@@ -185,9 +185,9 @@ export const messages = {
   "mobile.chat.attachment.unsupported":
     "{name} : choisissez des images, de l’audio MP3, de la vidéo MOV ou MP4, des archives ZIP, des PDF, des documents Office, des EML, du texte, du Markdown, des données ou des fichiers source.",
   "mobile.chat.attachment.hostRejectsType":
-    "{name} : l’ordinateur hôte n’accepte pas les fichiers {type}. Mettez OpenBot à jour sur cet ordinateur pour les joindre.",
+    "{name} : l’ordinateur hôte n’accepte pas les fichiers {type}. Mettez Pokebots à jour sur cet ordinateur pour les joindre.",
   "mobile.chat.attachment.hostRejects":
-    "{name} : l’ordinateur hôte n’accepte pas ces fichiers. Mettez OpenBot à jour sur cet ordinateur pour les joindre.",
+    "{name} : l’ordinateur hôte n’accepte pas ces fichiers. Mettez Pokebots à jour sur cet ordinateur pour les joindre.",
   "mobile.chat.attachment.nameTooLong": "Choisissez un fichier dont le nom est plus court.",
   "mobile.chat.attachment.damaged": "La pièce jointe est endommagée. Sélectionnez-la de nouveau.",
   "mobile.chat.attachment.tooLarge": "{name} dépasse {limit}.",
@@ -236,11 +236,11 @@ export const messages = {
   "mobile.chat.liveVoice.voiceServerFailed":
     "Votre serveur vocal n’a pas pu lire la réponse. Vérifiez-le dans Réglages > Voix.",
   "mobile.chat.liveVoice.gptUnsupported":
-    "Ce serveur ne prend pas en charge GPT Live Voice. Mettez à jour OpenBot sur l’ordinateur qui l’exécute.",
+    "Ce serveur ne prend pas en charge GPT Live Voice. Mettez à jour Pokebots sur l’ordinateur qui l’exécute.",
   "mobile.chat.liveVoice.gptFailed": "GPT Live Voice n’a pas pu démarrer. Réactivez le micro pour réessayer.",
   "mobile.chat.liveVoice.gptEnded": "GPT Live Voice s’est arrêté. Réactivez le micro pour le relancer.",
   "mobile.chat.liveVoice.gptMicrophoneOff":
-    "Autorisez OpenBot à utiliser le micro dans Réglages. Puis réactivez le micro pour réessayer.",
+    "Autorisez Pokebots à utiliser le micro dans Réglages. Puis réactivez le micro pour réessayer.",
   "mobile.chat.composer.addAttachment": "Ajouter une pièce jointe",
   "mobile.chat.composer.ask": "Demander à {name}",
   "mobile.chat.composer.stopFailed": "Impossible d’arrêter l’agent. Il a peut-être déjà terminé.",
@@ -266,7 +266,7 @@ export const messages = {
     "Ses questions et réponses ne sont que sur ce téléphone. Vous ne pourrez pas les récupérer.",
   "mobile.chat.sideQuestion.notFound": "Cet agent n’est plus sur le serveur.",
   "mobile.chat.sideQuestion.unsupported":
-    "Cet hôte ne peut pas répondre aux questions annexes. Mettez à jour OpenBot sur l’hôte.",
+    "Cet hôte ne peut pas répondre aux questions annexes. Mettez à jour Pokebots sur l’hôte.",
   "mobile.chat.pins.title": "Messages épinglés",
   "mobile.chat.pins.emptyTitle": "Aucun message épinglé",
   "mobile.chat.pins.emptyBody": "Touchez longuement un message, puis Épingler pour le garder ici.",
@@ -275,7 +275,7 @@ export const messages = {
   "mobile.chat.pins.unpin": "Désépingler",
   "mobile.chat.pins.failed": "L’épingle n’a pas changé.",
   "mobile.chat.pins.loadFailed": "Impossible de charger les messages épinglés.",
-  "mobile.chat.pins.unsupported": "Cet hôte ne peut pas épingler de messages. Mettez à jour OpenBot sur l’hôte.",
+  "mobile.chat.pins.unsupported": "Cet hôte ne peut pas épingler de messages. Mettez à jour Pokebots sur l’hôte.",
   "mobile.chat.pins.mainChat": "Chat principal",
   "mobile.chat.pins.thread": "Fil secondaire",
   "mobile.chat.pins.pinnedBy": "Épinglé par {name}",
@@ -367,7 +367,7 @@ export const messages = {
   "mobile.chat.imageGallery.saved": "Enregistrées dans Photos",
   "mobile.chat.imageGallery.shareAll": "Tout partager",
   "mobile.chat.imageGallery.photosPermission":
-    "Autorisez OpenBot à ajouter des photos dans Réglages pour enregistrer ces images.",
+    "Autorisez Pokebots à ajouter des photos dans Réglages pour enregistrer ces images.",
   "mobile.chat.imageGallery.saveFailed": "Impossible d’enregistrer les images",
   "mobile.chat.imageGallery.shareFailed": "Impossible de partager les images",
   "mobile.chat.imageGallery.shareNeedsUpdate": "Le partage de plusieurs images nécessite la dernière version de l’app.",
@@ -378,7 +378,7 @@ export const messages = {
   "mobile.chat.video.share": "Partager {name}",
   "mobile.chat.video.save": "Enregistrer {name} dans Photos",
   "mobile.chat.video.photosPermission":
-    "Autorisez OpenBot à ajouter des photos dans Réglages pour enregistrer cette vidéo.",
+    "Autorisez Pokebots à ajouter des photos dans Réglages pour enregistrer cette vidéo.",
   "mobile.chat.video.saveFailed": "Impossible d’enregistrer la vidéo",
   "mobile.chat.audio.play": "Lire {name}",
   "mobile.chat.audio.pause": "Mettre en pause {name}",
@@ -393,7 +393,7 @@ export const messages = {
   "mobile.chat.browserSecret.oneTimeCode": "Code à usage unique",
   "mobile.chat.browserSecret.takeoverTitle": "Prise de contrôle du navigateur",
   "mobile.chat.browserSecret.takeoverBody":
-    "Terminez cette étape dans le navigateur de l’ordinateur qui exécute OpenBot.",
+    "Terminez cette étape dans le navigateur de l’ordinateur qui exécute Pokebots.",
   "mobile.chat.mcpSignIn.marker": "Vous a demandé de vous connecter à un serveur MCP",
   "mobile.chat.mcpSignIn.signIn": "Se connecter",
   "mobile.chat.mcpSignIn.signInNamed": "Se connecter à {name}",
@@ -402,29 +402,29 @@ export const messages = {
   "mobile.chat.mcpSignIn.continueNamed": "Demander à l'agent de tester {name} à nouveau",
   "mobile.chat.mcpSignIn.message": "Je me suis connecté au serveur MCP {name}. Teste-le à nouveau.",
   "mobile.chat.mcpSignIn.unavailable":
-    "Connectez-vous à {name} dans OpenBot sur votre ordinateur, dans Réglages du serveur, MCP.",
+    "Connectez-vous à {name} dans Pokebots sur votre ordinateur, dans Réglages du serveur, MCP.",
   "mobile.chat.browserSecret.signInBlockedTitle": "Connectez-vous sur votre ordinateur",
   "mobile.chat.browserSecret.signInBlockedBody":
-    "Ce site n’accepte pas de connexion depuis le serveur. Ouvrez ce chat dans l’application de bureau OpenBot sur votre ordinateur, et connectez-vous là.",
+    "Ce site n’accepte pas de connexion depuis le serveur. Ouvrez ce chat dans l’application de bureau Pokebots sur votre ordinateur, et connectez-vous là.",
   "mobile.chat.browserSecret.takeoverReload":
-    "OpenBot n’a pas pu finir de saisir le mot de passe ou le code. Saisissez sur la page ce qui manque. Rechargez ensuite la page avant de choisir « J’ai terminé ».",
+    "Pokebots n’a pas pu finir de saisir le mot de passe ou le code. Saisissez sur la page ce qui manque. Rechargez ensuite la page avant de choisir « J’ai terminé ».",
   "mobile.chat.browserSecret.takeoverFailed": "La demande n’a pas pu aboutir.",
   "mobile.chat.browserSecret.done": "J’ai terminé",
   "mobile.chat.browserSecret.submitOnce":
     "Envoyer une seule fois à {origin}. Cette valeur n’est pas ajoutée à la discussion.",
   "mobile.chat.browserSecret.submitFailed": "La demande n’a pas pu aboutir. Vérifiez la connexion et réessayez.",
   "mobile.chat.browserSecret.vaultSkip.agentScript":
-    "OpenBot n’a pas utilisé votre identifiant enregistré, car l’agent a exécuté un script sur cette page. Pour l’utiliser, demandez à l’agent de recharger la page et de réessayer.",
+    "Pokebots n’a pas utilisé votre identifiant enregistré, car l’agent a exécuté un script sur cette page. Pour l’utiliser, demandez à l’agent de recharger la page et de réessayer.",
   "mobile.chat.browserSecret.vaultSkip.fieldKind":
-    "OpenBot n’a pas utilisé votre identifiant enregistré, car l’agent a choisi le mauvais champ sur la page.",
+    "Pokebots n’a pas utilisé votre identifiant enregistré, car l’agent a choisi le mauvais champ sur la page.",
   "mobile.chat.browserSecret.vaultSkip.loginChoice":
-    "OpenBot n’a utilisé aucun identifiant enregistré, car l’agent n’a choisi aucun des identifiants enregistrés pour ce site. Indiquez à l’agent le compte à utiliser.",
+    "Pokebots n’a utilisé aucun identifiant enregistré, car l’agent n’a choisi aucun des identifiants enregistrés pour ce site. Indiquez à l’agent le compte à utiliser.",
   "mobile.chat.browserSecret.vaultSkip.noPassword":
-    "OpenBot n’a pas utilisé votre identifiant enregistré, car il n’a pas de mot de passe pour ce site.",
+    "Pokebots n’a pas utilisé votre identifiant enregistré, car il n’a pas de mot de passe pour ce site.",
   "mobile.chat.browserSecret.vaultSkip.noAuthenticatorKey":
-    "OpenBot n’a pas utilisé votre identifiant enregistré, car il n’a pas de clé d’authentificateur.",
+    "Pokebots n’a pas utilisé votre identifiant enregistré, car il n’a pas de clé d’authentificateur.",
   "mobile.chat.browserSecret.vaultSkip.vaultUnreadable":
-    "OpenBot n’a utilisé aucun identifiant enregistré, car il n’a pas pu lire votre gestionnaire de mots de passe.",
+    "Pokebots n’a utilisé aucun identifiant enregistré, car il n’a pas pu lire votre gestionnaire de mots de passe.",
   "mobile.chat.browserSecret.submit": "Envoyer",
   "mobile.chat.browserSecret.takeOver": "Prendre la main",
   "mobile.chat.starter.title": "Par quoi commençons-nous ?",
@@ -494,14 +494,14 @@ export const messages = {
   "mobile.chat.approval.effect.permissions":
     "« Autoriser » donne à {name} ces autorisations sur {server}. « Refuser » conserve les autorisations actuelles.",
   "mobile.chat.approval.partial":
-    "{server} n’envoie au téléphone que le début de cette demande. Pour l’autoriser, mettez à jour OpenBot sur {server} ou ouvrez cette discussion dans l’app de bureau OpenBot. Vous pouvez la refuser ici.",
+    "{server} n’envoie au téléphone que le début de cette demande. Pour l’autoriser, mettez à jour Pokebots sur {server} ou ouvrez cette discussion dans l’app de bureau Pokebots. Vous pouvez la refuser ici.",
   "mobile.chat.approval.loading": "Chargement de la demande complète…",
   "mobile.chat.approval.loadFailed": "Impossible de charger la demande complète. Vous pouvez la refuser ici.",
   "mobile.chat.approval.retry": "Réessayer",
   "mobile.chat.approval.report.bugHeadline": "Un bug ? Corrigeons-le.",
   "mobile.chat.approval.report.ideaHeadline": "Une idée ? Concrétisons-la.",
   "mobile.chat.approval.report.dontSend": "Pas maintenant",
-  "mobile.chat.approval.report.send": "Envoyer à l'équipe OpenBot",
+  "mobile.chat.approval.report.send": "Envoyer à l'équipe Pokebots",
   "mobile.chat.approval.report.phoneAdds": "Ce téléphone ajoute au rapport :",
   "mobile.chat.approval.allow": "Autoriser",
   "mobile.chat.approval.deny": "Refuser",
@@ -588,7 +588,7 @@ export const messages = {
   "mobile.chat.queue.sendNowNeedsTurn": "Pour envoyer maintenant, un tour doit être en cours.",
   "mobile.chat.queue.stillHoldingTitle": "Le message est toujours retenu",
   "mobile.chat.queue.stillHoldingMessage":
-    "OpenBot n’a pas pu libérer ce message, l’agent continue donc de l’attendre. Réessayez quand le téléphone sera reconnecté.",
+    "Pokebots n’a pas pu libérer ce message, l’agent continue donc de l’attendre. Réessayez quand le téléphone sera reconnecté.",
   "mobile.chat.queue.keepEditing": "Continuer la modification",
   "mobile.chat.queue.leaveAnyway": "Quitter quand même",
   "mobile.chat.queue.discardTitle": "Abandonner les modifications ?",
@@ -598,7 +598,7 @@ export const messages = {
   "mobile.chat.queue.alreadyReceivedKept":
     "L’agent a déjà reçu ce message, il ne peut donc plus être modifié. Quand vous fermez cet écran, votre texte va dans la zone de message.",
   "mobile.chat.queue.holding": "Retenue du message pour vous…",
-  "mobile.chat.queue.holdFailed": "OpenBot n’a pas pu retenir ce message pour le modifier.",
+  "mobile.chat.queue.holdFailed": "Pokebots n’a pas pu retenir ce message pour le modifier.",
   "mobile.chat.queue.messageLabel": "Message",
   "mobile.chat.queue.messagePlaceholder": "Texte du message",
   "mobile.chat.queue.save": "Enregistrer le message en file d’attente",
@@ -642,15 +642,15 @@ export const messages = {
   "mobile.chat.threads.renameSave": "Enregistrer",
   "mobile.chat.threads.name": "Nom du fil",
   "mobile.chat.threads.renameUnavailable":
-    "Vous ne pouvez pas renommer ce fil maintenant. Connectez-vous au serveur ou mettez à jour OpenBot sur l’hôte.",
+    "Vous ne pouvez pas renommer ce fil maintenant. Connectez-vous au serveur ou mettez à jour Pokebots sur l’hôte.",
   "mobile.chat.threads.delete.action": "Supprimer",
   "mobile.chat.threads.delete.title": "Supprimer ce fil ?",
   "mobile.chat.threads.delete.body":
-    "OpenBot supprime définitivement le fil, ses messages et ses fichiers. Le chat principal ne change pas.",
+    "Pokebots supprime définitivement le fil, ses messages et ses fichiers. Le chat principal ne change pas.",
   "mobile.chat.threads.filesUnsupported":
-    "Cet hôte ne peut pas recevoir de fichiers dans un fil. Mettez à jour OpenBot sur l’hôte.",
+    "Cet hôte ne peut pas recevoir de fichiers dans un fil. Mettez à jour Pokebots sur l’hôte.",
   "mobile.chat.threads.unsupported":
-    "Cet hôte ne peut pas renommer ni supprimer les fils. Mettez à jour OpenBot sur l’hôte.",
+    "Cet hôte ne peut pas renommer ni supprimer les fils. Mettez à jour Pokebots sur l’hôte.",
   "mobile.chat.threads.error.rename": "Impossible de renommer le fil.",
   "mobile.chat.threads.error.delete": "Impossible de supprimer le fil.",
   "mobile.chat.channelWork.working": "Travaille dans {channel}",

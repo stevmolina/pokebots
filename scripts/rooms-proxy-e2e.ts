@@ -1,7 +1,7 @@
 // Drives the real main-process Rooms proxy over HTTP. The fixture has no external credentials.
 import assert from "node:assert/strict";
 import { mkdir, writeFile } from "node:fs/promises";
-import { registerSecretValue } from "@openbot/logging";
+import { registerSecretValue } from "@pokebots/logging";
 import { Effect } from "effect";
 import { decodeRoomsResultFromHost } from "../src/main/remote-rooms-decoding";
 import { RoomsService } from "../src/main/rooms-service";

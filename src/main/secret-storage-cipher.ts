@@ -21,7 +21,7 @@ import {
   writeSync,
 } from "node:fs";
 import { dirname } from "node:path";
-import { createOpenBotLogger } from "@openbot/logging";
+import { createOpenBotLogger } from "@pokebots/logging";
 import { app, safeStorage } from "electron";
 import { isMissingFileError } from "../backend/file-errors";
 

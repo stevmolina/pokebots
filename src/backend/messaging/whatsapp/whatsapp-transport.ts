@@ -1,7 +1,7 @@
-import type { MessagingConnectionState } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger } from "@openbot/logging";
-import { jidNormalizedUser, proto, type WAMessage } from "@openbot/whatsapp/baileys";
+import type { MessagingConnectionState } from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
+import { createOpenBotLogger } from "@pokebots/logging";
+import { jidNormalizedUser, proto, type WAMessage } from "@pokebots/whatsapp/baileys";
 import { Effect } from "effect";
 import type { InboundMessage, MessagingTransport, TransportSink } from "../messaging-types";
 import {

@@ -1,6 +1,6 @@
 import { Host } from "@expo/ui";
-import { eventFilterDraftsValid, eventFiltersFromDrafts } from "@openbot/contracts/event-filter-value";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { eventFilterDraftsValid, eventFiltersFromDrafts } from "@pokebots/contracts/event-filter-value";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import {
   type AgentMemorySelectionState,
   type CreateRoutineInput,
@@ -14,9 +14,9 @@ import {
   type SaveEventRoutineInput,
   type UpdateRoutineInput,
   type RoutineWebhookTrigger as WebhookTriggerFields,
-} from "@openbot/contracts/ipc";
-import type { EventRoutineOwner } from "@openbot/contracts/ipc-events";
-import type { MobileTextKey } from "@openbot/i18n/mobile";
+} from "@pokebots/contracts/ipc";
+import type { EventRoutineOwner } from "@pokebots/contracts/ipc-events";
+import type { MobileTextKey } from "@pokebots/i18n/mobile";
 import {
   ROUTINE_HEARTBEAT_SCHEDULE,
   type RoutineScheduleDraft,
@@ -24,7 +24,7 @@ import {
   routineScheduleFromDraft,
   routineScheduleToDraft,
   switchDraftKind,
-} from "@openbot/team-client/routine-schedule-draft";
+} from "@pokebots/team-client/routine-schedule-draft";
 import { type QueryKey, useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
 import { usePreventRemove } from "expo-router/react-navigation";

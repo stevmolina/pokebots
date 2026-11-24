@@ -20,8 +20,8 @@ import {
   workflowGitHubEventItemKind,
   workflowGitHubTriggerRepositories,
   workflowGitHubTriggerRepositoryFields,
-} from "@openbot/contracts/ipc";
-import type { AppTextKey, AppTranslate } from "@openbot/i18n";
+} from "@pokebots/contracts/ipc";
+import type { AppTextKey, AppTranslate } from "@pokebots/i18n";
 import {
   AtSign,
   Bot,
@@ -55,7 +55,7 @@ import {
   UserPlus,
   WifiOff,
   Zap,
-} from "@openbot/ui";
+} from "@pokebots/ui";
 import type { JSX } from "@solidjs/web";
 import { createMemo, createSignal, For, Show } from "solid-js";
 import { useText } from "../../text";

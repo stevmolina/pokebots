@@ -1,8 +1,8 @@
 import {
   PENDING_APPROVAL_CAPABILITY,
   PENDING_APPROVAL_ROUTES,
-} from "@openbot/contracts/team-protocol/pending-approval-v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/team-protocol/pending-approval-v1";
+import { sourceText } from "@pokebots/i18n/source";
 import type { TeamApiAgents } from "./dependencies";
 import { HttpError } from "./http-error";
 import type { RouteOutcome, TeamApiRequestContext } from "./request-context";

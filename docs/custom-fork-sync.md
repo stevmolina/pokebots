@@ -35,11 +35,18 @@ causes.
 
 | Script | What it does |
 | --- | --- |
-| `scripts/pokebots-rename-packages.ts` | Renames the 15 workspace packages and 2 build aliases from `@openbot/*` to `@pokebots/*` in imports, manifests, config, scripts and docs. Rewrites `bun.lock` as text. Keeps the logging alias for frozen migrations, the Effect service tags, `src/backend/migrations/`, catalog comments and `plans/`. Then sorts and wraps imports with Biome. |
+| `scripts/pokebots-rename-packages.ts` | Renames the 15 workspace packages and 2 build aliases from `@pokebots/*` to `@pokebots/*` in imports, manifests, config, scripts and docs. Rewrites `bun.lock` as text. Keeps the logging alias for frozen migrations, the Effect service tags, `src/backend/migrations/`, catalog comments and `plans/`. Then sorts and wraps imports with Biome. |
 | `scripts/pokebots-rename-catalogs.ts` | Puts "Pokebots" in the catalog message values with the rules of `scripts/brand-layer.ts`. Keeps the values listed in the script: service account names, installed components and paths, the Slack `/invite @OpenBot` handle, and English `error.` and `status.` text. |
 
 Both scripts take `--check` (change nothing, exit 1 when a rewrite is pending), `--no-format`,
 `--root <dir>` and `--report <file>`. The JSON report goes to `.openbot-build/` by default.
+
+### Temporary `@openbot/*` aliases
+
+Open branches still add new `@openbot/<package>` imports. Until they merge, the root `package.json`
+keeps an alias for each package (`"@openbot/x": "workspace:@pokebots/x@*"`), so the old name resolves
+to the same package in TypeScript, Vite, Metro and Bun. `scripts/legacy-openbot-scope.ts` lists them.
+Remove the aliases once no open branch imports `@openbot/`.
 
 ### Bring a branch up to date
 

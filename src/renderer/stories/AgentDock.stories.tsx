@@ -4,9 +4,9 @@ import {
   type AgentDockTakeover,
   type AgentDockUsageLimit,
   AVATAR_HUES,
-} from "@openbot/contracts/ipc";
-import type { AvatarMood } from "@openbot/ui/bloub-avatar";
-import type { AgentMessage, AgentProfile } from "@openbot/ui/data";
+} from "@pokebots/contracts/ipc";
+import type { AvatarMood } from "@pokebots/ui/bloub-avatar";
+import type { AgentMessage, AgentProfile } from "@pokebots/ui/data";
 import {
   AgentDock,
   type AgentDockChannel,
@@ -16,8 +16,8 @@ import {
   type AgentDockSeatRef,
   type AgentDockShelfResult,
   agentDockSeatKey,
-} from "@openbot/ui/features/agent-dock/AgentDock";
-import type { SidebarAgentState } from "@openbot/ui/features/sidebar/sidebar-types";
+} from "@pokebots/ui/features/agent-dock/AgentDock";
+import type { SidebarAgentState } from "@pokebots/ui/features/sidebar/sidebar-types";
 import { createSignal, createStore, onCleanup, onSettled, Show } from "solid-js";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { AgentDockEdgeStrip } from "../src/features/agent-dock/AgentDockEdgeStrip";

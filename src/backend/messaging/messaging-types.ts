@@ -8,15 +8,15 @@
 // socket, and the host calls the Bot API through Signal, which holds the bot token. No transport needs
 // a public endpoint on the host.
 
-import { AGENT_PROVIDERS, agentProviderName } from "@openbot/contracts/agent-providers";
-import type { MessagingConnectionState, MessagingPlatform } from "@openbot/contracts/ipc";
-import type { DiscordApiRequest, DiscordDelivery, DiscordEmbed } from "@openbot/contracts/signal-protocol/discord-api";
+import { AGENT_PROVIDERS, agentProviderName } from "@pokebots/contracts/agent-providers";
+import type { MessagingConnectionState, MessagingPlatform } from "@pokebots/contracts/ipc";
+import type { DiscordApiRequest, DiscordDelivery, DiscordEmbed } from "@pokebots/contracts/signal-protocol/discord-api";
 import type {
   TelegramCallMethod,
   TelegramCallParams,
   TelegramCallResult,
-} from "@openbot/contracts/signal-protocol/telegram-route";
-import { isFixedSourceText, matchingSourceKeys, sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/signal-protocol/telegram-route";
+import { isFixedSourceText, matchingSourceKeys, sourceText } from "@pokebots/i18n/source";
 import { type Effect, Schema } from "effect";
 import type { MessagingOperationFailed } from "./messaging-service";
 import type { MessagingAnswerFile } from "./messaging-threads";

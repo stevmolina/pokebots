@@ -1,4 +1,4 @@
-import { CHAT_COLOR_PRESETS, type ChatColorPresetId } from "@openbot/brand/chat-colors";
+import { CHAT_COLOR_PRESETS, type ChatColorPresetId } from "@pokebots/brand/chat-colors";
 import { useEffect, useRef } from "react";
 import { View } from "react-native";
 import Animated, {

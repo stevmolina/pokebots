@@ -1,6 +1,6 @@
 import { randomBytes } from "node:crypto";
-import { BROWSER_PROXY_SCHEMES, type BrowserProxyScheme } from "@openbot/contracts/ipc";
-import type { DynamicRecord } from "@openbot/contracts/runtime-values";
+import { BROWSER_PROXY_SCHEMES, type BrowserProxyScheme } from "@pokebots/contracts/ipc";
+import type { DynamicRecord } from "@pokebots/contracts/runtime-values";
 import {
   checkedColumn,
   databaseRows,

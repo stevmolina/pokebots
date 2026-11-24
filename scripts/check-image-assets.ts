@@ -1,5 +1,5 @@
 import { spawnSync } from "node:child_process";
-import { createOpenBotLogger } from "@openbot/logging";
+import { createOpenBotLogger } from "@pokebots/logging";
 
 // Pull request screenshots and recordings go in the pull request body, not in the repository
 // (AGENTS.md, "Pull requests"). Only the product owns image files, in these directories.
@@ -9,7 +9,7 @@ const ALLOWED_DIRECTORIES = [
   // Images that the renderer bundles, and Storybook fixtures.
   "src/renderer/src/assets/",
   "src/renderer/stories/assets/",
-  // Images that shared UI (`@openbot/ui`) bundles for the desktop and web apps.
+  // Images that shared UI (`@pokebots/ui`) bundles for the desktop and web apps.
   "packages/ui/src/assets/",
   // Pokebots app identity, agent portraits, and server illustrations.
   "packages/brand/src/assets/pokebots/",

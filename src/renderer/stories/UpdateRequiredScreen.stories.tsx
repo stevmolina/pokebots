@@ -1,6 +1,6 @@
-import type { UpdateStatus } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
-import { UpdateRequiredScreen } from "@openbot/ui/features/updates/UpdateRequiredScreen";
+import type { UpdateStatus } from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
+import { UpdateRequiredScreen } from "@pokebots/ui/features/updates/UpdateRequiredScreen";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 

@@ -25,27 +25,27 @@ import type {
   AgentTurnCompletedEvent,
   ConversationPage,
   ConversationSnapshot,
-} from "@openbot/contracts/ipc";
-import type { LiveActivityRelayPush } from "@openbot/contracts/live-activity-relay";
+} from "@pokebots/contracts/ipc";
+import type { LiveActivityRelayPush } from "@pokebots/contracts/live-activity-relay";
 import {
   TEAM_BOOTSTRAP_CAPABILITIES,
   TEAM_CURRENT_CAPABILITIES,
   TEAM_PROTOCOL_V9_ONLY_CAPABILITIES,
   teamCapabilitiesForProtocol,
-} from "@openbot/contracts/team-protocol/current";
-import { optionalRouteCodec } from "@openbot/contracts/team-protocol/optional-routes";
+} from "@pokebots/contracts/team-protocol/current";
+import { optionalRouteCodec } from "@pokebots/contracts/team-protocol/optional-routes";
 import {
   PUSH_NOTIFICATION_THREADS_CAPABILITY,
   PUSH_NOTIFICATION_THREADS_ROUTES,
-} from "@openbot/contracts/team-protocol/push-notification-threads-v1";
-import { createOpenBotLogger } from "@openbot/logging";
-import { type AgentLiveActivityProps, readLiveActivityLink } from "@openbot/team-client/live-activity-props";
+} from "@pokebots/contracts/team-protocol/push-notification-threads-v1";
+import { createOpenBotLogger } from "@pokebots/logging";
+import { type AgentLiveActivityProps, readLiveActivityLink } from "@pokebots/team-client/live-activity-props";
 import {
   encodeLiveActivityBytes,
   LIVE_ACTIVITY_SECRET_BYTES,
   liveActivityKeys,
-} from "@openbot/team-client/live-activity-seal";
-import { type PushNotificationContent, pushNotificationKeys } from "@openbot/team-client/push-notification-seal";
+} from "@pokebots/team-client/live-activity-seal";
+import { type PushNotificationContent, pushNotificationKeys } from "@pokebots/team-client/push-notification-seal";
 import { Effect } from "effect";
 import {
   liveActivityRoute,

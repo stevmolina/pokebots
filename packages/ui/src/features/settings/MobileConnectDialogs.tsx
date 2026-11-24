@@ -1,5 +1,5 @@
-import { AppLogo, type MobilePlatformLogoVariant, PlatformLogo } from "@openbot/brand";
-import type { AppTextKey } from "@openbot/i18n";
+import { AppLogo, type MobilePlatformLogoVariant, PlatformLogo } from "@pokebots/brand";
+import type { AppTextKey } from "@pokebots/i18n";
 import {
   ArrowLeft,
   ArrowRight,
@@ -20,7 +20,7 @@ import {
   SlidingTabs,
   Text,
   X,
-} from "@openbot/ui";
+} from "@pokebots/ui";
 import type { JSX } from "@solidjs/web";
 import { createEffect, createSignal, For, Match, onCleanup, Show, Switch } from "solid-js";
 import { useText } from "../../text";

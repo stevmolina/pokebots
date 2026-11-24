@@ -1,7 +1,7 @@
-import { agentProviderDescriptor } from "@openbot/contracts/ipc";
-import { ProviderCodeLoginDialog } from "@openbot/ui/components/ProviderCodeLoginDialog";
-import { ProviderUseAppDialog } from "@openbot/ui/components/ProviderUseAppDialog";
-import { useText } from "@openbot/ui/text";
+import { agentProviderDescriptor } from "@pokebots/contracts/ipc";
+import { ProviderCodeLoginDialog } from "@pokebots/ui/components/ProviderCodeLoginDialog";
+import { ProviderUseAppDialog } from "@pokebots/ui/components/ProviderUseAppDialog";
+import { useText } from "@pokebots/ui/text";
 import { Show } from "solid-js";
 import type { ProviderCodeLoginOpener, ProviderConnectionApi } from "./provider-connection-api";
 

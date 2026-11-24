@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { createServer } from "node:http";
 import { extname, resolve, sep } from "node:path";
-import type { SendMessageInput } from "@openbot/contracts/ipc";
+import type { SendMessageInput } from "@pokebots/contracts/ipc";
 import { chromium } from "playwright-core";
 
 declare global {

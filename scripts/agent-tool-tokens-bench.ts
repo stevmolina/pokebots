@@ -17,7 +17,7 @@ import { join, resolve } from "node:path";
 import { createSdkMcpServer } from "@anthropic-ai/claude-agent-sdk";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
-import { type AgentSummary, DEFAULT_AGENT_DEFAULTS } from "@openbot/contracts/ipc";
+import { type AgentSummary, DEFAULT_AGENT_DEFAULTS } from "@pokebots/contracts/ipc";
 import { developerInstructions } from "../src/backend/agent/developer-instructions";
 import { CODEX_FEATURES_CONFIG } from "../src/backend/agent/thread-lifecycle";
 import { discoverTools, visibleDynamicTools } from "../src/backend/agent/tool-catalog";

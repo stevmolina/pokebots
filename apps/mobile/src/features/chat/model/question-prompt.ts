@@ -1,5 +1,5 @@
-import type { AgentPromptQuestion, AgentPromptResolution } from "@openbot/contracts/ipc";
-import type { MobileTranslate } from "@openbot/i18n/mobile";
+import type { AgentPromptQuestion, AgentPromptResolution } from "@pokebots/contracts/ipc";
+import type { MobileTranslate } from "@pokebots/i18n/mobile";
 
 export function nextUnansweredQuestion(
   questions: AgentPromptQuestion[],

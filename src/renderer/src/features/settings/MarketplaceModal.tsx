@@ -1,7 +1,7 @@
-import type { MarketplaceListingLink } from "@openbot/contracts/marketplace-links";
-import { Marketplace } from "@openbot/ui/features/marketplace/Marketplace";
-import type { MarketplaceApp } from "@openbot/ui/features/marketplace/marketplace-model";
-import { createMarketplaceNavigation } from "@openbot/ui/features/marketplace/marketplace-view";
+import type { MarketplaceListingLink } from "@pokebots/contracts/marketplace-links";
+import { Marketplace } from "@pokebots/ui/features/marketplace/Marketplace";
+import type { MarketplaceApp } from "@pokebots/ui/features/marketplace/marketplace-model";
+import { createMarketplaceNavigation } from "@pokebots/ui/features/marketplace/marketplace-view";
 import { createEffect, createSignal, untrack } from "solid-js";
 import { McpServerControls } from "../servers/McpServerControls";
 import { McpServerForm } from "../servers/McpServerForm";

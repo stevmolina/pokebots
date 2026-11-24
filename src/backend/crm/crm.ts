@@ -1,5 +1,5 @@
-import { DEFAULT_CRM_SETTINGS } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+import { DEFAULT_CRM_SETTINGS } from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
 import { Context, Effect, Exit, Layer, ManagedRuntime } from "effect";
 import type { OpenBotDatabase } from "../openbot-database";
 import { type CrmAgentOperations, CrmAgentView } from "./crm-agent-view";

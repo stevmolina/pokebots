@@ -1,5 +1,5 @@
-import { isBoolean, isDynamicRecord, isNumber } from "@openbot/contracts/runtime-values";
-import { currentAnalyticsInstallId, newAnalyticsInstallId } from "@openbot/telemetry";
+import { isBoolean, isDynamicRecord, isNumber } from "@pokebots/contracts/runtime-values";
+import { currentAnalyticsInstallId, newAnalyticsInstallId } from "@pokebots/telemetry";
 import { randomUUID } from "expo-crypto";
 import * as SecureStore from "expo-secure-store";
 import { create } from "zustand";

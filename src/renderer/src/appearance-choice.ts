@@ -11,12 +11,12 @@ import {
   isChatBackgroundColor,
   sameThemePalettes,
   selectedThemePalette,
-} from "@openbot/contracts/app-appearance";
+} from "@pokebots/contracts/app-appearance";
 import {
   type AppearanceSelectValue,
   appearanceChangeOfSelectValue,
   appearanceSelectValue,
-} from "@openbot/ui/features/settings/AppearanceSelect";
+} from "@pokebots/ui/features/settings/AppearanceSelect";
 import { createSignal, onSettled } from "solid-js";
 import { applyAppFonts } from "./app-fonts";
 import { appPort } from "./app-port";

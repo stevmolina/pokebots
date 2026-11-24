@@ -1,8 +1,8 @@
 // The /pricing page: hosted servers and the license, as one order form. No JSX here, for the same
 // reason `content-collection.ts` holds none.
 
-import { BILLING_PLANS, type BillingPlanId, billingListPrices } from "@openbot/contracts/billing";
-import type { HostedServerCatalogPlan } from "@openbot/contracts/hosted-servers";
+import { BILLING_PLANS, type BillingPlanId, billingListPrices } from "@pokebots/contracts/billing";
+import type { HostedServerCatalogPlan } from "@pokebots/contracts/hosted-servers";
 
 export const PRICING_ROUTE = "/pricing";
 

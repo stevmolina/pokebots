@@ -1,17 +1,17 @@
-import { type HostKeyHandover, optionalHostKeyHandovers } from "@openbot/contracts/host-key-handover";
-import { inviteUseCount, isPermanentInvite } from "@openbot/contracts/invite-links";
+import { type HostKeyHandover, optionalHostKeyHandovers } from "@pokebots/contracts/host-key-handover";
+import { inviteUseCount, isPermanentInvite } from "@pokebots/contracts/invite-links";
 import {
   type AvatarColor,
   type CentralAuthUser,
   isAvatarColor,
   type MobileConnectedDevice,
-} from "@openbot/contracts/ipc";
-import { decodeRecord, requiredString } from "@openbot/contracts/ipc-decoding";
-import { type DynamicRecord, isBoolean, isNumber, isString } from "@openbot/contracts/runtime-values";
+} from "@pokebots/contracts/ipc";
+import { decodeRecord, requiredString } from "@pokebots/contracts/ipc-decoding";
+import { type DynamicRecord, isBoolean, isNumber, isString } from "@pokebots/contracts/runtime-values";
 import {
   optionalServerAppearanceField,
   type ServerAppearance,
-} from "@openbot/contracts/team-protocol/host-appearance-v1";
+} from "@pokebots/contracts/team-protocol/host-appearance-v1";
 
 /** The account API's answers, and the decoders that `CentralAuthManager` checks them with. */
 

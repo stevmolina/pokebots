@@ -1,8 +1,8 @@
-import type { ServerSummary } from "@openbot/contracts/ipc";
-import { Button, ChevronLeft, Dialog, IconButton, Input, PanelLeft, Search, X } from "@openbot/ui";
-import { ServerMark } from "@openbot/ui/features/servers/ServerRail";
-import type { SettingsPagePlacement } from "@openbot/ui/features/settings/SettingsDialogShell";
-import { useText } from "@openbot/ui/text";
+import type { ServerSummary } from "@pokebots/contracts/ipc";
+import { Button, ChevronLeft, Dialog, IconButton, Input, PanelLeft, Search, X } from "@pokebots/ui";
+import { ServerMark } from "@pokebots/ui/features/servers/ServerRail";
+import type { SettingsPagePlacement } from "@pokebots/ui/features/settings/SettingsDialogShell";
+import { useText } from "@pokebots/ui/text";
 import type { JSX } from "@solidjs/web";
 import { createSignal, flush, onCleanup, Show } from "solid-js";
 

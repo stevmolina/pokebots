@@ -1,5 +1,5 @@
-import { disconnectedPasswordManager, type PasswordManagerStatus } from "@openbot/contracts/ipc";
-import { KeeperConnectorPanel } from "@openbot/ui/features/settings/KeeperConnectorPanel";
+import { disconnectedPasswordManager, type PasswordManagerStatus } from "@pokebots/contracts/ipc";
+import { KeeperConnectorPanel } from "@pokebots/ui/features/settings/KeeperConnectorPanel";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { SettledArgs } from "./settled-args";

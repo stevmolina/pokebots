@@ -1,4 +1,4 @@
-import { CHAT_VISUAL_PAGE_LIMIT, isChatVisualMimeType } from "@openbot/contracts/chat-visual";
+import { CHAT_VISUAL_PAGE_LIMIT, isChatVisualMimeType } from "@pokebots/contracts/chat-visual";
 import { describe, expect, it } from "vitest";
 import { attachmentCorsHeaders, attachmentDocumentHeaders, chatVisualResponse } from "./chat-visual-protocol";
 

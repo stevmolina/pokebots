@@ -1,5 +1,5 @@
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { currentText } from "@openbot/ui/text";
+import { isDynamicRecord, isString } from "@pokebots/contracts/runtime-values";
+import { currentText } from "@pokebots/ui/text";
 
 /** Another tab of this browser has the host open. The host itself can be online. */
 export class WebHostOtherTabError extends Error {

@@ -77,8 +77,8 @@ import type {
   TeamPresenceSnapshot,
   UpdateHostIdentityInput,
   VoiceLiveEvent,
-} from "@openbot/contracts/ipc";
-import type { Logger } from "@openbot/logging";
+} from "@pokebots/contracts/ipc";
+import type { Logger } from "@pokebots/logging";
 import type { AgentService } from "../../backend/agent-service";
 import type { BrowserHost } from "../../backend/browser-host";
 import type { CrmPeopleOperations } from "../../backend/crm/crm-handle";

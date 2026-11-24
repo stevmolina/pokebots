@@ -1,8 +1,8 @@
-import { AppLogo } from "@openbot/brand";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import { isNeverExpiringInvite } from "@openbot/contracts/invite-links";
-import type { InvitePreview, JoinServerInput } from "@openbot/contracts/ipc";
-import type { AppFormat, AppTranslate } from "@openbot/i18n";
+import { AppLogo } from "@pokebots/brand";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
+import { isNeverExpiringInvite } from "@pokebots/contracts/invite-links";
+import type { InvitePreview, JoinServerInput } from "@pokebots/contracts/ipc";
+import type { AppFormat, AppTranslate } from "@pokebots/i18n";
 import {
   Alert,
   AlertContent,
@@ -19,9 +19,9 @@ import {
   OctagonX,
   Text,
   X,
-} from "@openbot/ui";
-import { motionDuration, prefersReducedMotion } from "@openbot/ui/utils";
-import type { UserErrorDetails } from "@openbot/user-errors";
+} from "@pokebots/ui";
+import { motionDuration, prefersReducedMotion } from "@pokebots/ui/utils";
+import type { UserErrorDetails } from "@pokebots/user-errors";
 import { createSignal, onCleanup, onSettled, Show, untrack } from "solid-js";
 import { useText } from "../../text";
 

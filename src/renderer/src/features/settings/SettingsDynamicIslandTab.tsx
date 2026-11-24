@@ -8,7 +8,7 @@ import {
   IDLE_DYNAMIC_ISLAND_PRESENTATION,
   isDynamicIslandServerVisible,
   type ServerSummary,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   Button,
   Item,
@@ -22,13 +22,13 @@ import {
   SliderField,
   Switch,
   SwitchField,
-} from "@openbot/ui";
+} from "@pokebots/ui";
 import {
   OpenBotDynamicIsland,
   openBotIdleCompactWidth,
-} from "@openbot/ui/features/dynamic-island/OpenBotDynamicIsland";
-import { ServerMark, serverStatusLabels } from "@openbot/ui/features/servers/ServerRail";
-import type { GeneralSettingsValue } from "@openbot/ui/features/settings/app-settings";
+} from "@pokebots/ui/features/dynamic-island/OpenBotDynamicIsland";
+import { ServerMark, serverStatusLabels } from "@pokebots/ui/features/servers/ServerRail";
+import type { GeneralSettingsValue } from "@pokebots/ui/features/settings/app-settings";
 import type { JSX } from "@solidjs/web";
 import { createSignal, createUniqueId, For, onSettled, Show } from "solid-js";
 import { useI18n } from "../../i18n-context";

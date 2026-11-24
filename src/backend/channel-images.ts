@@ -6,10 +6,10 @@ import {
   avatarFileExtension,
   isAvatarMimeType,
   isValidAvatarImage,
-} from "@openbot/contracts/avatar-images";
-import type { AvatarImageInput, Channel } from "@openbot/contracts/ipc";
-import { isUuidV4 } from "@openbot/contracts/validation";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/avatar-images";
+import type { AvatarImageInput, Channel } from "@pokebots/contracts/ipc";
+import { isUuidV4 } from "@pokebots/contracts/validation";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect } from "effect";
 import { writeFileAtomically } from "./atomic-json-file";
 import { channelFailure } from "./channel-effects";

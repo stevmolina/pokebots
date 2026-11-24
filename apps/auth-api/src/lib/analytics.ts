@@ -1,3 +1,4 @@
+import { OpenPanel, OpenPanelBase, type OpenPanelOptions, type TrackProperties } from "@openpanel/web";
 import {
   type FIRST_TOUCH_CAMPAIGN_FIELDS,
   FIRST_TOUCH_CAMPAIGN_VALUE,
@@ -6,9 +7,8 @@ import {
   type FirstTouchSourcePlatform,
   firstTouchDay,
   rememberFirstTouch,
-} from "@openbot/contracts/first-touch";
-import { isBoolean, isOneOf } from "@openbot/contracts/runtime-values";
-import { OpenPanel, OpenPanelBase, type OpenPanelOptions, type TrackProperties } from "@openpanel/web";
+} from "@pokebots/contracts/first-touch";
+import { isBoolean, isOneOf } from "@pokebots/contracts/runtime-values";
 import { BRAND_ROUTE } from "./brand-page";
 import { CLA_ROUTE } from "./cla";
 import { COMMERCIAL_LICENSE_ROUTE } from "./commercial-license";

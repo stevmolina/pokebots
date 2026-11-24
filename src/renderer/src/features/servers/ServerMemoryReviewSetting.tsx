@@ -1,4 +1,4 @@
-import type { HostMemoryReview, OpenBotDesktopApi } from "@openbot/contracts/ipc";
+import type { HostMemoryReview, OpenBotDesktopApi } from "@pokebots/contracts/ipc";
 import {
   Item,
   ItemActions,
@@ -10,8 +10,8 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@openbot/ui";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/ui";
+import { useText } from "@pokebots/ui/text";
 import { createEffect, createSignal, Show, untrack } from "solid-js";
 
 /** The memory review calls of one server's host. The desktop reaches them through main. */

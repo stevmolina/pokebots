@@ -4,7 +4,7 @@ import type {
   VaultSecretRequest,
   VaultState,
   VaultTwoStepCodes,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 
 /**
  * The Vault of one server. Desktop reaches this computer's Vault and a joined server's through main;

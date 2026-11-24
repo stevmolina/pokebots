@@ -1,28 +1,28 @@
-import { agentSteersTurns } from "@openbot/contracts/agent-providers";
-import { rasterImageMimeType } from "@openbot/contracts/attachment-files";
+import { agentSteersTurns } from "@pokebots/contracts/agent-providers";
+import { rasterImageMimeType } from "@pokebots/contracts/attachment-files";
 import {
   attachmentReferenceIds,
   expandAttachmentReferences,
   rewriteAttachmentReferences,
   serializeAttachmentReference,
-} from "@openbot/contracts/attachment-references";
-import { fileQuoteTarget } from "@openbot/contracts/chat-tag-references";
-import { ATTACHMENT_LIMITS, INPUT_LIMITS } from "@openbot/contracts/input-limits";
+} from "@pokebots/contracts/attachment-references";
+import { fileQuoteTarget } from "@pokebots/contracts/chat-tag-references";
+import { ATTACHMENT_LIMITS, INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import {
   type AttachmentDataInput,
   type DraftAttachment,
   LOCAL_SERVER_ID,
   type QueueDelivery,
-} from "@openbot/contracts/ipc";
-import { TEAM_MESSAGE_CLIENT_ID_CAPABILITY } from "@openbot/contracts/team-protocol/current";
-import { isQueueEditRejected, TEAM_QUEUE_EDIT_CAPABILITY } from "@openbot/contracts/team-protocol/queue-edit-v1";
-import type { QuestionPromptComposerAnswer } from "@openbot/ui/components/QuestionPromptBubble";
+} from "@pokebots/contracts/ipc";
+import { TEAM_MESSAGE_CLIENT_ID_CAPABILITY } from "@pokebots/contracts/team-protocol/current";
+import { isQueueEditRejected, TEAM_QUEUE_EDIT_CAPABILITY } from "@pokebots/contracts/team-protocol/queue-edit-v1";
+import type { QuestionPromptComposerAnswer } from "@pokebots/ui/components/QuestionPromptBubble";
 import {
   type ComposerPasteResult,
   type ComposerSelection,
   expandComposerMentions,
-} from "@openbot/ui/features/conversation/ComposerEditor";
-import { currentText } from "@openbot/ui/text";
+} from "@pokebots/ui/features/conversation/ComposerEditor";
+import { currentText } from "@pokebots/ui/text";
 import { playActionSound } from "../../../action-sounds";
 import { claimDictatedSend, forgetDictatedMessage } from "../../speech/speech-replies";
 import { rememberAttachmentKinds } from "../attachment-analytics";

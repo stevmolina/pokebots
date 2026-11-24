@@ -1,4 +1,4 @@
-import { SETTINGS_PANEL_DEFAULT, SETTINGS_PANEL_MAX } from "@openbot/ui/components/SettingsPanel";
+import { SETTINGS_PANEL_DEFAULT, SETTINGS_PANEL_MAX } from "@pokebots/ui/components/SettingsPanel";
 import { createSignal } from "solid-js";
 import { savePanelWidth } from "./panel-width-storage";
 

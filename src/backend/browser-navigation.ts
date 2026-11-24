@@ -1,4 +1,4 @@
-import type { BrowserTarget } from "@openbot/contracts/ipc";
+import type { BrowserTarget } from "@pokebots/contracts/ipc";
 import { Effect } from "effect";
 import type { WebContents } from "electron";
 import { type BrowserOperationError, browserFailure, browserSync } from "./browser-effects";

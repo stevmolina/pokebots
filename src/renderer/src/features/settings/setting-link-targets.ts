@@ -1,6 +1,6 @@
-import type { AppInfo, SettingLinkId } from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
-import type { AgentSettingLinkId } from "@openbot/ui/features/conversation/agent-setting-links";
+import type { AppInfo, SettingLinkId } from "@pokebots/contracts/ipc";
+import type { AppTextKey } from "@pokebots/i18n";
+import type { AgentSettingLinkId } from "@pokebots/ui/features/conversation/agent-setting-links";
 import type { SettingsTab } from "./settings-tabs";
 
 export type AppSettingLinkId = Exclude<SettingLinkId, AgentSettingLinkId>;

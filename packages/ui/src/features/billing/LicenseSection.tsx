@@ -3,8 +3,8 @@ import {
   type BillingInterval,
   type BillingSubscriptionStatus,
   isOpenBillingStatus,
-} from "@openbot/contracts/billing";
-import type { BillingDetails } from "@openbot/contracts/billing-details";
+} from "@pokebots/contracts/billing";
+import type { BillingDetails } from "@pokebots/contracts/billing-details";
 import {
   LICENSE_INCLUDED_USERS,
   LICENSE_MAX_USERS,
@@ -24,8 +24,8 @@ import {
   licensePlanOf,
   licensePlanPrice,
   type PricingOrder,
-} from "@openbot/contracts/license";
-import type { AppTextKey } from "@openbot/i18n";
+} from "@pokebots/contracts/license";
+import type { AppTextKey } from "@pokebots/i18n";
 import {
   Alert,
   AlertActions,
@@ -58,7 +58,7 @@ import {
   TriangleAlert,
   UsersRound,
   Zap,
-} from "@openbot/ui";
+} from "@pokebots/ui";
 import type { JSX } from "@solidjs/web";
 import { createEffect, createSignal, For, Match, onSettled, Show, Switch, untrack } from "solid-js";
 import { useText } from "../../text";

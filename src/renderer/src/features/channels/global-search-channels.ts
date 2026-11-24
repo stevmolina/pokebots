@@ -1,5 +1,5 @@
-import type { ChannelSummary } from "@openbot/contracts/ipc";
-import type { GlobalSearchChannel } from "@openbot/ui/components/GlobalSearch";
+import type { ChannelSummary } from "@pokebots/contracts/ipc";
+import type { GlobalSearchChannel } from "@pokebots/ui/components/GlobalSearch";
 
 /**
  * The channels that global search lists, with the last message as the detail. The desktop app and

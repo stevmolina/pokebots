@@ -9,7 +9,7 @@
 import assert from "node:assert/strict";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
-import { isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
+import { isDynamicRecord, isNumber, isString } from "@pokebots/contracts/runtime-values";
 import { chromium, type Page } from "playwright-core";
 
 const OUT = resolve(import.meta.dirname, "../.openbot-build/web-client-conversation-trim-e2e");

@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import { createReadStream, existsSync } from "node:fs";
 import { readdir, readFile, stat } from "node:fs/promises";
 import { basename, join, resolve } from "node:path";
-import { createOpenBotLogger } from "@openbot/logging";
+import { createOpenBotLogger } from "@pokebots/logging";
 import { readUpdateManifest } from "./update-rollout";
 
 const logger = createOpenBotLogger("verify-update-artifacts");

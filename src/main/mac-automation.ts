@@ -1,8 +1,8 @@
 // Asks macOS for Automation access to Apple apps before an agent needs it.
 
 import { execFile } from "node:child_process";
-import type { MacAutomationResult, MacAutomationTarget } from "@openbot/contracts/ipc";
-import { createOpenBotLogger, toLogValue } from "@openbot/logging";
+import type { MacAutomationResult, MacAutomationTarget } from "@pokebots/contracts/ipc";
+import { createOpenBotLogger, toLogValue } from "@pokebots/logging";
 import { Effect } from "effect";
 
 const logger = createOpenBotLogger("mac-automation");

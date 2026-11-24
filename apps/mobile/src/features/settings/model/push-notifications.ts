@@ -1,7 +1,7 @@
-import type { ServerNotificationLevel } from "@openbot/contracts/ipc";
-import { NOTIFICATION_SOUNDS, type NotificationSound } from "@openbot/contracts/notification-relay";
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
-import type { PushNotificationSound } from "@openbot/contracts/team-protocol/push-notifications-v1";
+import type { ServerNotificationLevel } from "@pokebots/contracts/ipc";
+import { NOTIFICATION_SOUNDS, type NotificationSound } from "@pokebots/contracts/notification-relay";
+import { isDynamicRecord } from "@pokebots/contracts/runtime-values";
+import type { PushNotificationSound } from "@pokebots/contracts/team-protocol/push-notifications-v1";
 import * as SecureStore from "expo-secure-store";
 import { create } from "zustand";
 

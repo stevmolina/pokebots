@@ -1,4 +1,4 @@
-import type { AppTranslate, TranslatedLocale } from "@openbot/i18n";
+import type { AppTranslate, TranslatedLocale } from "@pokebots/i18n";
 import { loadPageText } from "./page-text";
 import { SITE_LOCALES, type SiteLocale } from "./site-paths";
 import { type SiteChrome, siteText } from "./site-text";

@@ -14,7 +14,7 @@ import type { TeamsPageText } from "./teams-page-text";
 
 // Loaded after the page is in the browser, as in `FeaturesSection`: the avatar engine is large.
 const AgentAvatar = lazy(() =>
-  import("@openbot/ui/features/agents/AgentAvatar").then((module) => ({ default: module.AgentAvatar })),
+  import("@pokebots/ui/features/agents/AgentAvatar").then((module) => ({ default: module.AgentAvatar })),
 );
 
 const SETUP_ICONS: Record<TeamsSetupId, LandingIconName> = {

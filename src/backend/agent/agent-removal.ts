@@ -1,6 +1,6 @@
-import type { AgentEvent, AgentSummary } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
-import type { Logger } from "@openbot/logging";
+import type { AgentEvent, AgentSummary } from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
+import type { Logger } from "@pokebots/logging";
 import { Effect, Result, Schema } from "effect";
 import type { AgentApiKeys } from "../agent-api-keys";
 import type { AgentClient, AgentProvider } from "../agent-client";

@@ -1,4 +1,4 @@
-import type { MobileTextKey } from "@openbot/i18n/mobile";
+import type { MobileTextKey } from "@pokebots/i18n/mobile";
 import { useEffect, useState } from "react";
 import { useUniwind } from "uniwind";
 import { SettingsContent, SettingsRow, SettingsSection } from "@/features/settings/components/settings-content";

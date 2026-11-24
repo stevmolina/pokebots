@@ -1,4 +1,4 @@
-import { isNewerMobileVersion, type MobileReleaseNotes } from "@openbot/contracts/mobile-features";
+import { isNewerMobileVersion, type MobileReleaseNotes } from "@pokebots/contracts/mobile-features";
 import { createFileRoute } from "@tanstack/solid-router";
 import { parseInline } from "../../../lib/changelog";
 import { CHANGELOG_RELEASES } from "../../../lib/changelog-releases";

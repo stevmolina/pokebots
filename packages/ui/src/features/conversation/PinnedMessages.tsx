@@ -1,7 +1,7 @@
-import { Button, buttonVariants, ChevronRight, Pin, PinOff, Popover } from "@openbot/ui";
-import type { AgentProfile } from "@openbot/ui/data";
-import { ReplyQuote } from "@openbot/ui/features/conversation/ReplyQuote";
-import { useText } from "@openbot/ui/text";
+import { Button, buttonVariants, ChevronRight, Pin, PinOff, Popover } from "@pokebots/ui";
+import type { AgentProfile } from "@pokebots/ui/data";
+import { ReplyQuote } from "@pokebots/ui/features/conversation/ReplyQuote";
+import { useText } from "@pokebots/ui/text";
 import { createEffect, createSignal, createUniqueId, For, Show } from "solid-js";
 
 /** One pinned message as the list shows it. The caller resolves the names and the time. */

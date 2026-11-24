@@ -1,11 +1,11 @@
-import { isKnownAgentProvider } from "@openbot/contracts/agent-providers";
-import type { AgentModelId, AgentProviderId, AgentReasoningEffort, UpdateAgentInput } from "@openbot/contracts/ipc";
-import { findModelOption } from "@openbot/ui/components/provider-accounts";
+import { isKnownAgentProvider } from "@pokebots/contracts/agent-providers";
+import type { AgentModelId, AgentProviderId, AgentReasoningEffort, UpdateAgentInput } from "@pokebots/contracts/ipc";
+import { findModelOption } from "@pokebots/ui/components/provider-accounts";
 import type {
   AgentRuntimeSettings,
   AgentRuntimeSettingsPatch,
-} from "@openbot/ui/features/conversation/AgentSettingsPanel";
-import { currentText } from "@openbot/ui/text";
+} from "@pokebots/ui/features/conversation/AgentSettingsPanel";
+import { currentText } from "@pokebots/ui/text";
 import { agentConversationKey } from "../conversation-keys";
 import type { ConversationProps, ConversationTarget } from "../conversation-types";
 

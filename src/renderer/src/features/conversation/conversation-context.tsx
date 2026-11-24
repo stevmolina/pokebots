@@ -7,11 +7,11 @@ import {
   type ConversationReadState,
   type ConversationSnapshot,
   openExchangesOutside,
-} from "@openbot/contracts/ipc";
-import { THREAD_MESSAGE_SEARCH_PAGE_LIMIT } from "@openbot/contracts/team-protocol/thread-message-search-v1";
-import { cleanAgentMessageText } from "@openbot/team-client/agent-message-text";
-import type { AgentMessage, ComposerThreadMessageMatch } from "@openbot/ui/data";
-import { currentText } from "@openbot/ui/text";
+} from "@pokebots/contracts/ipc";
+import { THREAD_MESSAGE_SEARCH_PAGE_LIMIT } from "@pokebots/contracts/team-protocol/thread-message-search-v1";
+import { cleanAgentMessageText } from "@pokebots/team-client/agent-message-text";
+import type { AgentMessage, ComposerThreadMessageMatch } from "@pokebots/ui/data";
+import { currentText } from "@pokebots/ui/text";
 import { createEffect, createMemo, createStore, onCleanup, untrack } from "solid-js";
 import { noteAgentRequest } from "../../agent-requests";
 import { desktopAnalytics } from "../../analytics";

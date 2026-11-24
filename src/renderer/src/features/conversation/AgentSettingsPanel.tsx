@@ -12,34 +12,45 @@ import {
   type StoredFileRow,
   type TestRoutineInput,
   userAssignedSkills,
-} from "@openbot/contracts/ipc";
-import { fileTypeOf } from "@openbot/team-client/stored-files";
-import { Blocks, BookMarked, Button, ChevronRight, FileText, Folder, Gauge, Puzzle, Table2, Upload } from "@openbot/ui";
-import { ProviderModelPicker } from "@openbot/ui/components/ProviderModelPicker";
-import { SettingsLinkGroup, SettingsLinkRow } from "@openbot/ui/components/SettingsPanel";
-import type { AgentProfile } from "@openbot/ui/data";
-import type { BrowserProfileSelectProfile } from "@openbot/ui/features/browser/BrowserProfileSelect";
-import { browserProfileProxyNames } from "@openbot/ui/features/browser/BrowserProxies";
+} from "@pokebots/contracts/ipc";
+import { fileTypeOf } from "@pokebots/team-client/stored-files";
+import {
+  Blocks,
+  BookMarked,
+  Button,
+  ChevronRight,
+  FileText,
+  Folder,
+  Gauge,
+  Puzzle,
+  Table2,
+  Upload,
+} from "@pokebots/ui";
+import { ProviderModelPicker } from "@pokebots/ui/components/ProviderModelPicker";
+import { SettingsLinkGroup, SettingsLinkRow } from "@pokebots/ui/components/SettingsPanel";
+import type { AgentProfile } from "@pokebots/ui/data";
+import type { BrowserProfileSelectProfile } from "@pokebots/ui/features/browser/BrowserProfileSelect";
+import { browserProfileProxyNames } from "@pokebots/ui/features/browser/BrowserProxies";
 import {
   type AgentInstructionsCalls,
   AgentInstructionsView,
-} from "@openbot/ui/features/conversation/AgentInstructionsView";
+} from "@pokebots/ui/features/conversation/AgentInstructionsView";
 import {
   AgentSessionSettings,
   type AgentSessionSettingsApi,
-} from "@openbot/ui/features/conversation/AgentSessionSettings";
+} from "@pokebots/ui/features/conversation/AgentSessionSettings";
 import SharedAgentSettingsPanel, {
   type AgentBrowserProfileOptions,
   type AgentNotificationLevelOptions,
   type AgentSettingsPanelProps as SharedAgentSettingsPanelProps,
-} from "@openbot/ui/features/conversation/AgentSettingsPanel";
-import { AttachmentReferenceVisual } from "@openbot/ui/features/conversation/AttachmentReference";
-import type { AgentSettingLinkId, AgentSettingReveal } from "@openbot/ui/features/conversation/agent-setting-links";
-import { PinnedMessages, type PinnedMessagesProps } from "@openbot/ui/features/conversation/PinnedMessages";
-import { AgentSessions, type AgentSessionsProps } from "@openbot/ui/features/conversation/threads/AgentSessions";
-import { agentFilesLinkValue } from "@openbot/ui/features/files/AgentFilesView";
-import { sidebarMessageTime } from "@openbot/ui/features/sidebar/sidebar-filtering";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/ui/features/conversation/AgentSettingsPanel";
+import { AttachmentReferenceVisual } from "@pokebots/ui/features/conversation/AttachmentReference";
+import type { AgentSettingLinkId, AgentSettingReveal } from "@pokebots/ui/features/conversation/agent-setting-links";
+import { PinnedMessages, type PinnedMessagesProps } from "@pokebots/ui/features/conversation/PinnedMessages";
+import { AgentSessions, type AgentSessionsProps } from "@pokebots/ui/features/conversation/threads/AgentSessions";
+import { agentFilesLinkValue } from "@pokebots/ui/features/files/AgentFilesView";
+import { sidebarMessageTime } from "@pokebots/ui/features/sidebar/sidebar-filtering";
+import { useText } from "@pokebots/ui/text";
 import type { ComponentProps } from "@solidjs/web";
 import { createEffect, createMemo, createSignal, createStore, For, Show, untrack } from "solid-js";
 import { actionToast } from "../../action-toast";

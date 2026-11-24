@@ -1,5 +1,5 @@
-import { type BillingServerPlan, serverStorageGb } from "@openbot/contracts/billing";
-import type { HostedServerSummary } from "@openbot/contracts/hosted-servers";
+import { type BillingServerPlan, serverStorageGb } from "@pokebots/contracts/billing";
+import type { HostedServerSummary } from "@pokebots/contracts/hosted-servers";
 import { createEffect, createSignal, createStore, Show } from "solid-js";
 import { useText } from "../../text";
 import type { SettingsHostedServersStore } from "../settings/stores/hosted-servers-store";

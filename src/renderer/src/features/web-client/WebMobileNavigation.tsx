@@ -1,5 +1,5 @@
-import { Button, ChevronLeft, Input, LayoutGrid, Search, X } from "@openbot/ui";
-import { useText } from "@openbot/ui/text";
+import { Button, ChevronLeft, Input, LayoutGrid, Search, X } from "@pokebots/ui";
+import { useText } from "@pokebots/ui/text";
 import { Show } from "solid-js";
 
 /** The pane that a phone shows: the chat list at the root, or the conversation pushed over it. */

@@ -4,9 +4,9 @@
 // names that people read in the chat; see `DISPLAY_NAMES`.
 
 import { readFile, rm } from "node:fs/promises";
-import type { MessagingCredentialState } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
-import { registerSecretValue } from "@openbot/logging";
+import type { MessagingCredentialState } from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
+import { registerSecretValue } from "@pokebots/logging";
 import { Effect, Result, Semaphore } from "effect";
 import { z } from "zod";
 import { writeFileAtomically } from "../backend/atomic-json-file";

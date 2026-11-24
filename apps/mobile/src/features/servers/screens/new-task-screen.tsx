@@ -1,5 +1,5 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import { plainTaskTitle } from "@openbot/team-client/agent-tasks";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
+import { plainTaskTitle } from "@pokebots/team-client/agent-tasks";
 import { useQueryClient } from "@tanstack/react-query";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { usePreventRemove } from "expo-router/react-navigation";

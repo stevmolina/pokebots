@@ -1,8 +1,8 @@
-import type { AgentTask } from "@openbot/contracts/ipc";
-import { isAgentTaskActive } from "@openbot/team-client/agent-tasks";
-import { Archive, ArchiveRestore, Button, MessageSquare, X } from "@openbot/ui";
-import { AgentTaskMark, type AgentTaskWait } from "@openbot/ui/features/conversation/AgentTasks";
-import { useText } from "@openbot/ui/text";
+import type { AgentTask } from "@pokebots/contracts/ipc";
+import { isAgentTaskActive } from "@pokebots/team-client/agent-tasks";
+import { Archive, ArchiveRestore, Button, MessageSquare, X } from "@pokebots/ui";
+import { AgentTaskMark, type AgentTaskWait } from "@pokebots/ui/features/conversation/AgentTasks";
+import { useText } from "@pokebots/ui/text";
 import type { JSX } from "@solidjs/web";
 import { Show } from "solid-js";
 

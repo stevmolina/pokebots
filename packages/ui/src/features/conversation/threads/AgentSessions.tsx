@@ -1,4 +1,4 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import {
   Archive,
   Button,
@@ -12,9 +12,9 @@ import {
   Plus,
   Square,
   Trash2,
-} from "@openbot/ui";
-import { sidebarMessageTime } from "@openbot/ui/features/sidebar/sidebar-filtering";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/ui";
+import { sidebarMessageTime } from "@pokebots/ui/features/sidebar/sidebar-filtering";
+import { useText } from "@pokebots/ui/text";
 import { createSignal, createUniqueId, For, Show } from "solid-js";
 import { ThreadStatusMark } from "./ThreadStatusMark";
 import { ThreadTitle } from "./ThreadTitle";

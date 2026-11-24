@@ -1,7 +1,7 @@
 import type { DatabaseSync } from "node:sqlite";
-import { isDynamicRecord, isNumber } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger, toLogValue } from "@openbot/logging";
+import { isDynamicRecord, isNumber } from "@pokebots/contracts/runtime-values";
+import { sourceText } from "@pokebots/i18n/source";
+import { createOpenBotLogger, toLogValue } from "@pokebots/logging";
 import { withTransaction } from "./database/sqlite-transaction";
 import type { OpenBotMigration } from "./migrations/migration";
 import { MIGRATIONS } from "./migrations/registry";

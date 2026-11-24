@@ -1,7 +1,7 @@
-import type { AgentProviderId } from "@openbot/contracts/ipc";
-import { Toaster } from "@openbot/ui";
-import type { ProviderPickerOption } from "@openbot/ui/components/ProviderPicker";
-import { ProviderPicker } from "@openbot/ui/components/ProviderPicker";
+import type { AgentProviderId } from "@pokebots/contracts/ipc";
+import { Toaster } from "@pokebots/ui";
+import type { ProviderPickerOption } from "@pokebots/ui/components/ProviderPicker";
+import { ProviderPicker } from "@pokebots/ui/components/ProviderPicker";
 import { createSignal } from "solid-js";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";

@@ -34,17 +34,17 @@ import type {
   TeamPresenceSnapshot,
   TeamSessionSummary,
   UpdateStatus,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   CONVERSATION_PLAN_ITEM_TYPE,
   conversationPlanText,
   isAgentStatus,
   isForeignProviderId,
   isKnownAgentProvider,
-} from "@openbot/contracts/ipc";
-import type { AgentProfile } from "@openbot/ui/data";
-import type { AgentRuntimeSettings } from "@openbot/ui/features/conversation/AgentSettingsPanel";
-import type { MarketplacePluginDetail } from "@openbot/ui/features/settings/marketplace-plugins";
+} from "@pokebots/contracts/ipc";
+import type { AgentProfile } from "@pokebots/ui/data";
+import type { AgentRuntimeSettings } from "@pokebots/ui/features/conversation/AgentSettingsPanel";
+import type { MarketplacePluginDetail } from "@pokebots/ui/features/settings/marketplace-plugins";
 import type { McpServerConfig } from "../features/servers/mcp-servers";
 
 const STORY_NOW = "2026-08-19T10:00:00.000Z";

@@ -1,11 +1,11 @@
 /** A trigger: the start of a workflow. */
 
-import type { AppTranslate } from "@openbot/i18n";
+import type { AppTranslate } from "@pokebots/i18n";
 import {
   type RoutineScheduleDraft,
   routineScheduleFromDraft,
   routineScheduleToDraft,
-} from "@openbot/team-client/routine-schedule-draft";
+} from "@pokebots/team-client/routine-schedule-draft";
 import {
   Button,
   CalendarClock,
@@ -16,7 +16,7 @@ import {
   toast,
   Webhook,
   Zap,
-} from "@openbot/ui";
+} from "@pokebots/ui";
 import { createSignal, Show, untrack } from "solid-js";
 import { useText } from "../../text";
 import { RoutineSchedulePicker } from "../conversation/RoutineSchedulePicker";

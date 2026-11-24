@@ -1,7 +1,7 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { basename, resolve } from "node:path";
 import { isDeepStrictEqual } from "node:util";
-import { createOpenBotLogger } from "@openbot/logging";
+import { createOpenBotLogger } from "@pokebots/logging";
 import { parse } from "yaml";
 import { z } from "zod";
 import { readScriptArguments } from "./script-arguments";

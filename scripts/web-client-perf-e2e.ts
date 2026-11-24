@@ -36,8 +36,8 @@ import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "no
 import { createServer, type Server } from "node:http";
 import { resolve } from "node:path";
 import { gzipSync } from "node:zlib";
-import { isDynamicRecord, isNumber } from "@openbot/contracts/runtime-values";
-import { createOpenBotLogger } from "@openbot/logging";
+import { isDynamicRecord, isNumber } from "@pokebots/contracts/runtime-values";
+import { createOpenBotLogger } from "@pokebots/logging";
 import { type Browser, type BrowserContext, chromium, devices, type Page, type Route, webkit } from "playwright-core";
 import { type Spread, spread } from "./dev-automation/bench-stats";
 import { startRenderRecording } from "./dev-automation/render-metrics";

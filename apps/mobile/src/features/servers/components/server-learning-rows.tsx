@@ -4,7 +4,7 @@ import {
   RESPONSE_STYLES,
   type ResponseStyle,
   THREAD_AUTO_ARCHIVE_IDLE_DAYS,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import { type QueryKey, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Typography } from "heroui-native";
 import Archive from "lucide-react-native/icons/archive";

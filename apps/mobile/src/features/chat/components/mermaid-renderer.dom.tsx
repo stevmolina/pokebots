@@ -5,7 +5,7 @@ import {
   CHAT_MERMAID_FONT_FAMILY,
   mermaidImageUrl,
   sizedMermaidSvg,
-} from "@openbot/contracts/chat-preview";
+} from "@pokebots/contracts/chat-preview";
 import mermaid from "mermaid";
 import { useEffect, useRef } from "react";
 import type { MermaidJob, MermaidResult } from "../model/mermaid-diagrams";

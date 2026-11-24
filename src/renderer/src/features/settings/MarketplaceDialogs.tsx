@@ -1,9 +1,9 @@
-import { ConfirmDialog } from "@openbot/ui";
-import { AgentUpdateDialog } from "@openbot/ui/features/marketplace/AgentUpdateDialog";
-import { McpConnectDialog } from "@openbot/ui/features/settings/McpConnectDialog";
-import { McpSignInPageDialog, McpSignInRelayDialog } from "@openbot/ui/features/settings/McpSignInPage";
-import { PluginUninstallDialog } from "@openbot/ui/features/settings/PluginUninstallDialog";
-import { useText } from "@openbot/ui/text";
+import { ConfirmDialog } from "@pokebots/ui";
+import { AgentUpdateDialog } from "@pokebots/ui/features/marketplace/AgentUpdateDialog";
+import { McpConnectDialog } from "@pokebots/ui/features/settings/McpConnectDialog";
+import { McpSignInPageDialog, McpSignInRelayDialog } from "@pokebots/ui/features/settings/McpSignInPage";
+import { PluginUninstallDialog } from "@pokebots/ui/features/settings/PluginUninstallDialog";
+import { useText } from "@pokebots/ui/text";
 import { createEffect, Show } from "solid-js";
 import type { MarketplaceController, MarketplaceControllerProps, PendingSkillConfirm } from "./marketplace-controller";
 

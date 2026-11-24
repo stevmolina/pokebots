@@ -213,7 +213,7 @@ export const messages = {
 
   "workflow.output.title": "Salida",
   "workflow.output.name": "salida",
-  "workflow.output.channel.openbot": "OpenBot",
+  "workflow.output.channel.openbot": "Pokebots",
   "workflow.output.channel.search": "Buscar canales",
   "workflow.output.postsAs": "Publica como",
   "workflow.output.postsAsNote": "Una nota; no empieza ninguna tarea",
@@ -256,7 +256,7 @@ export const messages = {
   "workflow.telegram.anyChat": "Cualquier chat vinculado",
   "workflow.telegram.sameChat": "Igual que el disparador",
   "workflow.telegram.event": "Evento",
-  "workflow.telegram.event.mention": "Mención a OpenBot",
+  "workflow.telegram.event.mention": "Mención a Pokebots",
   "workflow.telegram.text": "El texto contiene",
   "workflow.telegram.anyText": "Cualquier texto",
   "workflow.telegram.on": "En",
@@ -309,8 +309,8 @@ export const messages = {
   "workflow.github.filter.branch": "Rama base es",
   "workflow.github.filter.titleValue": "Título contiene «{text}»",
   "workflow.github.filter.branchValue": "Rama base es {branch}",
-  "workflow.github.alert.missing": "OpenBot no puede ver {repository} en GitHub.",
-  "workflow.github.alert.readOnly": "OpenBot no puede cambiar incidencias ni pull requests en {repository}.",
+  "workflow.github.alert.missing": "Pokebots no puede ver {repository} en GitHub.",
+  "workflow.github.alert.readOnly": "Pokebots no puede cambiar incidencias ni pull requests en {repository}.",
   "workflow.github.alert.eventsOff": "GitHub aún no envía eventos de {repository}.",
   "workflow.github.alert.noEvent":
     "El activador no es un evento de GitHub. Elige un repositorio y toma el número de la entrada.",
@@ -318,7 +318,7 @@ export const messages = {
     "{action} solo funciona en pull requests. El activador se inicia con incidencias.",
   "workflow.github.history.name": "Eventos",
   "workflow.github.history.none": "Ninguno",
-  "workflow.github.history.offline": "OpenBot estaba sin conexión",
+  "workflow.github.history.offline": "Pokebots estaba sin conexión",
   "workflow.github.history.waitingGroup": "En espera",
   "workflow.github.history.startedGroup": "Ejecuciones iniciadas",
   "workflow.github.history.skippedGroup": "Omitidos",
@@ -536,9 +536,9 @@ export const messages = {
   "workflow.canvas.version.run": "Antes de ejecutar",
   "workflow.canvas.deleteUndo.title": "{name} eliminado",
   "workflow.canvas.deleteUndo.action": "Deshacer",
-  "workflow.page.failed": "OpenBot no pudo hacerlo. Inténtalo de nuevo.",
+  "workflow.page.failed": "Pokebots no pudo hacerlo. Inténtalo de nuevo.",
   "workflow.page.needsNewerApp":
-    "Este flujo de trabajo tiene pasos de una versión más reciente de OpenBot. Actualiza OpenBot para cambiarlo.",
+    "Este flujo de trabajo tiene pasos de una versión más reciente de Pokebots. Actualiza Pokebots para cambiarlo.",
   "workflow.page.manageOnly":
     "Para cambiar este flujo de trabajo, necesitas acceso de gestión a cada uno de sus agentes.",
 } as const satisfies PartialTranslation<typeof source>;

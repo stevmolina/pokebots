@@ -1,5 +1,5 @@
 import { join } from "node:path";
-import { teeLogLines } from "@openbot/logging";
+import { teeLogLines } from "@pokebots/logging";
 import { Effect, Fiber } from "effect";
 import { appendRemoteDiagnosticLog } from "./remote-diagnostics";
 

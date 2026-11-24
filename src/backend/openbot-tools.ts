@@ -4,17 +4,17 @@ import {
   CHAT_VISUAL_MAX_HEIGHT,
   CHAT_VISUAL_MIN_HEIGHT,
   CHAT_VISUAL_TITLE_LIMIT,
-} from "@openbot/contracts/chat-visual";
+} from "@pokebots/contracts/chat-visual";
 import {
   BUG_REPORT_AREAS,
   BUG_REPORT_SEVERITIES,
   FEATURE_REQUEST_TYPES,
   FEEDBACK_FINDERS,
   FEEDBACK_SURFACES,
-} from "@openbot/contracts/feedback";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import { API_KEY_NAME_PATTERN, CONNECTOR_IDS, VAULT_API_KEY_LIMIT, VAULT_NOTES_LIMIT } from "@openbot/contracts/ipc";
-import { isUiBlockId, UI_BLOCK_LIMITS } from "@openbot/contracts/ui-blocks";
+} from "@pokebots/contracts/feedback";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
+import { API_KEY_NAME_PATTERN, CONNECTOR_IDS, VAULT_API_KEY_LIMIT, VAULT_NOTES_LIMIT } from "@pokebots/contracts/ipc";
+import { isUiBlockId, UI_BLOCK_LIMITS } from "@pokebots/contracts/ui-blocks";
 import { z } from "zod";
 import pluginCatalog from "../../resources/plugin-catalog/catalog.json";
 import { advertisedJsonSchema } from "./agent/advertised-json-schema";

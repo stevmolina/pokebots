@@ -1,7 +1,7 @@
 import { readdir, readFile, stat } from "node:fs/promises";
 import { homedir } from "node:os";
 import { join } from "node:path";
-import { HOME_SKILL_ID_PREFIX } from "@openbot/contracts/ipc";
+import { HOME_SKILL_ID_PREFIX } from "@pokebots/contracts/ipc";
 import { Effect, Option, Schema } from "effect";
 import { readSkillFrontmatter } from "./skill-frontmatter";
 

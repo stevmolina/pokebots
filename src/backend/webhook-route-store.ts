@@ -5,10 +5,10 @@ import {
   isEventActivity,
   isEventRoutineOwner,
   type WebhookReceiptReason,
-} from "@openbot/contracts/ipc-events";
-import { type DynamicRecord, isDynamicRecord } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
-import { RoutineInputError } from "@openbot/team-client/routine-schedule";
+} from "@pokebots/contracts/ipc-events";
+import { type DynamicRecord, isDynamicRecord } from "@pokebots/contracts/runtime-values";
+import { sourceText } from "@pokebots/i18n/source";
+import { RoutineInputError } from "@pokebots/team-client/routine-schedule";
 import { databaseRows, optionalStringColumn, requiredStringColumn } from "./database/database-rows";
 import type { OpenBotDatabase } from "./openbot-database";
 import { ROUTINE_TABLES } from "./routine-tables";

@@ -10,9 +10,9 @@ import {
   mcpConfigErrors,
   normalizeMcpConfig,
   type SkillCategory,
-} from "@openbot/contracts/ipc";
-import { type DynamicRecord, isDynamicRecord, isOneOf, isString } from "@openbot/contracts/runtime-values";
-import { createOpenBotLogger, toLogValue } from "@openbot/logging";
+} from "@pokebots/contracts/ipc";
+import { type DynamicRecord, isDynamicRecord, isOneOf, isString } from "@pokebots/contracts/runtime-values";
+import { createOpenBotLogger, toLogValue } from "@pokebots/logging";
 
 const logger = createOpenBotLogger("build-plugin-catalog");
 
@@ -692,8 +692,8 @@ function renderRendererModule(plugins: PluginDetail[]): string {
  * bun run marketplace:build:plugins -- --check to verify.
  */
 
-import type { McpServerConfig } from "@openbot/contracts/ipc";
-import type { MarketplacePluginApp, MarketplacePluginDetail } from "@openbot/ui/features/settings/marketplace-plugins";
+import type { McpServerConfig } from "@pokebots/contracts/ipc";
+import type { MarketplacePluginApp, MarketplacePluginDetail } from "@pokebots/ui/features/settings/marketplace-plugins";
 
 /**
  * The configuration an app installs as. The catalog states the name and how the server is reached -
@@ -754,7 +754,7 @@ ${plugins.map((plugin) => `  ${JSON.stringify(plugin.slug)},`).join("\n")}
 }
 
 /**
- * The phone's copy. Mobile cannot import the renderer's types from `@openbot/ui`, so the module states
+ * The phone's copy. Mobile cannot import the renderer's types from `@pokebots/ui`, so the module states
  * its own. The vendor icon addresses are left out: the phone loads each icon from the account
  * service's `/plugins/icon/<slug>?app=<id>`, so opening the Marketplace sends no request to a vendor.
  * The Apple apps a server drives are left out too: only the Mac that runs the server can ask for them.
@@ -778,7 +778,7 @@ function renderMobileModule(plugins: PluginDetail[]): string {
  * bun run marketplace:build:plugins -- --check to verify.
  */
 
-import type { SkillCategory } from "@openbot/contracts/ipc";
+import type { SkillCategory } from "@pokebots/contracts/ipc";
 
 /** One credential the user types. It goes into a \`header\` (http) or an \`env\` value (stdio). */
 export interface MobilePluginAuthField {

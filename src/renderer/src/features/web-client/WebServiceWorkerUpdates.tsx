@@ -1,5 +1,5 @@
-import { useText } from "@openbot/ui/text";
-import { setToastErrorAction, toast } from "@openbot/ui/toast";
+import { useText } from "@pokebots/ui/text";
+import { setToastErrorAction, toast } from "@pokebots/ui/toast";
 import { onSettled } from "solid-js";
 import { statusAlertsShown } from "../updates/status-alerts";
 import { applyWebUpdate, onWebUpdateReady, registerWebServiceWorker } from "./web-service-worker";

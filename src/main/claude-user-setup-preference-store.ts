@@ -1,5 +1,5 @@
-import { type ClaudeUserSetupSetting, DEFAULT_CLAUDE_USER_SETUP } from "@openbot/contracts/ipc";
-import { isBoolean, isDynamicRecord } from "@openbot/contracts/runtime-values";
+import { type ClaudeUserSetupSetting, DEFAULT_CLAUDE_USER_SETUP } from "@pokebots/contracts/ipc";
+import { isBoolean, isDynamicRecord } from "@pokebots/contracts/runtime-values";
 import { Effect } from "effect";
 import { PreferenceStore } from "./preference-file";
 

@@ -4,22 +4,22 @@ import assert from "node:assert/strict";
 import { mkdir, mkdtemp, readFile, rm, symlink, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import { AGENT_PROVIDERS, isAgentTask, isAgentTasksSnapshot, isConversationSnapshot } from "@openbot/contracts/ipc";
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
-import { TEAM_APP_VERSION_HEADER, TEAM_PROTOCOL_VERSION_HEADER } from "@openbot/contracts/team-protocol";
-import { AGENT_ACCESS_ROUTES } from "@openbot/contracts/team-protocol/agent-access-v1";
-import { AGENT_TASKS_ROUTES } from "@openbot/contracts/team-protocol/agent-tasks-v1";
-import { teamCapabilitiesForProtocol, teamCapabilityHeaders } from "@openbot/contracts/team-protocol/current";
+import { AGENT_PROVIDERS, isAgentTask, isAgentTasksSnapshot, isConversationSnapshot } from "@pokebots/contracts/ipc";
+import { isDynamicRecord, isString } from "@pokebots/contracts/runtime-values";
+import { TEAM_API_ROUTES } from "@pokebots/contracts/team-api-routes";
+import { TEAM_APP_VERSION_HEADER, TEAM_PROTOCOL_VERSION_HEADER } from "@pokebots/contracts/team-protocol";
+import { AGENT_ACCESS_ROUTES } from "@pokebots/contracts/team-protocol/agent-access-v1";
+import { AGENT_TASKS_ROUTES } from "@pokebots/contracts/team-protocol/agent-tasks-v1";
+import { teamCapabilitiesForProtocol, teamCapabilityHeaders } from "@pokebots/contracts/team-protocol/current";
 import {
   decodeHomeAgentRulesResponse,
   HOME_AGENT_RULES_CAPABILITY,
   HOME_AGENT_RULES_ROUTES,
-} from "@openbot/contracts/team-protocol/home-agent-rules-v1";
-import { teamHttpCodec } from "@openbot/contracts/team-protocol/http-codecs";
-import { decodeTeamProtocolV2Json, type TeamProtocolV2Json } from "@openbot/contracts/team-protocol/v2";
-import { TEAM_PROTOCOL_V10 } from "@openbot/contracts/team-protocol/v10";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/team-protocol/home-agent-rules-v1";
+import { teamHttpCodec } from "@pokebots/contracts/team-protocol/http-codecs";
+import { decodeTeamProtocolV2Json, type TeamProtocolV2Json } from "@pokebots/contracts/team-protocol/v2";
+import { TEAM_PROTOCOL_V10 } from "@pokebots/contracts/team-protocol/v10";
+import { sourceText } from "@pokebots/i18n/source";
 import { plugin } from "bun";
 import { Effect, Redacted } from "effect";
 import { z } from "zod";

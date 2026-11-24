@@ -1,4 +1,4 @@
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
+import { isDynamicRecord } from "@pokebots/contracts/runtime-values";
 import { Effect, Semaphore } from "effect";
 import { type PreferenceFileFailure, PreferenceStore } from "./preference-file";
 

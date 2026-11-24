@@ -1,5 +1,5 @@
-import { parseWhatsAppPhoneNumber, type WhatsAppLinkState } from "@openbot/contracts/ipc";
-import type { MobileTextKey } from "@openbot/i18n/mobile";
+import { parseWhatsAppPhoneNumber, type WhatsAppLinkState } from "@pokebots/contracts/ipc";
+import type { MobileTextKey } from "@pokebots/i18n/mobile";
 import * as Clipboard from "expo-clipboard";
 import { router, useLocalSearchParams } from "expo-router";
 import { Spinner, Typography } from "heroui-native";

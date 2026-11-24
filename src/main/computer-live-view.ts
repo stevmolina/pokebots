@@ -1,4 +1,4 @@
-import { httpsLiveViewUrl } from "@openbot/contracts/ipc";
+import { httpsLiveViewUrl } from "@pokebots/contracts/ipc";
 import { Effect, Result } from "effect";
 import type { AgentComputerApi } from "../backend/agent-computer/agent-computer-api";
 import type { IntegrationCredential } from "../backend/integration-credential";

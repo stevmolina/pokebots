@@ -1,4 +1,4 @@
-import type { AvatarColor, AvatarHue } from "@openbot/contracts/ipc";
+import type { AvatarColor, AvatarHue } from "@pokebots/contracts/ipc";
 import { Spinner, Typography } from "heroui-native";
 import { useThemeColor } from "heroui-native/hooks";
 import Mic from "lucide-react-native/icons/mic";

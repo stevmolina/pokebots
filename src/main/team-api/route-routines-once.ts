@@ -1,8 +1,8 @@
-import { CHANNEL_CHATS_CAPABILITY, canAdministerServer, isReleasedRoutineSchedule } from "@openbot/contracts/ipc";
-import { type DynamicRecord, isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { ROUTINES_ONCE_CAPABILITY, ROUTINES_ONCE_ROUTES } from "@openbot/contracts/team-protocol/routines-once-v1";
-import { sourceText } from "@openbot/i18n/source";
-import { RoutineInputError } from "@openbot/team-client/routine-schedule";
+import { CHANNEL_CHATS_CAPABILITY, canAdministerServer, isReleasedRoutineSchedule } from "@pokebots/contracts/ipc";
+import { type DynamicRecord, isDynamicRecord, isString } from "@pokebots/contracts/runtime-values";
+import { ROUTINES_ONCE_CAPABILITY, ROUTINES_ONCE_ROUTES } from "@pokebots/contracts/team-protocol/routines-once-v1";
+import { sourceText } from "@pokebots/i18n/source";
+import { RoutineInputError } from "@pokebots/team-client/routine-schedule";
 import type { ChannelService } from "../../backend/channel-service";
 import {
   parseCreateChannelRoutine,

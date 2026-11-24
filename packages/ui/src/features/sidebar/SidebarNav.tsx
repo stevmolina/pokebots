@@ -4,7 +4,7 @@
  * the scroll fades in that order.
  */
 
-import { Bot, Button, CheckCheck, ContextMenu, FolderPlus, Hash } from "@openbot/ui";
+import { Bot, Button, CheckCheck, ContextMenu, FolderPlus, Hash } from "@pokebots/ui";
 import { For, Show } from "solid-js";
 import { useText } from "../../text";
 import { SidebarChannelRow } from "./SidebarChannelRow";

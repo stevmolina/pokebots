@@ -7,7 +7,7 @@ export const messages = {
   "mobile.chat.artifact.remove": "Отключить режим Artifact",
   "mobile.chat.dictation.microphoneOffTitle": "Доступ к микрофону выключен",
   "mobile.chat.dictation.microphoneOffMessage":
-    "Чтобы диктовать сообщения, разрешите OpenBot использовать микрофон и распознавание речи в настройках.",
+    "Чтобы диктовать сообщения, разрешите Pokebots использовать микрофон и распознавание речи в настройках.",
   "mobile.chat.dictation.stopped": "Диктовка остановлена",
   "mobile.chat.dictation.tryAgain": "Повторите попытку.",
   "mobile.chat.dictation.unavailable": "Диктовка недоступна",
@@ -208,7 +208,7 @@ export const messages = {
   "mobile.chat.attachment.openFailed": "Не удалось открыть вложение",
   "mobile.chat.attachment.photosNeedUpdate": "Для сохранения фото нужна последняя версия приложения.",
   "mobile.chat.attachment.photosPermission":
-    "Чтобы сохранить изображение, разрешите OpenBot добавлять фото в настройках.",
+    "Чтобы сохранить изображение, разрешите Pokebots добавлять фото в настройках.",
   "mobile.chat.attachment.imageUnavailable": "Изображение недоступно. Повторите попытку.",
   "mobile.chat.attachment.saveImageFailed": "Не удалось сохранить изображение",
   "mobile.chat.attachment.copyImageFailed": "Не удалось скопировать изображение",
@@ -240,9 +240,9 @@ export const messages = {
   "mobile.chat.attachment.unsupported":
     "{name}: выберите изображения, аудио MP3, видео MOV или MP4, архивы ZIP, PDF, документы Office, EML, текстовые файлы, Markdown, данные или исходный код.",
   "mobile.chat.attachment.hostRejectsType":
-    "{name}: компьютер-хост не принимает файлы {type}. Обновите там OpenBot, чтобы прикреплять их.",
+    "{name}: компьютер-хост не принимает файлы {type}. Обновите там Pokebots, чтобы прикреплять их.",
   "mobile.chat.attachment.hostRejects":
-    "{name}: компьютер-хост не принимает такие файлы. Обновите там OpenBot, чтобы прикреплять их.",
+    "{name}: компьютер-хост не принимает такие файлы. Обновите там Pokebots, чтобы прикреплять их.",
   "mobile.chat.attachment.nameTooLong": "Выберите файл с более коротким именем.",
   "mobile.chat.attachment.damaged": "Вложение повреждено. Выберите его заново.",
   "mobile.chat.attachment.tooLarge": "{name} больше {limit}.",
@@ -290,11 +290,11 @@ export const messages = {
   "mobile.chat.liveVoice.voiceServerFailed":
     "Голосовой сервер не смог прочитать ответ. Проверьте его в разделе «Настройки > Голос».",
   "mobile.chat.liveVoice.gptUnsupported":
-    "Этот сервер не поддерживает GPT Live Voice. Обновите OpenBot на компьютере, где он работает.",
+    "Этот сервер не поддерживает GPT Live Voice. Обновите Pokebots на компьютере, где он работает.",
   "mobile.chat.liveVoice.gptFailed": "Не удалось запустить GPT Live Voice. Включите микрофон, чтобы повторить.",
   "mobile.chat.liveVoice.gptEnded": "GPT Live Voice остановлен. Включите микрофон, чтобы запустить его снова.",
   "mobile.chat.liveVoice.gptMicrophoneOff":
-    "Разрешите OpenBot использовать микрофон в Настройках. Затем включите микрофон, чтобы повторить.",
+    "Разрешите Pokebots использовать микрофон в Настройках. Затем включите микрофон, чтобы повторить.",
   "mobile.chat.composer.addAttachment": "Добавить вложение",
   "mobile.chat.composer.ask": "Спросить: {name}",
   "mobile.chat.composer.stopFailed": "Не удалось остановить агента. Возможно, он уже закончил.",
@@ -318,7 +318,8 @@ export const messages = {
   "mobile.chat.sideQuestion.deleteTitle": "Удалить этот побочный вопрос?",
   "mobile.chat.sideQuestion.deleteBody": "Его вопросы и ответы есть только на этом телефоне. Восстановить их нельзя.",
   "mobile.chat.sideQuestion.notFound": "Этого агента больше нет на сервере.",
-  "mobile.chat.sideQuestion.unsupported": "Этот хост не может отвечать на побочные вопросы. Обновите OpenBot на хосте.",
+  "mobile.chat.sideQuestion.unsupported":
+    "Этот хост не может отвечать на побочные вопросы. Обновите Pokebots на хосте.",
   "mobile.chat.pins.title": "Закреплённые сообщения",
   "mobile.chat.pins.emptyTitle": "Нет закреплённых сообщений",
   "mobile.chat.pins.emptyBody": "Нажмите и удерживайте сообщение, затем нажмите «Закрепить», чтобы оно было здесь.",
@@ -327,7 +328,7 @@ export const messages = {
   "mobile.chat.pins.unpin": "Открепить",
   "mobile.chat.pins.failed": "Закрепление не изменилось.",
   "mobile.chat.pins.loadFailed": "Не удалось загрузить закреплённые сообщения.",
-  "mobile.chat.pins.unsupported": "Этот хост не может закреплять сообщения. Обновите OpenBot на хосте.",
+  "mobile.chat.pins.unsupported": "Этот хост не может закреплять сообщения. Обновите Pokebots на хосте.",
   "mobile.chat.pins.mainChat": "Основной чат",
   "mobile.chat.pins.thread": "Боковая ветка",
   "mobile.chat.pins.pinnedBy": "Закрепил(а): {name}",
@@ -425,7 +426,7 @@ export const messages = {
   "mobile.chat.imageGallery.saved": "Сохранено в «Фото»",
   "mobile.chat.imageGallery.shareAll": "Поделиться всеми",
   "mobile.chat.imageGallery.photosPermission":
-    "Разрешите OpenBot добавлять фото в Настройках, чтобы сохранить эти изображения.",
+    "Разрешите Pokebots добавлять фото в Настройках, чтобы сохранить эти изображения.",
   "mobile.chat.imageGallery.saveFailed": "Не удалось сохранить изображения",
   "mobile.chat.imageGallery.shareFailed": "Не удалось поделиться изображениями",
   "mobile.chat.imageGallery.shareNeedsUpdate":
@@ -436,7 +437,7 @@ export const messages = {
   "mobile.chat.video.loading": "Загрузка {name}",
   "mobile.chat.video.share": "Поделиться: {name}",
   "mobile.chat.video.save": "Сохранить {name} в «Фото»",
-  "mobile.chat.video.photosPermission": "Разрешите OpenBot добавлять фото в Настройках, чтобы сохранить это видео.",
+  "mobile.chat.video.photosPermission": "Разрешите Pokebots добавлять фото в Настройках, чтобы сохранить это видео.",
   "mobile.chat.video.saveFailed": "Не удалось сохранить видео",
   "mobile.chat.audio.play": "Воспроизвести: {name}",
   "mobile.chat.audio.pause": "Пауза: {name}",
@@ -450,7 +451,7 @@ export const messages = {
   "mobile.chat.browserSecret.authenticatorCode": "Код из приложения-аутентификатора",
   "mobile.chat.browserSecret.oneTimeCode": "Одноразовый код",
   "mobile.chat.browserSecret.takeoverTitle": "Управление браузером",
-  "mobile.chat.browserSecret.takeoverBody": "Выполните этот шаг в браузере на компьютере, где работает OpenBot.",
+  "mobile.chat.browserSecret.takeoverBody": "Выполните этот шаг в браузере на компьютере, где работает Pokebots.",
   "mobile.chat.mcpSignIn.marker": "Попросил войти на MCP-сервер",
   "mobile.chat.mcpSignIn.signIn": "Войти",
   "mobile.chat.mcpSignIn.signInNamed": "Войти в {name}",
@@ -458,28 +459,28 @@ export const messages = {
   "mobile.chat.mcpSignIn.continue": "Продолжить",
   "mobile.chat.mcpSignIn.continueNamed": "Попросить агента снова проверить {name}",
   "mobile.chat.mcpSignIn.message": "Я вошёл на MCP-сервер {name}. Проверь его ещё раз.",
-  "mobile.chat.mcpSignIn.unavailable": "Войдите в {name} в OpenBot на компьютере: Настройки сервера, MCP.",
+  "mobile.chat.mcpSignIn.unavailable": "Войдите в {name} в Pokebots на компьютере: Настройки сервера, MCP.",
   "mobile.chat.browserSecret.signInBlockedTitle": "Войдите на своём компьютере",
   "mobile.chat.browserSecret.signInBlockedBody":
-    "Этот сайт не принимает вход с сервера. Откройте этот чат в приложении OpenBot для компьютера и войдите там.",
+    "Этот сайт не принимает вход с сервера. Откройте этот чат в приложении Pokebots для компьютера и войдите там.",
   "mobile.chat.browserSecret.takeoverReload":
-    "OpenBot не смог до конца ввести пароль или код. Введите на странице недостающее. Затем обновите страницу и только потом нажмите «Готово».",
+    "Pokebots не смог до конца ввести пароль или код. Введите на странице недостающее. Затем обновите страницу и только потом нажмите «Готово».",
   "mobile.chat.browserSecret.takeoverFailed": "Не удалось выполнить запрос.",
   "mobile.chat.browserSecret.done": "Готово",
   "mobile.chat.browserSecret.submitOnce": "Однократная отправка на {origin}. Это значение не попадёт в чат.",
   "mobile.chat.browserSecret.submitFailed": "Не удалось выполнить запрос. Проверьте подключение и повторите попытку.",
   "mobile.chat.browserSecret.vaultSkip.agentScript":
-    "OpenBot не использовал ваши сохранённые учётные данные, потому что агент запустил скрипт на этой странице. Чтобы их использовать, попросите агента перезагрузить страницу и попробовать снова.",
+    "Pokebots не использовал ваши сохранённые учётные данные, потому что агент запустил скрипт на этой странице. Чтобы их использовать, попросите агента перезагрузить страницу и попробовать снова.",
   "mobile.chat.browserSecret.vaultSkip.fieldKind":
-    "OpenBot не использовал ваши сохранённые учётные данные, потому что агент выбрал не то поле на странице.",
+    "Pokebots не использовал ваши сохранённые учётные данные, потому что агент выбрал не то поле на странице.",
   "mobile.chat.browserSecret.vaultSkip.loginChoice":
-    "OpenBot не использовал сохранённые учётные данные, потому что агент не выбрал ни одни из учётных данных, сохранённых для этого сайта. Скажите агенту, какой аккаунт использовать.",
+    "Pokebots не использовал сохранённые учётные данные, потому что агент не выбрал ни одни из учётных данных, сохранённых для этого сайта. Скажите агенту, какой аккаунт использовать.",
   "mobile.chat.browserSecret.vaultSkip.noPassword":
-    "OpenBot не использовал ваши сохранённые учётные данные, потому что в них нет пароля для этого сайта.",
+    "Pokebots не использовал ваши сохранённые учётные данные, потому что в них нет пароля для этого сайта.",
   "mobile.chat.browserSecret.vaultSkip.noAuthenticatorKey":
-    "OpenBot не использовал ваши сохранённые учётные данные, потому что в них нет ключа аутентификатора.",
+    "Pokebots не использовал ваши сохранённые учётные данные, потому что в них нет ключа аутентификатора.",
   "mobile.chat.browserSecret.vaultSkip.vaultUnreadable":
-    "OpenBot не использовал сохранённые учётные данные, потому что не смог прочитать ваш менеджер паролей.",
+    "Pokebots не использовал сохранённые учётные данные, потому что не смог прочитать ваш менеджер паролей.",
   "mobile.chat.browserSecret.submit": "Отправить",
   "mobile.chat.browserSecret.takeOver": "Взять управление",
   "mobile.chat.starter.title": "С чего начнём?",
@@ -562,14 +563,14 @@ export const messages = {
   "mobile.chat.approval.effect.permissions":
     "«Разрешить» даст {name} эти разрешения на {server}. «Отклонить» сохранит текущие разрешения.",
   "mobile.chat.approval.partial":
-    "{server} отправляет на телефон только начало этого запроса. Чтобы разрешить его, обновите OpenBot на {server} или откройте этот чат в приложении OpenBot для компьютера. Отклонить его можно здесь.",
+    "{server} отправляет на телефон только начало этого запроса. Чтобы разрешить его, обновите Pokebots на {server} или откройте этот чат в приложении Pokebots для компьютера. Отклонить его можно здесь.",
   "mobile.chat.approval.loading": "Загрузка полного запроса…",
   "mobile.chat.approval.loadFailed": "Не удалось загрузить полный запрос. Отклонить его можно здесь.",
   "mobile.chat.approval.retry": "Повторить",
   "mobile.chat.approval.report.bugHeadline": "Нашли ошибку? Давайте исправим.",
   "mobile.chat.approval.report.ideaHeadline": "Есть идея? Давайте воплотим.",
   "mobile.chat.approval.report.dontSend": "Не сейчас",
-  "mobile.chat.approval.report.send": "Отправить команде OpenBot",
+  "mobile.chat.approval.report.send": "Отправить команде Pokebots",
   "mobile.chat.approval.report.phoneAdds": "Этот телефон добавляет в отчёт:",
   "mobile.chat.approval.allow": "Разрешить",
   "mobile.chat.approval.deny": "Отклонить",
@@ -663,7 +664,7 @@ export const messages = {
   "mobile.chat.queue.sendNowNeedsTurn": "Отправить сейчас можно только во время выполнения хода.",
   "mobile.chat.queue.stillHoldingTitle": "Сообщение всё ещё удерживается",
   "mobile.chat.queue.stillHoldingMessage":
-    "OpenBot не удалось освободить это сообщение, поэтому агент продолжает его ждать. Повторите попытку после переподключения телефона.",
+    "Pokebots не удалось освободить это сообщение, поэтому агент продолжает его ждать. Повторите попытку после переподключения телефона.",
   "mobile.chat.queue.keepEditing": "Продолжить",
   "mobile.chat.queue.leaveAnyway": "Всё равно выйти",
   "mobile.chat.queue.discardTitle": "Отменить изменения?",
@@ -673,7 +674,7 @@ export const messages = {
   "mobile.chat.queue.alreadyReceivedKept":
     "Агент уже получил это сообщение, поэтому его нельзя изменить. Когда вы закроете этот экран, ваш текст попадёт в поле сообщения.",
   "mobile.chat.queue.holding": "Удерживаем сообщение для вас…",
-  "mobile.chat.queue.holdFailed": "OpenBot не удалось удержать это сообщение для редактирования.",
+  "mobile.chat.queue.holdFailed": "Pokebots не удалось удержать это сообщение для редактирования.",
   "mobile.chat.queue.messageLabel": "Сообщение",
   "mobile.chat.queue.messagePlaceholder": "Текст сообщения",
   "mobile.chat.queue.save": "Сохранить сообщение из очереди",
@@ -722,12 +723,13 @@ export const messages = {
   "mobile.chat.threads.renameSave": "Сохранить",
   "mobile.chat.threads.name": "Название ветки",
   "mobile.chat.threads.renameUnavailable":
-    "Сейчас нельзя переименовать эту ветку. Подключитесь к серверу или обновите OpenBot на хосте.",
+    "Сейчас нельзя переименовать эту ветку. Подключитесь к серверу или обновите Pokebots на хосте.",
   "mobile.chat.threads.delete.action": "Удалить",
   "mobile.chat.threads.delete.title": "Удалить эту ветку?",
-  "mobile.chat.threads.delete.body": "OpenBot навсегда удалит ветку, её сообщения и файлы. Основной чат не изменится.",
-  "mobile.chat.threads.filesUnsupported": "Этот хост не принимает файлы в ветке. Обновите OpenBot на хосте.",
-  "mobile.chat.threads.unsupported": "Этот хост не может переименовывать или удалять ветки. Обновите OpenBot на хосте.",
+  "mobile.chat.threads.delete.body": "Pokebots навсегда удалит ветку, её сообщения и файлы. Основной чат не изменится.",
+  "mobile.chat.threads.filesUnsupported": "Этот хост не принимает файлы в ветке. Обновите Pokebots на хосте.",
+  "mobile.chat.threads.unsupported":
+    "Этот хост не может переименовывать или удалять ветки. Обновите Pokebots на хосте.",
   "mobile.chat.threads.error.rename": "Не удалось переименовать ветку.",
   "mobile.chat.threads.error.delete": "Не удалось удалить ветку.",
   "mobile.chat.channelWork.working": "Работает в канале {channel}",

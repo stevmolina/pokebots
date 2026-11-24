@@ -1,4 +1,4 @@
-import type { AttachmentSummary, AvatarColor, ConversationReaction, InstalledSkill } from "@openbot/contracts/ipc";
+import type { AttachmentSummary, AvatarColor, ConversationReaction, InstalledSkill } from "@pokebots/contracts/ipc";
 import {
   Bubble,
   BubbleContent,
@@ -8,7 +8,7 @@ import {
   MessageAvatar,
   MessageContent,
   MessageHeader,
-} from "@openbot/ui";
+} from "@pokebots/ui";
 import type { JSX } from "@solidjs/web";
 import { children, createMemo, For, Show } from "solid-js";
 import { avatarHeadColor } from "../../bloub-avatar";

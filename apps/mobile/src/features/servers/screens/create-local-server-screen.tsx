@@ -1,6 +1,6 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import type { HostLocalServer } from "@openbot/team-client/team-admin-requests";
-import type { UserErrorDetails } from "@openbot/user-errors";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
+import type { HostLocalServer } from "@pokebots/team-client/team-admin-requests";
+import type { UserErrorDetails } from "@pokebots/user-errors";
 import { useQuery } from "@tanstack/react-query";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { usePreventRemove } from "expo-router/react-navigation";

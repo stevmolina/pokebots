@@ -1,6 +1,6 @@
-import type { HostBrowsingMemory, OpenBotDesktopApi } from "@openbot/contracts/ipc";
-import { Item, ItemActions, ItemContent, ItemDescription, ItemTitle, Switch } from "@openbot/ui";
-import { useText } from "@openbot/ui/text";
+import type { HostBrowsingMemory, OpenBotDesktopApi } from "@pokebots/contracts/ipc";
+import { Item, ItemActions, ItemContent, ItemDescription, ItemTitle, Switch } from "@pokebots/ui";
+import { useText } from "@pokebots/ui/text";
 import { createEffect, createSignal, Show, untrack } from "solid-js";
 
 /** The browsing memory calls of one server's host. The desktop reaches them through main. */

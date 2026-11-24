@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import type {
   RoutineFields,
   RoutineLimitPolicy,
@@ -10,7 +10,7 @@ import type {
   RoutineRunSource,
   RoutineRunStatus,
   RoutineSchedule,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   isRoutinePausedByRun,
   isRoutineSchedule,
@@ -19,10 +19,10 @@ import {
   ROUTINE_MISSED_POLICIES,
   ROUTINE_RUN_PLACES,
   ROUTINE_RUN_SOURCES,
-} from "@openbot/contracts/ipc";
-import type { EventFilter, EventJsonValue, EventRoutineOwner } from "@openbot/contracts/ipc-events";
-import { type DynamicRecord, isDynamicRecord, isOneOf, isString } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/ipc";
+import type { EventFilter, EventJsonValue, EventRoutineOwner } from "@pokebots/contracts/ipc-events";
+import { type DynamicRecord, isDynamicRecord, isOneOf, isString } from "@pokebots/contracts/runtime-values";
+import { sourceText } from "@pokebots/i18n/source";
 import {
   nextRoutineOccurrence,
   nextValidRoutineOccurrence,
@@ -31,7 +31,7 @@ import {
   routineOnceInstant,
   validateRoutineSchedule,
   validateStoredRoutineSchedule,
-} from "@openbot/team-client/routine-schedule";
+} from "@pokebots/team-client/routine-schedule";
 import {
   databaseRows,
   optionalStringColumn,

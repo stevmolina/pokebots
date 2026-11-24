@@ -1,5 +1,5 @@
-import { Button, Heading } from "@openbot/ui";
-import { ShortcutSheet, type ShortcutSheetProps } from "@openbot/ui/features/shortcuts/ShortcutSheet";
+import { Button, Heading } from "@pokebots/ui";
+import { ShortcutSheet, type ShortcutSheetProps } from "@pokebots/ui/features/shortcuts/ShortcutSheet";
 import { createSignal } from "solid-js";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 

@@ -22,10 +22,10 @@ import type {
   SidebarLayoutSnapshot,
   TeamPresenceSnapshot,
   UpdateStatus,
-} from "@openbot/contracts/ipc";
-import { SIDEBAR_UNASSIGNED_SECTION_ID } from "@openbot/contracts/ipc";
-import { TEAM_CURRENT_CAPABILITIES } from "@openbot/contracts/team-protocol/current";
-import { TEAM_PROTOCOL_V6 } from "@openbot/contracts/team-protocol/v6";
+} from "@pokebots/contracts/ipc";
+import { SIDEBAR_UNASSIGNED_SECTION_ID } from "@pokebots/contracts/ipc";
+import { TEAM_CURRENT_CAPABILITIES } from "@pokebots/contracts/team-protocol/current";
+import { TEAM_PROTOCOL_V6 } from "@pokebots/contracts/team-protocol/v6";
 import developmentLogoUrl from "../assets/openbot-logo-dev.png";
 import productionLogoUrl from "../assets/openbot-logo-production.png";
 import { STORY_AGENT_STATUS, STORY_PRESENCE } from "./fixtures";

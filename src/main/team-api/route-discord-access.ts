@@ -1,6 +1,6 @@
-import { parseDiscordAllowedRoles } from "@openbot/contracts/ipc";
-import { DISCORD_ACCESS_CAPABILITY, DISCORD_ACCESS_ROUTES } from "@openbot/contracts/team-protocol/discord-access-v1";
-import { sourceText } from "@openbot/i18n/source";
+import { parseDiscordAllowedRoles } from "@pokebots/contracts/ipc";
+import { DISCORD_ACCESS_CAPABILITY, DISCORD_ACCESS_ROUTES } from "@pokebots/contracts/team-protocol/discord-access-v1";
+import { sourceText } from "@pokebots/i18n/source";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import type { TeamApiConnectors } from "./dependencies";
 import { HttpError } from "./http-error";

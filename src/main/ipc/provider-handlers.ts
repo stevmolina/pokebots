@@ -9,7 +9,7 @@ import {
   isDownloadableProvider,
   isManagedRuntimeProvider,
   type ManagedProviderId,
-} from "@openbot/contracts/agent-providers";
+} from "@pokebots/contracts/agent-providers";
 import {
   type AgentProviderId,
   type ConnectProviderAccountInput,
@@ -22,10 +22,10 @@ import {
   type ResetProviderUsageInput,
   type SetProviderAccountPoolInput,
   type SetProviderApiKeyInput,
-} from "@openbot/contracts/ipc";
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
-import { registerSecretValue } from "@openbot/logging";
+} from "@pokebots/contracts/ipc";
+import { isDynamicRecord, isString } from "@pokebots/contracts/runtime-values";
+import { sourceText } from "@pokebots/i18n/source";
+import { registerSecretValue } from "@pokebots/logging";
 import { AgentLifecycleFailed, type AgentService } from "../../backend/agent-service";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import type { SignInRegion } from "../../backend/kimi-region";

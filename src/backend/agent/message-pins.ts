@@ -8,7 +8,7 @@ import {
   type PinnedMessage,
   type PinnedMessagesSnapshot,
   type SetMessagePinnedInput,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import { Effect } from "effect";
 import type { AgentStore } from "../agent-store";
 import type { AgentTasks } from "../agent-tasks/agent-tasks";

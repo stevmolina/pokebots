@@ -1,4 +1,4 @@
-import { type AppLogoColor, DEFAULT_APP_LOGO_COLOR } from "@openbot/contracts/app-logo-color";
+import { type AppLogoColor, DEFAULT_APP_LOGO_COLOR } from "@pokebots/contracts/app-logo-color";
 import {
   BlendColor,
   Blur,

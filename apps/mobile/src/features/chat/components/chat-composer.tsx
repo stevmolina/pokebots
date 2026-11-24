@@ -1,4 +1,4 @@
-import { rankAgentMentions } from "@openbot/contracts/agent-mention-rank";
+import { rankAgentMentions } from "@pokebots/contracts/agent-mention-rank";
 import { GlassView } from "expo-glass-effect";
 import { router, useIsFocused } from "expo-router";
 import { Button, Spinner, Typography } from "heroui-native";

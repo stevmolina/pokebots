@@ -1,4 +1,4 @@
-import type { OpenBotDesktopApi } from "@openbot/contracts/ipc";
+import type { OpenBotDesktopApi } from "@pokebots/contracts/ipc";
 
 /**
  * What the publish and install dialogs reach in main: the agent templates of this computer, and

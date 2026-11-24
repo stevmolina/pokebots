@@ -12,9 +12,9 @@
 // it. Writes
 // .openbot-build/channel-stuck-tasks-e2e/report.json.
 import assert from "node:assert/strict";
-import { agentProviderDescriptor } from "@openbot/contracts/agent-providers";
-import { type ChannelPage, type ChannelTask, channelRoutingConversationEvent } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+import { agentProviderDescriptor } from "@pokebots/contracts/agent-providers";
+import { type ChannelPage, type ChannelTask, channelRoutingConversationEvent } from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
 import {
   ChannelClient,
   connectChannelE2e,

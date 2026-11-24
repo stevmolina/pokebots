@@ -1,5 +1,5 @@
-import { createOpenBotLogger } from "@openbot/logging";
-import type { WhatsAppAuthStore } from "@openbot/whatsapp/auth-store";
+import { createOpenBotLogger } from "@pokebots/logging";
+import type { WhatsAppAuthStore } from "@pokebots/whatsapp/auth-store";
 import {
   type AnyMessageContent,
   type BaileysEventMap,
@@ -18,7 +18,7 @@ import {
   type UserFacingSocketConfig,
   type WAMessage,
   type WAVersion,
-} from "@openbot/whatsapp/baileys";
+} from "@pokebots/whatsapp/baileys";
 import { Effect } from "effect";
 import { MessagingAdapterError, WhatsAppRefusedError } from "../messaging-types";
 import type { WhatsAppUpsertWindow } from "./whatsapp-events";

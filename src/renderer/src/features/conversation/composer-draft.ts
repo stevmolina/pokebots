@@ -1,16 +1,16 @@
-import { attachmentReferenceIds } from "@openbot/contracts/attachment-references";
-import { serializeChatTagReference } from "@openbot/contracts/chat-tag-references";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { attachmentReferenceIds } from "@pokebots/contracts/attachment-references";
+import { serializeChatTagReference } from "@pokebots/contracts/chat-tag-references";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import {
   type DraftAttachment,
   isAttachmentSummary,
   type MarketplaceSkillDetail,
   SKILL_CREATION_REQUEST,
-} from "@openbot/contracts/ipc";
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { decodeQueueEditRequest, type QueueEditRequest } from "@openbot/contracts/team-protocol/queue-edit-v1";
-import { skillExamplePrompt } from "@openbot/ui/components/SkillPreview";
-import type { ComposerSelection } from "@openbot/ui/features/conversation/ComposerEditor";
+} from "@pokebots/contracts/ipc";
+import { isDynamicRecord, isString } from "@pokebots/contracts/runtime-values";
+import { decodeQueueEditRequest, type QueueEditRequest } from "@pokebots/contracts/team-protocol/queue-edit-v1";
+import { skillExamplePrompt } from "@pokebots/ui/components/SkillPreview";
+import type { ComposerSelection } from "@pokebots/ui/features/conversation/ComposerEditor";
 import type { ComposerDraft } from "./conversation-types";
 
 export const EMPTY_DRAFT: ComposerDraft = {

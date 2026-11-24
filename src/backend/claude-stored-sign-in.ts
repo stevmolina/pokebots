@@ -14,8 +14,8 @@ import { createRequire } from "node:module";
 import { homedir, platform, userInfo } from "node:os";
 import { join } from "node:path";
 import { promisify } from "node:util";
-import { type DynamicRecord, isDynamicRecord } from "@openbot/contracts/runtime-values";
-import { createOpenBotLogger, toLogValue } from "@openbot/logging";
+import { type DynamicRecord, isDynamicRecord } from "@pokebots/contracts/runtime-values";
+import { createOpenBotLogger, toLogValue } from "@pokebots/logging";
 import { Effect, Option, Result, Schema } from "effect";
 import type * as Koffi from "koffi";
 

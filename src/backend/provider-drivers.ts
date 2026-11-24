@@ -12,8 +12,8 @@ import {
   type PromptCacheTtl,
   type ProviderEnvironmentProvider,
   type ProviderModelSource,
-} from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect } from "effect";
 import { AcpAgentClient, type AcpHistoryPersistence } from "./acp-client";
 import {
@@ -871,7 +871,7 @@ interface ProviderModelCatalog {
 
 /**
  * What a provider *does*. What it is called, how it is described and where its sign-in help points
- * live in the provider registry in `@openbot/contracts/agent-providers`; a driver holds only the
+ * live in the provider registry in `@pokebots/contracts/agent-providers`; a driver holds only the
  * behaviour, so a new provider is one registry row plus one driver.
  */
 export interface BuiltInProviderDriver {

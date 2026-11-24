@@ -1,4 +1,4 @@
-import { CoveredVoiceRecording } from "@openbot/ui/features/conversation/VoiceRecordingMorph";
+import { CoveredVoiceRecording } from "@pokebots/ui/features/conversation/VoiceRecordingMorph";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 

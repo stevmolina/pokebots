@@ -1,5 +1,5 @@
 import { createRequire } from "node:module";
-import { createOpenBotLogger, toLogValue } from "@openbot/logging";
+import { createOpenBotLogger, toLogValue } from "@pokebots/logging";
 import type * as Koffi from "koffi";
 
 const logger = createOpenBotLogger("windows-short-path");

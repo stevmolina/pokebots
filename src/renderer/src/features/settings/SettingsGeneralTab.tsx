@@ -5,8 +5,8 @@ import {
   type AvatarColor,
   QUIT_GUARDS,
   type QuitGuard,
-} from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
+} from "@pokebots/contracts/ipc";
+import type { AppTextKey } from "@pokebots/i18n";
 import {
   Item,
   ItemActions,
@@ -22,19 +22,19 @@ import {
   SettingsSection,
   SwitchField,
   toast,
-} from "@openbot/ui";
-import { documentColorScheme } from "@openbot/ui/document-color-scheme";
-import { AppearanceSelect } from "@openbot/ui/features/settings/AppearanceSelect";
-import type { GeneralSettingsValue } from "@openbot/ui/features/settings/app-settings";
-import { ChatBackgroundSetting } from "@openbot/ui/features/settings/ChatBackgroundSetting";
-import { ChatBubbleStyleSelect } from "@openbot/ui/features/settings/ChatBubbleStyleSelect";
-import { OwnChatColorTrigger } from "@openbot/ui/features/settings/ChatColorSetting";
-import { FontSelect } from "@openbot/ui/features/settings/FontSelect";
-import { LanguageSelect } from "@openbot/ui/features/settings/LanguageSelect";
-import { LogoColorPicker } from "@openbot/ui/features/settings/LogoColorPicker";
-import { SendShortcutSelect } from "@openbot/ui/features/settings/SendShortcutSelect";
-import { SidebarChatOrderSelect } from "@openbot/ui/features/settings/SidebarChatOrderSelect";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/ui";
+import { documentColorScheme } from "@pokebots/ui/document-color-scheme";
+import { AppearanceSelect } from "@pokebots/ui/features/settings/AppearanceSelect";
+import type { GeneralSettingsValue } from "@pokebots/ui/features/settings/app-settings";
+import { ChatBackgroundSetting } from "@pokebots/ui/features/settings/ChatBackgroundSetting";
+import { ChatBubbleStyleSelect } from "@pokebots/ui/features/settings/ChatBubbleStyleSelect";
+import { OwnChatColorTrigger } from "@pokebots/ui/features/settings/ChatColorSetting";
+import { FontSelect } from "@pokebots/ui/features/settings/FontSelect";
+import { LanguageSelect } from "@pokebots/ui/features/settings/LanguageSelect";
+import { LogoColorPicker } from "@pokebots/ui/features/settings/LogoColorPicker";
+import { SendShortcutSelect } from "@pokebots/ui/features/settings/SendShortcutSelect";
+import { SidebarChatOrderSelect } from "@pokebots/ui/features/settings/SidebarChatOrderSelect";
+import { useText } from "@pokebots/ui/text";
 import { createUniqueId, Show } from "solid-js";
 import { useInstalledFonts } from "../../app-fonts";
 import { useAppearanceChoice } from "../../appearance-choice";

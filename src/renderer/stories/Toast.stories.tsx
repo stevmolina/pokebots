@@ -1,5 +1,5 @@
-import { Button, Heading, Text, Toaster, toast } from "@openbot/ui";
-import { currentText } from "@openbot/ui/text";
+import { Button, Heading, Text, Toaster, toast } from "@pokebots/ui";
+import { currentText } from "@pokebots/ui/text";
 import { createSignal, onCleanup, type ParentProps } from "solid-js";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { WebServiceWorkerUpdates } from "../src/features/web-client/WebServiceWorkerUpdates";

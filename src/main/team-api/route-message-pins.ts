@@ -1,5 +1,5 @@
-import { MESSAGE_PINS_CAPABILITY, MESSAGE_PINS_ROUTES } from "@openbot/contracts/team-protocol/message-pins-v1";
-import { sourceText } from "@openbot/i18n/source";
+import { MESSAGE_PINS_CAPABILITY, MESSAGE_PINS_ROUTES } from "@pokebots/contracts/team-protocol/message-pins-v1";
+import { sourceText } from "@pokebots/i18n/source";
 import { MessagePinRefusedError, runMessagePin } from "../message-pin-refusal";
 import type { TeamApiAgents, TeamApiAgentTasks } from "./dependencies";
 import { HttpError } from "./http-error";

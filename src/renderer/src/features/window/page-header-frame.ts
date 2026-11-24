@@ -1,4 +1,4 @@
-import type { PageHeaderFrame } from "@openbot/ui/features/window/PageHeader";
+import type { PageHeaderFrame } from "@pokebots/ui/features/window/PageHeader";
 import { type Accessor, createSignal, onSettled } from "solid-js";
 import { usePlatform } from "../../platform";
 

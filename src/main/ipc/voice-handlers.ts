@@ -15,14 +15,14 @@ import type {
   VoiceSettings,
   VoiceStream,
   VoiceTranscriptionResult,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   decodeLiveVoiceSessionResponse,
   isLiveVoiceName,
   LIVE_VOICE_CAPABILITY,
   LIVE_VOICE_ROUTES,
-} from "@openbot/contracts/team-protocol/live-voice-v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/team-protocol/live-voice-v1";
+import { sourceText } from "@pokebots/i18n/source";
 import type { WebContents } from "electron";
 import type { AgentService } from "../../backend/agent-service";
 import { runCauseEffect } from "../../backend/effect-boundary";

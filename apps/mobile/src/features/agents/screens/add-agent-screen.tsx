@@ -1,5 +1,5 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import type { CreateAgentInput } from "@openbot/contracts/ipc";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
+import type { CreateAgentInput } from "@pokebots/contracts/ipc";
 import * as Crypto from "expo-crypto";
 import { router, Stack } from "expo-router";
 import { usePreventRemove } from "expo-router/react-navigation";

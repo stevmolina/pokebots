@@ -1,7 +1,7 @@
-import type { AgentTask, AgentTaskOutcome } from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
-import { TaskMark, type TaskMarkState } from "@openbot/ui/features/conversation/TaskList";
-import { type TextValue, useText } from "@openbot/ui/text";
+import type { AgentTask, AgentTaskOutcome } from "@pokebots/contracts/ipc";
+import type { AppTextKey } from "@pokebots/i18n";
+import { TaskMark, type TaskMarkState } from "@pokebots/ui/features/conversation/TaskList";
+import { type TextValue, useText } from "@pokebots/ui/text";
 import { Show } from "solid-js";
 
 const OUTCOME_TEXT = {

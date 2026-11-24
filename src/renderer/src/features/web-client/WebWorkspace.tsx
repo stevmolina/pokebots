@@ -1,8 +1,8 @@
-import { isKnownAgentProvider } from "@openbot/contracts/agent-providers";
-import type { AppAppearance } from "@openbot/contracts/app-appearance";
-import type { AppLanguage } from "@openbot/contracts/app-language";
-import { BRAIN_CAPABILITY } from "@openbot/contracts/brain";
-import { HOSTED_SERVER_CONTACT_URL } from "@openbot/contracts/hosted-servers";
+import { isKnownAgentProvider } from "@pokebots/contracts/agent-providers";
+import type { AppAppearance } from "@pokebots/contracts/app-appearance";
+import type { AppLanguage } from "@pokebots/contracts/app-language";
+import { BRAIN_CAPABILITY } from "@pokebots/contracts/brain";
+import { HOSTED_SERVER_CONTACT_URL } from "@pokebots/contracts/hosted-servers";
 import {
   type AddedAgent,
   type AgentModelChoice,
@@ -32,103 +32,103 @@ import {
   type ServerConnectionState,
   type ServerSummary,
   STORAGE_CAPABILITY,
-} from "@openbot/contracts/ipc";
-import type { PricingOrder } from "@openbot/contracts/license";
-import type { MarketplaceListingLink } from "@openbot/contracts/marketplace-links";
-import { AGENT_ACCESS_CAPABILITY } from "@openbot/contracts/team-protocol/agent-access-v1";
-import { AGENT_BACKUP_MODELS_ROUTES } from "@openbot/contracts/team-protocol/agent-backup-models-v1";
-import { AGENT_COMPUTER_CAPABILITY } from "@openbot/contracts/team-protocol/agent-computer-v1";
-import { AGENT_DEFAULTS_ROUTES } from "@openbot/contracts/team-protocol/agent-defaults-v1";
-import { AGENT_FAST_MODE_ROUTES } from "@openbot/contracts/team-protocol/agent-fast-mode-v1";
-import { AGENT_HOST_SETTINGS_ROUTES } from "@openbot/contracts/team-protocol/agent-host-settings-v1";
-import { AGENT_IMPORT_CAPABILITY } from "@openbot/contracts/team-protocol/agent-import-v1";
-import { AGENT_IMPORT_V2_CAPABILITY } from "@openbot/contracts/team-protocol/agent-import-v2";
-import { AGENT_NEW_CHAT_ROUTES } from "@openbot/contracts/team-protocol/agent-new-chat-v1";
-import { AGENT_NOTIFICATION_LEVELS_CAPABILITY } from "@openbot/contracts/team-protocol/agent-notification-levels-v1";
-import { AGENT_PLAN_CARD_ROUTES } from "@openbot/contracts/team-protocol/agent-plan-card-v1";
-import { AGENT_SPEED_CAPABILITY, AGENT_SPEED_ROUTES } from "@openbot/contracts/team-protocol/agent-speed-v1";
-import { AGENT_TASKS_CAPABILITY } from "@openbot/contracts/team-protocol/agent-tasks-v1";
-import { AGENT_THREAD_FILES_CAPABILITY } from "@openbot/contracts/team-protocol/agent-thread-files-v1";
-import { AGENT_USAGE_LIMIT_CAPABILITY } from "@openbot/contracts/team-protocol/agent-usage-limit-v1";
-import { AGENT_WAITS_CAPABILITY } from "@openbot/contracts/team-protocol/agent-waits-v1";
-import { BROWSER_PROFILES_CAPABILITY } from "@openbot/contracts/team-protocol/browser-profiles-v1";
-import { BROWSER_PROXIES_CAPABILITY } from "@openbot/contracts/team-protocol/browser-proxies-v1";
-import { TEAM_BROWSER_VIEW_CAPABILITY } from "@openbot/contracts/team-protocol/browser-view-v1";
-import { CHANNEL_BROWSER_CAPABILITY } from "@openbot/contracts/team-protocol/channel-browser-v1";
-import { CHANNEL_ISOLATION_CAPABILITY } from "@openbot/contracts/team-protocol/channel-isolation-v1";
-import { CHANNEL_PICTURE_CAPABILITY } from "@openbot/contracts/team-protocol/channel-picture-v1";
-import { CHAT_HISTORY_CAPABILITY } from "@openbot/contracts/team-protocol/chat-history-v1";
+} from "@pokebots/contracts/ipc";
+import type { PricingOrder } from "@pokebots/contracts/license";
+import type { MarketplaceListingLink } from "@pokebots/contracts/marketplace-links";
+import { AGENT_ACCESS_CAPABILITY } from "@pokebots/contracts/team-protocol/agent-access-v1";
+import { AGENT_BACKUP_MODELS_ROUTES } from "@pokebots/contracts/team-protocol/agent-backup-models-v1";
+import { AGENT_COMPUTER_CAPABILITY } from "@pokebots/contracts/team-protocol/agent-computer-v1";
+import { AGENT_DEFAULTS_ROUTES } from "@pokebots/contracts/team-protocol/agent-defaults-v1";
+import { AGENT_FAST_MODE_ROUTES } from "@pokebots/contracts/team-protocol/agent-fast-mode-v1";
+import { AGENT_HOST_SETTINGS_ROUTES } from "@pokebots/contracts/team-protocol/agent-host-settings-v1";
+import { AGENT_IMPORT_CAPABILITY } from "@pokebots/contracts/team-protocol/agent-import-v1";
+import { AGENT_IMPORT_V2_CAPABILITY } from "@pokebots/contracts/team-protocol/agent-import-v2";
+import { AGENT_NEW_CHAT_ROUTES } from "@pokebots/contracts/team-protocol/agent-new-chat-v1";
+import { AGENT_NOTIFICATION_LEVELS_CAPABILITY } from "@pokebots/contracts/team-protocol/agent-notification-levels-v1";
+import { AGENT_PLAN_CARD_ROUTES } from "@pokebots/contracts/team-protocol/agent-plan-card-v1";
+import { AGENT_SPEED_CAPABILITY, AGENT_SPEED_ROUTES } from "@pokebots/contracts/team-protocol/agent-speed-v1";
+import { AGENT_TASKS_CAPABILITY } from "@pokebots/contracts/team-protocol/agent-tasks-v1";
+import { AGENT_THREAD_FILES_CAPABILITY } from "@pokebots/contracts/team-protocol/agent-thread-files-v1";
+import { AGENT_USAGE_LIMIT_CAPABILITY } from "@pokebots/contracts/team-protocol/agent-usage-limit-v1";
+import { AGENT_WAITS_CAPABILITY } from "@pokebots/contracts/team-protocol/agent-waits-v1";
+import { BROWSER_PROFILES_CAPABILITY } from "@pokebots/contracts/team-protocol/browser-profiles-v1";
+import { BROWSER_PROXIES_CAPABILITY } from "@pokebots/contracts/team-protocol/browser-proxies-v1";
+import { TEAM_BROWSER_VIEW_CAPABILITY } from "@pokebots/contracts/team-protocol/browser-view-v1";
+import { CHANNEL_BROWSER_CAPABILITY } from "@pokebots/contracts/team-protocol/channel-browser-v1";
+import { CHANNEL_ISOLATION_CAPABILITY } from "@pokebots/contracts/team-protocol/channel-isolation-v1";
+import { CHANNEL_PICTURE_CAPABILITY } from "@pokebots/contracts/team-protocol/channel-picture-v1";
+import { CHAT_HISTORY_CAPABILITY } from "@pokebots/contracts/team-protocol/chat-history-v1";
 import {
   CLAUDE_AI_TOOLS_ROUTES,
   decodeClaudeAiToolsResponse,
-} from "@openbot/contracts/team-protocol/claude-ai-tools-v1";
+} from "@pokebots/contracts/team-protocol/claude-ai-tools-v1";
 import {
   CLAUDE_USER_SETUP_ROUTES,
   decodeClaudeUserSetupResponse,
-} from "@openbot/contracts/team-protocol/claude-user-setup-v1";
-import { COMPUTER_LIVE_VIEW_CAPABILITY } from "@openbot/contracts/team-protocol/computer-live-view-v1";
-import { COMPUTER_MANAGEMENT_CAPABILITY } from "@openbot/contracts/team-protocol/computer-management-v1";
-import { CONNECTORS_CAPABILITY } from "@openbot/contracts/team-protocol/connectors-v1";
-import { CONTEXT_COMPACT_CAPABILITY } from "@openbot/contracts/team-protocol/context-compact-v1";
-import { CONTEXT_RESET_CAPABILITY } from "@openbot/contracts/team-protocol/context-reset-v1";
-import { CONVERSATION_FILE_SEARCH_CAPABILITY } from "@openbot/contracts/team-protocol/conversation-file-search-v1";
-import { CONVERSATION_UNREAD_FROM_CAPABILITY } from "@openbot/contracts/team-protocol/conversation-unread-from-v1";
-import { CRM_CAPABILITY } from "@openbot/contracts/team-protocol/crm-v1";
+} from "@pokebots/contracts/team-protocol/claude-user-setup-v1";
+import { COMPUTER_LIVE_VIEW_CAPABILITY } from "@pokebots/contracts/team-protocol/computer-live-view-v1";
+import { COMPUTER_MANAGEMENT_CAPABILITY } from "@pokebots/contracts/team-protocol/computer-management-v1";
+import { CONNECTORS_CAPABILITY } from "@pokebots/contracts/team-protocol/connectors-v1";
+import { CONTEXT_COMPACT_CAPABILITY } from "@pokebots/contracts/team-protocol/context-compact-v1";
+import { CONTEXT_RESET_CAPABILITY } from "@pokebots/contracts/team-protocol/context-reset-v1";
+import { CONVERSATION_FILE_SEARCH_CAPABILITY } from "@pokebots/contracts/team-protocol/conversation-file-search-v1";
+import { CONVERSATION_UNREAD_FROM_CAPABILITY } from "@pokebots/contracts/team-protocol/conversation-unread-from-v1";
+import { CRM_CAPABILITY } from "@pokebots/contracts/team-protocol/crm-v1";
 import {
   AGENT_HIDDEN_CAPABILITY,
   AGENT_HIDDEN_WORK_CAPABILITY,
   AGENT_WELCOME_CAPABILITY,
   TEAM_AGENT_CREATE_MODEL_CAPABILITY,
-} from "@openbot/contracts/team-protocol/current";
-import { DISCORD_ACCESS_CAPABILITY } from "@openbot/contracts/team-protocol/discord-access-v1";
-import { EVENTS_CAPABILITY } from "@openbot/contracts/team-protocol/events-v1";
+} from "@pokebots/contracts/team-protocol/current";
+import { DISCORD_ACCESS_CAPABILITY } from "@pokebots/contracts/team-protocol/discord-access-v1";
+import { EVENTS_CAPABILITY } from "@pokebots/contracts/team-protocol/events-v1";
 import {
   decodeHomeAgentRulesResponse,
   HOME_AGENT_RULES_ROUTES,
-} from "@openbot/contracts/team-protocol/home-agent-rules-v1";
-import { HOST_PERSONALITY_CAPABILITY } from "@openbot/contracts/team-protocol/host-personality-v1";
-import { HOST_RELEASE_CAPABILITY } from "@openbot/contracts/team-protocol/host-release-v1";
-import { HOST_RESTART_CAPABILITY } from "@openbot/contracts/team-protocol/host-restart-v1";
-import { HOST_TURN_LIMITS_ROUTES } from "@openbot/contracts/team-protocol/host-turn-limits-v1";
-import { HOSTED_SITES_CAPABILITY } from "@openbot/contracts/team-protocol/hosted-sites-v1";
-import { INSTANCE_TRANSFER_CHUNKS_CAPABILITY } from "@openbot/contracts/team-protocol/instance-transfer-chunks-v1";
-import { INSTANCE_TRANSFER_FULL_COPY_CAPABILITY } from "@openbot/contracts/team-protocol/instance-transfer-full-copy-v1";
-import { INSTANCE_TRANSFER_CAPABILITY } from "@openbot/contracts/team-protocol/instance-transfer-v1";
-import { MCP_SIGN_IN_CAPABILITY } from "@openbot/contracts/team-protocol/mcp-sign-in-v1";
-import { MESSAGE_DELETE_CAPABILITY } from "@openbot/contracts/team-protocol/message-delete-v1";
-import { MESSAGE_PINS_CAPABILITY } from "@openbot/contracts/team-protocol/message-pins-v1";
+} from "@pokebots/contracts/team-protocol/home-agent-rules-v1";
+import { HOST_PERSONALITY_CAPABILITY } from "@pokebots/contracts/team-protocol/host-personality-v1";
+import { HOST_RELEASE_CAPABILITY } from "@pokebots/contracts/team-protocol/host-release-v1";
+import { HOST_RESTART_CAPABILITY } from "@pokebots/contracts/team-protocol/host-restart-v1";
+import { HOST_TURN_LIMITS_ROUTES } from "@pokebots/contracts/team-protocol/host-turn-limits-v1";
+import { HOSTED_SITES_CAPABILITY } from "@pokebots/contracts/team-protocol/hosted-sites-v1";
+import { INSTANCE_TRANSFER_CHUNKS_CAPABILITY } from "@pokebots/contracts/team-protocol/instance-transfer-chunks-v1";
+import { INSTANCE_TRANSFER_FULL_COPY_CAPABILITY } from "@pokebots/contracts/team-protocol/instance-transfer-full-copy-v1";
+import { INSTANCE_TRANSFER_CAPABILITY } from "@pokebots/contracts/team-protocol/instance-transfer-v1";
+import { MCP_SIGN_IN_CAPABILITY } from "@pokebots/contracts/team-protocol/mcp-sign-in-v1";
+import { MESSAGE_DELETE_CAPABILITY } from "@pokebots/contracts/team-protocol/message-delete-v1";
+import { MESSAGE_PINS_CAPABILITY } from "@pokebots/contracts/team-protocol/message-pins-v1";
 import {
   integrationRequest,
   POKEBOTS_INTEGRATIONS_CAPABILITY,
   POKEBOTS_INTEGRATIONS_ROUTES,
-} from "@openbot/contracts/team-protocol/pokebots-integrations-v1";
-import { PROVIDER_ACCOUNTS_CAPABILITY } from "@openbot/contracts/team-protocol/provider-accounts-v1";
-import { ROOMS_CAPABILITY, ROOMS_ROUTE } from "@openbot/contracts/team-protocol/rooms-v1";
-import { ROUTINE_FLOW_STOP_CAPABILITY } from "@openbot/contracts/team-protocol/routine-flow-stop-v1";
-import { ROUTINE_FLOWS_CAPABILITY } from "@openbot/contracts/team-protocol/routine-flows-v1";
-import { ROUTINE_RECOVERY_CAPABILITY } from "@openbot/contracts/team-protocol/routine-recovery-v1";
-import { ROUTINE_RUN_PLACE_CAPABILITY } from "@openbot/contracts/team-protocol/routine-run-place-v1";
-import { ROUTINES_ONCE_CAPABILITY } from "@openbot/contracts/team-protocol/routines-once-v1";
-import { SIDE_QUESTION_CAPABILITY } from "@openbot/contracts/team-protocol/side-question-v1";
-import { SIGN_IN_RELAY_CAPABILITY } from "@openbot/contracts/team-protocol/sign-in-relay-v1";
-import { SKILL_LEARNING_CAPABILITY } from "@openbot/contracts/team-protocol/skill-learning-v1";
-import { STORAGE_CHANNEL_CAPABILITY } from "@openbot/contracts/team-protocol/storage-channel-v1";
-import { THREAD_AUTO_ARCHIVE_ROUTES } from "@openbot/contracts/team-protocol/thread-auto-archive-v1";
-import { THREAD_MESSAGE_SEARCH_CAPABILITY } from "@openbot/contracts/team-protocol/thread-message-search-v1";
-import { VAULT_IMPORT_CAPABILITY } from "@openbot/contracts/team-protocol/vault-import-v1";
-import { VAULT_CAPABILITY } from "@openbot/contracts/team-protocol/vault-v1";
-import { VAULT_V2_CAPABILITY } from "@openbot/contracts/team-protocol/vault-v2";
-import { VAULT_V3_CAPABILITY } from "@openbot/contracts/team-protocol/vault-v3";
-import { VAULT_V4_CAPABILITY } from "@openbot/contracts/team-protocol/vault-v4";
-import { WEBHOOK_AGENT_SECRET_CAPABILITY } from "@openbot/contracts/team-protocol/webhook-agent-secret-v1";
-import { WEBHOOK_SENDER_SECRET_CAPABILITY } from "@openbot/contracts/team-protocol/webhook-sender-secret-v1";
-import { WEBHOOK_TESTS_CAPABILITY } from "@openbot/contracts/team-protocol/webhook-tests-v1";
-import { WHATSAPP_CONNECTOR_CAPABILITY } from "@openbot/contracts/team-protocol/whatsapp-connector-v1";
-import { WORKFLOWS_CAPABILITY } from "@openbot/contracts/team-protocol/workflows-v1";
-import { runTeamEffect } from "@openbot/team-client";
-import { createAgentComputerPort } from "@openbot/team-client/agent-computer";
-import { channelForThread } from "@openbot/team-client/channel-notifications";
-import { markRemoteSync } from "@openbot/team-client/sync-marks";
+} from "@pokebots/contracts/team-protocol/pokebots-integrations-v1";
+import { PROVIDER_ACCOUNTS_CAPABILITY } from "@pokebots/contracts/team-protocol/provider-accounts-v1";
+import { ROOMS_CAPABILITY, ROOMS_ROUTE } from "@pokebots/contracts/team-protocol/rooms-v1";
+import { ROUTINE_FLOW_STOP_CAPABILITY } from "@pokebots/contracts/team-protocol/routine-flow-stop-v1";
+import { ROUTINE_FLOWS_CAPABILITY } from "@pokebots/contracts/team-protocol/routine-flows-v1";
+import { ROUTINE_RECOVERY_CAPABILITY } from "@pokebots/contracts/team-protocol/routine-recovery-v1";
+import { ROUTINE_RUN_PLACE_CAPABILITY } from "@pokebots/contracts/team-protocol/routine-run-place-v1";
+import { ROUTINES_ONCE_CAPABILITY } from "@pokebots/contracts/team-protocol/routines-once-v1";
+import { SIDE_QUESTION_CAPABILITY } from "@pokebots/contracts/team-protocol/side-question-v1";
+import { SIGN_IN_RELAY_CAPABILITY } from "@pokebots/contracts/team-protocol/sign-in-relay-v1";
+import { SKILL_LEARNING_CAPABILITY } from "@pokebots/contracts/team-protocol/skill-learning-v1";
+import { STORAGE_CHANNEL_CAPABILITY } from "@pokebots/contracts/team-protocol/storage-channel-v1";
+import { THREAD_AUTO_ARCHIVE_ROUTES } from "@pokebots/contracts/team-protocol/thread-auto-archive-v1";
+import { THREAD_MESSAGE_SEARCH_CAPABILITY } from "@pokebots/contracts/team-protocol/thread-message-search-v1";
+import { VAULT_IMPORT_CAPABILITY } from "@pokebots/contracts/team-protocol/vault-import-v1";
+import { VAULT_CAPABILITY } from "@pokebots/contracts/team-protocol/vault-v1";
+import { VAULT_V2_CAPABILITY } from "@pokebots/contracts/team-protocol/vault-v2";
+import { VAULT_V3_CAPABILITY } from "@pokebots/contracts/team-protocol/vault-v3";
+import { VAULT_V4_CAPABILITY } from "@pokebots/contracts/team-protocol/vault-v4";
+import { WEBHOOK_AGENT_SECRET_CAPABILITY } from "@pokebots/contracts/team-protocol/webhook-agent-secret-v1";
+import { WEBHOOK_SENDER_SECRET_CAPABILITY } from "@pokebots/contracts/team-protocol/webhook-sender-secret-v1";
+import { WEBHOOK_TESTS_CAPABILITY } from "@pokebots/contracts/team-protocol/webhook-tests-v1";
+import { WHATSAPP_CONNECTOR_CAPABILITY } from "@pokebots/contracts/team-protocol/whatsapp-connector-v1";
+import { WORKFLOWS_CAPABILITY } from "@pokebots/contracts/team-protocol/workflows-v1";
+import { runTeamEffect } from "@pokebots/team-client";
+import { createAgentComputerPort } from "@pokebots/team-client/agent-computer";
+import { channelForThread } from "@pokebots/team-client/channel-notifications";
+import { markRemoteSync } from "@pokebots/team-client/sync-marks";
 import {
   cancelHostUpdate,
   checkHostForUpdate,
@@ -170,45 +170,45 @@ import {
   startHostUpdate,
   stopHostBackgroundProcess,
   updateAgentAdminSettings,
-} from "@openbot/team-client/team-admin-requests";
-import { clearAgentContext, type TeamApiRequest } from "@openbot/team-client/team-api-requests";
-import { classifyFailure } from "@openbot/telemetry";
-import { Button, toast } from "@openbot/ui";
-import type { GlobalSearchRoutine } from "@openbot/ui/components/GlobalSearch";
-import type { AgentMessage, ComposerThreadMessageMatch } from "@openbot/ui/data";
-import { accountUsageProviderRows } from "@openbot/ui/features/account/account-usage-view";
-import { computeAgentAvatarMoods } from "@openbot/ui/features/agents/agent-avatar-mood";
-import { createFirstAgentDraft, type FirstAgentDraft } from "@openbot/ui/features/agents/FirstAgentSetup";
-import type { BillingDialogProps } from "@openbot/ui/features/billing/BillingDialog";
-import { createBillingStore } from "@openbot/ui/features/billing/billing-store";
-import { createLicenseStore } from "@openbot/ui/features/billing/license-store";
-import { isConnectorId } from "@openbot/ui/features/connectors/connectors";
-import { unloadedHistory } from "@openbot/ui/features/conversation/ChatScrollRail";
-import type { DiagramModelChoice } from "@openbot/ui/features/diagrams/DiagramNewAgentCard";
-import { RoomsPanel } from "@openbot/ui/features/rooms/RoomsPanel";
-import { LeaveServerDialog } from "@openbot/ui/features/servers/LeaveServerDialog";
-import { RestartServerDialog } from "@openbot/ui/features/servers/RestartServerDialog";
-import type { ServerActionCallbacks } from "@openbot/ui/features/servers/ServerActionItems";
+} from "@pokebots/team-client/team-admin-requests";
+import { clearAgentContext, type TeamApiRequest } from "@pokebots/team-client/team-api-requests";
+import { classifyFailure } from "@pokebots/telemetry";
+import { Button, toast } from "@pokebots/ui";
+import type { GlobalSearchRoutine } from "@pokebots/ui/components/GlobalSearch";
+import type { AgentMessage, ComposerThreadMessageMatch } from "@pokebots/ui/data";
+import { accountUsageProviderRows } from "@pokebots/ui/features/account/account-usage-view";
+import { computeAgentAvatarMoods } from "@pokebots/ui/features/agents/agent-avatar-mood";
+import { createFirstAgentDraft, type FirstAgentDraft } from "@pokebots/ui/features/agents/FirstAgentSetup";
+import type { BillingDialogProps } from "@pokebots/ui/features/billing/BillingDialog";
+import { createBillingStore } from "@pokebots/ui/features/billing/billing-store";
+import { createLicenseStore } from "@pokebots/ui/features/billing/license-store";
+import { isConnectorId } from "@pokebots/ui/features/connectors/connectors";
+import { unloadedHistory } from "@pokebots/ui/features/conversation/ChatScrollRail";
+import type { DiagramModelChoice } from "@pokebots/ui/features/diagrams/DiagramNewAgentCard";
+import { RoomsPanel } from "@pokebots/ui/features/rooms/RoomsPanel";
+import { LeaveServerDialog } from "@pokebots/ui/features/servers/LeaveServerDialog";
+import { RestartServerDialog } from "@pokebots/ui/features/servers/RestartServerDialog";
+import type { ServerActionCallbacks } from "@pokebots/ui/features/servers/ServerActionItems";
 import {
   ConversationLoadNotice,
   ServerConnectionNotice,
   ServerPanelLoadNotice,
   serverWorkspacePhase,
-} from "@openbot/ui/features/servers/ServerConnectionNotice";
-import { ServerRail } from "@openbot/ui/features/servers/ServerRail";
-import type { SettingsPagePlacement } from "@openbot/ui/features/settings/SettingsDialogShell";
-import { createSettingsHostedServersStore } from "@openbot/ui/features/settings/stores/hosted-servers-store";
-import type { ShortcutId } from "@openbot/ui/features/shortcuts/shortcut-registry";
-import { Sidebar } from "@openbot/ui/features/sidebar/Sidebar";
-import { sidebarAgentOrder } from "@openbot/ui/features/sidebar/sidebar-agent-order";
+} from "@pokebots/ui/features/servers/ServerConnectionNotice";
+import { ServerRail } from "@pokebots/ui/features/servers/ServerRail";
+import type { SettingsPagePlacement } from "@pokebots/ui/features/settings/SettingsDialogShell";
+import { createSettingsHostedServersStore } from "@pokebots/ui/features/settings/stores/hosted-servers-store";
+import type { ShortcutId } from "@pokebots/ui/features/shortcuts/shortcut-registry";
+import { Sidebar } from "@pokebots/ui/features/sidebar/Sidebar";
+import { sidebarAgentOrder } from "@pokebots/ui/features/sidebar/sidebar-agent-order";
 import {
   computeSidebarAgentStates,
   sidebarAgentWaits,
   sidebarChannelWaits,
-} from "@openbot/ui/features/sidebar/sidebar-agent-states";
-import type { SidebarPage, SidebarPages } from "@openbot/ui/features/sidebar/sidebar-pages";
-import type { SidebarView } from "@openbot/ui/features/sidebar/sidebar-types";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/ui/features/sidebar/sidebar-agent-states";
+import type { SidebarPage, SidebarPages } from "@pokebots/ui/features/sidebar/sidebar-pages";
+import type { SidebarView } from "@pokebots/ui/features/sidebar/sidebar-types";
+import { useText } from "@pokebots/ui/text";
 import type { ComponentProps, JSX } from "@solidjs/web";
 import { Effect } from "effect";
 import {
@@ -541,8 +541,8 @@ const WebAccountSettings = lazy(() => import("./WebAccountSettings"));
 // These views load when they first open.
 const loadBilling = () =>
   Promise.all([
-    import("@openbot/ui/features/billing/BillingDialog"),
-    import("@openbot/ui/features/billing/LicenseSection"),
+    import("@pokebots/ui/features/billing/BillingDialog"),
+    import("@pokebots/ui/features/billing/LicenseSection"),
   ]);
 const loadAddServerOverlay = () => import("../servers/AddServerOverlay");
 const loadWebAgentSettings = () => import("./WebAgentSettings");

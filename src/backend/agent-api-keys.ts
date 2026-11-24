@@ -1,9 +1,9 @@
 import { randomUUID } from "node:crypto";
 import { lstat, readdir, readFile, readlink, rename, rm, symlink } from "node:fs/promises";
 import { join } from "node:path";
-import { API_KEY_NAME_PATTERN } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
-import { registerSecretValue } from "@openbot/logging";
+import { API_KEY_NAME_PATTERN } from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
+import { registerSecretValue } from "@pokebots/logging";
 import { Effect, Result, Schema, Semaphore } from "effect";
 import { writeFileAtomically } from "./atomic-json-file";
 import { isMissingFileError } from "./file-errors";

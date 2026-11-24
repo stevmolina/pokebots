@@ -40,7 +40,7 @@ new migration, as for a tagged one. After each Pokebots release, add its tag and
   type are the only exceptions. This includes helpers in a migration file and `runtime-values.ts`.
 - A new migration takes a version above the newest released one. Versions are contiguous from 8,
   and names are unique.
-- A migration file imports only `node:*`, `@openbot/logging`, `./runtime-values`, earlier migrations,
+- A migration file imports only `node:*`, `@pokebots/logging`, `./runtime-values`, earlier migrations,
   and types (`import type`) from `./migration`. Copy any other code into the file, so a change to live
   code cannot change a released migration.
 

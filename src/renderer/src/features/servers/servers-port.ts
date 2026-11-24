@@ -1,4 +1,4 @@
-import type { OpenBotDesktopApi, ServerSummary } from "@openbot/contracts/ipc";
+import type { OpenBotDesktopApi, ServerSummary } from "@pokebots/contracts/ipc";
 
 /**
  * What the servers domain reaches in main: the server list and selection, the account changes, the local host, the

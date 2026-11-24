@@ -38,10 +38,10 @@ import {
   type ProviderRuntimeSnapshot,
   type ProviderRuntimeStatus,
   type RemovableRuntimes,
-} from "@openbot/contracts/ipc";
-import { isBoolean, isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
-import { matchingSourceKeys, sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger, type LogValue, redactText, toLogValue } from "@openbot/logging";
+} from "@pokebots/contracts/ipc";
+import { isBoolean, isDynamicRecord, isNumber, isString } from "@pokebots/contracts/runtime-values";
+import { matchingSourceKeys, sourceText } from "@pokebots/i18n/source";
+import { createOpenBotLogger, type LogValue, redactText, toLogValue } from "@pokebots/logging";
 import { Deferred, Effect, Exit, Fiber, Result, Scope, Stream } from "effect";
 import lockValue from "../../native-runtime.lock.json";
 import { type AgentRuntimeLock, parseAgentRuntimeLock } from "../../scripts/agent-runtime-lock";

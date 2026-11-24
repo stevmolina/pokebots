@@ -3,7 +3,7 @@ import {
   type DiscordInboundAttachment,
   type DiscordInboundInteraction,
   type DiscordInboundMessage,
-} from "@openbot/contracts/signal-protocol/discord-api";
+} from "@pokebots/contracts/signal-protocol/discord-api";
 import type { InboundAction, InboundFile, InboundMessage } from "../messaging-types";
 
 /** The actions of the buttons OpenBot posts, as the middle part of their custom id. */

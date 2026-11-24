@@ -15,10 +15,10 @@ import {
   type McpServerConfig,
   type ResponseStyle,
   workspaceAccessEnforced,
-} from "@openbot/contracts/ipc";
-import { type DynamicRecord, isDynamicRecord } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger } from "@openbot/logging";
+} from "@pokebots/contracts/ipc";
+import { type DynamicRecord, isDynamicRecord } from "@pokebots/contracts/runtime-values";
+import { sourceText } from "@pokebots/i18n/source";
+import { createOpenBotLogger } from "@pokebots/logging";
 import { Deferred, Effect, Result, Schema, Semaphore } from "effect";
 import { type AgentClient, type AgentProvider, ProviderStoppedError } from "../agent-client";
 import type { AgentStore } from "../agent-store";

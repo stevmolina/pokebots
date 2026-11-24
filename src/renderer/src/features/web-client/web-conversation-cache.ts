@@ -1,4 +1,4 @@
-import type { ConversationPage } from "@openbot/contracts/ipc";
+import type { ConversationPage } from "@pokebots/contracts/ipc";
 
 const CACHE_PREFIX = "pokebots:conv-page:v1:";
 const INDEX_KEY = "pokebots:conv-page:v1:index";

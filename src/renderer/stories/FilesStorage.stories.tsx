@@ -1,9 +1,9 @@
-import { SettingsLinkGroup, SettingsLinkRow } from "@openbot/ui/components/SettingsPanel";
-import AgentSettingsPanel from "@openbot/ui/features/conversation/AgentSettingsPanel";
-import { AgentFilesView, agentFilesLinkValue } from "@openbot/ui/features/files/AgentFilesView";
-import { ConversationFilesPanel } from "@openbot/ui/features/files/ConversationFilesPanel";
-import { FileList } from "@openbot/ui/features/files/FileList";
-import { StorageOverview } from "@openbot/ui/features/files/StorageOverview";
+import { SettingsLinkGroup, SettingsLinkRow } from "@pokebots/ui/components/SettingsPanel";
+import AgentSettingsPanel from "@pokebots/ui/features/conversation/AgentSettingsPanel";
+import { AgentFilesView, agentFilesLinkValue } from "@pokebots/ui/features/files/AgentFilesView";
+import { ConversationFilesPanel } from "@pokebots/ui/features/files/ConversationFilesPanel";
+import { FileList } from "@pokebots/ui/features/files/FileList";
+import { StorageOverview } from "@pokebots/ui/features/files/StorageOverview";
 import { createSignal, Show } from "solid-js";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";

@@ -1,6 +1,6 @@
-import type { AboveAppsSupport } from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
-import { Button, Item, ItemActions, ItemContent, ItemDescription, ItemTitle } from "@openbot/ui";
+import type { AboveAppsSupport } from "@pokebots/contracts/ipc";
+import type { AppTextKey } from "@pokebots/i18n";
+import { Button, Item, ItemActions, ItemContent, ItemDescription, ItemTitle } from "@pokebots/ui";
 import { createSignal, Show } from "solid-js";
 import { useI18n } from "../../i18n-context";
 

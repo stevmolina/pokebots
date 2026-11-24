@@ -2,7 +2,7 @@ import "./service-endpoint-environment";
 
 import { uptime } from "node:os";
 import { join, resolve } from "node:path";
-import { parseInviteUrl, selfHostedApiOrigin } from "@openbot/contracts/invite-links";
+import { parseInviteUrl, selfHostedApiOrigin } from "@pokebots/contracts/invite-links";
 import {
   type AgentEvent,
   type AgentSummary,
@@ -12,11 +12,11 @@ import {
   type HostStatus,
   IPC_ENDPOINTS,
   type QuitGuard,
-} from "@openbot/contracts/ipc";
-import { createFormat, localeDirection, resolveLocale, translateFor, withHourCycle } from "@openbot/i18n";
-import { localizeSourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger, toLogValue } from "@openbot/logging";
-import { createRemoteDirectoryRefresh } from "@openbot/team-client/remote-directory";
+} from "@pokebots/contracts/ipc";
+import { createFormat, localeDirection, resolveLocale, translateFor, withHourCycle } from "@pokebots/i18n";
+import { localizeSourceText } from "@pokebots/i18n/source";
+import { createOpenBotLogger, toLogValue } from "@pokebots/logging";
+import { createRemoteDirectoryRefresh } from "@pokebots/team-client/remote-directory";
 import { Effect, Semaphore } from "effect";
 import {
   app,

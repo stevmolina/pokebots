@@ -1,4 +1,4 @@
-import { Button, Monitor } from "@openbot/ui";
+import { Button, Monitor } from "@pokebots/ui";
 import { Show } from "solid-js";
 import { useText } from "../../text";
 import { UiBlockCard } from "./ui-blocks/UiBlockCard";

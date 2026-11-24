@@ -1,8 +1,8 @@
 import {
   LANDING_PREVIEW_READY_MESSAGE,
   LANDING_PREVIEW_START_MESSAGE,
-} from "@openbot/contracts/landing-preview-messages";
-import { prefersReducedMotion } from "@openbot/ui/utils";
+} from "@pokebots/contracts/landing-preview-messages";
+import { prefersReducedMotion } from "@pokebots/ui/utils";
 import type { JSX } from "@solidjs/web";
 import { onCleanup, onSettled } from "solid-js";
 import { App } from "../App";

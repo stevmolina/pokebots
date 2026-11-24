@@ -14,8 +14,8 @@
 import assert from "node:assert/strict";
 import { mkdirSync } from "node:fs";
 import { resolve } from "node:path";
-import type { AgentTask, AgentTasksSnapshot, ConversationSearchPage } from "@openbot/contracts/ipc";
-import { translateFor } from "@openbot/i18n";
+import type { AgentTask, AgentTasksSnapshot, ConversationSearchPage } from "@pokebots/contracts/ipc";
+import { translateFor } from "@pokebots/i18n";
 import { argument, connectChannelE2e, waitFor, writeReport } from "./channel-e2e-support";
 
 const OUT = resolve(import.meta.dirname, "../.openbot-build/agent-threads-routing-e2e");

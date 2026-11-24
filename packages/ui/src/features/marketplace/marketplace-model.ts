@@ -10,9 +10,9 @@ import type {
   McpServerAccess,
   McpServerConfig,
   SkillCategory,
-} from "@openbot/contracts/ipc";
-import type { MarketplaceListingLink } from "@openbot/contracts/marketplace-links";
-import type { McpConnectFlow } from "@openbot/contracts/mcp-connect-flows";
+} from "@pokebots/contracts/ipc";
+import type { MarketplaceListingLink } from "@pokebots/contracts/marketplace-links";
+import type { McpConnectFlow } from "@pokebots/contracts/mcp-connect-flows";
 import type { JSX } from "@solidjs/web";
 import type { ConnectorDetail } from "../connectors/ConnectorDetailPanel";
 import type { ConnectorId } from "../connectors/connectors";

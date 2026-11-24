@@ -1,9 +1,9 @@
 import { lstat, mkdir, readdir, readFile, realpath, rename, unlink, writeFile } from "node:fs/promises";
 import { dirname, join, relative, resolve, sep } from "node:path";
-import { agentProviderDescriptor } from "@openbot/contracts/agent-providers";
-import type { AgentSummary, InstalledSkill } from "@openbot/contracts/ipc";
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
-import { createOpenBotLogger, toLogValue } from "@openbot/logging";
+import { agentProviderDescriptor } from "@pokebots/contracts/agent-providers";
+import type { AgentSummary, InstalledSkill } from "@pokebots/contracts/ipc";
+import { isDynamicRecord } from "@pokebots/contracts/runtime-values";
+import { createOpenBotLogger, toLogValue } from "@pokebots/logging";
 import { Effect, Result, Schema } from "effect";
 import { parse as parseYaml } from "yaml";
 import { causeHelpers } from "../backend/effect-boundary";

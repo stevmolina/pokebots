@@ -3,7 +3,7 @@ import {
   CHAT_VISUAL_PAGE_LIMIT,
   type ChatVisualDocumentOptions,
   chatVisualDocument,
-} from "@openbot/contracts/chat-visual";
+} from "@pokebots/contracts/chat-visual";
 import { isTrustedRendererUrl } from "./trusted-renderer";
 
 /**

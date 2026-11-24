@@ -1,5 +1,5 @@
-import { AppLogo } from "@openbot/brand";
-import { prefersReducedMotion } from "@openbot/ui/utils";
+import { AppLogo } from "@pokebots/brand";
+import { prefersReducedMotion } from "@pokebots/ui/utils";
 import { Link, useLocation } from "@tanstack/solid-router";
 import { createSignal, For, onSettled } from "solid-js";
 import { ButtonLink } from "../ui/button";

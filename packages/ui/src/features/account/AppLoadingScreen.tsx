@@ -1,5 +1,5 @@
-import mascotBlue from "@openbot/brand/assets/pokebots/blue.webp";
-import type { AppTextKey } from "@openbot/i18n";
+import mascotBlue from "@pokebots/brand/assets/pokebots/blue.webp";
+import type { AppTextKey } from "@pokebots/i18n";
 import type { JSX } from "@solidjs/web";
 import { createEffect, createSignal, For, onCleanup, onSettled, untrack } from "solid-js";
 import { documentStillFaces } from "../../document-rendering";

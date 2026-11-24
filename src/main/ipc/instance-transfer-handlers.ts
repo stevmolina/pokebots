@@ -25,20 +25,20 @@ import {
   parseCopyInstanceAgentsInput,
   parseExportInstanceInput,
   resolveRemoteInstanceTransferResult,
-} from "@openbot/contracts/ipc";
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
-import { INSTANCE_TRANSFER_CHUNKS_CAPABILITY } from "@openbot/contracts/team-protocol/instance-transfer-chunks-v1";
+} from "@pokebots/contracts/ipc";
+import { TEAM_API_ROUTES } from "@pokebots/contracts/team-api-routes";
+import { INSTANCE_TRANSFER_CHUNKS_CAPABILITY } from "@pokebots/contracts/team-protocol/instance-transfer-chunks-v1";
 import {
   INSTANCE_TRANSFER_FULL_COPY_CAPABILITY,
   INSTANCE_TRANSFER_FULL_COPY_ROUTES,
-} from "@openbot/contracts/team-protocol/instance-transfer-full-copy-v1";
+} from "@pokebots/contracts/team-protocol/instance-transfer-full-copy-v1";
 import {
   INSTANCE_TRANSFER_CAPABILITY,
   INSTANCE_TRANSFER_REMOTE_BYTES,
   INSTANCE_TRANSFER_ROUTES,
-} from "@openbot/contracts/team-protocol/instance-transfer-v1";
-import type { AppTranslate } from "@openbot/i18n";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/team-protocol/instance-transfer-v1";
+import type { AppTranslate } from "@pokebots/i18n";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect } from "effect";
 import { app, type BrowserWindow, dialog, type OpenDialogOptions, type SaveDialogOptions, shell } from "electron";
 import { runCauseEffect } from "../../backend/effect-boundary";

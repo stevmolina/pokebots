@@ -1,4 +1,4 @@
-import { CRM_CAPABILITY } from "@openbot/contracts/team-protocol/crm-v1";
+import { CRM_CAPABILITY } from "@pokebots/contracts/team-protocol/crm-v1";
 import { Show } from "solid-js";
 import { useAgents } from "../agents/agents-context";
 import { serverCanAdminister } from "../servers/server-capabilities";

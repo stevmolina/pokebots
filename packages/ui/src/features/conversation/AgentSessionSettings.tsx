@@ -3,9 +3,9 @@ import type {
   ResetAgentSessionSettingInput,
   SetAgentSessionSettingInput,
   AgentSessionSettings as Settings,
-} from "@openbot/contracts/ipc";
-import { Button, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Switch, Text } from "@openbot/ui";
-import { SettingsLinkGroup } from "@openbot/ui/components/SettingsPanel";
+} from "@pokebots/contracts/ipc";
+import { Button, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Switch, Text } from "@pokebots/ui";
+import { SettingsLinkGroup } from "@pokebots/ui/components/SettingsPanel";
 import { createEffect, createStore, For, Show } from "solid-js";
 import { useText } from "../../text";
 

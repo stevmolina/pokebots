@@ -1,6 +1,6 @@
-import type { AgentEvent, ClientAgentSummary } from "@openbot/contracts/ipc";
-import { teammateTurnCompleted } from "@openbot/team-client/agent-notifications";
-import { TASK_SOUND_CHOICES, type TaskSoundChoice } from "@openbot/ui/features/settings/app-settings";
+import type { AgentEvent, ClientAgentSummary } from "@pokebots/contracts/ipc";
+import { teammateTurnCompleted } from "@pokebots/team-client/agent-notifications";
+import { TASK_SOUND_CHOICES, type TaskSoundChoice } from "@pokebots/ui/features/settings/app-settings";
 import { play, unlock } from "cuelume";
 
 const TASK_SOUND_STORAGE_KEY = "openbot:task-sound";

@@ -13,7 +13,7 @@ import {
   type SetBrowserProfileProxyInput,
   type UpdateAgentBrowserProfileInput,
   type UpdateBrowserProfileInput,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 
 /** The saved proxies of one server, and the proxy of each named profile (`browser-proxies-v1`). */
 interface BrowserProxyCalls {

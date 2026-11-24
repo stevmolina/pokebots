@@ -21,16 +21,16 @@ import type {
   AgentSummary,
   ConversationPage,
   ConversationSnapshot,
-} from "@openbot/contracts/ipc";
-import type { LiveActivityRelayPush } from "@openbot/contracts/live-activity-relay";
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
-import { createOpenBotLogger } from "@openbot/logging";
+} from "@pokebots/contracts/ipc";
+import type { LiveActivityRelayPush } from "@pokebots/contracts/live-activity-relay";
+import { isDynamicRecord } from "@pokebots/contracts/runtime-values";
+import { createOpenBotLogger } from "@pokebots/logging";
 import {
   encodeLiveActivityBytes,
   LIVE_ACTIVITY_SECRET_BYTES,
   liveActivityKeys,
-} from "@openbot/team-client/live-activity-seal";
-import { pushNotificationKeys } from "@openbot/team-client/push-notification-seal";
+} from "@pokebots/team-client/live-activity-seal";
+import { pushNotificationKeys } from "@pokebots/team-client/push-notification-seal";
 import { Effect } from "effect";
 import { openSealedLiveActivity } from "../apps/mobile/src/features/live-activity/model/live-activity-open";
 import { LiveActivityPushService } from "../src/main/live-activity-push";

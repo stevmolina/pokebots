@@ -20,7 +20,11 @@ import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import type { Transport } from "@modelcontextprotocol/sdk/shared/transport.js";
 import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprotocol/sdk/types.js";
-import { COMPUTER_USE_MCP_SERVER_ID, COMPUTER_USE_MCP_SERVER_NAME, type McpServerConfig } from "@openbot/contracts/ipc";
+import {
+  COMPUTER_USE_MCP_SERVER_ID,
+  COMPUTER_USE_MCP_SERVER_NAME,
+  type McpServerConfig,
+} from "@pokebots/contracts/ipc";
 import { readCodexMcpConfig } from "../src/backend/agent/codex-mcp-config";
 import { visibleDynamicTools } from "../src/backend/agent/tool-catalog";
 import { CodexAppServerClient } from "../src/backend/app-server-client";

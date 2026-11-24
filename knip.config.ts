@@ -1,4 +1,5 @@
 import type { KnipConfig } from "knip";
+import { LEGACY_SCOPE_NAMES } from "./scripts/legacy-openbot-scope";
 
 // Stylesheets load packages with `@import`. Knip reads only script files, so this turns each
 // `@import "<package>"` into a script import that it can follow.
@@ -96,6 +97,8 @@ const config: KnipConfig = {
       ],
       project: ["src/**/*.{ts,tsx,css}", "scripts/**/*.ts", "tools/**/*.ts"],
       ignoreDependencies: [
+        // Temporary `@openbot/<package>` aliases for open branches (scripts/legacy-openbot-scope.ts).
+        ...LEGACY_SCOPE_NAMES,
         // `packages/ui` declares and imports these. The root copies date from before the UI moved to
         // that package; removing them changes what electron-builder packs, so it needs a package check.
         "@speed-highlight/core",
@@ -105,10 +108,10 @@ const config: KnipConfig = {
         "solid-sonner",
         // `scripts/mobile-ios.ts` resolves the Expo CLI that `apps/mobile` installs.
         "expo",
-        // `@openbot/team-client` imports it, and the main bundle keeps it external through this
+        // `@pokebots/team-client` imports it, and the main bundle keeps it external through this
         // entry. Bundled, a JSDoc `import` line in it takes the `__dirname` shim of electron-vite.
         "@noble/hashes",
-        // The vendored Baileys in `@openbot/whatsapp` imports these at runtime. The main bundle keeps
+        // The vendored Baileys in `@pokebots/whatsapp` imports these at runtime. The main bundle keeps
         // them external, so electron-builder packs them only from these root entries.
         "@cacheable/node-cache",
         "@hapi/boom",

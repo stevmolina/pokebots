@@ -1,4 +1,4 @@
-import { type VaultItemKind, type VaultSaveInput, vaultExpiryText } from "@openbot/contracts/ipc";
+import { type VaultItemKind, type VaultSaveInput, vaultExpiryText } from "@pokebots/contracts/ipc";
 import {
   type ConversationUiBlock,
   isSecretFormField,
@@ -11,13 +11,13 @@ import {
   uiBlockFallbackQuestions,
   uiBlockOutcomeText,
   uiConfirmAnswersWithPreview,
-} from "@openbot/contracts/ui-blocks";
-import type { AgentProfile } from "@openbot/ui/data";
-import { MarkdownMessageText } from "@openbot/ui/features/conversation/MarkdownMessageText";
-import { UiBlockingBlock } from "@openbot/ui/features/conversation/ui-blocks/UiBlockingBlock";
-import type { VaultRequestScope } from "@openbot/ui/features/vault/VaultPanel";
-import { VaultRequestCard } from "@openbot/ui/features/vault/VaultRequestCard";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/contracts/ui-blocks";
+import type { AgentProfile } from "@pokebots/ui/data";
+import { MarkdownMessageText } from "@pokebots/ui/features/conversation/MarkdownMessageText";
+import { UiBlockingBlock } from "@pokebots/ui/features/conversation/ui-blocks/UiBlockingBlock";
+import type { VaultRequestScope } from "@pokebots/ui/features/vault/VaultPanel";
+import { VaultRequestCard } from "@pokebots/ui/features/vault/VaultRequestCard";
+import { useText } from "@pokebots/ui/text";
 import { createMemo, createSignal, onCleanup, Show } from "solid-js";
 import type { PromptAnswerOptions } from "./conversation-types";
 

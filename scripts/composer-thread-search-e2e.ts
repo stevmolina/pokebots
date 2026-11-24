@@ -12,7 +12,7 @@
 import assert from "node:assert/strict";
 import { mkdirSync } from "node:fs";
 import { resolve } from "node:path";
-import { translateFor } from "@openbot/i18n";
+import { translateFor } from "@pokebots/i18n";
 import { argument, connectChannelE2e, SHORT_PROMPT, waitFor, writeReport } from "./channel-e2e-support";
 
 const NAME = "composer-thread-search-e2e";

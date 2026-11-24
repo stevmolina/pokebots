@@ -1,9 +1,9 @@
 import { BloubBot, type ExpressionId, POSES } from "@norbert_bodziony/bloub";
 import { PlushBot, type PlushState, type PlushTransition } from "@norbert_bodziony/bloub/plush";
-import { type AvatarMood, avatarMoodPresentation, type ShapeSafeStateId } from "@openbot/brand/bloub-avatar-motion";
-import { POKEBOTS_LANDING_ARTWORK, pokebotsDefaultPortrait } from "@openbot/brand/pokebots-avatar";
-import type { AgentStepActivity, AvatarColor, AvatarHue } from "@openbot/contracts/ipc";
-import { prefersReducedMotion } from "@openbot/ui/utils";
+import { type AvatarMood, avatarMoodPresentation, type ShapeSafeStateId } from "@pokebots/brand/bloub-avatar-motion";
+import { POKEBOTS_LANDING_ARTWORK, pokebotsDefaultPortrait } from "@pokebots/brand/pokebots-avatar";
+import type { AgentStepActivity, AvatarColor, AvatarHue } from "@pokebots/contracts/ipc";
+import { prefersReducedMotion } from "@pokebots/ui/utils";
 import { createEffect, createMemo, createSignal, onSettled, Show } from "solid-js";
 import { useAmbientMotion } from "../../ambient-motion";
 import {

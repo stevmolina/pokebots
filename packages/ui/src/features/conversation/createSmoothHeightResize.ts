@@ -1,4 +1,4 @@
-import { prefersReducedMotion } from "@openbot/ui/utils";
+import { prefersReducedMotion } from "@pokebots/ui/utils";
 import { onCleanup, onSettled } from "solid-js";
 
 interface SmoothHeightResizeOptions {

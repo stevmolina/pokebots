@@ -14,8 +14,8 @@ import {
   type QueueDelivery,
   type QueuedMessageReceipt,
   type UpdateAgentInput,
-} from "@openbot/contracts/ipc";
-import { ContextResetBusyError } from "@openbot/contracts/team-protocol/context-reset-v1";
+} from "@pokebots/contracts/ipc";
+import { ContextResetBusyError } from "@pokebots/contracts/team-protocol/context-reset-v1";
 import { Effect } from "effect";
 import { AgentSettingsRefused } from "../src/backend/agent/agent-settings-refused";
 import { AutomationServer, type UpdatedAgent } from "../src/main/automation-server";

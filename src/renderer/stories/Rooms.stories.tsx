@@ -1,5 +1,5 @@
-import type { RoomMessage, RoomsPort, RoomsResult } from "@openbot/contracts/rooms";
-import { RoomsPanel } from "@openbot/ui/features/rooms/RoomsPanel";
+import type { RoomMessage, RoomsPort, RoomsResult } from "@pokebots/contracts/rooms";
+import { RoomsPanel } from "@pokebots/ui/features/rooms/RoomsPanel";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 
 const room = {

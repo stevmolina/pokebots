@@ -7,10 +7,10 @@ import {
   type SpawnedMspConnection,
   spawnMspConnection,
 } from "@muse-code/sdk";
-import { attachmentMimeTypeForName } from "@openbot/contracts/attachment-files";
-import { isString } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
-import { redactText } from "@openbot/logging";
+import { attachmentMimeTypeForName } from "@pokebots/contracts/attachment-files";
+import { isString } from "@pokebots/contracts/runtime-values";
+import { sourceText } from "@pokebots/i18n/source";
+import { redactText } from "@pokebots/logging";
 import { Effect, Exit, Fiber, Option, Schema, Scope } from "effect";
 import { shownFailureDetail } from "./acp-flavor";
 import { secretElicitationField } from "./agent/prompts";

@@ -2,8 +2,8 @@ import type {
   ConversationSubagent,
   ConversationSubagentStatus,
   ConversationSubagentStep,
-} from "@openbot/contracts/ipc";
-import type { MobileTextKey } from "@openbot/i18n/mobile";
+} from "@pokebots/contracts/ipc";
+import type { MobileTextKey } from "@pokebots/i18n/mobile";
 import type { MobileText } from "@/shared/lib/text";
 
 export const SUBAGENT_STATE_LABELS = {

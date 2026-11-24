@@ -1,6 +1,6 @@
-import type { AgentProviderRef } from "@openbot/contracts/agent-providers";
-import { isNarrationItemId, showsNarration } from "@openbot/contracts/conversation-narration";
-import type { AgentMessage } from "@openbot/ui/data";
+import type { AgentProviderRef } from "@pokebots/contracts/agent-providers";
+import { isNarrationItemId, showsNarration } from "@pokebots/contracts/conversation-narration";
+import type { AgentMessage } from "@pokebots/ui/data";
 import { formatMessageTime } from "../../app-message-projection";
 
 /**

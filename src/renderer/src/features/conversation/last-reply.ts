@@ -1,4 +1,4 @@
-import type { AgentMessage } from "@openbot/ui/data";
+import type { AgentMessage } from "@pokebots/ui/data";
 
 /**
  * The newest finished reply of the agent: the text that ⇧⌘C copies. A reply that the agent still

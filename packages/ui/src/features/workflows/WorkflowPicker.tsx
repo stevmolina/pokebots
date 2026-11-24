@@ -5,7 +5,7 @@
  * Each trigger keeps its own root and puts this list in its `DropdownMenu.Portal`.
  */
 
-import { Check, DropdownMenu, Input, Search } from "@openbot/ui";
+import { Check, DropdownMenu, Input, Search } from "@pokebots/ui";
 import type { JSX } from "@solidjs/web";
 import { createMemo, createSignal, For, onCleanup, Show } from "solid-js";
 import { createScrollFades } from "../../components/createScrollFades";

@@ -20,7 +20,7 @@
 import assert from "node:assert/strict";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
-import { createOpenBotLogger } from "@openbot/logging";
+import { createOpenBotLogger } from "@pokebots/logging";
 import type { Page } from "playwright-core";
 import { argument } from "./channel-e2e-support";
 import { type Spread, spread } from "./dev-automation/bench-stats";

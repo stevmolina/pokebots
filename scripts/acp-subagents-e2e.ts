@@ -10,7 +10,7 @@ import assert from "node:assert/strict";
 import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import type { ConversationSubagent } from "@openbot/contracts/ipc";
+import type { ConversationSubagent } from "@pokebots/contracts/ipc";
 import { AcpAgentClient } from "../src/backend/acp-client";
 import { CLINE_ACP_FLAVOR, HERMES_ACP_FLAVOR, KIMI_ACP_FLAVOR } from "../src/backend/acp-flavor";
 import { SUBAGENTS_UPDATED_METHOD, subagentsFromNotification } from "../src/backend/agent/subagent-updates";

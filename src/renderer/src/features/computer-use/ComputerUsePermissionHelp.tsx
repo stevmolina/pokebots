@@ -1,7 +1,7 @@
-import { type ComputerUsePermissionApp, LOCAL_SERVER_ID, type MacPermissionId } from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
-import { Button, FolderOpen, GripVertical, Monitor, MousePointer2 } from "@openbot/ui";
-import { useText } from "@openbot/ui/text";
+import { type ComputerUsePermissionApp, LOCAL_SERVER_ID, type MacPermissionId } from "@pokebots/contracts/ipc";
+import type { AppTextKey } from "@pokebots/i18n";
+import { Button, FolderOpen, GripVertical, Monitor, MousePointer2 } from "@pokebots/ui";
+import { useText } from "@pokebots/ui/text";
 import { createSignal, onCleanup, onSettled, Show } from "solid-js";
 import { computerUsePort } from "./computer-use-port";
 

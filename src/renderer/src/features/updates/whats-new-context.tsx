@@ -1,5 +1,5 @@
-import type { TranslatedLocale } from "@openbot/i18n";
-import { summarizeWhatsNew, type WhatsNewNotes, type WhatsNewRelease } from "@openbot/ui/features/updates/whats-new";
+import type { TranslatedLocale } from "@pokebots/i18n";
+import { summarizeWhatsNew, type WhatsNewNotes, type WhatsNewRelease } from "@pokebots/ui/features/updates/whats-new";
 import { createEffect, createStore, onSettled } from "solid-js";
 import { useI18n } from "../../i18n-context";
 import { usePlatform } from "../../platform";

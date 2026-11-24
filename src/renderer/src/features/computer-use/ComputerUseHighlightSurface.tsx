@@ -1,4 +1,4 @@
-import type { ComputerUseHighlightPlacement } from "@openbot/contracts/ipc";
+import type { ComputerUseHighlightPlacement } from "@pokebots/contracts/ipc";
 import { createSignal, For, onSettled, Show } from "solid-js";
 import { ComputerUseAgentCursor } from "./ComputerUseAgentCursor";
 import { ComputerUseWindowHighlight } from "./ComputerUseWindowHighlight";

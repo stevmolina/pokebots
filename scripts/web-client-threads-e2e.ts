@@ -16,10 +16,10 @@
 import assert from "node:assert/strict";
 import { mkdirSync } from "node:fs";
 import { resolve } from "node:path";
-import type { AgentTask, AgentTasksSnapshot, ConversationSnapshot } from "@openbot/contracts/ipc";
-import { AGENT_THREADS_CAPABILITY } from "@openbot/contracts/team-protocol/agent-threads-v1";
-import { translateFor } from "@openbot/i18n";
-import { createOpenBotLogger } from "@openbot/logging";
+import type { AgentTask, AgentTasksSnapshot, ConversationSnapshot } from "@pokebots/contracts/ipc";
+import { AGENT_THREADS_CAPABILITY } from "@pokebots/contracts/team-protocol/agent-threads-v1";
+import { translateFor } from "@pokebots/i18n";
+import { createOpenBotLogger } from "@pokebots/logging";
 import { chromium, type Page } from "playwright-core";
 import { argument, connectChannelE2e, SHORT_PROMPT, waitFor, writeReport } from "./channel-e2e-support";
 import { assertMutationAllowed, connectToDevApp } from "./dev-automation/cdp-client";

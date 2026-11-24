@@ -3,8 +3,8 @@ import type {
   CustomProviderSummary,
   SaveCustomProviderInput,
   UpdateCustomProviderInput,
-} from "@openbot/contracts/ipc";
-import { currentText } from "@openbot/ui/text";
+} from "@pokebots/contracts/ipc";
+import { currentText } from "@pokebots/ui/text";
 import { createStore } from "solid-js";
 import { desktopAnalytics } from "../../../analytics";
 import type { CustomProvidersEndpointApi } from "../custom-providers-port";

@@ -1,4 +1,4 @@
-import { CODEX_LIVE_VOICES, type CodexLiveVoice, SPEECH_VOICES } from "@openbot/contracts/ipc";
+import { CODEX_LIVE_VOICES, type CodexLiveVoice, SPEECH_VOICES } from "@pokebots/contracts/ipc";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { Button, Spinner, Typography } from "heroui-native";
 import { useThemeColor } from "heroui-native/hooks";

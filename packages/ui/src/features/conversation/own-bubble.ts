@@ -1,5 +1,5 @@
-import { type AvatarColor, isAvatarColor } from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
+import { type AvatarColor, isAvatarColor } from "@pokebots/contracts/ipc";
+import type { AppTextKey } from "@pokebots/i18n";
 import { avatarHeadColor } from "../../bloub-avatar";
 import type { AgentProfile } from "../../data";
 import type { ChatMessageAuthor } from "./ChatMessageRow";

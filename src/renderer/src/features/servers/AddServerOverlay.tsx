@@ -3,30 +3,30 @@ import {
   type BillingInterval,
   type BillingPlanId,
   isOpenBillingStatus,
-} from "@openbot/contracts/billing";
-import { type BillingDetails, isEuConsumer } from "@openbot/contracts/billing-details";
+} from "@pokebots/contracts/billing";
+import { type BillingDetails, isEuConsumer } from "@pokebots/contracts/billing-details";
 import type {
   HostedServerCatalog,
   HostedServerCatalogPlan,
   HostedServerEntryPoint,
   HostedServerList,
   HostedServerSummary,
-} from "@openbot/contracts/hosted-servers";
-import type { HostedServersDesktopApi, LicenseDesktopApi, ServerSummary } from "@openbot/contracts/ipc";
-import type { LicenseOrder, LicenseState, PricingOrder } from "@openbot/contracts/license";
-import { classifyFailure } from "@openbot/telemetry";
+} from "@pokebots/contracts/hosted-servers";
+import type { HostedServersDesktopApi, LicenseDesktopApi, ServerSummary } from "@pokebots/contracts/ipc";
+import type { LicenseOrder, LicenseState, PricingOrder } from "@pokebots/contracts/license";
+import { classifyFailure } from "@pokebots/telemetry";
 import {
   type BillingDetailsCalls,
   type BillingDetailsDraft,
   billingDetailsDraft,
   saveBillingDetails,
-} from "@openbot/ui/features/billing/BillingDetailsFields";
+} from "@pokebots/ui/features/billing/BillingDetailsFields";
 import type {
   CreatedHostedServer,
   CreateHostedServerInput,
   HostedServerSetupStatus,
-} from "@openbot/ui/features/servers/AddServerDialog";
-import type { OrderConsent } from "@openbot/ui/features/servers/HostedPricingPage";
+} from "@pokebots/ui/features/servers/AddServerDialog";
+import type { OrderConsent } from "@pokebots/ui/features/servers/HostedPricingPage";
 import {
   guessHostedCurrency,
   HOSTED_BILLING_CURRENCY,
@@ -35,9 +35,9 @@ import {
   type HostedServerPlan,
   hostedCurrencies,
   hostedServerPlansFromCatalog,
-} from "@openbot/ui/features/servers/HostedServerPricing";
-import { currentText, useText } from "@openbot/ui/text";
-import type { UserErrorDetails } from "@openbot/user-errors";
+} from "@pokebots/ui/features/servers/HostedServerPricing";
+import { currentText, useText } from "@pokebots/ui/text";
+import type { UserErrorDetails } from "@pokebots/user-errors";
 import { Portal } from "@solidjs/web";
 import { createEffect, createSignal, createStore, Loading, onSettled, type ParentProps, Show, untrack } from "solid-js";
 import { actionToast } from "../../action-toast";

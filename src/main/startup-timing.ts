@@ -1,6 +1,6 @@
 import { uptime } from "node:os";
 import { join } from "node:path";
-import { isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
+import { isDynamicRecord, isNumber, isString } from "@pokebots/contracts/runtime-values";
 import { Effect } from "effect";
 import { readPreferenceFile, writePreferenceFile } from "./preference-file";
 import { quantize } from "./resource-summary";

@@ -4,9 +4,9 @@ import {
   DEFAULT_QUIT_GUARD,
   QUIT_GUARDS,
   type QuitGuard,
-} from "@openbot/contracts/ipc";
-import { isDynamicRecord, isOneOf } from "@openbot/contracts/runtime-values";
-import { createOpenBotLogger, toLogValue } from "@openbot/logging";
+} from "@pokebots/contracts/ipc";
+import { isDynamicRecord, isOneOf } from "@pokebots/contracts/runtime-values";
+import { createOpenBotLogger, toLogValue } from "@pokebots/logging";
 import { Effect, Result, Semaphore } from "effect";
 import { isMissingFileError } from "../backend/file-errors";
 import type { LoginItem, LoginItemFailure } from "./login-item";

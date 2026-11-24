@@ -1,4 +1,4 @@
-import type { MarketplaceAgentSummary } from "@openbot/contracts/ipc";
+import type { MarketplaceAgentSummary } from "@pokebots/contracts/ipc";
 import type { JSX } from "@solidjs/web";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 // The site's stylesheet, loaded only when a site story opens. See `ArticleMedia.stories.tsx`.

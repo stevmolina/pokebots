@@ -6,11 +6,11 @@ import type {
   UiConfirmBlock as UiConfirmSpec,
   UiFormBlock as UiFormSpec,
   UiQuickRepliesBlock as UiQuickRepliesSpec,
-} from "@openbot/contracts/ui-blocks";
-import { UI_API_KEY_SCOPE_FIELD_ID, uiBlockOutcomeText } from "@openbot/contracts/ui-blocks";
-import { UiChoiceBlock } from "@openbot/ui/features/conversation/ui-blocks/UiChoiceBlock";
-import { UiConfirmBlock } from "@openbot/ui/features/conversation/ui-blocks/UiConfirmBlock";
-import { UiFormBlock } from "@openbot/ui/features/conversation/ui-blocks/UiFormBlock";
+} from "@pokebots/contracts/ui-blocks";
+import { UI_API_KEY_SCOPE_FIELD_ID, uiBlockOutcomeText } from "@pokebots/contracts/ui-blocks";
+import { UiChoiceBlock } from "@pokebots/ui/features/conversation/ui-blocks/UiChoiceBlock";
+import { UiConfirmBlock } from "@pokebots/ui/features/conversation/ui-blocks/UiConfirmBlock";
+import { UiFormBlock } from "@pokebots/ui/features/conversation/ui-blocks/UiFormBlock";
 import type { JSX } from "@solidjs/web";
 import { createSignal } from "solid-js";
 import { fn } from "storybook/test";

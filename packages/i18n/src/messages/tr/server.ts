@@ -9,7 +9,7 @@ export const messages = {
   "server.connection.waking": "{name} başlatılıyor",
   "server.connection.startProgress": "{step} · {time}",
   "server.connection.providerLimit":
-    "Bulut sağlayıcısı şu anda yeni başlatmaları sınırlıyor. OpenBot kısa süre içinde yeniden deneyecek.",
+    "Bulut sağlayıcısı şu anda yeni başlatmaları sınırlıyor. Pokebots kısa süre içinde yeniden deneyecek.",
   "server.connection.updating": "{name} güncelleniyor",
   "server.connection.loading": "{name} yükleniyor",
   "server.connection.connecting": "{name} sunucusuna bağlanılıyor",
@@ -28,13 +28,13 @@ export const messages = {
   "server.connection.details": "Ayrıntılar",
 
   "server.status.steps": "Bağlantı adımları",
-  "server.status.updateCause": "{name}, OpenBot {version} sürümünü yüklemek için yeniden başlıyor.",
-  "server.status.updateCauseNoVersion": "{name}, bir OpenBot güncellemesini yüklemek için yeniden başlıyor.",
-  "server.status.wakeCause": "{name} durdurulmuştu. OpenBot onu yeniden başlatıyor.",
+  "server.status.updateCause": "{name}, Pokebots {version} sürümünü yüklemek için yeniden başlıyor.",
+  "server.status.updateCauseNoVersion": "{name}, bir Pokebots güncellemesini yüklemek için yeniden başlıyor.",
+  "server.status.wakeCause": "{name} durdurulmuştu. Pokebots onu yeniden başlatıyor.",
   "server.status.connectCause": "Bu uygulama {name} sunucusuna bağlanıyor.",
   "server.status.connectionCause": "Bu uygulamanın {name} ile bağlantısı kesildi. Otomatik olarak yeniden bağlanır.",
   "server.status.stepUpdate": "Güncellemeyi yükle",
-  "server.status.stepUpdateDetail": "OpenBot durur, güncellemeyi yükler ve yeniden başlar.",
+  "server.status.stepUpdateDetail": "Pokebots durur, güncellemeyi yükler ve yeniden başlar.",
   "server.status.stepWake": "Sunucuyu başlat",
   "server.status.stepWakeDetail": "Bu birkaç dakika sürebilir.",
   "server.status.stepConnect": "Bağlan",
@@ -42,8 +42,8 @@ export const messages = {
   "server.status.stepLoad": "Çalışma alanını yükle",
   "server.status.stepLoadDetail": "Ajanlar ve sohbetler sunucudan yüklenir.",
   "server.status.elapsed": "Geçen süre: {time}",
-  "server.compatibility.updateClientTitle": "Bu OpenBot uygulamasını güncelleyin",
-  "server.compatibility.updateHostTitle": "{name} üzerindeki OpenBot'u güncelleyin",
+  "server.compatibility.updateClientTitle": "Bu Pokebots uygulamasını güncelleyin",
+  "server.compatibility.updateHostTitle": "{name} üzerindeki Pokebots'u güncelleyin",
   "server.compatibility.unsafeDataTitle": "Ana makine güvenli olmayan veri döndürdü",
   "server.compatibility.cannotConnectTitle": "{name} ile bağlantı kurulamıyor",
   "server.compatibility.safeModeTitle": "{name} başlamıyor",
@@ -52,7 +52,7 @@ export const messages = {
   "server.compatibility.updateHostDescription":
     "Ana makine yalnızca bu uygulamadan daha eski protokolleri destekliyor. Ana makineyi güncelleyin, ardından tekrar deneyin.",
   "server.compatibility.unsafeDataDescription":
-    "Bilinen bir veri yükü geçersiz olduğu için OpenBot bu bağlantıyı durdurdu. Geçerli çalışma alanı verileriniz değiştirilmedi.",
+    "Bilinen bir veri yükü geçersiz olduğu için Pokebots bu bağlantıyı durdurdu. Geçerli çalışma alanı verileriniz değiştirilmedi.",
   "server.compatibility.clientVersion": "İstemci sürümü",
   "server.compatibility.hostVersion": "Ana makine sürümü",
   "server.compatibility.negotiatedProtocol": "Anlaşılan protokol",
@@ -80,9 +80,9 @@ export const messages = {
   "server.join.emailBound": "Bu davet yalnızca e-posta alıcısı için geçerlidir.",
   "server.join.unknownDate": "Bilinmiyor",
   // Sunucu çubuğundaki artı düğmesinin açtığı iletişim kutusu. {price} "€20" gibi biçimlendirilmiş bir tutardır.
-  "server.add.title": "OpenBot'u harici bir sunucuda 7/24 çalıştırın",
+  "server.add.title": "Pokebots'u harici bir sunucuda 7/24 çalıştırın",
   "server.add.description":
-    "OpenBot Sunucuları, bilgisayarınız kapalıyken bile ajanlarınızı ve rutinlerinizi çalışır durumda tutar. Altyapı ve bakımla biz ilgileniriz; sunucunuz teknik bir kurulum gerektirmeden kullanıma hazır olur.",
+    "Pokebots Sunucuları, bilgisayarınız kapalıyken bile ajanlarınızı ve rutinlerinizi çalışır durumda tutar. Altyapı ve bakımla biz ilgileniriz; sunucunuz teknik bir kurulum gerektirmeden kullanıma hazır olur.",
   "server.add.billing.label": "Faturalandırma dönemi",
   "server.add.currency.label": "Para birimi",
   "server.add.billing.monthly": "Aylık",
@@ -121,19 +121,19 @@ export const messages = {
   "server.local.creating": "Sunucu oluşturuluyor…",
   "server.local.createFailed": "Sunucu oluşturulamadı.",
   "server.local.createFailedRetry":
-    "Bir sorun oluştu. Tekrar deneyin. Yine başarısız olursa OpenBot'u yeniden başlatın.",
+    "Bir sorun oluştu. Tekrar deneyin. Yine başarısız olursa Pokebots'u yeniden başlatın.",
   "server.local.limitReached":
     "Bu bilgisayarda en fazla {limit} sunucunuz olabilir. Yeni bir sunucu oluşturmak için birini silin.",
   "server.local.deleteConfirmTitle": "{name} silinsin mi?",
   "server.local.deleteConfirmDescription":
-    "OpenBot sunucuyu durdurur ve ajanlarını, sohbetlerini ve dosyalarını çöp kutusuna taşır.",
+    "Pokebots sunucuyu durdurur ve ajanlarını, sohbetlerini ve dosyalarını çöp kutusuna taşır.",
   "server.local.deleting": "Sunucu siliniyor…",
   "server.local.deletedTitle": "{name} silindi",
   "server.install.title": "Başka bir bilgisayarda yeni sunucu",
   "server.install.description":
-    "Bu komutu size ait bir Linux bilgisayarda veya VPS'te çalıştırın. Komut OpenBot'u kurar ve sunucuyu bu hesaba ekler.",
+    "Bu komutu size ait bir Linux bilgisayarda veya VPS'te çalıştırın. Komut Pokebots'u kurar ve sunucuyu bu hesaba ekler.",
   "server.install.making": "Bu hesap için komut oluşturuluyor…",
-  "server.install.failed": "OpenBot komut oluşturamadı. İnternet bağlantısını kontrol edin.",
+  "server.install.failed": "Pokebots komut oluşturamadı. İnternet bağlantısını kontrol edin.",
   "server.install.copyForAgent": "Yapay zekâ ajanı için kopyala",
   "server.install.expiresIn": "Bir kez çalışır. {time} sonra sona erer.",
   "server.install.newCommand": "Yeni komut",
@@ -143,10 +143,10 @@ export const messages = {
   "server.install.offline": "{name} çevrimdışı.",
   "server.install.expired": "Bu komutun süresi doldu. Yeni bir komut oluşturun.",
   "server.install.agentPrompt":
-    'OpenBot\'u bu Linux sunucuya kur ve OpenBot hesabımda oturum aç.\nBu komutu root olarak çalıştır. Soru sormaz ve birkaç dakika sürer:\n\n{command}\n\n"OpenBot is connected to your account." satırı ve 0 çıkış koduyla biter.\nKomut 15 dakika boyunca bir kez çalışır. Hiçbir yere kaydetme.',
+    'Pokebots\'u bu Linux sunucuya kur ve Pokebots hesabımda oturum aç.\nBu komutu root olarak çalıştır. Soru sormaz ve birkaç dakika sürer:\n\n{command}\n\n"Pokebots is connected to your account." satırı ve 0 çıkış koduyla biter.\nKomut 15 dakika boyunca bir kez çalışır. Hiçbir yere kaydetme.',
   "server.install.setUpWithAgent": "Bir ajanla kur",
   "server.install.sshAgentPrompt":
-    "Linux sunucuma SSH ile bağlan ve OpenBot'u sunucu olarak oraya kur.\n\nSSH adresi (user@host):",
+    "Linux sunucuma SSH ile bağlan ve Pokebots'u sunucu olarak oraya kur.\n\nSSH adresi (user@host):",
   // Hesap maksimum sayıda barındırılan sunucuya sahip olduğunda gösterilir. Planlar devre dışıdır.
   "server.add.limit.title": "Bu hesap maksimum sunucu sayısına ulaştı",
   "server.add.limit.description": {
@@ -170,14 +170,14 @@ export const messages = {
   "server.hosted.defaultName": "Bulut sunucusu",
   "server.hosted.defaultNameNumbered": "Bulut sunucusu {number}",
   "server.hosted.step.create": "Makineyi oluştur",
-  "server.hosted.step.start": "OpenBot'u başlat",
+  "server.hosted.step.start": "Pokebots'u başlat",
   "server.hosted.step.connect": "Hesaba bağlan",
   "server.hosted.detail.create.reserve": "Özel bir makine ayrılıyor",
-  "server.hosted.detail.create.copy": "OpenBot makineye kopyalanıyor",
+  "server.hosted.detail.create.copy": "Pokebots makineye kopyalanıyor",
   "server.hosted.detail.create.key": "Tek seferlik oturum açma anahtarı ekleniyor",
   "server.hosted.detail.start.boot": "Makine açılıyor",
-  "server.hosted.detail.start.app": "OpenBot başlatılıyor",
-  "server.hosted.detail.start.wait": "OpenBot'un yanıt vermesi bekleniyor",
+  "server.hosted.detail.start.app": "Pokebots başlatılıyor",
+  "server.hosted.detail.start.wait": "Pokebots'un yanıt vermesi bekleniyor",
   "server.hosted.detail.connect.signIn": "Sizin adınıza oturum açılıyor",
   "server.hosted.detail.connect.publish": "Sunucu hesabınıza ekleniyor",
   "server.hosted.detail.connect.check": "Bağlantı kontrol ediliyor",
@@ -242,13 +242,13 @@ export const messages = {
   "server.settings.identityLocalOnly":
     "Bu sunucunun adı ve logosu yalnızca onu çalıştıran bilgisayarda değiştirilebilir.",
   "server.settings.publicationLocalOnly": "Yayımlama durumunu yalnızca yerel sunucu değiştirebilir.",
-  "server.compatibility.versionMismatchTitle": "{name} üzerinde farklı OpenBot sürümleri",
+  "server.compatibility.versionMismatchTitle": "{name} üzerinde farklı Pokebots sürümleri",
   "server.compatibility.versionMismatchDescription":
     "Bağlantı {protocol} protokolünü kullanıyor. Bazı yeni özellikler kullanılamayabilir. İstemci {clientVersion}; ana makine {hostVersion}.",
   "server.compatibility.versionMismatchUpdateHostDescription":
-    "Tüm özellikleri kullanmak için {name} üzerindeki OpenBot'u güncelleyin. Bağlantı {protocol} protokolünü kullanıyor. İstemci {clientVersion}; ana makine {hostVersion}.",
+    "Tüm özellikleri kullanmak için {name} üzerindeki Pokebots'u güncelleyin. Bağlantı {protocol} protokolünü kullanıyor. İstemci {clientVersion}; ana makine {hostVersion}.",
   "server.compatibility.versionMismatchUpdateClientDescription":
-    "Tüm özellikleri kullanmak için bu OpenBot uygulamasını güncelleyin. Bağlantı {protocol} protokolünü kullanıyor. İstemci {clientVersion}; ana makine {hostVersion}.",
+    "Tüm özellikleri kullanmak için bu Pokebots uygulamasını güncelleyin. Bağlantı {protocol} protokolünü kullanıyor. İstemci {clientVersion}; ana makine {hostVersion}.",
   "server.connection.failedTitle": "Bağlantı başarısız oldu",
   "server.connection.failedDescription":
     "Bu sunucuya bağlanılamadı. Ana makinenin çevrim içi olduğunu kontrol edip tekrar deneyin.",
@@ -266,7 +266,7 @@ export const messages = {
   "server.settings.desktopTitle": "Uzak masaüstü",
   "server.settings.desktopDescription": "Bu sunucunun masaüstünü yapılandırın veya masaüstüne bağlanın.",
   "server.settings.storageTitle": "Depolama",
-  "server.settings.storageDescription": "OpenBot'un bu sunucunun diskinde ne sakladığını ve boş alanı görün.",
+  "server.settings.storageDescription": "Pokebots'un bu sunucunun diskinde ne sakladığını ve boş alanı görün.",
   "server.settings.hostedSitesTitle": "Siteler",
   "server.settings.hostedSitesDescription": "Bu sunucudaki ajanların openbot.site üzerinde yayımladığı statik siteler.",
   "server.settings.importTitle": "İçe aktar",
@@ -302,9 +302,9 @@ export const messages = {
   "server.settings.nameTooLong": "En fazla {limit} karakter kullanın.",
   "server.settings.actionFailedTitle": "Sunucu eylemi başarısız oldu",
   "server.settings.actionFailed": "Sunucu eylemi başarısız oldu.",
-  "server.settings.imageReadFailed": "OpenBot bu görseli okuyamadı.",
+  "server.settings.imageReadFailed": "Pokebots bu görseli okuyamadı.",
   "server.settings.copyFailedTitle": "Kopyalama başarısız oldu",
-  "server.settings.copyFailed": "OpenBot bu değeri kopyalayamadı.",
+  "server.settings.copyFailed": "Pokebots bu değeri kopyalayamadı.",
   "server.settings.unavailableTitle": "Sunucu ayarları kullanılamıyor",
   "server.settings.reset": "Sıfırla",
   "server.settings.unsavedChanges": "Kaydedilmemiş değişiklikler",
@@ -344,7 +344,7 @@ export const messages = {
   "server.settings.appearanceColorOption": "{color} sunucu rengi",
   "server.settings.appearanceReset": "Şekli ve rengi sıfırla",
   "server.settings.access": "Erişim",
-  "server.companySignIn.desktopOnly": "Çoklu oturum açmayı OpenBot masaüstü uygulamasında ayarlayın.",
+  "server.companySignIn.desktopOnly": "Çoklu oturum açmayı Pokebots masaüstü uygulamasında ayarlayın.",
   "server.settings.publish": "Bu sunucuyu yayımla",
   "server.settings.published": "Sunucu yayımlandı",
   "server.settings.setUpDesktopTitle": "Uzak masaüstünü ayarlayın",
@@ -429,7 +429,7 @@ export const messages = {
   "server.settings.restartTitle": "Yeniden başlat",
   "server.settings.restarting": "Yeniden başlatılıyor…",
   "server.settings.restartedTitle": "{name} yeniden başlatılıyor",
-  "server.settings.restartHiddenDescription": "Sunucu geri geldiğinde OpenBot otomatik olarak yeniden bağlanır.",
+  "server.settings.restartHiddenDescription": "Sunucu geri geldiğinde Pokebots otomatik olarak yeniden bağlanır.",
   "server.settings.restartHide": "Gizle",
   "server.settings.restartProgressTitle": "{name} yeniden başlatılıyor",
   "server.settings.restartProgressDescription":
@@ -529,7 +529,7 @@ export const messages = {
   "server.desktop.connectionUnavailable": "Bağlantı kullanılamıyor",
   "server.desktop.hostOffline": "Ana makine çevrim dışı",
   "server.desktop.hostOfflineDescription": "Masaüstünü açmadan önce ana makineye yeniden bağlanın.",
-  "server.desktop.hostUpdateDescription": "Uzaktan kontrolü kullanmak için ana makinedeki OpenBot'u güncelleyin.",
+  "server.desktop.hostUpdateDescription": "Uzaktan kontrolü kullanmak için ana makinedeki Pokebots'u güncelleyin.",
   "server.desktop.serviceAvailable": "Hizmet kullanılabilir",
   "server.desktop.serviceNotReady": "Hizmet hazır değil",
   "server.desktop.serviceNotReadyDescription":
@@ -543,7 +543,7 @@ export const messages = {
   "server.desktop.accessMembers": "Tüm üyeler",
   "server.desktop.askLabel": "Bu bilgisayarda sor",
   "server.desktop.askDescription":
-    "Her oturum, bu bilgisayarın başındaki bir kişi izin verene kadar bekler. 30 saniye içinde yanıt gelmezse OpenBot oturumu reddeder.",
+    "Her oturum, bu bilgisayarın başındaki bir kişi izin verene kadar bekler. 30 saniye içinde yanıt gelmezse Pokebots oturumu reddeder.",
   "server.desktop.activeTitle": "Etkin uzak masaüstü oturumları: {active}",
   "server.desktop.activeDescription": "Her oturumu hemen sonlandırır. Üyeler yeniden isteyebilir.",
   "server.desktop.stopAll": "Tüm uzaktan kontrolü durdur",
@@ -556,9 +556,9 @@ export const messages = {
   "server.settings.providersSwitch": "Bu sunucuya geç",
   // Sunucu Ayarları > Güncellemeler: Katılınan bir sunucunun ana makinesinin OpenBot güncellemesi. {name} sunucudur.
   "server.settings.updatesTitle": "Güncellemeler",
-  "server.settings.updatesDescription": "Bu sunucuyu çalıştıran bilgisayardaki OpenBot'u güncelleyin.",
-  "server.update.hostTitle": "{name} üzerinde OpenBot",
-  "server.update.version": "OpenBot {version}",
+  "server.settings.updatesDescription": "Bu sunucuyu çalıştıran bilgisayardaki Pokebots'u güncelleyin.",
+  "server.update.hostTitle": "{name} üzerinde Pokebots",
+  "server.update.version": "Pokebots {version}",
   "server.update.status.idle": "En son sürümü bulmak için güncellemeleri denetleyin.",
   "server.update.status.checking": "Güncellemeler denetleniyor…",
   "server.update.status.available": "{version} sürümü mevcut.",
@@ -567,11 +567,11 @@ export const messages = {
   "server.update.status.downloadingUnknown": "{version} indiriliyor…",
   "server.update.status.ready": "{version} indirildi.",
   "server.update.status.installing": "{name}, güncellemeyi yüklemek için yeniden başlatılıyor.",
-  "server.update.status.upToDate": "{name} üzerinde OpenBot güncel.",
+  "server.update.status.upToDate": "{name} üzerinde Pokebots güncel.",
   "server.update.status.checkFailed": "{name} güncellemeleri denetleyemedi. Tekrar deneyin.",
   "server.update.status.downloadFailed": "{name} güncellemeyi indiremedi. Tekrar deneyin.",
   "server.update.status.installFailed":
-    "{name} güncellemeyi yükleyemedi. O bilgisayarın başka hiçbir kullanıcısının OpenBot çalıştırmadığından emin olun, ardından tekrar deneyin.",
+    "{name} güncellemeyi yükleyemedi. O bilgisayarın başka hiçbir kullanıcısının Pokebots çalıştırmadığından emin olun, ardından tekrar deneyin.",
   "server.update.releaseCheckFailed":
     "{name} sürüm akışını okuyamadı. Ana makinenin ağ bağlantısını kontrol edin, ardından tekrar deneyin.",
   "server.update.releaseUnavailable":
@@ -582,13 +582,13 @@ export const messages = {
   "server.update.path.hosted":
     "Barındırılan hizmet güncellemeleri arka planda indirir. İndirilen bir güncelleme, sunucu bir sonraki başlatılışında başlar. Sunucuyu durdurup sürdürmeden önce etkin çalışmanın bitmesini bekleyin. Sunucu eski bir sürümde kalırsa ana makine yöneticisiyle iletişime geçin.",
   "server.update.path.system":
-    "En son sürümü yüklemek için ana makinede sudo openbot update komutunu çalıştırın. Bu komut OpenBot'u durdurur. Önce etkin çalışmanın bitmesini bekleyin. Otomatik indirmeler bir sonraki önyüklemede yüklenir.",
+    "En son sürümü yüklemek için ana makinede sudo openbot update komutunu çalıştırın. Bu komut Pokebots'u durdurur. Önce etkin çalışmanın bitmesini bekleyin. Otomatik indirmeler bir sonraki önyüklemede yüklenir.",
   "server.update.path.container":
     "Docker ana makinesinde yeni OpenBot görüntüsünü çekin ve kapsayıcıyı aynı veri birimleriyle yeniden oluşturun. Önce etkin çalışmanın bitmesini bekleyin. Verilerinizi korumak için mevcut birimleri saklayın.",
   "server.update.path.manual":
-    "Bu kurulum kendini değiştiremez. Ana makine yöneticisinden uyumlu sürümü github.com/nightly-labs/openbot/releases adresinden yüklemesini isteyin. Mevcut OpenBot verilerini saklayın.",
+    "Bu kurulum kendini değiştiremez. Ana makine yöneticisinden uyumlu sürümü github.com/nightly-labs/openbot/releases adresinden yüklemesini isteyin. Mevcut Pokebots verilerini saklayın.",
   "server.update.path.unavailable":
-    "Bu bir geliştirme derlemesidir. Güncellemeleri denetlemek için yüklü bir OpenBot sürümü kullanın.",
+    "Bu bir geliştirme derlemesidir. Güncellemeleri denetlemek için yüklü bir Pokebots sürümü kullanın.",
   "server.update.check": "Güncellemeleri denetle",
   "server.update.start": "Boşta olduğunda güncelle",
   "server.update.restartNow": "Şimdi yeniden başlat",
@@ -598,39 +598,39 @@ export const messages = {
   "server.update.requestedBy": "{member} bu güncellemeyi istedi.",
   "server.update.automatic": "{name} güncellemeleri otomatik olarak yükler.",
   "server.update.autoDownloadTitle": "Güncellemeleri otomatik olarak indir",
-  "server.update.autoDownloadDescription": "{name}, OpenBot'un her yeni sürümü çıktığında indirir.",
+  "server.update.autoDownloadDescription": "{name}, Pokebots'un her yeni sürümü çıktığında indirir.",
   "server.update.autoInstallTitle": "Güncellemeleri otomatik olarak yükle",
   "server.update.autoInstallDescription":
     "{name}, ajanları boşta olduğunda indirilen güncellemeyle yeniden başlar. Üyelerin bağlantısı kısa bir süre için kesilir ve otomatik olarak tekrar bağlanır.",
   "server.update.waitingFor": "{reasons} bekleniyor.",
   "server.update.disabledTitle": "Uzaktan güncellemeler kapalı",
   "server.update.disabledDescription":
-    "{name} kullanıcısı sunucu üyelerinin güncelleme yapmasını kapattı. OpenBot uygulamasını güncellemesini veya ayarı açmasını isteyin.",
-  "server.update.managedTitle": "Güncellemeleri OpenBot Host Manager yönetiyor",
+    "{name} kullanıcısı sunucu üyelerinin güncelleme yapmasını kapattı. Pokebots uygulamasını güncellemesini veya ayarı açmasını isteyin.",
+  "server.update.managedTitle": "Güncellemeleri Pokebots Host Manager yönetiyor",
   "server.update.managedDescription":
     "OpenBot Host Manager, {name} sunucusunu günceller. Ana makine yöneticisiyle iletişime geçin.",
   "server.update.unsupportedTitle": "{name} kendini güncelleyemiyor",
   "server.update.unsupportedDescription":
-    "Bu OpenBot derlemesinde güncelleyici yok. {name} üzerine yeni bir sürüm yükleyin.",
+    "Bu Pokebots derlemesinde güncelleyici yok. {name} üzerine yeni bir sürüm yükleyin.",
   "server.update.restarting": "Yeniden başlatılıyor…",
   "server.update.loadFailed": "{name} güncelleme durumu yüklenemedi.",
   "server.update.hostAction": "Ana makineyi güncelle",
   // Güncelleme iletişim kutusu: indirme, yeniden başlatma ve sunucunun tekrar çevrim içi olması.
-  "server.update.dialog.offerTitle": "{name} sunucusunu OpenBot {version} sürümüne güncelle",
+  "server.update.dialog.offerTitle": "{name} sunucusunu Pokebots {version} sürümüne güncelle",
   "server.update.dialog.offerDescription":
-    "{name}, OpenBot {current} kullanıyor. Önce güncellemeyi indirir, ardından yeniden başlar.",
+    "{name}, Pokebots {current} kullanıyor. Önce güncellemeyi indirir, ardından yeniden başlar.",
   "server.update.dialog.offerReadyDescription":
-    "{name}, OpenBot {current} kullanıyor. Güncelleme indirildi. {name}, güncellemeyi yüklemek için yeniden başlar.",
+    "{name}, Pokebots {current} kullanıyor. Güncelleme indirildi. {name}, güncellemeyi yüklemek için yeniden başlar.",
   "server.update.dialog.progressTitle": "{name} güncelleniyor",
   "server.update.dialog.progressDescription": "{time} · Bu pencereyi gizleyebilirsiniz.",
-  "server.update.dialog.doneTitle": "{name}, OpenBot {version} sürümünde",
+  "server.update.dialog.doneTitle": "{name}, Pokebots {version} sürümünde",
   "server.update.dialog.doneDescription": "Güncelleme {time} sürdü.",
   "server.update.dialog.failedTitle": "{name} güncellenmedi",
   "server.update.dialog.restartFailed":
     "{name} tekrar çevrim içi olmadı. Ana makineyi kontrol edin, ardından tekrar deneyin.",
-  "server.update.dialog.notInstalled": "{name}, OpenBot {current} ile yeniden başladı. Güncellemeyi tekrar deneyin.",
+  "server.update.dialog.notInstalled": "{name}, Pokebots {current} ile yeniden başladı. Güncellemeyi tekrar deneyin.",
   "server.update.dialog.steps": "Güncelleme adımları",
-  "server.update.dialog.downloadStep": "OpenBot {version} sürümünü indir",
+  "server.update.dialog.downloadStep": "Pokebots {version} sürümünü indir",
   "server.update.dialog.downloadPending": "İndirme sırasında ajanlar çalışmaya devam eder.",
   "server.update.dialog.downloadPreparing": "İndirme hazırlanıyor…",
   "server.update.dialog.downloadRunning": "{progress} · Ajanlar çalışmaya devam ediyor.",
@@ -639,10 +639,10 @@ export const messages = {
   "server.update.dialog.restartPending": "Üyelerin bağlantısı yaklaşık bir dakika kesilir.",
   "server.update.dialog.restartWaiting": "Bitmesi beklenen işler: {reasons}.",
   "server.update.dialog.restartSoon": "Yeniden başlatma birazdan başlıyor.",
-  "server.update.dialog.restartRunning": "OpenBot {version} başlatılıyor…",
+  "server.update.dialog.restartRunning": "Pokebots {version} başlatılıyor…",
   "server.update.dialog.onlineStep": "Tekrar çevrim içi",
   "server.update.dialog.onlinePending": "Üyeler otomatik olarak tekrar bağlanır.",
-  "server.update.dialog.onlineDone": "{time} sonra OpenBot {version} sürümünde.",
+  "server.update.dialog.onlineDone": "{time} sonra Pokebots {version} sürümünde.",
   "server.update.dialog.waitIdle": "Ajanlar boşta olana kadar bekle",
   "server.update.dialog.waitIdleDescription":
     "Yeniden başlatma, ajan turlarının ve rutin çalıştırmalarının bitmesini bekler.",
@@ -670,15 +670,15 @@ export const messages = {
   "server.update.reason.fileTransfer": "bir dosya aktarımı",
   "server.update.reason.browserControl": "bir ajan tarafından tarayıcı kontrolü",
   "server.update.reason.updateOperation": "başka bir güncelleme adımı",
-  "server.update.reason.initialization": "OpenBot'un başlatılması",
+  "server.update.reason.initialization": "Pokebots'un başlatılması",
   "server.update.reason.other": "diğer çalışmalar",
   // Katılınan bir sunucu bir güncellemeye yeniden başladığında her üyeye bir bildirim. {name} sunucudur.
   "server.restartNotice.waitingTitle": "{name}, bir güncellemeyi yüklemek için yeniden başlatılacak",
-  "server.restartNotice.waitingVersionTitle": "{name}, OpenBot {version} sürümünü yüklemek için yeniden başlatılacak",
+  "server.restartNotice.waitingVersionTitle": "{name}, Pokebots {version} sürümünü yüklemek için yeniden başlatılacak",
   "server.restartNotice.waitingDescription":
-    "Yeniden başlatma, ajanları boşta kalana kadar bekler. Kısa bir süre için bağlantınız kesilir, ardından OpenBot otomatik olarak tekrar bağlanır.",
+    "Yeniden başlatma, ajanları boşta kalana kadar bekler. Kısa bir süre için bağlantınız kesilir, ardından Pokebots otomatik olarak tekrar bağlanır.",
   "server.restartNotice.restartingTitle": "{name}, güncellemeyi yüklemek için yeniden başlatılıyor",
-  "server.restartNotice.restartingDescription": "{name} geri geldiğinde OpenBot otomatik olarak tekrar bağlanır.",
+  "server.restartNotice.restartingDescription": "{name} geri geldiğinde Pokebots otomatik olarak tekrar bağlanır.",
   "server.restartNotice.backTitle": "{name} tekrar çevrim içi",
   "server.settings.personalityTitle": "Kişilik",
   "server.settings.personalityDescription": "Bu sunucudaki ajanların sizinle nasıl konuşacağını seçin.",

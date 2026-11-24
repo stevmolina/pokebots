@@ -20,8 +20,8 @@ import {
   ListToolsRequestSchema,
   ReadResourceRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { createOpenBotLogger, toLogValue } from "@openbot/logging";
+import { isDynamicRecord, isString } from "@pokebots/contracts/runtime-values";
+import { createOpenBotLogger, toLogValue } from "@pokebots/logging";
 import { runCauseEffect } from "../backend/effect-boundary";
 import { readJsonBody } from "../backend/local-mcp-bridge";
 import { cutModelText, MCP_RESULT_MORE, MCP_RESULT_TEXT_LIMIT } from "../backend/model-text-limit";

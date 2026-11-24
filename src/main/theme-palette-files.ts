@@ -5,8 +5,8 @@ import {
   APP_THEME_PALETTE_COLOR_PATTERN,
   type AppThemePalette,
   isAppThemePaletteId,
-} from "@openbot/contracts/app-appearance";
-import { createOpenBotLogger, toLogValue } from "@openbot/logging";
+} from "@pokebots/contracts/app-appearance";
+import { createOpenBotLogger, toLogValue } from "@pokebots/logging";
 import { Effect, Option, Schema } from "effect";
 
 const logger = createOpenBotLogger("theme-palette-files");

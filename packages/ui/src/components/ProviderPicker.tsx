@@ -1,5 +1,5 @@
-import { ProviderLogo } from "@openbot/brand";
-import { agentProviderDescriptor } from "@openbot/contracts/agent-providers";
+import { ProviderLogo } from "@pokebots/brand";
+import { agentProviderDescriptor } from "@pokebots/contracts/agent-providers";
 import type {
   AgentProviderId,
   AgentProviderState,
@@ -8,7 +8,7 @@ import type {
   ProviderAccountPool,
   ProviderApiKeyStatus,
   ProviderRuntimeStatus,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   Badge,
   Button,
@@ -27,7 +27,7 @@ import {
   Switch,
   UserRoundPlus,
   X,
-} from "@openbot/ui";
+} from "@pokebots/ui";
 import type { JSX } from "@solidjs/web";
 import { createEffect, createSignal, createStore, createUniqueId, For, Show } from "solid-js";
 import { useText } from "../text";

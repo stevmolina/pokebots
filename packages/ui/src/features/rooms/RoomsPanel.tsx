@@ -5,7 +5,7 @@ import type {
   RoomsPort,
   RoomsRequest,
   RoomsResult,
-} from "@openbot/contracts/rooms";
+} from "@pokebots/contracts/rooms";
 import type { JSX } from "@solidjs/web";
 import { createEffect, createStore, For, onCleanup, Show } from "solid-js";
 import { Button } from "../../button";

@@ -38,8 +38,8 @@
 // At the end it stops and deletes each thread that it started.
 // Writes .openbot-build/agent-threads-messaging-e2e/report.json.
 import assert from "node:assert/strict";
-import { agentProviderDescriptor, isAgentProvider } from "@openbot/contracts/agent-providers";
-import type { AgentTask, ConversationMessage, ConversationSnapshot } from "@openbot/contracts/ipc";
+import { agentProviderDescriptor, isAgentProvider } from "@pokebots/contracts/agent-providers";
+import type { AgentTask, ConversationMessage, ConversationSnapshot } from "@pokebots/contracts/ipc";
 import { argument, connectChannelE2e, waitFor, writeReport } from "./channel-e2e-support";
 
 const fromArgument = argument("from");

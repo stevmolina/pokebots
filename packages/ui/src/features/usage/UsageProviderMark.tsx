@@ -1,5 +1,5 @@
-import { ProviderLogo } from "@openbot/brand";
-import { isAgentProvider } from "@openbot/contracts/ipc";
+import { ProviderLogo } from "@pokebots/brand";
+import { isAgentProvider } from "@pokebots/contracts/ipc";
 import { Show } from "solid-js";
 
 // A report row names a provider by the string the record carried, so an unrecognized one

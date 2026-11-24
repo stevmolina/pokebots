@@ -1,8 +1,8 @@
 import {
   ROUTINE_RUN_COMMAND_CAPABILITY,
   ROUTINE_RUN_COMMAND_ROUTES,
-} from "@openbot/contracts/team-protocol/routine-run-command-v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/team-protocol/routine-run-command-v1";
+import { sourceText } from "@pokebots/i18n/source";
 import type { TeamApiAdmin } from "./dependencies";
 import { HttpError } from "./http-error";
 import type { RouteOutcome, TeamApiRequestContext } from "./request-context";

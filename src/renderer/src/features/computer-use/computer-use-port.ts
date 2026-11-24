@@ -1,4 +1,4 @@
-import type { OpenBotDesktopApi } from "@openbot/contracts/ipc";
+import type { OpenBotDesktopApi } from "@pokebots/contracts/ipc";
 
 /**
  * What Computer Use reaches in main: the driver state, the macOS permission panes and helper, the

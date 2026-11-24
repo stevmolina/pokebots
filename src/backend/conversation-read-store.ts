@@ -3,10 +3,10 @@ import {
   itemTypeCountsAsUnread,
   READ_EXCLUDED_ITEM_TYPE_PREFIXES,
   READ_EXCLUDED_ITEM_TYPES,
-} from "@openbot/contracts/conversation-read";
-import type { AgentSummary, ConversationReadState, ConversationSnapshot } from "@openbot/contracts/ipc";
-import { isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/conversation-read";
+import type { AgentSummary, ConversationReadState, ConversationSnapshot } from "@pokebots/contracts/ipc";
+import { isDynamicRecord, isNumber, isString } from "@pokebots/contracts/runtime-values";
+import { sourceText } from "@pokebots/i18n/source";
 import {
   type ConversationMarkerExclusions,
   ORDER_KEY_COLUMNS,

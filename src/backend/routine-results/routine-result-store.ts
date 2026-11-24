@@ -12,8 +12,8 @@ import {
   type RoutineResultDelivery,
   type RoutineResultDeliveryReason,
   type RoutineResultDestination,
-} from "@openbot/contracts/ipc";
-import { type DynamicRecord, isOneOf } from "@openbot/contracts/runtime-values";
+} from "@pokebots/contracts/ipc";
+import { type DynamicRecord, isOneOf } from "@pokebots/contracts/runtime-values";
 import { databaseRow, databaseRows } from "../database/database-rows";
 import { withTransaction } from "../database/sqlite-transaction";
 import type { OpenBotDatabase } from "../openbot-database";

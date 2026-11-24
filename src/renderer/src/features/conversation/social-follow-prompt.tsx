@@ -1,8 +1,8 @@
-import type { SentMessageStats } from "@openbot/contracts/ipc";
-import { dialogOpen, toast } from "@openbot/ui";
-import { type SocialFollowStep, SocialFollowToast } from "@openbot/ui/features/social-follow/SocialFollowToast";
-import type { SocialNetwork, SocialNetworkId } from "@openbot/ui/features/social-follow/social-networks";
-import { currentText } from "@openbot/ui/text";
+import type { SentMessageStats } from "@pokebots/contracts/ipc";
+import { dialogOpen, toast } from "@pokebots/ui";
+import { type SocialFollowStep, SocialFollowToast } from "@pokebots/ui/features/social-follow/SocialFollowToast";
+import type { SocialNetwork, SocialNetworkId } from "@pokebots/ui/features/social-follow/social-networks";
+import { currentText } from "@pokebots/ui/text";
 import { Option, Schema } from "effect";
 import { createSignal } from "solid-js";
 import { appPort } from "../../app-port";

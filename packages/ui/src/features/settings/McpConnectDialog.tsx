@@ -9,9 +9,9 @@
  * it. Leaving a sign-in that waits for the browser stops that sign-in first.
  */
 
-import type { McpServerConfig, McpTestResult } from "@openbot/contracts/ipc";
-import type { McpConnectFlow } from "@openbot/contracts/mcp-connect-flows";
-import { Button } from "@openbot/ui";
+import type { McpServerConfig, McpTestResult } from "@pokebots/contracts/ipc";
+import type { McpConnectFlow } from "@pokebots/contracts/mcp-connect-flows";
+import { Button } from "@pokebots/ui";
 import type { JSX } from "@solidjs/web";
 import { createSignal, Match, Show, Switch } from "solid-js";
 import { useText } from "../../text";

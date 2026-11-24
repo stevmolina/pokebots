@@ -1,5 +1,5 @@
-import type { ComputerManagementInput } from "@openbot/contracts/ipc";
-import { Button, ConfirmDialog, Field, Input } from "@openbot/ui";
+import type { ComputerManagementInput } from "@pokebots/contracts/ipc";
+import { Button, ConfirmDialog, Field, Input } from "@pokebots/ui";
 import { createStore, Show } from "solid-js";
 import { useText } from "../../text";
 import type { CloudComputer } from "./CloudComputerList";

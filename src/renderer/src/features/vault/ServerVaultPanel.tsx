@@ -1,5 +1,5 @@
-import { type VaultAgentChoice, VaultPanel } from "@openbot/ui/features/vault/VaultPanel";
-import { useText } from "@openbot/ui/text";
+import { type VaultAgentChoice, VaultPanel } from "@pokebots/ui/features/vault/VaultPanel";
+import { useText } from "@pokebots/ui/text";
 import { createEffect, createSignal, onSettled, Show } from "solid-js";
 import { actionToast } from "../../action-toast";
 import type { LinkAccountStore } from "./stores/link-account-store";

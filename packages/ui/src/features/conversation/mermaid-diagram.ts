@@ -1,4 +1,4 @@
-import { CHAT_MERMAID_ELK, CHAT_MERMAID_FONT_FAMILY, mermaidImageUrl } from "@openbot/contracts/chat-preview";
+import { CHAT_MERMAID_ELK, CHAT_MERMAID_FONT_FAMILY, mermaidImageUrl } from "@pokebots/contracts/chat-preview";
 import type { DocumentColorScheme } from "../../document-color-scheme";
 
 type Mermaid = typeof import("mermaid")["default"];

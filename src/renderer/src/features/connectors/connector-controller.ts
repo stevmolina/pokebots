@@ -1,8 +1,8 @@
-import type { AppTextKey } from "@openbot/i18n";
-import { classifyFailure } from "@openbot/telemetry";
-import type { ConnectorDetail } from "@openbot/ui/features/connectors/ConnectorDetailPanel";
-import type { ConnectorId } from "@openbot/ui/features/connectors/connectors";
-import { currentText } from "@openbot/ui/text";
+import type { AppTextKey } from "@pokebots/i18n";
+import { classifyFailure } from "@pokebots/telemetry";
+import type { ConnectorDetail } from "@pokebots/ui/features/connectors/ConnectorDetailPanel";
+import type { ConnectorId } from "@pokebots/ui/features/connectors/connectors";
+import { currentText } from "@pokebots/ui/text";
 import { createSignal, onCleanup } from "solid-js";
 import { actionToast } from "../../action-toast";
 import { type DesktopAnalyticsProperties, desktopAnalytics } from "../../analytics";

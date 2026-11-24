@@ -6,7 +6,7 @@ import {
   type OpenBotDesktopApi,
   type SetEnabledSkillInput,
   type UninstallSkillInput,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 
 /**
  * What the skill screens reach in main: the marketplace, the agent skills dialog and the local

@@ -35,25 +35,25 @@ export const messages = {
   "status.agent.sendIdea": "这会成为一个公开的 GitHub issue。不会显示你的名字。",
   "status.agent.feedbackRecentErrors": "聊天中的最近错误：",
   "status.agent.feedbackSameAs": "添加到 issue #{issue}",
-  "status.agent.feedbackSent": "已发送给 OpenBot 团队：{title}",
+  "status.agent.feedbackSent": "已发送给 Pokebots 团队：{title}",
   "status.agent.feedbackWithdrawn": "已从 GitHub 删除：{title}",
   "status.agent.feedbackWithdrawCommand": "从 GitHub 删除报告 #{issue}",
   "status.agent.feedbackWithdrawReason":
     "任何人都无法再在 GitHub 上看到此报告。此操作无法撤销。如需修改，助手可以发送一份修正后的报告。",
   "status.agent.feedbackWithdrawing": "正在从 GitHub 删除你的报告…",
   "status.agent.serverInstallCommand":
-    "创建一个一次性命令，在另一台计算机上把 OpenBot 安装为服务器 {name}，并登录到你的账户。代理会在那里运行它。",
+    "创建一个一次性命令，在另一台计算机上把 Pokebots 安装为服务器 {name}，并登录到你的账户。代理会在那里运行它。",
   "status.agent.serverInstallCard": "服务器 {name} 的安装命令",
   "status.agent.browserProfileNamed":
     "将 {agents} 移到浏览器配置文件 {profile}。它们会使用其中的登录信息和 Cookie。它们打开的标签页会关闭。",
-  "status.agent.commitCoAuthorOff": "不再将 OpenBot 作为共同作者添加到所有智能体的提交中。",
-  "status.agent.commitCoAuthorOn": "重新将 OpenBot 作为共同作者添加到所有智能体的提交中。",
+  "status.agent.commitCoAuthorOff": "不再将 Pokebots 作为共同作者添加到所有智能体的提交中。",
+  "status.agent.commitCoAuthorOn": "重新将 Pokebots 作为共同作者添加到所有智能体的提交中。",
   "status.agent.browserProfileNew":
     "新建浏览器配置文件 {profile} 并将 {agents} 移到其中。它没有登录信息。它们打开的标签页会关闭。",
   "status.agent.browserProfileShared":
     "将 {agents} 移到共享浏览器配置文件。它们会使用其中的登录信息和 Cookie。它们打开的标签页会关闭。",
   "status.agent.browserProfileOwn": "为 {agents} 各自提供专用的浏览器配置文件。它们打开的标签页会关闭。",
-  "status.agent.feedbackSending": "正在将你的反馈发送给 OpenBot 团队…",
+  "status.agent.feedbackSending": "正在将你的反馈发送给 Pokebots 团队…",
   "status.agent.workflowDelete": "删除工作流 {title} 及其运行记录和版本。其未完成的步骤会停止。",
   "status.agent.deleteAgents": "删除 {agents} 及其聊天和文件。此操作无法撤销。",
   "status.agent.vaultCardFillFrames": "银行卡字段位于来自 {origins} 的框架中。",
@@ -102,9 +102,9 @@ export const messages = {
   "status.agent.memoryChangesWithConflicts":
     "记忆：已保存 {saved} 条，已更新 {updated} 条，已忘记 {forgotten} 条，{notChanged} 条因另一个话题先更改而未更改。",
   "status.agent.mcpServerAdd":
-    "添加 MCP 服务器 {name}：{target}。该服务器上的每个助手都能使用它的工具。OpenBot 会连接它进行测试。",
+    "添加 MCP 服务器 {name}：{target}。该服务器上的每个助手都能使用它的工具。Pokebots 会连接它进行测试。",
   "status.agent.mcpServerChange":
-    "把 MCP 服务器 {name} 改为 {target}。该服务器上的每个助手都能使用它的工具。OpenBot 会连接它进行测试。",
+    "把 MCP 服务器 {name} 改为 {target}。该服务器上的每个助手都能使用它的工具。Pokebots 会连接它进行测试。",
   "status.agent.mcpServerEnable": "为该服务器上的每个助手开启 MCP 服务器 {name}。",
   "status.agent.mcpServerDisable": "为该服务器上的每个助手关闭 MCP 服务器 {name}。",
   "status.agent.mcpServerRemove": "从该服务器上的每个助手移除 MCP 服务器 {name} 及其登录。",

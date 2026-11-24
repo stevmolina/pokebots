@@ -14,8 +14,8 @@ import {
   type WorkflowMediaAspect,
   type WorkflowMediaCatalogModel,
   type WorkflowMediaKind,
-} from "@openbot/contracts/ipc";
-import { type DynamicRecord, isDynamicRecord } from "@openbot/contracts/runtime-values";
+} from "@pokebots/contracts/ipc";
+import { type DynamicRecord, isDynamicRecord } from "@pokebots/contracts/runtime-values";
 
 /** How the host sends the pictures and the choices of a step to one Higgsfield model. */
 export interface HiggsfieldPlan {

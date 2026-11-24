@@ -1,5 +1,5 @@
-import { PlatformLogo } from "@openbot/brand";
-import type { MobileConnectedDevice } from "@openbot/contracts/ipc";
+import { PlatformLogo } from "@pokebots/brand";
+import type { MobileConnectedDevice } from "@pokebots/contracts/ipc";
 import {
   Button,
   buttonVariants,
@@ -18,7 +18,7 @@ import {
   Smartphone,
   Text,
   Trash2,
-} from "@openbot/ui";
+} from "@pokebots/ui";
 import { createSignal, For, Show } from "solid-js";
 import { useText } from "../../text";
 import { MobileConnectAddPhoneDialog, MobileConnectLinkDialog } from "./MobileConnectDialogs";

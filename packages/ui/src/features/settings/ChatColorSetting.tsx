@@ -7,7 +7,7 @@
  * closes, and only when the color changed, so a drag does not send a save for each frame.
  */
 
-import type { AvatarColor } from "@openbot/contracts/ipc";
+import type { AvatarColor } from "@pokebots/contracts/ipc";
 import type { JSX } from "@solidjs/web";
 import { createEffect, createSignal, onSettled, Show, untrack } from "solid-js";
 import { type ColorPickerAnchor, ColorPickerPopover, ColorPickerTrigger } from "../../color-picker";

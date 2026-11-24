@@ -1,5 +1,5 @@
-import type { ServerSummary } from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
+import type { ServerSummary } from "@pokebots/contracts/ipc";
+import type { AppTextKey } from "@pokebots/i18n";
 import {
   AppWindow,
   BellOff,
@@ -15,8 +15,8 @@ import {
   Plus,
   Server,
   Settings,
-} from "@openbot/ui";
-import { SwapLabel } from "@openbot/ui/components/SwapLabel";
+} from "@pokebots/ui";
+import { SwapLabel } from "@pokebots/ui/components/SwapLabel";
 import { createEffect, createSignal, For, Show, untrack } from "solid-js";
 import { useText } from "../../text";
 import { type ServerActionCallbacks, ServerActionItems } from "./ServerActionItems";

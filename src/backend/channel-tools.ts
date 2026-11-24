@@ -1,4 +1,4 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import { z } from "zod";
 import { CHANNEL_REPLY_CHARACTERS, CHANNEL_REPLY_LIMIT } from "./channel-replies";
 import {

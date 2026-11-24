@@ -1,6 +1,6 @@
 import type { DatabaseSync } from "node:sqlite";
-import { AGENT_MEMORY_CONTEXT_BUDGET_BYTES, essentialMemoryBytes } from "@openbot/contracts/agent-memory-context";
-import type { MemoryEntry } from "@openbot/contracts/ipc";
+import { AGENT_MEMORY_CONTEXT_BUDGET_BYTES, essentialMemoryBytes } from "@pokebots/contracts/agent-memory-context";
+import type { MemoryEntry } from "@pokebots/contracts/ipc";
 import { databaseRows, requiredStringColumn } from "./database/database-rows";
 
 /**

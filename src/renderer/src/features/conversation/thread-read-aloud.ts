@@ -1,4 +1,4 @@
-import type { AgentMessage } from "@openbot/ui/data";
+import type { AgentMessage } from "@pokebots/ui/data";
 import { speechModelReady } from "../speech/speech-model";
 import { speechReading } from "../speech/speech-playback";
 import { toggleReadAloud } from "../speech/speech-replies";

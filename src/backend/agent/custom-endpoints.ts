@@ -1,4 +1,4 @@
-import type { AgentModelOption, AgentReasoningEffort, AgentSummary, UpdateAgentInput } from "@openbot/contracts/ipc";
+import type { AgentModelOption, AgentReasoningEffort, AgentSummary, UpdateAgentInput } from "@pokebots/contracts/ipc";
 import {
   CUSTOM_AGENT_DEFAULT_MODEL,
   CUSTOM_PROVIDER_HARNESSES,
@@ -9,8 +9,8 @@ import {
   isCustomProviderHarness,
   isReasoningEffort,
   PICKER_PROVIDERS,
-} from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect, Exit, Schema, Semaphore } from "effect";
 import type { AgentProvider } from "../agent-client";
 import { type AgentStore, DEFAULT_AGENT_PROVIDER } from "../agent-store";

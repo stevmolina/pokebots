@@ -3,13 +3,13 @@
 // Everything the page renders is owner-agnostic; only the five calls, the event filter and three
 // words of copy are not. They live here, so `AgentMemoriesSettings` names no owner at all.
 
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import type {
   AgentMemorySelectionState,
   MemoryEntry,
   OpenBotDesktopApi,
   SetAgentMemoryInclusionInput,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 
 export interface MemoriesPort {
   ownerId: string;

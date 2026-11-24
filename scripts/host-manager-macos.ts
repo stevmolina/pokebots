@@ -2,7 +2,7 @@ import { execFile } from "node:child_process";
 import { chmod, lstat, mkdir, readdir, readlink, rename, rm } from "node:fs/promises";
 import { dirname, join, resolve, sep } from "node:path";
 import { promisify } from "node:util";
-import { isNewerRelease as isNewerSharedRelease } from "@openbot/contracts/release-version";
+import { isNewerRelease as isNewerSharedRelease } from "@pokebots/contracts/release-version";
 import { z } from "zod";
 import { runCauseEffect } from "../src/backend/effect-boundary";
 import type { HostManagerOperations } from "../src/main/host-manager";

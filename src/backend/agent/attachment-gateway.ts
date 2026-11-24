@@ -1,9 +1,9 @@
 import { constants } from "node:fs";
 import { lstat, open, realpath } from "node:fs/promises";
 import { basename, isAbsolute } from "node:path";
-import { sortConversationMessages } from "@openbot/contracts/conversation-order";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import type { AgentEvent, AttachmentSummary, ConversationSnapshot } from "@openbot/contracts/ipc";
+import { sortConversationMessages } from "@pokebots/contracts/conversation-order";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
+import type { AgentEvent, AttachmentSummary, ConversationSnapshot } from "@pokebots/contracts/ipc";
 import { Deferred, Effect, Result } from "effect";
 import {
   type AttachmentOperationError,

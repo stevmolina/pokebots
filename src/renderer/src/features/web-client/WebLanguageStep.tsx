@@ -1,7 +1,7 @@
-import type { AppLanguage } from "@openbot/contracts/app-language";
-import type { AppVariant } from "@openbot/contracts/ipc";
-import { formatLocale, resolveLocale, type TranslatedLocale } from "@openbot/i18n";
-import { LanguageWheel } from "@openbot/ui/features/account/LanguageWheel";
+import type { AppLanguage } from "@pokebots/contracts/app-language";
+import type { AppVariant } from "@pokebots/contracts/ipc";
+import { formatLocale, resolveLocale, type TranslatedLocale } from "@pokebots/i18n";
+import { LanguageWheel } from "@pokebots/ui/features/account/LanguageWheel";
 import { createSignal } from "solid-js";
 import { StaticI18nProvider } from "../../i18n-context";
 

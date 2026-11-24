@@ -11,7 +11,7 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { chmod, mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import { sourceText } from "@openbot/i18n/source";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect, Result } from "effect";
 
 const OUT = resolve(import.meta.dirname, "../.openbot-build/codex-state-busy-e2e");

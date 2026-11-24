@@ -1,5 +1,5 @@
 import { ContextMenu } from "@kobalte/core/context-menu";
-import { AppLogo } from "@openbot/brand";
+import { AppLogo } from "@pokebots/brand";
 import { Link, useRouter } from "@tanstack/solid-router";
 import { BRAND_ROUTE } from "../../lib/brand-page";
 import { localizedPath } from "../../lib/site-paths";

@@ -5,7 +5,7 @@ import {
   type DynamicIslandAction,
   type DynamicIslandPreference,
   IDLE_DYNAMIC_ISLAND_PRESENTATION,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import { Effect } from "effect";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { dynamicIslandIpcHandlers } from "./dynamic-island-handlers";

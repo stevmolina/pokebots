@@ -19,7 +19,7 @@ import { type ChildProcess, spawn, spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { createServer, type Server } from "node:http";
 import { resolve } from "node:path";
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
+import { isDynamicRecord } from "@pokebots/contracts/runtime-values";
 import { type Browser, chromium, type Page } from "playwright-core";
 
 const ROOT = resolve(import.meta.dirname, "..");

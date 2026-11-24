@@ -1,4 +1,4 @@
-import { agentProviderDescriptor, agentSteersTurns, isKnownAgentProvider } from "@openbot/contracts/ipc";
+import { agentProviderDescriptor, agentSteersTurns, isKnownAgentProvider } from "@pokebots/contracts/ipc";
 import { useQuery } from "@tanstack/react-query";
 import { useQueryScope } from "@/features/auth/context/mobile-session-context";
 import {

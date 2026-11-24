@@ -1,12 +1,12 @@
-import type { ServerSummary } from "@openbot/contracts/ipc";
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
+import type { ServerSummary } from "@pokebots/contracts/ipc";
+import { isDynamicRecord } from "@pokebots/contracts/runtime-values";
 import {
   WEB_PUSH_NOTIFICATIONS_CAPABILITY,
   WEB_PUSH_NOTIFICATIONS_ROUTES,
   type WebPushNotificationRegistration,
-} from "@openbot/contracts/team-protocol/push-notifications-web-v1";
-import type { TeamProtocolV2Json } from "@openbot/contracts/team-protocol/v2";
-import { WEB_PUSH_CONFIG_ROUTE } from "@openbot/contracts/web-push";
+} from "@pokebots/contracts/team-protocol/push-notifications-web-v1";
+import type { TeamProtocolV2Json } from "@pokebots/contracts/team-protocol/v2";
+import { WEB_PUSH_CONFIG_ROUTE } from "@pokebots/contracts/web-push";
 import { createEffect, createStore, onCleanup } from "solid-js";
 import { PUSH_SUBSCRIPTION_CHANGE_MESSAGE, webServiceWorkerRegistration } from "./web-service-worker";
 

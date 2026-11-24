@@ -11,9 +11,9 @@ import {
   type AgentEvent,
   isAgentEvent,
   type ScopedAgentEvent,
-} from "@openbot/contracts/ipc";
-import { decodeRecord, nullableString, requiredString } from "@openbot/contracts/ipc-decoding";
-import { isBoolean, isNumber, isOneOf, isString } from "@openbot/contracts/runtime-values";
+} from "@pokebots/contracts/ipc";
+import { decodeRecord, nullableString, requiredString } from "@pokebots/contracts/ipc-decoding";
+import { isBoolean, isNumber, isOneOf, isString } from "@pokebots/contracts/runtime-values";
 
 const APPROVAL_KINDS = ["command", "file-change", "permissions"] as const;
 

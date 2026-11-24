@@ -1,5 +1,9 @@
-import { DEFAULT_REMOTE_CONTROL_POLICY, isRemoteControlAccess, type RemoteControlPolicy } from "@openbot/contracts/ipc";
-import { isBoolean, isDynamicRecord } from "@openbot/contracts/runtime-values";
+import {
+  DEFAULT_REMOTE_CONTROL_POLICY,
+  isRemoteControlAccess,
+  type RemoteControlPolicy,
+} from "@pokebots/contracts/ipc";
+import { isBoolean, isDynamicRecord } from "@pokebots/contracts/runtime-values";
 import { PreferenceStore } from "./preference-file";
 
 /**

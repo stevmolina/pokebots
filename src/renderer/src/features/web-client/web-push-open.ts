@@ -1,4 +1,4 @@
-import { WEB_PUSH_OPEN_PARAMS, type WebPushOpenTarget, webPushOpenTarget } from "@openbot/contracts/web-push";
+import { WEB_PUSH_OPEN_PARAMS, type WebPushOpenTarget, webPushOpenTarget } from "@pokebots/contracts/web-push";
 import { createEffect, createSignal, onCleanup } from "solid-js";
 import { onWebNotificationOpen } from "./web-service-worker";
 

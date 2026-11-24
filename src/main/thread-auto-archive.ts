@@ -5,9 +5,9 @@ import {
   DEFAULT_THREAD_AUTO_ARCHIVE,
   parseThreadAutoArchiveSetting,
   type ThreadAutoArchiveSetting,
-} from "@openbot/contracts/ipc";
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
-import { createOpenBotLogger } from "@openbot/logging";
+} from "@pokebots/contracts/ipc";
+import { isDynamicRecord } from "@pokebots/contracts/runtime-values";
+import { createOpenBotLogger } from "@pokebots/logging";
 import { Effect, Fiber } from "effect";
 import {
   type PullRequestRef,

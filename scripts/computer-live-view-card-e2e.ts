@@ -19,10 +19,10 @@ import {
   httpsLiveViewUrl,
   machineLiveViewUrl,
   type ServerSummary,
-} from "@openbot/contracts/ipc";
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
-import { redactSecrets, redactText } from "@openbot/logging";
+} from "@pokebots/contracts/ipc";
+import { isDynamicRecord } from "@pokebots/contracts/runtime-values";
+import { sourceText } from "@pokebots/i18n/source";
+import { redactSecrets, redactText } from "@pokebots/logging";
 import { Effect, Redacted } from "effect";
 import { CLOUD_AGENT_RULE, developerInstructions } from "../src/backend/agent/developer-instructions";
 import type { AgentComputerApi } from "../src/backend/agent-computer/agent-computer-api";

@@ -23,14 +23,14 @@ import {
   type SessionNotification,
   type SessionUpdate,
 } from "@agentclientprotocol/sdk";
-import { agentProviderName } from "@openbot/contracts/agent-providers";
-import { attachmentMimeTypeForName } from "@openbot/contracts/attachment-files";
-import type { AgentSessionSettingsSnapshot, AgentSessionSettingValue } from "@openbot/contracts/ipc";
-import { type DynamicRecord, isBoolean, isString } from "@openbot/contracts/runtime-values";
-import { type SourceMessages, sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger, redactText } from "@openbot/logging";
-import { type CauseCode, classifyFailure, httpStatusCause, structuredCause } from "@openbot/telemetry";
-import { classifyUserError } from "@openbot/user-errors";
+import { agentProviderName } from "@pokebots/contracts/agent-providers";
+import { attachmentMimeTypeForName } from "@pokebots/contracts/attachment-files";
+import type { AgentSessionSettingsSnapshot, AgentSessionSettingValue } from "@pokebots/contracts/ipc";
+import { type DynamicRecord, isBoolean, isString } from "@pokebots/contracts/runtime-values";
+import { type SourceMessages, sourceText } from "@pokebots/i18n/source";
+import { createOpenBotLogger, redactText } from "@pokebots/logging";
+import { type CauseCode, classifyFailure, httpStatusCause, structuredCause } from "@pokebots/telemetry";
+import { classifyUserError } from "@pokebots/user-errors";
 import { Deferred, Effect, Exit, Fiber, Option, Result, Scope, Semaphore } from "effect";
 import { AcpConfiguration, type AcpModel, currentModelFromSessionSetup } from "./acp-configuration";
 import { AcpConnection, type AcpConnectionOptions } from "./acp-connection";

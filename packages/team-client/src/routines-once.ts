@@ -13,7 +13,7 @@ import type {
   SaveEventRoutineResult,
   UpdateChannelRoutineInput,
   UpdateRoutineInput,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   decodeOnceAgentRoutine,
   decodeOnceAgentRoutines,
@@ -22,9 +22,9 @@ import {
   decodeOnceEventRoutines,
   decodeOnceEventSave,
   ROUTINES_ONCE_ROUTES,
-} from "@openbot/contracts/team-protocol/routines-once-v1";
-import { decodeTeamProtocolV2Json, type TeamProtocolV2Json } from "@openbot/contracts/team-protocol/v2";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/team-protocol/routines-once-v1";
+import { decodeTeamProtocolV2Json, type TeamProtocolV2Json } from "@pokebots/contracts/team-protocol/v2";
+import { sourceText } from "@pokebots/i18n/source";
 
 /** One POST to the host. The desktop and the web client each give their own transport. */
 export type RoutinesOncePost = <T>(path: string, decode: (value: unknown) => T, body: TeamProtocolV2Json) => Promise<T>;

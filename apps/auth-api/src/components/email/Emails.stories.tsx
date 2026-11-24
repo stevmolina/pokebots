@@ -1,4 +1,4 @@
-import { licensePeriodAmount } from "@openbot/contracts/license";
+import { licensePeriodAmount } from "@pokebots/contracts/license";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import {
   type LicenseEmailInput,

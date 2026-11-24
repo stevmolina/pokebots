@@ -1,10 +1,10 @@
-import { agentProviderDescriptor, isKnownAgentProvider } from "@openbot/contracts/agent-providers";
-import { DEFAULT_AGENT_ACCESS } from "@openbot/contracts/ipc";
-import { Button, ConfirmDialog } from "@openbot/ui";
-import { AgentFolderDropOverlay, createAgentFolders } from "@openbot/ui/features/conversation/AgentFolders";
-import { MessageSelectionActions } from "@openbot/ui/features/conversation/SelectionActions";
-import { CoveredVoiceRecording } from "@openbot/ui/features/conversation/VoiceRecordingMorph";
-import { useText } from "@openbot/ui/text";
+import { agentProviderDescriptor, isKnownAgentProvider } from "@pokebots/contracts/agent-providers";
+import { DEFAULT_AGENT_ACCESS } from "@pokebots/contracts/ipc";
+import { Button, ConfirmDialog } from "@pokebots/ui";
+import { AgentFolderDropOverlay, createAgentFolders } from "@pokebots/ui/features/conversation/AgentFolders";
+import { MessageSelectionActions } from "@pokebots/ui/features/conversation/SelectionActions";
+import { CoveredVoiceRecording } from "@pokebots/ui/features/conversation/VoiceRecordingMorph";
+import { useText } from "@pokebots/ui/text";
 import { Portal } from "@solidjs/web";
 import { createEffect, Show } from "solid-js";
 import { deviceQuoteShortcut } from "../../send-shortcut-preference";

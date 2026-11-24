@@ -1,4 +1,4 @@
-import { ATTACHMENT_LIMITS } from "@openbot/contracts/input-limits";
+import { ATTACHMENT_LIMITS } from "@pokebots/contracts/input-limits";
 import {
   type AgentAccessLevels,
   MESSAGING_LIMITS,
@@ -9,19 +9,19 @@ import {
   type StoredFileRow,
   WORKFLOW_PICTURE_TYPES,
   type WorkflowMediaKind,
-} from "@openbot/contracts/ipc";
-import { ATTACHMENT_PREVIEW_CAPABILITY } from "@openbot/contracts/team-protocol/attachment-preview-v1";
-import { WORKFLOWS_MEDIA_ACCOUNT_CAPABILITY } from "@openbot/contracts/team-protocol/workflows-media-account-v1";
-import { WORKFLOWS_MEDIA_SIZE_CAPABILITY } from "@openbot/contracts/team-protocol/workflows-media-size-v1";
-import { WORKFLOWS_MEDIA_TRANSPARENT_CAPABILITY } from "@openbot/contracts/team-protocol/workflows-media-transparent-v1";
+} from "@pokebots/contracts/ipc";
+import { ATTACHMENT_PREVIEW_CAPABILITY } from "@pokebots/contracts/team-protocol/attachment-preview-v1";
+import { WORKFLOWS_MEDIA_ACCOUNT_CAPABILITY } from "@pokebots/contracts/team-protocol/workflows-media-account-v1";
+import { WORKFLOWS_MEDIA_SIZE_CAPABILITY } from "@pokebots/contracts/team-protocol/workflows-media-size-v1";
+import { WORKFLOWS_MEDIA_TRANSPARENT_CAPABILITY } from "@pokebots/contracts/team-protocol/workflows-media-transparent-v1";
 import type {
   WorkflowChannel,
   WorkflowDiscordServer,
   WorkflowPlace,
   WorkflowSlackWorkspace,
   WorkflowTelegramChat,
-} from "@openbot/ui/features/workflows/workflow-model";
-import { currentText } from "@openbot/ui/text";
+} from "@pokebots/ui/features/workflows/workflow-model";
+import { currentText } from "@pokebots/ui/text";
 import {
   type GitHubConnectorPort,
   githubConnectorPort,

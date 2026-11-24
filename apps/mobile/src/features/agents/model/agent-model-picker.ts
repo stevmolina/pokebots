@@ -1,4 +1,4 @@
-import type { AgentModelOption, AgentProviderId } from "@openbot/contracts/ipc";
+import type { AgentModelOption, AgentProviderId } from "@pokebots/contracts/ipc";
 import { create } from "zustand";
 
 /**

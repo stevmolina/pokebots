@@ -10,12 +10,12 @@ export const messages = {
   "error.workflow.conditionBranch": "Каждая связь от условия должна быть «да» или «нет».",
   "error.workflow.duplicateEdge": "У этих двух шагов уже есть такая связь.",
   "error.workflow.serverTooOld":
-    "Этот сервер не поддерживает рабочие процессы. Обновите OpenBot на компьютере, на котором он работает.",
+    "Этот сервер не поддерживает рабочие процессы. Обновите Pokebots на компьютере, на котором он работает.",
   "error.workflow.nodeUnsupported":
-    "Эта версия OpenBot пока не может выполнять шаги с изображениями, файлами и сообщениями.",
-  "error.workflow.interrupted": "OpenBot остановился во время этого шага. Запустите его снова.",
+    "Эта версия Pokebots пока не может выполнять шаги с изображениями, файлами и сообщениями.",
+  "error.workflow.interrupted": "Pokebots остановился во время этого шага. Запустите его снова.",
   "error.workflow.agentMissing": "Выберите агента для этого шага.",
-  "error.workflow.handoffFailed": "OpenBot не смог отправить этот шаг агенту.",
+  "error.workflow.handoffFailed": "Pokebots не смог отправить этот шаг агенту.",
   "error.workflow.agentStepEnded": "Сообщение агенту было удалено до его ответа.",
   "error.workflow.agentStepStopped": "Агент остановился, не ответив на этот шаг. Запустите шаг снова.",
   "error.workflow.conditionUnclear": "Модель не ответила «да» или «нет».",
@@ -27,7 +27,7 @@ export const messages = {
   "error.workflow.modelUnavailable": "Модель этого шага недоступна. Выберите другую модель для этого шага.",
   "error.workflow.providerBusy": "Провайдер занят. Подождите несколько минут и запустите шаг снова.",
   "error.workflow.providerOffline":
-    "OpenBot не смог связаться с провайдером. Проверьте подключение к интернету и запустите шаг снова.",
+    "Pokebots не смог связаться с провайдером. Проверьте подключение к интернету и запустите шаг снова.",
   "error.workflow.modelBusy": "Выполняется другой запрос к модели. Скоро запустите шаг снова.",
   "error.workflow.mediaFailed": "Модели не удалось создать изображение или видео. Запустите шаг снова.",
   "error.workflow.pictureMissing": "Изображения больше нет на сервере. Отправьте его снова.",
@@ -43,7 +43,7 @@ export const messages = {
   "error.workflow.noDecision": "Этот шаг не ждет решения.",
   "error.workflow.outputPlaceMissing": "Выберите место в мессенджере для этого вывода.",
   "error.workflow.outputChannelMissing": "Выберите канал для этого вывода.",
-  "error.workflow.outputChannelFailed": "OpenBot не смог опубликовать результат в канале. Запустите шаг снова.",
+  "error.workflow.outputChannelFailed": "Pokebots не смог опубликовать результат в канале. Запустите шаг снова.",
   "error.workflow.discordNoMessage":
     "Этот вывод действует на сообщение Discord, которое запустило выполнение. Запустите его упоминанием в Discord или выберите «Опубликовать в канале».",
   "error.workflow.slackNoMessage":
@@ -53,7 +53,7 @@ export const messages = {
   "error.workflow.outputConnectionOff":
     "Подключение мессенджера для этого вывода выключено или удалено. Выберите место снова.",
   "error.workflow.outputNotRunning": "Подключение мессенджера сейчас не работает. Повторите, когда оно заработает.",
-  "error.workflow.outputRefused": "Место отклонило публикацию. Убедитесь, что OpenBot может публиковать там.",
+  "error.workflow.outputRefused": "Место отклонило публикацию. Убедитесь, что Pokebots может публиковать там.",
   "error.workflow.outputUncertain":
     "Публикация остановилась на полпути. Часть её может уже быть в этом месте. Проверьте перед повтором.",
   "error.workflow.tooLarge":
@@ -79,7 +79,7 @@ export const messages = {
     "OpenBot GitHub App не может изменять этот репозиторий. Откройте GitHub и дайте приложению доступ.",
   "error.workflow.githubLocked": "Это обсуждение заблокировано на GitHub.",
   "error.workflow.githubRefused": "GitHub отклонил изменение: {detail}",
-  "error.workflow.githubUnreachable": "OpenBot не удалось связаться с GitHub. Запустите шаг снова.",
+  "error.workflow.githubUnreachable": "Pokebots не удалось связаться с GitHub. Запустите шаг снова.",
   "error.workflow.githubUncertain":
     "Изменение остановилось на полпути. Оно может уже быть на GitHub. Проверьте там, прежде чем запускать шаг снова.",
   "error.workflow.githubNoEvent": "На GitHub нет задачи или пул-реквеста, на которых запускается этот триггер.",
@@ -92,7 +92,7 @@ export const messages = {
     "Sunra принимает входные изображения только с личным аккаунтом. Выберите личный аккаунт в Sunra или удалите связи с изображениями.",
   "error.workflow.sunraFailed": "Sunra не удалось создать файл: {reason}",
   "error.workflow.sunraTimeout":
-    "Sunra не завершила файл вовремя. Проверьте проект OpenBot на sunra.ai, прежде чем запускать шаг снова.",
+    "Sunra не завершила файл вовремя. Проверьте проект Pokebots на sunra.ai, прежде чем запускать шаг снова.",
   "error.workflow.higgsfieldSignIn":
     "Войдите в Higgsfield в разделе «Приложения», чтобы использовать модели Higgsfield.",
   "error.workflow.higgsfieldNoCredits":

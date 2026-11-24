@@ -8,35 +8,35 @@ import {
   type WorkflowRunDetail,
   type WorkflowRunPage,
   type WorkflowStep,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   WORKFLOWS_GITHUB_CAPABILITY,
   WORKFLOWS_GITHUB_ROUTES,
-} from "@openbot/contracts/team-protocol/workflows-github-v1";
+} from "@pokebots/contracts/team-protocol/workflows-github-v1";
 import {
   WORKFLOWS_HIGGSFIELD_CAPABILITY,
   WORKFLOWS_HIGGSFIELD_ROUTES,
-} from "@openbot/contracts/team-protocol/workflows-higgsfield-v1";
+} from "@pokebots/contracts/team-protocol/workflows-higgsfield-v1";
 import {
   WORKFLOWS_MEDIA_CATALOG_CAPABILITY,
   WORKFLOWS_MEDIA_CATALOG_ROUTES,
-} from "@openbot/contracts/team-protocol/workflows-media-catalog-v1";
+} from "@pokebots/contracts/team-protocol/workflows-media-catalog-v1";
 import {
   WORKFLOWS_MEDIA_CAPABILITY,
   WORKFLOWS_MEDIA_ROUTES,
-} from "@openbot/contracts/team-protocol/workflows-media-v1";
+} from "@pokebots/contracts/team-protocol/workflows-media-v1";
 import {
   WORKFLOWS_SUNRA_CAPABILITY,
   WORKFLOWS_SUNRA_ROUTES,
-} from "@openbot/contracts/team-protocol/workflows-sunra-v1";
+} from "@pokebots/contracts/team-protocol/workflows-sunra-v1";
 import {
   WORKFLOW_RUN_STEP_LIMIT,
   WORKFLOW_STEP_TEXT_LIMIT,
   WORKFLOWS_CAPABILITY,
   WORKFLOWS_ROUTES,
-} from "@openbot/contracts/team-protocol/workflows-v1";
-import { sourceText } from "@openbot/i18n/source";
-import { RoutineInputError } from "@openbot/team-client/routine-schedule";
+} from "@pokebots/contracts/team-protocol/workflows-v1";
+import { sourceText } from "@pokebots/i18n/source";
+import { RoutineInputError } from "@pokebots/team-client/routine-schedule";
 import type { Effect } from "effect";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import { WorkflowStoreError } from "../../backend/workflows/workflow-store";

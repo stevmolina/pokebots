@@ -1,7 +1,7 @@
-import type { MachineMetric, MachineMetrics } from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
-import { Cpu, HardDrive, MemoryStick } from "@openbot/ui";
-import { useText } from "@openbot/ui/text";
+import type { MachineMetric, MachineMetrics } from "@pokebots/contracts/ipc";
+import type { AppTextKey } from "@pokebots/i18n";
+import { Cpu, HardDrive, MemoryStick } from "@pokebots/ui";
+import { useText } from "@pokebots/ui/text";
 import type { JSX } from "@solidjs/web";
 
 /** The name, icon, use and colour of one machine metric, as Storage and the Usage header show them. */

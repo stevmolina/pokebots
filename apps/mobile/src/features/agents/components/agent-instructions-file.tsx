@@ -1,5 +1,5 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import type { AgentInstructionsFile } from "@openbot/contracts/ipc";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
+import type { AgentInstructionsFile } from "@pokebots/contracts/ipc";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { usePreventRemove } from "expo-router/react-navigation";
 import { Button, Typography } from "heroui-native";

@@ -1,5 +1,5 @@
-import { avatarHueSwatch } from "@openbot/brand/bloub-avatar";
-import type { AvatarHue } from "@openbot/contracts/ipc";
+import { avatarHueSwatch } from "@pokebots/brand/bloub-avatar";
+import type { AvatarHue } from "@pokebots/contracts/ipc";
 import { View } from "react-native";
 import { useCSSVariable } from "uniwind";
 

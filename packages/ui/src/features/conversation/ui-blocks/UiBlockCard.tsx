@@ -1,4 +1,4 @@
-import type { UiBlockStatus } from "@openbot/contracts/ui-blocks";
+import type { UiBlockStatus } from "@pokebots/contracts/ui-blocks";
 import {
   Badge,
   Bubble,
@@ -10,7 +10,7 @@ import {
   LoaderCircle,
   Spinner,
   X,
-} from "@openbot/ui";
+} from "@pokebots/ui";
 import type { JSX } from "@solidjs/web";
 import { children, createUniqueId, Match, Show, Switch, untrack } from "solid-js";
 import { useText } from "../../../text";

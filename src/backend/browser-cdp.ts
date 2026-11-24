@@ -8,11 +8,11 @@ import type {
   BrowserJsonValue,
   BrowserSnapshot,
   BrowserTarget,
-} from "@openbot/contracts/ipc";
-import { type DynamicRecord, isBoolean, isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
-import { BROWSER_VIEW_MAX_CLIPBOARD_TEXT } from "@openbot/contracts/team-protocol/browser-view-v1";
-import { sourceText } from "@openbot/i18n/source";
-import { redactText } from "@openbot/logging";
+} from "@pokebots/contracts/ipc";
+import { type DynamicRecord, isBoolean, isDynamicRecord, isNumber, isString } from "@pokebots/contracts/runtime-values";
+import { BROWSER_VIEW_MAX_CLIPBOARD_TEXT } from "@pokebots/contracts/team-protocol/browser-view-v1";
+import { sourceText } from "@pokebots/i18n/source";
+import { redactText } from "@pokebots/logging";
 import { Deferred, Effect, Exit, Fiber, Option, Scope } from "effect";
 import type { NativeImage, WebContents } from "electron";
 import {

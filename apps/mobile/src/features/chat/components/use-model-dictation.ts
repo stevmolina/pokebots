@@ -1,5 +1,5 @@
-import { sourceText } from "@openbot/i18n/source";
-import { referenceFrom } from "@openbot/user-errors";
+import { sourceText } from "@pokebots/i18n/source";
+import { referenceFrom } from "@pokebots/user-errors";
 import { CodedError } from "expo";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Linking } from "react-native";

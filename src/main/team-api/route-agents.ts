@@ -6,7 +6,7 @@ import {
   parseGenerateAgentProfile,
   parseHostAnalyticsInput,
   parseSaveAgentProfile,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import { hiddenProviderAgentIds, isPeerHiddenProvider } from "./provider-visibility";
 // Agents: the collection, the sidebar that arranges them, and everything under one agent's id.
 //
@@ -21,24 +21,24 @@ import { hiddenProviderAgentIds, isPeerHiddenProvider } from "./provider-visibil
 // 400 on a malformed identifier into a 404 for some methods and not others.
 
 import { readFile } from "node:fs/promises";
-import { isAvatarMimeType } from "@openbot/contracts/avatar-images";
-import { AVATAR_IMAGE_LIMITS, INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import { type CreateAgentInput, type DuplicateAgentResult, WORKFLOWS_USAGE_ID } from "@openbot/contracts/ipc";
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
-import { AGENT_WELCOME_CAPABILITY } from "@openbot/contracts/team-protocol/agent-welcome-v1";
+import { isAvatarMimeType } from "@pokebots/contracts/avatar-images";
+import { AVATAR_IMAGE_LIMITS, INPUT_LIMITS } from "@pokebots/contracts/input-limits";
+import { type CreateAgentInput, type DuplicateAgentResult, WORKFLOWS_USAGE_ID } from "@pokebots/contracts/ipc";
+import { TEAM_API_ROUTES } from "@pokebots/contracts/team-api-routes";
+import { AGENT_WELCOME_CAPABILITY } from "@pokebots/contracts/team-protocol/agent-welcome-v1";
 import {
   BROWSER_SECRET_VAULT_CAPABILITY,
   BROWSER_SECRET_VAULT_ROUTES,
-} from "@openbot/contracts/team-protocol/browser-secret-vault-v1";
+} from "@pokebots/contracts/team-protocol/browser-secret-vault-v1";
 import {
   PROVIDER_MODEL_SOURCE_CAPABILITY,
   PROVIDER_MODEL_SOURCE_ROUTES,
-} from "@openbot/contracts/team-protocol/provider-model-source-v1";
-import { SKILL_PROBLEMS_CAPABILITY } from "@openbot/contracts/team-protocol/skill-problems-v1";
-import { V5_AGENT_MODEL } from "@openbot/contracts/team-protocol/v5-adapter";
-import { V6_AGENT_MODEL } from "@openbot/contracts/team-protocol/v6-adapter";
-import { WORKFLOWS_CAPABILITY } from "@openbot/contracts/team-protocol/workflows-v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/team-protocol/provider-model-source-v1";
+import { SKILL_PROBLEMS_CAPABILITY } from "@pokebots/contracts/team-protocol/skill-problems-v1";
+import { V5_AGENT_MODEL } from "@pokebots/contracts/team-protocol/v5-adapter";
+import { V6_AGENT_MODEL } from "@pokebots/contracts/team-protocol/v6-adapter";
+import { WORKFLOWS_CAPABILITY } from "@pokebots/contracts/team-protocol/workflows-v1";
+import { sourceText } from "@pokebots/i18n/source";
 import type { Effect } from "effect";
 import type { AgentDuplicationFailed } from "../../backend/agent/duplication-gate";
 import { ForbiddenAttentionAnswer, InactiveAttentionRequest } from "../../backend/agent/inactive-attention-request";

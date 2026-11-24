@@ -1,5 +1,5 @@
-import type { ComputerUseState, MacPermissionId } from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
+import type { ComputerUseState, MacPermissionId } from "@pokebots/contracts/ipc";
+import type { AppTextKey } from "@pokebots/i18n";
 import {
   Alert,
   AlertActions,
@@ -24,8 +24,8 @@ import {
   SettingsSection,
   Skeleton,
   TriangleAlert,
-} from "@openbot/ui";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/ui";
+import { useText } from "@pokebots/ui/text";
 import { createSignal, For, onCleanup, onSettled, Show } from "solid-js";
 import { desktopAnalytics } from "../../analytics";
 import { idleRestartTarget } from "../updates/updates-port";

@@ -1,4 +1,4 @@
-import { isBoolean, isDynamicRecord, isNumber } from "@openbot/contracts/runtime-values";
+import { isBoolean, isDynamicRecord, isNumber } from "@pokebots/contracts/runtime-values";
 import { Effect } from "effect";
 import { automationContextId, type SendCommand } from "./browser-cdp-values";
 

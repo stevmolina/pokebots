@@ -173,7 +173,7 @@ thread. The routine settings show a switch for it on this computer's host, and o
 the optional `routine-run-place-v1` capability (`packages/contracts/src/team-protocol/routine-run-place-v1.ts`,
 host route `routeRoutineRunPlace` in `src/main/team-api/route-routine-run-place.ts`). The released
 routine routes and the `events-v1` and `routine-recovery-v1` routes do not carry `runIn`, so the remote
-adapters (main IPC for desktop, `@openbot/team-client` for `/app`) read the places on their own list
+adapters (main IPC for desktop, `@pokebots/team-client` for `/app`) read the places on their own list
 route and send a change to the set route after the save. Any member reads the places of an agent that
 they can see; a change needs manage access. The host saves the stored record again with only the new
 place, for schedule and webhook routines. A save without `runIn`, or to a host without the capability,
@@ -794,7 +794,7 @@ agents of the active server and opens a task beside the list in `AgentThreadView
 The panel archives, restores and opens the task in the chat. A read there marks the thread read. A running
 task that waits for an approval, a question or a browser takeover goes to Needs you; the chat answers a
 question or takeover, so the panel links there. The Tasks page and the phone share the section and title
-rules in `@openbot/team-client/agent-tasks`.
+rules in `@pokebots/team-client/agent-tasks`.
 On the phone, the server drawer opens the Tasks screen (`apps/mobile/src/app/(app)/server-tasks.tsx`) when
 the host serves the capability. A task opens as a full screen (`apps/mobile/src/app/(app)/task/[taskId].tsx`)
 with the message list and header of the agent's chat, the task actions in place of the browser
@@ -1156,14 +1156,14 @@ The optional `bubbles` argument (`yours`, `agents`: `#rrggbb`) goes in the page 
 client gets the colors with the page file and the protocol does not change. `WindowBackdrop` reads
 them with `chatBackdropBubbles` while that page shows and sets them in
 `features/window/backdrop-bubbles.tsx`; the render root gives them to `ChatMessageRow` through the
-`BackdropBubbles` context of `@openbot/ui`. They replace the chat color of the reader's own bubbles
+`BackdropBubbles` context of `@pokebots/ui`. They replace the chat color of the reader's own bubbles
 and of agent bubbles, not the saved agent `chatColor`. A built-in scene or a picture has no bubble
 colors.
 
 `html_render` publishes a visual reply: an HTML page that shows above the agent's reply. On desktop
 and in the web client, a button on the page opens it as a file tab of the side panel too. The router
 stores the page as a generated `text/html` attachment and adds an assistant message with the item
-type `visual-reply:<height>` and the page title as its text (`@openbot/contracts/chat-visual`). A
+type `visual-reply:<height>` and the page title as its text (`@pokebots/contracts/chat-visual`). A
 client that does not know the item type shows the title and the file. A visual message is not
 readable: unread counts, latest-message previews and mobile read state skip it. The desktop serves
 the page on `openbot-visual:` (`openbot-remote-visual:` for a remote host) with

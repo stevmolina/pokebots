@@ -205,7 +205,7 @@ export const messages = {
   "sidebar.delete.pending": "Eliminando…",
   "sidebar.delete.title": "¿Eliminar {name}?",
   "sidebar.delete.agentDescription":
-    "Esto elimina de la aplicación el agente y su conversación de OpenBot. Se eliminan su cola, recuerdos, rutinas y espacio de trabajo. El historial guardado por separado por el proveedor CLI conectado no se elimina.",
+    "Esto elimina de la aplicación el agente y su conversación de Pokebots. Se eliminan su cola, recuerdos, rutinas y espacio de trabajo. El historial guardado por separado por el proveedor CLI conectado no se elimina.",
   "sidebar.delete.channelDescription":
     "Esto detiene el canal. Su historial permanece en Canales eliminados solo para consulta. Puedes restaurarlo desde allí. Los agentes miembros se conservan.",
   "sidebar.delete.sectionDescription":
@@ -219,7 +219,7 @@ export const messages = {
   "sidebar.announce.movedPinned": "Se movió el chat fijado a la posición {position} de {total}.",
   "sidebar.announce.personFallback": "persona",
   "sidebar.announce.chatFallback": "chat",
-  "sidebar.mobileApp.title": "OpenBot para móviles",
+  "sidebar.mobileApp.title": "Pokebots para móviles",
   "sidebar.storage.lowTitle": "Almacenamiento casi lleno",
   "sidebar.storage.fullTitle": "Almacenamiento lleno",
   "sidebar.storage.body": "{used} de {total} en uso en {server}.",
@@ -237,5 +237,5 @@ export const messages = {
   "sidebar.machine.alertTo": "La alerta va a {name}",
   "sidebar.machine.details": "Ver detalles",
   "sidebar.machine.dismiss": "Ocultar hasta la próxima alerta",
-  "sidebar.community.followX": "Seguir a OpenBot en X",
+  "sidebar.community.followX": "Seguir a Pokebots en X",
 } as const satisfies PartialTranslation<typeof source>;

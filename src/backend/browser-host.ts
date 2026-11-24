@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 import { existsSync } from "node:fs";
 import { isIP } from "node:net";
 import { basename, extname, join } from "node:path";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import type {
   AgentBrowserProfile,
   BrowserBounds,
@@ -22,21 +22,21 @@ import type {
   BrowserTeachStep,
   BrowserViewTarget,
   BrowserVisibilityInput,
-} from "@openbot/contracts/ipc";
-import { isNumber, isString } from "@openbot/contracts/runtime-values";
-import type { BrowserSignInStorage } from "@openbot/contracts/team-protocol/browser-sign-in-storage-v1";
+} from "@pokebots/contracts/ipc";
+import { isNumber, isString } from "@pokebots/contracts/runtime-values";
+import type { BrowserSignInStorage } from "@pokebots/contracts/team-protocol/browser-sign-in-storage-v1";
 import {
   type BrowserSignInCookie,
   browserSignInCookieFitsHost,
-} from "@openbot/contracts/team-protocol/browser-sign-in-v1";
+} from "@pokebots/contracts/team-protocol/browser-sign-in-v1";
 import {
   BROWSER_VIEW_CONTEXT_MENU_URL_MAX_LENGTH,
   type BrowserViewContextMenu,
   type BrowserViewCursor,
   type BrowserViewViewport,
-} from "@openbot/contracts/team-protocol/browser-view-v1";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger, redactText, toLogValue } from "@openbot/logging";
+} from "@pokebots/contracts/team-protocol/browser-view-v1";
+import { sourceText } from "@pokebots/i18n/source";
+import { createOpenBotLogger, redactText, toLogValue } from "@pokebots/logging";
 import { Deferred, Effect, Exit, Fiber, Option, Result, Scope, Semaphore } from "effect";
 import {
   app,

@@ -1,7 +1,7 @@
-import { SIGNAL_NO_READY_CLOSE_CODE } from "@openbot/contracts/signal-protocol/messages";
-import { ticketNamesSignalHome } from "@openbot/contracts/signal-protocol/ticket";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger } from "@openbot/logging";
+import { SIGNAL_NO_READY_CLOSE_CODE } from "@pokebots/contracts/signal-protocol/messages";
+import { ticketNamesSignalHome } from "@pokebots/contracts/signal-protocol/ticket";
+import { sourceText } from "@pokebots/i18n/source";
+import { createOpenBotLogger } from "@pokebots/logging";
 import { Context, Deferred, Effect, Exit, Fiber, Layer, ManagedRuntime, Scope } from "effect";
 import { RemoteWorkflowError } from "./remote-service-effects";
 import type { TeamWebRtcBridge } from "./team-webrtc-bridge";

@@ -1,4 +1,4 @@
-import type { CustomProvidersDesktopApi, OpenBotDesktopApi, ProviderAdminDesktopApi } from "@openbot/contracts/ipc";
+import type { CustomProvidersDesktopApi, OpenBotDesktopApi, ProviderAdminDesktopApi } from "@pokebots/contracts/ipc";
 import type { ProviderDetectionCalls } from "./stores/provider-detection-store";
 
 /**
