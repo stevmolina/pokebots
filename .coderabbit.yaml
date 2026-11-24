@@ -1,0 +1,9 @@
+# CodeRabbit is off for this repository. Its free review credits ran out, and its
+# "review limit reached" comments woke every agent that watched a pull request.
+# Turn it on again by setting `enabled: true` below.
+reviews:
+  auto_review:
+    enabled: false
+  review_status: false
+chat:
+  auto_reply: false
