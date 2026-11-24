@@ -648,6 +648,8 @@ export interface AcpProviderOptions {
   turnStallMs?: number;
   /** How long a prompt may get no update before it is sent again (`ACP_FIRST_UPDATE_MS` when absent). */
   firstUpdateMs?: number;
+  /** How long a stopped turn may take to end before OpenBot ends it (`ACP_STOP_GRACE_MS` when absent). */
+  stopGraceMs?: number;
   /** What this provider could not be given. Reported once per spawn, by `AgentService`. */
   reportMcpDrops?: McpDropReporter | undefined;
   mcpToolRuntimes?: McpToolRuntimeSource | undefined;
@@ -1610,7 +1612,9 @@ export class AcpAgentClient extends EventEmitter<ClientEvents> {
           // The grace starts before the cancel: a cancel that fails or does not answer must not leave
           // the stopped turn open, because the stall watch no longer ends it.
           yield* Effect.forkIn(
-            Effect.sleep(ACP_STOP_GRACE_MS).pipe(Effect.andThen(this.#abandonTurn(thread, turn, "interrupted", null))),
+            Effect.sleep(this.options.stopGraceMs ?? ACP_STOP_GRACE_MS).pipe(
+              Effect.andThen(this.#abandonTurn(thread, turn, "interrupted", null)),
+            ),
             this.#scope,
           );
           yield* cancel;
