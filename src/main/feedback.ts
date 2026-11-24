@@ -59,7 +59,7 @@ function similarIssues(value: unknown): SimilarFeedbackIssue[] {
 
 /**
  * Sends approved feedback with the account session. The account service opens the issue as
- * `openbotgit[bot]`, so the user needs no GitHub account, and the issue does not name the account.
+ * `pokebotsapp[bot]`, so the user needs no GitHub account, and the issue does not name the account.
  */
 export function feedbackSender(auth: FeedbackAuth): AgentFeedback {
   return {

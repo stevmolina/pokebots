@@ -67,10 +67,18 @@ export type AgentDefaults = Record<AgentDefaultKey, boolean> & {
 };
 
 /**
- * The trailer that names OpenBot as a co-author of a commit. The address is the GitHub noreply address
- * of the `openbotgit[bot]` account (user id 335604065), so GitHub links the co-author to the OpenBot app.
+ * The trailer that names Pokebots as a co-author of a commit. The address is the GitHub noreply address
+ * of the `pokebotsapp[bot]` account (user id 360799014), so GitHub links the co-author to the Pokebots app.
+ * The symbol keeps its released name.
  */
-export const OPENBOT_COMMIT_TRAILER = "Co-authored-by: OpenBot <335604065+openbotgit[bot]@users.noreply.github.com>";
+export const OPENBOT_COMMIT_TRAILER = "Co-authored-by: Pokebots <360799014+pokebotsapp[bot]@users.noreply.github.com>";
+
+/**
+ * The trailer that earlier releases added, for the `openbotgit[bot]` account (user id 335604065). Commits
+ * keep it, so code that looks for a trailer must accept it as the same co-author.
+ */
+export const LEGACY_OPENBOT_COMMIT_TRAILER =
+  "Co-authored-by: OpenBot <335604065+openbotgit[bot]@users.noreply.github.com>";
 
 /** The plan card start time that every agent had before the setting existed. */
 export const DEFAULT_PLAN_START_AFTER_MS = 10_000;

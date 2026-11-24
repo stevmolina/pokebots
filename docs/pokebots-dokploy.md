@@ -120,3 +120,19 @@ their edit history. It deletes an account's duplicate comments in place.
 Keep the feedback signing key stable while reports can still be withdrawn.
 Its value also signs the ownership marks on submitted feedback. The shared
 GitHub integration continues to use the existing `GITHUB_APP_*` settings.
+
+## GitHub App for agents
+
+Agents act on GitHub as `pokebotsapp[bot]` (GitHub App `PokebotsApp`, app ID 5908341, owner
+`stevmolina`). In Dokploy, the account service reads two settings for it:
+
+- `GITHUB_APP_CLIENT_ID`: the public Client ID of the app, `Iv23liqjDfmQETt7RBIr`.
+- `GITHUB_APP_PRIVATE_KEY`: the app's private key as a PKCS #8 PEM, with `\n` for each line break,
+  because Dokploy keeps one line for each variable. Convert GitHub's key with
+  `openssl pkcs8 -topk8 -nocrypt`. A key with real line breaks also works.
+
+Until the key is set, `POST /v1/github/installation-tokens` answers 503 `github_app_unavailable`, and
+the desktop acts as the signed-in user. The app needs an installation: install `PokebotsApp` on the
+accounts and repositories where agents work (`https://github.com/apps/pokebotsapp/installations/new`).
+Signal also needs `GITHUB_WEBHOOK_SECRET`, the app's webhook secret, before GitHub triggers receive
+events. Keep both values out of the repository.

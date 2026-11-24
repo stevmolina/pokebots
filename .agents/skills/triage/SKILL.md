@@ -149,7 +149,7 @@ Write, in one line each:
     The `external` label shows an author outside the organization.
   - A request from an organization member shows product intent. It is
     not user demand.
-  - An issue that the `openbotgit` app opened is not a user.
+  - An issue that the `pokebotsapp` app opened, or the earlier `openbotgit` app, is not a user.
 - **History**: earlier decisions for the same need. Search issues closed
   as not planned (`gh issue list --state closed --search "<words> reason:not-planned"`),
   issues with the `wontfix` label, maintainer comments, merged PR bodies,

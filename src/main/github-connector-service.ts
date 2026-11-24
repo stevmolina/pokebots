@@ -22,7 +22,7 @@ import { Deferred, Effect, Exit, type Layer, Result, Scope, Semaphore } from "ef
 import { z } from "zod";
 import { writeFileAtomically } from "../backend/atomic-json-file";
 import { GitHubBotTokens } from "./github-bot-tokens";
-import type { GitHubAppConfig } from "./github-connector-config";
+import { type GitHubAppConfig, LEGACY_GITHUB_APP_CLIENT_ID } from "./github-connector-config";
 import type { GitHubConnectorRecord, GitHubConnectorStore } from "./github-connector-store";
 import {
   GITHUB_REQUEST_TIMEOUT_MS,
@@ -587,7 +587,12 @@ export class GitHubConnectorService {
       });
       registerTokenSecrets(tokens);
       const user = yield* this.#readUserEffect(tokens.accessToken, pending.controller.signal);
-      const record: GitHubConnectorRecord = { ...tokens, ...user, mcpProxy: this.#mcpProxySettings() };
+      const record: GitHubConnectorRecord = {
+        ...tokens,
+        ...user,
+        clientId: app.clientId,
+        mcpProxy: this.#mcpProxySettings(),
+      };
       // Checked in the queue: a cancel or disconnect that ran while the last change was written wins.
       const committed = yield* this.#serialize(() =>
         Effect.gen({ self: this }, function* () {
@@ -767,10 +772,21 @@ export class GitHubConnectorService {
     return record.accessTokenExpiresAt !== null && record.accessTokenExpiresAt <= this.#now();
   }
 
+  /**
+   * Whether the stored tokens belong to another GitHub App than the configured one, as after the move
+   * from "OpenBotGit" to "PokebotsApp". Such a token keeps working until it expires. GitHub refuses its
+   * refresh with this Client ID, so the connection then shows Reconnect. The stored record stays as it is.
+   */
+  #fromOtherApp(record: GitHubConnectorRecord): boolean {
+    const app = this.#app;
+    return app !== null && (record.clientId ?? LEGACY_GITHUB_APP_CLIENT_ID) !== app.clientId;
+  }
+
   #canRefresh(record: GitHubConnectorRecord): boolean {
     return (
       record.refreshToken !== null &&
-      (record.refreshTokenExpiresAt === null || record.refreshTokenExpiresAt > this.#now())
+      (record.refreshTokenExpiresAt === null || record.refreshTokenExpiresAt > this.#now()) &&
+      !this.#fromOtherApp(record)
     );
   }
 

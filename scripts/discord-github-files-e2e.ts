@@ -247,7 +247,7 @@ try {
       store: new WorkflowStore({ database, nextDueAt: workflowScheduleDueAt(() => "UTC") }),
       runs: new WorkflowRunStore({ database }),
       github: new WorkflowGitHubStore({ database }),
-      githubApp: () => "openbotgit",
+      githubApp: () => "pokebotsapp",
       githubApi,
       delivery: () => null,
       turnAnswer: () => null,

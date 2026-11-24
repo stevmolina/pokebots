@@ -16,6 +16,7 @@ import {
   COMPUTER_USE_MCP_SERVER_NAME,
   DEFAULT_AGENT_MEMORY_LIMIT,
   DEFAULT_RESPONSE_STYLE,
+  LEGACY_OPENBOT_COMMIT_TRAILER,
   OPENBOT_COMMIT_TRAILER,
   type ResponseStyle,
   workspaceAccessEnforced,
@@ -735,7 +736,7 @@ export function developerInstructions(
     ...(agentDefaults.commitCoAuthor
       ? [
           // The trailer comes last, so that no period follows it.
-          `When the user asks to drop the OpenBot co-author trailer, call openbot.set_commit_co_author. Until then, when you create or amend a git commit, also with a message from the user, end its message with this trailer once: ${OPENBOT_COMMIT_TRAILER}`,
+          `When the user asks to drop the Pokebots co-author trailer, call openbot.set_commit_co_author. Until then, when you create or amend a git commit, also with a message from the user, end its message with the trailer once. A message that already ends with the older trailer "${LEGACY_OPENBOT_COMMIT_TRAILER}" has it: do not add a second one. The trailer is: ${OPENBOT_COMMIT_TRAILER}`,
         ]
       : []),
     ...(options.memoriesInTurns
