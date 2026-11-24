@@ -243,12 +243,20 @@ jobs:
         if: matrix.part == 2
         run: xvfb-run -a bun run test:browser-ambiguous-targets
 
+      - name: Show the failed browser E2E reports
+        if: failure()
+        run: |
+          for report in .openbot-build/browser-*/report.json; do
+            [ -f "$report" ] && grep -q '"failed"' "$report" && { echo "$report"; cat "$report"; }
+          done
+          true
+
       - name: Upload the browser E2E reports
         if: failure()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: browser-e2e-${{ matrix.part }}
-          path: .openbot-build/browser-*/
+          path: .openbot-build/browser-*
           if-no-files-found: ignore
 
   tests-desktop:
