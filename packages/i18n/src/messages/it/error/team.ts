@@ -93,6 +93,8 @@ export const messages = {
     "Questa connessione non può mostrare le richieste di un thread secondario ad altri agenti.",
   "error.team.hostTurnLimitsUnsupported":
     "Questa connessione non può mostrare né modificare i limiti dei thread del server.",
+  "error.team.threadAutoArchiveUnsupported": "Questo server non supporta l'archiviazione automatica dei thread.",
+  "error.team.threadAutoArchiveInvalid": "L'impostazione di archiviazione automatica dei thread non è valida.",
   "error.team.usageLimitUnsupported":
     "Questa connessione non può mostrare né modificare i limiti di utilizzo degli agenti.",
   "error.team.hermesImportUnsupported": "Questa connessione non può importare profili Hermes dal server.",

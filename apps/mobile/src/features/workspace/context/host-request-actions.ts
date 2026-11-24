@@ -146,6 +146,7 @@ import {
 } from "@openbot/contracts/team-protocol/current";
 import { EVENTS_CAPABILITY } from "@openbot/contracts/team-protocol/events-v1";
 import { HOME_AGENT_RULES_CAPABILITY } from "@openbot/contracts/team-protocol/home-agent-rules-v1";
+import { THREAD_AUTO_ARCHIVE_CAPABILITY } from "@openbot/contracts/team-protocol/thread-auto-archive-v1";
 import { HOST_MEMBER_UPDATE_CAPABILITY } from "@openbot/contracts/team-protocol/host-member-update-v1";
 import { HOST_PERSONALITY_CAPABILITY } from "@openbot/contracts/team-protocol/host-personality-v1";
 import { HOST_RELEASE_CAPABILITY } from "@openbot/contracts/team-protocol/host-release-v1";
@@ -260,6 +261,7 @@ import {
   getHostPersonality,
   getHostReleaseStatus,
   getHostSkillLearning,
+  getHostThreadAutoArchive,
   getHostTimezone,
   getHostUpdateStatus,
   getRoutineResultDestination,
@@ -323,6 +325,7 @@ import {
   setHostMemoryReview,
   setHostPersonality,
   setHostSkillLearning,
+  setHostThreadAutoArchive,
   setHostTimezone,
   setHostUpdateSettings,
   setMcpServerEnabled,
@@ -535,6 +538,8 @@ type HostRequestActions = Pick<
   | "setSkillLearning"
   | "loadHomeAgentRules"
   | "setHomeAgentRules"
+  | "loadThreadAutoArchive"
+  | "setThreadAutoArchive"
   | "loadBrowsingMemory"
   | "setBrowsingMemory"
   | "loadServerPersonality"
@@ -856,6 +861,8 @@ export function createHostRequestActions({
     capabilityApi(serverId, SKILL_LEARNING_CAPABILITY, "mobile.server.settings.learningUnsupported");
   const homeAgentRulesAdmin = (serverId: string) =>
     capabilityApi(serverId, HOME_AGENT_RULES_CAPABILITY, "error.team.homeAgentRulesUnsupported");
+  const threadAutoArchiveAdmin = (serverId: string) =>
+    capabilityApi(serverId, THREAD_AUTO_ARCHIVE_CAPABILITY, "error.team.threadAutoArchiveUnsupported");
   const browsingMemoryAdmin = (serverId: string) =>
     capabilityApi(serverId, BROWSING_MEMORY_CAPABILITY, "mobile.server.settings.learningUnsupported");
   /** Any member reads the personality; the host lets only an owner or admin set it. */
@@ -975,6 +982,10 @@ export function createHostRequestActions({
     loadHomeAgentRules: async (serverId) => runTeamRequest(getHostHomeAgentRules(homeAgentRulesAdmin(serverId))),
     setHomeAgentRules: async (preference, serverId) =>
       runTeamRequest(setHostHomeAgentRules(homeAgentRulesAdmin(serverId), preference)),
+    loadThreadAutoArchive: async (serverId) =>
+      runTeamRequest(getHostThreadAutoArchive(threadAutoArchiveAdmin(serverId))),
+    setThreadAutoArchive: async (setting, serverId) =>
+      runTeamRequest(setHostThreadAutoArchive(threadAutoArchiveAdmin(serverId), setting)),
     loadBrowsingMemory: async (serverId) => runTeamRequest(getHostBrowsingMemory(browsingMemoryAdmin(serverId))),
     setBrowsingMemory: async (enabled, serverId) =>
       runTeamRequest(setHostBrowsingMemory(browsingMemoryAdmin(serverId), enabled)),

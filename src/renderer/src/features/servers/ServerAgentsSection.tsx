@@ -8,6 +8,7 @@ import {
   type UpdateAgentDefaultsInput,
 } from "@openbot/contracts/ipc";
 import { HOME_AGENT_RULES_CAPABILITY } from "@openbot/contracts/team-protocol/home-agent-rules-v1";
+import { THREAD_AUTO_ARCHIVE_CAPABILITY } from "@openbot/contracts/team-protocol/thread-auto-archive-v1";
 import { Alert, AlertContent, AlertDescription, ItemGroup, SettingsSection } from "@openbot/ui";
 import type { RoleAgent } from "@openbot/ui/features/servers/ServerRoles";
 import {
@@ -21,6 +22,7 @@ import { createEffect, createStore, onSettled, Show, untrack } from "solid-js";
 import { actionToast } from "../../action-toast";
 import { ServerHomeAgentRulesSetting } from "./ServerHomeAgentRulesSetting";
 import { ServerTimezoneSetting } from "./ServerTimezoneSetting";
+import { ServerThreadAutoArchiveSetting } from "./ServerThreadAutoArchiveSetting";
 import { ServerTurnLimitsSetting } from "./ServerTurnLimitsSetting";
 import { serverCanAdminister, serverHasAgentDefaults, serverSupportsCapability } from "./server-capabilities";
 import type { ServerSettingsSectionHost } from "./server-settings-section";
@@ -122,7 +124,12 @@ export function createServerAgentsSection(
       return server.id;
     return undefined;
   };
-  const available = () => defaultsAvailable() || Boolean(timezone() || turnLimits() || homeRules());
+  const threadArchive = () =>
+    serverCanAdminister(props.server, THREAD_AUTO_ARCHIVE_CAPABILITY) && actionsAvailable()
+      ? props.threadAutoArchive
+      : undefined;
+  const available = () =>
+    defaultsAvailable() || Boolean(timezone() || turnLimits() || threadArchive() || homeRules());
 
   function load(serverId: string): void {
     const options = props.agentDefaults;
@@ -253,7 +260,7 @@ export function createServerAgentsSection(
   function Panel() {
     return (
       <>
-        <Show when={!state.setting && (timezone() || turnLimits())}>
+        <Show when={!state.setting && (timezone() || turnLimits() || threadArchive())}>
           <SettingsSection title={t("server.settings.threadsCard")}>
             <ItemGroup class="settings-modal-card">
               <Show when={timezone()}>
@@ -270,6 +277,17 @@ export function createServerAgentsSection(
               <Show when={turnLimits()}>
                 {(options) => (
                   <ServerTurnLimitsSetting
+                    {...options()}
+                    serverId={props.server.id}
+                    disabled={Boolean(busy())}
+                    menuMount={host.menuMount()}
+                    run={run}
+                  />
+                )}
+              </Show>
+              <Show when={threadArchive()}>
+                {(options) => (
+                  <ServerThreadAutoArchiveSetting
                     {...options()}
                     serverId={props.server.id}
                     disabled={Boolean(busy())}

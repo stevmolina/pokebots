@@ -49,6 +49,7 @@ import {
 import { EVENTS_CAPABILITY } from "@openbot/contracts/team-protocol/events-v1";
 import { FOCUS_USE_CAPABILITY, FOCUS_USE_ROUTES } from "@openbot/contracts/team-protocol/focus-use-v1";
 import { HOME_AGENT_RULES_CAPABILITY } from "@openbot/contracts/team-protocol/home-agent-rules-v1";
+import { THREAD_AUTO_ARCHIVE_CAPABILITY } from "@openbot/contracts/team-protocol/thread-auto-archive-v1";
 import { HOST_ADMIN_CAPABILITY } from "@openbot/contracts/team-protocol/host-admin-v1";
 import { HOST_APPEARANCE_CAPABILITY } from "@openbot/contracts/team-protocol/host-appearance-v1";
 import { HOST_KEY_ROTATION_CAPABILITY } from "@openbot/contracts/team-protocol/host-key-rotation-v1";
@@ -2722,6 +2723,7 @@ export function MobileWorkspaceProvider({ children }: PropsWithChildren) {
           servers.find((candidate) => candidate.id === serverId)?.role === "owner" &&
           administers(serverId, HOME_AGENT_RULES_CAPABILITY),
         canManageBrowsingMemory: (serverId) => administers(serverId, BROWSING_MEMORY_CAPABILITY),
+        canManageThreadAutoArchive: (serverId) => administers(serverId, THREAD_AUTO_ARCHIVE_CAPABILITY),
         canManageServerPersonality: (serverId) => administers(serverId, HOST_PERSONALITY_CAPABILITY),
         servesServerPersonality: (serverId) => {
           const server = servers.find((candidate) => candidate.id === serverId);

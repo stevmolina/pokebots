@@ -274,6 +274,7 @@ import {
   TEAM_UI_BLOCK_VAULT_CAPABILITY,
   withUiBlockVaultRequests,
 } from "@openbot/contracts/team-protocol/ui-block-vault-v1";
+import { THREAD_AUTO_ARCHIVE_CAPABILITY } from "@openbot/contracts/team-protocol/thread-auto-archive-v1";
 import { USAGE_CREDITS_CAPABILITY } from "@openbot/contracts/team-protocol/usage-credits-v1";
 import {
   TEAM_APP_VERSION_HEADER,
@@ -479,6 +480,7 @@ import { routeSkillSuggestionSave } from "./team-api/route-skill-suggestion-save
 import { routeSkillsAdmin } from "./team-api/route-skills-admin";
 import { routeStorage } from "./team-api/route-storage";
 import { routeTeam } from "./team-api/route-team";
+import { routeThreadAutoArchive } from "./team-api/route-thread-auto-archive";
 import { routeThreadMessageSearch } from "./team-api/route-thread-message-search";
 import { routeUsageCredits } from "./team-api/route-usage-credits";
 import { routeVault } from "./team-api/route-vault";
@@ -1449,6 +1451,7 @@ export class TeamApiServer {
       if ((await routePromptCacheTtl(context, this.#options.admin)) === "handled") return;
       if ((await routeClaudeUserSetup(context, this.#options.admin)) === "handled") return;
       if ((await routeHomeAgentRules(context, this.#options.admin)) === "handled") return;
+      if ((await routeThreadAutoArchive(context, this.#options.admin)) === "handled") return;
       if ((await routeClaudeAiTools(context, this.#options.admin)) === "handled") return;
       if ((await routeClaudeCompactWindow(context, this.#options.admin)) === "handled") return;
       if ((await routeProviderEnvironment(context, this.#options.admin)) === "handled") return;
@@ -3088,6 +3091,7 @@ export class TeamApiServer {
         if (capability === PROMPT_CACHE_TTL_CAPABILITY) return this.#options.admin?.promptCacheTtl !== undefined;
         if (capability === CLAUDE_USER_SETUP_CAPABILITY) return this.#options.admin?.claudeUserSetup !== undefined;
         if (capability === HOME_AGENT_RULES_CAPABILITY) return this.#options.admin?.homeAgentRules !== undefined;
+        if (capability === THREAD_AUTO_ARCHIVE_CAPABILITY) return this.#options.admin?.threadAutoArchive !== undefined;
         if (capability === CLAUDE_AI_TOOLS_CAPABILITY) return this.#options.admin?.claudeAiTools !== undefined;
         if (capability === CLAUDE_COMPACT_WINDOW_CAPABILITY)
           return this.#options.admin?.claudeCompactWindow !== undefined;

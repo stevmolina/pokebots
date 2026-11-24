@@ -3,13 +3,16 @@ import {
   isSkillLearningMode,
   RESPONSE_STYLES,
   type ResponseStyle,
+  THREAD_AUTO_ARCHIVE_IDLE_DAYS,
 } from "@openbot/contracts/ipc";
 import { type QueryKey, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Typography } from "heroui-native";
+import Archive from "lucide-react-native/icons/archive";
 import BookOpen from "lucide-react-native/icons/book-open";
 import Brain from "lucide-react-native/icons/brain";
 import BrainCog from "lucide-react-native/icons/brain-cog";
 import Smile from "lucide-react-native/icons/face-slightly-smiling";
+import GitPullRequest from "lucide-react-native/icons/git-pull-request";
 import MousePointerClick from "lucide-react-native/icons/mouse-pointer-click";
 import { useState } from "react";
 import { useUniwind } from "uniwind";
@@ -337,6 +340,70 @@ export function ServerHomeAgentRulesRows({ serverId }: { serverId: string }) {
             );
           })
         : null}
+    </SettingsSection>
+  );
+}
+
+/**
+ * When the host archives the side threads of its agents by itself (`thread-auto-archive-v1`): after an
+ * idle time, and when the GitHub pull requests that a thread links are merged or closed. An owner or
+ * admin changes it; the host checks the role again.
+ */
+export function ServerThreadAutoArchiveRows({ serverId }: { serverId: string }) {
+  const { t } = useText();
+  const { theme } = useUniwind();
+  const { loadThreadAutoArchive, setThreadAutoArchive } = useMobileWorkspaceActions();
+  const setting = useHostSetting(
+    queryKeys.threadAutoArchive(useQueryScope(), serverId),
+    () => loadThreadAutoArchive(serverId),
+    t("mobile.server.settings.threadAutoArchiveLoadFailed"),
+    t("mobile.server.settings.threadAutoArchiveSaveFailed"),
+  );
+  const current = setting.value;
+  return (
+    <SettingsSection
+      title={t("mobile.server.settings.threadAutoArchive")}
+      footer={setting.error ?? t("mobile.server.settings.threadAutoArchiveDescription")}
+    >
+      <SettingsRow
+        leading={<RowIcon icon={Archive} />}
+        disclosure={false}
+        trailing={
+          current ? (
+            <SettingsPicker
+              value={current.idleDays}
+              options={THREAD_AUTO_ARCHIVE_IDLE_DAYS.map((days) => ({
+                value: days,
+                label:
+                  days === 0
+                    ? t("mobile.server.settings.threadAutoArchiveIdleOff")
+                    : t("mobile.server.settings.threadAutoArchiveIdleDays", { count: days }),
+              }))}
+              enabled={!setting.saving}
+              dark={theme === "dark"}
+              label={t("mobile.server.settings.threadAutoArchiveIdle")}
+              onChange={(idleDays) => {
+                if (idleDays !== current.idleDays)
+                  setting.save(() => setThreadAutoArchive({ ...current, idleDays }, serverId));
+              }}
+            />
+          ) : null
+        }
+      >
+        <Typography.Paragraph>{t("mobile.server.settings.threadAutoArchiveIdle")}</Typography.Paragraph>
+      </SettingsRow>
+      <SettingsRow leading={<RowIcon icon={GitPullRequest} />}>
+        <SettingsSwitch
+          value={current?.mergedPullRequests ?? false}
+          disabled={!current || setting.saving}
+          label={t("mobile.server.settings.threadAutoArchivePullRequests")}
+          dark={theme === "dark"}
+          onValueChange={(mergedPullRequests) => {
+            if (current && mergedPullRequests !== current.mergedPullRequests)
+              setting.save(() => setThreadAutoArchive({ ...current, mergedPullRequests }, serverId));
+          }}
+        />
+      </SettingsRow>
     </SettingsSection>
   );
 }

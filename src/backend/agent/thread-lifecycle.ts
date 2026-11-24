@@ -1931,6 +1931,11 @@ export class ThreadLifecycle {
     return this.#runsBackgroundWork(agent.threadId, RUNTIME_RELOADED_ON_RESUME);
   }
 
+  /** Whether a loaded provider session of this side thread runs background work, such as a background command. */
+  threadRunsBackgroundWork(threadId: string): Effect.Effect<boolean> {
+    return this.#runsBackgroundWork(threadId);
+  }
+
   /**
    * Whether a loaded session of this thread runs background work, of `providers` alone when given.
    * A failed check keeps the session.

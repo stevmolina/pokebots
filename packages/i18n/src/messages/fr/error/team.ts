@@ -94,6 +94,8 @@ export const messages = {
     "Cette connexion ne peut pas afficher les demandes d’un fil annexe aux autres agents.",
   "error.team.hostTurnLimitsUnsupported":
     "Cette connexion ne peut pas afficher ni modifier les limites de fils du serveur.",
+  "error.team.threadAutoArchiveUnsupported": "Ce serveur ne prend pas en charge l'archivage automatique des fils.",
+  "error.team.threadAutoArchiveInvalid": "Le réglage d'archivage automatique des fils n'est pas valide.",
   "error.team.usageLimitUnsupported":
     "Cette connexion ne peut pas afficher ni modifier les limites d’utilisation des agents.",
   "error.team.hermesImportUnsupported": "Cette connexion ne peut pas importer de profils Hermes depuis le serveur.",

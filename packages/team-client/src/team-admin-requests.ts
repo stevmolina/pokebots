@@ -62,6 +62,8 @@ import {
   type SidebarPin,
   type SidebarPinsSnapshot,
   type StartWhatsAppLinkInput,
+  parseThreadAutoArchiveSetting,
+  type ThreadAutoArchiveSetting,
   type WhatsAppGroupList,
   type WhatsAppLinkState,
   type WhatsAppOverview,
@@ -115,6 +117,7 @@ import type { PROVIDERS_V5_ROUTES } from "@openbot/contracts/team-protocol/provi
 import { PROVIDERS_V8_ROUTES } from "@openbot/contracts/team-protocol/providers-v8";
 import { SIDEBAR_PINS_ROUTES } from "@openbot/contracts/team-protocol/sidebar-pins-v1";
 import { SKILL_LEARNING_ROUTES } from "@openbot/contracts/team-protocol/skill-learning-v1";
+import { THREAD_AUTO_ARCHIVE_ROUTES } from "@openbot/contracts/team-protocol/thread-auto-archive-v1";
 import { WHATSAPP_CONNECTOR_ROUTES } from "@openbot/contracts/team-protocol/whatsapp-connector-v1";
 import { WHATSAPP_STATUS_REACTIONS_ROUTES } from "@openbot/contracts/team-protocol/whatsapp-status-reactions-v1";
 import { WHATSAPP_WORKING_MESSAGE_ROUTES } from "@openbot/contracts/team-protocol/whatsapp-working-message-v1";
@@ -1098,6 +1101,26 @@ export function setHostHomeAgentRules(
     request("POST", HOME_AGENT_RULES_ROUTES.update, decodeHomeAgentRulesResponse, {
       enabled: preference.enabled,
       files: [...preference.files],
+    }),
+  );
+}
+
+/** `thread-auto-archive-v1`: when the host archives the side threads of its agents by itself. */
+export function getHostThreadAutoArchive(
+  request: TeamApiRequest,
+): Effect.Effect<ThreadAutoArchiveSetting, TeamAdminRequestError> {
+  return adminCall(() => request("POST", THREAD_AUTO_ARCHIVE_ROUTES.settings, parseThreadAutoArchiveSetting, {}));
+}
+
+/** `thread-auto-archive-v1`: saves the idle time and the pull request rule. An owner or admin only. */
+export function setHostThreadAutoArchive(
+  request: TeamApiRequest,
+  setting: ThreadAutoArchiveSetting,
+): Effect.Effect<ThreadAutoArchiveSetting, TeamAdminRequestError> {
+  return adminCall(() =>
+    request("POST", THREAD_AUTO_ARCHIVE_ROUTES.update, parseThreadAutoArchiveSetting, {
+      idleDays: setting.idleDays,
+      mergedPullRequests: setting.mergedPullRequests,
     }),
   );
 }

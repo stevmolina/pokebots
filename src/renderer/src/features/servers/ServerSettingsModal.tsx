@@ -102,6 +102,7 @@ import { type ServerRoutineFeedOptions, ServerRoutineFeedPanel } from "./ServerR
 import type { ServerSkillLearningOptions } from "./ServerSkillLearningSetting";
 import type { ServerTimezoneOptions } from "./ServerTimezoneSetting";
 import { type ServerTransferOptions, ServerTransferPanel } from "./ServerTransferPanel";
+import type { ServerThreadAutoArchiveOptions } from "./ServerThreadAutoArchiveSetting";
 import type { ServerTurnLimitsOptions } from "./ServerTurnLimitsSetting";
 import { type ServerUpdateOptions, ServerUpdatePanel } from "./ServerUpdatePanel";
 import { serverCanAdminister, serverRoleCanAdminister } from "./server-capabilities";
@@ -209,6 +210,11 @@ export interface ServerSettingsModalProps {
    * server or a remote host with `host-turn-limits-v1` that this member administers.
    */
   hostTurnLimits?: ServerTurnLimitsOptions | undefined;
+  /**
+   * Agent defaults shows the automatic thread archive only when a caller supplies this, and only for the
+   * local server or a remote host with `thread-auto-archive-v1` that this member administers.
+   */
+  threadAutoArchive?: ServerThreadAutoArchiveOptions | undefined;
   /**
    * The Personality section shows only when a caller supplies this, and only for the local server or
    * a remote host with `host-personality-v1` that this member administers.
@@ -407,6 +413,8 @@ const SECTION_ROWS: Partial<Record<Section, readonly AppTextKey[]>> = {
     "server.settings.timezone",
     "server.settings.turnLimit",
     "server.settings.agentTaskLimit",
+    "server.settings.threadAutoArchiveIdle",
+    "server.settings.threadAutoArchivePullRequests",
     "server.settings.homeAgentRules",
     "agentSettings.automation.title",
     "agentSettings.agentNewChat.title",

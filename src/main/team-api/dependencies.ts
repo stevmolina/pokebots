@@ -112,6 +112,7 @@ import type { RemoteComputerHost } from "../remote-computer-host";
 import type { RemoteScreenGateway } from "../remote-screen-gateway";
 import type { SignInRelayHost } from "../sign-in-relay-host";
 import type { TeamStore } from "../team-store";
+import type { ThreadAutoArchiveControl } from "../thread-auto-archive";
 import type { VaultService } from "../vault-service";
 
 type TeamApiAgentMethods = Pick<
@@ -617,6 +618,8 @@ export interface TeamApiAdmin {
   /** `claude-user-setup-v1`: whether this computer's Claude agents load the Claude Code setup of its user. */
   claudeUserSetup?: ClaudeUserSetupControl;
   homeAgentRules?: HomeAgentRulesControl;
+  /** `thread-auto-archive-v1`: when this computer archives the side threads of its agents by itself. */
+  threadAutoArchive?: ThreadAutoArchiveControl;
   /** `claude-ai-tools-v1`: whether this computer's Claude agents get the claude.ai tools of its Claude sign-in. */
   claudeAiTools?: ClaudeAiToolsControl;
   /** `claude-compact-window-v1`: the size at which Claude Code compacts the chats of this computer's agents. */

@@ -27,6 +27,7 @@ import {
   decodeHostTurnLimits,
   LEGACY_RESPONSE_STYLE,
   type McpSignInState,
+  parseThreadAutoArchiveSetting,
   type RoutineFields,
   type ServerConnectionState,
   type ServerSummary,
@@ -111,6 +112,7 @@ import { SIDE_QUESTION_CAPABILITY } from "@openbot/contracts/team-protocol/side-
 import { SIGN_IN_RELAY_CAPABILITY } from "@openbot/contracts/team-protocol/sign-in-relay-v1";
 import { SKILL_LEARNING_CAPABILITY } from "@openbot/contracts/team-protocol/skill-learning-v1";
 import { STORAGE_CHANNEL_CAPABILITY } from "@openbot/contracts/team-protocol/storage-channel-v1";
+import { THREAD_AUTO_ARCHIVE_ROUTES } from "@openbot/contracts/team-protocol/thread-auto-archive-v1";
 import { THREAD_MESSAGE_SEARCH_CAPABILITY } from "@openbot/contracts/team-protocol/thread-message-search-v1";
 import { VAULT_IMPORT_CAPABILITY } from "@openbot/contracts/team-protocol/vault-import-v1";
 import { VAULT_CAPABILITY } from "@openbot/contracts/team-protocol/vault-v1";
@@ -322,6 +324,7 @@ import type { HostAgentAccessCalls } from "../servers/ServerRolesSection";
 import type { ServerHostedSitesOptions, ServerSettingsSection } from "../servers/ServerSettingsModal";
 import type { HostSkillLearningCalls } from "../servers/ServerSkillLearningSetting";
 import type { HostTimezoneCalls } from "../servers/ServerTimezoneSetting";
+import type { HostThreadAutoArchiveCalls } from "../servers/ServerThreadAutoArchiveSetting";
 import type { HostTurnLimitsCalls } from "../servers/ServerTurnLimitsSetting";
 import type { HostUpdateCalls } from "../servers/ServerUpdatePanel";
 import {
@@ -1909,6 +1912,15 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
       hostRequest(serverId)("POST", HOST_TURN_LIMITS_ROUTES.update, decodeHostTurnLimits, {
         turnLimit,
         agentTaskLimit,
+      }),
+  };
+  const hostThreadAutoArchiveCalls: HostThreadAutoArchiveCalls = {
+    getThreadAutoArchive: async (serverId) =>
+      hostRequest(serverId)("POST", THREAD_AUTO_ARCHIVE_ROUTES.settings, parseThreadAutoArchiveSetting, {}),
+    setThreadAutoArchive: async ({ idleDays, mergedPullRequests }, serverId) =>
+      hostRequest(serverId)("POST", THREAD_AUTO_ARCHIVE_ROUTES.update, parseThreadAutoArchiveSetting, {
+        idleDays,
+        mergedPullRequests,
       }),
   };
   const hostPersonalityCalls: HostPersonalityCalls = {
@@ -4185,6 +4197,7 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                         hostUpdate={{ calls: hostUpdateCalls }}
                         hostTimezone={{ calls: hostTimezoneCalls }}
                         hostTurnLimits={{ calls: hostTurnLimitsCalls }}
+                        threadAutoArchive={{ calls: hostThreadAutoArchiveCalls }}
                         hostPersonality={{ calls: hostPersonalityCalls }}
                         hostMemoryLimit={{ calls: hostMemoryLimitCalls }}
                         memoryReview={{ calls: hostMemoryReviewCalls }}
