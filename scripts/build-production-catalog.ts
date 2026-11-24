@@ -23,7 +23,8 @@ const scriptRoot = dirname(fileURLToPath(import.meta.url));
 const projectRoot = resolve(scriptRoot, "..");
 const sourceRoot = join(projectRoot, "marketplace", "production-catalog");
 const defaultOutput = join(projectRoot, "out", "marketplace-production");
-const zipTimestamp = new Date("1980-01-01T00:00:00.000Z");
+// fflate reads mtime with local-time getters. Local noon gives the same DOS date and time in every time zone.
+const zipTimestamp = new Date(1980, 0, 1, 12, 0, 0);
 const dependencyPattern =
   /(?:\bMCP\b|\bconnectors?\b|https?:\/\/|\b(?:npm|pnpm|yarn|bun|pipx?|uv|brew|apt(?:-get)?|cargo)\s+(?:add|install)\b)/iu;
 
