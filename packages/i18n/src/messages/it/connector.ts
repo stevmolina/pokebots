@@ -110,7 +110,7 @@ export const messages = {
   "connector.slack.stepAgent": "Agente",
   "connector.slack.connectTitle": "Connetti un workspace Slack",
   "connector.slack.connectDescription":
-    "OpenBot installa nel workspace una sola app, chiamata OpenBot, che entra in ogni canale pubblico.",
+    "Pokebots installa nel workspace una sola app, chiamata OpenBot, che entra in ogni canale pubblico.",
   "connector.slack.connectStepBrowser": "Slack si apre nel browser",
   "connector.slack.connectStepAllow": "Seleziona il workspace in alto a destra, poi Consenti",
   "connector.slack.connectStepReturn": "Questa finestra prosegue quando Slack ha finito",
@@ -190,7 +190,7 @@ export const messages = {
   "connector.discord.stepWorkspace": "Server Discord",
   "connector.discord.stepAgent": "Agente",
   "connector.discord.connectTitle": "Connetti un server Discord",
-  "connector.discord.connectDescription": "OpenBot aggiunge al server Discord un solo bot, chiamato OpenBot.",
+  "connector.discord.connectDescription": "Pokebots aggiunge al server Discord un solo bot, chiamato OpenBot.",
   "connector.discord.connectStepBrowser": "Discord si apre nel browser",
   "connector.discord.connectStepAllow": "Seleziona il server, poi Autorizza",
   "connector.discord.connectStepReturn": "Questa finestra prosegue quando Discord ha finito",

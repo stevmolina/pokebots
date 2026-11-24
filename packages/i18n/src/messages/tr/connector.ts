@@ -135,7 +135,7 @@ export const messages = {
   "connector.slack.stepAgent": "Ajan",
   "connector.slack.connectTitle": "Bir Slack çalışma alanına bağlanın",
   "connector.slack.connectDescription":
-    "OpenBot çalışma alanına OpenBot adında bir uygulama yükler ve her genel kanala katılır.",
+    "Pokebots çalışma alanına OpenBot adında bir uygulama yükler ve her genel kanala katılır.",
   "connector.slack.connectStepBrowser": "Slack tarayıcınızda açılır",
   "connector.slack.connectStepAllow": "Sağ üst köşeden çalışma alanını seçin, ardından İzin Ver'e tıklayın",
   "connector.slack.connectStepReturn": "Slack işlemi tamamlandığında bu iletişim kutusu devam eder",
@@ -219,7 +219,7 @@ export const messages = {
   "connector.discord.stepWorkspace": "Discord sunucusu",
   "connector.discord.stepAgent": "Ajan",
   "connector.discord.connectTitle": "Bir Discord sunucusuna bağlanın",
-  "connector.discord.connectDescription": "OpenBot, Discord sunucusuna OpenBot adında bir bot ekler.",
+  "connector.discord.connectDescription": "Pokebots, Discord sunucusuna OpenBot adında bir bot ekler.",
   "connector.discord.connectStepBrowser": "Discord tarayıcınızda açılır",
   "connector.discord.connectStepAllow": "Sunucuyu seçin, ardından Yetkilendir'e tıklayın",
   "connector.discord.connectStepReturn": "Discord işlemi tamamlandığında bu iletişim kutusu devam eder",

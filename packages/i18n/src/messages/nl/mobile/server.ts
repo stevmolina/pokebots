@@ -759,7 +759,7 @@ export const messages = {
   },
   "mobile.server.connectors.slack.connect": "Slack verbinden",
   "mobile.server.connectors.slack.connectFooter":
-    "Slack opent in een browser. Kies rechtsboven de werkruimte en daarna Toestaan. OpenBot installeert één app, OpenBot genaamd, en die wordt lid van elk openbaar kanaal.",
+    "Slack opent in een browser. Kies rechtsboven de werkruimte en daarna Toestaan. Pokebots installeert één app, OpenBot genaamd, en die wordt lid van elk openbaar kanaal.",
   "mobile.server.connectors.slack.add": "Werkruimte toevoegen",
   "mobile.server.connectors.slack.limit": {
     one: "Je kunt maximaal {count} werkruimte verbinden.",
@@ -805,7 +805,7 @@ export const messages = {
   },
   "mobile.server.connectors.discord.connect": "Discord verbinden",
   "mobile.server.connectors.discord.connectFooter":
-    "Discord opent in een browser. Kies de Discord-server en daarna Autoriseren. OpenBot voegt één bot toe, OpenBot genaamd.",
+    "Discord opent in een browser. Kies de Discord-server en daarna Autoriseren. Pokebots voegt één bot toe, OpenBot genaamd.",
   "mobile.server.connectors.discord.add": "Discord-server toevoegen",
   "mobile.server.connectors.discord.limit": {
     one: "Je kunt maximaal {count} Discord-server verbinden.",

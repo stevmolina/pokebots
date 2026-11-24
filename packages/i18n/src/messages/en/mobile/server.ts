@@ -1086,7 +1086,7 @@ export const messages = defineMessages("mobile.server", {
   },
   "mobile.server.connectors.slack.connect": "Connect Slack",
   "mobile.server.connectors.slack.connectFooter":
-    "Slack opens in a browser. Select the workspace in the top-right corner, then Allow. OpenBot installs one app, named OpenBot, and it joins every public channel.",
+    "Slack opens in a browser. Select the workspace in the top-right corner, then Allow. Pokebots installs one app, named OpenBot, and it joins every public channel.",
   "mobile.server.connectors.slack.add": "Add workspace",
   "mobile.server.connectors.slack.limit": {
     one: "You can connect a maximum of {count} workspace.",
@@ -1134,7 +1134,7 @@ export const messages = defineMessages("mobile.server", {
   },
   "mobile.server.connectors.discord.connect": "Connect Discord",
   "mobile.server.connectors.discord.connectFooter":
-    "Discord opens in a browser. Select the Discord server, then Authorize. OpenBot adds one bot, named OpenBot.",
+    "Discord opens in a browser. Select the Discord server, then Authorize. Pokebots adds one bot, named OpenBot.",
   "mobile.server.connectors.discord.add": "Add Discord server",
   "mobile.server.connectors.discord.limit": {
     one: "You can connect a maximum of {count} Discord server.",

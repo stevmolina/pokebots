@@ -878,7 +878,7 @@ export const messages = {
   },
   "mobile.server.connectors.slack.connect": "Połącz Slack",
   "mobile.server.connectors.slack.connectFooter":
-    "Slack otworzy się w przeglądarce. Wybierz obszar roboczy w prawym górnym rogu, a potem Allow. OpenBot instaluje jedną aplikację o nazwie OpenBot, która dołącza do każdego publicznego kanału.",
+    "Slack otworzy się w przeglądarce. Wybierz obszar roboczy w prawym górnym rogu, a potem Allow. Pokebots instaluje jedną aplikację o nazwie OpenBot, która dołącza do każdego publicznego kanału.",
   "mobile.server.connectors.slack.add": "Dodaj obszar roboczy",
   "mobile.server.connectors.slack.limit": {
     one: "Możesz połączyć maksymalnie {count} obszar roboczy.",
@@ -927,7 +927,7 @@ export const messages = {
   },
   "mobile.server.connectors.discord.connect": "Połącz Discord",
   "mobile.server.connectors.discord.connectFooter":
-    "Discord otworzy się w przeglądarce. Wybierz serwer Discord, a potem Authorize. OpenBot dodaje jednego bota o nazwie OpenBot.",
+    "Discord otworzy się w przeglądarce. Wybierz serwer Discord, a potem Authorize. Pokebots dodaje jednego bota o nazwie OpenBot.",
   "mobile.server.connectors.discord.add": "Dodaj serwer Discord",
   "mobile.server.connectors.discord.limit": {
     one: "Możesz połączyć maksymalnie {count} serwer Discord.",

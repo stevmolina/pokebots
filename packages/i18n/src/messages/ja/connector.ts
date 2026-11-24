@@ -115,7 +115,7 @@ export const messages = {
   "connector.slack.stepAgent": "エージェント",
   "connector.slack.connectTitle": "Slack ワークスペースを接続",
   "connector.slack.connectDescription":
-    "OpenBot はワークスペースに OpenBot という名前のアプリを 1 つインストールし、そのアプリはすべての公開チャンネルに参加します。",
+    "Pokebots はワークスペースに OpenBot という名前のアプリを 1 つインストールし、そのアプリはすべての公開チャンネルに参加します。",
   "connector.slack.connectStepBrowser": "ブラウザーで Slack が開きます",
   "connector.slack.connectStepAllow": "右上でワークスペースを選び、「許可する」を押します",
   "connector.slack.connectStepReturn": "Slack での操作が終わると、このダイアログが続行します",
@@ -195,7 +195,8 @@ export const messages = {
   "connector.discord.stepWorkspace": "Discord サーバー",
   "connector.discord.stepAgent": "エージェント",
   "connector.discord.connectTitle": "Discord サーバーを接続",
-  "connector.discord.connectDescription": "OpenBot は Discord サーバーに OpenBot という名前のボットを 1 つ追加します。",
+  "connector.discord.connectDescription":
+    "Pokebots は Discord サーバーに OpenBot という名前のボットを 1 つ追加します。",
   "connector.discord.connectStepBrowser": "ブラウザーで Discord が開きます",
   "connector.discord.connectStepAllow": "サーバーを選び、「認証」を押します",
   "connector.discord.connectStepReturn": "Discord での操作が終わると、このダイアログが続行します",

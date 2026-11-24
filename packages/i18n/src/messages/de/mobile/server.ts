@@ -803,7 +803,7 @@ export const messages = {
   },
   "mobile.server.connectors.slack.connect": "Slack verbinden",
   "mobile.server.connectors.slack.connectFooter":
-    "Slack öffnet sich in einem Browser. Wähle den Arbeitsbereich oben rechts und dann „Zulassen“. OpenBot installiert eine App namens OpenBot. Sie tritt allen öffentlichen Kanälen bei.",
+    "Slack öffnet sich in einem Browser. Wähle den Arbeitsbereich oben rechts und dann „Zulassen“. Pokebots installiert eine App namens OpenBot. Sie tritt allen öffentlichen Kanälen bei.",
   "mobile.server.connectors.slack.add": "Arbeitsbereich hinzufügen",
   "mobile.server.connectors.slack.limit": {
     one: "Du kannst höchstens {count} Arbeitsbereich verbinden.",
@@ -852,7 +852,7 @@ export const messages = {
   },
   "mobile.server.connectors.discord.connect": "Discord verbinden",
   "mobile.server.connectors.discord.connectFooter":
-    "Discord öffnet sich in einem Browser. Wähle den Discord-Server und dann „Autorisieren“. OpenBot fügt einen Bot namens OpenBot hinzu.",
+    "Discord öffnet sich in einem Browser. Wähle den Discord-Server und dann „Autorisieren“. Pokebots fügt einen Bot namens OpenBot hinzu.",
   "mobile.server.connectors.discord.add": "Discord-Server hinzufügen",
   "mobile.server.connectors.discord.limit": {
     one: "Du kannst höchstens {count} Discord-Server verbinden.",

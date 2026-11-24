@@ -751,7 +751,7 @@ export const messages = {
   },
   "mobile.server.connectors.slack.connect": "Slack 연결",
   "mobile.server.connectors.slack.connectFooter":
-    "Slack이 브라우저에서 열려요. 오른쪽 위에서 워크스페이스를 선택한 다음 허용을 누르세요. OpenBot은 OpenBot이라는 앱 하나를 설치하고 모든 공개 채널에 참여해요.",
+    "Slack이 브라우저에서 열려요. 오른쪽 위에서 워크스페이스를 선택한 다음 허용을 누르세요. Pokebots은 OpenBot이라는 앱 하나를 설치하고 모든 공개 채널에 참여해요.",
   "mobile.server.connectors.slack.add": "워크스페이스 추가",
   "mobile.server.connectors.slack.limit": {
     other: "워크스페이스는 최대 {count}개까지 연결할 수 있어요.",
@@ -794,7 +794,7 @@ export const messages = {
   },
   "mobile.server.connectors.discord.connect": "Discord 연결",
   "mobile.server.connectors.discord.connectFooter":
-    "Discord가 브라우저에서 열려요. Discord 서버를 선택한 다음 승인을 누르세요. OpenBot은 OpenBot이라는 봇 하나를 추가해요.",
+    "Discord가 브라우저에서 열려요. Discord 서버를 선택한 다음 승인을 누르세요. Pokebots은 OpenBot이라는 봇 하나를 추가해요.",
   "mobile.server.connectors.discord.add": "Discord 서버 추가",
   "mobile.server.connectors.discord.limit": {
     other: "Discord 서버는 최대 {count}개까지 연결할 수 있어요.",

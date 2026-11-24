@@ -134,7 +134,7 @@ export const messages = {
   "connector.slack.stepAgent": "الوكيل",
   "connector.slack.connectTitle": "ربط مساحة عمل Slack",
   "connector.slack.connectDescription":
-    "يثبّت OpenBot تطبيقًا واحدًا باسم OpenBot في مساحة العمل، وينضم إلى كل قناة عامة.",
+    "يثبّت Pokebots تطبيقًا واحدًا باسم OpenBot في مساحة العمل، وينضم إلى كل قناة عامة.",
   "connector.slack.connectStepBrowser": "يُفتح Slack في المتصفح",
   "connector.slack.connectStepAllow": "اختر مساحة العمل في الزاوية العلوية، ثم Allow",
   "connector.slack.connectStepReturn": "يتابع مربع الحوار هذا عندما ينتهي Slack",
@@ -220,7 +220,7 @@ export const messages = {
   "connector.discord.stepWorkspace": "خادم Discord",
   "connector.discord.stepAgent": "الوكيل",
   "connector.discord.connectTitle": "ربط خادم Discord",
-  "connector.discord.connectDescription": "يضيف OpenBot بوتًا واحدًا باسم OpenBot إلى خادم Discord.",
+  "connector.discord.connectDescription": "يضيف Pokebots بوتًا واحدًا باسم OpenBot إلى خادم Discord.",
   "connector.discord.connectStepBrowser": "يُفتح Discord في المتصفح",
   "connector.discord.connectStepAllow": "اختر الخادم، ثم Authorize",
   "connector.discord.connectStepReturn": "يتابع مربع الحوار هذا عندما ينتهي Discord",
