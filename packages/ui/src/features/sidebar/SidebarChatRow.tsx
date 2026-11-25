@@ -21,6 +21,7 @@ import { MAIN_THREAD_ID } from "../conversation/threads/thread-types";
 import { ServerMark, type ServerMarkServer } from "../servers/ServerRail";
 import { SidebarAgentContextMenu } from "./SidebarAgentContextMenu";
 import { SidebarAgentIndicator } from "./SidebarAgentIndicator";
+import { SidebarAgentThreads } from "./SidebarAgentThreads";
 import { SidebarChannelContextMenu } from "./SidebarChannelContextMenu";
 import { useSidebarMachineMarks } from "./SidebarMachineFilter";
 import { SIDEBAR_WAIT_ACTION, SIDEBAR_WAIT_TITLE, sidebarAgentStateLabel } from "./sidebar-filtering";
@@ -47,6 +48,8 @@ export function sidebarChatTime(at: string | null | undefined, format: AppFormat
 interface ChatView {
   /** The chat's id, unique across agents and channels. */
   id: string;
+  /** The agent whose side threads show under the row. Undefined for a channel or an agent of another server. */
+  threadsAgent?: AgentProfile | undefined;
   name: string;
   preview: string;
   waiting: boolean;
@@ -151,6 +154,9 @@ function useAgentView(agent: () => AgentProfile, pinned: () => boolean): ChatVie
     },
     get server() {
       return props.allMachines ? marks.agent(agent().id) : props.chatServer;
+    },
+    get threadsAgent() {
+      return elsewhere() ? undefined : agent();
     },
     avatar: () => <AgentAvatar agent={agent()} motion="idle" mood={mood()} />,
     mark: () => <SidebarAgentIndicator state={markState} />,
@@ -288,9 +294,16 @@ function SidebarChatView(viewProps: {
   card?: boolean | undefined;
 }) {
   const { t, format } = useText();
-  const { snoozeClock } = useSidebarScope();
+  const { snoozeClock, props: sidebarProps } = useSidebarScope();
   const [menuOpen, setMenuOpen] = createSignal(false);
+  const [rowElement, setRowElement] = createSignal<HTMLElement>();
   const view = viewProps.view;
+  /** The side threads of an agent row: live ones under the row, all of them with the chevron or a hover. */
+  const threads = () => {
+    const model = sidebarProps.agentThreads;
+    const agent = view.threadsAgent;
+    return viewProps.look === "row" && !sidebarProps.compact && model && agent ? { model, agent } : undefined;
+  };
   // The preview can end with its own full stop, so the label does not add a second one.
   const label = () =>
     [
@@ -305,6 +318,7 @@ function SidebarChatView(viewProps: {
   const trigger = () => (
     <ContextMenu.Root modal={false} onOpenChange={setMenuOpen}>
       <ContextMenu.Trigger
+        ref={setRowElement}
         as="button"
         type="button"
         class={[
@@ -360,8 +374,24 @@ function SidebarChatView(viewProps: {
       {view.menu()}
     </ContextMenu.Root>
   );
+  const row = () => (
+    <Show when={threads()} fallback={trigger()}>
+      {(current) => (
+        <div class="sidebar-chat-item">
+          {trigger()}
+          <SidebarAgentThreads
+            model={current().model}
+            agentId={current().agent.id}
+            agentName={current().agent.name}
+            row={rowElement()}
+            menuOpen={menuOpen()}
+          />
+        </div>
+      )}
+    </Show>
+  );
   return (
-    <Show when={viewProps.look === "face"} fallback={trigger()}>
+    <Show when={viewProps.look === "face"} fallback={row()}>
       <MotionTooltip
         class="ui-popover-menu-surface sidebar-chat-tip"
         suppressed={menuOpen()}

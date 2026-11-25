@@ -37,6 +37,7 @@
 }
 
 .sidebar-agent-item:hover > .sidebar-threads-toggle,
+.sidebar-chat-item:hover > .sidebar-threads-toggle,
 .sidebar-threads-toggle:focus-visible,
 .sidebar-threads-toggle[data-open] {
   opacity: 1;
@@ -53,6 +54,38 @@
   )
   :is(.agent-row-time, .agent-row-wait-chip) {
   visibility: hidden;
+}
+
+/* In the open chat list (Active), the row is taller and ends with the time, the unread dot and the
+   server mark. The chevron takes their place on hover and while every thread shows. */
+.sidebar-chat-item {
+  position: relative;
+}
+
+.sidebar-chat-item > .sidebar-threads-toggle {
+  top: 50%;
+  inset-inline-end: 8px;
+  translate: 0 -50%;
+}
+
+.sidebar-chat-item:has(> .sidebar-threads) > .sidebar-threads-toggle {
+  top: 12px;
+  translate: none;
+}
+
+.sidebar-chat-item:has(> .sidebar-threads-toggle):is(
+    :hover,
+    :has(> .sidebar-threads-toggle:focus-visible),
+    :has(> .sidebar-threads-toggle[data-open])
+  )
+  > .sidebar-chat-row
+  :is(.sidebar-chat-time, .sidebar-chat-unread, .sidebar-chat-server, .sidebar-chat-spinner) {
+  visibility: hidden;
+}
+
+/* The threads sit under the name, past the face. */
+.sidebar-chat-item > .sidebar-threads .sidebar-threads-list {
+  padding-inline-start: 28px;
 }
 
 /* With a side thread open in the open list, the thread is the open chat, not the agent's own chat. A closed
@@ -160,8 +193,36 @@
   white-space: nowrap;
 }
 
-.sidebar-thread-more {
-  color: var(--openbot-text-muted);
+/* "Show N more" is a small pill under the rows, as the "N running" pill over the composer. */
+.sidebar-thread-more-item {
+  display: flex;
+  padding: 4px 0 2px calc(var(--openbot-space-2) + 16px + var(--openbot-space-2) - 10px);
+}
+
+.sidebar-thread-more.ui-button {
+  display: inline-flex;
+  height: 24px;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid var(--openbot-border-strong);
+  border-radius: var(--openbot-radius-pill);
+  background: var(--openbot-bg-surface);
+  padding: 0 10px;
+  color: var(--openbot-text-secondary);
+  font-size: var(--openbot-text-sm);
+  font-weight: var(--openbot-weight-regular);
+  line-height: 1;
+  box-shadow: 0 1px 3px var(--openbot-shadow-popover-ambient);
+}
+
+.sidebar-thread-more.ui-button:hover:not(:disabled) {
+  background: var(--openbot-bg-control-hover);
+  color: var(--openbot-text-primary);
+}
+
+.sidebar-thread-more-icon {
+  width: 12px;
+  height: 12px;
 }
 
 .sidebar-thread-more[aria-expanded="true"] .sidebar-thread-more-icon {

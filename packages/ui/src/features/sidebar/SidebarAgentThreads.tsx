@@ -1,6 +1,7 @@
 /**
- * The side threads of one agent in the sidebar. The chevron in the corner of the agent row shows them
- * under the row: the threads that need a look first, then the latest others, cut short. A longer
+ * The side threads of one agent in the sidebar. Threads that work, wait or have unread replies show
+ * under the row by themselves, a few at a time with a "Show N more" pill. The chevron in the corner of
+ * the row shows every thread: the threads that need a look first, then the latest others. A longer
  * hover on the row shows all of them in a card beside the sidebar, with a new thread item at the top.
  * The icon of each thread shows its state, as the tabs of the chat header do.
  */
@@ -13,27 +14,13 @@ import { ThreadTitle } from "../conversation/threads/ThreadTitle";
 import type { ThreadItem } from "../conversation/threads/thread-types";
 import { sidebarMessageTime } from "./sidebar-filtering";
 import { useSidebarScope } from "./sidebar-scope";
+import { type SidebarThreadListMode, sidebarThreadList, sidebarThreadListMode } from "./sidebar-thread-list";
 import type { SidebarAgentThreads as SidebarAgentThreadsModel } from "./sidebar-types";
 
 /** A pointer that stays this long on an agent row opens its thread card. A pass over the list does not. */
 const CARD_OPEN_DELAY = 700;
 /** Time to move the pointer from the row into the card before it closes. */
 const CARD_CLOSE_DELAY = 220;
-/** The threads that need no look and show under the row before "Show more". */
-const EARLIER_LIMIT = 3;
-
-/** A thread that needs a look: it runs, waits, failed, or has unread messages. */
-function needsLook(thread: ThreadItem): boolean {
-  return thread.status.kind !== "idle" || (thread.unread ?? 0) > 0;
-}
-
-/** The latest threads, with the open thread in the list even when it is older. */
-function shownThreads(threads: readonly ThreadItem[], openId: string | undefined, limit: number): ThreadItem[] {
-  const latest = threads.slice(0, limit);
-  const open = threads.find((thread) => thread.id === openId);
-  if (!open || latest.includes(open)) return latest;
-  return [...latest.slice(0, limit - 1), open];
-}
 
 /** One thread under the agent row: state icon, title, time. */
 function ThreadRow(props: { thread: ThreadItem; current: boolean; index: number; onOpen: () => void }) {
@@ -57,23 +44,31 @@ function ThreadRow(props: { thread: ThreadItem; current: boolean; index: number;
   );
 }
 
-/** The threads under the agent row. They open and close in place. */
+/**
+ * The threads under the agent row. They open and close in place: by themselves while a thread is live,
+ * or with the chevron for every thread. Each part shows a few rows, then a "Show N more" pill.
+ */
 function InlineThreads(props: {
   model: SidebarAgentThreadsModel;
   agentId: string;
   agentName: string;
   threads: readonly ThreadItem[];
-  open: boolean;
+  mode: SidebarThreadListMode;
 }) {
   const { t } = useText();
   const [all, setAll] = createSignal(false);
-  const active = () => props.threads.filter(needsLook);
-  const earlier = () => props.threads.filter((thread) => !needsLook(thread));
-  const shownEarlier = () =>
-    all() ? earlier() : shownThreads(earlier(), props.model.openId(props.agentId), EARLIER_LIMIT);
-  const shown = () => [...active(), ...shownEarlier()];
+  const open = () => props.mode !== "closed";
+  const list = createMemo(() =>
+    sidebarThreadList({
+      threads: props.threads,
+      mode: props.mode,
+      openId: props.model.openId(props.agentId),
+      showAll: all(),
+    }),
+  );
+  const shown = () => list().shown;
   return (
-    <div class="sidebar-threads" data-open={props.open ? "" : undefined} inert={!props.open}>
+    <div class="sidebar-threads" data-open={open() ? "" : undefined} data-mode={props.mode} inert={!open()}>
       <div class="sidebar-threads-clip">
         <ul class="sidebar-threads-list" aria-label={t("sidebar.threads.label", { name: props.agentName })}>
           <For each={shown()} keyed={(thread) => thread.id}>
@@ -86,22 +81,19 @@ function InlineThreads(props: {
               />
             )}
           </For>
-          <Show when={earlier().length > EARLIER_LIMIT}>
-            <li class="sidebar-thread-item" style={{ "--sidebar-thread-index": shown().length }}>
+          <Show when={list().pill}>
+            <li
+              class="sidebar-thread-item sidebar-thread-more-item"
+              style={{ "--sidebar-thread-index": shown().length }}
+            >
               <Button
                 variant="ghost"
-                class="sidebar-thread-row sidebar-thread-more"
+                class="sidebar-thread-more"
                 aria-expanded={all() ? "true" : "false"}
                 onClick={() => setAll(!all())}
               >
-                <span class="sidebar-thread-icon" aria-hidden="true">
-                  <ChevronDown class="sidebar-thread-more-icon" />
-                </span>
-                <span class="sidebar-thread-title">
-                  {all()
-                    ? t("sidebar.threads.less")
-                    : t("sidebar.threads.more", { count: earlier().length - shownEarlier().length })}
-                </span>
+                <ChevronDown class="sidebar-thread-more-icon" aria-hidden="true" />
+                <span>{all() ? t("sidebar.threads.less") : t("sidebar.threads.more", { count: list().hidden })}</span>
               </Button>
             </li>
           </Show>
@@ -208,6 +200,8 @@ export function SidebarAgentThreads(threadProps: {
   // The list is read once for each change, not again by each part that shows it.
   const threads = createMemo(() => threadProps.model.threads(threadProps.agentId));
   const expanded = () => agentThreadsOpen(threadProps.agentId);
+  // Live threads open the list by themselves; the chevron opens it for every thread.
+  const mode = createMemo(() => sidebarThreadListMode(threads(), expanded()));
   const [card, setCard] = createSignal(false);
   let openTimer: ReturnType<typeof setTimeout> | undefined;
   let closeTimer: ReturnType<typeof setTimeout> | undefined;
@@ -300,7 +294,7 @@ export function SidebarAgentThreads(threadProps: {
         agentId={threadProps.agentId}
         agentName={threadProps.agentName}
         threads={threads()}
-        open={expanded()}
+        mode={mode()}
       />
       <ThreadCard
         model={threadProps.model}
