@@ -124,6 +124,7 @@ async function main(): Promise<void> {
 
     phase("script-sequence");
     const form = await open("/form");
+    await form.contents.executeJavaScript(`window.__ev = []; const t0 = performance.now(); for (const type of ["pointermove", "pointerdown", "mousedown", "pointerup", "mouseup", "click", "keydown", "input"]) window.addEventListener(type, (e) => window.__ev.push([type, Math.round(performance.now() - t0), navigator.userActivation.hasBeenActive]), true); void 0`);
     const searched = await runScript({
       tabId: form.tab.id,
       script: `
@@ -136,7 +137,7 @@ async function main(): Promise<void> {
     if (!searched.result.success) {
       // Says which step lost its input: the typed value, the page's click count, and the script log.
       const page = await form.contents.executeJavaScript(
-        "({ query: document.querySelector('#query').value, clicks: window.clicks, out: document.querySelector('#out').textContent })",
+        "({ query: document.querySelector('#query').value, clicks: window.clicks, out: document.querySelector('#out').textContent, active: navigator.userActivation.hasBeenActive, ev: window.__ev })",
       );
       assert.fail(
         `${searched.outcome.error} ${JSON.stringify({ steps: searched.outcome.steps, log: searched.outcome.log, page })}`,
