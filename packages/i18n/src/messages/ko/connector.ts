@@ -67,7 +67,7 @@ export const messages = {
 
   "connector.slack.title": "Slack",
   "connector.slack.description":
-    "사람들이 Slack에서 @Pokebots을 멘션하거나 다이렉트 메시지를 보내면 Slack 오케스트레이터가 알맞은 에이전트에게 물어보고 답해요.",
+    "사람들이 Slack에서 @OpenBot을 멘션하거나 다이렉트 메시지를 보내면 Slack 오케스트레이터가 알맞은 에이전트에게 물어보고 답해요.",
   "connector.slack.statusConnected": "연결됨",
   "connector.slack.statusAttention": "확인 필요",
   "connector.slack.summaryConnected": "{workspace} · Slack 오케스트레이터가 답변",
@@ -78,11 +78,11 @@ export const messages = {
   "connector.slack.addAgent": "에이전트 추가",
   "connector.slack.actionFailed": "Slack이 변경 사항을 받아들이지 않았어요",
   "connector.slack.workspaceTitle": "워크스페이스",
-  "connector.slack.workspaceDescription": "사람들이 @Pokebots을 멘션하거나 다이렉트 메시지를 보내요.",
+  "connector.slack.workspaceDescription": "사람들이 @OpenBot을 멘션하거나 다이렉트 메시지를 보내요.",
   "connector.slack.disconnectWorkspace": "연결 해제",
   "connector.slack.disconnectAllTitle": "Slack 연결 해제",
   "connector.slack.disconnectAllSummary":
-    "모든 워크스페이스의 연결이 해제돼요. 더 이상 @Pokebots으로 에이전트에게 연락할 수 없어요.",
+    "모든 워크스페이스의 연결이 해제돼요. 더 이상 @OpenBot으로 에이전트에게 연락할 수 없어요.",
   "connector.slack.disconnectAllSummaryOrchestrator":
     "모든 워크스페이스의 연결이 해제돼요. Slack 오케스트레이터와 그 대화가 Pokebots에서 삭제돼요.",
   "connector.slack.missingScopes":
@@ -103,14 +103,14 @@ export const messages = {
   "connector.slack.stepAgent": "에이전트",
   "connector.slack.connectTitle": "Slack 워크스페이스 연결",
   "connector.slack.connectDescription":
-    "Pokebots이 워크스페이스에 Pokebots이라는 앱을 하나 설치하고, 모든 공개 채널에 참여해요.",
+    "Pokebots이 워크스페이스에 “OpenBot”이라는 앱을 하나 설치하고, 모든 공개 채널에 참여해요.",
   "connector.slack.connectStepBrowser": "브라우저에서 Slack이 열려요",
   "connector.slack.connectStepAllow": "오른쪽 위에서 워크스페이스를 선택하고 허용을 누르세요",
   "connector.slack.connectStepReturn": "Slack에서 마치면 이 대화상자가 이어져요",
   "connector.slack.connectInSlack": "Slack에서 연결",
   "connector.slack.connectWaiting": "Slack 대기 중이에요. 브라우저에서 설치를 마쳐 주세요.",
   "connector.slack.agentStepTitle": "Slack 오케스트레이터 추가",
-  "connector.slack.agentStepDescription": "이 새 에이전트가 {workspace}에서 @Pokebots에 보내는 모든 요청에 답해요.",
+  "connector.slack.agentStepDescription": "이 새 에이전트가 {workspace}에서 @OpenBot에 보내는 모든 요청에 답해요.",
   "connector.slack.orchestratorName": "Slack 오케스트레이터",
   "connector.slack.orchestratorRole": "Slack에서 답하고 팀에 물어봐요",
   "connector.slack.orchestratorDoesReceive": "모든 Slack 요청을 가장 먼저 받아요",
@@ -118,14 +118,14 @@ export const messages = {
   "connector.slack.orchestratorDoesAnswer": "Slack 스레드에 답변을 올려요",
   "connector.slack.orchestratorModel": "모델",
   "connector.slack.doneTitle": "Pokebots이 {workspace}에 들어왔어요",
-  "connector.slack.doneDescription": "공개 채널에서 @Pokebots을 멘션하거나 다이렉트 메시지를 보내 보세요.",
+  "connector.slack.doneDescription": "공개 채널에서 @OpenBot을 멘션하거나 다이렉트 메시지를 보내 보세요.",
   "connector.slack.done": "완료",
   "connector.slack.disconnectTitle": "{workspace} 연결을 해제할까요?",
   "connector.slack.disconnectDescription":
     "Pokebots이 {workspace}에서 더 이상 답하지 않고, 이 컴퓨터에서 Slack 토큰을 삭제해요.",
   "connector.slack.disconnectDescriptionHost":
     "Pokebots이 {workspace}에서 더 이상 답하지 않고, {host}에서 Slack 토큰을 삭제해요.",
-  "connector.slack.disconnectEffect": "{workspace}의 사람들이 더 이상 @Pokebots으로 내 에이전트에게 연락할 수 없어요.",
+  "connector.slack.disconnectEffect": "{workspace}의 사람들이 더 이상 @OpenBot으로 내 에이전트에게 연락할 수 없어요.",
   "connector.slack.removeEffectKept": "대화와 Slack 오케스트레이터는 Pokebots에 그대로 남아요.",
   "connector.slack.removeEffectDeleted": "Slack 오케스트레이터와 대화가 Pokebots에서 삭제돼요.",
   "connector.slack.keep": "연결 유지",
@@ -136,7 +136,7 @@ export const messages = {
 
   "connector.discord.title": "Discord",
   "connector.discord.description":
-    "사람들이 Discord 서버의 채널에서 @Pokebots을 멘션하면 Discord 오케스트레이터가 알맞은 에이전트에게 물어보고 답해요.",
+    "사람들이 Discord 서버의 채널에서 @OpenBot을 멘션하면 Discord 오케스트레이터가 알맞은 에이전트에게 물어보고 답해요.",
   "connector.discord.statusConnected": "연결됨",
   "connector.discord.statusAttention": "확인 필요",
   "connector.discord.summaryConnected": "{workspace} · Discord 오케스트레이터가 답변",
@@ -148,11 +148,11 @@ export const messages = {
   "connector.discord.actionFailed": "Discord가 변경 사항을 받아들이지 않았어요",
   "connector.discord.workspaceTitle": "Discord 서버",
   "connector.discord.workspaceDescription":
-    "채널에서 @Pokebots을 멘션하세요. 대화를 이어가려면 Pokebots의 메시지에 답장하세요.",
+    "채널에서 @OpenBot을 멘션하세요. 대화를 이어가려면 “OpenBot”의 메시지에 답장하세요.",
   "connector.discord.disconnectWorkspace": "연결 해제",
   "connector.discord.disconnectAllTitle": "Discord 연결 해제",
   "connector.discord.disconnectAllSummary":
-    "모든 서버의 연결이 해제돼요. 더 이상 @Pokebots으로 에이전트에게 연락할 수 없어요.",
+    "모든 서버의 연결이 해제돼요. 더 이상 @OpenBot으로 에이전트에게 연락할 수 없어요.",
   "connector.discord.disconnectAllSummaryOrchestrator":
     "모든 서버의 연결이 해제돼요. Discord 오케스트레이터와 그 대화가 Pokebots에서 삭제돼요.",
   "connector.discord.missingScopes":
@@ -172,14 +172,14 @@ export const messages = {
   "connector.discord.stepWorkspace": "Discord 서버",
   "connector.discord.stepAgent": "에이전트",
   "connector.discord.connectTitle": "Discord 서버 연결",
-  "connector.discord.connectDescription": "Pokebots이 Discord 서버에 Pokebots이라는 봇을 하나 추가해요.",
+  "connector.discord.connectDescription": "Pokebots이 Discord 서버에 “OpenBot”이라는 봇을 하나 추가해요.",
   "connector.discord.connectStepBrowser": "브라우저에서 Discord가 열려요",
   "connector.discord.connectStepAllow": "서버를 선택하고 승인을 누르세요",
   "connector.discord.connectStepReturn": "Discord에서 마치면 이 대화상자가 이어져요",
   "connector.discord.connectInDiscord": "Discord에서 연결",
   "connector.discord.connectWaiting": "Discord 대기 중이에요. 브라우저에서 승인을 마쳐 주세요.",
   "connector.discord.agentStepTitle": "Discord 오케스트레이터 추가",
-  "connector.discord.agentStepDescription": "이 새 에이전트가 {workspace}에서 @Pokebots에 보내는 모든 요청에 답해요.",
+  "connector.discord.agentStepDescription": "이 새 에이전트가 {workspace}에서 @OpenBot에 보내는 모든 요청에 답해요.",
   "connector.discord.orchestratorName": "Discord 오케스트레이터",
   "connector.discord.orchestratorRole": "Discord에서 답하고 팀에 물어봐요",
   "connector.discord.orchestratorDoesReceive": "모든 Discord 요청을 가장 먼저 받아요",
@@ -188,15 +188,14 @@ export const messages = {
   "connector.discord.orchestratorModel": "모델",
   "connector.discord.doneTitle": "Pokebots이 {workspace}에 들어왔어요",
   "connector.discord.doneDescription":
-    "채널에서 @Pokebots을 멘션하세요. 대화를 이어가려면 Pokebots의 메시지에 답장하세요.",
+    "채널에서 @OpenBot을 멘션하세요. 대화를 이어가려면 “OpenBot”의 메시지에 답장하세요.",
   "connector.discord.done": "완료",
   "connector.discord.disconnectTitle": "{workspace} 연결을 해제할까요?",
   "connector.discord.disconnectDescription":
     "Pokebots이 {workspace}에서 더 이상 답하지 않고, 이 컴퓨터에서 Discord 연결을 삭제해요.",
   "connector.discord.disconnectDescriptionHost":
     "Pokebots이 {workspace}에서 더 이상 답하지 않고, {host}에서 Discord 연결을 삭제해요.",
-  "connector.discord.disconnectEffect":
-    "{workspace}의 사람들이 더 이상 @Pokebots으로 내 에이전트에게 연락할 수 없어요.",
+  "connector.discord.disconnectEffect": "{workspace}의 사람들이 더 이상 @OpenBot으로 내 에이전트에게 연락할 수 없어요.",
   "connector.discord.removeEffectKept": "대화와 Discord 오케스트레이터는 Pokebots에 그대로 남아요.",
   "connector.discord.removeEffectDeleted": "Discord 오케스트레이터와 대화가 Pokebots에서 삭제돼요.",
   "connector.discord.keep": "연결 유지",
