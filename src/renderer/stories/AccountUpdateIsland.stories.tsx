@@ -96,3 +96,10 @@ export const ActionFailed: Story = {
 export const CheckFailed: Story = {
   args: { updateStatus: status({ phase: "error", availableVersion: null, errorCode: "check_failed" }) },
 };
+
+/** Pokebots on macOS: the update job is not loaded, or no run started for 20 minutes. Retry loads it again. */
+export const PokebotsUpdatesOff: Story = {
+  args: {
+    updateStatus: status({ phase: "error", availableVersion: null, message: sourceText("error.update.jobOff") }),
+  },
+};

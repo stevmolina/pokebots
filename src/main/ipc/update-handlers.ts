@@ -32,9 +32,9 @@ export function updateIpcHandlers({
   return {
     update: {
       getStatus: handler(getStatus),
-      check: handler(() => {
+      check: handler(async () => {
         if (!usePokebotsUpdateJob) return runCauseEffect(updater.checkForUpdates());
-        checkPokebotsUpdate();
+        await checkPokebotsUpdate();
         return getStatus();
       }),
       download: handler(() => runCauseEffect(updater.downloadUpdate())),

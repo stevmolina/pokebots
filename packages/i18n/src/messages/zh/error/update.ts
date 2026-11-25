@@ -8,6 +8,8 @@ export const messages = {
   "error.update.restartFailed": "Pokebots 无法重启以安装更新。",
   "error.update.downloadStalled": "更新下载停止响应，请重试。",
   "error.update.installFailed": "无法安装更新。请退出并重新打开 Pokebots 后重试。",
+  "error.update.jobOff": "更新已关闭。",
+  "error.update.jobStartFailed": "无法重新开启更新。请在 Pokebots 检出目录中运行 scripts/custom-auto-update-setup.sh。",
   "error.update.notInstalled": "上次重启未能安装更新。请重启以重试。",
   "error.update.downloadFailed": "无法下载更新，请重试。",
   "error.update.checkFailed": "无法检查更新，请重试。",
