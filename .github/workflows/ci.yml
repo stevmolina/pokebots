@@ -288,20 +288,14 @@ jobs:
           include-hidden-files: true
 
   tests-desktop:
-    # ubuntu-latest gives 4 vCPUs, so vitest runs 3 workers and the job is
-    # CPU-bound. The suite is split across shards that run as their own
-    # runners. The split is by recorded duration rather than vitest's own file-size one - see
-    # tools/vitest/balanced-sequencer.ts for why, and run `bun run
-    # test:durations` when the two shards below stop finishing together.
-    name: Tests (desktop ${{ matrix.shard }}/2)
+    # ubuntu-latest gives 4 vCPUs, so vitest runs 3 workers. The suite once took two runners; after the
+    # move to E2E tests it takes about 90 s on one (the two shards took 45 s and 105 s, each with 25 s
+    # of setup). One runner leaves a runner free for another job: see `service-e2e`.
+    name: Tests (desktop)
     needs: detect
     if: needs.detect.outputs.code == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    strategy:
-      fail-fast: false
-      matrix:
-        shard: [1, 2]
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -312,16 +306,26 @@ jobs:
           install: ignore-scripts
 
       - name: Run desktop tests
-        run: bun run test:desktop -- --shard=${{ matrix.shard }}/2
+        run: bun run test:desktop
 
-  signal-e2e:
-    # Starts the real Signal service with throwaway secrets and checks its secret and
-    # authentication rules over HTTP and WebSocket. It needs no external service.
-    name: Signal E2E
+  service-e2e:
+    # The short service E2E tests share one runner: each needs only Bun and a loopback port, and on
+    # their own runners each spent as long on setup as on its test. A free public repository gets 20
+    # runners at once, and one CI run asked for 22, so short jobs waited in the queue. Each step keeps
+    # the lane of its old job, and a failed step does not stop the next one.
+    #
+    # Signal: starts the real Signal service with throwaway secrets and checks its secret and
+    # authentication rules over HTTP and WebSocket.
+    # Local scripts CLI: runs `openbot-cli` with Node against the real Local scripts server, with an
+    # in-memory agent service.
+    # Team API routes: drives the real Team API server over HTTP, with the real team store and
+    # direct-message store on temporary files and an in-memory agent service.
+    # None of them needs Electron, a display or an external service.
+    name: Service E2E
     needs: detect
-    if: needs.detect.outputs.remote == 'true'
+    if: needs.detect.outputs.remote == 'true' || needs.detect.outputs.desktop == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -330,90 +334,60 @@ jobs:
         uses: ./.github/actions/setup-bun
         with:
           install: ignore-scripts
-
       - name: Run the Signal E2E test
+        if: ${{ !cancelled() && needs.detect.outputs.remote == 'true' }}
         run: bun run test:signal
 
       - name: Upload the Signal E2E report
-        if: always()
+        if: ${{ !cancelled() && needs.detect.outputs.remote == 'true' }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: signal-security-e2e
           path: .openbot-build/signal-security-e2e/
           if-no-files-found: ignore
 
-  automation-cli-e2e:
-    # Runs `openbot-cli` with Node against the real Local scripts server on a loopback port, with
-    # an in-memory agent service. It needs no Electron, display or external service.
-    name: Local scripts CLI E2E
-    needs: detect
-    if: needs.detect.outputs.desktop == 'true'
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-
-      - name: Set up Bun
-        uses: ./.github/actions/setup-bun
-        with:
-          install: ignore-scripts
-
       - name: Run the Local scripts CLI E2E test
+        if: ${{ !cancelled() && needs.detect.outputs.desktop == 'true' }}
         run: bun run test:automation-cli
 
       - name: Upload the Local scripts CLI E2E report
-        if: always()
+        if: ${{ !cancelled() && needs.detect.outputs.desktop == 'true' }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: automation-cli-e2e
           path: .openbot-build/automation-cli-e2e/
           if-no-files-found: ignore
 
-  team-api-routes-e2e:
-    # Drives the real Team API server over HTTP on a loopback port, with the real team store and
-    # direct-message store on temporary files and an in-memory agent service. It needs no Electron,
-    # display or external service.
-    name: Team API routes E2E
-    needs: detect
-    if: needs.detect.outputs.desktop == 'true'
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-
-      - name: Set up Bun
-        uses: ./.github/actions/setup-bun
-        with:
-          install: ignore-scripts
-
       - name: Run Brain host route E2E
+        if: ${{ !cancelled() && needs.detect.outputs.desktop == 'true' }}
         run: bun --preload ./scripts/team-api-routes-e2e-electron.mjs scripts/brain-e2e.ts
 
       - name: Run native Agent Computer REST E2E
+        if: ${{ !cancelled() && needs.detect.outputs.desktop == 'true' }}
         run: bun scripts/agent-computer-e2e.ts
 
       - name: Run the Rooms proxy E2E check
+        if: ${{ !cancelled() && needs.detect.outputs.desktop == 'true' }}
         run: bun scripts/rooms-proxy-e2e.ts
 
       - name: Run the Team API routes E2E test
+        if: ${{ !cancelled() && needs.detect.outputs.desktop == 'true' }}
         run: bun run test:team-api-routes
 
       - name: Run the Keeper password manager E2E test
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && needs.detect.outputs.desktop == 'true' }}
         run: bun run test:keeper-driver
 
       - name: Run the CRM Team API E2E test
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && needs.detect.outputs.desktop == 'true' }}
         run: bun run test:crm-team-api
 
       - name: Run the release version comparator E2E test
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && needs.detect.outputs.desktop == 'true' }}
         run: bun scripts/release-version-comparator-e2e.ts
 
       - name: Upload the Team API routes E2E report
-        if: always()
+        if: ${{ !cancelled() && needs.detect.outputs.desktop == 'true' }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: team-api-routes-e2e
@@ -431,11 +405,11 @@ jobs:
     # unmute, pause and resume, hide and restore) against the real host services on a temporary
     # profile, with loopback HTTP and WebSocket. It also starts the host stores on settings files that
     # a power loss filled with zeros. It needs no Electron, display or external service.
-    name: Team API and reverse actions E2E (${{ matrix.shard }}/3)
+    name: Team API and reverse actions E2E (${{ matrix.shard }}/2)
     strategy:
       fail-fast: false
       matrix:
-        shard: [1, 2, 3]
+        shard: [1, 2]
     needs: detect
     if: needs.detect.outputs.desktop == 'true'
     runs-on: ubuntu-latest
@@ -450,19 +424,19 @@ jobs:
           install: ignore-scripts
 
       - name: Run the Team API legacy clients E2E test
-        if: ${{ !cancelled() && matrix.shard == 2 }}
+        if: ${{ !cancelled() && matrix.shard == 1 }}
         run: bun run test:team-legacy-clients
 
       - name: Run the Team API protocol 10 E2E test
-        if: ${{ !cancelled() && matrix.shard == 1 }}
+        if: ${{ !cancelled() && matrix.shard == 2 }}
         run: bun run test:team-protocol-v10
 
       - name: Run the Team WebRTC wire parity E2E test
-        if: ${{ !cancelled() && matrix.shard == 2 }}
+        if: ${{ !cancelled() && matrix.shard == 1 }}
         run: bun run test:team-webrtc-wire-parity
 
       - name: Run the remote viewer proxy E2E test
-        if: ${{ !cancelled() && matrix.shard == 2 }}
+        if: ${{ !cancelled() && matrix.shard == 1 }}
         run: bun run test:remote-viewer-proxy
       - name: Run the server safe mode E2E test
         if: ${{ !cancelled() && matrix.shard == 1 }}
@@ -473,31 +447,31 @@ jobs:
         run: bun run test:team-session-revoke
 
       - name: Run the sign-in relay paste E2E test
-        if: ${{ !cancelled() && matrix.shard == 2 }}
+        if: ${{ !cancelled() && matrix.shard == 1 }}
         run: bun run test:sign-in-relay-paste
 
       - name: Run the sign-in relay replay E2E test
-        if: ${{ !cancelled() && matrix.shard == 2 }}
+        if: ${{ !cancelled() && matrix.shard == 1 }}
         run: bun run test:sign-in-relay-replay
 
       - name: Run the MCP member access E2E test
-        if: ${{ !cancelled() && matrix.shard == 3 }}
+        if: ${{ !cancelled() && matrix.shard == 1 }}
         run: bun run test:mcp-member-access
 
       - name: Run the server mute and unmute E2E test
-        if: ${{ !cancelled() && matrix.shard == 2 }}
+        if: ${{ !cancelled() && matrix.shard == 1 }}
         run: bun run test:server-mute
 
       - name: Run the desktop and phone notification E2E test
-        if: ${{ !cancelled() && matrix.shard == 3 }}
+        if: ${{ !cancelled() && matrix.shard == 1 }}
         run: bun run test:desktop-notifications
 
       - name: Run the phone notification away and Live Activity E2E test
-        if: ${{ !cancelled() && matrix.shard == 3 }}
+        if: ${{ !cancelled() && matrix.shard == 1 }}
         run: bun run test:push-notification-away
 
       - name: Run the computer activity phone notification E2E test
-        if: ${{ !cancelled() && matrix.shard == 1 }}
+        if: ${{ !cancelled() && matrix.shard == 2 }}
         run: bun run test:computer-activity
 
       - name: Run the Computer Use turn-taking E2E test
@@ -505,11 +479,11 @@ jobs:
         run: bun run test:computer-use-coordination
 
       - name: Run the notification summary E2E test
-        if: ${{ !cancelled() && matrix.shard == 1 }}
+        if: ${{ !cancelled() && matrix.shard == 2 }}
         run: bun run test:notification-summary
 
       - name: Run the side thread notification and Live Activity link E2E test
-        if: ${{ !cancelled() && matrix.shard == 3 }}
+        if: ${{ !cancelled() && matrix.shard == 1 }}
         run: bun run test:thread-notifications
 
       - name: Run the routine pause and resume E2E test
@@ -517,11 +491,11 @@ jobs:
         run: bun run test:routine-pause-resume
 
       - name: Run the routine time zone move E2E test
-        if: ${{ !cancelled() && matrix.shard == 2 }}
+        if: ${{ !cancelled() && matrix.shard == 1 }}
         run: bun run test:routine-timezone-move
 
       - name: Run the routine overnight window E2E test
-        if: ${{ !cancelled() && matrix.shard == 3 }}
+        if: ${{ !cancelled() && matrix.shard == 2 }}
         run: bun run test:routine-overnight-window
 
       - name: Run the agent open-wait tools E2E test
@@ -529,23 +503,23 @@ jobs:
         run: bun run test:agent-waits-tools
 
       - name: Run the agent hide and restore E2E test
-        if: ${{ !cancelled() && matrix.shard == 3 }}
+        if: ${{ !cancelled() && matrix.shard == 2 }}
         run: bun run test:agent-hide-restore
 
       - name: Run the agent create retry E2E test
-        if: ${{ !cancelled() && matrix.shard == 1 }}
+        if: ${{ !cancelled() && matrix.shard == 2 }}
         run: bun run test:agent-create-retry
 
       - name: Run the update host takeover E2E test
-        if: ${{ !cancelled() && matrix.shard == 2 }}
+        if: ${{ !cancelled() && matrix.shard == 1 }}
         run: bun run test:update-host-takeover
 
       - name: Run the messaging pause and resume E2E test
-        if: ${{ !cancelled() && matrix.shard == 1 }}
+        if: ${{ !cancelled() && matrix.shard == 2 }}
         run: bun run test:messaging-pause-resume
 
       - name: Run the Discord role list and reply context E2E test
-        if: ${{ !cancelled() && matrix.shard == 2 }}
+        if: ${{ !cancelled() && matrix.shard == 1 }}
         run: bun run test:messaging-discord-access
 
       - name: Run the Discord embeds E2E test
@@ -553,31 +527,31 @@ jobs:
         run: bun run test:messaging-discord-embeds
 
       - name: Run the place history E2E test
-        if: ${{ !cancelled() && matrix.shard == 3 }}
+        if: ${{ !cancelled() && matrix.shard == 1 }}
         run: bun run test:messaging-place-history
 
       - name: Run the Telegram answer mentions E2E test
-        if: ${{ !cancelled() && matrix.shard == 2 }}
+        if: ${{ !cancelled() && matrix.shard == 1 }}
         run: bun run test:messaging-telegram-mentions
 
       - name: Run the Slack ping reply E2E test
-        if: ${{ !cancelled() && matrix.shard == 1 }}
+        if: ${{ !cancelled() && matrix.shard == 2 }}
         run: bun run test:messaging-slack-ping-reply
 
       - name: Run the turn input E2E test
-        if: ${{ !cancelled() && matrix.shard == 2 }}
+        if: ${{ !cancelled() && matrix.shard == 1 }}
         run: bun run test:turn-input
 
       - name: Run the zero-filled settings file E2E test
-        if: ${{ !cancelled() && matrix.shard == 2 }}
+        if: ${{ !cancelled() && matrix.shard == 1 }}
         run: bun run test:zero-filled-settings
 
       - name: Run the server key rotation E2E test
-        if: ${{ !cancelled() && matrix.shard == 3 }}
+        if: ${{ !cancelled() && matrix.shard == 1 }}
         run: bun run test:host-key-rotation
 
       - name: Run the provider update during a turn E2E test
-        if: ${{ !cancelled() && matrix.shard == 3 }}
+        if: ${{ !cancelled() && matrix.shard == 1 }}
         run: bun run test:provider-update-busy
 
       - name: Run the provider update after an app upgrade E2E test
@@ -585,27 +559,27 @@ jobs:
         run: bun run test:provider-update-after-app-upgrade
 
       - name: Run the provider CLI removal E2E test
-        if: ${{ !cancelled() && matrix.shard == 1 }}
+        if: ${{ !cancelled() && matrix.shard == 2 }}
         run: bun run test:provider-runtime-remove
 
       - name: Run the provider session after a process exit E2E test
-        if: ${{ !cancelled() && matrix.shard == 2 }}
+        if: ${{ !cancelled() && matrix.shard == 1 }}
         run: bun run test:provider-exit-session
 
       - name: Run the ACP subagent card E2E test
-        if: ${{ !cancelled() && matrix.shard == 2 }}
+        if: ${{ !cancelled() && matrix.shard == 1 }}
         run: bun run test:acp-subagents
 
       - name: Run the Codex subagent steps E2E test
-        if: ${{ !cancelled() && matrix.shard == 3 }}
+        if: ${{ !cancelled() && matrix.shard == 2 }}
         run: bun run test:codex-subagent-steps
 
       - name: Run the subagent status and failure alert E2E test
-        if: ${{ !cancelled() && matrix.shard == 3 }}
+        if: ${{ !cancelled() && matrix.shard == 2 }}
         run: bun run test:subagent-status
 
       - name: Run the hung Codex app-server E2E test
-        if: ${{ !cancelled() && matrix.shard == 2 }}
+        if: ${{ !cancelled() && matrix.shard == 1 }}
         run: bun run test:codex-hung-app-server
 
       - name: Run the Codex mid-turn compaction E2E test
@@ -613,11 +587,11 @@ jobs:
         run: bun run test:codex-midturn-compaction
 
       - name: Run the Codex missing rollout backfill E2E test
-        if: ${{ !cancelled() && matrix.shard == 2 }}
+        if: ${{ !cancelled() && matrix.shard == 1 }}
         run: bun run test:codex-missing-rollout
 
       - name: Run the Codex idle thread release E2E test
-        if: ${{ !cancelled() && matrix.shard == 3 }}
+        if: ${{ !cancelled() && matrix.shard == 2 }}
         run: bun run test:codex-idle-thread-release
 
       - name: Run the Codex usage metering E2E test
@@ -633,7 +607,7 @@ jobs:
         run: bun run test:codex-capacity-retry
 
       - name: Run the Codex warning banner E2E test
-        if: ${{ !cancelled() && matrix.shard == 3 }}
+        if: ${{ !cancelled() && matrix.shard == 1 }}
         run: bun run test:codex-warning-banner
 
       - name: Run the usage read pacing E2E test
@@ -649,27 +623,27 @@ jobs:
         run: bun run test:routine-report-failure
 
       - name: Run the agent webhook routine E2E test
-        if: ${{ !cancelled() && matrix.shard == 2 }}
+        if: ${{ !cancelled() && matrix.shard == 1 }}
         run: bun run test:agent-webhook-routine
 
       - name: Run the agent channel management E2E test
-        if: ${{ !cancelled() && matrix.shard == 3 }}
+        if: ${{ !cancelled() && matrix.shard == 2 }}
         run: bun run test:agent-channel-manage
 
       - name: Run the agent channel creation E2E test
-        if: ${{ !cancelled() && matrix.shard == 1 }}
+        if: ${{ !cancelled() && matrix.shard == 2 }}
         run: bun run test:agent-channel-create
 
       - name: Run the Library folders agent tool E2E test
-        if: ${{ !cancelled() && matrix.shard == 1 }}
+        if: ${{ !cancelled() && matrix.shard == 2 }}
         run: bun run test:library-folders
 
       - name: Run the agent workflow gate E2E test
-        if: ${{ !cancelled() && matrix.shard == 3 }}
+        if: ${{ !cancelled() && matrix.shard == 2 }}
         run: bun run test:agent-workflow-gate
 
       - name: Run the independent agent task E2E test
-        if: ${{ !cancelled() && matrix.shard == 1 }}
+        if: ${{ !cancelled() && matrix.shard == 2 }}
         run: bun scripts/start-agent-task-e2e.ts
 
       - name: Run the remote coding job recovery smoke tests
@@ -687,7 +661,7 @@ jobs:
         run: bun run test:messaging-owner-card
 
       - name: Run the agent profile accounts E2E test
-        if: ${{ !cancelled() && matrix.shard == 3 }}
+        if: ${{ !cancelled() && matrix.shard == 2 }}
         run: bun run test:agent-profile-accounts
 
       - name: Run the browser profile agents E2E test
@@ -699,7 +673,7 @@ jobs:
         run: bun run test:agent-browser-profile-tool
 
       - name: Run the agent delete tool E2E test
-        if: ${{ !cancelled() && matrix.shard == 3 }}
+        if: ${{ !cancelled() && matrix.shard == 1 }}
         run: bun run test:agent-delete-tool
 
       - name: Run the agent commit co-author tool E2E test
@@ -711,15 +685,15 @@ jobs:
         run: bun run test:claude-usage-resume
 
       - name: Run the Claude background hold at low memory E2E test
-        if: ${{ !cancelled() && matrix.shard == 2 }}
+        if: ${{ !cancelled() && matrix.shard == 1 }}
         run: bun run test:claude-background-hold
 
       - name: Run the Claude turn context after a runtime refresh E2E test
-        if: ${{ !cancelled() && matrix.shard == 3 }}
+        if: ${{ !cancelled() && matrix.shard == 2 }}
         run: bun run test:claude-turn-context
 
       - name: Run the Claude late steer E2E test
-        if: ${{ !cancelled() && matrix.shard == 3 }}
+        if: ${{ !cancelled() && matrix.shard == 2 }}
         run: bun run test:claude-late-steer
 
       - name: Run the Claude session identity and request tools E2E test
@@ -727,23 +701,23 @@ jobs:
         run: bun run test:claude-foreign-session
 
       - name: Run the provider session reuse E2E test
-        if: ${{ !cancelled() && matrix.shard == 1 }}
+        if: ${{ !cancelled() && matrix.shard == 2 }}
         run: bun run test:provider-session-reuse
 
       - name: Run the backup model failover E2E test
-        if: ${{ !cancelled() && matrix.shard == 3 }}
+        if: ${{ !cancelled() && matrix.shard == 2 }}
         run: bun run test:backup-model-failover
 
       - name: Run the Codex empty lead turn E2E test
-        if: ${{ !cancelled() && matrix.shard == 2 }}
+        if: ${{ !cancelled() && matrix.shard == 1 }}
         run: bun run test:codex-empty-lead-turn
 
       - name: Run the ZIP attachment E2E test
-        if: ${{ !cancelled() && matrix.shard == 2 }}
+        if: ${{ !cancelled() && matrix.shard == 1 }}
         run: bun run test:zip-attachments
 
       - name: Run the MP4 attachment E2E test
-        if: ${{ !cancelled() && matrix.shard == 2 }}
+        if: ${{ !cancelled() && matrix.shard == 1 }}
         run: bun run test:mp4-attachments
 
       - name: Run the SVG attachment E2E test
@@ -751,7 +725,7 @@ jobs:
         run: bun run test:svg-attachments
 
       - name: Run the any file attachment E2E test
-        if: ${{ !cancelled() && matrix.shard == 2 }}
+        if: ${{ !cancelled() && matrix.shard == 1 }}
         run: bun run test:any-file-attachments
 
       - name: Run the channel notifications and channel settings E2E test
@@ -759,7 +733,7 @@ jobs:
         run: bun run test:channel-notifications
 
       - name: Run the agent MCP server tools E2E test
-        if: ${{ !cancelled() && matrix.shard == 3 }}
+        if: ${{ !cancelled() && matrix.shard == 2 }}
         run: bun run test:agent-mcp-tools
 
       - name: Run the MCP sign-in client refusal E2E test
@@ -767,11 +741,11 @@ jobs:
         run: bun run test:mcp-sign-in-client-refused
 
       - name: Run the MCP sign-in client metadata document E2E test
-        if: ${{ !cancelled() && matrix.shard == 2 }}
+        if: ${{ !cancelled() && matrix.shard == 1 }}
         run: bun run test:mcp-sign-in-client-metadata-document
 
       - name: Run the unreadable MCP server row E2E test
-        if: ${{ !cancelled() && matrix.shard == 3 }}
+        if: ${{ !cancelled() && matrix.shard == 1 }}
         run: bun run test:mcp-server-unreadable-row
 
       - name: Run the agent bulk settings E2E test
@@ -783,11 +757,11 @@ jobs:
         run: bun run test:antigravity-usage
 
       - name: Run the Gemini accounts E2E test
-        if: ${{ !cancelled() && matrix.shard == 3 }}
+        if: ${{ !cancelled() && matrix.shard == 2 }}
         run: bun run test:antigravity-accounts
 
       - name: Run the Gemini usage metering E2E test
-        if: ${{ !cancelled() && matrix.shard == 2 }}
+        if: ${{ !cancelled() && matrix.shard == 1 }}
         run: bun run test:antigravity-usage-metering
 
       - name: Run the Gemini quota failover E2E test
@@ -795,23 +769,23 @@ jobs:
         run: bun run test:antigravity-quota-failover
 
       - name: Run the Gemini failing session E2E test
-        if: ${{ !cancelled() && matrix.shard == 3 }}
+        if: ${{ !cancelled() && matrix.shard == 2 }}
         run: bun run test:antigravity-failing-session
 
       - name: Run the Gemini Windows zip E2E test
-        if: ${{ !cancelled() && matrix.shard == 2 }}
+        if: ${{ !cancelled() && matrix.shard == 1 }}
         run: bun run test:antigravity-windows-zip
 
       - name: Run the workflow model steps E2E test
-        if: ${{ !cancelled() && matrix.shard == 1 }}
+        if: ${{ !cancelled() && matrix.shard == 2 }}
         run: bun run test:workflow-model-steps
 
       - name: Run the workflow Discord E2E test
-        if: ${{ !cancelled() && matrix.shard == 2 }}
+        if: ${{ !cancelled() && matrix.shard == 1 }}
         run: bun run test:workflow-discord
 
       - name: Run the workflow Telegram E2E test
-        if: ${{ !cancelled() && matrix.shard == 2 }}
+        if: ${{ !cancelled() && matrix.shard == 1 }}
         run: bun run test:workflow-telegram
 
       - name: Run the workflow Slack E2E test
@@ -819,15 +793,15 @@ jobs:
         run: bun run test:workflow-slack
 
       - name: Run the workflow channel output E2E test
-        if: ${{ !cancelled() && matrix.shard == 2 }}
+        if: ${{ !cancelled() && matrix.shard == 1 }}
         run: bun run test:workflow-channel-output
 
       - name: Run the workflow agent tools E2E test
-        if: ${{ !cancelled() && matrix.shard == 3 }}
+        if: ${{ !cancelled() && matrix.shard == 1 }}
         run: bun run test:workflow-agent-tools
 
       - name: Run the workflow join E2E test
-        if: ${{ !cancelled() && matrix.shard == 2 }}
+        if: ${{ !cancelled() && matrix.shard == 1 }}
         run: bun run test:workflow-join
 
       - name: Run the Discord files to GitHub E2E test
@@ -835,11 +809,11 @@ jobs:
         run: bun run test:discord-github-files
 
       - name: Run the OpenCode usage metering E2E test
-        if: ${{ !cancelled() && matrix.shard == 2 }}
+        if: ${{ !cancelled() && matrix.shard == 1 }}
         run: bun run test:opencode-usage-metering
 
       - name: Run the Claude API key E2E test
-        if: ${{ !cancelled() && matrix.shard == 3 }}
+        if: ${{ !cancelled() && matrix.shard == 2 }}
         run: bun run test:claude-api-key
 
       - name: Run the Claude stored sign-in E2E test
@@ -851,15 +825,15 @@ jobs:
         run: bun run test:cursor-usage
 
       - name: Run the Cursor key accounts E2E test
-        if: ${{ !cancelled() && matrix.shard == 3 }}
+        if: ${{ !cancelled() && matrix.shard == 1 }}
         run: bun run test:cursor-key-accounts
 
       - name: Run the OpenCode Go usage E2E test
-        if: ${{ !cancelled() && matrix.shard == 2 }}
+        if: ${{ !cancelled() && matrix.shard == 1 }}
         run: bun run test:opencode-go-usage
 
       - name: Run the Pi sign-in outside OpenBot E2E test
-        if: ${{ !cancelled() && matrix.shard == 3 }}
+        if: ${{ !cancelled() && matrix.shard == 2 }}
         run: bun run test:pi-sign-in-watch
 
       - name: Run the provider launch order E2E test
@@ -867,11 +841,11 @@ jobs:
         run: bun run test:provider-launch-order
 
       - name: Run the agent API key E2E test
-        if: ${{ !cancelled() && matrix.shard == 3 }}
+        if: ${{ !cancelled() && matrix.shard == 1 }}
         run: bun run test:agent-api-keys
 
       - name: Run the remote connect analytics E2E test
-        if: ${{ !cancelled() && matrix.shard == 2 }}
+        if: ${{ !cancelled() && matrix.shard == 1 }}
         run: bun run test:remote-connect-analytics
 
       - name: Run the memory review E2E test
@@ -879,11 +853,11 @@ jobs:
         run: bun run test:memory-review
 
       - name: Run the memory changes wire E2E test
-        if: ${{ !cancelled() && matrix.shard == 2 }}
+        if: ${{ !cancelled() && matrix.shard == 1 }}
         run: bun run test:memory-changes-wire
 
       - name: Run the local skill revision E2E test
-        if: ${{ !cancelled() && matrix.shard == 1 }}
+        if: ${{ !cancelled() && matrix.shard == 2 }}
         run: bun run test:skill-revision
 
       - name: Upload the reports
@@ -1277,24 +1251,11 @@ jobs:
       - name: Validate the remote Compose files
         run: bun run remote:check:compose
 
-  mobile-share-sender-e2e:
-    # Builds the page that the iOS share extension runs and drives it in the runner's Chrome, as the
-    # extension's web view does. It needs no host, display or external service.
-    name: Share extension page E2E
-    needs: detect
-    if: needs.detect.outputs.surfaces == 'true'
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-
-      - name: Set up Bun
-        uses: ./.github/actions/setup-bun
-        with:
-          install: ignore-scripts
-
+      # The page that the iOS share extension runs, driven in the runner's Chrome as the extension's
+      # web view does. Then the update server of the mobile app on a local bucket, asked for updates
+      # as a phone does. Both ran on their own runners before; they need no device or external service.
       - name: Run the share extension page E2E test
+        if: ${{ !cancelled() }}
         run: bun run test:mobile-share-sender
 
       - name: Upload the share extension page E2E report
@@ -1305,24 +1266,8 @@ jobs:
           path: .openbot-build/mobile-share-sender-e2e/report.json
           if-no-files-found: ignore
 
-  mobile-ota-e2e:
-    # Runs the update server of the mobile app on a local bucket and the real publish commands, then
-    # asks for updates as a phone does. It needs no device and no external service.
-    name: Mobile update server E2E
-    needs: detect
-    if: needs.detect.outputs.surfaces == 'true'
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-
-      - name: Set up Bun
-        uses: ./.github/actions/setup-bun
-        with:
-          install: ignore-scripts
-
       - name: Run the mobile update server E2E test
+        if: ${{ !cancelled() }}
         run: bun run test:mobile-ota
 
       # The release notes of an update, and the store release steps that must ignore its section.
@@ -1497,7 +1442,7 @@ jobs:
     # fails this one.
     name: All required checks pass
     if: always()
-    needs: [detect, check, catalogs, browser, tests-desktop, signal-e2e, automation-cli-e2e, team-api-routes-e2e, reverse-actions-e2e, provider-fakes-e2e, surfaces, mobile-share-sender-e2e, mobile-ota-e2e, api, storybook]
+    needs: [detect, check, catalogs, browser, tests-desktop, service-e2e, reverse-actions-e2e, provider-fakes-e2e, surfaces, api, storybook]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -1524,7 +1469,7 @@ jobs:
     # `apps/auth-api`, which `api` already covers: mobile, the site router, the
     # team client and the remote stack all consume the account API, so a red
     # Surfaces is the signal that this deploy is the thing about to break them.
-    needs: [check, catalogs, browser, tests-desktop, signal-e2e, automation-cli-e2e, team-api-routes-e2e, reverse-actions-e2e, provider-fakes-e2e, api, storybook, surfaces, mobile-share-sender-e2e]
+    needs: [check, catalogs, browser, tests-desktop, service-e2e, reverse-actions-e2e, provider-fakes-e2e, api, storybook, surfaces]
     runs-on: ubuntu-latest
     timeout-minutes: 15
     environment: cloudflare-production
