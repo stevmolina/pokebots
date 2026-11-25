@@ -408,6 +408,7 @@
     "./features/sidebar/sidebar-chat.css": "./src/features/sidebar/sidebar-chat.css",
     "./features/sidebar/sidebar-pages": "./src/features/sidebar/sidebar-pages.ts",
     "./features/sidebar/sidebar-recent-chats": "./src/features/sidebar/sidebar-recent-chats.ts",
+    "./features/sidebar/sidebar-thread-list": "./src/features/sidebar/sidebar-thread-list.ts",
     "./features/sidebar/SidebarChat": "./src/features/sidebar/SidebarChat.tsx",
     "./features/sidebar/SidebarChatRow": "./src/features/sidebar/SidebarChatRow.tsx",
     "./features/sidebar/SidebarPill": "./src/features/sidebar/SidebarPill.tsx",
