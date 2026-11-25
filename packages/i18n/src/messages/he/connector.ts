@@ -90,7 +90,7 @@ export const messages = {
   // Orchestrator agent receives each request, asks the team and answers.
   "connector.slack.title": "Slack",
   "connector.slack.description":
-    "אפשר לתייג את @Pokebots ב-Slack או לשלוח לו הודעה ישירה. מתזמר Slack פונה לסוכן המתאים ועונה.",
+    "אפשר לתייג את @OpenBot ב-Slack או לשלוח לו הודעה ישירה. מתזמר Slack פונה לסוכן המתאים ועונה.",
   "connector.slack.statusConnected": "מחובר",
   "connector.slack.statusAttention": "דורש תשומת לב",
   // {workspace} is the Slack workspace name.
@@ -106,10 +106,10 @@ export const messages = {
   "connector.slack.addAgent": "הוספת סוכן",
   "connector.slack.actionFailed": "Slack לא קיבל את השינוי",
   "connector.slack.workspaceTitle": "סביבות עבודה",
-  "connector.slack.workspaceDescription": "אפשר לתייג את @Pokebots או לשלוח לו הודעה ישירה.",
+  "connector.slack.workspaceDescription": "אפשר לתייג את @OpenBot או לשלוח לו הודעה ישירה.",
   "connector.slack.disconnectWorkspace": "ניתוק",
   "connector.slack.disconnectAllTitle": "ניתוק Slack",
-  "connector.slack.disconnectAllSummary": "כל סביבות העבודה מתנתקות. אי אפשר עוד להגיע לסוכנים שלך דרך @Pokebots.",
+  "connector.slack.disconnectAllSummary": "כל סביבות העבודה מתנתקות. אי אפשר עוד להגיע לסוכנים שלך דרך @OpenBot.",
   "connector.slack.disconnectAllSummaryOrchestrator":
     "כל סביבות העבודה מתנתקות. מתזמר Slack והשיחות שלו נמחקים מ-Pokebots.",
   "connector.slack.missingScopes":
@@ -132,7 +132,7 @@ export const messages = {
   "connector.slack.stepAgent": "סוכן",
   "connector.slack.connectTitle": "חיבור סביבת עבודה של Slack",
   "connector.slack.connectDescription":
-    "Pokebots מתקין אפליקציה אחת בסביבת העבודה, בשם Pokebots, והיא מצטרפת לכל ערוץ ציבורי.",
+    "Pokebots מתקין אפליקציה אחת בסביבת העבודה, בשם “OpenBot”, והיא מצטרפת לכל ערוץ ציבורי.",
   "connector.slack.connectStepBrowser": "Slack נפתח בדפדפן",
   "connector.slack.connectStepAllow": "יש לבחור את סביבת העבודה בפינה הימנית העליונה ואז באפשר (Allow)",
   "connector.slack.connectStepReturn": "החלון הזה ממשיך כש-Slack מסיים",
@@ -140,7 +140,7 @@ export const messages = {
   "connector.slack.connectWaiting": "ממתין ל-Slack. יש לסיים את ההתקנה בדפדפן.",
   "connector.slack.agentStepTitle": "הוספת מתזמר Slack",
   // {workspace} is the Slack workspace name.
-  "connector.slack.agentStepDescription": "הסוכן החדש הזה עונה על כל מה שנשלח אל @Pokebots ב-{workspace}.",
+  "connector.slack.agentStepDescription": "הסוכן החדש הזה עונה על כל מה שנשלח אל @OpenBot ב-{workspace}.",
   "connector.slack.orchestratorName": "מתזמר Slack",
   "connector.slack.orchestratorRole": "עונה ב-Slack ופונה לצוות",
   "connector.slack.orchestratorDoesReceive": "מקבל קודם כל בקשה מ-Slack",
@@ -148,12 +148,12 @@ export const messages = {
   "connector.slack.orchestratorDoesAnswer": "מפרסם את התשובה בשרשור ב-Slack",
   "connector.slack.orchestratorModel": "מודל",
   "connector.slack.doneTitle": "Pokebots נמצא ב-{workspace}",
-  "connector.slack.doneDescription": "אפשר לתייג את @Pokebots בכל ערוץ ציבורי או לשלוח לו הודעה ישירה.",
+  "connector.slack.doneDescription": "אפשר לתייג את @OpenBot בכל ערוץ ציבורי או לשלוח לו הודעה ישירה.",
   "connector.slack.done": "סיום",
   "connector.slack.disconnectTitle": "לנתק את {workspace}?",
   "connector.slack.disconnectDescription": "Pokebots מפסיק לענות ב-{workspace} ומסיר את אסימון Slack שלו מהמחשב הזה.",
   "connector.slack.disconnectDescriptionHost": "Pokebots מפסיק לענות ב-{workspace} ומסיר את אסימון Slack שלו מ-{host}.",
-  "connector.slack.disconnectEffect": "אנשים ב-{workspace} לא יוכלו עוד להגיע לסוכנים שלך דרך @Pokebots.",
+  "connector.slack.disconnectEffect": "אנשים ב-{workspace} לא יוכלו עוד להגיע לסוכנים שלך דרך @OpenBot.",
   "connector.slack.removeEffectKept": "השיחות ומתזמר Slack נשארים ב-Pokebots.",
   "connector.slack.removeEffectDeleted": "מתזמר Slack והשיחות שלו נמחקים מ-Pokebots.",
   "connector.slack.keep": "השארת החיבור",
@@ -177,7 +177,7 @@ export const messages = {
   // "Discord server": "server" alone is an OpenBot server.
   "connector.discord.title": "Discord",
   "connector.discord.description":
-    "אפשר לתייג את @Pokebots בערוץ של שרת Discord. מתזמר Discord פונה לסוכן המתאים ועונה.",
+    "אפשר לתייג את @OpenBot בערוץ של שרת Discord. מתזמר Discord פונה לסוכן המתאים ועונה.",
   "connector.discord.statusConnected": "מחובר",
   "connector.discord.statusAttention": "דורש תשומת לב",
   // {workspace} is the Discord server name.
@@ -193,10 +193,10 @@ export const messages = {
   "connector.discord.addAgent": "הוספת סוכן",
   "connector.discord.actionFailed": "Discord לא קיבל את השינוי",
   "connector.discord.workspaceTitle": "שרתי Discord",
-  "connector.discord.workspaceDescription": "אפשר לתייג את @Pokebots בערוץ. כדי להמשיך יש להשיב ל-Pokebots.",
+  "connector.discord.workspaceDescription": "אפשר לתייג את @OpenBot בערוץ. כדי להמשיך יש להשיב ל-“OpenBot”.",
   "connector.discord.disconnectWorkspace": "ניתוק",
   "connector.discord.disconnectAllTitle": "ניתוק Discord",
-  "connector.discord.disconnectAllSummary": "כל השרתים מתנתקים. אי אפשר עוד להגיע לסוכנים שלך דרך @Pokebots.",
+  "connector.discord.disconnectAllSummary": "כל השרתים מתנתקים. אי אפשר עוד להגיע לסוכנים שלך דרך @OpenBot.",
   "connector.discord.disconnectAllSummaryOrchestrator":
     "כל השרתים מתנתקים. מתזמר Discord והשיחות שלו נמחקים מ-Pokebots.",
   "connector.discord.missingScopes":
@@ -217,7 +217,7 @@ export const messages = {
   "connector.discord.stepWorkspace": "שרת Discord",
   "connector.discord.stepAgent": "סוכן",
   "connector.discord.connectTitle": "חיבור שרת Discord",
-  "connector.discord.connectDescription": "Pokebots מוסיף בוט אחד, בשם Pokebots, לשרת Discord.",
+  "connector.discord.connectDescription": "Pokebots מוסיף בוט אחד, בשם “OpenBot”, לשרת Discord.",
   "connector.discord.connectStepBrowser": "Discord נפתח בדפדפן",
   "connector.discord.connectStepAllow": "יש לבחור את השרת ואז באישור (Authorize)",
   "connector.discord.connectStepReturn": "החלון הזה ממשיך כש-Discord מסיים",
@@ -225,7 +225,7 @@ export const messages = {
   "connector.discord.connectWaiting": "ממתין ל-Discord. יש לסיים את האישור בדפדפן.",
   "connector.discord.agentStepTitle": "הוספת מתזמר Discord",
   // {workspace} is the Discord server name.
-  "connector.discord.agentStepDescription": "הסוכן החדש הזה עונה על כל מה שנשלח אל @Pokebots ב-{workspace}.",
+  "connector.discord.agentStepDescription": "הסוכן החדש הזה עונה על כל מה שנשלח אל @OpenBot ב-{workspace}.",
   "connector.discord.orchestratorName": "מתזמר Discord",
   "connector.discord.orchestratorRole": "עונה ב-Discord ופונה לצוות",
   "connector.discord.orchestratorDoesReceive": "מקבל קודם כל בקשה מ-Discord",
@@ -233,13 +233,13 @@ export const messages = {
   "connector.discord.orchestratorDoesAnswer": "משיב עם התשובה בערוץ ב-Discord",
   "connector.discord.orchestratorModel": "מודל",
   "connector.discord.doneTitle": "Pokebots נמצא ב-{workspace}",
-  "connector.discord.doneDescription": "אפשר לתייג את @Pokebots בערוץ. כדי להמשיך יש להשיב ל-Pokebots.",
+  "connector.discord.doneDescription": "אפשר לתייג את @OpenBot בערוץ. כדי להמשיך יש להשיב ל-“OpenBot”.",
   "connector.discord.done": "סיום",
   "connector.discord.disconnectTitle": "לנתק את {workspace}?",
   "connector.discord.disconnectDescription": "Pokebots מפסיק לענות ב-{workspace} ומסיר את החיבור ל-Discord מהמחשב הזה.",
   "connector.discord.disconnectDescriptionHost":
     "Pokebots מפסיק לענות ב-{workspace} ומסיר את החיבור ל-Discord מ-{host}.",
-  "connector.discord.disconnectEffect": "אנשים ב-{workspace} לא יוכלו עוד להגיע לסוכנים שלך דרך @Pokebots.",
+  "connector.discord.disconnectEffect": "אנשים ב-{workspace} לא יוכלו עוד להגיע לסוכנים שלך דרך @OpenBot.",
   "connector.discord.removeEffectKept": "השיחות ומתזמר Discord נשארים ב-Pokebots.",
   "connector.discord.removeEffectDeleted": "מתזמר Discord והשיחות שלו נמחקים מ-Pokebots.",
   "connector.discord.keep": "השארת החיבור",

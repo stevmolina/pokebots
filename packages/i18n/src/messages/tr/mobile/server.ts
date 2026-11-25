@@ -785,14 +785,14 @@ export const messages = {
     "{host} kendi erişim anahtarını siler. Kasa ve içindeki girişler {name} hesabınızda kalır.",
   "mobile.server.connectors.slack.title": "Slack",
   "mobile.server.connectors.slack.description":
-    "Kullanıcılar Slack'te @Pokebots'tan bahseder veya doğrudan mesaj gönderir. Slack Düzenleyicisi doğru ajana sorar ve yanıtlar.",
+    "Kullanıcılar Slack'te @OpenBot'tan bahseder veya doğrudan mesaj gönderir. Slack Düzenleyicisi doğru ajana sorar ve yanıtlar.",
   "mobile.server.connectors.slack.attention": {
     one: "{count} çalışma alanı için işlem gerekiyor",
     other: "{count} çalışma alanı için işlem gerekiyor",
   },
   "mobile.server.connectors.slack.connect": "Slack'e bağlan",
   "mobile.server.connectors.slack.connectFooter":
-    "Slack bir tarayıcıda açılır. Sağ üst köşeden çalışma alanını seçin, ardından İzin Ver'e dokunun. Pokebots, Pokebots adında bir uygulama yükler ve bu uygulama her genel kanala katılır.",
+    "Slack bir tarayıcıda açılır. Sağ üst köşeden çalışma alanını seçin, ardından İzin Ver'e dokunun. Pokebots, “OpenBot” adında bir uygulama yükler ve bu uygulama her genel kanala katılır.",
   "mobile.server.connectors.slack.add": "Çalışma alanı ekle",
   "mobile.server.connectors.slack.limit": {
     one: "En fazla {count} çalışma alanı bağlayabilirsiniz.",
@@ -800,7 +800,7 @@ export const messages = {
   },
   "mobile.server.connectors.slack.workspaceTitle": "Çalışma alanı",
   "mobile.server.connectors.slack.workspaceDescription":
-    "Kullanıcılar @Pokebots'tan bahseder veya doğrudan mesaj gönderir.",
+    "Kullanıcılar @OpenBot'tan bahseder veya doğrudan mesaj gönderir.",
   "mobile.server.connectors.slack.missingScopes":
     "Pokebots Slack'te şu izinlere sahip değil: {scopes}. Çalışma alanı bağlantısını kesin, ardından tekrar bağlayın.",
   "mobile.server.connectors.slack.retryAt": "Slack Pokebots'tan beklemesini istedi. {time} saatinde tekrar deneyecek.",
@@ -826,18 +826,18 @@ export const messages = {
   "mobile.server.connectors.slack.disconnectDeleted": "Slack Düzenleyicisi ve konuşmaları Pokebots'tan silinir.",
   "mobile.server.connectors.slack.agentPromptTitle": "Slack Düzenleyicisi eklensin mi?",
   "mobile.server.connectors.slack.agentPromptBody":
-    "Bu yeni ajan, {workspace} içinde @Pokebots'a gönderilen her şeyi yanıtlar.",
+    "Bu yeni ajan, {workspace} içinde @OpenBot'a gönderilen her şeyi yanıtlar.",
   "mobile.server.connectors.slack.installFailed": "Slack yüklemeyi tamamlamadı. Tekrar deneyin.",
   "mobile.server.connectors.discord.title": "Discord",
   "mobile.server.connectors.discord.description":
-    "Kullanıcılar bir Discord sunucusunun kanalında @Pokebots'tan bahseder. Discord Düzenleyicisi doğru ajana sorar ve yanıtlar.",
+    "Kullanıcılar bir Discord sunucusunun kanalında @OpenBot'tan bahseder. Discord Düzenleyicisi doğru ajana sorar ve yanıtlar.",
   "mobile.server.connectors.discord.attention": {
     one: "{count} Discord sunucusu için işlem gerekiyor",
     other: "{count} Discord sunucusu için işlem gerekiyor",
   },
   "mobile.server.connectors.discord.connect": "Discord'a bağlan",
   "mobile.server.connectors.discord.connectFooter":
-    "Discord bir tarayıcıda açılır. Discord sunucusunu seçin, ardından Yetkilendir'e dokunun. Pokebots, Pokebots adında bir bot ekler.",
+    "Discord bir tarayıcıda açılır. Discord sunucusunu seçin, ardından Yetkilendir'e dokunun. Pokebots, “OpenBot” adında bir bot ekler.",
   "mobile.server.connectors.discord.add": "Discord sunucusu ekle",
   "mobile.server.connectors.discord.limit": {
     one: "En fazla {count} Discord sunucusu bağlayabilirsiniz.",
@@ -845,7 +845,7 @@ export const messages = {
   },
   "mobile.server.connectors.discord.workspaceTitle": "Discord sunucusu",
   "mobile.server.connectors.discord.workspaceDescription":
-    "Bir kanalda @Pokebots'tan bahsedin. Devam etmek için Pokebots'a yanıt verin.",
+    "Bir kanalda @OpenBot'tan bahsedin. Devam etmek için “OpenBot”'a yanıt verin.",
   "mobile.server.connectors.discord.missingScopes":
     "Pokebots Discord'da şu izinlere sahip değil: {scopes}. Discord sunucusu bağlantısını kesin, ardından tekrar bağlayın.",
   "mobile.server.connectors.discord.retryAt":
@@ -872,7 +872,7 @@ export const messages = {
   "mobile.server.connectors.discord.disconnectDeleted": "Discord Düzenleyicisi ve konuşmaları Pokebots'tan silinir.",
   "mobile.server.connectors.discord.agentPromptTitle": "Discord Düzenleyicisi eklensin mi?",
   "mobile.server.connectors.discord.agentPromptBody":
-    "Bu yeni ajan, {workspace} içinde @Pokebots'a gönderilen her şeyi yanıtlar.",
+    "Bu yeni ajan, {workspace} içinde @OpenBot'a gönderilen her şeyi yanıtlar.",
   "mobile.server.connectors.discord.installFailed": "Discord yetkilendirmeyi tamamlamadı. Tekrar deneyin.",
   "mobile.server.connectors.telegram.title": "Telegram",
   "mobile.server.connectors.telegram.description":

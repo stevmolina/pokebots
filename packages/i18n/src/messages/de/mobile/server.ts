@@ -811,14 +811,14 @@ export const messages = {
     "{host} löscht seinen Zugriffsschlüssel. Der Tresor und seine Logins bleiben in deinem {name}-Konto.",
   "mobile.server.connectors.slack.title": "Slack",
   "mobile.server.connectors.slack.description":
-    "Personen erwähnen @Pokebots in Slack oder senden ihm eine Direktnachricht. Der Slack Orchestrator fragt den passenden Agenten und antwortet.",
+    "Personen erwähnen @OpenBot in Slack oder senden ihm eine Direktnachricht. Der Slack Orchestrator fragt den passenden Agenten und antwortet.",
   "mobile.server.connectors.slack.attention": {
     one: "{count} Arbeitsbereich benötigt Aufmerksamkeit",
     other: "{count} Arbeitsbereiche benötigen Aufmerksamkeit",
   },
   "mobile.server.connectors.slack.connect": "Slack verbinden",
   "mobile.server.connectors.slack.connectFooter":
-    "Slack öffnet sich in einem Browser. Wähle den Arbeitsbereich oben rechts und dann „Zulassen“. Pokebots installiert eine App namens Pokebots. Sie tritt allen öffentlichen Kanälen bei.",
+    "Slack öffnet sich in einem Browser. Wähle den Arbeitsbereich oben rechts und dann „Zulassen“. Pokebots installiert eine App namens “OpenBot”. Sie tritt allen öffentlichen Kanälen bei.",
   "mobile.server.connectors.slack.add": "Arbeitsbereich hinzufügen",
   "mobile.server.connectors.slack.limit": {
     one: "Du kannst höchstens {count} Arbeitsbereich verbinden.",
@@ -826,7 +826,7 @@ export const messages = {
   },
   "mobile.server.connectors.slack.workspaceTitle": "Arbeitsbereich",
   "mobile.server.connectors.slack.workspaceDescription":
-    "Personen erwähnen @Pokebots oder senden ihm eine Direktnachricht.",
+    "Personen erwähnen @OpenBot oder senden ihm eine Direktnachricht.",
   "mobile.server.connectors.slack.missingScopes":
     "Pokebots hat diese Berechtigungen in Slack nicht: {scopes}. Trenne den Arbeitsbereich und verbinde ihn erneut.",
   "mobile.server.connectors.slack.retryAt":
@@ -856,18 +856,18 @@ export const messages = {
     "Der Slack Orchestrator und seine Unterhaltungen werden aus Pokebots gelöscht.",
   "mobile.server.connectors.slack.agentPromptTitle": "Slack Orchestrator hinzufügen?",
   "mobile.server.connectors.slack.agentPromptBody":
-    "Dieser neue Agent beantwortet alles, was Personen in {workspace} an @Pokebots senden.",
+    "Dieser neue Agent beantwortet alles, was Personen in {workspace} an @OpenBot senden.",
   "mobile.server.connectors.slack.installFailed": "Slack hat die Installation nicht abgeschlossen. Versuche es erneut.",
   "mobile.server.connectors.discord.title": "Discord",
   "mobile.server.connectors.discord.description":
-    "Personen erwähnen @Pokebots in einem Kanal eines Discord-Servers. Der Discord Orchestrator fragt den passenden Agenten und antwortet.",
+    "Personen erwähnen @OpenBot in einem Kanal eines Discord-Servers. Der Discord Orchestrator fragt den passenden Agenten und antwortet.",
   "mobile.server.connectors.discord.attention": {
     one: "{count} Discord-Server benötigt Aufmerksamkeit",
     other: "{count} Discord-Server benötigen Aufmerksamkeit",
   },
   "mobile.server.connectors.discord.connect": "Discord verbinden",
   "mobile.server.connectors.discord.connectFooter":
-    "Discord öffnet sich in einem Browser. Wähle den Discord-Server und dann „Autorisieren“. Pokebots fügt einen Bot namens Pokebots hinzu.",
+    "Discord öffnet sich in einem Browser. Wähle den Discord-Server und dann „Autorisieren“. Pokebots fügt einen Bot namens “OpenBot” hinzu.",
   "mobile.server.connectors.discord.add": "Discord-Server hinzufügen",
   "mobile.server.connectors.discord.limit": {
     one: "Du kannst höchstens {count} Discord-Server verbinden.",
@@ -875,7 +875,7 @@ export const messages = {
   },
   "mobile.server.connectors.discord.workspaceTitle": "Discord-Server",
   "mobile.server.connectors.discord.workspaceDescription":
-    "Erwähne @Pokebots in einem Kanal. Antworte Pokebots, um fortzufahren.",
+    "Erwähne @OpenBot in einem Kanal. Antworte “OpenBot”, um fortzufahren.",
   "mobile.server.connectors.discord.missingScopes":
     "Pokebots hat diese Berechtigungen in Discord nicht: {scopes}. Trenne den Discord-Server und verbinde ihn erneut.",
   "mobile.server.connectors.discord.retryAt":
@@ -904,7 +904,7 @@ export const messages = {
     "Der Discord Orchestrator und seine Unterhaltungen werden aus Pokebots gelöscht.",
   "mobile.server.connectors.discord.agentPromptTitle": "Discord Orchestrator hinzufügen?",
   "mobile.server.connectors.discord.agentPromptBody":
-    "Dieser neue Agent beantwortet alles, was Personen in {workspace} an @Pokebots senden.",
+    "Dieser neue Agent beantwortet alles, was Personen in {workspace} an @OpenBot senden.",
   "mobile.server.connectors.discord.installFailed":
     "Discord hat die Autorisierung nicht abgeschlossen. Versuche es erneut.",
   "mobile.server.connectors.telegram.title": "Telegram",

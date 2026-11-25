@@ -873,7 +873,7 @@ export const messages = {
     "{host} удалит свой ключ доступа. Хранилище и его логины останутся в вашем аккаунте {name}.",
   "mobile.server.connectors.slack.title": "Slack",
   "mobile.server.connectors.slack.description":
-    "Люди упоминают @Pokebots в Slack или пишут ему личным сообщением. Оркестратор Slack спрашивает нужного агента и отвечает.",
+    "Люди упоминают @OpenBot в Slack или пишут ему личным сообщением. Оркестратор Slack спрашивает нужного агента и отвечает.",
   "mobile.server.connectors.slack.attention": {
     one: "{count} рабочее пространство требует внимания",
     few: "{count} рабочих пространства требуют внимания",
@@ -882,7 +882,7 @@ export const messages = {
   },
   "mobile.server.connectors.slack.connect": "Подключить Slack",
   "mobile.server.connectors.slack.connectFooter":
-    "Slack откроется в браузере. Выберите рабочее пространство в правом верхнем углу, затем нажмите «Разрешить». Pokebots устанавливает одно приложение с названием Pokebots, и оно присоединяется ко всем публичным каналам.",
+    "Slack откроется в браузере. Выберите рабочее пространство в правом верхнем углу, затем нажмите «Разрешить». Pokebots устанавливает одно приложение с названием “OpenBot”, и оно присоединяется ко всем публичным каналам.",
   "mobile.server.connectors.slack.add": "Добавить пространство",
   "mobile.server.connectors.slack.limit": {
     one: "Можно подключить не более {count} рабочего пространства.",
@@ -891,7 +891,7 @@ export const messages = {
     other: "Можно подключить не более {count} рабочего пространства.",
   },
   "mobile.server.connectors.slack.workspaceTitle": "Рабочее пространство",
-  "mobile.server.connectors.slack.workspaceDescription": "Люди упоминают @Pokebots или пишут ему личным сообщением.",
+  "mobile.server.connectors.slack.workspaceDescription": "Люди упоминают @OpenBot или пишут ему личным сообщением.",
   "mobile.server.connectors.slack.missingScopes":
     "У Pokebots нет этих разрешений в Slack: {scopes}. Отключите рабочее пространство и подключите его снова.",
   "mobile.server.connectors.slack.retryAt": "Slack попросил Pokebots подождать. Следующая попытка в {time}.",
@@ -917,11 +917,11 @@ export const messages = {
   "mobile.server.connectors.slack.disconnectDeleted": "Оркестратор Slack и его диалоги будут удалены из Pokebots.",
   "mobile.server.connectors.slack.agentPromptTitle": "Добавить Оркестратора Slack?",
   "mobile.server.connectors.slack.agentPromptBody":
-    "Этот новый агент отвечает на всё, что люди отправляют @Pokebots в {workspace}.",
+    "Этот новый агент отвечает на всё, что люди отправляют @OpenBot в {workspace}.",
   "mobile.server.connectors.slack.installFailed": "Slack не завершил установку. Повторите попытку.",
   "mobile.server.connectors.discord.title": "Discord",
   "mobile.server.connectors.discord.description":
-    "Люди упоминают @Pokebots в канале сервера Discord. Оркестратор Discord спрашивает нужного агента и отвечает.",
+    "Люди упоминают @OpenBot в канале сервера Discord. Оркестратор Discord спрашивает нужного агента и отвечает.",
   "mobile.server.connectors.discord.attention": {
     one: "{count} сервер Discord требует внимания",
     few: "{count} сервера Discord требуют внимания",
@@ -930,7 +930,7 @@ export const messages = {
   },
   "mobile.server.connectors.discord.connect": "Подключить Discord",
   "mobile.server.connectors.discord.connectFooter":
-    "Discord откроется в браузере. Выберите сервер Discord, затем нажмите «Авторизовать». Pokebots добавляет одного бота с названием Pokebots.",
+    "Discord откроется в браузере. Выберите сервер Discord, затем нажмите «Авторизовать». Pokebots добавляет одного бота с названием “OpenBot”.",
   "mobile.server.connectors.discord.add": "Добавить сервер Discord",
   "mobile.server.connectors.discord.limit": {
     one: "Можно подключить не более {count} сервера Discord.",
@@ -940,7 +940,7 @@ export const messages = {
   },
   "mobile.server.connectors.discord.workspaceTitle": "Сервер Discord",
   "mobile.server.connectors.discord.workspaceDescription":
-    "Упомяните @Pokebots в канале. Ответьте Pokebots, чтобы продолжить.",
+    "Упомяните @OpenBot в канале. Ответьте “OpenBot”, чтобы продолжить.",
   "mobile.server.connectors.discord.missingScopes":
     "У Pokebots нет этих разрешений в Discord: {scopes}. Отключите сервер Discord и подключите его снова.",
   "mobile.server.connectors.discord.retryAt": "Discord попросил Pokebots подождать. Следующая попытка в {time}.",
@@ -966,7 +966,7 @@ export const messages = {
   "mobile.server.connectors.discord.disconnectDeleted": "Оркестратор Discord и его диалоги будут удалены из Pokebots.",
   "mobile.server.connectors.discord.agentPromptTitle": "Добавить Оркестратора Discord?",
   "mobile.server.connectors.discord.agentPromptBody":
-    "Этот новый агент отвечает на всё, что люди отправляют @Pokebots в {workspace}.",
+    "Этот новый агент отвечает на всё, что люди отправляют @OpenBot в {workspace}.",
   "mobile.server.connectors.discord.installFailed": "Discord не завершил авторизацию. Повторите попытку.",
   "mobile.server.connectors.telegram.title": "Telegram",
   "mobile.server.connectors.telegram.description":
