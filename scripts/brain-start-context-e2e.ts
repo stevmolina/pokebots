@@ -353,7 +353,11 @@ async function prompts() {
     .trim()
     .split("\n")
     .filter(Boolean)
-    .map((line) => JSON.parse(line) as { provider: string; text: string; at: number });
+    .map((line): unknown => JSON.parse(line))
+    .filter(isPromptEntry);
+}
+function isPromptEntry(value: unknown): value is { provider: string; text: string; at: number } {
+  return isDynamicRecord(value) && isString(value.provider) && isString(value.text) && typeof value.at === "number";
 }
 const promptFor = (tag: string) =>
   waitFor(tag, async () => (await prompts()).find((entry) => entry.text.includes(tag)));
