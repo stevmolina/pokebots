@@ -43,6 +43,14 @@ const server = createServer((request, response) => {
   else response.end(formPage());
 });
 
+// On Linux, the GPU switches of a server (`configureLinuxGpu` in src/main/linux-gpu-mode.ts), as in
+// browser-fingerprint-electron.ts. CI has no GPU. With GPU compositing on, a tab of a fresh runner could
+// draw no frames for seconds, and Chromium dropped the clicks and keys that it got in that time.
+if (process.platform === "linux") {
+  app.commandLine.appendSwitch("disable-gpu-compositing");
+  app.commandLine.appendSwitch("enable-unsafe-swiftshader");
+}
+
 let browser: BrowserHost | undefined;
 let window: BrowserWindow | undefined;
 let sequence = 0;
