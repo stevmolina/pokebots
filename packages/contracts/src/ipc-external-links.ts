@@ -19,7 +19,7 @@ export interface ExternalLinkPreference {
   target: ExternalLinkTarget;
 }
 
-export const DEFAULT_EXTERNAL_LINK_PREFERENCE: ExternalLinkPreference = { target: { kind: "default" } };
+export const DEFAULT_EXTERNAL_LINK_PREFERENCE: ExternalLinkPreference = { target: { kind: "openbot" } };
 
 /** An application on this computer that opens web pages. */
 export interface ExternalLinkBrowser {
