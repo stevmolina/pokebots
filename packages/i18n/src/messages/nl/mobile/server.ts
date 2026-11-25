@@ -757,7 +757,7 @@ export const messages = {
     "{host} verwijdert zijn toegangssleutel. De kluis en de logins erin blijven in je {name}-account.",
   "mobile.server.connectors.slack.title": "Slack",
   "mobile.server.connectors.slack.description":
-    "Mensen noemen @Pokebots in Slack of sturen een direct bericht. De Slack Orchestrator vraagt het de juiste agent en antwoordt.",
+    "Mensen noemen @OpenBot in Slack of sturen een direct bericht. De Slack Orchestrator vraagt het de juiste agent en antwoordt.",
   "mobile.server.connectors.slack.attention": {
     one: "{count} werkruimte heeft aandacht nodig",
     other: "{count} werkruimten hebben aandacht nodig",
@@ -771,7 +771,7 @@ export const messages = {
     other: "Je kunt maximaal {count} werkruimten verbinden.",
   },
   "mobile.server.connectors.slack.workspaceTitle": "Werkruimte",
-  "mobile.server.connectors.slack.workspaceDescription": "Mensen noemen @Pokebots of sturen een direct bericht.",
+  "mobile.server.connectors.slack.workspaceDescription": "Mensen noemen @OpenBot of sturen een direct bericht.",
   "mobile.server.connectors.slack.missingScopes":
     "Pokebots heeft deze machtigingen niet in Slack: {scopes}. Ontkoppel de werkruimte en verbind hem opnieuw.",
   "mobile.server.connectors.slack.retryAt": "Slack vroeg Pokebots te wachten. Het probeert het opnieuw om {time}.",
@@ -799,11 +799,11 @@ export const messages = {
     "De Slack Orchestrator en zijn gesprekken worden uit Pokebots verwijderd.",
   "mobile.server.connectors.slack.agentPromptTitle": "De Slack Orchestrator toevoegen?",
   "mobile.server.connectors.slack.agentPromptBody":
-    "Deze nieuwe agent beantwoordt alles wat mensen in {workspace} naar @Pokebots sturen.",
+    "Deze nieuwe agent beantwoordt alles wat mensen in {workspace} naar @OpenBot sturen.",
   "mobile.server.connectors.slack.installFailed": "Slack heeft de installatie niet voltooid. Probeer het opnieuw.",
   "mobile.server.connectors.discord.title": "Discord",
   "mobile.server.connectors.discord.description":
-    "Mensen noemen @Pokebots in een kanaal van een Discord-server. De Discord Orchestrator vraagt het de juiste agent en antwoordt.",
+    "Mensen noemen @OpenBot in een kanaal van een Discord-server. De Discord Orchestrator vraagt het de juiste agent en antwoordt.",
   "mobile.server.connectors.discord.attention": {
     one: "{count} Discord-server heeft aandacht nodig",
     other: "{count} Discord-servers hebben aandacht nodig",
@@ -818,7 +818,7 @@ export const messages = {
   },
   "mobile.server.connectors.discord.workspaceTitle": "Discord-server",
   "mobile.server.connectors.discord.workspaceDescription":
-    "Noem @Pokebots in een kanaal. Antwoord op Pokebots om verder te gaan.",
+    "Noem @OpenBot in een kanaal. Antwoord op “OpenBot” om verder te gaan.",
   "mobile.server.connectors.discord.missingScopes":
     "Pokebots heeft deze machtigingen niet in Discord: {scopes}. Ontkoppel de Discord-server en verbind hem opnieuw.",
   "mobile.server.connectors.discord.retryAt": "Discord vroeg Pokebots te wachten. Het probeert het opnieuw om {time}.",
@@ -845,7 +845,7 @@ export const messages = {
     "De Discord Orchestrator en zijn gesprekken worden uit Pokebots verwijderd.",
   "mobile.server.connectors.discord.agentPromptTitle": "De Discord Orchestrator toevoegen?",
   "mobile.server.connectors.discord.agentPromptBody":
-    "Deze nieuwe agent beantwoordt alles wat mensen in {workspace} naar @Pokebots sturen.",
+    "Deze nieuwe agent beantwoordt alles wat mensen in {workspace} naar @OpenBot sturen.",
   "mobile.server.connectors.discord.installFailed": "Discord heeft de autorisatie niet voltooid. Probeer het opnieuw.",
   "mobile.server.connectors.telegram.title": "Telegram",
   "mobile.server.connectors.telegram.description":

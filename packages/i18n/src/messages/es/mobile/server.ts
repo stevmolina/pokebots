@@ -801,7 +801,7 @@ export const messages = {
     "{host} elimina su clave de acceso. La bóveda y sus inicios de sesión permanecen en tu cuenta de {name}.",
   "mobile.server.connectors.slack.title": "Slack",
   "mobile.server.connectors.slack.description":
-    "Las personas mencionan a @Pokebots en Slack o le envían un mensaje directo. El Orquestador de Slack consulta al agente adecuado y responde.",
+    "Las personas mencionan a @OpenBot en Slack o le envían un mensaje directo. El Orquestador de Slack consulta al agente adecuado y responde.",
   "mobile.server.connectors.slack.attention": {
     one: "{count} espacio de trabajo requiere atención",
     other: "{count} espacios de trabajo requieren atención",
@@ -816,7 +816,7 @@ export const messages = {
   },
   "mobile.server.connectors.slack.workspaceTitle": "Espacio de trabajo",
   "mobile.server.connectors.slack.workspaceDescription":
-    "Las personas mencionan a @Pokebots o le envían un mensaje directo.",
+    "Las personas mencionan a @OpenBot o le envían un mensaje directo.",
   "mobile.server.connectors.slack.missingScopes":
     "Pokebots no tiene estos permisos en Slack: {scopes}. Desconecta el espacio de trabajo y vuelve a conectarlo.",
   "mobile.server.connectors.slack.retryAt": "Slack pidió a Pokebots que esperara. Lo intentará de nuevo a las {time}.",
@@ -844,11 +844,11 @@ export const messages = {
     "El Orquestador de Slack y sus conversaciones se eliminan de Pokebots.",
   "mobile.server.connectors.slack.agentPromptTitle": "¿Añadir el Orquestador de Slack?",
   "mobile.server.connectors.slack.agentPromptBody":
-    "Este nuevo agente responde a todo lo que las personas envían a @Pokebots en {workspace}.",
+    "Este nuevo agente responde a todo lo que las personas envían a @OpenBot en {workspace}.",
   "mobile.server.connectors.slack.installFailed": "Slack no terminó la instalación. Inténtalo de nuevo.",
   "mobile.server.connectors.discord.title": "Discord",
   "mobile.server.connectors.discord.description":
-    "Las personas mencionan a @Pokebots en un canal de un servidor de Discord. El Orquestador de Discord consulta al agente adecuado y responde.",
+    "Las personas mencionan a @OpenBot en un canal de un servidor de Discord. El Orquestador de Discord consulta al agente adecuado y responde.",
   "mobile.server.connectors.discord.attention": {
     one: "{count} servidor de Discord requiere atención",
     other: "{count} servidores de Discord requieren atención",
@@ -863,7 +863,7 @@ export const messages = {
   },
   "mobile.server.connectors.discord.workspaceTitle": "Servidor de Discord",
   "mobile.server.connectors.discord.workspaceDescription":
-    "Menciona a @Pokebots en un canal. Responde a Pokebots para continuar.",
+    "Menciona a @OpenBot en un canal. Responde a “OpenBot” para continuar.",
   "mobile.server.connectors.discord.missingScopes":
     "Pokebots no tiene estos permisos en Discord: {scopes}. Desconecta el servidor de Discord y vuelve a conectarlo.",
   "mobile.server.connectors.discord.retryAt":
@@ -892,7 +892,7 @@ export const messages = {
     "El Orquestador de Discord y sus conversaciones se eliminan de Pokebots.",
   "mobile.server.connectors.discord.agentPromptTitle": "¿Añadir el Orquestador de Discord?",
   "mobile.server.connectors.discord.agentPromptBody":
-    "Este nuevo agente responde a todo lo que las personas envían a @Pokebots en {workspace}.",
+    "Este nuevo agente responde a todo lo que las personas envían a @OpenBot en {workspace}.",
   "mobile.server.connectors.discord.installFailed": "Discord no terminó la autorización. Inténtalo de nuevo.",
   "mobile.server.connectors.telegram.title": "Telegram",
   "mobile.server.connectors.telegram.description":

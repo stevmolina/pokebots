@@ -26,8 +26,8 @@
       "reason": "Quoted provider app name in Slack and Discord connection instructions. See apps/slack-app manifests and apps/discord-app/README.md."
     },
     {
-      "pattern": "/invite @OpenBot\\b",
-      "reason": "The Slack app bot user is still named OpenBot (apps/slack-app manifests), so the invite command names that handle."
+      "pattern": "@OpenBot(?!\\w)",
+      "reason": "Slack and Discord mention and invite instructions use the documented provider bot handle."
     },
     {
       "pattern": "~/OpenBot\\b|\\$HOME/OpenBot\\b|\\\"OpenBot\\\", \\\"(?:Bots|Shared|Agents|Workspaces|Attachments|backups)\\\"",

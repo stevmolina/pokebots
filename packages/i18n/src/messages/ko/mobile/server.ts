@@ -750,7 +750,7 @@ export const messages = {
     "{host}에서 액세스 키가 삭제돼요. 보관함과 로그인 항목은 {name} 계정에 남아 있어요.",
   "mobile.server.connectors.slack.title": "Slack",
   "mobile.server.connectors.slack.description":
-    "Slack에서 @Pokebots을 멘션하거나 다이렉트 메시지를 보낼 수 있어요. Slack Orchestrator가 알맞은 에이전트에게 물어보고 답변해요.",
+    "Slack에서 @OpenBot을 멘션하거나 다이렉트 메시지를 보낼 수 있어요. Slack Orchestrator가 알맞은 에이전트에게 물어보고 답변해요.",
   "mobile.server.connectors.slack.attention": {
     other: "워크스페이스 {count}개 확인 필요",
   },
@@ -762,7 +762,7 @@ export const messages = {
     other: "워크스페이스는 최대 {count}개까지 연결할 수 있어요.",
   },
   "mobile.server.connectors.slack.workspaceTitle": "워크스페이스",
-  "mobile.server.connectors.slack.workspaceDescription": "@Pokebots을 멘션하거나 다이렉트 메시지를 보내세요.",
+  "mobile.server.connectors.slack.workspaceDescription": "@OpenBot을 멘션하거나 다이렉트 메시지를 보내세요.",
   "mobile.server.connectors.slack.missingScopes":
     "Pokebots에 Slack에서 다음 권한이 없어요: {scopes}. 워크스페이스 연결을 해제한 다음 다시 연결해 주세요.",
   "mobile.server.connectors.slack.retryAt": "Slack이 Pokebots에 대기를 요청했어요. {time}에 다시 시도해요.",
@@ -789,11 +789,11 @@ export const messages = {
   "mobile.server.connectors.slack.disconnectDeleted": "Slack Orchestrator와 해당 대화가 Pokebots에서 삭제돼요.",
   "mobile.server.connectors.slack.agentPromptTitle": "Slack Orchestrator를 추가할까요?",
   "mobile.server.connectors.slack.agentPromptBody":
-    "이 새 에이전트가 {workspace}에서 @Pokebots에게 보내는 모든 요청에 답변해요.",
+    "이 새 에이전트가 {workspace}에서 @OpenBot에게 보내는 모든 요청에 답변해요.",
   "mobile.server.connectors.slack.installFailed": "Slack 설치가 완료되지 않았어요. 다시 시도해 주세요.",
   "mobile.server.connectors.discord.title": "Discord",
   "mobile.server.connectors.discord.description":
-    "Discord 서버의 채널에서 @Pokebots을 멘션할 수 있어요. Discord Orchestrator가 알맞은 에이전트에게 물어보고 답변해요.",
+    "Discord 서버의 채널에서 @OpenBot을 멘션할 수 있어요. Discord Orchestrator가 알맞은 에이전트에게 물어보고 답변해요.",
   "mobile.server.connectors.discord.attention": {
     other: "Discord 서버 {count}개 확인 필요",
   },
@@ -806,7 +806,7 @@ export const messages = {
   },
   "mobile.server.connectors.discord.workspaceTitle": "Discord 서버",
   "mobile.server.connectors.discord.workspaceDescription":
-    "채널에서 @Pokebots을 멘션하세요. 이어가려면 Pokebots의 메시지에 답장하세요.",
+    "채널에서 @OpenBot을 멘션하세요. 이어가려면 “OpenBot”의 메시지에 답장하세요.",
   "mobile.server.connectors.discord.missingScopes":
     "Pokebots에 Discord에서 다음 권한이 없어요: {scopes}. Discord 서버 연결을 해제한 다음 다시 연결해 주세요.",
   "mobile.server.connectors.discord.retryAt": "Discord가 Pokebots에 대기를 요청했어요. {time}에 다시 시도해요.",
@@ -832,7 +832,7 @@ export const messages = {
   "mobile.server.connectors.discord.disconnectDeleted": "Discord Orchestrator와 해당 대화가 Pokebots에서 삭제돼요.",
   "mobile.server.connectors.discord.agentPromptTitle": "Discord Orchestrator를 추가할까요?",
   "mobile.server.connectors.discord.agentPromptBody":
-    "이 새 에이전트가 {workspace}에서 @Pokebots에게 보내는 모든 요청에 답변해요.",
+    "이 새 에이전트가 {workspace}에서 @OpenBot에게 보내는 모든 요청에 답변해요.",
   "mobile.server.connectors.discord.installFailed": "Discord 승인이 완료되지 않았어요. 다시 시도해 주세요.",
   "mobile.server.connectors.telegram.title": "Telegram",
   "mobile.server.connectors.telegram.description":

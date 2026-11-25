@@ -90,6 +90,12 @@ const providerNameKeys = new Set([
   "mobile.server.connectors.slack.connectFooter",
   "mobile.server.connectors.discord.connectFooter",
 ]);
+const providerReplyKeys = new Set([
+  "connector.discord.workspaceDescription",
+  "connector.discord.doneDescription",
+  "mobile.server.connectors.discord.workspaceDescription",
+]);
+const providerKey = /^(?:connector|mobile\.server\.connectors)\.(?:slack|discord)\./;
 const keptPhrases: Record<string, number> = {};
 for (const file of catalogFiles) {
   const name = file.split("/").pop() ?? "";
@@ -105,13 +111,23 @@ for (const file of catalogFiles) {
   for (const [key, text] of messageValues(module.messages)) {
     if (text.includes("openbot.run") || text.includes("openbot://")) valuesWithAddress += 1;
     const providerNames = [...text.matchAll(PROVIDER_APP_NAME)].length;
-    if (providerNameKeys.has(key)) {
+    if (providerReplyKeys.has(key)) {
+      check(
+        providerNames === 1 && text.includes("@OpenBot") && !text.includes("Pokebots"),
+        `${path} ${key}: use the same provider name in the mention and reply instructions.`,
+      );
+    } else if (providerNameKeys.has(key)) {
       check(
         providerNames === 1 && count(text, "Pokebots") === 1,
         `${path} ${key}: expected one quoted provider name and one product name.`,
       );
     } else {
       check(providerNames === 0, `${path} ${key}: unexpected quoted provider name.`);
+    }
+    if (providerKey.test(key)) {
+      check(!text.includes("@Pokebots"), `${path} ${key}: use the provider bot handle in mentions.`);
+    } else {
+      check(!text.includes("@OpenBot"), `${path} ${key}: unexpected provider bot handle.`);
     }
     let rest = text;
     for (const phrase of KEPT) {

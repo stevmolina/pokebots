@@ -81,7 +81,7 @@ export const messages = {
   // Marketplace > Apps > Slack: a workspace installs the one OpenBot app, and the Slack
   // Orchestrator agent receives each request, asks the team and answers.
   "connector.slack.title": "Slack",
-  "connector.slack.description": "人们在 Slack 中提及 @Pokebots 或给它发私信，Slack 调度助手会找到合适的助手来回答。",
+  "connector.slack.description": "人们在 Slack 中提及 @OpenBot 或给它发私信，Slack 调度助手会找到合适的助手来回答。",
   "connector.slack.statusConnected": "已连接",
   "connector.slack.statusAttention": "需要关注",
   // {workspace} is the Slack workspace name.
@@ -96,10 +96,10 @@ export const messages = {
   "connector.slack.addAgent": "添加助手",
   "connector.slack.actionFailed": "Slack 没有接受该更改",
   "connector.slack.workspaceTitle": "工作区",
-  "connector.slack.workspaceDescription": "人们提及 @Pokebots 或给它发私信。",
+  "connector.slack.workspaceDescription": "人们提及 @OpenBot 或给它发私信。",
   "connector.slack.disconnectWorkspace": "断开连接",
   "connector.slack.disconnectAllTitle": "断开 Slack",
-  "connector.slack.disconnectAllSummary": "所有工作区都将断开，其他人无法再通过 @Pokebots 联系你的助手。",
+  "connector.slack.disconnectAllSummary": "所有工作区都将断开，其他人无法再通过 @OpenBot 联系你的助手。",
   "connector.slack.disconnectAllSummaryOrchestrator":
     "所有工作区都将断开，Slack 调度助手及其对话将从 Pokebots 中删除。",
   "connector.slack.missingScopes": "Pokebots 在 Slack 中缺少这些权限：{scopes}。请断开该工作区后重新连接。",
@@ -128,7 +128,7 @@ export const messages = {
   "connector.slack.connectWaiting": "正在等待 Slack，请在浏览器中完成安装。",
   "connector.slack.agentStepTitle": "添加 Slack 调度助手",
   // {workspace} is the Slack workspace name.
-  "connector.slack.agentStepDescription": "这个新助手会回答人们在 {workspace} 中发给 @Pokebots 的所有内容。",
+  "connector.slack.agentStepDescription": "这个新助手会回答人们在 {workspace} 中发给 @OpenBot 的所有内容。",
   "connector.slack.orchestratorName": "Slack 调度助手",
   "connector.slack.orchestratorRole": "在 Slack 中回答并调度团队",
   "connector.slack.orchestratorDoesReceive": "优先接收所有 Slack 请求",
@@ -136,12 +136,12 @@ export const messages = {
   "connector.slack.orchestratorDoesAnswer": "把答案发到 Slack 话题中",
   "connector.slack.orchestratorModel": "模型",
   "connector.slack.doneTitle": "Pokebots 已加入 {workspace}",
-  "connector.slack.doneDescription": "在任意公开频道中提及 @Pokebots，或给它发私信。",
+  "connector.slack.doneDescription": "在任意公开频道中提及 @OpenBot，或给它发私信。",
   "connector.slack.done": "完成",
   "connector.slack.disconnectTitle": "断开 {workspace}？",
   "connector.slack.disconnectDescription": "Pokebots 将停止在 {workspace} 中回答，并从这台电脑删除其 Slack 令牌。",
   "connector.slack.disconnectDescriptionHost": "Pokebots 将停止在 {workspace} 中回答，并从 {host} 删除其 Slack 令牌。",
-  "connector.slack.disconnectEffect": "{workspace} 中的人将无法再通过 @Pokebots 联系你的助手。",
+  "connector.slack.disconnectEffect": "{workspace} 中的人将无法再通过 @OpenBot 联系你的助手。",
   "connector.slack.removeEffectKept": "对话和 Slack 调度助手会保留在 Pokebots 中。",
   "connector.slack.removeEffectDeleted": "Slack 调度助手及其对话将从 Pokebots 中删除。",
   "connector.slack.keep": "保持连接",
@@ -157,7 +157,7 @@ export const messages = {
   // "Discord server": "server" alone is an OpenBot server.
   "connector.discord.title": "Discord",
   "connector.discord.description":
-    "人们在 Discord 服务器的频道中提及 @Pokebots，Discord 调度助手会找到合适的助手来回答。",
+    "人们在 Discord 服务器的频道中提及 @OpenBot，Discord 调度助手会找到合适的助手来回答。",
   "connector.discord.statusConnected": "已连接",
   "connector.discord.statusAttention": "需要关注",
   // {workspace} is the Discord server name.
@@ -172,10 +172,10 @@ export const messages = {
   "connector.discord.addAgent": "添加助手",
   "connector.discord.actionFailed": "Discord 没有接受该更改",
   "connector.discord.workspaceTitle": "Discord 服务器",
-  "connector.discord.workspaceDescription": "在频道中提及 @Pokebots，回复 Pokebots 可继续对话。",
+  "connector.discord.workspaceDescription": "在频道中提及 @OpenBot，回复 “OpenBot” 可继续对话。",
   "connector.discord.disconnectWorkspace": "断开连接",
   "connector.discord.disconnectAllTitle": "断开 Discord",
-  "connector.discord.disconnectAllSummary": "所有服务器都将断开，其他人无法再通过 @Pokebots 联系你的助手。",
+  "connector.discord.disconnectAllSummary": "所有服务器都将断开，其他人无法再通过 @OpenBot 联系你的助手。",
   "connector.discord.disconnectAllSummaryOrchestrator":
     "所有服务器都将断开，Discord 调度助手及其对话将从 Pokebots 中删除。",
   "connector.discord.missingScopes":
@@ -204,7 +204,7 @@ export const messages = {
   "connector.discord.connectWaiting": "正在等待 Discord，请在浏览器中完成授权。",
   "connector.discord.agentStepTitle": "添加 Discord 调度助手",
   // {workspace} is the Discord server name.
-  "connector.discord.agentStepDescription": "这个新助手会回答人们在 {workspace} 中发给 @Pokebots 的所有内容。",
+  "connector.discord.agentStepDescription": "这个新助手会回答人们在 {workspace} 中发给 @OpenBot 的所有内容。",
   "connector.discord.orchestratorName": "Discord 调度助手",
   "connector.discord.orchestratorRole": "在 Discord 中回答并调度团队",
   "connector.discord.orchestratorDoesReceive": "优先接收所有 Discord 请求",
@@ -212,13 +212,13 @@ export const messages = {
   "connector.discord.orchestratorDoesAnswer": "在 Discord 频道中回复答案",
   "connector.discord.orchestratorModel": "模型",
   "connector.discord.doneTitle": "Pokebots 已加入 {workspace}",
-  "connector.discord.doneDescription": "在频道中提及 @Pokebots，回复 Pokebots 可继续对话。",
+  "connector.discord.doneDescription": "在频道中提及 @OpenBot，回复 “OpenBot” 可继续对话。",
   "connector.discord.done": "完成",
   "connector.discord.disconnectTitle": "断开 {workspace}？",
   "connector.discord.disconnectDescription": "Pokebots 将停止在 {workspace} 中回答，并从这台电脑移除 Discord 连接。",
   "connector.discord.disconnectDescriptionHost":
     "Pokebots 将停止在 {workspace} 中回答，并从 {host} 移除 Discord 连接。",
-  "connector.discord.disconnectEffect": "{workspace} 中的人将无法再通过 @Pokebots 联系你的助手。",
+  "connector.discord.disconnectEffect": "{workspace} 中的人将无法再通过 @OpenBot 联系你的助手。",
   "connector.discord.removeEffectKept": "对话和 Discord 调度助手会保留在 Pokebots 中。",
   "connector.discord.removeEffectDeleted": "Discord 调度助手及其对话将从 Pokebots 中删除。",
   "connector.discord.keep": "保持连接",

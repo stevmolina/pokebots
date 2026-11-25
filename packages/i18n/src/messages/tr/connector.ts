@@ -93,7 +93,7 @@ export const messages = {
   // Düzenleyicisi ajanı her isteği alır, ekibe sorar ve yanıtlar.
   "connector.slack.title": "Slack",
   "connector.slack.description":
-    "Kullanıcılar Slack'te @Pokebots'tan bahseder veya doğrudan mesaj gönderir. Slack Düzenleyicisi doğru ajana sorar ve yanıtlar.",
+    "Kullanıcılar Slack'te @OpenBot'tan bahseder veya doğrudan mesaj gönderir. Slack Düzenleyicisi doğru ajana sorar ve yanıtlar.",
   "connector.slack.statusConnected": "Bağlandı",
   "connector.slack.statusAttention": "Dikkat gerekiyor",
   // {workspace} Slack çalışma alanı adıdır.
@@ -108,11 +108,11 @@ export const messages = {
   "connector.slack.addAgent": "Ajan ekle",
   "connector.slack.actionFailed": "Slack değişikliği kabul etmedi",
   "connector.slack.workspaceTitle": "Çalışma alanları",
-  "connector.slack.workspaceDescription": "Kullanıcılar @Pokebots'tan bahseder veya doğrudan mesaj gönderir.",
+  "connector.slack.workspaceDescription": "Kullanıcılar @OpenBot'tan bahseder veya doğrudan mesaj gönderir.",
   "connector.slack.disconnectWorkspace": "Bağlantıyı kes",
   "connector.slack.disconnectAllTitle": "Slack bağlantısını kes",
   "connector.slack.disconnectAllSummary":
-    "Tüm çalışma alanlarının bağlantısı kesilir. Kimse ajanlarınıza artık @Pokebots üzerinden ulaşamaz.",
+    "Tüm çalışma alanlarının bağlantısı kesilir. Kimse ajanlarınıza artık @OpenBot üzerinden ulaşamaz.",
   "connector.slack.disconnectAllSummaryOrchestrator":
     "Tüm çalışma alanlarının bağlantısı kesilir. Slack Düzenleyicisi ve sohbetleri Pokebots'tan silinir.",
   "connector.slack.missingScopes":
@@ -143,7 +143,7 @@ export const messages = {
   "connector.slack.connectWaiting": "Slack bekleniyor. Kurulumu tarayıcınızda tamamlayın.",
   "connector.slack.agentStepTitle": "Slack Düzenleyicisini ekleyin",
   // {workspace} Slack çalışma alanı adıdır.
-  "connector.slack.agentStepDescription": "Bu yeni ajan, {workspace} içinde @Pokebots'a gönderilen her şeyi yanıtlar.",
+  "connector.slack.agentStepDescription": "Bu yeni ajan, {workspace} içinde @OpenBot'a gönderilen her şeyi yanıtlar.",
   "connector.slack.orchestratorName": "Slack Düzenleyicisi",
   "connector.slack.orchestratorRole": "Slack'te yanıt verir ve ekibe sorar",
   "connector.slack.orchestratorDoesReceive": "Her Slack isteğini ilk olarak alır",
@@ -151,15 +151,14 @@ export const messages = {
   "connector.slack.orchestratorDoesAnswer": "Yanıtı Slack ileti dizisinde paylaşır",
   "connector.slack.orchestratorModel": "Model",
   "connector.slack.doneTitle": "Pokebots {workspace} içinde",
-  "connector.slack.doneDescription": "Herhangi bir genel kanalda @Pokebots'tan bahsedin veya doğrudan mesaj gönderin.",
+  "connector.slack.doneDescription": "Herhangi bir genel kanalda @OpenBot'tan bahsedin veya doğrudan mesaj gönderin.",
   "connector.slack.done": "Bitti",
   "connector.slack.disconnectTitle": "{workspace} bağlantısı kesilsin mi?",
   "connector.slack.disconnectDescription":
     "Pokebots {workspace} içinde yanıt vermeyi durdurur ve Slack belirtecini bu bilgisayardan kaldırır.",
   "connector.slack.disconnectDescriptionHost":
     "Pokebots {workspace} içinde yanıt vermeyi durdurur ve Slack belirtecini {host} sunucusundan kaldırır.",
-  "connector.slack.disconnectEffect":
-    "{workspace} içindeki kişiler artık @Pokebots aracılığıyla ajanlarınıza ulaşamaz.",
+  "connector.slack.disconnectEffect": "{workspace} içindeki kişiler artık @OpenBot aracılığıyla ajanlarınıza ulaşamaz.",
   "connector.slack.removeEffectKept": "Konuşmalar ve Slack Düzenleyicisi Pokebots'ta kalır.",
   "connector.slack.removeEffectDeleted": "Slack Düzenleyicisi ve konuşmaları Pokebots'tan silinir.",
   "connector.slack.keep": "Bağlı tut",
@@ -178,7 +177,7 @@ export const messages = {
   // Düzenleyicisi ajanı her isteği alır, ekibe sorar ve yanıtlar. Her zaman "Discord sunucusu" yazın.
   "connector.discord.title": "Discord",
   "connector.discord.description":
-    "Kullanıcılar bir Discord sunucusunun kanalında @Pokebots'tan bahseder. Discord Düzenleyicisi doğru ajana sorar ve yanıtlar.",
+    "Kullanıcılar bir Discord sunucusunun kanalında @OpenBot'tan bahseder. Discord Düzenleyicisi doğru ajana sorar ve yanıtlar.",
   "connector.discord.statusConnected": "Bağlandı",
   "connector.discord.statusAttention": "Dikkat gerekiyor",
   // {workspace} Discord sunucusunun adıdır.
@@ -194,11 +193,11 @@ export const messages = {
   "connector.discord.actionFailed": "Discord değişikliği kabul etmedi",
   "connector.discord.workspaceTitle": "Discord sunucuları",
   "connector.discord.workspaceDescription":
-    "Bir kanalda @Pokebots'tan bahsedin. Devam etmek için Pokebots'a yanıt verin.",
+    "Bir kanalda @OpenBot'tan bahsedin. Devam etmek için “OpenBot”'a yanıt verin.",
   "connector.discord.disconnectWorkspace": "Bağlantıyı kes",
   "connector.discord.disconnectAllTitle": "Discord bağlantısını kes",
   "connector.discord.disconnectAllSummary":
-    "Tüm sunucuların bağlantısı kesilir. Kimse ajanlarınıza artık @Pokebots üzerinden ulaşamaz.",
+    "Tüm sunucuların bağlantısı kesilir. Kimse ajanlarınıza artık @OpenBot üzerinden ulaşamaz.",
   "connector.discord.disconnectAllSummaryOrchestrator":
     "Tüm sunucuların bağlantısı kesilir. Discord Düzenleyicisi ve sohbetleri Pokebots'tan silinir.",
   "connector.discord.missingScopes":
@@ -228,8 +227,7 @@ export const messages = {
   "connector.discord.connectWaiting": "Discord bekleniyor. Yetkilendirmeyi tarayıcınızda tamamlayın.",
   "connector.discord.agentStepTitle": "Discord Düzenleyicisini ekleyin",
   // {workspace} Discord sunucusunun adıdır.
-  "connector.discord.agentStepDescription":
-    "Bu yeni ajan, {workspace} içinde @Pokebots'a gönderilen her şeyi yanıtlar.",
+  "connector.discord.agentStepDescription": "Bu yeni ajan, {workspace} içinde @OpenBot'a gönderilen her şeyi yanıtlar.",
   "connector.discord.orchestratorName": "Discord Düzenleyicisi",
   "connector.discord.orchestratorRole": "Discord'da yanıt verir ve ekibe sorar",
   "connector.discord.orchestratorDoesReceive": "Her Discord isteğini ilk olarak alır",
@@ -237,7 +235,7 @@ export const messages = {
   "connector.discord.orchestratorDoesAnswer": "Yanıtı Discord kanalında verir",
   "connector.discord.orchestratorModel": "Model",
   "connector.discord.doneTitle": "Pokebots {workspace} içinde",
-  "connector.discord.doneDescription": "Bir kanalda @Pokebots'tan bahsedin. Devam etmek için Pokebots'a yanıt verin.",
+  "connector.discord.doneDescription": "Bir kanalda @OpenBot'tan bahsedin. Devam etmek için “OpenBot”'a yanıt verin.",
   "connector.discord.done": "Bitti",
   "connector.discord.disconnectTitle": "{workspace} bağlantısı kesilsin mi?",
   "connector.discord.disconnectDescription":
@@ -245,7 +243,7 @@ export const messages = {
   "connector.discord.disconnectDescriptionHost":
     "Pokebots {workspace} içinde yanıt vermeyi bırakır ve Discord bağlantısını {host} sunucusundan kaldırır.",
   "connector.discord.disconnectEffect":
-    "{workspace} içindeki kişiler artık @Pokebots aracılığıyla ajanlarınıza ulaşamaz.",
+    "{workspace} içindeki kişiler artık @OpenBot aracılığıyla ajanlarınıza ulaşamaz.",
   "connector.discord.removeEffectKept": "Konuşmalar ve Discord Düzenleyicisi Pokebots'ta kalır.",
   "connector.discord.removeEffectDeleted": "Discord Düzenleyicisi ve konuşmaları Pokebots'tan silinir.",
   "connector.discord.keep": "Bağlı tut",

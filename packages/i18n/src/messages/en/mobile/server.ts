@@ -1093,7 +1093,7 @@ export const messages = defineMessages("mobile.server", {
   // {workspace} is the Slack workspace name.
   "mobile.server.connectors.slack.title": "Slack",
   "mobile.server.connectors.slack.description":
-    "People mention @Pokebots in Slack or send it a direct message. The Slack Orchestrator asks the right agent and answers.",
+    "People mention @OpenBot in Slack or send it a direct message. The Slack Orchestrator asks the right agent and answers.",
   "mobile.server.connectors.slack.attention": {
     one: "{count} workspace needs attention",
     other: "{count} workspaces need attention",
@@ -1107,7 +1107,7 @@ export const messages = defineMessages("mobile.server", {
     other: "You can connect a maximum of {count} workspaces.",
   },
   "mobile.server.connectors.slack.workspaceTitle": "Workspace",
-  "mobile.server.connectors.slack.workspaceDescription": "People mention @Pokebots or send it a direct message.",
+  "mobile.server.connectors.slack.workspaceDescription": "People mention @OpenBot or send it a direct message.",
   // {scopes} lists Slack permissions, such as "chat:write and users:read".
   "mobile.server.connectors.slack.missingScopes":
     "Pokebots does not have these permissions in Slack: {scopes}. Disconnect the workspace, then connect it again.",
@@ -1135,13 +1135,13 @@ export const messages = defineMessages("mobile.server", {
     "The Slack Orchestrator and its conversations are deleted from Pokebots.",
   "mobile.server.connectors.slack.agentPromptTitle": "Add the Slack Orchestrator?",
   "mobile.server.connectors.slack.agentPromptBody":
-    "This new agent answers everything that people send to @Pokebots in {workspace}.",
+    "This new agent answers everything that people send to @OpenBot in {workspace}.",
   "mobile.server.connectors.slack.installFailed": "Slack did not finish the install. Try again.",
   // Discord: a Discord server adds the one OpenBot bot. Always write "Discord server": "server" alone
   // is an OpenBot server. {workspace} is the Discord server name.
   "mobile.server.connectors.discord.title": "Discord",
   "mobile.server.connectors.discord.description":
-    "People mention @Pokebots in a channel of a Discord server. The Discord Orchestrator asks the right agent and answers.",
+    "People mention @OpenBot in a channel of a Discord server. The Discord Orchestrator asks the right agent and answers.",
   "mobile.server.connectors.discord.attention": {
     one: "{count} Discord server needs attention",
     other: "{count} Discord servers need attention",
@@ -1156,7 +1156,7 @@ export const messages = defineMessages("mobile.server", {
   },
   "mobile.server.connectors.discord.workspaceTitle": "Discord server",
   "mobile.server.connectors.discord.workspaceDescription":
-    "Mention @Pokebots in a channel. Reply to Pokebots to continue.",
+    "Mention @OpenBot in a channel. Reply to “OpenBot” to continue.",
   // {scopes} lists Discord permissions.
   "mobile.server.connectors.discord.missingScopes":
     "Pokebots does not have these permissions in Discord: {scopes}. Disconnect the Discord server, then connect it again.",
@@ -1184,7 +1184,7 @@ export const messages = defineMessages("mobile.server", {
     "The Discord Orchestrator and its conversations are deleted from Pokebots.",
   "mobile.server.connectors.discord.agentPromptTitle": "Add the Discord Orchestrator?",
   "mobile.server.connectors.discord.agentPromptBody":
-    "This new agent answers everything that people send to @Pokebots in {workspace}.",
+    "This new agent answers everything that people send to @OpenBot in {workspace}.",
   "mobile.server.connectors.discord.installFailed": "Discord did not finish the authorization. Try again.",
   // Telegram: each chat adds the one OpenBot bot, and the Telegram Orchestrator answers all chats.
   // {chat} is the Telegram chat name.

@@ -1080,7 +1080,7 @@ export const messages = {
   // {workspace} is the Slack workspace name.
   "mobile.server.connectors.slack.title": "Slack",
   "mobile.server.connectors.slack.description":
-    "אנשים מזכירים את @Pokebots ב-Slack או שולחים לו הודעה ישירה. Slack Orchestrator פונה לסוכן המתאים ועונה.",
+    "אנשים מזכירים את @OpenBot ב-Slack או שולחים לו הודעה ישירה. Slack Orchestrator פונה לסוכן המתאים ועונה.",
   "mobile.server.connectors.slack.attention": {
     one: "סביבת עבודה אחת דורשת טיפול",
     two: "שתי סביבות עבודה דורשות טיפול",
@@ -1096,7 +1096,7 @@ export const messages = {
     other: "אפשר לחבר לכל היותר {count} סביבות עבודה.",
   },
   "mobile.server.connectors.slack.workspaceTitle": "סביבת עבודה",
-  "mobile.server.connectors.slack.workspaceDescription": "אנשים מזכירים את @Pokebots או שולחים לו הודעה ישירה.",
+  "mobile.server.connectors.slack.workspaceDescription": "אנשים מזכירים את @OpenBot או שולחים לו הודעה ישירה.",
   // {scopes} lists Slack permissions, such as "chat:write and users:read".
   "mobile.server.connectors.slack.missingScopes":
     "ל-Pokebots אין את ההרשאות האלה ב-Slack: {scopes}. יש לנתק את סביבת העבודה ולחבר אותה שוב.",
@@ -1124,13 +1124,13 @@ export const messages = {
   "mobile.server.connectors.slack.disconnectDeleted": "Slack Orchestrator והשיחות שלו נמחקים מ-Pokebots.",
   "mobile.server.connectors.slack.agentPromptTitle": "להוסיף את Slack Orchestrator?",
   "mobile.server.connectors.slack.agentPromptBody":
-    "הסוכן החדש הזה עונה על כל מה שאנשים שולחים אל @Pokebots ב-{workspace}.",
+    "הסוכן החדש הזה עונה על כל מה שאנשים שולחים אל @OpenBot ב-{workspace}.",
   "mobile.server.connectors.slack.installFailed": "Slack לא סיים את ההתקנה. אפשר לנסות שוב.",
   // Discord: a Discord server adds the one OpenBot bot. Always write "Discord server": "server" alone
   // is an OpenBot server. {workspace} is the Discord server name.
   "mobile.server.connectors.discord.title": "Discord",
   "mobile.server.connectors.discord.description":
-    "אנשים מזכירים את @Pokebots בערוץ של שרת Discord. Discord Orchestrator פונה לסוכן המתאים ועונה.",
+    "אנשים מזכירים את @OpenBot בערוץ של שרת Discord. Discord Orchestrator פונה לסוכן המתאים ועונה.",
   "mobile.server.connectors.discord.attention": {
     one: "שרת Discord אחד דורש טיפול",
     two: "שני שרתי Discord דורשים טיפול",
@@ -1147,7 +1147,7 @@ export const messages = {
   },
   "mobile.server.connectors.discord.workspaceTitle": "שרת Discord",
   "mobile.server.connectors.discord.workspaceDescription":
-    "יש להזכיר את @Pokebots בערוץ. כדי להמשיך, משיבים ל-Pokebots.",
+    "יש להזכיר את @OpenBot בערוץ. כדי להמשיך, משיבים ל-“OpenBot”.",
   // {scopes} lists Discord permissions.
   "mobile.server.connectors.discord.missingScopes":
     "ל-Pokebots אין את ההרשאות האלה ב-Discord: {scopes}. יש לנתק את שרת Discord ולחבר אותו שוב.",
@@ -1174,7 +1174,7 @@ export const messages = {
   "mobile.server.connectors.discord.disconnectDeleted": "Discord Orchestrator והשיחות שלו נמחקים מ-Pokebots.",
   "mobile.server.connectors.discord.agentPromptTitle": "להוסיף את Discord Orchestrator?",
   "mobile.server.connectors.discord.agentPromptBody":
-    "הסוכן החדש הזה עונה על כל מה שאנשים שולחים אל @Pokebots ב-{workspace}.",
+    "הסוכן החדש הזה עונה על כל מה שאנשים שולחים אל @OpenBot ב-{workspace}.",
   "mobile.server.connectors.discord.installFailed": "Discord לא סיים את ההרשאה. אפשר לנסות שוב.",
   // Telegram: each chat adds the one OpenBot bot, and the Telegram Orchestrator answers all chats.
   // {chat} is the Telegram chat name.

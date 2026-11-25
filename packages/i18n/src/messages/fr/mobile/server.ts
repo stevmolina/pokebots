@@ -797,7 +797,7 @@ export const messages = {
     "{host} supprime sa clé d’accès. Le coffre et ses identifiants restent dans votre compte {name}.",
   "mobile.server.connectors.slack.title": "Slack",
   "mobile.server.connectors.slack.description":
-    "Les utilisateurs mentionnent @Pokebots dans Slack ou lui envoient un message direct. Le Slack Orchestrator sollicite le bon agent et répond.",
+    "Les utilisateurs mentionnent @OpenBot dans Slack ou lui envoient un message direct. Le Slack Orchestrator sollicite le bon agent et répond.",
   "mobile.server.connectors.slack.attention": {
     one: "{count} espace de travail demande votre attention",
     other: "{count} espaces de travail demandent votre attention",
@@ -812,7 +812,7 @@ export const messages = {
   },
   "mobile.server.connectors.slack.workspaceTitle": "Espace de travail",
   "mobile.server.connectors.slack.workspaceDescription":
-    "Les utilisateurs mentionnent @Pokebots ou lui envoient un message direct.",
+    "Les utilisateurs mentionnent @OpenBot ou lui envoient un message direct.",
   "mobile.server.connectors.slack.missingScopes":
     "Pokebots n’a pas ces autorisations dans Slack : {scopes}. Déconnectez l’espace de travail, puis connectez-le à nouveau.",
   "mobile.server.connectors.slack.retryAt": "Slack a demandé à Pokebots de patienter. Nouvel essai à {time}.",
@@ -840,11 +840,11 @@ export const messages = {
     "Le Slack Orchestrator et ses conversations sont supprimés d’Pokebots.",
   "mobile.server.connectors.slack.agentPromptTitle": "Ajouter le Slack Orchestrator ?",
   "mobile.server.connectors.slack.agentPromptBody":
-    "Ce nouvel agent répond à tout ce que les utilisateurs envoient à @Pokebots dans {workspace}.",
+    "Ce nouvel agent répond à tout ce que les utilisateurs envoient à @OpenBot dans {workspace}.",
   "mobile.server.connectors.slack.installFailed": "Slack n’a pas terminé l’installation. Réessayez.",
   "mobile.server.connectors.discord.title": "Discord",
   "mobile.server.connectors.discord.description":
-    "Les utilisateurs mentionnent @Pokebots dans un canal d’un serveur Discord. Le Discord Orchestrator sollicite le bon agent et répond.",
+    "Les utilisateurs mentionnent @OpenBot dans un canal d’un serveur Discord. Le Discord Orchestrator sollicite le bon agent et répond.",
   "mobile.server.connectors.discord.attention": {
     one: "{count} serveur Discord demande votre attention",
     other: "{count} serveurs Discord demandent votre attention",
@@ -859,7 +859,7 @@ export const messages = {
   },
   "mobile.server.connectors.discord.workspaceTitle": "Serveur Discord",
   "mobile.server.connectors.discord.workspaceDescription":
-    "Mentionnez @Pokebots dans un canal. Répondez à Pokebots pour continuer.",
+    "Mentionnez @OpenBot dans un canal. Répondez à “OpenBot” pour continuer.",
   "mobile.server.connectors.discord.missingScopes":
     "Pokebots n’a pas ces autorisations dans Discord : {scopes}. Déconnectez le serveur Discord, puis connectez-le à nouveau.",
   "mobile.server.connectors.discord.retryAt": "Discord a demandé à Pokebots de patienter. Nouvel essai à {time}.",
@@ -887,7 +887,7 @@ export const messages = {
     "Le Discord Orchestrator et ses conversations sont supprimés d’Pokebots.",
   "mobile.server.connectors.discord.agentPromptTitle": "Ajouter le Discord Orchestrator ?",
   "mobile.server.connectors.discord.agentPromptBody":
-    "Ce nouvel agent répond à tout ce que les utilisateurs envoient à @Pokebots dans {workspace}.",
+    "Ce nouvel agent répond à tout ce que les utilisateurs envoient à @OpenBot dans {workspace}.",
   "mobile.server.connectors.discord.installFailed": "Discord n’a pas terminé l’autorisation. Réessayez.",
   "mobile.server.connectors.telegram.title": "Telegram",
   "mobile.server.connectors.telegram.description":

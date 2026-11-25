@@ -85,7 +85,7 @@ export const messages = {
 
   "connector.slack.title": "Slack",
   "connector.slack.description":
-    "Ludzie oznaczają @Pokebots w Slacku lub wysyłają mu wiadomość prywatną. Slack Orchestrator pyta odpowiedniego agenta i odpowiada.",
+    "Ludzie oznaczają @OpenBot w Slacku lub wysyłają mu wiadomość prywatną. Slack Orchestrator pyta odpowiedniego agenta i odpowiada.",
   "connector.slack.statusConnected": "Połączono",
   "connector.slack.statusAttention": "Wymaga uwagi",
   "connector.slack.summaryConnected": "{workspace} · odpowiada Slack Orchestrator",
@@ -101,11 +101,11 @@ export const messages = {
   "connector.slack.addAgent": "Dodaj agenta",
   "connector.slack.actionFailed": "Slack nie przyjął zmiany",
   "connector.slack.workspaceTitle": "Obszary robocze",
-  "connector.slack.workspaceDescription": "Ludzie oznaczają @Pokebots lub wysyłają mu wiadomość prywatną.",
+  "connector.slack.workspaceDescription": "Ludzie oznaczają @OpenBot lub wysyłają mu wiadomość prywatną.",
   "connector.slack.disconnectWorkspace": "Odłącz",
   "connector.slack.disconnectAllTitle": "Odłącz Slack",
   "connector.slack.disconnectAllSummary":
-    "Wszystkie przestrzenie robocze zostaną odłączone. Nikt nie dotrze już do Twoich agentów przez @Pokebots.",
+    "Wszystkie przestrzenie robocze zostaną odłączone. Nikt nie dotrze już do Twoich agentów przez @OpenBot.",
   "connector.slack.disconnectAllSummaryOrchestrator":
     "Wszystkie przestrzenie robocze zostaną odłączone. Slack Orchestrator i jego rozmowy zostaną usunięte z Pokebots.",
   "connector.slack.missingScopes":
@@ -134,7 +134,7 @@ export const messages = {
   "connector.slack.connectWaiting": "Czekanie na Slack. Dokończ instalację w przeglądarce.",
   "connector.slack.agentStepTitle": "Dodaj Slack Orchestrator",
   "connector.slack.agentStepDescription":
-    "Ten nowy agent odpowiada na wszystko, co ludzie wysyłają do @Pokebots w obszarze roboczym {workspace}.",
+    "Ten nowy agent odpowiada na wszystko, co ludzie wysyłają do @OpenBot w obszarze roboczym {workspace}.",
   "connector.slack.orchestratorName": "Slack Orchestrator",
   "connector.slack.orchestratorRole": "Odpowiada w Slacku i pyta zespół",
   "connector.slack.orchestratorDoesReceive": "Jako pierwszy odbiera każdą prośbę ze Slacka",
@@ -142,7 +142,7 @@ export const messages = {
   "connector.slack.orchestratorDoesAnswer": "Publikuje odpowiedź w wątku Slacka",
   "connector.slack.orchestratorModel": "Model",
   "connector.slack.doneTitle": "Pokebots jest w obszarze roboczym {workspace}",
-  "connector.slack.doneDescription": "Oznacz @Pokebots w dowolnym publicznym kanale lub wyślij mu wiadomość prywatną.",
+  "connector.slack.doneDescription": "Oznacz @OpenBot w dowolnym publicznym kanale lub wyślij mu wiadomość prywatną.",
   "connector.slack.done": "Gotowe",
   "connector.slack.disconnectTitle": "Odłączyć {workspace}?",
   "connector.slack.disconnectDescription":
@@ -150,7 +150,7 @@ export const messages = {
   "connector.slack.disconnectDescriptionHost":
     "Pokebots przestaje odpowiadać w obszarze roboczym {workspace} i usuwa swój token Slack z serwera {host}.",
   "connector.slack.disconnectEffect":
-    "Ludzie z obszaru roboczego {workspace} nie będą już mogli kontaktować się z twoimi agentami przez @Pokebots.",
+    "Ludzie z obszaru roboczego {workspace} nie będą już mogli kontaktować się z twoimi agentami przez @OpenBot.",
   "connector.slack.removeEffectKept": "Rozmowy i Slack Orchestrator zostają w Pokebots.",
   "connector.slack.removeEffectDeleted": "Slack Orchestrator i jego rozmowy zostaną usunięte z Pokebots.",
   "connector.slack.keep": "Nie odłączaj",
@@ -171,7 +171,7 @@ export const messages = {
 
   "connector.discord.title": "Discord",
   "connector.discord.description":
-    "Ludzie oznaczają @Pokebots na kanale serwera Discord. Discord Orchestrator pyta odpowiedniego agenta i odpowiada.",
+    "Ludzie oznaczają @OpenBot na kanale serwera Discord. Discord Orchestrator pyta odpowiedniego agenta i odpowiada.",
   "connector.discord.statusConnected": "Połączono",
   "connector.discord.statusAttention": "Wymaga uwagi",
   "connector.discord.summaryConnected": "{workspace} · odpowiada Discord Orchestrator",
@@ -188,11 +188,11 @@ export const messages = {
   "connector.discord.actionFailed": "Discord nie przyjął zmiany",
   "connector.discord.workspaceTitle": "Serwery Discord",
   "connector.discord.workspaceDescription":
-    "Oznacz @Pokebots na kanale. Odpowiedz na wiadomość Pokebots, aby kontynuować.",
+    "Oznacz @OpenBot na kanale. Odpowiedz na wiadomość “OpenBot”, aby kontynuować.",
   "connector.discord.disconnectWorkspace": "Odłącz",
   "connector.discord.disconnectAllTitle": "Odłącz Discord",
   "connector.discord.disconnectAllSummary":
-    "Wszystkie serwery zostaną odłączone. Nikt nie dotrze już do Twoich agentów przez @Pokebots.",
+    "Wszystkie serwery zostaną odłączone. Nikt nie dotrze już do Twoich agentów przez @OpenBot.",
   "connector.discord.disconnectAllSummaryOrchestrator":
     "Wszystkie serwery zostaną odłączone. Discord Orchestrator i jego rozmowy zostaną usunięte z Pokebots.",
   "connector.discord.missingScopes":
@@ -220,7 +220,7 @@ export const messages = {
   "connector.discord.connectWaiting": "Czekanie na Discord. Dokończ autoryzację w przeglądarce.",
   "connector.discord.agentStepTitle": "Dodaj Discord Orchestrator",
   "connector.discord.agentStepDescription":
-    "Ten nowy agent odpowiada na wszystko, co ludzie wysyłają do @Pokebots na serwerze {workspace}.",
+    "Ten nowy agent odpowiada na wszystko, co ludzie wysyłają do @OpenBot na serwerze {workspace}.",
   "connector.discord.orchestratorName": "Discord Orchestrator",
   "connector.discord.orchestratorRole": "Odpowiada w Discordzie i pyta zespół",
   "connector.discord.orchestratorDoesReceive": "Jako pierwszy odbiera każdą prośbę z Discorda",
@@ -228,7 +228,7 @@ export const messages = {
   "connector.discord.orchestratorDoesAnswer": "Odpowiada na kanale Discord",
   "connector.discord.orchestratorModel": "Model",
   "connector.discord.doneTitle": "Pokebots jest na serwerze {workspace}",
-  "connector.discord.doneDescription": "Oznacz @Pokebots na kanale. Odpowiedz na wiadomość Pokebots, aby kontynuować.",
+  "connector.discord.doneDescription": "Oznacz @OpenBot na kanale. Odpowiedz na wiadomość “OpenBot”, aby kontynuować.",
   "connector.discord.done": "Gotowe",
   "connector.discord.disconnectTitle": "Odłączyć {workspace}?",
   "connector.discord.disconnectDescription":
@@ -236,7 +236,7 @@ export const messages = {
   "connector.discord.disconnectDescriptionHost":
     "Pokebots przestaje odpowiadać na serwerze {workspace} i usuwa połączenie z Discord z serwera {host}.",
   "connector.discord.disconnectEffect":
-    "Ludzie na serwerze {workspace} nie będą już mogli kontaktować się z twoimi agentami przez @Pokebots.",
+    "Ludzie na serwerze {workspace} nie będą już mogli kontaktować się z twoimi agentami przez @OpenBot.",
   "connector.discord.removeEffectKept": "Rozmowy i Discord Orchestrator zostają w Pokebots.",
   "connector.discord.removeEffectDeleted": "Discord Orchestrator i jego rozmowy zostaną usunięte z Pokebots.",
   "connector.discord.keep": "Nie odłączaj",

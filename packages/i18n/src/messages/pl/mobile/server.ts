@@ -874,7 +874,7 @@ export const messages = {
     "{host} usuwa swój klucz dostępu. Sejf i jego loginy zostają na Twoim koncie {name}.",
   "mobile.server.connectors.slack.title": "Slack",
   "mobile.server.connectors.slack.description":
-    "Ludzie oznaczają @Pokebots w Slacku lub wysyłają mu wiadomość prywatną. Slack Orchestrator pyta odpowiedniego agenta i odpowiada.",
+    "Ludzie oznaczają @OpenBot w Slacku lub wysyłają mu wiadomość prywatną. Slack Orchestrator pyta odpowiedniego agenta i odpowiada.",
   "mobile.server.connectors.slack.attention": {
     one: "{count} obszar roboczy wymaga uwagi",
     few: "{count} obszary robocze wymagają uwagi",
@@ -893,7 +893,7 @@ export const messages = {
   },
   "mobile.server.connectors.slack.workspaceTitle": "Obszar roboczy",
   "mobile.server.connectors.slack.workspaceDescription":
-    "Ludzie oznaczają @Pokebots lub wysyłają mu wiadomość prywatną.",
+    "Ludzie oznaczają @OpenBot lub wysyłają mu wiadomość prywatną.",
   "mobile.server.connectors.slack.missingScopes":
     "Pokebots nie ma tych uprawnień w Slacku: {scopes}. Odłącz obszar roboczy, a potem połącz go ponownie.",
   "mobile.server.connectors.slack.retryAt": "Slack poprosił Pokebots o czekanie. Kolejna próba o {time}.",
@@ -919,11 +919,11 @@ export const messages = {
   "mobile.server.connectors.slack.disconnectDeleted": "Slack Orchestrator i jego rozmowy zostaną usunięte z Pokebots.",
   "mobile.server.connectors.slack.agentPromptTitle": "Dodać Slack Orchestrator?",
   "mobile.server.connectors.slack.agentPromptBody":
-    "Ten nowy agent odpowiada na wszystko, co ludzie wysyłają do @Pokebots w obszarze roboczym {workspace}.",
+    "Ten nowy agent odpowiada na wszystko, co ludzie wysyłają do @OpenBot w obszarze roboczym {workspace}.",
   "mobile.server.connectors.slack.installFailed": "Slack nie ukończył instalacji. Spróbuj ponownie.",
   "mobile.server.connectors.discord.title": "Discord",
   "mobile.server.connectors.discord.description":
-    "Ludzie oznaczają @Pokebots na kanale serwera Discord. Discord Orchestrator pyta odpowiedniego agenta i odpowiada.",
+    "Ludzie oznaczają @OpenBot na kanale serwera Discord. Discord Orchestrator pyta odpowiedniego agenta i odpowiada.",
   "mobile.server.connectors.discord.attention": {
     one: "{count} serwer Discord wymaga uwagi",
     few: "{count} serwery Discord wymagają uwagi",
@@ -942,7 +942,7 @@ export const messages = {
   },
   "mobile.server.connectors.discord.workspaceTitle": "Serwer Discord",
   "mobile.server.connectors.discord.workspaceDescription":
-    "Oznacz @Pokebots na kanale. Odpowiedz na wiadomość Pokebots, aby kontynuować.",
+    "Oznacz @OpenBot na kanale. Odpowiedz na wiadomość “OpenBot”, aby kontynuować.",
   "mobile.server.connectors.discord.missingScopes":
     "Pokebots nie ma tych uprawnień w Discordzie: {scopes}. Odłącz serwer Discord, a potem połącz go ponownie.",
   "mobile.server.connectors.discord.retryAt": "Discord poprosił Pokebots o czekanie. Kolejna próba o {time}.",
@@ -969,7 +969,7 @@ export const messages = {
     "Discord Orchestrator i jego rozmowy zostaną usunięte z Pokebots.",
   "mobile.server.connectors.discord.agentPromptTitle": "Dodać Discord Orchestrator?",
   "mobile.server.connectors.discord.agentPromptBody":
-    "Ten nowy agent odpowiada na wszystko, co ludzie wysyłają do @Pokebots w obszarze roboczym {workspace}.",
+    "Ten nowy agent odpowiada na wszystko, co ludzie wysyłają do @OpenBot w obszarze roboczym {workspace}.",
   "mobile.server.connectors.discord.installFailed": "Discord nie ukończył autoryzacji. Spróbuj ponownie.",
   "mobile.server.connectors.telegram.title": "Telegram",
   "mobile.server.connectors.telegram.description":

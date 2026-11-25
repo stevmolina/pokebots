@@ -740,7 +740,7 @@ export const messages = {
   // {workspace} is the Slack workspace name.
   "mobile.server.connectors.slack.title": "Slack",
   "mobile.server.connectors.slack.description":
-    "人们在 Slack 中提及 @Pokebots 或给它发私信。Slack 调度助手会找到合适的助手来回答。",
+    "人们在 Slack 中提及 @OpenBot 或给它发私信。Slack 调度助手会找到合适的助手来回答。",
   "mobile.server.connectors.slack.attention": { other: "{count} 个工作区需要关注" },
   "mobile.server.connectors.slack.connect": "连接 Slack",
   "mobile.server.connectors.slack.connectFooter":
@@ -748,7 +748,7 @@ export const messages = {
   "mobile.server.connectors.slack.add": "添加工作区",
   "mobile.server.connectors.slack.limit": { other: "最多可连接 {count} 个工作区。" },
   "mobile.server.connectors.slack.workspaceTitle": "工作区",
-  "mobile.server.connectors.slack.workspaceDescription": "人们提及 @Pokebots 或给它发私信。",
+  "mobile.server.connectors.slack.workspaceDescription": "人们提及 @OpenBot 或给它发私信。",
   // {scopes} lists Slack permissions, such as "chat:write and users:read".
   "mobile.server.connectors.slack.missingScopes":
     "Pokebots 在 Slack 中缺少这些权限：{scopes}。请断开该工作区后重新连接。",
@@ -774,13 +774,13 @@ export const messages = {
   "mobile.server.connectors.slack.disconnectKept": "对话和 Slack 调度助手会保留在 Pokebots 中。",
   "mobile.server.connectors.slack.disconnectDeleted": "Slack 调度助手及其对话将从 Pokebots 中删除。",
   "mobile.server.connectors.slack.agentPromptTitle": "添加 Slack 调度助手？",
-  "mobile.server.connectors.slack.agentPromptBody": "这个新助手会回答人们在 {workspace} 中发给 @Pokebots 的所有消息。",
+  "mobile.server.connectors.slack.agentPromptBody": "这个新助手会回答人们在 {workspace} 中发给 @OpenBot 的所有消息。",
   "mobile.server.connectors.slack.installFailed": "Slack 未完成安装，请重试。",
   // Discord: a Discord server adds the one OpenBot bot. Always write "Discord server": "server" alone
   // is an OpenBot server. {workspace} is the Discord server name.
   "mobile.server.connectors.discord.title": "Discord",
   "mobile.server.connectors.discord.description":
-    "人们在 Discord 服务器的频道中提及 @Pokebots。Discord 调度助手会找到合适的助手来回答。",
+    "人们在 Discord 服务器的频道中提及 @OpenBot。Discord 调度助手会找到合适的助手来回答。",
   "mobile.server.connectors.discord.attention": { other: "{count} 个 Discord 服务器需要关注" },
   "mobile.server.connectors.discord.connect": "连接 Discord",
   "mobile.server.connectors.discord.connectFooter":
@@ -788,7 +788,7 @@ export const messages = {
   "mobile.server.connectors.discord.add": "添加 Discord 服务器",
   "mobile.server.connectors.discord.limit": { other: "最多可连接 {count} 个 Discord 服务器。" },
   "mobile.server.connectors.discord.workspaceTitle": "Discord 服务器",
-  "mobile.server.connectors.discord.workspaceDescription": "在频道中提及 @Pokebots，回复 Pokebots 可继续对话。",
+  "mobile.server.connectors.discord.workspaceDescription": "在频道中提及 @OpenBot，回复 “OpenBot” 可继续对话。",
   // {scopes} lists Discord permissions.
   "mobile.server.connectors.discord.missingScopes":
     "Pokebots 在 Discord 中缺少这些权限：{scopes}。请断开该 Discord 服务器后重新连接。",
@@ -813,8 +813,7 @@ export const messages = {
   "mobile.server.connectors.discord.disconnectKept": "对话和 Discord 调度助手会保留在 Pokebots 中。",
   "mobile.server.connectors.discord.disconnectDeleted": "Discord 调度助手及其对话将从 Pokebots 中删除。",
   "mobile.server.connectors.discord.agentPromptTitle": "添加 Discord 调度助手？",
-  "mobile.server.connectors.discord.agentPromptBody":
-    "这个新助手会回答人们在 {workspace} 中发给 @Pokebots 的所有消息。",
+  "mobile.server.connectors.discord.agentPromptBody": "这个新助手会回答人们在 {workspace} 中发给 @OpenBot 的所有消息。",
   "mobile.server.connectors.discord.installFailed": "Discord 未完成授权，请重试。",
   // Telegram: each chat adds the one OpenBot bot, and the Telegram Orchestrator answers all chats.
   // {chat} is the Telegram chat name.

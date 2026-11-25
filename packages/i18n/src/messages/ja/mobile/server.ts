@@ -776,7 +776,7 @@ export const messages = {
     "{host} はアクセスキーを削除します。保管庫とそのログインは {name} アカウントに残ります。",
   "mobile.server.connectors.slack.title": "Slack",
   "mobile.server.connectors.slack.description":
-    "Slack で @Pokebots をメンションするか、ダイレクトメッセージを送ります。Slack Orchestrator が適切なエージェントに依頼して回答します。",
+    "Slack で @OpenBot をメンションするか、ダイレクトメッセージを送ります。Slack Orchestrator が適切なエージェントに依頼して回答します。",
   "mobile.server.connectors.slack.attention": { other: "{count} 件のワークスペースに対応が必要です" },
   "mobile.server.connectors.slack.connect": "Slack を接続",
   "mobile.server.connectors.slack.connectFooter":
@@ -785,7 +785,7 @@ export const messages = {
   "mobile.server.connectors.slack.limit": { other: "接続できるワークスペースは最大 {count} 件です。" },
   "mobile.server.connectors.slack.workspaceTitle": "ワークスペース",
   "mobile.server.connectors.slack.workspaceDescription":
-    "@Pokebots をメンションするか、ダイレクトメッセージを送ります。",
+    "@OpenBot をメンションするか、ダイレクトメッセージを送ります。",
   "mobile.server.connectors.slack.missingScopes":
     "Pokebots には Slack で次の権限がありません: {scopes}。ワークスペースを切断してから、もう一度接続してください。",
   "mobile.server.connectors.slack.retryAt": "Slack から待機するよう求められました。{time} に再試行します。",
@@ -812,11 +812,11 @@ export const messages = {
   "mobile.server.connectors.slack.disconnectDeleted": "Slack Orchestrator とその会話は Pokebots から削除されます。",
   "mobile.server.connectors.slack.agentPromptTitle": "Slack Orchestrator を追加しますか？",
   "mobile.server.connectors.slack.agentPromptBody":
-    "この新しいエージェントは、{workspace} で @Pokebots に送られたすべてのメッセージに回答します。",
+    "この新しいエージェントは、{workspace} で @OpenBot に送られたすべてのメッセージに回答します。",
   "mobile.server.connectors.slack.installFailed": "Slack でインストールが完了しませんでした。もう一度お試しください。",
   "mobile.server.connectors.discord.title": "Discord",
   "mobile.server.connectors.discord.description":
-    "Discord サーバーのチャンネルで @Pokebots をメンションします。Discord Orchestrator が適切なエージェントに依頼して回答します。",
+    "Discord サーバーのチャンネルで @OpenBot をメンションします。Discord Orchestrator が適切なエージェントに依頼して回答します。",
   "mobile.server.connectors.discord.attention": { other: "{count} 件の Discord サーバーに対応が必要です" },
   "mobile.server.connectors.discord.connect": "Discord を接続",
   "mobile.server.connectors.discord.connectFooter":
@@ -825,7 +825,7 @@ export const messages = {
   "mobile.server.connectors.discord.limit": { other: "接続できる Discord サーバーは最大 {count} 件です。" },
   "mobile.server.connectors.discord.workspaceTitle": "Discord サーバー",
   "mobile.server.connectors.discord.workspaceDescription":
-    "チャンネルで @Pokebots をメンションします。続けるには Pokebots に返信します。",
+    "チャンネルで @OpenBot をメンションします。続けるには 「OpenBot」 に返信します。",
   "mobile.server.connectors.discord.missingScopes":
     "Pokebots には Discord で次の権限がありません: {scopes}。Discord サーバーを切断してから、もう一度接続してください。",
   "mobile.server.connectors.discord.retryAt": "Discord から待機するよう求められました。{time} に再試行します。",
@@ -851,7 +851,7 @@ export const messages = {
   "mobile.server.connectors.discord.disconnectDeleted": "Discord Orchestrator とその会話は Pokebots から削除されます。",
   "mobile.server.connectors.discord.agentPromptTitle": "Discord Orchestrator を追加しますか？",
   "mobile.server.connectors.discord.agentPromptBody":
-    "この新しいエージェントは、{workspace} で @Pokebots に送られたすべてのメッセージに回答します。",
+    "この新しいエージェントは、{workspace} で @OpenBot に送られたすべてのメッセージに回答します。",
   "mobile.server.connectors.discord.installFailed": "Discord で認証が完了しませんでした。もう一度お試しください。",
   "mobile.server.connectors.telegram.title": "Telegram",
   "mobile.server.connectors.telegram.description":
