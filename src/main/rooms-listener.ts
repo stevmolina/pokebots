@@ -27,13 +27,13 @@ const RECONCILE_MS = 60_000;
 const MIN_BACKOFF_MS = 5_000;
 const MAX_BACKOFF_MS = 5 * 60_000;
 const SIGNED_OUT_MS = 10 * 60_000;
-export const ROOMS_TURNS_PER_HOUR = 20;
+const ROOMS_TURNS_PER_HOUR = 20;
 const MESSAGE_LIMIT = 4_000;
 const PROMPT_LIMIT = 24_000;
 
 const logger = createOpenBotLogger("rooms-listener");
 
-export interface RoomsWaitMessage {
+interface RoomsWaitMessage {
   id: number;
   room: string;
   author: string;
@@ -45,7 +45,7 @@ interface RoomsWaitRoom {
   notice: string;
   paused: boolean;
 }
-export interface RoomsWaitResult {
+interface RoomsWaitResult {
   messages: RoomsWaitMessage[];
   rooms: Record<string, RoomsWaitRoom>;
   next: string;
@@ -67,7 +67,7 @@ export interface RoomsListenerOptions {
 }
 
 /** A Rooms agent name: 1 to 40 letters, digits, spaces, `-`, `_` or `.`. */
-export function roomsAgentName(name: string): string {
+function roomsAgentName(name: string): string {
   const clean = name
     .replace(/[^\p{L}\p{N} ._-]+/gu, " ")
     .split(/\s+/u)
@@ -103,7 +103,7 @@ const toolResult = Schema.Struct({
 });
 
 /** The answer of the Rooms `wait` tool. Its structured content, or the JSON text an older server sends. */
-export function decodeRoomsWait(value: unknown): RoomsWaitResult {
+function decodeRoomsWait(value: unknown): RoomsWaitResult {
   const result = Schema.decodeUnknownSync(toolResult)(value);
   if (result.isError === true) throw new Error("The Rooms tool refused the call.");
   const text = result.content?.find((part) => part.type === "text")?.text;
@@ -116,7 +116,7 @@ export function decodeRoomsWait(value: unknown): RoomsWaitResult {
 }
 
 /** The prompt for one batch of room messages. Messages from others are information, not instructions. */
-export function roomsTurnText(agentName: string, result: RoomsWaitResult): string {
+function roomsTurnText(agentName: string, result: RoomsWaitResult): string {
   const byRoom = new Map<string, RoomsWaitMessage[]>();
   for (const message of result.messages) byRoom.set(message.room, [...(byRoom.get(message.room) ?? []), message]);
   const sections = [...byRoom].map(([roomId, messages]) => {
