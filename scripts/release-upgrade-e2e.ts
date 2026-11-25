@@ -431,18 +431,14 @@ async function stageLocalMacBuild(source: string, bundle: string): Promise<Local
   check(input.endsWith(".app") && (await lstat(input)).isDirectory(), "Expected a signed .app directory.");
   await mkdir(resolve(bundle, ".."), { recursive: true });
   execFileSync("/usr/bin/ditto", [input, bundle]);
-  const verification = spawnSync(
-    "/usr/bin/codesign",
-    [
-      "--verify",
-      "--deep",
-      "--strict",
-      "-R",
-      '=identifier "app.openbot.custom" and certificate leaf[subject.CN] = "OpenBot Custom Local Signing"',
-      bundle,
-    ],
-    { stdio: "pipe" },
-  );
+  const verification = spawnSync("/usr/bin/codesign", [
+    "--verify",
+    "--deep",
+    "--strict",
+    "-R",
+    '=identifier "app.openbot.custom" and certificate leaf[subject.CN] = "OpenBot Custom Local Signing"',
+    bundle,
+  ]);
   check(verification.status === 0, "The fixture bundle failed signature verification.");
   const certificatePrefix = join(resolve(bundle, ".."), "signing-cert-");
   const display = spawnSync(
@@ -1069,6 +1065,12 @@ function rows(db: DatabaseSync, sql: string) {
   return db.prepare(sql).all();
 }
 
+function databaseSchema(db: DatabaseSync): string {
+  return JSON.stringify(
+    rows(db, "SELECT type, name, tbl_name, sql FROM sqlite_schema WHERE name NOT LIKE 'sqlite_%' ORDER BY type, name"),
+  );
+}
+
 function appliedVersions(db: DatabaseSync): number[] {
   return rows(db, "SELECT version FROM schema_migrations ORDER BY version").map((row) =>
     isNumber(row.version) ? row.version : -1,
@@ -1107,6 +1109,7 @@ async function checkDatabase(
   previousForeignKeyViolations: number,
   previousRowCounts: ReadonlyMap<string, number>,
   snapshot = "database-after",
+  expectedSchema?: string,
 ): Promise<DatabaseReport> {
   const fresh = new DatabaseSync(":memory:");
   migrateOpenBotDatabase(fresh);
@@ -1116,6 +1119,9 @@ async function checkDatabase(
 
   const db = await openDatabaseCopy(snapshot);
   try {
+    if (expectedSchema !== undefined) {
+      check(databaseSchema(db) === expectedSchema, "The next app changed the fixture database schema.");
+    }
     const versions = new Set(appliedVersions(db));
     const tables = tableColumns(db);
     let missingTables = 0;
@@ -1308,8 +1314,10 @@ try {
     report.candidatePassed = true;
     const candidateDatabase = new DatabaseSync(join(root, "database-after", "openbot.db"), { readOnly: true });
     let candidateRowCounts: Map<string, number>;
+    let candidateSchema: string;
     try {
       candidateRowCounts = rowCounts(candidateDatabase);
+      candidateSchema = databaseSchema(candidateDatabase);
     } finally {
       candidateDatabase.close();
     }
@@ -1329,6 +1337,7 @@ try {
       database.foreignKeyViolations,
       candidateRowCounts,
       "database-after-next",
+      candidateSchema,
     );
     checkUpgradedDatabase(next.database);
     check(JSON.stringify(next.afterUpgrade) === JSON.stringify(report.seeded), "The next app lost seeded data.");
@@ -1346,7 +1355,7 @@ try {
         : String(error);
   logger.error(`Release upgrade check failed: ${report.error}`);
   const running = current.app ?? current.process;
-  if (!localPokebots && running) logger.error(`OpenBot stderr (last lines):\n${running.stderr()}`);
+  if (!localPokebots && running) logger.error(`App stderr (last lines):\n${running.stderr()}`);
   if (!localPokebots) await printLogs().catch(() => undefined);
   process.exitCode = 1;
 } finally {
