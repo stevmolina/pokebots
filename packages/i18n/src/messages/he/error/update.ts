@@ -7,6 +7,9 @@ export const messages = {
   "error.update.restartFailed": "Pokebots לא הצליח להפעיל את עצמו מחדש כדי להתקין את העדכון.",
   "error.update.downloadStalled": "הורדת העדכון הפסיקה להגיב. יש לנסות שוב.",
   "error.update.installFailed": "לא ניתן להתקין את העדכון. יש לצאת מ-Pokebots, לפתוח אותו מחדש ולנסות שוב.",
+  "error.update.jobOff": "העדכונים כבויים.",
+  "error.update.jobStartFailed":
+    "לא ניתן להפעיל שוב את העדכונים. יש להריץ את scripts/custom-auto-update-setup.sh בעותק של Pokebots.",
   "error.update.notInstalled": "ההפעלה מחדש האחרונה לא התקינה את העדכון. יש להפעיל מחדש כדי לנסות שוב.",
   "error.update.downloadFailed": "לא ניתן להוריד את העדכון. יש לנסות שוב.",
   "error.update.checkFailed": "לא ניתן לבדוק אם יש עדכונים. יש לנסות שוב.",

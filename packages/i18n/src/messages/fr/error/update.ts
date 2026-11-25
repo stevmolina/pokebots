@@ -9,6 +9,9 @@ export const messages = {
   "error.update.restartFailed": "Pokebots n’a pas pu redémarrer pour installer la mise à jour.",
   "error.update.downloadStalled": "Le téléchargement de la mise à jour ne répond plus. Réessayez.",
   "error.update.installFailed": "Impossible d’installer la mise à jour. Quittez puis rouvrez Pokebots, et réessayez.",
+  "error.update.jobOff": "Mises à jour désactivées.",
+  "error.update.jobStartFailed":
+    "Impossible de réactiver les mises à jour. Exécutez scripts/custom-auto-update-setup.sh dans la copie de Pokebots.",
   "error.update.notInstalled": "Le dernier redémarrage n’a pas installé la mise à jour. Redémarrez pour réessayer.",
   "error.update.downloadFailed": "Impossible de télécharger la mise à jour. Réessayez.",
   "error.update.checkFailed": "Impossible de rechercher des mises à jour. Réessayez.",
