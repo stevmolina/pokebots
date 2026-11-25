@@ -133,7 +133,13 @@ async function main(): Promise<void> {
         return await evaluate("document.querySelector('#out').textContent");
       `,
     });
-    assert.equal(searched.result.success, true, searched.outcome.error);
+    if (!searched.result.success) {
+      // Says which step lost its input: the typed value, the page's click count, and the script log.
+      const page = await form.contents.executeJavaScript(
+        "({ query: document.querySelector('#query').value, clicks: window.clicks, out: document.querySelector('#out').textContent })",
+      );
+      assert.fail(`${searched.outcome.error} ${JSON.stringify({ steps: searched.outcome.steps, log: searched.outcome.log, page })}`);
+    }
     assert.equal(searched.outcome.status, "completed");
     assert.equal(searched.outcome.steps, 4);
     assert.equal(searched.outcome.value, "Result: openbot");
