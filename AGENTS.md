@@ -373,6 +373,11 @@ app (`/Applications/Pokebots.app`), which `electron-builder.custom.yml` builds. 
 - In the report, give the commit of the installed app from `--status`. When the status is
   `build_failed` or `launch_failed`, read the log, fix the cause on `main`, and the next merge
   builds again. `scripts/custom-auto-update-setup.sh --run-now` starts a check at once.
+- Never run `scripts/custom-auto-update-setup.sh` (with no option) to start a run: a reload can stop
+  a running build, and on 2026-11-24 it left the job unloaded for 20 hours. Use `--run-now`, which
+  only asks launchd for a run and never stops one, then check `--status`. `--status` exits 3 and
+  prints a warning when the job is not loaded. "Merged" does not mean "on Steven's Mac": that is true
+  only when `--status` shows the commit as installed.
 - When Steven says that a change is missing from the app, check the installed commit first.
 - To show the result, take a screenshot of the changed screen in the running app and show it inline
   in the chat reply. Use `bun run dev:automation screenshot` (read-only) as `README.md` describes;

@@ -7,6 +7,9 @@ export const messages = {
   "error.update.restartFailed": "تعذّر على Pokebots إعادة التشغيل لتثبيت التحديث.",
   "error.update.downloadStalled": "توقف تنزيل التحديث عن الاستجابة. حاول مرة أخرى.",
   "error.update.installFailed": "تعذّر تثبيت التحديث. أغلق Pokebots وأعد فتحه، ثم حاول مرة أخرى.",
+  "error.update.jobOff": "التحديثات متوقفة.",
+  "error.update.jobStartFailed":
+    "تعذّر إعادة تشغيل التحديثات. شغّل scripts/custom-auto-update-setup.sh في نسخة Pokebots.",
   "error.update.notInstalled": "لم تُثبِّت إعادة التشغيل الأخيرة التحديث. أعد التشغيل للمحاولة مرة أخرى.",
   "error.update.downloadFailed": "تعذّر تنزيل التحديث. حاول مرة أخرى.",
   "error.update.checkFailed": "تعذّر التحقق من وجود تحديثات. حاول مرة أخرى.",

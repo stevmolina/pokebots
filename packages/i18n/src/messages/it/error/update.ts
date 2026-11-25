@@ -7,6 +7,9 @@ export const messages = {
   "error.update.restartFailed": "Pokebots non è riuscito a riavviarsi per installare l'aggiornamento.",
   "error.update.downloadStalled": "Il download dell'aggiornamento ha smesso di rispondere. Riprova.",
   "error.update.installFailed": "Impossibile installare l'aggiornamento. Chiudi e riapri Pokebots, poi riprova.",
+  "error.update.jobOff": "Aggiornamenti disattivati.",
+  "error.update.jobStartFailed":
+    "Impossibile riattivare gli aggiornamenti. Esegui scripts/custom-auto-update-setup.sh nella copia di Pokebots.",
   "error.update.notInstalled": "L'ultimo riavvio non ha installato l'aggiornamento. Riavvia per riprovare.",
   "error.update.downloadFailed": "Impossibile scaricare l'aggiornamento. Riprova.",
   "error.update.checkFailed": "Impossibile cercare aggiornamenti. Riprova.",

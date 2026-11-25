@@ -14,6 +14,11 @@
 #      the new app does not stay up.
 #   5. Record the result in `status.json` and the log.
 #
+# Every start touches `last-check`, also when another run holds the lock. The app reads it, with the
+# launchd state, to show that updates are off. A run that finds "building", "waiting" or
+# "installing" from a run that is gone (stopped by a reload, a crash or a restart) says so and
+# starts again.
+#
 # State, the build worktree and the log are in ~/.local/state/pokebots-autoupdate/.
 # A failed build is not tried again until `main` moves. `--force` rebuilds the latest commit.
 # `--apply` installs an already staged commit when bootstrapping the sidebar button.
@@ -34,6 +39,7 @@ main() {
   legacy_target="/Applications/OpenBot Custom.app"
   app_process="^/Applications/(Pokebots|OpenBot Custom)\\.app/Contents/MacOS/(Pokebots|OpenBot)"
   mkdir -p "$state"
+  touch "$state/last-check"
   # Keep the log small: the last 2000 lines.
   if [[ -f "$log" ]] && (($(wc -l <"$log") > 4000)); then
     tail -n 2000 "$log" >"$log.tmp" && mv "$log.tmp" "$log"
@@ -43,6 +49,7 @@ main() {
   setup_path
   take_lock || exit 0
   say "Run started (pid $$)."
+  recover_stale_status
   touch "$state/manual-updates"
 
   local staged approved
@@ -158,6 +165,25 @@ take_lock() {
   fi
   staging_dir=""
   trap '[[ -n "${staging_dir:-}" ]] && rm -rf "$staging_dir"; rm -rf "$state/lock"' EXIT
+}
+
+# This run holds the lock, so a busy status was written by a run that is gone. Without this, the
+# status stays "building" until the next build ends, and nothing shows that the run died.
+recover_stale_status() {
+  local previous commit
+  previous="$(sed -n 's/.*"status":"\([a-z_]*\)".*/\1/p' "$state/status.json" 2>/dev/null || true)"
+  case "$previous" in
+    building | waiting | installing) ;;
+    *) return 0 ;;
+  esac
+  commit="$(sed -n 's/.*"commit":"\([0-9a-f]*\)".*/\1/p' "$state/status.json" 2>/dev/null || true)"
+  if [[ -n "$commit" && "$commit" == "$(cat "$state/installed-commit" 2>/dev/null || true)" ]]; then
+    say "The last run stopped while $previous, after it installed $commit."
+    write_status installed "$commit" "Installed $commit."
+    return 0
+  fi
+  say "The last run stopped while $previous. Starting again."
+  write_status interrupted "$commit" "The last run stopped while $previous. The next check starts again."
 }
 
 # HTTPS with the GitHub CLI token, so the job does not need an SSH agent.
@@ -398,5 +424,8 @@ notify() {
   say "$1"
 }
 
-main "$@"
-exit
+# The race test sources this file to call one function, so run only when executed.
+if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+  main "$@"
+  exit
+fi

@@ -8,6 +8,9 @@ export const messages = {
   "error.update.downloadStalled": "De download van de update reageert niet meer. Probeer het opnieuw.",
   "error.update.installFailed":
     "Kan de update niet installeren. Stop Pokebots, open het opnieuw en probeer het nog eens.",
+  "error.update.jobOff": "Updates staan uit.",
+  "error.update.jobStartFailed":
+    "Kan updates niet weer aanzetten. Voer scripts/custom-auto-update-setup.sh uit in de Pokebots-checkout.",
   "error.update.notInstalled":
     "Bij de laatste herstart is de update niet geïnstalleerd. Start opnieuw om het nog eens te proberen.",
   "error.update.downloadFailed": "Kan de update niet downloaden. Probeer het opnieuw.",

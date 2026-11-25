@@ -7,6 +7,9 @@ export const messages = defineMessages("error.update", {
   "error.update.restartFailed": "Pokebots could not restart to install the update.",
   "error.update.downloadStalled": "The update download stopped responding. Try again.",
   "error.update.installFailed": "Could not install the update. Quit and reopen Pokebots, then try again.",
+  "error.update.jobOff": "Updates are off.",
+  "error.update.jobStartFailed":
+    "Could not turn updates back on. Run scripts/custom-auto-update-setup.sh in the Pokebots checkout.",
   "error.update.notInstalled": "The last restart did not install the update. Restart to try again.",
   "error.update.downloadFailed": "Could not download the update. Try again.",
   "error.update.checkFailed": "Could not check for updates. Try again.",
