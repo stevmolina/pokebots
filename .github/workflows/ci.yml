@@ -179,6 +179,9 @@ jobs:
     if: ${{ !cancelled() && (needs.detect.result != 'success' || needs.detect.outputs.code == 'true') }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    # The steps read `CODE`, as in `Check`. Without it each step skipped, and the job passed with no check.
+    env:
+      CODE: ${{ needs.detect.result != 'success' || needs.detect.outputs.code == 'true' }}
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -281,6 +284,8 @@ jobs:
           name: browser-e2e-${{ matrix.part }}
           path: .openbot-build/browser-*
           if-no-files-found: ignore
+          # `.openbot-build` is a hidden folder, and the action skips hidden files by default.
+          include-hidden-files: true
 
   tests-desktop:
     # ubuntu-latest gives 4 vCPUs, so vitest runs 3 workers. The suite once took two runners; after the
