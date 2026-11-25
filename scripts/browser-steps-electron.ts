@@ -124,7 +124,6 @@ async function main(): Promise<void> {
 
     phase("script-sequence");
     const form = await open("/form");
-    await form.contents.executeJavaScript(`window.__ev = []; const t0 = performance.now(); let frames = 0; const tick = () => { frames += 1; requestAnimationFrame(tick); }; requestAnimationFrame(tick); for (const type of ["pointermove", "pointerdown", "mousedown", "pointerup", "mouseup", "click", "keydown", "focus", "blur"]) window.addEventListener(type, (e) => window.__ev.push([type, Math.round(performance.now() - t0), frames, e.isTrusted, (e.composedPath()[0] && (e.composedPath()[0].localName || e.composedPath()[0].nodeName)) || "", Math.round(e.clientX || 0), Math.round(e.clientY || 0), e.defaultPrevented]), true); void 0`);
     const searched = await runScript({
       tabId: form.tab.id,
       script: `
@@ -137,7 +136,7 @@ async function main(): Promise<void> {
     if (!searched.result.success) {
       // Says which step lost its input: the typed value, the page's click count, and the script log.
       const page = await form.contents.executeJavaScript(
-        "({ query: document.querySelector('#query').value, clicks: window.clicks, out: document.querySelector('#out').textContent, button: JSON.stringify(document.querySelector('button').getBoundingClientRect()), ev: window.__ev.filter((e) => e[0] !== 'keydown') })",
+        "({ query: document.querySelector('#query').value, clicks: window.clicks, out: document.querySelector('#out').textContent })",
       );
       assert.fail(
         `${searched.outcome.error} ${JSON.stringify({ steps: searched.outcome.steps, log: searched.outcome.log, page })}`,

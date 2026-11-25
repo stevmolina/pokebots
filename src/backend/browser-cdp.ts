@@ -121,10 +121,9 @@ const CHOOSER_WAIT_MS = 5_000;
 const DROP_FRAME_WAIT_MS = 1_500;
 const DROP_FRAME_SCRIPT = "new Promise((resolve) => requestAnimationFrame(() => setTimeout(resolve, 0)))";
 /**
- * Chromium can drop key and mouse press events, with no error, that reach a new page before its
- * first frame. That frame comes in less than 100 ms after the response, or up to one second later in
- * a tab that draws one frame each second, so only a page that got its response less than this time
- * ago waits for a frame before a key or a click. The age counts from the response, because
+ * Chromium can drop key events, with no error, that reach a new page before its first frame. That
+ * frame comes in less than 100 ms after the response, so only a page that got its response less
+ * than this time ago waits for a frame before a key. The age counts from the response, because
  * redirects and a slow server come before it. An older page does not wait: a tab that draws one
  * frame each second would make each key slow.
  */
@@ -265,6 +264,31 @@ const FOCUSED_FRAME_SCRIPT = `(() => {${FOCUSED_SELECTION}
 const MAX_FOCUSED_FRAME_DEPTH = 8;
 /** A click measures its target again when a press went to another element; after this many presses it fails. */
 const CLICK_PRESS_ATTEMPTS = 3;
+/**
+ * Chromium can drop a mouse press, with no error, that reaches a new page in a tab that draws no
+ * frames, for a few seconds after the page loads. The pointer move still arrives. A press that
+ * reached the page always sets `navigator.userActivation.hasBeenActive`, and a page cannot clear it.
+ * So when the page had no user activation before the press and has none after it, no part of the press
+ * reached the page, and the click presses again after this wait, until its deadline. A page that had
+ * activation before cannot tell, and gets one press as before.
+ */
+const DROPPED_PRESS_RETRY_MS = 250;
+/** The presses again of a click that has no deadline: about ten seconds. */
+const MAX_DROPPED_PRESSES = 40;
+const HAS_BEEN_ACTIVE_SCRIPT = "navigator.userActivation?.hasBeenActive ?? null";
+
+/** The `hasBeenActive` flag of the frame of `sessionId`, or undefined when it cannot be read. */
+const readHasBeenActive = (send: SendCommand, sessionId: string | undefined) =>
+  Effect.gen(function* () {
+    const contextId = yield* automationContextId(send, sessionId);
+    const result = yield* send(
+      "Runtime.evaluate",
+      { expression: HAS_BEEN_ACTIVE_SCRIPT, contextId, returnByValue: true },
+      sessionId,
+    );
+    const value = recordValue(result.result)?.value;
+    return typeof value === "boolean" ? value : undefined;
+  }).pipe(Effect.catch(() => Effect.succeed(undefined)));
 
 // Counts the key events that reach the target's window, in the automation world, so the page does
 // not see the listener. `TYPED_KEY_ARRIVED_FUNCTION` reads the count and removes the listener. A key
@@ -1227,28 +1251,38 @@ export class BrowserCdpEngine {
               Effect.catch(() => Effect.succeed(undefined)),
             )
           : undefined;
-        // Chromium drops a press, with no error, that reaches a new page before its first frame, as it
-        // drops keys: `NEW_PAGE_MS` says why. The pointer path does not wait for that frame: a move that
-        // the page does not acknowledge in time ends the path. So a click on a new page waits here.
-        yield* waitForFrame(send, resolved.sessionId, deadline, NEW_PAGE_FRAME_SCRIPT);
         // The page can move the target when the pointer comes near, after the point was measured. The
         // guard stops a press that goes to another element; the next attempt measures the target again.
-        for (let attempt = 1; ; attempt += 1) {
+        let dispatched = false;
+        let droppedPresses = 0;
+        for (let attempt = 1; ; ) {
           yield* browserSync(() => assertBeforeDeadline(deadline));
           const point = element
             ? yield* this.#elementPointEffect(send, element, true, resolved.sessionId)
             : { x: resolved.x, y: resolved.y };
           const { sessionId, ...coordinates } = point;
           yield* browserSync(() => assertBeforeDeadline(deadline));
-          if (attempt === 1) onDispatch?.();
+          if (!dispatched) onDispatch?.();
+          dispatched = true;
+          const activeBefore = yield* readHasBeenActive(send, sessionId);
           const from = this.#pointerIn(sessionId);
           this.#pointer = { point: coordinates, sessionId };
           const press = dispatchMouseClick(send, coordinates, button, totalClicks, modifiers, sessionId, from);
-          if (!element) return yield* press;
-          const missed = yield* guardedPress(send, element, contextId, sessionId, press);
-          if (missed === undefined) return;
+          const missed = element ? yield* guardedPress(send, element, contextId, sessionId, press) : yield* press;
+          if (missed === undefined) {
+            // Only a left press is sure to give activation, and a click with no deadline stops after the cap.
+            if (button !== "left" || activeBefore !== false) return;
+            if ((yield* readHasBeenActive(send, sessionId)) !== false) return;
+            droppedPresses += 1;
+            if (deadline === undefined && droppedPresses > MAX_DROPPED_PRESSES) return;
+            // No part of the press reached the page, as `DROPPED_PRESS_RETRY_MS` says: press again.
+            yield* browserSync(() => assertBeforeDeadline(deadline));
+            yield* Effect.sleep(DROPPED_PRESS_RETRY_MS);
+            continue;
+          }
           if (attempt >= CLICK_PRESS_ATTEMPTS)
             return yield* browserFailure(new Error(sourceText("error.backend.browserClickMoved", { element: missed })));
+          attempt += 1;
         }
       }),
     );
