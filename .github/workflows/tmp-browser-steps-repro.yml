@@ -16,7 +16,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: ./.github/actions/setup-bun
       - run: sudo apt-get update && sudo apt-get install --no-install-recommends --yes xvfb
-      - run: xvfb-run -a bun run test:browser-agent-session
-      - run: xvfb-run -a bun run test:browser-steps
+      - run: xvfb-run -a -s "-screen 0 1920x1080x24" bun run test:browser-agent-session
+      - run: xvfb-run -a -s "-screen 0 1920x1080x24" bun run test:browser-steps
       - if: failure()
         run: cat .openbot-build/browser-steps-e2e/report.json || true

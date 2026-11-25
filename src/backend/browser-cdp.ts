@@ -264,31 +264,6 @@ const FOCUSED_FRAME_SCRIPT = `(() => {${FOCUSED_SELECTION}
 const MAX_FOCUSED_FRAME_DEPTH = 8;
 /** A click measures its target again when a press went to another element; after this many presses it fails. */
 const CLICK_PRESS_ATTEMPTS = 3;
-/**
- * Chromium can drop a mouse press, with no error, that reaches a new page in a tab that draws no
- * frames, for a few seconds after the page loads. The pointer move still arrives. A press that
- * reached the page always sets `navigator.userActivation.hasBeenActive`, and a page cannot clear it.
- * So when the page had no user activation before the press and has none after it, no part of the press
- * reached the page, and the click presses again after this wait, until its deadline. A page that had
- * activation before cannot tell, and gets one press as before.
- */
-const DROPPED_PRESS_RETRY_MS = 250;
-/** The presses again of a click that has no deadline: about ten seconds. */
-const MAX_DROPPED_PRESSES = 40;
-const HAS_BEEN_ACTIVE_SCRIPT = "navigator.userActivation?.hasBeenActive ?? null";
-
-/** The `hasBeenActive` flag of the frame of `sessionId`, or undefined when it cannot be read. */
-const readHasBeenActive = (send: SendCommand, sessionId: string | undefined) =>
-  Effect.gen(function* () {
-    const contextId = yield* automationContextId(send, sessionId);
-    const result = yield* send(
-      "Runtime.evaluate",
-      { expression: HAS_BEEN_ACTIVE_SCRIPT, contextId, returnByValue: true },
-      sessionId,
-    );
-    const value = recordValue(result.result)?.value;
-    return typeof value === "boolean" ? value : undefined;
-  }).pipe(Effect.catch(() => Effect.succeed(undefined)));
 
 // Counts the key events that reach the target's window, in the automation world, so the page does
 // not see the listener. `TYPED_KEY_ARRIVED_FUNCTION` reads the count and removes the listener. A key
@@ -1253,36 +1228,22 @@ export class BrowserCdpEngine {
           : undefined;
         // The page can move the target when the pointer comes near, after the point was measured. The
         // guard stops a press that goes to another element; the next attempt measures the target again.
-        let dispatched = false;
-        let droppedPresses = 0;
-        for (let attempt = 1; ; ) {
+        for (let attempt = 1; ; attempt += 1) {
           yield* browserSync(() => assertBeforeDeadline(deadline));
           const point = element
             ? yield* this.#elementPointEffect(send, element, true, resolved.sessionId)
             : { x: resolved.x, y: resolved.y };
           const { sessionId, ...coordinates } = point;
           yield* browserSync(() => assertBeforeDeadline(deadline));
-          if (!dispatched) onDispatch?.();
-          dispatched = true;
-          const activeBefore = yield* readHasBeenActive(send, sessionId);
+          if (attempt === 1) onDispatch?.();
           const from = this.#pointerIn(sessionId);
           this.#pointer = { point: coordinates, sessionId };
           const press = dispatchMouseClick(send, coordinates, button, totalClicks, modifiers, sessionId, from);
-          const missed = element ? yield* guardedPress(send, element, contextId, sessionId, press) : yield* press;
-          if (missed === undefined) {
-            // Only a left press is sure to give activation, and a click with no deadline stops after the cap.
-            if (button !== "left" || activeBefore !== false) return;
-            if ((yield* readHasBeenActive(send, sessionId)) !== false) return;
-            droppedPresses += 1;
-            if (deadline === undefined && droppedPresses > MAX_DROPPED_PRESSES) return;
-            // No part of the press reached the page, as `DROPPED_PRESS_RETRY_MS` says: press again.
-            yield* browserSync(() => assertBeforeDeadline(deadline));
-            yield* Effect.sleep(DROPPED_PRESS_RETRY_MS);
-            continue;
-          }
+          if (!element) return yield* press;
+          const missed = yield* guardedPress(send, element, contextId, sessionId, press);
+          if (missed === undefined) return;
           if (attempt >= CLICK_PRESS_ATTEMPTS)
             return yield* browserFailure(new Error(sourceText("error.backend.browserClickMoved", { element: missed })));
-          attempt += 1;
         }
       }),
     );
