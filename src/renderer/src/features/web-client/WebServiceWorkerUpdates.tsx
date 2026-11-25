@@ -37,17 +37,8 @@ export function WebServiceWorkerUpdates() {
       ? setToastErrorMute((words) => CONNECTION_NOISE.some((key) => words === t(key)))
       : () => undefined;
     registerWebServiceWorker();
-    let updateWaits = false;
-    const applyWhenHidden = () => {
-      if (updateWaits && document.visibilityState === "hidden") void applyWebUpdate();
-    };
-    if (quiet) document.addEventListener("visibilitychange", applyWhenHidden);
     const stopWatching = onWebUpdateReady(() => {
-      if (quiet) {
-        updateWaits = true;
-        applyWhenHidden();
-        return;
-      }
+      if (quiet) return;
       toast(t("webClient.update.ready"), {
         id: UPDATE_TOAST_ID,
         duration: Number.POSITIVE_INFINITY,
@@ -58,7 +49,6 @@ export function WebServiceWorkerUpdates() {
       stopOffering();
       stopMuting();
       stopWatching();
-      document.removeEventListener("visibilitychange", applyWhenHidden);
     };
   });
   return null;

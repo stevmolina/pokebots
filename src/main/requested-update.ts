@@ -311,7 +311,8 @@ export class RequestedUpdate extends EventEmitter<{ preference: [UpdatePreferenc
     if (status.availableVersion === this.#declinedVersion) return;
     if (status.phase === "available")
       yield* Effect.forkIn(this.#updater.downloadUpdate(), this.#workScope, { startImmediately: true });
-    else if (status.phase === "ready") {
+    else if (status.phase === "ready" && this.#clientInUse !== null) {
+      // Desktop apps never auto-restart: the user triggers the restart from the sidebar update button.
       this.#schedule = { memberId: null, requestedBy: null, mode: "when-idle", waitingFor: [] };
       this.#log(`Scheduled the automatic restart into ${status.availableVersion}.`);
       this.#publish();

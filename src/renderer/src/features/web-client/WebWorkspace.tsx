@@ -200,6 +200,7 @@ import {
   sidebarChannelWaits,
 } from "@openbot/ui/features/sidebar/sidebar-agent-states";
 import type { SidebarPage, SidebarPages } from "@openbot/ui/features/sidebar/sidebar-pages";
+import { applyWebUpdate, onWebUpdateReady } from "./web-service-worker";
 import type { SidebarView } from "@openbot/ui/features/sidebar/sidebar-types";
 import { useText } from "@openbot/ui/text";
 import type { ComponentProps, JSX } from "@solidjs/web";
@@ -3244,6 +3245,8 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
     shortcutPlatform: () => shortcutPlatform(),
   });
   /** As on desktop: the pages, the provider usage and the account switch of the chat sidebar. */
+  const [webUpdateReady, setWebUpdateReady] = createSignal(false);
+  onSettled(() => onWebUpdateReady(() => setWebUpdateReady(true)));
   const builtInIntegrations = () => workspace.state.capabilities.includes(POKEBOTS_INTEGRATIONS_CAPABILITY);
   const sidebarPages = (): SidebarPages => ({
     current: sidebarPage(),
@@ -3300,6 +3303,13 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
     help,
     onCollapse: () => layout.setSidebarCollapsed(true),
     shortcutPlatform: shortcutPlatform(),
+    update: {
+      phase: webUpdateReady() ? "ready" : "idle",
+      busy: false,
+      hasUpdate: webUpdateReady(),
+      label: webUpdateReady() ? t("account.update.restartLabel") : t("menu.checkForUpdates"),
+      onAction: () => void applyWebUpdate(),
+    },
   });
   /** The settings page on screen, if any. */
   const settingsKind = (): SettingsKind | null =>
