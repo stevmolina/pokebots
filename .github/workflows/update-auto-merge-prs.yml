@@ -60,6 +60,7 @@ jobs:
               continue
             fi
             echo "PR #$number is $behind commit(s) behind main. Updating."
+            old_head="$(gh pr view "$number" --repo "$REPO" --json headRefOid --jq .headRefOid)"
             # A merge update, not a rebase: it keeps the author's commits and needs no force push.
             if ! gh api -X PUT "repos/$REPO/pulls/$number/update-branch" 2>&1; then
               echo "::warning::PR #$number: update failed (merge conflict, or a workflow file that this token cannot write). Left as it is."
@@ -68,6 +69,19 @@ jobs:
             # Stop CI runs for the old head, then start CI on the new one.
             for run in $(gh run list --repo "$REPO" --workflow ci.yml --branch "$branch" --event workflow_dispatch --json databaseId,status --jq '.[] | select(.status != "completed") | .databaseId'); do
               gh run cancel "$run" --repo "$REPO" || true
+            done
+            # The update push also starts `pull_request` runs that wait for approval
+            # (`action_required`). When that suite is newer than the dispatched one, GitHub reads
+            # the required check from it and keeps the pull request blocked, although the
+            # dispatched run passed. So wait for the new head and its `pull_request` runs first,
+            # then dispatch, so that the dispatched suite is the newest. Up to 90 seconds.
+            new_head="$old_head"
+            for _ in $(seq 1 30); do
+              new_head="$(gh pr view "$number" --repo "$REPO" --json headRefOid --jq .headRefOid)"
+              [[ "$new_head" != "$old_head" ]] &&
+                [[ -n "$(gh run list --repo "$REPO" --workflow ci.yml --commit "$new_head" --event pull_request --json databaseId --jq '.[0].databaseId // empty')" ]] &&
+                break
+              sleep 3
             done
             gh workflow run ci.yml --repo "$REPO" --ref "$branch" || echo "::warning::PR #$number: could not start CI."
           done <<<"$prs"
