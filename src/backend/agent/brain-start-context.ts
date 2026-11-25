@@ -25,11 +25,17 @@ interface SnapshotMessage {
   readonly author: string;
   readonly createdAt: string;
   readonly itemType?: string | undefined;
+  readonly source?: string | undefined;
+  readonly delivery?: { readonly status: string } | undefined;
 }
 
+/** A person's message that reached the model. Queued, failed or cancelled messages never ran. */
+const RAN = new Set(["running", "completed", "interrupted"]);
+
 /**
- * True for the first message of a chat, or the first after `BRAIN_CONTEXT_GAP_MS` without a
- * message. `startIds` are the messages that this turn sends. A welcome message is not a turn.
+ * True for the first message of a chat, or the first after `BRAIN_CONTEXT_GAP_MS` without one.
+ * Only the person's own messages that ran count: the setup (welcome) message, the agent's answers,
+ * routine runs and messages still in the queue do not. `startIds` are the messages of this turn.
  */
 export function wantsBrainStartContext(
   messages: readonly SnapshotMessage[],
@@ -38,8 +44,9 @@ export function wantsBrainStartContext(
 ): boolean {
   let last = Number.NEGATIVE_INFINITY;
   for (const message of messages) {
-    if (startIds.has(message.id) || message.itemType === AGENT_WELCOME_ITEM_TYPE) continue;
-    if (message.author !== "user" && message.author !== "assistant") continue;
+    if (startIds.has(message.id) || message.author !== "user") continue;
+    if (message.itemType === AGENT_WELCOME_ITEM_TYPE || message.source === "routine") continue;
+    if (message.delivery && !RAN.has(message.delivery.status)) continue;
     const at = Date.parse(message.createdAt);
     last = Math.max(last, Number.isFinite(at) ? at : now);
   }

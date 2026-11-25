@@ -117,6 +117,25 @@ const agentBrowser: AgentBrowserHost = {
 };
 const teamBrowser: TeamApiBrowser = {
   listTabs: () => [],
+  getControlState: () => ({ sessions: [] }),
+  open: unused,
+  activate: unused,
+  navigate: unused,
+  reload: unused,
+  stop: unused,
+  setColorScheme: unused,
+  takeUserControl: unused,
+  startTeach: unused,
+  stopTeach: () => [],
+  releaseUserControl: () => {},
+  releaseUserControlHeldBy: () => {},
+  releaseUserControlRefused: () => {},
+  close: unused,
+  capturePreview: unused,
+  setVisible: unused,
+  getDisplayState: () => ({ tabs: [], activeTabId: null }),
+  loadUrl: unused,
+  isPrivate: () => false,
   startView: unused,
   dispatchViewInput: unused,
   copyViewSelection: unused,
@@ -411,6 +430,15 @@ try {
   assert.ok(acpFirst.text.includes(START), acpFirst.text);
   assert.match(acpFirst.text, /the Mac update job was off/);
   report.checks.acpFirstTurnHasContext = true;
+
+  // The question leaves the host redacted: a query string can reach access logs.
+  const redact = await create("Redact Bot", "codex");
+  connected.add(redact.id);
+  await send(redact.id, "CONTEXT REDACT-FIRST my key is sk-ant-api03-SYNTHETICQUESTIONSECRET");
+  await promptFor("REDACT-FIRST");
+  const redactCall = brainRequests.find((entry) => entry.question.includes("REDACT-FIRST"));
+  assert.ok(redactCall && !redactCall.question.includes("SYNTHETICQUESTIONSECRET"), redactCall?.question);
+  report.checks.questionRedacted = true;
 
   // A brain without the `context` route: the search route fills in.
   const search = await create("Search Bot", "codex");

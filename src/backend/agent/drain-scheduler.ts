@@ -1125,17 +1125,26 @@ export class DrainScheduler {
       // snapshot below.
       const brainStartContext = this.#hooks.brainStartContext;
       const opening = batch[0]?.delivery;
-      const brainText =
-        brainStartContext &&
+      const asksBrain =
+        brainStartContext !== undefined &&
         opening?.sender.kind === "user" &&
         !opening.text.trimStart().startsWith("/") &&
+        !this.#mailbox.isWelcomeDelivery(opening.id) &&
         planNote === undefined &&
         !context.resumeAfterUsageLimit &&
         !channelDelivery &&
         !messagingDelivery &&
-        wantsBrainStartContext(snapshot.messages, new Set(batch.map((item) => item.delivery.id)))
-          ? yield* brainStartContext({ agent, question: batch.map((item) => item.delivery.text).join("\n\n") })
-          : null;
+        wantsBrainStartContext(snapshot.messages, new Set(batch.map((item) => item.delivery.id)));
+      const brainText = asksBrain
+        ? yield* brainStartContext({ agent, question: batch.map((item) => item.delivery.text).join("\n\n") })
+        : null;
+      // The brain wait can last seconds: a turn that the provider started itself meanwhile holds this
+      // delivery back, as the check above does.
+      if (asksBrain && snapshot.activeTurnId) {
+        for (const item of batch) yield* this.#mailbox.restoreQueued(item.delivery.id).pipe(toDeliveryStartFailed);
+        this.#mailboxSync.emitQueue(agent.id);
+        return;
+      }
       const brainBlock = brainText ? brainStartContextBlock(brainText) : null;
       if (brainBlock)
         logger.info("The turn starts with Second Brain context.", { agentId: agent.id, chars: brainBlock.length });

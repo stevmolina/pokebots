@@ -86,7 +86,8 @@ export class BrainService {
   readonly startContext = Effect.fn("Brain.startContext")(
     function* (this: BrainService, connection: McpServerConfig, input: BrainStartContextInput) {
       if (!isBrainConnection(connection) || !connection.enabled) return null;
-      const question = input.question.trim().slice(0, 2000);
+      // A query string can reach access logs: the question goes out redacted, and short.
+      const question = redactSecrets(input.question).trim().slice(0, 1000);
       if (!question) return null;
       let token = yield* this.options.oauth.accessToken(connection.url).pipe(Effect.orElseSucceed(() => null));
       if (!token) return null;
