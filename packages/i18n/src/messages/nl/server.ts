@@ -735,4 +735,9 @@ export const messages = {
   "server.settings.responseStyleNatural": "Natuurlijk",
   "server.settings.responseStyleClassic": "Klassiek",
   "server.settings.personalityLoadFailed": "Kan de persoonlijkheid van de server niet laden.",
+  "server.settings.brainContext": "Breincontext",
+  "server.settings.brainContextEnable": "Chats starten met breincontext",
+  "server.settings.brainContextDescription":
+    "Voor het eerste bericht van een nieuwe chat, en na 6 uur stilte, krijgen agents met een Second Brain-verbinding wat het brein over dat bericht weet. Antwoordt het brein niet binnen 3 seconden, dan start de chat zonder.",
+  "server.settings.brainContextLoadFailed": "Kan de instelling voor breincontext niet laden.",
 } as const satisfies PartialTranslation<typeof source>;

@@ -765,4 +765,9 @@ export const messages = {
   "server.settings.responseStyleNatural": "טבעי",
   "server.settings.responseStyleClassic": "קלאסי",
   "server.settings.personalityLoadFailed": "לא ניתן לטעון את אישיות השרת.",
+  "server.settings.brainContext": "הקשר מהמוח",
+  "server.settings.brainContextEnable": "להתחיל צ'אטים עם הקשר מהמוח",
+  "server.settings.brainContextDescription":
+    "לפני ההודעה הראשונה בצ'אט חדש, ואחרי 6 שעות של שקט, סוכנים עם חיבור ל-Second Brain מקבלים את מה שהמוח יודע על ההודעה. אם המוח לא עונה תוך 3 שניות, הצ'אט מתחיל בלעדיו.",
+  "server.settings.brainContextLoadFailed": "לא ניתן לטעון את הגדרת ההקשר מהמוח.",
 } as const satisfies PartialTranslation<typeof source>;

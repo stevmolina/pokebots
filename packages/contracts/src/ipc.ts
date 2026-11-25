@@ -34,6 +34,7 @@ export * from "./ipc-app-behavior";
 export * from "./ipc-approvals";
 export * from "./ipc-attachments";
 export * from "./ipc-bitwarden-connector";
+export * from "./ipc-brain-context";
 export * from "./ipc-browser";
 export * from "./ipc-browser-dock";
 export * from "./ipc-browser-profiles";

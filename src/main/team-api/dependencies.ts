@@ -92,6 +92,7 @@ import type { WorkflowsHandle } from "../../backend/workflows/workflows";
 import type { AgentComputerService } from "../agent-computer-service";
 import type { AgentImportService } from "../agent-import-service";
 import type { BitwardenConnectorService } from "../bitwarden-connector-service";
+import type { BrainContextControl } from "../brain-context-preference-store";
 import type { BrowserViewGateway } from "../browser-view-gateway";
 import type { GitHubConnectorService } from "../github-connector-service";
 import type { HermesImportService } from "../hermes-import-service";
@@ -619,6 +620,8 @@ export interface TeamApiAdmin {
   /** `claude-user-setup-v1`: whether this computer's Claude agents load the Claude Code setup of its user. */
   claudeUserSetup?: ClaudeUserSetupControl;
   homeAgentRules?: HomeAgentRulesControl;
+  /** `brain-context-v1`: whether this computer's agents start a new chat with Second Brain context. */
+  brainContext?: BrainContextControl;
   /** `thread-auto-archive-v1`: when this computer archives the side threads of its agents by itself. */
   threadAutoArchive?: ThreadAutoArchiveControl;
   /** `claude-ai-tools-v1`: whether this computer's Claude agents get the claude.ai tools of its Claude sign-in. */

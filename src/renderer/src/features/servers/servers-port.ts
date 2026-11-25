@@ -42,10 +42,12 @@ export interface ServersPort {
   hostAdmin: Pick<
     OpenBotDesktopApi["hostAdmin"],
     | "cancelUpdate"
+    | "getBrainContext"
     | "getHomeAgentRules"
     | "getUpdateStatus"
     | "restartHost"
     | "rotateHostKey"
+    | "setBrainContext"
     | "setHomeAgentRules"
     | "startUpdate"
     | "updateIdentity"

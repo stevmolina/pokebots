@@ -694,4 +694,9 @@ export const messages = {
   "server.settings.responseStyleNatural": "Естественный",
   "server.settings.responseStyleClassic": "Классический",
   "server.settings.personalityLoadFailed": "Не удалось загрузить характер сервера.",
+  "server.settings.brainContext": "Контекст мозга",
+  "server.settings.brainContextEnable": "Начинать чаты с контекстом мозга",
+  "server.settings.brainContextDescription":
+    "Перед первым сообщением нового чата и после 6 часов тишины агенты с подключением Second Brain получают то, что мозг знает об этом сообщении. Если мозг не ответит за 3 секунды, чат начнётся без него.",
+  "server.settings.brainContextLoadFailed": "Не удалось загрузить настройку контекста мозга.",
 } as const satisfies PartialTranslation<typeof source>;

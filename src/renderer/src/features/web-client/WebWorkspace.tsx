@@ -51,6 +51,7 @@ import { AGENT_TASKS_CAPABILITY } from "@pokebots/contracts/team-protocol/agent-
 import { AGENT_THREAD_FILES_CAPABILITY } from "@pokebots/contracts/team-protocol/agent-thread-files-v1";
 import { AGENT_USAGE_LIMIT_CAPABILITY } from "@pokebots/contracts/team-protocol/agent-usage-limit-v1";
 import { AGENT_WAITS_CAPABILITY } from "@pokebots/contracts/team-protocol/agent-waits-v1";
+import { BRAIN_CONTEXT_ROUTES, decodeBrainContextResponse } from "@pokebots/contracts/team-protocol/brain-context-v1";
 import { BROWSER_PROFILES_CAPABILITY } from "@pokebots/contracts/team-protocol/browser-profiles-v1";
 import { BROWSER_PROXIES_CAPABILITY } from "@pokebots/contracts/team-protocol/browser-proxies-v1";
 import { TEAM_BROWSER_VIEW_CAPABILITY } from "@pokebots/contracts/team-protocol/browser-view-v1";
@@ -317,6 +318,7 @@ import { mcpSignInRecord } from "../servers/mcp-servers";
 import { saveRemoteFrameChannels } from "../servers/remote-workspace-frame";
 import type { HostAgentDefaultsCalls } from "../servers/ServerAgentsSection";
 import type { HostServerAuditCalls } from "../servers/ServerAuditSection";
+import type { HostBrainContextCalls } from "../servers/ServerBrainContextSetting";
 import type { HostBrowsingMemoryCalls } from "../servers/ServerBrowsingMemorySetting";
 import type { HostHomeAgentRulesCalls } from "../servers/ServerHomeAgentRulesSetting";
 import type { HostMemoryLimitCalls } from "../servers/ServerMemoryLimitSetting";
@@ -1982,6 +1984,12 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
       runTeamEffect(getHostPromptCacheTtl(hostRequest(serverId)).pipe(Effect.mapError((error) => error.cause))),
     setPromptCacheTtl: async (ttl, serverId) =>
       runTeamEffect(setHostPromptCacheTtl(hostRequest(serverId), ttl).pipe(Effect.mapError((error) => error.cause))),
+  };
+  const hostBrainContextCalls: HostBrainContextCalls = {
+    getBrainContext: (serverId) =>
+      hostRequest(serverId)("POST", BRAIN_CONTEXT_ROUTES.settings, decodeBrainContextResponse, {}),
+    setBrainContext: (enabled, serverId) =>
+      hostRequest(serverId)("POST", BRAIN_CONTEXT_ROUTES.update, decodeBrainContextResponse, { enabled }),
   };
   const hostHomeAgentRulesCalls: HostHomeAgentRulesCalls = {
     getHomeAgentRules: (serverId) =>
@@ -4208,6 +4216,7 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                         browsingMemory={{ calls: hostBrowsingMemoryCalls }}
                         hostPromptCacheTtl={{ calls: hostPromptCacheTtlCalls }}
                         homeAgentRules={hostHomeAgentRulesCalls}
+                        brainContext={hostBrainContextCalls}
                         claudeUserSetup={{ calls: hostClaudeUserSetupCalls }}
                         claudeAiTools={{ calls: hostClaudeAiToolsCalls }}
                         claudeCompactWindow={{ calls: hostClaudeCompactWindowCalls }}

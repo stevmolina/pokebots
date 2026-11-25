@@ -661,4 +661,9 @@ export const messages = {
   "server.settings.responseStyleNatural": "ナチュラル",
   "server.settings.responseStyleClassic": "クラシック",
   "server.settings.personalityLoadFailed": "サーバーのパーソナリティを読み込めませんでした。",
+  "server.settings.brainContext": "ブレインのコンテキスト",
+  "server.settings.brainContextEnable": "ブレインのコンテキストでチャットを始める",
+  "server.settings.brainContextDescription":
+    "新しいチャットの最初のメッセージの前と、6 時間動きがなかった後に、Second Brain に接続したエージェントは、そのメッセージについてブレインが知っていることを受け取ります。ブレインが 3 秒以内に応答しない場合、チャットはそれなしで始まります。",
+  "server.settings.brainContextLoadFailed": "ブレインのコンテキスト設定を読み込めませんでした。",
 } as const satisfies PartialTranslation<typeof source>;

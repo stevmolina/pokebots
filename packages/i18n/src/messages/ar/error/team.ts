@@ -200,4 +200,5 @@ export const messages = {
   "error.team.backgroundProcessesUnsupported": "هذا الاتصال لا يدعم العمليات في الخلفية.",
   "error.team.providerUseUnsupported": "هذا الاتصال لا يدعم تشغيل المزوّدين وإيقافهم.",
   "error.team.providerUseInvalid": "هذا المزوّد ليس له مفتاح تشغيل وإيقاف.",
+  "error.team.brainContextUnsupported": "هذا الخادم لا يدعم سياق الدماغ.",
 } as const satisfies PartialTranslation<typeof source>;

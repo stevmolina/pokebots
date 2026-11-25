@@ -209,4 +209,5 @@ export const messages = defineMessages("error.team", {
   "error.team.providerUseInvalid": "This provider does not have an on/off switch.",
   "error.team.remoteComputerCallNotFound": "This computer request ended or belongs to another session.",
   "error.team.remoteTerminalNeedsComputer": "Turn on Computer Use for this server first.",
+  "error.team.brainContextUnsupported": "This server does not support brain context.",
 });

@@ -735,4 +735,9 @@ export const messages = {
   "server.settings.responseStyleNatural": "자연형",
   "server.settings.responseStyleClassic": "클래식",
   "server.settings.personalityLoadFailed": "서버 성격을 불러올 수 없었어요.",
+  "server.settings.brainContext": "브레인 컨텍스트",
+  "server.settings.brainContextEnable": "브레인 컨텍스트로 채팅 시작",
+  "server.settings.brainContextDescription":
+    "새 채팅의 첫 메시지 전과 6시간 동안 조용한 뒤, Second Brain에 연결된 에이전트는 그 메시지에 대해 브레인이 아는 내용을 받습니다. 브레인이 3초 안에 응답하지 않으면 채팅은 그것 없이 시작됩니다.",
+  "server.settings.brainContextLoadFailed": "브레인 컨텍스트 설정을 불러오지 못했습니다.",
 } as const satisfies PartialTranslation<typeof source>;

@@ -51,6 +51,7 @@ import { ARTIFACT_REQUEST_CAPABILITY } from "./artifact-request-v1";
 import { ATTACHMENT_PREVIEW_CAPABILITY } from "./attachment-preview-v1";
 import { BACKGROUND_PROCESSES_CAPABILITY } from "./background-processes-v1";
 import { BITWARDEN_CONNECTOR_CAPABILITY } from "./bitwarden-connector-v1";
+import { BRAIN_CONTEXT_CAPABILITY } from "./brain-context-v1";
 import { BROWSER_COLOR_SCHEME_CAPABILITY } from "./browser-color-scheme-v1";
 import { BROWSER_EGRESS_CAPABILITY } from "./browser-egress-v1";
 import { TEAM_BROWSER_NAVIGATION_CAPABILITY } from "./browser-navigation-v1";
@@ -865,6 +866,7 @@ const TEAM_CAPABILITY_REGISTRY = [
   [THREAD_AUTO_ARCHIVE_CAPABILITY, POKEBOTS],
   [HOME_AGENT_RULES_CAPABILITY, V10],
   [COMPUTER_LIVE_VIEW_CAPABILITY, POKEBOTS],
+  [BRAIN_CONTEXT_CAPABILITY, POKEBOTS],
 ] as const satisfies readonly (readonly [string, TeamCapabilityPlacement])[];
 
 export const TEAM_CURRENT_CAPABILITIES = TEAM_CAPABILITY_REGISTRY.map(([capability]) => capability);

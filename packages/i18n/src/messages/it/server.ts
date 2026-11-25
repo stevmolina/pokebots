@@ -677,4 +677,9 @@ export const messages = {
   "server.settings.responseStyleNatural": "Naturale",
   "server.settings.responseStyleClassic": "Classico",
   "server.settings.personalityLoadFailed": "Impossibile caricare la personalità del server.",
+  "server.settings.brainContext": "Contesto del cervello",
+  "server.settings.brainContextEnable": "Avvia le chat con il contesto del cervello",
+  "server.settings.brainContextDescription":
+    "Prima del primo messaggio di una nuova chat, e dopo 6 ore di inattività, gli agenti con una connessione a Second Brain ricevono ciò che il cervello sa su quel messaggio. Se il cervello non risponde entro 3 secondi, la chat inizia senza.",
+  "server.settings.brainContextLoadFailed": "Impossibile caricare l'impostazione del contesto del cervello.",
 } as const satisfies PartialTranslation<typeof source>;

@@ -199,4 +199,5 @@ export const messages = {
   "error.team.backgroundProcessesUnsupported": "Это подключение не поддерживает фоновые процессы.",
   "error.team.providerUseUnsupported": "Это подключение не поддерживает включение и выключение провайдеров.",
   "error.team.providerUseInvalid": "У этого провайдера нет переключателя включения.",
+  "error.team.brainContextUnsupported": "Этот сервер не поддерживает контекст мозга.",
 } as const satisfies PartialTranslation<typeof source>;

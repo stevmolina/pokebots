@@ -823,4 +823,9 @@ export const messages = {
   "server.settings.responseStyleNatural": "طبيعي",
   "server.settings.responseStyleClassic": "كلاسيكي",
   "server.settings.personalityLoadFailed": "تعذّر تحميل شخصية الخادم.",
+  "server.settings.brainContext": "سياق الدماغ",
+  "server.settings.brainContextEnable": "بدء المحادثات بسياق الدماغ",
+  "server.settings.brainContextDescription":
+    "قبل الرسالة الأولى في محادثة جديدة، وبعد 6 ساعات من الهدوء، يحصل الوكلاء المتصلون بـ Second Brain على ما يعرفه الدماغ عن تلك الرسالة. إذا لم يرد الدماغ خلال 3 ثوانٍ، تبدأ المحادثة بدونه.",
+  "server.settings.brainContextLoadFailed": "تعذر تحميل إعداد سياق الدماغ.",
 } as const satisfies PartialTranslation<typeof source>;

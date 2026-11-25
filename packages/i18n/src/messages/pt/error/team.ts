@@ -207,4 +207,5 @@ export const messages = {
   "error.team.backgroundProcessesUnsupported": "Esta conexão não suporta processos em segundo plano.",
   "error.team.providerUseUnsupported": "Esta conexão não suporta ativar e desativar provedores.",
   "error.team.providerUseInvalid": "Este provedor não tem um interruptor de ativação.",
+  "error.team.brainContextUnsupported": "Este servidor não oferece suporte ao contexto do cérebro.",
 } as const satisfies PartialTranslation<typeof source>;

@@ -688,4 +688,9 @@ export const messages = {
   "server.settings.responseStyleNatural": "Doğal",
   "server.settings.responseStyleClassic": "Klasik",
   "server.settings.personalityLoadFailed": "Sunucu kişiliği yüklenemedi.",
+  "server.settings.brainContext": "Beyin bağlamı",
+  "server.settings.brainContextEnable": "Sohbetleri beyin bağlamıyla başlat",
+  "server.settings.brainContextDescription":
+    "Yeni bir sohbetin ilk mesajından önce ve 6 saatlik sessizlikten sonra, Second Brain bağlantısı olan ajanlar beynin o mesaj hakkında bildiklerini alır. Beyin 3 saniye içinde yanıt vermezse sohbet onsuz başlar.",
+  "server.settings.brainContextLoadFailed": "Beyin bağlamı ayarı yüklenemedi.",
 } as const satisfies PartialTranslation<typeof source>;

@@ -728,4 +728,9 @@ export const messages = {
   "server.settings.responseStyleNatural": "Naturalny",
   "server.settings.responseStyleClassic": "Klasyczny",
   "server.settings.personalityLoadFailed": "Nie udało się wczytać osobowości serwera.",
+  "server.settings.brainContext": "Kontekst mózgu",
+  "server.settings.brainContextEnable": "Zaczynaj czaty z kontekstem mózgu",
+  "server.settings.brainContextDescription":
+    "Przed pierwszą wiadomością nowego czatu i po 6 godzinach ciszy agenci z połączeniem Second Brain dostają to, co mózg wie o tej wiadomości. Jeśli mózg nie odpowie w 3 sekundy, czat zaczyna się bez niego.",
+  "server.settings.brainContextLoadFailed": "Nie udało się wczytać ustawienia kontekstu mózgu.",
 } as const satisfies PartialTranslation<typeof source>;

@@ -79,6 +79,7 @@ import type { HostPromptCacheTtlOptions, ProviderPromptCacheSource } from "../se
 import { type ServerVaultOptions, ServerVaultPanel } from "../vault/ServerVaultPanel";
 import { createServerAgentsSection, type ServerAgentDefaultsOptions } from "./ServerAgentsSection";
 import { createServerAuditSection, type ServerAuditOptions } from "./ServerAuditSection";
+import type { HostBrainContextCalls } from "./ServerBrainContextSetting";
 import type { ServerBrowsingMemoryOptions } from "./ServerBrowsingMemorySetting";
 import { type ServerCloudComputersOptions, ServerCloudComputersPanel } from "./ServerCloudComputersPanel";
 import { type CompanySignInCalls, createServerCompanySignInSection } from "./ServerCompanySignInSection";
@@ -254,6 +255,8 @@ export interface ServerSettingsModalProps {
    * administers.
    */
   homeAgentRules?: HostHomeAgentRulesCalls | undefined;
+  /** "Start chats with brain context" of this computer or of a joined server with `brain-context-v1`. */
+  brainContext?: HostBrainContextCalls | undefined;
   claudeUserSetup?: HostClaudeUserSetupOptions | undefined;
   /**
    * The Claude provider page shows "Use claude.ai tools" only when a caller supplies this, and only
@@ -416,6 +419,7 @@ const SECTION_ROWS: Partial<Record<Section, readonly AppTextKey[]>> = {
     "server.settings.threadAutoArchiveIdle",
     "server.settings.threadAutoArchivePullRequests",
     "server.settings.homeAgentRules",
+    "server.settings.brainContext",
     "agentSettings.automation.title",
     "agentSettings.agentNewChat.title",
     "agentSettings.quickAcknowledgement.title",

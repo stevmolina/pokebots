@@ -217,4 +217,5 @@ export const messages = {
   "error.team.providerUseUnsupported":
     "Das Ein- und Ausschalten von Anbietern wird von dieser Verbindung nicht unterstützt.",
   "error.team.providerUseInvalid": "Dieser Anbieter hat keinen Ein-/Aus-Schalter.",
+  "error.team.brainContextUnsupported": "Dieser Server unterstützt keinen Gehirn-Kontext.",
 } as const satisfies PartialTranslation<typeof source>;

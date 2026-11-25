@@ -71,6 +71,11 @@ import {
   AGENT_MEMORY_LIMIT_ROUTES,
 } from "@pokebots/contracts/team-protocol/agent-memory-limit-v1";
 import {
+  BRAIN_CONTEXT_CAPABILITY,
+  BRAIN_CONTEXT_ROUTES,
+  decodeBrainContextResponse,
+} from "@pokebots/contracts/team-protocol/brain-context-v1";
+import {
   BROWSING_MEMORY_CAPABILITY,
   BROWSING_MEMORY_ROUTES,
 } from "@pokebots/contracts/team-protocol/browsing-memory-v1";
@@ -143,6 +148,7 @@ import { sourceText } from "@pokebots/i18n/source";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import { type AgentAccessStore, agentAccessSnapshot } from "../agent-access-store";
 import type { AgentMemoryLimitSetting } from "../agent-memory-limit-preference-store";
+import type { BrainContextControl } from "../brain-context-preference-store";
 import type { BrowsingMemoryPreferenceStore } from "../browsing-memory-preference-store";
 import type { ClaudeAiToolsControl } from "../claude-ai-tools-preference-store";
 import type { ClaudeCompactWindowControl } from "../claude-compact-window-preference-store";
@@ -204,6 +210,7 @@ interface HostAdminIpcDependencies {
   promptCacheTtl: Pick<PromptCacheTtlPreferenceStore, "get" | "set">;
   claudeUserSetup: ClaudeUserSetupControl;
   homeAgentRules: HomeAgentRulesControl;
+  brainContext: BrainContextControl;
   threadAutoArchive: ThreadAutoArchiveControl;
   claudeAiTools: ClaudeAiToolsControl;
   claudeCompactWindow: ClaudeCompactWindowControl;
@@ -238,6 +245,7 @@ export function hostAdminIpcHandlers({
   promptCacheTtl,
   claudeUserSetup,
   homeAgentRules,
+  brainContext,
   threadAutoArchive,
   claudeAiTools,
   claudeCompactWindow,
@@ -328,6 +336,11 @@ export function hostAdminIpcHandlers({
     return runCauseEffect(
       remoteServers.request(serverId, route, decodeClaudeUserSetupResponse, { method: "POST", body }),
     );
+  }
+  function remoteBrainContext(serverId: string, route: string, body: { enabled?: boolean }) {
+    if (!remoteServers.supportsCapability(serverId, BRAIN_CONTEXT_CAPABILITY))
+      throw new Error(sourceText("error.team.brainContextUnsupported"));
+    return runCauseEffect(remoteServers.request(serverId, route, decodeBrainContextResponse, { method: "POST", body }));
   }
   function remoteClaudeAiTools(serverId: string, route: string, body: { enabled?: boolean }) {
     if (!remoteServers.supportsCapability(serverId, CLAUDE_AI_TOOLS_CAPABILITY))
@@ -596,6 +609,14 @@ export function hostAdminIpcHandlers({
         local: (ttl) => runCauseEffect(promptCacheTtl.set(ttl)),
         remote: (ttl, serverId) => remotePromptCacheTtl(serverId, PROMPT_CACHE_TTL_ROUTES.update, { ttl }),
       }),
+      getBrainContext: scopedQueryHandler({
+        local: () => brainContext.get(),
+        remote: (serverId) => remoteBrainContext(serverId, BRAIN_CONTEXT_ROUTES.settings, {}),
+      }),
+      setBrainContext: scopedHandler(parseBrainContext, {
+        local: (enabled) => runCauseEffect(brainContext.set(enabled)),
+        remote: (enabled, serverId) => remoteBrainContext(serverId, BRAIN_CONTEXT_ROUTES.update, { enabled }),
+      }),
       getHomeAgentRules: scopedQueryHandler({
         local: () => runCauseEffect(homeAgentRules.get()),
         remote: (serverId) => remoteHomeAgentRules(serverId, HOME_AGENT_RULES_ROUTES.settings, {}),
@@ -713,6 +734,11 @@ function wireIdentity(input: UpdateHostIdentityInput) {
 
 function parseClaudeUserSetup(value: unknown): boolean {
   if (typeof value !== "boolean") throw new Error("Invalid Claude setup setting.");
+  return value;
+}
+
+function parseBrainContext(value: unknown): boolean {
+  if (typeof value !== "boolean") throw new Error("Invalid brain context setting.");
   return value;
 }
 
