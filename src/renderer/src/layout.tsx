@@ -2,6 +2,11 @@ import type { AppInfo } from "@pokebots/contracts/ipc";
 import type { ServerView } from "@pokebots/ui/features/servers/ServerMenu";
 import { SIDEBAR_PINNABLE_PAGES, type SidebarPinnablePage } from "@pokebots/ui/features/sidebar/sidebar-pages";
 import {
+  DEFAULT_SIDEBAR_AUTO_SETTLE,
+  SIDEBAR_AUTO_SETTLE_OPTIONS,
+  type SidebarAutoSettleOption,
+} from "@pokebots/ui/features/sidebar/sidebar-settling";
+import {
   SIDEBAR_CHAT_ORDERS,
   type SidebarChatOrder,
   type SidebarView,
@@ -22,6 +27,7 @@ import {
   RAIL_PINS_STORAGE_KEY,
   SERVER_RAIL_WIDTH,
   SERVER_VIEW_STORAGE_KEY,
+  SIDEBAR_AUTO_SETTLE_STORAGE_KEY,
   SIDEBAR_CHAT_ORDER_STORAGE_KEY,
   SIDEBAR_VIEW_STORAGE_KEY,
 } from "./layout-constants";
@@ -91,6 +97,15 @@ function readSidebarChatOrder(): SidebarChatOrder {
   }
 }
 
+function readSidebarAutoSettle(): SidebarAutoSettleOption {
+  try {
+    const saved = window.localStorage.getItem(SIDEBAR_AUTO_SETTLE_STORAGE_KEY);
+    return SIDEBAR_AUTO_SETTLE_OPTIONS.find((option) => option === saved) ?? DEFAULT_SIDEBAR_AUTO_SETTLE;
+  } catch {
+    return DEFAULT_SIDEBAR_AUTO_SETTLE;
+  }
+}
+
 /**
  * The width of the workspace sidebar, and the two independent reasons it can be
  * narrow: the user collapsed it, or the window is too small to keep it open.
@@ -136,6 +151,9 @@ const Layout = createSimpleContext({
         : "agents",
     );
     const [sidebarChatOrder, setSidebarChatOrderSignal] = createSignal<SidebarChatOrder>(readSidebarChatOrder());
+    const [sidebarAutoSettle, setSidebarAutoSettleSignal] = createSignal<SidebarAutoSettleOption>(
+      readSidebarAutoSettle(),
+    );
     const [railPinChoices, setRailPinChoices] = createSignal<RailPinChoices>(readRailPinChoices());
     const railPinned = createMemo(() => {
       const choices = railPinChoices();
@@ -181,6 +199,8 @@ const Layout = createSimpleContext({
       if (event.key === null || event.key === RAIL_PINS_STORAGE_KEY) setRailPinChoices(readRailPinChoices());
       if (event.key === null || event.key === SIDEBAR_CHAT_ORDER_STORAGE_KEY)
         setSidebarChatOrderSignal(readSidebarChatOrder());
+      if (event.key === null || event.key === SIDEBAR_AUTO_SETTLE_STORAGE_KEY)
+        setSidebarAutoSettleSignal(readSidebarAutoSettle());
     }
 
     onSettled(() => {
@@ -212,6 +232,15 @@ const Layout = createSimpleContext({
       setSidebarChatOrderSignal(order);
       try {
         window.localStorage.setItem(SIDEBAR_CHAT_ORDER_STORAGE_KEY, order);
+      } catch {
+        // Blocked or full storage keeps the choice for this window only.
+      }
+    }
+
+    function setSidebarAutoSettle(option: SidebarAutoSettleOption): void {
+      setSidebarAutoSettleSignal(option);
+      try {
+        window.localStorage.setItem(SIDEBAR_AUTO_SETTLE_STORAGE_KEY, option);
       } catch {
         // Blocked or full storage keeps the choice for this window only.
       }
@@ -250,6 +279,8 @@ const Layout = createSimpleContext({
       setSidebarView,
       sidebarChatOrder,
       setSidebarChatOrder,
+      sidebarAutoSettle,
+      setSidebarAutoSettle,
       railPinned,
       setRailPinned,
     };

@@ -32,6 +32,7 @@ import { SendShortcutSelect } from "@pokebots/ui/features/settings/SendShortcutS
 import { SettingsDialogShell, type SettingsPagePlacement } from "@pokebots/ui/features/settings/SettingsDialogShell";
 import { SettingsMachinesTab } from "@pokebots/ui/features/settings/SettingsMachinesTab";
 import { SettingsProfileTab } from "@pokebots/ui/features/settings/SettingsProfileTab";
+import { SidebarAutoSettleSelect } from "@pokebots/ui/features/settings/SidebarAutoSettleSelect";
 import { SidebarChatOrderSelect } from "@pokebots/ui/features/settings/SidebarChatOrderSelect";
 import { SoundChoiceSelect } from "@pokebots/ui/features/settings/SoundChoiceSelect";
 import { createSettingsProfileStore } from "@pokebots/ui/features/settings/stores/profile-store";
@@ -283,6 +284,19 @@ export default function WebAccountSettings(props: WebAccountSettingsProps) {
                   <SidebarChatOrderSelect
                     value={layout.sidebarChatOrder()}
                     onChange={layout.setSidebarChatOrder}
+                    {...(modalElement ? { mount: modalElement } : {})}
+                  />
+                </ItemActions>
+              </Item>
+              <Item class="settings-modal-row">
+                <ItemContent>
+                  <ItemTitle>{t("settings.autoSettle.title")}</ItemTitle>
+                  <ItemDescription>{t("settings.autoSettle.description")}</ItemDescription>
+                </ItemContent>
+                <ItemActions>
+                  <SidebarAutoSettleSelect
+                    value={layout.sidebarAutoSettle()}
+                    onChange={layout.setSidebarAutoSettle}
                     {...(modalElement ? { mount: modalElement } : {})}
                   />
                 </ItemActions>

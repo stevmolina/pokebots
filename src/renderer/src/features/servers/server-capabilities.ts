@@ -31,6 +31,7 @@ export function serverSupportsCapability(
       capability === "brain-context-v1" ||
       capability === "rooms-listening-v1" ||
       capability === "thread-auto-archive-v1" ||
+      capability === "agent-pull-requests-v1" ||
       capability === "brain-v1" ||
       capability === "remote-desktop-setup" ||
       capability === "channel-chats-v1" ||

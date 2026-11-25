@@ -125,6 +125,12 @@ export const messages = defineMessages("settings", {
   "settings.sendShortcut.description": "Choose the keys that send a message on this device and browser.",
   "settings.chatOrder.description":
     "Choose how the sidebar sorts chats on this device. Manual and Recent activity turn off the Unread group.",
+  "settings.autoSettle.title": "Auto-settle inactive bots",
+  "settings.autoSettle.description": "Move finished bots from Done to Settled after this long without new activity. Bots with open pull requests stay in Done until they merge.",
+  "settings.autoSettle.1d": "1 day",
+  "settings.autoSettle.3d": "3 days",
+  "settings.autoSettle.7d": "7 days",
+  "settings.autoSettle.manual": "Manual only",
   "settings.sendShortcut.enter": "Enter to send",
   "settings.sendShortcut.modEnterMac": "⌘Enter to send",
   "settings.sendShortcut.modEnterWin": "Ctrl+Enter to send",

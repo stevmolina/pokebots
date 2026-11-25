@@ -20,10 +20,20 @@ import type { UsageLimitAskCardProps } from "@pokebots/ui/features/conversation/
 import { unloadedHistory } from "@pokebots/ui/features/conversation/ChatScrollRail";
 import { MAIN_THREAD_ID } from "@pokebots/ui/features/conversation/threads/thread-types";
 import { sidebarAgentWaits } from "@pokebots/ui/features/sidebar/sidebar-agent-states";
+import {
+  evaluateAgentSettle,
+  latestAgentActivityAt,
+  parseSidebarSettled,
+  sidebarAutoSettleMs,
+  sidebarSettledAgents,
+  sidebarSettledMarker,
+} from "@pokebots/ui/features/sidebar/sidebar-settling";
+import { sidebarSnoozes } from "@pokebots/ui/features/sidebar/sidebar-types";
 import { useText } from "@pokebots/ui/text";
-import { createMemo } from "solid-js";
+import { createMemo, createSignal, onCleanup } from "solid-js";
 import { appPort } from "../../app-port";
 import { ProviderSignInDialogs } from "../../components/ProviderSignInDialogs";
+import { useLayout } from "../../layout";
 import { useNavigation } from "../../navigation";
 import { usePlatform } from "../../platform";
 import { useProviders } from "../../providers";
@@ -58,6 +68,7 @@ import { serversPort } from "../servers/servers-port";
 import { appSettingLinkTarget } from "../settings/setting-link-targets";
 import { useSettings } from "../settings/settings-context";
 import { settingsTabShown } from "../settings/settings-tabs";
+import { useSidebar } from "../sidebar/sidebar-context";
 import { isReaderAuthor } from "../team/reader-identity";
 import { usePresence } from "../team/team-context";
 import { useUsage } from "../usage/usage-context";
@@ -141,6 +152,7 @@ export function WorkspaceConversation(props: { account: () => CentralAuthUser; o
     agentStatus,
     hostAccountLimits,
     agentList,
+    agentPullRequests,
     agentListConnecting,
     activeAgent,
     userPausedAgentIds,
@@ -184,8 +196,10 @@ export function WorkspaceConversation(props: { account: () => CentralAuthUser; o
   } = useTurns();
   const {
     activeMessages,
+    agentUnreadReplies,
     conversations,
     sendMessage,
+    markAgentChatRead,
     markAgentMessagesRead,
     markAgentMessagesUnread,
     deleteAgentMessage,
@@ -223,6 +237,47 @@ export function WorkspaceConversation(props: { account: () => CentralAuthUser; o
   const { teamPresence, readerMemberId } = usePresence();
   const { selectAgent, openAgentThread, openAgentMessage, messageFocusRequest, globalSearchOpen } = useNavigation();
   const channels = useChannels();
+  const layout = useLayout();
+  const { collapsedSidebarSectionIds, toggleSidebarSection } = useSidebar();
+  const [settleClock, setSettleClock] = createSignal(Date.now());
+  const settleTimer = setInterval(() => setSettleClock(Date.now()), 60_000);
+  onCleanup(() => clearInterval(settleTimer));
+
+  const activeOpenPullRequest = createMemo(() => {
+    const agent = activeAgent();
+    return agent ? agentPullRequests()[agent.id]?.open[0] : undefined;
+  });
+
+  const activeAgentSettle = createMemo(() => {
+    const agent = activeAgent();
+    if (!agent) return undefined;
+    const now = settleClock();
+    if (activeTurns()[agent.id] || agentWaits()[agent.id]) return undefined;
+    const collapsed = collapsedSidebarSectionIds();
+    if (sidebarSnoozes(collapsed, now).has(agent.id)) return undefined;
+    const unread = (agentUnreadReplies()[agent.id] ?? 0) > 0;
+    const state = evaluateAgentSettle({
+      unread,
+      lastActivityAt: latestAgentActivityAt(agent.updatedAt),
+      settledAt: sidebarSettledAgents(collapsed).get(agent.id),
+      settleAfterMs: sidebarAutoSettleMs(layout.sidebarAutoSettle()),
+      now,
+      pullRequests: agentPullRequests()[agent.id],
+    });
+    if (!state.inDone) return undefined;
+    return {
+      onSettle: () => {
+        const current = collapsedSidebarSectionIds();
+        for (const id of current) {
+          const parsed = parseSidebarSettled(id);
+          if (parsed && parsed.agentId === agent.id) toggleSidebarSection(id);
+        }
+        toggleSidebarSection(sidebarSettledMarker(agent.id, Date.now()));
+        if (unread) void markAgentChatRead(agent.id);
+        setSettleClock(Date.now());
+      },
+    };
+  });
   const conversationController = useConversationController();
   /** The open channels, for "Send to channel" on a message. The text waits in the channel's composer. */
   const sendToChannel = () => {
@@ -781,6 +836,9 @@ export function WorkspaceConversation(props: { account: () => CentralAuthUser; o
         onActivateBrowserTab={activateBrowserTab}
         onCloseBrowserTab={closeBrowserTab}
         onOpenRemoteDesktop={openRemoteDesktopWorkspace}
+        openPullRequest={activeOpenPullRequest()}
+        onOpenPullRequest={(url) => void appPort().openUrl(url)}
+        settle={activeAgentSettle()}
         onStop={stopActiveTurn}
       />
       <ProviderSignInDialogs api={connection} opener="composer" />

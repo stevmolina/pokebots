@@ -124,6 +124,12 @@ export const messages = {
     "Wybierz klawisze, które wysyłają wiadomość na tym urządzeniu i w tej przeglądarce.",
   "settings.chatOrder.description":
     "Wybierz, jak pasek boczny sortuje czaty na tym urządzeniu. Ręcznie i Ostatnia aktywność wyłączają grupę Nieprzeczytane.",
+  "settings.autoSettle.title": "Automatycznie załatwiaj nieaktywne boty",
+  "settings.autoSettle.description": "Przenosi ukończone boty do Załatwionych po tym czasie bez nowej aktywności. Boty z otwartymi pull requestami zostają do momentu scalenia.",
+  "settings.autoSettle.1d": "1 dzień",
+  "settings.autoSettle.3d": "3 dni",
+  "settings.autoSettle.7d": "7 dni",
+  "settings.autoSettle.manual": "Tylko ręcznie",
   "settings.sendShortcut.enter": "Enter wysyła",
   "settings.sendShortcut.modEnterMac": "⌘Enter wysyła",
   "settings.sendShortcut.modEnterWin": "Ctrl+Enter wysyła",

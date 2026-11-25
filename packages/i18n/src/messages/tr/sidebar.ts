@@ -107,6 +107,7 @@ export const messages = {
   "sidebar.agentMenu.markRead": "Okundu olarak işaretle",
   "sidebar.agentMenu.makeMain": "Ana ajan yap",
   "sidebar.agentMenu.markUnread": "Okunmadı olarak işaretle",
+  "sidebar.agentMenu.settle": "Tamamla",
   "sidebar.agentMenu.mute": "Ajanı sessize al",
   "sidebar.agentMenu.unmute": "Ajanın sesini aç",
   "sidebar.agentMenu.delete": "Ajanı sil",

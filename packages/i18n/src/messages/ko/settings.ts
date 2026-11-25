@@ -122,6 +122,12 @@ export const messages = {
   "settings.sendShortcut.description": "이 기기와 브라우저에서 메시지를 보낼 키를 선택해요.",
   "settings.chatOrder.description":
     "이 기기의 사이드바에서 채팅을 정렬하는 방법을 선택합니다. 수동 또는 최근 활동을 선택하면 읽지 않음 그룹이 꺼집니다.",
+  "settings.autoSettle.title": "비활성 봇 자동 완료",
+  "settings.autoSettle.description": "새 활동 없이 이 기간이 지나면 끝난 봇을 완료로 이동합니다. 열린 PR이 있는 봇은 병합될 때까지 유지됩니다.",
+  "settings.autoSettle.1d": "1일",
+  "settings.autoSettle.3d": "3일",
+  "settings.autoSettle.7d": "7일",
+  "settings.autoSettle.manual": "수동만",
   "settings.sendShortcut.enter": "Enter로 전송",
   "settings.sendShortcut.modEnterMac": "⌘Enter로 전송",
   "settings.sendShortcut.modEnterWin": "Ctrl+Enter로 전송",

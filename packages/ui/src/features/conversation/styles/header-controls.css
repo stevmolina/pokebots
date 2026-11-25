@@ -51,7 +51,45 @@
   display: flex;
   min-width: 0;
   align-items: center;
+  gap: 8px;
+}
+
+/* Manual settle pill on the top-right of the chat header when the bot is in "Done" (Option B). */
+.conversation-header .conversation-settle-button.ui-button {
+  display: inline-flex;
+  flex: none;
+  height: 34px;
+  align-items: center;
   gap: 6px;
+  border: 1px solid var(--openbot-border);
+  border-radius: var(--openbot-radius-pill);
+  background: var(--openbot-bg-surface);
+  padding-inline: 12px 14px;
+  color: var(--openbot-text-primary);
+  font-size: var(--openbot-text-sm);
+  font-weight: var(--openbot-weight-medium);
+  line-height: 18px;
+  white-space: nowrap;
+  transition:
+    border-color var(--openbot-duration-hover) ease,
+    background-color var(--openbot-duration-hover) ease,
+    transform var(--openbot-duration-fast) cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.conversation-header .conversation-settle-button.ui-button:hover {
+  border-color: var(--openbot-border-strong);
+  background: var(--openbot-bg-control-hover);
+}
+
+.conversation-header .conversation-settle-button.ui-button:active {
+  transform: scale(0.96);
+}
+
+.conversation-settle-icon {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  color: var(--openbot-text-secondary);
 }
 
 /* The model change that waits for the running turn to end. */

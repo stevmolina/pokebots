@@ -251,6 +251,41 @@ export const WorkingAndDone: Story = {
 };
 
 /**
+ * Option B "Done" group with sample data: bots stay in Done after being read, showing either an
+ * open PR chip (`#344`, `#263`) or quiet remaining auto-settle time (`18h`), with Settled below.
+ */
+export const DoneWithPrAndTimer: Story = {
+  args: {
+    agents: [
+      { ...requireFixture(agents[0], "Agent 0"), id: "sample-bot-1", name: "Pokebot", updatedAt: minutesAgo(360) },
+      { ...requireFixture(agents[1], "Agent 1"), id: "sample-bot-2", name: "Marca", updatedAt: minutesAgo(360) },
+      { ...requireFixture(agents[2], "Agent 2"), id: "sample-bot-3", name: "Resorsi", updatedAt: minutesAgo(120) },
+      { ...requireFixture(agents[3], "Agent 3"), id: "sample-bot-4", name: "Sales", updatedAt: minutesAgo(2_000) },
+      { ...requireFixture(agents[4], "Agent 4"), id: "sample-bot-5", name: "Writer", updatedAt: minutesAgo(3_000) },
+      { ...requireFixture(agents[5], "Agent 5"), id: "sample-bot-6", name: "Designer", updatedAt: minutesAgo(4_000) },
+    ],
+    activeAgentId: "sample-bot-1",
+    agentStates: {},
+    agentMoods: {},
+    channels: [],
+    autoSettle: "1d",
+    agentPullRequests: {
+      "sample-bot-1": {
+        open: [{ owner: "example", repo: "app", number: 344, url: "https://github.com/example/app/pull/344" }],
+        allMerged: false,
+        mergedAt: null,
+      },
+      "sample-bot-3": {
+        open: [{ owner: "example", repo: "app", number: 263, url: "https://github.com/example/app/pull/263" }],
+        allMerged: false,
+        mergedAt: null,
+      },
+    },
+    collapsedSectionIds: [`dock:open:${SIDEBAR_UNASSIGNED_SECTION_ID}`],
+  },
+};
+
+/**
  * The first pinned agent is the main agent: a centered tile at the top, with its star and the menu of
  * the agent. The pinned group does not repeat it.
  */

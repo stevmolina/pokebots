@@ -35,6 +35,12 @@ import { sidebarSectionResolver } from "./sidebar-agent-order";
 import { sidebarAgentWait } from "./sidebar-recent-chats";
 import { useSidebarScope } from "./sidebar-scope";
 import {
+  type AgentSettleState,
+  evaluateAgentSettle,
+  latestAgentActivityAt,
+  sidebarAutoSettleMs,
+} from "./sidebar-settling";
+import {
   SIDEBAR_DOCK_DONE_ID,
   SIDEBAR_DOCK_SNOOZED_ID,
   SIDEBAR_DOCK_WORKING_ID,
@@ -50,6 +56,7 @@ function SidebarChatRows(rowsProps: {
   compact?: boolean | undefined;
   card?: boolean | undefined;
   note?: ((chat: SidebarChatItem) => string | undefined) | undefined;
+  doneStatus?: ((chat: SidebarChatItem) => AgentSettleState | undefined) | undefined;
 }) {
   return (
     <div
@@ -60,7 +67,15 @@ function SidebarChatRows(rowsProps: {
     >
       {/* Keyed by chat, so a new order after a message keeps each row, its focus and its menu. */}
       <For each={rowsProps.chats} keyed={(chat) => `${chat.kind}:${chat.id}`}>
-        {(chat) => <SidebarChatRow chat={chat()} look="row" note={rowsProps.note?.(chat())} card={rowsProps.card} />}
+        {(chat) => (
+          <SidebarChatRow
+            chat={chat()}
+            look="row"
+            note={rowsProps.note?.(chat())}
+            doneStatus={rowsProps.doneStatus?.(chat())}
+            card={rowsProps.card}
+          />
+        )}
       </For>
     </div>
   );
@@ -92,6 +107,8 @@ interface SidebarChatDockGroups {
   working: SidebarChatItem[];
   snoozed: SidebarChatItem[];
   done: SidebarChatItem[];
+  /** Settling status (open PR or remaining auto-settle time) for each agent in "Done". */
+  doneMeta: ReadonlyMap<string, AgentSettleState>;
   /** The chats in no state group, newest first, from every folder: "Settled" of the "Active" view. */
   rest: SidebarChatItem[];
   bySection: ReadonlyMap<string, SidebarChatItem[]>;
@@ -121,7 +138,7 @@ function useThreadStates() {
 
 /** The groups of the list. `chats` is newest first, and each group keeps that order. */
 export function useSidebarChatDockGroups(chats: () => readonly SidebarChatItem[]) {
-  const { draggingKind, props, snoozedAgents, waitingChats } = useSidebarScope();
+  const { draggingKind, props, settledAgents, snoozeClock, snoozedAgents, waitingChats } = useSidebarScope();
   const threadStates = useThreadStates();
   const unread = useChatUnread();
   let heldWorking = new Set<string>();
@@ -136,10 +153,30 @@ export function useSidebarChatDockGroups(chats: () => readonly SidebarChatItem[]
     if (!draggingKind()) heldWorking = next;
     return heldWorking;
   });
-  let heldDone = new Set<string>();
-  /** The agents with a reply that the user did not read. Like the others, it holds still during a drag. */
-  const unreadAgentIds = createMemo(() => {
-    const next = new Set(chats().flatMap((chat) => (chat.kind === "agent" && unread(chat) ? [chat.id] : [])));
+  let heldDone = new Map<string, AgentSettleState>();
+  /**
+   * The agents that belong in "Done" (by unread, inactivity window, open PR, or manual settle).
+   * Like the other state sets, it holds still during a drag so rows do not jump under the pointer.
+   */
+  const doneStates = createMemo(() => {
+    const now = snoozeClock();
+    const settleAfterMs = sidebarAutoSettleMs(props.autoSettle);
+    const settled = settledAgents();
+    const latestThreads = props.threadLanes?.latestThreadUpdatedAt;
+    const pullRequests = props.agentPullRequests;
+    const next = new Map<string, AgentSettleState>();
+    for (const chat of chats()) {
+      if (chat.kind !== "agent") continue;
+      const result = evaluateAgentSettle({
+        unread: unread(chat),
+        lastActivityAt: latestAgentActivityAt(chat.agent.updatedAt, latestThreads?.[chat.id]),
+        settledAt: settled.get(chat.id),
+        settleAfterMs,
+        now,
+        pullRequests: pullRequests?.[chat.id],
+      });
+      if (result.inDone) next.set(chat.id, result);
+    }
     if (!draggingKind()) heldDone = next;
     return heldDone;
   });
@@ -148,6 +185,7 @@ export function useSidebarChatDockGroups(chats: () => readonly SidebarChatItem[]
     const waitingIds = new Set(waitingChats().map((chat) => chat.id));
     const states = threadStates();
     const snoozes = snoozedAgents();
+    const doneMeta = doneStates();
     const waiting: SidebarChatItem[] = [];
     const working: SidebarChatItem[] = [];
     const snoozed: SidebarChatItem[] = [];
@@ -170,7 +208,7 @@ export function useSidebarChatDockGroups(chats: () => readonly SidebarChatItem[]
         working.push(chat);
       } else if (agent && snoozes.has(chat.id)) {
         snoozed.push(chat);
-      } else if (agent && unreadAgentIds().has(chat.id)) {
+      } else if (agent && doneMeta.has(chat.id)) {
         done.push(chat);
       } else {
         file(bySection, chat);
@@ -179,7 +217,7 @@ export function useSidebarChatDockGroups(chats: () => readonly SidebarChatItem[]
     }
     // The agent that wakes up first comes first.
     snoozed.sort((a, b) => (snoozes.get(a.id) ?? 0) - (snoozes.get(b.id) ?? 0));
-    return { waiting, working, snoozed, done, rest, bySection, allBySection };
+    return { waiting, working, snoozed, done, doneMeta, rest, bySection, allBySection };
   });
 }
 
@@ -242,6 +280,7 @@ function SidebarDockGroup(groupProps: {
   compact?: boolean;
   card?: boolean;
   note?: (chat: SidebarChatItem) => string | undefined;
+  doneStatus?: (chat: SidebarChatItem) => AgentSettleState | undefined;
   children?: JSX.Element;
 }) {
   const { chatListView, dragOffset, sectionDragClasses } = useSidebarScope();
@@ -287,6 +326,7 @@ function SidebarDockGroup(groupProps: {
           compact={groupProps.compact}
           card={groupProps.card}
           note={groupProps.note}
+          doneStatus={groupProps.doneStatus}
         />
         {groupProps.children}
       </SidebarDockBody>
@@ -521,6 +561,7 @@ export function SidebarChatDock(dockProps: { groups: SidebarChatDockGroups; open
             open={!sectionIsCollapsed(SIDEBAR_DOCK_DONE_ID)}
             onToggle={() => toggleSection(SIDEBAR_DOCK_DONE_ID)}
             compact
+            doneStatus={(chat) => (chat.kind === "agent" ? dockProps.groups.doneMeta.get(chat.id) : undefined)}
           />
         </Show>
         <Show when={snoozedShown()}>

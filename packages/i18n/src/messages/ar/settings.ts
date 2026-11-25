@@ -120,6 +120,12 @@ export const messages = {
   "settings.sendShortcut.description": "اختر المفاتيح التي ترسل رسالة على هذا الجهاز والمتصفح.",
   "settings.chatOrder.description":
     "اختر كيف يرتب الشريط الجانبي الدردشات على هذا الجهاز. الخياران يدوي والنشاط الأخير يوقفان مجموعة غير المقروءة.",
+  "settings.autoSettle.title": "تسوية البوتات غير النشطة تلقائيًا",
+  "settings.autoSettle.description": "انقل البوتات المنتهية من انتهت إلى مستقرة بعد هذه المدة دون نشاط جديد. تبقى البوتات ذات طلبات السحب المفتوحة حتى دمجها.",
+  "settings.autoSettle.1d": "يوم واحد",
+  "settings.autoSettle.3d": "3 أيام",
+  "settings.autoSettle.7d": "7 أيام",
+  "settings.autoSettle.manual": "يدوي فقط",
   "settings.sendShortcut.enter": "Enter للإرسال",
   "settings.sendShortcut.modEnterMac": "⌘Enter للإرسال",
   "settings.sendShortcut.modEnterWin": "Ctrl+Enter للإرسال",

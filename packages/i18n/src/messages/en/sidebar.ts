@@ -108,6 +108,7 @@ export const messages = defineMessages("sidebar", {
   "sidebar.agentMenu.markRead": "Mark read",
   "sidebar.agentMenu.makeMain": "Make main agent",
   "sidebar.agentMenu.markUnread": "Mark unread",
+  "sidebar.agentMenu.settle": "Settle",
   "sidebar.agentMenu.mute": "Mute agent",
   "sidebar.agentMenu.unmute": "Unmute agent",
   "sidebar.agentMenu.delete": "Delete agent",

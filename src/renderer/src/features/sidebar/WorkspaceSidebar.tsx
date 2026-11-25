@@ -81,6 +81,7 @@ export function WorkspaceSidebar(props: { peopleEnabled: boolean }) {
   const { setSkillsMarketplaceOpen } = useSettings();
   const {
     agentList,
+    agentPullRequests,
     agentListConnecting,
     agentListSettled,
     activeAgent,
@@ -425,6 +426,8 @@ export function WorkspaceSidebar(props: { peopleEnabled: boolean }) {
         layoutMutable={!allMachinesOn() && activeServerSupportsCapability("sidebar-layout")}
         chatOrder={layout.sidebarChatOrder()}
         onChatOrderChange={layout.setSidebarChatOrder}
+        autoSettle={layout.sidebarAutoSettle()}
+        agentPullRequests={allMachinesOn() ? undefined : agentPullRequests()}
         foldersSupported={activeServerSupportsCapability("sidebar-folders-v1")}
         collapsedSectionIds={allMachinesOn() ? allMachines.collapsedSectionIds() : collapsedSidebarSectionIds()}
         onMutateLayout={mutateSidebarLayout}

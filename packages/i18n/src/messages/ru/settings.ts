@@ -124,6 +124,12 @@ export const messages = {
   "settings.sendShortcut.description": "Выберите клавиши для отправки сообщения на этом устройстве и в этом браузере.",
   "settings.chatOrder.description":
     "Выберите, как боковая панель сортирует чаты на этом устройстве. «Вручную» и «Недавняя активность» отключают группу «Непрочитанные».",
+  "settings.autoSettle.title": "Автоматически завершать неактивных ботов",
+  "settings.autoSettle.description": "Переносит готовых ботов в Завершённые после этого времени без новой активности. Боты с открытыми pull request остаются до слияния.",
+  "settings.autoSettle.1d": "1 день",
+  "settings.autoSettle.3d": "3 дня",
+  "settings.autoSettle.7d": "7 дней",
+  "settings.autoSettle.manual": "Только вручную",
   "settings.sendShortcut.enter": "Отправка по Enter",
   "settings.sendShortcut.modEnterMac": "Отправка по ⌘Enter",
   "settings.sendShortcut.modEnterWin": "Отправка по Ctrl+Enter",

@@ -38,10 +38,10 @@
   inset: 10px 0 auto;
   display: flex;
   width: fit-content;
-  max-width: min(440px, calc(100% - 12 * var(--openbot-space-4)));
+  max-width: min(560px, calc(100% - 12 * var(--openbot-space-4)));
   height: fit-content;
   align-items: center;
-  gap: var(--openbot-space-1);
+  gap: var(--openbot-space-2);
   margin: 0 auto;
 }
 
@@ -98,6 +98,58 @@
 .conversation-new-session.ui-button {
   flex: none;
   border-radius: var(--openbot-radius-pill);
+  color: var(--openbot-text-muted);
+}
+
+/* Open PR pill beside the centered agent name pill (Option B). */
+.conversation-pr-chip {
+  display: inline-flex;
+  flex: none;
+  height: 36px;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--openbot-border);
+  border-radius: var(--openbot-radius-pill);
+  background: var(--openbot-bg-surface);
+  padding-inline: 12px 14px;
+  color: var(--openbot-text-primary);
+  font-size: var(--openbot-text-sm);
+  line-height: 18px;
+  text-decoration: none;
+  white-space: nowrap;
+  box-shadow:
+    0 4px 12px -1px color-mix(in srgb, var(--openbot-text-primary) 8%, transparent),
+    0 2px 4px -2px color-mix(in srgb, var(--openbot-text-primary) 6%, transparent);
+  transition:
+    border-color var(--openbot-duration-hover) ease,
+    background-color var(--openbot-duration-hover) ease;
+}
+
+.conversation-pr-chip:hover {
+  border-color: var(--openbot-border-strong);
+  background: var(--openbot-bg-control-hover);
+}
+
+.conversation-pr-chip:focus-visible {
+  outline: 2px solid var(--openbot-focus-ring, var(--openbot-accent));
+  outline-offset: 1px;
+}
+
+.conversation-pr-chip-icon {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  color: var(--openbot-success);
+}
+
+.conversation-pr-chip-number {
+  color: var(--openbot-text-primary);
+  font-weight: var(--openbot-weight-medium);
+  font-variant-numeric: tabular-nums;
+}
+
+.conversation-pr-chip-sep,
+.conversation-pr-chip-state {
   color: var(--openbot-text-muted);
 }
 

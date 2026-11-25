@@ -139,6 +139,7 @@ export const messages = {
   "sidebar.agentMenu.markRead": "تعليم كمقروء",
   "sidebar.agentMenu.makeMain": "اجعله الوكيل الرئيسي",
   "sidebar.agentMenu.markUnread": "تعليم كغير مقروء",
+  "sidebar.agentMenu.settle": "تسوية",
   "sidebar.agentMenu.mute": "كتم الوكيل",
   "sidebar.agentMenu.unmute": "إلغاء كتم الوكيل",
   "sidebar.agentMenu.delete": "حذف الوكيل",

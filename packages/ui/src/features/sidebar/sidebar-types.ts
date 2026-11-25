@@ -18,6 +18,7 @@ import type { ServerMenuProps } from "../servers/ServerMenu";
 import type { ServerMarkServer } from "../servers/ServerRail";
 import type { SidebarPages } from "./sidebar-pages";
 import type { SidebarPinnedItem } from "./sidebar-pins";
+import type { SidebarAgentPullRequestStatus, SidebarAutoSettleOption } from "./sidebar-settling";
 
 /**
  * What the sidebar is, as data. These live apart from `Sidebar.tsx` because
@@ -269,6 +270,10 @@ export interface SidebarProps {
   chatOrder?: SidebarChatOrder | undefined;
   /** Saves the user's choice of order. Without it, the list menu has no "Sort chats" item. */
   onChatOrderChange?: ((order: SidebarChatOrder) => void) | undefined;
+  /** How long an inactive agent stays in "Done" before moving to "Settled". Defaults to `"1d"`. */
+  autoSettle?: SidebarAutoSettleOption | undefined;
+  /** Linked GitHub pull request status per agent, for Done row badges and PR-merge auto-settling. */
+  agentPullRequests?: Readonly<Record<string, SidebarAgentPullRequestStatus>> | undefined;
   collapsedSectionIds: string[];
   onMutateLayout: (action: SidebarLayoutAction) => Promise<void>;
   /**

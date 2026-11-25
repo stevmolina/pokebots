@@ -45,6 +45,7 @@ import type { SidePanelPane } from "@pokebots/ui/features/conversation/SidePanel
 import type { AgentThreadOlderMessages } from "@pokebots/ui/features/conversation/threads/AgentThreadView";
 import type { ThreadHeaderProps, ThreadItem } from "@pokebots/ui/features/conversation/threads/thread-types";
 import type { SidebarAgentWait } from "@pokebots/ui/features/sidebar/sidebar-agent-states";
+import type { SidebarAgentOpenPullRequest } from "@pokebots/ui/features/sidebar/sidebar-settling";
 import type { JSX } from "@solidjs/web";
 import type { ConnectorRegistry } from "../connectors/connector-registry";
 import type { AppSettingLinkId } from "../settings/setting-link-targets";
@@ -150,6 +151,12 @@ export interface ConversationChannelSettingsPaneProps {
 export interface ConversationProps {
   /** A channel, in place of an agent. Read once, when the view opens. */
   channel?: ConversationChannelSource | undefined;
+  /** Primary open GitHub PR linked to this agent, shown as a clickable pill in the header. */
+  openPullRequest?: SidebarAgentOpenPullRequest | undefined;
+  /** Custom click handler for opening the linked PR URL (e.g. desktop external link opener). */
+  onOpenPullRequest?: ((url: string) => void) | undefined;
+  /** Shown on the top-right of the header when this agent is in "Done" and can be settled. */
+  settle?: { onSettle: () => void } | undefined;
   contextState?: AgentContextState | undefined;
   runtime?: ConversationRuntime | undefined;
   notice?: JSX.Element | undefined;

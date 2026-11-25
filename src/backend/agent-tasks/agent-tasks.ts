@@ -623,6 +623,11 @@ export class AgentTasks implements TaskLanes {
     return this.#store.pullRequestTexts(task.threadId);
   }
 
+  /** Recent message texts across an agent's main thread and open side threads that name a GitHub PR. */
+  agentPullRequestTexts(agentId: string, mainThreadId: string): string[] {
+    return this.#store.agentPullRequestTexts(agentId, mainThreadId);
+  }
+
   #awaitedTaskIds(): Set<string> {
     return new Set(this.#mailbox.awaitedThreadRequests().map((request) => request.taskId));
   }

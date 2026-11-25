@@ -1646,3 +1646,30 @@
   color: var(--openbot-text-secondary);
   font-size: var(--openbot-text-sm);
 }
+
+/* "Done" row trailing badges: open PR (#344) with subtle green PR icon, or muted time left (18h). */
+.sidebar-chat-done-pr {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 4px;
+  color: var(--openbot-text-muted);
+  font-size: var(--openbot-text-sm);
+  font-variant-numeric: tabular-nums;
+  line-height: 18px;
+}
+
+.sidebar-chat-done-pr-icon {
+  width: 13px;
+  height: 13px;
+  flex: none;
+  color: var(--openbot-success);
+}
+
+.sidebar-chat-done-time {
+  flex: none;
+  color: var(--openbot-text-muted);
+  font-size: var(--openbot-text-sm);
+  font-variant-numeric: tabular-nums;
+  line-height: 18px;
+}

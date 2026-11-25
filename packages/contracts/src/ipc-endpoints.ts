@@ -68,6 +68,7 @@ import type {
   UpdateAgentPlanCardInput,
 } from "./ipc-agent-admin";
 import type { AgentAnalytics, AgentAnalyticsInput } from "./ipc-agent-analytics";
+import type { AgentPullRequestsMap } from "./ipc-agent-pull-requests";
 import type {
   AgentComputerAccountAllowance,
   AgentComputerMachineList,
@@ -1879,6 +1880,7 @@ export const IPC_ENDPOINTS = {
     getUsage: scopedRequest<string | undefined, AccountUsage>()("agent:get-usage"),
     listModels: scopedQuery<ClientAgentModelOption[]>()("agent:list-models"),
     listAgents: scopedQuery<ClientAgentSummary[]>()("agent:list"),
+    listAgentPullRequests: scopedQuery<AgentPullRequestsMap>()("agent:list-pull-requests"),
     readAgentSessionSettings: scopedRequest<string, AgentSessionSettings>()("agent:session-settings:read"),
     setAgentSessionSetting: scopedRequest<SetAgentSessionSettingInput, AgentSessionSettings>()(
       "agent:session-settings:set",

@@ -133,6 +133,12 @@ export const messages = {
     "Choisissez les touches qui envoient un message sur cet appareil et dans ce navigateur.",
   "settings.chatOrder.description":
     "Choisissez comment la barre latérale trie les discussions sur cet appareil. Manuel et Activité récente désactivent le groupe Non lues.",
+  "settings.autoSettle.title": "Régler automatiquement les bots inactifs",
+  "settings.autoSettle.description": "Déplace les bots terminés vers Réglés après cette durée sans nouvelle activité. Les bots avec des pull requests ouvertes restent dans Terminés jusqu’à leur fusion.",
+  "settings.autoSettle.1d": "1 jour",
+  "settings.autoSettle.3d": "3 jours",
+  "settings.autoSettle.7d": "7 jours",
+  "settings.autoSettle.manual": "Manuel uniquement",
   "settings.sendShortcut.enter": "Entrée pour envoyer",
   "settings.sendShortcut.modEnterMac": "⌘Entrée pour envoyer",
   "settings.sendShortcut.modEnterWin": "Ctrl+Entrée pour envoyer",

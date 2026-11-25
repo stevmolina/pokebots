@@ -1,3 +1,4 @@
+import type { AgentPullRequestsMap } from "@pokebots/contracts/ipc";
 import type { Effect } from "effect";
 import type { BrainService } from "../../backend/brain-service";
 import type { ChannelService } from "../../backend/channel-service";
@@ -627,6 +628,8 @@ export interface TeamApiAdmin {
   roomsListening?: Pick<RoomsListeningControl, "get" | "set">;
   /** `thread-auto-archive-v1`: when this computer archives the side threads of its agents by itself. */
   threadAutoArchive?: ThreadAutoArchiveControl;
+  /** `agent-pull-requests-v1`: linked GitHub pull request status per agent. */
+  listAgentPullRequests?: () => Effect.Effect<AgentPullRequestsMap>;
   /** `claude-ai-tools-v1`: whether this computer's Claude agents get the claude.ai tools of its Claude sign-in. */
   claudeAiTools?: ClaudeAiToolsControl;
   /** `claude-compact-window-v1`: the size at which Claude Code compacts the chats of this computer's agents. */

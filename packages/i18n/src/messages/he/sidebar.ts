@@ -108,6 +108,7 @@ export const messages = {
   "sidebar.agentMenu.markRead": "סימון כנקרא",
   "sidebar.agentMenu.makeMain": "הפוך לסוכן הראשי",
   "sidebar.agentMenu.markUnread": "סימון כלא נקרא",
+  "sidebar.agentMenu.settle": "להשלים",
   "sidebar.agentMenu.mute": "השתקת הסוכן",
   "sidebar.agentMenu.unmute": "ביטול השתקת הסוכן",
   "sidebar.agentMenu.delete": "מחיקת הסוכן",

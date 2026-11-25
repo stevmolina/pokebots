@@ -485,6 +485,7 @@ import { routeSkillSuggestionSave } from "./team-api/route-skill-suggestion-save
 import { routeSkillsAdmin } from "./team-api/route-skills-admin";
 import { routeStorage } from "./team-api/route-storage";
 import { routeTeam } from "./team-api/route-team";
+import { routeAgentPullRequests } from "./team-api/route-agent-pull-requests";
 import { routeThreadAutoArchive } from "./team-api/route-thread-auto-archive";
 import { routeThreadMessageSearch } from "./team-api/route-thread-message-search";
 import { routeUsageCredits } from "./team-api/route-usage-credits";
@@ -1462,6 +1463,7 @@ export class TeamApiServer {
       if ((await routeBrainContext(context, this.#options.admin)) === "handled") return;
       if ((await routeRoomsListening(context, this.#options.admin)) === "handled") return;
       if ((await routeThreadAutoArchive(context, this.#options.admin)) === "handled") return;
+      if ((await routeAgentPullRequests(context, this.#options.admin)) === "handled") return;
       if ((await routeClaudeAiTools(context, this.#options.admin)) === "handled") return;
       if ((await routeClaudeCompactWindow(context, this.#options.admin)) === "handled") return;
       if ((await routeProviderEnvironment(context, this.#options.admin)) === "handled") return;

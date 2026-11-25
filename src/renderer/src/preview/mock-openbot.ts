@@ -2316,6 +2316,7 @@ export function createMockOpenBot(options: MockOpenBotOptions = {}): MockOpenBot
         ]),
       listAgents: async (serverId) =>
         clone(serverId === storyForeignServerId ? [...agents, STORY_FOREIGN_AGENT] : agents),
+      listAgentPullRequests: async () => ({}),
       listHiddenAgents: async () => hiddenAgents(),
       // As on a host: the agent keeps everything, and a hide or a restore goes to every device.
       setAgentHidden: async ({ agentId, hidden }) => {

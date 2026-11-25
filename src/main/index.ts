@@ -933,6 +933,7 @@ function registerIpcHandlers({
   brainContext,
   roomsListening,
   threadAutoArchive,
+  listAgentPullRequests,
   claudeAiTools,
   claudeCompactWindow,
   providerEnvironment,
@@ -1282,6 +1283,7 @@ function registerIpcHandlers({
       openExternal: openLink,
       modelVisibility,
       closeChatNotifications,
+      listAgentPullRequests,
     }),
     ...browserIpcHandlers({ browserPictureInPicture, browser, remoteServers, browserView, localSignIn }),
   });

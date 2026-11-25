@@ -275,6 +275,38 @@ export class AgentThreadStore {
     });
   }
 
+  /**
+   * The text of recent person and agent messages across an agent's main thread and open side threads
+   * that name a GitHub pull request address, newest first.
+   */
+  agentPullRequestTexts(agentId: string, mainThreadId: string, limit = 40): string[] {
+    return databaseRows(
+      this.#database.connection
+        .prepare(
+          `SELECT m.message_json FROM projection_thread_messages m
+           WHERE (
+             m.thread_id = ?
+             OR m.thread_id IN (
+               SELECT t.thread_id FROM projection_agent_threads t
+               WHERE t.agent_id = ? AND t.archived_at IS NULL
+             )
+           )
+             AND m.author IN ('user', 'assistant', 'agent')
+             AND m.message_json LIKE '%github.com/%/pull/%'
+           ORDER BY m.created_at DESC, m.ordinal DESC
+           LIMIT ?`,
+        )
+        .all(mainThreadId, agentId, limit),
+    ).flatMap((row) => {
+      try {
+        const { text } = decodeConversationMessageJson(requiredStringColumn(row, "message_json"));
+        return text ? [text] : [];
+      } catch {
+        return [];
+      }
+    });
+  }
+
   /** The titles of all threads of this agent, open and archived. */
   titles(agentId: string): string[] {
     return databaseRows(

@@ -124,6 +124,7 @@ export const messages = {
   "sidebar.agentMenu.markRead": "Отметить прочитанным",
   "sidebar.agentMenu.makeMain": "Сделать главным агентом",
   "sidebar.agentMenu.markUnread": "Отметить непрочитанным",
+  "sidebar.agentMenu.settle": "Завершить",
   "sidebar.agentMenu.mute": "Отключить уведомления",
   "sidebar.agentMenu.unmute": "Включить уведомления",
   "sidebar.agentMenu.delete": "Удалить агента",

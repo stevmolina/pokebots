@@ -25,6 +25,7 @@ import { AGENT_NOTIFICATION_LEVELS_CODECS } from "./agent-notification-levels-v1
 import { AGENT_PENDING_RUNTIME_CODECS } from "./agent-pending-runtime-v1";
 import { AGENT_PLAN_CARD_CODECS } from "./agent-plan-card-v1";
 import { AGENT_PUBLISH_CODECS } from "./agent-publish-v1";
+import { AGENT_PULL_REQUESTS_CODECS } from "./agent-pull-requests-v1";
 import { AGENT_QUEUE_TASK_CODECS } from "./agent-queue-task-v1";
 import { AGENT_SESSION_SETTINGS_CODECS } from "./agent-session-settings-v1";
 import { AGENT_SPEED_CODECS } from "./agent-speed-v1";
@@ -238,6 +239,7 @@ const CODECS: ReadonlyMap<string, OptionalRouteCodec> = new Map([
   ...AGENT_IMPORT_V2_CODECS,
   ...INSTANCE_TRANSFER_CODECS,
   ...AGENT_PUBLISH_CODECS,
+  ...AGENT_PULL_REQUESTS_CODECS,
   ...LIVE_ACTIVITY_PUSH_CODECS,
   ...PUSH_NOTIFICATIONS_CODECS,
   ...ANDROID_PUSH_NOTIFICATIONS_CODECS,

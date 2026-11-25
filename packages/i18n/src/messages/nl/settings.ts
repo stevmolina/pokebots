@@ -125,6 +125,12 @@ export const messages = {
   "settings.sendShortcut.description": "Kies de toetsen die een bericht verzenden op dit apparaat en in deze browser.",
   "settings.chatOrder.description":
     "Kies hoe de zijbalk chats op dit apparaat sorteert. Handmatig en Recente activiteit zetten de groep Ongelezen uit.",
+  "settings.autoSettle.title": "Inactieve bots automatisch afhandelen",
+  "settings.autoSettle.description": "Verplaatst klare bots naar Afgehandeld na deze tijd zonder nieuwe activiteit. Bots met open pull requests blijven staan tot ze zijn gemerged.",
+  "settings.autoSettle.1d": "1 dag",
+  "settings.autoSettle.3d": "3 dagen",
+  "settings.autoSettle.7d": "7 dagen",
+  "settings.autoSettle.manual": "Alleen handmatig",
   "settings.sendShortcut.enter": "Enter verstuurt",
   "settings.sendShortcut.modEnterMac": "⌘Enter verstuurt",
   "settings.sendShortcut.modEnterWin": "Ctrl+Enter verstuurt",

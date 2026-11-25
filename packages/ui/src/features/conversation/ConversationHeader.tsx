@@ -1,4 +1,4 @@
-import { Badge, Button, Clock3, Lock, Plus } from "@pokebots/ui";
+import { Badge, Button, Check, Clock3, GitPullRequest, Lock, Plus } from "@pokebots/ui";
 import { ProviderModelPicker } from "@pokebots/ui/components/ProviderModelPicker";
 import type { AgentProfile } from "@pokebots/ui/data";
 import { AgentAvatar } from "@pokebots/ui/features/agents/AgentAvatar";
@@ -6,6 +6,7 @@ import { agentAccessLockLabel } from "@pokebots/ui/features/agents/agent-access"
 import { RemoteDesktopIcon } from "@pokebots/ui/features/conversation/ConversationIcons";
 import { PinnedMessages, type PinnedMessagesProps } from "@pokebots/ui/features/conversation/PinnedMessages";
 import { SidePanelToggle, type SidePanelToggleProps } from "@pokebots/ui/features/conversation/SidePanel";
+import type { SidebarAgentOpenPullRequest } from "@pokebots/ui/features/sidebar/sidebar-settling";
 import { useText } from "@pokebots/ui/text";
 import type { ComponentProps, JSX } from "@solidjs/web";
 import { Show } from "solid-js";
@@ -43,6 +44,12 @@ export interface ConversationHeaderProps {
    * pane that the name pill opens has both.
    */
   sessionsInPane?: boolean | undefined;
+  /** Primary open GitHub PR linked to this agent, shown as a clickable pill beside the agent name pill. */
+  openPullRequest?: SidebarAgentOpenPullRequest | undefined;
+  /** Optional custom handler when the user clicks the PR pill (e.g. desktop external link opener). */
+  onOpenPullRequest?: ((url: string) => void) | undefined;
+  /** Shown on the top-right when this agent is currently in "Done" and can be settled manually. */
+  settle?: { onSettle: () => void } | undefined;
 }
 
 export interface ConversationHeaderSession {
@@ -127,6 +134,33 @@ export function ConversationHeader(props: ConversationHeaderProps) {
                   </Button>
                 )}
               </Show>
+              <Show when={props.openPullRequest}>
+                {(pr) => (
+                  <a
+                    class="conversation-pr-chip no-drag"
+                    href={pr().url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={t("conversation.header.openPrLabel", { number: pr().number })}
+                    title={`${pr().owner}/${pr().repo}#${pr().number}`}
+                    onClick={(event) => {
+                      if (props.onOpenPullRequest) {
+                        event.preventDefault();
+                        props.onOpenPullRequest(pr().url);
+                      }
+                    }}
+                  >
+                    <GitPullRequest class="conversation-pr-chip-icon" aria-hidden="true" />
+                    <span class="conversation-pr-chip-number">
+                      {t("conversation.header.prNumber", { number: pr().number })}
+                    </span>
+                    <span class="conversation-pr-chip-sep" aria-hidden="true">
+                      ·
+                    </span>
+                    <span class="conversation-pr-chip-state">{t("conversation.header.prOpen")}</span>
+                  </a>
+                )}
+              </Show>
             </div>
           )}
         </Show>
@@ -166,6 +200,20 @@ export function ConversationHeader(props: ConversationHeaderProps) {
           )}
         </Show>
         <Show when={props.pinnedMessages}>{(pins) => <PinnedMessages {...pins()} />}</Show>
+        <Show when={props.agent && props.settle}>
+          {(settle) => (
+            <Button
+              variant="ghost"
+              size="sm"
+              type="button"
+              class="conversation-settle-button no-drag"
+              onClick={() => settle().onSettle()}
+            >
+              <Check class="conversation-settle-icon" aria-hidden="true" />
+              <span>{t("conversation.header.settle")}</span>
+            </Button>
+          )}
+        </Show>
         <Show when={props.sidePanel}>{(sidePanel) => <SidePanelToggle {...sidePanel()} />}</Show>
       </div>
     </header>

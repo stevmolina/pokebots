@@ -27,6 +27,7 @@ import { AGENT_NEW_CHAT_CAPABILITY } from "./agent-new-chat-v1";
 import { AGENT_NOTIFICATION_LEVELS_CAPABILITY } from "./agent-notification-levels-v1";
 import { AGENT_PENDING_RUNTIME_CAPABILITY } from "./agent-pending-runtime-v1";
 import { AGENT_PLAN_CARD_CAPABILITY } from "./agent-plan-card-v1";
+import { AGENT_PULL_REQUESTS_CAPABILITY } from "./agent-pull-requests-v1";
 import { AGENT_PUBLISH_CAPABILITY } from "./agent-publish-v1";
 import { AGENT_QUEUE_TASK_CAPABILITY } from "./agent-queue-task-v1";
 import { AGENT_SESSION_SETTINGS_CAPABILITY } from "./agent-session-settings-v1";
@@ -869,6 +870,7 @@ const TEAM_CAPABILITY_REGISTRY = [
   [COMPUTER_LIVE_VIEW_CAPABILITY, POKEBOTS],
   [BRAIN_CONTEXT_CAPABILITY, POKEBOTS],
   [ROOMS_LISTENING_CAPABILITY, POKEBOTS],
+  [AGENT_PULL_REQUESTS_CAPABILITY, POKEBOTS],
 ] as const satisfies readonly (readonly [string, TeamCapabilityPlacement])[];
 
 export const TEAM_CURRENT_CAPABILITIES = TEAM_CAPABILITY_REGISTRY.map(([capability]) => capability);

@@ -27,6 +27,7 @@ import {
   decodeHostTurnLimits,
   LEGACY_RESPONSE_STYLE,
   type McpSignInState,
+  parseAgentPullRequestsResponse,
   parseThreadAutoArchiveSetting,
   type RoutineFields,
   type ServerConnectionState,
@@ -46,6 +47,10 @@ import { AGENT_IMPORT_V2_CAPABILITY } from "@pokebots/contracts/team-protocol/ag
 import { AGENT_NEW_CHAT_ROUTES } from "@pokebots/contracts/team-protocol/agent-new-chat-v1";
 import { AGENT_NOTIFICATION_LEVELS_CAPABILITY } from "@pokebots/contracts/team-protocol/agent-notification-levels-v1";
 import { AGENT_PLAN_CARD_ROUTES } from "@pokebots/contracts/team-protocol/agent-plan-card-v1";
+import {
+  AGENT_PULL_REQUESTS_CAPABILITY,
+  AGENT_PULL_REQUESTS_ROUTES,
+} from "@pokebots/contracts/team-protocol/agent-pull-requests-v1";
 import { AGENT_SPEED_CAPABILITY, AGENT_SPEED_ROUTES } from "@pokebots/contracts/team-protocol/agent-speed-v1";
 import { AGENT_TASKS_CAPABILITY } from "@pokebots/contracts/team-protocol/agent-tasks-v1";
 import { AGENT_THREAD_FILES_CAPABILITY } from "@pokebots/contracts/team-protocol/agent-thread-files-v1";
@@ -212,7 +217,16 @@ import {
   sidebarChannelWaits,
 } from "@pokebots/ui/features/sidebar/sidebar-agent-states";
 import type { SidebarPage, SidebarPages } from "@pokebots/ui/features/sidebar/sidebar-pages";
+import {
+  evaluateAgentSettle,
+  latestAgentActivityAt,
+  parseSidebarSettled,
+  sidebarAutoSettleMs,
+  sidebarSettledAgents,
+  sidebarSettledMarker,
+} from "@pokebots/ui/features/sidebar/sidebar-settling";
 import type { SidebarView } from "@pokebots/ui/features/sidebar/sidebar-types";
+import { sidebarSnoozes } from "@pokebots/ui/features/sidebar/sidebar-types";
 import { useText } from "@pokebots/ui/text";
 import type { ComponentProps, JSX } from "@solidjs/web";
 import { Effect } from "effect";
@@ -234,6 +248,7 @@ import {
 } from "solid-js";
 import { toAgentProfile } from "../../app-message-projection";
 import { queuedDeliveriesInOrder } from "../../queue-reconciliation";
+import { createAgentPullRequestsPoll } from "../agents/use-agent-pull-requests";
 import { WebBrainPage } from "../brain/WebBrainPage";
 import { backgroundWorkKey } from "../conversation/background-work-key";
 import { IntegrationProfiles } from "../integrations/IntegrationProfiles";
@@ -1933,6 +1948,61 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
         mergedPullRequests,
       }),
   };
+  const agentPullRequests = createAgentPullRequestsPoll({
+    activityKey: () =>
+      `${workspace.state.host?.hostId ?? ""}|${workspace
+        .profiles()
+        .map((agent) => `${agent.id}:${agent.updatedAt ?? ""}`)
+        .join(",")}`,
+    enabled: () =>
+      workspace.state.status === "online" &&
+      workspace.state.capabilities.includes(AGENT_PULL_REQUESTS_CAPABILITY) &&
+      workspace.profiles().length > 0 &&
+      Boolean(workspace.state.host?.hostId),
+    load: async () => {
+      const hostId = workspace.state.host?.hostId;
+      if (!hostId) return {};
+      return hostRequest(hostId)("POST", AGENT_PULL_REQUESTS_ROUTES.list, parseAgentPullRequestsResponse, {});
+    },
+  });
+  const [webSettleClock, setWebSettleClock] = createSignal(Date.now());
+  const webSettleTimer = setInterval(() => setWebSettleClock(Date.now()), 60_000);
+  onCleanup(() => clearInterval(webSettleTimer));
+  const activeWebOpenPullRequest = createMemo(() => {
+    const id = workspace.state.selectedId;
+    return id ? agentPullRequests()[id]?.open[0] : undefined;
+  });
+  const activeWebAgentSettle = createMemo(() => {
+    const id = workspace.state.selectedId;
+    const agent = id ? workspace.profiles().find((candidate) => candidate.id === id) : undefined;
+    if (!agent) return undefined;
+    const state = sidebarAgentStates()[agent.id];
+    if (state?.kind === "working" || state?.kind === "waiting") return undefined;
+    const now = webSettleClock();
+    const collapsed = workspace.preferences.collapsedSidebarSectionIds();
+    if (sidebarSnoozes(collapsed, now).has(agent.id)) return undefined;
+    const unread = state?.kind === "unread";
+    const result = evaluateAgentSettle({
+      unread,
+      lastActivityAt: latestAgentActivityAt(agent.updatedAt),
+      settledAt: sidebarSettledAgents(collapsed).get(agent.id),
+      settleAfterMs: sidebarAutoSettleMs(layout.sidebarAutoSettle()),
+      now,
+      pullRequests: agentPullRequests()[agent.id],
+    });
+    if (!result.inDone) return undefined;
+    return {
+      onSettle: () => {
+        const current = workspace.preferences.collapsedSidebarSectionIds();
+        for (const marker of current) {
+          const parsed = parseSidebarSettled(marker);
+          if (parsed && parsed.agentId === agent.id) workspace.preferences.toggleSidebarSection(marker);
+        }
+        workspace.preferences.toggleSidebarSection(sidebarSettledMarker(agent.id, Date.now()));
+        setWebSettleClock(Date.now());
+      },
+    };
+  });
   const hostPersonalityCalls: HostPersonalityCalls = {
     // A host before host-personality-v1 uses the classic prompt.
     getPersonality: async (serverId) =>
@@ -3924,6 +3994,8 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                     }
                     chatOrder={layout.sidebarChatOrder()}
                     onChatOrderChange={layout.setSidebarChatOrder}
+                    autoSettle={layout.sidebarAutoSettle()}
+                    agentPullRequests={allMachinesOn() ? undefined : agentPullRequests()}
                     collapsedSectionIds={workspace.preferences.collapsedSidebarSectionIds()}
                     onMutateLayout={workspace.mutateSidebarLayout}
                     sectionDuplicateSupported={
@@ -4816,6 +4888,8 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                   onActivateBrowserTab={workspace.activateBrowserTab}
                   onCloseBrowserTab={(tabId) => workspace.runtime.closeBrowserTab(tabId)}
                   onOpenRemoteDesktop={unavailable}
+                  openPullRequest={activeWebOpenPullRequest()}
+                  settle={activeWebAgentSettle()}
                   onStop={() => {
                     const page = workspace.conversation()?.page;
                     if (page?.activeTurnId)

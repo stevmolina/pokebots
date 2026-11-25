@@ -127,6 +127,12 @@ export const messages = {
   "settings.sendShortcut.description": "Wähle die Tasten zum Senden auf diesem Gerät und in diesem Browser.",
   "settings.chatOrder.description":
     "Wähle, wie die Seitenleiste Chats auf diesem Gerät sortiert. „Manuell“ und „Letzte Aktivität“ schalten die Gruppe „Ungelesen“ aus.",
+  "settings.autoSettle.title": "Inaktive Bots automatisch erledigen",
+  "settings.autoSettle.description": "Verschiebt fertige Bots nach dieser Zeit ohne neue Aktivität von Fertig nach Erledigt. Bots mit offenen Pull Requests bleiben bis zum Merge in Fertig.",
+  "settings.autoSettle.1d": "1 Tag",
+  "settings.autoSettle.3d": "3 Tage",
+  "settings.autoSettle.7d": "7 Tage",
+  "settings.autoSettle.manual": "Nur manuell",
   "settings.sendShortcut.enter": "Mit Enter senden",
   "settings.sendShortcut.modEnterMac": "Mit ⌘Enter senden",
   "settings.sendShortcut.modEnterWin": "Mit Strg+Enter senden",
