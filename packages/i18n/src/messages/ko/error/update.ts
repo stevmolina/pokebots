@@ -8,6 +8,9 @@ export const messages = {
   "error.update.restartFailed": "Pokebots이 업데이트를 설치하기 위해 다시 시작하지 못했어요.",
   "error.update.downloadStalled": "업데이트 다운로드가 응답하지 않아요. 다시 시도해 주세요.",
   "error.update.installFailed": "업데이트를 설치할 수 없었어요. Pokebots을 종료한 후 다시 열고 다시 시도해 주세요.",
+  "error.update.jobOff": "업데이트가 꺼져 있어요.",
+  "error.update.jobStartFailed":
+    "업데이트를 다시 켤 수 없었어요. Pokebots 체크아웃에서 scripts/custom-auto-update-setup.sh를 실행해 주세요.",
   "error.update.notInstalled": "마지막 재시작에서 업데이트가 설치되지 않았어요. 다시 시작해서 다시 시도해 주세요.",
   "error.update.downloadFailed": "업데이트를 다운로드할 수 없었어요. 다시 시도해 주세요.",
   "error.update.checkFailed": "업데이트를 확인할 수 없었어요. 다시 시도해 주세요.",

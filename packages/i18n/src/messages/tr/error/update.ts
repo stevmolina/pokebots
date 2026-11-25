@@ -8,6 +8,9 @@ export const messages = {
   "error.update.restartFailed": "Pokebots güncellemeyi yüklemek için yeniden başlatılamadı.",
   "error.update.downloadStalled": "Güncelleme indirmesi yanıt vermeyi durdurdu. Tekrar deneyin.",
   "error.update.installFailed": "Güncelleme yüklenemedi. Pokebots'tan çıkıp yeniden açın, ardından tekrar deneyin.",
+  "error.update.jobOff": "Güncellemeler kapalı.",
+  "error.update.jobStartFailed":
+    "Güncellemeler yeniden açılamadı. Pokebots kopyasında scripts/custom-auto-update-setup.sh komutunu çalıştırın.",
   "error.update.notInstalled": "Son yeniden başlatma güncellemeyi yüklemedi. Tekrar denemek için yeniden başlatın.",
   "error.update.downloadFailed": "Güncelleme indirilemedi. Tekrar deneyin.",
   "error.update.checkFailed": "Güncellemeler denetlenemedi. Tekrar deneyin.",

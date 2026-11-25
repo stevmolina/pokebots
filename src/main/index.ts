@@ -1953,7 +1953,12 @@ if (!hasSingleInstanceLock) {
         let previous = pokebotsUpdateStatus(currentVersion);
         const poll = setInterval(() => {
           const next = pokebotsUpdateStatus(currentVersion);
-          if (next.phase === previous.phase && next.availableVersion === previous.availableVersion) return;
+          if (
+            next.phase === previous.phase &&
+            next.availableVersion === previous.availableVersion &&
+            next.message === previous.message
+          )
+            return;
           previous = next;
           forwardUpdateStatus(next);
         }, 3_000);
