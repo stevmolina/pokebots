@@ -1416,6 +1416,10 @@ Network traffic can also occur when:
 - a Discord server is connected. See [Discord connections](#discord-connections);
 - a Telegram chat is connected. See [Telegram connections](#telegram-connections);
 - a WhatsApp number is linked. See [WhatsApp connections](#whatsapp-connections).
+- Rooms listening, when an owner or admin turns it on for an agent, keeps a `wait` request open to
+  `rooms.mcpbox.dev` from the computer that runs the agent, with the same Rooms sign-in. New room
+  messages from others go into that agent's chat as a message from "Rooms" and to the agent's
+  provider as its prompt. Only the agent ids that listen are saved, in a local settings file.
 
 ## Webhook routines
 

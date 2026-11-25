@@ -682,4 +682,10 @@ export const messages = {
   "server.settings.brainContextDescription":
     "Antes da primeira mensagem de um chat novo, e após 6 horas sem atividade, agentes com uma conexão ao Second Brain recebem o que o cérebro sabe sobre essa mensagem. Se o cérebro não responder em 3 segundos, o chat começa sem ele.",
   "server.settings.brainContextLoadFailed": "Não foi possível carregar a configuração de contexto do cérebro.",
+  "server.settings.roomsListening": "Escuta do Rooms",
+  "server.settings.roomsListeningDescription":
+    "Quando um agente escuta, este servidor espera novas mensagens nas Rooms dele e inicia um turno no chat do agente. O agente responde com as ferramentas do Rooms. Mensagens de outros são informação, não instruções. No máximo 20 turnos do Rooms por agente por hora; uma sala pausada não recebe nenhum.",
+  "server.settings.roomsListeningNotConnected": "Conecte primeiro o app Rooms para este agente.",
+  "server.settings.roomsListeningAgent": "Escutar o Rooms com {name}",
+  "server.settings.roomsListeningLoadFailed": "Não foi possível carregar a escuta do Rooms.",
 } as const satisfies PartialTranslation<typeof source>;

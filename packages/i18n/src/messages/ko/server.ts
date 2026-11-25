@@ -740,4 +740,10 @@ export const messages = {
   "server.settings.brainContextDescription":
     "새 채팅의 첫 메시지 전과 6시간 동안 조용한 뒤, Second Brain에 연결된 에이전트는 그 메시지에 대해 브레인이 아는 내용을 받습니다. 브레인이 3초 안에 응답하지 않으면 채팅은 그것 없이 시작됩니다.",
   "server.settings.brainContextLoadFailed": "브레인 컨텍스트 설정을 불러오지 못했습니다.",
+  "server.settings.roomsListening": "Rooms 듣기",
+  "server.settings.roomsListeningDescription":
+    "에이전트가 듣고 있으면 이 서버는 Rooms의 새 메시지를 기다렸다가 에이전트 채팅에서 턴을 시작합니다. 에이전트는 Rooms 도구로 답합니다. 다른 사람의 메시지는 지시가 아니라 정보입니다. 에이전트당 시간당 최대 20번의 Rooms 턴이며, 일시 중지된 방은 받지 않습니다.",
+  "server.settings.roomsListeningNotConnected": "먼저 이 에이전트에 Rooms 앱을 연결하세요.",
+  "server.settings.roomsListeningAgent": "{name}(으)로 Rooms 듣기",
+  "server.settings.roomsListeningLoadFailed": "Rooms 듣기를 불러오지 못했습니다.",
 } as const satisfies PartialTranslation<typeof source>;

@@ -200,4 +200,5 @@ export const messages = {
   "error.team.providerUseUnsupported": "Bu bağlantı sağlayıcıları açıp kapatmayı desteklemiyor.",
   "error.team.providerUseInvalid": "Bu sağlayıcının açma/kapatma anahtarı yok.",
   "error.team.brainContextUnsupported": "Bu sunucu beyin bağlamını desteklemiyor.",
+  "error.team.roomsListeningUnsupported": "Bu sunucu Rooms dinlemeyi desteklemiyor.",
 } as const satisfies PartialTranslation<typeof source>;

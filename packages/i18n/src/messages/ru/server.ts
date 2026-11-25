@@ -699,4 +699,10 @@ export const messages = {
   "server.settings.brainContextDescription":
     "Перед первым сообщением нового чата и после 6 часов тишины агенты с подключением Second Brain получают то, что мозг знает об этом сообщении. Если мозг не ответит за 3 секунды, чат начнётся без него.",
   "server.settings.brainContextLoadFailed": "Не удалось загрузить настройку контекста мозга.",
+  "server.settings.roomsListening": "Прослушивание Rooms",
+  "server.settings.roomsListeningDescription":
+    "Когда агент слушает, этот сервер ждёт новые сообщения в его Rooms и начинает ход в чате агента. Агент отвечает инструментами Rooms. Сообщения других — это информация, а не указания. Не больше 20 ходов Rooms на агента в час; комната на паузе не получает ни одного.",
+  "server.settings.roomsListeningNotConnected": "Сначала подключите приложение Rooms для этого агента.",
+  "server.settings.roomsListeningAgent": "Слушать Rooms с {name}",
+  "server.settings.roomsListeningLoadFailed": "Не удалось загрузить прослушивание Rooms.",
 } as const satisfies PartialTranslation<typeof source>;

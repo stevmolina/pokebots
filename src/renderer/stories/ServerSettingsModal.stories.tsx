@@ -16,6 +16,7 @@ import {
 } from "@pokebots/contracts/ipc";
 import { BRAIN_CONTEXT_CAPABILITY } from "@pokebots/contracts/team-protocol/brain-context-v1";
 import { HOME_AGENT_RULES_CAPABILITY } from "@pokebots/contracts/team-protocol/home-agent-rules-v1";
+import { ROOMS_LISTENING_CAPABILITY } from "@pokebots/contracts/team-protocol/rooms-listening-v1";
 import { THREAD_AUTO_ARCHIVE_CAPABILITY } from "@pokebots/contracts/team-protocol/thread-auto-archive-v1";
 import { sourceText } from "@pokebots/i18n/source";
 import { Toaster } from "@pokebots/ui";
@@ -141,6 +142,51 @@ export const JoinedBrainContext: Story = {
           brainContext: {
             getBrainContext: async () => ({ enabled: enabled() }),
             setBrainContext: async (value) => ({ enabled: setEnabled(value) }),
+          },
+        }}
+      />
+    );
+  },
+};
+
+/** Rooms listening of a joined server with `rooms-listening-v1`: one switch for each agent. */
+export const JoinedRoomsListening: Story = {
+  args: {
+    server: {
+      ...remoteServer,
+      compatibility: {
+        localAppVersion: "0.0.0-story",
+        hostAppVersion: "0.0.0-story",
+        localProtocol: { minimum: 1, maximum: 10 },
+        hostProtocol: { minimum: 1, maximum: 10 },
+        negotiatedProtocol: 10,
+        capabilities: [ROOMS_LISTENING_CAPABILITY],
+      },
+    },
+    initialSection: "agents",
+  },
+  render: (args) => {
+    const [listening, setListening] = createSignal<string[]>([STORY_AGENT_SUMMARIES[0]?.id ?? ""]);
+    const setting = () => ({
+      agents: STORY_AGENT_SUMMARIES.slice(0, 4).map((agent, index) => ({
+        id: agent.id,
+        name: agent.name,
+        listening: listening().includes(agent.id),
+        roomsConnected: index !== 3,
+      })),
+    });
+    return (
+      <ServerSettingsStory
+        settings={{
+          ...args,
+          roomsListening: {
+            getRoomsListening: async () => setting(),
+            setRoomsListening: async (change) => {
+              setListening((ids) =>
+                change.listening ? [...ids, change.agentId] : ids.filter((id) => id !== change.agentId),
+              );
+              return setting();
+            },
           },
         }}
       />

@@ -719,4 +719,10 @@ export const messages = {
   "server.settings.brainContextDescription":
     "在新聊天的第一条消息之前，以及安静 6 小时之后，连接了 Second Brain 的智能体会收到大脑对这条消息所知道的内容。如果大脑在 3 秒内没有回应，聊天会在没有它的情况下开始。",
   "server.settings.brainContextLoadFailed": "无法加载大脑上下文设置。",
+  "server.settings.roomsListening": "Rooms 监听",
+  "server.settings.roomsListeningDescription":
+    "当智能体在监听时，此服务器会等待其 Rooms 中的新消息，并在智能体的聊天中开始一轮。智能体用 Rooms 工具回复。他人的消息是信息，不是指令。每个智能体每小时最多 20 轮 Rooms；已暂停的房间不会收到。",
+  "server.settings.roomsListeningNotConnected": "请先为此智能体连接 Rooms 应用。",
+  "server.settings.roomsListeningAgent": "用 {name} 监听 Rooms",
+  "server.settings.roomsListeningLoadFailed": "无法加载 Rooms 监听。",
 } as const satisfies PartialTranslation<typeof source>;

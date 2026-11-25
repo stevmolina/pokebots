@@ -173,6 +173,7 @@ import {
   type RemoteSessionReusePreference,
   type ReorderQueueInput,
   type RespondToPromptInput,
+  type RoomsListeningSetting,
   type Routine,
   type RoutineFlowLink,
   type RoutineFlowStep,
@@ -558,6 +559,7 @@ export function createMockOpenBot(options: MockOpenBotOptions = {}): MockOpenBot
   let threadAutoArchive: ThreadAutoArchiveSetting = { ...DEFAULT_THREAD_AUTO_ARCHIVE };
   let claudeUserSetup: ClaudeUserSetupSetting = { ...DEFAULT_CLAUDE_USER_SETUP };
   let brainContext: BrainContextSetting = { ...DEFAULT_BRAIN_CONTEXT };
+  const roomsListeningIds = new Set<string>();
   let claudeAiTools: ClaudeAiToolsSetting = { ...DEFAULT_CLAUDE_AI_TOOLS };
   let claudeCompactWindow: ClaudeCompactWindowSetting = { ...DEFAULT_CLAUDE_COMPACT_WINDOW };
   /** The variables of each provider; a sensitive one keeps its value here, as the host keeps it encrypted. */
@@ -3876,6 +3878,26 @@ export function createMockOpenBot(options: MockOpenBotOptions = {}): MockOpenBot
         if (typeof enabled !== "boolean") throw new Error("Invalid brain context setting.");
         brainContext = { enabled };
         return clone(brainContext);
+      },
+      getRoomsListening: async (): Promise<RoomsListeningSetting> => ({
+        agents: agents.map((agent, index) => ({
+          id: agent.id,
+          name: agent.name,
+          listening: roomsListeningIds.has(agent.id),
+          roomsConnected: index % 2 === 0,
+        })),
+      }),
+      setRoomsListening: async (change) => {
+        if (change.listening) roomsListeningIds.add(change.agentId);
+        else roomsListeningIds.delete(change.agentId);
+        return {
+          agents: agents.map((agent, index) => ({
+            id: agent.id,
+            name: agent.name,
+            listening: roomsListeningIds.has(agent.id),
+            roomsConnected: index % 2 === 0,
+          })),
+        };
       },
       getClaudeUserSetup: async () => clone(claudeUserSetup),
       setClaudeUserSetup: async (enabled) => {

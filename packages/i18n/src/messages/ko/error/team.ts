@@ -200,4 +200,5 @@ export const messages = {
   "error.team.providerUseUnsupported": "이 연결에서는 제공자를 켜고 끌 수 없어요.",
   "error.team.providerUseInvalid": "이 제공자에는 켜기/끄기 스위치가 없어요.",
   "error.team.brainContextUnsupported": "이 서버는 브레인 컨텍스트를 지원하지 않습니다.",
+  "error.team.roomsListeningUnsupported": "이 서버는 Rooms 듣기를 지원하지 않습니다.",
 } as const satisfies PartialTranslation<typeof source>;

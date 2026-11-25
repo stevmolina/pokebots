@@ -99,6 +99,7 @@ import type { ServerMemoryReviewOptions } from "./ServerMemoryReviewSetting";
 import { createServerMemorySection } from "./ServerMemorySection";
 import { type ServerPersonalityOptions, ServerPersonalitySetting } from "./ServerPersonalitySetting";
 import { createServerRolesSection, type ServerAgentAccessOptions } from "./ServerRolesSection";
+import type { HostRoomsListeningCalls } from "./ServerRoomsListeningSetting";
 import { type ServerRoutineFeedOptions, ServerRoutineFeedPanel } from "./ServerRoutineFeedPanel";
 import type { ServerSkillLearningOptions } from "./ServerSkillLearningSetting";
 import type { ServerThreadAutoArchiveOptions } from "./ServerThreadAutoArchiveSetting";
@@ -257,6 +258,8 @@ export interface ServerSettingsModalProps {
   homeAgentRules?: HostHomeAgentRulesCalls | undefined;
   /** "Start chats with brain context" of this computer or of a joined server with `brain-context-v1`. */
   brainContext?: HostBrainContextCalls | undefined;
+  /** Rooms listening of the agents of this computer or of a joined server with `rooms-listening-v1`. */
+  roomsListening?: HostRoomsListeningCalls | undefined;
   claudeUserSetup?: HostClaudeUserSetupOptions | undefined;
   /**
    * The Claude provider page shows "Use claude.ai tools" only when a caller supplies this, and only
@@ -420,6 +423,7 @@ const SECTION_ROWS: Partial<Record<Section, readonly AppTextKey[]>> = {
     "server.settings.threadAutoArchivePullRequests",
     "server.settings.homeAgentRules",
     "server.settings.brainContext",
+    "server.settings.roomsListening",
     "agentSettings.automation.title",
     "agentSettings.agentNewChat.title",
     "agentSettings.quickAcknowledgement.title",

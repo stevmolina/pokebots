@@ -9,6 +9,7 @@ import {
 } from "@pokebots/contracts/ipc";
 import { BRAIN_CONTEXT_CAPABILITY } from "@pokebots/contracts/team-protocol/brain-context-v1";
 import { HOME_AGENT_RULES_CAPABILITY } from "@pokebots/contracts/team-protocol/home-agent-rules-v1";
+import { ROOMS_LISTENING_CAPABILITY } from "@pokebots/contracts/team-protocol/rooms-listening-v1";
 import { THREAD_AUTO_ARCHIVE_CAPABILITY } from "@pokebots/contracts/team-protocol/thread-auto-archive-v1";
 import { Alert, AlertContent, AlertDescription, ItemGroup, SettingsSection } from "@pokebots/ui";
 import type { RoleAgent } from "@pokebots/ui/features/servers/ServerRoles";
@@ -23,6 +24,7 @@ import { createEffect, createStore, onSettled, Show, untrack } from "solid-js";
 import { actionToast } from "../../action-toast";
 import { ServerBrainContextSetting } from "./ServerBrainContextSetting";
 import { ServerHomeAgentRulesSetting } from "./ServerHomeAgentRulesSetting";
+import { ServerRoomsListeningSetting } from "./ServerRoomsListeningSetting";
 import { ServerThreadAutoArchiveSetting } from "./ServerThreadAutoArchiveSetting";
 import { ServerTimezoneSetting } from "./ServerTimezoneSetting";
 import { ServerTurnLimitsSetting } from "./ServerTurnLimitsSetting";
@@ -130,12 +132,19 @@ export function createServerAgentsSection(
     (local() || serverCanAdminister(props.server, BRAIN_CONTEXT_CAPABILITY)) && actionsAvailable() && props.brainContext
       ? props.server.id
       : undefined;
+  const roomsListening = () =>
+    (local() || serverCanAdminister(props.server, ROOMS_LISTENING_CAPABILITY)) &&
+    actionsAvailable() &&
+    props.roomsListening
+      ? props.server.id
+      : undefined;
   const threadArchive = () =>
     serverCanAdminister(props.server, THREAD_AUTO_ARCHIVE_CAPABILITY) && actionsAvailable()
       ? props.threadAutoArchive
       : undefined;
   const available = () =>
-    defaultsAvailable() || Boolean(timezone() || turnLimits() || threadArchive() || homeRules() || brainContext());
+    defaultsAvailable() ||
+    Boolean(timezone() || turnLimits() || threadArchive() || homeRules() || brainContext() || roomsListening());
 
   function load(serverId: string): void {
     const options = props.agentDefaults;
@@ -316,6 +325,13 @@ export function createServerAgentsSection(
           {(serverId) => (
             <Show when={props.brainContext}>
               {(calls) => <ServerBrainContextSetting calls={calls()} serverId={serverId} />}
+            </Show>
+          )}
+        </Show>
+        <Show when={!state.setting && props.open && visible() && roomsListening()} keyed>
+          {(serverId) => (
+            <Show when={props.roomsListening}>
+              {(calls) => <ServerRoomsListeningSetting calls={calls()} serverId={serverId} />}
             </Show>
           )}
         </Show>

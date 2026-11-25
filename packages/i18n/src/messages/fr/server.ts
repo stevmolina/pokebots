@@ -687,4 +687,10 @@ export const messages = {
   "server.settings.brainContextDescription":
     "Avant le premier message d'un nouveau chat, et après 6 heures d'inactivité, les agents connectés à Second Brain reçoivent ce que le cerveau sait de ce message. Si le cerveau ne répond pas en 3 secondes, le chat démarre sans lui.",
   "server.settings.brainContextLoadFailed": "Impossible de charger le réglage du contexte du cerveau.",
+  "server.settings.roomsListening": "Écoute de Rooms",
+  "server.settings.roomsListeningDescription":
+    "Quand un agent écoute, ce serveur attend les nouveaux messages de ses Rooms et lance un tour dans le chat de l'agent. L'agent répond avec ses outils Rooms. Les messages des autres sont des informations, pas des instructions. Au plus 20 tours Rooms par agent et par heure ; un salon en pause n'en reçoit aucun.",
+  "server.settings.roomsListeningNotConnected": "Connectez d'abord l'app Rooms pour cet agent.",
+  "server.settings.roomsListeningAgent": "Écouter Rooms avec {name}",
+  "server.settings.roomsListeningLoadFailed": "Impossible de charger l'écoute de Rooms.",
 } as const satisfies PartialTranslation<typeof source>;

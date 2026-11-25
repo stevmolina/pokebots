@@ -650,6 +650,10 @@ jobs:
         if: ${{ !cancelled() && matrix.shard == 2 }}
         run: bun scripts/brain-start-context-e2e.ts
 
+      - name: Run the Rooms listening E2E test
+        if: ${{ !cancelled() && matrix.shard == 2 }}
+        run: bun scripts/rooms-listening-e2e.ts
+
       - name: Run the remote coding job recovery smoke tests
         if: ${{ !cancelled() && matrix.shard == 1 }}
         run: |
@@ -926,6 +930,7 @@ jobs:
             .openbot-build/agent-workflow-gate-e2e/
             .openbot-build/start-agent-task-e2e/
             .openbot-build/brain-start-context-e2e/
+            .openbot-build/rooms-listening-e2e/
             .openbot-build/remote-coding-task-smoke/
             .openbot-build/coding-jobs-controller-smoke/
             .openbot-build/pinned-message-agent-tool-e2e/

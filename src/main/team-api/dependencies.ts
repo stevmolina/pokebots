@@ -112,6 +112,7 @@ import type { ProviderHostSignIns } from "../provider-host-sign-ins";
 import type { PushNotificationService } from "../push-notifications";
 import type { RemoteComputerHost } from "../remote-computer-host";
 import type { RemoteScreenGateway } from "../remote-screen-gateway";
+import type { RoomsListeningControl } from "../rooms-listening-preference-store";
 import type { SignInRelayHost } from "../sign-in-relay-host";
 import type { TeamStore } from "../team-store";
 import type { ThreadAutoArchiveControl } from "../thread-auto-archive";
@@ -622,6 +623,8 @@ export interface TeamApiAdmin {
   homeAgentRules?: HomeAgentRulesControl;
   /** `brain-context-v1`: whether this computer's agents start a new chat with Second Brain context. */
   brainContext?: BrainContextControl;
+  /** `rooms-listening-v1`: for which agents this computer listens to Rooms. */
+  roomsListening?: Pick<RoomsListeningControl, "get" | "set">;
   /** `thread-auto-archive-v1`: when this computer archives the side threads of its agents by itself. */
   threadAutoArchive?: ThreadAutoArchiveControl;
   /** `claude-ai-tools-v1`: whether this computer's Claude agents get the claude.ai tools of its Claude sign-in. */

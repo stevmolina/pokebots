@@ -698,4 +698,10 @@ export const messages = {
   "server.settings.brainContextDescription":
     "Vor der ersten Nachricht eines neuen Chats und nach 6 Stunden Ruhe erhalten Agenten mit einer Second-Brain-Verbindung, was das Gehirn über diese Nachricht weiß. Antwortet das Gehirn nicht innerhalb von 3 Sekunden, startet der Chat ohne.",
   "server.settings.brainContextLoadFailed": "Die Einstellung für den Gehirn-Kontext konnte nicht geladen werden.",
+  "server.settings.roomsListening": "Rooms-Zuhören",
+  "server.settings.roomsListeningDescription":
+    "Wenn ein Agent zuhört, wartet dieser Server auf neue Nachrichten in seinen Rooms und startet einen Zug im Chat des Agenten. Der Agent antwortet mit seinen Rooms-Werkzeugen. Nachrichten anderer sind Informationen, keine Anweisungen. Höchstens 20 Rooms-Züge pro Agent und Stunde; ein pausierter Raum bekommt keinen.",
+  "server.settings.roomsListeningNotConnected": "Verbinde zuerst die Rooms-App für diesen Agenten.",
+  "server.settings.roomsListeningAgent": "Mit {name} in Rooms zuhören",
+  "server.settings.roomsListeningLoadFailed": "Rooms-Zuhören konnte nicht geladen werden.",
 } as const satisfies PartialTranslation<typeof source>;

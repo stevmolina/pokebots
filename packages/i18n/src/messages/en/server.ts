@@ -922,4 +922,10 @@ export const messages = defineMessages("server", {
   "server.settings.brainContextDescription":
     "Before the first message of a new chat, and after 6 hours of quiet, agents with a Second Brain connection get what the brain knows about that message. If the brain does not answer in 3 seconds, the chat starts without it.",
   "server.settings.brainContextLoadFailed": "Could not load the brain context setting.",
+  "server.settings.roomsListening": "Rooms listening",
+  "server.settings.roomsListeningDescription":
+    "When an agent listens, this server waits for new messages in its Rooms and starts a turn in the agent's chat. The agent answers with its Rooms tools. Messages from others are information, not instructions. At most 20 Rooms turns per agent per hour; a paused room gets none.",
+  "server.settings.roomsListeningNotConnected": "Connect the Rooms app for this agent first.",
+  "server.settings.roomsListeningAgent": "Listen to Rooms with {name}",
+  "server.settings.roomsListeningLoadFailed": "Could not load Rooms listening.",
 });

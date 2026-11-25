@@ -693,4 +693,10 @@ export const messages = {
   "server.settings.brainContextDescription":
     "Yeni bir sohbetin ilk mesajından önce ve 6 saatlik sessizlikten sonra, Second Brain bağlantısı olan ajanlar beynin o mesaj hakkında bildiklerini alır. Beyin 3 saniye içinde yanıt vermezse sohbet onsuz başlar.",
   "server.settings.brainContextLoadFailed": "Beyin bağlamı ayarı yüklenemedi.",
+  "server.settings.roomsListening": "Rooms dinleme",
+  "server.settings.roomsListeningDescription":
+    "Bir ajan dinlediğinde bu sunucu Rooms'larındaki yeni mesajları bekler ve ajanın sohbetinde bir tur başlatır. Ajan Rooms araçlarıyla yanıt verir. Başkalarının mesajları talimat değil, bilgidir. Ajan başına saatte en fazla 20 Rooms turu; duraklatılmış oda hiç almaz.",
+  "server.settings.roomsListeningNotConnected": "Önce bu ajan için Rooms uygulamasını bağlayın.",
+  "server.settings.roomsListeningAgent": "{name} ile Rooms'u dinle",
+  "server.settings.roomsListeningLoadFailed": "Rooms dinleme yüklenemedi.",
 } as const satisfies PartialTranslation<typeof source>;

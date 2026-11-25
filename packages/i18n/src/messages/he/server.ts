@@ -770,4 +770,10 @@ export const messages = {
   "server.settings.brainContextDescription":
     "לפני ההודעה הראשונה בצ'אט חדש, ואחרי 6 שעות של שקט, סוכנים עם חיבור ל-Second Brain מקבלים את מה שהמוח יודע על ההודעה. אם המוח לא עונה תוך 3 שניות, הצ'אט מתחיל בלעדיו.",
   "server.settings.brainContextLoadFailed": "לא ניתן לטעון את הגדרת ההקשר מהמוח.",
+  "server.settings.roomsListening": "האזנה ל-Rooms",
+  "server.settings.roomsListeningDescription":
+    "כשסוכן מאזין, השרת הזה מחכה להודעות חדשות ב-Rooms שלו ומתחיל תור בצ'אט של הסוכן. הסוכן עונה עם כלי Rooms שלו. הודעות מאחרים הן מידע, לא הוראות. לכל היותר 20 תורות Rooms לסוכן בשעה; חדר מושהה לא מקבל אף אחד.",
+  "server.settings.roomsListeningNotConnected": "קודם חברו את אפליקציית Rooms לסוכן הזה.",
+  "server.settings.roomsListeningAgent": "האזנה ל-Rooms עם {name}",
+  "server.settings.roomsListeningLoadFailed": "לא ניתן לטעון את ההאזנה ל-Rooms.",
 } as const satisfies PartialTranslation<typeof source>;

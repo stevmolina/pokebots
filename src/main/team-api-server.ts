@@ -253,6 +253,7 @@ import {
   REMOTE_COMPUTER_USE_CAPABILITY,
   type RemoteComputerCallEvent,
 } from "@pokebots/contracts/team-protocol/remote-computer-use-v1";
+import { ROOMS_LISTENING_CAPABILITY } from "@pokebots/contracts/team-protocol/rooms-listening-v1";
 import { ROOMS_CAPABILITY } from "@pokebots/contracts/team-protocol/rooms-v1";
 import { ROUTINE_QUIET_ANSWERS_CAPABILITY } from "@pokebots/contracts/team-protocol/routine-quiet-answers-v1";
 import { ROUTINE_RESULTS_WHATSAPP_CAPABILITY } from "@pokebots/contracts/team-protocol/routine-results-whatsapp-v1";
@@ -466,6 +467,7 @@ import { routePushNotifications } from "./team-api/route-push-notifications";
 import { routeRemoteComputer } from "./team-api/route-remote-computer";
 import { routeRemoteScreen } from "./team-api/route-remote-screen";
 import { routeRooms } from "./team-api/route-rooms";
+import { routeRoomsListening } from "./team-api/route-rooms-listening";
 import { routeRoutineFlows } from "./team-api/route-routine-flows";
 import { routeRoutinePauseReasons } from "./team-api/route-routine-pause-reasons";
 import { routeRoutineResults } from "./team-api/route-routine-results";
@@ -1458,6 +1460,7 @@ export class TeamApiServer {
       if ((await routeClaudeUserSetup(context, this.#options.admin)) === "handled") return;
       if ((await routeHomeAgentRules(context, this.#options.admin)) === "handled") return;
       if ((await routeBrainContext(context, this.#options.admin)) === "handled") return;
+      if ((await routeRoomsListening(context, this.#options.admin)) === "handled") return;
       if ((await routeThreadAutoArchive(context, this.#options.admin)) === "handled") return;
       if ((await routeClaudeAiTools(context, this.#options.admin)) === "handled") return;
       if ((await routeClaudeCompactWindow(context, this.#options.admin)) === "handled") return;
@@ -3100,6 +3103,7 @@ export class TeamApiServer {
         if (capability === CLAUDE_USER_SETUP_CAPABILITY) return this.#options.admin?.claudeUserSetup !== undefined;
         if (capability === HOME_AGENT_RULES_CAPABILITY) return this.#options.admin?.homeAgentRules !== undefined;
         if (capability === BRAIN_CONTEXT_CAPABILITY) return this.#options.admin?.brainContext !== undefined;
+        if (capability === ROOMS_LISTENING_CAPABILITY) return this.#options.admin?.roomsListening !== undefined;
         if (capability === THREAD_AUTO_ARCHIVE_CAPABILITY) return this.#options.admin?.threadAutoArchive !== undefined;
         if (capability === CLAUDE_AI_TOOLS_CAPABILITY) return this.#options.admin?.claudeAiTools !== undefined;
         if (capability === CLAUDE_COMPACT_WINDOW_CAPABILITY)

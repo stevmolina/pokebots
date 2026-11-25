@@ -1057,6 +1057,7 @@ function ServerSettings() {
           hostPromptCacheTtl={{}}
           homeAgentRules={serversPort().hostAdmin}
           brainContext={serversPort().hostAdmin}
+          roomsListening={serversPort().hostAdmin}
           claudeUserSetup={{}}
           claudeAiTools={{}}
           claudeCompactWindow={{}}
