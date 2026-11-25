@@ -144,7 +144,11 @@ function roomsTurnText(agentName: string, result: RoomsWaitResult): string {
   return redactSecrets(text).slice(0, PROMPT_LIMIT);
 }
 
-/** One open Rooms MCP session with the host's token, closed when the scope ends. */
+/**
+ * One open Rooms MCP session with the host's token, ended when the scope ends. The server keeps a
+ * session until it is deleted, and the loop opens one per wait, so the release deletes it on the
+ * server before it closes the client.
+ */
 function connect(url: string, token: string, fetcher: FetchLike) {
   return Effect.acquireRelease(
     Effect.tryPromise({
@@ -154,13 +158,23 @@ function connect(url: string, token: string, fetcher: FetchLike) {
           fetch: fetcher,
           requestInit: { headers: { Authorization: `Bearer ${token}` } },
         });
-        await client.connect(forwardingTransport(transport), { signal });
-        return client;
+        try {
+          await client.connect(forwardingTransport(transport), { signal });
+        } catch (error) {
+          await endSession(client, transport);
+          throw error;
+        }
+        return { client, transport };
       },
       catch: (cause) => cause,
     }),
-    (client) => Effect.promise(() => client.close().catch(() => undefined)),
-  );
+    ({ client, transport }) => Effect.promise(() => endSession(client, transport)),
+  ).pipe(Effect.map(({ client }) => client));
+}
+
+async function endSession(client: Client, transport: StreamableHTTPClientTransport): Promise<void> {
+  if (transport.sessionId) await transport.terminateSession().catch(() => undefined);
+  await client.close().catch(() => undefined);
 }
 
 const unauthorized = (cause: unknown) => {
@@ -245,6 +259,7 @@ export class RoomsListener {
           continue;
         }
         const timeout = listeners() <= WAIT_SLOTS ? LONG_WAIT_SECONDS : SHARED_WAIT_SECONDS;
+        const waitStartedAt = Date.now();
         const waited = yield* Effect.scoped(
           Effect.gen(function* () {
             const client = yield* connect(url, token as string, fetcher).pipe(
@@ -289,7 +304,8 @@ export class RoomsListener {
         const messages = result.messages.filter((message) => !result.rooms[message.room]?.paused);
         if (messages.length === 0) {
           // An empty wait that came back at once (a shared slot, or a server that does not hold) waits a little.
-          if (timeout === SHARED_WAIT_SECONDS || result.messages.length > 0) yield* Effect.sleep(2_000);
+          if (timeout === SHARED_WAIT_SECONDS || result.messages.length > 0 || Date.now() - waitStartedAt < 2_000)
+            yield* Effect.sleep(2_000);
           continue;
         }
         const batch = { ...result, messages };
