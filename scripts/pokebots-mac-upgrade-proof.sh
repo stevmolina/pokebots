@@ -2,16 +2,29 @@
 set -euo pipefail
 
 : "${RUNNER_TEMP:?}" "${GITHUB_SHA:?}"
-[[ "${GITHUB_ACTIONS:-}" == true && "${RUNNER_ENVIRONMENT:-}" == github-hosted &&
-   "$(uname -s)" == Darwin && "$(uname -m)" == arm64 &&
-   "$(sw_vers -productVersion)" == 15.* && "$(id -u)" != 0 ]]
-[[ "$(git rev-parse HEAD)" == "$GITHUB_SHA" ]]
+if [[ "${GITHUB_ACTIONS:-}" != true || "${RUNNER_ENVIRONMENT:-}" != github-hosted ||
+      "$(uname -s)" != Darwin || "$(uname -m)" != arm64 ||
+      "$(sw_vers -productVersion)" != 15.* || "$(id -u)" == 0 ]]; then
+  echo 'Use a GitHub-hosted macOS 15 ARM64 runner with a non-root login.' >&2
+  exit 1
+fi
+if [[ "$(git rev-parse HEAD)" != "$GITHUB_SHA" ]]; then
+  echo 'The checkout does not match the dispatch SHA.' >&2
+  exit 1
+fi
 for name in 'OpenBot' 'OpenBot Custom' 'Pokebots'; do
-  [[ ! -e "/Applications/$name.app" && ! -e "$HOME/Applications/$name.app" ]]
+  if [[ -e "/Applications/$name.app" || -e "$HOME/Applications/$name.app" ]]; then
+    echo 'Use a fresh runner with no installed OpenBot or Pokebots app.' >&2
+    exit 1
+  fi
 done
 
 baseline=bc41a1d1da9deeb25b3573a2b6bc1f17dc60c520
 signing_name='OpenBot Custom Local Signing'
+if ! git merge-base --is-ancestor "$baseline" "$GITHUB_SHA"; then
+  echo 'The baseline is not in the selected revision history.' >&2
+  exit 1
+fi
 security list-keychains -d user > /dev/null
 original_keychains=()
 while IFS= read -r line; do
@@ -66,6 +79,9 @@ openssl pkcs12 -export -inkey "$work/key.pem" -in "$work/cert.pem" -out "$work/i
   -keypbe PBE-SHA1-3DES -certpbe PBE-SHA1-3DES -macalg sha1 -passout "pass:$p12_password"
 security import "$work/id.p12" -k "$keychain" -P "$p12_password" -T /usr/bin/codesign
 security set-key-partition-list -S apple-tool:,apple: -s -k "$keychain_password" "$keychain" >/dev/null
+security find-certificate -c "$signing_name" > /dev/null
+identity="$(security find-identity -p codesigning)"
+[[ "$identity" == *"\"$signing_name\""* ]]
 openssl x509 -in "$work/cert.pem" -outform DER -out "$work/fixture.der"
 rm "$work/key.pem" "$work/id.p12"
 unset keychain_password p12_password
@@ -104,6 +120,7 @@ build_and_verify() {
   [[ -s "$work/$label-requirement" ]]
   printf '%s_commit=%s\n%s_version=%s\n%s_cdhash=%s\n' \
     "$label" "$commit" "$label" "$version" "$label" "$cdhash" >> "$work/report.txt"
+  git worktree remove --force "$work/$label"
 }
 
 build_and_verify baseline "$baseline"
