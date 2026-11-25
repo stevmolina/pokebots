@@ -792,7 +792,7 @@ export const messages = {
   },
   "mobile.server.connectors.slack.connect": "Slack'e bağlan",
   "mobile.server.connectors.slack.connectFooter":
-    "Slack bir tarayıcıda açılır. Sağ üst köşeden çalışma alanını seçin, ardından İzin Ver'e dokunun. Pokebots, Pokebots adında bir uygulama yükler ve bu uygulama her genel kanala katılır.",
+    "Slack bir tarayıcıda açılır. Sağ üst köşeden çalışma alanını seçin, ardından İzin Ver'e dokunun. Pokebots, “OpenBot” adında bir uygulama yükler ve bu uygulama her genel kanala katılır.",
   "mobile.server.connectors.slack.add": "Çalışma alanı ekle",
   "mobile.server.connectors.slack.limit": {
     one: "En fazla {count} çalışma alanı bağlayabilirsiniz.",
@@ -837,7 +837,7 @@ export const messages = {
   },
   "mobile.server.connectors.discord.connect": "Discord'a bağlan",
   "mobile.server.connectors.discord.connectFooter":
-    "Discord bir tarayıcıda açılır. Discord sunucusunu seçin, ardından Yetkilendir'e dokunun. Pokebots, Pokebots adında bir bot ekler.",
+    "Discord bir tarayıcıda açılır. Discord sunucusunu seçin, ardından Yetkilendir'e dokunun. Pokebots, “OpenBot” adında bir bot ekler.",
   "mobile.server.connectors.discord.add": "Discord sunucusu ekle",
   "mobile.server.connectors.discord.limit": {
     one: "En fazla {count} Discord sunucusu bağlayabilirsiniz.",

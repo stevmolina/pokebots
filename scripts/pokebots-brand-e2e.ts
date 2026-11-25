@@ -13,7 +13,7 @@ import { pathToFileURL } from "node:url";
 import { runInNewContext } from "node:vm";
 import { parse } from "yaml";
 import type { MessageCatalog } from "../packages/i18n/src/message";
-import { KEPT_PHRASES } from "./pokebots-brand-text";
+import { KEPT_PHRASES, PROVIDER_APP_NAME } from "./pokebots-brand-text";
 import { readServiceDefaults, serviceDefaultsPlugins, withServiceDefaults } from "./service-defaults";
 
 const ROOT = resolve(import.meta.dirname, "..");
@@ -84,6 +84,12 @@ let comparedModules = 0;
 let keys = 0;
 let valuesWithAddress = 0;
 const leftovers: string[] = [];
+const providerNameKeys = new Set([
+  "connector.slack.connectDescription",
+  "connector.discord.connectDescription",
+  "mobile.server.connectors.slack.connectFooter",
+  "mobile.server.connectors.discord.connectFooter",
+]);
 const keptPhrases: Record<string, number> = {};
 for (const file of catalogFiles) {
   const name = file.split("/").pop() ?? "";
@@ -98,6 +104,15 @@ for (const file of catalogFiles) {
   keys += Object.keys(module.messages).length;
   for (const [key, text] of messageValues(module.messages)) {
     if (text.includes("openbot.run") || text.includes("openbot://")) valuesWithAddress += 1;
+    const providerNames = [...text.matchAll(PROVIDER_APP_NAME)].length;
+    if (providerNameKeys.has(key)) {
+      check(
+        providerNames === 1 && count(text, "Pokebots") === 1,
+        `${path} ${key}: expected one quoted provider name and one product name.`,
+      );
+    } else {
+      check(providerNames === 0, `${path} ${key}: unexpected quoted provider name.`);
+    }
     let rest = text;
     for (const phrase of KEPT) {
       const found = count(rest, phrase);

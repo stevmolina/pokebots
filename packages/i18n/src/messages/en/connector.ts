@@ -125,7 +125,7 @@ export const messages = defineMessages("connector", {
   "connector.slack.stepAgent": "Agent",
   "connector.slack.connectTitle": "Connect a Slack workspace",
   "connector.slack.connectDescription":
-    "Pokebots installs one app in the workspace, named Pokebots, and it joins every public channel.",
+    "Pokebots installs one app in the workspace, named “OpenBot”, and it joins every public channel.",
   "connector.slack.connectStepBrowser": "Slack opens in your browser",
   "connector.slack.connectStepAllow": "Select the workspace in the top-right corner, then Allow",
   "connector.slack.connectStepReturn": "This dialog continues when Slack is done",
@@ -211,7 +211,7 @@ export const messages = defineMessages("connector", {
   "connector.discord.stepWorkspace": "Discord server",
   "connector.discord.stepAgent": "Agent",
   "connector.discord.connectTitle": "Connect a Discord server",
-  "connector.discord.connectDescription": "Pokebots adds one bot, named Pokebots, to the Discord server.",
+  "connector.discord.connectDescription": "Pokebots adds one bot, named “OpenBot”, to the Discord server.",
   "connector.discord.connectStepBrowser": "Discord opens in your browser",
   "connector.discord.connectStepAllow": "Select the server, then Authorize",
   "connector.discord.connectStepReturn": "This dialog continues when Discord is done",

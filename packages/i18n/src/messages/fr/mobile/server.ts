@@ -804,7 +804,7 @@ export const messages = {
   },
   "mobile.server.connectors.slack.connect": "Connecter Slack",
   "mobile.server.connectors.slack.connectFooter":
-    "Slack s’ouvre dans un navigateur. Sélectionnez l’espace de travail en haut à droite, puis Autoriser. Pokebots installe une app nommée Pokebots, et elle rejoint chaque canal public.",
+    "Slack s’ouvre dans un navigateur. Sélectionnez l’espace de travail en haut à droite, puis Autoriser. Pokebots installe une app nommée “OpenBot”, et elle rejoint chaque canal public.",
   "mobile.server.connectors.slack.add": "Ajouter un espace de travail",
   "mobile.server.connectors.slack.limit": {
     one: "Vous pouvez connecter au maximum {count} espace de travail.",
@@ -851,7 +851,7 @@ export const messages = {
   },
   "mobile.server.connectors.discord.connect": "Connecter Discord",
   "mobile.server.connectors.discord.connectFooter":
-    "Discord s’ouvre dans un navigateur. Sélectionnez le serveur Discord, puis Autoriser. Pokebots ajoute un bot nommé Pokebots.",
+    "Discord s’ouvre dans un navigateur. Sélectionnez le serveur Discord, puis Autoriser. Pokebots ajoute un bot nommé “OpenBot”.",
   "mobile.server.connectors.discord.add": "Ajouter un serveur Discord",
   "mobile.server.connectors.discord.limit": {
     one: "Vous pouvez connecter au maximum {count} serveur Discord.",

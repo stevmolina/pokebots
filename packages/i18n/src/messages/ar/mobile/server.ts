@@ -1075,7 +1075,7 @@ export const messages = {
   },
   "mobile.server.connectors.slack.connect": "ربط Slack",
   "mobile.server.connectors.slack.connectFooter":
-    "يُفتح Slack في متصفح. اختر مساحة العمل في الزاوية العلوية، ثم Allow. يثبّت Pokebots تطبيقًا واحدًا باسم Pokebots، وينضم إلى كل قناة عامة.",
+    "يُفتح Slack في متصفح. اختر مساحة العمل في الزاوية العلوية، ثم Allow. يثبّت Pokebots تطبيقًا واحدًا باسم “OpenBot”، وينضم إلى كل قناة عامة.",
   "mobile.server.connectors.slack.add": "إضافة مساحة عمل",
   "mobile.server.connectors.slack.limit": {
     zero: "لا يمكنك ربط أي مساحة عمل.",
@@ -1126,7 +1126,7 @@ export const messages = {
   },
   "mobile.server.connectors.discord.connect": "ربط Discord",
   "mobile.server.connectors.discord.connectFooter":
-    "يُفتح Discord في متصفح. اختر خادم Discord، ثم Authorize. يضيف Pokebots بوتًا واحدًا باسم Pokebots.",
+    "يُفتح Discord في متصفح. اختر خادم Discord، ثم Authorize. يضيف Pokebots بوتًا واحدًا باسم “OpenBot”.",
   "mobile.server.connectors.discord.add": "إضافة خادم Discord",
   "mobile.server.connectors.discord.limit": {
     zero: "لا يمكنك ربط أي خادم Discord.",

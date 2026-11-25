@@ -132,7 +132,7 @@ export const messages = {
   "connector.slack.stepAgent": "סוכן",
   "connector.slack.connectTitle": "חיבור סביבת עבודה של Slack",
   "connector.slack.connectDescription":
-    "Pokebots מתקין אפליקציה אחת בסביבת העבודה, בשם Pokebots, והיא מצטרפת לכל ערוץ ציבורי.",
+    "Pokebots מתקין אפליקציה אחת בסביבת העבודה, בשם “OpenBot”, והיא מצטרפת לכל ערוץ ציבורי.",
   "connector.slack.connectStepBrowser": "Slack נפתח בדפדפן",
   "connector.slack.connectStepAllow": "יש לבחור את סביבת העבודה בפינה הימנית העליונה ואז באפשר (Allow)",
   "connector.slack.connectStepReturn": "החלון הזה ממשיך כש-Slack מסיים",
@@ -217,7 +217,7 @@ export const messages = {
   "connector.discord.stepWorkspace": "שרת Discord",
   "connector.discord.stepAgent": "סוכן",
   "connector.discord.connectTitle": "חיבור שרת Discord",
-  "connector.discord.connectDescription": "Pokebots מוסיף בוט אחד, בשם Pokebots, לשרת Discord.",
+  "connector.discord.connectDescription": "Pokebots מוסיף בוט אחד, בשם “OpenBot”, לשרת Discord.",
   "connector.discord.connectStepBrowser": "Discord נפתח בדפדפן",
   "connector.discord.connectStepAllow": "יש לבחור את השרת ואז באישור (Authorize)",
   "connector.discord.connectStepReturn": "החלון הזה ממשיך כש-Discord מסיים",

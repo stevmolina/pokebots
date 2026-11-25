@@ -103,7 +103,7 @@ export const messages = {
   "connector.slack.stepAgent": "에이전트",
   "connector.slack.connectTitle": "Slack 워크스페이스 연결",
   "connector.slack.connectDescription":
-    "Pokebots이 워크스페이스에 Pokebots이라는 앱을 하나 설치하고, 모든 공개 채널에 참여해요.",
+    "Pokebots이 워크스페이스에 “OpenBot”이라는 앱을 하나 설치하고, 모든 공개 채널에 참여해요.",
   "connector.slack.connectStepBrowser": "브라우저에서 Slack이 열려요",
   "connector.slack.connectStepAllow": "오른쪽 위에서 워크스페이스를 선택하고 허용을 누르세요",
   "connector.slack.connectStepReturn": "Slack에서 마치면 이 대화상자가 이어져요",
@@ -172,7 +172,7 @@ export const messages = {
   "connector.discord.stepWorkspace": "Discord 서버",
   "connector.discord.stepAgent": "에이전트",
   "connector.discord.connectTitle": "Discord 서버 연결",
-  "connector.discord.connectDescription": "Pokebots이 Discord 서버에 Pokebots이라는 봇을 하나 추가해요.",
+  "connector.discord.connectDescription": "Pokebots이 Discord 서버에 “OpenBot”이라는 봇을 하나 추가해요.",
   "connector.discord.connectStepBrowser": "브라우저에서 Discord가 열려요",
   "connector.discord.connectStepAllow": "서버를 선택하고 승인을 누르세요",
   "connector.discord.connectStepReturn": "Discord에서 마치면 이 대화상자가 이어져요",

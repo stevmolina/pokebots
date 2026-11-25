@@ -110,7 +110,7 @@ export const messages = {
   "connector.slack.stepAgent": "Agent",
   "connector.slack.connectTitle": "Verbind een Slack-werkruimte",
   "connector.slack.connectDescription":
-    "Pokebots installeert één app in de werkruimte, met de naam Pokebots, en die wordt lid van elk openbaar kanaal.",
+    "Pokebots installeert één app in de werkruimte, met de naam “OpenBot”, en die wordt lid van elk openbaar kanaal.",
   "connector.slack.connectStepBrowser": "Slack opent in je browser",
   "connector.slack.connectStepAllow": "Kies rechtsboven de werkruimte en daarna Toestaan",
   "connector.slack.connectStepReturn": "Dit venster gaat verder als Slack klaar is",
@@ -188,7 +188,7 @@ export const messages = {
   "connector.discord.stepWorkspace": "Discord-server",
   "connector.discord.stepAgent": "Agent",
   "connector.discord.connectTitle": "Verbind een Discord-server",
-  "connector.discord.connectDescription": "Pokebots voegt één bot, met de naam Pokebots, toe aan de Discord-server.",
+  "connector.discord.connectDescription": "Pokebots voegt één bot, met de naam “OpenBot”, toe aan de Discord-server.",
   "connector.discord.connectStepBrowser": "Discord opent in je browser",
   "connector.discord.connectStepAllow": "Kies de server en daarna Autoriseren",
   "connector.discord.connectStepReturn": "Dit venster gaat verder als Discord klaar is",

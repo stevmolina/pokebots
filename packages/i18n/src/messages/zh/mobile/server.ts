@@ -744,7 +744,7 @@ export const messages = {
   "mobile.server.connectors.slack.attention": { other: "{count} 个工作区需要关注" },
   "mobile.server.connectors.slack.connect": "连接 Slack",
   "mobile.server.connectors.slack.connectFooter":
-    "Slack 会在浏览器中打开。在右上角选择工作区，然后点击“允许”。Pokebots 会安装一个名为 Pokebots 的应用，并加入所有公开频道。",
+    "Slack 会在浏览器中打开。在右上角选择工作区，然后点击“允许”。Pokebots 会安装一个名为 “OpenBot” 的应用，并加入所有公开频道。",
   "mobile.server.connectors.slack.add": "添加工作区",
   "mobile.server.connectors.slack.limit": { other: "最多可连接 {count} 个工作区。" },
   "mobile.server.connectors.slack.workspaceTitle": "工作区",
@@ -784,7 +784,7 @@ export const messages = {
   "mobile.server.connectors.discord.attention": { other: "{count} 个 Discord 服务器需要关注" },
   "mobile.server.connectors.discord.connect": "连接 Discord",
   "mobile.server.connectors.discord.connectFooter":
-    "Discord 会在浏览器中打开。选择 Discord 服务器，然后点击“授权”。Pokebots 会添加一个名为 Pokebots 的机器人。",
+    "Discord 会在浏览器中打开。选择 Discord 服务器，然后点击“授权”。Pokebots 会添加一个名为 “OpenBot” 的机器人。",
   "mobile.server.connectors.discord.add": "添加 Discord 服务器",
   "mobile.server.connectors.discord.limit": { other: "最多可连接 {count} 个 Discord 服务器。" },
   "mobile.server.connectors.discord.workspaceTitle": "Discord 服务器",

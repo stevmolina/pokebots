@@ -1088,7 +1088,7 @@ export const messages = {
   },
   "mobile.server.connectors.slack.connect": "חיבור Slack",
   "mobile.server.connectors.slack.connectFooter":
-    "Slack נפתח בדפדפן. יש לבחור את סביבת העבודה בפינה הימנית העליונה, ואז Allow. Pokebots מתקין אפליקציה אחת בשם Pokebots, והיא מצטרפת לכל ערוץ ציבורי.",
+    "Slack נפתח בדפדפן. יש לבחור את סביבת העבודה בפינה הימנית העליונה, ואז Allow. Pokebots מתקין אפליקציה אחת בשם “OpenBot”, והיא מצטרפת לכל ערוץ ציבורי.",
   "mobile.server.connectors.slack.add": "הוספת סביבת עבודה",
   "mobile.server.connectors.slack.limit": {
     one: "אפשר לחבר לכל היותר סביבת עבודה אחת.",
@@ -1138,7 +1138,7 @@ export const messages = {
   },
   "mobile.server.connectors.discord.connect": "חיבור Discord",
   "mobile.server.connectors.discord.connectFooter":
-    "Discord נפתח בדפדפן. יש לבחור את שרת Discord, ואז Authorize. Pokebots מוסיף בוט אחד בשם Pokebots.",
+    "Discord נפתח בדפדפן. יש לבחור את שרת Discord, ואז Authorize. Pokebots מוסיף בוט אחד בשם “OpenBot”.",
   "mobile.server.connectors.discord.add": "הוספת שרת Discord",
   "mobile.server.connectors.discord.limit": {
     one: "אפשר לחבר לכל היותר שרת Discord אחד.",

@@ -780,7 +780,7 @@ export const messages = {
   "mobile.server.connectors.slack.attention": { other: "{count} 件のワークスペースに対応が必要です" },
   "mobile.server.connectors.slack.connect": "Slack を接続",
   "mobile.server.connectors.slack.connectFooter":
-    "ブラウザーで Slack が開きます。右上でワークスペースを選び、「許可する」を押します。Pokebots は Pokebots という名前のアプリを 1 つインストールし、そのアプリはすべての公開チャンネルに参加します。",
+    "ブラウザーで Slack が開きます。右上でワークスペースを選び、「許可する」を押します。Pokebots は 「OpenBot」 という名前のアプリを 1 つインストールし、そのアプリはすべての公開チャンネルに参加します。",
   "mobile.server.connectors.slack.add": "ワークスペースを追加",
   "mobile.server.connectors.slack.limit": { other: "接続できるワークスペースは最大 {count} 件です。" },
   "mobile.server.connectors.slack.workspaceTitle": "ワークスペース",
@@ -820,7 +820,7 @@ export const messages = {
   "mobile.server.connectors.discord.attention": { other: "{count} 件の Discord サーバーに対応が必要です" },
   "mobile.server.connectors.discord.connect": "Discord を接続",
   "mobile.server.connectors.discord.connectFooter":
-    "ブラウザーで Discord が開きます。Discord サーバーを選び、「認証」を押します。Pokebots は Pokebots という名前のボットを 1 つ追加します。",
+    "ブラウザーで Discord が開きます。Discord サーバーを選び、「認証」を押します。Pokebots は 「OpenBot」 という名前のボットを 1 つ追加します。",
   "mobile.server.connectors.discord.add": "Discord サーバーを追加",
   "mobile.server.connectors.discord.limit": { other: "接続できる Discord サーバーは最大 {count} 件です。" },
   "mobile.server.connectors.discord.workspaceTitle": "Discord サーバー",

@@ -115,7 +115,7 @@ export const messages = {
   "connector.slack.stepAgent": "Agent",
   "connector.slack.connectTitle": "Connecter un espace de travail Slack",
   "connector.slack.connectDescription":
-    "Pokebots installe une app nommée Pokebots dans l’espace de travail, et elle rejoint chaque canal public.",
+    "Pokebots installe une app nommée “OpenBot” dans l’espace de travail, et elle rejoint chaque canal public.",
   "connector.slack.connectStepBrowser": "Slack s’ouvre dans votre navigateur",
   "connector.slack.connectStepAllow": "Sélectionnez l’espace de travail en haut à droite, puis Autoriser",
   "connector.slack.connectStepReturn": "Cette boîte de dialogue continue quand Slack a terminé",
@@ -194,7 +194,7 @@ export const messages = {
   "connector.discord.stepWorkspace": "Serveur Discord",
   "connector.discord.stepAgent": "Agent",
   "connector.discord.connectTitle": "Connecter un serveur Discord",
-  "connector.discord.connectDescription": "Pokebots ajoute un bot nommé Pokebots au serveur Discord.",
+  "connector.discord.connectDescription": "Pokebots ajoute un bot nommé “OpenBot” au serveur Discord.",
   "connector.discord.connectStepBrowser": "Discord s’ouvre dans votre navigateur",
   "connector.discord.connectStepAllow": "Sélectionnez le serveur, puis Autoriser",
   "connector.discord.connectStepReturn": "Cette boîte de dialogue continue quand Discord a terminé",
