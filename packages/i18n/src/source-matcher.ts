@@ -18,6 +18,7 @@ interface Template {
   readonly key: string;
   readonly pattern: RegExp;
   readonly names: readonly string[];
+  readonly alias: boolean;
 }
 
 /** Placeholders whose value is itself text from a sender, so it is translated in turn. */
@@ -49,7 +50,7 @@ function placeholderPattern(name: string) {
   return "([^\\n]+?)";
 }
 
-function compile(key: string, text: string): Template {
+function compile(key: string, text: string, alias: boolean): Template {
   const names: string[] = [];
   let pattern = "";
   let last = 0;
@@ -61,7 +62,7 @@ function compile(key: string, text: string): Template {
     last = match.index + match[0].length;
   }
   pattern += escapeRegExp(text.slice(last));
-  return { key, pattern: new RegExp(`^${pattern}$`), names };
+  return { key, pattern: new RegExp(`^${pattern}(?![\\s\\S])`), names, alias };
 }
 
 /** The literal text before the first placeholder. */
@@ -72,6 +73,7 @@ function literalPrefix(text: string): string {
 
 export function createSourceLocalizer(input: {
   source: MessageCatalog;
+  aliases?: MessageCatalog;
   /** `undefined` while the language is not loaded. Its text then stays English and is not cached. */
   translation: (locale: TranslatedLocale) => PartialTranslation<MessageCatalog> | undefined;
 }): SourceLocalizer {
@@ -83,19 +85,24 @@ export function createSourceLocalizer(input: {
   function buckets(): ReadonlyMap<string, readonly Template[]> {
     if (byPrefix) return byPrefix;
     byPrefix = new Map();
-    for (const [key, message] of Object.entries(input.source)) {
+    addTemplates(byPrefix, input.source, false);
+    if (input.aliases) addTemplates(byPrefix, input.aliases, true);
+    return byPrefix;
+  }
+
+  function addTemplates(index: Map<string, Template[]>, catalog: MessageCatalog, alias: boolean): void {
+    for (const [key, message] of Object.entries(catalog)) {
       for (const text of forms(message)) {
-        const template = compile(key, text);
+        const template = compile(key, text, alias);
         const prefix = literalPrefix(text);
         if (prefix.length < BUCKET_LENGTH) {
           unbucketed.push(template);
           continue;
         }
         const bucket = prefix.slice(0, BUCKET_LENGTH);
-        byPrefix.set(bucket, [...(byPrefix.get(bucket) ?? []), template]);
+        index.set(bucket, [...(index.get(bucket) ?? []), template]);
       }
     }
-    return byPrefix;
   }
 
   function candidates(text: string): readonly Template[] {
@@ -124,13 +131,17 @@ export function createSourceLocalizer(input: {
       const match = template.pattern.exec(text);
       if (!match) continue;
       const values = new Map<string, string | number>();
+      let needsEnglishRender = template.alias;
       template.names.forEach((name, position) => {
         const value = match[position + 1] ?? "";
         if (name === "count") values.set(name, Number(value));
-        else if (NESTED_PLACEHOLDERS.has(name) && depth < MAX_NESTING)
-          values.set(name, localize(value, locale, depth + 1));
-        else values.set(name, value);
+        else if (NESTED_PLACEHOLDERS.has(name) && depth < MAX_NESTING) {
+          const localized = localize(value, locale, depth + 1);
+          if (localized !== value) needsEnglishRender = true;
+          values.set(name, localized);
+        } else values.set(name, value);
       });
+      if (locale === "en" && !needsEnglishRender) return text;
       return translatorFor(locale)(template.key, Object.fromEntries(values));
     }
     return text;
@@ -140,7 +151,7 @@ export function createSourceLocalizer(input: {
 
   return {
     localize: (text, locale) => {
-      if (locale === "en" || !input.translation(locale)) return text;
+      if (locale !== "en" && !input.translation(locale)) return text;
       const cacheKey = `${locale}\u0000${text}`;
       const cached = cache.get(cacheKey);
       if (cached !== undefined) {
@@ -157,9 +168,12 @@ export function createSourceLocalizer(input: {
       }
       return localized;
     },
-    matchingKeys: (text) =>
-      candidates(text)
-        .filter((template) => template.pattern.test(text))
-        .map((template) => template.key),
+    matchingKeys: (text) => [
+      ...new Set(
+        candidates(text)
+          .filter((template) => template.pattern.test(text))
+          .map((template) => template.key),
+      ),
+    ],
   };
 }
