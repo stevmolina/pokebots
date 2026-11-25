@@ -229,4 +229,5 @@ export const messages = {
   "error.team.providerUseUnsupported":
     "Cette connexion ne prend pas en charge l’activation et la désactivation des fournisseurs.",
   "error.team.providerUseInvalid": "Ce fournisseur n’a pas d’interrupteur d’activation.",
+  "error.team.brainContextUnsupported": "Ce serveur ne prend pas en charge le contexte du cerveau.",
 } as const satisfies PartialTranslation<typeof source>;

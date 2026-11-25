@@ -194,4 +194,5 @@ export const messages = {
   "error.team.backgroundProcessesUnsupported": "此连接不支持后台进程。",
   "error.team.providerUseUnsupported": "当前连接不支持开启和关闭服务商。",
   "error.team.providerUseInvalid": "该服务商没有开关。",
+  "error.team.brainContextUnsupported": "此服务器不支持大脑上下文。",
 } as const satisfies PartialTranslation<typeof source>;

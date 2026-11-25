@@ -26,6 +26,12 @@ import { channelLane, type DeliveryContext, laneChannelId, type MailboxStore, ME
 import type { MessagingThreads } from "../messaging/messaging-threads";
 import { decodeTurnResponse } from "../protocol";
 import { ProviderSignInError } from "../provider-client-effects";
+import {
+  BRAIN_START_CONTEXT_WAIT_MS,
+  type BrainStartContextSource,
+  brainStartContextBlock,
+  wantsBrainStartContext,
+} from "./brain-start-context";
 import type { ContextCompaction } from "./context-compaction";
 import type { ConversationRuntime } from "./conversation-runtime";
 import {
@@ -170,6 +176,11 @@ export interface DrainHooks {
   startRequestedNewChat(agentId: string, queuedRuns?: readonly string[]): Effect.Effect<void>;
   /** Drops that request: a turn in the agent's own chat starts first, so the agent's notes do not cover it. */
   dropRequestedNewChat(agentId: string): void;
+  /**
+   * The Second Brain context for the first message of a chat (`brain-start-context.ts`), or null.
+   * Never fails, and waits at most a few seconds. Optional: without it, no turn gets brain context.
+   */
+  brainStartContext?: BrainStartContextSource;
 }
 
 /** The tasks of the agents, as the drain reads them. */
@@ -1102,7 +1113,7 @@ export class DrainScheduler {
       // keeps its count, so its waits end (#12480).
       this.#startRetry.forget(delivery.id);
       yield* drainStep(requireLaunchNotStopped);
-      const snapshot = this.#conversation.ensureSnapshot(agent.id, threadId);
+      let snapshot = this.#conversation.ensureSnapshot(agent.id, threadId);
       // A turn started on this thread while the provider and the thread were prepared. The user
       // cannot see that race, so the delivery goes back to the head of the queue rather than
       // failing: a message to a busy agent always waits. `drainAgent` reschedules it in its
@@ -1112,6 +1123,44 @@ export class DrainScheduler {
         this.#mailboxSync.emitQueue(agent.id);
         return;
       }
+
+      // Brain context for the first message of a chat, or the first after a long pause, in front of the
+      // prompt for every provider. Only for a person's own message in a chat: a teammate, a routine, a
+      // channel and a continuation bring their own context. Read before this turn's messages join the
+      // snapshot below.
+      const brainStartContext = this.#hooks.brainStartContext;
+      const opening = batch[0]?.delivery;
+      const asksBrain =
+        brainStartContext !== undefined &&
+        opening?.sender.kind === "user" &&
+        !opening.text.trimStart().startsWith("/") &&
+        !this.#mailbox.isWelcomeDelivery(opening.id) &&
+        planNote === undefined &&
+        !context.resumeAfterUsageLimit &&
+        !channelDelivery &&
+        !messagingDelivery &&
+        wantsBrainStartContext(snapshot.messages, new Set(batch.map((item) => item.delivery.id)));
+      // Never fails and never waits longer than the source allows: a defect or a slow source starts the
+      // turn without context.
+      const brainText = asksBrain
+        ? yield* Effect.suspend(() =>
+            brainStartContext({ agent, question: batch.map((item) => item.delivery.text).join("\n\n") }),
+          ).pipe(
+            Effect.timeoutOrElse({ duration: BRAIN_START_CONTEXT_WAIT_MS, orElse: () => Effect.succeed(null) }),
+            Effect.catchCause(() => Effect.succeed(null)),
+          )
+        : null;
+      // The brain wait can last seconds, and the conversation publishes a new snapshot when it changes:
+      // read it again, and hold this delivery back when a turn started meanwhile, as the check above does.
+      if (asksBrain) snapshot = this.#conversation.ensureSnapshot(agent.id, threadId);
+      if (asksBrain && snapshot.activeTurnId) {
+        for (const item of batch) yield* this.#mailbox.restoreQueued(item.delivery.id).pipe(toDeliveryStartFailed);
+        this.#mailboxSync.emitQueue(agent.id);
+        return;
+      }
+      const brainBlock = brainText ? brainStartContextBlock(brainText) : null;
+      if (brainBlock)
+        logger.info("The turn starts with Second Brain context.", { agentId: agent.id, chars: brainBlock.length });
 
       const agentNames = agentNamesById(this.#store.list());
       // `threadId` is the provider session; a tab owner is a public thread.
@@ -1165,12 +1214,19 @@ export class DrainScheduler {
       const sentHandoffs = new Map<string, string>();
       const inputForThread = (providerThreadId: string) => {
         const handoff = this.#threads.consumePendingHandoff(providerThreadId);
-        const input =
+        const chosen =
           deltaInput && shortened?.sendsDelta(delivery.id, providerThreadId)
             ? deltaInput
             : planNote !== undefined && handoff && handoffHasHistory(handoff)
               ? restatedContinuationInput(promptInput(execution?.text), planNote)
               : completeInput;
+        const input = brainBlock
+          ? chosen.map((item, index) =>
+              index === 0 && item.type === "text"
+                ? { ...item, text: `${brainBlock}${CURRENT_MESSAGE_SEPARATOR}${item.text}` }
+                : item,
+            )
+          : chosen;
         if (!handoff) return input;
         sentHandoffs.set(providerThreadId, handoff);
         return input.map((item, index) =>

@@ -714,4 +714,9 @@ export const messages = {
   "server.settings.responseStyleNatural": "自然",
   "server.settings.responseStyleClassic": "经典",
   "server.settings.personalityLoadFailed": "无法加载服务器个性。",
+  "server.settings.brainContext": "大脑上下文",
+  "server.settings.brainContextEnable": "用大脑上下文开始聊天",
+  "server.settings.brainContextDescription":
+    "在新聊天的第一条消息之前，以及安静 6 小时之后，连接了 Second Brain 的智能体会收到大脑对这条消息所知道的内容。如果大脑在 3 秒内没有回应，聊天会在没有它的情况下开始。",
+  "server.settings.brainContextLoadFailed": "无法加载大脑上下文设置。",
 } as const satisfies PartialTranslation<typeof source>;

@@ -36,7 +36,29 @@ type BrainServiceRequest = {
 
 const writes = new Set<BrainRequest["operation"]>(["addFile", "remember", "update", "forget"]);
 
-function isBrainConnection(config: McpServerConfig): boolean {
+/** Longest wait for brain context before a turn starts without it. */
+const BRAIN_START_CONTEXT_TIMEOUT_MS = 3_000;
+const START_CONTEXT_LIMIT = 12_000;
+const startContextReply = z.object({ text: z.string().optional(), context: z.string().optional() });
+const startSearchReply = z.object({
+  claims: z
+    .array(
+      z.object({
+        text: z.string(),
+        page: z.string(),
+        verified_at: z.string().nullable().optional(),
+      }),
+    )
+    .optional(),
+});
+
+export interface BrainStartContextInput {
+  question: string;
+  /** The agent's workspace folder, so the brain can pick the project it belongs to. */
+  cwd?: string;
+}
+
+export function isBrainConnection(config: McpServerConfig): boolean {
   if (config.transport !== "http") return false;
   try {
     const url = new URL(config.url);
@@ -55,6 +77,85 @@ export class BrainService {
       fetch?: (input: URL, init: RequestInit) => Promise<Response>;
     },
   ) {}
+
+  /**
+   * What the brain knows about the first message of a chat, as text for the turn prompt, or null.
+   * Uses the `context` route, and the `search` route while a brain has no `context` route yet. Never
+   * fails and never waits more than `BRAIN_START_CONTEXT_TIMEOUT_MS`: a chat starts without it then.
+   */
+  readonly startContext = Effect.fn("Brain.startContext")(
+    function* (this: BrainService, connection: McpServerConfig, input: BrainStartContextInput) {
+      if (!isBrainConnection(connection) || !connection.enabled) return null;
+      // A query string can reach access logs: the question goes out redacted, and short.
+      const question = redactSecrets(input.question).trim().slice(0, 1000);
+      if (!question) return null;
+      let token = yield* this.options.oauth.accessToken(connection.url).pipe(Effect.orElseSucceed(() => null));
+      if (!token) return null;
+      const fetcher = this.options.fetch ?? fetch;
+      const unreadable = () => null;
+      const send = (path: string, query: Record<string, string>, accessToken: string) =>
+        Effect.tryPromise({
+          try: (signal) => {
+            const url = new URL(`https://brain.mcpbox.dev/api/v1${path}`);
+            for (const [key, value] of Object.entries(query)) url.searchParams.set(key, value);
+            return fetcher(url, {
+              method: "GET",
+              redirect: "error",
+              signal,
+              headers: { Authorization: `Bearer ${accessToken}` },
+            });
+          },
+          catch: unreadable,
+        });
+      const oauth = this.options.oauth;
+      const get = (path: string, query: Record<string, string>) =>
+        Effect.gen(function* () {
+          if (!token) return { status: 401, value: null };
+          let response = yield* send(path, query, token);
+          // Retry only authentication, once, as `request` does.
+          if (response.status === 401) {
+            yield* Effect.promise(() => response.body?.cancel().catch(() => undefined) ?? Promise.resolve());
+            token = yield* oauth.refreshAccessToken(connection.url, token).pipe(Effect.orElseSucceed(() => null));
+            if (!token) return { status: 401, value: null };
+            response = yield* send(path, query, token);
+          }
+          if (!response.ok) {
+            yield* Effect.promise(() => response.body?.cancel().catch(() => undefined) ?? Promise.resolve());
+            return { status: response.status, value: null };
+          }
+          const bytes = yield* readLimitedBody(response, 1024 * 1024, unreadable);
+          const value = yield* Effect.try({
+            try: (): unknown => JSON.parse(bytes.toString("utf8")),
+            catch: unreadable,
+          });
+          return { status: response.status, value };
+        });
+      const context = yield* get("/context", {
+        question,
+        ...(input.cwd ? { cwd: input.cwd } : {}),
+        budget: "3000",
+      });
+      if (context.status !== 404) {
+        const reply = startContextReply.safeParse(context.value);
+        const text = reply.success ? (reply.data.text ?? reply.data.context ?? "") : "";
+        return text.trim() ? redactSecrets(text.trim()).slice(0, START_CONTEXT_LIMIT) : null;
+      }
+      // A brain without the `context` route yet: its best claims for the message.
+      const search = yield* get("/search", { query: searchTerms(question), limit: "8" });
+      const reply = startSearchReply.safeParse(search.value);
+      const claims = reply.success ? (reply.data.claims ?? []) : [];
+      if (claims.length === 0) return null;
+      return redactSecrets(
+        claims
+          .map(
+            (claim) => `- ${claim.text} (${claim.page}${claim.verified_at ? `, verified ${claim.verified_at}` : ""})`,
+          )
+          .join("\n"),
+      ).slice(0, START_CONTEXT_LIMIT);
+    },
+    (effect) => effect.pipe(Effect.orElseSucceed(() => null)),
+    Effect.timeoutOrElse({ duration: BRAIN_START_CONTEXT_TIMEOUT_MS, orElse: () => Effect.succeed(null) }),
+  );
 
   readonly request = Effect.fn("Brain.request")(
     function* (this: BrainService, input: BrainServiceRequest, credential?: IntegrationCredential<"brain">) {
@@ -156,4 +257,10 @@ export class BrainService {
       orElse: () => Effect.fail(new BrainError({ message: sourceText("error.brain.request") })),
     }),
   );
+}
+
+/** The words of a message that a full-text search can match: the first 12 of 3 letters or more. */
+function searchTerms(question: string): string {
+  const words = question.match(/[\p{L}\p{N}][\p{L}\p{N}._-]{2,}/gu) ?? [];
+  return (words.slice(0, 12).join(" ") || question).slice(0, 300);
 }

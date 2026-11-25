@@ -197,4 +197,5 @@ export const messages = {
   "error.team.backgroundProcessesUnsupported": "To połączenie nie obsługuje procesów w tle.",
   "error.team.providerUseUnsupported": "To połączenie nie obsługuje włączania i wyłączania dostawców.",
   "error.team.providerUseInvalid": "Ten dostawca nie ma przełącznika włączania.",
+  "error.team.brainContextUnsupported": "Ten serwer nie obsługuje kontekstu mózgu.",
 } as const satisfies PartialTranslation<typeof source>;

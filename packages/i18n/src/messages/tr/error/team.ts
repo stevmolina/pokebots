@@ -199,4 +199,5 @@ export const messages = {
   "error.team.backgroundProcessesUnsupported": "Bu bağlantı arka plan işlemlerini desteklemiyor.",
   "error.team.providerUseUnsupported": "Bu bağlantı sağlayıcıları açıp kapatmayı desteklemiyor.",
   "error.team.providerUseInvalid": "Bu sağlayıcının açma/kapatma anahtarı yok.",
+  "error.team.brainContextUnsupported": "Bu sunucu beyin bağlamını desteklemiyor.",
 } as const satisfies PartialTranslation<typeof source>;

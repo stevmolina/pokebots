@@ -2439,3 +2439,10 @@ the Second Brain MCP connection's sign-in. OAuth tokens stay on that computer. T
 brain pages, claims, files lists, and past chats in memory only. A file download opens a link that
 expires after about 15 minutes. Files added from this screen are limited to 512 KB so they fit the
 joined-server transport. No brain content is stored in the account service.
+
+When Brain context is on (Server Settings > Agents, on by default) and an agent has the Second Brain
+connection, the computer that runs the agent sends the first message of each new chat, and of a
+chat that was quiet for 6 hours, with the agent's workspace folder path, to Agent Brain at
+`brain.mcpbox.dev`. The answer goes into that turn's prompt to the agent's provider, with secrets
+taken out, and is not saved by Pokebots apart from the chat history that the provider keeps. A brain
+that does not answer in 3 seconds is skipped.

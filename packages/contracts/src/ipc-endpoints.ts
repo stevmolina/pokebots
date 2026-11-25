@@ -242,6 +242,7 @@ import type {
   WorkspaceDirectory,
 } from "./ipc-attachments";
 import type { BitwardenConnectorStatus, BitwardenHostConnectInput } from "./ipc-bitwarden-connector";
+import type { BrainContextSetting } from "./ipc-brain-context";
 import type {
   BrowserBounds,
   BrowserColorSchemeInput,
@@ -1541,6 +1542,10 @@ export const IPC_ENDPOINTS = {
     setClaudeUserSetup: scopedRequest<boolean, ClaudeUserSetupSetting, "required">()(
       "host-admin:set-claude-user-setup",
     ),
+    // Whether the agents of the server start a new chat with Second Brain context
+    // (`brain-context-v1`). On by default. An owner or admin sets it.
+    getBrainContext: scopedQuery<BrainContextSetting, "required">()("host-admin:get-brain-context"),
+    setBrainContext: scopedRequest<boolean, BrainContextSetting, "required">()("host-admin:set-brain-context"),
     // Whether the server includes selected `~/.agents/rules` files across providers
     // (`home-agent-rules-v1`). Off by default. The host owner sets it.
     getHomeAgentRules: scopedQuery<HomeAgentRulesSetting, "required">()("host-admin:get-home-agent-rules"),

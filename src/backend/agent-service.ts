@@ -194,6 +194,7 @@ import {
 } from "./agent/attention-registry";
 import { backgroundModel, withBackgroundEffort } from "./agent/background-model";
 import { BootRecovery } from "./agent/boot-recovery";
+import type { BrainStartContextSource } from "./agent/brain-start-context";
 import type { AgentBrowserProfiles } from "./agent/browser-profile-tool";
 import { BrowserUploads } from "./agent/browser-uploads";
 import type { ChatVisualPreviewHost } from "./agent/chat-visual-preview";
@@ -411,6 +412,8 @@ interface AgentServiceEvents {
 
 export interface AgentServiceOptions {
   homeAgentRules?: () => HomeAgentRulesPreference;
+  /** The Second Brain context for the first message of a chat. See `brain-start-context.ts`. */
+  brainStartContext?: BrainStartContextSource;
   store: AgentStore;
   mailbox: MailboxStore;
   browser: AgentBrowserHost;
@@ -1985,6 +1988,7 @@ export class AgentService extends EventEmitter<AgentServiceEvents> {
           if (this.#requestedNewChats.delete(agentId))
             logger.info(`Agent ${agentId} dropped its new chat request: a turn in its chat started first.`);
         },
+        ...(options.brainStartContext ? { brainStartContext: options.brainStartContext } : {}),
         followPendingRuntime: (agentId) => this.#startPendingRuntime(agentId),
         followUsageLimit: (agentId) => {
           if (this.#startPendingRuntime(agentId)) return true;

@@ -13,7 +13,7 @@ import { AgentApiKeys } from "../backend/agent-api-keys";
 import { AgentDatabaseSupervisor } from "../backend/agent-data/agent-database-supervisor";
 import { AgentTables } from "../backend/agent-data/agent-tables";
 import { AgentRoutineStore } from "../backend/agent-routine-store";
-import { BrainService } from "../backend/brain-service";
+import { BrainService, isBrainConnection } from "../backend/brain-service";
 import { type CrmHandle, createCrm } from "../backend/crm/crm";
 import { CrmError } from "../backend/crm/crm-handle";
 import { stripeSource } from "../backend/crm/crm-stripe";
@@ -230,6 +230,7 @@ import { BillingDesktopService } from "./billing-service";
 import { managedBitwardenCli } from "./bitwarden-cli-installer";
 import { BitwardenConnectorService } from "./bitwarden-connector-service";
 import { BitwardenConnectorStore } from "./bitwarden-connector-store";
+import { type BrainContextControl, createBrainContextControl } from "./brain-context-preference-store";
 import { BrowserDockOverlay } from "./browser-dock-overlay";
 import { BrowserEgressClient } from "./browser-egress-client";
 import { BrowserEgressHost } from "./browser-egress-host";
@@ -571,6 +572,7 @@ const SERVER_PERSONALITY_PREFERENCE_FILE = "openbot-server-personality-v1.json";
 const PROMPT_CACHE_TTL_PREFERENCE_FILE = "openbot-prompt-cache-ttl-v1.json";
 const CLAUDE_USER_SETUP_PREFERENCE_FILE = "openbot-claude-user-setup-v1.json";
 const HOME_AGENT_RULES_PREFERENCE_FILE = "openbot-home-agent-rules-v1.json";
+const BRAIN_CONTEXT_PREFERENCE_FILE = "pokebots-brain-context-v1.json";
 const THREAD_AUTO_ARCHIVE_PREFERENCE_FILE = "openbot-thread-auto-archive-v1.json";
 const CLAUDE_AI_TOOLS_PREFERENCE_FILE = "openbot-claude-ai-tools-v1.json";
 const CRM_PREFERENCE_FILE = "openbot-crm-v1.json";
@@ -855,6 +857,7 @@ export interface ApplicationServices {
   promptCacheTtl: PromptCacheTtlPreferenceStore;
   claudeUserSetup: ClaudeUserSetupControl;
   homeAgentRules: HomeAgentRulesControl;
+  brainContext: BrainContextControl;
   threadAutoArchive: ThreadAutoArchiveControl;
   claudeAiTools: ClaudeAiToolsControl;
   claudeCompactWindow: ClaudeCompactWindowControl;
@@ -1686,6 +1689,7 @@ export async function createApplicationServices({
     join(app.getPath("userData"), CLAUDE_USER_SETUP_PREFERENCE_FILE),
   );
   const homeAgentRules = createHomeAgentRulesControl(join(app.getPath("userData"), HOME_AGENT_RULES_PREFERENCE_FILE));
+  const brainContext = createBrainContextControl(join(app.getPath("userData"), BRAIN_CONTEXT_PREFERENCE_FILE));
   const threadAutoArchive = createThreadAutoArchiveControl(
     join(app.getPath("userData"), THREAD_AUTO_ARCHIVE_PREFERENCE_FILE),
   );
@@ -1741,6 +1745,7 @@ export async function createApplicationServices({
       promptCacheTtl.load(),
       claudeUserSetup.load(),
       homeAgentRules.load(),
+      brainContext.load(),
       threadAutoArchive.load(),
       claudeAiTools.load(),
       crmPreference.load(),
@@ -2571,6 +2576,13 @@ export async function createApplicationServices({
     // built-in default.
     developmentDefaults: appVariant === "dev",
     homeAgentRules: homeAgentRules.preference,
+    // Read at the start of each turn: a new chat of an agent with a Second Brain connection starts
+    // with what the brain knows about its first message.
+    brainStartContext: ({ agent, question }) => {
+      if (!brainContext.get().enabled) return Effect.succeed(null);
+      const connection = service.enabledMcpServers(agent.id).find(isBrainConnection);
+      return connection ? brain.startContext(connection, { question, cwd: agent.workspacePath }) : Effect.succeed(null);
+    },
     credentials: {
       apiKey: (provider) => providerCredentials.get(provider),
       accountKeys: {
@@ -3999,6 +4011,7 @@ export async function createApplicationServices({
       promptCacheTtl,
       claudeUserSetup: claudeUserSetupSetting,
       homeAgentRules,
+      brainContext,
       threadAutoArchive,
       claudeAiTools: claudeAiToolsSetting,
       claudeCompactWindow: claudeCompactWindowSetting,
@@ -5189,6 +5202,7 @@ export async function createApplicationServices({
     promptCacheTtl,
     claudeUserSetup: claudeUserSetupSetting,
     homeAgentRules,
+    brainContext,
     threadAutoArchive,
     claudeAiTools: claudeAiToolsSetting,
     claudeCompactWindow: claudeCompactWindowSetting,

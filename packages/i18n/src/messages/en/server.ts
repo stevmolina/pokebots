@@ -917,4 +917,9 @@ export const messages = defineMessages("server", {
   "server.setup.errorCompany": "This email signs in through your company. Use another email.",
   "server.setup.errorRefused": "Pokebots refused the request.",
   "server.setup.errorNoAnswer": "Pokebots does not answer. Reload the page.",
+  "server.settings.brainContext": "Brain context",
+  "server.settings.brainContextEnable": "Start chats with brain context",
+  "server.settings.brainContextDescription":
+    "Before the first message of a new chat, and after 6 hours of quiet, agents with a Second Brain connection get what the brain knows about that message. If the brain does not answer in 3 seconds, the chat starts without it.",
+  "server.settings.brainContextLoadFailed": "Could not load the brain context setting.",
 });

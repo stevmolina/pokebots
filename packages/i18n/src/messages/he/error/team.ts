@@ -200,4 +200,5 @@ export const messages = {
   "error.team.providerUseInvalid": "לספק הזה אין מתג הפעלה וכיבוי.",
   "error.team.remoteComputerCallNotFound": "בקשת המחשב הזו הסתיימה או שייכת לסשן אחר.",
   "error.team.remoteTerminalNeedsComputer": "קודם יש להפעיל שליטה במחשב עבור השרת הזה.",
+  "error.team.brainContextUnsupported": "שרת זה אינו תומך בהקשר מהמוח.",
 } as const satisfies PartialTranslation<typeof source>;

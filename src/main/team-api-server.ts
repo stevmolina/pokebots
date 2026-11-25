@@ -64,6 +64,7 @@ import { AGENT_THREAD_REQUESTS_CAPABILITY } from "@pokebots/contracts/team-proto
 import { AGENT_THREADS_CAPABILITY } from "@pokebots/contracts/team-protocol/agent-threads-v1";
 import { ARTIFACT_REQUEST_CAPABILITY } from "@pokebots/contracts/team-protocol/artifact-request-v1";
 import { BACKGROUND_PROCESSES_CAPABILITY } from "@pokebots/contracts/team-protocol/background-processes-v1";
+import { BRAIN_CONTEXT_CAPABILITY } from "@pokebots/contracts/team-protocol/brain-context-v1";
 import { BROWSER_EGRESS_CAPABILITY } from "@pokebots/contracts/team-protocol/browser-egress-v1";
 import { BROWSER_PAGE_STATE_CAPABILITY } from "@pokebots/contracts/team-protocol/browser-page-state-v1";
 import { BROWSER_PROFILES_EVENTS_CAPABILITY } from "@pokebots/contracts/team-protocol/browser-profiles-events-v1";
@@ -388,6 +389,7 @@ import { routeAgents } from "./team-api/route-agents";
 import { routeBackgroundProcesses } from "./team-api/route-background-processes";
 import { routeBitwardenConnector } from "./team-api/route-bitwarden-connector";
 import { routeBrain } from "./team-api/route-brain";
+import { routeBrainContext } from "./team-api/route-brain-context";
 import { hiddenTabTest, routeBrowser, visibleControlState } from "./team-api/route-browser";
 import { routeBrowserProfiles } from "./team-api/route-browser-profiles";
 import { routeBrowserProxies } from "./team-api/route-browser-proxies";
@@ -1455,6 +1457,7 @@ export class TeamApiServer {
       if ((await routePromptCacheTtl(context, this.#options.admin)) === "handled") return;
       if ((await routeClaudeUserSetup(context, this.#options.admin)) === "handled") return;
       if ((await routeHomeAgentRules(context, this.#options.admin)) === "handled") return;
+      if ((await routeBrainContext(context, this.#options.admin)) === "handled") return;
       if ((await routeThreadAutoArchive(context, this.#options.admin)) === "handled") return;
       if ((await routeClaudeAiTools(context, this.#options.admin)) === "handled") return;
       if ((await routeClaudeCompactWindow(context, this.#options.admin)) === "handled") return;
@@ -3096,6 +3099,7 @@ export class TeamApiServer {
         if (capability === PROMPT_CACHE_TTL_CAPABILITY) return this.#options.admin?.promptCacheTtl !== undefined;
         if (capability === CLAUDE_USER_SETUP_CAPABILITY) return this.#options.admin?.claudeUserSetup !== undefined;
         if (capability === HOME_AGENT_RULES_CAPABILITY) return this.#options.admin?.homeAgentRules !== undefined;
+        if (capability === BRAIN_CONTEXT_CAPABILITY) return this.#options.admin?.brainContext !== undefined;
         if (capability === THREAD_AUTO_ARCHIVE_CAPABILITY) return this.#options.admin?.threadAutoArchive !== undefined;
         if (capability === CLAUDE_AI_TOOLS_CAPABILITY) return this.#options.admin?.claudeAiTools !== undefined;
         if (capability === CLAUDE_COMPACT_WINDOW_CAPABILITY)

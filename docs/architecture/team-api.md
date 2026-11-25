@@ -546,6 +546,14 @@ that start after it, and the host sends the provider status event, so open setti
 again. `src/main/team-api/route-claude-user-setup.ts` owns them. Without the capability a client hides
 the switch for that host.
 
+The optional `brain-context-v1` capability (Pokebots) adds `POST /v1/admin/host/brain-context` and
+`POST /v1/admin/host/brain-context/update` (`enabled`). They are "Start chats with brain context" of
+the host in Server Settings > Agents. On, the host asks an agent's Second Brain connection about the
+first message of a new chat (and the first after 6 hours of quiet) and puts the answer in front of
+that turn's prompt, for every provider. Only owners and admins can use them (else 403). The routes
+carry only the switch, never brain content. `src/main/team-api/route-brain-context.ts` owns them.
+Without the capability a client hides the switch for that host.
+
 The optional `provider-account-models-v1` capability (protocol 9 only) adds
 `POST /v1/admin/providers/accounts/models` (empty request). It gives, for each provider, the accounts
 after the first that serve models the provider's own sign-in does not, with those models (at most 1,000

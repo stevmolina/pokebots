@@ -316,6 +316,7 @@
     "./team-protocol/routines-once-v1": "./src/team-protocol/routines-once-v1.ts",
     "./team-protocol/provider-use-v1": "./src/team-protocol/provider-use-v1.ts",
     "./team-protocol/routine-run-command-v1": "./src/team-protocol/routine-run-command-v1.ts",
+    "./team-protocol/brain-context-v1": "./src/team-protocol/brain-context-v1.ts",
     "./team-protocol/claude-user-setup-v1": "./src/team-protocol/claude-user-setup-v1.ts",
     "./team-protocol/home-agent-rules-v1": "./src/team-protocol/home-agent-rules-v1.ts",
     "./team-protocol/thread-auto-archive-v1": "./src/team-protocol/thread-auto-archive-v1.ts",

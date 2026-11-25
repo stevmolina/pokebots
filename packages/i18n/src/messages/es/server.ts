@@ -721,4 +721,9 @@ export const messages = {
   "server.allMachines.connecting": "Conectando con {name}.",
   "server.allMachines.sleeping": "{name} está en reposo. Reintenta para activarla.",
   "server.allMachines.loadFailed": "No se pudieron leer los agentes de {name}.",
+  "server.settings.brainContext": "Contexto del cerebro",
+  "server.settings.brainContextEnable": "Empezar chats con contexto del cerebro",
+  "server.settings.brainContextDescription":
+    "Antes del primer mensaje de un chat nuevo, y tras 6 horas sin actividad, los agentes con una conexión a Second Brain reciben lo que el cerebro sabe sobre ese mensaje. Si el cerebro no responde en 3 segundos, el chat empieza sin él.",
+  "server.settings.brainContextLoadFailed": "No se pudo cargar el ajuste de contexto del cerebro.",
 } as const satisfies PartialTranslation<typeof source>;

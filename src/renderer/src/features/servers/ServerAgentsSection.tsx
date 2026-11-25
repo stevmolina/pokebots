@@ -7,6 +7,7 @@ import {
   type OpenBotDesktopApi,
   type UpdateAgentDefaultsInput,
 } from "@pokebots/contracts/ipc";
+import { BRAIN_CONTEXT_CAPABILITY } from "@pokebots/contracts/team-protocol/brain-context-v1";
 import { HOME_AGENT_RULES_CAPABILITY } from "@pokebots/contracts/team-protocol/home-agent-rules-v1";
 import { THREAD_AUTO_ARCHIVE_CAPABILITY } from "@pokebots/contracts/team-protocol/thread-auto-archive-v1";
 import { Alert, AlertContent, AlertDescription, ItemGroup, SettingsSection } from "@pokebots/ui";
@@ -20,6 +21,7 @@ import { currentText, useText } from "@pokebots/ui/text";
 import type { JSX } from "@solidjs/web";
 import { createEffect, createStore, onSettled, Show, untrack } from "solid-js";
 import { actionToast } from "../../action-toast";
+import { ServerBrainContextSetting } from "./ServerBrainContextSetting";
 import { ServerHomeAgentRulesSetting } from "./ServerHomeAgentRulesSetting";
 import { ServerThreadAutoArchiveSetting } from "./ServerThreadAutoArchiveSetting";
 import { ServerTimezoneSetting } from "./ServerTimezoneSetting";
@@ -124,11 +126,16 @@ export function createServerAgentsSection(
       return server.id;
     return undefined;
   };
+  const brainContext = () =>
+    (local() || serverCanAdminister(props.server, BRAIN_CONTEXT_CAPABILITY)) && actionsAvailable() && props.brainContext
+      ? props.server.id
+      : undefined;
   const threadArchive = () =>
     serverCanAdminister(props.server, THREAD_AUTO_ARCHIVE_CAPABILITY) && actionsAvailable()
       ? props.threadAutoArchive
       : undefined;
-  const available = () => defaultsAvailable() || Boolean(timezone() || turnLimits() || threadArchive() || homeRules());
+  const available = () =>
+    defaultsAvailable() || Boolean(timezone() || turnLimits() || threadArchive() || homeRules() || brainContext());
 
   function load(serverId: string): void {
     const options = props.agentDefaults;
@@ -302,6 +309,13 @@ export function createServerAgentsSection(
           {(serverId) => (
             <Show when={props.homeAgentRules}>
               {(calls) => <ServerHomeAgentRulesSetting calls={calls()} serverId={serverId} />}
+            </Show>
+          )}
+        </Show>
+        <Show when={!state.setting && props.open && visible() && brainContext()} keyed>
+          {(serverId) => (
+            <Show when={props.brainContext}>
+              {(calls) => <ServerBrainContextSetting calls={calls()} serverId={serverId} />}
             </Show>
           )}
         </Show>

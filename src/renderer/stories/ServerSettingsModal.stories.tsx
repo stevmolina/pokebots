@@ -14,6 +14,7 @@ import {
   type ServerAuditEntry,
   type ThreadAutoArchiveSetting,
 } from "@pokebots/contracts/ipc";
+import { BRAIN_CONTEXT_CAPABILITY } from "@pokebots/contracts/team-protocol/brain-context-v1";
 import { HOME_AGENT_RULES_CAPABILITY } from "@pokebots/contracts/team-protocol/home-agent-rules-v1";
 import { THREAD_AUTO_ARCHIVE_CAPABILITY } from "@pokebots/contracts/team-protocol/thread-auto-archive-v1";
 import { sourceText } from "@pokebots/i18n/source";
@@ -113,6 +114,39 @@ function hostRulesStory(capabilities: string[]): Story {
 
 export const JoinedHostRules = hostRulesStory(["host-turn-limits-v1", HOME_AGENT_RULES_CAPABILITY]);
 export const JoinedHostBeforeHostRules = hostRulesStory(["host-turn-limits-v1"]);
+
+/** "Start chats with brain context" of a joined server with `brain-context-v1`, for its owner. */
+export const JoinedBrainContext: Story = {
+  args: {
+    server: {
+      ...remoteServer,
+      compatibility: {
+        localAppVersion: "0.0.0-story",
+        hostAppVersion: "0.0.0-story",
+        localProtocol: { minimum: 1, maximum: 10 },
+        hostProtocol: { minimum: 1, maximum: 10 },
+        negotiatedProtocol: 10,
+        capabilities: ["host-turn-limits-v1", BRAIN_CONTEXT_CAPABILITY],
+      },
+    },
+    initialSection: "agents",
+    hostTurnLimits: {},
+  },
+  render: (args) => {
+    const [enabled, setEnabled] = createSignal(true);
+    return (
+      <ServerSettingsStory
+        settings={{
+          ...args,
+          brainContext: {
+            getBrainContext: async () => ({ enabled: enabled() }),
+            setBrainContext: async (value) => ({ enabled: setEnabled(value) }),
+          },
+        }}
+      />
+    );
+  },
+};
 
 function threadArchiveStory(capabilities: string[]): Story {
   return {

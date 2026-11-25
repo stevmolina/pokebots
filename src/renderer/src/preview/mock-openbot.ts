@@ -58,6 +58,7 @@ import {
   agentQuickAcknowledgementEnabled,
   agentTaskLimit,
   type BackgroundProcess,
+  type BrainContextSetting,
   type BrowserProfileSummary,
   type BrowserProxySummary,
   type BrowsingMemoryPreference,
@@ -87,6 +88,7 @@ import {
   DEFAULT_APP_INTERFACE_SIZE,
   DEFAULT_APP_LOGO_COLOR,
   DEFAULT_APPROVAL_AUTOMATION_PREFERENCE,
+  DEFAULT_BRAIN_CONTEXT,
   DEFAULT_BROWSING_MEMORY_PREFERENCE,
   DEFAULT_BUSY_MESSAGE_MODE,
   DEFAULT_CLAUDE_AI_TOOLS,
@@ -555,6 +557,7 @@ export function createMockOpenBot(options: MockOpenBotOptions = {}): MockOpenBot
   let homeAgentRules: HomeAgentRulesSetting = { enabled: false, files: [], availableFiles: ["agents.md", "proof.md"] };
   let threadAutoArchive: ThreadAutoArchiveSetting = { ...DEFAULT_THREAD_AUTO_ARCHIVE };
   let claudeUserSetup: ClaudeUserSetupSetting = { ...DEFAULT_CLAUDE_USER_SETUP };
+  let brainContext: BrainContextSetting = { ...DEFAULT_BRAIN_CONTEXT };
   let claudeAiTools: ClaudeAiToolsSetting = { ...DEFAULT_CLAUDE_AI_TOOLS };
   let claudeCompactWindow: ClaudeCompactWindowSetting = { ...DEFAULT_CLAUDE_COMPACT_WINDOW };
   /** The variables of each provider; a sensitive one keeps its value here, as the host keeps it encrypted. */
@@ -3867,6 +3870,12 @@ export function createMockOpenBot(options: MockOpenBotOptions = {}): MockOpenBot
       setHomeAgentRules: async (preference) => {
         homeAgentRules = { ...homeAgentRules, ...preference };
         return clone(homeAgentRules);
+      },
+      getBrainContext: async () => clone(brainContext),
+      setBrainContext: async (enabled) => {
+        if (typeof enabled !== "boolean") throw new Error("Invalid brain context setting.");
+        brainContext = { enabled };
+        return clone(brainContext);
       },
       getClaudeUserSetup: async () => clone(claudeUserSetup),
       setClaudeUserSetup: async (enabled) => {
