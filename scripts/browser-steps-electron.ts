@@ -43,14 +43,6 @@ const server = createServer((request, response) => {
   else response.end(formPage());
 });
 
-// On Linux, the GPU switches of a server (`configureLinuxGpu` in src/main/linux-gpu-mode.ts), as in
-// browser-fingerprint-electron.ts. CI has no GPU. With GPU compositing on, a tab of a fresh runner could
-// draw no frames for seconds, and Chromium dropped the clicks and keys that it got in that time.
-if (process.platform === "linux") {
-  app.commandLine.appendSwitch("disable-gpu-compositing");
-  app.commandLine.appendSwitch("enable-unsafe-swiftshader");
-}
-
 let browser: BrowserHost | undefined;
 let window: BrowserWindow | undefined;
 let sequence = 0;
@@ -132,13 +124,13 @@ async function main(): Promise<void> {
 
     phase("script-sequence");
     const form = await open("/form");
-    // Chromium drops clicks and keys, with no error, that reach a tab before it draws frames. The
-    // first case waits until the new tab draws one, so that it tests the script and not the runner.
+    // Chromium drops clicks and keys, with no error, that reach a tab before it draws frames. On a
+    // fresh CI runner, the first frame of this tab came 1.4 to 8.3 s late in 5 of 12 runs, and the
+    // script's click was lost. The first case waits for that frame, so that it tests the script and
+    // not the runner.
     const frameStart = Date.now();
     await form.contents.executeJavaScript("new Promise((resolve) => requestAnimationFrame(() => resolve()))");
     measurements.firstFrameMs = Date.now() - frameStart;
-    process.stdout.write(`TMPDIAG first frame ${measurements.firstFrameMs}\n`);
-    await form.contents.executeJavaScript(`window.__ev = []; const t0 = performance.now(); for (const type of ["pointermove", "pointerdown", "mousedown", "pointerup", "mouseup", "click", "keydown", "input"]) window.addEventListener(type, (e) => window.__ev.push([type, Math.round(performance.now() - t0), navigator.userActivation.hasBeenActive]), true); void 0`);
     const searched = await runScript({
       tabId: form.tab.id,
       script: `
@@ -151,7 +143,7 @@ async function main(): Promise<void> {
     if (!searched.result.success) {
       // Says which step lost its input: the typed value, the page's click count, and the script log.
       const page = await form.contents.executeJavaScript(
-        "({ query: document.querySelector('#query').value, clicks: window.clicks, out: document.querySelector('#out').textContent, active: navigator.userActivation.hasBeenActive, ev: window.__ev })",
+        "({ query: document.querySelector('#query').value, clicks: window.clicks, out: document.querySelector('#out').textContent })",
       );
       assert.fail(
         `${searched.outcome.error} ${JSON.stringify({ steps: searched.outcome.steps, log: searched.outcome.log, page })}`,
