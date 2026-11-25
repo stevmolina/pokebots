@@ -253,7 +253,7 @@ export class RoomsListener {
           yield* Effect.sleep(Math.max(1_000, until - Date.now()));
           continue;
         }
-        let token = yield* options.accessToken().pipe(Effect.orElseSucceed(() => null));
+        const token = yield* options.accessToken().pipe(Effect.orElseSucceed(() => null));
         if (!token) {
           yield* Effect.sleep(SIGNED_OUT_MS);
           continue;
@@ -262,14 +262,13 @@ export class RoomsListener {
         const waitStartedAt = Date.now();
         const waited = yield* Effect.scoped(
           Effect.gen(function* () {
-            const client = yield* connect(url, token as string, fetcher).pipe(
+            const client = yield* connect(url, token, fetcher).pipe(
               Effect.catch((cause) =>
                 unauthorized(cause)
-                  ? options.refreshAccessToken(token as string).pipe(
+                  ? options.refreshAccessToken(token).pipe(
                       Effect.orElseSucceed(() => null),
                       Effect.flatMap((next) => {
                         if (!next) return Effect.fail(cause);
-                        token = next;
                         return connect(url, next, fetcher);
                       }),
                     )
