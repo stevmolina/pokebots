@@ -124,6 +124,13 @@ async function main(): Promise<void> {
 
     phase("script-sequence");
     const form = await open("/form");
+    // Chromium drops clicks and keys, with no error, that reach a tab before it draws frames. On a
+    // fresh CI runner, the first frame of this tab came 1.4 to 8.3 s late in 5 of 12 runs, and the
+    // script's click was lost. The first case waits for that frame, so that it tests the script and
+    // not the runner.
+    const frameStart = Date.now();
+    await form.contents.executeJavaScript("new Promise((resolve) => requestAnimationFrame(() => resolve()))");
+    measurements.firstFrameMs = Date.now() - frameStart;
     const searched = await runScript({
       tabId: form.tab.id,
       script: `
@@ -133,7 +140,15 @@ async function main(): Promise<void> {
         return await evaluate("document.querySelector('#out').textContent");
       `,
     });
-    assert.equal(searched.result.success, true, searched.outcome.error);
+    if (!searched.result.success) {
+      // Says which step lost its input: the typed value, the page's click count, and the script log.
+      const page = await form.contents.executeJavaScript(
+        "({ query: document.querySelector('#query').value, clicks: window.clicks, out: document.querySelector('#out').textContent })",
+      );
+      assert.fail(
+        `${searched.outcome.error} ${JSON.stringify({ steps: searched.outcome.steps, log: searched.outcome.log, page })}`,
+      );
+    }
     assert.equal(searched.outcome.status, "completed");
     assert.equal(searched.outcome.steps, 4);
     assert.equal(searched.outcome.value, "Result: openbot");
