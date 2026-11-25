@@ -535,6 +535,7 @@ import type {
   RemoteNetworkRouteState,
   RemoteSessionReusePreference,
 } from "./ipc-remote-sessions";
+import type { RoomsListeningChange, RoomsListeningSetting } from "./ipc-rooms-listening";
 import type {
   ConnectRoutineFlowInput,
   DisconnectRoutineFlowInput,
@@ -1546,6 +1547,12 @@ export const IPC_ENDPOINTS = {
     // (`brain-context-v1`). On by default. An owner or admin sets it.
     getBrainContext: scopedQuery<BrainContextSetting, "required">()("host-admin:get-brain-context"),
     setBrainContext: scopedRequest<boolean, BrainContextSetting, "required">()("host-admin:set-brain-context"),
+    // For which agents the server listens to Rooms and starts a turn on new messages
+    // (`rooms-listening-v1`). Off for each agent by default. An owner or admin sets it.
+    getRoomsListening: scopedQuery<RoomsListeningSetting, "required">()("host-admin:get-rooms-listening"),
+    setRoomsListening: scopedRequest<RoomsListeningChange, RoomsListeningSetting, "required">()(
+      "host-admin:set-rooms-listening",
+    ),
     // Whether the server includes selected `~/.agents/rules` files across providers
     // (`home-agent-rules-v1`). Off by default. The host owner sets it.
     getHomeAgentRules: scopedQuery<HomeAgentRulesSetting, "required">()("host-admin:get-home-agent-rules"),

@@ -43,11 +43,13 @@ export interface ServersPort {
     OpenBotDesktopApi["hostAdmin"],
     | "cancelUpdate"
     | "getBrainContext"
+    | "getRoomsListening"
     | "getHomeAgentRules"
     | "getUpdateStatus"
     | "restartHost"
     | "rotateHostKey"
     | "setBrainContext"
+    | "setRoomsListening"
     | "setHomeAgentRules"
     | "startUpdate"
     | "updateIdentity"

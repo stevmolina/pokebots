@@ -84,7 +84,7 @@ const unauthorized = (cause: unknown) =>
  * The SDK transport behind the SDK's own `Transport` type. The SDK class declares `sessionId` and its
  * callbacks without `undefined`, so `exactOptionalPropertyTypes` refuses the class itself.
  */
-function forwardingTransport(inner: StreamableHTTPClientTransport): Transport {
+export function forwardingTransport(inner: StreamableHTTPClientTransport): Transport {
   const transport: Transport = {
     start: () => inner.start(),
     send: (message, options) => inner.send(message, options),

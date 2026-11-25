@@ -210,4 +210,5 @@ export const messages = defineMessages("error.team", {
   "error.team.remoteComputerCallNotFound": "This computer request ended or belongs to another session.",
   "error.team.remoteTerminalNeedsComputer": "Turn on Computer Use for this server first.",
   "error.team.brainContextUnsupported": "This server does not support brain context.",
+  "error.team.roomsListeningUnsupported": "This server does not support Rooms listening.",
 });

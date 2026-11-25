@@ -740,4 +740,10 @@ export const messages = {
   "server.settings.brainContextDescription":
     "Voor het eerste bericht van een nieuwe chat, en na 6 uur stilte, krijgen agents met een Second Brain-verbinding wat het brein over dat bericht weet. Antwoordt het brein niet binnen 3 seconden, dan start de chat zonder.",
   "server.settings.brainContextLoadFailed": "Kan de instelling voor breincontext niet laden.",
+  "server.settings.roomsListening": "Rooms luisteren",
+  "server.settings.roomsListeningDescription":
+    "Als een agent luistert, wacht deze server op nieuwe berichten in zijn Rooms en start een beurt in de chat van de agent. De agent antwoordt met zijn Rooms-tools. Berichten van anderen zijn informatie, geen instructies. Hoogstens 20 Rooms-beurten per agent per uur; een gepauzeerde room krijgt er geen.",
+  "server.settings.roomsListeningNotConnected": "Verbind eerst de Rooms-app voor deze agent.",
+  "server.settings.roomsListeningAgent": "Luister naar Rooms met {name}",
+  "server.settings.roomsListeningLoadFailed": "Kan Rooms luisteren niet laden.",
 } as const satisfies PartialTranslation<typeof source>;

@@ -554,6 +554,15 @@ that turn's prompt, for every provider. Only owners and admins can use them (els
 carry only the switch, never brain content. `src/main/team-api/route-brain-context.ts` owns them.
 Without the capability a client hides the switch for that host.
 
+The optional `rooms-listening-v1` capability (Pokebots) adds `POST /v1/admin/host/rooms-listening`
+(empty request) and `POST /v1/admin/host/rooms-listening/update` (`agentId`, `listening`). The answer
+lists each agent of the host with `listening` and `roomsConnected` (the agent has the Rooms app). On,
+the host keeps the Rooms `wait` tool open for that agent with the host's Rooms sign-in and starts a
+turn in the agent's chat for new messages (`src/main/rooms-listener.ts`). Only owners and admins can
+use the routes (else 403). They carry agent ids, names and flags, never room content.
+`src/main/team-api/route-rooms-listening.ts` owns them. Without the capability a client hides the
+section for that host.
+
 The optional `provider-account-models-v1` capability (protocol 9 only) adds
 `POST /v1/admin/providers/accounts/models` (empty request). It gives, for each provider, the accounts
 after the first that serve models the provider's own sign-in does not, with those models (at most 1,000

@@ -104,6 +104,10 @@ import {
   POKEBOTS_INTEGRATIONS_ROUTES,
 } from "@pokebots/contracts/team-protocol/pokebots-integrations-v1";
 import { PROVIDER_ACCOUNTS_CAPABILITY } from "@pokebots/contracts/team-protocol/provider-accounts-v1";
+import {
+  decodeRoomsListeningResponse,
+  ROOMS_LISTENING_ROUTES,
+} from "@pokebots/contracts/team-protocol/rooms-listening-v1";
 import { ROOMS_CAPABILITY, ROOMS_ROUTE } from "@pokebots/contracts/team-protocol/rooms-v1";
 import { ROUTINE_FLOW_STOP_CAPABILITY } from "@pokebots/contracts/team-protocol/routine-flow-stop-v1";
 import { ROUTINE_FLOWS_CAPABILITY } from "@pokebots/contracts/team-protocol/routine-flows-v1";
@@ -324,6 +328,7 @@ import type { HostHomeAgentRulesCalls } from "../servers/ServerHomeAgentRulesSet
 import type { HostMemoryLimitCalls } from "../servers/ServerMemoryLimitSetting";
 import type { HostMemoryReviewCalls } from "../servers/ServerMemoryReviewSetting";
 import type { HostAgentAccessCalls } from "../servers/ServerRolesSection";
+import type { HostRoomsListeningCalls } from "../servers/ServerRoomsListeningSetting";
 import type { ServerHostedSitesOptions, ServerSettingsSection } from "../servers/ServerSettingsModal";
 import type { HostSkillLearningCalls } from "../servers/ServerSkillLearningSetting";
 import type { HostThreadAutoArchiveCalls } from "../servers/ServerThreadAutoArchiveSetting";
@@ -1984,6 +1989,12 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
       runTeamEffect(getHostPromptCacheTtl(hostRequest(serverId)).pipe(Effect.mapError((error) => error.cause))),
     setPromptCacheTtl: async (ttl, serverId) =>
       runTeamEffect(setHostPromptCacheTtl(hostRequest(serverId), ttl).pipe(Effect.mapError((error) => error.cause))),
+  };
+  const hostRoomsListeningCalls: HostRoomsListeningCalls = {
+    getRoomsListening: (serverId) =>
+      hostRequest(serverId)("POST", ROOMS_LISTENING_ROUTES.settings, decodeRoomsListeningResponse, {}),
+    setRoomsListening: (change, serverId) =>
+      hostRequest(serverId)("POST", ROOMS_LISTENING_ROUTES.update, decodeRoomsListeningResponse, { ...change }),
   };
   const hostBrainContextCalls: HostBrainContextCalls = {
     getBrainContext: (serverId) =>
@@ -4217,6 +4228,7 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                         hostPromptCacheTtl={{ calls: hostPromptCacheTtlCalls }}
                         homeAgentRules={hostHomeAgentRulesCalls}
                         brainContext={hostBrainContextCalls}
+                        roomsListening={hostRoomsListeningCalls}
                         claudeUserSetup={{ calls: hostClaudeUserSetupCalls }}
                         claudeAiTools={{ calls: hostClaudeAiToolsCalls }}
                         claudeCompactWindow={{ calls: hostClaudeCompactWindowCalls }}

@@ -458,6 +458,12 @@ import { RequestedUpdate, RequestedUpdateRefusal } from "./requested-update";
 import { RequiredUpdate } from "./required-update";
 import { ResourceMonitor } from "./resource-monitor";
 import { StatementTimings } from "./resource-summary";
+import { ROOMS_MCP_URL, RoomsListener } from "./rooms-listener";
+import {
+  createRoomsListeningControl,
+  isRoomsConnection,
+  type RoomsListeningControl,
+} from "./rooms-listening-preference-store";
 import { RoutineFeedServer } from "./routine-feed-server";
 import { clearRoutineHold, ROUTINE_HOLD_FILE, takeRoutineHold, writeRoutineHold } from "./routine-hold-file";
 import type { UncleanExitProperties } from "./run-marker";
@@ -573,6 +579,7 @@ const PROMPT_CACHE_TTL_PREFERENCE_FILE = "openbot-prompt-cache-ttl-v1.json";
 const CLAUDE_USER_SETUP_PREFERENCE_FILE = "openbot-claude-user-setup-v1.json";
 const HOME_AGENT_RULES_PREFERENCE_FILE = "openbot-home-agent-rules-v1.json";
 const BRAIN_CONTEXT_PREFERENCE_FILE = "pokebots-brain-context-v1.json";
+const ROOMS_LISTENING_PREFERENCE_FILE = "pokebots-rooms-listening-v1.json";
 const THREAD_AUTO_ARCHIVE_PREFERENCE_FILE = "openbot-thread-auto-archive-v1.json";
 const CLAUDE_AI_TOOLS_PREFERENCE_FILE = "openbot-claude-ai-tools-v1.json";
 const CRM_PREFERENCE_FILE = "openbot-crm-v1.json";
@@ -700,6 +707,8 @@ const TEARDOWN_ORDER = {
   passwordManagers: 106.75,
   // Before the GitHub connection and the agent service: a sweep reads both.
   threadAutoArchive: 106.9,
+  // Before the agent service: a listener starts turns in it.
+  roomsListener: 106.95,
   // Before the agent service, so no agent is handed a token file that is being removed.
   githubConnector: 107,
   // Before the agent service, so no payment wait outlives the agents that asked for it.
@@ -858,6 +867,7 @@ export interface ApplicationServices {
   claudeUserSetup: ClaudeUserSetupControl;
   homeAgentRules: HomeAgentRulesControl;
   brainContext: BrainContextControl;
+  roomsListening: RoomsListeningControl;
   threadAutoArchive: ThreadAutoArchiveControl;
   claudeAiTools: ClaudeAiToolsControl;
   claudeCompactWindow: ClaudeCompactWindowControl;
@@ -1690,6 +1700,13 @@ export async function createApplicationServices({
   );
   const homeAgentRules = createHomeAgentRulesControl(join(app.getPath("userData"), HOME_AGENT_RULES_PREFERENCE_FILE));
   const brainContext = createBrainContextControl(join(app.getPath("userData"), BRAIN_CONTEXT_PREFERENCE_FILE));
+  // The agents that the host listens to Rooms for. The listener is made with the agent service.
+  let roomsListener: RoomsListener | null = null;
+  const roomsListening = createRoomsListeningControl(join(app.getPath("userData"), ROOMS_LISTENING_PREFERENCE_FILE), {
+    agents: () => service.listAgents().map((agent) => ({ id: agent.id, name: agent.name })),
+    roomsConnected: (agentId) => service.enabledMcpServers(agentId).some(isRoomsConnection),
+    changed: () => roomsListener?.refresh(),
+  });
   const threadAutoArchive = createThreadAutoArchiveControl(
     join(app.getPath("userData"), THREAD_AUTO_ARCHIVE_PREFERENCE_FILE),
   );
@@ -1746,6 +1763,7 @@ export async function createApplicationServices({
       claudeUserSetup.load(),
       homeAgentRules.load(),
       brainContext.load(),
+      roomsListening.load(),
       threadAutoArchive.load(),
       claudeAiTools.load(),
       crmPreference.load(),
@@ -2730,6 +2748,18 @@ export async function createApplicationServices({
     ...(devThreadSweepMs === null ? {} : { intervalMs: devThreadSweepMs }),
   });
   threadAutoArchiveScheduler.start();
+  // Rooms listening: new room messages start a turn for each agent that listens. Started after the
+  // agents load (below), so a restart picks the saved agents up again.
+  roomsListener = new RoomsListener({
+    accessToken: () => mcpOAuth.accessToken(ROOMS_MCP_URL),
+    refreshAccessToken: (rejected) => mcpOAuth.refreshAccessToken(ROOMS_MCP_URL, rejected),
+    listeningAgents: () => roomsListening.listeningAgents(),
+    deliver: (agentId, text, key) =>
+      service.sendMessage({ agentId, text, clientMessageId: key }, { id: "rooms", name: "Rooms" }).pipe(Effect.asVoid),
+    stopListening: (agentId) => roomsListening.set({ agentId, listening: false }),
+  });
+  const listener = roomsListener;
+  teardown.push(TEARDOWN_ORDER.roomsListener, "Rooms listening", () => Effect.runPromise(listener.stop()));
   teardown.push(TEARDOWN_ORDER.threadAutoArchive, "the automatic thread archive", () =>
     Effect.runPromise(threadAutoArchiveScheduler.close()),
   );
@@ -4012,6 +4042,7 @@ export async function createApplicationServices({
       claudeUserSetup: claudeUserSetupSetting,
       homeAgentRules,
       brainContext,
+      roomsListening,
       threadAutoArchive,
       claudeAiTools: claudeAiToolsSetting,
       claudeCompactWindow: claudeCompactWindowSetting,
@@ -4892,6 +4923,7 @@ export async function createApplicationServices({
         beforeProviderStart: Fiber.join(computerUseWarmUp).pipe(Effect.asVoid),
       });
       yield* eventsRuntime.start();
+      roomsListener?.start();
       yield* automation.sync();
       // Picks up the flows a restart stopped between one agent's answer and the next agent's message.
       yield* routineFlowRuntime.sweep();
@@ -5203,6 +5235,7 @@ export async function createApplicationServices({
     claudeUserSetup: claudeUserSetupSetting,
     homeAgentRules,
     brainContext,
+    roomsListening,
     threadAutoArchive,
     claudeAiTools: claudeAiToolsSetting,
     claudeCompactWindow: claudeCompactWindowSetting,

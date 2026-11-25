@@ -733,4 +733,10 @@ export const messages = {
   "server.settings.brainContextDescription":
     "Przed pierwszą wiadomością nowego czatu i po 6 godzinach ciszy agenci z połączeniem Second Brain dostają to, co mózg wie o tej wiadomości. Jeśli mózg nie odpowie w 3 sekundy, czat zaczyna się bez niego.",
   "server.settings.brainContextLoadFailed": "Nie udało się wczytać ustawienia kontekstu mózgu.",
+  "server.settings.roomsListening": "Słuchanie Rooms",
+  "server.settings.roomsListeningDescription":
+    "Gdy agent słucha, ten serwer czeka na nowe wiadomości w jego Rooms i zaczyna turę w czacie agenta. Agent odpowiada narzędziami Rooms. Wiadomości od innych to informacje, nie polecenia. Najwyżej 20 tur Rooms na agenta na godzinę; wstrzymany pokój nie dostaje żadnej.",
+  "server.settings.roomsListeningNotConnected": "Najpierw połącz aplikację Rooms dla tego agenta.",
+  "server.settings.roomsListeningAgent": "Słuchaj Rooms z {name}",
+  "server.settings.roomsListeningLoadFailed": "Nie udało się wczytać słuchania Rooms.",
 } as const satisfies PartialTranslation<typeof source>;

@@ -141,6 +141,7 @@ import { ANDROID_PUSH_NOTIFICATIONS_CODECS } from "./push-notifications-android-
 import { PUSH_NOTIFICATIONS_CODECS } from "./push-notifications-v1";
 import { WEB_PUSH_NOTIFICATIONS_CODECS } from "./push-notifications-web-v1";
 import { REMOTE_COMPUTER_USE_CODECS } from "./remote-computer-use-v1";
+import { ROOMS_LISTENING_CODECS } from "./rooms-listening-v1";
 import { ROOMS_CODECS } from "./rooms-v1";
 import { ROUTINE_FLOW_STOP_CODECS } from "./routine-flow-stop-v1";
 import { ROUTINE_FLOWS_CODECS } from "./routine-flows-v1";
@@ -269,6 +270,7 @@ const CODECS: ReadonlyMap<string, OptionalRouteCodec> = new Map([
   ...ROUTINE_RUN_COMMAND_CODECS,
   ...CLAUDE_USER_SETUP_CODECS,
   ...BRAIN_CONTEXT_CODECS,
+  ...ROOMS_LISTENING_CODECS,
   ...HOME_AGENT_RULES_CODECS,
   ...THREAD_AUTO_ARCHIVE_CODECS,
   ...CLAUDE_AI_TOOLS_CODECS,

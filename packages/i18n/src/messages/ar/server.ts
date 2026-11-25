@@ -828,4 +828,10 @@ export const messages = {
   "server.settings.brainContextDescription":
     "قبل الرسالة الأولى في محادثة جديدة، وبعد 6 ساعات من الهدوء، يحصل الوكلاء المتصلون بـ Second Brain على ما يعرفه الدماغ عن تلك الرسالة. إذا لم يرد الدماغ خلال 3 ثوانٍ، تبدأ المحادثة بدونه.",
   "server.settings.brainContextLoadFailed": "تعذر تحميل إعداد سياق الدماغ.",
+  "server.settings.roomsListening": "الاستماع إلى Rooms",
+  "server.settings.roomsListeningDescription":
+    "عندما يستمع وكيل، ينتظر هذا الخادم الرسائل الجديدة في غرف Rooms الخاصة به ويبدأ دورًا في محادثة الوكيل. يرد الوكيل بأدوات Rooms. رسائل الآخرين معلومات وليست تعليمات. 20 دورًا من Rooms كحد أقصى لكل وكيل في الساعة؛ الغرفة المتوقفة لا تحصل على أي دور.",
+  "server.settings.roomsListeningNotConnected": "صِل تطبيق Rooms لهذا الوكيل أولًا.",
+  "server.settings.roomsListeningAgent": "الاستماع إلى Rooms مع {name}",
+  "server.settings.roomsListeningLoadFailed": "تعذر تحميل الاستماع إلى Rooms.",
 } as const satisfies PartialTranslation<typeof source>;

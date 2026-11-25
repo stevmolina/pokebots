@@ -200,4 +200,5 @@ export const messages = {
   "error.team.providerUseUnsupported": "この接続ではプロバイダーのオン・オフを切り替えられません。",
   "error.team.providerUseInvalid": "このプロバイダーにはオン・オフの切り替えがありません。",
   "error.team.brainContextUnsupported": "このサーバーはブレインのコンテキストに対応していません。",
+  "error.team.roomsListeningUnsupported": "このサーバーは Rooms のリッスンに対応していません。",
 } as const satisfies PartialTranslation<typeof source>;

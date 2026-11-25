@@ -218,4 +218,5 @@ export const messages = {
     "Das Ein- und Ausschalten von Anbietern wird von dieser Verbindung nicht unterstützt.",
   "error.team.providerUseInvalid": "Dieser Anbieter hat keinen Ein-/Aus-Schalter.",
   "error.team.brainContextUnsupported": "Dieser Server unterstützt keinen Gehirn-Kontext.",
+  "error.team.roomsListeningUnsupported": "Dieser Server unterstützt kein Rooms-Zuhören.",
 } as const satisfies PartialTranslation<typeof source>;

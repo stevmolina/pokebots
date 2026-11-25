@@ -198,4 +198,5 @@ export const messages = {
   "error.team.providerUseUnsupported": "To połączenie nie obsługuje włączania i wyłączania dostawców.",
   "error.team.providerUseInvalid": "Ten dostawca nie ma przełącznika włączania.",
   "error.team.brainContextUnsupported": "Ten serwer nie obsługuje kontekstu mózgu.",
+  "error.team.roomsListeningUnsupported": "Ten serwer nie obsługuje słuchania Rooms.",
 } as const satisfies PartialTranslation<typeof source>;

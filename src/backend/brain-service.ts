@@ -132,8 +132,9 @@ export class BrainService {
         });
       const context = yield* get("/context", {
         question,
-        ...(input.cwd ? { cwd: input.cwd } : {}),
-        budget: "3000",
+        ...(input.cwd ? { cwd: input.cwd.slice(0, 1000) } : {}),
+        // Characters of brain text; the brain's default. The `text` field is the whole block.
+        budget: "6000",
       });
       if (context.status !== 404) {
         const reply = startContextReply.safeParse(context.value);

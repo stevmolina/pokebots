@@ -55,7 +55,9 @@ import {
   parseHostTurnLimitsInput,
   parseProviderModelVisibilityChange,
   parseProviderModelVisibilityProvider,
+  parseRoomsListeningChange,
   parseThreadAutoArchiveSetting,
+  type RoomsListeningChange,
   type ServerAuditLog,
   type ServerAuditName,
   type ServerSummary,
@@ -138,6 +140,11 @@ import {
   PROVIDER_ENVIRONMENT_CAPABILITY,
   PROVIDER_ENVIRONMENT_ROUTES,
 } from "@pokebots/contracts/team-protocol/provider-environment-v1";
+import {
+  decodeRoomsListeningResponse,
+  ROOMS_LISTENING_CAPABILITY,
+  ROOMS_LISTENING_ROUTES,
+} from "@pokebots/contracts/team-protocol/rooms-listening-v1";
 import { SERVER_AUDIT_CAPABILITY, SERVER_AUDIT_ROUTES } from "@pokebots/contracts/team-protocol/server-audit-v1";
 import { SKILL_LEARNING_CAPABILITY, SKILL_LEARNING_ROUTES } from "@pokebots/contracts/team-protocol/skill-learning-v1";
 import {
@@ -168,6 +175,7 @@ import {
   type ResponseDecoder,
 } from "../remote-host-decoding";
 import type { RemoteRequestInit } from "../remote-server-client";
+import type { RoomsListeningControl } from "../rooms-listening-preference-store";
 import type { ServerAuditStore } from "../server-audit-store";
 import { parseServerPersonality, type ServerPersonalityPreferenceStore } from "../server-personality-preference-store";
 import { parseServerTimezone, type ServerTimezonePreferenceStore } from "../server-timezone-preference-store";
@@ -211,6 +219,7 @@ interface HostAdminIpcDependencies {
   claudeUserSetup: ClaudeUserSetupControl;
   homeAgentRules: HomeAgentRulesControl;
   brainContext: BrainContextControl;
+  roomsListening: RoomsListeningControl;
   threadAutoArchive: ThreadAutoArchiveControl;
   claudeAiTools: ClaudeAiToolsControl;
   claudeCompactWindow: ClaudeCompactWindowControl;
@@ -246,6 +255,7 @@ export function hostAdminIpcHandlers({
   claudeUserSetup,
   homeAgentRules,
   brainContext,
+  roomsListening,
   threadAutoArchive,
   claudeAiTools,
   claudeCompactWindow,
@@ -341,6 +351,13 @@ export function hostAdminIpcHandlers({
     if (!remoteServers.supportsCapability(serverId, BRAIN_CONTEXT_CAPABILITY))
       throw new Error(sourceText("error.team.brainContextUnsupported"));
     return runCauseEffect(remoteServers.request(serverId, route, decodeBrainContextResponse, { method: "POST", body }));
+  }
+  function remoteRoomsListening(serverId: string, route: string, body: Partial<RoomsListeningChange>) {
+    if (!remoteServers.supportsCapability(serverId, ROOMS_LISTENING_CAPABILITY))
+      throw new Error(sourceText("error.team.roomsListeningUnsupported"));
+    return runCauseEffect(
+      remoteServers.request(serverId, route, decodeRoomsListeningResponse, { method: "POST", body }),
+    );
   }
   function remoteClaudeAiTools(serverId: string, route: string, body: { enabled?: boolean }) {
     if (!remoteServers.supportsCapability(serverId, CLAUDE_AI_TOOLS_CAPABILITY))
@@ -616,6 +633,14 @@ export function hostAdminIpcHandlers({
       setBrainContext: scopedHandler(parseBrainContext, {
         local: (enabled) => runCauseEffect(brainContext.set(enabled)),
         remote: (enabled, serverId) => remoteBrainContext(serverId, BRAIN_CONTEXT_ROUTES.update, { enabled }),
+      }),
+      getRoomsListening: scopedQueryHandler({
+        local: () => roomsListening.get(),
+        remote: (serverId) => remoteRoomsListening(serverId, ROOMS_LISTENING_ROUTES.settings, {}),
+      }),
+      setRoomsListening: scopedHandler(parseRoomsListeningChange, {
+        local: (change) => runCauseEffect(roomsListening.set(change)),
+        remote: (change, serverId) => remoteRoomsListening(serverId, ROOMS_LISTENING_ROUTES.update, change),
       }),
       getHomeAgentRules: scopedQueryHandler({
         local: () => runCauseEffect(homeAgentRules.get()),

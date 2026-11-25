@@ -183,6 +183,7 @@ import { QUIET_TURN_CAPABILITY } from "./quiet-turn-v1";
 import { TEAM_REASONING_EFFORTS_CAPABILITY } from "./reasoning-efforts-v1";
 import { REMOTE_COMPUTER_TERMINAL_CAPABILITY } from "./remote-computer-terminal-v1";
 import { REMOTE_COMPUTER_USE_CAPABILITY } from "./remote-computer-use-v1";
+import { ROOMS_LISTENING_CAPABILITY } from "./rooms-listening-v1";
 import { ROOMS_CAPABILITY } from "./rooms-v1";
 import { ROUTINE_FLOW_STOP_CAPABILITY } from "./routine-flow-stop-v1";
 import { ROUTINE_FLOWS_CAPABILITY } from "./routine-flows-v1";
@@ -867,6 +868,7 @@ const TEAM_CAPABILITY_REGISTRY = [
   [HOME_AGENT_RULES_CAPABILITY, V10],
   [COMPUTER_LIVE_VIEW_CAPABILITY, POKEBOTS],
   [BRAIN_CONTEXT_CAPABILITY, POKEBOTS],
+  [ROOMS_LISTENING_CAPABILITY, POKEBOTS],
 ] as const satisfies readonly (readonly [string, TeamCapabilityPlacement])[];
 
 export const TEAM_CURRENT_CAPABILITIES = TEAM_CAPABILITY_REGISTRY.map(([capability]) => capability);

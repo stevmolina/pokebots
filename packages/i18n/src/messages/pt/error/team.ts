@@ -208,4 +208,5 @@ export const messages = {
   "error.team.providerUseUnsupported": "Esta conexão não suporta ativar e desativar provedores.",
   "error.team.providerUseInvalid": "Este provedor não tem um interruptor de ativação.",
   "error.team.brainContextUnsupported": "Este servidor não oferece suporte ao contexto do cérebro.",
+  "error.team.roomsListeningUnsupported": "Este servidor não oferece suporte à escuta do Rooms.",
 } as const satisfies PartialTranslation<typeof source>;

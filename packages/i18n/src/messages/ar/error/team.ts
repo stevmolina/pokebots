@@ -201,4 +201,5 @@ export const messages = {
   "error.team.providerUseUnsupported": "هذا الاتصال لا يدعم تشغيل المزوّدين وإيقافهم.",
   "error.team.providerUseInvalid": "هذا المزوّد ليس له مفتاح تشغيل وإيقاف.",
   "error.team.brainContextUnsupported": "هذا الخادم لا يدعم سياق الدماغ.",
+  "error.team.roomsListeningUnsupported": "هذا الخادم لا يدعم الاستماع إلى Rooms.",
 } as const satisfies PartialTranslation<typeof source>;

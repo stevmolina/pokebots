@@ -201,4 +201,5 @@ export const messages = {
   "error.team.remoteComputerCallNotFound": "בקשת המחשב הזו הסתיימה או שייכת לסשן אחר.",
   "error.team.remoteTerminalNeedsComputer": "קודם יש להפעיל שליטה במחשב עבור השרת הזה.",
   "error.team.brainContextUnsupported": "שרת זה אינו תומך בהקשר מהמוח.",
+  "error.team.roomsListeningUnsupported": "שרת זה אינו תומך בהאזנה ל-Rooms.",
 } as const satisfies PartialTranslation<typeof source>;

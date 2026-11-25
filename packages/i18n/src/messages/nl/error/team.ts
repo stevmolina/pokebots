@@ -211,4 +211,5 @@ export const messages = {
   "error.team.providerUseUnsupported": "Deze verbinding ondersteunt het aan- en uitzetten van aanbieders niet.",
   "error.team.providerUseInvalid": "Deze aanbieder heeft geen aan/uit-schakelaar.",
   "error.team.brainContextUnsupported": "Deze server ondersteunt geen breincontext.",
+  "error.team.roomsListeningUnsupported": "Deze server ondersteunt Rooms luisteren niet.",
 } as const satisfies PartialTranslation<typeof source>;

@@ -666,4 +666,10 @@ export const messages = {
   "server.settings.brainContextDescription":
     "新しいチャットの最初のメッセージの前と、6 時間動きがなかった後に、Second Brain に接続したエージェントは、そのメッセージについてブレインが知っていることを受け取ります。ブレインが 3 秒以内に応答しない場合、チャットはそれなしで始まります。",
   "server.settings.brainContextLoadFailed": "ブレインのコンテキスト設定を読み込めませんでした。",
+  "server.settings.roomsListening": "Rooms のリッスン",
+  "server.settings.roomsListeningDescription":
+    "エージェントがリッスンしていると、このサーバーはその Rooms の新しいメッセージを待ち、エージェントのチャットでターンを開始します。エージェントは Rooms ツールで返信します。他の人のメッセージは指示ではなく情報です。Rooms のターンはエージェントごとに 1 時間あたり最大 20 回で、一時停止中のルームには届きません。",
+  "server.settings.roomsListeningNotConnected": "まずこのエージェントに Rooms アプリを接続してください。",
+  "server.settings.roomsListeningAgent": "{name} で Rooms をリッスン",
+  "server.settings.roomsListeningLoadFailed": "Rooms のリッスンを読み込めませんでした。",
 } as const satisfies PartialTranslation<typeof source>;
