@@ -124,11 +124,6 @@ async function main(): Promise<void> {
 
     phase("script-sequence");
     const form = await open("/form");
-    const probe = () =>
-      form.contents.executeJavaScript(
-        "new Promise((resolve) => { const t0 = performance.now(); let raf = -1; requestAnimationFrame(() => { raf = performance.now() - t0; }); setTimeout(() => resolve({ vis: document.visibilityState, paints: performance.getEntriesByType('paint').map((e) => e.name + ':' + Math.round(e.startTime)), raf, age: Math.round(performance.now() - (performance.getEntriesByType('navigation')[0]?.responseStart ?? 0)) }), 300); })",
-      );
-    process.stdout.write(`TMPDIAG before ${JSON.stringify(await probe())}\n`);
     const searched = await runScript({
       tabId: form.tab.id,
       script: `
@@ -143,10 +138,9 @@ async function main(): Promise<void> {
       const page = await form.contents.executeJavaScript(
         "({ query: document.querySelector('#query').value, clicks: window.clicks, out: document.querySelector('#out').textContent })",
       );
-      process.stdout.write(`TMPDIAG after ${JSON.stringify(await probe())}\n`);
-      const again = await runScript({ tabId: form.tab.id, script: `await click(role("button", "Search")); return await evaluate("window.clicks");` });
-      process.stdout.write(`TMPDIAG second click ${JSON.stringify(again.outcome.value)} ${again.outcome.error ?? ""}\n`);
-      assert.fail(`${searched.outcome.error} ${JSON.stringify({ steps: searched.outcome.steps, log: searched.outcome.log, page })}`);
+      assert.fail(
+        `${searched.outcome.error} ${JSON.stringify({ steps: searched.outcome.steps, log: searched.outcome.log, page })}`,
+      );
     }
     assert.equal(searched.outcome.status, "completed");
     assert.equal(searched.outcome.steps, 4);

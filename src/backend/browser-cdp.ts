@@ -121,9 +121,10 @@ const CHOOSER_WAIT_MS = 5_000;
 const DROP_FRAME_WAIT_MS = 1_500;
 const DROP_FRAME_SCRIPT = "new Promise((resolve) => requestAnimationFrame(() => setTimeout(resolve, 0)))";
 /**
- * Chromium can drop key events, with no error, that reach a new page before its first frame. That
- * frame comes in less than 100 ms after the response, so only a page that got its response less
- * than this time ago waits for a frame before a key. The age counts from the response, because
+ * Chromium can drop key and mouse press events, with no error, that reach a new page before its
+ * first frame. That frame comes in less than 100 ms after the response, or up to one second later in
+ * a tab that draws one frame each second, so only a page that got its response less than this time
+ * ago waits for a frame before a key or a click. The age counts from the response, because
  * redirects and a slow server come before it. An older page does not wait: a tab that draws one
  * frame each second would make each key slow.
  */
@@ -1226,6 +1227,10 @@ export class BrowserCdpEngine {
               Effect.catch(() => Effect.succeed(undefined)),
             )
           : undefined;
+        // Chromium drops a press, with no error, that reaches a new page before its first frame, as it
+        // drops keys: `NEW_PAGE_MS` says why. The pointer path does not wait for that frame: a move that
+        // the page does not acknowledge in time ends the path. So a click on a new page waits here.
+        yield* waitForFrame(send, resolved.sessionId, deadline, NEW_PAGE_FRAME_SCRIPT);
         // The page can move the target when the pointer comes near, after the point was measured. The
         // guard stops a press that goes to another element; the next attempt measures the target again.
         for (let attempt = 1; ; attempt += 1) {
