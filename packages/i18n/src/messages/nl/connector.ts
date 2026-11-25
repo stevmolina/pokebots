@@ -71,7 +71,7 @@ export const messages = {
 
   "connector.slack.title": "Slack",
   "connector.slack.description":
-    "Mensen noemen @Pokebots in Slack of sturen het een direct bericht. De Slack Orchestrator vraagt de juiste agent en antwoordt.",
+    "Mensen noemen @OpenBot in Slack of sturen het een direct bericht. De Slack Orchestrator vraagt de juiste agent en antwoordt.",
   "connector.slack.statusConnected": "Verbonden",
   "connector.slack.statusAttention": "Aandacht nodig",
   "connector.slack.summaryConnected": "{workspace} · Slack Orchestrator antwoordt",
@@ -85,11 +85,11 @@ export const messages = {
   "connector.slack.addAgent": "Agent toevoegen",
   "connector.slack.actionFailed": "Slack heeft de wijziging niet geaccepteerd",
   "connector.slack.workspaceTitle": "Werkruimten",
-  "connector.slack.workspaceDescription": "Mensen noemen @Pokebots of sturen het een direct bericht.",
+  "connector.slack.workspaceDescription": "Mensen noemen @OpenBot of sturen het een direct bericht.",
   "connector.slack.disconnectWorkspace": "Verbreken",
   "connector.slack.disconnectAllTitle": "Slack loskoppelen",
   "connector.slack.disconnectAllSummary":
-    "Elke werkruimte wordt losgekoppeld. Mensen kunnen je agents niet meer bereiken via @Pokebots.",
+    "Elke werkruimte wordt losgekoppeld. Mensen kunnen je agents niet meer bereiken via @OpenBot.",
   "connector.slack.disconnectAllSummaryOrchestrator":
     "Elke werkruimte wordt losgekoppeld. De Slack Orchestrator en zijn gesprekken worden uit Pokebots verwijderd.",
   "connector.slack.missingScopes":
@@ -110,7 +110,7 @@ export const messages = {
   "connector.slack.stepAgent": "Agent",
   "connector.slack.connectTitle": "Verbind een Slack-werkruimte",
   "connector.slack.connectDescription":
-    "Pokebots installeert één app in de werkruimte, met de naam Pokebots, en die wordt lid van elk openbaar kanaal.",
+    "Pokebots installeert één app in de werkruimte, met de naam “OpenBot”, en die wordt lid van elk openbaar kanaal.",
   "connector.slack.connectStepBrowser": "Slack opent in je browser",
   "connector.slack.connectStepAllow": "Kies rechtsboven de werkruimte en daarna Toestaan",
   "connector.slack.connectStepReturn": "Dit venster gaat verder als Slack klaar is",
@@ -118,7 +118,7 @@ export const messages = {
   "connector.slack.connectWaiting": "Wachten op Slack. Rond de installatie af in je browser.",
   "connector.slack.agentStepTitle": "Voeg de Slack Orchestrator toe",
   "connector.slack.agentStepDescription":
-    "Deze nieuwe agent beantwoordt alles wat mensen naar @Pokebots sturen in {workspace}.",
+    "Deze nieuwe agent beantwoordt alles wat mensen naar @OpenBot sturen in {workspace}.",
   "connector.slack.orchestratorName": "Slack Orchestrator",
   "connector.slack.orchestratorRole": "Antwoordt in Slack en vraagt het team",
   "connector.slack.orchestratorDoesReceive": "Ontvangt elk Slack-verzoek als eerste",
@@ -126,14 +126,14 @@ export const messages = {
   "connector.slack.orchestratorDoesAnswer": "Plaatst het antwoord in de Slack-thread",
   "connector.slack.orchestratorModel": "Model",
   "connector.slack.doneTitle": "Pokebots zit in {workspace}",
-  "connector.slack.doneDescription": "Noem @Pokebots in een openbaar kanaal, of stuur het een direct bericht.",
+  "connector.slack.doneDescription": "Noem @OpenBot in een openbaar kanaal, of stuur het een direct bericht.",
   "connector.slack.done": "Klaar",
   "connector.slack.disconnectTitle": "{workspace} loskoppelen?",
   "connector.slack.disconnectDescription":
     "Pokebots antwoordt niet meer in {workspace} en verwijdert zijn Slack-token van deze computer.",
   "connector.slack.disconnectDescriptionHost":
     "Pokebots antwoordt niet meer in {workspace} en verwijdert zijn Slack-token van {host}.",
-  "connector.slack.disconnectEffect": "Mensen in {workspace} kunnen je agents niet meer bereiken via @Pokebots.",
+  "connector.slack.disconnectEffect": "Mensen in {workspace} kunnen je agents niet meer bereiken via @OpenBot.",
   "connector.slack.removeEffectKept": "De gesprekken en de Slack Orchestrator blijven in Pokebots.",
   "connector.slack.removeEffectDeleted": "De Slack Orchestrator en zijn gesprekken worden uit Pokebots verwijderd.",
   "connector.slack.keep": "Verbonden houden",
@@ -150,7 +150,7 @@ export const messages = {
 
   "connector.discord.title": "Discord",
   "connector.discord.description":
-    "Mensen noemen @Pokebots in een kanaal van een Discord-server. De Discord Orchestrator vraagt de juiste agent en antwoordt.",
+    "Mensen noemen @OpenBot in een kanaal van een Discord-server. De Discord Orchestrator vraagt de juiste agent en antwoordt.",
   "connector.discord.statusConnected": "Verbonden",
   "connector.discord.statusAttention": "Aandacht nodig",
   "connector.discord.summaryConnected": "{workspace} · Discord Orchestrator antwoordt",
@@ -164,11 +164,11 @@ export const messages = {
   "connector.discord.addAgent": "Agent toevoegen",
   "connector.discord.actionFailed": "Discord heeft de wijziging niet geaccepteerd",
   "connector.discord.workspaceTitle": "Discord-servers",
-  "connector.discord.workspaceDescription": "Noem @Pokebots in een kanaal. Antwoord op Pokebots om verder te gaan.",
+  "connector.discord.workspaceDescription": "Noem @OpenBot in een kanaal. Antwoord op “OpenBot” om verder te gaan.",
   "connector.discord.disconnectWorkspace": "Verbreken",
   "connector.discord.disconnectAllTitle": "Discord loskoppelen",
   "connector.discord.disconnectAllSummary":
-    "Elke Discord-server wordt losgekoppeld. Mensen kunnen je agents niet meer bereiken via @Pokebots.",
+    "Elke Discord-server wordt losgekoppeld. Mensen kunnen je agents niet meer bereiken via @OpenBot.",
   "connector.discord.disconnectAllSummaryOrchestrator":
     "Elke Discord-server wordt losgekoppeld. De Discord Orchestrator en zijn gesprekken worden uit Pokebots verwijderd.",
   "connector.discord.missingScopes":
@@ -188,7 +188,7 @@ export const messages = {
   "connector.discord.stepWorkspace": "Discord-server",
   "connector.discord.stepAgent": "Agent",
   "connector.discord.connectTitle": "Verbind een Discord-server",
-  "connector.discord.connectDescription": "Pokebots voegt één bot, met de naam Pokebots, toe aan de Discord-server.",
+  "connector.discord.connectDescription": "Pokebots voegt één bot, met de naam “OpenBot”, toe aan de Discord-server.",
   "connector.discord.connectStepBrowser": "Discord opent in je browser",
   "connector.discord.connectStepAllow": "Kies de server en daarna Autoriseren",
   "connector.discord.connectStepReturn": "Dit venster gaat verder als Discord klaar is",
@@ -196,7 +196,7 @@ export const messages = {
   "connector.discord.connectWaiting": "Wachten op Discord. Rond de autorisatie af in je browser.",
   "connector.discord.agentStepTitle": "Voeg de Discord Orchestrator toe",
   "connector.discord.agentStepDescription":
-    "Deze nieuwe agent beantwoordt alles wat mensen naar @Pokebots sturen in {workspace}.",
+    "Deze nieuwe agent beantwoordt alles wat mensen naar @OpenBot sturen in {workspace}.",
   "connector.discord.orchestratorName": "Discord Orchestrator",
   "connector.discord.orchestratorRole": "Antwoordt in Discord en vraagt het team",
   "connector.discord.orchestratorDoesReceive": "Ontvangt elk Discord-verzoek als eerste",
@@ -204,14 +204,14 @@ export const messages = {
   "connector.discord.orchestratorDoesAnswer": "Antwoordt in het Discord-kanaal",
   "connector.discord.orchestratorModel": "Model",
   "connector.discord.doneTitle": "Pokebots zit in {workspace}",
-  "connector.discord.doneDescription": "Noem @Pokebots in een kanaal. Antwoord op Pokebots om verder te gaan.",
+  "connector.discord.doneDescription": "Noem @OpenBot in een kanaal. Antwoord op “OpenBot” om verder te gaan.",
   "connector.discord.done": "Klaar",
   "connector.discord.disconnectTitle": "{workspace} loskoppelen?",
   "connector.discord.disconnectDescription":
     "Pokebots antwoordt niet meer in {workspace} en verwijdert de Discord-verbinding van deze computer.",
   "connector.discord.disconnectDescriptionHost":
     "Pokebots antwoordt niet meer in {workspace} en verwijdert de Discord-verbinding van {host}.",
-  "connector.discord.disconnectEffect": "Mensen in {workspace} kunnen je agents niet meer bereiken via @Pokebots.",
+  "connector.discord.disconnectEffect": "Mensen in {workspace} kunnen je agents niet meer bereiken via @OpenBot.",
   "connector.discord.removeEffectKept": "De gesprekken en de Discord Orchestrator blijven in Pokebots.",
   "connector.discord.removeEffectDeleted": "De Discord Orchestrator en zijn gesprekken worden uit Pokebots verwijderd.",
   "connector.discord.keep": "Verbonden houden",

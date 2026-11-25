@@ -1064,7 +1064,7 @@ export const messages = {
     "يحذف {host} مفتاح الوصول الخاص به. تبقى الخزنة وبيانات تسجيل الدخول فيها في حساب {name} الخاص بك.",
   "mobile.server.connectors.slack.title": "Slack",
   "mobile.server.connectors.slack.description":
-    "يذكر الأشخاص @Pokebots في Slack أو يرسلون إليه رسالة مباشرة. يسأل Slack Orchestrator الوكيل المناسب ويرد.",
+    "يذكر الأشخاص @OpenBot في Slack أو يرسلون إليه رسالة مباشرة. يسأل Slack Orchestrator الوكيل المناسب ويرد.",
   "mobile.server.connectors.slack.attention": {
     zero: "لا توجد مساحات عمل تحتاج إلى انتباه",
     one: "مساحة عمل واحدة تحتاج إلى انتباه",
@@ -1075,7 +1075,7 @@ export const messages = {
   },
   "mobile.server.connectors.slack.connect": "ربط Slack",
   "mobile.server.connectors.slack.connectFooter":
-    "يُفتح Slack في متصفح. اختر مساحة العمل في الزاوية العلوية، ثم Allow. يثبّت Pokebots تطبيقًا واحدًا باسم Pokebots، وينضم إلى كل قناة عامة.",
+    "يُفتح Slack في متصفح. اختر مساحة العمل في الزاوية العلوية، ثم Allow. يثبّت Pokebots تطبيقًا واحدًا باسم “OpenBot”، وينضم إلى كل قناة عامة.",
   "mobile.server.connectors.slack.add": "إضافة مساحة عمل",
   "mobile.server.connectors.slack.limit": {
     zero: "لا يمكنك ربط أي مساحة عمل.",
@@ -1086,7 +1086,7 @@ export const messages = {
     other: "يمكنك ربط {count} مساحة عمل كحد أقصى.",
   },
   "mobile.server.connectors.slack.workspaceTitle": "مساحة العمل",
-  "mobile.server.connectors.slack.workspaceDescription": "يذكر الأشخاص @Pokebots أو يرسلون إليه رسالة مباشرة.",
+  "mobile.server.connectors.slack.workspaceDescription": "يذكر الأشخاص @OpenBot أو يرسلون إليه رسالة مباشرة.",
   "mobile.server.connectors.slack.missingScopes":
     "لا يملك Pokebots هذه الأذونات في Slack: {scopes}. اقطع اتصال مساحة العمل، ثم اربطها مجددًا.",
   "mobile.server.connectors.slack.retryAt": "طلب Slack من Pokebots الانتظار. سيعيد المحاولة في {time}.",
@@ -1111,11 +1111,11 @@ export const messages = {
   "mobile.server.connectors.slack.disconnectDeleted": "يُحذف Slack Orchestrator ومحادثاته من Pokebots.",
   "mobile.server.connectors.slack.agentPromptTitle": "هل تريد إضافة Slack Orchestrator؟",
   "mobile.server.connectors.slack.agentPromptBody":
-    "يرد هذا الوكيل الجديد على كل ما يرسله الأشخاص إلى @Pokebots في {workspace}.",
+    "يرد هذا الوكيل الجديد على كل ما يرسله الأشخاص إلى @OpenBot في {workspace}.",
   "mobile.server.connectors.slack.installFailed": "لم يُكمل Slack التثبيت. أعد المحاولة.",
   "mobile.server.connectors.discord.title": "Discord",
   "mobile.server.connectors.discord.description":
-    "يذكر الأشخاص @Pokebots في قناة على خادم Discord. يسأل Discord Orchestrator الوكيل المناسب ويرد.",
+    "يذكر الأشخاص @OpenBot في قناة على خادم Discord. يسأل Discord Orchestrator الوكيل المناسب ويرد.",
   "mobile.server.connectors.discord.attention": {
     zero: "لا توجد خوادم Discord تحتاج إلى انتباه",
     one: "خادم Discord واحد يحتاج إلى انتباه",
@@ -1126,7 +1126,7 @@ export const messages = {
   },
   "mobile.server.connectors.discord.connect": "ربط Discord",
   "mobile.server.connectors.discord.connectFooter":
-    "يُفتح Discord في متصفح. اختر خادم Discord، ثم Authorize. يضيف Pokebots بوتًا واحدًا باسم Pokebots.",
+    "يُفتح Discord في متصفح. اختر خادم Discord، ثم Authorize. يضيف Pokebots بوتًا واحدًا باسم “OpenBot”.",
   "mobile.server.connectors.discord.add": "إضافة خادم Discord",
   "mobile.server.connectors.discord.limit": {
     zero: "لا يمكنك ربط أي خادم Discord.",
@@ -1137,7 +1137,7 @@ export const messages = {
     other: "يمكنك ربط {count} خادم Discord كحد أقصى.",
   },
   "mobile.server.connectors.discord.workspaceTitle": "خادم Discord",
-  "mobile.server.connectors.discord.workspaceDescription": "اذكر @Pokebots في قناة. رد على Pokebots للمتابعة.",
+  "mobile.server.connectors.discord.workspaceDescription": "اذكر @OpenBot في قناة. رد على “OpenBot” للمتابعة.",
   "mobile.server.connectors.discord.missingScopes":
     "لا يملك Pokebots هذه الأذونات في Discord: {scopes}. اقطع اتصال خادم Discord، ثم اربطه مجددًا.",
   "mobile.server.connectors.discord.retryAt": "طلب Discord من Pokebots الانتظار. سيعيد المحاولة في {time}.",
@@ -1161,7 +1161,7 @@ export const messages = {
   "mobile.server.connectors.discord.disconnectDeleted": "يُحذف Discord Orchestrator ومحادثاته من Pokebots.",
   "mobile.server.connectors.discord.agentPromptTitle": "هل تريد إضافة Discord Orchestrator؟",
   "mobile.server.connectors.discord.agentPromptBody":
-    "يرد هذا الوكيل الجديد على كل ما يرسله الأشخاص إلى @Pokebots في {workspace}.",
+    "يرد هذا الوكيل الجديد على كل ما يرسله الأشخاص إلى @OpenBot في {workspace}.",
   "mobile.server.connectors.discord.installFailed": "لم يُكمل Discord التفويض. أعد المحاولة.",
   "mobile.server.connectors.telegram.title": "Telegram",
   "mobile.server.connectors.telegram.description":

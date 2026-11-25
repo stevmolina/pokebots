@@ -76,7 +76,7 @@ export const messages = {
   // Marketplace > Apps > Slack.
   "connector.slack.title": "Slack",
   "connector.slack.description":
-    "Slack で @Pokebots をメンションするか、ダイレクトメッセージを送ります。Slack Orchestrator が適切なエージェントに依頼して回答します。",
+    "Slack で @OpenBot をメンションするか、ダイレクトメッセージを送ります。Slack Orchestrator が適切なエージェントに依頼して回答します。",
   "connector.slack.statusConnected": "接続済み",
   "connector.slack.statusAttention": "対応が必要",
   "connector.slack.summaryConnected": "{workspace} · Slack Orchestrator が回答します",
@@ -89,11 +89,11 @@ export const messages = {
   "connector.slack.addAgent": "エージェントを追加",
   "connector.slack.actionFailed": "Slack は変更を受け付けませんでした",
   "connector.slack.workspaceTitle": "ワークスペース",
-  "connector.slack.workspaceDescription": "@Pokebots をメンションするか、ダイレクトメッセージを送ります。",
+  "connector.slack.workspaceDescription": "@OpenBot をメンションするか、ダイレクトメッセージを送ります。",
   "connector.slack.disconnectWorkspace": "切断",
   "connector.slack.disconnectAllTitle": "Slack を切断",
   "connector.slack.disconnectAllSummary":
-    "すべてのワークスペースが切断されます。@Pokebots からエージェントに連絡できなくなります。",
+    "すべてのワークスペースが切断されます。@OpenBot からエージェントに連絡できなくなります。",
   "connector.slack.disconnectAllSummaryOrchestrator":
     "すべてのワークスペースが切断されます。Slack Orchestrator とその会話は Pokebots から削除されます。",
   "connector.slack.missingScopes":
@@ -115,7 +115,7 @@ export const messages = {
   "connector.slack.stepAgent": "エージェント",
   "connector.slack.connectTitle": "Slack ワークスペースを接続",
   "connector.slack.connectDescription":
-    "Pokebots はワークスペースに Pokebots という名前のアプリを 1 つインストールし、そのアプリはすべての公開チャンネルに参加します。",
+    "Pokebots はワークスペースに 「OpenBot」 という名前のアプリを 1 つインストールし、そのアプリはすべての公開チャンネルに参加します。",
   "connector.slack.connectStepBrowser": "ブラウザーで Slack が開きます",
   "connector.slack.connectStepAllow": "右上でワークスペースを選び、「許可する」を押します",
   "connector.slack.connectStepReturn": "Slack での操作が終わると、このダイアログが続行します",
@@ -123,7 +123,7 @@ export const messages = {
   "connector.slack.connectWaiting": "Slack を待っています。ブラウザーでインストールを完了してください。",
   "connector.slack.agentStepTitle": "Slack Orchestrator を追加",
   "connector.slack.agentStepDescription":
-    "この新しいエージェントは、{workspace} で @Pokebots に送られたすべてのメッセージに回答します。",
+    "この新しいエージェントは、{workspace} で @OpenBot に送られたすべてのメッセージに回答します。",
   "connector.slack.orchestratorName": "Slack Orchestrator",
   "connector.slack.orchestratorRole": "Slack で回答し、チームに依頼します",
   "connector.slack.orchestratorDoesReceive": "Slack のすべてのリクエストを最初に受け取ります",
@@ -132,7 +132,7 @@ export const messages = {
   "connector.slack.orchestratorModel": "モデル",
   "connector.slack.doneTitle": "Pokebots が {workspace} に参加しました",
   "connector.slack.doneDescription":
-    "公開チャンネルで @Pokebots をメンションするか、ダイレクトメッセージを送ってください。",
+    "公開チャンネルで @OpenBot をメンションするか、ダイレクトメッセージを送ってください。",
   "connector.slack.done": "完了",
   "connector.slack.disconnectTitle": "{workspace} を切断しますか？",
   "connector.slack.disconnectDescription":
@@ -140,7 +140,7 @@ export const messages = {
   "connector.slack.disconnectDescriptionHost":
     "Pokebots は {workspace} での回答を停止し、Slack のトークンを {host} から削除します。",
   "connector.slack.disconnectEffect":
-    "{workspace} のメンバーは、@Pokebots からあなたのエージェントに連絡できなくなります。",
+    "{workspace} のメンバーは、@OpenBot からあなたのエージェントに連絡できなくなります。",
   "connector.slack.removeEffectKept": "会話と Slack Orchestrator は Pokebots に残ります。",
   "connector.slack.removeEffectDeleted": "Slack Orchestrator とその会話は Pokebots から削除されます。",
   "connector.slack.keep": "接続を維持",
@@ -157,7 +157,7 @@ export const messages = {
   // OpenBot server.
   "connector.discord.title": "Discord",
   "connector.discord.description":
-    "Discord サーバーのチャンネルで @Pokebots をメンションします。Discord Orchestrator が適切なエージェントに依頼して回答します。",
+    "Discord サーバーのチャンネルで @OpenBot をメンションします。Discord Orchestrator が適切なエージェントに依頼して回答します。",
   "connector.discord.statusConnected": "接続済み",
   "connector.discord.statusAttention": "対応が必要",
   "connector.discord.summaryConnected": "{workspace} · Discord Orchestrator が回答します",
@@ -171,11 +171,11 @@ export const messages = {
   "connector.discord.actionFailed": "Discord は変更を受け付けませんでした",
   "connector.discord.workspaceTitle": "Discord サーバー",
   "connector.discord.workspaceDescription":
-    "チャンネルで @Pokebots をメンションします。続けるには Pokebots に返信します。",
+    "チャンネルで @OpenBot をメンションします。続けるには 「OpenBot」 に返信します。",
   "connector.discord.disconnectWorkspace": "切断",
   "connector.discord.disconnectAllTitle": "Discord を切断",
   "connector.discord.disconnectAllSummary":
-    "すべてのサーバーが切断されます。@Pokebots からエージェントに連絡できなくなります。",
+    "すべてのサーバーが切断されます。@OpenBot からエージェントに連絡できなくなります。",
   "connector.discord.disconnectAllSummaryOrchestrator":
     "すべてのサーバーが切断されます。Discord Orchestrator とその会話は Pokebots から削除されます。",
   "connector.discord.missingScopes":
@@ -196,7 +196,7 @@ export const messages = {
   "connector.discord.stepAgent": "エージェント",
   "connector.discord.connectTitle": "Discord サーバーを接続",
   "connector.discord.connectDescription":
-    "Pokebots は Discord サーバーに Pokebots という名前のボットを 1 つ追加します。",
+    "Pokebots は Discord サーバーに 「OpenBot」 という名前のボットを 1 つ追加します。",
   "connector.discord.connectStepBrowser": "ブラウザーで Discord が開きます",
   "connector.discord.connectStepAllow": "サーバーを選び、「認証」を押します",
   "connector.discord.connectStepReturn": "Discord での操作が終わると、このダイアログが続行します",
@@ -204,7 +204,7 @@ export const messages = {
   "connector.discord.connectWaiting": "Discord を待っています。ブラウザーで認証を完了してください。",
   "connector.discord.agentStepTitle": "Discord Orchestrator を追加",
   "connector.discord.agentStepDescription":
-    "この新しいエージェントは、{workspace} で @Pokebots に送られたすべてのメッセージに回答します。",
+    "この新しいエージェントは、{workspace} で @OpenBot に送られたすべてのメッセージに回答します。",
   "connector.discord.orchestratorName": "Discord Orchestrator",
   "connector.discord.orchestratorRole": "Discord で回答し、チームに依頼します",
   "connector.discord.orchestratorDoesReceive": "Discord のすべてのリクエストを最初に受け取ります",
@@ -213,7 +213,7 @@ export const messages = {
   "connector.discord.orchestratorModel": "モデル",
   "connector.discord.doneTitle": "Pokebots が {workspace} に参加しました",
   "connector.discord.doneDescription":
-    "チャンネルで @Pokebots をメンションしてください。続けるには Pokebots に返信してください。",
+    "チャンネルで @OpenBot をメンションしてください。続けるには 「OpenBot」 に返信してください。",
   "connector.discord.done": "完了",
   "connector.discord.disconnectTitle": "{workspace} を切断しますか？",
   "connector.discord.disconnectDescription":
@@ -221,7 +221,7 @@ export const messages = {
   "connector.discord.disconnectDescriptionHost":
     "Pokebots は {workspace} での回答を停止し、Discord の接続を {host} から削除します。",
   "connector.discord.disconnectEffect":
-    "{workspace} のメンバーは、@Pokebots からあなたのエージェントに連絡できなくなります。",
+    "{workspace} のメンバーは、@OpenBot からあなたのエージェントに連絡できなくなります。",
   "connector.discord.removeEffectKept": "会話と Discord Orchestrator は Pokebots に残ります。",
   "connector.discord.removeEffectDeleted": "Discord Orchestrator とその会話は Pokebots から削除されます。",
   "connector.discord.keep": "接続を維持",
