@@ -14,7 +14,7 @@ if [[ "$(git rev-parse HEAD)" != "$GITHUB_SHA" ]]; then
 fi
 for name in 'OpenBot' 'OpenBot Custom' 'Pokebots'; do
   if [[ -e "/Applications/$name.app" || -e "$HOME/Applications/$name.app" ]]; then
-    echo 'Use a fresh runner with no installed OpenBot or Pokebots app.' >&2
+    echo 'Use a fresh runner without an installed app from this project.' >&2
     exit 1
   fi
 done

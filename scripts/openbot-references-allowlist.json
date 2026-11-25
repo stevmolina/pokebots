@@ -22,6 +22,10 @@
   ],
   "lines": [
     {
+      "pattern": "^\\s*for name in 'OpenBot' 'OpenBot Custom' 'Pokebots'; do$|^signing_name='OpenBot Custom Local Signing'$",
+      "reason": "The Mac fixture checks released app names and signs with the legacy certificate name."
+    },
+    {
       "pattern": "“OpenBot”|「OpenBot」",
       "reason": "Quoted provider app name in Slack and Discord connection instructions. See apps/slack-app manifests and apps/discord-app/README.md."
     },
