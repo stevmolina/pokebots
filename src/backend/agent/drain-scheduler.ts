@@ -26,7 +26,12 @@ import { channelLane, type DeliveryContext, laneChannelId, type MailboxStore, ME
 import type { MessagingThreads } from "../messaging/messaging-threads";
 import { decodeTurnResponse } from "../protocol";
 import { ProviderSignInError } from "../provider-client-effects";
-import { type BrainStartContextSource, brainStartContextBlock, wantsBrainStartContext } from "./brain-start-context";
+import {
+  BRAIN_START_CONTEXT_WAIT_MS,
+  type BrainStartContextSource,
+  brainStartContextBlock,
+  wantsBrainStartContext,
+} from "./brain-start-context";
 import type { ContextCompaction } from "./context-compaction";
 import type { ConversationRuntime } from "./conversation-runtime";
 import {
@@ -1108,7 +1113,7 @@ export class DrainScheduler {
       // keeps its count, so its waits end (#12480).
       this.#startRetry.forget(delivery.id);
       yield* drainStep(requireLaunchNotStopped);
-      const snapshot = this.#conversation.ensureSnapshot(agent.id, threadId);
+      let snapshot = this.#conversation.ensureSnapshot(agent.id, threadId);
       // A turn started on this thread while the provider and the thread were prepared. The user
       // cannot see that race, so the delivery goes back to the head of the queue rather than
       // failing: a message to a busy agent always waits. `drainAgent` reschedules it in its
@@ -1135,11 +1140,19 @@ export class DrainScheduler {
         !channelDelivery &&
         !messagingDelivery &&
         wantsBrainStartContext(snapshot.messages, new Set(batch.map((item) => item.delivery.id)));
+      // Never fails and never waits longer than the source allows: a defect or a slow source starts the
+      // turn without context.
       const brainText = asksBrain
-        ? yield* brainStartContext({ agent, question: batch.map((item) => item.delivery.text).join("\n\n") })
+        ? yield* Effect.suspend(() =>
+            brainStartContext({ agent, question: batch.map((item) => item.delivery.text).join("\n\n") }),
+          ).pipe(
+            Effect.timeoutOrElse({ duration: BRAIN_START_CONTEXT_WAIT_MS, orElse: () => Effect.succeed(null) }),
+            Effect.catchCause(() => Effect.succeed(null)),
+          )
         : null;
-      // The brain wait can last seconds: a turn that the provider started itself meanwhile holds this
-      // delivery back, as the check above does.
+      // The brain wait can last seconds, and the conversation publishes a new snapshot when it changes:
+      // read it again, and hold this delivery back when a turn started meanwhile, as the check above does.
+      if (asksBrain) snapshot = this.#conversation.ensureSnapshot(agent.id, threadId);
       if (asksBrain && snapshot.activeTurnId) {
         for (const item of batch) yield* this.#mailbox.restoreQueued(item.delivery.id).pipe(toDeliveryStartFailed);
         this.#mailboxSync.emitQueue(agent.id);
