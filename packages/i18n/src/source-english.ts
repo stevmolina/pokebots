@@ -1,6 +1,5 @@
 import { createTranslate, type Translate } from "./message";
 import { source as en } from "./messages/en/source";
-import { releasedSourceMessages } from "./source-wire-compat";
 
 /**
  * The English source text and nothing else. A Worker that only writes `sourceText` imports this
@@ -10,9 +9,8 @@ import { releasedSourceMessages } from "./source-wire-compat";
 export type SourceMessages = typeof en;
 
 /** The English text for a source key. Write it where the code threw a literal before. */
-export const sourceText: Translate<SourceMessages> = createTranslate<SourceMessages>({
+export const sourceText: Translate<SourceMessages> = createTranslate({
   source: en,
-  translation: releasedSourceMessages,
   locale: "en",
   sourceLocale: "en",
 });

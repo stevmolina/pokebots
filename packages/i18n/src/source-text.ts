@@ -13,9 +13,8 @@ export { type SourceMessages, sourceText };
  * Text the main process, a host or the team client sends as English, and a screen translates.
  *
  * An error crosses IPC as its message only, and the Team API sends `{ error: message }` to clients
- * of every released version. So the sender keeps writing English, byte for byte what it wrote
- * before, and the screen that shows the text maps it back to its key and renders the reader's
- * language. A remote client then reads its own language, not the host's.
+ * of every released version. The sender writes the current English catalog. The reader also
+ * recognizes the released English aliases and renders their keys in the selected language.
  *
  * `bun run i18n:check` fails when two templates can match the same text, so the first match is the
  * only match.

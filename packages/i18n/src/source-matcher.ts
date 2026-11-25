@@ -62,7 +62,7 @@ function compile(key: string, text: string, alias: boolean): Template {
     last = match.index + match[0].length;
   }
   pattern += escapeRegExp(text.slice(last));
-  return { key, pattern: new RegExp(`^${pattern}(?![\\s\\S])`), names, alias };
+  return { key, pattern: new RegExp(`^${pattern}$`), names, alias };
 }
 
 /** The literal text before the first placeholder. */

@@ -194,6 +194,10 @@ jobs:
             if: env.CODE == 'true'
             run: bun run i18n:check
 
+          - name: Check released English messages
+            if: env.CODE == 'true'
+            run: bun scripts/pokebots-wire-compat-e2e.ts
+
           - name: Check ratcheted TypeScript options
             if: env.CODE == 'true'
             run: bun run types:ratchet

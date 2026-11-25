@@ -17,6 +17,14 @@
     { "path": "scripts/pokebots-rename-catalogs.ts", "reason": "The rename script names the old product word." },
     { "path": "scripts/pokebots-brand-text.ts", "reason": "The text rules name the old product word." },
     { "path": "scripts/pokebots-brand-e2e.ts", "reason": "The e2e checks that the old word is gone and names it." },
+    {
+      "path": "packages/i18n/src/source-wire-compat.ts",
+      "reason": "Exact released English messages for supported clients and hosts."
+    },
+    {
+      "path": "scripts/pokebots-wire-compat-e2e.ts",
+      "reason": "Fixtures for the released English message bytes and localized output."
+    },
     { "path": "scripts/frozen-migrations.ts", "reason": "The frozen-migration import list allows `@openbot/logging`." },
     { "path": "scripts/check-frozen-migrations.test.ts", "reason": "Fixtures for the frozen-migration import list." }
   ],
