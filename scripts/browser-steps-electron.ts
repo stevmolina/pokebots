@@ -132,6 +132,12 @@ async function main(): Promise<void> {
 
     phase("script-sequence");
     const form = await open("/form");
+    // Chromium drops clicks and keys, with no error, that reach a tab before it draws frames. The
+    // first case waits until the new tab draws one, so that it tests the script and not the runner.
+    const frameStart = Date.now();
+    await form.contents.executeJavaScript("new Promise((resolve) => requestAnimationFrame(() => resolve()))");
+    measurements.firstFrameMs = Date.now() - frameStart;
+    process.stdout.write(`TMPDIAG first frame ${measurements.firstFrameMs}\n`);
     await form.contents.executeJavaScript(`window.__ev = []; const t0 = performance.now(); for (const type of ["pointermove", "pointerdown", "mousedown", "pointerup", "mouseup", "click", "keydown", "input"]) window.addEventListener(type, (e) => window.__ev.push([type, Math.round(performance.now() - t0), navigator.userActivation.hasBeenActive]), true); void 0`);
     const searched = await runScript({
       tabId: form.tab.id,
