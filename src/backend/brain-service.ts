@@ -37,7 +37,7 @@ type BrainServiceRequest = {
 const writes = new Set<BrainRequest["operation"]>(["addFile", "remember", "update", "forget"]);
 
 /** Longest wait for brain context before a turn starts without it. */
-export const BRAIN_START_CONTEXT_TIMEOUT_MS = 3_000;
+const BRAIN_START_CONTEXT_TIMEOUT_MS = 3_000;
 const START_CONTEXT_LIMIT = 12_000;
 const startContextReply = z.object({ text: z.string().optional(), context: z.string().optional() });
 const startSearchReply = z.object({

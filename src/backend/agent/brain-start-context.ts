@@ -9,10 +9,10 @@ import type { Effect } from "effect";
  */
 
 /** A chat that was quiet this long gets fresh context with its next message. */
-export const BRAIN_CONTEXT_GAP_MS = 6 * 60 * 60 * 1000;
+const BRAIN_CONTEXT_GAP_MS = 6 * 60 * 60 * 1000;
 
-export const BRAIN_CONTEXT_START = "--- context from your Second Brain ---";
-export const BRAIN_CONTEXT_END = "--- end of Second Brain context ---";
+const BRAIN_CONTEXT_START = "--- context from your Second Brain ---";
+const BRAIN_CONTEXT_END = "--- end of Second Brain context ---";
 
 /** What the host gives back for one turn: the brain's text, or null when there is none. */
 export type BrainStartContextSource = (input: {
