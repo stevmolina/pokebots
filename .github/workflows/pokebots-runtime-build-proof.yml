@@ -1,0 +1,203 @@
+name: Pokebots runtime build proof
+
+on:
+  push:
+    branches: [pokebots-runtime-build-proof]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build ${{ matrix.target }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 75
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-15
+            platform: darwin
+            architecture: arm64
+            target: darwin-arm64
+          - os: macos-15-intel
+            platform: darwin
+            architecture: x64
+            target: darwin-x64
+          - os: windows-2025
+            platform: win32
+            architecture: x64
+            target: win32-x64
+          - os: ubuntu-24.04
+            platform: linux
+            architecture: x64
+            target: linux-x64
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Report checkout SHA and build target
+        shell: bash
+        run: |
+          checkout_sha="$(git rev-parse HEAD)"
+          printf 'Checkout SHA %s\nTarget %s\n' "$checkout_sha" "${{ matrix.target }}"
+          test "$checkout_sha" = "$GITHUB_SHA"
+
+      - name: Report Windows checkout mode
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          git symbolic-ref --quiet --short HEAD || echo "Detached HEAD"
+          for key in core.autocrlf core.eol core.symlinks; do
+            git config --show-origin --get "$key" || printf '%s is unset\n' "$key"
+          done
+          git ls-files --eol -- native-runtime.lock.json 'vendor/remote-desktop/patches/*.patch'
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
+        with:
+          bun-version: 1.4.2
+          no-cache: true
+
+      - name: Set up Windows Node.js
+        if: runner.os == 'Windows'
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 24
+
+      - name: Export Windows tool paths
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          "OPENBOT_BUN_DIR=$(Split-Path (Get-Command bun).Source -Parent)" >> $env:GITHUB_ENV
+          "OPENBOT_CARGO_DIR=$(Split-Path (Get-Command cargo).Source -Parent)" >> $env:GITHUB_ENV
+          "OPENBOT_NODE_DIR=$(Split-Path (Get-Command node).Source -Parent)" >> $env:GITHUB_ENV
+          "OPENBOT_PERL_DIR=$(Split-Path (Get-Command perl).Source -Parent)" >> $env:GITHUB_ENV
+
+      - name: Install macOS build dependencies
+        if: runner.os == 'macOS'
+        # Sunshine does not build with OpenSSL 4. Runner images since 2026-10-28 link openssl@4 into the
+        # Homebrew prefix, where CMake finds it before the keg-only openssl@3.
+        run: |
+          brew install cmake ninja node pkgconf icu4c@78 miniupnpc openssl@3 opus
+          if brew list openssl@4 >/dev/null 2>&1; then brew unlink openssl@4; fi
+          brew link --force --overwrite openssl@3
+
+      - name: Set up Windows build dependencies
+        if: runner.os == 'Windows'
+        uses: msys2/setup-msys2@e9898307ac31d1a803454791be09ab9973336e1c # v2.31.1
+        with:
+          msystem: UCRT64
+          cache: false
+          update: true
+          install: >-
+            git
+            mingw-w64-ucrt-x86_64-boost
+            mingw-w64-ucrt-x86_64-cmake
+            mingw-w64-ucrt-x86_64-cppwinrt
+            mingw-w64-ucrt-x86_64-curl-winssl
+            mingw-w64-ucrt-x86_64-gcc
+            mingw-w64-ucrt-x86_64-graphviz
+            mingw-w64-ucrt-x86_64-MinHook
+            mingw-w64-ucrt-x86_64-miniupnpc
+            mingw-w64-ucrt-x86_64-ninja
+            mingw-w64-ucrt-x86_64-nlohmann-json
+            mingw-w64-ucrt-x86_64-onevpl
+            mingw-w64-ucrt-x86_64-openssl
+            mingw-w64-ucrt-x86_64-opus
+            mingw-w64-ucrt-x86_64-toolchain
+
+      # The Linux build captures X11 and encodes in software; the packages match
+      # LINUX_SUNSHINE_OPTIONS in scripts/build-remote-desktop-runtime.ts.
+      - name: Install Linux build dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            cmake gcc-14 g++-14 ninja-build pkg-config clang libclang-dev \
+            libcap-dev libcurl4-openssl-dev libdrm-dev libevdev-dev libgbm-dev libminiupnpc-dev libnuma-dev \
+            libopus-dev libpulse-dev libssl-dev libsystemd-dev systemd-dev libudev-dev libva-dev libwayland-dev \
+            libx11-dev libxcb-shm0-dev libxcb-xfixes0-dev libxcb1-dev libxfixes-dev libxrandr-dev libxtst-dev \
+            python3-jinja2 python3-setuptools
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Build runtime on Linux
+        if: runner.os == 'Linux'
+        env:
+          CC: gcc-14
+          CXX: g++-14
+          CMAKE_GENERATOR: Ninja
+        run: bun run build:remote-desktop-runtime
+
+      - name: Build runtime on macOS
+        if: runner.os == 'macOS'
+        env:
+          CMAKE_GENERATOR: Ninja
+        run: bun run build:remote-desktop-runtime
+
+      - name: Build runtime on Windows
+        if: runner.os == 'Windows'
+        shell: msys2 {0}
+        env:
+          CMAKE_GENERATOR: Ninja
+        run: |
+          native_perl="$(cygpath "$OPENBOT_PERL_DIR")/perl.exe"
+          "$native_perl" -e 'die "Windows Perl is required\n" unless $^O eq "MSWin32";'
+          export OPENSSL_SRC_PERL="$(cygpath -w "$native_perl")"
+          export PATH="$PATH:$(cygpath "$OPENBOT_BUN_DIR"):$(cygpath "$OPENBOT_CARGO_DIR"):$(cygpath "$OPENBOT_NODE_DIR")"
+          bun run build:remote-desktop-runtime
+
+      - name: Verify runtime
+        shell: bash
+        run: |
+          bun scripts/verify-remote-desktop-runtime.ts ${{ matrix.platform == 'win32' && '--windows' || matrix.platform == 'linux' && '--linux' || '' }}
+          echo "Sunshine and Moonlight Web GPL-3.0 license checksum checks passed."
+          if [[ "$RUNNER_OS" != "Windows" ]]; then
+            echo "Bundled library license checks passed."
+          fi
+
+      - name: Run macOS smoke test
+        id: macos-smoke
+        if: runner.os == 'macOS'
+        run: bun run test:remote-desktop-runtime
+
+      - name: Run Linux smoke test
+        id: linux-smoke
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends xvfb libxtst6
+          xvfb-run -a bun run test:remote-desktop-runtime
+
+      # The runner is Ubuntu 24.04. On Ubuntu 26.04 with only the runtime libraries of
+      # scripts/hosting/packages.txt, each executable must find every library that it loads.
+      - name: Check Linux runtime libraries on Ubuntu 26.04
+        if: runner.os == 'Linux'
+        run: |
+          docker run --rm \
+            -v "$PWD/build/remote-desktop-runtime/linux/x64:/runtime:ro" \
+            -v "$PWD/scripts/hosting/packages.txt:/packages.txt:ro" \
+            ubuntu:26.04@sha256:c098726dd9b9733f3e885f8de0ef375206a311b0a317eadc40d347b1115fb944 \
+            bash -euo pipefail -c '
+              apt-get update -qq
+              sed -n "/^# The remote desktop runtime\./,\$p" /packages.txt | grep -v "^#" |
+                xargs apt-get install -y -qq --no-install-recommends >/dev/null
+              missing=$(ldd /runtime/sunshine /runtime/web-server /runtime/streamer | grep "not found" || true)
+              if [ -n "$missing" ]; then echo "$missing" >&2; exit 1; fi'
+
+      - name: Create deterministic archive
+        run: bun scripts/package-remote-desktop-runtime.ts ${{ matrix.platform }} ${{ matrix.architecture }}
+
+      - name: Report smoke result
+        if: always()
+        shell: bash
+        run: |
+          case "$RUNNER_OS" in
+            macOS) echo "Runtime smoke result ${{ steps.macos-smoke.outcome }}" ;;
+            Linux) echo "Runtime smoke result ${{ steps.linux-smoke.outcome }}" ;;
+            Windows) echo "Runtime smoke skipped. The native build workflow has no Windows smoke step." ;;
+          esac
