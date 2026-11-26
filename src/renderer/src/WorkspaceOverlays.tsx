@@ -1255,7 +1255,10 @@ function AppSettings(props: AccountProps) {
   );
 }
 
-/** Global Search merges every online machine in "All machines" view; the new instance picker stays on the active server. */
+/**
+ * Global Search merges every machine in "All machines" view, with the last known agents of a machine
+ * that is offline or reconnects; the new instance picker stays on the active server.
+ */
 function WorkspacePickers() {
   const { activeServerId } = useServers();
   const { agentList, userHiddenAgentIds } = useAgents();
@@ -1274,7 +1277,8 @@ function WorkspacePickers() {
     if (!allMachines.active()) return undefined;
     const hidden = userHiddenAgentIds();
     return mergeAllMachinesSidebar({
-      sources: allMachines.sources({
+      // A server that is offline or reconnects keeps its last known agents in search.
+      sources: allMachines.searchSources({
         serverId: activeServerId(),
         agents: agentList().filter((agent) => !hidden.has(agent.id)),
         agentStates: {},

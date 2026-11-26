@@ -76,6 +76,8 @@ interface Props {
   onTeamEvent(hostId: string, event: RemoteTeamEvent): void;
   /** An attempt of this server failed in the foreground, or Signal says that its host is offline. */
   onUnavailable?(hostId: string): void;
+  /** Signal says that the host is not connected to it, also while this connection is inactive. */
+  onHostOffline?(hostId: string): void;
 }
 
 /**
@@ -93,9 +95,12 @@ export const ServerConnection = memo(function ServerConnection({
   onTeamEvent,
   onMembershipChanged,
   onUnavailable,
+  onHostOffline,
 }: Props) {
   const onUnavailableRef = useRef(onUnavailable);
   onUnavailableRef.current = onUnavailable;
+  const onHostOfflineRef = useRef(onHostOffline);
+  onHostOfflineRef.current = onHostOffline;
   const [client, setClient] = useState<RemoteTeamTransportRef | null>(null);
   const controller = useRef<ReturnType<typeof createRemoteConnectionRecovery> | null>(null);
   const activeRef = useRef(active);
@@ -163,6 +168,7 @@ export const ServerConnection = memo(function ServerConnection({
         "connection",
         `${hostId} ${update.state}${update.code ? ` (${update.code})` : ""}${update.message ? `: ${update.message}` : ""}${update.reference ? ` [${update.reference}]` : ""}${update.hostOffline ? ", host not on Signal" : ""}${update.resync ? ", resync" : ""}`,
       );
+      if (update.hostOffline) onHostOfflineRef.current?.(hostId);
       if (update.hostOffline && activeRef.current) onUnavailableRef.current?.(hostId);
       if (update.state === "online" && update.lostAfterMs !== undefined) lostAfterMs.current = update.lostAfterMs;
       if (update.state === "offline") {
