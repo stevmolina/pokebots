@@ -65,11 +65,12 @@ export function startAgentLog(logsDirectory: string): () => void {
  * message that did not start, with its redacted reason: a channel shows only "The provider could not
  * start this assignment" (#3957). The Linux GPU logger goes here too: a GPU crash keeps software
  * rendering on at later starts, and this file keeps the reason and the exit code of that crash
- * (#4836).
+ * (#4836). The brain service goes here too: when a new chat starts without Second Brain context, it
+ * names the reason (a timeout, no token, an HTTP status), never the question or the text.
  */
 export function startMainLog(logsDirectory: string): void {
   const directory = join(logsDirectory, "main");
-  teeLogLines(["main", "update", "channel-routing", "drain-scheduler", "linux-gpu"], (line) => {
+  teeLogLines(["main", "update", "channel-routing", "drain-scheduler", "brain-service", "linux-gpu"], (line) => {
     const write = Effect.runFork(appendRemoteDiagnosticLog(directory, "main", `${line}\n`));
     mainLogWrites.add(write);
     write.addObserver(() => mainLogWrites.delete(write));
