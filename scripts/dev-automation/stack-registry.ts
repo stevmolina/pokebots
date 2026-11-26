@@ -261,3 +261,49 @@ export function describeDevStack(record: DevStackRecord): string {
   const orphaned = isOrphanedDevStack(record) ? " orphaned" : "";
   return `pid=${record.supervisorPid}${orphaned} services=${record.services.join(",")} ${ports} root=${record.projectRoot}`;
 }
+
+/**
+ * What a runner restarts on `SIGUSR2`: one service, and how long it stays stopped before it starts
+ * again. `bun run dev:restart-host` writes it just before the signal. With no request, the runner
+ * restarts the test client at once, as `bun run dev:restart-client` asks.
+ */
+export interface DevStackRestartRequest {
+  service: "app" | "test-client";
+  pauseMs: number;
+}
+
+const DEFAULT_RESTART_REQUEST: DevStackRestartRequest = { service: "test-client", pauseMs: 0 };
+const RESTART_SERVICES = ["app", "test-client"] as const;
+
+// Not `.json`: `readDevStackRecords` reads each `.json` file of this directory as a stack record.
+function restartRequestPath(directory: string, supervisorPid: number): string {
+  return join(directory, `restart-${supervisorPid}.request`);
+}
+
+export function writeDevStackRestartRequest(
+  record: Pick<DevStackRecord, "supervisorPid">,
+  request: DevStackRestartRequest,
+  directory = devStackRegistryDirectory(),
+): void {
+  ensureDevStackRegistryDirectory(directory);
+  writeRegistryFile(restartRequestPath(directory, record.supervisorPid), `${JSON.stringify(request)}\n`);
+}
+
+/** Reads and removes the restart request of this runner. A missing or bad request gives the default. */
+export function takeDevStackRestartRequest(
+  supervisorPid: number,
+  directory = devStackRegistryDirectory(),
+): DevStackRestartRequest {
+  const path = restartRequestPath(directory, supervisorPid);
+  if (!existsSync(path)) return DEFAULT_RESTART_REQUEST;
+  let raw: unknown = null;
+  try {
+    raw = JSON.parse(readFileSync(path, "utf8"));
+  } catch {
+    raw = null;
+  }
+  rmSync(path, { force: true });
+  if (!isDynamicRecord(raw) || !isOneOf(RESTART_SERVICES, raw.service)) return DEFAULT_RESTART_REQUEST;
+  const pauseMs = isNumber(raw.pauseMs) && Number.isFinite(raw.pauseMs) && raw.pauseMs > 0 ? raw.pauseMs : 0;
+  return { service: raw.service, pauseMs };
+}
