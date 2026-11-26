@@ -31,25 +31,19 @@ if (manifest.moonlightWeb?.patch?.sha256 !== lock.remoteDesktop.moonlightWeb.pat
 
 const target = runtimeTarget(platform, architecture);
 const names = lock.remoteDesktop.targets[target];
-const sunshinePatch = basename(lock.remoteDesktop.sunshine.patch.path);
-const moonlightPatch = basename(lock.remoteDesktop.moonlightWeb.patch.path);
+const { sunshine, moonlightWeb } = lock.remoteDesktop;
+const pinnedDistributionFiles = new Map([
+  ["licenses/Sunshine-GPL-3.0.txt", sunshine.licenseSha256],
+  ["licenses/moonlight-web-stream-GPL-3.0.txt", moonlightWeb.licenseSha256],
+  [`sources/${basename(sunshine.patch.path)}`, sunshine.patch.sha256],
+  [`sources/${basename(moonlightWeb.patch.path)}`, moonlightWeb.patch.sha256],
+]);
 await Promise.all([
   ...names.map((name) => access(join(root, name))),
   access(join(root, "static/stream.html")),
   ...(platform === "win32"
     ? [access(join(root, "assets/shaders/directx/convert_yuv420_packed_uv_type0_ps.hlsl"))]
     : []),
-  access(resolve("build/remote-desktop-runtime/licenses/Sunshine-GPL-3.0.txt")),
-  access(resolve("build/remote-desktop-runtime/licenses/moonlight-web-stream-GPL-3.0.txt")),
-  access(resolve(`build/remote-desktop-runtime/sources/Sunshine-${lock.remoteDesktop.sunshine.version}-source.tar.gz`)),
-  access(resolve("build/remote-desktop-runtime/sources", sunshinePatch)),
-  access(
-    resolve(
-      `build/remote-desktop-runtime/sources/moonlight-web-stream-${lock.remoteDesktop.moonlightWeb.version}-openbot-source.tar.gz`,
-    ),
-  ),
-  access(resolve("build/remote-desktop-runtime/sources", moonlightPatch)),
-  access(join(distributionRoot, "DISTRIBUTION-SHA256SUMS.txt")),
 ]);
 
 await expectMissing(join(root, "static/stream/audio"));
@@ -66,13 +60,15 @@ for (const name of names) {
 }
 for (const name of [
   "source-manifest.json",
-  "licenses/Sunshine-GPL-3.0.txt",
-  "licenses/moonlight-web-stream-GPL-3.0.txt",
-  `sources/${sunshinePatch}`,
-  `sources/${moonlightPatch}`,
+  `sources/Sunshine-${sunshine.version}-source.tar.gz`,
+  `sources/moonlight-web-stream-${moonlightWeb.version}-openbot-source.tar.gz`,
+  ...pinnedDistributionFiles.keys(),
 ]) {
-  if (!distributionChecksumEntries.some((entry) => entry.name === name)) {
-    throw new Error(`Missing distribution checksum for ${name}.`);
+  const entry = distributionChecksumEntries.find((checksum) => checksum.name === name);
+  if (!entry) throw new Error(`Missing distribution checksum for ${name}.`);
+  const pinnedDigest = pinnedDistributionFiles.get(name);
+  if (pinnedDigest !== undefined && entry.digest !== pinnedDigest) {
+    throw new Error(`Distribution checksum does not match the lock pin for ${name}.`);
   }
 }
 
