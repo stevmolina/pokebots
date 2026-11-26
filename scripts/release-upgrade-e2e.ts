@@ -276,11 +276,8 @@ if (!localPokebots) {
 // The app puts agent workspaces in `homedir()`/OpenBot/Agents. On Windows `homedir()` reads
 // USERPROFILE, which stays the real one (see `launchEnvironment`), and an earlier step of the job
 // can have made workspaces there. So the check counts only the folders that are new.
-const agentsFolder = join(
-  target === "windows" ? (process.env.USERPROFILE ?? homePath) : launchHome,
-  "OpenBot",
-  "Agents",
-);
+const workspaceHome = target === "windows" ? (process.env.USERPROFILE ?? homePath) : launchHome;
+const agentsFolder = join(workspaceHome, "OpenBot", "Agents");
 const earlierWorkspaces = new Set(await listWorkspaces());
 // The process and the app that run now, so that a failure can stop them. `process` is set at the
 // spawn and `app` when the window is connected.
