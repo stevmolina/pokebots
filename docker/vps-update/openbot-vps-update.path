@@ -1,7 +1,7 @@
 # The app asks for an update with an empty file in the requests folder. `openbot-vps-update setup`
 # enables this unit. See docs/docker.md#updates-from-the-app-on-a-vps-pokebots.
 [Unit]
-Description=Update requests of the OpenBot VPS container
+Description=Update requests of the Pokebots VPS container
 
 [Path]
 PathExists=/var/lib/openbot-vps-update/requests/update-stage

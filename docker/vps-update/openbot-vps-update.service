@@ -1,6 +1,6 @@
 # Stages the newest image, and for an install backs up the data and makes the container again.
 [Unit]
-Description=Update the OpenBot VPS container on request
+Description=Update the Pokebots VPS container on request
 After=docker.service
 Requires=docker.service
 

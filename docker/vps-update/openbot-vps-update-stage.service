@@ -1,6 +1,6 @@
 # Pulls the newest image and stages it when it is a newer build. It never replaces the container.
 [Unit]
-Description=Stage a new OpenBot VPS server image
+Description=Stage a new Pokebots VPS server image
 After=docker.service network-online.target
 Requires=docker.service
 

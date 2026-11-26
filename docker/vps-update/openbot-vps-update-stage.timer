@@ -1,5 +1,5 @@
 [Unit]
-Description=Stage new OpenBot VPS server images every 15 minutes
+Description=Stage new Pokebots VPS server images every 15 minutes
 
 [Timer]
 OnBootSec=5min
