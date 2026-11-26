@@ -493,7 +493,7 @@ async function stageLocalMacBuild(source: string, bundle: string): Promise<Local
   check(!resources.includes("app-update.yml"), "The fixture build has an update feed.");
   const cdHash = /^CDHash=([a-f0-9]+)$/mu.exec(display.stderr)?.[1];
   check(cdHash, "The signed bundle has no CDHash.");
-  const signingRequirement = /^designated => (.+)$/mu.exec(display.stderr)?.[1];
+  const signingRequirement = /^designated => (.+)$/mu.exec(display.stdout)?.[1];
   check(signingRequirement, "The signed bundle has no designated signing requirement.");
   return {
     version: plist.CFBundleShortVersionString,
