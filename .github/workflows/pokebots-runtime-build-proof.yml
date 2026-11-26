@@ -24,14 +24,6 @@ jobs:
             platform: darwin
             architecture: x64
             target: darwin-x64
-          - os: windows-2025
-            platform: win32
-            architecture: x64
-            target: win32-x64
-          - os: ubuntu-24.04
-            platform: linux
-            architecture: x64
-            target: linux-x64
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -81,9 +73,23 @@ jobs:
         # Sunshine does not build with OpenSSL 4. Runner images since 2026-10-28 link openssl@4 into the
         # Homebrew prefix, where CMake finds it before the keg-only openssl@3.
         run: |
-          brew install cmake ninja node pkgconf icu4c@78 miniupnpc openssl@3 opus
+          brew install ninja node pkgconf icu4c@78 miniupnpc openssl@3 opus
           if brew list openssl@4 >/dev/null 2>&1; then brew unlink openssl@4; fi
           brew link --force --overwrite openssl@3
+
+      - name: Use CMake from the last successful macOS runtime build
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          archive=cmake-4.4.5-macos-universal.tar.gz
+          cd "$RUNNER_TEMP"
+          curl --fail --silent --show-error --location --output "$archive" \
+            "https://github.com/Kitware/CMake/releases/download/v4.4.5/$archive"
+          echo "679e77a96b9ef9484cc6c1445255fc4f84206b48a65420efbedf16bdab55fbff  $archive" | shasum -a 256 -c
+          tar -xzf "$archive"
+          cmake_bin="$RUNNER_TEMP/cmake-4.4.5-macos-universal/CMake.app/Contents/bin"
+          "$cmake_bin/cmake" --version
+          echo "$cmake_bin" >> "$GITHUB_PATH"
 
       - name: Set up Windows build dependencies
         if: runner.os == 'Windows'
