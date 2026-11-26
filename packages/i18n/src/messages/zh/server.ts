@@ -594,14 +594,17 @@ export const messages = {
   "server.settings.updatesDescription": "更新运行该服务器那台电脑上的 Pokebots。",
   "server.update.hostTitle": "{name} 上的 Pokebots",
   "server.update.version": "Pokebots {version}",
+  "server.update.build": "构建 {build}",
   "server.update.status.idle": "检查更新以获取最新版本。",
   "server.update.status.checking": "正在检查更新…",
   "server.update.status.available": "{version} 可安装。",
+  "server.update.status.availableBuild": "有可用更新：构建 {build}。",
   // {progress} is a percent, such as 42%.
   "server.update.status.downloading": "正在下载 {version} · {progress}",
   // Before the host knows the size, or while it waits to start the download.
   "server.update.status.downloadingUnknown": "正在下载 {version}…",
   "server.update.status.ready": "{version} 已下载。",
+  "server.update.status.readyBuild": "更新已就绪：构建 {build}。",
   "server.update.status.installing": "{name} 正在重启以安装更新。",
   "server.update.status.upToDate": "{name} 上的 Pokebots 已是最新版本。",
   "server.update.status.checkFailed": "{name} 无法检查更新，请重试。",

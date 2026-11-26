@@ -655,6 +655,24 @@ export const RemoteUpdateAvailable: Story = {
   render: (args) => <ServerSettingsStory settings={args} hostUpdate={STORY_HOST_UPDATE} />,
 };
 
+/** A VPS on a Pokebots server image: all its images have one version, so the host offers a build. */
+export const RemoteUpdateBuildReady: Story = {
+  args: remoteUpdateArgs,
+  render: (args) => (
+    <ServerSettingsStory
+      settings={args}
+      hostUpdate={{
+        ...STORY_HOST_UPDATE,
+        phase: "ready",
+        progress: 100,
+        currentVersion: "0.73.0+5dfb288b7",
+        availableVersion: "0.73.0+9c41d2e07",
+        autoInstall: false,
+      }}
+    />
+  ),
+};
+
 export const RemoteUpdateWaiting: Story = {
   args: remoteUpdateArgs,
   render: (args) => (

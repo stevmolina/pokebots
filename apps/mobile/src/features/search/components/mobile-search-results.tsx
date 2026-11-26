@@ -100,8 +100,8 @@ function useSearchSettings(channelsSupported: boolean): MobileSearchSetting[] {
 }
 
 /**
- * The results of the home search for `query`: agents and settings on this phone, and the messages,
- * files and routines that the host finds. With no query and no filter, `idle` shows instead.
+ * The results of the home search for `query`: agents of every server and settings on this phone, and
+ * the messages, files and routines that the open server's host finds. With no query and no filter, `idle` shows instead.
  * The host searches run only while `active`.
  */
 export function MobileSearchResults({
@@ -119,6 +119,8 @@ export function MobileSearchResults({
   const { t } = useText();
   const {
     activeAgents,
+    searchAgents,
+    servers,
     activeServer,
     hiddenChannelIds,
     searchMessages,
@@ -147,6 +149,11 @@ export function MobileSearchResults({
     [channelState.supported, channelState.channels, hiddenChannelIds],
   );
   const agentsById = useMemo(() => new Map(activeAgents.map((agent) => [agent.id, agent])), [activeAgents]);
+  // With more than one server, each agent result names its server, and opens on it.
+  const serverNames = useMemo(
+    () => (servers.length > 1 ? new Map(servers.map((server) => [server.id, server.name])) : null),
+    [servers],
+  );
   const settings = useSearchSettings(channelState.supported);
 
   // Search the host after typing stops, as the desktop search does, not on each character.
@@ -225,6 +232,7 @@ export function MobileSearchResults({
         filter,
         reader: { memberId: membershipId || null, accountUserId },
         agents: activeAgents,
+        searchAgents,
         channels,
         settings,
         routines: !wanted.routines
@@ -257,6 +265,7 @@ export function MobileSearchResults({
       membershipId,
       accountUserId,
       activeAgents,
+      searchAgents,
       channels,
       settings,
       wanted.routines,
@@ -405,6 +414,7 @@ export function MobileSearchResults({
                             query={query}
                             serverId={serverId}
                             agents={agentsById}
+                            serverNames={serverNames}
                             onLeave={onLeave}
                             kindLabel={calm ? t(KIND_LABEL[section.key]) : undefined}
                           />

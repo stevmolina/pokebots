@@ -77,6 +77,8 @@ interface Props {
   ): void;
   onMembershipChanged?(): Promise<void>;
   onTeamEvent(hostId: string, event: RemoteTeamEvent): void;
+  /** Signal says that the host is not connected to it, also while this connection is inactive. */
+  onHostOffline?(hostId: string): void;
 }
 
 /**
@@ -94,7 +96,10 @@ export const ServerConnection = memo(function ServerConnection({
   onStatus,
   onTeamEvent,
   onMembershipChanged,
+  onHostOffline,
 }: Props) {
+  const onHostOfflineRef = useRef(onHostOffline);
+  onHostOfflineRef.current = onHostOffline;
   const [client, setClient] = useState<RemoteTeamTransportRef | null>(null);
   const controller = useRef<ReturnType<typeof createRemoteConnectionRecovery> | null>(null);
   const activeRef = useRef(active);
@@ -162,6 +167,7 @@ export const ServerConnection = memo(function ServerConnection({
         "connection",
         `${hostId} ${update.state}${update.code ? ` (${update.code})` : ""}${update.message ? `: ${update.message}` : ""}${update.reference ? ` [${update.reference}]` : ""}${update.hostOffline ? ", host not on Signal" : ""}${update.resync ? ", resync" : ""}`,
       );
+      if (update.hostOffline) onHostOfflineRef.current?.(hostId);
       if (update.state === "online" && update.lostAfterMs !== undefined) lostAfterMs.current = update.lostAfterMs;
       if (update.state === "offline") {
         if (activeRef.current) analytics.lost();

@@ -20,7 +20,8 @@ function StatusText({ server: shown }: { server: MobileServer }) {
   const { t, sourceText } = useText();
   const server = useLiveServerRecovery(shown);
   const recovery = server.recoveryStatus;
-  const reconnecting = recovery && recovery.phase !== "online" && recovery.phase !== "suspended";
+  // A host that Signal says is not connected shows as offline, not as an attempt count.
+  const reconnecting = recovery && recovery.phase !== "online" && recovery.phase !== "suspended" && !server.hostOffline;
   const title = reconnecting ? t("mobile.workspace.status.reconnecting") : serverStatusLabel(server, t);
   const detail = reconnecting
     ? t("mobile.workspace.status.attempt", { attempt: recoveryAttempt(recovery), limit: REMOTE_RETRY_LIMIT })

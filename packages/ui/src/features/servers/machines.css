@@ -121,6 +121,7 @@
 }
 
 .machines-section[data-state="connecting"] .machines-state-dot,
+.machines-section[data-state="reconnecting"] .machines-state-dot,
 .machines-section[data-state="sleeping"] .machines-state-dot {
   background: var(--openbot-warning);
 }

@@ -1646,6 +1646,14 @@ export function MobileWorkspaceProvider({ children }: PropsWithChildren) {
     },
     [recoveryCountdowns, wakeSelectedServer, connectionWaits, limitFirstConnection],
   );
+  /** Signal says that the host of a server is not connected. The server shows as offline until it is online. */
+  const handleHostOffline = useCallback((hostId: string) => {
+    setServers((current) =>
+      current.some((server) => server.id === hostId && !server.hostOffline && server.state !== "online")
+        ? current.map((server) => (server.id === hostId ? { ...server, hostOffline: true } : server))
+        : current,
+    );
+  }, []);
   // The next retry of an offline server can be 30 seconds away, so a server starts when it is selected.
   useEffect(() => {
     if (!foreground || !activeServerId) return;
@@ -2644,6 +2652,17 @@ export function MobileWorkspaceProvider({ children }: PropsWithChildren) {
         : NO_AGENTS,
     [activeServerHasPreferences, agents, activeServer.id, hiddenAgentIds],
   );
+  const searchAgents = useMemo(() => {
+    const joined = new Set(servers.map((server) => server.id));
+    const shown = (agent: MobileAgent) =>
+      joined.has(agent.serverId) &&
+      !preferences[agent.serverId]?.hidden.includes(agent.id) &&
+      !hostHidden[agent.serverId]?.includes(agent.id);
+    return [
+      ...agents.filter((agent) => agent.serverId === activeServer.id && shown(agent)),
+      ...agents.filter((agent) => agent.serverId !== activeServer.id && shown(agent)),
+    ];
+  }, [agents, servers, preferences, hostHidden, activeServer.id]);
   const hiddenAgents = useMemo(
     () => agents.filter((agent) => agent.serverId === activeServer.id && hiddenAgentIds.includes(agent.id)),
     [agents, activeServer.id, hiddenAgentIds],
@@ -2804,6 +2823,7 @@ export function MobileWorkspaceProvider({ children }: PropsWithChildren) {
       agents,
       activeServer,
       activeAgents,
+      searchAgents,
       hiddenAgents,
       hiddenAgentIdsByServer,
       pinnedAgentIds,
@@ -2839,6 +2859,7 @@ export function MobileWorkspaceProvider({ children }: PropsWithChildren) {
     servers,
     activeServer,
     activeAgents,
+    searchAgents,
     hiddenAgents,
     hiddenAgentIdsByServer,
     pinnedAgentIds,
@@ -2901,6 +2922,7 @@ export function MobileWorkspaceProvider({ children }: PropsWithChildren) {
               onStatus={handleConnectionStatus}
               onMembershipChanged={refreshMemberships}
               onTeamEvent={handleTeamEvent}
+              onHostOffline={handleHostOffline}
             />
           ))}
         </View>
