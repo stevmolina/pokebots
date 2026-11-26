@@ -629,11 +629,13 @@ async function runDevelopmentServices(specs: DevelopmentServiceSpec[], stack: De
       restarting.add(spec.name);
       processes.delete(spec.name);
       const pause = request.pauseMs > 0 ? ` It starts again after ${Math.round(request.pauseMs / 1000)} s.` : "";
-      logger.info(`[${spec.name}] Restarting ${spec.name}. The other services keep running.${pause}`);
+      logger.info(
+        `[${spec.name}] Restarting ${spec.name} with ${request.signal}. The other services keep running.${pause}`,
+      );
       void (async () => {
         // The app quits with its services on SIGTERM, as a server does under systemd. That can take
         // longer than the test client needs.
-        await stopOwnedProcesses([child], "SIGTERM", spec.name === "app" ? { timeoutMs: 15_000 } : {});
+        await stopOwnedProcesses([child], request.signal, spec.name === "app" ? { timeoutMs: 15_000 } : {});
         if (stack) {
           stack.processes = stack.processes.filter((entry) => entry.pid !== child.pid);
           writeDevStackRecord(stack);

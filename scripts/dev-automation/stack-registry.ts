@@ -263,17 +263,20 @@ export function describeDevStack(record: DevStackRecord): string {
 }
 
 /**
- * What a runner restarts on `SIGUSR2`: one service, and how long it stays stopped before it starts
- * again. `bun run dev:restart-host` writes it just before the signal. With no request, the runner
- * restarts the test client at once, as `bun run dev:restart-client` asks.
+ * What a runner restarts on `SIGUSR2`: one service, the signal that stops it, and how long it stays
+ * stopped before it starts again. `bun run dev:restart-host` writes it just before the signal. With
+ * no request, the runner restarts the test client at once, as `bun run dev:restart-client` asks.
+ * `SIGKILL` stops the service with no shutdown, as a crash or a power loss does.
  */
 export interface DevStackRestartRequest {
   service: "app" | "test-client";
+  signal: "SIGTERM" | "SIGKILL";
   pauseMs: number;
 }
 
-const DEFAULT_RESTART_REQUEST: DevStackRestartRequest = { service: "test-client", pauseMs: 0 };
+const DEFAULT_RESTART_REQUEST: DevStackRestartRequest = { service: "test-client", signal: "SIGTERM", pauseMs: 0 };
 const RESTART_SERVICES = ["app", "test-client"] as const;
+const RESTART_SIGNALS = ["SIGTERM", "SIGKILL"] as const;
 
 // Not `.json`: `readDevStackRecords` reads each `.json` file of this directory as a stack record.
 function restartRequestPath(directory: string, supervisorPid: number): string {
@@ -305,5 +308,6 @@ export function takeDevStackRestartRequest(
   rmSync(path, { force: true });
   if (!isDynamicRecord(raw) || !isOneOf(RESTART_SERVICES, raw.service)) return DEFAULT_RESTART_REQUEST;
   const pauseMs = isNumber(raw.pauseMs) && Number.isFinite(raw.pauseMs) && raw.pauseMs > 0 ? raw.pauseMs : 0;
-  return { service: raw.service, pauseMs };
+  const signal = isOneOf(RESTART_SIGNALS, raw.signal) ? raw.signal : "SIGTERM";
+  return { service: raw.service, signal, pauseMs };
 }

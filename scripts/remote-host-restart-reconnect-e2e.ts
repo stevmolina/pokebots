@@ -3,7 +3,8 @@
 // The script starts this worktree's dev stack with `OPENBOT_DEV_CLIENT_TRANSPORT=webrtc`: the test
 // client joins the dev host over WebRTC through the local Signal service, as a desktop app joins a VPS.
 // When the client shows the host online, `bun run dev:restart-host --pause=<s>` stops the host with
-// SIGTERM, as systemd stops a server, and starts it again after the pause (default 90 s). The script
+// SIGTERM, as systemd stops a server (or SIGKILL with `--signal=SIGKILL`, a crash with no goodbye),
+// and starts it again after the pause (default 90 s). The script
 // then records:
 //   - when the host stopped, when the client showed it offline, and when the new host process started;
 //   - when the new host was online on Signal (`host.getStatus()` gives `online`);
@@ -12,14 +13,14 @@
 //     from the stop, from the `remote-connect:*` spans of its trace file.
 // It passes when the client is online within 10 s after the host is online on Signal.
 //
-// Run: bun scripts/remote-host-restart-reconnect-e2e.ts [--pause=90] [--timeout=420] [--label=after] [--keep]
+// Run: bun scripts/remote-host-restart-reconnect-e2e.ts [--pause=90] [--signal=SIGKILL] [--timeout=420] [--label=after] [--keep]
 // No dev stack of this worktree can run. `--timeout` is how long the script waits for the client after
 // the host is online. `--keep` leaves the stack running; stop it with `bun run dev:stop`.
 // Writes .openbot-build/remote-host-restart-reconnect-e2e/<label>.json.
 import assert from "node:assert/strict";
 import { execFileSync, spawn } from "node:child_process";
 import { existsSync, mkdirSync, openSync, readFileSync, writeFileSync } from "node:fs";
-import { join, resolve } from "node:path";
+import { delimiter, dirname, join, resolve } from "node:path";
 import type { OpenBotDesktopApi } from "@pokebots/contracts/ipc";
 import { isDynamicRecord, isNumber, isString } from "@pokebots/contracts/runtime-values";
 import { createOpenBotLogger } from "@pokebots/logging";
@@ -47,6 +48,8 @@ assert.ok(Number.isFinite(timeoutSeconds) && timeoutSeconds > 0, "--timeout take
 const label = argument("label") ?? "report";
 assert.match(label, /^\w[\w.-]*$/, "--label takes a file name, not a path.");
 const keep = process.argv.includes("--keep");
+const stopSignal = argument("signal") ?? "SIGTERM";
+assert.ok(stopSignal === "SIGTERM" || stopSignal === "SIGKILL", "--signal takes SIGTERM or SIGKILL.");
 /** The client must be online this soon after the host is online on Signal. */
 const RECONNECT_LIMIT_MS = 10_000;
 // Bounds on failure only: the first start of a dev stack builds the app and seeds a profile.
@@ -63,6 +66,8 @@ interface Report {
   label: string;
   startedAt: string;
   pauseSeconds: number;
+  /** How the host stopped: SIGTERM quits with its services, SIGKILL is a crash with no goodbye. */
+  signal: string;
   passed: boolean;
   /** The test client's window had the focus when the host stopped. Without focus, the offline delay is 15 min. */
   clientFocused?: boolean;
@@ -91,6 +96,7 @@ const report: Report = {
   label,
   startedAt: new Date().toISOString(),
   pauseSeconds,
+  signal: stopSignal,
   passed: false,
   times: {},
 };
@@ -147,9 +153,14 @@ function readTrace(path: string): TraceSpan[] {
 mkdirSync(OUT, { recursive: true });
 assert.equal(ownRecords().length, 0, "A dev stack of this worktree already runs. Stop it with `bun run dev:stop`.");
 const stackLog = openSync(resolve(OUT, `${label}-stack.log`), "w");
-const stack = spawn("bun", ["scripts/dev-services.ts", "test-client"], {
+const stack = spawn(process.execPath, ["scripts/dev-services.ts", "test-client"], {
   cwd: ROOT,
-  env: { ...process.env, OPENBOT_DEV_CLIENT_TRANSPORT: "webrtc" },
+  // The Bun that runs this script goes first on the path: a shell can find another Bun first.
+  env: {
+    ...process.env,
+    PATH: [dirname(process.execPath), process.env.PATH].filter(Boolean).join(delimiter),
+    OPENBOT_DEV_CLIENT_TRANSPORT: "webrtc",
+  },
   stdio: ["ignore", stackLog, stackLog],
   detached: true,
 });
@@ -176,12 +187,16 @@ try {
   const tracePath = join(userData, "logs", "trace.ndjson");
   report.clientFocused = await clientPage.evaluate(() => document.hasFocus());
 
-  // 1. Stop the host with SIGTERM. The supervisor starts it again after the pause.
+  // 1. Stop the host. The supervisor starts it again after the pause.
   report.times.restartRequested = Date.now();
-  execFileSync("bun", ["scripts/dev-stack.ts", "restart-host", `--pause=${pauseSeconds}`], {
-    cwd: ROOT,
-    stdio: "inherit",
-  });
+  execFileSync(
+    process.execPath,
+    ["scripts/dev-stack.ts", "restart-host", `--pause=${pauseSeconds}`, `--signal=${stopSignal}`],
+    {
+      cwd: ROOT,
+      stdio: "inherit",
+    },
+  );
   const offline = until("the test client to show the host offline", 60_000, async () => {
     const state = await hostState(clientPage, server.id);
     return state !== "online" ? Date.now() : null;
@@ -245,6 +260,6 @@ try {
   logger.info(
     `${report.passed ? "Passed" : "Failed"}: the client was online ${report.reconnectAfterHostOnlineMs ?? "-"} ms after the host. Wrote ${path}.`,
   );
-  if (!keep) execFileSync("bun", ["scripts/dev-stack.ts", "stop"], { cwd: ROOT, stdio: "inherit" });
+  if (!keep) execFileSync(process.execPath, ["scripts/dev-stack.ts", "stop"], { cwd: ROOT, stdio: "inherit" });
 }
 process.exitCode = report.passed ? 0 : 1;

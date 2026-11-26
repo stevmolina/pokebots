@@ -39,7 +39,7 @@ import { type OwnedProcess, stopOwnedProcesses } from "./dev-services";
 const logger = createOpenBotLogger("dev-stack", (line) => process.stderr.write(`${line}\n`));
 
 const USAGE =
-  "Usage: bun scripts/dev-stack.ts <status|stop|forget|restart-client|restart-host> [--all] [--pid=<supervisor pid>] [--pause=<seconds>]";
+  "Usage: bun scripts/dev-stack.ts <status|stop|forget|restart-client|restart-host> [--all] [--pid=<supervisor pid>] [--pause=<seconds>] [--signal=SIGTERM|SIGKILL]";
 
 export interface DevStackInvocation {
   // `forget` drops a record without signalling anything. It is the way out of
@@ -53,6 +53,8 @@ export interface DevStackInvocation {
   pid: number | null;
   /** Seconds that `restart-host` keeps the host stopped. */
   pauseSeconds: number;
+  /** How `restart-host` stops the host: `SIGKILL` skips its shutdown, as a crash does. */
+  signal: "SIGTERM" | "SIGKILL";
 }
 
 export function parseDevStackInvocation(args: string[]): DevStackInvocation {
@@ -73,16 +75,22 @@ export function parseDevStackInvocation(args: string[]): DevStackInvocation {
   const rawPause = args.find((argument) => argument.startsWith("--pause="))?.slice("--pause=".length);
   const pauseSeconds = rawPause === undefined ? 0 : Number(rawPause);
   if (!Number.isFinite(pauseSeconds) || pauseSeconds < 0) throw new Error("--pause must be a number of seconds.");
-  if (rawPause !== undefined && command !== "restart-host") throw new Error("Only restart-host takes --pause.");
+  const rawSignal = args.find((argument) => argument.startsWith("--signal="))?.slice("--signal=".length);
+  if (rawSignal !== undefined && rawSignal !== "SIGTERM" && rawSignal !== "SIGKILL")
+    throw new Error("--signal must be SIGTERM or SIGKILL.");
+  const signal = rawSignal ?? "SIGTERM";
+  if ((rawPause !== undefined || rawSignal !== undefined) && command !== "restart-host")
+    throw new Error("Only restart-host takes --pause and --signal.");
   const unsupported = args.find(
     (argument) =>
       argument.startsWith("--") &&
       argument !== "--all" &&
       !argument.startsWith("--pid=") &&
-      !argument.startsWith("--pause="),
+      !argument.startsWith("--pause=") &&
+      !argument.startsWith("--signal="),
   );
   if (unsupported) throw new Error(`Unknown option: ${unsupported}.\n${USAGE}`);
-  return { command, all, pid, pauseSeconds };
+  return { command, all, pid, pauseSeconds, signal };
 }
 
 export type DevStackScope = { kind: "all" } | { kind: "pid"; pid: number } | { kind: "worktree"; projectRoot: string };
@@ -119,7 +127,12 @@ function ownedProcess(pid: number): OwnedProcess {
 // The runner restarts the child itself: it owns the pid, the published records, and the exit handler
 // that would otherwise stop the whole stack. This only asks, and only a runner it can confirm. A host
 // restart writes its request first, so the runner knows which service and how long it stays stopped.
-function restartService(selected: DevStackRecord[], service: "app" | "test-client", pauseSeconds: number): void {
+function restartService(
+  selected: DevStackRecord[],
+  service: "app" | "test-client",
+  pauseSeconds: number,
+  signal: "SIGTERM" | "SIGKILL",
+): void {
   const what = service === "app" ? "the dev host" : "the test client";
   const withService = selected.filter((record) => record.services.includes(service));
   const [record] = withService;
@@ -142,7 +155,8 @@ function restartService(selected: DevStackRecord[], service: "app" | "test-clien
     process.exitCode = 1;
     return;
   }
-  if (service === "app") writeDevStackRestartRequest(record, { service, pauseMs: Math.round(pauseSeconds * 1000) });
+  if (service === "app")
+    writeDevStackRestartRequest(record, { service, signal, pauseMs: Math.round(pauseSeconds * 1000) });
   process.kill(record.supervisorPid, "SIGUSR2");
   const pause = service === "app" && pauseSeconds > 0 ? ` after ${pauseSeconds} s` : "";
   logger.info(`Asked ${describeDevStack(record)} to restart ${what}${pause}.`);
@@ -323,7 +337,12 @@ async function main(): Promise<void> {
   const scope = devStackScope(invocation, projectRoot);
   const selected = selectDevStacks(records, scope);
   if (invocation.command === "restart-client" || invocation.command === "restart-host") {
-    restartService(selected, invocation.command === "restart-host" ? "app" : "test-client", invocation.pauseSeconds);
+    restartService(
+      selected,
+      invocation.command === "restart-host" ? "app" : "test-client",
+      invocation.pauseSeconds,
+      invocation.signal,
+    );
     return;
   }
   if (selected.length === 0) {
