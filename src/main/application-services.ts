@@ -65,8 +65,10 @@ import { HostReleaseService, readInstallationMode } from "./host-release-service
 import {
   CONTAINER_UPDATE_PATHS,
   CONTAINER_UPDATE_TRIGGER,
+  currentServerImageBuild,
   HOSTED_UPDATE_TRIGGER,
   HostedUpdateAdapter,
+  serverBuildVersion,
 } from "./hosted-update-adapter";
 import { JoinedIntegrationAccess } from "./joined-integration-access";
 import { LicenseDesktopService } from "./license-service";
@@ -4854,11 +4856,16 @@ export async function createApplicationServices({
   let updaterEnabled = updatesEnabled;
   let updaterCacheDirectory: string | undefined;
   let appImagePath: string | undefined;
+  // A Pokebots server image says its commit. All its images have one version, so its host stages
+  // and offers them by build, and Server Settings > Updates shows the commit ("0.73.0+5dfb288b7").
+  const imageBuild = containerInstaller ? currentServerImageBuild(currentVersion, process.env) : null;
+  const updaterVersion = imageBuild ? serverBuildVersion(imageBuild) : currentVersion;
   if (updatesEnabled && hostedInstaller) {
     updateAdapter = new HostedUpdateAdapter({
       currentVersion,
       arch: process.arch,
       ...(containerInstaller ? { paths: CONTAINER_UPDATE_PATHS } : {}),
+      ...(imageBuild ? { imageBuild } : {}),
     });
   } else if (updatesEnabled) {
     const realAdapter = await loadElectronUpdater();
@@ -4871,7 +4878,7 @@ export async function createApplicationServices({
     }
   }
   const updater = new UpdateService(updateAdapter, {
-    currentVersion,
+    currentVersion: updaterVersion,
     enabled: updaterEnabled,
     autoDownload: updatePreference.autoDownload,
     beforeInstall: prepareForUpdateInstall,

@@ -4,6 +4,7 @@ import type {
   HostUpdateStatus,
   OpenBotDesktopApi,
 } from "@pokebots/contracts/ipc";
+import { releaseBuild } from "@pokebots/contracts/release-version";
 import { classifyFailure } from "@pokebots/telemetry";
 import {
   Alert,
@@ -179,7 +180,14 @@ export function ServerUpdatePanel(
       return calls().getUpdateStatus(serverId);
     });
   };
-  const version = (current: HostUpdateStatus) => current.availableVersion ?? current.currentVersion;
+  // A Pokebots server image names its build in the version ("0.73.0+5dfb288b7"): all its images have one version.
+  const version = (current: HostUpdateStatus) => {
+    const value = current.availableVersion ?? current.currentVersion;
+    const build = releaseBuild(value);
+    return build ? t("server.update.build", { build }) : value;
+  };
+  const availableBuild = (current: HostUpdateStatus) =>
+    current.availableVersion ? releaseBuild(current.availableVersion) : null;
   const waitingFor = (current: HostUpdateStatus) =>
     format.list(current.restart?.waitingFor.map((reason) => t(restartReasonKey(reason))) ?? []);
 
@@ -207,8 +215,12 @@ export function ServerUpdatePanel(
     switch (current.phase) {
       case "checking":
         return t("server.update.status.checking");
-      case "available":
-        return t("server.update.status.available", { version: version(current) });
+      case "available": {
+        const build = availableBuild(current);
+        return build
+          ? t("server.update.status.availableBuild", { build })
+          : t("server.update.status.available", { version: version(current) });
+      }
       case "downloading":
         return current.progress === null
           ? t("server.update.status.downloadingUnknown", { version: version(current) })
@@ -216,8 +228,12 @@ export function ServerUpdatePanel(
               version: version(current),
               progress: format.percent(current.progress / 100),
             });
-      case "ready":
-        return t("server.update.status.ready", { version: version(current) });
+      case "ready": {
+        const build = availableBuild(current);
+        return build
+          ? t("server.update.status.readyBuild", { build })
+          : t("server.update.status.ready", { version: version(current) });
+      }
       case "installing":
         return t("server.update.status.installing", { name });
       case "up-to-date":

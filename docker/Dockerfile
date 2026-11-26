@@ -47,13 +47,20 @@ RUN install -d -m 0755 /opt/OpenBot/hosted \
 
 ARG VERSION=unknown
 ARG REVISION=unknown
+# The time of the commit in UTC, such as 2026-11-26T17:00:00Z. All Pokebots images of one release have
+# the same version, so the host of a VPS compares the commit and this time to find a newer build
+# (docker/vps-update). It is the commit time, not the build time, so a build of an older commit that
+# runs later is not newer.
+ARG CREATED=
 # GitHub links the package to the repository through `source`.
 LABEL org.opencontainers.image.title=OpenBot \
   org.opencontainers.image.source=https://github.com/stevmolina/pokebots \
   org.opencontainers.image.licenses=PolyForm-Noncommercial-1.0.0 \
   org.opencontainers.image.version=${VERSION} \
-  org.opencontainers.image.revision=${REVISION}
-ENV LANG=C.UTF-8 XDG_RUNTIME_DIR=/run/openbot
+  org.opencontainers.image.revision=${REVISION} \
+  org.opencontainers.image.created=${CREATED}
+# OpenBot reads its own build here, and offers only a newer staged image (src/main/hosted-update-adapter.ts).
+ENV LANG=C.UTF-8 XDG_RUNTIME_DIR=/run/openbot OPENBOT_IMAGE_REVISION=${REVISION} OPENBOT_IMAGE_CREATED=${CREATED}
 # Only /data stays when an update replaces the container, so the tools that the user and agents
 # install go to ~/.local/bin, for example with uv or pipx. A login shell finds that folder only
 # through ~/.profile, which an empty bind mount does not have.

@@ -607,14 +607,17 @@ export const messages = {
   "server.settings.updatesDescription": "이 서버를 실행하는 컴퓨터의 Pokebots을 업데이트해요.",
   "server.update.hostTitle": "{name}의 Pokebots",
   "server.update.version": "Pokebots {version}",
+  "server.update.build": "빌드 {build}",
   "server.update.status.idle": "업데이트를 확인해 최신 릴리스를 찾아보세요.",
   "server.update.status.checking": "업데이트 확인 중…",
   "server.update.status.available": "{version}을(를) 사용할 수 있어요.",
+  "server.update.status.availableBuild": "업데이트 가능: 빌드 {build}.",
   // {progress} is a percent, such as 42%.
   "server.update.status.downloading": "{version} 다운로드 중 · {progress}",
   // Before the host knows the size, or while it waits to start the download.
   "server.update.status.downloadingUnknown": "{version} 다운로드 중…",
   "server.update.status.ready": "{version} 다운로드를 완료했어요.",
+  "server.update.status.readyBuild": "업데이트 준비 완료: 빌드 {build}.",
   "server.update.status.installing": "업데이트를 설치하기 위해 {name}이(가) 다시 시작되고 있어요.",
   "server.update.status.upToDate": "{name}의 Pokebots이 최신 버전이에요.",
   "server.update.status.checkFailed": "{name}이(가) 업데이트를 확인하지 못했어요. 다시 시도해 주세요.",
