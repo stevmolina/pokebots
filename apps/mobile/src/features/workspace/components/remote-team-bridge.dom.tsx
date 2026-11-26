@@ -17,6 +17,7 @@ import {
   createRemoteDesktopRelay,
   type RemoteDesktopRelayEvent,
 } from "@/features/remote-desktop/model/remote-desktop-relay";
+import { createPeerHintStore, decodePeerHints, type PeerHints } from "@/features/workspace/model/peer-hints";
 
 type BridgeJson = Parameters<DOMImperativeFactory[string]>[0];
 
@@ -42,6 +43,11 @@ export type RemoteTeamBridgeHandle = {
   networkChanged: (value: BridgeJson) => void;
   /** The user cancelled the upload in progress. The peer stops it and tells the host. */
   cancelUpload: (value: BridgeJson) => void;
+  /**
+   * What the phone kept about a server from its last connection (`peer-hints.ts`), as
+   * `{ hostId, hints }`. The native side sends it before the first commands of a page.
+   */
+  hostHints: (value: BridgeJson) => void;
 };
 
 interface RemoteTeamBridgeProps extends RemoteTeamPeerActions {
@@ -52,6 +58,8 @@ interface RemoteTeamBridgeProps extends RemoteTeamPeerActions {
   onReady?: () => Promise<void>;
   onBrowserViewEvent?: (event: BrowserViewBridgeEvent) => Promise<void>;
   onRemoteDesktopEvent?: (event: RemoteDesktopRelayEvent) => Promise<void>;
+  /** The peer learned more about a server, such as its protocol or Signal route. The phone keeps it. */
+  onHostHints?: (value: { hostId: string; hints: PeerHints }) => Promise<void>;
   dom?: import("expo/dom").DOMProps;
 }
 
@@ -75,6 +83,7 @@ export default function RemoteTeamBridge({
   onReady,
   onBrowserViewEvent,
   onRemoteDesktopEvent,
+  onHostHints,
   ...callbacks
 }: RemoteTeamBridgeProps) {
   const browserViewEvent = useRef(onBrowserViewEvent);
@@ -99,9 +108,23 @@ export default function RemoteTeamBridge({
       await callbacks.onConnectionUpdate(update);
     },
   };
+  const saveHints = useRef(onHostHints);
+  saveHints.current = onHostHints;
+  // A new page knows the protocol, compact-rpc-v1 and the Signal route of the last connection, as
+  // the web client does. Without them, each page load cost about 5 more round trips to connect.
+  const hints = useRef<ReturnType<typeof createPeerHintStore> | null>(null);
+  if (!hints.current)
+    hints.current = createPeerHintStore((hostId, value) => {
+      void saveHints.current?.({ hostId, hints: value }).catch(() => undefined);
+    });
+  const hintStore = hints.current;
   const runtime = useRef<ReturnType<typeof createRemoteTeamPeer> | null>(null);
   // The workspace speaks protocol 10 with a host of protocol 10, and protocol 9 with an older host.
-  if (!runtime.current) runtime.current = createRemoteTeamPeer(actions, { clientProtocol: TEAM_WEB_CLIENT_PROTOCOL });
+  if (!runtime.current)
+    runtime.current = createRemoteTeamPeer(actions, {
+      clientProtocol: TEAM_WEB_CLIENT_PROTOCOL,
+      hostProtocols: hintStore,
+    });
   const peer = runtime.current;
   if (!browserView.current)
     browserView.current = createBrowserViewBridge(
@@ -165,6 +188,11 @@ export default function RemoteTeamBridge({
   const cancelUpload = useRef(() => {
     void peer.cancelUpload().catch(() => undefined);
   }).current;
+  const hostHints = useRef((value: unknown) => {
+    if (!isDynamicRecord(value) || !isString(value.hostId)) return;
+    const decoded = decodePeerHints(value.hints);
+    if (decoded) hintStore.load(value.hostId, decoded);
+  }).current;
 
   useDOMImperativeHandle<RemoteTeamBridgeHandle>(
     ref ?? null,
@@ -175,8 +203,9 @@ export default function RemoteTeamBridge({
       setActive,
       networkChanged,
       cancelUpload,
+      hostHints,
     }),
-    [views, desktopStreams, teamCommands, setActive, networkChanged, cancelUpload],
+    [views, desktopStreams, teamCommands, setActive, networkChanged, cancelUpload, hostHints],
   );
 
   // After the handle effect above, so the native side knows the handle before it sends the commands.

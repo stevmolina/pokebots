@@ -18,6 +18,7 @@ import * as FileSystem from "expo-file-system/legacy";
 import * as LockedKeychain from "@/shared/lib/locked-keychain";
 import { decodeConversationPage } from "./conversation";
 import { type DrawerSnapshot, decodeDrawerSnapshot } from "./drawer-snapshot";
+import { decodePeerHints, type PeerHints } from "./peer-hints";
 import { decodeAgentSummaries, decodeSidebarLayout, type RemoteAgent } from "./workspace-records";
 
 /** What the phone shows for one server before its connection is back. The host stays the source of truth. */
@@ -56,6 +57,9 @@ export interface WorkspaceCache {
   /** The last server list of the account service, so the connections start before it answers again. */
   readHosts(): Promise<RemoteTeamHost[] | null>;
   writeHosts(hosts: readonly RemoteTeamHost[]): Promise<void>;
+  /** The connection hints of a server (`peer-hints.ts`). `remove` and `retain` delete them with its file. */
+  readHints(serverId: string): Promise<PeerHints | null>;
+  writeHints(serverId: string, hints: PeerHints): Promise<void>;
 }
 
 const FORMAT = 1;
@@ -63,6 +67,8 @@ const ROOT = "workspace-cache-v1/";
 const KEY_NAME = "openbot.mobile.workspace-cache-key.v1";
 /** `segment` never makes a `~`, so no server file has this name. */
 const HOSTS_NAME = "~hosts";
+/** The prefix of the hints file of a server. Also with a `~`, so no server file has such a name. */
+const HINTS_PREFIX = "~hints~";
 /**
  * The escaped JSON of a server file. Base64 adds a third, so the file stays under 4 MB. A server with
  * more keeps its agents and the chats that fit, newest first.
@@ -210,7 +216,8 @@ function decodeCachedHosts(value: unknown): RemoteTeamHost[] {
 
 /**
  * The server list, and the agents, sections, recent chats and channels of each server of one account, so the
- * app shows them at once after a start, before the account service and the connection answer. The
+ * app shows them at once after a start, before the account service and the connection answer. Also the
+ * connection hints of each server (`peer-hints.ts`), so a new peer page connects in fewer round trips. The
  * list and each server have one file in `Library/Caches`, which is not in a backup and which the
  * system can delete when the device is low on storage. The files are sealed with AES-256-GCM and
  * bound to the account and to the server, or to the list.
@@ -219,35 +226,41 @@ export function createWorkspaceCache(scope: string): WorkspaceCache | null {
   const root = rootDirectory();
   if (!root) return null;
   const account = Crypto.digestStringAsync(Crypto.CryptoDigestAlgorithm.SHA256, scope);
-  /** `serverId` null is the server list. */
-  const paths = async (serverId: string | null) => {
+  /** `serverId` null is the server list. `hints` is the hints file of the server. */
+  const paths = async (serverId: string | null, hints = false) => {
     const folder = `${root}${await account}/`;
-    const name = serverId === null ? HOSTS_NAME : segment(serverId);
+    const name = serverId === null ? HOSTS_NAME : `${hints ? HINTS_PREFIX : ""}${segment(serverId)}`;
     return { folder, file: `${folder}${name}.bin`, next: `${folder}${name}.next.bin` };
   };
-  const binding = async (serverId: string | null) => asciiBytes(asciiJson([FORMAT, await account, serverId]));
+  // The hints file has its own binding, so it does not open as the server file.
+  const binding = async (serverId: string | null, hints = false) =>
+    asciiBytes(asciiJson(hints ? [FORMAT, await account, serverId, "hints"] : [FORMAT, await account, serverId]));
   // A remove that follows a write of the same server runs after it, so the file does not come back.
-  const queues = new Map<string | null, Promise<unknown>>();
-  const inOrder = <T>(serverId: string | null, operation: () => Promise<T>): Promise<T> => {
-    const result = (queues.get(serverId) ?? Promise.resolve()).then(operation, operation);
-    const tail = result.catch(() => undefined);
-    queues.set(serverId, tail);
-    void tail.then(() => {
-      if (queues.get(serverId) === tail) queues.delete(serverId);
-    });
-    return result;
+  const ordered = () => {
+    const queues = new Map<string | null, Promise<unknown>>();
+    return <T>(serverId: string | null, operation: () => Promise<T>): Promise<T> => {
+      const result = (queues.get(serverId) ?? Promise.resolve()).then(operation, operation);
+      const tail = result.catch(() => undefined);
+      queues.set(serverId, tail);
+      void tail.then(() => {
+        if (queues.get(serverId) === tail) queues.delete(serverId);
+      });
+      return result;
+    };
   };
-  const open = <T>(serverId: string | null, decode: (value: unknown) => T) =>
-    inOrder(serverId, async () => {
+  const inOrder = ordered();
+  const hintsInOrder = ordered();
+  const open = <T>(serverId: string | null, decode: (value: unknown) => T, hints = false) =>
+    (hints ? hintsInOrder : inOrder)(serverId, async () => {
       const key = await cacheKey();
       if (!key) return null;
-      const { file } = await paths(serverId);
+      const { file } = await paths(serverId, hints);
       if (!(await FileSystem.getInfoAsync(file)).exists) return null;
       try {
         const sealed = Crypto.AESSealedData.fromCombined(await FileSystem.readAsStringAsync(file));
         const plain = await Crypto.aesDecryptAsync(sealed, key, {
           output: "bytes",
-          additionalData: await binding(serverId),
+          additionalData: await binding(serverId, hints),
         });
         return decode(JSON.parse(asciiText(plain)));
       } catch {
@@ -256,9 +269,11 @@ export function createWorkspaceCache(scope: string): WorkspaceCache | null {
         return null;
       }
     });
-  const seal = async (serverId: string | null, key: Crypto.AESEncryptionKey, json: string) => {
-    const sealed = await Crypto.aesEncryptAsync(asciiBytes(json), key, { additionalData: await binding(serverId) });
-    const { folder, file, next } = await paths(serverId);
+  const seal = async (serverId: string | null, key: Crypto.AESEncryptionKey, json: string, hints = false) => {
+    const sealed = await Crypto.aesEncryptAsync(asciiBytes(json), key, {
+      additionalData: await binding(serverId, hints),
+    });
+    const { folder, file, next } = await paths(serverId, hints);
     await FileSystem.makeDirectoryAsync(folder, { intermediates: true });
     await FileSystem.writeAsStringAsync(next, await sealed.combined("base64"));
     await FileSystem.deleteAsync(file, { idempotent: true });
@@ -268,6 +283,20 @@ export function createWorkspaceCache(scope: string): WorkspaceCache | null {
   return {
     read: (serverId) => open(serverId, decodeCachedServer),
     readHosts: () => open(null, decodeCachedHosts),
+    readHints: (serverId) =>
+      open(
+        serverId,
+        (value) => {
+          if (!isDynamicRecord(value) || value.format !== FORMAT) throw new Error("The hints file is invalid.");
+          return decodePeerHints(value.hints);
+        },
+        true,
+      ),
+    writeHints: (serverId, hints) =>
+      hintsInOrder(serverId, async () => {
+        const key = await cacheKey();
+        if (key) await seal(serverId, key, asciiJson({ format: FORMAT, hints }), true);
+      }),
     writeHosts: (hosts) =>
       inOrder(null, async () => {
         const key = await cacheKey();
@@ -321,16 +350,25 @@ export function createWorkspaceCache(scope: string): WorkspaceCache | null {
         return true;
       }),
     remove: (serverId) =>
-      inOrder(serverId, async () => {
-        const { file, next } = await paths(serverId);
-        await FileSystem.deleteAsync(file, { idempotent: true });
-        await FileSystem.deleteAsync(next, { idempotent: true });
-      }),
+      Promise.all([
+        inOrder(serverId, async () => {
+          const { file, next } = await paths(serverId);
+          await FileSystem.deleteAsync(file, { idempotent: true });
+          await FileSystem.deleteAsync(next, { idempotent: true });
+        }),
+        hintsInOrder(serverId, async () => {
+          const { file, next } = await paths(serverId, true);
+          await FileSystem.deleteAsync(file, { idempotent: true });
+          await FileSystem.deleteAsync(next, { idempotent: true });
+        }),
+      ]).then(() => undefined),
     retain: async (serverIds) => {
       const folder = `${root}${await account}/`;
       if (!(await FileSystem.getInfoAsync(folder)).exists) return;
       const kept = new Set(
-        [HOSTS_NAME, ...serverIds.map(segment)].flatMap((name) => [`${name}.bin`, `${name}.next.bin`]),
+        [HOSTS_NAME, ...serverIds.map(segment), ...serverIds.map((id) => `${HINTS_PREFIX}${segment(id)}`)].flatMap(
+          (name) => [`${name}.bin`, `${name}.next.bin`],
+        ),
       );
       for (const name of await FileSystem.readDirectoryAsync(folder))
         if (!kept.has(name)) await FileSystem.deleteAsync(`${folder}${name}`, { idempotent: true });
