@@ -222,11 +222,10 @@ try {
   logger.info("The new host is online on Signal. The script waits for the test client.");
 
   // 3. The client connects again.
-  report.times.clientOnline = await until(
-    "the test client to show the host online again",
-    timeoutSeconds * 1000,
-    async () => ((await hostState(clientPage, server.id)) === "online" ? Date.now() : null),
-  ).catch(() => undefined);
+  const clientOnline = await until("the test client to show the host online again", timeoutSeconds * 1000, async () =>
+    (await hostState(clientPage, server.id)) === "online" ? Date.now() : null,
+  ).catch(() => null);
+  if (clientOnline !== null) report.times.clientOnline = clientOnline;
   const times = report.times;
   if (times.clientOnline !== undefined && times.hostOnline !== undefined) {
     report.reconnectAfterHostOnlineMs = times.clientOnline - times.hostOnline;
