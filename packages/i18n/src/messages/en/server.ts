@@ -718,14 +718,18 @@ export const messages = defineMessages("server", {
   "server.settings.updatesDescription": "Update Pokebots on the computer that runs this server.",
   "server.update.hostTitle": "Pokebots on {name}",
   "server.update.version": "Pokebots {version}",
+  // {build} is the short commit of a server image, such as 5dfb288b7.
+  "server.update.build": "build {build}",
   "server.update.status.idle": "Check for updates to find the latest release.",
   "server.update.status.checking": "Checking for updates…",
   "server.update.status.available": "{version} is available.",
+  "server.update.status.availableBuild": "Update available: build {build}.",
   // {progress} is a percent, such as 42%.
   "server.update.status.downloading": "Downloading {version} · {progress}",
   // Before the host knows the size, or while it waits to start the download.
   "server.update.status.downloadingUnknown": "Downloading {version}…",
   "server.update.status.ready": "{version} is downloaded.",
+  "server.update.status.readyBuild": "Update ready: build {build}.",
   "server.update.status.installing": "{name} is restarting to install the update.",
   "server.update.status.upToDate": "Pokebots is up to date on {name}.",
   "server.update.status.checkFailed": "{name} could not check for updates. Try again.",
