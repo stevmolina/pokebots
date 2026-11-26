@@ -1457,6 +1457,7 @@ type MobileWorkspaceStateKey =
   | "agents"
   | "activeServer"
   | "activeAgents"
+  | "searchAgents"
   | "hiddenAgents"
   | "hiddenAgentIdsByServer"
   | "pinnedAgentIds"
