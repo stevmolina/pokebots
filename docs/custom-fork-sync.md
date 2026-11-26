@@ -18,8 +18,9 @@ The T3 schedule **Daily Pokebots upstream sync** is disabled.
 - Mac uses the [launchd updater](../AGENTS.md#after-merge-pokebots-app). Verify the staged revision
   and the installed app after approval.
 - The [server image workflow](../.github/workflows/server-image.yml) builds and smoke-tests the
-  self-hosted Linux image. A push to `main` updates `ghcr.io/stevmolina/pokebots:latest`. An app change
-  on `main` can reach hosts that use the [VPS updater](../docker/vps-auto-update.sh).
+  self-hosted Linux image. A push to `main` updates `ghcr.io/stevmolina/pokebots:latest`. The VPS
+  servers download it by themselves and install it when an owner selects Install in Server Settings >
+  Updates ([VPS updates](docker.md#updates-from-the-app-on-a-vps-pokebots)).
 - The [Dokploy runbook](pokebots-dokploy.md) covers the account API and browser app on matching
   `main` changes. The landing page has its own repository and deployment.
 

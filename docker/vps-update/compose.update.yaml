@@ -1,0 +1,12 @@
+# Added to the Compose files of the stack by `openbot-vps-update setup` (COMPOSE_FILE in .env). See
+# docs/docker.md#updates-from-the-app-on-a-vps-pokebots.
+services:
+  openbot:
+    # A local tag that only an install moves, so a pull or a `docker compose up -d` never changes the
+    # image.
+    image: openbot-vps:current
+    pull_policy: never
+    volumes:
+      # Updates from the app: OpenBot writes requests, and root on the host writes the state.
+      - /var/lib/openbot-vps-update/requests:/var/lib/openbot-update/requests
+      - /var/lib/openbot-vps-update/status:/var/lib/openbot-update/status:ro

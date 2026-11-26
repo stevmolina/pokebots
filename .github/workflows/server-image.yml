@@ -64,9 +64,11 @@ jobs:
           mv "${appImages[0]}" image/OpenBot.AppImage
           version=$(jq -r .version package.json)
           short=${GITHUB_SHA::9}
+          # The commit time orders the builds of one version (docker/vps-update).
+          created=$(TZ=UTC git log -1 --format=%cd --date=format-local:%Y-%m-%dT%H:%M:%SZ "$GITHUB_SHA")
           docker build --file docker/Dockerfile --platform linux/amd64 \
             --label "org.opencontainers.image.source=https://github.com/${GITHUB_REPOSITORY}" \
-            --build-arg "VERSION=$version-custom" --build-arg "REVISION=$short" \
+            --build-arg "VERSION=$version-custom" --build-arg "REVISION=$short" --build-arg "CREATED=$created" \
             --tag "openbot-custom:$short" image
           docker save "openbot-custom:$short" | gzip -1 > "openbot-custom-$short.tar.gz"
           sha256sum "openbot-custom-$short.tar.gz" > SHA256SUMS.txt

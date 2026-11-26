@@ -1,0 +1,521 @@
+#!/bin/bash
+# Updates the OpenBot container of one Compose stack on a VPS, as a person asks in the app. See
+# docs/docker.md#updates-from-the-app-on-a-vps-pokebots.
+#
+# The host downloads new images by itself, and installs one only when the owner or an admin presses
+# Install in Server Settings > Updates:
+#
+# - openbot-vps-update-stage.timer runs `stage`: it pulls IMAGE_REF and, when that image is a newer
+#   build than the container, writes "<version> <commit> <commit time>" to status/staged.ready.
+# - The app writes an empty request file to the requests folder, which the container can write.
+#   openbot-vps-update.path sees it and runs `request` as root. `update-stage` stages now, and
+#   `update-install` also installs: it stops the container, backs up its data volume, makes the
+#   container again from the staged image, and waits until it is online. When it does not come back,
+#   it restores the backup and the old image.
+#
+# The container never gets the Docker socket. Root only tests a request file and removes it; it never
+# reads or follows it. Root reports in the status folder, which the container mounts read-only.
+#
+# Compose runs the local tag openbot-vps:current (compose.update.yaml), never IMAGE_REF itself, so a
+# pull or a `docker compose up -d` by hand never changes the image. Only an install moves the tag.
+#
+#   openbot-vps-update setup [--recreate]   Installs the units, folders and Compose file (as root).
+#   openbot-vps-update stage                Pulls and stages a newer build.
+#   openbot-vps-update request              Acts on the requests of the app (the path unit runs it).
+#   openbot-vps-update install              Stages and installs now, as an Install in the app.
+#   openbot-vps-update status               Shows the running and the staged build.
+set -euo pipefail
+umask 077
+
+CONFIG=${OPENBOT_VPS_UPDATE_CONFIG:-/etc/openbot-vps-update.env}
+# shellcheck disable=SC1090 # Root owns the file; `setup` writes it.
+if [ -r "$CONFIG" ]; then . "$CONFIG"; fi
+
+DOCKER=${DOCKER:-docker}
+STACK_DIR=${STACK_DIR:-/srv/stacks/openbot}
+COMPOSE_SERVICE=${COMPOSE_SERVICE:-openbot}
+CONTAINER_NAME=${CONTAINER_NAME:-openbot-openbot-1}
+IMAGE_REF=${IMAGE_REF:-ghcr.io/stevmolina/pokebots:latest}
+CURRENT_TAG=${CURRENT_TAG:-openbot-vps:current}
+PREVIOUS_TAG=${PREVIOUS_TAG:-openbot-vps:previous}
+UPDATE_DIR=${UPDATE_DIR:-/var/lib/openbot-vps-update}
+REQUESTS=$UPDATE_DIR/requests
+STATUS=$UPDATE_DIR/status
+HOST=$UPDATE_DIR/host
+BACKUP_DIR=${BACKUP_DIR:-/home/ubuntu/backups}
+BACKUP_NAME=${BACKUP_NAME:-openbot}
+BACKUP_KEEP=${BACKUP_KEEP:-3}
+VOLUME_DIR=${VOLUME_DIR:-}
+HEALTH_TIMEOUT_SECONDS=${HEALTH_TIMEOUT_SECONDS:-300}
+POLL_SECONDS=${POLL_SECONDS:-2}
+LOCK_FILE=${LOCK_FILE:-/run/openbot-vps-update.lock}
+UNIT_DIRECTORY=${UNIT_DIRECTORY:-/etc/systemd/system}
+INSTALLED=/usr/local/sbin/openbot-vps-update
+
+# The log goes to stderr, so that a function can print its result on stdout. systemd keeps both.
+log() {
+  printf '[%s] [openbot-vps-update] %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$*" >&2
+}
+
+fail() {
+  log "ERROR: $*"
+  exit 1
+}
+
+set_state() {
+  printf '%s\n' "$2" >"$1.new"
+  chmod 0644 "$1.new"
+  mv -f "$1.new" "$1"
+}
+
+lock() {
+  exec 9>"$LOCK_FILE"
+  flock 9
+}
+
+compose() {
+  (cd "$STACK_DIR" && "$DOCKER" compose "$@")
+}
+
+# "<version>|<commit>|<commit time>" of an image or a container. Docker prints "<no value>" for a
+# missing label.
+labels() {
+  "$DOCKER" inspect --format \
+    '{{index .Config.Labels "org.opencontainers.image.version"}}|{{index .Config.Labels "org.opencontainers.image.revision"}}|{{index .Config.Labels "org.opencontainers.image.created"}}' \
+    "$1" 2>/dev/null || true
+}
+
+# The release version of a label, such as 0.73.0 for 0.73.0-custom. Empty when it is not one.
+release_version() {
+  if [[ $1 =~ ^([0-9]+\.[0-9]+\.[0-9]+)(-[A-Za-z0-9.]+)?$ ]]; then echo "${BASH_REMATCH[1]}"; fi
+}
+
+valid_revision() {
+  [[ $1 =~ ^[0-9a-f]{7,40}$ ]]
+}
+
+valid_created() {
+  [[ $1 =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$ ]]
+}
+
+# Version $1 is newer than version $2.
+version_newer() {
+  [ "$1" != "$2" ] && [ "$(printf '%s\n%s\n' "$1" "$2" | sort -V | tail -n 1)" = "$1" ]
+}
+
+# True when build "$1 $2 $3" (version, commit, time) is newer than build "$4 $5 $6". An older
+# OpenBot cannot open a database that a newer one migrated, so a build is newer only when it surely
+# is: a newer version; or the same version, another commit and a later commit time. A running image
+# without a time is older than each image with one, because the label came after it. The app uses
+# the same rule (isNewerServerBuild in src/main/hosted-update-adapter.ts).
+newer_build() {
+  local version=$1 revision=$2 created=$3 running_version=$4 running_revision=$5 running_created=$6
+  [ -n "$version" ] && [ -n "$running_version" ] || return 1
+  if [ "$version" != "$running_version" ]; then
+    version_newer "$version" "$running_version"
+    return
+  fi
+  valid_revision "$revision" && [ "$revision" != "$running_revision" ] || return 1
+  valid_created "$created" || return 1
+  valid_created "$running_created" || return 0
+  [[ $created > $running_created ]]
+}
+
+# Splits the output of `labels` into BUILD_VERSION, BUILD_REVISION and BUILD_CREATED.
+read_build() {
+  local version revision created
+  IFS='|' read -r version revision created <<<"$1"
+  BUILD_VERSION=$(release_version "$version")
+  BUILD_REVISION=""
+  BUILD_CREATED=""
+  if valid_revision "$revision"; then BUILD_REVISION=$revision; fi
+  if valid_created "$created"; then BUILD_CREATED=$created; fi
+}
+
+container_image() {
+  "$DOCKER" inspect --format '{{.Image}}' "$CONTAINER_NAME" 2>/dev/null || true
+}
+
+container_running() {
+  [ "$("$DOCKER" inspect --format '{{.State.Running}}' "$CONTAINER_NAME" 2>/dev/null || true)" = true ]
+}
+
+image_id() {
+  "$DOCKER" image inspect --format '{{.Id}}' "$1" 2>/dev/null || true
+}
+
+read_status() {
+  "$DOCKER" exec "$CONTAINER_NAME" curl -fsS --max-time 5 \
+    --unix-socket /run/openbot/control.sock http://localhost/v1/status 2>/dev/null || true
+}
+
+status_value() {
+  printf '%s\n' "$1" | awk -F= -v k="$2" '$1 == k { sub(/^[^=]*=/, ""); print; exit }'
+}
+
+# The folder of the /data volume of the container on the host.
+volume_dir() {
+  if [ -n "$VOLUME_DIR" ]; then
+    echo "$VOLUME_DIR"
+    return
+  fi
+  "$DOCKER" inspect --format '{{range .Mounts}}{{if eq .Destination "/data"}}{{.Source}}{{end}}{{end}}' \
+    "$CONTAINER_NAME" 2>/dev/null || true
+}
+
+# Pulls IMAGE_REF and writes it to staged.ready when it is a newer build than the container.
+# Each run writes the state again, so a staged image that is no longer newer goes away.
+stage() {
+  local pulled_id running_id status server
+  "$DOCKER" pull --quiet "$IMAGE_REF" >/dev/null || fail "The image $IMAGE_REF did not download."
+  pulled_id=$(image_id "$IMAGE_REF")
+  running_id=$(container_image)
+  [ -n "$pulled_id" ] || fail "The image $IMAGE_REF cannot be read."
+  if [ -z "$running_id" ]; then
+    rm -f "$STATUS/staged.ready"
+    log "There is no container $CONTAINER_NAME, so nothing is staged."
+    return 0
+  fi
+  # An install checks that the new container is online only when this one was.
+  if container_running; then
+    status=$(read_status)
+    server=$(status_value "$status" server)
+    if [ -n "$server" ]; then set_state "$HOST/server-state" "$server"; fi
+  fi
+  if [ "$pulled_id" = "$running_id" ]; then
+    rm -f "$STATUS/staged.ready"
+    return 0
+  fi
+  if [ -f "$HOST/failed-image" ] && [ "$(cat "$HOST/failed-image")" = "$pulled_id" ]; then
+    rm -f "$STATUS/staged.ready"
+    log "Skipping $pulled_id: an install of it failed. A newer image clears this."
+    return 0
+  fi
+  read_build "$(labels "$CONTAINER_NAME")"
+  local running_version=$BUILD_VERSION running_revision=$BUILD_REVISION running_created=$BUILD_CREATED
+  read_build "$(labels "$pulled_id")"
+  if newer_build "$BUILD_VERSION" "$BUILD_REVISION" "$BUILD_CREATED" \
+    "$running_version" "$running_revision" "$running_created"; then
+    set_state "$HOST/staged-image" "$pulled_id"
+    set_state "$STATUS/staged.ready" "$BUILD_VERSION $BUILD_REVISION $BUILD_CREATED"
+    log "Staged $BUILD_VERSION ${BUILD_REVISION:-?} (${BUILD_CREATED:-no time}); running $running_version ${running_revision:-?} (${running_created:-no time})."
+  else
+    rm -f "$STATUS/staged.ready"
+    log "Not staged: $IMAGE_REF is $BUILD_VERSION ${BUILD_REVISION:-?} (${BUILD_CREATED:-no time}), not newer than $running_version ${running_revision:-?} (${running_created:-no time})."
+  fi
+}
+
+# The complete backups of this stack, newest first.
+complete_backups() {
+  local file name
+  for file in "$BACKUP_DIR"/openbot-"$BACKUP_NAME"-*; do
+    name=${file##*/}
+    if [[ $name =~ ^openbot-${BACKUP_NAME}-[0-9]{8}T[0-9]{6}Z\.(tgz|tar\.zst)$ ]]; then echo "$name"; fi
+  done | sort -r
+}
+
+# Keeps the newest $1 complete backups of this stack and deletes the others.
+prune_backups() {
+  local keep=$1 index=0 name
+  while IFS= read -r name; do
+    index=$((index + 1))
+    if [ "$index" -gt "$keep" ]; then
+      rm -f -- "$BACKUP_DIR/$name" "$BACKUP_DIR/$name.sha256"
+      log "Deleted the old backup $name."
+    fi
+  done < <(complete_backups)
+}
+
+# Copies the stopped data volume to one archive. Prints its path.
+backup() {
+  local data=$1 stamp archive need available newest compressor=(gzip -1) extension=tgz
+  [ -d "$data" ] || fail "The data folder $data is not there."
+  install -d -m 0755 "$BACKUP_DIR"
+  rm -f -- "$BACKUP_DIR"/openbot-"$BACKUP_NAME"-*.partial
+  # The new backup is the last one of BACKUP_KEEP, so the disk needs room for one archive only.
+  prune_backups $((BACKUP_KEEP > 1 ? BACKUP_KEEP - 1 : 1))
+  newest=$(complete_backups | head -n 1)
+  if [ -n "$newest" ]; then
+    need=$(stat --format=%s "$BACKUP_DIR/$newest")
+  else
+    need=$(du -sb --one-file-system "$data" | cut -f 1)
+  fi
+  need=$((need + need / 4 + 536870912))
+  available=$(df --block-size=1 --output=avail "$BACKUP_DIR" | tail -n 1 | tr -d ' ')
+  [ "$available" -gt "$need" ] ||
+    fail "The backup needs about $((need / 1048576)) MiB in $BACKUP_DIR, which has $((available / 1048576)) MiB free."
+  if command -v zstd >/dev/null; then
+    compressor=(zstd --quiet --threads=0 -3)
+    extension=tar.zst
+  fi
+  stamp=$(date -u +%Y%m%dT%H%M%SZ)
+  archive=$BACKUP_DIR/openbot-$BACKUP_NAME-$stamp.$extension
+  tar --create --file=- --directory="$data" --numeric-owner --sparse --one-file-system . |
+    "${compressor[@]}" >"$archive.partial" || { rm -f -- "$archive.partial"; fail "The backup of $data failed."; }
+  sync --file-system "$archive.partial"
+  mv -f -- "$archive.partial" "$archive"
+  (cd "$BACKUP_DIR" && sha256sum -- "${archive##*/}") >"$archive.sha256"
+  echo "$archive"
+}
+
+# Replaces the stopped data volume with backup $2.
+restore() {
+  local data=$1 archive=$2 decompress=(gzip -dc)
+  [ -d "$data" ] || fail "The data folder $data is not there."
+  (cd "$BACKUP_DIR" && sha256sum --check --status -- "${archive##*/}.sha256") ||
+    fail "The backup $archive does not match its checksum; $data is not changed."
+  if [[ $archive == *.tar.zst ]]; then decompress=(zstd -dc --quiet); fi
+  find "$data" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +
+  "${decompress[@]}" -- "$archive" | tar --extract --file=- --directory="$data" --numeric-owner --same-permissions
+}
+
+# Waits until the container runs image $1 and answers its status, and is online when $2 is 1.
+wait_healthy() {
+  local image=$1 online=$2 deadline=$((SECONDS + HEALTH_TIMEOUT_SECONDS)) status
+  while [ "$SECONDS" -lt "$deadline" ]; do
+    if container_running && [ "$(container_image)" = "$image" ]; then
+      status=$(read_status)
+      if [ -n "$(status_value "$status" version)" ] &&
+        { [ "$online" = 0 ] || [ "$(status_value "$status" server)" = online ]; }; then
+        return 0
+      fi
+    fi
+    sleep "$POLL_SECONDS"
+  done
+  return 1
+}
+
+check_compose() {
+  local images
+  images=$(compose config --images 2>/dev/null || true)
+  printf '%s\n' "$images" | grep -qxF "$CURRENT_TAG" ||
+    fail "Compose in $STACK_DIR does not run $CURRENT_TAG. Run 'openbot-vps-update setup' first."
+}
+
+# Installs the staged image. The lock is held. The container has stopped its work: the app runs its
+# shutdown before it asks for the install.
+install_staged() {
+  local staged_id running_id data online=0 old_previous archive stopped_at downtime from to
+  staged_id=$(cat "$HOST/staged-image" 2>/dev/null || true)
+  running_id=$(container_image)
+  [ -n "$staged_id" ] && [ -n "$running_id" ] || fail "There is no staged image or no container."
+  check_compose
+  data=$(volume_dir)
+  [ -n "$data" ] || fail "The data volume of $CONTAINER_NAME is not known."
+  if [ "$(cat "$HOST/server-state" 2>/dev/null || true)" = online ]; then online=1; fi
+  read_build "$(labels "$running_id")"
+  from="$BUILD_VERSION ${BUILD_REVISION:-?}"
+  read_build "$(labels "$staged_id")"
+  to="$BUILD_VERSION ${BUILD_REVISION:-?}"
+
+  old_previous=$(image_id "$PREVIOUS_TAG")
+  "$DOCKER" tag "$running_id" "$PREVIOUS_TAG"
+  log "Installing $to over $from. Stopping $CONTAINER_NAME for the backup."
+  stopped_at=$SECONDS
+  "$DOCKER" stop --time 60 "$CONTAINER_NAME" >/dev/null
+  if ! archive=$(backup "$data"); then
+    "$DOCKER" start "$CONTAINER_NAME" >/dev/null || true
+    fail "The backup failed, so nothing changed. $CONTAINER_NAME runs $from again."
+  fi
+  log "Backup $archive ($(du -h "$archive" | cut -f 1)) after $((SECONDS - stopped_at)) s."
+  "$DOCKER" tag "$staged_id" "$CURRENT_TAG"
+  if compose up -d --pull never "$COMPOSE_SERVICE" && wait_healthy "$staged_id" "$online"; then
+    downtime=$((SECONDS - stopped_at))
+    rm -f "$STATUS/staged.ready" "$HOST/staged-image" "$HOST/failed-image"
+    log "Installed $to in $downtime s, from stop to $([ "$online" = 1 ] && echo online || echo answering)."
+    printf '{"at":"%s","from":"%s","to":"%s","result":"installed","downtimeSeconds":%s,"backup":"%s"}\n' \
+      "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$from" "$to" "$downtime" "$archive" >>"$HOST/installs.log"
+    # The image before the previous one has no use now. A tag or a container that still uses it keeps it.
+    if [ -n "$old_previous" ] && [ "$old_previous" != "$running_id" ] && [ "$old_previous" != "$staged_id" ]; then
+      "$DOCKER" image rm "$old_previous" >/dev/null 2>&1 || true
+    fi
+    return 0
+  fi
+
+  log "$CONTAINER_NAME did not come back on $to within $HEALTH_TIMEOUT_SECONDS s. Restoring $archive and $from."
+  set_state "$HOST/failed-image" "$staged_id"
+  rm -f "$STATUS/staged.ready" "$HOST/staged-image"
+  "$DOCKER" stop --time 60 "$CONTAINER_NAME" >/dev/null 2>&1 || true
+  restore "$data" "$archive"
+  "$DOCKER" tag "$running_id" "$CURRENT_TAG"
+  if compose up -d --pull never "$COMPOSE_SERVICE" && wait_healthy "$running_id" "$online"; then
+    log "Back on $from with the data from before the install."
+  else
+    log "CRITICAL: $from did not come back after the restore."
+  fi
+  printf '{"at":"%s","from":"%s","to":"%s","result":"rolled-back","downtimeSeconds":%s,"backup":"%s"}\n' \
+    "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$from" "$to" "$((SECONDS - stopped_at))" "$archive" >>"$HOST/installs.log"
+  return 1
+}
+
+# The app writes `update-stage` or `update-install`. It waits while the request is there, then reads
+# the state, so the state comes first. The time of the state changes while the request runs.
+# `request install` installs without a request file, so the path unit does not take it at the same time.
+request() {
+  local install=0 result=0 keeper
+  lock
+  if [ "${1:-}" = install ] || [ -e "$REQUESTS/update-install" ] || [ -L "$REQUESTS/update-install" ]; then install=1; fi
+  if [ "$install" -eq 1 ]; then set_state "$STATUS/state" installing; else set_state "$STATUS/state" waiting; fi
+  rm -rf -- "$REQUESTS/update-stage" "$REQUESTS/update-install"
+  (while sleep 5; do touch -c "$STATUS/state"; done) >/dev/null 2>&1 &
+  keeper=$!
+  (stage) || result=$?
+  if [ "$install" -eq 1 ]; then
+    if [ "$result" -eq 0 ] && [ -e "$STATUS/staged.ready" ]; then
+      (install_staged) || result=$?
+    else
+      # The app stopped its work for the install. Start it again on the same image.
+      log "Nothing newer to install. Restarting $CONTAINER_NAME on its image."
+      "$DOCKER" restart --time 60 "$CONTAINER_NAME" >/dev/null || result=1
+    fi
+  fi
+  kill "$keeper" 2>/dev/null || true
+  rm -f "$STATUS/state"
+  return "$result"
+}
+
+show_status() {
+  read_build "$(labels "$CONTAINER_NAME")"
+  echo "running: $BUILD_VERSION ${BUILD_REVISION:-?} ${BUILD_CREATED:-}"
+  echo "staged: $(cat "$STATUS/staged.ready" 2>/dev/null || echo none)"
+  echo "app updates: $([ -e "$STATUS/enabled" ] && echo enabled || echo disabled)"
+  echo "last server state: $(cat "$HOST/server-state" 2>/dev/null || echo unknown)"
+  if [ -f "$HOST/installs.log" ]; then echo "last install: $(tail -n 1 "$HOST/installs.log")"; fi
+}
+
+# The host UID:GID of the image user, 1000:1000. With userns-remap, Docker adds the start of the
+# ranges of dockremap in /etc/subuid and /etc/subgid.
+data_owner() {
+  if ! "$DOCKER" info --format '{{.SecurityOptions}}' | grep -q name=userns; then
+    echo 1000:1000
+    return
+  fi
+  local uid gid
+  uid=$(awk -F: '$1 == "dockremap" { print $2; exit }' /etc/subuid)
+  gid=$(awk -F: '$1 == "dockremap" { print $2; exit }' /etc/subgid)
+  [ -n "$uid" ] && [ -n "$gid" ] || fail "Docker uses userns-remap, but dockremap has no range."
+  echo "$((uid + 1000)):$((gid + 1000))"
+}
+
+# Sets KEY=VALUE in env file $1, and keeps its other lines.
+set_env_line() {
+  local file=$1 key=$2 value=$3
+  touch "$file"
+  grep -v "^$key=" "$file" >"$file.new" || true
+  printf '%s=%s\n' "$key" "$value" >>"$file.new"
+  chmod --reference="$file" "$file.new"
+  mv -f "$file.new" "$file"
+}
+
+setup() {
+  local here recreate=0 stamp saved owner files running_id unit
+  [ "$(id -u)" -eq 0 ] || fail "Run setup as root."
+  for arg in "$@"; do
+    case $arg in
+      --recreate) recreate=1 ;;
+      *) fail "Unknown option $arg." ;;
+    esac
+  done
+  here=$(dirname "$(readlink -f "$0")")
+  for unit in openbot-vps-update.path openbot-vps-update.service openbot-vps-update-stage.service \
+    openbot-vps-update-stage.timer compose.update.yaml; do
+    [ -f "$here/$unit" ] || fail "$here/$unit is missing. Run setup from the docker/vps-update folder."
+  done
+  [ -f "$STACK_DIR/compose.yaml" ] || fail "There is no $STACK_DIR/compose.yaml."
+
+  if [ ! -f "$CONFIG" ]; then
+    printf '%s\n' "# openbot-vps-update settings. See docs/docker.md#updates-from-the-app-on-a-vps-pokebots." \
+      "STACK_DIR=$STACK_DIR" "COMPOSE_SERVICE=$COMPOSE_SERVICE" "CONTAINER_NAME=$CONTAINER_NAME" \
+      "IMAGE_REF=$IMAGE_REF" "BACKUP_DIR=$BACKUP_DIR" "BACKUP_NAME=$BACKUP_NAME" "BACKUP_KEEP=$BACKUP_KEEP" >"$CONFIG"
+    chmod 0644 "$CONFIG"
+  fi
+
+  # A copy of what setup changes, so that it can be undone.
+  stamp=$(date -u +%Y%m%dT%H%M%SZ)
+  saved=$UPDATE_DIR/setup-backups/$stamp
+  install -d -m 0700 "$saved"
+  for files in "$STACK_DIR"/compose*.yaml "$STACK_DIR/.env" "$UNIT_DIRECTORY"/openbot-vps-auto-update.* \
+    /usr/local/bin/openbot-vps-auto-update /etc/fstab; do
+    if [ -e "$files" ]; then cp -a -- "$files" "$saved/"; fi
+  done
+  if [ -d "$UNIT_DIRECTORY/openbot-vps-auto-update.timer.d" ]; then
+    cp -a -- "$UNIT_DIRECTORY/openbot-vps-auto-update.timer.d" "$saved/"
+  fi
+  log "Saved the old files in $saved."
+
+  # The automatic swap of docker/vps-auto-update.sh, which this replaces.
+  if [ -e "$UNIT_DIRECTORY/openbot-vps-auto-update.timer" ]; then
+    systemctl disable --now openbot-vps-auto-update.timer >/dev/null 2>&1 || true
+    rm -rf -- "$UNIT_DIRECTORY"/openbot-vps-auto-update.timer "$UNIT_DIRECTORY"/openbot-vps-auto-update.service \
+      "$UNIT_DIRECTORY/openbot-vps-auto-update.timer.d" /usr/local/bin/openbot-vps-auto-update
+    log "Removed the automatic swap (openbot-vps-auto-update)."
+  fi
+
+  install -m 0755 "$here/openbot-vps-update" "$INSTALLED"
+  install -d -m 0755 "$UPDATE_DIR" "$STATUS"
+  install -d -m 0700 "$HOST"
+  # The container writes requests. The folder is a small tmpfs, so it cannot fill the disk. Docker
+  # would make a missing folder as root, and the container could not write to it.
+  owner=$(data_owner)
+  install -d -m 0700 "$REQUESTS"
+  if ! grep -qF " $REQUESTS tmpfs " /etc/fstab; then
+    printf 'tmpfs %s tmpfs size=64k,nr_inodes=16,mode=0700,uid=%s,gid=%s,nodev,nosuid,noexec,nofail,x-systemd.before=docker.service 0 0\n' \
+      "$REQUESTS" "${owner%:*}" "${owner#*:}" >>/etc/fstab
+    systemctl daemon-reload
+  fi
+  mountpoint -q "$REQUESTS" || mount "$REQUESTS"
+  # OpenBot offers updates from the app only when this file is there.
+  touch "$STATUS/enabled"
+  chmod 0644 "$STATUS/enabled"
+
+  for unit in openbot-vps-update.path openbot-vps-update.service openbot-vps-update-stage.service \
+    openbot-vps-update-stage.timer; do
+    install -m 0644 "$here/$unit" "$UNIT_DIRECTORY/$unit"
+  done
+  install -m 0644 "$here/compose.update.yaml" "$STACK_DIR/compose.update.yaml"
+  files=compose.yaml
+  if [ -f "$STACK_DIR/compose.override.yaml" ]; then files=$files:compose.override.yaml; fi
+  set_env_line "$STACK_DIR/.env" COMPOSE_FILE "$files:compose.update.yaml"
+  chown --reference="$STACK_DIR/compose.yaml" "$STACK_DIR/compose.update.yaml" "$STACK_DIR/.env"
+
+  # The running image becomes openbot-vps:current, so the next `up` keeps it.
+  running_id=$(container_image)
+  if [ -n "$running_id" ] && [ -z "$(image_id "$CURRENT_TAG")" ]; then "$DOCKER" tag "$running_id" "$CURRENT_TAG"; fi
+  [ -n "$(image_id "$CURRENT_TAG")" ] || "$DOCKER" tag "$IMAGE_REF" "$CURRENT_TAG"
+  check_compose
+
+  systemctl daemon-reload
+  systemctl enable --now openbot-vps-update.path openbot-vps-update-stage.timer
+  log "Installed. The timer stages new images; Install in Server Settings > Updates installs them."
+  if [ "$recreate" -eq 1 ]; then
+    log "Making $CONTAINER_NAME again once, with the update folders. Clients reconnect."
+    local stopped_at=$SECONDS online=0
+    if [ "$(status_value "$(read_status)" server)" = online ]; then online=1; fi
+    compose up -d "$COMPOSE_SERVICE"
+    wait_healthy "$(image_id "$CURRENT_TAG")" "$online" || fail "$CONTAINER_NAME did not come back."
+    log "$CONTAINER_NAME is back after $((SECONDS - stopped_at)) s."
+  else
+    log "Run 'cd $STACK_DIR && docker compose up -d' once to give the container the update folders."
+  fi
+}
+
+main() {
+  local command=${1:-}
+  [ "$#" -eq 0 ] || shift
+  case $command in
+    setup) setup "$@" ;;
+    stage)
+      lock
+      stage
+      ;;
+    request) request ;;
+    install) request install ;;
+    status) show_status ;;
+    *)
+      sed -n '2,25p' "$0" | sed 's/^# \{0,1\}//'
+      [ -z "$command" ] || exit 2
+      ;;
+  esac
+}
+
+main "$@"

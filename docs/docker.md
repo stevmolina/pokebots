@@ -282,7 +282,7 @@ its env file keeps that tag and offers no update in the app. An instance made be
 ### Automatic updates (Pokebots)
 
 `openbot-instance-auto-update.timer` runs `openbot-instance auto-update --all` every 10 minutes, so
-each instance updates by itself, as the Mac app and the main VPS server do. A push to `main` publishes
+each instance updates by itself, as the Mac app does. A push to `main` publishes
 `ghcr.io/stevmolina/pokebots:latest`, the default image of the instances. For each instance it:
 
 1. pulls the image and stops when the container already runs it, or when it is older than the
@@ -406,6 +406,63 @@ OpenBot does not update itself in a container. A new image replaces it. An insta
 `docker/instances` can ask the host for that from the app, see
 [Updates from the app](#updates-from-the-app). Do not go back to an older tag: an older OpenBot cannot
 open a database that a newer one migrated, so it does not start.
+
+### Updates from the app on a VPS (Pokebots)
+
+A VPS that runs one OpenBot container from a Compose stack, such as `/srv/stacks/openbot`, downloads
+new images by itself and installs one only when the owner or an admin selects Install in Server
+Settings > Updates, on the desktop, the web client or the phone. An install restarts the server, and
+each restart drops every client, so it never happens by itself.
+
+Set it up once, as root, from a checkout of this repository on the VPS:
+
+```sh
+sudo BACKUP_NAME=resorsi docker/vps-update/openbot-vps-update setup --recreate
+```
+
+`setup` writes `/etc/openbot-vps-update.env` (`STACK_DIR`, `CONTAINER_NAME`, `IMAGE_REF`,
+`BACKUP_DIR=/home/ubuntu/backups`, `BACKUP_NAME`, `BACKUP_KEEP=3`), installs
+`/usr/local/sbin/openbot-vps-update` and the units of `docker/vps-update`, and copies the files that
+it changes to `/var/lib/openbot-vps-update/setup-backups/<time>/`. It removes the old automatic swap
+(`openbot-vps-auto-update`). It adds `compose.update.yaml` to the stack through `COMPOSE_FILE` in its
+`.env`. `--recreate` makes the container again once, with the update folders; clients reconnect.
+
+| Part | What it does |
+| --- | --- |
+| `openbot-vps-update-stage.timer` | Every 15 minutes, pulls `IMAGE_REF` and writes `<version> <commit> <commit time>` to `/var/lib/openbot-vps-update/status/staged.ready` when it is a newer build. It never replaces the container. |
+| `openbot-vps-update.path` | Runs `openbot-vps-update request` as root when the app writes `update-stage` or `update-install` to `/var/lib/openbot-vps-update/requests`, a tmpfs of 64 KiB that the container can write. |
+| `compose.update.yaml` | Runs the local tag `openbot-vps:current`, so a pull or a `docker compose up -d` never changes the image. Mounts the request folder, and the status folder read-only. |
+| `status/enabled` | OpenBot offers updates from the app only when this file is there. |
+
+All Pokebots images of one release have the same version, such as `0.73.0-custom`. So the host and
+the app compare builds: a newer version is newer; with the same version, the commit must differ and
+its time (`org.opencontainers.image.created`, the commit time) must be later. An older build is never
+offered: an older OpenBot cannot open a database that a newer one migrated. The app shows the build
+as `0.73.0+<commit>`, and "Update ready: build <commit>".
+
+When a person selects Install, the app tells the clients that the server restarts, stops its work and
+writes `update-install`. The host then:
+
+1. pulls the image again and checks that it is still a newer build. When it is not, it only restarts
+   the container;
+2. tags the running image `openbot-vps:previous` and stops the container;
+3. copies the data volume to `BACKUP_DIR/openbot-<BACKUP_NAME>-<time>.tar.zst` (or `.tgz`), with a
+   `.sha256` file, and keeps the newest `BACKUP_KEEP` of them. A failed backup starts the old
+   container again and changes nothing;
+4. moves `openbot-vps:current` to the new image, makes the container again and waits until it answers,
+   and is online when it was online before;
+5. when it does not come back, restores the backup and the old image, and skips that image until a
+   newer one is published.
+
+`sudo openbot-vps-update status` shows the running and the staged build, and the last install.
+`sudo openbot-vps-update install` installs the staged build from the shell. Each install writes one
+line with its downtime to `/var/lib/openbot-vps-update/host/installs.log`. `journalctl -u
+openbot-vps-update -u openbot-vps-update-stage` shows what the host did. `scripts/vps-update-e2e.ts`
+checks the request flow and the build rule.
+
+To undo it: `systemctl disable --now openbot-vps-update.path openbot-vps-update-stage.timer`, remove
+`COMPOSE_FILE` from the `.env` of the stack and the requests line from `/etc/fstab`, then
+`docker compose up -d`.
 
 ### Update automation
 

@@ -71,3 +71,17 @@ export function isNewerRelease(candidate: string, current: string): boolean {
   const now = parseReleaseVersion(current);
   return next !== null && now !== null && compareReleaseVersions(next, now) > 0;
 }
+
+const BUILD_REVISION = /^[0-9a-f]{7,40}$/u;
+
+/**
+ * The commit of a server image build in a version such as "0.73.0+5dfb288b7", or null. A Pokebots
+ * server image adds its commit as SemVer build metadata, because all images of one release have the
+ * same version. The commit has no effect on the order of versions.
+ */
+export function releaseBuild(version: string): string | null {
+  const separator = version.indexOf("+");
+  if (separator < 0 || !isValidSemver(version)) return null;
+  const build = version.slice(separator + 1);
+  return BUILD_REVISION.test(build) ? build : null;
+}
