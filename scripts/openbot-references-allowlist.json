@@ -46,6 +46,10 @@
       "reason": "The released data folder ~/OpenBot."
     },
     {
+      "pattern": "\\.config/OpenBot\\b|OpenBot/(?:Agents|Shared)\\b",
+      "reason": "The released data folders ~/.config/OpenBot and ~/OpenBot/Agents, as paths in the server data volume (docker/vps-update)."
+    },
+    {
       "pattern": "OpenBot Safe Storage|OpenBot Dev\\b",
       "reason": "The released keychain item and the dev profile name."
     },

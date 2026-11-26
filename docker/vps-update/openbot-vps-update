@@ -9,9 +9,16 @@
 #   build than the container, writes "<version> <commit> <commit time>" to status/staged.ready.
 # - The app writes an empty request file to the requests folder, which the container can write.
 #   openbot-vps-update.path sees it and runs `request` as root. `update-stage` stages now, and
-#   `update-install` also installs: it stops the container, backs up its data volume, makes the
-#   container again from the staged image, and waits until it is online. When it does not come back,
-#   it restores the backup and the old image.
+#   `update-install` also installs: it stops the container, copies the last changes of its data
+#   volume to the mirror, makes the container again from the staged image, and waits until it is
+#   online. When it does not come back, it restores the data from the mirror and the old image.
+#
+# The mirror is a copy of the data volume next to the backups. While a staged build waits, a
+# background job copies the volume to the mirror with rsync while the server runs ("pre-copy"). The
+# app stops its work before it asks for the install, so the install does only a short final sync
+# with the container stopped. That copy is consistent, also for SQLite with its -wal and -shm files.
+# After the install, a background job compresses the mirror to one archive and keeps the newest
+# BACKUP_KEEP archives. Download caches are not copied (see BACKUP_EXCLUDES).
 #
 # The container never gets the Docker socket. Root only tests a request file and removes it; it never
 # reads or follows it. Root reports in the status folder, which the container mounts read-only.
@@ -23,6 +30,8 @@
 #   openbot-vps-update stage                Pulls and stages a newer build.
 #   openbot-vps-update request              Acts on the requests of the app (the path unit runs it).
 #   openbot-vps-update install              Stages and installs now, as an Install in the app.
+#   openbot-vps-update precopy              Fills the mirror while the server runs (a background job).
+#   openbot-vps-update archive              Compresses a stopped mirror to an archive (a background job).
 #   openbot-vps-update status               Shows the running and the staged build.
 set -euo pipefail
 umask 077
@@ -47,10 +56,62 @@ BACKUP_NAME=${BACKUP_NAME:-openbot}
 BACKUP_KEEP=${BACKUP_KEEP:-3}
 VOLUME_DIR=${VOLUME_DIR:-}
 HEALTH_TIMEOUT_SECONDS=${HEALTH_TIMEOUT_SECONDS:-300}
-POLL_SECONDS=${POLL_SECONDS:-2}
+POLL_SECONDS=${POLL_SECONDS:-1}
 LOCK_FILE=${LOCK_FILE:-/run/openbot-vps-update.lock}
 UNIT_DIRECTORY=${UNIT_DIRECTORY:-/etc/systemd/system}
 INSTALLED=/usr/local/sbin/openbot-vps-update
+# The mirror of the data volume. Root only: it holds the same secrets as the volume.
+MIRROR_DIR=${MIRROR_DIR:-$BACKUP_DIR/openbot-$BACKUP_NAME-mirror}
+MIRROR_DATA=$MIRROR_DIR/data
+MIRROR_STATE=$MIRROR_DIR/state
+MIRROR_LOCK=$UPDATE_DIR/mirror.lock
+MIRROR_JOB=$UPDATE_DIR/mirror.job
+# A pre-copy runs again when the mirror is older than this, while a staged build waits.
+MIRROR_REFRESH_SECONDS=${MIRROR_REFRESH_SECONDS:-600}
+# The disk must keep this much free space after a copy to the mirror.
+MIRROR_MIN_FREE_BYTES=${MIRROR_MIN_FREE_BYTES:-1073741824}
+# A stopped copy runs one rsync for each folder in SPLIT_ROOT/<agent>/, SYNC_JOBS at once (copy_tree).
+SPLIT_ROOT=OpenBot/Agents
+SYNC_JOBS=${SYNC_JOBS:-$(nproc 2>/dev/null || echo 4)}
+
+# Folders that the backup does not copy, from the root of the data volume (rsync patterns). Each one
+# is only a download or build cache: the tool downloads or makes it again when it is missing. User
+# data stays in the backup: agent folders (also their node_modules), databases, provider-state and
+# provider-runtimes, sessions, the .claude, .codex, .grok, .gemini and .cursor folders, the browser
+# profiles in Partitions (logins and cookies), and Service Worker storage. A rollback restores the
+# mirror with these patterns, so it keeps the caches that are on the volume. Add a folder only when
+# it is surely a cache.
+BACKUP_EXCLUDES=(
+  /.bun/install/cache/   # Bun package downloads; `bun install` gets them again.
+  /.npm/_cacache/        # npm package downloads.
+  /.npm/_npx/            # Packages that npx downloaded.
+  /.npm/_logs/           # npm debug logs.
+  /.cache/ms-playwright/ # Playwright browser downloads; `playwright install` gets them again.
+  /.cache/electron/      # Electron downloads.
+  /.cache/zig/           # Zig build cache.
+  /.cache/mesa_shader_cache/
+  /.cache/cursor-compile-cache/
+  /.cache/fontconfig/
+  /.cargo/registry/      # Crate downloads and their unpacked sources.
+  /.rustup/downloads/
+  /.rustup/tmp/
+  # Chromium caches of OpenBot and of the browser profiles in Partitions. Not "Service Worker".
+  /.config/OpenBot/Cache/
+  "/.config/OpenBot/Code Cache/"
+  /.config/OpenBot/GPUCache/
+  /.config/OpenBot/GPUPersistentCache/
+  /.config/OpenBot/DawnWebGPUCache/
+  /.config/OpenBot/DawnGraphiteCache/
+  /.config/OpenBot/GrShaderCache/
+  /.config/OpenBot/ShaderCache/
+  '/.config/OpenBot/Partitions/*/Cache/'
+  '/.config/OpenBot/Partitions/*/Code Cache/'
+  '/.config/OpenBot/Partitions/*/GPUCache/'
+  '/.config/OpenBot/Partitions/*/DawnWebGPUCache/'
+  '/.config/OpenBot/Partitions/*/DawnGraphiteCache/'
+  '/.config/OpenBot/Partitions/*/GrShaderCache/'
+  '/.config/OpenBot/Partitions/*/ShaderCache/'
+)
 
 # The log goes to stderr, so that a function can print its result on stdout. systemd keeps both.
 log() {
@@ -164,9 +225,11 @@ volume_dir() {
 }
 
 # Pulls IMAGE_REF and writes it to staged.ready when it is a newer build than the container.
-# Each run writes the state again, so a staged image that is no longer newer goes away.
+# Each run writes the state again, so a staged image that is no longer newer goes away. While a
+# build is staged, it starts the pre-copy job, which keeps the mirror less than
+# MIRROR_REFRESH_SECONDS old. With $1 = 0 it does not: an install follows at once.
 stage() {
-  local pulled_id running_id status server
+  local precopy=${1:-1} pulled_id running_id status server
   "$DOCKER" pull --quiet "$IMAGE_REF" >/dev/null || fail "The image $IMAGE_REF did not download."
   pulled_id=$(image_id "$IMAGE_REF")
   running_id=$(container_image)
@@ -199,6 +262,7 @@ stage() {
     set_state "$HOST/staged-image" "$pulled_id"
     set_state "$STATUS/staged.ready" "$BUILD_VERSION $BUILD_REVISION $BUILD_CREATED"
     log "Staged $BUILD_VERSION ${BUILD_REVISION:-?} (${BUILD_CREATED:-no time}); running $running_version ${running_revision:-?} (${running_created:-no time})."
+    if [ "$precopy" = 1 ] && container_running && mirror_stale; then start_job precopy; fi
   else
     rm -f "$STATUS/staged.ready"
     log "Not staged: $IMAGE_REF is $BUILD_VERSION ${BUILD_REVISION:-?} (${BUILD_CREATED:-no time}), not newer than $running_version ${running_revision:-?} (${running_created:-no time})."
@@ -226,47 +290,235 @@ prune_backups() {
   done < <(complete_backups)
 }
 
-# Copies the stopped data volume to one archive. Prints its path.
-backup() {
-  local data=$1 stamp archive need available newest compressor=(gzip -1) extension=tgz
-  [ -d "$data" ] || fail "The data folder $data is not there."
+# Milliseconds since the epoch, for the times of the install phases.
+now_ms() {
+  date +%s%3N
+}
+
+# Seconds with one decimal, from milliseconds.
+seconds() {
+  printf '%d.%d' $(($1 / 1000)) $(($1 % 1000 / 100))
+}
+
+free_bytes() {
+  df --block-size=1 --output=avail "$1" | tail -n 1 | tr -d ' '
+}
+
+# The options of each rsync between the data volume and the mirror. rsync copies a file when
+# its size or its modification time differs. --modify-window=-1 compares the time in nanoseconds;
+# with the default, rsync compares whole seconds, and the final sync could keep an old copy of a
+# database page that changed in the same second as the pre-copy. Like the tar archives before, the
+# copy does not keep ACLs or extended attributes: OpenBot does not use them, and they make each copy
+# slower.
+RSYNC_OPTIONS=(--archive --hard-links --numeric-ids --one-file-system --delete --modify-window=-1)
+
+# The folders in each agent folder (SPLIT_ROOT/<agent>/<folder>) of $1, relative to it, each followed
+# by a NUL. Each one is a "unit" of a split copy.
+split_units() {
+  if [ -d "$1/$SPLIT_ROOT" ]; then (cd "$1" && find "$SPLIT_ROOT" -mindepth 2 -maxdepth 2 -type d -print0); fi
+}
+
+# Copies folder $1 to folder $2 with the patterns of BACKUP_EXCLUDES. Each cache in $2 stays: the
+# patterns protect it from --delete. $3 is "live" while the container runs: then a file can change
+# or go away while rsync reads it, and the next copy copies it again.
+#
+# A stopped copy (the final sync, a restore) is downtime. rsync uses one CPU, and one rsync over the
+# 1.3 million files of the Personal VPS takes 43 s, most of them in the node_modules of agent
+# folders. So it runs one rsync for each unit (split_units) and one for the rest, SYNC_JOBS at once:
+# 7 s there. A live copy runs one rsync, which also keeps hard links between units.
+copy_tree() {
+  local from=$1 to=$2 mode=$3 pattern unit result=0 failures
+  local excludes=()
+  local -A units=()
+  for pattern in "${BACKUP_EXCLUDES[@]}"; do excludes+=("--exclude=$pattern"); done
+  if [ "$mode" = live ]; then
+    rsync "${RSYNC_OPTIONS[@]}" "${excludes[@]}" --stats -- "$from/" "$to/" |
+      awk '/^Number of regular files transferred|^Total transferred file size/ { print "  " $0 }' >&2 ||
+      result=$?
+    if [ "$result" -eq 24 ]; then result=0; fi
+    [ "$result" -eq 0 ] || log "rsync of $from to $to ended with code $result."
+    return "$result"
+  fi
+  while IFS= read -r -d '' unit; do units[$unit]=1; done < <(split_units "$from")
+  # A unit that is only in $2: the rsync of the rest cannot delete it, because its pattern protects it.
+  while IFS= read -r -d '' unit; do
+    if [ -z "${units[$unit]:-}" ]; then rm -rf -- "${to:?}/$unit"; fi
+  done < <(split_units "$to")
+  failures=$(mktemp)
+  { rsync "${RSYNC_OPTIONS[@]}" "${excludes[@]}" "--exclude=/$SPLIT_ROOT/*/*/*" -- "$from/" "$to/" ||
+    echo "rest: rsync code $?" >>"$failures"; } &
+  for unit in "${!units[@]}"; do
+    while [ "$(jobs -rp | wc -l)" -ge "$SYNC_JOBS" ]; do wait -n || true; done
+    { mkdir -p -- "$to/$unit" && rsync "${RSYNC_OPTIONS[@]}" -- "$from/$unit/" "$to/$unit/" ||
+      echo "$unit: rsync code $?" >>"$failures"; } &
+  done
+  wait
+  if [ -s "$failures" ]; then
+    log "The copy of $from to $to failed: $(head -n 3 "$failures" | tr '\n' ' ')"
+    result=1
+  fi
+  rm -f -- "$failures"
+  return "$result"
+}
+
+# Copies the data volume $1 to the mirror. $2 is "live" while the container runs, or "stopped". The
+# caller holds the mirror lock.
+sync_mirror() {
+  local data=$1 mode=$2 need=0 available
+  [ -d "$data" ] || { log "The data folder $data is not there."; return 1; }
+  install -d -m 0700 "$MIRROR_DIR"
+  if [ ! -d "$MIRROR_DATA" ]; then need=$(du -sb --one-file-system "$data" | cut -f 1); fi
+  need=$((need + MIRROR_MIN_FREE_BYTES))
+  available=$(free_bytes "$MIRROR_DIR")
+  if [ "$available" -le "$need" ]; then
+    log "The mirror needs about $((need / 1048576)) MiB in $MIRROR_DIR, which has $((available / 1048576)) MiB free."
+    return 1
+  fi
+  set_state "$MIRROR_STATE" "partial $(date +%s)"
+  copy_tree "$data" "$MIRROR_DATA" "$mode"
+}
+
+# Replaces the stopped data volume $1 with the mirror. The caches on the volume stay.
+restore_mirror() {
+  local data=$1
+  [ -d "$data" ] && [ -d "$MIRROR_DATA" ] || { log "The data folder or the mirror is not there."; return 1; }
+  copy_tree "$MIRROR_DATA" "$data" stopped
+}
+
+# "<state> <unix time> [<stamp>]" of the mirror: partial, live (after a pre-copy) or stopped (after
+# the final sync of the stopped container at <stamp>).
+mirror_state() {
+  cat "$MIRROR_STATE" 2>/dev/null || true
+}
+
+# Seconds since the last complete copy to the mirror, or "never".
+mirror_age() {
+  local state at
+  read -r state at _ <<<"$(mirror_state)"
+  if [ -d "$MIRROR_DATA" ] && { [ "${state:-}" = live ] || [ "${state:-}" = stopped ]; } &&
+    [[ ${at:-} =~ ^[0-9]+$ ]]; then
+    echo $(($(date +%s) - at))
+  else
+    echo never
+  fi
+}
+
+# True when the mirror has no complete copy, or one older than MIRROR_REFRESH_SECONDS.
+mirror_stale() {
+  local age
+  age=$(mirror_age)
+  [ "$age" = never ] || [ "$age" -ge "$MIRROR_REFRESH_SECONDS" ]
+}
+
+# Takes the mirror lock on file descriptor 8. With "stop-jobs", it stops a background job that holds
+# it: a pre-copy or an archive has no use when an install makes a new copy.
+mirror_lock() {
+  local deadline=$((SECONDS + 30)) pid kind
+  exec 8>"$MIRROR_LOCK"
+  if flock -n 8; then return 0; fi
+  [ "${1:-}" = stop-jobs ] || return 1
+  while [ "$SECONDS" -lt "$deadline" ]; do
+    read -r pid kind <"$MIRROR_JOB" 2>/dev/null || true
+    # Only a job of this script. The job leads its process group, with rsync or tar in it.
+    if [[ ${pid:-} =~ ^[0-9]+$ ]] && grep -qF openbot-vps-update "/proc/$pid/cmdline" 2>/dev/null; then
+      log "Stopping the ${kind:-mirror} job ($pid): the install makes a new copy."
+      kill -TERM -- "-$pid" 2>/dev/null || kill -TERM "$pid" 2>/dev/null || true
+    fi
+    if flock -w 2 8; then return 0; fi
+  done
+  return 1
+}
+
+# A background job uses the CPU and the disk only when the server does not.
+lower_priority() {
+  renice -n 19 -p $$ >/dev/null 2>&1 || true
+  ionice -c 3 -p $$ >/dev/null 2>&1 || true
+}
+
+# Starts `openbot-vps-update $1` (precopy or archive) in the background. systemd stops each process
+# of a oneshot unit when the unit ends, so the job gets its own transient unit. Without systemd (the
+# E2E check), it runs in its own session. It never keeps the locks of the caller.
+start_job() {
+  local kind=$1 self=${SELF:-$(readlink -f "$0")}
+  if [ -d /run/systemd/system ] && command -v systemd-run >/dev/null; then
+    systemd-run --quiet --collect --unit="openbot-vps-update-$kind" --property=Nice=19 \
+      --property=IOSchedulingClass=idle --setenv=OPENBOT_VPS_UPDATE_CONFIG="$CONFIG" "$self" "$kind" \
+      >/dev/null 2>&1 || log "The $kind job did not start. It can be running already."
+  else
+    OPENBOT_VPS_UPDATE_CONFIG=$CONFIG setsid nohup "$self" "$kind" </dev/null >>"$UPDATE_DIR/$kind.log" 2>&1 8>&- 9>&- &
+  fi
+}
+
+# Compresses the mirror to BACKUP_DIR/openbot-<BACKUP_NAME>-<stamp $1>.tar.zst (or .tgz), with a
+# .sha256 file, and keeps the newest BACKUP_KEEP archives. Prints its path.
+make_archive() {
+  local stamp=$1 archive need available newest compressor=(gzip -1) extension=tgz
   install -d -m 0755 "$BACKUP_DIR"
   rm -f -- "$BACKUP_DIR"/openbot-"$BACKUP_NAME"-*.partial
-  # The new backup is the last one of BACKUP_KEEP, so the disk needs room for one archive only.
+  # The new archive is the last one of BACKUP_KEEP, so the disk needs room for one archive only.
   prune_backups $((BACKUP_KEEP > 1 ? BACKUP_KEEP - 1 : 1))
   newest=$(complete_backups | head -n 1)
   if [ -n "$newest" ]; then
     need=$(stat --format=%s "$BACKUP_DIR/$newest")
   else
-    need=$(du -sb --one-file-system "$data" | cut -f 1)
+    need=$(du -sb --one-file-system "$MIRROR_DATA" | cut -f 1)
   fi
   need=$((need + need / 4 + 536870912))
-  available=$(df --block-size=1 --output=avail "$BACKUP_DIR" | tail -n 1 | tr -d ' ')
+  available=$(free_bytes "$BACKUP_DIR")
   [ "$available" -gt "$need" ] ||
-    fail "The backup needs about $((need / 1048576)) MiB in $BACKUP_DIR, which has $((available / 1048576)) MiB free."
+    fail "The archive needs about $((need / 1048576)) MiB in $BACKUP_DIR, which has $((available / 1048576)) MiB free."
   if command -v zstd >/dev/null; then
     compressor=(zstd --quiet --threads=0 -3)
     extension=tar.zst
   fi
-  stamp=$(date -u +%Y%m%dT%H%M%SZ)
   archive=$BACKUP_DIR/openbot-$BACKUP_NAME-$stamp.$extension
-  tar --create --file=- --directory="$data" --numeric-owner --sparse --one-file-system . |
-    "${compressor[@]}" >"$archive.partial" || { rm -f -- "$archive.partial"; fail "The backup of $data failed."; }
+  tar --create --file=- --directory="$MIRROR_DATA" --numeric-owner --sparse --one-file-system . |
+    "${compressor[@]}" >"$archive.partial" || { rm -f -- "$archive.partial"; fail "The archive of the mirror failed."; }
   sync --file-system "$archive.partial"
   mv -f -- "$archive.partial" "$archive"
   (cd "$BACKUP_DIR" && sha256sum -- "${archive##*/}") >"$archive.sha256"
+  prune_backups "$BACKUP_KEEP"
   echo "$archive"
 }
 
-# Replaces the stopped data volume with backup $2.
-restore() {
-  local data=$1 archive=$2 decompress=(gzip -dc)
-  [ -d "$data" ] || fail "The data folder $data is not there."
-  (cd "$BACKUP_DIR" && sha256sum --check --status -- "${archive##*/}.sha256") ||
-    fail "The backup $archive does not match its checksum; $data is not changed."
-  if [[ $archive == *.tar.zst ]]; then decompress=(zstd -dc --quiet); fi
-  find "$data" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +
-  "${decompress[@]}" -- "$archive" | tar --extract --file=- --directory="$data" --numeric-owner --same-permissions
+# Makes the archive of a stopped mirror that has none. The mirror lock is held.
+archive_stopped_mirror() {
+  local state at stamp started archive took
+  read -r state at stamp <<<"$(mirror_state)"
+  [ "${state:-}" = stopped ] && [[ ${stamp:-} =~ ^[0-9]{8}T[0-9]{6}Z$ ]] || return 0
+  if complete_backups | grep -q "^openbot-$BACKUP_NAME-$stamp\."; then return 0; fi
+  started=$(now_ms)
+  archive=$(make_archive "$stamp")
+  took=$(seconds $(($(now_ms) - started)))
+  log "Archived the mirror of $stamp to $archive ($(du -h "$archive" | cut -f 1)) in $took s."
+  printf '{"at":"%s","result":"archived","seconds":%s,"archive":"%s"}\n' \
+    "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$took" "$archive" >>"$HOST/archives.log"
+}
+
+# The `archive` job: the archive of the copy that the last install made.
+archive_job() {
+  mirror_lock || { log "Another mirror job is running."; return 0; }
+  printf '%s archive\n' "$$" >"$MIRROR_JOB"
+  lower_priority
+  archive_stopped_mirror
+}
+
+# The `precopy` job: copies the data volume to the mirror while the server runs, when the mirror is
+# older than MIRROR_REFRESH_SECONDS. A stopped mirror without an archive is archived first.
+precopy_job() {
+  local data started
+  mirror_lock || { log "Another mirror job is running."; return 0; }
+  printf '%s precopy\n' "$$" >"$MIRROR_JOB"
+  lower_priority
+  archive_stopped_mirror
+  mirror_stale || return 0
+  data=$(volume_dir)
+  [ -n "$data" ] || fail "The data volume of $CONTAINER_NAME is not known."
+  log "Pre-copy of $data to $MIRROR_DATA while the server runs."
+  started=$(now_ms)
+  sync_mirror "$data" live || fail "The pre-copy failed. The next one tries again."
+  set_state "$MIRROR_STATE" "live $(date +%s)"
+  log "Pre-copy done in $(seconds $(($(now_ms) - started))) s."
 }
 
 # Waits until the container runs image $1 and answers its status, and is online when $2 is 1.
@@ -293,59 +545,87 @@ check_compose() {
 }
 
 # Installs the staged image. The lock is held. The container has stopped its work: the app runs its
-# shutdown before it asks for the install.
+# shutdown before it asks for the install, so each second from here on is downtime. The pre-copy
+# filled the mirror before, while the server ran; here only the final sync runs.
 install_staged() {
-  local staged_id running_id data online=0 old_previous archive stopped_at downtime from to
+  local staged_id running_id data online=0 old_previous from to stamp result phases
+  local t_stop t_stopped t_synced t_started t_online
   staged_id=$(cat "$HOST/staged-image" 2>/dev/null || true)
   running_id=$(container_image)
   [ -n "$staged_id" ] && [ -n "$running_id" ] || fail "There is no staged image or no container."
   check_compose
   data=$(volume_dir)
   [ -n "$data" ] || fail "The data volume of $CONTAINER_NAME is not known."
+  command -v rsync >/dev/null || fail "rsync is not installed. Run 'apt-get install rsync'."
   if [ "$(cat "$HOST/server-state" 2>/dev/null || true)" = online ]; then online=1; fi
   read_build "$(labels "$running_id")"
   from="$BUILD_VERSION ${BUILD_REVISION:-?}"
   read_build "$(labels "$staged_id")"
   to="$BUILD_VERSION ${BUILD_REVISION:-?}"
+  if ! mirror_lock stop-jobs; then
+    "$DOCKER" restart --time 60 "$CONTAINER_NAME" >/dev/null || true
+    fail "A background copy holds the mirror and did not stop. $CONTAINER_NAME runs $from again."
+  fi
+  log "Installing $to over $from. The mirror is $(mirror_state | cut -d ' ' -f 1) from $(mirror_age) s ago."
 
   old_previous=$(image_id "$PREVIOUS_TAG")
   "$DOCKER" tag "$running_id" "$PREVIOUS_TAG"
-  log "Installing $to over $from. Stopping $CONTAINER_NAME for the backup."
-  stopped_at=$SECONDS
+  t_stop=$(now_ms)
   "$DOCKER" stop --time 60 "$CONTAINER_NAME" >/dev/null
-  if ! archive=$(backup "$data"); then
+  t_stopped=$(now_ms)
+  log "Stopped $CONTAINER_NAME in $(seconds $((t_stopped - t_stop))) s. Final sync to the mirror."
+  stamp=$(date -u +%Y%m%dT%H%M%SZ)
+  if ! sync_mirror "$data" stopped; then
     "$DOCKER" start "$CONTAINER_NAME" >/dev/null || true
-    fail "The backup failed, so nothing changed. $CONTAINER_NAME runs $from again."
+    fail "The final sync failed, so nothing changed. $CONTAINER_NAME runs $from again."
   fi
-  log "Backup $archive ($(du -h "$archive" | cut -f 1)) after $((SECONDS - stopped_at)) s."
+  set_state "$MIRROR_STATE" "stopped $(date +%s) $stamp"
+  t_synced=$(now_ms)
+  log "Final sync in $(seconds $((t_synced - t_stopped))) s. Starting $to."
   "$DOCKER" tag "$staged_id" "$CURRENT_TAG"
-  if compose up -d --pull never "$COMPOSE_SERVICE" && wait_healthy "$staged_id" "$online"; then
-    downtime=$((SECONDS - stopped_at))
+  result=rolled-back
+  if compose up -d --pull never "$COMPOSE_SERVICE"; then
+    t_started=$(now_ms)
+    log "Started in $(seconds $((t_started - t_synced))) s. Waiting until it is $([ "$online" = 1 ] && echo online || echo answering)."
+    if wait_healthy "$staged_id" "$online"; then result=installed; fi
+  fi
+  t_online=$(now_ms)
+  t_started=${t_started:-$t_online}
+
+  if [ "$result" = installed ]; then
     rm -f "$STATUS/staged.ready" "$HOST/staged-image" "$HOST/failed-image"
-    log "Installed $to in $downtime s, from stop to $([ "$online" = 1 ] && echo online || echo answering)."
-    printf '{"at":"%s","from":"%s","to":"%s","result":"installed","downtimeSeconds":%s,"backup":"%s"}\n' \
-      "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$from" "$to" "$downtime" "$archive" >>"$HOST/installs.log"
+    log "Installed $to in $(seconds $((t_online - t_stop))) s from stop to $([ "$online" = 1 ] && echo online || echo answering), $(seconds $((t_online - REQUEST_MS))) s from the request."
     # The image before the previous one has no use now. A tag or a container that still uses it keeps it.
     if [ -n "$old_previous" ] && [ "$old_previous" != "$running_id" ] && [ "$old_previous" != "$staged_id" ]; then
       "$DOCKER" image rm "$old_previous" >/dev/null 2>&1 || true
     fi
-    return 0
-  fi
-
-  log "$CONTAINER_NAME did not come back on $to within $HEALTH_TIMEOUT_SECONDS s. Restoring $archive and $from."
-  set_state "$HOST/failed-image" "$staged_id"
-  rm -f "$STATUS/staged.ready" "$HOST/staged-image"
-  "$DOCKER" stop --time 60 "$CONTAINER_NAME" >/dev/null 2>&1 || true
-  restore "$data" "$archive"
-  "$DOCKER" tag "$running_id" "$CURRENT_TAG"
-  if compose up -d --pull never "$COMPOSE_SERVICE" && wait_healthy "$running_id" "$online"; then
-    log "Back on $from with the data from before the install."
   else
-    log "CRITICAL: $from did not come back after the restore."
+    log "$CONTAINER_NAME did not come back on $to within $HEALTH_TIMEOUT_SECONDS s. Restoring the mirror and $from."
+    set_state "$HOST/failed-image" "$staged_id"
+    rm -f "$STATUS/staged.ready" "$HOST/staged-image"
+    "$DOCKER" stop --time 60 "$CONTAINER_NAME" >/dev/null 2>&1 || true
+    if restore_mirror "$data"; then
+      log "Restored the data of $stamp from the mirror."
+    else
+      log "CRITICAL: the restore from the mirror failed. The archive of $stamp follows in $BACKUP_DIR."
+    fi
+    "$DOCKER" tag "$running_id" "$CURRENT_TAG"
+    if compose up -d --pull never "$COMPOSE_SERVICE" && wait_healthy "$running_id" "$online"; then
+      log "Back on $from with the data from before the install."
+    else
+      log "CRITICAL: $from did not come back after the restore."
+    fi
+    t_online=$(now_ms)
   fi
-  printf '{"at":"%s","from":"%s","to":"%s","result":"rolled-back","downtimeSeconds":%s,"backup":"%s"}\n' \
-    "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$from" "$to" "$((SECONDS - stopped_at))" "$archive" >>"$HOST/installs.log"
-  return 1
+  phases=$(printf '{"stop":%s,"finalSync":%s,"start":%s,"online":%s}' "$(seconds $((t_stopped - t_stop)))" \
+    "$(seconds $((t_synced - t_stopped)))" "$(seconds $((t_started - t_synced)))" "$(seconds $((t_online - t_started)))")
+  printf '{"at":"%s","from":"%s","to":"%s","result":"%s","downtimeSeconds":%s,"fromRequestSeconds":%s,"phases":%s,"mirror":"%s"}\n' \
+    "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$from" "$to" "$result" "$(seconds $((t_online - t_stop)))" \
+    "$(seconds $((t_online - REQUEST_MS)))" "$phases" "$stamp" >>"$HOST/installs.log"
+  # The archive of the copy from before the install, in the background.
+  exec 8>&-
+  start_job archive
+  [ "$result" = installed ]
 }
 
 # The app writes `update-stage` or `update-install`. It waits while the request is there, then reads
@@ -353,13 +633,14 @@ install_staged() {
 # `request install` installs without a request file, so the path unit does not take it at the same time.
 request() {
   local install=0 result=0 keeper
+  REQUEST_MS=$(now_ms)
   lock
   if [ "${1:-}" = install ] || [ -e "$REQUESTS/update-install" ] || [ -L "$REQUESTS/update-install" ]; then install=1; fi
   if [ "$install" -eq 1 ]; then set_state "$STATUS/state" installing; else set_state "$STATUS/state" waiting; fi
   rm -rf -- "$REQUESTS/update-stage" "$REQUESTS/update-install"
   (while sleep 5; do touch -c "$STATUS/state"; done) >/dev/null 2>&1 &
   keeper=$!
-  (stage) || result=$?
+  (stage $((1 - install))) || result=$?
   if [ "$install" -eq 1 ]; then
     if [ "$result" -eq 0 ] && [ -e "$STATUS/staged.ready" ]; then
       (install_staged) || result=$?
@@ -380,7 +661,9 @@ show_status() {
   echo "staged: $(cat "$STATUS/staged.ready" 2>/dev/null || echo none)"
   echo "app updates: $([ -e "$STATUS/enabled" ] && echo enabled || echo disabled)"
   echo "last server state: $(cat "$HOST/server-state" 2>/dev/null || echo unknown)"
+  echo "mirror: $(mirror_state | cut -d ' ' -f 1 | grep . || echo none), $(mirror_age) s old ($MIRROR_DATA)"
   if [ -f "$HOST/installs.log" ]; then echo "last install: $(tail -n 1 "$HOST/installs.log")"; fi
+  if [ -f "$HOST/archives.log" ]; then echo "last archive: $(tail -n 1 "$HOST/archives.log")"; fi
 }
 
 # The host UID:GID of the image user, 1000:1000. With userns-remap, Docker adds the start of the
@@ -410,6 +693,7 @@ set_env_line() {
 setup() {
   local here recreate=0 stamp saved owner files running_id unit
   [ "$(id -u)" -eq 0 ] || fail "Run setup as root."
+  command -v rsync >/dev/null || fail "rsync is not installed. Run 'apt-get install rsync' first."
   for arg in "$@"; do
     case $arg in
       --recreate) recreate=1 ;;
@@ -495,7 +779,14 @@ setup() {
     wait_healthy "$(image_id "$CURRENT_TAG")" "$online" || fail "$CONTAINER_NAME did not come back."
     log "$CONTAINER_NAME is back after $((SECONDS - stopped_at)) s."
   else
-    log "Run 'cd $STACK_DIR && docker compose up -d' once to give the container the update folders."
+    log "Run 'cd $STACK_DIR && docker compose up -d' once to give the container the update folders, when it does not have them."
+  fi
+  # The first copy to the mirror takes minutes on a large volume, so it starts now while the server
+  # runs. Later copies take only the changes.
+  SELF=$INSTALLED
+  if container_running && mirror_stale; then
+    start_job precopy
+    log "Started the pre-copy to $MIRROR_DATA in the background."
   fi
 }
 
@@ -510,9 +801,11 @@ main() {
       ;;
     request) request ;;
     install) request install ;;
+    precopy) precopy_job ;;
+    archive) archive_job ;;
     status) show_status ;;
     *)
-      sed -n '2,25p' "$0" | sed 's/^# \{0,1\}//'
+      sed -n '2,35p' "$0" | sed 's/^# \{0,1\}//'
       [ -z "$command" ] || exit 2
       ;;
   esac
