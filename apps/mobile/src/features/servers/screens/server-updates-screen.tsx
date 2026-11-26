@@ -1,4 +1,5 @@
 import type { HostUpdateSettingsChange, HostUpdateStatus, UpdateRestartMode } from "@pokebots/contracts/ipc";
+import { releaseBuild } from "@pokebots/contracts/release-version";
 import type { MobileTextKey } from "@pokebots/i18n/mobile";
 import { useLocalSearchParams } from "expo-router";
 import { Spinner, Typography } from "heroui-native";
@@ -294,7 +295,11 @@ function blockedNotice(
 function statusMessage({ t, format }: MobileText, snapshot: ServerUpdateSnapshot, name: string): string {
   const { status } = snapshot;
   const checked = readOnlyRelease(snapshot);
-  const version = status.availableVersion ?? status.currentVersion;
+  // A Pokebots server image names its build in the version ("0.73.0+5dfb288b7"): all its images have one version.
+  const value = status.availableVersion ?? status.currentVersion;
+  const valueBuild = releaseBuild(value);
+  const version = valueBuild ? t("mobile.server.update.build", { build: valueBuild }) : value;
+  const build = status.availableVersion ? releaseBuild(status.availableVersion) : null;
   if (checked && !updateRunning(status) && status.phase !== "ready" && status.errorCode !== "install_failed") {
     switch (checked.phase) {
       case "checking":
@@ -317,13 +322,17 @@ function statusMessage({ t, format }: MobileText, snapshot: ServerUpdateSnapshot
     case "checking":
       return t("mobile.server.update.status.checking");
     case "available":
-      return t("mobile.server.update.status.available", { version });
+      return build
+        ? t("mobile.server.update.status.availableBuild", { build })
+        : t("mobile.server.update.status.available", { version });
     case "downloading":
       return status.progress === null
         ? t("mobile.server.update.status.downloadingUnknown", { version })
         : t("mobile.server.update.status.downloading", { version, progress: format.percent(status.progress / 100) });
     case "ready":
-      return t("mobile.server.update.status.ready", { version });
+      return build
+        ? t("mobile.server.update.status.readyBuild", { build })
+        : t("mobile.server.update.status.ready", { version });
     case "installing":
       return t("mobile.server.update.status.installing", { name });
     case "up-to-date":

@@ -1,0 +1,10 @@
+# Pulls the newest image and stages it when it is a newer build. It never replaces the container.
+[Unit]
+Description=Stage a new OpenBot VPS server image
+After=docker.service network-online.target
+Requires=docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/openbot-vps-update stage
+TimeoutStartSec=30min

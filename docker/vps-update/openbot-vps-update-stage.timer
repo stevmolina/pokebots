@@ -1,0 +1,11 @@
+[Unit]
+Description=Stage new OpenBot VPS server images every 15 minutes
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=15min
+RandomizedDelaySec=60s
+Persistent=true
+
+[Install]
+WantedBy=timers.target
