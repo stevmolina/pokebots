@@ -7,15 +7,21 @@
 // It checks that:
 // - the bash rule (`newer_build`) and the app rule (`isNewerServerBuild`) give the same answers;
 // - `stage` writes the version, commit and time of a newer build, and nothing for an older one;
+// - `stage` starts the pre-copy, which fills the mirror while the container runs, without the
+//   download caches and with the user data;
 // - the app offers the staged build as "0.73.0+<commit>", and never an older build;
-// - an install request backs up the data, moves openbot-vps:current and makes the container again;
-// - an image that does not come back is rolled back to the old image and the old data;
-// - an install request with nothing newer only restarts the container;
-// - only the newest backups stay.
+// - an install request stops the container, then syncs the mirror (also a change in the same
+//   second as the pre-copy), moves openbot-vps:current and makes the container again;
+// - after the install, a background job compresses the mirror to an archive, and only the newest
+//   archives stay;
+// - an image that does not come back is rolled back to the old image and the data of the mirror,
+//   and the caches on the volume stay;
+// - an install request with nothing newer only restarts the container.
 //
 //   bun scripts/vps-update-e2e.ts
 //
-// It needs Docker and the image ubuntu:24.04. The report is `.openbot-build/vps-update-e2e/report.json`.
+// It needs Docker and the image ubuntu:24.04, and installs rsync in it. The report is
+// `.openbot-build/vps-update-e2e/report.json`.
 
 import { spawnSync } from "node:child_process";
 import { randomBytes } from "node:crypto";
@@ -44,6 +50,31 @@ const OLDER = { id: "sha256:cccc", labels: "0.73.0-custom|1503cf943|2026-11-18T0
 const BROKEN = { id: "sha256:dddd", labels: "0.73.0-custom|e0e0e0e0e|2026-11-27T08:00:00Z" };
 const NEXT = { id: "sha256:eeee", labels: "0.74.0-custom|f1f1f1f1f|2026-11-28T08:00:00Z" };
 
+/** Download caches: the mirror and the archives leave them out, and a rollback keeps them on the volume. */
+const CACHE_FILES = [
+  ".bun/install/cache/left-pad@1.3.0/package.json",
+  ".npm/_cacache/index-v5/aa/bb",
+  ".cache/ms-playwright/chromium-1200/chrome",
+  ".config/OpenBot/Cache/Cache_Data/data_0",
+  ".config/OpenBot/Partitions/openbot-browser/Cache/Cache_Data/data_1",
+  ".config/OpenBot/Partitions/openbot-browser/Code Cache/js/index",
+];
+/** User data: the mirror and the archives keep it. */
+const USER_FILES = [
+  ".config/OpenBot/openbot.db-wal",
+  ".config/OpenBot/provider-state/claude.json",
+  ".config/OpenBot/provider-runtimes/claude/bin/claude",
+  ".config/OpenBot/Partitions/openbot-browser/Cookies",
+  ".config/OpenBot/Partitions/openbot-browser/Service Worker/CacheStorage/entry",
+  ".claude/settings.json",
+  "OpenBot/Agents/alpha/node_modules/left-pad/index.js",
+  "OpenBot/Agents/alpha/README.md",
+  "OpenBot/Agents/beta/project/src/index.ts",
+];
+const DATABASE = ".config/OpenBot/openbot.db";
+const MIRROR = "/work/backups/openbot-e2e-mirror";
+const ARCHIVE = /^openbot-e2e-\d{8}T\d{6}Z\.tgz$/u;
+
 function check(name: string, ok: boolean, detail: string): void {
   results.push({ name, ok, detail });
   process.stdout.write(`${ok ? "pass" : "FAIL"} ${name}: ${detail}\n`);
@@ -69,6 +100,23 @@ const read = (path: string) =>
     (text) => text.trim(),
     () => "",
   );
+
+/** The paths of `paths` that are files in folder `folder` of the Ubuntu container. */
+function present(folder: string, paths: string[]): string[] {
+  const result = shell(
+    `cd ${JSON.stringify(folder)} && for path in ${paths.map((path) => JSON.stringify(path)).join(" ")}; do if [ -f "$path" ]; then echo "$path"; fi; done`,
+  );
+  return result.stdout.split("\n").filter(Boolean);
+}
+
+/** A file in the Ubuntu container, read as root: the mirror is root only. */
+function readIn(path: string): string {
+  return shell(`cat ${JSON.stringify(path)} 2>/dev/null || true`).stdout.trim();
+}
+
+async function archives(): Promise<string[]> {
+  return (await readdir(join(work, "backups"))).filter((name) => ARCHIVE.test(name)).sort();
+}
 
 /** The stand-in for `docker`: images, tags and one container, as files in /work/fake. */
 const FAKE_DOCKER = String.raw`#!/bin/bash
@@ -104,7 +152,8 @@ case "$1" in
     if grep -qxF "$id" "$F/offline-images" 2>/dev/null; then server=offline; fi
     printf 'version=%s\nserver=%s\n' "$(cut -d'|' -f1 "$F/images/$id" | sed 's/-custom$//')" "$server" ;;
   tag) id=$(resolve "$2") || exit 1; echo "$id" >"$(tagfile "$3")" ;;
-  stop) echo false >"$F/running" ;;
+  # OpenBot writes its last changes when it stops, as SQLite does when it closes.
+  stop) echo false >"$F/running"; echo "stopped $(cat "$F/container")" >>/work/data/.config/OpenBot/shutdown.log ;;
   start|restart) echo true >"$F/running" ;;
   compose)
     case "$2" in
@@ -113,7 +162,11 @@ case "$1" in
         cat "$(tagfile openbot-vps:current)" >"$F/container"
         echo true >"$F/running"
         # A new version changes its data when it starts, as a migration does.
-        if grep -qxF "$(cat "$F/container")" "$F/offline-images" 2>/dev/null; then echo migrated >/work/data/marker; fi ;;
+        if grep -qxF "$(cat "$F/container")" "$F/offline-images" 2>/dev/null; then
+          echo migrated >/work/data/marker
+          echo new >/work/data/.config/OpenBot/made-by-new-version
+          mkdir -p /work/data/OpenBot/Agents/alpha/made-by-new-version && echo new >/work/data/OpenBot/Agents/alpha/made-by-new-version/file
+        fi ;;
     esac ;;
   info) echo "[name=seccomp]" ;;
 esac
@@ -239,7 +292,16 @@ async function main(): Promise<void> {
   await writeFile(join(fake, "docker"), FAKE_DOCKER);
   await chmod(join(fake, "docker"), 0o755);
   await writeFile(join(work, "data", "marker"), "original\n");
-  await writeFile(join(work, "data", "openbot.db"), "database\n");
+  for (const path of [
+    ...CACHE_FILES,
+    ...USER_FILES,
+    DATABASE,
+    ".config/OpenBot/shutdown.log",
+    "OpenBot/Agents/alpha/old-worktree/file",
+  ]) {
+    await mkdir(join(work, "data", path, ".."), { recursive: true });
+    await writeFile(join(work, "data", path), path === DATABASE ? "database\n" : `${path}\n`);
+  }
   await writeFile(
     join(work, "env"),
     [
@@ -278,6 +340,12 @@ async function main(): Promise<void> {
   ]);
   if (started.status !== 0) throw new Error(`docker run failed: ${started.stderr}`);
   try {
+    const rsync = shell(
+      "apt-get update -qq >/dev/null && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends rsync >/dev/null",
+    );
+    if (rsync.status !== 0) throw new Error(`rsync did not install: ${rsync.stderr}`);
+    // A whole second plus 0.1 s, so that the change before the install is in the same second.
+    shell(`touch -d @1764000000.100000000 /work/data/${DATABASE}`);
     await ruleParity();
 
     // `stage` with a newer build of the same version.
@@ -293,6 +361,24 @@ async function main(): Promise<void> {
       (await read(join(fake, "container"))) === OLD.id &&
         !(await fakeLog()).some((line) => line.startsWith("compose up")),
       "the container still runs the old image",
+    );
+
+    // The staged build starts the pre-copy job in the background, while the container runs.
+    const precopied = await waitFor("the pre-copy", async () => readIn(`${MIRROR}/state`).startsWith("live "));
+    check(
+      "pre-copy fills the mirror while the server runs",
+      precopied &&
+        (await read(join(fake, "running"))) === "true" &&
+        !(await fakeLog()).some((line) => line.startsWith("stop")),
+      `mirror state "${readIn(`${MIRROR}/state`)}", ${(await read(join(work, "update/precopy.log"))).split("\n").at(-1)}`,
+    );
+    const mirroredCaches = present(`${MIRROR}/data`, CACHE_FILES);
+    check("the mirror leaves out the download caches", mirroredCaches.length === 0, `in the mirror: ${mirroredCaches}`);
+    const mirroredData = present(`${MIRROR}/data`, [...USER_FILES, DATABASE]);
+    check(
+      "the mirror keeps the user data",
+      mirroredData.length === USER_FILES.length + 1,
+      `${mirroredData.length} of ${USER_FILES.length + 1} files`,
     );
 
     // `stage` with an older build removes the offer.
@@ -344,6 +430,16 @@ async function main(): Promise<void> {
     await adapter.downloadUpdate();
     check("app download ends with the build", downloaded === "0.73.0+9c41d2e07", `update-downloaded ${downloaded}`);
 
+    // A change after the pre-copy, with the same size and in the same second. An agent also removes
+    // one folder and makes another.
+    shell(
+      [
+        `printf 'DATABASE\\n' >/work/data/${DATABASE} && touch -d @1764000000.200000000 /work/data/${DATABASE}`,
+        "rm -rf /work/data/OpenBot/Agents/alpha/old-worktree",
+        "mkdir -p /work/data/OpenBot/Agents/alpha/new-worktree && echo new >/work/data/OpenBot/Agents/alpha/new-worktree/file",
+      ].join(" && "),
+    );
+
     // Install, as the app does after its shutdown.
     const logBefore = (await fakeLog()).length;
     adapter.quitAndInstall();
@@ -362,21 +458,54 @@ async function main(): Promise<void> {
       installed && stopAt >= 0 && stopAt < tagAt && tagAt < upAt,
       `container ${await read(join(fake, "container"))}, steps ${JSON.stringify(installLog.filter((line) => /^(stop|tag|compose up)/u.test(line)))}`,
     );
-    const backups = (await readdir(join(work, "backups")))
-      .filter((name) => /^openbot-e2e-\d{8}T\d{6}Z\.tgz$/u.test(name))
-      .sort();
+    const mirrorState = readIn(`${MIRROR}/state`);
     check(
-      "install backs up first and keeps 3",
-      backups.length === 3 &&
-        !backups.includes("openbot-e2e-20261101T000000Z.tgz") &&
-        (await readdir(join(work, "backups"))).includes("openbot-renzo-server-20261101T000000Z.tgz"),
-      backups.join(", "),
+      "the final sync runs after the stop",
+      /^stopped \d+ \d{8}T\d{6}Z$/u.test(mirrorState) &&
+        readIn(`${MIRROR}/data/.config/OpenBot/shutdown.log`).endsWith(`stopped ${OLD.id}`),
+      `mirror state "${mirrorState}", shutdown.log "${readIn(`${MIRROR}/data/.config/OpenBot/shutdown.log`)}"`,
+    );
+    const mirroredDatabase = readIn(`${MIRROR}/data/${DATABASE}`);
+    check(
+      "the final sync copies a change in the same second as the pre-copy",
+      mirroredDatabase === "DATABASE",
+      `mirror ${DATABASE}: "${mirroredDatabase}"`,
+    );
+    const agentFolders = present(`${MIRROR}/data/OpenBot/Agents/alpha`, ["old-worktree/file", "new-worktree/file"]);
+    check(
+      "the final sync removes and adds agent folders",
+      agentFolders.length === 1 && agentFolders[0] === "new-worktree/file",
+      `in the mirror: ${agentFolders}`,
     );
     const installRecord = JSON.parse((await read(join(work, "update/host/installs.log"))).split("\n").at(-1) ?? "{}");
     check(
-      "install records the downtime",
-      typeof installRecord.downtimeSeconds === "number" && installRecord.to === "0.73.0 9c41d2e07",
+      "install records the downtime and its phases",
+      typeof installRecord.downtimeSeconds === "number" &&
+        installRecord.to === "0.73.0 9c41d2e07" &&
+        ["stop", "finalSync", "start", "online"].every((phase) => typeof installRecord.phases?.[phase] === "number") &&
+        installRecord.mirror === mirrorState.split(" ")[2],
       JSON.stringify(installRecord),
+    );
+
+    // After the install, a background job compresses the mirror and keeps the newest 3 archives.
+    const newArchive = `openbot-e2e-${mirrorState.split(" ")[2]}.tgz`;
+    const archived = await waitFor("the archive", async () => (await archives()).includes(newArchive));
+    const kept = await archives();
+    check(
+      "the archive is made after the install and only 3 stay",
+      archived &&
+        kept.length === 3 &&
+        !kept.includes("openbot-e2e-20261101T000000Z.tgz") &&
+        (await readdir(join(work, "backups"))).includes("openbot-renzo-server-20261101T000000Z.tgz") &&
+        (await read(join(work, "update/host/archives.log"))).includes(newArchive),
+      kept.join(", "),
+    );
+    const listed = shell(`tar --list --gzip --file=/work/backups/${newArchive}`).stdout;
+    check(
+      "the archive has the user data and no caches",
+      [...USER_FILES, DATABASE].every((path) => listed.includes(`./${path}\n`)) &&
+        CACHE_FILES.every((path) => !listed.includes(`./${path}\n`)),
+      `${listed.split("\n").filter(Boolean).length} entries`,
     );
     check(
       "install clears the offer",
@@ -444,6 +573,28 @@ async function main(): Promise<void> {
         (await read(join(work, "update/host/failed-image"))) === BROKEN.id,
       `exit ${result.status}, container ${await read(join(fake, "container"))}, marker ${marker}`,
     );
+    const cachesAfterRollback = present("/work/data", CACHE_FILES);
+    check(
+      "the rollback restores the mirror and keeps the caches on the volume",
+      present("/work/data", [".config/OpenBot/made-by-new-version", "OpenBot/Agents/alpha/made-by-new-version/file"])
+        .length === 0 &&
+        present("/work/data", ["OpenBot/Agents/alpha/new-worktree/file", ...USER_FILES]).length ===
+          USER_FILES.length + 1 &&
+        cachesAfterRollback.length === CACHE_FILES.length &&
+        result.stderr.includes("Restored the data of") &&
+        (await read(join(work, "update/host/installs.log"))).split("\n").at(-1)?.includes('"rolled-back"') === true,
+      `caches ${cachesAfterRollback.length} of ${CACHE_FILES.length}, ${result.stderr.split("\n").find((line) => line.includes("Restored")) ?? "no restore line"}`,
+    );
+    // The archive of the data from before the failed install.
+    const rollbackArchive = `openbot-e2e-${readIn(`${MIRROR}/state`).split(" ")[2]}.tgz`;
+    const rollbackArchived = await waitFor("the archive after the rollback", async () =>
+      (await archives()).includes(rollbackArchive),
+    );
+    check(
+      "the rollback copy is archived too, and 3 stay",
+      rollbackArchived && (await archives()).length === 3,
+      (await archives()).join(", "),
+    );
     result = script("stage");
     check(
       "the failed image is not offered again",
@@ -463,7 +614,8 @@ async function main(): Promise<void> {
       JSON.stringify(restartLog.filter((line) => /^(restart|compose)/u.test(line))),
     );
   } finally {
-    await writeFile(join(reportRoot, "path-unit.log"), await read(join(work, "path-unit.log")));
+    for (const log of ["path-unit.log", "update/precopy.log", "update/archive.log"])
+      await writeFile(join(reportRoot, log.split("/").at(-1) ?? log), await read(join(work, log)));
     run("docker", ["rm", "--force", container]);
   }
 }

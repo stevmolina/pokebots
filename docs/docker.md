@@ -426,6 +426,7 @@ sudo BACKUP_NAME=resorsi docker/vps-update/openbot-vps-update setup --recreate
 it changes to `/var/lib/openbot-vps-update/setup-backups/<time>/`. It removes the old automatic swap
 (`openbot-vps-auto-update`). It adds `compose.update.yaml` to the stack through `COMPOSE_FILE` in its
 `.env`. `--recreate` makes the container again once, with the update folders; clients reconnect.
+`setup` needs `rsync`. At its end, it starts the first pre-copy (see below) in the background.
 
 | Part | What it does |
 | --- | --- |
@@ -440,29 +441,49 @@ its time (`org.opencontainers.image.created`, the commit time) must be later. An
 offered: an older OpenBot cannot open a database that a newer one migrated. The app shows the build
 as `0.73.0+<commit>`, and "Update ready: build <commit>".
 
+The backup is a mirror of the data volume, `BACKUP_DIR/openbot-<BACKUP_NAME>-mirror/data` (root
+only), on the same disk. It needs about as much free space as the volume. While a build is staged, a
+background job (`openbot-vps-update precopy`, the transient unit `openbot-vps-update-precopy`, at the
+lowest CPU and disk priority) copies the volume to the mirror with rsync while the server runs, when
+the mirror is older than `MIRROR_REFRESH_SECONDS` (600). The first copy takes minutes; later copies
+take only the changes. The mirror leaves out download caches, such as the Bun, npm and Playwright
+caches and the Chromium caches (`BACKUP_EXCLUDES` in the script has the list and the reasons). It
+keeps all user data: agent folders, databases, provider state, sessions and browser logins.
+
 When a person selects Install, the app tells the clients that the server restarts, stops its work and
 writes `update-install`. The host then:
 
 1. pulls the image again and checks that it is still a newer build. When it is not, it only restarts
    the container;
-2. tags the running image `openbot-vps:previous` and stops the container;
-3. copies the data volume to `BACKUP_DIR/openbot-<BACKUP_NAME>-<time>.tar.zst` (or `.tgz`), with a
-   `.sha256` file, and keeps the newest `BACKUP_KEEP` of them. A failed backup starts the old
-   container again and changes nothing;
+2. stops a pre-copy or archive job that runs, tags the running image `openbot-vps:previous` and stops
+   the container;
+3. syncs the changes since the pre-copy to the mirror (the final sync). The container is stopped, so
+   the copy is consistent, also for SQLite with its `-wal` and `-shm` files. It runs one rsync for
+   each folder in `OpenBot/Agents/<agent>/` and one for the rest, `SYNC_JOBS` (the CPU count) at once.
+   A failed sync starts the old container again and changes nothing;
 4. moves `openbot-vps:current` to the new image, makes the container again and waits until it answers,
    and is online when it was online before;
-5. when it does not come back, restores the backup and the old image, and skips that image until a
-   newer one is published.
+5. when it does not come back, restores the data from the mirror (the caches on the volume stay) and
+   the old image, and skips that image until a newer one is published;
+6. starts a background job (`openbot-vps-update archive`) that compresses the mirror to
+   `BACKUP_DIR/openbot-<BACKUP_NAME>-<time>.tar.zst` (or `.tgz`), with a `.sha256` file, and keeps
+   the newest `BACKUP_KEEP` archives. It writes one line to `/var/lib/openbot-vps-update/host/archives.log`.
 
-`sudo openbot-vps-update status` shows the running and the staged build, and the last install.
-`sudo openbot-vps-update install` installs the staged build from the shell. Each install writes one
-line with its downtime to `/var/lib/openbot-vps-update/host/installs.log`. `journalctl -u
-openbot-vps-update -u openbot-vps-update-stage` shows what the host did. `scripts/vps-update-e2e.ts`
-checks the request flow and the build rule.
+On the Personal VPS (20 GB, 1.3 million files), the old install stopped the server for 288 s to make
+the archive. The final sync takes about 8 s there.
+
+`sudo openbot-vps-update status` shows the running and the staged build, the mirror, and the last
+install and archive. `sudo openbot-vps-update install` installs the staged build from the shell. Each
+install writes one line to `/var/lib/openbot-vps-update/host/installs.log`, with the seconds from the
+stop to online (`downtimeSeconds`), from the request (`fromRequestSeconds`) and of each phase.
+`journalctl -u openbot-vps-update -u openbot-vps-update-stage -u openbot-vps-update-precopy -u
+openbot-vps-update-archive` shows what the host did. To restore an archive by hand, stop the
+container, empty the volume folder and extract the archive into it with `tar --numeric-owner`.
+`scripts/vps-update-e2e.ts` checks the request flow, the build rule, the mirror and the rollback.
 
 To undo it: `systemctl disable --now openbot-vps-update.path openbot-vps-update-stage.timer`, remove
 `COMPOSE_FILE` from the `.env` of the stack and the requests line from `/etc/fstab`, then
-`docker compose up -d`.
+`docker compose up -d`. Remove the mirror folder to free its disk space.
 
 ### Update automation
 
