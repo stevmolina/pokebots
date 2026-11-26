@@ -1,12 +1,14 @@
 import { type BrainRequest, decodeBrainResponse } from "@pokebots/contracts/brain";
 import type { McpServerConfig } from "@pokebots/contracts/ipc";
 import { sourceText } from "@pokebots/i18n/source";
-import { redactSecrets, registerSecretValue } from "@pokebots/logging";
+import { createOpenBotLogger, redactSecrets, registerSecretValue } from "@pokebots/logging";
 import { Effect, Redacted, Schema } from "effect";
 import { z } from "zod";
 import type { IntegrationCredential } from "./integration-credential";
 import { readLimitedBody } from "./limited-body";
 import type { McpOAuth } from "./mcp-oauth-provider";
+
+const logger = createOpenBotLogger("brain-service");
 
 class BrainError extends Schema.TaggedError<BrainError>()("BrainError", {
   message: Schema.String,
@@ -36,8 +38,13 @@ type BrainServiceRequest = {
 
 const writes = new Set<BrainRequest["operation"]>(["addFile", "remember", "update", "forget"]);
 
-/** Longest wait for brain context before a turn starts without it. */
-const BRAIN_START_CONTEXT_TIMEOUT_MS = 3_000;
+/**
+ * Longest wait for brain context before a turn starts without it, token lookup and refresh included.
+ * It stays below the drain scheduler's own cap (`BRAIN_START_CONTEXT_WAIT_MS`, 5 s), so this service
+ * is the one that stops the wait and logs why. A cold brain server took 2.7 s to 4.3 s for its first
+ * call on 2026-11-26, more than the 3 s that this used to be.
+ */
+export const BRAIN_START_CONTEXT_TIMEOUT_MS = 4_500;
 const START_CONTEXT_LIMIT = 12_000;
 const startContextReply = z.object({ text: z.string().optional(), context: z.string().optional() });
 const startSearchReply = z.object({
@@ -51,6 +58,15 @@ const startSearchReply = z.object({
     )
     .optional(),
 });
+
+/** Why a new chat starts without brain context. Logged on its own, with no question and no text. */
+type SkipReason = "timeout" | "no-token" | "network" | "unreadable" | "empty" | `http-${number}`;
+function skipped(reason: SkipReason): null {
+  logger.info("A new chat starts without Second Brain context.", { reason });
+  return null;
+}
+
+const isSuccess = (status: number) => status >= 200 && status < 300;
 
 export interface BrainStartContextInput {
   question: string;
@@ -90,9 +106,9 @@ export class BrainService {
       const question = redactSecrets(input.question).trim().slice(0, 1000);
       if (!question) return null;
       let token = yield* this.options.oauth.accessToken(connection.url).pipe(Effect.orElseSucceed(() => null));
-      if (!token) return null;
+      if (!token) return skipped("no-token");
       const fetcher = this.options.fetch ?? fetch;
-      const unreadable = () => null;
+      const unreadable = () => "unreadable" as const;
       const send = (path: string, query: Record<string, string>, accessToken: string) =>
         Effect.tryPromise({
           try: (signal) => {
@@ -105,7 +121,7 @@ export class BrainService {
               headers: { Authorization: `Bearer ${accessToken}` },
             });
           },
-          catch: unreadable,
+          catch: () => "network" as const,
         });
       const oauth = this.options.oauth;
       const get = (path: string, query: Record<string, string>) =>
@@ -137,15 +153,17 @@ export class BrainService {
         budget: "6000",
       });
       if (context.status !== 404) {
+        if (!isSuccess(context.status)) return skipped(`http-${context.status}`);
         const reply = startContextReply.safeParse(context.value);
         const text = reply.success ? (reply.data.text ?? reply.data.context ?? "") : "";
-        return text.trim() ? redactSecrets(text.trim()).slice(0, START_CONTEXT_LIMIT) : null;
+        return text.trim() ? redactSecrets(text.trim()).slice(0, START_CONTEXT_LIMIT) : skipped("empty");
       }
       // A brain without the `context` route yet: its best claims for the message.
       const search = yield* get("/search", { query: searchTerms(question), limit: "8" });
+      if (!isSuccess(search.status)) return skipped(`http-${search.status}`);
       const reply = startSearchReply.safeParse(search.value);
       const claims = reply.success ? (reply.data.claims ?? []) : [];
-      if (claims.length === 0) return null;
+      if (claims.length === 0) return skipped("empty");
       return redactSecrets(
         claims
           .map(
@@ -154,8 +172,11 @@ export class BrainService {
           .join("\n"),
       ).slice(0, START_CONTEXT_LIMIT);
     },
-    (effect) => effect.pipe(Effect.orElseSucceed(() => null)),
-    Effect.timeoutOrElse({ duration: BRAIN_START_CONTEXT_TIMEOUT_MS, orElse: () => Effect.succeed(null) }),
+    (effect) => effect.pipe(Effect.catch((reason) => Effect.sync(() => skipped(reason)))),
+    Effect.timeoutOrElse({
+      duration: BRAIN_START_CONTEXT_TIMEOUT_MS,
+      orElse: () => Effect.sync(() => skipped("timeout")),
+    }),
   );
 
   readonly request = Effect.fn("Brain.request")(
