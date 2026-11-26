@@ -32,12 +32,14 @@ import {
   readAllDevStackRecords,
   readDevStackRecords,
   removeDevStackRecord,
+  writeDevStackRestartRequest,
 } from "./dev-automation/stack-registry";
 import { type OwnedProcess, stopOwnedProcesses } from "./dev-services";
 
 const logger = createOpenBotLogger("dev-stack", (line) => process.stderr.write(`${line}\n`));
 
-const USAGE = "Usage: bun scripts/dev-stack.ts <status|stop|forget|restart-client> [--all] [--pid=<supervisor pid>]";
+const USAGE =
+  "Usage: bun scripts/dev-stack.ts <status|stop|forget|restart-client|restart-host> [--all] [--pid=<supervisor pid>] [--pause=<seconds>] [--signal=SIGTERM|SIGKILL]";
 
 export interface DevStackInvocation {
   // `forget` drops a record without signalling anything. It is the way out of
@@ -45,25 +47,50 @@ export interface DevStackInvocation {
   // alive but that this machine cannot date, which `stop` will not signal
   // because the pid may since have been recycled by an unrelated program.
   // `restart-client` asks this worktree's runner to stop and start only its test client.
-  command: "status" | "stop" | "forget" | "restart-client";
+  // `restart-host` asks it to stop only its app, the dev host, and to start it again after `--pause`.
+  command: "status" | "stop" | "forget" | "restart-client" | "restart-host";
   all: boolean;
   pid: number | null;
+  /** Seconds that `restart-host` keeps the host stopped. */
+  pauseSeconds: number;
+  /** How `restart-host` stops the host: `SIGKILL` skips its shutdown, as a crash does. */
+  signal: "SIGTERM" | "SIGKILL";
 }
 
 export function parseDevStackInvocation(args: string[]): DevStackInvocation {
   const command = args.find((argument) => !argument.startsWith("--"));
-  if (command !== "status" && command !== "stop" && command !== "forget" && command !== "restart-client")
+  if (
+    command !== "status" &&
+    command !== "stop" &&
+    command !== "forget" &&
+    command !== "restart-client" &&
+    command !== "restart-host"
+  )
     throw new Error(USAGE);
   const raw = args.find((argument) => argument.startsWith("--pid="))?.slice("--pid=".length);
   const pid = raw === undefined ? null : Number(raw);
   if (pid !== null && (!Number.isInteger(pid) || pid <= 0)) throw new Error("--pid must be a positive integer.");
   const all = args.includes("--all");
   if (all && pid !== null) throw new Error("Pass either --all or --pid=<pid>, not both.");
+  const rawPause = args.find((argument) => argument.startsWith("--pause="))?.slice("--pause=".length);
+  const pauseSeconds = rawPause === undefined ? 0 : Number(rawPause);
+  if (!Number.isFinite(pauseSeconds) || pauseSeconds < 0) throw new Error("--pause must be a number of seconds.");
+  const rawSignal = args.find((argument) => argument.startsWith("--signal="))?.slice("--signal=".length);
+  if (rawSignal !== undefined && rawSignal !== "SIGTERM" && rawSignal !== "SIGKILL")
+    throw new Error("--signal must be SIGTERM or SIGKILL.");
+  const signal = rawSignal ?? "SIGTERM";
+  if ((rawPause !== undefined || rawSignal !== undefined) && command !== "restart-host")
+    throw new Error("Only restart-host takes --pause and --signal.");
   const unsupported = args.find(
-    (argument) => argument.startsWith("--") && argument !== "--all" && !argument.startsWith("--pid="),
+    (argument) =>
+      argument.startsWith("--") &&
+      argument !== "--all" &&
+      !argument.startsWith("--pid=") &&
+      !argument.startsWith("--pause=") &&
+      !argument.startsWith("--signal="),
   );
   if (unsupported) throw new Error(`Unknown option: ${unsupported}.\n${USAGE}`);
-  return { command, all, pid };
+  return { command, all, pid, pauseSeconds, signal };
 }
 
 export type DevStackScope = { kind: "all" } | { kind: "pid"; pid: number } | { kind: "worktree"; projectRoot: string };
@@ -98,21 +125,28 @@ function ownedProcess(pid: number): OwnedProcess {
 // Verify process identity before signalling. A live supervisor stops its own
 // children; otherwise stop only child groups whose leaders are verified.
 // The runner restarts the child itself: it owns the pid, the published records, and the exit handler
-// that would otherwise stop the whole stack. This only asks, and only a runner it can confirm.
-function restartTestClient(selected: DevStackRecord[]): void {
-  const withClient = selected.filter((record) => record.services.includes("test-client"));
-  const [record] = withClient;
-  if (!record || withClient.length > 1) {
+// that would otherwise stop the whole stack. This only asks, and only a runner it can confirm. A host
+// restart writes its request first, so the runner knows which service and how long it stays stopped.
+function restartService(
+  selected: DevStackRecord[],
+  service: "app" | "test-client",
+  pauseSeconds: number,
+  signal: "SIGTERM" | "SIGKILL",
+): void {
+  const what = service === "app" ? "the dev host" : "the test client";
+  const withService = selected.filter((record) => record.services.includes(service));
+  const [record] = withService;
+  if (!record || withService.length > 1) {
     logger.error(
-      withClient.length > 1
-        ? "More than one stack runs a test client. Name one with --pid=<supervisor pid>."
-        : "No dev stack of this worktree runs a test client. Start one with `bun run dev:test-client`.",
+      withService.length > 1
+        ? `More than one stack runs ${what}. Name one with --pid=<supervisor pid>.`
+        : `No dev stack of this worktree runs ${what}. Start one with \`bun run ${service === "app" ? "dev" : "dev:test-client"}\`.`,
     );
     process.exitCode = 1;
     return;
   }
   if (process.platform === "win32") {
-    logger.error("Restarting only the test client needs SIGUSR2, which Windows does not have.");
+    logger.error(`Restarting only ${what} needs SIGUSR2, which Windows does not have.`);
     process.exitCode = 1;
     return;
   }
@@ -121,8 +155,11 @@ function restartTestClient(selected: DevStackRecord[]): void {
     process.exitCode = 1;
     return;
   }
+  if (service === "app")
+    writeDevStackRestartRequest(record, { service, signal, pauseMs: Math.round(pauseSeconds * 1000) });
   process.kill(record.supervisorPid, "SIGUSR2");
-  logger.info(`Asked ${describeDevStack(record)} to restart its test client.`);
+  const pause = service === "app" && pauseSeconds > 0 ? ` after ${pauseSeconds} s` : "";
+  logger.info(`Asked ${describeDevStack(record)} to restart ${what}${pause}.`);
 }
 
 async function stopDevStack(record: DevStackRecord): Promise<boolean> {
@@ -299,8 +336,13 @@ async function main(): Promise<void> {
 
   const scope = devStackScope(invocation, projectRoot);
   const selected = selectDevStacks(records, scope);
-  if (invocation.command === "restart-client") {
-    restartTestClient(selected);
+  if (invocation.command === "restart-client" || invocation.command === "restart-host") {
+    restartService(
+      selected,
+      invocation.command === "restart-host" ? "app" : "test-client",
+      invocation.pauseSeconds,
+      invocation.signal,
+    );
     return;
   }
   if (selected.length === 0) {

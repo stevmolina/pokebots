@@ -71,6 +71,8 @@ const REMOTE_HOST_OFFLINE_UNFOCUSED_RETRY_MS = 15 * 60_000;
 // A host that this app saw online within this time did not go away for good: its computer or its
 // network restarted, and it comes back soon. It keeps the normal backoff, so it reconnects within a
 // minute after it comes back, not after the offline delay (#4132). The backoff stops after this time.
+// For the same time after a connected host drops, each attempt asks Signal to hold it until the host
+// is back, so a host that restarts is connected again within seconds of its return.
 const REMOTE_HOST_RECENTLY_ONLINE_MS = 10 * 60_000;
 // A hosted server that starts after a wake request comes online in about a minute. It retries at
 // this delay, not with the backoff, so the user does not wait for a long delay after the start.
@@ -169,6 +171,10 @@ export class RemoteEventStream {
   readonly #seenOnlineAt = new Map<string, number>();
   /** When the WebRTC transport last connected to each host. */
   readonly #transportConnectedAt = new Map<string, number>();
+  /** Until when attempts to each host that dropped while connected ask Signal to hold them for the host. */
+  readonly #hostReturnUntil = new Map<string, number>();
+  /** When the current WebRTC attempt to each host started. */
+  readonly #attemptStartedAt = new Map<string, number>();
   /** The WebRTC connections to each host in a sequence that dropped before they were healthy. */
   readonly #transportDrops = new Map<string, number>();
   /** Hosted servers that start after a wake request. */
@@ -217,6 +223,8 @@ export class RemoteEventStream {
     this.#offlineHosts.clear();
     this.#seenOnlineAt.clear();
     this.#transportConnectedAt.clear();
+    this.#hostReturnUntil.clear();
+    this.#attemptStartedAt.clear();
     this.#transportDrops.clear();
     this.#transportAttempts.clear();
     this.#authenticationPaused.clear();
@@ -287,6 +295,8 @@ export class RemoteEventStream {
     if (drops) this.#reconnectAttempts.set(serverId, drops);
     else this.#reconnectAttempts.delete(serverId);
     this.#transportConnectedAt.set(serverId, Date.now());
+    this.#hostReturnUntil.delete(serverId);
+    this.#attemptStartedAt.delete(serverId);
   }
 
   /**
@@ -298,7 +308,13 @@ export class RemoteEventStream {
     const connectedAt = this.#transportConnectedAt.get(serverId);
     this.#transportConnectedAt.delete(serverId);
     if (connectedAt === undefined) return !this.#transportDrops.has(serverId);
-    if (Date.now() - connectedAt >= REMOTE_EVENT_HEALTHY_MS) {
+    // The transport was connected until now. The state that the user sees is often an error already:
+    // a data channel error or a Signal renewal comes before the drop. The host was online all the same,
+    // so it keeps the normal backoff, and Signal holds the next attempts until the host is back.
+    const now = Date.now();
+    this.#seenOnlineAt.set(serverId, now);
+    this.#hostReturnUntil.set(serverId, now + REMOTE_HOST_RECENTLY_ONLINE_MS);
+    if (now - connectedAt >= REMOTE_EVENT_HEALTHY_MS) {
       this.#transportDrops.delete(serverId);
       this.#reconnectAttempts.delete(serverId);
       return true;
@@ -348,6 +364,19 @@ export class RemoteEventStream {
   /** The host is online now, or was online until now. */
   markSeenOnline(serverId: string): void {
     this.#seenOnlineAt.set(serverId, Date.now());
+  }
+
+  /**
+   * Until when an attempt to this host asks Signal to hold it until the host connects, or null. It starts
+   * when a connected host drops and ends at its next connection, or after `REMOTE_HOST_RECENTLY_ONLINE_MS`.
+   * Then the offline delay applies, as for a host that went away for good.
+   */
+  hostReturnDeadline(serverId: string): number | null {
+    const until = this.#hostReturnUntil.get(serverId);
+    if (until === undefined) return null;
+    if (until > Date.now()) return until;
+    this.#hostReturnUntil.delete(serverId);
+    return null;
   }
 
   /**
@@ -464,6 +493,8 @@ export class RemoteEventStream {
     this.#offlineHosts.delete(serverId);
     this.#seenOnlineAt.delete(serverId);
     this.#transportConnectedAt.delete(serverId);
+    this.#hostReturnUntil.delete(serverId);
+    this.#attemptStartedAt.delete(serverId);
     this.#transportDrops.delete(serverId);
     this.#startingHosts.delete(serverId);
     this.#authenticationPaused.delete(serverId);
@@ -482,6 +513,7 @@ export class RemoteEventStream {
       )
         return;
       this.#transportAttempts.add(serverId);
+      this.#attemptStartedAt.set(serverId, Date.now());
       const transport = this.#transport;
       if (transport)
         yield* Effect.forkIn(
@@ -539,9 +571,19 @@ export class RemoteEventStream {
       ? offlineDelay
       : Math.min(REMOTE_EVENT_RECONNECT_MAX_MS, REMOTE_EVENT_RECONNECT_BASE_MS * 2 ** (attempt - 1));
     const jitter = exponentialDelay * REMOTE_EVENT_RECONNECT_JITTER * (Math.random() * 2 - 1);
+    // While a host that dropped comes back, Signal holds each attempt for up to a minute. The backoff
+    // counts from the start of the failed attempt, so the next attempt holds again at once. An older
+    // Signal that refuses at once keeps the normal backoff, and each attempt still spends one ticket.
+    const attemptStartedAt = this.#attemptStartedAt.get(serverId);
+    this.#attemptStartedAt.delete(serverId);
+    const attemptMs =
+      attemptStartedAt !== undefined && this.hostReturnDeadline(serverId) !== null ? Date.now() - attemptStartedAt : 0;
     const delay = this.#startingHosts.has(serverId)
       ? HOSTED_SERVER_START_RETRY_MS
-      : Math.min(maximumDelay, Math.max(REMOTE_EVENT_RECONNECT_BASE_MS, Math.round(exponentialDelay + jitter)));
+      : Math.min(
+          maximumDelay,
+          Math.max(REMOTE_EVENT_RECONNECT_BASE_MS, Math.round(exponentialDelay + jitter) - attemptMs),
+        );
     const timer = setTimeout(() => {
       this.#reconnectTimers.delete(serverId);
       // Only the attempt that follows was delayed. When it fails for another reason, for example

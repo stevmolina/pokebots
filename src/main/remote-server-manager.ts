@@ -529,6 +529,7 @@ export class RemoteServerManager extends EventEmitter<RemoteServerEvents> {
     this.#webrtcTransport?.on("connected", (serverId) => {
       this.#events.transportConnected(serverId);
       this.#events.markSeenOnline(serverId);
+      this.#webrtcTransport?.setHostReturnWait(serverId, null);
       this.#hostRestartAway.delete(serverId);
       const hostedStartAt = this.#hostedStartAt.get(serverId);
       if (hostedStartAt !== undefined)
@@ -584,7 +585,6 @@ export class RemoteServerManager extends EventEmitter<RemoteServerEvents> {
     });
     this.#webrtcTransport?.on("disconnected", (serverId) => {
       const wasOnline = this.#connections.statusFor(serverId).state === "online";
-      if (wasOnline) this.#events.markSeenOnline(serverId);
       // A host the app has stopped reconnecting to is not merely offline. The recorded failure is
       // the reason it will not come back, and this disconnect is that failure's own tail -- the one
       // `#suspendServer` asked for. Writing "offline" over an "incompatible" would leave the issue
@@ -592,7 +592,11 @@ export class RemoteServerManager extends EventEmitter<RemoteServerEvents> {
       if (!this.#events.isReconnectSuspended(serverId)) this.#connections.setState(serverId, "offline");
       this.#presence.markOffline(serverId);
       this.#emitChanged();
+      // The stream records a drop of a connected transport as the last time the host was online, also
+      // when the state already shows an error. For some minutes, Signal then holds each attempt until
+      // the host is back.
       const firstDrop = this.#events.transportDisconnected(serverId);
+      this.#webrtcTransport?.setHostReturnWait(serverId, this.#events.hostReturnDeadline(serverId));
       this.#events.scheduleReconnect(serverId);
       // Each read of the host list is a request to the account service. A connection that drops again
       // after a few seconds already read it after its first drop.
