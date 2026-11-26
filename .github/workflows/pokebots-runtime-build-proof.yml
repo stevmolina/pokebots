@@ -45,7 +45,7 @@ jobs:
           printf 'Checkout SHA %s\nTarget %s\n' "$checkout_sha" "${{ matrix.target }}"
           test "$checkout_sha" = "$GITHUB_SHA"
 
-      - name: Report Windows checkout mode
+      - name: Report repository checkout mode on Windows
         if: runner.os == 'Windows'
         shell: bash
         run: |
@@ -149,6 +149,11 @@ jobs:
           "$native_perl" -e 'die "Windows Perl is required\n" unless $^O eq "MSWin32";'
           export OPENSSL_SRC_PERL="$(cygpath -w "$native_perl")"
           export PATH="$PATH:$(cygpath "$OPENBOT_BUN_DIR"):$(cygpath "$OPENBOT_CARGO_DIR"):$(cygpath "$OPENBOT_NODE_DIR")"
+          printf 'Build Git executable %s\n' "$(command -v git)"
+          for key in core.autocrlf core.eol; do
+            git config --system --get "$key" || printf 'System %s is unset\n' "$key"
+            git config --global --get "$key" || printf 'Global %s is unset\n' "$key"
+          done
           bun run build:remote-desktop-runtime
 
       - name: Verify runtime
