@@ -29,7 +29,6 @@ import { bytesToBase64Url } from "@pokebots/team-client/base64";
 import { createEd25519Identity, type Ed25519Identity, signEd25519 } from "@pokebots/team-client/ed25519";
 import {
   createRemoteTeamPeer,
-  type RemoteTeamCommand,
   type RemoteTeamCommandResult,
   type RemoteTeamPeerActions,
 } from "@pokebots/team-client/remote-peer";
@@ -189,7 +188,8 @@ class FarPeerConnection extends NativePeerConnection {
 
 Object.defineProperty(FarPeerConnection.prototype, "localDescription", {
   get(this: FarPeerConnection) {
-    const description = nativeLocalDescription?.get?.call(this) as RTCSessionDescription | null;
+    const read = nativeLocalDescription?.get;
+    const description: RTCSessionDescription | null = read ? read.call(this) : null;
     if (!description || performance.now() >= this.gatherAt + 2 * rt) return description;
     const sdp = withoutCandidates(description.sdp);
     return { type: description.type, sdp, toJSON: () => ({ type: description.type, sdp }) };
@@ -532,9 +532,7 @@ function openPage(hostId: string, mode: Mode): PhonePage {
 }
 
 let commandCount = 0;
-function command<T extends Omit<RemoteTeamCommand, "id">>(value: T): RemoteTeamCommand {
-  return { ...value, id: `command-${++commandCount}` } as RemoteTeamCommand;
-}
+const commandId = () => `command-${++commandCount}`;
 
 function checked(result: RemoteTeamCommandResult, what: string): RemoteTeamCommandResult {
   if (!result.ok) throw new Error(`${what}: ${result.error ?? "failed"}`);
@@ -549,15 +547,18 @@ async function connectAndLoad(page: PhonePage): Promise<void> {
   const host = hosts.get(page.hostId);
   if (!host) throw new Error("Unknown host.");
   checked(
-    await page.peer.execute(
-      command({ type: "connect", hostId: page.hostId, hostPublicKey: host.identity.publicKeyPem }),
-    ),
+    await page.peer.execute({
+      id: commandId(),
+      type: "connect",
+      hostId: page.hostId,
+      hostPublicKey: host.identity.publicKeyPem,
+    }),
     "connect",
   );
   page.steps.connect ??= at();
   const request = (path: string) =>
     page.peer
-      .execute(command({ type: "request", method: "GET", path, body: {} }))
+      .execute({ id: commandId(), type: "request", method: "GET", path, body: {} })
       .then((result) => checked(result, `GET ${path}`).body);
   const compatibility = readTeamHostCompatibility(
     () => request(TEAM_API_ROUTES.compatibility),
@@ -605,7 +606,8 @@ async function prepareHosts(count: number): Promise<string[]> {
 /** One measured run. Each run is in a new page, so no state of another run is left. */
 async function run(options: { scenario: Scenario; mode: Mode; rt: number }): Promise<RunResult> {
   rt = options.rt;
-  globalThis.WebSocket = FarWebSocket as unknown as typeof WebSocket;
+  // The peer code reads these globals when it makes a socket or a connection.
+  Object.defineProperty(globalThis, "WebSocket", { value: FarWebSocket, configurable: true, writable: true });
   globalThis.RTCPeerConnection = FarPeerConnection;
   const { scenario, mode } = options;
   const hostIds = await prepareHosts(scenario === "three-servers-return" ? 3 : 1);

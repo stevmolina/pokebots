@@ -75,11 +75,21 @@ function median(values: readonly number[]): number | null {
 
 /** The median of each step of the selected server, and the time until all servers had their first read. */
 function summarize(results: readonly RunResult[]) {
-  const steps = Object.fromEntries(
-    STEPS.map((step) => [step, median(results.map((result) => result.servers[0]?.[step] ?? Number.NaN))]),
-  ) as Record<keyof StepTimes, number | null>;
+  const step = (name: keyof StepTimes) => median(results.map((result) => result.servers[0]?.[name] ?? Number.NaN));
+  const steps: Record<keyof StepTimes, number | null> = {
+    ticket: step("ticket"),
+    signalOpen: step("signalOpen"),
+    ready: step("ready"),
+    channels: step("channels"),
+    auth: step("auth"),
+    connect: step("connect"),
+    compatibility: step("compatibility"),
+    firstRead: step("firstRead"),
+  };
   return { steps, allServersMs: median(results.map((result) => result.allServersMs)) };
 }
+
+type Summary = Record<Scenario, Record<Mode, ReturnType<typeof summarize>>>;
 
 async function bundle(): Promise<string> {
   const result = await Bun.build({
@@ -100,7 +110,7 @@ async function bundle(): Promise<string> {
 const cell = (value: number | null) => (value === null ? "-" : `${value}`);
 const roundTrips = (value: number | null) => (value === null ? "-" : (value / latencyMs).toFixed(1));
 
-function table(summary: Record<Scenario, Record<Mode, ReturnType<typeof summarize>>>): string {
+function table(summary: Summary): string {
   const lines: string[] = [];
   for (const scenario of SCENARIOS) {
     const { before, after } = summary[scenario];
@@ -165,17 +175,18 @@ async function main(): Promise<void> {
     await browser.close();
   }
 
-  const summary = Object.fromEntries(
-    SCENARIOS.map((scenario) => [
-      scenario,
-      Object.fromEntries(
-        MODES.map((mode) => [
-          mode,
-          summarize(results.filter((result) => result.scenario === scenario && result.mode === mode)),
-        ]),
-      ),
-    ]),
-  ) as Record<Scenario, Record<Mode, ReturnType<typeof summarize>>>;
+  const of = (scenario: Scenario) => {
+    const pick = (mode: Mode) =>
+      summarize(results.filter((result) => result.scenario === scenario && result.mode === mode));
+    return { before: pick("before"), after: pick("after") };
+  };
+  const summary: Summary = {
+    "cold-start": of("cold-start"),
+    "return-60s": of("return-60s"),
+    "return-15m": of("return-15m"),
+    "return-15m-reload": of("return-15m-reload"),
+    "three-servers-return": of("three-servers-return"),
+  };
   const commit = execFileSync("git", ["rev-parse", "--short", "HEAD"], { cwd: ROOT, encoding: "utf8" }).trim();
   const report = { createdAt: new Date().toISOString(), commit, latencyMs, runs, summary, results };
   writeFileSync(resolve(OUT, "report.json"), `${JSON.stringify(report, null, 2)}\n`);
