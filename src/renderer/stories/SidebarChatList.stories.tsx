@@ -477,8 +477,20 @@ const storyMachines: Machine[] = [
   },
 ];
 
+/** A joined server that the app tries again: Signal did not say that it is offline. */
+const reconnectingMachine: Machine = {
+  id: "home-mini",
+  name: "Home Mac mini",
+  logoUrl: null,
+  state: "reconnecting",
+  current: false,
+  thisComputer: false,
+  agents: { status: "loading" },
+};
+
 /** The real sidebar in the "All machines" view, merged the way the app merges it. */
-function AllMachinesSidebar(props: { filter?: string | null; compact?: boolean }) {
+function AllMachinesSidebar(props: { filter?: string | null; compact?: boolean; machines?: Machine[] }) {
+  const machines = () => props.machines ?? storyMachines;
   const [filter, setFilter] = createSignal<string | null>(props.filter ?? null);
   const merged = () =>
     mergeAllMachinesSidebar({
@@ -512,13 +524,13 @@ function AllMachinesSidebar(props: { filter?: string | null; compact?: boolean }
       layout={merged().layout}
       layoutMutable={false}
       machineChips={{
-        machines: storyMachines,
+        machines: machines(),
         chosen: filter(),
         attention: merged().attention,
         onChoose: setFilter,
       }}
       allMachines={{
-        machines: storyMachines,
+        machines: machines(),
         activeServerId: "local",
         filter: filter(),
         onFilterChange: setFilter,
@@ -558,6 +570,16 @@ export const MachineChipsOnOneMachine: Story = {
 /** A machine that does not answer shows one muted line with a retry. */
 export const AllMachinesOffline: Story = {
   render: () => <SettledArgs>{() => <AllMachinesSidebar filter="resorsi-vps" />}</SettledArgs>,
+};
+
+/**
+ * A machine that the app tries again says "Reconnecting", with a retry. Only a machine that Signal says
+ * is not connected says "offline".
+ */
+export const AllMachinesReconnecting: Story = {
+  render: () => (
+    <SettledArgs>{() => <AllMachinesSidebar machines={[...storyMachines, reconnectingMachine]} />}</SettledArgs>
+  ),
 };
 
 /** The collapsed sidebar shows the faces of the chosen machines. */

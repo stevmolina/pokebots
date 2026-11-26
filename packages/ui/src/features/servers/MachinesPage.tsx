@@ -33,8 +33,12 @@ export type MachineAgents =
   | { status: "failed" }
   | { status: "ready"; agents: readonly MachineAgent[] };
 
-/** The state of the connection to a machine. A hosted server that sleeps is "sleeping". */
-export type MachineState = ServerConnectionState | "sleeping";
+/**
+ * The state of the connection to a machine. A hosted server that sleeps is "sleeping". "reconnecting" is
+ * a machine that the app tries again, between attempts: only a machine that Signal says is not
+ * connected is "offline".
+ */
+export type MachineState = ServerConnectionState | "sleeping" | "reconnecting";
 
 export interface Machine {
   id: string;
@@ -69,7 +73,8 @@ export const MACHINE_STATE_LABEL = {
   error: "server.machines.state.error",
   incompatible: "server.machines.state.incompatible",
   sleeping: "server.machines.state.sleeping",
-} as const;
+  reconnecting: "server.machines.state.reconnecting",
+} as const satisfies Record<MachineState, AppTextKey>;
 
 /**
  * Why a machine shows no agents: it connects, sleeps, does not answer, or did not give its agents.
@@ -78,6 +83,7 @@ export const MACHINE_STATE_LABEL = {
  */
 export function machineUnavailableNotice(machine: Machine): AppTextKey | null {
   if (machine.state === "connecting") return "server.machines.connectingNotice";
+  if (machine.state === "reconnecting") return "server.machines.reconnectingNotice";
   if (machine.state === "sleeping") return "server.machines.sleepingNotice";
   if (machine.state !== "online") return "server.machines.unreachable";
   return machine.agents.status === "failed" ? "server.machines.loadFailed" : null;

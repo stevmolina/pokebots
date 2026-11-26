@@ -197,6 +197,7 @@ import { unloadedHistory } from "@pokebots/ui/features/conversation/ChatScrollRa
 import type { DiagramModelChoice } from "@pokebots/ui/features/diagrams/DiagramNewAgentCard";
 import { RoomsPanel } from "@pokebots/ui/features/rooms/RoomsPanel";
 import { LeaveServerDialog } from "@pokebots/ui/features/servers/LeaveServerDialog";
+import type { MachineState } from "@pokebots/ui/features/servers/MachinesPage";
 import { RestartServerDialog } from "@pokebots/ui/features/servers/RestartServerDialog";
 import type { ServerActionCallbacks } from "@pokebots/ui/features/servers/ServerActionItems";
 import {
@@ -491,6 +492,11 @@ const QUEUE_EDIT_ACCOUNT_KEY = "openbot.web.queue-edit-account";
 const SEARCH_ROUTINE_REQUESTS = 4;
 /** After the host answers, the first page load waits at most this long for the sidebar before its cover goes. */
 const SIDEBAR_WAIT_MS = 5000;
+/**
+ * A first page load with a saved frame keeps its cover at most this long while the host does not
+ * answer. Then the frame shows, with search, while the host connects or the client tries again.
+ */
+const FRAME_COVER_MS = 2000;
 /** While the agent status is not ready, it is read again at this interval. */
 const STATUS_READ_INTERVAL_MS = 5000;
 
@@ -769,14 +775,33 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
     status,
     t,
   });
-  /** The opened host has its own connection. Another host shows its status connection, as on mobile. */
-  function hostState(hostId: string): ServerConnectionState {
+  /**
+   * The opened host has its own connection. Another host shows its status connection, as on mobile. A
+   * slow attempt and the wait before the next one are "connecting" and "reconnecting": only a host that
+   * Signal says is not connected is "offline".
+   */
+  function hostMachineState(hostId: string): Exclude<MachineState, "sleeping"> {
     // The tab that has the host open reports its state.
-    if (hostId === workspace.state.host?.hostId && !workspace.state.otherTab) return workspace.state.status;
+    if (hostId === workspace.state.host?.hostId && !workspace.state.otherTab) {
+      const current = workspace.state;
+      if (current.status === "online") return "online";
+      if (current.hostOffline) return "offline";
+      if (current.status === "connecting") return "connecting";
+      // A stopped recovery, such as after access ended, does not try again.
+      if (current.recovery?.phase === "suspended") return "offline";
+      // The status is "offline" before the first attempt too. A failed attempt reports its failure
+      // before the recovery reports its wait, and the client tries again after both.
+      return current.recovery || current.connectionError ? "reconnecting" : "connecting";
+    }
     const state = workspace.state.hostStates[hostId];
     // Without status connections (no BroadcastChannel), nothing will report this host.
     if (!workspace.runtime.hosts) return "offline";
     return !state || state === "unknown" ? "connecting" : state;
+  }
+  /** The server list has no "reconnecting": a host that the client tries again shows as connecting. */
+  function hostState(hostId: string): ServerConnectionState {
+    const state = hostMachineState(hostId);
+    return state === "reconnecting" ? "connecting" : state;
   }
   const servers = createMemo<ServerSummary[]>(() =>
     workspace.orderedHosts().map((host) => {
@@ -854,12 +879,26 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
    * cover first goes.
    */
   const [pageLoad, setPageLoad] = createSignal(true);
+  /**
+   * A saved frame is on screen and the host did not answer in `FRAME_COVER_MS`. The cover goes, so the
+   * user can search and read the frame while the host connects. A host that answers sooner keeps the
+   * cover, so a fast load still does not show the frame change.
+   */
+  const [frameCoverOver, setFrameCoverOver] = createSignal(false);
+  createEffect(
+    () => workspace.state.workspaceLoaded && workspace.state.status !== "online",
+    (waiting) => {
+      if (!waiting || untrack(frameCoverOver)) return;
+      const timer = setTimeout(() => setFrameCoverOver(true), FRAME_COVER_MS);
+      return () => clearTimeout(timer);
+    },
+  );
   // As on desktop, the first load covers the whole window. A server that sleeps, updates or fails
   // shows its screen in the pane only.
   const fullWindowLoading = () =>
     (connectionShown() &&
       // After the page load, a saved frame stays on screen: the chat shows its history loader until the host answers.
-      (!workspace.state.workspaceLoaded || pageLoad()) &&
+      (!workspace.state.workspaceLoaded || (pageLoad() && !frameCoverOver())) &&
       !workspace.state.hostOffline &&
       // The status is "offline" before the first attempt too; only a reported failure ends the cover.
       !(workspace.state.status === "offline" && workspace.state.connectionError) &&
@@ -3940,8 +3979,7 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
                           id: srv.id,
                           name: srv.name,
                           logoUrl: srv.logoUrl ?? null,
-                          state:
-                            srv.state === "online" ? "online" : srv.state === "connecting" ? "connecting" : "offline",
+                          state: srv.state === "incompatible" ? "incompatible" : hostMachineState(srv.id),
                           current: srv.id === workspace.state.host?.hostId,
                           thisComputer: false,
                           agents: { status: "ready" as const, agents: [] },

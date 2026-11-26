@@ -36,7 +36,7 @@ import {
   mobileSearchMatchParts,
   mobileSearchSnippet,
 } from "@/features/search/model/mobile-search";
-import type { MobileAgent } from "@/features/workspace/context/mobile-workspace-context";
+import { type MobileAgent, useMobileWorkspaceActions } from "@/features/workspace/context/mobile-workspace-context";
 import { formatUpdatedAt } from "@/shared/lib/format-updated-at";
 import { haptics } from "@/shared/lib/haptics";
 import { useText } from "@/shared/lib/text";
@@ -211,6 +211,7 @@ export function MobileSearchResultRow({
   query,
   serverId,
   agents,
+  serverNames = null,
   onLeave,
   kindLabel,
 }: {
@@ -219,6 +220,8 @@ export function MobileSearchResultRow({
   serverId: string;
   /** The agents of the server, by ID, for the member avatars of a channel. */
   agents: ReadonlyMap<string, MobileAgent>;
+  /** The name of each server, when the phone has more than one: an agent result names its server. */
+  serverNames?: ReadonlyMap<string, string> | null;
   /** Runs before a result opens what it names, and closes the search. */
   onLeave: () => void;
   /** The new design names the kind of each result in gray on the right, in place of its time. */
@@ -226,6 +229,7 @@ export function MobileSearchResultRow({
 }) {
   const { t, format } = useText();
   const pane = useChatListPane();
+  const { selectServer } = useMobileWorkspaceActions();
   // In the chat list pane, the chat takes the place of the open one.
   const openChat = (agentId: string, messageId?: string) => {
     onLeave();
@@ -243,14 +247,19 @@ export function MobileSearchResultRow({
   switch (result.kind) {
     case "agent": {
       const { agent } = result;
+      const serverName = serverNames?.get(agent.serverId);
       return (
         <SearchRow
           leading={<AgentAvatar agent={agent} />}
           title={agent.name}
           detail={agent.title.trim() || agent.preview}
-          trailing={kindLabel ?? agent.updatedLabel}
+          trailing={[kindLabel ?? agent.updatedLabel, serverName].filter(Boolean).join(" · ")}
           query={query}
-          onPress={() => openChat(agent.id)}
+          onPress={() => {
+            // An agent of another server opens on its server, as a row of All machines does.
+            if (agent.serverId !== serverId) selectServer(agent.serverId);
+            openChat(agent.id);
+          }}
         />
       );
     }

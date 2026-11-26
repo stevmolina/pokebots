@@ -182,6 +182,8 @@ function machineNotice(
 ): string | null {
   const name = machine.name;
   if (machine.state === "connecting") return t("server.allMachines.connecting", { name });
+  // Between two attempts: the retry starts the next attempt now.
+  if (machine.state === "reconnecting") return t("server.allMachines.reconnecting", { name });
   if (machine.state === "sleeping") return t("server.allMachines.sleeping", { name });
   if (machine.state !== "online") return t("server.allMachines.offline", { name });
   if (machine.agents.status === "failed") return t("server.allMachines.loadFailed", { name });

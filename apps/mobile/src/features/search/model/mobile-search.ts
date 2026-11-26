@@ -174,6 +174,7 @@ export function mobileSearchView({
   filter,
   reader,
   agents,
+  searchAgents = agents,
   channels,
   settings,
   routines,
@@ -185,6 +186,11 @@ export function mobileSearchView({
   reader: MobileSearchReader;
   /** The agents this device shows. Messages, files and routines of other agents stay out. */
   agents: MobileAgent[];
+  /**
+   * The agents that the agent results come from: those of every server, also one that connects or is
+   * offline. Messages, files and routines are of the open server only.
+   */
+  searchAgents?: MobileAgent[];
   /** The open channels this device shows. */
   channels: ChannelSummary[];
   /** The settings pages this device has. */
@@ -199,11 +205,12 @@ export function mobileSearchView({
 
   // A name match first, as in an `@` mention; a match only in the last message goes last. Array sort
   // is stable, so agents of one rank keep the list order.
-  const agentResults = agents
+  const agentResults = searchAgents
     .filter((agent) => matches(normalized, [agent.name, agent.title, agent.description, agent.preview]))
     .map((agent) => ({ agent, rank: agentMentionRank(agent, normalized) ?? Number.MAX_VALUE }))
     .sort((left, right) => left.rank - right.rank)
-    .map(({ agent }): MobileSearchResult => ({ kind: "agent", id: `agent:${agent.id}`, agent }));
+    // Two servers can have an agent with the same id, as a server copied from another does.
+    .map(({ agent }): MobileSearchResult => ({ kind: "agent", id: `agent:${agent.serverId}:${agent.id}`, agent }));
   const channelResults = channels
     .filter((channel) => matches(normalized, [channel.name, channel.title]))
     .map((channel): MobileSearchResult => ({ kind: "channel", id: `channel:${channel.id}`, channel }));
