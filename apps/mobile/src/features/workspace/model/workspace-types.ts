@@ -267,6 +267,11 @@ export interface MobileServer {
    * its quiet time. The app shows the server as online, and a request waits for the connection.
    */
   resuming?: boolean;
+  /**
+   * Signal said that the host is not connected to it. Until the server is online again, it shows as
+   * offline. Without it, a server that the app tries again shows as reconnecting.
+   */
+  hostOffline?: boolean;
   address: string | null;
   accent: string;
   publicKey: string;
@@ -427,6 +432,12 @@ export interface MobileWorkspaceContextValue {
   agents: MobileAgent[];
   activeServer: MobileServer;
   activeAgents: MobileAgent[];
+  /**
+   * The agents that search finds: those of every server, from the phone's copy while a server connects
+   * or is offline, without the hidden ones. The open server's agents come first. A server whose
+   * preferences are not read yet does not wait for them: only its host's hidden list applies.
+   */
+  searchAgents: MobileAgent[];
   hiddenAgents: MobileAgent[];
   /** The hidden agents of each server, the phone's own list and the host's, for views of every server. */
   hiddenAgentIdsByServer: Readonly<Record<string, readonly string[]>>;

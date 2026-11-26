@@ -48,9 +48,22 @@ function serverReachable(server: ServerSummary): boolean {
   return server.kind === "local" || server.state === "online";
 }
 
+/** The reference of the issue when Signal says that the host is not connected to it. */
+const HOST_NOT_ON_SIGNAL = "signal/host_unavailable";
+
+/**
+ * Main shows a joined server as "offline" or "error" between its reconnect attempts too. Only a host
+ * that Signal says is not connected is offline; a server that main tries again is "reconnecting". A
+ * failure that no retry fixes, and a stopped local server on this computer, keep their state.
+ */
 function machineState(server: ServerSummary): MachineState {
   if (server.hostedSleep) return "sleeping";
-  return server.kind === "local" ? "online" : server.state;
+  if (server.kind === "local") return "online";
+  if (server.state === "online" || server.state === "incompatible") return server.state;
+  if (server.issue?.reference === HOST_NOT_ON_SIGNAL) return "offline";
+  if (server.state === "connecting" || server.thisComputer) return server.state;
+  if (server.state === "offline" || server.issue?.retryable === true) return "reconnecting";
+  return server.state;
 }
 
 /**

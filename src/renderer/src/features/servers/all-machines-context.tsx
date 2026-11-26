@@ -2,10 +2,12 @@ import { createEffect, createMemo, createSignal, untrack } from "solid-js";
 import { toAgentProfile } from "../../app-message-projection";
 import { usePlatform } from "../../platform";
 import { createSimpleContext } from "../../simple-context";
+import { useAuth } from "../account/account-context";
 import { useDynamicIsland } from "../dynamic-island/dynamic-island-context";
 import { type AllMachinesSource, machineAgentActivity } from "./all-machines-sidebar";
 import { createMachineActivity } from "./machine-activity";
 import { createMachinesStore } from "./machines-store";
+import { readRemoteWorkspaceFrame } from "./remote-workspace-frame";
 import { orderServers } from "./server-order";
 import { useServers } from "./servers-context";
 
@@ -51,6 +53,7 @@ const AllMachines = createSimpleContext({
     const platform = usePlatform();
     const { servers, activeServerId, localServerHidden, retryServerConnection } = useServers();
     const { dynamicIslandCoordinator } = useDynamicIsland();
+    const { centralAuth } = useAuth();
     const [chosen, setChosen] = createSignal(read(ALL_MACHINES_STORAGE_KEY) === "true");
     const [chosenFilter, setChosenFilter] = createSignal(read(FILTER_STORAGE_KEY) || null);
     const [collapsedSectionIds, setCollapsedSectionIds] = createSignal<string[]>(
@@ -136,6 +139,52 @@ const AllMachines = createSimpleContext({
       });
     }
 
+    /**
+     * The agents that a joined server gave before it went offline or while it reconnects: the last read
+     * of this window, else the saved frame of its last load (`remote-workspace-frame`). Search finds them,
+     * and a result switches to the server, which shows the same frame until the host answers.
+     */
+    const lastKnownSources = createMemo(() => {
+      const known = new Map<string, AllMachinesSource>();
+      if (!active()) return known;
+      const auth = centralAuth();
+      const account = auth.status === "signed_in" ? auth.user.id : null;
+      for (const server of orderedServers()) {
+        if (server.kind !== "remote" || server.state === "online" || server.id === activeServerId()) continue;
+        const entry = store.sidebarEntry(server.id);
+        const frame = entry || !account ? null : untrack(() => readRemoteWorkspaceFrame(account, server.id));
+        const hidden = new Set(frame?.hiddenAgents.map((agent) => agent.agentId) ?? []);
+        const agents = (
+          entry?.agents ??
+          frame?.agents.filter((agent) => !agent.hiddenAt && !hidden.has(agent.id)) ??
+          []
+        ).map(toAgentProfile);
+        if (agents.length === 0) continue;
+        known.set(server.id, {
+          serverId: server.id,
+          agents,
+          agentStates: {},
+          agentMoods: {},
+          layout: entry?.layout ?? frame?.sidebarLayout ?? null,
+        });
+      }
+      return known;
+    });
+
+    /**
+     * The sources that search reads: those of `sources`, and the last known agents of each joined server
+     * that is offline or reconnects, so a server that does not answer does not hide its agents.
+     */
+    function searchSources(own: AllMachinesSource): AllMachinesSource[] {
+      const others = otherSources();
+      const known = lastKnownSources();
+      return orderedServers().flatMap((server) => {
+        if (server.id === own.serverId) return [own];
+        const source = others.get(server.id) ?? known.get(server.id);
+        return source ? [source] : [];
+      });
+    }
+
     function setActive(on: boolean): void {
       setChosen(on);
       save(ALL_MACHINES_STORAGE_KEY, String(on));
@@ -172,6 +221,7 @@ const AllMachines = createSimpleContext({
       filter,
       setFilter,
       sources,
+      searchSources,
       collapsedSectionIds,
       toggleSection,
       retry,
