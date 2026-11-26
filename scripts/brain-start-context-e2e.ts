@@ -1,7 +1,9 @@
 // Runs the real host, its queue and the Team API on a temporary profile, with a fake Second Brain
 // server and fake Codex (app-server) and OpenCode (ACP) CLIs that log each prompt they receive.
 // Checks that the first message of a new chat gets brain context for both provider families, that
-// later messages do not, that a slow brain does not hold the turn, and the `brain-context-v1` routes.
+// later messages do not, that a brain that answers in 4 s still gives its context, that one that never
+// answers does not hold the turn past the 5 s cap and is logged with its reason, that each skip (timeout,
+// HTTP status, empty answer, no token) logs one line with the reason only, and the `brain-context-v1` routes.
 // Run: bun scripts/brain-start-context-e2e.ts. Writes .openbot-build/brain-start-context-e2e/report.json.
 import assert from "node:assert/strict";
 import { appendFileSync } from "node:fs";
@@ -87,7 +89,11 @@ const { TeamApiServer } = await import("../src/main/team-api-server");
 const { AGENT_ACCESS_FILE, AgentAccessStore } = await import("../src/main/agent-access-store");
 const { TeamStore } = await import("../src/main/team-store");
 const { createBrainContextControl } = await import("../src/main/brain-context-preference-store");
-const { BrainService, isBrainConnection } = await import("../src/backend/brain-service");
+const { BRAIN_START_CONTEXT_TIMEOUT_MS, BrainService, isBrainConnection } = await import(
+  "../src/backend/brain-service"
+);
+const { BRAIN_START_CONTEXT_WAIT_MS } = await import("../src/backend/agent/brain-start-context");
+const { teeLogLines } = await import("@pokebots/logging");
 const { AgentService } = await import("../src/backend/agent-service");
 const { AgentStore } = await import("../src/backend/agent-store");
 const { runCauseEffect } = await import("../src/backend/effect-boundary");
@@ -222,8 +228,13 @@ createInterface({ input: process.stdin }).on("line", (line) => {
 await writeFile(fakeCodex, FAKE_CODEX, { mode: 0o755 });
 await writeFile(fakeOpencode, FAKE_OPENCODE, { mode: 0o755 });
 
+// What the brain service logs when a chat starts without context.
+const brainLog: string[] = [];
+teeLogLines(["brain-service"], (line) => brainLog.push(line));
+
 // The fake brain answers by the first word of the question: CONTEXT has the `context` route, SEARCH has
-// only `search` (a brain before the `context` tool), SLOW answers after the time box, EMPTY knows nothing.
+// only `search` (a brain before the `context` tool), SLOW answers after the time box, SLOW4 answers after
+// 4 s (inside the time box), EMPTY knows nothing, FAIL answers HTTP 500.
 const brainRequests: { path: string; question: string; cwd: string | null; authorization: string | null }[] = [];
 const brainServer = Bun.serve({
   hostname: "127.0.0.1",
@@ -237,10 +248,12 @@ const brainServer = Bun.serve({
       cwd: url.searchParams.get("cwd"),
       authorization: request.headers.get("authorization"),
     });
-    const mode = /\b(CONTEXT|SEARCH|SLOW|EMPTY)\b/.exec(question)?.[1];
+    const mode = /\b(CONTEXT|SEARCH|SLOW4|SLOW|EMPTY|FAIL)\b/.exec(question)?.[1];
     if (url.pathname === "/api/v1/context") {
       if (mode === "SEARCH") return Response.json({ error: { code: "not_found" } }, { status: 404 });
       if (mode === "SLOW") await Bun.sleep(5_000);
+      if (mode === "SLOW4") await Bun.sleep(4_000);
+      if (mode === "FAIL") return Response.json({ error: { code: "boom" } }, { status: 500 });
       if (mode === "EMPTY") return Response.json({ text: "" });
       return Response.json({
         text: "Me: Steven. 2026-11-25: the Mac update job was off, so merged fixes were not installed. Token sk-ant-api03-SYNTHETICSECRETVALUE",
@@ -453,7 +466,28 @@ try {
   assert.match(searchFirst.text, /launchd job\. \(wiki\/pokebots\.md, verified 2026-11-20\)/);
   report.checks.searchFallback = true;
 
-  // A slow brain does not hold the turn past the time box, and the turn has no block.
+  // The brain service stops the wait before the scheduler's own cap, so the service is the one that logs why.
+  assert.ok(
+    BRAIN_START_CONTEXT_TIMEOUT_MS < BRAIN_START_CONTEXT_WAIT_MS,
+    `The brain timeout ${BRAIN_START_CONTEXT_TIMEOUT_MS} ms must stay under the scheduler cap ${BRAIN_START_CONTEXT_WAIT_MS} ms.`,
+  );
+  report.checks.brainTimeoutUnderSchedulerCap = true;
+  const skipLines = () => brainLog.filter((line) => line.includes("A new chat starts without Second Brain context."));
+
+  // A cold brain that answers in 4 s (more than the old 3 s limit) still gives its context.
+  const slowOk = await create("Slow Ok Bot", "codex");
+  connected.add(slowOk.id);
+  const slowOkSentAt = Date.now();
+  await send(slowOk.id, "SLOW4 SLOW4-FIRST hi");
+  const slowOkFirst = await promptFor("SLOW4-FIRST");
+  assert.ok(slowOkFirst.text.includes(START), slowOkFirst.text);
+  report.checks.fourSecondBrainWaitMs = slowOkFirst.at - slowOkSentAt;
+  assert.ok(slowOkFirst.at - slowOkSentAt >= 4_000);
+  assert.equal(skipLines().length, 0, "A brain that answered logged a skip.");
+  report.checks.fourSecondBrainGivesContext = true;
+
+  // A brain that never answers does not hold the turn past the scheduler cap, the turn has no block,
+  // and the service logs the reason.
   const slow = await create("Slow Bot", "codex");
   connected.add(slow.id);
   const sentAt = Date.now();
@@ -461,8 +495,47 @@ try {
   const slowFirst = await promptFor("SLOW-FIRST");
   assert.ok(!slowFirst.text.includes(START));
   report.checks.slowBrainWaitMs = slowFirst.at - sentAt;
-  assert.ok(slowFirst.at - sentAt < 4_500, `The slow brain held the turn ${slowFirst.at - sentAt} ms.`);
+  assert.ok(
+    slowFirst.at - sentAt < BRAIN_START_CONTEXT_WAIT_MS,
+    `The slow brain held the turn ${slowFirst.at - sentAt} ms.`,
+  );
+  assert.equal(skipLines().length, 1, brainLog.join("\n"));
+  assert.match(skipLines()[0] ?? "", /reason.{0,5}timeout/);
   report.checks.slowBrainSkipped = true;
+  report.checks.timeoutLogged = true;
+
+  // An HTTP error and an empty answer each log their reason.
+  const failing = await create("Failing Bot", "codex");
+  connected.add(failing.id);
+  await send(failing.id, "FAIL FAIL-FIRST hi");
+  assert.ok(!(await promptFor("FAIL-FIRST")).text.includes(START));
+  const empty = await create("Empty Bot", "codex");
+  connected.add(empty.id);
+  await send(empty.id, "EMPTY EMPTY-FIRST hi");
+  assert.ok(!(await promptFor("EMPTY-FIRST")).text.includes(START));
+  assert.equal(skipLines().length, 3, brainLog.join("\n"));
+  assert.match(skipLines()[1] ?? "", /reason.{0,5}http-500/);
+  assert.match(skipLines()[2] ?? "", /reason.{0,5}empty/);
+  report.checks.httpStatusLogged = true;
+  report.checks.emptyLogged = true;
+
+  // No token: the service logs it. Asked straight, because the host fixture always has one.
+  const noToken = new BrainService({
+    oauth: { accessToken: () => Effect.succeed(null), refreshAccessToken: () => Effect.succeed(null) },
+    connections: () => [],
+    fetch: () => Promise.reject(new Error("must not be called without a token")),
+  });
+  assert.equal(await runCauseEffect(noToken.startContext(brainConnection, { question: "NOTOKEN-FIRST hi" })), null);
+  assert.equal(skipLines().length, 4, brainLog.join("\n"));
+  assert.match(skipLines()[3] ?? "", /reason.{0,5}no-token/);
+  report.checks.noTokenLogged = true;
+
+  // The log has the reason and nothing the person wrote or the brain answered.
+  const logged = brainLog.join("\n");
+  for (const secret of ["FIRST", "Mac update job", "SYNTHETIC", "brain-fixture-token"])
+    assert.ok(!logged.includes(secret), `The brain log carries "${secret}": ${logged}`);
+  report.checks.logHasReasonOnly = true;
+  report.checks.skipLog = skipLines().length;
 
   // No connection: no brain call. Switch off: no brain call either.
   const plain = await create("Plain Bot", "codex");
