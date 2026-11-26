@@ -26,6 +26,7 @@ import {
   describeDevStack,
   heldDevStackPorts,
   removeDevStackRecord,
+  takeDevStackRestartRequest,
   writeDevStackRecord,
 } from "./dev-automation/stack-registry";
 import { attachSlackTunnels } from "./dev-slack-tunnels";
@@ -615,18 +616,26 @@ async function runDevelopmentServices(specs: DevelopmentServiceSpec[], stack: De
     if (spec.name === "remote") await waitForDevelopmentRemote(spec.env.REMOTE_HEALTH_PORT, child);
   };
 
-  // `bun run dev:restart-client` sends SIGUSR2: only the test client stops and starts again, so a
-  // client start can be measured against a host that stays live. Windows has no SIGUSR2.
-  const testClient = specs.find((spec) => spec.name === "test-client");
-  if (testClient && process.platform !== "win32") {
+  // `bun run dev:restart-client` and `bun run dev:restart-host` send SIGUSR2: only one service stops and
+  // starts again, so a client start can be measured against a host that stays live, and a client can be
+  // measured while its host restarts. The request file names the service and how long it stays stopped;
+  // with no request it is the test client, at once. Windows has no SIGUSR2.
+  if (process.platform !== "win32" && specs.some((spec) => spec.name === "app" || spec.name === "test-client")) {
     process.on("SIGUSR2", () => {
-      const child = processes.get("test-client");
-      if (stopping || restarting.has("test-client") || !child) return;
-      restarting.add("test-client");
-      processes.delete("test-client");
-      logger.info("[test-client] Restarting the test client. The other services keep running.");
+      const request = takeDevStackRestartRequest(process.pid);
+      const spec = specs.find((entry) => entry.name === request.service);
+      const child = processes.get(request.service);
+      if (stopping || !spec || restarting.has(spec.name) || !child) return;
+      restarting.add(spec.name);
+      processes.delete(spec.name);
+      const pause = request.pauseMs > 0 ? ` It starts again after ${Math.round(request.pauseMs / 1000)} s.` : "";
+      logger.info(
+        `[${spec.name}] Restarting ${spec.name} with ${request.signal}. The other services keep running.${pause}`,
+      );
       void (async () => {
-        await stopOwnedProcesses([child], "SIGTERM");
+        // The app quits with its services on SIGTERM, as a server does under systemd. That can take
+        // longer than the test client needs.
+        await stopOwnedProcesses([child], request.signal, spec.name === "app" ? { timeoutMs: 15_000 } : {});
         if (stack) {
           stack.processes = stack.processes.filter((entry) => entry.pid !== child.pid);
           writeDevStackRecord(stack);
@@ -634,15 +643,16 @@ async function runDevelopmentServices(specs: DevelopmentServiceSpec[], stack: De
         const index = publishedInstances.findIndex((record) => record.pid === child.pid);
         const [instance] = index >= 0 ? publishedInstances.splice(index, 1) : [];
         if (instance) removeDevInstanceRecord(instance);
-        if (!stopping) await startService(testClient);
+        if (request.pauseMs > 0) await new Promise((resolveDelay) => setTimeout(resolveDelay, request.pauseMs));
+        if (!stopping) await startService(spec);
       })()
         .catch((error: unknown) => {
-          logger.error("[test-client] Could not restart:", error instanceof Error ? error.message : String(error));
+          logger.error(`[${spec.name}] Could not restart:`, error instanceof Error ? error.message : String(error));
           void stopAll("SIGTERM").then(() => {
             process.exitCode = 1;
           });
         })
-        .finally(() => restarting.delete("test-client"));
+        .finally(() => restarting.delete(spec.name));
     });
   }
 

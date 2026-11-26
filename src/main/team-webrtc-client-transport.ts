@@ -277,6 +277,8 @@ export class TeamWebRtcClientTransport extends EventEmitter<TeamWebRtcClientTran
   #signalUrl: string | null = null;
   /** Hosted servers that start. Signal holds an attempt for them until the host connects. */
   readonly #waitForHost = new Set<string>();
+  /** Until when attempts to each host that dropped ask Signal to hold them, apart from a hosted start. */
+  readonly #hostReturnWait = new Map<string, number>();
   /**
    * The computer sleeps, or is in a dark wake with no user. The network is often down then, and
    * timers stop during sleep, so a request or a connect from then can wait until the next wake.
@@ -335,6 +337,16 @@ export class TeamWebRtcClientTransport extends EventEmitter<TeamWebRtcClientTran
   setWaitForHost(hostId: string, wait: boolean): void {
     if (wait) this.#waitForHost.add(hostId);
     else this.#waitForHost.delete(hostId);
+  }
+
+  /**
+   * After a connected host drops, attempts until `until` also wait on Signal for the host, so a host
+   * that restarts is connected again when it says hello. It is apart from `setWaitForHost`, so the end
+   * of a hosted start does not end it. Null ends it.
+   */
+  setHostReturnWait(hostId: string, until: number | null): void {
+    if (until === null) this.#hostReturnWait.delete(hostId);
+    else this.#hostReturnWait.set(hostId, until);
   }
 
   pinHostKey(hostId: string, publicKey: string): void {
@@ -1259,7 +1271,7 @@ export class TeamWebRtcClientTransport extends EventEmitter<TeamWebRtcClientTran
         bootstrap.signalUrl,
       );
     let cleanupConnectionWait: () => void = () => undefined;
-    const waitForHost = this.#waitForHost.has(hostId);
+    const waitForHost = this.#waitForHost.has(hostId) || (this.#hostReturnWait.get(hostId) ?? 0) > Date.now();
     // Subscribe before bridge.connect: a bridge can deliver authentication events before it resolves.
     const connected = Deferred.makeUnsafe<void, RemoteWorkflowError>();
     {

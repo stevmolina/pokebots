@@ -1292,6 +1292,15 @@ loses the host while a restart waits treats it as the restart: desktop keeps the
 instead of the `host_unavailable` wait for 10 minutes, and web tries again every 5 s for 3 minutes.
 `host-restart-toast.ts` shows the notice until the host is back, for 10 minutes at most.
 
+A host can also stop with no `host-restart` event, for example when systemd restarts a VPS. For 10
+minutes after the data channel of a connected host drops, desktop keeps the normal backoff, and each
+attempt asks Signal to hold it until the host says hello (`waitForHost`, as for a hosted server that
+starts). The transport ends a hold after 60 s, and the next attempt takes a new ticket at once, so the
+client spends about one ticket each minute. The drop counts as the host's last time online also when the
+state already showed an error before the drop. After the 10 minutes, the `host_unavailable` wait
+applies. `bun scripts/remote-host-restart-reconnect-e2e.ts` restarts the dev host with
+`bun run dev:restart-host` and measures the time until the test client is online again.
+
 ### Roles
 
 `agent-access-v1` limits the agents that a member can use. Its routes are `/v1/agent-access` and
