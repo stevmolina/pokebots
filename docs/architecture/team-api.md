@@ -19,8 +19,8 @@ ICE servers from main for each stream and sends them to the viewer, so its media
 Its candidates are not filtered; a direct public IPv6 path stays possible.
 Mobile server labels in the drawer and connection settings describe the authenticated application
 connection, not membership or Signal presence. Each membership has its own transport and recovery controller while mobile is active.
-On a return to the app, the selected server connects first; the others become active when it is
-online, or after 3 s.
+On a return to the app, all servers connect at once. Each one has its own page, ticket and Signal
+socket; the account service has no ticket rate limit, and Signal takes 32 client sockets for each user.
 Switching servers changes the visible workspace without closing other connections. iOS `inactive`
 transitions leave connections alone. Backgrounding retains the last connection status and pauses
 recovery; transport failures received in the background are retained for resume. Only the paired desktop is Local;
@@ -52,7 +52,12 @@ to 6 s after the start of an ICE restart (`ICE_RESTART_PROBE_MS`) before it judg
 at its 11th ICE restart, so the peer counts its restart offers and, after 10, makes a new connection
 on the same session instead of an 11th. A new connection to a known host opens its Signal socket while the ticket request runs,
 and, with ICE servers less than 30 minutes old, gathers candidates before `ready`; its first offer
-holds the candidates gathered so far. A server that was
+holds the candidates gathered so far. The phone keeps these hints, as the web client keeps them in
+`localStorage`: each peer page gets a `hostProtocols` store (`apps/mobile/src/features/workspace/model/peer-hints.ts`)
+with the protocol, compact-rpc-v1 and the Signal route of the last connection. The native side keeps
+them in the encrypted workspace cache, one file for each server, and sends them to a new page before
+its first command, so a page that iOS or Android loaded again connects as the page before it did.
+Sign-out, the end of the session and the removal of the server delete them with the cache. A server that was
 Online when the app left keeps its Online look during the first attempt after the return, for up to
 5 s (`QUIET_RESUME_MS` in `server-connection.tsx`): the server is `resuming`, `showsOnline` is
 true, and no reconnect status, faded avatars or faded chat show. A workspace request to a resuming
