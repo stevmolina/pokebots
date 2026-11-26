@@ -38,6 +38,11 @@
 //     --previous-artifact=/fixtures/old/Pokebots.app --new=/fixtures/new/Pokebots.app
 // Optionally add --next=/fixtures/next/Pokebots.app to test a second replacement on the same profile.
 // The next build must have the same database schema as the candidate checkout.
+// Add --real-keychain-offline-guest with --next only on a disposable macOS guest with its
+// network adapter disconnected and a fresh, unlocked test login keychain. The flag attests
+// that the guest and login are disposable. Approve Keychain prompts only in that guest.
+// This proves that one synthetic Vault login survives both replacements under the same signer
+// and bundle ID. It does not test a new bundle ID, a new signer, or provider authentication.
 // Use trusted signed builds from the commits under test. Run from the candidate checkout.
 // The test login isolates native macOS paths and the keychain. Keep real profiles and accounts
 // out of this login. This test checks bundle replacement and fixture data.
@@ -79,7 +84,7 @@ import {
   rm,
   writeFile,
 } from "node:fs/promises";
-import { tmpdir, userInfo } from "node:os";
+import { networkInterfaces, tmpdir, userInfo } from "node:os";
 import { basename, join, resolve } from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import { setTimeout as sleep } from "node:timers/promises";
@@ -149,6 +154,15 @@ if (nextArguments.length > 0) {
     throw new Error("Use one --next=<signed .app folder>.");
   }
 }
+class UpgradeCheckError extends Error {}
+
+const realKeychain = process.argv.includes("--real-keychain-offline-guest");
+if (realKeychain) {
+  if (!localPokebots || target !== "macos" || !nextArtifact) {
+    throw new Error("--real-keychain-offline-guest requires the local macOS fixture with --next.");
+  }
+  checkOfflineMacGuest();
+}
 if (localPokebots) {
   if (target !== "macos" || history || option("previous") !== undefined || option("previous-age-days") !== undefined) {
     throw new Error("Local Pokebots requires macos with no release selection or history options.");
@@ -173,6 +187,15 @@ const newVersion = z
   .object({ version: z.string() })
   .parse(JSON.parse(await readFile(resolve(import.meta.dirname, "../package.json"), "utf8"))).version;
 
+function checkOfflineMacGuest(): void {
+  const guest = spawnSync("/usr/sbin/sysctl", ["-n", "kern.hv_vmm_present"], { encoding: "utf8" });
+  check(guest.status === 0 && guest.stdout.trim() === "1", "Real Keychain requires a macOS guest.");
+  check(
+    Object.values(networkInterfaces()).every((addresses) => addresses?.every(({ internal }) => internal)),
+    "Disconnect all non-loopback network interfaces before using real Keychain.",
+  );
+}
+
 interface Report {
   passed: boolean;
   error?: string;
@@ -196,6 +219,7 @@ interface Report {
   newQuit?: QuitResult;
   /** The calls of the previous release that the seed step used. */
   seedApi?: SeedApi;
+  realKeychainVault?: { baseline: boolean; candidate: boolean; successor: boolean };
   seeded?: Counts;
   afterUpgrade?: Counts;
   database?: DatabaseReport;
@@ -256,8 +280,6 @@ const earlierWorkspaces = new Set(await listWorkspaces());
 // The process and the app that run now, so that a failure can stop them. `process` is set at the
 // spawn and `app` when the window is connected.
 const current: { process: LaunchedProcess | null; app: RunningApp | null } = { process: null, app: null };
-
-class UpgradeCheckError extends Error {}
 
 function check(condition: unknown, message: string): asserts condition {
   if (!condition) throw new UpgradeCheckError(message);
@@ -612,7 +634,8 @@ async function launch(): Promise<RunningApp> {
   // A stale port file from the earlier start would point at a closed port.
   await rm(join(userDataPath, "DevToolsActivePort"), { force: true });
   const args = [`--user-data-dir=${userDataPath}`, "--remote-debugging-port=0"];
-  if (target === "macos") args.push("--use-mock-keychain");
+  if (realKeychain) checkOfflineMacGuest();
+  else if (target === "macos") args.push("--use-mock-keychain");
   // On POSIX the app gets its own process group, so that the cleanup also stops the helpers that
   // outlive a killed app: the crash handler and the fake agent keep the stderr pipe open.
   const child = spawn(executablePath(), args, {
@@ -1043,6 +1066,48 @@ async function listWorkspaces(): Promise<string[]> {
   return existsSync(agentsFolder) ? await readdir(agentsFolder) : [];
 }
 
+async function checkKeychainVaultEnvelope(): Promise<void> {
+  const envelope = z
+    .object({ version: z.literal(1), record: z.string() })
+    .parse(JSON.parse(await readFile(join(userDataPath, "openbot-vault-v1.json"), "utf8")));
+  // The released cipher sends macOS v10 ciphertext to Electron safeStorage. The key-file
+  // fallback has a different prefix. Read only the envelope and never report its contents.
+  check(
+    Buffer.from(envelope.record, "base64").subarray(0, 3).toString("ascii") === "v10",
+    "The fixture Vault did not use macOS safeStorage.",
+  );
+}
+
+async function seedKeychainVault(page: Page, password: string): Promise<string> {
+  const id = await page.evaluate(async (password) => {
+    const vault = window.openbot.vault;
+    const empty = await vault.list();
+    if (empty.status !== "ready" || empty.items.length !== 0) return null;
+    const state = await vault.save({
+      kind: "login",
+      id: null,
+      website: "https://upgrade-fixture.invalid",
+      username: "upgrade-fixture",
+      notes: "",
+      password,
+    });
+    const item = state.items[0];
+    return state.status === "ready" && state.items.length === 1 && item?.kind === "login" ? item.id : null;
+  }, password);
+  check(id, "Cannot seed a synthetic login in an empty Vault.");
+  return id;
+}
+
+async function checkKeychainVault(page: Page, id: string, password: string): Promise<void> {
+  await checkKeychainVaultEnvelope();
+  // Use the released user reveal path. Return only the equality result across DevTools.
+  const matches = await page.evaluate(
+    async ({ id, password }) => (await window.openbot.vault.reveal({ id, field: "password" })) === password,
+    { id, password },
+  );
+  check(matches, "The fixture Vault did not reveal the seeded synthetic password.");
+}
+
 async function readAppVersion(page: Page): Promise<string> {
   return (await page.evaluate(() => window.openbot.getAppInfo())).version;
 }
@@ -1247,6 +1312,12 @@ try {
       ? "The baseline app reports the wrong version."
       : `The previous release reports version ${oldVersion}, not ${previousVersion}.`,
   );
+  const vaultPassword = realKeychain ? randomUUID() : undefined;
+  const vaultId = vaultPassword ? await seedKeychainVault(oldApp.page, vaultPassword) : undefined;
+  if (vaultId && vaultPassword) {
+    await checkKeychainVault(oldApp.page, vaultId, vaultPassword);
+    report.realKeychainVault = { baseline: true, candidate: false, successor: false };
+  }
   const seeded = await seed(oldApp.page);
   report.seeded = await readSeed(oldApp.page, seeded);
   report.oldQuit = await quit(oldApp);
@@ -1268,6 +1339,10 @@ try {
   if (localPokebots) check(installedVersion === newVersion, "The candidate app reports the wrong version.");
   report.installedVersion = installedVersion;
   report.afterUpgrade = await readSeed(newApp.page, seeded);
+  if (report.realKeychainVault && vaultId && vaultPassword) {
+    await checkKeychainVault(newApp.page, vaultId, vaultPassword);
+    report.realKeychainVault.candidate = true;
+  }
   report.newQuit = await quit(newApp, process.platform !== "darwin");
   report.database = await checkDatabase(previousSchemaVersion, previousForeignKeyViolations, previousRowCounts);
 
@@ -1327,6 +1402,10 @@ try {
     check((await readAppVersion(nextApp.page)) === next.build.version, "The next app reports the wrong version.");
     next.installedVersion = next.build.version;
     next.afterUpgrade = await readSeed(nextApp.page, seeded);
+    if (report.realKeychainVault && vaultId && vaultPassword) {
+      await checkKeychainVault(nextApp.page, vaultId, vaultPassword);
+      report.realKeychainVault.successor = true;
+    }
     next.quit = await quit(nextApp);
     check(
       next.quit.clean && next.quit.exitCode === 0 && next.quit.runMarker === "clean",
