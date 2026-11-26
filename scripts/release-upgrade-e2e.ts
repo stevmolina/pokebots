@@ -263,6 +263,7 @@ const runMarkerFile = z.object({ state: z.string() });
 const report: Report = { passed: false, target, arch: process.arch, history, newVersion };
 const root = await mkdtemp(join(tmpdir(), "openbot-upgrade-"));
 const homePath = join(root, "home");
+const launchHome = realKeychain ? userInfo().homedir : homePath;
 // Keep the profile's released path relative to the fixture home. Electron's native appData
 // resolution can ignore HOME, so launch also passes this exact path via --user-data-dir.
 const userDataPath = localPokebots
@@ -275,7 +276,11 @@ if (!localPokebots) {
 // The app puts agent workspaces in `homedir()`/OpenBot/Agents. On Windows `homedir()` reads
 // USERPROFILE, which stays the real one (see `launchEnvironment`), and an earlier step of the job
 // can have made workspaces there. So the check counts only the folders that are new.
-const agentsFolder = join(target === "windows" ? (process.env.USERPROFILE ?? homePath) : homePath, "OpenBot", "Agents");
+const agentsFolder = join(
+  target === "windows" ? (process.env.USERPROFILE ?? homePath) : launchHome,
+  "OpenBot",
+  "Agents",
+);
 const earlierWorkspaces = new Set(await listWorkspaces());
 // The process and the app that run now, so that a failure can stop them. `process` is set at the
 // spawn and `app` when the window is connected.
@@ -587,8 +592,9 @@ function launchEnvironment(): NodeJS.ProcessEnv {
     // USERPROFILE: with an empty one, Windows cannot find the AppData known folder and the start
     // fails ("Failed to get 'appData' path"). So on Windows the workspaces go to the real profile
     // (see `agentsFolder`). The runner is discarded after the job.
-    HOME: homePath,
-    ...(target === "windows" ? {} : { USERPROFILE: homePath }),
+    // The offline guest uses its fresh login home so macOS can find its real Keychain.
+    HOME: launchHome,
+    ...(target === "windows" ? {} : { USERPROFILE: launchHome }),
     CODEX_HOME: join(userDataPath, "codex-home"),
     CLAUDE_CONFIG_DIR: join(userDataPath, "claude-home"),
     OPENBOT_CODEX_PATH: join(userDataPath, target === "windows" ? "missing-codex.exe" : "missing-codex"),
