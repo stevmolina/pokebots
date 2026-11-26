@@ -16,14 +16,10 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: macos-15
-            platform: darwin
-            architecture: arm64
-            target: darwin-arm64
-          - os: macos-15-intel
-            platform: darwin
+          - os: windows-2025
+            platform: win32
             architecture: x64
-            target: darwin-x64
+            target: win32-x64
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -151,6 +147,7 @@ jobs:
         env:
           CMAKE_GENERATOR: Ninja
         run: |
+          set -euo pipefail
           native_perl="$(cygpath "$OPENBOT_PERL_DIR")/perl.exe"
           "$native_perl" -e 'die "Windows Perl is required\n" unless $^O eq "MSWin32";'
           export OPENSSL_SRC_PERL="$(cygpath -w "$native_perl")"
@@ -160,6 +157,19 @@ jobs:
             git config --system --get "$key" || printf 'System %s is unset\n' "$key"
             git config --global --get "$key" || printf 'Global %s is unset\n' "$key"
           done
+          # Use the historical OpenSSL package for this build without changing the runner's packages.
+          openssl_dir="$(mktemp -d)"
+          package=mingw-w64-ucrt-x86_64-openssl-3.6.5-1-any.pkg.tar.zst
+          curl --fail --silent --show-error --location --output "$openssl_dir/$package" \
+            "https://repo.msys2.org/mingw/ucrt64/$package"
+          (
+            cd "$openssl_dir"
+            echo "773e021ebad83f14b5c103db467411e8ff064663e1c7e7f730e2be72f4117064  $package" | sha256sum -c
+            tar -xf "$package"
+          )
+          export OPENSSL_ROOT_DIR="$(cygpath -m "$openssl_dir/ucrt64")"
+          export PATH="$openssl_dir/ucrt64/bin:$PATH"
+          "$openssl_dir/ucrt64/bin/openssl.exe" version
           bun run build:remote-desktop-runtime
 
       - name: Verify runtime
