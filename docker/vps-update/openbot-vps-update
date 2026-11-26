@@ -350,10 +350,11 @@ install_staged() {
 
 # The app writes `update-stage` or `update-install`. It waits while the request is there, then reads
 # the state, so the state comes first. The time of the state changes while the request runs.
+# `request install` installs without a request file, so the path unit does not take it at the same time.
 request() {
   local install=0 result=0 keeper
   lock
-  if [ -e "$REQUESTS/update-install" ] || [ -L "$REQUESTS/update-install" ]; then install=1; fi
+  if [ "${1:-}" = install ] || [ -e "$REQUESTS/update-install" ] || [ -L "$REQUESTS/update-install" ]; then install=1; fi
   if [ "$install" -eq 1 ]; then set_state "$STATUS/state" installing; else set_state "$STATUS/state" waiting; fi
   rm -rf -- "$REQUESTS/update-stage" "$REQUESTS/update-install"
   (while sleep 5; do touch -c "$STATUS/state"; done) >/dev/null 2>&1 &
@@ -508,10 +509,7 @@ main() {
       stage
       ;;
     request) request ;;
-    install)
-      touch "$REQUESTS/update-install"
-      request
-      ;;
+    install) request install ;;
     status) show_status ;;
     *)
       sed -n '2,25p' "$0" | sed 's/^# \{0,1\}//'
