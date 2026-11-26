@@ -12,7 +12,7 @@ import {
   useMobileWorkspaceActions,
   useMobileWorkspaceSelector,
 } from "@/features/workspace/context/mobile-workspace-context";
-import { showsOnline } from "@/features/workspace/model/server-status";
+import { showsOffline, showsOnline } from "@/features/workspace/model/server-status";
 import type { MobileServer } from "@/features/workspace/model/workspace-types";
 import { haptics } from "@/shared/lib/haptics";
 import { useText } from "@/shared/lib/text";
@@ -59,7 +59,13 @@ function useMachineChoices(): { choices: MachineChoice[]; current: MachineChoice
   );
   const count = (n: number) => t("mobile.agent.machines.agentCount", { count: n });
   const state = (server: MobileServer) =>
-    t(showsOnline(server) ? "mobile.agent.machines.online" : "mobile.agent.machines.offlineShort");
+    t(
+      showsOnline(server)
+        ? "mobile.agent.machines.online"
+        : showsOffline(server)
+          ? "mobile.agent.machines.offlineShort"
+          : "mobile.agent.machines.reconnectingShort",
+    );
   const total = servers.reduce((sum, server) => sum + (counts.get(server.id) ?? 0), 0);
   const online = servers.filter((server) => showsOnline(server)).length;
   const choices: MachineChoice[] = [

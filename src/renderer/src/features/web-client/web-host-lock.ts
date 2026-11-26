@@ -37,8 +37,12 @@ export async function acquireWebHostLock(
   });
 }
 
-/** The connection state that a tab reports for a host it holds. "unknown" before the first result. */
-export type WebHostState = "unknown" | "connecting" | "online" | "offline" | "error" | "incompatible";
+/**
+ * The connection state that a tab reports for a host it holds. "unknown" before the first result.
+ * "reconnecting" is the wait between two attempts; "offline" is a host that Signal says is not connected.
+ * A tab of an older build drops a "reconnecting" message and keeps the state it had.
+ */
+export type WebHostState = "unknown" | "connecting" | "reconnecting" | "online" | "offline" | "error" | "incompatible";
 
 /**
  * The messages between the tabs of one account. A tab that opens a host asks the tab that holds it
@@ -55,6 +59,7 @@ export type WebHostTabMessage =
 const HOST_STATES = [
   "unknown",
   "connecting",
+  "reconnecting",
   "online",
   "offline",
   "error",

@@ -25,12 +25,32 @@ export function showsOnline(server: Pick<MobileServer, "state" | "resuming"> | u
   return server?.state === "online" || server?.resuming === true;
 }
 
+/**
+ * A server that the app tries again, in an attempt or in the wait before the next one. Only a host that
+ * Signal says is not connected is offline: a slow or failed attempt can have another cause.
+ */
+function showsReconnecting(
+  server: Pick<MobileServer, "state" | "initialConnectionPending" | "resuming" | "hostOffline">,
+): boolean {
+  if (showsOnline(server) || server.hostOffline) return false;
+  return server.state === "offline" || (server.state === "connecting" && !server.initialConnectionPending);
+}
+
+/**
+ * A server that the machine lists show as offline: Signal says that its host is not connected, or no
+ * retry can fix its connection. Each other server that is not online connects or tries again.
+ */
+export function showsOffline(server: Pick<MobileServer, "state" | "resuming" | "hostOffline">): boolean {
+  return !showsOnline(server) && (server.hostOffline === true || server.state === "error");
+}
+
 export function serverStatusLabel(
-  server: Pick<MobileServer, "state" | "initialConnectionPending" | "resuming">,
+  server: Pick<MobileServer, "state" | "initialConnectionPending" | "resuming" | "hostOffline">,
   t: MobileTranslate,
 ): string {
   if (showsOnline(server)) return t(LABELS.online);
-  if (server.state === "connecting" && !server.initialConnectionPending) return t(LABELS.offline);
+  if (showsReconnecting(server)) return t("mobile.workspace.status.reconnecting");
+  if (server.hostOffline && server.state !== "error") return t(LABELS.offline);
   return t(LABELS[server.state]);
 }
 
@@ -57,6 +77,8 @@ export function applyServerRecovery(
     recoveryStatus: status,
     resuming: resuming && state !== "online",
     initialConnectionPending: server.initialConnectionPending && state === "connecting",
+    // Signal says it again while the host stays away. A connection that works ends it.
+    hostOffline: server.hostOffline === true && state !== "online",
   };
 }
 
@@ -69,6 +91,7 @@ export function sameServerRecovery(server: MobileServer, next: MobileServer): bo
     previous?.attempt === status?.attempt &&
     server.state === next.state &&
     server.resuming === next.resuming &&
+    Boolean(server.hostOffline) === Boolean(next.hostOffline) &&
     server.initialConnectionPending === next.initialConnectionPending &&
     server.connectionFailure?.message === next.connectionFailure?.message &&
     server.connectionFailure?.reference === next.connectionFailure?.reference
@@ -116,6 +139,7 @@ export function serverFromHost(
     connectionFailure: previous?.connectionFailure,
     recoveryStatus: previous?.recoveryStatus,
     resuming: previous?.resuming,
+    ...(previous?.hostOffline ? { hostOffline: true } : {}),
     address: null,
     accent: serverAccent(host.hostId),
     // The directory gives the key that this app trusts: the pinned key, or the new key of a signed
