@@ -44,6 +44,7 @@ import type {
   RemoteDesktopRelayEvent,
 } from "@/features/remote-desktop/model/remote-desktop-relay";
 import { supportLog, supportLogUrl } from "@/features/support/model/support-log";
+import type { PeerHintCache, PeerHints } from "@/features/workspace/model/peer-hints";
 import { InactiveRequestError } from "@/features/workspace/model/pending-approvals";
 import { referencedError } from "@/features/workspace/model/referenced-error";
 import {
@@ -110,6 +111,8 @@ interface RemoteTeamTransportProps {
   hostId: string;
   active: boolean;
   directory: RemoteTeamDirectoryClient;
+  /** The connection hints that the phone keeps for each server. Null when it cannot keep them. */
+  peerHints: PeerHintCache | null;
   onConnectionUpdate: (update: RemoteTeamConnectionUpdate) => void;
   /** Signal says this account's server list changed on another device. */
   onMembershipChanged?: () => Promise<void>;
@@ -141,6 +144,12 @@ function liveVoiceErrorText(path: string, status: number, body: unknown): string
   if (path !== LIVE_VOICE_ROUTES.start && path !== LIVE_VOICE_ROUTES.stop) return null;
   return isDynamicRecord(body) && isString(body.error) && body.error ? body.error : null;
 }
+
+/**
+ * How long a page that is ready waits for the hints that the phone kept. The read is a small file;
+ * a keychain that does not answer must not hold the connection.
+ */
+const HINTS_WAIT_MS = 250;
 
 // One object, not a new one for each render.
 const BRIDGE_DOM: DOMProps = {
@@ -393,21 +402,41 @@ export const RemoteTeamTransport = memo(
       [enqueue, sendViewCommand, sendDesktopCommand, backgroundLane],
     );
 
+    // The newest hints of this server: the page's own, or the ones that the phone kept. The read
+    // starts with the transport, while the page loads.
+    const hints = useRef<{ hostId: string; value: Promise<PeerHints | null> } | null>(null);
+    if (!hints.current && props.peerHints)
+      hints.current = { hostId: props.hostId, value: props.peerHints.read(props.hostId).catch(() => null) };
     // A page that loads again, such as after Android ends its renderer, has none of the commands.
     // The page takes later states from the handle only, so it gets the current one before its commands.
     // A second load means that the system ended the page's web process, such as in the background.
     const pageLoads = useRef(0);
     const handleReady = useCallback(async () => {
       pageLoads.current += 1;
+      const kept = hints.current;
+      const saved = kept
+        ? await Promise.race([
+            kept.value,
+            new Promise<null>((resolve) => setTimeout(() => resolve(null), HINTS_WAIT_MS)),
+          ])
+        : null;
+      // The handle has the method only after the page has registered it.
+      const hostHints = bridge.current?.hostHints;
+      if (kept && saved && typeof hostHints === "function") hostHints({ hostId: kept.hostId, hints: saved });
       const outstanding = mailbox.outstanding();
       supportLog.add(
         "info",
         "connection",
-        `${latest.current.props.hostId} page ready, load ${pageLoads.current}, ${outstanding.length} commands waiting`,
+        `${latest.current.props.hostId} page ready, load ${pageLoads.current}, ${outstanding.length} commands waiting${saved ? ", hints kept" : ""}`,
       );
       sendActive(latest.current.props.active);
       deliverCommands(outstanding);
     }, [sendActive, deliverCommands, mailbox]);
+    const handleHostHints = useCallback(async ({ hostId, hints: value }: { hostId: string; hints: PeerHints }) => {
+      // A page that loads again gets these, not the older ones of the first read.
+      hints.current = { hostId, value: Promise.resolve(value) };
+      latest.current.props.peerHints?.write(hostId, value);
+    }, []);
     const handleCommandResult = useCallback(
       async (result: RemoteTeamCommandResult) => {
         mailbox.receive(result);
@@ -511,6 +540,7 @@ export const RemoteTeamTransport = memo(
         dom={BRIDGE_DOM}
         onCommandResult={handleCommandResult}
         onReady={handleReady}
+        onHostHints={handleHostHints}
         {...actions}
       />
     );

@@ -17,6 +17,7 @@ import { memo, useCallback, useEffect, useRef, useState } from "react";
 import { MobileConnectionAnalytics } from "@/features/analytics/connection";
 import { mobileAnalytics } from "@/features/analytics/mobile-analytics";
 import { supportLog, supportLogValue } from "@/features/support/model/support-log";
+import type { PeerHintCache } from "@/features/workspace/model/peer-hints";
 import { referencedError } from "@/features/workspace/model/referenced-error";
 import { subscribeNetworkMoves } from "@/shared/lib/network-path";
 import { RemoteTeamTransport, type RemoteTeamTransportRef } from "./remote-team-transport";
@@ -63,6 +64,8 @@ interface Props {
   publicKey: string;
   active: boolean;
   directory: RemoteTeamDirectoryClient;
+  /** The connection hints that the phone keeps for each server. */
+  peerHints: PeerHintCache | null;
   register(hostId: string, handle: ServerConnectionHandle | null): void;
   load(hostId: string, publicKey: string, client: RemoteTeamTransportRef, context: ServerLoadContext): Promise<void>;
   /** `resuming` is true while a return to the app connects again in its quiet time. */
@@ -74,8 +77,6 @@ interface Props {
   ): void;
   onMembershipChanged?(): Promise<void>;
   onTeamEvent(hostId: string, event: RemoteTeamEvent): void;
-  /** An attempt of this server failed in the foreground, or Signal says that its host is offline. */
-  onUnavailable?(hostId: string): void;
 }
 
 /**
@@ -87,15 +88,13 @@ export const ServerConnection = memo(function ServerConnection({
   publicKey,
   active,
   directory,
+  peerHints,
   register,
   load,
   onStatus,
   onTeamEvent,
   onMembershipChanged,
-  onUnavailable,
 }: Props) {
-  const onUnavailableRef = useRef(onUnavailable);
-  onUnavailableRef.current = onUnavailable;
   const [client, setClient] = useState<RemoteTeamTransportRef | null>(null);
   const controller = useRef<ReturnType<typeof createRemoteConnectionRecovery> | null>(null);
   const activeRef = useRef(active);
@@ -163,7 +162,6 @@ export const ServerConnection = memo(function ServerConnection({
         "connection",
         `${hostId} ${update.state}${update.code ? ` (${update.code})` : ""}${update.message ? `: ${update.message}` : ""}${update.reference ? ` [${update.reference}]` : ""}${update.hostOffline ? ", host not on Signal" : ""}${update.resync ? ", resync" : ""}`,
       );
-      if (update.hostOffline && activeRef.current) onUnavailableRef.current?.(hostId);
       if (update.state === "online" && update.lostAfterMs !== undefined) lostAfterMs.current = update.lostAfterMs;
       if (update.state === "offline") {
         if (activeRef.current) analytics.lost();
@@ -204,10 +202,7 @@ export const ServerConnection = memo(function ServerConnection({
             supportLog.add("info", "connection", `${hostId} attempt ${attempt} loaded (${Date.now() - started} ms)`);
           },
           (error) => {
-            if (initiatingContext.isCurrent()) {
-              finish("failed", initiatingContext.stage);
-              onUnavailableRef.current?.(hostId);
-            }
+            if (initiatingContext.isCurrent()) finish("failed", initiatingContext.stage);
             const reference = errorReference(error);
             supportLog.add(
               "warn",
@@ -304,6 +299,7 @@ export const ServerConnection = memo(function ServerConnection({
       hostId={hostId}
       active={active}
       directory={directory}
+      peerHints={peerHints}
       onMembershipChanged={onMembershipChanged}
       onNetworkRestored={handleNetworkRestored}
       onTeamEvent={onTeamEvent}

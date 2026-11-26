@@ -237,6 +237,7 @@ import {
 } from "@/features/workspace/model/drawer-snapshot";
 import { publishLiveVoiceEvent } from "@/features/workspace/model/live-voice-events";
 import { LiveWorkspaceStore } from "@/features/workspace/model/live-workspace-store";
+import type { PeerHintCache } from "@/features/workspace/model/peer-hints";
 import {
   dropApproval,
   InactiveRequestError,
@@ -316,8 +317,6 @@ const NO_IDS: string[] = [];
 /** A create whose answer got lost sends its id again and gets the first agent (`agent-create-operation-v1`). */
 const createOperationId = retryOperationIds(() => Crypto.randomUUID());
 const NO_AGENTS: MobileAgent[] = [];
-/** The longest that the servers which are not selected wait for the selected one on a return to the app. */
-const OTHER_SERVERS_RETURN_DELAY_MS = 3_000;
 /** How long the app waits at start for the first server before it opens a server that is online. */
 const STARTUP_SERVER_WAIT_MS = 4_000;
 /**
@@ -496,6 +495,19 @@ export function MobileWorkspaceProvider({ children }: PropsWithChildren) {
     startDrawerSnapshots(`${session.apiUrl}:${session.user.id}`);
     return createWorkspaceCache(`${session.apiUrl}:${session.user.id}`);
   }, [session.apiUrl, session.user.id]);
+  // The protocol, compact-rpc-v1 and Signal route of each server, so a new peer page connects in fewer
+  // round trips. They go with the workspace cache: sign-out, session end and server removal delete them.
+  const peerHints = useMemo<PeerHintCache | null>(
+    () =>
+      workspaceCache && {
+        read: (serverId) => workspaceCache.readHints(serverId),
+        write: (serverId, hints) => {
+          if (!removedServers.current.has(serverId))
+            void workspaceCache.writeHints(serverId, hints).catch(() => undefined);
+        },
+      },
+    [workspaceCache],
+  );
   useEffect(() => {
     startDrawerSnapshots(`${session.apiUrl}:${session.user.id}`);
     return () => startDrawerSnapshots(null);
@@ -1549,16 +1561,6 @@ export function MobileWorkspaceProvider({ children }: PropsWithChildren) {
     },
     [teamApi, liveState],
   );
-  /**
-   * Set on background entry with the selected server. Until it clears, the other servers stay
-   * inactive. A new selection ends it, so the server that the user leaves keeps its attempt. A
-   * selected server that cannot be online soon ends it too: the others do not wait for nothing.
-   */
-  const [hold, setHold] = useState<{ serverId: string | null } | null>(null);
-  const othersHeld = hold !== null && hold.serverId === activeServerId;
-  const handleServerUnavailable = useCallback((hostId: string) => {
-    if (hostId === activeServerIdRef.current) setHold(null);
-  }, []);
   const wakeReconnect = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   useEffect(() => () => clearTimeout(wakeReconnect.current), []);
   const limitFirstConnection = useCallback((hostId: string) => {
@@ -1635,7 +1637,6 @@ export function MobileWorkspaceProvider({ children }: PropsWithChildren) {
       if (status.phase === "online") connectionWaits.settle(hostId, null);
       else if (!resuming && status.phase !== "connecting")
         connectionWaits.settle(hostId, new Error(sourceText("error.remote.selectedServerOffline")));
-      if (status.phase === "online" && hostId === activeServerIdRef.current) setHold(null);
       // The status repeats each second while it waits, so each failed attempt asks once.
       if (status.phase === "online") wakeAttempts.current.delete(hostId);
       if (status.phase !== "waiting" && status.phase !== "cooldown") return;
@@ -1679,26 +1680,6 @@ export function MobileWorkspaceProvider({ children }: PropsWithChildren) {
     }
     directoryRefresh.setActive(foreground);
   }, [foreground, directoryRefresh, conversationStore, connectionWaits, persistServer]);
-
-  // On a return to the app the selected server connects first; the others follow when it is online,
-  // or after a short wait. The phone then sets up the connection the user waits for alone, and the
-  // tickets of the other servers reach the account service later.
-  useEffect(() => {
-    if (!foreground) {
-      setHold({ serverId: activeServerIdRef.current });
-      return;
-    }
-    if (!activeServerIdRef.current) {
-      setHold(null);
-      return;
-    }
-    const timer = setTimeout(() => setHold(null), OTHER_SERVERS_RETURN_DELAY_MS);
-    return () => clearTimeout(timer);
-  }, [foreground]);
-  // A selection made during the hold ends it, also when the user then selects the first server again.
-  useEffect(() => {
-    if (hold && hold.serverId !== activeServerId) setHold(null);
-  }, [hold, activeServerId]);
 
   // The app starts on the first server of the list. When that server does not connect soon, such as
   // a computer that sleeps, the first server that is online opens instead. The saved order stays.
@@ -2905,19 +2886,21 @@ export function MobileWorkspaceProvider({ children }: PropsWithChildren) {
             serversReady={serverDirectoryState === "ready"}
             agents={directoryAgents}
           />
+          {/* On a return to the app all servers connect at once. Each one has its own page, ticket and
+              Signal socket, and the account service and Signal take several at a time. */}
           {servers.map((server) => (
             <ServerConnection
               key={server.id}
               hostId={server.id}
               publicKey={server.publicKey}
-              active={foreground && (!othersHeld || server.id === activeServerId)}
+              active={foreground}
               directory={directory}
+              peerHints={peerHints}
               register={registerConnection}
               load={loadServer}
               onStatus={handleConnectionStatus}
               onMembershipChanged={refreshMemberships}
               onTeamEvent={handleTeamEvent}
-              onUnavailable={handleServerUnavailable}
             />
           ))}
         </View>
