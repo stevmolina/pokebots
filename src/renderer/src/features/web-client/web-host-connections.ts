@@ -77,6 +77,11 @@ interface HostEntry {
   agents: ClientAgentSummary[];
   /** Counts `agents-changed` events, so a list read that started before one is dropped. */
   agentsRevision: number;
+  /**
+   * Signal said that the host is not connected to it. The host stays "offline" until it is online again;
+   * without this word, a host between two attempts is "reconnecting", not offline.
+   */
+  hostOffline: boolean;
 }
 
 /** The events of a host that this tab has not opened that a notification can show or withdraw. */
@@ -225,6 +230,7 @@ export function createWebHostConnections(options: {
       capabilities: null,
       agents: [],
       agentsRevision: 0,
+      hostOffline: false,
     };
     entries.set(host.hostId, entry);
     options.acquireHostLock(options.accountId, host.hostId, { wait: entry.stop.signal }).then(
@@ -272,7 +278,10 @@ export function createWebHostConnections(options: {
             void readAgents(entry);
           // Signal holds the attempt until the host connects. The attempt continues, so the recovery
           // reports no state for this wait.
-          if (update.hostOffline) setState(host.hostId, "offline");
+          if (update.hostOffline) {
+            entry.hostOffline = true;
+            setState(host.hostId, "offline");
+          }
           if (update.state !== "offline") return;
           if (update.code === "session_revoked") options.onSessionRevoked();
           if (update.code === "protocol_error") entry.recovery?.suspend(failed(update.message, update.reference));
@@ -345,17 +354,21 @@ export function createWebHostConnections(options: {
       () => undefined,
       (status) => {
         if (entries.get(host.hostId) !== entry) return;
+        if (status.phase === "online") entry.hostOffline = false;
         setState(
           host.hostId,
           status.phase === "online"
             ? "online"
-            : status.phase === "connecting"
-              ? "connecting"
-              : status.phase === "suspended"
-                ? entry.incompatible
-                  ? "incompatible"
-                  : "error"
-                : "offline",
+            : status.phase === "suspended"
+              ? entry.incompatible
+                ? "incompatible"
+                : "error"
+              : // A slow attempt and the wait for the next one are not offline. Only Signal says that.
+                entry.hostOffline
+                ? "offline"
+                : status.phase === "connecting"
+                  ? "connecting"
+                  : "reconnecting",
         );
       },
     );
@@ -511,6 +524,7 @@ export function createWebHostConnections(options: {
         capabilities: handover.capabilities,
         agents: agents ? [...agents] : [],
         agentsRevision: 0,
+        hostOffline: false,
       };
       const failed = (message: string | null | undefined, reference: string | undefined) =>
         new WebHostRequestError(message ?? currentText().t("webClient.error.connectionUnavailable"), reference ?? null);
@@ -537,7 +551,10 @@ export function createWebHostConnections(options: {
             (options.onNotice || options.onAgentsChanged)
           )
             void readAgents(entry);
-          if (update.hostOffline) setState(host.hostId, "offline");
+          if (update.hostOffline) {
+            entry.hostOffline = true;
+            setState(host.hostId, "offline");
+          }
           if (update.state !== "offline") return;
           if (update.code === "session_revoked") options.onSessionRevoked();
           if (update.code === "protocol_error") entry.recovery?.suspend(failed(update.message, update.reference));

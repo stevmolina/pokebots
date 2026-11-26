@@ -16,7 +16,7 @@ import {
   useMobileWorkspaceActions,
   useMobileWorkspaceSelector,
 } from "@/features/workspace/context/mobile-workspace-context";
-import { showsOnline } from "@/features/workspace/model/server-status";
+import { showsOffline, showsOnline } from "@/features/workspace/model/server-status";
 import type { MobileServer } from "@/features/workspace/model/workspace-types";
 import type { LargeTitleScroll } from "@/shared/components/large-title";
 import { haptics } from "@/shared/lib/haptics";
@@ -111,7 +111,9 @@ export function AllMachinesList({
               key={server.id}
               style={[previewType.groupCaption, { color: colors.groupCaption, paddingHorizontal: 20, paddingTop: 6 }]}
             >
-              {t("mobile.agent.machines.offline", { name: server.name })}
+              {t(showsOffline(server) ? "mobile.agent.machines.offline" : "mobile.agent.machines.reconnecting", {
+                name: server.name,
+              })}
             </Typography>
           ))}
         </View>
@@ -208,7 +210,13 @@ export function MachinesGridScreen() {
   }, [agents, hidden]);
   const total = servers.reduce((sum, server) => sum + (counts.get(server.id) ?? 0), 0);
   const state = (server: MobileServer) =>
-    t(showsOnline(server) ? "mobile.agent.machines.online" : "mobile.agent.machines.offlineShort");
+    t(
+      showsOnline(server)
+        ? "mobile.agent.machines.online"
+        : showsOffline(server)
+          ? "mobile.agent.machines.offlineShort"
+          : "mobile.agent.machines.reconnectingShort",
+    );
   const close = (then: () => void) => {
     then();
     router.back();
