@@ -38,8 +38,8 @@ import {
 } from "./error-reports";
 import { MARKETPLACE_PLUGIN_SLUGS } from "./features/settings/marketplace-plugin-slugs";
 
-const OPENPANEL_API_URL = "https://analytics.openbot.run/api";
-const OPENPANEL_CLIENT_ID = "6c989975-87ef-4f0c-857e-ab449a65b5c2";
+const OPENPANEL_API_URL = "https://api.openpanel.dev";
+const OPENPANEL_CLIENT_ID = "3b690d6f-e603-4207-b494-5d9e523ae63d";
 const MAX_PENDING_EVENTS = 100;
 const CURATED_LISTING_PATTERN = /^openbot-curated-(?:skill|agent)-([a-z0-9][a-z0-9-]{0,63})$/u;
 const PLUGIN_SLUGS = new Set(MARKETPLACE_PLUGIN_SLUGS);
@@ -913,7 +913,11 @@ class DesktopAnalytics {
    * failure reports, and the web preference controls both.
    */
   configureWeb(options: { version: string; user: AnalyticsIdentity | null; enabled: boolean }): boolean {
-    if (!this.#client && (!this.#productionBuild || window.location.origin !== "https://openbot.run")) {
+    if (
+      !this.#client &&
+      (!this.#productionBuild ||
+        (window.location.origin !== "https://app.pokebots.xyz" && window.location.origin !== "https://pokebots.xyz"))
+    ) {
       this.#disabled = true;
       this.#pending = [];
       return false;

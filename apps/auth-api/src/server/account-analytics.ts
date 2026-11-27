@@ -22,7 +22,7 @@ import { Effect, Schema } from "effect";
 import type { HostedPoolGroup } from "./hosted-pool-snapshot";
 
 /** The same OpenPanel project as the desktop app and the website. ANALYTICS.md is the contract. */
-const OPENPANEL_API_URL = "https://analytics.openbot.run/api";
+const OPENPANEL_API_URL = "https://api.openpanel.dev";
 /**
  * The current generation. Generation 10 adds the account events, first-touch properties, and
  * `reactivated` and `end_reason` on plan events. Generation 11 adds the license to the billing events

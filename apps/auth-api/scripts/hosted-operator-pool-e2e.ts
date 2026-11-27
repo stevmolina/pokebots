@@ -519,7 +519,7 @@ async function scheduledSnapshots(database: DatabaseSync, at: number, cron: stri
   const originalFetch = globalThis.fetch;
   const routedFetch = async (input: RequestInfo | URL, init?: RequestInit) => {
     const url = String(input instanceof Request ? input.url : input);
-    if (url !== "https://analytics.openbot.run/api/track") return new Response(null, { status: 404 });
+    if (url !== "https://api.openpanel.dev/track") return new Response(null, { status: 404 });
     const body = String(init?.body);
     if (body.includes('"name":"hosted_pool_snapshot"')) snapshots.push(body);
     return new Response(null, { status: 202 });

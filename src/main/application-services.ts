@@ -4278,7 +4278,7 @@ export async function createApplicationServices({
     ? new ReportQueue(
         fileReportStorage(join(app.getPath("userData"), "openbot-error-reports-v1.json")),
         openPanelTransport({
-          clientId: "6c989975-87ef-4f0c-857e-ab449a65b5c2",
+          clientId: "3b690d6f-e603-4207-b494-5d9e523ae63d",
           origin: "openbot-app://app",
           ...(analyticsCaptureUrl ? { endpoint: `${analyticsCaptureUrl}/track` } : {}),
         }),
