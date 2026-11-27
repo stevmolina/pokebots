@@ -340,7 +340,7 @@ function buildMoonlight(source: string): void {
     const linkerArgument = /^host: .+-msvc$/m.test(rustcVersion) ? `/MAP:${map}` : `-Wl,${linkMapOption(map)}`;
     execFileSync(
       "cargo",
-      ["rustc", "--locked", "--release", "--bin", binary, "--", `-Clink-arg=${linkerArgument}`],
+      ["rustc", "--locked", "--release", "--package", binary, "--bin", binary, "--", `-Clink-arg=${linkerArgument}`],
       options,
     );
   }
