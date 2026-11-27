@@ -95,7 +95,11 @@ function stageCargo(source: string, stage: string, work: string) {
       throw new Error(`Cargo vendor checksum mismatch for ${directory}`);
     }
     const paths = files(path).filter((name) => name !== ".cargo-checksum.json");
-    for (const name of paths) checkDigest(join(path, name), checksums.files[name]);
+    for (const name of paths) {
+      const expected = checksums.files[name];
+      if (expected === undefined) throw new Error(`Missing Cargo vendor checksum for ${directory}/${name}`);
+      checkDigest(join(path, name), expected);
+    }
     if (paths.length !== Object.keys(checksums.files).length) {
       throw new Error(`Incomplete Cargo vendor tree for ${directory}`);
     }
