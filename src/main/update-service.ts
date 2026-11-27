@@ -70,6 +70,12 @@ export type UpdateAdapter = {
    * staged rollout, such as the hosted server adapter, does not have it.
    */
   isUserWithinRollout?: (info: UpdateInfo) => boolean | Promise<boolean>;
+  /**
+   * The version that `quitAndInstall` installs now, or null when the adapter does not know it. A VPS
+   * host stages a newer image while a download waits, and installs that one
+   * (`HostedUpdateAdapter.readyVersion`). Only an adapter that can tell has it.
+   */
+  readyVersion?: () => Promise<string | null>;
 };
 
 export function createDisabledUpdateAdapter(): UpdateAdapter {
@@ -602,6 +608,7 @@ export class UpdateService extends EventEmitter<UpdateServiceEvents> {
     return Effect.gen({ self: this }, function* () {
       // Scheduled before the request, because a request that never settles must not end the loop.
       this.#scheduleCheck(this.#options.checkIntervalMs);
+      yield* this.refreshReadyVersion();
       if (!this.#autoDownload || this.#checkRequest) return this.getStatus();
       const downloaded = this.#downloadedVersion;
       const checked = yield* Effect.result(this.#issueCheck());
@@ -677,6 +684,7 @@ export class UpdateService extends EventEmitter<UpdateServiceEvents> {
       if (!this.#canInstall() || this.#installStarted)
         return yield* new UpdateOperationFailure({ cause: new Error(sourceText("error.update.notReady")) });
       if (this.#managedByHost) return yield* new UpdateOperationFailure({ cause: new Error(MANAGED_HOST_MESSAGE) });
+      yield* this.refreshReadyVersion();
       yield* this.#install();
     });
   }
@@ -760,6 +768,24 @@ export class UpdateService extends EventEmitter<UpdateServiceEvents> {
         return yield* new UpdateOperationFailure({ cause: new Error(sourceText("error.update.restartFailed")) });
       }
     }).pipe(Effect.uninterruptible);
+  }
+
+  /**
+   * Names the version that an install installs now, when the updater knows it
+   * (`UpdateAdapter.readyVersion`). The host of a VPS server stages each newer image while a
+   * downloaded one waits, and an install installs the newest staged image. Without this, the update
+   * window named the build of the first download. It stays "ready" and changes nothing else.
+   */
+  refreshReadyVersion(): Effect.Effect<void> {
+    return Effect.gen({ self: this }, function* () {
+      if (!this.#updater.readyVersion || !this.#canInstall() || this.#installStarted) return;
+      const version = yield* Effect.promise(
+        () => this.#updater.readyVersion?.().catch(() => null) ?? Promise.resolve(null),
+      );
+      if (!version || version === this.#downloadedVersion || !this.#canInstall() || this.#installStarted) return;
+      logger.info(`The update to install is now ${version}, not ${this.#downloadedVersion}.`);
+      this.#markReady(version);
+    });
   }
 
   /**
