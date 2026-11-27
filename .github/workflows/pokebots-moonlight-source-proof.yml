@@ -1,0 +1,93 @@
+name: Pokebots Moonlight source proof
+
+on:
+  push:
+    branches: [pokebots-moonlight-source-proof]
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  replay:
+    if: github.repository == 'stevmolina/pokebots'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
+        with:
+          bun-version: 1.4.2
+          no-cache: true
+
+      - name: Verify the reference build evidence
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          proof="$RUNNER_TEMP/moonlight-source-proof"
+          mkdir -p "$proof"
+          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/15232679485/zip" > "$proof/reference.zip"
+          echo '00aef93e94ef389208bc383ae10f6363308ec651067785f4df76b51424b92997  reference.zip' |
+            (cd "$proof" && sha256sum -c)
+          unzip -p "$proof/reference.zip" build/remote-desktop-runtime/DISTRIBUTION-SHA256SUMS.txt |
+            sed -n 's!  linux/x64/static/!  !p' | LC_ALL=C sort > "$proof/expected.sha256"
+          test "$(wc -l < "$proof/expected.sha256")" -eq 110
+
+      - name: Stage and verify the locked source inputs
+        shell: bash
+        run: |
+          proof="$RUNNER_TEMP/moonlight-source-proof"
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq --no-install-recommends clang libclang-dev
+          rustup toolchain install nightly-2026-02-13 --profile minimal --no-self-update
+          export RUSTUP_TOOLCHAIN=nightly-2026-02-13
+          source_url="$(jq -er '.remoteDesktop.moonlightWeb.sourceArchive' native-runtime.lock.json)"
+          curl --fail --silent --show-error --location "$source_url" -o "$proof/source.tar.gz"
+          bun scripts/stage-moonlight-dependency-sources.ts "$proof/source.tar.gz" "$proof/supplement"
+          (cd "$proof/supplement" && sha256sum --quiet -c SHA256SUMS.txt)
+
+      - name: Rebuild the Moonlight web assets offline
+        shell: bash
+        run: |
+          proof="$RUNNER_TEMP/moonlight-source-proof"
+          supplement="$proof/supplement"
+          mkdir -p "$proof/replay/cargo" "$proof/replay/.cargo"
+          tar -xf "$supplement/upstream.tar.gz" --strip-components=1 -C "$proof/replay"
+          cd "$proof/replay"
+          git init --quiet
+          git apply --check "$supplement/runtime.patch"
+          git apply "$supplement/runtime.patch"
+          cmp Cargo.lock "$supplement/cargo/Cargo.lock"
+          cmp package-lock.json "$supplement/npm/package-lock.json"
+          mv "$supplement/cargo/vendor" cargo/vendor
+          cp "$supplement/cargo/config.toml" .cargo/config.toml
+          export CARGO_HOME="$proof/cargo-home" RUSTUP_HOME="$HOME/.rustup" RUSTUP_TOOLCHAIN=nightly-2026-02-13
+          export npm_config_cache="$proof/npm-cache" npm_config_offline=true CARGO_NET_OFFLINE=true
+          for package in "$supplement"/npm/*.tgz; do
+            npm cache add "$package" --offline --ignore-scripts
+          done
+          sudo unshare --net --setgid "$(id -g)" --setuid "$(id -u)" -- env \
+            PATH="$PATH" CARGO_HOME="$CARGO_HOME" RUSTUP_HOME="$RUSTUP_HOME" RUSTUP_TOOLCHAIN="$RUSTUP_TOOLCHAIN" \
+            npm_config_cache="$npm_config_cache" npm_config_offline=true CARGO_NET_OFFLINE=true bash -euo pipefail -c '
+              npm ci --offline --ignore-scripts --include=dev --no-audit --no-fund
+              npm run build
+            '
+          (cd dist && find . -type f -print0 | xargs -0 sha256sum | sed 's!  ./!  !' | LC_ALL=C sort) > "$proof/actual.sha256"
+          diff -u "$proof/expected.sha256" "$proof/actual.sha256"
+          printf 'Matched %s Moonlight web assets to runtime proof 46070121012.\n' \
+            "$(wc -l < "$proof/actual.sha256")" | tee "$proof/result.txt"
+
+      - name: Retain checksum evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: moonlight-web-asset-proof
+          path: |
+            ${{ runner.temp }}/moonlight-source-proof/expected.sha256
+            ${{ runner.temp }}/moonlight-source-proof/actual.sha256
+            ${{ runner.temp }}/moonlight-source-proof/result.txt
+          if-no-files-found: error
