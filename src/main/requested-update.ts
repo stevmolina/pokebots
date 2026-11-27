@@ -49,6 +49,8 @@ interface RequestedUpdateUpdater {
   checkForUpdates(): Effect.Effect<UpdateStatus, UpdateOperationFailure>;
   downloadUpdate(): Effect.Effect<UpdateStatus, UpdateOperationFailure>;
   installUpdate(): Effect.Effect<void, UpdateOperationFailure>;
+  /** Names the version that the install installs now, before members hear of the restart. */
+  refreshReadyVersion?(): Effect.Effect<void>;
   setScheduledRestart(restart: ScheduledUpdateRestart | null): void;
   getAutoDownload(): boolean;
   setAutoDownload(enabled: boolean): Effect.Effect<void>;
@@ -349,6 +351,7 @@ export class RequestedUpdate extends EventEmitter<{ preference: [UpdatePreferenc
       schedule.waitingFor = [];
       this.#publish();
     }
+    if (this.#updater.refreshReadyVersion) yield* this.#updater.refreshReadyVersion();
     this.#log(`Restarting to install the update that ${describe(schedule)} asked for.`);
     this.#announceState("restarting");
     this.#installing = true;

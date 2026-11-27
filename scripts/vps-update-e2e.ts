@@ -10,12 +10,15 @@
 // - `stage` starts the pre-copy, which fills the mirror while the container runs, without the
 //   download caches and with the user data;
 // - the app offers the staged build as "0.73.0+<commit>", and never an older build;
+// - when the host stages a newer build after the download, the app names that build when it
+//   installs, and the install takes the staged image without a new download;
 // - an install request stops the container, then syncs the mirror (also a change in the same
-//   second as the pre-copy), moves openbot-vps:current and makes the container again;
-// - after the install, a background job compresses the mirror to an archive, and only the newest
-//   archives stay;
+//   second as the pre-copy) without the node_modules folders of agent folders, moves
+//   openbot-vps:current and makes the container again;
+// - after the install, a background job copies those node_modules folders to the mirror, compresses
+//   the mirror to an archive, and only the newest archives stay;
 // - an image that does not come back is rolled back to the old image and the data of the mirror,
-//   and the caches on the volume stay;
+//   and the caches and the agent node_modules folders on the volume stay;
 // - an install request with nothing newer only restarts the container.
 //
 //   bun scripts/vps-update-e2e.ts
@@ -28,6 +31,7 @@ import { randomBytes } from "node:crypto";
 import { chmod, mkdir, readdir, readFile, rm, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { setTimeout as delay } from "node:timers/promises";
+import { Effect } from "effect";
 import {
   HostedUpdateAdapter,
   isNewerServerBuild,
@@ -36,6 +40,7 @@ import {
   serverBuildVersion,
   serverImageBuild,
 } from "../src/main/hosted-update-adapter";
+import { UpdateService } from "../src/main/update-service";
 
 const root = resolve(import.meta.dirname, "..");
 const reportRoot = join(root, ".openbot-build", "vps-update-e2e");
@@ -49,6 +54,10 @@ const NEW = { id: "sha256:bbbb", labels: "0.73.0-custom|9c41d2e07|2026-11-26T19:
 const OLDER = { id: "sha256:cccc", labels: "0.73.0-custom|1503cf943|2026-11-18T01:30:00Z" };
 const BROKEN = { id: "sha256:dddd", labels: "0.73.0-custom|e0e0e0e0e|2026-11-27T08:00:00Z" };
 const NEXT = { id: "sha256:eeee", labels: "0.74.0-custom|f1f1f1f1f|2026-11-28T08:00:00Z" };
+/** A build that the timer stages after the app downloaded NEW. */
+const LATER = { id: "sha256:ffff", labels: "0.73.0-custom|a1b2c3d4e|2026-11-26T20:00:00Z" };
+/** A package that an agent installs after the pre-copy. The final sync leaves it out. */
+const LATE_PACKAGE = "OpenBot/Agents/alpha/node_modules/late-pkg/index.js";
 
 /** Download caches: the mirror and the archives leave them out, and a rollback keeps them on the volume. */
 const CACHE_FILES = [
@@ -120,6 +129,7 @@ async function archives(): Promise<string[]> {
 
 /** The stand-in for `docker`: images, tags and one container, as files in /work/fake. */
 const FAKE_DOCKER = String.raw`#!/bin/bash
+LATE_PACKAGE=${LATE_PACKAGE}
 F=/work/fake
 echo "$*" >>"$F/log"
 tagfile() { echo "$F/tags/$(printf '%s' "$1" | tr '/:' '__')"; }
@@ -161,6 +171,8 @@ case "$1" in
       up)
         cat "$(tagfile openbot-vps:current)" >"$F/container"
         echo true >"$F/running"
+        # Whether the final sync copied the package that an agent installed after the pre-copy.
+        if [ -e "/work/backups/openbot-e2e-mirror/data/${LATE_PACKAGE}" ]; then echo yes; else echo no; fi >>"$F/packages-at-start"
         # A new version changes its data when it starts, as a migration does.
         if grep -qxF "$(cat "$F/container")" "$F/offline-images" 2>/dev/null; then
           echo migrated >/work/data/marker
@@ -283,7 +295,7 @@ async function main(): Promise<void> {
     "data",
   ])
     await mkdir(join(work, folder), { recursive: true });
-  for (const image of [OLD, NEW, OLDER, BROKEN, NEXT])
+  for (const image of [OLD, NEW, OLDER, BROKEN, NEXT, LATER])
     await writeFile(join(fake, "images", image.id), `${image.labels}\n`);
   await writeFile(join(fake, "container"), `${OLD.id}\n`);
   await writeFile(join(fake, "running"), "true\n");
@@ -430,6 +442,35 @@ async function main(): Promise<void> {
     await adapter.downloadUpdate();
     check("app download ends with the build", downloaded === "0.73.0+9c41d2e07", `update-downloaded ${downloaded}`);
 
+    // The update service of the app, as the server runs it, downloads NEW. Then the timer stages
+    // LATER, as on the Personal VPS on 2026-11-27: the window named NEW, and the host installed LATER.
+    const service = new UpdateService(adapter, {
+      currentVersion: "0.73.0",
+      enabled: true,
+      autoDownload: false,
+      beforeInstall: async () => undefined,
+      platform: "linux",
+      initialCheckDelayMs: 3_600_000,
+      checkIntervalMs: 3_600_000,
+    });
+    service.start(false);
+    await Effect.runPromise(service.checkForUpdates());
+    await Effect.runPromise(service.downloadUpdate());
+    const ready = await waitFor("the download of the service", async () => service.getStatus().phase === "ready");
+    check(
+      "the service has the download ready",
+      ready && service.getStatus().availableVersion === "0.73.0+9c41d2e07",
+      `${service.getStatus().phase} ${service.getStatus().availableVersion}`,
+    );
+    await setRegistry(LATER);
+    result = script("stage");
+    const readyVersion = await adapter.readyVersion();
+    check(
+      "the adapter names the build that the host staged last",
+      readyVersion === "0.73.0+a1b2c3d4e",
+      `exit ${result.status}, readyVersion ${readyVersion}`,
+    );
+
     // A change after the pre-copy, with the same size and in the same second. An agent also removes
     // one folder and makes another.
     shell(
@@ -437,26 +478,45 @@ async function main(): Promise<void> {
         `printf 'DATABASE\\n' >/work/data/${DATABASE} && touch -d @1764000000.200000000 /work/data/${DATABASE}`,
         "rm -rf /work/data/OpenBot/Agents/alpha/old-worktree",
         "mkdir -p /work/data/OpenBot/Agents/alpha/new-worktree && echo new >/work/data/OpenBot/Agents/alpha/new-worktree/file",
+        `mkdir -p /work/data/${LATE_PACKAGE.replace(/\/[^/]+$/u, "")} && echo late >/work/data/${LATE_PACKAGE}`,
       ].join(" && "),
     );
 
-    // Install, as the app does after its shutdown.
+    // Install, as the app does after its shutdown. The registry has a newer image now, which the
+    // install must not download: it installs the image that the app named.
+    await setRegistry(NEXT);
     const logBefore = (await fakeLog()).length;
-    adapter.quitAndInstall();
+    await Effect.runPromise(service.installUpdate());
+    check(
+      "the service names the staged build when it installs",
+      service.getStatus().phase === "installing" && service.getStatus().availableVersion === "0.73.0+a1b2c3d4e",
+      `${service.getStatus().phase} ${service.getStatus().availableVersion}`,
+    );
     const installed = await waitFor(
       "the install",
       async () =>
-        (await read(join(fake, "container"))) === NEW.id &&
+        (await read(join(fake, "container"))) === LATER.id &&
         (await read(join(work, "update/host/installs.log"))).includes('"installed"'),
     );
     const installLog = (await fakeLog()).slice(logBefore);
     const stopAt = installLog.findIndex((line) => line.startsWith("stop"));
-    const tagAt = installLog.indexOf(`tag ${NEW.id} openbot-vps:current`);
+    const tagAt = installLog.indexOf(`tag ${LATER.id} openbot-vps:current`);
     const upAt = installLog.findIndex((line) => line.startsWith("compose up -d --pull never openbot"));
     check(
-      "install request swaps the container",
+      "install request swaps the container to the staged image",
       installed && stopAt >= 0 && stopAt < tagAt && tagAt < upAt,
       `container ${await read(join(fake, "container"))}, steps ${JSON.stringify(installLog.filter((line) => /^(stop|tag|compose up)/u.test(line)))}`,
+    );
+    check(
+      "the install does not download again",
+      !installLog.some((line) => line.startsWith("pull")),
+      JSON.stringify(installLog.filter((line) => line.startsWith("pull"))),
+    );
+    const packagesAtStart = (await read(join(fake, "packages-at-start"))).split("\n").at(-1);
+    check(
+      "the final sync leaves out the agent node_modules folders",
+      packagesAtStart === "no",
+      `the mirror had ${LATE_PACKAGE} at the start: ${packagesAtStart}`,
     );
     const mirrorState = readIn(`${MIRROR}/state`);
     check(
@@ -481,7 +541,7 @@ async function main(): Promise<void> {
     check(
       "install records the downtime and its phases",
       typeof installRecord.downtimeSeconds === "number" &&
-        installRecord.to === "0.73.0 9c41d2e07" &&
+        installRecord.to === "0.73.0 a1b2c3d4e" &&
         ["stop", "finalSync", "start", "online"].every((phase) => typeof installRecord.phases?.[phase] === "number") &&
         installRecord.mirror === mirrorState.split(" ")[2],
       JSON.stringify(installRecord),
@@ -502,8 +562,8 @@ async function main(): Promise<void> {
     );
     const listed = shell(`tar --list --gzip --file=/work/backups/${newArchive}`).stdout;
     check(
-      "the archive has the user data and no caches",
-      [...USER_FILES, DATABASE].every((path) => listed.includes(`./${path}\n`)) &&
+      "the archive has the user data, also the agent node_modules folders, and no caches",
+      [...USER_FILES, DATABASE, LATE_PACKAGE].every((path) => listed.includes(`./${path}\n`)) &&
         CACHE_FILES.every((path) => !listed.includes(`./${path}\n`)),
       `${listed.split("\n").filter(Boolean).length} entries`,
     );
@@ -514,7 +574,7 @@ async function main(): Promise<void> {
     );
 
     // The new app runs NEW now. The old image is not offered again.
-    const nowRunning = serverImageBuild("0.73.0", "9c41d2e07", "2026-11-26T19:04:00Z");
+    const nowRunning = serverImageBuild("0.73.0", "a1b2c3d4e", "2026-11-26T20:00:00Z");
     if (!nowRunning) throw new Error("The new build is not valid.");
     const afterInstall = new HostedUpdateAdapter({
       currentVersion: "0.73.0",
@@ -558,12 +618,23 @@ async function main(): Promise<void> {
         (await read(join(work, "watcher-stopped"))) !== "" || (await readdir(work)).includes("watcher-stopped"),
     );
 
-    // An image that does not come back online is rolled back with the data from before.
+    // An image that does not come back online is rolled back with the data from before. An agent
+    // installed packages after the last copy: the rollback keeps them, also a node_modules folder
+    // at the root of an agent folder.
+    const newPackages = [
+      "OpenBot/Agents/alpha/node_modules/after-copy/index.js",
+      "OpenBot/Agents/beta/node_modules/root-pkg/index.js",
+    ];
+    shell(
+      newPackages
+        .map((path) => `mkdir -p /work/data/${path.replace(/\/[^/]+$/u, "")} && echo new >/work/data/${path}`)
+        .join(" && "),
+    );
     await setRegistry(BROKEN);
     await writeFile(join(work, "update/host/server-state"), "online\n");
     result = script("stage");
     result = script("install");
-    const rolledBack = (await read(join(fake, "container"))) === NEW.id;
+    const rolledBack = (await read(join(fake, "container"))) === LATER.id;
     const marker = await read(join(work, "data", "marker"));
     check(
       "a failed install rolls back image and data",
@@ -581,6 +652,7 @@ async function main(): Promise<void> {
         present("/work/data", ["OpenBot/Agents/alpha/new-worktree/file", ...USER_FILES]).length ===
           USER_FILES.length + 1 &&
         cachesAfterRollback.length === CACHE_FILES.length &&
+        present("/work/data", [...newPackages, LATE_PACKAGE]).length === newPackages.length + 1 &&
         result.stderr.includes("Restored the data of") &&
         (await read(join(work, "update/host/installs.log"))).split("\n").at(-1)?.includes('"rolled-back"') === true,
       `caches ${cachesAfterRollback.length} of ${CACHE_FILES.length}, ${result.stderr.split("\n").find((line) => line.includes("Restored")) ?? "no restore line"}`,
