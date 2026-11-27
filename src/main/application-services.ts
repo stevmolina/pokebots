@@ -82,7 +82,7 @@ import { PushNotificationStore } from "./push-notification-store";
 import { DESKTOP_USE_MS } from "./push-notifications";
 import { RemoteWorkflowError, toRemoteWorkflowError } from "./remote-service-effects";
 import { RoomsService } from "./rooms-service";
-import { needsServerDefaultCliDownload } from "./server-default-provider-clis";
+import { initialPreferredProvider, needsServerDefaultCliDownload } from "./server-default-provider-clis";
 import { sizeWorkflowPicture } from "./workflow-picture-size";
 /**
  * The composition root. Every long-lived service the desktop app owns is built here, in one
@@ -2572,7 +2572,10 @@ export async function createApplicationServices({
               ),
             )
         : Effect.void,
-    preferredProvider: setupState.preferredProvider ?? "codex",
+    preferredProvider: initialPreferredProvider(
+      setupState.preferredProvider,
+      hostedServer !== null || serverModeEnvironment !== null,
+    ),
     bundledExecutables: providerRuntimes.bundledExecutables(),
     prepareAgentWorkspace: (agent) =>
       Effect.gen(function* () {
