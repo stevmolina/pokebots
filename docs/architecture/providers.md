@@ -333,12 +333,16 @@ before with `read_local_skill` and publish its files with `revise_skill`.
 
 ## Host rules and skills
 
-In Server Settings > Agent defaults, the host owner can select `agents.md` and `proof.md` from
-`~/.agents/rules` on the computer that runs the agents. OpenBot starts with this setting off.
+In Server Settings > Agent defaults, the host owner can select `approval.md`, `writing.md`,
+`brain.md`, `agents.md` and `proof.md` from `~/.agents/rules` on the computer that runs the agents.
+The prompt adds them in that order. Each file can have at most 32 KiB. OpenBot starts with this
+setting off.
 Use the operating-system account that runs the host when syncing the folder to a joined server.
 The setting stores the switch and selected file names on each host. The desktop, web, and mobile
 clients receive the names and availability flags. Joined clients need a host with
-`home-agent-rules-v1`.
+`home-agent-rules-v1` (only `agents.md` and `proof.md`) or `home-agent-rules-v2` (all five files).
+A v2 host also serves v1: a v1 client sees only the two v1 files, and its change keeps the other
+selected files.
 
 OpenBot adds the selected rules when it builds a provider prompt. It skips rules that the
 provider already loads from those same files. Codex can load them through a trusted session hook.

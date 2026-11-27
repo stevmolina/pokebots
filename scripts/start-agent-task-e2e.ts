@@ -16,6 +16,11 @@ import {
   HOME_AGENT_RULES_CAPABILITY,
   HOME_AGENT_RULES_ROUTES,
 } from "@pokebots/contracts/team-protocol/home-agent-rules-v1";
+import {
+  decodeHomeAgentRulesV2Response,
+  HOME_AGENT_RULES_V2_CAPABILITY,
+  HOME_AGENT_RULES_V2_ROUTES,
+} from "@pokebots/contracts/team-protocol/home-agent-rules-v2";
 import { teamHttpCodec } from "@pokebots/contracts/team-protocol/http-codecs";
 import { decodeTeamProtocolV2Json, type TeamProtocolV2Json } from "@pokebots/contracts/team-protocol/v2";
 import { TEAM_PROTOCOL_V10 } from "@pokebots/contracts/team-protocol/v10";
@@ -63,6 +68,7 @@ const ruleHook = join(home, ".agents", "hooks", "rules-session.py");
 const trustedHook = join(root, "trust-rule-hook");
 const proofMarker = "SYNTHETIC PROOF RULE";
 const agentMarker = "SYNTHETIC DELEGATION RULE";
+const approvalMarker = "SYNTHETIC APPROVAL RULE";
 const fixtureCredential = "sk-ant-synthetic-fixture-token";
 const proofFile = `${proofMarker}\nAuthorization: Bearer ${fixtureCredential}`;
 const workerProof = "Fixture check passed. PR https://example.test/pull/1";
@@ -71,6 +77,7 @@ await mkdir(join(home, ".agents", "hooks"), { recursive: true });
 await writeFile(ruleHook, "# Synthetic hook metadata fixture.");
 await writeFile(join(rulesDirectory, "proof.md"), proofFile);
 await writeFile(join(rulesDirectory, "agents.md"), agentMarker);
+await writeFile(join(rulesDirectory, "approval.md"), approvalMarker);
 await writeFile(join(rulesDirectory, "other.md"), "SYNTHETIC UNSELECTED FILE");
 process.env.CODEX_HOME = join(home, ".codex");
 process.env.OPENBOT_CODEX_PATH = fakeCodex;
@@ -664,6 +671,7 @@ try {
   const legacyCompatibility = await call(TEAM_API_ROUTES.compatibility, 200, undefined, undefined, 9);
   assert.ok(isDynamicRecord(compatibility) && Array.isArray(compatibility.capabilities));
   assert.ok(compatibility.capabilities.includes(HOME_AGENT_RULES_CAPABILITY));
+  assert.ok(compatibility.capabilities.includes(HOME_AGENT_RULES_V2_CAPABILITY));
   assert.ok(isDynamicRecord(legacyCompatibility) && Array.isArray(legacyCompatibility.capabilities));
   assert.ok(!legacyCompatibility.capabilities.includes(HOME_AGENT_RULES_CAPABILITY));
   await call(rulesSettings, 400, ownerToken, {}, 9);
@@ -707,10 +715,32 @@ try {
   await writeFile(join(rulesDirectory, "proof.md"), proofFile);
   await call(updateRules, 200, ownerToken, { enabled: true, files: ["agents.md", "proof.md"] });
 
+  // v2 offers the other rule files. A v1 client sees only its two files, and its change keeps the rest.
+  const readRulesV2 = async () =>
+    decodeHomeAgentRulesV2Response(await call(HOME_AGENT_RULES_V2_ROUTES.settings, 200, ownerToken, {}));
+  assert.deepEqual((await readRulesV2()).availableFiles, ["approval.md", "agents.md", "proof.md"]);
+  await call(HOME_AGENT_RULES_V2_ROUTES.update, 403, token, { enabled: true, files: ["approval.md"] });
+  await call(HOME_AGENT_RULES_V2_ROUTES.update, 400, ownerToken, { enabled: true, files: ["other.md"] });
+  await call(updateRules, 400, ownerToken, { enabled: true, files: ["approval.md"] });
+  const allRules = ["approval.md", "agents.md", "proof.md"];
+  assert.deepEqual(await call(HOME_AGENT_RULES_V2_ROUTES.update, 200, ownerToken, { enabled: true, files: allRules }), {
+    enabled: true,
+    files: allRules,
+    availableFiles: allRules,
+  });
+  assert.deepEqual(await readRules(), {
+    enabled: true,
+    files: ["agents.md", "proof.md"],
+    availableFiles: ["agents.md", "proof.md"],
+  });
+  await call(updateRules, 200, ownerToken, { enabled: true, files: ["agents.md", "proof.md"] });
+  assert.deepEqual((await readRulesV2()).files, allRules);
+  report.checks.hostRulesV2OffersMoreFilesAndV1KeepsThem = true;
+
   const proofTask = await start("synthetic-proof-worker", "HOLD PROOF-WORKER", target.id);
-  assert.deepEqual((await fixtureLog("PROOF-WORKER")).rules, [agentMarker, proofMarker]);
+  assert.deepEqual((await fixtureLog("PROOF-WORKER")).rules, [approvalMarker, agentMarker, proofMarker]);
   await send(caller.id, "RUN WHILE-WORKER-RUNS");
-  assert.deepEqual((await fixtureLog("WHILE-WORKER-RUNS")).rules, [agentMarker, proofMarker]);
+  assert.deepEqual((await fixtureLog("WHILE-WORKER-RUNS")).rules, [approvalMarker, agentMarker, proofMarker]);
   const launchingChat = await waitFor("a reply while the worker runs", async () => {
     const snapshot = await chat(caller.id);
     return snapshot.messages.some(({ text }) => text === "RESULT WHILE-WORKER-RUNS") ? snapshot : undefined;

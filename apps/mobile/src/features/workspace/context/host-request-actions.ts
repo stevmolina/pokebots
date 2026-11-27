@@ -150,6 +150,7 @@ import {
 } from "@pokebots/contracts/team-protocol/current";
 import { EVENTS_CAPABILITY } from "@pokebots/contracts/team-protocol/events-v1";
 import { HOME_AGENT_RULES_CAPABILITY } from "@pokebots/contracts/team-protocol/home-agent-rules-v1";
+import { HOME_AGENT_RULES_V2_CAPABILITY } from "@pokebots/contracts/team-protocol/home-agent-rules-v2";
 import { HOST_MEMBER_UPDATE_CAPABILITY } from "@pokebots/contracts/team-protocol/host-member-update-v1";
 import { HOST_PERSONALITY_CAPABILITY } from "@pokebots/contracts/team-protocol/host-personality-v1";
 import { HOST_RELEASE_CAPABILITY } from "@pokebots/contracts/team-protocol/host-release-v1";
@@ -866,6 +867,8 @@ export function createHostRequestActions({
     capabilityApi(serverId, SKILL_LEARNING_CAPABILITY, "mobile.server.settings.learningUnsupported");
   const homeAgentRulesAdmin = (serverId: string) =>
     capabilityApi(serverId, HOME_AGENT_RULES_CAPABILITY, "error.team.homeAgentRulesUnsupported");
+  /** A host with v2 offers every rule file; an older host offers the two v1 files. */
+  const homeAgentRulesV2 = (serverId: string) => hasCapability(capabilities, serverId, HOME_AGENT_RULES_V2_CAPABILITY);
   const threadAutoArchiveAdmin = (serverId: string) =>
     capabilityApi(serverId, THREAD_AUTO_ARCHIVE_CAPABILITY, "error.team.threadAutoArchiveUnsupported");
   const browsingMemoryAdmin = (serverId: string) =>
@@ -987,9 +990,10 @@ export function createHostRequestActions({
     loadSkillLearning: async (serverId) => runTeamRequest(getHostSkillLearning(skillLearningAdmin(serverId))),
     setSkillLearning: async (mode, serverId) =>
       runTeamRequest(setHostSkillLearning(skillLearningAdmin(serverId), mode)),
-    loadHomeAgentRules: async (serverId) => runTeamRequest(getHostHomeAgentRules(homeAgentRulesAdmin(serverId))),
+    loadHomeAgentRules: async (serverId) =>
+      runTeamRequest(getHostHomeAgentRules(homeAgentRulesAdmin(serverId), homeAgentRulesV2(serverId))),
     setHomeAgentRules: async (preference, serverId) =>
-      runTeamRequest(setHostHomeAgentRules(homeAgentRulesAdmin(serverId), preference)),
+      runTeamRequest(setHostHomeAgentRules(homeAgentRulesAdmin(serverId), preference, homeAgentRulesV2(serverId))),
     loadThreadAutoArchive: async (serverId) =>
       runTeamRequest(getHostThreadAutoArchive(threadAutoArchiveAdmin(serverId))),
     setThreadAutoArchive: async (setting, serverId) =>

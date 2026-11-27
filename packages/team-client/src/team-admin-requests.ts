@@ -96,7 +96,12 @@ import { DISCORD_ACCESS_ROUTES } from "@pokebots/contracts/team-protocol/discord
 import {
   decodeHomeAgentRulesResponse,
   HOME_AGENT_RULES_ROUTES,
+  isHomeAgentRulesV1File,
 } from "@pokebots/contracts/team-protocol/home-agent-rules-v1";
+import {
+  decodeHomeAgentRulesV2Response,
+  HOME_AGENT_RULES_V2_ROUTES,
+} from "@pokebots/contracts/team-protocol/home-agent-rules-v2";
 import { HOST_APPEARANCE_ROUTES, type ServerAppearance } from "@pokebots/contracts/team-protocol/host-appearance-v1";
 import { HOST_KEY_ROTATION_ROUTES } from "@pokebots/contracts/team-protocol/host-key-rotation-v1";
 import { HOST_MEMBER_UPDATE_ROUTES } from "@pokebots/contracts/team-protocol/host-member-update-v1";
@@ -1085,23 +1090,37 @@ export function setHostClaudeCompactWindow(
   );
 }
 
-/** `home-agent-rules-v1`: host opt-in and selected `~/.agents/rules` files for all providers. */
+/**
+ * Host opt-in and selected `~/.agents/rules` files for all providers. `v2` is true when the host
+ * serves `home-agent-rules-v2` (five files); otherwise `home-agent-rules-v1` (two files).
+ */
 export function getHostHomeAgentRules(
   request: TeamApiRequest,
+  v2: boolean,
 ): Effect.Effect<HomeAgentRulesSetting, TeamAdminRequestError> {
-  return adminCall(() => request("POST", HOME_AGENT_RULES_ROUTES.settings, decodeHomeAgentRulesResponse, {}));
+  return adminCall(() =>
+    v2
+      ? request("POST", HOME_AGENT_RULES_V2_ROUTES.settings, decodeHomeAgentRulesV2Response, {})
+      : request("POST", HOME_AGENT_RULES_ROUTES.settings, decodeHomeAgentRulesResponse, {}),
+  );
 }
 
-/** `home-agent-rules-v1`: saves the host opt-in and selected `~/.agents/rules` file names. */
+/** Saves the host opt-in and selected `~/.agents/rules` file names. A v1 host takes only its two files. */
 export function setHostHomeAgentRules(
   request: TeamApiRequest,
   preference: HomeAgentRulesPreference,
+  v2: boolean,
 ): Effect.Effect<HomeAgentRulesSetting, TeamAdminRequestError> {
   return adminCall(() =>
-    request("POST", HOME_AGENT_RULES_ROUTES.update, decodeHomeAgentRulesResponse, {
-      enabled: preference.enabled,
-      files: [...preference.files],
-    }),
+    v2
+      ? request("POST", HOME_AGENT_RULES_V2_ROUTES.update, decodeHomeAgentRulesV2Response, {
+          enabled: preference.enabled,
+          files: [...preference.files],
+        })
+      : request("POST", HOME_AGENT_RULES_ROUTES.update, decodeHomeAgentRulesResponse, {
+          enabled: preference.enabled,
+          files: preference.files.filter(isHomeAgentRulesV1File),
+        }),
   );
 }
 

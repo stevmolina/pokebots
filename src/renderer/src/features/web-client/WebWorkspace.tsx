@@ -86,7 +86,13 @@ import { EVENTS_CAPABILITY } from "@pokebots/contracts/team-protocol/events-v1";
 import {
   decodeHomeAgentRulesResponse,
   HOME_AGENT_RULES_ROUTES,
+  isHomeAgentRulesV1File,
 } from "@pokebots/contracts/team-protocol/home-agent-rules-v1";
+import {
+  decodeHomeAgentRulesV2Response,
+  HOME_AGENT_RULES_V2_CAPABILITY,
+  HOME_AGENT_RULES_V2_ROUTES,
+} from "@pokebots/contracts/team-protocol/home-agent-rules-v2";
 import { HOST_PERSONALITY_CAPABILITY } from "@pokebots/contracts/team-protocol/host-personality-v1";
 import { HOST_RELEASE_CAPABILITY } from "@pokebots/contracts/team-protocol/host-release-v1";
 import { HOST_RESTART_CAPABILITY } from "@pokebots/contracts/team-protocol/host-restart-v1";
@@ -2041,14 +2047,23 @@ function WebWorkspaceFrame(props: WebWorkspaceProps) {
     setBrainContext: (enabled, serverId) =>
       hostRequest(serverId)("POST", BRAIN_CONTEXT_ROUTES.update, decodeBrainContextResponse, { enabled }),
   };
+  // A host with `home-agent-rules-v2` gets every file; an older host gets the two v1 files.
+  const homeAgentRulesV2 = () => workspace.state.capabilities.includes(HOME_AGENT_RULES_V2_CAPABILITY);
   const hostHomeAgentRulesCalls: HostHomeAgentRulesCalls = {
     getHomeAgentRules: (serverId) =>
-      hostRequest(serverId)("POST", HOME_AGENT_RULES_ROUTES.settings, decodeHomeAgentRulesResponse, {}),
+      homeAgentRulesV2()
+        ? hostRequest(serverId)("POST", HOME_AGENT_RULES_V2_ROUTES.settings, decodeHomeAgentRulesV2Response, {})
+        : hostRequest(serverId)("POST", HOME_AGENT_RULES_ROUTES.settings, decodeHomeAgentRulesResponse, {}),
     setHomeAgentRules: (preference, serverId) =>
-      hostRequest(serverId)("POST", HOME_AGENT_RULES_ROUTES.update, decodeHomeAgentRulesResponse, {
-        enabled: preference.enabled,
-        files: preference.files,
-      }),
+      homeAgentRulesV2()
+        ? hostRequest(serverId)("POST", HOME_AGENT_RULES_V2_ROUTES.update, decodeHomeAgentRulesV2Response, {
+            enabled: preference.enabled,
+            files: [...preference.files],
+          })
+        : hostRequest(serverId)("POST", HOME_AGENT_RULES_ROUTES.update, decodeHomeAgentRulesResponse, {
+            enabled: preference.enabled,
+            files: preference.files.filter(isHomeAgentRulesV1File),
+          }),
   };
   const hostClaudeUserSetupCalls: HostClaudeUserSetupCalls = {
     getClaudeUserSetup: (serverId) =>

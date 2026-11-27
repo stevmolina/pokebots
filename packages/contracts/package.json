@@ -320,6 +320,7 @@
     "./team-protocol/rooms-listening-v1": "./src/team-protocol/rooms-listening-v1.ts",
     "./team-protocol/claude-user-setup-v1": "./src/team-protocol/claude-user-setup-v1.ts",
     "./team-protocol/home-agent-rules-v1": "./src/team-protocol/home-agent-rules-v1.ts",
+    "./team-protocol/home-agent-rules-v2": "./src/team-protocol/home-agent-rules-v2.ts",
     "./team-protocol/thread-auto-archive-v1": "./src/team-protocol/thread-auto-archive-v1.ts",
     "./team-protocol/artifact-request-v1": "./src/team-protocol/artifact-request-v1.ts",
     "./team-protocol/message-queue-only-v1": "./src/team-protocol/message-queue-only-v1.ts",
