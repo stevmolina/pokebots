@@ -1,14 +1,35 @@
-import { isManagedRuntimeProvider, type ManagedProviderId } from "@pokebots/contracts/agent-providers";
+import {
+  type AgentProviderId,
+  isManagedRuntimeProvider,
+  type ManagedProviderId,
+} from "@pokebots/contracts/agent-providers";
 import type { AgentProviderStatus, ProviderRuntimeStatus } from "@pokebots/contracts/ipc";
 import { sourceText } from "@pokebots/i18n/source";
 
 /** The provider CLIs that a server downloads at start when it has none of them. */
-export const SERVER_DEFAULT_PROVIDER_CLIS: readonly ManagedProviderId[] = ["claude", "codex", "cursor", "grok"];
+export const SERVER_DEFAULT_PROVIDER_CLIS: readonly ManagedProviderId[] = [
+  "claude",
+  "codex",
+  "cursor",
+  "grok",
+  "opencode",
+];
 
 const MISSING_CLI_MESSAGES: Partial<Record<ManagedProviderId, string>> = {
   claude: sourceText("error.provider.claudeMissing"),
   codex: sourceText("error.provider.codexMissing"),
 };
+
+/**
+ * The default provider a host starts with when the user has not saved a choice yet.
+ *
+ * A server preinstalls OpenCode alongside the paid CLIs, so defaulting to `opencode` lets new
+ * users run bots on free models immediately without a subscription. Once the user picks a paid
+ * provider in setup or Settings, that saved preference takes over. Desktop apps keep `"codex"`.
+ */
+export function initialPreferredProvider(savedProvider: AgentProviderId | null, isServer: boolean): AgentProviderId {
+  return savedProvider ?? (isServer ? "opencode" : "codex");
+}
 
 /**
  * Whether a provider row means the server has no CLI for this provider at all.
