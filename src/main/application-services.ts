@@ -82,6 +82,7 @@ import { PushNotificationStore } from "./push-notification-store";
 import { DESKTOP_USE_MS } from "./push-notifications";
 import { RemoteWorkflowError, toRemoteWorkflowError } from "./remote-service-effects";
 import { RoomsService } from "./rooms-service";
+import { needsServerDefaultCliDownload } from "./server-default-provider-clis";
 import { sizeWorkflowPicture } from "./workflow-picture-size";
 /**
  * The composition root. Every long-lived service the desktop app owns is built here, in one
@@ -565,8 +566,6 @@ const NOTIFICATION_PREFERENCE_FILE = "openbot-notification-preference-v1.json";
 const PUSH_NOTIFICATION_FILE = "openbot-push-notifications-v1.json";
 const BUSY_MESSAGE_MODE_PREFERENCE_FILE = "openbot-busy-message-mode-v1.json";
 const PROVIDER_CLI_APP_VERSION_FILE = "openbot-provider-cli-app-version-v1.json";
-/** The provider CLIs that a server downloads at start when it has none of them. */
-const SERVER_DEFAULT_PROVIDER_CLIS: readonly ManagedProviderId[] = ["claude", "codex", "cursor", "grok"];
 const AGENT_DEFAULTS_PREFERENCE_FILE = "openbot-agent-defaults-v1.json";
 const AGENT_MEMORY_LIMIT_PREFERENCE_FILE = "openbot-agent-memory-limit-v1.json";
 const MEMORY_REVIEW_PREFERENCE_FILE = "openbot-memory-review-v1.json";
@@ -3239,10 +3238,9 @@ export async function createApplicationServices({
       }
       if (
         downloadsServerDefaultClis &&
-        provider.state === "not-installed" &&
-        SERVER_DEFAULT_PROVIDER_CLIS.includes(provider.id) &&
         !startedServerDefaultClis.has(provider.id) &&
-        !providerUse.off().includes(provider.id)
+        !providerUse.off().includes(provider.id) &&
+        needsServerDefaultCliDownload(provider, providerRuntimes.getStatus().providers[provider.id]?.phase)
       ) {
         startedServerDefaultClis.add(provider.id);
         const id = provider.id;
