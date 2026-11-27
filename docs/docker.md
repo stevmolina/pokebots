@@ -453,24 +453,31 @@ keeps all user data: agent folders, databases, provider state, sessions and brow
 When a person selects Install, the app tells the clients that the server restarts, stops its work and
 writes `update-install`. The host then:
 
-1. pulls the image again and checks that it is still a newer build. When it is not, it only restarts
-   the container;
+1. takes the staged image without a new download, so it installs the build that the app showed
+   (the app reads `staged.ready` again when the install starts). When nothing is staged, it pulls the
+   image and checks that it is a newer build; when it is not, it only restarts the container;
 2. stops a pre-copy or archive job that runs, tags the running image `openbot-vps:previous` and stops
    the container;
 3. syncs the changes since the pre-copy to the mirror (the final sync). The container is stopped, so
    the copy is consistent, also for SQLite with its `-wal` and `-shm` files. It runs one rsync for
-   each folder in `OpenBot/Agents/<agent>/` and one for the rest, `SYNC_JOBS` (the CPU count) at once.
-   A failed sync starts the old container again and changes nothing;
+   each folder in `OpenBot/Agents/<agent>/`, one for each other folder at the root of the volume and
+   one for the rest, `SYNC_JOBS` (the CPU count) at once. It leaves out the `node_modules` folders in
+   agent folders: only a package manager that an agent runs writes them, never OpenBot, and they are
+   most of the files. A failed sync starts the old container again and changes nothing;
 4. moves `openbot-vps:current` to the new image, makes the container again and waits until it answers,
    and is online when it was online before;
-5. when it does not come back, restores the data from the mirror (the caches on the volume stay) and
-   the old image, and skips that image until a newer one is published;
-6. starts a background job (`openbot-vps-update archive`) that compresses the mirror to
+5. when it does not come back, restores the data from the mirror (the caches and the agent
+   `node_modules` folders on the volume stay) and the old image, and skips that image until a newer
+   one is published;
+6. starts a background job (`openbot-vps-update archive`) that copies the agent `node_modules`
+   folders to the mirror, then compresses the mirror to
    `BACKUP_DIR/openbot-<BACKUP_NAME>-<time>.tar.zst` (or `.tgz`), with a `.sha256` file, and keeps
    the newest `BACKUP_KEEP` archives. It writes one line to `/var/lib/openbot-vps-update/host/archives.log`.
 
-On the Personal VPS (20 GB, 1.3 million files), the old install stopped the server for 288 s to make
-the archive. The final sync takes about 8 s there.
+On the Personal VPS (20 GB, 1.5 million files, 1.2 million of them in agent `node_modules` folders),
+the old install stopped the server for 288 s to make the archive. A final sync of all files took
+about 9 s there; without the agent `node_modules` folders it walks about 1.6 s. The script checks a
+starting container every 0.25 s (`POLL_SECONDS`).
 
 `sudo openbot-vps-update status` shows the running and the staged build, the mirror, and the last
 install and archive. `sudo openbot-vps-update install` installs the staged build from the shell. Each

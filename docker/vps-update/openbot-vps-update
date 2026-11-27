@@ -12,12 +12,16 @@
 #   `update-install` also installs: it stops the container, copies the last changes of its data
 #   volume to the mirror, makes the container again from the staged image, and waits until it is
 #   online. When it does not come back, it restores the data from the mirror and the old image.
+#   An install takes the image that staged.ready names, without a new download, so the app installs
+#   the build that its update window shows.
 #
 # The mirror is a copy of the data volume next to the backups. While a staged build waits, a
 # background job copies the volume to the mirror with rsync while the server runs ("pre-copy"). The
 # app stops its work before it asks for the install, so the install does only a short final sync
 # with the container stopped. That copy is consistent, also for SQLite with its -wal and -shm files.
-# After the install, a background job compresses the mirror to one archive and keeps the newest
+# It leaves out the node_modules folders in agent folders (AGENT_PACKAGES): they hold most of the
+# files, and only a package manager that an agent runs writes them. After the install, a background
+# job copies them to the mirror, compresses the mirror to one archive and keeps the newest
 # BACKUP_KEEP archives. Download caches are not copied (see BACKUP_EXCLUDES).
 #
 # The container never gets the Docker socket. Root only tests a request file and removes it; it never
@@ -29,9 +33,9 @@
 #   openbot-vps-update setup [--recreate]   Installs the units, folders and Compose file (as root).
 #   openbot-vps-update stage                Pulls and stages a newer build.
 #   openbot-vps-update request              Acts on the requests of the app (the path unit runs it).
-#   openbot-vps-update install              Stages and installs now, as an Install in the app.
+#   openbot-vps-update install              Installs the staged build now, as an Install in the app.
 #   openbot-vps-update precopy              Fills the mirror while the server runs (a background job).
-#   openbot-vps-update archive              Compresses a stopped mirror to an archive (a background job).
+#   openbot-vps-update archive              Archives a stopped mirror (a background job).
 #   openbot-vps-update status               Shows the running and the staged build.
 set -euo pipefail
 umask 077
@@ -56,7 +60,8 @@ BACKUP_NAME=${BACKUP_NAME:-openbot}
 BACKUP_KEEP=${BACKUP_KEEP:-3}
 VOLUME_DIR=${VOLUME_DIR:-}
 HEALTH_TIMEOUT_SECONDS=${HEALTH_TIMEOUT_SECONDS:-300}
-POLL_SECONDS=${POLL_SECONDS:-1}
+# Each poll of a starting container asks it for its status. A short poll sees it online sooner.
+POLL_SECONDS=${POLL_SECONDS:-0.25}
 LOCK_FILE=${LOCK_FILE:-/run/openbot-vps-update.lock}
 UNIT_DIRECTORY=${UNIT_DIRECTORY:-/etc/systemd/system}
 INSTALLED=/usr/local/sbin/openbot-vps-update
@@ -70,9 +75,18 @@ MIRROR_JOB=$UPDATE_DIR/mirror.job
 MIRROR_REFRESH_SECONDS=${MIRROR_REFRESH_SECONDS:-600}
 # The disk must keep this much free space after a copy to the mirror.
 MIRROR_MIN_FREE_BYTES=${MIRROR_MIN_FREE_BYTES:-1073741824}
-# A stopped copy runs one rsync for each folder in SPLIT_ROOT/<agent>/, SYNC_JOBS at once (copy_tree).
+# A stopped copy runs one rsync for each folder in SPLIT_ROOT/<agent>/ and for each other folder at
+# the root of the volume, SYNC_JOBS at once (copy_tree).
 SPLIT_ROOT=OpenBot/Agents
 SYNC_JOBS=${SYNC_JOBS:-$(nproc 2>/dev/null || echo 4)}
+
+# The node_modules folders in agent folders. A stopped copy (the final sync, a restore) leaves them
+# out, and keeps them where it copies to. They are about 1.2 million of the 1.5 million files of the
+# Personal VPS, and the walk over them was 5 of the 7 s of a final sync. OpenBot never writes them,
+# so an install and a rollback do not change them; only a package manager that an agent runs does.
+# The mirror keeps them: the pre-copy copies them, and after an install the archive job copies them
+# before it compresses the mirror. "p" lets rsync delete a folder that only they keep in it.
+AGENT_PACKAGES="-p /$SPLIT_ROOT/**/node_modules/"
 
 # Folders that the backup does not copy, from the root of the data volume (rsync patterns). Each one
 # is only a download or build cache: the tool downloads or makes it again when it is missing. User
@@ -318,17 +332,32 @@ split_units() {
   if [ -d "$1/$SPLIT_ROOT" ]; then (cd "$1" && find "$SPLIT_ROOT" -mindepth 2 -maxdepth 2 -type d -print0); fi
 }
 
+# The other folders at the root of $1 (.config, .local, ...), each followed by a NUL: units of a split
+# copy too. A name with a pattern character of rsync stays in the rest.
+top_units() {
+  find "$1" -mindepth 1 -maxdepth 1 -type d ! -name "${SPLIT_ROOT%%/*}" ! -name '*[[*?\\]*' -printf '%P\0'
+}
+
+# The node_modules folders of the agent folders of $1, relative to it, each followed by a NUL. Not the
+# ones in another node_modules folder.
+agent_packages() {
+  if [ -d "$1/$SPLIT_ROOT" ]; then (cd "$1" && find "$SPLIT_ROOT" -mindepth 2 -type d -name node_modules -prune -print0); fi
+}
+
 # Copies folder $1 to folder $2 with the patterns of BACKUP_EXCLUDES. Each cache in $2 stays: the
 # patterns protect it from --delete. $3 is "live" while the container runs: then a file can change
 # or go away while rsync reads it, and the next copy copies it again.
 #
 # A stopped copy (the final sync, a restore) is downtime. rsync uses one CPU, and one rsync over the
-# 1.3 million files of the Personal VPS takes 43 s, most of them in the node_modules of agent
-# folders. So it runs one rsync for each unit (split_units) and one for the rest, SYNC_JOBS at once:
-# 7 s there. A live copy runs one rsync, which also keeps hard links between units.
+# 1.5 million files of the Personal VPS takes 43 s, most of them in the node_modules of agent
+# folders. So it leaves out AGENT_PACKAGES, and runs one rsync for each unit (split_units,
+# top_units) and one for the rest, SYNC_JOBS at once: 2.7 s there, from 7.4 s with them and no
+# top_units. Each unit rsync starts at the root of the volume (--relative and "/./"), so the patterns
+# apply as in the rest. A live copy runs one rsync over all files, which also keeps hard links
+# between units.
 copy_tree() {
   local from=$1 to=$2 mode=$3 pattern unit result=0 failures
-  local excludes=()
+  local excludes=() top=() rest=()
   local -A units=()
   for pattern in "${BACKUP_EXCLUDES[@]}"; do excludes+=("--exclude=$pattern"); done
   if [ "$mode" = live ]; then
@@ -340,16 +369,21 @@ copy_tree() {
     return "$result"
   fi
   while IFS= read -r -d '' unit; do units[$unit]=1; done < <(split_units "$from")
+  while IFS= read -r -d '' unit; do top+=("$unit"); done < <(top_units "$from")
   # A unit that is only in $2: the rsync of the rest cannot delete it, because its pattern protects it.
+  # A node_modules unit stays, as AGENT_PACKAGES keeps it. A folder at the root that is only in $2 is
+  # not a pattern of the rest, so the rest deletes it.
   while IFS= read -r -d '' unit; do
-    if [ -z "${units[$unit]:-}" ]; then rm -rf -- "${to:?}/$unit"; fi
+    if [ -z "${units[$unit]:-}" ] && [ "${unit##*/}" != node_modules ]; then rm -rf -- "${to:?}/$unit"; fi
   done < <(split_units "$to")
+  rest=("${excludes[@]}" "--exclude=/$SPLIT_ROOT/*/*/*")
+  for unit in "${top[@]}"; do rest+=("--exclude=/$unit/"); done
   failures=$(mktemp)
-  { rsync "${RSYNC_OPTIONS[@]}" "${excludes[@]}" "--exclude=/$SPLIT_ROOT/*/*/*" -- "$from/" "$to/" ||
+  { rsync "${RSYNC_OPTIONS[@]}" "--filter=$AGENT_PACKAGES" "${rest[@]}" -- "$from/" "$to/" ||
     echo "rest: rsync code $?" >>"$failures"; } &
-  for unit in "${!units[@]}"; do
+  for unit in "${top[@]}" "${!units[@]}"; do
     while [ "$(jobs -rp | wc -l)" -ge "$SYNC_JOBS" ]; do wait -n || true; done
-    { mkdir -p -- "$to/$unit" && rsync "${RSYNC_OPTIONS[@]}" -- "$from/$unit/" "$to/$unit/" ||
+    { rsync "${RSYNC_OPTIONS[@]}" --relative "--filter=$AGENT_PACKAGES" "${excludes[@]}" -- "$from/./$unit/" "$to/" ||
       echo "$unit: rsync code $?" >>"$failures"; } &
   done
   wait
@@ -481,13 +515,36 @@ make_archive() {
   echo "$archive"
 }
 
+# Copies the node_modules folders of the agent folders of the running volume $1 to the mirror, which
+# a stopped copy left out (AGENT_PACKAGES), and deletes the ones that are only in the mirror. The
+# other files of the mirror stay as the stopped copy made them. The container runs, so this is a live
+# copy. A folder whose agent folder is not in the mirror waits for the next pre-copy.
+copy_agent_packages() {
+  local from=$1 folder result=0
+  [ -d "$from" ] && [ -d "$MIRROR_DATA" ] || return 0
+  while IFS= read -r -d '' folder; do
+    if [ ! -d "$from/$folder" ]; then rm -rf -- "${MIRROR_DATA:?}/$folder"; fi
+  done < <(agent_packages "$MIRROR_DATA")
+  while IFS= read -r -d '' folder; do
+    [ -d "$MIRROR_DATA/${folder%/*}" ] || continue
+    rsync "${RSYNC_OPTIONS[@]}" -- "$from/$folder/" "$MIRROR_DATA/$folder/" || result=$?
+    if [ "$result" -eq 24 ]; then result=0; fi
+    [ "$result" -eq 0 ] || { log "rsync of $folder to the mirror ended with code $result."; return "$result"; }
+  done < <(agent_packages "$from")
+}
+
 # Makes the archive of a stopped mirror that has none. The mirror lock is held.
 archive_stopped_mirror() {
-  local state at stamp started archive took
+  local state at stamp started archive took data
   read -r state at stamp <<<"$(mirror_state)"
   [ "${state:-}" = stopped ] && [[ ${stamp:-} =~ ^[0-9]{8}T[0-9]{6}Z$ ]] || return 0
   if complete_backups | grep -q "^openbot-$BACKUP_NAME-$stamp\."; then return 0; fi
   started=$(now_ms)
+  data=$(volume_dir)
+  if [ -n "$data" ]; then
+    copy_agent_packages "$data" || fail "The copy of the agent node_modules folders failed. The next job tries again."
+    log "Copied the agent node_modules folders to the mirror in $(seconds $(($(now_ms) - started))) s."
+  fi
   archive=$(make_archive "$stamp")
   took=$(seconds $(($(now_ms) - started)))
   log "Archived the mirror of $stamp to $archive ($(du -h "$archive" | cut -f 1)) in $took s."
@@ -628,6 +685,20 @@ install_staged() {
   [ "$result" = installed ]
 }
 
+# True when the staged image can be installed without a new download: staged.ready names it, it is
+# still here, the container does not run it, and no install of it failed. The app read staged.ready
+# for its update window, so an install of this image installs the build that the window shows. A
+# download takes about 1 s even when nothing is new, and the container has stopped its work.
+staged_ready() {
+  local staged_id running_id
+  [ -e "$STATUS/staged.ready" ] || return 1
+  staged_id=$(cat "$HOST/staged-image" 2>/dev/null || true)
+  running_id=$(container_image)
+  [ -n "$staged_id" ] && [ -n "$running_id" ] && [ "$staged_id" != "$running_id" ] || return 1
+  [ -n "$(image_id "$staged_id")" ] || return 1
+  ! { [ -f "$HOST/failed-image" ] && [ "$(cat "$HOST/failed-image")" = "$staged_id" ]; }
+}
+
 # The app writes `update-stage` or `update-install`. It waits while the request is there, then reads
 # the state, so the state comes first. The time of the state changes while the request runs.
 # `request install` installs without a request file, so the path unit does not take it at the same time.
@@ -640,7 +711,11 @@ request() {
   rm -rf -- "$REQUESTS/update-stage" "$REQUESTS/update-install"
   (while sleep 5; do touch -c "$STATUS/state"; done) >/dev/null 2>&1 &
   keeper=$!
-  (stage $((1 - install))) || result=$?
+  if [ "$install" -eq 1 ] && staged_ready; then
+    log "Installing the staged image $(cat "$HOST/staged-image") without a new download."
+  else
+    (stage $((1 - install))) || result=$?
+  fi
   if [ "$install" -eq 1 ]; then
     if [ "$result" -eq 0 ] && [ -e "$STATUS/staged.ready" ]; then
       (install_staged) || result=$?
