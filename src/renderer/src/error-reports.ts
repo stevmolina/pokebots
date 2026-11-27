@@ -46,7 +46,7 @@ export function configureDesktopReports(
   queue ??= new ReportQueue(
     indexedReportStorage("openbot-desktop-error-reports-v1"),
     openPanelTransport({
-      clientId: "6c989975-87ef-4f0c-857e-ab449a65b5c2",
+      clientId: "3b690d6f-e603-4207-b494-5d9e523ae63d",
       ...(capture === undefined ? {} : { endpoint: `${capture}/track` }),
     }),
     {
@@ -129,10 +129,14 @@ function webAnalyticsDefault(): boolean {
 
 export function configureWebReports(user: Pick<CentralAuthUser, "id" | "email"> | null): void {
   webSignedIn = user !== null;
-  if (!import.meta.env.PROD || window.location.origin !== "https://openbot.run") return;
+  if (
+    !import.meta.env.PROD ||
+    (window.location.origin !== "https://app.pokebots.xyz" && window.location.origin !== "https://pokebots.xyz")
+  )
+    return;
   queue ??= new ReportQueue(
     indexedReportStorage("openbot-web-error-reports-v1"),
-    openPanelTransport({ clientId: "6c989975-87ef-4f0c-857e-ab449a65b5c2" }),
+    openPanelTransport({ clientId: "3b690d6f-e603-4207-b494-5d9e523ae63d" }),
     { surface: "web", platform: "web", app_version: version, event_schema_version: ANALYTICS_GENERATIONS.web },
   );
   installId = webAnalyticsInstallId();
