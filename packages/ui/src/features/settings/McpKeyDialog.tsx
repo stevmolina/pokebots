@@ -8,8 +8,8 @@ import {
   type McpAuthValues,
   type McpKeyFlow,
   mcpFlowComplete,
-} from "@openbot/contracts/mcp-connect-flows";
-import { Button, ExternalLink, Field, Input, ShieldCheck, Text } from "@openbot/ui";
+} from "@pokebots/contracts/mcp-connect-flows";
+import { Button, ExternalLink, Field, Input, ShieldCheck, Text } from "@pokebots/ui";
 import { createMemo, createStore, For, Show } from "solid-js";
 import { useText } from "../../text";
 import { createConnectRun, type McpConnectBaseProps, McpConnectShell } from "./McpConnectShell";

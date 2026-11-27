@@ -10,51 +10,51 @@ import {
   STORAGE_CAPABILITY,
   type TeamRealtimeEvent,
   type WorkflowMediaKind,
-} from "@openbot/contracts/ipc";
-import { AGENT_ACCESS_CAPABILITY } from "@openbot/contracts/team-protocol/agent-access-v1";
-import { ATTACHMENT_PREVIEW_CAPABILITY } from "@openbot/contracts/team-protocol/attachment-preview-v1";
-import { ROUTINE_RESULTS_CAPABILITY } from "@openbot/contracts/team-protocol/routine-results-v1";
-import { decodeTeamProtocolV2Json, TEAM_PROTOCOL_V2_MAX_FILE_BYTES } from "@openbot/contracts/team-protocol/v2";
-import { WORKFLOWS_CHANNELS_CAPABILITY } from "@openbot/contracts/team-protocol/workflows-channels-v1";
-import { WORKFLOWS_CHATS_CAPABILITY } from "@openbot/contracts/team-protocol/workflows-chats-v1";
+} from "@pokebots/contracts/ipc";
+import { AGENT_ACCESS_CAPABILITY } from "@pokebots/contracts/team-protocol/agent-access-v1";
+import { ATTACHMENT_PREVIEW_CAPABILITY } from "@pokebots/contracts/team-protocol/attachment-preview-v1";
+import { ROUTINE_RESULTS_CAPABILITY } from "@pokebots/contracts/team-protocol/routine-results-v1";
+import { decodeTeamProtocolV2Json, TEAM_PROTOCOL_V2_MAX_FILE_BYTES } from "@pokebots/contracts/team-protocol/v2";
+import { WORKFLOWS_CHANNELS_CAPABILITY } from "@pokebots/contracts/team-protocol/workflows-channels-v1";
+import { WORKFLOWS_CHATS_CAPABILITY } from "@pokebots/contracts/team-protocol/workflows-chats-v1";
 import {
   WORKFLOWS_GITHUB_CAPABILITY,
   WORKFLOWS_GITHUB_ROUTES,
-} from "@openbot/contracts/team-protocol/workflows-github-v1";
+} from "@pokebots/contracts/team-protocol/workflows-github-v1";
 import {
   WORKFLOWS_HIGGSFIELD_CAPABILITY,
   WORKFLOWS_HIGGSFIELD_ROUTES,
-} from "@openbot/contracts/team-protocol/workflows-higgsfield-v1";
-import { WORKFLOWS_MEDIA_ACCOUNT_CAPABILITY } from "@openbot/contracts/team-protocol/workflows-media-account-v1";
+} from "@pokebots/contracts/team-protocol/workflows-higgsfield-v1";
+import { WORKFLOWS_MEDIA_ACCOUNT_CAPABILITY } from "@pokebots/contracts/team-protocol/workflows-media-account-v1";
 import {
   WORKFLOWS_MEDIA_CATALOG_CAPABILITY,
   WORKFLOWS_MEDIA_CATALOG_ROUTES,
-} from "@openbot/contracts/team-protocol/workflows-media-catalog-v1";
-import { WORKFLOWS_MEDIA_SIZE_CAPABILITY } from "@openbot/contracts/team-protocol/workflows-media-size-v1";
-import { WORKFLOWS_MEDIA_TRANSPARENT_CAPABILITY } from "@openbot/contracts/team-protocol/workflows-media-transparent-v1";
+} from "@pokebots/contracts/team-protocol/workflows-media-catalog-v1";
+import { WORKFLOWS_MEDIA_SIZE_CAPABILITY } from "@pokebots/contracts/team-protocol/workflows-media-size-v1";
+import { WORKFLOWS_MEDIA_TRANSPARENT_CAPABILITY } from "@pokebots/contracts/team-protocol/workflows-media-transparent-v1";
 import {
   WORKFLOWS_MEDIA_CAPABILITY,
   WORKFLOWS_MEDIA_ROUTES,
-} from "@openbot/contracts/team-protocol/workflows-media-v1";
+} from "@pokebots/contracts/team-protocol/workflows-media-v1";
 import {
   WORKFLOWS_SUNRA_CAPABILITY,
   WORKFLOWS_SUNRA_ROUTES,
-} from "@openbot/contracts/team-protocol/workflows-sunra-v1";
-import { WORKFLOWS_CAPABILITY, WORKFLOWS_ROUTES } from "@openbot/contracts/team-protocol/workflows-v1";
-import { runTeamEffect } from "@openbot/team-client";
-import { bytesToBase64 } from "@openbot/team-client/base64";
+} from "@pokebots/contracts/team-protocol/workflows-sunra-v1";
+import { WORKFLOWS_CAPABILITY, WORKFLOWS_ROUTES } from "@pokebots/contracts/team-protocol/workflows-v1";
+import { runTeamEffect } from "@pokebots/team-client";
+import { bytesToBase64 } from "@pokebots/team-client/base64";
 import {
   getHostAgentAccess,
   getStorageUsage,
   listRoutineResultOptions,
   type TeamAdminRequestError,
-} from "@openbot/team-client/team-admin-requests";
+} from "@pokebots/team-client/team-admin-requests";
 import {
   discardAttachmentDraft,
   type TeamApiRequest,
   teamChannelsApi,
   uploadAttachmentDraft,
-} from "@openbot/team-client/team-api-requests";
+} from "@pokebots/team-client/team-api-requests";
 import {
   decodeRemoteHiggsfieldCredits,
   decodeRemoteHiggsfieldProviders,
@@ -76,9 +76,9 @@ import {
   decodeRemoteWorkflowSummary,
   decodeRemoteWorkflowVersionGraph,
   decodeRemoteWorkflowVersions,
-} from "@openbot/team-client/workflow-decoding";
-import type { AttachmentMediaSource } from "@openbot/ui/features/conversation/AttachmentCards";
-import { currentText } from "@openbot/ui/text";
+} from "@pokebots/team-client/workflow-decoding";
+import type { AttachmentMediaSource } from "@pokebots/ui/features/conversation/AttachmentCards";
+import { currentText } from "@pokebots/ui/text";
 import { Effect } from "effect";
 import { createSignal } from "solid-js";
 import type { GitHubConnectorPort } from "../connectors/github-connector-port";

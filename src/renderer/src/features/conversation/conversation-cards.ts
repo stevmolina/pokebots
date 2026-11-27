@@ -6,10 +6,10 @@ import { lazy } from "solid-js";
  * the chat moves under it.
  */
 export const ApprovalCard = lazy(() =>
-  import("@openbot/ui/features/conversation/ConversationPrompts").then((module) => ({ default: module.ApprovalCard })),
+  import("@pokebots/ui/features/conversation/ConversationPrompts").then((module) => ({ default: module.ApprovalCard })),
 );
 export const QuestionPromptBubble = lazy(() =>
-  import("@openbot/ui/components/QuestionPromptBubble").then((module) => ({ default: module.QuestionPromptBubble })),
+  import("@pokebots/ui/components/QuestionPromptBubble").then((module) => ({ default: module.QuestionPromptBubble })),
 );
 export const UiBlockPrompt = lazy(() =>
   import("./UiBlockPrompt").then((module) => ({ default: module.UiBlockPrompt })),

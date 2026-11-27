@@ -3,8 +3,8 @@
  * get it in the add menu or in the node's choices; the host still refuses it in a run.
  */
 
-import type { ProviderLogoVariant } from "@openbot/brand";
-import { isKnownAgentProvider } from "@openbot/contracts/agent-providers";
+import type { ProviderLogoVariant } from "@pokebots/brand";
+import { isKnownAgentProvider } from "@pokebots/contracts/agent-providers";
 import {
   type AgentProviderRef,
   type AgentStatus,
@@ -20,7 +20,7 @@ import {
   type WorkflowNodeKind,
   type WorkflowOutputTarget,
   type WorkflowTriggerType,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import { providerOffersModels } from "../../components/provider-model-options";
 import type { AgentProfile } from "../../data";
 

@@ -1,4 +1,4 @@
-import type { AgentSummary, QuitGuard } from "@openbot/contracts/ipc";
+import type { AgentSummary, QuitGuard } from "@pokebots/contracts/ipc";
 import type { BrowserWindow, Input } from "electron";
 
 /** How long `Cmd + Q` must be held before OpenBot quits. */

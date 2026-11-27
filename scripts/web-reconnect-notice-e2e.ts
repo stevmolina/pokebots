@@ -9,7 +9,7 @@
 import assert from "node:assert/strict";
 import { mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { createOpenBotLogger } from "@openbot/logging";
+import { createOpenBotLogger } from "@pokebots/logging";
 import { type Page, webkit } from "playwright-core";
 
 const logger = createOpenBotLogger("web-reconnect-notice-e2e");

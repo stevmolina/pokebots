@@ -45,8 +45,8 @@ import { chmod } from "node:fs/promises";
 import { connect, createServer, type Server, type Socket } from "node:net";
 import { dirname, join } from "node:path";
 import { Transform, type TransformCallback } from "node:stream";
-import { type DynamicRecord, isDynamicRecord } from "@openbot/contracts/runtime-values";
-import { createOpenBotLogger, type Logger } from "@openbot/logging";
+import { type DynamicRecord, isDynamicRecord } from "@pokebots/contracts/runtime-values";
+import { createOpenBotLogger, type Logger } from "@pokebots/logging";
 import { Effect, Exit, Result } from "effect";
 import {
   COMPUTER_USE_SHARED_ACTOR_KEY,

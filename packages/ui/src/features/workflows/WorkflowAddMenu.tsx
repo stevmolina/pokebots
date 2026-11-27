@@ -4,8 +4,8 @@
  * only the kinds that the host allows.
  */
 
-import type { WorkflowNodeKind } from "@openbot/contracts/ipc";
-import type { AppTextKey, AppTranslate } from "@openbot/i18n";
+import type { WorkflowNodeKind } from "@pokebots/contracts/ipc";
+import type { AppTextKey, AppTranslate } from "@pokebots/i18n";
 import {
   Bot,
   Button,
@@ -27,7 +27,7 @@ import {
   Type,
   UserCheck,
   Zap,
-} from "@openbot/ui";
+} from "@pokebots/ui";
 import type { JSX } from "@solidjs/web";
 import { For, Show } from "solid-js";
 import { useText } from "../../text";

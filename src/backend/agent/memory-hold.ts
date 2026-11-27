@@ -1,4 +1,4 @@
-import { sourceText } from "@openbot/i18n/source";
+import { sourceText } from "@pokebots/i18n/source";
 import { Duration, Effect, Exit, Schedule, Scope } from "effect";
 import type { HostMemory } from "../host-memory";
 import type { ProviderClientOperationError } from "../provider-client-effects";

@@ -1,5 +1,5 @@
-import type { BitwardenConnectorStatus, BitwardenHostConnectInput, OpenBotDesktopApi } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+import type { BitwardenConnectorStatus, BitwardenHostConnectInput, OpenBotDesktopApi } from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
 
 type DesktopBitwarden = OpenBotDesktopApi["bitwardenConnector"];
 

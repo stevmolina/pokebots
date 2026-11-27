@@ -5,7 +5,7 @@ import {
   type BrowserDockAction,
   type BrowserDockFrame,
   type BrowserDockPresentation,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import { Effect } from "effect";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { browserDockLayout } from "../browser-dock-overlay";

@@ -31,9 +31,9 @@ import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, renameSync, r
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from "node:http";
 import { extname, join, resolve } from "node:path";
 import { gzipSync } from "node:zlib";
-import { isDynamicRecord, isNumber } from "@openbot/contracts/runtime-values";
-import { translateFor } from "@openbot/i18n";
-import { createOpenBotLogger } from "@openbot/logging";
+import { isDynamicRecord, isNumber } from "@pokebots/contracts/runtime-values";
+import { translateFor } from "@pokebots/i18n";
+import { createOpenBotLogger } from "@pokebots/logging";
 import { type Browser, type BrowserContext, devices, type Page, webkit } from "playwright-core";
 import { median } from "./dev-automation/bench-stats";
 

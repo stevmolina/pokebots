@@ -1,8 +1,8 @@
 import {
   MESSAGE_QUEUE_ONLY_CODECS,
   MESSAGE_QUEUE_ONLY_ROUTE,
-} from "@openbot/contracts/team-protocol/message-queue-only-v1";
-import { isAlternateSubmitKey } from "@openbot/ui/features/conversation/send-shortcut";
+} from "@pokebots/contracts/team-protocol/message-queue-only-v1";
+import { isAlternateSubmitKey } from "@pokebots/ui/features/conversation/send-shortcut";
 import { describe, expect, it } from "vitest";
 
 const key = (overrides: Partial<{ metaKey: boolean; ctrlKey: boolean; shiftKey: boolean; altKey: boolean }>) => ({

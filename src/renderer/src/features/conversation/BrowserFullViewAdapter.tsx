@@ -1,11 +1,11 @@
-import type { BrowserTab } from "@openbot/contracts/ipc";
-import { BROWSER_COLOR_SCHEME_CAPABILITY } from "@openbot/contracts/team-protocol/browser-color-scheme-v1";
-import { BROWSER_PROFILES_CAPABILITY } from "@openbot/contracts/team-protocol/browser-profiles-v1";
-import { BROWSER_PROXIES_CAPABILITY } from "@openbot/contracts/team-protocol/browser-proxies-v1";
-import BrowserFullView from "@openbot/ui/features/browser/BrowserFullView";
-import BrowserLocalSignInDialog from "@openbot/ui/features/browser/BrowserLocalSignInDialog";
-import { BROWSER_NEW_TAB_URL } from "@openbot/ui/features/browser/browser-suggestions";
-import { useText } from "@openbot/ui/text";
+import type { BrowserTab } from "@pokebots/contracts/ipc";
+import { BROWSER_COLOR_SCHEME_CAPABILITY } from "@pokebots/contracts/team-protocol/browser-color-scheme-v1";
+import { BROWSER_PROFILES_CAPABILITY } from "@pokebots/contracts/team-protocol/browser-profiles-v1";
+import { BROWSER_PROXIES_CAPABILITY } from "@pokebots/contracts/team-protocol/browser-proxies-v1";
+import BrowserFullView from "@pokebots/ui/features/browser/BrowserFullView";
+import BrowserLocalSignInDialog from "@pokebots/ui/features/browser/BrowserLocalSignInDialog";
+import { BROWSER_NEW_TAB_URL } from "@pokebots/ui/features/browser/browser-suggestions";
+import { useText } from "@pokebots/ui/text";
 import { createEffect, createMemo, onCleanup, Show, untrack } from "solid-js";
 import { desktopBrowserProfileCalls } from "../browser/browser-profiles-port";
 import {

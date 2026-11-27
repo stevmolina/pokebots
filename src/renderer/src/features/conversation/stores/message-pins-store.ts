@@ -1,8 +1,8 @@
-import type { PinnedMessage, PinnedMessagesSnapshot } from "@openbot/contracts/ipc";
-import { formatChatTimestamp } from "@openbot/ui/features/conversation/chat-timestamp";
-import type { PinnedMessageItem } from "@openbot/ui/features/conversation/PinnedMessages";
-import { teamMemberName } from "@openbot/ui/features/team/TeamPersonAvatar";
-import { currentText } from "@openbot/ui/text";
+import type { PinnedMessage, PinnedMessagesSnapshot } from "@pokebots/contracts/ipc";
+import { formatChatTimestamp } from "@pokebots/ui/features/conversation/chat-timestamp";
+import type { PinnedMessageItem } from "@pokebots/ui/features/conversation/PinnedMessages";
+import { teamMemberName } from "@pokebots/ui/features/team/TeamPersonAvatar";
+import { currentText } from "@pokebots/ui/text";
 import { createEffect, createMemo, createStore } from "solid-js";
 import { actionToast } from "../../../action-toast";
 import type { ConversationMessagePins, ConversationProps } from "../conversation-types";

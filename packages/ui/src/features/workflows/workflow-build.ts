@@ -5,7 +5,7 @@
  * order of the nodes in the graph. A new node comes last in it, in the order of the agent's operations.
  */
 
-import type { WorkflowGraph, WorkflowNode } from "@openbot/contracts/ipc";
+import type { WorkflowGraph, WorkflowNode } from "@pokebots/contracts/ipc";
 import { stableJson } from "./workflow-history";
 
 export interface WorkflowBuild {

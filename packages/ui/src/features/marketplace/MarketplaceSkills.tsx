@@ -5,8 +5,8 @@ import {
   type MarketplaceSkillSummary,
   SKILL_CATEGORIES,
   type SkillCategory,
-} from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
+} from "@pokebots/contracts/ipc";
+import type { AppTextKey } from "@pokebots/i18n";
 import {
   Button,
   buttonVariants,
@@ -23,9 +23,9 @@ import {
   ShieldCheck,
   SlidingTabs,
   Text,
-} from "@openbot/ui";
-import { SkillGradient } from "@openbot/ui/skill-gradient";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/ui";
+import { SkillGradient } from "@pokebots/ui/skill-gradient";
+import { useText } from "@pokebots/ui/text";
 import type { JSX } from "@solidjs/web";
 import { createEffect, createMemo, createStore, For, Match, onCleanup, Show, Switch, untrack } from "solid-js";
 import { DialogAgents, type DialogSkill } from "./MarketplaceAgentsDialog";

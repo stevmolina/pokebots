@@ -1,7 +1,7 @@
-import type { AvatarImageInput, ChannelCommand, ChannelPage, ChannelSummary } from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
-import type { AgentProfile } from "@openbot/ui/data";
-import { currentText } from "@openbot/ui/text";
+import type { AvatarImageInput, ChannelCommand, ChannelPage, ChannelSummary } from "@pokebots/contracts/ipc";
+import type { AppTextKey } from "@pokebots/i18n";
+import type { AgentProfile } from "@pokebots/ui/data";
+import { currentText } from "@pokebots/ui/text";
 import { createEffect, createStore, flush, onSettled, reconcile, snapshot, untrack } from "solid-js";
 import { actionToast } from "../../action-toast";
 import { type DesktopAnalyticsProperties, desktopAnalytics } from "../../analytics";

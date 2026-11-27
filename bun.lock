@@ -49,16 +49,17 @@
         "@electron/fuses": "1.8.0",
         "@fontsource-variable/inter": "catalog:",
         "@kobalte/core": "catalog:",
-        "@openbot/brand": "workspace:*",
-        "@openbot/contracts": "workspace:*",
-        "@openbot/i18n": "workspace:*",
-        "@openbot/logging": "workspace:*",
-        "@openbot/team-client": "workspace:*",
-        "@openbot/telemetry": "workspace:*",
-        "@openbot/ui": "workspace:*",
-        "@openbot/user-errors": "workspace:*",
-        "@openbot/whatsapp": "workspace:*",
+        "@openbot/logging": "workspace:@pokebots/logging@*",
         "@paper-design/shaders": "catalog:",
+        "@pokebots/brand": "workspace:*",
+        "@pokebots/contracts": "workspace:*",
+        "@pokebots/i18n": "workspace:*",
+        "@pokebots/logging": "workspace:*",
+        "@pokebots/team-client": "workspace:*",
+        "@pokebots/telemetry": "workspace:*",
+        "@pokebots/ui": "workspace:*",
+        "@pokebots/user-errors": "workspace:*",
+        "@pokebots/whatsapp": "workspace:*",
         "@solidjs/testing-library": "catalog:",
         "@solidjs/vite-plugin": "catalog:",
         "@speed-highlight/core": "catalog:",
@@ -94,16 +95,16 @@
       },
     },
     "apps/auth-api": {
-      "name": "@openbot/auth-api",
+      "name": "@pokebots/auth-api",
       "version": "0.0.0",
       "dependencies": {
         "@fontsource-variable/inter": "catalog:",
         "@kobalte/core": "catalog:",
-        "@openbot/brand": "workspace:*",
-        "@openbot/contracts": "workspace:*",
-        "@openbot/ui": "workspace:*",
         "@openpanel/web": "catalog:",
         "@paper-design/shaders": "catalog:",
+        "@pokebots/brand": "workspace:*",
+        "@pokebots/contracts": "workspace:*",
+        "@pokebots/ui": "workspace:*",
         "@solidjs/signals": "catalog:",
         "@solidjs/web": "catalog:",
         "@tanstack/solid-router": "2.0.0-rc.9",
@@ -131,7 +132,7 @@
       },
     },
     "apps/mobile": {
-      "name": "@openbot/mobile",
+      "name": "@pokebots/mobile",
       "version": "1.4.11",
       "dependencies": {
         "@config-plugins/react-native-webrtc": "15.0.2",
@@ -140,14 +141,14 @@
         "@legendapp/list": "3.7.2",
         "@noble/hashes": "catalog:",
         "@norbert_bodziony/bloub": "catalog:",
-        "@openbot/brand": "workspace:*",
-        "@openbot/contracts": "workspace:*",
-        "@openbot/i18n": "workspace:*",
-        "@openbot/logging": "workspace:*",
-        "@openbot/team-client": "workspace:*",
-        "@openbot/telemetry": "workspace:*",
-        "@openbot/user-errors": "workspace:*",
         "@openpanel/react-native": "1.4.2",
+        "@pokebots/brand": "workspace:*",
+        "@pokebots/contracts": "workspace:*",
+        "@pokebots/i18n": "workspace:*",
+        "@pokebots/logging": "workspace:*",
+        "@pokebots/team-client": "workspace:*",
+        "@pokebots/telemetry": "workspace:*",
+        "@pokebots/user-errors": "workspace:*",
         "@react-native-masked-view/masked-view": "0.3.2",
         "@shopify/react-native-skia": "2.14.0",
         "@speed-highlight/core": "catalog:",
@@ -225,7 +226,7 @@
       },
     },
     "apps/mobile-updates": {
-      "name": "@openbot/mobile-updates",
+      "name": "@pokebots/mobile-updates",
       "version": "0.0.0",
       "dependencies": {
         "effect": "catalog:",
@@ -237,10 +238,10 @@
       },
     },
     "apps/site-router": {
-      "name": "@openbot/site-router",
+      "name": "@pokebots/site-router",
       "version": "0.0.0",
       "dependencies": {
-        "@openbot/contracts": "workspace:*",
+        "@pokebots/contracts": "workspace:*",
         "effect": "catalog:",
       },
       "devDependencies": {
@@ -250,12 +251,12 @@
       },
     },
     "apps/status": {
-      "name": "@openbot/status",
+      "name": "@pokebots/status",
       "version": "0.0.0",
       "dependencies": {
         "@fontsource-variable/inter": "catalog:",
-        "@openbot/brand": "workspace:*",
-        "@openbot/logging": "workspace:*",
+        "@pokebots/brand": "workspace:*",
+        "@pokebots/logging": "workspace:*",
         "@solidjs/web": "catalog:",
         "effect": "catalog:",
         "lucide-solid": "catalog:",
@@ -269,11 +270,11 @@
       },
     },
     "packages/brand": {
-      "name": "@openbot/brand",
+      "name": "@pokebots/brand",
       "version": "0.0.0",
       "dependencies": {
         "@norbert_bodziony/bloub": "catalog:",
-        "@openbot/contracts": "workspace:*",
+        "@pokebots/contracts": "workspace:*",
       },
       "devDependencies": {
         "typescript": "catalog:",
@@ -284,7 +285,7 @@
       },
     },
     "packages/contracts": {
-      "name": "@openbot/contracts",
+      "name": "@pokebots/contracts",
       "version": "0.0.0",
       "dependencies": {
         "emoji-regex": "10.6.0",
@@ -296,10 +297,10 @@
       },
     },
     "packages/i18n": {
-      "name": "@openbot/i18n",
+      "name": "@pokebots/i18n",
       "version": "0.0.0",
       "dependencies": {
-        "@openbot/contracts": "workspace:*",
+        "@pokebots/contracts": "workspace:*",
       },
       "devDependencies": {
         "@types/node": "catalog:",
@@ -307,7 +308,7 @@
       },
     },
     "packages/logging": {
-      "name": "@openbot/logging",
+      "name": "@pokebots/logging",
       "version": "0.0.0",
       "dependencies": {
         "ts-log": "3.0.3",
@@ -318,14 +319,14 @@
       },
     },
     "packages/team-client": {
-      "name": "@openbot/team-client",
+      "name": "@pokebots/team-client",
       "version": "0.0.0",
       "dependencies": {
         "@noble/ed25519": "3.2.0",
         "@noble/hashes": "catalog:",
-        "@openbot/contracts": "workspace:*",
-        "@openbot/i18n": "workspace:*",
-        "@openbot/user-errors": "workspace:*",
+        "@pokebots/contracts": "workspace:*",
+        "@pokebots/i18n": "workspace:*",
+        "@pokebots/user-errors": "workspace:*",
         "effect": "catalog:",
       },
       "devDependencies": {
@@ -333,10 +334,10 @@
       },
     },
     "packages/telemetry": {
-      "name": "@openbot/telemetry",
+      "name": "@pokebots/telemetry",
       "version": "0.0.0",
       "dependencies": {
-        "@openbot/contracts": "workspace:*",
+        "@pokebots/contracts": "workspace:*",
         "effect": "catalog:",
       },
       "devDependencies": {
@@ -345,17 +346,17 @@
       },
     },
     "packages/ui": {
-      "name": "@openbot/ui",
+      "name": "@pokebots/ui",
       "version": "0.0.0",
       "dependencies": {
         "@kobalte/core": "catalog:",
         "@norbert_bodziony/bloub": "catalog:",
-        "@openbot/brand": "workspace:*",
-        "@openbot/contracts": "workspace:*",
-        "@openbot/i18n": "workspace:*",
-        "@openbot/team-client": "workspace:*",
-        "@openbot/telemetry": "workspace:*",
-        "@openbot/user-errors": "workspace:*",
+        "@pokebots/brand": "workspace:*",
+        "@pokebots/contracts": "workspace:*",
+        "@pokebots/i18n": "workspace:*",
+        "@pokebots/team-client": "workspace:*",
+        "@pokebots/telemetry": "workspace:*",
+        "@pokebots/user-errors": "workspace:*",
         "@speed-highlight/core": "catalog:",
         "@tanstack/virtual-core": "catalog:",
         "class-variance-authority": "catalog:",
@@ -374,12 +375,12 @@
       },
     },
     "packages/user-errors": {
-      "name": "@openbot/user-errors",
+      "name": "@pokebots/user-errors",
       "version": "0.0.0",
       "dependencies": {
-        "@openbot/contracts": "workspace:*",
-        "@openbot/i18n": "workspace:*",
-        "@openbot/logging": "workspace:*",
+        "@pokebots/contracts": "workspace:*",
+        "@pokebots/i18n": "workspace:*",
+        "@pokebots/logging": "workspace:*",
       },
       "devDependencies": {
         "@types/node": "catalog:",
@@ -387,7 +388,7 @@
       },
     },
     "packages/whatsapp": {
-      "name": "@openbot/whatsapp",
+      "name": "@pokebots/whatsapp",
       "version": "0.0.0",
       "dependencies": {
         "@cacheable/node-cache": "catalog:",
@@ -411,12 +412,12 @@
       },
     },
     "remote/api": {
-      "name": "@openbot/remote-api",
+      "name": "@pokebots/remote-api",
       "version": "0.0.0",
       "dependencies": {
         "@discordjs/rest": "2.6.3",
         "@discordjs/ws": "2.0.4",
-        "@openbot/contracts": "workspace:*",
+        "@pokebots/contracts": "workspace:*",
         "discord-api-types": "0.38.57",
         "effect": "catalog:",
         "elysia": "1.4.30",
@@ -1166,35 +1167,7 @@
 
     "@oozcitak/util": ["@oozcitak/util@10.0.0", "", {}, "sha512-hAX0pT/73190NLqBPPWSdBVGtbY6VOhWYK3qqHqtXQ1gK7kS2yz4+ivsN07hpJ6I3aeMtKP6J6npsEKOAzuTLA=="],
 
-    "@openbot/auth-api": ["@openbot/auth-api@workspace:apps/auth-api"],
-
-    "@openbot/brand": ["@openbot/brand@workspace:packages/brand"],
-
-    "@openbot/contracts": ["@openbot/contracts@workspace:packages/contracts"],
-
-    "@openbot/i18n": ["@openbot/i18n@workspace:packages/i18n"],
-
-    "@openbot/logging": ["@openbot/logging@workspace:packages/logging"],
-
-    "@openbot/mobile": ["@openbot/mobile@workspace:apps/mobile"],
-
-    "@openbot/mobile-updates": ["@openbot/mobile-updates@workspace:apps/mobile-updates"],
-
-    "@openbot/remote-api": ["@openbot/remote-api@workspace:remote/api"],
-
-    "@openbot/site-router": ["@openbot/site-router@workspace:apps/site-router"],
-
-    "@openbot/status": ["@openbot/status@workspace:apps/status"],
-
-    "@openbot/team-client": ["@openbot/team-client@workspace:packages/team-client"],
-
-    "@openbot/telemetry": ["@openbot/telemetry@workspace:packages/telemetry"],
-
-    "@openbot/ui": ["@openbot/ui@workspace:packages/ui"],
-
-    "@openbot/user-errors": ["@openbot/user-errors@workspace:packages/user-errors"],
-
-    "@openbot/whatsapp": ["@openbot/whatsapp@workspace:packages/whatsapp"],
+    "@openbot/logging": ["@pokebots/logging@workspace:packages/logging"],
 
     "@openpanel/react-native": ["@openpanel/react-native@1.4.2", "", { "dependencies": { "@openpanel/sdk": "1.3.2" }, "peerDependencies": { "expo-application": "5 - 7", "expo-constants": "14 - 18", "react-native": "*" } }, "sha512-VC9axx2jcyTIuaAVpx2TTR3W7G31n3M2/yOjXLe7TY1Bqv73uyRw+4ZBoNM5OnbKjg/XFYx6sPKMT602omTxpA=="],
 
@@ -1335,6 +1308,36 @@
     "@peculiar/webcrypto": ["@peculiar/webcrypto@1.7.1", "", { "dependencies": { "@peculiar/asn1-schema": "^2.7.0", "@peculiar/json-schema": "^1.1.12", "@peculiar/utils": "^2.0.2", "tslib": "^2.8.1", "webcrypto-core": "^1.9.2" } }, "sha512-ODOov0sGMJMf3jPonOkgGqPknTsu+DdQ7kD++gz8aI+aFMOMHFbWAA2taqXXVTdP+OTOQR/znGvSpmkeI0WTYQ=="],
 
     "@pinojs/redact": ["@pinojs/redact@0.4.0", "", {}, "sha512-k2ENnmBugE/rzQfEcdWHcCY+/FM3VLzH9cYEsbdsoqrvzAKRhUZeRNhAZvB8OitQJ1TBed3yqWtdjzS6wJKBwg=="],
+
+    "@pokebots/auth-api": ["@pokebots/auth-api@workspace:apps/auth-api"],
+
+    "@pokebots/brand": ["@pokebots/brand@workspace:packages/brand"],
+
+    "@pokebots/contracts": ["@pokebots/contracts@workspace:packages/contracts"],
+
+    "@pokebots/i18n": ["@pokebots/i18n@workspace:packages/i18n"],
+
+    "@pokebots/logging": ["@pokebots/logging@workspace:packages/logging"],
+
+    "@pokebots/mobile": ["@pokebots/mobile@workspace:apps/mobile"],
+
+    "@pokebots/mobile-updates": ["@pokebots/mobile-updates@workspace:apps/mobile-updates"],
+
+    "@pokebots/remote-api": ["@pokebots/remote-api@workspace:remote/api"],
+
+    "@pokebots/site-router": ["@pokebots/site-router@workspace:apps/site-router"],
+
+    "@pokebots/status": ["@pokebots/status@workspace:apps/status"],
+
+    "@pokebots/team-client": ["@pokebots/team-client@workspace:packages/team-client"],
+
+    "@pokebots/telemetry": ["@pokebots/telemetry@workspace:packages/telemetry"],
+
+    "@pokebots/ui": ["@pokebots/ui@workspace:packages/ui"],
+
+    "@pokebots/user-errors": ["@pokebots/user-errors@workspace:packages/user-errors"],
+
+    "@pokebots/whatsapp": ["@pokebots/whatsapp@workspace:packages/whatsapp"],
 
     "@poppinss/colors": ["@poppinss/colors@4.1.6", "", { "dependencies": { "kleur": "^4.1.5" } }, "sha512-H9xkIdFswbS8n1d6vmRd8+c10t2Qe+rZITbbDHHkQixH5+2x1FDGmi/0K+WgWiqQFKPSlIYB7jlH6Kpfn6Fleg=="],
 

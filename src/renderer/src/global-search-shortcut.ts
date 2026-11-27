@@ -1,4 +1,4 @@
-import { shortcutMatches } from "@openbot/ui/features/shortcuts/shortcut-registry";
+import { shortcutMatches } from "@pokebots/ui/features/shortcuts/shortcut-registry";
 
 /**
  * Cmd+K on macOS and Ctrl+K elsewhere, without Alt or Shift, opens and closes the global search. Either

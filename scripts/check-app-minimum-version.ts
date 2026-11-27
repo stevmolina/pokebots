@@ -6,8 +6,8 @@
 
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { APP_SURFACES, type AppSurface } from "@openbot/contracts/app-minimum-version";
-import { createOpenBotLogger } from "@openbot/logging";
+import { APP_SURFACES, type AppSurface } from "@pokebots/contracts/app-minimum-version";
+import { createOpenBotLogger } from "@pokebots/logging";
 import { type ChangelogPlatform, type ChangelogRelease, parseChangelog } from "../apps/auth-api/src/lib/changelog";
 import { APP_MINIMUM_VERSIONS } from "../apps/auth-api/src/server/app-minimum-version";
 

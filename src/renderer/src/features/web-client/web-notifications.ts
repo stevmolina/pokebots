@@ -1,11 +1,11 @@
-import type { AgentEvent, ClientAgentSummary, ServerNotificationLevel } from "@openbot/contracts/ipc";
-import type { AppTranslate } from "@openbot/i18n";
+import type { AgentEvent, ClientAgentSummary, ServerNotificationLevel } from "@pokebots/contracts/ipc";
+import type { AppTranslate } from "@pokebots/i18n";
 import {
   type AgentNotificationChannel,
   notificationForAgentEvent,
   notificationRequestKey,
-} from "@openbot/team-client/agent-notifications";
-import type { ChannelNotificationContent } from "@openbot/team-client/channel-notifications";
+} from "@pokebots/team-client/agent-notifications";
+import type { ChannelNotificationContent } from "@pokebots/team-client/channel-notifications";
 import { webPushCovers } from "./web-push";
 
 const PERMISSION_ASKED_KEY = "openbot.web.notification-permission-asked";

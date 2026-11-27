@@ -1,5 +1,5 @@
-import { attachmentMimeTypeForName } from "@openbot/contracts/attachment-files";
-import type { AttachmentSummary } from "@openbot/contracts/ipc";
+import { attachmentMimeTypeForName } from "@pokebots/contracts/attachment-files";
+import type { AttachmentSummary } from "@pokebots/contracts/ipc";
 import { createContext, useCallback, useContext, useRef, useState } from "react";
 import { showFailureAlert } from "@/features/analytics/failure-reports";
 import { useMobileWorkspaceActions } from "@/features/workspace/context/mobile-workspace-context";

@@ -1,7 +1,7 @@
-import type { AgentApproval, AgentEvent, AgentRuntimeSnapshot } from "@openbot/contracts/ipc";
-import { cleanAgentMessageText } from "@openbot/team-client/agent-message-text";
-import { keepWholeApprovals, reconcilePendingRequests } from "@openbot/team-client/runtime-attention";
-import type { AgentMessage } from "@openbot/ui/data";
+import type { AgentApproval, AgentEvent, AgentRuntimeSnapshot } from "@pokebots/contracts/ipc";
+import { cleanAgentMessageText } from "@pokebots/team-client/agent-message-text";
+import { keepWholeApprovals, reconcilePendingRequests } from "@pokebots/team-client/runtime-attention";
+import type { AgentMessage } from "@pokebots/ui/data";
 import { createStoredMessage } from "../../app-stored-values";
 import { promptRequestKey } from "../conversation/conversation-keys";
 

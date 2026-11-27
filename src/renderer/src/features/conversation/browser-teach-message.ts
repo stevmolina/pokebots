@@ -1,5 +1,5 @@
-import type { BrowserTeachStep } from "@openbot/contracts/ipc";
-import type { AppTranslate } from "@openbot/i18n";
+import type { BrowserTeachStep } from "@pokebots/contracts/ipc";
+import type { AppTranslate } from "@pokebots/i18n";
 
 /** The agent reads the steps from this file. The name is fixed, as `pasted-text.txt` is. */
 const TEACH_FILE_NAME = "recorded-task.txt";

@@ -18,24 +18,24 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import { AGENT_PROVIDERS, type AgentEvent } from "@openbot/contracts/ipc";
-import { isDynamicRecord as isRecord } from "@openbot/contracts/runtime-values";
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
+import { AGENT_PROVIDERS, type AgentEvent } from "@pokebots/contracts/ipc";
+import { isDynamicRecord as isRecord } from "@pokebots/contracts/runtime-values";
+import { TEAM_API_ROUTES } from "@pokebots/contracts/team-api-routes";
 import {
   TEAM_APP_VERSION_HEADER,
   TEAM_CAPABILITIES_HEADER,
   TEAM_PROTOCOL_VERSION_HEADER,
-} from "@openbot/contracts/team-protocol";
-import { AGENT_CREATE_OPERATION_CAPABILITY } from "@openbot/contracts/team-protocol/agent-create-operation-v1";
-import { teamCapabilitiesForProtocol } from "@openbot/contracts/team-protocol/current";
-import { teamHttpCodec } from "@openbot/contracts/team-protocol/http-codecs";
-import { TEAM_PROTOCOL_V8 } from "@openbot/contracts/team-protocol/v8";
-import { TEAM_PROTOCOL_V9 } from "@openbot/contracts/team-protocol/v9";
+} from "@pokebots/contracts/team-protocol";
+import { AGENT_CREATE_OPERATION_CAPABILITY } from "@pokebots/contracts/team-protocol/agent-create-operation-v1";
+import { teamCapabilitiesForProtocol } from "@pokebots/contracts/team-protocol/current";
+import { teamHttpCodec } from "@pokebots/contracts/team-protocol/http-codecs";
+import { TEAM_PROTOCOL_V8 } from "@pokebots/contracts/team-protocol/v8";
+import { TEAM_PROTOCOL_V9 } from "@pokebots/contracts/team-protocol/v9";
 import {
   decodeTeamProtocolV9WebRtcHttpRequest,
   encodeTeamProtocolV9WebRtcHttpRequest,
-} from "@openbot/contracts/team-protocol/v9-webrtc-adapter";
-import { retryOperationIds } from "@openbot/team-client/retry-operation-id";
+} from "@pokebots/contracts/team-protocol/v9-webrtc-adapter";
+import { retryOperationIds } from "@pokebots/team-client/retry-operation-id";
 import { plugin } from "bun";
 import { Effect } from "effect";
 import type { AgentBrowserHost } from "../src/backend/agent/turn-lifecycle";

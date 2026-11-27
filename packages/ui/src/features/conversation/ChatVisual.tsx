@@ -13,9 +13,9 @@ import {
   chatVisualReplyMessage,
   chatVisualThemeMessage,
   parseChatVisualMessage,
-} from "@openbot/contracts/chat-visual";
-import type { AttachmentSummary } from "@openbot/contracts/ipc";
-import { Button, Maximize2, PanelRight, Wallpaper } from "@openbot/ui";
+} from "@pokebots/contracts/chat-visual";
+import type { AttachmentSummary } from "@pokebots/contracts/ipc";
+import { Button, Maximize2, PanelRight, Wallpaper } from "@pokebots/ui";
 import { Portal } from "@solidjs/web";
 import { createEffect, createSignal, onSettled, Show, untrack } from "solid-js";
 import { documentColorScheme } from "../../document-color-scheme";

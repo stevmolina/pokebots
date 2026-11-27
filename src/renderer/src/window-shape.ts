@@ -1,4 +1,4 @@
-import { AGENT_DOCK_LIMITS, type AgentDockInputRect } from "@openbot/contracts/ipc";
+import { AGENT_DOCK_LIMITS, type AgentDockInputRect } from "@pokebots/contracts/ipc";
 
 /**
  * The parts of a shaped helper window in whole window px, inside the window, at most as many as main

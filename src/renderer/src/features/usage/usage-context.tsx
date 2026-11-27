@@ -1,4 +1,4 @@
-import { CRM_CAPABILITY } from "@openbot/contracts/team-protocol/crm-v1";
+import { CRM_CAPABILITY } from "@pokebots/contracts/team-protocol/crm-v1";
 import { createEffect, createMemo, createSignal, createStore, untrack } from "solid-js";
 import { createSimpleContext } from "../../simple-context";
 import { createCrmEnabled } from "../crm/crm-enabled";

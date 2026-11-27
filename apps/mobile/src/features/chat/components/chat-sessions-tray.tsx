@@ -1,4 +1,4 @@
-import type { AgentTask } from "@openbot/contracts/ipc";
+import type { AgentTask } from "@pokebots/contracts/ipc";
 import { router } from "expo-router";
 import { Typography } from "heroui-native";
 import { memo, useRef, useState } from "react";

@@ -1,4 +1,4 @@
-import type { AvatarColor } from "@openbot/contracts/ipc";
+import type { AvatarColor } from "@pokebots/contracts/ipc";
 import { Slider, Typography } from "heroui-native";
 import { useState } from "react";
 import { View } from "react-native";

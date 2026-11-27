@@ -1,26 +1,26 @@
 import { createHash, randomBytes } from "node:crypto";
-import type { DiscordDelivery } from "@openbot/contracts/signal-protocol/discord-api";
-import { DISCORD_ROUTE_TTL_SECONDS, type DiscordRouteGuild } from "@openbot/contracts/signal-protocol/discord-route";
-import type { GitHubRouteRepository } from "@openbot/contracts/signal-protocol/github-route";
+import type { DiscordDelivery } from "@pokebots/contracts/signal-protocol/discord-api";
+import { DISCORD_ROUTE_TTL_SECONDS, type DiscordRouteGuild } from "@pokebots/contracts/signal-protocol/discord-route";
+import type { GitHubRouteRepository } from "@pokebots/contracts/signal-protocol/github-route";
 import {
   INGRESS_QUEUE_CAPABILITY,
   type IngressRoute,
   isIngressQueueKey,
   type QueuedSignalMessage,
-} from "@openbot/contracts/signal-protocol/ingress-queue";
-import { SLACK_ROUTE_TTL_SECONDS, type SlackRouteTeam } from "@openbot/contracts/signal-protocol/slack-route";
+} from "@pokebots/contracts/signal-protocol/ingress-queue";
+import { SLACK_ROUTE_TTL_SECONDS, type SlackRouteTeam } from "@pokebots/contracts/signal-protocol/slack-route";
 import {
   TELEGRAM_CAPABILITY,
   TELEGRAM_ROUTE_TTL_SECONDS,
   type TelegramCallResult,
   type TelegramRouteChat,
   telegramRouteChatKey,
-} from "@openbot/contracts/signal-protocol/telegram-route";
+} from "@pokebots/contracts/signal-protocol/telegram-route";
 import {
   WEBHOOK_ROUTE_TTL_SECONDS,
   type WebhookRoute,
   type WebhookSignatureFormat,
-} from "@openbot/contracts/signal-protocol/webhook-route";
+} from "@pokebots/contracts/signal-protocol/webhook-route";
 import { Context, Effect, Fiber, Layer, Result, Schema } from "effect";
 import { IngressQueue, queueRouteKey, type RouteWaker } from "./ingress-queue";
 import {

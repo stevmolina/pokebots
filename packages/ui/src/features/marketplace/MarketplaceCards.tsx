@@ -1,5 +1,5 @@
-import { Button, Plus, TriangleAlert } from "@openbot/ui";
-import { useText } from "@openbot/ui/text";
+import { Button, Plus, TriangleAlert } from "@pokebots/ui";
+import { useText } from "@pokebots/ui/text";
 import { Show } from "solid-js";
 import { AppLogo, Done } from "./MarketplaceParts";
 import { customServerStatus, type MarketplaceApp, pluginNeedsMac } from "./marketplace-model";

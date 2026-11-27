@@ -272,7 +272,7 @@ start, and iOS suspends the app soon after the intent returns.
 - The App Intents, their cards and the `AppShortcutsProvider` are Swift files in `plugins/shortcuts`.
   `plugins/with-shortcuts.js` adds them to the app target, because Xcode reads the shortcuts of an
   app from that target. iOS reads the names and the phrases of the shortcuts at build time, so they
-  are English and not from the `@openbot/i18n` catalog. The text of the cards is from the catalog.
+  are English and not from the `@pokebots/i18n` catalog. The text of the cards is from the catalog.
 - The app writes `shortcuts.json` to the App Group
   (`src/features/shortcuts/model/shortcut-directory.ts`): the agents, the agent of Settings >
   Shortcuts, the app lock and the card text. Sign-out deletes it. The servers with their public
@@ -1015,7 +1015,7 @@ Only fixed cause, source, operation, and provider/model fields are sent. No aler
 
 Mobile schema generation 3 adds sign-in, hosted server plans, first-run, notification settings,
 Live Activity, voice, agent template and opt-out events, `entry_point` on pairing, and `scope` on
-`usage_viewed`. The generation comes from `ANALYTICS_GENERATIONS.mobile` in `@openbot/telemetry`.
+`usage_viewed`. The generation comes from `ANALYTICS_GENERATIONS.mobile` in `@pokebots/telemetry`.
 The file queue holds at most 1,000 reports, 1 MiB, and seven days, and sends only after a local
 write succeeds. Foreground and host reconnection trigger retries. Opt-out and account changes
 clear this queue. See [the analytics contract](../../ANALYTICS.md#reliable-error-reports).

@@ -1,5 +1,5 @@
-import { type AgentTemplateDetail, canAdministerServer, type RoutineSchedule } from "@openbot/contracts/ipc";
-import type { MobileTextKey } from "@openbot/i18n/mobile";
+import { type AgentTemplateDetail, canAdministerServer, type RoutineSchedule } from "@pokebots/contracts/ipc";
+import type { MobileTextKey } from "@pokebots/i18n/mobile";
 import { useQuery } from "@tanstack/react-query";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { usePreventRemove } from "expo-router/react-navigation";

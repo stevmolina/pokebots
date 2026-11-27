@@ -4,8 +4,8 @@ import {
   type ExternalLinkTarget,
   externalLinkAppName,
   isExternalLinkAppPath,
-} from "@openbot/contracts/ipc";
-import { Button, Input, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@openbot/ui";
+} from "@pokebots/contracts/ipc";
+import { Button, Input, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@pokebots/ui";
 import { createMemo, createSignal, createStore, onSettled, Show } from "solid-js";
 import { useI18n } from "../../i18n-context";
 import { settingsPort } from "./settings-port";

@@ -1,4 +1,4 @@
-import type { AppFormat, MobileTranslate } from "@openbot/i18n/mobile";
+import type { AppFormat, MobileTranslate } from "@pokebots/i18n/mobile";
 import { messageDay, messageTime, startOfDay } from "./message-time";
 
 /**

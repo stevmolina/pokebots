@@ -1,6 +1,6 @@
 import { readFile } from "node:fs/promises";
-import type { HostReleaseStatus, UpdateStatus } from "@openbot/contracts/ipc";
-import { isNewerRelease, isValidSemver } from "@openbot/contracts/release-version";
+import type { HostReleaseStatus, UpdateStatus } from "@pokebots/contracts/ipc";
+import { isNewerRelease, isValidSemver } from "@pokebots/contracts/release-version";
 import { Deferred, Effect, Exit, Schema } from "effect";
 import { parse } from "yaml";
 

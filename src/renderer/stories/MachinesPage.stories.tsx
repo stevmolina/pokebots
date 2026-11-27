@@ -1,6 +1,6 @@
-import { AVATAR_HUES } from "@openbot/contracts/ipc";
-import type { Machine, MachineAgent } from "@openbot/ui/features/servers/MachinesPage";
-import { MachinesPage } from "@openbot/ui/features/servers/MachinesPage";
+import { AVATAR_HUES } from "@pokebots/contracts/ipc";
+import type { Machine, MachineAgent } from "@pokebots/ui/features/servers/MachinesPage";
+import { MachinesPage } from "@pokebots/ui/features/servers/MachinesPage";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 

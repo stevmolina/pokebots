@@ -1,5 +1,5 @@
 import { randomBytes } from "node:crypto";
-import { registerSecretValue } from "@openbot/logging";
+import { registerSecretValue } from "@pokebots/logging";
 import { Effect } from "effect";
 import { describe, expect, it } from "vitest";
 import type { WorkflowGitHubChange } from "../backend/workflows/workflow-github-api";

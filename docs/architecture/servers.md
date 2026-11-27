@@ -32,7 +32,7 @@ renderer hides those controls from a member. The wire carries no absolute paths,
 download files travel only as category totals. A host without the capability reads as null, and the
 surface asks for an update; a change is refused before any request. The desktop Library page and
 the phone Library (the server drawer) read the same `host` scope. The file types, the type filter
-and the order of both are in `@openbot/team-client/stored-files`.
+and the order of both are in `@pokebots/team-client/stored-files`.
 
 The optional `storage-channel-v1` capability adds `POST /v1/storage/channel-files`
 (`team-protocol/storage-channel-v1.ts`), with `channelId` and an optional `force`. It answers the file
@@ -58,7 +58,7 @@ frozen `storage-disk-v1` reply cannot get a new field, so this is a new route. O
 measures it (`src/backend/user-files-bytes.ts`, `nice -n 19 du -s -x -c`), at most each 10 minutes,
 in the background after the first value. It is null on another host, and on a machine with Docker,
 because `du` cannot read the Docker folder. The clients count the plan storage that is left
-(`hostedPlanDisk` in `@openbot/contracts/hosted-servers`) from `userBytes`. When it is null or the
+(`hostedPlanDisk` in `@pokebots/contracts/hosted-servers`) from `userBytes`. When it is null or the
 host does not have the capability, they subtract `HOSTED_SERVER_BASE_IMAGE_GB` for the system, which
 is correct only for a boat sandbox. Every member can read it. The desktop, the web client and mobile
 prefer this route and use `storage-disk-v1` with an older host.
@@ -338,7 +338,7 @@ this computer's included. `instance-transfer:copy` is scoped to the destination 
 server settings and without chat history to a temporary file. As in a file export, the file also has
 the channels that have a selected agent as a member and the Shared folder. Each apply adds the
 channels again as new channels. Main then keeps only the settings of the copied agents in the file
-(`InstanceTransferService.keepCopiedSettings`, with `@openbot/team-client/instance-transfer-copy`): the
+(`InstanceTransferService.keepCopiedSettings`, with `@pokebots/team-client/instance-transfer-copy`): the
 routine flows between them, the places on their routine canvas, and the workflows with a step for one
 of them or an output to one of their channels. MCP servers, custom providers and agents, sidebar
 sections and shared skills stay out. It writes a new manifest and a new central directory over the old
@@ -355,7 +355,7 @@ added beside it. The browser client has no copy: it connects to one host at a ti
 The mobile app has the same copy in Server settings > Transfer > Copy to another server. The source
 is the server of the page, and the destination is another online server that the user administers
 with `instance-transfer-v1`. The phone downloads the file from the source with the export route,
-keeps the same settings as the desktop (`copiedTransferUpload` in `@openbot/team-client`, which decodes
+keeps the same settings as the desktop (`copiedTransferUpload` in `@pokebots/team-client`, which decodes
 only the Base64 of the manifest and the end of the file), sends it to the destination with the upload
 route, and applies all of its agents with the settings. The phone uses
 only `instance-transfer-v1`, so the file is at most 100 MB. The file stays in memory on the phone and
@@ -1145,7 +1145,7 @@ once on the desktop and the reverse. The owner's levels change in the host store
 the desktop app gets the same event from `RemoteServerManager`. Each client also reads the levels when
 a server connects; the desktop reads them for each notification too. The server level replaces the level that each device kept for the
 server before (the effective level is `server ?? the device level`); the agent level replaces the
-server level for that agent (`agentNotificationLevel` in `@openbot/team-client`), in both directions.
+server level for that agent (`agentNotificationLevel` in `@pokebots/team-client`), in both directions.
 A server set to Nothing, or muted on a device, stays quiet for all agents. A mute stays on each device.
 The shared switch of the agent (`notifications`) still turns notifications off for every member, because the released Team API carries it. Current clients do not show it in the agent settings any more: the matrix shows such an agent with a "Turn on" button, which sets the switch back on. The
 host applies the levels to phone notifications itself (`PushNotificationService`), so phones of every
@@ -1153,7 +1153,7 @@ version follow them. On the desktop, `RemoteServerManager` reports the effective
 `ServerSummary`, so the rail, the menus and the island follow it.
 
 Settings › Notifications is the one place that changes these levels: a matrix of the servers and their
-agents (`NotificationMatrix` in `@openbot/ui`, and its own screen on the phone). Server settings have no
+agents (`NotificationMatrix` in `@pokebots/ui`, and its own screen on the phone). Server settings have no
 notification section on any device; the server menu (desktop and web) and the agent settings show the
 current level and open the matrix. A joined server
 without the capability keeps the level of each device and shows "This computer only".
@@ -1322,7 +1322,7 @@ source before the copy shows to clients, so a copy does not open memories that t
 each change it sends `agent-access-changed` and a new `agents-changed` to each connection, so the agent
 lists of members change without a reload.
 
-Server settings → Roles (`ServerRolesSection.tsx`, `@openbot/ui/features/servers/ServerRoles`) edits the
+Server settings → Roles (`ServerRolesSection.tsx`, `@pokebots/ui/features/servers/ServerRoles`) edits the
 set on desktop and web. The role menu of each member row on the Members page sets the server role
 (Member or Admin, through the same confirmation as before) and the custom roles. The tab shows for the
 local server and for a joined server whose host advertises the capability to an owner or admin.
@@ -1362,7 +1362,7 @@ member update, a removal, and each account directory sync (`memberAuditChanges`)
 or change runs at a time, from the read of the directory to the audit entry, so a slow read cannot
 apply an older list after a newer one. A join keeps the time when the membership was made.
 
-Server settings → Audit log (`ServerAuditSection.tsx`, `@openbot/ui/features/servers/ServerAuditLog`)
+Server settings → Audit log (`ServerAuditSection.tsx`, `@pokebots/ui/features/servers/ServerAuditLog`)
 shows the log on desktop and web, with a filter by kind and a search. The tab shows for an owner or
 admin of the local server and of a joined server whose host advertises the capability. It reads the log
 again each time it shows.
@@ -1495,7 +1495,7 @@ creates them and the Customer Portal settings.
   [hosted servers](../hosted-servers.md#lifecycle). The webhook links a new Stripe customer to the
   account from `openbot_user_id`. It never moves a known
   customer to another account, and it skips a subscription that names no account.
-- Desktop Settings → Billing and the web Billing dialog render `@openbot/ui/features/billing`: one
+- Desktop Settings → Billing and the web Billing dialog render `@pokebots/ui/features/billing`: one
   row for each open plan, with the server name, the plan, its price, and its renewal controls.
   Hosted plans support cancellation that keeps data, Keep server, and explicit deletion now or
   after the paid period. A stored deletion date and subscription ID drive the cron; a fresh
@@ -1664,7 +1664,7 @@ the tiers used the same lookup key. The license terms allow 3 devices for each u
   monthly for 5 users in place of the added user. At 25 users it shows "Contact
   us" and creates no invite. Admins get no step; the join tells the person that the license is full.
 - Desktop calls the `license` IPC group; the web client calls the browser routes. Both render
-  `@openbot/ui/features/billing/LicenseSection` in the license slot of `BillingPanel`.
+  `@pokebots/ui/features/billing/LicenseSection` in the license slot of `BillingPanel`.
 
 ## Servers on this computer
 

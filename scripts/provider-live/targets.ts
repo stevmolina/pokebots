@@ -1,6 +1,6 @@
 // The providers of the live provider test, shared by the config, the app command and the test.
 import { join, resolve } from "node:path";
-import type { AgentProviderId } from "@openbot/contracts/agent-providers";
+import type { AgentProviderId } from "@pokebots/contracts/agent-providers";
 
 export const PROJECT_ROOT = resolve(import.meta.dirname, "../..");
 /** Never `localhost`: the runner and the app can resolve that name to different addresses. */

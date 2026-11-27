@@ -8,9 +8,9 @@
 // and that the member which does the work is told the lead's id. It makes its own channel and
 // deletes it. Writes .openbot-build/channel-lead-required-e2e/report.json.
 import assert from "node:assert/strict";
-import { agentProviderDescriptor } from "@openbot/contracts/agent-providers";
-import type { ChannelPage, ChannelTask } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+import { agentProviderDescriptor } from "@pokebots/contracts/agent-providers";
+import type { ChannelPage, ChannelTask } from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
 import { ChannelClient, connectChannelE2e, waitFor, writeReport } from "./channel-e2e-support";
 
 const PROMPT =

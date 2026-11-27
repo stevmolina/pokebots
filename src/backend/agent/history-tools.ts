@@ -1,12 +1,12 @@
-import { chatVisualReply } from "@openbot/contracts/chat-visual";
+import { chatVisualReply } from "@pokebots/contracts/chat-visual";
 import {
   CONVERSATION_TRACE_STEP_LIMIT,
   type ConversationMessage,
   type ConversationTurnTrace,
   ROUTINE_QUIET_ANSWER_ITEM_TYPE,
-} from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
-import { redactSecrets } from "@openbot/logging";
+} from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
+import { redactSecrets } from "@pokebots/logging";
 import { Effect } from "effect";
 import { z } from "zod";
 import type { AgentStore } from "../agent-store";

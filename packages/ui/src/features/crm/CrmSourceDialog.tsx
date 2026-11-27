@@ -1,4 +1,4 @@
-import { CRM_SOURCE_KINDS, type CrmSource, type CrmSourceKind } from "@openbot/contracts/ipc";
+import { CRM_SOURCE_KINDS, type CrmSource, type CrmSourceKind } from "@pokebots/contracts/ipc";
 import {
   ArrowLeft,
   Badge,
@@ -11,10 +11,10 @@ import {
   IconButton,
   Input,
   RefreshCw,
-} from "@openbot/ui";
-import { FileSearch } from "@openbot/ui/features/files/FileList";
-import { StripeTile } from "@openbot/ui/features/settings/brand-marks";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/ui";
+import { FileSearch } from "@pokebots/ui/features/files/FileList";
+import { StripeTile } from "@pokebots/ui/features/settings/brand-marks";
+import { useText } from "@pokebots/ui/text";
 import type { JSX } from "@solidjs/web";
 import { createSignal, For, Show } from "solid-js";
 import { SOURCE_ERROR_KEY, SOURCE_KEY, timeAgo } from "./crm-model";

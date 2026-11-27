@@ -11,7 +11,7 @@ import type {
   VaultStatus,
   VaultTwoStepCode,
   VaultTwoStepCodes,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   decodeList,
   decodeRecord,
@@ -20,8 +20,8 @@ import {
   requiredBoolean,
   requiredNumber,
   requiredString,
-} from "@openbot/contracts/ipc-decoding";
-import { type DynamicRecord, isOneOf, isString } from "@openbot/contracts/runtime-values";
+} from "@pokebots/contracts/ipc-decoding";
+import { type DynamicRecord, isOneOf, isString } from "@pokebots/contracts/runtime-values";
 
 const STATUSES: readonly VaultStatus[] = ["ready", "unavailable", "unreadable"];
 const BRANDS: readonly VaultCardBrand[] = ["visa", "mastercard", "amex", "discover"];

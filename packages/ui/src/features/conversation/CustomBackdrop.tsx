@@ -3,7 +3,7 @@ import {
   chatVisualAppTheme,
   chatVisualDocument,
   chatVisualFrameUrl,
-} from "@openbot/contracts/chat-visual";
+} from "@pokebots/contracts/chat-visual";
 import { Match, Switch } from "solid-js";
 import { documentColorScheme } from "../../document-color-scheme";
 

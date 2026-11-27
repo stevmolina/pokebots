@@ -1,5 +1,5 @@
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { remoteHostFingerprint } from "@openbot/team-client";
+import { isDynamicRecord, isString } from "@pokebots/contracts/runtime-values";
+import { remoteHostFingerprint } from "@pokebots/team-client";
 import * as SecureStore from "expo-secure-store";
 
 /** The agent that got the last share, which the next share selects first. */

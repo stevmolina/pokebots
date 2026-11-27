@@ -2,8 +2,8 @@ import {
   DEFAULT_REMOTE_NETWORK_ROUTE,
   isRemoteNetworkRoute,
   type RemoteNetworkRoutePreference,
-} from "@openbot/contracts/ipc";
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
+} from "@pokebots/contracts/ipc";
+import { isDynamicRecord } from "@pokebots/contracts/runtime-values";
 import { PreferenceStore } from "./preference-file";
 
 /**

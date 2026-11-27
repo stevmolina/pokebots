@@ -8,7 +8,7 @@ import {
   HERMES_SKILL_COMMAND,
   parseAgentImportSkillSource,
   type RemoteAgentImportResult,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import * as Clipboard from "expo-clipboard";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { Typography } from "heroui-native";

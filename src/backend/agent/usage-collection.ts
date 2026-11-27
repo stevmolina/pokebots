@@ -1,8 +1,8 @@
 import { randomUUID } from "node:crypto";
-import { accountUsageCoversModel, isKeyOnlyProvider } from "@openbot/contracts/agent-providers";
-import { type AgentSummary, isAgentModel, type UsageTokens, WORKFLOWS_USAGE_ID } from "@openbot/contracts/ipc";
-import { type DynamicRecord, isDynamicRecord } from "@openbot/contracts/runtime-values";
-import { createOpenBotLogger } from "@openbot/logging";
+import { accountUsageCoversModel, isKeyOnlyProvider } from "@pokebots/contracts/agent-providers";
+import { type AgentSummary, isAgentModel, type UsageTokens, WORKFLOWS_USAGE_ID } from "@pokebots/contracts/ipc";
+import { type DynamicRecord, isDynamicRecord } from "@pokebots/contracts/runtime-values";
+import { createOpenBotLogger } from "@pokebots/logging";
 import type { AgentUsage } from "../database/agent-usage";
 import type { ProviderSession } from "../database/provider-sessions";
 import { getRecord, getString } from "../protocol";

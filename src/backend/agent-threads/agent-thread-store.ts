@@ -1,12 +1,12 @@
 import { randomUUID } from "node:crypto";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import {
   AGENT_TASK_OUTCOMES,
   type AgentTaskOutcome,
   type AttachmentSummary,
   type ConversationMessage,
-} from "@openbot/contracts/ipc";
-import { type DynamicRecord, isDynamicRecord, isOneOf, isString } from "@openbot/contracts/runtime-values";
+} from "@pokebots/contracts/ipc";
+import { type DynamicRecord, isDynamicRecord, isOneOf, isString } from "@pokebots/contracts/runtime-values";
 import { ORDER_KEY_DESC } from "../database/conversation-queries";
 import { deleteAggregateHistory, deleteThreadAttachments } from "../database/database-core";
 import {

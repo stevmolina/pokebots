@@ -1,5 +1,5 @@
-import { isAgentModel } from "@openbot/contracts/ipc";
-import { createOpenBotLogger } from "@openbot/logging";
+import { isAgentModel } from "@pokebots/contracts/ipc";
+import { createOpenBotLogger } from "@pokebots/logging";
 import { Effect, Schema } from "effect";
 import type { AcpModel } from "./acp-configuration";
 

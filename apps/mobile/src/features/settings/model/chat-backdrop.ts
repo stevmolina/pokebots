@@ -1,6 +1,6 @@
-import { type ChatBackdropScene, isChatBackdropScene } from "@openbot/brand/chat-backdrop-scenes";
-import { type ChatBackdropBubbles, chatBackdropBubbles } from "@openbot/contracts/chat-visual";
-import { isAvatarColor } from "@openbot/contracts/ipc";
+import { type ChatBackdropScene, isChatBackdropScene } from "@pokebots/brand/chat-backdrop-scenes";
+import { type ChatBackdropBubbles, chatBackdropBubbles } from "@pokebots/contracts/chat-visual";
+import { isAvatarColor } from "@pokebots/contracts/ipc";
 import { Directory, File, Paths } from "expo-file-system";
 import * as SecureStore from "expo-secure-store";
 import { create } from "zustand";

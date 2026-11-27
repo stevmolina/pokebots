@@ -1,4 +1,4 @@
-import { currentText } from "@openbot/ui/text";
+import { currentText } from "@pokebots/ui/text";
 import { createEffect, createSignal, onCleanup } from "solid-js";
 import { actionToast } from "../../action-toast";
 import { appPort } from "../../app-port";

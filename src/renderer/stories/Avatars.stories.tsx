@@ -1,9 +1,9 @@
 import { BloubBot, POSES } from "@norbert_bodziony/bloub";
-import type { AvatarMood } from "@openbot/brand/bloub-avatar-motion";
-import { Button } from "@openbot/ui";
-import { bloubAvatarProfile } from "@openbot/ui/bloub-avatar";
-import { AgentAvatar } from "@openbot/ui/features/agents/AgentAvatar";
-import { TeamPersonAvatar } from "@openbot/ui/features/team/TeamPersonAvatar";
+import type { AvatarMood } from "@pokebots/brand/bloub-avatar-motion";
+import { Button } from "@pokebots/ui";
+import { bloubAvatarProfile } from "@pokebots/ui/bloub-avatar";
+import { AgentAvatar } from "@pokebots/ui/features/agents/AgentAvatar";
+import { TeamPersonAvatar } from "@pokebots/ui/features/team/TeamPersonAvatar";
 import { createStore, For, Show } from "solid-js";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { STORY_AGENTS, STORY_PRESENCE } from "./fixtures";

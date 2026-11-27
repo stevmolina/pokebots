@@ -7,11 +7,11 @@ import {
   agentProviderDescriptor,
   agentSteersTurns,
   customAgentIdOfModel,
-} from "@openbot/contracts/agent-providers";
-import { sortConversationMessages } from "@openbot/contracts/conversation-order";
-import { developmentStartingModel } from "@openbot/contracts/development-defaults";
-import type { FeedbackFacts } from "@openbot/contracts/feedback";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+} from "@pokebots/contracts/agent-providers";
+import { sortConversationMessages } from "@pokebots/contracts/conversation-order";
+import { developmentStartingModel } from "@pokebots/contracts/development-defaults";
+import type { FeedbackFacts } from "@pokebots/contracts/feedback";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import type {
   AgentAccessLevel,
   AgentAnalyticsInput,
@@ -133,7 +133,7 @@ import type {
   VoiceLiveStart,
   WithdrawFeedbackInput,
   WithdrawFeedbackResult,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   AGENT_TASK_LIMIT_DEFAULT,
   type AgentDefaults,
@@ -171,15 +171,15 @@ import {
   type WorkflowMediaProviders,
   type WorkflowMediaSpecs,
   workspaceAccessEnforced,
-} from "@openbot/contracts/ipc";
-import { AGENT_THREAD_READS_LIMIT } from "@openbot/contracts/team-protocol/agent-thread-reads-v1";
-import { CLAUDE_API_KEY_ACCOUNT_ID } from "@openbot/contracts/team-protocol/claude-api-key-v1";
-import { ContextCompactRefusedError } from "@openbot/contracts/team-protocol/context-compact-v1";
-import { ContextResetBusyError } from "@openbot/contracts/team-protocol/context-reset-v1";
-import type { QueueEditRequest } from "@openbot/contracts/team-protocol/queue-edit-v1";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger } from "@openbot/logging";
-import { type CauseCode, classifyFailure, isCauseCode } from "@openbot/telemetry";
+} from "@pokebots/contracts/ipc";
+import { AGENT_THREAD_READS_LIMIT } from "@pokebots/contracts/team-protocol/agent-thread-reads-v1";
+import { CLAUDE_API_KEY_ACCOUNT_ID } from "@pokebots/contracts/team-protocol/claude-api-key-v1";
+import { ContextCompactRefusedError } from "@pokebots/contracts/team-protocol/context-compact-v1";
+import { ContextResetBusyError } from "@pokebots/contracts/team-protocol/context-reset-v1";
+import type { QueueEditRequest } from "@pokebots/contracts/team-protocol/queue-edit-v1";
+import { sourceText } from "@pokebots/i18n/source";
+import { createOpenBotLogger } from "@pokebots/logging";
+import { type CauseCode, classifyFailure, isCauseCode } from "@pokebots/telemetry";
 import { Cause, Deferred, Effect, Exit, Fiber, Result, Schema, Scope, Semaphore } from "effect";
 import { AgentMemories } from "./agent/agent-memories";
 import { AgentRemoval, AgentRemovalFailed } from "./agent/agent-removal";

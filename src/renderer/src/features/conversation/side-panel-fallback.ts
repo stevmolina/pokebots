@@ -1,4 +1,4 @@
-import type { SidePanelPane } from "@openbot/ui/features/conversation/SidePanel";
+import type { SidePanelPane } from "@pokebots/ui/features/conversation/SidePanel";
 
 export type EmptySidePanelAction = "settings" | "launcher" | "close";
 

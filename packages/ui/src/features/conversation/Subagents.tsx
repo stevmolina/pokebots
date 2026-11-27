@@ -3,8 +3,8 @@ import type {
   ConversationSubagentStatus,
   ConversationSubagentStep,
   ConversationSubagentStepKind,
-} from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
+} from "@pokebots/contracts/ipc";
+import type { AppTextKey } from "@pokebots/i18n";
 import {
   Badge,
   Brain,
@@ -23,9 +23,9 @@ import {
   Search,
   TriangleAlert,
   X,
-} from "@openbot/ui";
-import { useText } from "@openbot/ui/text";
-import { prefersReducedMotion } from "@openbot/ui/utils";
+} from "@pokebots/ui";
+import { useText } from "@pokebots/ui/text";
+import { prefersReducedMotion } from "@pokebots/ui/utils";
 import type { JSX } from "@solidjs/web";
 import { createEffect, createMemo, createSignal, createUniqueId, For, Match, Show, Switch } from "solid-js";
 import { ActivityShine } from "./ActivityShine";

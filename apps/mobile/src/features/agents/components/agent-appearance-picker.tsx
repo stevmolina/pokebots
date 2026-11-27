@@ -13,9 +13,9 @@ import {
   isAvatarArtworkColorChoice,
   SUPPORTED_AVATAR_SILHOUETTES,
   type SupportedAvatarSilhouetteId,
-} from "@openbot/brand/bloub-avatar";
-import type { AvatarColor, AvatarHue } from "@openbot/contracts/ipc";
-import type { MobileTextKey } from "@openbot/i18n/mobile";
+} from "@pokebots/brand/bloub-avatar";
+import type { AvatarColor, AvatarHue } from "@pokebots/contracts/ipc";
+import type { MobileTextKey } from "@pokebots/i18n/mobile";
 import { Button, Typography } from "heroui-native";
 import { useThemeColor } from "heroui-native/hooks";
 import RotateCcw from "lucide-react-native/icons/rotate-ccw";

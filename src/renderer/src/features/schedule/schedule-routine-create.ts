@@ -1,8 +1,8 @@
-import type { ServerSummary } from "@openbot/contracts/ipc";
+import type { ServerSummary } from "@pokebots/contracts/ipc";
 import type {
   RoutineCalendarCreate,
   RoutineCalendarNewRoutine,
-} from "@openbot/ui/features/conversation/RoutineCalendarCreateCard";
+} from "@pokebots/ui/features/conversation/RoutineCalendarCreateCard";
 import { desktopAnalytics } from "../../analytics";
 import type { ConversationRuntime } from "../conversation/conversation-runtime";
 import { trackRoutineAction } from "../conversation/routine-analytics";

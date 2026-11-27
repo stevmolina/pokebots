@@ -3,8 +3,8 @@ import {
   type AgentDockDisplay,
   type AgentDockDisplayInfo,
   type AgentDockEdge,
-} from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
+} from "@pokebots/contracts/ipc";
+import type { AppTextKey } from "@pokebots/i18n";
 import {
   Item,
   ItemActions,
@@ -22,9 +22,9 @@ import {
   SliderField,
   Switch,
   SwitchField,
-} from "@openbot/ui";
-import type { ComposerAgent } from "@openbot/ui/data";
-import { AgentAvatar } from "@openbot/ui/features/agents/AgentAvatar";
+} from "@pokebots/ui";
+import type { ComposerAgent } from "@pokebots/ui/data";
+import { AgentAvatar } from "@pokebots/ui/features/agents/AgentAvatar";
 import type { JSX } from "@solidjs/web";
 import { createMemo, createSignal, createUniqueId, For, onSettled, Show } from "solid-js";
 import { useI18n } from "../../i18n-context";

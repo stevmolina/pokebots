@@ -1,5 +1,5 @@
-import { matchingSourceKeys } from "@openbot/i18n";
-import { normalizeMessage } from "@openbot/user-errors/reference";
+import { matchingSourceKeys } from "@pokebots/i18n";
+import { normalizeMessage } from "@pokebots/user-errors/reference";
 
 /**
  * The host refused to steer a message into a routine run, which has its own provider session. The

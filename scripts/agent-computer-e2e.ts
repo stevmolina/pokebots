@@ -4,7 +4,7 @@ import { createCipheriv, createDecipheriv, randomBytes } from "node:crypto";
 import { access, mkdir, mkdtemp, readFile, rm, symlink, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import { redactSecrets, redactText } from "@openbot/logging";
+import { redactSecrets, redactText } from "@pokebots/logging";
 import { Effect } from "effect";
 import { AgentComputerApi } from "../src/backend/agent-computer/agent-computer-api";
 import {

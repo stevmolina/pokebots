@@ -1,5 +1,5 @@
-import { canPreviewAttachment, type StoredFileRow } from "@openbot/contracts/ipc";
-import { ConversationFilesPanel } from "@openbot/ui/features/files/ConversationFilesPanel";
+import { canPreviewAttachment, type StoredFileRow } from "@pokebots/contracts/ipc";
+import { ConversationFilesPanel } from "@pokebots/ui/features/files/ConversationFilesPanel";
 import { type FilesPort, filesPort } from "./files-port";
 import { createStorageUsage } from "./storage-usage";
 

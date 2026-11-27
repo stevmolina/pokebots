@@ -1,11 +1,11 @@
-import type { ChatVisualKey } from "@openbot/contracts/chat-visual";
-import { ATTACHMENT_LIMITS } from "@openbot/contracts/input-limits";
+import type { ChatVisualKey } from "@pokebots/contracts/chat-visual";
+import { ATTACHMENT_LIMITS } from "@pokebots/contracts/input-limits";
 import {
   type FilePreview,
   filePreviewKindForFile,
   type WorkspaceDirectory,
   type WorkspaceDirectoryEntry,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   ArrowLeft,
   Button,
@@ -25,17 +25,17 @@ import {
   Sun,
   WrapText,
   X,
-} from "@openbot/ui";
-import { PanelResizer } from "@openbot/ui/components/PanelResizer";
-import { SETTINGS_PANEL_DEFAULT } from "@openbot/ui/components/SettingsPanel";
-import type { AgentProfile } from "@openbot/ui/data";
-import { ChatVisual } from "@openbot/ui/features/conversation/ChatVisual";
-import { type CodeToken, fileCodeLanguage, highlightedCodeLines } from "@openbot/ui/features/conversation/CodeBlock";
-import { MarkdownFilePreview } from "@openbot/ui/features/conversation/MarkdownFilePreview";
-import type { QuoteShortcutModifier } from "@openbot/ui/features/conversation/SelectionActions";
-import { SpreadsheetFilePreview } from "@openbot/ui/features/conversation/SpreadsheetFilePreview";
-import { useText } from "@openbot/ui/text";
-import { holdFlag } from "@openbot/ui/utils";
+} from "@pokebots/ui";
+import { PanelResizer } from "@pokebots/ui/components/PanelResizer";
+import { SETTINGS_PANEL_DEFAULT } from "@pokebots/ui/components/SettingsPanel";
+import type { AgentProfile } from "@pokebots/ui/data";
+import { ChatVisual } from "@pokebots/ui/features/conversation/ChatVisual";
+import { type CodeToken, fileCodeLanguage, highlightedCodeLines } from "@pokebots/ui/features/conversation/CodeBlock";
+import { MarkdownFilePreview } from "@pokebots/ui/features/conversation/MarkdownFilePreview";
+import type { QuoteShortcutModifier } from "@pokebots/ui/features/conversation/SelectionActions";
+import { SpreadsheetFilePreview } from "@pokebots/ui/features/conversation/SpreadsheetFilePreview";
+import { useText } from "@pokebots/ui/text";
+import { holdFlag } from "@pokebots/ui/utils";
 import type { JSX } from "@solidjs/web";
 import { createEffect, createMemo, createSignal, For, onCleanup, onSettled, Show, untrack } from "solid-js";
 

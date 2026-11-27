@@ -1,16 +1,16 @@
-import type { QueueDelivery } from "@openbot/contracts/ipc";
-import { Button } from "@openbot/ui";
-import { ComposerErrorBanner } from "@openbot/ui/features/conversation/ComposerErrorBanner";
+import type { QueueDelivery } from "@pokebots/contracts/ipc";
+import { Button } from "@pokebots/ui";
+import { ComposerErrorBanner } from "@pokebots/ui/features/conversation/ComposerErrorBanner";
 import {
   ComposerNotice,
   ComposerSignInNotice,
   ComposerUpdateNotice,
   ComposerUsageLimitNotice,
-} from "@openbot/ui/features/conversation/ComposerNotice";
-import { ComposerStackCard } from "@openbot/ui/features/conversation/ComposerStackCard";
-import { ComposerCompactionNotice } from "@openbot/ui/features/conversation/ContextUsage";
-import { type OpenWaitItem, OpenWaits } from "@openbot/ui/features/conversation/OpenWaits";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/ui/features/conversation/ComposerNotice";
+import { ComposerStackCard } from "@pokebots/ui/features/conversation/ComposerStackCard";
+import { ComposerCompactionNotice } from "@pokebots/ui/features/conversation/ContextUsage";
+import { type OpenWaitItem, OpenWaits } from "@pokebots/ui/features/conversation/OpenWaits";
+import { useText } from "@pokebots/ui/text";
 import { type JSX, Portal } from "@solidjs/web";
 import { createSignal, createStore, For, onSettled, Show } from "solid-js";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";

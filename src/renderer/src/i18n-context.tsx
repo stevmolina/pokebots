@@ -1,5 +1,5 @@
-import { type AppLanguage, DEFAULT_APP_LANGUAGE } from "@openbot/contracts/app-language";
-import type { HourCycle } from "@openbot/contracts/ipc";
+import { type AppLanguage, DEFAULT_APP_LANGUAGE } from "@pokebots/contracts/app-language";
+import type { HourCycle } from "@pokebots/contracts/ipc";
 import {
   type AppTranslate,
   formatLocale,
@@ -9,8 +9,8 @@ import {
   resolveLocale,
   type TranslatedLocale,
   translateFor,
-} from "@openbot/i18n";
-import { TextProvider } from "@openbot/ui/text";
+} from "@pokebots/i18n";
+import { TextProvider } from "@pokebots/ui/text";
 import type { JSX } from "@solidjs/web";
 import {
   createContext,
@@ -194,7 +194,7 @@ const I18nContext = createContext<I18nValue>(FALLBACK, { name: "I18n" });
 
 /**
  * The language setting and the text context shared components read (`useText` from
- * `@openbot/ui/text`). A screen reads text through `useText`; only the language setting itself
+ * `@pokebots/ui/text`). A screen reads text through `useText`; only the language setting itself
  * needs `useI18n`.
  *
  * `waitForLanguage` renders nothing until the first language is loaded. A helper window uses it, as

@@ -1,4 +1,4 @@
-import { attachmentMimeTypeForName } from "@openbot/contracts/attachment-files";
+import { attachmentMimeTypeForName } from "@pokebots/contracts/attachment-files";
 import { router, Stack, useNavigation } from "expo-router";
 import { StackActions } from "expo-router/react-navigation";
 import { Typography } from "heroui-native";

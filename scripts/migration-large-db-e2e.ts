@@ -25,7 +25,7 @@ import { spawn } from "node:child_process";
 import { constants, copyFileSync, existsSync, mkdirSync, rmSync, statfsSync, statSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import type { DatabaseSync } from "node:sqlite";
-import { isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
+import { isDynamicRecord, isNumber, isString } from "@pokebots/contracts/runtime-values";
 import {
   buildDatabaseAtVersion,
   HARNESS_APPLIED_AT,

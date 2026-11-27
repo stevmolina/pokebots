@@ -1,4 +1,4 @@
-import { type AgentProviderId, isKeyOnlyProvider, isKnownAgentProvider } from "@openbot/contracts/agent-providers";
+import { type AgentProviderId, isKeyOnlyProvider, isKnownAgentProvider } from "@pokebots/contracts/agent-providers";
 import {
   type AgentModelChoice,
   agentPermissionLevel,
@@ -8,19 +8,19 @@ import {
   sameAgentModelChoice,
   type UpdateAgentAdminSettingsInput,
   type UpdateAgentInput,
-} from "@openbot/contracts/ipc";
-import { BROWSER_PROFILES_CAPABILITY } from "@openbot/contracts/team-protocol/browser-profiles-v1";
-import { CONVERSATION_UNREAD_FROM_CAPABILITY } from "@openbot/contracts/team-protocol/conversation-unread-from-v1";
-import { MESSAGE_DELETE_CAPABILITY } from "@openbot/contracts/team-protocol/message-delete-v1";
-import { MESSAGE_PINS_CAPABILITY } from "@openbot/contracts/team-protocol/message-pins-v1";
-import { THREAD_MESSAGE_SEARCH_CAPABILITY } from "@openbot/contracts/team-protocol/thread-message-search-v1";
-import type { AgentMessage } from "@openbot/ui/data";
-import { isConnectorId } from "@openbot/ui/features/connectors/connectors";
-import type { UsageLimitAskCardProps } from "@openbot/ui/features/conversation/BackupModels";
-import { unloadedHistory } from "@openbot/ui/features/conversation/ChatScrollRail";
-import { MAIN_THREAD_ID } from "@openbot/ui/features/conversation/threads/thread-types";
-import { sidebarAgentWaits } from "@openbot/ui/features/sidebar/sidebar-agent-states";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/contracts/ipc";
+import { BROWSER_PROFILES_CAPABILITY } from "@pokebots/contracts/team-protocol/browser-profiles-v1";
+import { CONVERSATION_UNREAD_FROM_CAPABILITY } from "@pokebots/contracts/team-protocol/conversation-unread-from-v1";
+import { MESSAGE_DELETE_CAPABILITY } from "@pokebots/contracts/team-protocol/message-delete-v1";
+import { MESSAGE_PINS_CAPABILITY } from "@pokebots/contracts/team-protocol/message-pins-v1";
+import { THREAD_MESSAGE_SEARCH_CAPABILITY } from "@pokebots/contracts/team-protocol/thread-message-search-v1";
+import type { AgentMessage } from "@pokebots/ui/data";
+import { isConnectorId } from "@pokebots/ui/features/connectors/connectors";
+import type { UsageLimitAskCardProps } from "@pokebots/ui/features/conversation/BackupModels";
+import { unloadedHistory } from "@pokebots/ui/features/conversation/ChatScrollRail";
+import { MAIN_THREAD_ID } from "@pokebots/ui/features/conversation/threads/thread-types";
+import { sidebarAgentWaits } from "@pokebots/ui/features/sidebar/sidebar-agent-states";
+import { useText } from "@pokebots/ui/text";
 import { createMemo } from "solid-js";
 import { appPort } from "../../app-port";
 import { ProviderSignInDialogs } from "../../components/ProviderSignInDialogs";

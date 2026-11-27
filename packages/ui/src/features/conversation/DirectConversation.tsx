@@ -1,5 +1,5 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import type { DirectConversationSnapshot, DirectMessage, TeamPresenceMember } from "@openbot/contracts/ipc";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
+import type { DirectConversationSnapshot, DirectMessage, TeamPresenceMember } from "@pokebots/contracts/ipc";
 import {
   Bubble,
   BubbleContent,
@@ -9,18 +9,18 @@ import {
   MessageFooter,
   MessageGroup,
   Textarea,
-} from "@openbot/ui";
-import { TypingDots } from "@openbot/ui/components/TypingDots";
-import { formatChatTimestamp } from "@openbot/ui/features/conversation/chat-timestamp";
-import { ScrollToLatestButton, scrollToLatestMessage } from "@openbot/ui/features/conversation/MessageNavigation";
+} from "@pokebots/ui";
+import { TypingDots } from "@pokebots/ui/components/TypingDots";
+import { formatChatTimestamp } from "@pokebots/ui/features/conversation/chat-timestamp";
+import { ScrollToLatestButton, scrollToLatestMessage } from "@pokebots/ui/features/conversation/MessageNavigation";
 import {
   scrollToUnreadBoundary,
   UnreadMessagesBanner,
   UnreadMessagesDivider,
   unreadMessagesDividerIsVisible,
-} from "@openbot/ui/features/conversation/UnreadMessages";
-import { TeamPersonAvatar, teamMemberName } from "@openbot/ui/features/team/TeamPersonAvatar";
-import { type TextValue, useText } from "@openbot/ui/text";
+} from "@pokebots/ui/features/conversation/UnreadMessages";
+import { TeamPersonAvatar, teamMemberName } from "@pokebots/ui/features/team/TeamPersonAvatar";
+import { type TextValue, useText } from "@pokebots/ui/text";
 import { createEffect, createMemo, createSignal, For, onCleanup, onSettled, Show } from "solid-js";
 import { ChatScrollRail, createChatScrollRail, type UnloadedHistory } from "./ChatScrollRail";
 import { calculateChatScrollMargin, chatHistoryBoundaryReached, createChatVirtualizer } from "./createChatVirtualizer";

@@ -22,8 +22,8 @@ export const messages = defineMessages("notification", {
   "notification.channelMessage": "Sent a message.",
   "notification.usageLimit.title": "{provider} account reached its limit",
   "notification.usageLimit.body": {
-    one: "{count} agent waits. OpenBot will try again later.",
-    other: "{count} agents wait. OpenBot will try again later.",
+    one: "{count} agent waits. Pokebots will try again later.",
+    other: "{count} agents wait. Pokebots will try again later.",
   },
   "notification.usageLimit.bodyResets": {
     one: "{count} agent waits. Resets {reset}.",
@@ -36,9 +36,9 @@ export const messages = defineMessages("notification", {
   "notification.machineAlert.body": "It passed the alert level of {level}. See Server settings > Storage.",
   // An agent on a joined server started to use this computer through Computer Use.
   "notification.remoteComputer.title": "An agent on {server} is using this computer",
-  "notification.remoteComputer.body": "To stop it, click Stop in the OpenBot window.",
+  "notification.remoteComputer.body": "To stop it, click Stop in the Pokebots window.",
   "notification.test": "Notifications are working.",
-  "notification.welcome": "OpenBot will tell you here when an agent needs you.",
+  "notification.welcome": "Pokebots will tell you here when an agent needs you.",
   // The toast region in each window.
   "notification.toast.region": "Notifications",
   "notification.toast.close": "Close notification",

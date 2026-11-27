@@ -1,8 +1,8 @@
 // The cloud account: email sign-in, profile, and the mobile devices connected to it.
 
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import { LOCAL_SERVER_ID, type TestCompanySignInInput } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
+import { LOCAL_SERVER_ID, type TestCompanySignInInput } from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import type { CentralAuthManager } from "../central-auth-manager";
 import type { HostService } from "../host-service";

@@ -1,7 +1,7 @@
-import { ArrowDown, ArrowUp, Button, Command, CornerDownLeft, Dialog, Input, Kbd, Search } from "@openbot/ui";
-import type { AgentProfile } from "@openbot/ui/data";
-import { AgentAvatar } from "@openbot/ui/features/agents/AgentAvatar";
-import { useText } from "@openbot/ui/text";
+import { ArrowDown, ArrowUp, Button, Command, CornerDownLeft, Dialog, Input, Kbd, Search } from "@pokebots/ui";
+import type { AgentProfile } from "@pokebots/ui/data";
+import { AgentAvatar } from "@pokebots/ui/features/agents/AgentAvatar";
+import { useText } from "@pokebots/ui/text";
 import { createEffect, createMemo, createSignal, For, onCleanup, Show } from "solid-js";
 import { normalizedSearchText } from "./global-search-text";
 

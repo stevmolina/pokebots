@@ -4,15 +4,15 @@ import type {
   BrowserTab,
   BrowserTakeoverRequest,
   LocalBrowserSecretResponse,
-} from "@openbot/contracts/ipc";
-import { type FeedbackApproval, feedbackApproval } from "@openbot/team-client/feedback-approval";
-import { approvalIsCut } from "@openbot/team-client/runtime-attention";
-import { classifyFailure } from "@openbot/telemetry";
-import { Button, LogIn, Maximize2, Monitor, toast } from "@openbot/ui";
-import { StandingApprovalConfirmation } from "@openbot/ui/components/StandingApprovalConfirmation";
-import { BrowserSecretCard, type BrowserSecretVault } from "@openbot/ui/features/conversation/BrowserSecretCard";
-import { BrowserTakeoverPreview } from "@openbot/ui/features/conversation/BrowserTakeoverPreview";
-import { type TextValue, useText } from "@openbot/ui/text";
+} from "@pokebots/contracts/ipc";
+import { type FeedbackApproval, feedbackApproval } from "@pokebots/team-client/feedback-approval";
+import { approvalIsCut } from "@pokebots/team-client/runtime-attention";
+import { classifyFailure } from "@pokebots/telemetry";
+import { Button, LogIn, Maximize2, Monitor, toast } from "@pokebots/ui";
+import { StandingApprovalConfirmation } from "@pokebots/ui/components/StandingApprovalConfirmation";
+import { BrowserSecretCard, type BrowserSecretVault } from "@pokebots/ui/features/conversation/BrowserSecretCard";
+import { BrowserTakeoverPreview } from "@pokebots/ui/features/conversation/BrowserTakeoverPreview";
+import { type TextValue, useText } from "@pokebots/ui/text";
 import { createMemo, createSignal, For, Show } from "solid-js";
 import { UiBlockCard } from "./ui-blocks/UiBlockCard";
 

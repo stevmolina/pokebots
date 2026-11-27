@@ -1,4 +1,4 @@
-import { FEEDBACK_REPOSITORY } from "@openbot/contracts/feedback";
+import { FEEDBACK_REPOSITORY } from "@pokebots/contracts/feedback";
 import { createFileRoute } from "@tanstack/solid-router";
 import { Effect } from "effect";
 import { runApiResponse } from "../../../server/effect-runtime";

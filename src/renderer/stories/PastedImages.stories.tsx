@@ -2,16 +2,16 @@ import {
   attachmentReferenceIds,
   removeAttachmentReferences,
   serializeAttachmentReference,
-} from "@openbot/contracts/attachment-references";
-import type { DraftAttachment } from "@openbot/contracts/ipc";
-import type { AgentMessage } from "@openbot/ui/data";
-import { ChatMessageRow } from "@openbot/ui/features/conversation/ChatMessageRow";
+} from "@pokebots/contracts/attachment-references";
+import type { DraftAttachment } from "@pokebots/contracts/ipc";
+import type { AgentMessage } from "@pokebots/ui/data";
+import { ChatMessageRow } from "@pokebots/ui/features/conversation/ChatMessageRow";
 import {
   ComposerAttachmentRow,
   type ComposerPendingImage,
   type ComposerUploadFile,
-} from "@openbot/ui/features/conversation/ComposerAttachmentRow";
-import { ComposerEditor } from "@openbot/ui/features/conversation/ComposerEditor";
+} from "@pokebots/ui/features/conversation/ComposerAttachmentRow";
+import { ComposerEditor } from "@pokebots/ui/features/conversation/ComposerEditor";
 import { createSignal } from "solid-js";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";

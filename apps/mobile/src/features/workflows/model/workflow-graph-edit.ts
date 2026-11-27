@@ -4,7 +4,7 @@ import {
   type WorkflowEdge,
   type WorkflowGraph,
   type WorkflowNode,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import type { AddableKind } from "./workflow-outline";
 
 /**

@@ -1,7 +1,7 @@
 /** A sticky note on the canvas. It has no ports, and a run skips it. */
 
-import type { AppTextKey } from "@openbot/i18n";
-import { Bold, Button, LabelTooltipTrigger, StickyNote, Textarea, UserRoundPen } from "@openbot/ui";
+import type { AppTextKey } from "@pokebots/i18n";
+import { Bold, Button, LabelTooltipTrigger, StickyNote, Textarea, UserRoundPen } from "@pokebots/ui";
 import { Show, untrack } from "solid-js";
 import { useText } from "../../text";
 import { Hint } from "./workflow-board";

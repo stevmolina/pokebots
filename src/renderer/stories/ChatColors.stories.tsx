@@ -1,8 +1,8 @@
-import type { AvatarColor } from "@openbot/contracts/ipc";
-import type { AgentMessage } from "@openbot/ui/data";
-import { ChatMessageRow } from "@openbot/ui/features/conversation/ChatMessageRow";
-import { CHAT_BUBBLE_STYLES, ownMessageAuthor } from "@openbot/ui/features/conversation/own-bubble";
-import { CHAT_COLOR_PRESETS } from "@openbot/ui/features/settings/ChatColorPicker";
+import type { AvatarColor } from "@pokebots/contracts/ipc";
+import type { AgentMessage } from "@pokebots/ui/data";
+import { ChatMessageRow } from "@pokebots/ui/features/conversation/ChatMessageRow";
+import { CHAT_BUBBLE_STYLES, ownMessageAuthor } from "@pokebots/ui/features/conversation/own-bubble";
+import { CHAT_COLOR_PRESETS } from "@pokebots/ui/features/settings/ChatColorPicker";
 import { For } from "solid-js";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";

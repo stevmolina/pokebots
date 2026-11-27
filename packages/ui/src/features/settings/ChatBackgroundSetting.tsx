@@ -4,9 +4,9 @@
  * popup saves once, when it closes, as the Chat color popup does.
  */
 
-import { CHAT_BACKGROUND_PRESETS, type ChatBackgroundScheme } from "@openbot/brand/chat-colors";
-import type { AvatarColor } from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
+import { CHAT_BACKGROUND_PRESETS, type ChatBackgroundScheme } from "@pokebots/brand/chat-colors";
+import type { AvatarColor } from "@pokebots/contracts/ipc";
+import type { AppTextKey } from "@pokebots/i18n";
 import { createMemo, Show } from "solid-js";
 import { ColorPicker, ColorPickerTrigger } from "../../color-picker";
 import { useText } from "../../text";

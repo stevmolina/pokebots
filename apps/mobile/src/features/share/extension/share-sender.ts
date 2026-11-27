@@ -8,22 +8,22 @@
  * and it gives each file only when the page asks for it, so one file at a time is in memory.
  */
 
-import { isQueuedMessageReceipt } from "@openbot/contracts/ipc";
-import { isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
-import { TEAM_MESSAGE_CLIENT_ID_CAPABILITY } from "@openbot/contracts/team-protocol/current";
-import type { TeamProtocolV2Json } from "@openbot/contracts/team-protocol/v2";
-import { TEAM_PROTOCOL_V3 } from "@openbot/contracts/team-protocol/v3";
-import { decodeTeamProtocolSupportV9 } from "@openbot/contracts/team-protocol/v9";
-import { runTeamEffect } from "@openbot/team-client";
-import { verifyEd25519Base64Url } from "@openbot/team-client/ed25519";
-import { RemoteTeamDirectoryClient } from "@openbot/team-client/remote-directory";
+import { isQueuedMessageReceipt } from "@pokebots/contracts/ipc";
+import { isDynamicRecord, isNumber, isString } from "@pokebots/contracts/runtime-values";
+import { TEAM_API_ROUTES } from "@pokebots/contracts/team-api-routes";
+import { TEAM_MESSAGE_CLIENT_ID_CAPABILITY } from "@pokebots/contracts/team-protocol/current";
+import type { TeamProtocolV2Json } from "@pokebots/contracts/team-protocol/v2";
+import { TEAM_PROTOCOL_V3 } from "@pokebots/contracts/team-protocol/v3";
+import { decodeTeamProtocolSupportV9 } from "@pokebots/contracts/team-protocol/v9";
+import { runTeamEffect } from "@pokebots/team-client";
+import { verifyEd25519Base64Url } from "@pokebots/team-client/ed25519";
+import { RemoteTeamDirectoryClient } from "@pokebots/team-client/remote-directory";
 import {
   createRemoteTeamPeer,
   MOBILE_ATTACHMENT_BYTES,
   type RemoteFileUpload,
   type RemoteTeamPeerActions,
-} from "@openbot/team-client/remote-peer";
+} from "@pokebots/team-client/remote-peer";
 
 /** What the extension asks the page to send. The extension has checked the values. */
 interface ShareSendRequest {

@@ -1,4 +1,4 @@
-import type { BrainRequest, BrainResponse } from "@openbot/contracts/brain";
+import type { BrainRequest, BrainResponse } from "@pokebots/contracts/brain";
 import {
   ArrowLeft,
   Badge,
@@ -18,9 +18,9 @@ import {
   Textarea,
   Trash2,
   Upload,
-} from "@openbot/ui";
-import { MarkdownFilePreview } from "@openbot/ui/features/conversation/MarkdownFilePreview";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/ui";
+import { MarkdownFilePreview } from "@pokebots/ui/features/conversation/MarkdownFilePreview";
+import { useText } from "@pokebots/ui/text";
 import type { JSX } from "@solidjs/web";
 import { createMemo, createStore, For, Match, onCleanup, onSettled, Show, Switch } from "solid-js";
 import "./brain.css";

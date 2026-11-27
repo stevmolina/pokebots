@@ -4,7 +4,7 @@ import {
   POKEBOTS_ACCESSORY_VIEW_BOX,
   pokebotsAccessory,
   pokebotsAccessoryParts,
-} from "@openbot/brand/pokebots-avatar";
+} from "@pokebots/brand/pokebots-avatar";
 import { createMemo, For } from "solid-js";
 
 /**

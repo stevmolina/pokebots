@@ -1,5 +1,5 @@
-import type { AttachmentSupport } from "@openbot/contracts/attachment-files";
-import type { BrainRequest, BrainResponse } from "@openbot/contracts/brain";
+import type { AttachmentSupport } from "@pokebots/contracts/attachment-files";
+import type { BrainRequest, BrainResponse } from "@pokebots/contracts/brain";
 import type {
   AddAgentFolderInput,
   AddedAgent,
@@ -188,7 +188,7 @@ import type {
   WorkflowVersion,
   WorkflowVersionInput,
   WorkflowWebhookSecret,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import type {
   AgentWebhookSecret,
   EventActivity,
@@ -199,22 +199,22 @@ import type {
   SaveEventRoutineInput,
   SaveEventRoutineResult,
   WebhookSecret,
-} from "@openbot/contracts/ipc-events";
-import type { RoomsRequest, RoomsResult } from "@openbot/contracts/rooms";
-import type { ServerAppearance } from "@openbot/contracts/team-protocol/host-appearance-v1";
-import type { LiveVoiceSessionResponse, LiveVoiceStartRequest } from "@openbot/contracts/team-protocol/live-voice-v1";
-import type { IntegrationProfile } from "@openbot/contracts/team-protocol/pokebots-integrations-v1";
-import type { QueueEditRequest } from "@openbot/contracts/team-protocol/queue-edit-v1";
-import type { RemoteConnectionFailure, RemoteRecoveryStatus, RemoteTeamDirectoryClient } from "@openbot/team-client";
-import type { AgentComputerPort } from "@openbot/team-client/agent-computer";
-import type { PlanLimits } from "@openbot/team-client/plan-limits";
-import type { RemoteDownloadWatch, RemoteFileUpload, RemoteLargeDownload } from "@openbot/team-client/remote-peer";
+} from "@pokebots/contracts/ipc-events";
+import type { RoomsRequest, RoomsResult } from "@pokebots/contracts/rooms";
+import type { ServerAppearance } from "@pokebots/contracts/team-protocol/host-appearance-v1";
+import type { LiveVoiceSessionResponse, LiveVoiceStartRequest } from "@pokebots/contracts/team-protocol/live-voice-v1";
+import type { IntegrationProfile } from "@pokebots/contracts/team-protocol/pokebots-integrations-v1";
+import type { QueueEditRequest } from "@pokebots/contracts/team-protocol/queue-edit-v1";
+import type { RemoteConnectionFailure, RemoteRecoveryStatus, RemoteTeamDirectoryClient } from "@pokebots/team-client";
+import type { AgentComputerPort } from "@pokebots/team-client/agent-computer";
+import type { PlanLimits } from "@pokebots/team-client/plan-limits";
+import type { RemoteDownloadWatch, RemoteFileUpload, RemoteLargeDownload } from "@pokebots/team-client/remote-peer";
 import type {
   HostLocalServer,
   HostLocalServerList,
   MessagingConnectorPage,
-} from "@openbot/team-client/team-admin-requests";
-import type { AgentExportParts } from "@openbot/team-client/team-api-requests";
+} from "@pokebots/team-client/team-admin-requests";
+import type { AgentExportParts } from "@pokebots/team-client/team-api-requests";
 import type { NewAgentInput } from "@/features/agents/model/agent-initial-message";
 import type { MobileBrowserTab } from "@/features/browser/model/browser-tabs";
 import type { BrowserViewBridgeEvent, RemoteBrowserViewSession } from "@/features/browser/model/browser-view-bridge";

@@ -11,8 +11,8 @@
 // Writes .openbot-build/channel-chat-e2e/report.json and screenshots.
 import assert from "node:assert/strict";
 import { resolve } from "node:path";
-import type { CreateChannelRoutineInput } from "@openbot/contracts/ipc";
-import { translateFor } from "@openbot/i18n";
+import type { CreateChannelRoutineInput } from "@pokebots/contracts/ipc";
+import { translateFor } from "@pokebots/i18n";
 import type { Locator } from "playwright-core";
 import {
   ChannelClient,

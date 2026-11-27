@@ -1,4 +1,4 @@
-import { type BackgroundWorker, BackgroundWorkers } from "@openbot/ui/features/conversation/BackgroundWorkers";
+import { type BackgroundWorker, BackgroundWorkers } from "@pokebots/ui/features/conversation/BackgroundWorkers";
 import { createSignal, onCleanup } from "solid-js";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { STORY_AGENTS } from "./fixtures";

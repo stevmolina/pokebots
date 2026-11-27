@@ -1,4 +1,4 @@
-import { type AcpRegistryEntry, CUSTOM_AGENT_LIMITS, isNewCustomAgentId } from "@openbot/contracts/ipc";
+import { type AcpRegistryEntry, CUSTOM_AGENT_LIMITS, isNewCustomAgentId } from "@pokebots/contracts/ipc";
 import { useLocalSearchParams } from "expo-router";
 import { Spinner, Typography } from "heroui-native";
 import { useCallback, useEffect, useRef, useState } from "react";

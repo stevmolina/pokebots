@@ -3,7 +3,7 @@
 import { mkdir, mkdtemp, realpath, rm, symlink, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { CHAT_VISUAL_PAGE_LIMIT } from "@openbot/contracts/chat-visual";
+import { CHAT_VISUAL_PAGE_LIMIT } from "@pokebots/contracts/chat-visual";
 import { afterEach, describe, expect, it } from "vitest";
 import { FilePreviewPages } from "./file-preview-pages";
 

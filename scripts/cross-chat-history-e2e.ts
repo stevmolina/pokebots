@@ -12,7 +12,7 @@
 // Not covered: the refusal in a messaging chat, which needs a connected messaging account.
 // Writes .openbot-build/cross-chat-history-e2e/report.json.
 import assert from "node:assert/strict";
-import type { ConversationSnapshot } from "@openbot/contracts/ipc";
+import type { ConversationSnapshot } from "@pokebots/contracts/ipc";
 import { argument, connectChannelE2e, SHORT_PROMPT, waitFor, writeReport } from "./channel-e2e-support";
 
 const agentArgument = argument("agent");

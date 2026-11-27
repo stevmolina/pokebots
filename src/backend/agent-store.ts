@@ -16,9 +16,9 @@ import {
   writeFile,
 } from "node:fs/promises";
 import { basename, dirname, isAbsolute, join, relative, resolve } from "node:path";
-import { avatarFileExtension, isAvatarMimeType, isValidAvatarImage } from "@openbot/contracts/avatar-images";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import type { AgentProfileDraft } from "@openbot/contracts/ipc";
+import { avatarFileExtension, isAvatarMimeType, isValidAvatarImage } from "@pokebots/contracts/avatar-images";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
+import type { AgentProfileDraft } from "@pokebots/contracts/ipc";
 import {
   AGENT_FOLDER_LIMIT,
   AGENT_PROVIDERS,
@@ -67,11 +67,11 @@ import {
   type SaveAgentProfileResult,
   type SidebarLayoutSnapshot,
   type UpdateAgentInput,
-} from "@openbot/contracts/ipc";
-import { type DynamicRecord, isBoolean, isNumber, isOneOf, isString } from "@openbot/contracts/runtime-values";
-import { isGeneratedAgentId, isUuidV4, legacyAgentId } from "@openbot/contracts/validation";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger, toLogValue } from "@openbot/logging";
+} from "@pokebots/contracts/ipc";
+import { type DynamicRecord, isBoolean, isNumber, isOneOf, isString } from "@pokebots/contracts/runtime-values";
+import { isGeneratedAgentId, isUuidV4, legacyAgentId } from "@pokebots/contracts/validation";
+import { sourceText } from "@pokebots/i18n/source";
+import { createOpenBotLogger, toLogValue } from "@pokebots/logging";
 import { Effect, Result, Semaphore, Stream } from "effect";
 import { ProfileCreationRecovery } from "./agent/profile-creation-recovery";
 import { isEmptyStoredFile, parseStoredJson, writeFileAtomically } from "./atomic-json-file";

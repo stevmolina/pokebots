@@ -1,5 +1,5 @@
-import type { CloudComputer } from "@openbot/ui/features/servers/CloudComputerList";
-import { AgentComputerPanel } from "@openbot/ui/features/settings/AgentComputerPanel";
+import type { CloudComputer } from "@pokebots/ui/features/servers/CloudComputerList";
+import { AgentComputerPanel } from "@pokebots/ui/features/settings/AgentComputerPanel";
 import { createStore } from "solid-js";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 

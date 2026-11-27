@@ -6,12 +6,12 @@ import {
   parseClearBrowserDataInput,
   parseUpdateAgentBrowserProfileInput,
   parseUpdateBrowserProfileInput,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   BROWSER_PROFILES_CAPABILITY,
   BROWSER_PROFILES_ROUTES,
-} from "@openbot/contracts/team-protocol/browser-profiles-v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/team-protocol/browser-profiles-v1";
+import { sourceText } from "@pokebots/i18n/source";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import { AgentNotFoundError } from "../agent-admin-settings";
 import { BrowserProfileRejectedError } from "../browser-profile-service";

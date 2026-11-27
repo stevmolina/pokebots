@@ -1,5 +1,5 @@
-import { SIDEBAR_UNASSIGNED_SECTION_ID, type SidebarLayoutSnapshot } from "@openbot/contracts/ipc";
-import type { AgentProfile } from "@openbot/ui/data";
+import { SIDEBAR_UNASSIGNED_SECTION_ID, type SidebarLayoutSnapshot } from "@pokebots/contracts/ipc";
+import type { AgentProfile } from "@pokebots/ui/data";
 import { describe, expect, it } from "vitest";
 import { type AllMachinesSource, allMachinesSearchAgents, mergeAllMachinesSidebar } from "./all-machines-sidebar";
 

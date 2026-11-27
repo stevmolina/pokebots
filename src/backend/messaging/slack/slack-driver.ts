@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises";
-import { type DynamicRecord, isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { SLACK_BOT_SCOPES } from "@openbot/contracts/slack-app";
-import { sourceText } from "@openbot/i18n/source";
+import { type DynamicRecord, isDynamicRecord, isString } from "@pokebots/contracts/runtime-values";
+import { SLACK_BOT_SCOPES } from "@pokebots/contracts/slack-app";
+import { sourceText } from "@pokebots/i18n/source";
 import { Deferred, Effect, Result } from "effect";
 import { causeHelpers } from "../../effect-boundary";
 import { mentionNames, withMentionNames } from "../messaging-mentions";

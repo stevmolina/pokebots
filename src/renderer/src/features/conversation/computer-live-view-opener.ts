@@ -1,5 +1,5 @@
-import { type AgentComputerMachineList, machineLiveViewUrl, type ServerSummary } from "@openbot/contracts/ipc";
-import { AGENT_COMPUTER_CAPABILITY } from "@openbot/contracts/team-protocol/agent-computer-v1";
+import { type AgentComputerMachineList, machineLiveViewUrl, type ServerSummary } from "@pokebots/contracts/ipc";
+import { AGENT_COMPUTER_CAPABILITY } from "@pokebots/contracts/team-protocol/agent-computer-v1";
 import { serverCanAdminister } from "../servers/server-capabilities";
 
 /**

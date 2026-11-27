@@ -1,7 +1,7 @@
 /** The right-click menu on a channel, in the pinned strip and in a section alike. */
 
-import type { ChannelSummary } from "@openbot/contracts/ipc";
-import { ContextMenu, Hash, Pin, PinOff, RotateCcw } from "@openbot/ui";
+import type { ChannelSummary } from "@pokebots/contracts/ipc";
+import { ContextMenu, Hash, Pin, PinOff, RotateCcw } from "@pokebots/ui";
 import { Show } from "solid-js";
 import { useText } from "../../text";
 import { DeleteIcon, EditIcon } from "./SidebarIcons";

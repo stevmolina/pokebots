@@ -1,8 +1,8 @@
 import { randomBytes } from "node:crypto";
 import { EventEmitter } from "node:events";
 import { dirname, join } from "node:path";
-import type { HostKeyHandover } from "@openbot/contracts/host-key-handover";
-import { createInviteUrl, selfHostedApiOrigin } from "@openbot/contracts/invite-links";
+import type { HostKeyHandover } from "@pokebots/contracts/host-key-handover";
+import { createInviteUrl, selfHostedApiOrigin } from "@pokebots/contracts/invite-links";
 import type {
   AgentEvent,
   AgentTaskReadState,
@@ -40,7 +40,7 @@ import type {
   TeamSessionSummary,
   UpdateHostIdentityInput,
   UpdateTeamMemberInput,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   type AgentAccessLevel,
   canAdministerServer,
@@ -49,12 +49,12 @@ import {
   isAvatarColor,
   type ServerAuditName,
   SIGNED_OUT_CHANNEL_MEMBER_ID,
-} from "@openbot/contracts/ipc";
-import type { LiveActivityRelayPush } from "@openbot/contracts/live-activity-relay";
-import type { ServerAppearance } from "@openbot/contracts/team-protocol/host-appearance-v1";
-import type { HostRestartState } from "@openbot/contracts/team-protocol/host-update-v1";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger, toLogValue } from "@openbot/logging";
+} from "@pokebots/contracts/ipc";
+import type { LiveActivityRelayPush } from "@pokebots/contracts/live-activity-relay";
+import type { ServerAppearance } from "@pokebots/contracts/team-protocol/host-appearance-v1";
+import type { HostRestartState } from "@pokebots/contracts/team-protocol/host-update-v1";
+import { sourceText } from "@pokebots/i18n/source";
+import { createOpenBotLogger, toLogValue } from "@pokebots/logging";
 import { Cause, Context, Deferred, Effect, Fiber, Layer, ManagedRuntime, Option, Result, Semaphore } from "effect";
 import type { AgentService } from "../backend/agent-service";
 import type { ChannelService } from "../backend/channel-service";

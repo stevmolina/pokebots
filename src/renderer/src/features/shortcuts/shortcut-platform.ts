@@ -1,4 +1,4 @@
-import type { ShortcutPlatform } from "@openbot/ui/features/shortcuts/shortcut-registry";
+import type { ShortcutPlatform } from "@pokebots/ui/features/shortcuts/shortcut-registry";
 import { currentDevicePlatform } from "../../send-shortcut-preference";
 
 /** The keyboard of the device: the app's report on desktop, the browser's guess in the web client. */

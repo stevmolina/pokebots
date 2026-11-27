@@ -1,11 +1,11 @@
-import { AGENT_COMPUTER_KEY_INPUT_LIMIT, decodeComputerManagementInput } from "@openbot/contracts/ipc";
-import { AGENT_COMPUTER_CAPABILITY, AGENT_COMPUTER_ROUTES } from "@openbot/contracts/team-protocol/agent-computer-v1";
+import { AGENT_COMPUTER_KEY_INPUT_LIMIT, decodeComputerManagementInput } from "@pokebots/contracts/ipc";
+import { AGENT_COMPUTER_CAPABILITY, AGENT_COMPUTER_ROUTES } from "@pokebots/contracts/team-protocol/agent-computer-v1";
 import {
   COMPUTER_MANAGEMENT_CAPABILITY,
   COMPUTER_MANAGEMENT_ROUTE,
-} from "@openbot/contracts/team-protocol/computer-management-v1";
-import { sourceText } from "@openbot/i18n/source";
-import { registerSecretValue } from "@openbot/logging";
+} from "@pokebots/contracts/team-protocol/computer-management-v1";
+import { sourceText } from "@pokebots/i18n/source";
+import { registerSecretValue } from "@pokebots/logging";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import type { TeamApiAgentComputer } from "./dependencies";
 import { HttpError } from "./http-error";

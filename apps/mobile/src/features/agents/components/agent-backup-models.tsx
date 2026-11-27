@@ -8,7 +8,7 @@ import {
   DEFAULT_PROVIDER_ACCOUNT_ID,
   type HostProviderAccounts,
   sameAgentModelChoice,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import { useQuery } from "@tanstack/react-query";
 import { router, useNavigation } from "expo-router";
 import { Button, Typography } from "heroui-native";

@@ -4,7 +4,7 @@
 //
 // The iOS share extension carries its own copy of the share sender, which `plugins/with-share-target.js`
 // builds at prebuild. An update cannot change it, so its sources change `runtimeVersion` too. A change in
-// `@openbot/team-client` reaches the extension with the next build.
+// `@pokebots/team-client` reaches the extension with the next build.
 //
 // A config plugin copies the Notification Service Extension source (`plugins/notification-service`),
 // the App Intents of the shortcuts (`plugins/shortcuts`)

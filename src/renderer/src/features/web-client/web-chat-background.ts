@@ -1,4 +1,4 @@
-import { type ChatBackgroundColor, isChatBackgroundColor } from "@openbot/contracts/app-appearance";
+import { type ChatBackgroundColor, isChatBackgroundColor } from "@pokebots/contracts/app-appearance";
 import { createSignal } from "solid-js";
 import { applyChatBackground } from "../../chat-background";
 

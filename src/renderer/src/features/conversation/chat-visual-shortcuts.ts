@@ -1,5 +1,5 @@
-import type { ChatVisualKey } from "@openbot/contracts/chat-visual";
-import { matchShortcut } from "@openbot/ui/features/shortcuts/shortcut-registry";
+import type { ChatVisualKey } from "@pokebots/contracts/chat-visual";
+import { matchShortcut } from "@pokebots/ui/features/shortcuts/shortcut-registry";
 import { isGlobalSearchShortcut } from "../../global-search-shortcut";
 import { isOpenSettingsShortcut } from "../settings/settings-shortcut";
 

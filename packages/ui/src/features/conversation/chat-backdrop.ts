@@ -4,9 +4,9 @@ import {
   type ChatBackdropScene,
   isChatBackdropScene,
   paintChatBackdropScene,
-} from "@openbot/brand/chat-backdrop-scenes";
-import { chatHtmlPreviewDocument, chatPreviewKind } from "@openbot/contracts/chat-preview";
-import type { AppTextKey } from "@openbot/i18n";
+} from "@pokebots/brand/chat-backdrop-scenes";
+import { chatHtmlPreviewDocument, chatPreviewKind } from "@pokebots/contracts/chat-preview";
+import type { AppTextKey } from "@pokebots/i18n";
 import { Marked, type Token, type Tokens } from "marked";
 
 const CUSTOM_PREFIX = "custom:";
@@ -56,14 +56,14 @@ export const CHAT_BACKDROP_LABEL = {
   fireflies: "settings.chatBackdrop.fireflies",
 } as const satisfies Record<ChatBackdropScene, AppTextKey>;
 
-/** The scenes live in `@openbot/brand`, so mobile draws the same ones. */
+/** The scenes live in `@pokebots/brand`, so mobile draws the same ones. */
 export {
   CHAT_BACKDROP_BASE,
   CHAT_BACKDROP_SCENES,
   type ChatBackdropFrame,
   type ChatBackdropScene,
   isChatBackdropScene,
-} from "@openbot/brand/chat-backdrop-scenes";
+} from "@pokebots/brand/chat-backdrop-scenes";
 
 /** How much of the scene the base color covers where the chat usually is (right of the sidebar). */
 const CALM_CENTER = 0.55;

@@ -1,9 +1,9 @@
 // Run: bun scripts/pokebots-joined-authorization-e2e.ts
 import assert from "node:assert/strict";
 import { mkdir, writeFile } from "node:fs/promises";
-import { runTeamEffect } from "@openbot/team-client";
-import { IntegrationAuthorization } from "@openbot/team-client/integration-authorization";
-import { RemoteTeamDirectoryClient } from "@openbot/team-client/remote-directory";
+import { runTeamEffect } from "@pokebots/team-client";
+import { IntegrationAuthorization } from "@pokebots/team-client/integration-authorization";
+import { RemoteTeamDirectoryClient } from "@pokebots/team-client/remote-directory";
 import { Effect } from "effect";
 
 const hostId = "test-host";

@@ -12,8 +12,8 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import { createInviteUrl, parseInviteUrl } from "@openbot/contracts/invite-links";
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
+import { createInviteUrl, parseInviteUrl } from "@pokebots/contracts/invite-links";
+import { TEAM_API_ROUTES } from "@pokebots/contracts/team-api-routes";
 import {
   TEAM_APP_VERSION_HEADER,
   TEAM_CAPABILITIES_HEADER,
@@ -21,7 +21,7 @@ import {
   TEAM_PROTOCOL_V7,
   TEAM_PROTOCOL_V7_CAPABILITIES,
   TEAM_PROTOCOL_VERSION_HEADER,
-} from "@openbot/contracts/team-protocol";
+} from "@pokebots/contracts/team-protocol";
 import { plugin } from "bun";
 import { Effect } from "effect";
 import type { AgentBrowserHost } from "../src/backend/agent/turn-lifecycle";

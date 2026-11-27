@@ -1,5 +1,5 @@
-import type { GitHubConnectorRepositories, GitHubConnectorStatus } from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
+import type { GitHubConnectorRepositories, GitHubConnectorStatus } from "@pokebots/contracts/ipc";
+import type { AppTextKey } from "@pokebots/i18n";
 import {
   Alert,
   AlertActions,
@@ -26,7 +26,7 @@ import {
   Text,
   TriangleAlert,
   UserAvatar,
-} from "@openbot/ui";
+} from "@pokebots/ui";
 import { createEffect, createMemo, createSignal, For, Match, Show, Switch } from "solid-js";
 import { useText } from "../../text";
 import { GitHubTile } from "./brand-marks";

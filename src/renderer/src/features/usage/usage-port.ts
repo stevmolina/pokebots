@@ -1,4 +1,4 @@
-import type { OpenBotDesktopApi } from "@openbot/contracts/ipc";
+import type { OpenBotDesktopApi } from "@pokebots/contracts/ipc";
 
 /**
  * What the usage panel reaches in main: the analytics of a server, its agents, and the events that

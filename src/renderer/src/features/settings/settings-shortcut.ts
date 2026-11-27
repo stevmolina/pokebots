@@ -1,4 +1,4 @@
-import { type ShortcutKeyEvent, shortcutMatches } from "@openbot/ui/features/shortcuts/shortcut-registry";
+import { type ShortcutKeyEvent, shortcutMatches } from "@pokebots/ui/features/shortcuts/shortcut-registry";
 
 /**
  * The Settings shortcut: `Cmd + ,` on macOS, `Ctrl + ,` elsewhere. It fires from any focused

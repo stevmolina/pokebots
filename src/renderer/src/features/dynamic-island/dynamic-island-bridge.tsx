@@ -1,6 +1,6 @@
-import type { DynamicIslandAction } from "@openbot/contracts/ipc";
-import { classifyFailure } from "@openbot/telemetry";
-import { useText } from "@openbot/ui/text";
+import type { DynamicIslandAction } from "@pokebots/contracts/ipc";
+import { classifyFailure } from "@pokebots/telemetry";
+import { useText } from "@pokebots/ui/text";
 import { createEffect, onSettled, untrack } from "solid-js";
 import { actionToast } from "../../action-toast";
 import { withoutAgent } from "../../app-message-projection";

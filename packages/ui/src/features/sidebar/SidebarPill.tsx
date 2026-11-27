@@ -20,7 +20,7 @@ import {
   Server,
   Waypoints,
   Workflow,
-} from "@openbot/ui";
+} from "@pokebots/ui";
 import { Dynamic } from "@solidjs/web";
 import { createMemo, createSignal, For, Show } from "solid-js";
 import { useText } from "../../text";

@@ -8,15 +8,15 @@ import {
   assertSupportedAttachmentName,
   isOpenableAttachmentName,
   isSupportedAttachmentNameFor,
-} from "@openbot/contracts/attachment-files";
+} from "@pokebots/contracts/attachment-files";
 import {
   legacyTeamCapabilities,
   TEAM_ANY_FILE_ATTACHMENTS_CAPABILITY,
   TEAM_CURRENT_CAPABILITIES,
   TEAM_PROTOCOL_V9_ONLY_CAPABILITIES,
   teamCapabilitiesForProtocol,
-} from "@openbot/contracts/team-protocol/current";
-import { TEAM_PROTOCOL_V9_CAPABILITY_LIMIT } from "@openbot/contracts/team-protocol/v9";
+} from "@pokebots/contracts/team-protocol/current";
+import { TEAM_PROTOCOL_V9_CAPABILITY_LIMIT } from "@pokebots/contracts/team-protocol/v9";
 import { Effect } from "effect";
 import { AttachmentFiles } from "../src/backend/attachment-files";
 

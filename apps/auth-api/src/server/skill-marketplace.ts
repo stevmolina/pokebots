@@ -1,12 +1,12 @@
 import { createHash } from "node:crypto";
-import { isAgentTemplateCardPng } from "@openbot/contracts/ipc-agent-templates";
+import { isAgentTemplateCardPng } from "@pokebots/contracts/ipc-agent-templates";
 import {
   isSkillCategory,
   type MarketplaceSkillSort,
   SKILL_DESCRIPTION_MAX_LENGTH,
   type SkillCategory,
-} from "@openbot/contracts/ipc-skills";
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
+} from "@pokebots/contracts/ipc-skills";
+import { isDynamicRecord, isString } from "@pokebots/contracts/runtime-values";
 import { Effect, Result, Schema } from "effect";
 import { unzipSync } from "fflate";
 import { parse as parseYaml } from "yaml";

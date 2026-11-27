@@ -4,7 +4,7 @@
  * again; the page shows its first characters, tests it, and lists the computers with their live views.
  */
 
-import type { AgentComputerAccountAllowance, AgentComputerStatus } from "@openbot/contracts/ipc";
+import type { AgentComputerAccountAllowance, AgentComputerStatus } from "@pokebots/contracts/ipc";
 import {
   Alert,
   Button,
@@ -20,7 +20,7 @@ import {
   RefreshCw,
   SettingsSection,
   Text,
-} from "@openbot/ui";
+} from "@pokebots/ui";
 import { createSignal, Show } from "solid-js";
 import { useText } from "../../text";
 import { type CloudComputer, CloudComputerList } from "../servers/CloudComputerList";

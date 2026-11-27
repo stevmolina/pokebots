@@ -1,6 +1,6 @@
-import { AppLogo } from "@openbot/brand";
-import { Button, ErrorReference } from "@openbot/ui";
-import { useText } from "@openbot/ui/text";
+import { AppLogo } from "@pokebots/brand";
+import { Button, ErrorReference } from "@pokebots/ui";
+import { useText } from "@pokebots/ui/text";
 import { usePlatform } from "../../platform";
 import { useSetup } from "./onboarding-context";
 

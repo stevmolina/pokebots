@@ -36,26 +36,26 @@ export const messages = {
   "update.provider.hideDetails": "隐藏详情",
 
   // An update that an admin of this server asked for. {name} is the admin.
-  "update.scheduled.title": "{name} 计划了一次 OpenBot 更新",
+  "update.scheduled.title": "{name} 计划了一次 Pokebots 更新",
   // The same notice when "Install updates automatically" scheduled the restart.
-  "update.scheduled.automaticTitle": "OpenBot 正在安装更新",
-  "update.scheduled.whenIdle": "助手空闲时 OpenBot 会重启。",
-  "update.scheduled.now": "更新下载完成后 OpenBot 会重启。",
+  "update.scheduled.automaticTitle": "Pokebots 正在安装更新",
+  "update.scheduled.whenIdle": "助手空闲时 Pokebots 会重启。",
+  "update.scheduled.now": "更新下载完成后 Pokebots 会重启。",
   "update.scheduled.cancel": "取消更新",
   "update.scheduled.cancelFailed": "无法取消该更新。",
 
   // A restart that the user of this computer asked for. It waits until no work runs.
-  "update.idleRestart.relaunchTitle": "助手空闲时 OpenBot 会重启",
-  "update.idleRestart.updateTitle": "助手空闲时 OpenBot 会安装更新",
+  "update.idleRestart.relaunchTitle": "助手空闲时 Pokebots 会重启",
+  "update.idleRestart.updateTitle": "助手空闲时 Pokebots 会安装更新",
   "update.idleRestart.description": "新的自动化任务运行会等到重启之后。",
   "update.idleRestart.waitingFor": "正在等待{reasons}。",
   "update.idleRestart.cancel": "取消重启",
   "update.idleRestart.cancelFailed": "无法取消该重启。",
   "update.idleRestart.requestFailed": "无法安排该重启。",
-  "update.idleRestart.failedTitle": "OpenBot 未重启",
+  "update.idleRestart.failedTitle": "Pokebots 未重启",
 
   // The "What's new" dialog after an app update.
-  "update.whatsNew.title": "OpenBot 的新功能",
+  "update.whatsNew.title": "Pokebots 的新功能",
   "update.whatsNew.description": "该版本的新功能和改动。",
   "update.whatsNew.version": "版本 {version}",
   "update.whatsNew.updatedFrom": "已从 {from} 更新到 {to}",
@@ -71,11 +71,11 @@ export const messages = {
   "update.whatsNew.empty.title": "该版本没有新功能",
   "update.whatsNew.empty.body": "该版本没有可在此展示的更新说明。完整更新日志会列出所有改动。",
   "update.whatsNew.changelog": "完整更新日志",
-  "update.whatsNew.changelogFailed": "OpenBot 无法打开更新日志。",
+  "update.whatsNew.changelogFailed": "Pokebots 无法打开更新日志。",
   "update.whatsNew.done": "知道了",
   "update.required.title": "需要更新",
-  "update.required.description": "OpenBot {version} 已不再受支持。请更新到 {minimum} 或更高版本以继续使用。",
-  "update.required.download": "下载 OpenBot",
+  "update.required.description": "Pokebots {version} 已不再受支持。请更新到 {minimum} 或更高版本以继续使用。",
+  "update.required.download": "下载 Pokebots",
   "update.required.continue": "不更新并继续",
   "update.required.failed": "更新未完成。",
 } as const satisfies PartialTranslation<typeof source>;

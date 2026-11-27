@@ -4,7 +4,7 @@
  * its last message. The full sidebar shows these in the row, so it has no tooltip there.
  */
 
-import { Badge } from "@openbot/ui";
+import { Badge } from "@pokebots/ui";
 import type { JSX } from "@solidjs/web";
 import { Show } from "solid-js";
 import { SidebarRowTooltip } from "./SidebarRowTooltip";

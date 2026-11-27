@@ -3,10 +3,10 @@ import {
   INSTANCE_TRANSFER_LIMITS,
   type InstanceTransferUploadProgress,
   resolveRemoteInstanceTransferResult,
-} from "@openbot/contracts/ipc";
-import { INSTANCE_TRANSFER_REMOTE_BYTES } from "@openbot/contracts/team-protocol/instance-transfer-v1";
-import { runTeamEffect } from "@openbot/team-client";
-import { base64ToBytes } from "@openbot/team-client/base64";
+} from "@pokebots/contracts/ipc";
+import { INSTANCE_TRANSFER_REMOTE_BYTES } from "@pokebots/contracts/team-protocol/instance-transfer-v1";
+import { runTeamEffect } from "@pokebots/team-client";
+import { base64ToBytes } from "@pokebots/team-client/base64";
 import {
   applyInstanceTransfer,
   applyInstanceTransferFullCopy,
@@ -20,8 +20,8 @@ import {
   stageInstanceTransfer,
   stageInstanceTransferInParts,
   type TeamApiRequest,
-} from "@openbot/team-client/team-api-requests";
-import { currentText } from "@openbot/ui/text";
+} from "@pokebots/team-client/team-api-requests";
+import { currentText } from "@pokebots/ui/text";
 import { Effect } from "effect";
 import type { ServerTransferCalls } from "../servers/server-transfer-store";
 import { readBase64 } from "./web-agent-import";

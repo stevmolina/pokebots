@@ -4,16 +4,16 @@
  * host from its own contexts.
  */
 
-import { leadingAddress } from "@openbot/contracts/chat-tag-references";
+import { leadingAddress } from "@pokebots/contracts/chat-tag-references";
 import {
   type AgentApproval,
   type AgentEvent,
   type BrowserTakeoverRequest,
   channelBrowserAgent,
-} from "@openbot/contracts/ipc";
-import type { AgentMessage } from "@openbot/ui/data";
-import { unloadedHistory } from "@openbot/ui/features/conversation/ChatScrollRail";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/contracts/ipc";
+import type { AgentMessage } from "@pokebots/ui/data";
+import { unloadedHistory } from "@pokebots/ui/features/conversation/ChatScrollRail";
+import { useText } from "@pokebots/ui/text";
 import { createEffect, createMemo } from "solid-js";
 import { agentMessagesEqual } from "../../app-message-projection";
 import { channelAwaitingReplies } from "../../awaiting-replies";

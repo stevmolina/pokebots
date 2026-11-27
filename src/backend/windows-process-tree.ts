@@ -1,5 +1,5 @@
 import { type ChildProcess, type ExecFileException, execFile } from "node:child_process";
-import { createOpenBotLogger } from "@openbot/logging";
+import { createOpenBotLogger } from "@pokebots/logging";
 import { Effect, Fiber, Schema } from "effect";
 
 /**

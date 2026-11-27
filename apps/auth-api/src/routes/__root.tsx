@@ -9,9 +9,9 @@ import {
   Scripts,
 } from "@tanstack/solid-router";
 import { createSignal, onSettled, Show } from "solid-js";
-import "@openbot/brand/logo.css";
-import { rememberPromotionCode } from "@openbot/contracts/promotion-code";
-import { installPointerFocusGuard } from "@openbot/ui/pointer-focus";
+import "@pokebots/brand/logo.css";
+import { rememberPromotionCode } from "@pokebots/contracts/promotion-code";
+import { installPointerFocusGuard } from "@pokebots/ui/pointer-focus";
 import "../styles.css";
 import { SiteTextProvider, useRouteSiteChrome } from "../components/landing/SiteText";
 import { type RootPageText, rootPageText } from "../components/transactional/page-text";

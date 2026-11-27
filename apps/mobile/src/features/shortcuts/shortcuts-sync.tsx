@@ -1,4 +1,4 @@
-import type { RemoteWorkspacePreferences } from "@openbot/team-client";
+import type { RemoteWorkspacePreferences } from "@pokebots/team-client";
 import { type ReactNode, useEffect, useMemo, useState } from "react";
 import { useCSSVariable } from "uniwind";
 import { useAppLock } from "@/features/app-lock/model/app-lock";

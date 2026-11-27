@@ -1,4 +1,4 @@
-import { mobileBugReportFormUrl } from "@openbot/contracts/feedback";
+import { mobileBugReportFormUrl } from "@pokebots/contracts/feedback";
 import { File, Paths } from "expo-file-system";
 import { router } from "expo-router";
 import * as Sharing from "expo-sharing";

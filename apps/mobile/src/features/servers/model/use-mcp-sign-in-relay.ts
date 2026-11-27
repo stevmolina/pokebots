@@ -1,4 +1,4 @@
-import { type McpServerConfig, relayCallbackQuery } from "@openbot/contracts/ipc";
+import { type McpServerConfig, relayCallbackQuery } from "@pokebots/contracts/ipc";
 import { useEffect, useRef, useState } from "react";
 import { Linking } from "react-native";
 import { relayPage } from "@/features/servers/model/provider-admin";

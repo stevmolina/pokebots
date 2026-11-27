@@ -9,7 +9,7 @@
 // `### Added` style groups, `-` bullets with indented continuation lines, plain paragraphs
 // under a heading, and inline `**bold**`, `code` and [links](url).
 
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
+import { isDynamicRecord } from "@pokebots/contracts/runtime-values";
 import { OPENBOT_SITE_URL, OPENBOT_X_HANDLE, type PageSocialImage, pageSocialImageMeta } from "./site-metadata";
 
 export const CHANGELOG_ROUTE = "/changelog";

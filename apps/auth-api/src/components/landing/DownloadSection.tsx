@@ -1,4 +1,4 @@
-import { type MobilePlatformLogoVariant, PlatformLogo, type PlatformLogoVariant } from "@openbot/brand";
+import { type MobilePlatformLogoVariant, PlatformLogo, type PlatformLogoVariant } from "@pokebots/brand";
 import type { JSX } from "@solidjs/web";
 import { Link } from "@tanstack/solid-router";
 import { For, Show } from "solid-js";

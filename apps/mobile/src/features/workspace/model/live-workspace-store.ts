@@ -1,4 +1,4 @@
-import type { BrowserTakeoverRequest } from "@openbot/contracts/ipc";
+import type { BrowserTakeoverRequest } from "@pokebots/contracts/ipc";
 import type { MobileBrowserTabs } from "@/features/browser/model/browser-tabs";
 import type { MobileAgentActivities } from "./agent-activity";
 import type { MobileContextStates } from "./context-states";

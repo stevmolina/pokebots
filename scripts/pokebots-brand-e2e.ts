@@ -1,5 +1,5 @@
 // Runs the real brand layer (`scripts/brand-layer.ts`) the way the Vite builds run it, over every
-// `@openbot/i18n` catalog module and every visible literal outside the catalogs, and checks:
+// `@pokebots/i18n` catalog module and every visible literal outside the catalogs, and checks:
 // - with `OPENBOT_BRAND_NAME=Pokebots`, no catalog value keeps the product word "OpenBot", except
 //   the kept phrases; every key stays; each `openbot.run` and `openbot://` stays;
 // - each literal rule and the account defaults of the main process apply;

@@ -28,22 +28,22 @@ import { mkdtemp, rm } from "node:fs/promises";
 import { createServer, type IncomingMessage } from "node:http";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import type { AgentEvent } from "@openbot/contracts/ipc";
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
+import type { AgentEvent } from "@pokebots/contracts/ipc";
+import { isDynamicRecord } from "@pokebots/contracts/runtime-values";
+import { TEAM_API_ROUTES } from "@pokebots/contracts/team-api-routes";
 import {
   TEAM_APP_VERSION_HEADER,
   TEAM_CAPABILITIES_HEADER,
   TEAM_PROTOCOL_V9,
   TEAM_PROTOCOL_VERSION_HEADER,
   teamCapabilitiesForProtocol,
-} from "@openbot/contracts/team-protocol";
+} from "@pokebots/contracts/team-protocol";
 import {
   WEB_PUSH_NOTIFICATIONS_CAPABILITY,
   WEB_PUSH_NOTIFICATIONS_ROUTES,
-} from "@openbot/contracts/team-protocol/push-notifications-web-v1";
-import { WEB_PUSH_CONFIG_ROUTE, webPushOpenTarget } from "@openbot/contracts/web-push";
-import { createOpenBotLogger } from "@openbot/logging";
+} from "@pokebots/contracts/team-protocol/push-notifications-web-v1";
+import { WEB_PUSH_CONFIG_ROUTE, webPushOpenTarget } from "@pokebots/contracts/web-push";
+import { createOpenBotLogger } from "@pokebots/logging";
 import { plugin } from "bun";
 import { Effect } from "effect";
 import { importJWK, jwtVerify } from "jose";

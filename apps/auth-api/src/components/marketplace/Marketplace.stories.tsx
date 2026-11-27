@@ -1,5 +1,5 @@
-import type { MarketplaceAgentSummary } from "@openbot/contracts/ipc";
-import { translateFor } from "@openbot/i18n";
+import type { MarketplaceAgentSummary } from "@pokebots/contracts/ipc";
+import { translateFor } from "@pokebots/i18n";
 import type { JSX } from "@solidjs/web";
 import {
   createMemoryHistory,

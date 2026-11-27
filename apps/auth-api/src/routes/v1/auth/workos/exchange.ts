@@ -1,5 +1,5 @@
-import { isString } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source-english";
+import { isString } from "@pokebots/contracts/runtime-values";
+import { sourceText } from "@pokebots/i18n/source-english";
 import { createFileRoute } from "@tanstack/solid-router";
 import { Effect } from "effect";
 import { runApiResponse } from "../../../../server/effect-runtime";

@@ -1,12 +1,12 @@
-import { agentProviderName, decodeHostProviderAccounts, isAccountUsage } from "@openbot/contracts/ipc";
-import { CLAUDE_API_KEY_ACCOUNT_ID } from "@openbot/contracts/team-protocol/claude-api-key-v1";
+import { agentProviderName, decodeHostProviderAccounts, isAccountUsage } from "@pokebots/contracts/ipc";
+import { CLAUDE_API_KEY_ACCOUNT_ID } from "@pokebots/contracts/team-protocol/claude-api-key-v1";
 import {
   type PlanLimitRow,
   type PlanLimits,
   type PlanLimitWindow,
   planLimitRows,
   planLimitWindowKind,
-} from "@openbot/team-client/plan-limits";
+} from "@pokebots/team-client/plan-limits";
 import { useQuery } from "@tanstack/react-query";
 import { File, Paths } from "expo-file-system";
 import { useEffect, useMemo } from "react";

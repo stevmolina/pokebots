@@ -1,4 +1,4 @@
-import type { BackgroundWorker } from "@openbot/ui/features/conversation/BackgroundWorkers";
+import type { BackgroundWorker } from "@pokebots/ui/features/conversation/BackgroundWorkers";
 import type { agentAwaitingReplies } from "../../awaiting-replies";
 
 type Reply = ReturnType<typeof agentAwaitingReplies>[number];

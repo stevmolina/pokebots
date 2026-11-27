@@ -19,8 +19,8 @@ import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync, rmSync } from "node:fs";
 import { join } from "node:path";
-import { agentProviderDescriptor, isAgentProvider } from "@openbot/contracts/agent-providers";
-import type { AgentTask, ConversationMessage, ConversationSnapshot } from "@openbot/contracts/ipc";
+import { agentProviderDescriptor, isAgentProvider } from "@pokebots/contracts/agent-providers";
+import type { AgentTask, ConversationMessage, ConversationSnapshot } from "@pokebots/contracts/ipc";
 import { argument, connectChannelE2e, LONG_PROMPT, waitFor, writeReport } from "./channel-e2e-support";
 
 const agentArgument = argument("agent");

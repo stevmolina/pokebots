@@ -1,4 +1,4 @@
-import { DISCONNECTED_LINK_ACCOUNT, type LinkAccountDesktopApi, type LinkAccountStatus } from "@openbot/contracts/ipc";
+import { DISCONNECTED_LINK_ACCOUNT, type LinkAccountDesktopApi, type LinkAccountStatus } from "@pokebots/contracts/ipc";
 import { createStore } from "solid-js";
 
 /**

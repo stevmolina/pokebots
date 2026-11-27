@@ -1,5 +1,5 @@
-import { AGENT_MEMORY_CONTEXT_BUDGET_BYTES, essentialMemoryBytes } from "@openbot/contracts/agent-memory-context";
-import { feedbackSentIssue, feedbackWithdrawnItemType } from "@openbot/contracts/feedback";
+import { AGENT_MEMORY_CONTEXT_BUDGET_BYTES, essentialMemoryBytes } from "@pokebots/contracts/agent-memory-context";
+import { feedbackSentIssue, feedbackWithdrawnItemType } from "@pokebots/contracts/feedback";
 import type {
   AcpRegistryEntry,
   AgentProviderRef,
@@ -9,7 +9,7 @@ import type {
   McpSignInApp,
   McpSignInAppState,
   ServerNotificationLevel,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   type AccountUsage,
   AGENT_DEFAULT_KEYS,
@@ -192,9 +192,9 @@ import {
   type UpdateQueuedMessageInput,
   type UpdateStatus,
   type WorkspaceDirectory,
-} from "@openbot/contracts/ipc";
-import { ACTIVE_QUEUE_STATUSES } from "@openbot/contracts/team-protocol/agent-active-queues-v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/ipc";
+import { ACTIVE_QUEUE_STATUSES } from "@pokebots/contracts/team-protocol/agent-active-queues-v1";
+import { sourceText } from "@pokebots/i18n/source";
 import {
   AGENT_IMPORT_PREVIEW,
   AGENT_IMPORT_SKILL,

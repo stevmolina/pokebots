@@ -1,5 +1,5 @@
-import { AppLoadingScreen } from "@openbot/ui/features/account/AppLoadingScreen";
-import { ConversationLoadNotice, ServerConnectionNotice } from "@openbot/ui/features/servers/ServerConnectionNotice";
+import { AppLoadingScreen } from "@pokebots/ui/features/account/AppLoadingScreen";
+import { ConversationLoadNotice, ServerConnectionNotice } from "@pokebots/ui/features/servers/ServerConnectionNotice";
 import type { JSX } from "@solidjs/web";
 import { createSignal, Show } from "solid-js";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";

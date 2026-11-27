@@ -10,13 +10,13 @@ import {
   isSupportedAttachmentNameFor,
   playableMediaKind,
   supportedAttachmentExtensions,
-} from "@openbot/contracts/attachment-files";
+} from "@pokebots/contracts/attachment-files";
 import {
   legacyTeamCapabilities,
   TEAM_CURRENT_CAPABILITIES,
   TEAM_MP4_ATTACHMENTS_CAPABILITY,
   teamCapabilitiesForProtocol,
-} from "@openbot/contracts/team-protocol/current";
+} from "@pokebots/contracts/team-protocol/current";
 import { Effect } from "effect";
 import { AttachmentFiles } from "../src/backend/attachment-files";
 

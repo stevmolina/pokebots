@@ -1,4 +1,4 @@
-import type { OpenBotDesktopApi } from "@openbot/contracts/ipc";
+import type { OpenBotDesktopApi } from "@pokebots/contracts/ipc";
 import type { CompanySignInCalls } from "./features/servers/ServerCompanySignInSection";
 
 /**

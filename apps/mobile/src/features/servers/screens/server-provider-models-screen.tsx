@@ -1,4 +1,4 @@
-import { type AgentModelId, isAgentProvider } from "@openbot/contracts/ipc";
+import { type AgentModelId, isAgentProvider } from "@pokebots/contracts/ipc";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { Typography } from "heroui-native";
 import { useThemeColor } from "heroui-native/hooks";

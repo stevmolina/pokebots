@@ -13,8 +13,8 @@
 // changes nothing. With no note file the command stops; `--allow-empty` makes that a success.
 
 import { rm, writeFile } from "node:fs/promises";
-import { isOneOf, isString } from "@openbot/contracts/runtime-values";
-import { createOpenBotLogger } from "@openbot/logging";
+import { isOneOf, isString } from "@pokebots/contracts/runtime-values";
+import { createOpenBotLogger } from "@pokebots/logging";
 import { appJsonVersion, appVersion, readText, run, today } from "./mobile-release-steps";
 import {
   assembleSection,

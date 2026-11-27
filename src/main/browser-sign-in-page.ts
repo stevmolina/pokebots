@@ -1,4 +1,4 @@
-import { browserSignInCookieFitsHost } from "@openbot/contracts/team-protocol/browser-sign-in-v1";
+import { browserSignInCookieFitsHost } from "@pokebots/contracts/team-protocol/browser-sign-in-v1";
 import { getDomain } from "tldts";
 
 /** Words in a path or a query that sign-in, sign-up and recovery steps of most sites use. */

@@ -1,4 +1,4 @@
-import { profileStats } from "@openbot/team-client/profile-stats";
+import { profileStats } from "@pokebots/team-client/profile-stats";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { lastUsageDays } from "@/features/agents/components/usage-range-picker";

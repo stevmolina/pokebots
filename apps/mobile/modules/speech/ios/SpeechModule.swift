@@ -3,7 +3,7 @@ import ExpoModulesCore
 import SherpaOnnxC
 import UIKit
 
-/// The files of the Supertonic 3 export, as `@openbot/contracts/speech-models` downloads them.
+/// The files of the Supertonic 3 export, as `@pokebots/contracts/speech-models` downloads them.
 private let supertonicFiles = (
   durationPredictor: "duration_predictor.int8.onnx",
   textEncoder: "text_encoder.int8.onnx",
@@ -82,7 +82,7 @@ private enum SpeechError: Error {
   case modelLoadFailed
 }
 
-/// The files of the Parakeet TDT 0.6B v3 export, as `@openbot/contracts/speech-models` downloads them.
+/// The files of the Parakeet TDT 0.6B v3 export, as `@pokebots/contracts/speech-models` downloads them.
 private let parakeetFiles = (
   encoder: "encoder.int8.onnx",
   decoder: "decoder.int8.onnx",
@@ -90,7 +90,7 @@ private let parakeetFiles = (
   tokens: "tokens.txt"
 )
 
-/// The files of the Qwen3-ASR 0.6B export, as `@openbot/contracts/speech-models` downloads them. The
+/// The files of the Qwen3-ASR 0.6B export, as `@pokebots/contracts/speech-models` downloads them. The
 /// tokenizer files are in the model directory itself.
 private let qwen3AsrFiles = (
   convFrontend: "conv_frontend.onnx",

@@ -5,7 +5,7 @@
  * The icon of each thread shows its state, as the tabs of the chat header do.
  */
 
-import { Button, ChevronDown, MessageCirclePlus, Popover } from "@openbot/ui";
+import { Button, ChevronDown, MessageCirclePlus, Popover } from "@pokebots/ui";
 import { createEffect, createMemo, createSignal, For, onCleanup, Show } from "solid-js";
 import { useText } from "../../text";
 import { ThreadStatusText, ThreadTabIcon } from "../conversation/threads/ThreadStatusMark";

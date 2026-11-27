@@ -1,4 +1,4 @@
-import { machineLiveViewUrl } from "@openbot/contracts/ipc";
+import { machineLiveViewUrl } from "@pokebots/contracts/ipc";
 import { Button, Typography } from "heroui-native";
 import { useThemeColor } from "heroui-native/hooks";
 import Monitor from "lucide-react-native/icons/monitor";

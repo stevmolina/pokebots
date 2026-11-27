@@ -19,8 +19,8 @@ import {
   workflowMediaSpecs,
   workflowVideoDurations,
   workflowVideoLengthChoices,
-} from "@openbot/contracts/ipc";
-import type { AppTextKey, AppTranslate } from "@openbot/i18n";
+} from "@pokebots/contracts/ipc";
+import type { AppTextKey, AppTranslate } from "@pokebots/i18n";
 import {
   Button,
   Download,
@@ -38,7 +38,7 @@ import {
   Square,
   Textarea,
   Type,
-} from "@openbot/ui";
+} from "@pokebots/ui";
 import type { JSX } from "@solidjs/web";
 import { createEffect, createMemo, createSignal, For, Show, untrack } from "solid-js";
 import { useText } from "../../text";

@@ -1,7 +1,7 @@
-import { BRAIN_MCP_URL } from "@openbot/contracts/brain";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import type { McpServerConfig, McpTestResult, McpTransport } from "@openbot/contracts/ipc";
-import { matchingSourceKeys } from "@openbot/i18n/source";
+import { BRAIN_MCP_URL } from "@pokebots/contracts/brain";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
+import type { McpServerConfig, McpTestResult, McpTransport } from "@pokebots/contracts/ipc";
+import { matchingSourceKeys } from "@pokebots/i18n/source";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { usePreventRemove } from "expo-router/react-navigation";
 import { Typography } from "heroui-native";

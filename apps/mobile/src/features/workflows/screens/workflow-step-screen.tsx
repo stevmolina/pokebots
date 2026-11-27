@@ -1,5 +1,5 @@
-import { type AgentReasoningEffort, canAdministerServer, type WorkflowNode } from "@openbot/contracts/ipc";
-import type { MobileTextKey } from "@openbot/i18n/mobile";
+import { type AgentReasoningEffort, canAdministerServer, type WorkflowNode } from "@pokebots/contracts/ipc";
+import type { MobileTextKey } from "@pokebots/i18n/mobile";
 import { useQuery } from "@tanstack/react-query";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { Typography } from "heroui-native";

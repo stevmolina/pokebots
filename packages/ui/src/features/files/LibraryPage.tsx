@@ -6,7 +6,7 @@ import {
   libraryFolderBranch,
   libraryFolderPath,
   libraryFolderTree,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   ArrowRight,
   Ban,
@@ -21,9 +21,9 @@ import {
   LayoutGrid,
   List,
   toast,
-} from "@openbot/ui";
-import type { AgentProfile } from "@openbot/ui/data";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/ui";
+import type { AgentProfile } from "@pokebots/ui/data";
+import { useText } from "@pokebots/ui/text";
 import { type JSX, Portal } from "@solidjs/web";
 import { createEffect, createMemo, createSignal, For, onCleanup, Show, untrack } from "solid-js";
 import { AgentPicker } from "../agents/AgentPicker";

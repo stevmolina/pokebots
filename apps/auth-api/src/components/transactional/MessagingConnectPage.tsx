@@ -1,9 +1,9 @@
-import { AppLogo } from "@openbot/brand";
+import { AppLogo } from "@pokebots/brand";
 import {
   WEB_MESSAGING_INSTALL_KEY_PREFIX,
   type WebMessagingInstallPlatform,
-} from "@openbot/contracts/web-messaging-install";
-import { DiscordMark, SlackMark } from "@openbot/ui/features/settings/brand-marks";
+} from "@pokebots/contracts/web-messaging-install";
+import { DiscordMark, SlackMark } from "@pokebots/ui/features/settings/brand-marks";
 import type { JSX } from "@solidjs/web";
 import { createSignal, onSettled, Show } from "solid-js";
 import { handOffToWebClient } from "../landing/web-messaging-handoff";

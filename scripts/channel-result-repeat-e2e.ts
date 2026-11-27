@@ -9,8 +9,8 @@
 // no reply of the ended turn is still at streaming. It makes its own
 // channel and deletes it. Writes .openbot-build/channel-result-repeat-e2e/report.json.
 import assert from "node:assert/strict";
-import { DEVELOPMENT_FREE_DEFAULT } from "@openbot/contracts/development-defaults";
-import type { AgentSummary, ChannelPage } from "@openbot/contracts/ipc";
+import { DEVELOPMENT_FREE_DEFAULT } from "@pokebots/contracts/development-defaults";
+import type { AgentSummary, ChannelPage } from "@pokebots/contracts/ipc";
 import { ChannelClient, connectChannelE2e, waitFor, writeReport } from "./channel-e2e-support";
 
 const WORDS = ["OSPREY", "KESTREL", "PLOVER"];

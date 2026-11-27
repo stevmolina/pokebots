@@ -9,8 +9,8 @@ import {
   type PasswordManagerConnectInput,
   type PasswordManagerConnectMethod,
   type PasswordManagerId,
-} from "@openbot/contracts/ipc";
-import type { TeamCurrentCapability } from "@openbot/contracts/team-protocol/current";
+} from "@pokebots/contracts/ipc";
+import type { TeamCurrentCapability } from "@pokebots/contracts/team-protocol/current";
 import {
   PASSWORD_MANAGERS_CAPABILITY,
   PASSWORD_MANAGERS_CODE_LIMIT,
@@ -18,9 +18,9 @@ import {
   PASSWORD_MANAGERS_KEY_LIMIT,
   PASSWORD_MANAGERS_PASSWORD_LIMIT,
   PASSWORD_MANAGERS_ROUTES,
-} from "@openbot/contracts/team-protocol/password-managers-v1";
-import { sourceText } from "@openbot/i18n/source";
-import { registerSecretValue } from "@openbot/logging";
+} from "@pokebots/contracts/team-protocol/password-managers-v1";
+import { sourceText } from "@pokebots/i18n/source";
+import { registerSecretValue } from "@pokebots/logging";
 import type { Effect } from "effect";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import type { PasswordManagersService } from "../password-managers/password-managers-service";

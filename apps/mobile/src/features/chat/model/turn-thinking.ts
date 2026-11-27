@@ -1,4 +1,4 @@
-import { type ChannelMessage, type ConversationMessage, isAgentAnswer } from "@openbot/contracts/ipc";
+import { type ChannelMessage, type ConversationMessage, isAgentAnswer } from "@pokebots/contracts/ipc";
 import { isTurnThought, type TurnStepLine, type TurnStepLines } from "@/features/workspace/model/turn-step-lines";
 import { messageTime } from "./message-time";
 

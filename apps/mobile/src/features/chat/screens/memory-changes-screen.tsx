@@ -1,5 +1,5 @@
-import type { ConversationMemoryChange, ConversationMemoryChangeAction } from "@openbot/contracts/ipc";
-import type { MobileTextKey } from "@openbot/i18n/mobile";
+import type { ConversationMemoryChange, ConversationMemoryChangeAction } from "@pokebots/contracts/ipc";
+import type { MobileTextKey } from "@pokebots/i18n/mobile";
 import { useLocalSearchParams } from "expo-router";
 import { Typography } from "heroui-native";
 import type { LucideIcon } from "lucide-react-native";

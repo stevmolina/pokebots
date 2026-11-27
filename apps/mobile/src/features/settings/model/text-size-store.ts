@@ -1,4 +1,4 @@
-import { type AppInterfaceSize, DEFAULT_APP_INTERFACE_SIZE } from "@openbot/contracts/ipc";
+import { type AppInterfaceSize, DEFAULT_APP_INTERFACE_SIZE } from "@pokebots/contracts/ipc";
 import { create } from "zustand";
 
 /**

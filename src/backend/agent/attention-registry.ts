@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import type { FeedbackPhone } from "@openbot/contracts/feedback";
+import type { FeedbackPhone } from "@pokebots/contracts/feedback";
 import type {
   AgentApproval,
   AgentApprovalKind,
@@ -15,10 +15,10 @@ import type {
   RespondToApprovalInput,
   RespondToBrowserTakeoverInput,
   RespondToPromptInput,
-} from "@openbot/contracts/ipc";
-import { AGENT_RUNTIME_ATTENTION_LIMIT, BROWSER_TAKEOVER_REASONS, cardBrand } from "@openbot/contracts/ipc";
-import { type DynamicRecord, isOneOf, isString } from "@openbot/contracts/runtime-values";
-import { normalizeTwoStepKey, twoStepKeySecret } from "@openbot/contracts/two-step-code";
+} from "@pokebots/contracts/ipc";
+import { AGENT_RUNTIME_ATTENTION_LIMIT, BROWSER_TAKEOVER_REASONS, cardBrand } from "@pokebots/contracts/ipc";
+import { type DynamicRecord, isOneOf, isString } from "@pokebots/contracts/runtime-values";
+import { normalizeTwoStepKey, twoStepKeySecret } from "@pokebots/contracts/two-step-code";
 import {
   type ConversationUiBlock,
   normalizeConversationUiBlock,
@@ -40,9 +40,9 @@ import {
   uiBlockResponseFromAnswers,
   uiConfirmPreviewEdit,
   validateUiBlockResponse,
-} from "@openbot/contracts/ui-blocks";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger, redactText, registerSecretValue, toLogValue } from "@openbot/logging";
+} from "@pokebots/contracts/ui-blocks";
+import { sourceText } from "@pokebots/i18n/source";
+import { createOpenBotLogger, redactText, registerSecretValue, toLogValue } from "@pokebots/logging";
 import { Deferred, Effect, Option, Result, Schema } from "effect";
 import { getDomain } from "tldts";
 import type { AgentApiKeys, SavedApiKey } from "../agent-api-keys";

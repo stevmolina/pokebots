@@ -1,4 +1,4 @@
-import type { NotificationSound } from "@openbot/contracts/notification-relay";
+import type { NotificationSound } from "@pokebots/contracts/notification-relay";
 import type { NotificationPermission } from "@/features/settings/model/push-notifications";
 import type { OutsideTarget } from "@/features/workspace/model/outside-target";
 

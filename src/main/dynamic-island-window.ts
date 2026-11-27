@@ -5,16 +5,16 @@ import type {
   DynamicIslandNotchSize,
   DynamicIslandPreference,
   DynamicIslandPresentation,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   DEFAULT_DYNAMIC_ISLAND_PREFERENCE,
   dynamicIslandCompactHeight,
   dynamicIslandShowsMode,
   IDLE_DYNAMIC_ISLAND_PRESENTATION,
   IPC_ENDPOINTS,
-} from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger, type Logger, toLogValue } from "@openbot/logging";
+} from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
+import { createOpenBotLogger, type Logger, toLogValue } from "@pokebots/logging";
 import { Deferred, Effect, Schema, Semaphore } from "effect";
 import type { BrowserWindow, Display, Rectangle } from "electron";
 import { causeHelpers } from "../backend/effect-boundary";

@@ -1,4 +1,4 @@
-import { type McpAuthValues, mcpFlowComplete } from "@openbot/contracts/mcp-connect-flows";
+import { type McpAuthValues, mcpFlowComplete } from "@pokebots/contracts/mcp-connect-flows";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { usePreventRemove } from "expo-router/react-navigation";
 import { Typography } from "heroui-native";

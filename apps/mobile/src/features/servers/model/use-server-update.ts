@@ -1,4 +1,4 @@
-import type { HostReleaseStatus, HostUpdateStatus } from "@openbot/contracts/ipc";
+import type { HostReleaseStatus, HostUpdateStatus } from "@pokebots/contracts/ipc";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useQueryScope } from "@/features/auth/context/mobile-session-context";
 import { useMobileWorkspace, useMobileWorkspaceActions } from "@/features/workspace/context/mobile-workspace-context";

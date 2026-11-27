@@ -11,7 +11,7 @@ import type {
   VaultSecretRequest,
   VaultState,
   VaultTwoStepCodes,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   API_KEY_NAME_PATTERN,
   cardBrand,
@@ -21,9 +21,9 @@ import {
   VAULT_PASSWORD_LIMIT,
   VAULT_TEXT_LIMIT,
   vaultExpiryText,
-} from "@openbot/contracts/ipc";
-import { normalizeTwoStepKey } from "@openbot/contracts/two-step-code";
-import type { AppTextKey } from "@openbot/i18n";
+} from "@pokebots/contracts/ipc";
+import { normalizeTwoStepKey } from "@pokebots/contracts/two-step-code";
+import type { AppTextKey } from "@pokebots/i18n";
 import {
   Alert,
   AlertActions,
@@ -69,8 +69,8 @@ import {
   UserRound,
   userInitials,
   X,
-} from "@openbot/ui";
-import type { UserErrorDetails } from "@openbot/user-errors";
+} from "@pokebots/ui";
+import type { UserErrorDetails } from "@pokebots/user-errors";
 import type { JSX } from "@solidjs/web";
 import { createMemo, createSignal, createStore, For, Match, Show, Switch, untrack } from "solid-js";
 import { useText } from "../../text";

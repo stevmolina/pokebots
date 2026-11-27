@@ -1,10 +1,10 @@
-import { PICKER_PROVIDERS } from "@openbot/contracts/agent-providers";
+import { PICKER_PROVIDERS } from "@pokebots/contracts/agent-providers";
 import {
   type AgentModelOption,
   type AgentProviderId,
   type AgentReasoningEffort,
   providerDisplayName,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import { useQuery } from "@tanstack/react-query";
 import { router, useLocalSearchParams } from "expo-router";
 import { Typography } from "heroui-native";

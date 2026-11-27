@@ -2,9 +2,9 @@ import { Effect } from "effect";
 // App identity, first-run setup, the analytics preference, external links and the data and
 // diagnostics exports.
 
-import { bugReportFormUrl } from "@openbot/contracts/feedback";
-import { HOSTED_SERVER_CONTACT_URL } from "@openbot/contracts/hosted-servers";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { bugReportFormUrl } from "@pokebots/contracts/feedback";
+import { HOSTED_SERVER_CONTACT_URL } from "@pokebots/contracts/hosted-servers";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import {
   type AnalyticsPreference,
   type AppInfo,
@@ -15,9 +15,9 @@ import {
   type ExternalLinkBrowser,
   externalLinkAppName,
   GROK_BOT_EXPORT_URL,
-} from "@openbot/contracts/ipc";
-import type { AppTranslate } from "@openbot/i18n";
-import { analyticsOnByDefault } from "@openbot/telemetry";
+} from "@pokebots/contracts/ipc";
+import type { AppTranslate } from "@pokebots/i18n";
+import { analyticsOnByDefault } from "@pokebots/telemetry";
 import { app, type BrowserWindow, dialog, type OpenDialogOptions, type WebContents } from "electron";
 import { version as developmentVersion } from "../../../package.json";
 import type { AgentService } from "../../backend/agent-service";

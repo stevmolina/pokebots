@@ -17,14 +17,14 @@ import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { Boom } from "@hapi/boom";
-import type { MessagingConnection, WhatsAppLinkState } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+import type { MessagingConnection, WhatsAppLinkState } from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
 import {
   newStoreKey,
   WhatsAppAuthStore,
   WhatsAppStoreLocked,
   WhatsAppStoreUnreadable,
-} from "@openbot/whatsapp/auth-store";
+} from "@pokebots/whatsapp/auth-store";
 import {
   type AnyMessageContent,
   type BaileysEventMap,
@@ -33,7 +33,7 @@ import {
   proto,
   type UserFacingSocketConfig,
   type WAMessage,
-} from "@openbot/whatsapp/baileys";
+} from "@pokebots/whatsapp/baileys";
 import { gc } from "bun";
 import { Effect, Scope } from "effect";
 import type { AgentBrowserHost } from "../src/backend/agent/turn-lifecycle";

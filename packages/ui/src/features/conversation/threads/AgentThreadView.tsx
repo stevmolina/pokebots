@@ -1,4 +1,4 @@
-import { limitedQuoteText } from "@openbot/contracts/chat-tag-references";
+import { limitedQuoteText } from "@pokebots/contracts/chat-tag-references";
 import type {
   AgentApproval,
   AgentTask,
@@ -8,75 +8,75 @@ import type {
   InstalledSkill,
   MessageReaction,
   QueueDelivery,
-} from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
-import { isAgentTaskActive } from "@openbot/team-client/agent-tasks";
-import { Button, Check, CopyButton, DropdownMenu, LoaderCircle, MessageSquareText, Square, toast } from "@openbot/ui";
-import { createScrollFades } from "@openbot/ui/components/createScrollFades";
+} from "@pokebots/contracts/ipc";
+import type { AppTextKey } from "@pokebots/i18n";
+import { isAgentTaskActive } from "@pokebots/team-client/agent-tasks";
+import { Button, Check, CopyButton, DropdownMenu, LoaderCircle, MessageSquareText, Square, toast } from "@pokebots/ui";
+import { createScrollFades } from "@pokebots/ui/components/createScrollFades";
 import type {
   AgentMessage,
   AgentProfile,
   ComposerBrowserTab,
   ComposerMcpServer,
   ComposerThread,
-} from "@openbot/ui/data";
-import { AgentAvatar } from "@openbot/ui/features/agents/AgentAvatar";
-import { AgentActivityIndicator, nextAgentActivityLabel } from "@openbot/ui/features/conversation/AgentActivity";
+} from "@pokebots/ui/data";
+import { AgentAvatar } from "@pokebots/ui/features/agents/AgentAvatar";
+import { AgentActivityIndicator, nextAgentActivityLabel } from "@pokebots/ui/features/conversation/AgentActivity";
 import {
   type AgentStep,
   AgentStepsDisclosure,
   type AgentStepsFacts,
   type AgentStepsTrace,
-} from "@openbot/ui/features/conversation/AgentSteps";
+} from "@pokebots/ui/features/conversation/AgentSteps";
 import {
   AttachmentCards,
   type AttachmentDownloads,
   type AttachmentMediaSource,
-} from "@openbot/ui/features/conversation/AttachmentCards";
-import { AwaitingReplies, type AwaitingReplyItem } from "@openbot/ui/features/conversation/AwaitingReplies";
-import { agentActivityExitDuration } from "@openbot/ui/features/conversation/activity-timing";
-import { branchPointIds } from "@openbot/ui/features/conversation/branch-points";
-import { type ChangeMarkerActions, ChatActionMarker } from "@openbot/ui/features/conversation/ChatActionMarker";
-import { type ChatMessageAuthor, ChatMessageRow } from "@openbot/ui/features/conversation/ChatMessageRow";
-import { ComposerAddMenu, ComposerArtifactChip } from "@openbot/ui/features/conversation/ComposerAddMenu";
+} from "@pokebots/ui/features/conversation/AttachmentCards";
+import { AwaitingReplies, type AwaitingReplyItem } from "@pokebots/ui/features/conversation/AwaitingReplies";
+import { agentActivityExitDuration } from "@pokebots/ui/features/conversation/activity-timing";
+import { branchPointIds } from "@pokebots/ui/features/conversation/branch-points";
+import { type ChangeMarkerActions, ChatActionMarker } from "@pokebots/ui/features/conversation/ChatActionMarker";
+import { type ChatMessageAuthor, ChatMessageRow } from "@pokebots/ui/features/conversation/ChatMessageRow";
+import { ComposerAddMenu, ComposerArtifactChip } from "@pokebots/ui/features/conversation/ComposerAddMenu";
 import {
   ComposerAttachmentRow,
   type ComposerPendingImage,
-} from "@openbot/ui/features/conversation/ComposerAttachmentRow";
+} from "@pokebots/ui/features/conversation/ComposerAttachmentRow";
 import {
   ComposerEditor,
   type ComposerPasteResult,
   type ComposerSelection,
   type QuoteRequest,
-} from "@openbot/ui/features/conversation/ComposerEditor";
-import { ComposerNotice } from "@openbot/ui/features/conversation/ComposerNotice";
-import { ComposerReplyPreview } from "@openbot/ui/features/conversation/ComposerReplyPreview";
-import { ComposerSendControl } from "@openbot/ui/features/conversation/ComposerSendControl";
-import { ComposerStackCard } from "@openbot/ui/features/conversation/ComposerStackCard";
-import { ContextUsageMeter, type ContextUsageView } from "@openbot/ui/features/conversation/ContextUsage";
-import { ApprovalCard } from "@openbot/ui/features/conversation/ConversationPrompts";
-import { dayMarkerLabel } from "@openbot/ui/features/conversation/chat-day-markers";
-import { CHAT_TIME_GAP_MS, continuesSenderRun } from "@openbot/ui/features/conversation/chat-grouping";
+} from "@pokebots/ui/features/conversation/ComposerEditor";
+import { ComposerNotice } from "@pokebots/ui/features/conversation/ComposerNotice";
+import { ComposerReplyPreview } from "@pokebots/ui/features/conversation/ComposerReplyPreview";
+import { ComposerSendControl } from "@pokebots/ui/features/conversation/ComposerSendControl";
+import { ComposerStackCard } from "@pokebots/ui/features/conversation/ComposerStackCard";
+import { ContextUsageMeter, type ContextUsageView } from "@pokebots/ui/features/conversation/ContextUsage";
+import { ApprovalCard } from "@pokebots/ui/features/conversation/ConversationPrompts";
+import { dayMarkerLabel } from "@pokebots/ui/features/conversation/chat-day-markers";
+import { CHAT_TIME_GAP_MS, continuesSenderRun } from "@pokebots/ui/features/conversation/chat-grouping";
 import {
   preferredMessageScrollBehavior,
   ScrollToLatestButton,
-} from "@openbot/ui/features/conversation/MessageNavigation";
+} from "@pokebots/ui/features/conversation/MessageNavigation";
 import {
   DeleteMessageDialog,
   MessageActions,
   MessageMenu,
   MessageMenuItems,
   type MessageMenuItemsProps,
-} from "@openbot/ui/features/conversation/MessageRendering";
-import { type ChatBubbleStyle, ownMessageAuthor } from "@openbot/ui/features/conversation/own-bubble";
-import { QueuePanel } from "@openbot/ui/features/conversation/QueuePanel";
+} from "@pokebots/ui/features/conversation/MessageRendering";
+import { type ChatBubbleStyle, ownMessageAuthor } from "@pokebots/ui/features/conversation/own-bubble";
+import { QueuePanel } from "@pokebots/ui/features/conversation/QueuePanel";
 import {
   MessageSelectionActions,
   type QuoteShortcutModifier,
-} from "@openbot/ui/features/conversation/SelectionActions";
-import type { SendShortcut } from "@openbot/ui/features/conversation/send-shortcut";
-import { ComposerVoiceControls, type VoicePhase } from "@openbot/ui/features/conversation/VoiceRecordingMorph";
-import { type TextValue, useText } from "@openbot/ui/text";
+} from "@pokebots/ui/features/conversation/SelectionActions";
+import type { SendShortcut } from "@pokebots/ui/features/conversation/send-shortcut";
+import { ComposerVoiceControls, type VoicePhase } from "@pokebots/ui/features/conversation/VoiceRecordingMorph";
+import { type TextValue, useText } from "@pokebots/ui/text";
 import type { JSX } from "@solidjs/web";
 import { children, createEffect, createMemo, createSignal, For, onCleanup, onSettled, Show, untrack } from "solid-js";
 import { createComposerRowsResize } from "../createComposerRowsResize";

@@ -1,8 +1,8 @@
 import {
   CLAUDE_COMPACT_WINDOW_CAPABILITY,
   CLAUDE_COMPACT_WINDOW_ROUTES,
-} from "@openbot/contracts/team-protocol/claude-compact-window-v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/team-protocol/claude-compact-window-v1";
+import { sourceText } from "@pokebots/i18n/source";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import type { TeamApiAdmin } from "./dependencies";
 import { HttpError } from "./http-error";

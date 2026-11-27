@@ -10,12 +10,12 @@ export const messages = {
   "error.workflow.conditionBranch": "Elke verbinding vanuit een voorwaarde moet ja of nee zijn.",
   "error.workflow.duplicateEdge": "Deze twee stappen hebben deze verbinding al.",
   "error.workflow.serverTooOld":
-    "Deze server ondersteunt geen workflows. Werk OpenBot bij op de computer waarop de server draait.",
+    "Deze server ondersteunt geen workflows. Werk Pokebots bij op de computer waarop de server draait.",
   "error.workflow.nodeUnsupported":
-    "Deze versie van OpenBot kan nog geen stappen voor afbeeldingen, bestanden en berichten uitvoeren.",
-  "error.workflow.interrupted": "OpenBot is gestopt terwijl deze stap liep. Voer hem opnieuw uit.",
+    "Deze versie van Pokebots kan nog geen stappen voor afbeeldingen, bestanden en berichten uitvoeren.",
+  "error.workflow.interrupted": "Pokebots is gestopt terwijl deze stap liep. Voer hem opnieuw uit.",
   "error.workflow.agentMissing": "Kies een agent voor deze stap.",
-  "error.workflow.handoffFailed": "OpenBot kon deze stap niet naar de agent sturen.",
+  "error.workflow.handoffFailed": "Pokebots kon deze stap niet naar de agent sturen.",
   "error.workflow.agentStepEnded": "Het bericht van de agent voor deze stap is verwijderd voordat de agent antwoordde.",
   "error.workflow.agentStepStopped":
     "De agent is gestopt voordat hij deze stap beantwoordde. Voer de stap opnieuw uit.",
@@ -29,7 +29,7 @@ export const messages = {
     "Het model van deze stap is niet beschikbaar. Kies een ander model voor deze stap.",
   "error.workflow.providerBusy": "De provider is bezet. Wacht een paar minuten en voer de stap dan opnieuw uit.",
   "error.workflow.providerOffline":
-    "OpenBot kon de provider niet bereiken. Controleer de internetverbinding en voer de stap dan opnieuw uit.",
+    "Pokebots kon de provider niet bereiken. Controleer de internetverbinding en voer de stap dan opnieuw uit.",
   "error.workflow.modelBusy": "Er loopt een ander verzoek aan het model. Voer de stap zo opnieuw uit.",
   "error.workflow.mediaFailed": "Het model kon de afbeelding of video niet maken. Voer de stap opnieuw uit.",
   "error.workflow.pictureMissing": "De afbeelding staat niet meer op de server. Stuur hem opnieuw.",
@@ -48,7 +48,7 @@ export const messages = {
   "error.workflow.outputPlaceMissing": "Kies een berichtenplek voor deze uitvoer.",
   "error.workflow.outputChannelMissing": "Kies een kanaal voor deze uitvoer.",
   "error.workflow.outputChannelFailed":
-    "OpenBot kon het resultaat niet in het kanaal plaatsen. Voer de stap opnieuw uit.",
+    "Pokebots kon het resultaat niet in het kanaal plaatsen. Voer de stap opnieuw uit.",
   "error.workflow.discordNoMessage":
     "Deze uitvoer werkt op het Discord-bericht dat de run startte. Start de run vanuit een vermelding in Discord, of kies Posten in kanaal.",
   "error.workflow.slackNoMessage":
@@ -58,7 +58,7 @@ export const messages = {
   "error.workflow.outputConnectionOff":
     "De berichtenverbinding van deze uitvoer staat uit of is verwijderd. Kies opnieuw een plek.",
   "error.workflow.outputNotRunning": "De berichtenverbinding draait nu niet. Probeer het opnieuw als hij draait.",
-  "error.workflow.outputRefused": "De plek heeft het bericht geweigerd. Zorg dat OpenBot daar mag posten.",
+  "error.workflow.outputRefused": "De plek heeft het bericht geweigerd. Zorg dat Pokebots daar mag posten.",
   "error.workflow.outputUncertain":
     "Het bericht is onderweg gestopt. Een deel ervan kan op de plek staan. Kijk daar voordat je het opnieuw probeert.",
   "error.workflow.tooLarge":
@@ -84,7 +84,7 @@ export const messages = {
     "De OpenBot GitHub App kan deze repository niet wijzigen. Open GitHub en geef de app toegang.",
   "error.workflow.githubLocked": "Dit gesprek is vergrendeld op GitHub.",
   "error.workflow.githubRefused": "GitHub heeft de wijziging geweigerd: {detail}",
-  "error.workflow.githubUnreachable": "OpenBot kon GitHub niet bereiken. Voer de stap opnieuw uit.",
+  "error.workflow.githubUnreachable": "Pokebots kon GitHub niet bereiken. Voer de stap opnieuw uit.",
   "error.workflow.githubUncertain":
     "De wijziging is onderweg gestopt. Hij kan al op GitHub staan. Kijk daar voordat je de stap opnieuw uitvoert.",
   "error.workflow.githubNoEvent": "GitHub heeft geen issue of pull request waarop deze trigger start.",
@@ -97,7 +97,7 @@ export const messages = {
     "Sunra gebruikt invoerafbeeldingen alleen met een persoonlijk account. Selecteer je persoonlijke account in Sunra of verwijder de afbeeldingsverbindingen.",
   "error.workflow.sunraFailed": "Sunra kon het bestand niet maken: {reason}",
   "error.workflow.sunraTimeout":
-    "Sunra heeft het bestand niet op tijd gemaakt. Kijk in het project OpenBot op sunra.ai voordat je de stap opnieuw uitvoert.",
+    "Sunra heeft het bestand niet op tijd gemaakt. Kijk in het project Pokebots op sunra.ai voordat je de stap opnieuw uitvoert.",
   "error.workflow.higgsfieldSignIn": "Meld je aan bij Higgsfield in Apps om Higgsfield-modellen te gebruiken.",
   "error.workflow.higgsfieldNoCredits":
     "Je Higgsfield-account heeft niet genoeg tegoed. Voeg tegoed toe op higgsfield.ai/pricing en voer de stap daarna opnieuw uit.",

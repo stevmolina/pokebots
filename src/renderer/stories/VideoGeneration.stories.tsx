@@ -1,5 +1,5 @@
-import type { AttachmentSummary } from "@openbot/contracts/ipc";
-import { VideoGeneration, type VideoGenerationProps } from "@openbot/ui/features/conversation/VideoGeneration";
+import type { AttachmentSummary } from "@pokebots/contracts/ipc";
+import { VideoGeneration, type VideoGenerationProps } from "@pokebots/ui/features/conversation/VideoGeneration";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 

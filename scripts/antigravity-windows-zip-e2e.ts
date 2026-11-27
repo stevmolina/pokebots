@@ -11,7 +11,7 @@ import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { crc32 } from "node:zlib";
-import { sourceText } from "@openbot/i18n/source";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect, Exit } from "effect";
 import lockValue from "../native-runtime.lock.json";
 import { providerRuntimeDescriptor } from "../src/main/provider-runtime-descriptors";

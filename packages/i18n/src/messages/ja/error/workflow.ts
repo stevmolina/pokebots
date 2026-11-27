@@ -10,12 +10,12 @@ export const messages = {
   "error.workflow.conditionBranch": "条件からの接続は、それぞれ「はい」か「いいえ」である必要があります。",
   "error.workflow.duplicateEdge": "この 2 つのステップにはすでにこの接続があります。",
   "error.workflow.serverTooOld":
-    "このサーバーはワークフローに対応していません。サーバーを実行しているコンピューターの OpenBot を更新してください。",
+    "このサーバーはワークフローに対応していません。サーバーを実行しているコンピューターの Pokebots を更新してください。",
   "error.workflow.nodeUnsupported":
-    "このバージョンの OpenBot では、画像、ファイル、メッセージのステップはまだ実行できません。",
-  "error.workflow.interrupted": "このステップの実行中に OpenBot が停止しました。もう一度実行してください。",
+    "このバージョンの Pokebots では、画像、ファイル、メッセージのステップはまだ実行できません。",
+  "error.workflow.interrupted": "このステップの実行中に Pokebots が停止しました。もう一度実行してください。",
   "error.workflow.agentMissing": "このステップのエージェントを選択してください。",
-  "error.workflow.handoffFailed": "OpenBot はこのステップをエージェントに送信できませんでした。",
+  "error.workflow.handoffFailed": "Pokebots はこのステップをエージェントに送信できませんでした。",
   "error.workflow.agentStepEnded": "エージェントが回答する前に、このステップのメッセージが削除されました。",
   "error.workflow.agentStepStopped":
     "エージェントはこのステップに回答する前に停止しました。ステップをもう一度実行してください。",
@@ -28,7 +28,7 @@ export const messages = {
   "error.workflow.modelUnavailable": "このステップのモデルは利用できません。このステップに別のモデルを選んでください。",
   "error.workflow.providerBusy": "プロバイダーが混み合っています。数分待ってから、ステップをもう一度実行してください。",
   "error.workflow.providerOffline":
-    "OpenBot がプロバイダーに接続できませんでした。インターネット接続を確認してから、ステップをもう一度実行してください。",
+    "Pokebots がプロバイダーに接続できませんでした。インターネット接続を確認してから、ステップをもう一度実行してください。",
   "error.workflow.modelBusy": "別のモデルリクエストが実行中です。しばらくしてからステップを再実行してください。",
   "error.workflow.mediaFailed": "モデルが画像または動画を作成できませんでした。ステップをもう一度実行してください。",
   "error.workflow.pictureMissing": "画像はサーバーにありません。もう一度送信してください。",
@@ -45,7 +45,7 @@ export const messages = {
   "error.workflow.outputPlaceMissing": "この出力のメッセージングの投稿先を選んでください。",
   "error.workflow.outputChannelMissing": "この出力のチャンネルを選んでください。",
   "error.workflow.outputChannelFailed":
-    "OpenBot は結果をチャンネルに投稿できませんでした。ステップをもう一度実行してください。",
+    "Pokebots は結果をチャンネルに投稿できませんでした。ステップをもう一度実行してください。",
   "error.workflow.discordNoMessage":
     "この出力は実行を開始した Discord メッセージに対して動作します。Discord のメンションから実行を開始するか、「チャンネルに投稿」を選んでください。",
   "error.workflow.slackNoMessage":
@@ -56,7 +56,7 @@ export const messages = {
     "この出力のメッセージング接続はオフか、削除されています。投稿先をもう一度選んでください。",
   "error.workflow.outputNotRunning":
     "メッセージング接続は現在動作していません。動作しているときにもう一度試してください。",
-  "error.workflow.outputRefused": "投稿先が投稿を拒否しました。OpenBot がそこに投稿できることを確認してください。",
+  "error.workflow.outputRefused": "投稿先が投稿を拒否しました。Pokebots がそこに投稿できることを確認してください。",
   "error.workflow.outputUncertain":
     "投稿が途中で止まりました。一部がすでに投稿先にある可能性があります。もう一度試す前に確認してください。",
   "error.workflow.tooLarge":
@@ -83,7 +83,7 @@ export const messages = {
     "OpenBot GitHub App はこのリポジトリを変更できません。GitHub を開いてアクセスを許可してください。",
   "error.workflow.githubLocked": "この会話は GitHub でロックされています。",
   "error.workflow.githubRefused": "GitHub が変更を拒否しました: {detail}",
-  "error.workflow.githubUnreachable": "OpenBot は GitHub に接続できませんでした。ステップをもう一度実行してください。",
+  "error.workflow.githubUnreachable": "Pokebots は GitHub に接続できませんでした。ステップをもう一度実行してください。",
   "error.workflow.githubUncertain":
     "変更が途中で止まりました。GitHub にすでに反映されている可能性があります。ステップを再実行する前に GitHub を確認してください。",
   "error.workflow.githubNoEvent": "このトリガーが開始する Issue またはプルリクエストが GitHub にありません。",
@@ -96,7 +96,7 @@ export const messages = {
     "Sunra は個人アカウントでのみ入力画像を使います。Sunra で個人アカウントを選ぶか、画像の接続を外してください。",
   "error.workflow.sunraFailed": "Sunra がファイルを作成できませんでした: {reason}",
   "error.workflow.sunraTimeout":
-    "Sunra が時間内にファイルを完成できませんでした。ステップをもう一度実行する前に、sunra.ai の OpenBot プロジェクトを確認してください。",
+    "Sunra が時間内にファイルを完成できませんでした。ステップをもう一度実行する前に、sunra.ai の Pokebots プロジェクトを確認してください。",
   "error.workflow.higgsfieldSignIn": "Higgsfield のモデルを使うには、アプリで Higgsfield にサインインしてください。",
   "error.workflow.higgsfieldNoCredits":
     "Higgsfield アカウントのクレジットが足りません。higgsfield.ai/pricing でクレジットを追加してから、ステップをもう一度実行してください。",

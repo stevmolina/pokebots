@@ -1,6 +1,6 @@
-import { Button, Heading } from "@openbot/ui";
-import type { VoicePhase } from "@openbot/ui/features/conversation/VoiceRecordingMorph";
-import { currentText } from "@openbot/ui/text";
+import { Button, Heading } from "@pokebots/ui";
+import type { VoicePhase } from "@pokebots/ui/features/conversation/VoiceRecordingMorph";
+import { currentText } from "@pokebots/ui/text";
 import { createSignal, For, onCleanup, onSettled } from "solid-js";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { createConversationController } from "../src/features/conversation/Conversation";

@@ -10,26 +10,26 @@ import {
   type McpServerConfig,
   type McpSignInState,
   type SkillCategory,
-} from "@openbot/contracts/ipc";
-import type { McpConnectFlow } from "@openbot/contracts/mcp-connect-flows";
-import { CONNECTOR_LISTINGS } from "@openbot/ui/features/connectors/connector-catalog";
-import { Marketplace } from "@openbot/ui/features/marketplace/Marketplace";
-import { AgentsDialog } from "@openbot/ui/features/marketplace/MarketplaceAgentsDialog";
+} from "@pokebots/contracts/ipc";
+import type { McpConnectFlow } from "@pokebots/contracts/mcp-connect-flows";
+import { CONNECTOR_LISTINGS } from "@pokebots/ui/features/connectors/connector-catalog";
+import { Marketplace } from "@pokebots/ui/features/marketplace/Marketplace";
+import { AgentsDialog } from "@pokebots/ui/features/marketplace/MarketplaceAgentsDialog";
 import type {
   MarketplaceApp,
   MarketplaceAppAccount,
   MarketplaceAppConnection,
   MarketplaceAppsBlock,
   MarketplaceModel,
-} from "@openbot/ui/features/marketplace/marketplace-model";
+} from "@pokebots/ui/features/marketplace/marketplace-model";
 import {
   createMarketplaceNavigation,
   type MarketplaceNavigation,
-} from "@openbot/ui/features/marketplace/marketplace-view";
-import { McpConnectDialog } from "@openbot/ui/features/settings/McpConnectDialog";
-import type { McpConnectSubject } from "@openbot/ui/features/settings/McpConnectShell";
-import type { MarketplacePluginApp } from "@openbot/ui/features/settings/marketplace-plugins";
-import { currentText } from "@openbot/ui/text";
+} from "@pokebots/ui/features/marketplace/marketplace-view";
+import { McpConnectDialog } from "@pokebots/ui/features/settings/McpConnectDialog";
+import type { McpConnectSubject } from "@pokebots/ui/features/settings/McpConnectShell";
+import type { MarketplacePluginApp } from "@pokebots/ui/features/settings/marketplace-plugins";
+import { currentText } from "@pokebots/ui/text";
 import type { JSX } from "@solidjs/web";
 import { createSignal, createStore, onSettled, Show, untrack } from "solid-js";
 import { fn } from "storybook/test";

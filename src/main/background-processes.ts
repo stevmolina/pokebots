@@ -12,8 +12,8 @@
 import { execFile } from "node:child_process";
 import { readFile, realpath } from "node:fs/promises";
 import { sep } from "node:path";
-import type { BackgroundProcess } from "@openbot/contracts/ipc";
-import { redactText } from "@openbot/logging";
+import type { BackgroundProcess } from "@pokebots/contracts/ipc";
+import { redactText } from "@pokebots/logging";
 import { Effect, Schema } from "effect";
 import { causeHelpers } from "../backend/effect-boundary";
 import { AGENT_PROCESS_VARIABLE } from "./server-memory";

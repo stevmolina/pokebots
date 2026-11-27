@@ -1,4 +1,4 @@
-import type { AppTextKey } from "@openbot/i18n";
+import type { AppTextKey } from "@pokebots/i18n";
 import {
   Button,
   Field,
@@ -9,7 +9,7 @@ import {
   ItemGroup,
   ItemTitle,
   SettingsSection,
-} from "@openbot/ui";
+} from "@pokebots/ui";
 import type { JSX } from "@solidjs/web";
 import { createSignal, Show } from "solid-js";
 import { useText } from "../../text";

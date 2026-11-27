@@ -5,7 +5,7 @@ import {
   sidebarFolderHeight,
   sidebarFolderParents,
   sidebarFolderPath,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import { router } from "expo-router";
 import { Typography } from "heroui-native";
 import { useThemeColor } from "heroui-native/hooks";

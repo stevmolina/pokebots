@@ -1,4 +1,4 @@
-import { FEEDBACK_LIMITS, type FeedbackPhone } from "@openbot/contracts/feedback";
+import { FEEDBACK_LIMITS, type FeedbackPhone } from "@pokebots/contracts/feedback";
 import * as Device from "expo-device";
 import { File, Paths } from "expo-file-system";
 import * as Updates from "expo-updates";

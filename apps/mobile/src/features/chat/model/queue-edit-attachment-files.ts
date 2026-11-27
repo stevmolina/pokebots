@@ -1,4 +1,4 @@
-import { MOBILE_ATTACHMENT_BYTES } from "@openbot/team-client/remote-peer";
+import { MOBILE_ATTACHMENT_BYTES } from "@pokebots/team-client/remote-peer";
 import * as Crypto from "expo-crypto";
 import * as FileSystem from "expo-file-system/legacy";
 import { currentText } from "@/shared/lib/text";

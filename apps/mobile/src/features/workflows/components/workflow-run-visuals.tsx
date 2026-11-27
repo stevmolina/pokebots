@@ -1,4 +1,4 @@
-import type { WorkflowStep } from "@openbot/contracts/ipc";
+import type { WorkflowStep } from "@pokebots/contracts/ipc";
 import { Typography } from "heroui-native";
 import CircleCheck from "lucide-react-native/icons/circle-check";
 import CircleX from "lucide-react-native/icons/circle-x";

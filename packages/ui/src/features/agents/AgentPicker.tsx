@@ -1,8 +1,8 @@
-import { ActiveCurrentRow, Check, Combobox, Popover, Search } from "@openbot/ui";
-import { createScrollFades } from "@openbot/ui/components/createScrollFades";
-import type { AgentProfile } from "@openbot/ui/data";
-import { ContentExitMotion } from "@openbot/ui/menu-motion";
-import { useText } from "@openbot/ui/text";
+import { ActiveCurrentRow, Check, Combobox, Popover, Search } from "@pokebots/ui";
+import { createScrollFades } from "@pokebots/ui/components/createScrollFades";
+import type { AgentProfile } from "@pokebots/ui/data";
+import { ContentExitMotion } from "@pokebots/ui/menu-motion";
+import { useText } from "@pokebots/ui/text";
 import type { JSX } from "@solidjs/web";
 import { createMemo, createSignal, onCleanup, Show } from "solid-js";
 import { MatchedName, matchByName } from "../../components/name-match";

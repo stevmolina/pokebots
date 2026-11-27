@@ -1,6 +1,6 @@
 @import "@fontsource-variable/inter";
-@import "@openbot/brand/tokens.css";
-@import "@openbot/brand/logo.css";
+@import "@pokebots/brand/tokens.css";
+@import "@pokebots/brand/logo.css";
 
 /* The status page. Every rule is under `.status-page`, so the page also renders in Storybook. */
 

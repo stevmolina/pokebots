@@ -97,17 +97,17 @@ export const messages = {
   "browser.secret.takeOver": "Przejmij",
   "browser.secret.failed": "Nie udało się wykonać żądania. Sprawdź połączenie i spróbuj ponownie.",
   "browser.secret.vaultSkip.agentScript":
-    "OpenBot nie użył Twoich zapisanych danych logowania, ponieważ agent uruchomił skrypt na tej stronie. Aby ich użyć, poproś agenta o ponowne załadowanie strony i ponowną próbę.",
+    "Pokebots nie użył Twoich zapisanych danych logowania, ponieważ agent uruchomił skrypt na tej stronie. Aby ich użyć, poproś agenta o ponowne załadowanie strony i ponowną próbę.",
   "browser.secret.vaultSkip.fieldKind":
-    "OpenBot nie użył Twoich zapisanych danych logowania, ponieważ agent wybrał niewłaściwe pole na stronie.",
+    "Pokebots nie użył Twoich zapisanych danych logowania, ponieważ agent wybrał niewłaściwe pole na stronie.",
   "browser.secret.vaultSkip.loginChoice":
-    "OpenBot nie użył zapisanych danych logowania, ponieważ agent nie wybrał żadnych z danych logowania zapisanych dla tej witryny. Powiedz agentowi, którego konta ma użyć.",
+    "Pokebots nie użył zapisanych danych logowania, ponieważ agent nie wybrał żadnych z danych logowania zapisanych dla tej witryny. Powiedz agentowi, którego konta ma użyć.",
   "browser.secret.vaultSkip.noPassword":
-    "OpenBot nie użył Twoich zapisanych danych logowania, ponieważ nie zawierają hasła do tej witryny.",
+    "Pokebots nie użył Twoich zapisanych danych logowania, ponieważ nie zawierają hasła do tej witryny.",
   "browser.secret.vaultSkip.noAuthenticatorKey":
-    "OpenBot nie użył Twoich zapisanych danych logowania, ponieważ nie zawierają klucza aplikacji uwierzytelniającej.",
+    "Pokebots nie użył Twoich zapisanych danych logowania, ponieważ nie zawierają klucza aplikacji uwierzytelniającej.",
   "browser.secret.vaultSkip.vaultUnreadable":
-    "OpenBot nie użył zapisanych danych logowania, ponieważ nie mógł odczytać Twojego menedżera haseł.",
+    "Pokebots nie użył zapisanych danych logowania, ponieważ nie mógł odczytać Twojego menedżera haseł.",
   "browser.error.openAddress": "Nie udało się otworzyć adresu w tej karcie.",
   "browser.error.channelNoBrowserMember": "Żaden członek nie może otworzyć nowej karty w tym kanale.",
   "browser.error.closeTab": "Nie udało się zamknąć karty przeglądarki.",
@@ -172,21 +172,21 @@ export const messages = {
   "browser.signIn.local": "Zaloguj się na tym komputerze",
   "browser.signIn.title": "Zaloguj się do {site}",
   "browser.signIn.description":
-    "Niektóre witryny odrzucają logowanie z serwera. Zaloguj się na tym komputerze, a OpenBot wyśle logowanie do {site} na {server}. Wszyscy agenci i członkowie na {server} mogą go potem używać w przeglądarce.",
+    "Niektóre witryny odrzucają logowanie z serwera. Zaloguj się na tym komputerze, a Pokebots wyśle logowanie do {site} na {server}. Wszyscy agenci i członkowie na {server} mogą go potem używać w przeglądarce.",
   "browser.signIn.windowOpen":
-    "Zaloguj się w oknie, które się otworzyło. OpenBot wyśle logowanie, gdy będzie gotowe. Jeśli okno pozostanie otwarte, wybierz Gotowe.",
+    "Zaloguj się w oknie, które się otworzyło. Pokebots wyśle logowanie, gdy będzie gotowe. Jeśli okno pozostanie otwarte, wybierz Gotowe.",
   "browser.signIn.windowClosed":
     "Okno logowania jest zamknięte. Wybierz Gotowe, aby wysłać logowanie, albo otwórz okno ponownie.",
   "browser.signIn.reopen": "Otwórz okno logowania",
   "browser.signIn.sending": "Wysyłanie na {server}…",
   "browser.signIn.sent": "Zalogowano do {site} na {server}",
   "browser.signIn.notFound":
-    "OpenBot nie znalazł logowania do {site}. Zaloguj się w oknie, a następnie wybierz Gotowe.",
+    "Pokebots nie znalazł logowania do {site}. Zaloguj się w oknie, a następnie wybierz Gotowe.",
   "browser.signIn.stillSignedOut": "{server} nadal pokazuje stronę logowania do {site}. Dokończ logowanie w oknie.",
-  "browser.signIn.failed": "OpenBot nie mógł wysłać logowania.",
+  "browser.signIn.failed": "Pokebots nie mógł wysłać logowania.",
   "browser.profiles.title": "Profile przeglądarki",
   "browser.profiles.subtitle":
-    "Każdy profil przechowuje na komputerze, na którym działa OpenBot, własne logowania, pliki cookie i dane witryn.",
+    "Każdy profil przechowuje na komputerze, na którym działa Pokebots, własne logowania, pliki cookie i dane witryn.",
   "browser.profiles.label": "Profile przeglądarki",
   "browser.profiles.newName": "Nazwa profilu",
   "browser.profiles.create": "Dodaj",
@@ -215,8 +215,8 @@ export const messages = {
   "browser.profiles.deleteDescription":
     "Spowoduje to usunięcie logowań, plików cookie i danych witryn profilu. Jego otwarte karty zostaną zamknięte.",
   "browser.profiles.deleteAgents": "Ci agenci przejdą na wspólny profil: {agents}.",
-  "browser.profiles.failed": "OpenBot nie mógł zmienić profili przeglądarki.",
-  "browser.profiles.loadFailed": "OpenBot nie mógł wczytać profili przeglądarki.",
+  "browser.profiles.failed": "Pokebots nie mógł zmienić profili przeglądarki.",
+  "browser.profiles.loadFailed": "Pokebots nie mógł wczytać profili przeglądarki.",
   "browser.profiles.tabLabel": "Profil: {name}",
   "browser.profiles.tabLabelProxy": "Profil: {name} · Proxy: {proxy}",
   "browser.profiles.agentTabLabel": "Własny profil agenta",
@@ -236,7 +236,7 @@ export const messages = {
   "browser.proxies.addTitle": "Dodaj serwer proxy",
   "browser.proxies.editTitle": "Edytuj {name}",
   "browser.proxies.dialogDescription":
-    "Użyj socks5, http lub https. Nazwa użytkownika i hasło są opcjonalne dla każdego typu. Hasło pozostaje zaszyfrowane na komputerze, na którym działa OpenBot.",
+    "Użyj socks5, http lub https. Nazwa użytkownika i hasło są opcjonalne dla każdego typu. Hasło pozostaje zaszyfrowane na komputerze, na którym działa Pokebots.",
   "browser.proxies.address": "Adres",
   "browser.proxies.addressPlaceholder": "socks5://user:password@host:1080",
   "browser.proxies.deleteUsed": {
@@ -248,7 +248,7 @@ export const messages = {
   "browser.proxies.deleteUnused": "Żaden profil nie używa tego serwera proxy.",
   "browser.proxies.failing": "{name} nie odpowiada",
   "browser.proxies.signInRefused": "{name} odrzucił logowanie",
-  "browser.proxies.unsupported": "Ten serwer nie może używać serwerów proxy. Zaktualizuj na nim OpenBot.",
+  "browser.proxies.unsupported": "Ten serwer nie może używać serwerów proxy. Zaktualizuj na nim Pokebots.",
   "browser.proxies.yourComputer": "Twój komputer",
   "browser.proxies.memberComputer": "Komputer użytkownika {name}",
   "browser.proxies.unknownComputer": "Komputer członka",
@@ -259,7 +259,7 @@ export const messages = {
   "browser.proxies.offlineBadge": "{name} jest offline",
   "browser.proxies.shareTitle": "Udostępnić połączenie tego komputera?",
   "browser.proxies.shareDescription":
-    "Profile, które używają Twojego komputera, otwierają publiczne witryny przez połączenie internetowe tego komputera. Działa to tylko wtedy, gdy OpenBot jest tu otwarty. Serwer nie może otwierać adresów w Twojej sieci lokalnej.",
+    "Profile, które używają Twojego komputera, otwierają publiczne witryny przez połączenie internetowe tego komputera. Działa to tylko wtedy, gdy Pokebots jest tu otwarty. Serwer nie może otwierać adresów w Twojej sieci lokalnej.",
   "browser.proxies.share": "Udostępnij",
   "browser.proxies.stopSharing": "Przestań udostępniać",
   "browser.proxies.closesTabs": {

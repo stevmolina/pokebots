@@ -5,7 +5,7 @@
  * hidden results come back, so nothing goes while the user looks at it.
  */
 
-import { Button, FileText, MessageSquareText } from "@openbot/ui";
+import { Button, FileText, MessageSquareText } from "@pokebots/ui";
 import { createEffect, createMemo, createSignal, For, onSettled, Show, untrack } from "solid-js";
 import type { ComposerAgent } from "../../data";
 import { useText } from "../../text";

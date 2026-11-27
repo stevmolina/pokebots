@@ -1,19 +1,19 @@
-import { providerDisplayName } from "@openbot/contracts/agent-providers";
+import { providerDisplayName } from "@pokebots/contracts/agent-providers";
 import {
   type AgentEvent,
   type AgentRuntimeSnapshot,
   type AttachmentSummary,
   type ConversationMessage,
   LOCAL_SERVER_ID,
-} from "@openbot/contracts/ipc";
-import { cleanAgentMessageText } from "@openbot/team-client/agent-message-text";
-import { agentNotificationLevel } from "@openbot/team-client/agent-notifications";
-import { reconcileQueuesWithRuntimeWork } from "@openbot/team-client/dynamic-island-coordinator";
-import { approvalIsCut } from "@openbot/team-client/runtime-attention";
-import { classifyFailure } from "@openbot/telemetry";
-import { toast } from "@openbot/ui";
-import { currentText } from "@openbot/ui/text";
-import { classifyUserError } from "@openbot/user-errors";
+} from "@pokebots/contracts/ipc";
+import { cleanAgentMessageText } from "@pokebots/team-client/agent-message-text";
+import { agentNotificationLevel } from "@pokebots/team-client/agent-notifications";
+import { reconcileQueuesWithRuntimeWork } from "@pokebots/team-client/dynamic-island-coordinator";
+import { approvalIsCut } from "@pokebots/team-client/runtime-attention";
+import { classifyFailure } from "@pokebots/telemetry";
+import { toast } from "@pokebots/ui";
+import { currentText } from "@pokebots/ui/text";
+import { classifyUserError } from "@pokebots/user-errors";
 import { flush, onSettled } from "solid-js";
 import { showNewAgentBackdrop } from "../../agent-backdrops";
 import { withoutAgent } from "../../app-message-projection";

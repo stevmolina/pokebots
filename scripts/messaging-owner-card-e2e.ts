@@ -15,9 +15,9 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import { bugReportPlatform, type Feedback, type FeedbackPhone } from "@openbot/contracts/feedback";
-import { AGENT_PROVIDERS } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+import { bugReportPlatform, type Feedback, type FeedbackPhone } from "@pokebots/contracts/feedback";
+import { AGENT_PROVIDERS } from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect } from "effect";
 import type { AgentBrowserHost } from "../src/backend/agent/turn-lifecycle";
 

@@ -3,8 +3,8 @@
 import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import type { McpServerConfig } from "@openbot/contracts/ipc";
-import { registerSecretValue } from "@openbot/logging";
+import type { McpServerConfig } from "@pokebots/contracts/ipc";
+import { registerSecretValue } from "@pokebots/logging";
 import { Effect } from "effect";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { mcpSecretValues, redactMcpRecord } from "./mcp-redaction";

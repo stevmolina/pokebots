@@ -5,8 +5,8 @@ import {
   type McpServerConfig,
   RESERVED_MCP_SERVER_NAMES,
   type Routine,
-} from "@openbot/contracts/ipc";
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
+} from "@pokebots/contracts/ipc";
+import { isDynamicRecord, isString } from "@pokebots/contracts/runtime-values";
 import { Effect } from "effect";
 import { isMissingFileError } from "../backend/file-errors";
 import type { AnalyticsInventoryDayStore } from "./analytics";

@@ -1,10 +1,10 @@
-import { avatarHeadColor } from "@openbot/brand/bloub-avatar";
-import { providerDisplayName } from "@openbot/contracts/agent-providers";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import type { ConversationMessage } from "@openbot/contracts/ipc";
-import { markdownPlainText } from "@openbot/contracts/markdown-preview-text";
-import { serializeSelectionInstruction } from "@openbot/contracts/selection-instruction";
-import { type CauseCode, classifyFailure, type FailureProperties } from "@openbot/telemetry";
+import { avatarHeadColor } from "@pokebots/brand/bloub-avatar";
+import { providerDisplayName } from "@pokebots/contracts/agent-providers";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
+import type { ConversationMessage } from "@pokebots/contracts/ipc";
+import { markdownPlainText } from "@pokebots/contracts/markdown-preview-text";
+import { serializeSelectionInstruction } from "@pokebots/contracts/selection-instruction";
+import { type CauseCode, classifyFailure, type FailureProperties } from "@pokebots/telemetry";
 import { useQueryClient } from "@tanstack/react-query";
 import { isLiquidGlassAvailable } from "expo-glass-effect";
 import { router, useIsFocused } from "expo-router";

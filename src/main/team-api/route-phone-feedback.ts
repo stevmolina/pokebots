@@ -1,6 +1,6 @@
-import { parseFeedbackPhone } from "@openbot/contracts/feedback";
-import { PHONE_FEEDBACK_CAPABILITY, PHONE_FEEDBACK_ROUTES } from "@openbot/contracts/team-protocol/phone-feedback-v1";
-import { sourceText } from "@openbot/i18n/source";
+import { parseFeedbackPhone } from "@pokebots/contracts/feedback";
+import { PHONE_FEEDBACK_CAPABILITY, PHONE_FEEDBACK_ROUTES } from "@pokebots/contracts/team-protocol/phone-feedback-v1";
+import { sourceText } from "@pokebots/i18n/source";
 import { ForbiddenAttentionAnswer, InactiveAttentionRequest } from "../../backend/agent/inactive-attention-request";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import type { TeamApiAgents } from "./dependencies";

@@ -27,7 +27,7 @@ The file sits at the root because Biome resolves inherited plugin paths relative
 
 The aggregate typecheck selects `typecheck:*`. Mobile was previously named only `mobile:typecheck`
 and was omitted. It now has `typecheck:mobile`; the old name remains an alias for CI. Mobile uses
-`@openbot/brand`, `@openbot/contracts`, and `@openbot/team-client`. Its Expo and Uniwind generation
+`@pokebots/brand`, `@pokebots/contracts`, and `@pokebots/team-client`. Its Expo and Uniwind generation
 writes ignored files before TypeScript runs.
 
 Each `typecheck` script starts `scripts/type-checker.ts`, not a bare `tsc`. The script runs tsrs, the
@@ -61,7 +61,7 @@ those counts.
 
 The root `dependencies` are what electron-builder copies into `app.asar`, and what the main and
 preload builds load from `node_modules` at run time. A package that the renderer uses, or that the
-main build bundles (the `@openbot/*` workspaces), goes in `devDependencies`: Vite puts its code in
+main build bundles (the `@pokebots/*` workspaces), goes in `devDependencies`: Vite puts its code in
 `out/`, and a copy in `app.asar` only makes each download and hosted server wake larger.
 
 The Signal Dockerfile installs from a pruned checkout with one manifest copy per workspace.

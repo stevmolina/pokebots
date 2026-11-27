@@ -3,10 +3,10 @@
 // `whatsapp-working-message-v1` adds the "Working on it…" setting of each number, and
 // `whatsapp-status-reactions-v1` its status reaction setting.
 
-import { withWhatsAppStatusReactions, withWhatsAppWorkingMessages } from "@openbot/contracts/ipc";
-import { WHATSAPP_STATUS_REACTIONS_CAPABILITY } from "@openbot/contracts/team-protocol/whatsapp-status-reactions-v1";
-import { WHATSAPP_WORKING_MESSAGE_CAPABILITY } from "@openbot/contracts/team-protocol/whatsapp-working-message-v1";
-import { runTeamEffect } from "@openbot/team-client";
+import { withWhatsAppStatusReactions, withWhatsAppWorkingMessages } from "@pokebots/contracts/ipc";
+import { WHATSAPP_STATUS_REACTIONS_CAPABILITY } from "@pokebots/contracts/team-protocol/whatsapp-status-reactions-v1";
+import { WHATSAPP_WORKING_MESSAGE_CAPABILITY } from "@pokebots/contracts/team-protocol/whatsapp-working-message-v1";
+import { runTeamEffect } from "@pokebots/team-client";
 import {
   type TeamAdminRequestError,
   whatsappConnectorAddOrchestrator,
@@ -26,8 +26,8 @@ import {
   whatsappConnectorStartLink,
   whatsappConnectorStatusReactions,
   whatsappConnectorWorkingMessages,
-} from "@openbot/team-client/team-admin-requests";
-import type { TeamApiRequest } from "@openbot/team-client/team-api-requests";
+} from "@pokebots/team-client/team-admin-requests";
+import type { TeamApiRequest } from "@pokebots/team-client/team-api-requests";
 import { Effect } from "effect";
 import type { HostWhatsAppApi } from "../connectors/whatsapp-connector";
 

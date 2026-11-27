@@ -1,15 +1,15 @@
-import { isString } from "@openbot/contracts/runtime-values";
-import { decodeSignalServerMessage } from "@openbot/contracts/signal-protocol/decode";
+import { isString } from "@pokebots/contracts/runtime-values";
+import { decodeSignalServerMessage } from "@pokebots/contracts/signal-protocol/decode";
 import {
   SIGNAL_NO_READY_CLOSE_CODE,
   SIGNAL_PROTOCOL_VERSION,
   SIGNAL_TURN_REFRESH_INTERVAL_MS,
   type SignalClientMessage,
   type SignalServerMessage,
-} from "@openbot/contracts/signal-protocol/messages";
-import { BROWSER_EGRESS_CHANNEL } from "@openbot/contracts/team-protocol/browser-egress-v1";
-import { TEAM_PROTOCOL_V2_CHANNELS } from "@openbot/contracts/team-protocol/v2";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/signal-protocol/messages";
+import { BROWSER_EGRESS_CHANNEL } from "@pokebots/contracts/team-protocol/browser-egress-v1";
+import { TEAM_PROTOCOL_V2_CHANNELS } from "@pokebots/contracts/team-protocol/v2";
+import { sourceText } from "@pokebots/i18n/source";
 import { encodeTeamWebRtcPayload, TeamWebRtcPayloadDecoder } from "./team-webrtc-framing";
 import { isPrivateNetworkCandidate, privateNetworkSdp } from "./team-webrtc-private-network";
 

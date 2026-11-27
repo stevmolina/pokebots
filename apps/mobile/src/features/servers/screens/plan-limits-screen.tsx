@@ -1,4 +1,4 @@
-import { type PlanLimitWindow, usagePaceRemainingPercent } from "@openbot/team-client/plan-limits";
+import { type PlanLimitWindow, usagePaceRemainingPercent } from "@pokebots/team-client/plan-limits";
 import { useLocalSearchParams } from "expo-router";
 import { Typography } from "heroui-native";
 import { useThemeColor } from "heroui-native/hooks";

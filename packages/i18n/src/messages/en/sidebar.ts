@@ -187,7 +187,7 @@ export const messages = defineMessages("sidebar", {
   "sidebar.delete.pending": "Deleting…",
   "sidebar.delete.title": "Delete {name}?",
   "sidebar.delete.agentDescription":
-    "This removes the agent and its OpenBot conversation from the app. Its queue, memories, routines, and workspace are deleted. History stored separately by the connected CLI provider is not deleted.",
+    "This removes the agent and its Pokebots conversation from the app. Its queue, memories, routines, and workspace are deleted. History stored separately by the connected CLI provider is not deleted.",
   "sidebar.delete.channelDescription":
     "This stops the channel. Its history stays in Deleted channels for preview only. You can restore it from there. Member agents are kept.",
   "sidebar.delete.sectionDescription":
@@ -201,7 +201,7 @@ export const messages = defineMessages("sidebar", {
   "sidebar.announce.movedPinned": "Moved pinned chat to position {position} of {total}.",
   "sidebar.announce.personFallback": "person",
   "sidebar.announce.chatFallback": "chat",
-  "sidebar.mobileApp.title": "OpenBot for mobile",
+  "sidebar.mobileApp.title": "Pokebots for mobile",
   "sidebar.storage.lowTitle": "Storage almost full",
   "sidebar.storage.fullTitle": "Storage full",
   "sidebar.storage.body": "{used} of {total} used on {server}.",
@@ -220,5 +220,5 @@ export const messages = defineMessages("sidebar", {
   "sidebar.machine.alertTo": "The alert goes to {name}",
   "sidebar.machine.details": "View details",
   "sidebar.machine.dismiss": "Hide until the next alert",
-  "sidebar.community.followX": "Follow OpenBot on X",
+  "sidebar.community.followX": "Follow Pokebots on X",
 });
