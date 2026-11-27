@@ -60,7 +60,7 @@ export const mobileAnalytics = new MobileAnalytics(() => {
     return null;
   const { OpenPanel }: typeof import("@openpanel/react-native") = require("@openpanel/react-native");
   const client = new OpenPanel({
-    apiUrl: "https://analytics.openbot.run/api",
+    apiUrl: "https://api.openpanel.dev",
     clientId,
     clientSecret,
     filter: filterMobilePayload,
