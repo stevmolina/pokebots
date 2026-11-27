@@ -10,7 +10,7 @@
 // not follow the instructions fails a step. It makes its own channel and deletes it.
 // Writes .openbot-build/channel-reply-e2e/report.json.
 import assert from "node:assert/strict";
-import type { ChannelMessage, ChannelPage, ChannelTask } from "@openbot/contracts/ipc";
+import type { ChannelMessage, ChannelPage, ChannelTask } from "@pokebots/contracts/ipc";
 import { ChannelClient, connectChannelE2e, waitFor, writeReport } from "./channel-e2e-support";
 
 const REPLY_PREFIX = "channel-reply-";

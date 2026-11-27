@@ -1,6 +1,6 @@
-import type { RoutineFields, RoutineSchedule } from "@openbot/contracts/ipc";
-import { RoutineScheduleCard } from "@openbot/ui/features/conversation/RoutineScheduleCard";
-import type { RoutineScheduleDraft } from "@openbot/ui/features/conversation/routine-schedule-draft";
+import type { RoutineFields, RoutineSchedule } from "@pokebots/contracts/ipc";
+import { RoutineScheduleCard } from "@pokebots/ui/features/conversation/RoutineScheduleCard";
+import type { RoutineScheduleDraft } from "@pokebots/ui/features/conversation/routine-schedule-draft";
 import {
   ROUTINE_LOCAL_DRAFT_KINDS,
   ROUTINE_SAVED_DRAFT_KINDS,
@@ -9,8 +9,8 @@ import {
   routineOncePassed,
   routineScheduleFromDraft,
   routineScheduleToDraft,
-} from "@openbot/ui/features/conversation/routine-schedule-saved";
-import { type TextValue, useText } from "@openbot/ui/text";
+} from "@pokebots/ui/features/conversation/routine-schedule-saved";
+import { type TextValue, useText } from "@pokebots/ui/text";
 import { createEffect, createSignal } from "solid-js";
 import { knownTimeZone, localTimeZone, routinePausedByRunLabel, routineTimeZoneLabel } from "./routine-summary";
 import { agentRoutinesPort } from "./routines-port";

@@ -3,7 +3,7 @@
  * context menu is open. When `enabled` is false, the row has no tooltip and no wrapper, so a long
  * list does not carry a tooltip for each row that cannot show one.
  */
-import { Tooltip } from "@openbot/ui";
+import { Tooltip } from "@pokebots/ui";
 import type { JSX } from "@solidjs/web";
 import { createSignal, Show } from "solid-js";
 

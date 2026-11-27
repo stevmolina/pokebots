@@ -1,4 +1,4 @@
-import type { AgentTasksSnapshot, ConversationSnapshot } from "@openbot/contracts/ipc";
+import type { AgentTasksSnapshot, ConversationSnapshot } from "@pokebots/contracts/ipc";
 import { skipToken, useQuery } from "@tanstack/react-query";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { HeaderHeightContext } from "expo-router/react-navigation";

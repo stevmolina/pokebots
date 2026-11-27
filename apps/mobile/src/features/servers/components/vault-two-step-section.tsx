@@ -1,4 +1,4 @@
-import type { VaultLoginSummary } from "@openbot/contracts/ipc";
+import type { VaultLoginSummary } from "@pokebots/contracts/ipc";
 import { router } from "expo-router";
 import { Typography } from "heroui-native";
 import ShieldCheck from "lucide-react-native/icons/shield-check";

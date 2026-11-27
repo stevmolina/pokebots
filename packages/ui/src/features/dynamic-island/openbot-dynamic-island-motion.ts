@@ -1,6 +1,6 @@
-import type { DynamicIslandPresentation } from "@openbot/contracts/ipc";
-import { computedBlur, computedScale, springKeyframes } from "@openbot/ui/spring-motion";
-import { mix } from "@openbot/ui/utils";
+import type { DynamicIslandPresentation } from "@pokebots/contracts/ipc";
+import { computedBlur, computedScale, springKeyframes } from "@pokebots/ui/spring-motion";
+import { mix } from "@pokebots/ui/utils";
 
 const MODE_SWAP_EXIT_DURATION = 160;
 const MODE_SWAP_STATIC_DURATION = 240;

@@ -1,5 +1,5 @@
 import { type SpawnedMspConnection, spawnMspConnection } from "@muse-code/sdk";
-import { sourceText } from "@openbot/i18n/source";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect, Option, Schema } from "effect";
 import { type AgentCliInfo, cliPathEnvironment, cliSpawnTarget } from "../cli";
 import {

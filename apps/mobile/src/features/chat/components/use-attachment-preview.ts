@@ -1,4 +1,4 @@
-import type { AttachmentSummary } from "@openbot/contracts/ipc";
+import type { AttachmentSummary } from "@pokebots/contracts/ipc";
 import { File } from "expo-file-system";
 import { router } from "expo-router";
 import { useState } from "react";

@@ -1,4 +1,4 @@
-import { type ConversationMemoryChange, countConversationMemoryChanges } from "@openbot/contracts/ipc";
+import { type ConversationMemoryChange, countConversationMemoryChanges } from "@pokebots/contracts/ipc";
 import Bookmark from "lucide-react-native/icons/bookmark";
 import type { ChatMessage } from "@/features/chat/model/chat-messages";
 import type { MobileText } from "@/shared/lib/text";

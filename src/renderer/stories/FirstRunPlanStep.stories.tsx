@@ -1,5 +1,5 @@
-import type { AgentStatus } from "@openbot/contracts/ipc";
-import type { ProviderDetection } from "@openbot/ui/features/custom-providers/detected-providers";
+import type { AgentStatus } from "@pokebots/contracts/ipc";
+import type { ProviderDetection } from "@pokebots/ui/features/custom-providers/detected-providers";
 import { createSignal, onSettled, Show } from "solid-js";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";

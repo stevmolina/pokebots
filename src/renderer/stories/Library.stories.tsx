@@ -3,11 +3,11 @@ import {
   type LibraryFolder,
   type LibraryFolderAction,
   type LibraryFoldersSnapshot,
-} from "@openbot/contracts/ipc";
-import { Toaster } from "@openbot/ui";
-import type { AgentProfile } from "@openbot/ui/data";
-import type { StoredFileRow } from "@openbot/ui/features/files/files-view";
-import { type BatchFileAction, type LibraryLocation, LibraryPage } from "@openbot/ui/features/files/LibraryPage";
+} from "@pokebots/contracts/ipc";
+import { Toaster } from "@pokebots/ui";
+import type { AgentProfile } from "@pokebots/ui/data";
+import type { StoredFileRow } from "@pokebots/ui/features/files/files-view";
+import { type BatchFileAction, type LibraryLocation, LibraryPage } from "@pokebots/ui/features/files/LibraryPage";
 import type { ComponentProps } from "@solidjs/web";
 import { createSignal, untrack } from "solid-js";
 import { fn } from "storybook/test";

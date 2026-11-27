@@ -2,7 +2,7 @@
 // uses it. The services of the app and the server safe mode (`server-safe-mode.ts`) make the account
 // manager in the same way, so both read the same session file and the same host credentials.
 import { join } from "node:path";
-import { sourceText } from "@openbot/i18n/source";
+import { sourceText } from "@pokebots/i18n/source";
 import { app, net } from "electron";
 import { CentralAuthManager, readCentralAuthApiUrl, readMobileConnectApiUrl } from "./central-auth-manager";
 import type { CompanySignInBrowser } from "./company-sign-in-browser";

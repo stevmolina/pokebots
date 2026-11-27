@@ -1,4 +1,5 @@
-import { AGENT_PROVIDERS, type AgentProviderId, isKeyOnlyProvider } from "@openbot/contracts/agent-providers";
+import { OpenPanelBase, type OpenPanelOptions } from "@openpanel/web";
+import { AGENT_PROVIDERS, type AgentProviderId, isKeyOnlyProvider } from "@pokebots/contracts/agent-providers";
 import {
   BILLING_CURRENCIES,
   BILLING_INTERVALS,
@@ -6,23 +7,29 @@ import {
   type BillingCurrency,
   type BillingInterval,
   type BillingPlanId,
-} from "@openbot/contracts/billing";
-import { HOSTED_SERVER_ENTRY_POINTS, type HostedServerEntryPoint } from "@openbot/contracts/hosted-servers";
+} from "@pokebots/contracts/billing";
+import { HOSTED_SERVER_ENTRY_POINTS, type HostedServerEntryPoint } from "@pokebots/contracts/hosted-servers";
 // Narrow contract files, not the `ipc` index: the web sign-in screen loads this file for its first
 // analytics event, and the index holds every IPC schema.
-import type { AppInfo, CentralAuthUser } from "@openbot/contracts/ipc";
+import type { AppInfo, CentralAuthUser } from "@pokebots/contracts/ipc";
 import {
   AGENT_REASONING_EFFORTS,
   type AgentModelId,
   type AgentReasoningEffort,
   isAgentModel,
-} from "@openbot/contracts/ipc-agent-identity";
-import { SPEECH_VOICES, type SpeechVoice } from "@openbot/contracts/ipc-voice";
-import { WORKFLOW_NODE_KINDS, type WorkflowNodeKind } from "@openbot/contracts/ipc-workflows";
-import { isBoolean, isDynamicRecord, isFunction, isNumber, isOneOf, isString } from "@openbot/contracts/runtime-values";
-import { normalizeEmailAddress } from "@openbot/contracts/validation";
-import { ANALYTICS_GENERATIONS } from "@openbot/telemetry";
-import { OpenPanelBase, type OpenPanelOptions } from "@openpanel/web";
+} from "@pokebots/contracts/ipc-agent-identity";
+import { SPEECH_VOICES, type SpeechVoice } from "@pokebots/contracts/ipc-voice";
+import { WORKFLOW_NODE_KINDS, type WorkflowNodeKind } from "@pokebots/contracts/ipc-workflows";
+import {
+  isBoolean,
+  isDynamicRecord,
+  isFunction,
+  isNumber,
+  isOneOf,
+  isString,
+} from "@pokebots/contracts/runtime-values";
+import { normalizeEmailAddress } from "@pokebots/contracts/validation";
+import { ANALYTICS_GENERATIONS } from "@pokebots/telemetry";
 import {
   ANALYTICS_SCHEMA_VERSION,
   configureDesktopReports,

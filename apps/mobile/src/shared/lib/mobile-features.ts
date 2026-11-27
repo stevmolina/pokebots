@@ -1,11 +1,11 @@
-import { parseAppMinimumVersion } from "@openbot/contracts/app-minimum-version";
+import { parseAppMinimumVersion } from "@pokebots/contracts/app-minimum-version";
 import {
   MOBILE_FEATURES_PATH,
   type MobileFeatureFlags,
   mobileFeaturesOff,
   parseMobileFeatureFlags,
   parseMobileLatestVersion,
-} from "@openbot/contracts/mobile-features";
+} from "@pokebots/contracts/mobile-features";
 import Constants, { ExecutionEnvironment } from "expo-constants";
 import { create } from "zustand";
 import { devFeatureOverride, devLatestAppVersion } from "@/shared/lib/dev-feature-overrides";

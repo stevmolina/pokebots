@@ -7,9 +7,9 @@ import {
   type ProviderEnvironmentProvider,
   type ProviderEnvironmentUpdate,
   providerEnvironmentProblem,
-} from "@openbot/contracts/ipc";
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/ipc";
+import { isDynamicRecord, isString } from "@pokebots/contracts/runtime-values";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect, Schema, Semaphore } from "effect";
 import { PreferenceStore } from "./preference-file";
 import {

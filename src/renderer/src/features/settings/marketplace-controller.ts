@@ -1,4 +1,4 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import type {
   AddedAgent,
   ClientAgentSummary,
@@ -19,7 +19,7 @@ import type {
   McpSignInRelayPage,
   McpSignInState,
   SaveMcpSignInAppInput,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   assignedSkillCount,
   DEFAULT_MCP_SERVER_ACCESS,
@@ -29,17 +29,17 @@ import {
   isRemovableSkill,
   isSkillEnabled,
   mcpConfigErrors,
-} from "@openbot/contracts/ipc";
-import { createMarketplaceShareUrl, type MarketplaceListingLink } from "@openbot/contracts/marketplace-links";
-import { mcpAccountFragment, mcpAccountUrl } from "@openbot/contracts/mcp-accounts";
-import { type McpConnectFlow, mcpFlowFields, savedKeyFlow } from "@openbot/contracts/mcp-connect-flows";
-import { createPluginShareUrl } from "@openbot/contracts/plugin-links";
-import { TOAST_DURATION, toast } from "@openbot/ui";
-import type { BrowserViewRuntime } from "@openbot/ui/features/browser/BrowserLiveView";
-import { connectorSummary } from "@openbot/ui/features/connectors/ConnectorDetailPanel";
-import { CONNECTOR_LISTINGS } from "@openbot/ui/features/connectors/connector-catalog";
-import { isConnectorId } from "@openbot/ui/features/connectors/connectors";
-import { safeBrowserUrl } from "@openbot/ui/features/conversation/RichMessageText";
+} from "@pokebots/contracts/ipc";
+import { createMarketplaceShareUrl, type MarketplaceListingLink } from "@pokebots/contracts/marketplace-links";
+import { mcpAccountFragment, mcpAccountUrl } from "@pokebots/contracts/mcp-accounts";
+import { type McpConnectFlow, mcpFlowFields, savedKeyFlow } from "@pokebots/contracts/mcp-connect-flows";
+import { createPluginShareUrl } from "@pokebots/contracts/plugin-links";
+import { TOAST_DURATION, toast } from "@pokebots/ui";
+import type { BrowserViewRuntime } from "@pokebots/ui/features/browser/BrowserLiveView";
+import { connectorSummary } from "@pokebots/ui/features/connectors/ConnectorDetailPanel";
+import { CONNECTOR_LISTINGS } from "@pokebots/ui/features/connectors/connector-catalog";
+import { isConnectorId } from "@pokebots/ui/features/connectors/connectors";
+import { safeBrowserUrl } from "@pokebots/ui/features/conversation/RichMessageText";
 import type {
   AgentListingState,
   GithubSkillRead,
@@ -54,20 +54,20 @@ import type {
   MarketplaceSkillChange,
   MarketplaceSkillRef,
   SkillRead,
-} from "@openbot/ui/features/marketplace/marketplace-model";
-import { pluginNeedsMac } from "@openbot/ui/features/marketplace/marketplace-model";
-import { serverAddress } from "@openbot/ui/features/marketplace/marketplace-view";
-import type { McpConnectSubject } from "@openbot/ui/features/settings/McpConnectShell";
+} from "@pokebots/ui/features/marketplace/marketplace-model";
+import { pluginNeedsMac } from "@pokebots/ui/features/marketplace/marketplace-model";
+import { serverAddress } from "@pokebots/ui/features/marketplace/marketplace-view";
+import type { McpConnectSubject } from "@pokebots/ui/features/settings/McpConnectShell";
 import {
   currentPluginAppConfig,
   isPluginAppConfig,
   type MarketplacePluginApp,
   type MarketplacePluginDetail,
   type MarketplacePluginPrompt,
-} from "@openbot/ui/features/settings/marketplace-plugins";
-import type { PluginUninstallPlan } from "@openbot/ui/features/settings/PluginUninstallDialog";
-import { currentText, useText } from "@openbot/ui/text";
-import { errorReference } from "@openbot/user-errors";
+} from "@pokebots/ui/features/settings/marketplace-plugins";
+import type { PluginUninstallPlan } from "@pokebots/ui/features/settings/PluginUninstallDialog";
+import { currentText, useText } from "@pokebots/ui/text";
+import { errorReference } from "@pokebots/user-errors";
 import { createEffect, createMemo, createSignal, createStore, onCleanup, untrack } from "solid-js";
 import { actionToast } from "../../action-toast";
 import { desktopAnalytics } from "../../analytics";

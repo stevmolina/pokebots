@@ -1,9 +1,9 @@
 import { randomUUID } from "node:crypto";
 import type { DatabaseSync } from "node:sqlite";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import { type AgentMemoryOrigin, MEMORY_SITE_MAX_LENGTH, type MemoryEntry } from "@openbot/contracts/ipc";
-import { type DynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
+import { type AgentMemoryOrigin, MEMORY_SITE_MAX_LENGTH, type MemoryEntry } from "@pokebots/contracts/ipc";
+import { type DynamicRecord, isString } from "@pokebots/contracts/runtime-values";
+import { sourceText } from "@pokebots/i18n/source";
 import { databaseRow, databaseRows, requiredStringColumn } from "./database/database-rows";
 import type { OpenBotDatabase } from "./openbot-database";
 

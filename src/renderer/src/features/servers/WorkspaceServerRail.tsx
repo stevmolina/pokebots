@@ -1,5 +1,5 @@
-import { ServerRail } from "@openbot/ui/features/servers/ServerRail";
-import { shortcutMatches } from "@openbot/ui/features/shortcuts/shortcut-registry";
+import { ServerRail } from "@pokebots/ui/features/servers/ServerRail";
+import { shortcutMatches } from "@pokebots/ui/features/shortcuts/shortcut-registry";
 import { onSettled, Show } from "solid-js";
 import { playActionSound } from "../../action-sounds";
 import { useLayout } from "../../layout";

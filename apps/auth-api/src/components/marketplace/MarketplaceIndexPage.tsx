@@ -1,10 +1,10 @@
-import type { MarketplaceAgentSummary, MarketplaceSkillSummary } from "@openbot/contracts/ipc";
-import { SKILL_CATEGORIES, type SkillCategory } from "@openbot/contracts/ipc-skills";
-import type { MarketplaceListingLink } from "@openbot/contracts/marketplace-links";
-import type { AppTextKey, AppTranslate, TranslatedLocale } from "@openbot/i18n";
-import { CATEGORY_LABELS } from "@openbot/ui/features/marketplace/marketplace-listing";
-import { Search } from "@openbot/ui/icons";
-import { useText } from "@openbot/ui/text";
+import type { MarketplaceAgentSummary, MarketplaceSkillSummary } from "@pokebots/contracts/ipc";
+import { SKILL_CATEGORIES, type SkillCategory } from "@pokebots/contracts/ipc-skills";
+import type { MarketplaceListingLink } from "@pokebots/contracts/marketplace-links";
+import type { AppTextKey, AppTranslate, TranslatedLocale } from "@pokebots/i18n";
+import { CATEGORY_LABELS } from "@pokebots/ui/features/marketplace/marketplace-listing";
+import { Search } from "@pokebots/ui/icons";
+import { useText } from "@pokebots/ui/text";
 import type { JSX } from "@solidjs/web";
 import { Link } from "@tanstack/solid-router";
 import { createMemo, createSignal, For, onSettled, Show, untrack } from "solid-js";

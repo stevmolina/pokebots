@@ -1,11 +1,11 @@
-import { feedbackSentIssue } from "@openbot/contracts/feedback";
-import { serverInstallEvent } from "@openbot/contracts/hosted-servers";
+import { feedbackSentIssue } from "@pokebots/contracts/feedback";
+import { serverInstallEvent } from "@pokebots/contracts/hosted-servers";
 import type {
   ClientAgentSummary,
   ConversationMessage,
   ConversationSearchPage,
   QueueDeliveryStatus,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   AGENT_INSTRUCTIONS_CHANGE_ITEM_TYPE,
   AGENT_WELCOME_ITEM_TYPE,
@@ -29,10 +29,10 @@ import {
   signInFailureProvider,
   skillConversationEvent,
   skillSuggestionEvent,
-} from "@openbot/contracts/ipc";
-import { markdownPreviewText } from "@openbot/contracts/markdown-preview-text";
-import { sourceText as englishSourceText } from "@openbot/i18n/source";
-import { cleanAgentMessageText } from "@openbot/team-client/agent-message-text";
+} from "@pokebots/contracts/ipc";
+import { markdownPreviewText } from "@pokebots/contracts/markdown-preview-text";
+import { sourceText as englishSourceText } from "@pokebots/i18n/source";
+import { cleanAgentMessageText } from "@pokebots/team-client/agent-message-text";
 import type {
   AgentDeliveryMarkerStatus,
   AgentMessage,
@@ -40,10 +40,10 @@ import type {
   AgentProfile,
   ChatActionMarkerModel,
   ComposerThreadMessageMatch,
-} from "@openbot/ui/data";
-import { formatChatTimestamp } from "@openbot/ui/features/conversation/chat-timestamp";
-import type { TaskListItem } from "@openbot/ui/features/conversation/TaskList";
-import { currentText } from "@openbot/ui/text";
+} from "@pokebots/ui/data";
+import { formatChatTimestamp } from "@pokebots/ui/features/conversation/chat-timestamp";
+import type { TaskListItem } from "@pokebots/ui/features/conversation/TaskList";
+import { currentText } from "@pokebots/ui/text";
 import { isRoutineEventItem } from "./features/conversation/conversation-read-state";
 
 /** The title in the host's thank-you text, which ends with it. Text from another host gives none. */

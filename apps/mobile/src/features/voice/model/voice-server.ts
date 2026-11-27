@@ -6,8 +6,8 @@ import {
   type VoiceServerModels,
   type VoiceServerProbeField,
   type VoiceServerRoutes,
-} from "@openbot/contracts/ipc";
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
+} from "@pokebots/contracts/ipc";
+import { isDynamicRecord, isString } from "@pokebots/contracts/runtime-values";
 import {
   decodeVoiceServerWav,
   encodeVoiceServerWav,
@@ -16,8 +16,8 @@ import {
   voiceServerHost,
   voiceServerModelLists,
   voiceServerVoiceNames,
-} from "@openbot/contracts/voice-server";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/voice-server";
+import { sourceText } from "@pokebots/i18n/source";
 // Not the logged fetch: its log line keeps the path, and the path of a voice server address can
 // hold a token. The global fetch of React Native follows redirects; `expo/fetch` obeys `manual`.
 import { fetch } from "expo/fetch";

@@ -10,7 +10,7 @@
 import { randomUUID } from "node:crypto";
 import { mkdir, readFile, realpath, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import {
   AGENT_IMPORT_LIMITS,
   type AgentImportResult,
@@ -24,9 +24,9 @@ import {
   type HermesImportProfile,
   type McpServerConfig,
   type UpdateAgentInput,
-} from "@openbot/contracts/ipc";
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/ipc";
+import { isDynamicRecord, isString } from "@pokebots/contracts/runtime-values";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect, Result } from "effect";
 import { parseStoredJson, writeJsonFileAtomically } from "../backend/atomic-json-file";
 import { writeTreeEffect } from "./agent-archive";

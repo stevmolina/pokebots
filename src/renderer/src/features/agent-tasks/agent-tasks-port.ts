@@ -1,4 +1,4 @@
-import type { AgentTaskInput, OpenBotDesktopApi } from "@openbot/contracts/ipc";
+import type { AgentTaskInput, OpenBotDesktopApi } from "@pokebots/contracts/ipc";
 import { noteAgentRequest } from "../../agent-requests";
 
 /** What the side thread state reaches on a server: the list, a thread's conversation, and the thread actions. */

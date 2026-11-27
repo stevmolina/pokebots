@@ -1,4 +1,4 @@
-# @openbot/whatsapp
+# @pokebots/whatsapp
 
 The WhatsApp client of the WhatsApp connector: a fork of Baileys without its copyleft parts, OpenBot's
 own Signal-protocol code, and the encrypted store of one linked device. The connector itself

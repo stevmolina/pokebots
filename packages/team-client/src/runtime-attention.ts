@@ -1,4 +1,4 @@
-import type { AgentApproval, AgentRuntimeApproval } from "@openbot/contracts/ipc";
+import type { AgentApproval, AgentRuntimeApproval } from "@pokebots/contracts/ipc";
 
 /**
  * Folds the pending requests of a runtime snapshot into the list a client shows.

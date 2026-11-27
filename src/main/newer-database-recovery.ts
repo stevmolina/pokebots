@@ -6,10 +6,10 @@
 // that state, not a loop.
 import { existsSync } from "node:fs";
 import { join } from "node:path";
-import type { UpdateStatus } from "@openbot/contracts/ipc";
-import { isNewerRelease, isValidSemver } from "@openbot/contracts/release-version";
-import type { AppTranslate } from "@openbot/i18n";
-import { createOpenBotLogger, toLogValue } from "@openbot/logging";
+import type { UpdateStatus } from "@pokebots/contracts/ipc";
+import { isNewerRelease, isValidSemver } from "@pokebots/contracts/release-version";
+import type { AppTranslate } from "@pokebots/i18n";
+import { createOpenBotLogger, toLogValue } from "@pokebots/logging";
 import { Effect } from "effect";
 import { app, type BrowserWindow, dialog, shell } from "electron";
 import { runCauseEffect } from "../backend/effect-boundary";

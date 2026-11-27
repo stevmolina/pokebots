@@ -1,7 +1,7 @@
-import { hostedPlanDisk } from "@openbot/contracts/hosted-servers";
-import type { ServerSummary, StorageDisk } from "@openbot/contracts/ipc";
-import { STORAGE_DISK_CAPABILITY } from "@openbot/contracts/team-protocol/storage-disk-v1";
-import type { SidebarStorageLevel } from "@openbot/ui/features/sidebar/SidebarStorageCard";
+import { hostedPlanDisk } from "@pokebots/contracts/hosted-servers";
+import type { ServerSummary, StorageDisk } from "@pokebots/contracts/ipc";
+import { STORAGE_DISK_CAPABILITY } from "@pokebots/contracts/team-protocol/storage-disk-v1";
+import type { SidebarStorageLevel } from "@pokebots/ui/features/sidebar/SidebarStorageCard";
 import { createMemo, createSignal, untrack } from "solid-js";
 import { createUsageRefreshPoll } from "../account/usage-refresh-poll";
 import { canManageStorage, hostedPlanStorageGb } from "../files/storage-usage";

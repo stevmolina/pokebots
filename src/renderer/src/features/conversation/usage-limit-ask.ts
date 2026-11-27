@@ -1,18 +1,18 @@
-import { isKnownAgentProvider } from "@openbot/contracts/agent-providers";
+import { isKnownAgentProvider } from "@pokebots/contracts/agent-providers";
 import {
   type AgentModelChoice,
   type AgentStatus,
   type ClientAgentModelOption,
   sameAgentModelChoice,
   type UpdateAgentInput,
-} from "@openbot/contracts/ipc";
-import type { AgentProfile } from "@openbot/ui/data";
+} from "@pokebots/contracts/ipc";
+import type { AgentProfile } from "@pokebots/ui/data";
 import {
   type BackupModelSource,
   rememberedBackupModels,
   type UsageLimitAskCardProps,
   usageLimitAskOptions,
-} from "@openbot/ui/features/conversation/BackupModels";
+} from "@pokebots/ui/features/conversation/BackupModels";
 import { type Accessor, createEffect } from "solid-js";
 import { desktopAnalytics } from "../../analytics";
 import { useTurns } from "../../turns";

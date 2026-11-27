@@ -1,4 +1,4 @@
-import { SERVER_NOTIFICATION_LEVELS, type ServerNotificationLevel } from "@openbot/contracts/ipc";
+import { SERVER_NOTIFICATION_LEVELS, type ServerNotificationLevel } from "@pokebots/contracts/ipc";
 import { createSignal, onCleanup } from "solid-js";
 import { z } from "zod";
 

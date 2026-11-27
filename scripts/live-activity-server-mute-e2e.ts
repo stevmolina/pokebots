@@ -14,9 +14,9 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
-import type { AgentEvent, AgentSummary } from "@openbot/contracts/ipc";
-import { LIVE_ACTIVITY_PUSH_ROUTES } from "@openbot/contracts/team-protocol/live-activity-push-v1";
-import { createOpenBotLogger } from "@openbot/logging";
+import type { AgentEvent, AgentSummary } from "@pokebots/contracts/ipc";
+import { LIVE_ACTIVITY_PUSH_ROUTES } from "@pokebots/contracts/team-protocol/live-activity-push-v1";
+import { createOpenBotLogger } from "@pokebots/logging";
 import { plugin } from "bun";
 
 const OUT = resolve(import.meta.dirname, "../.openbot-build/live-activity-server-mute-e2e");

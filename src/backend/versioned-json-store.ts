@@ -1,5 +1,5 @@
 import { readFile } from "node:fs/promises";
-import { type DynamicRecord, isDynamicRecord } from "@openbot/contracts/runtime-values";
+import { type DynamicRecord, isDynamicRecord } from "@pokebots/contracts/runtime-values";
 import { Effect, Result } from "effect";
 import { isEmptyStoredFile, setAsideDamagedFile } from "./atomic-json-file";
 import { isMissingFileError } from "./file-errors";

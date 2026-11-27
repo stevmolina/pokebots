@@ -5,17 +5,17 @@
 // An error names the host only. The path and the query of a base URL can hold a token, and the key
 // and the header values are credentials, so no message and no log line contains them.
 
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import type { CustomProviderHeader, CustomProviderInputKind, DetectedModel } from "@openbot/contracts/ipc";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
+import type { CustomProviderHeader, CustomProviderInputKind, DetectedModel } from "@pokebots/contracts/ipc";
 import {
   CUSTOM_PROVIDER_INPUT_KINDS,
   CUSTOM_PROVIDER_REASONING_EFFORTS,
   isCustomProviderContextWindow,
   isCustomProviderMaxOutput,
   PROVIDER_DETECTION_LIMITS,
-} from "@openbot/contracts/ipc";
-import { type DynamicRecord, isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/ipc";
+import { type DynamicRecord, isDynamicRecord, isString } from "@pokebots/contracts/runtime-values";
+import { sourceText } from "@pokebots/i18n/source";
 import { Context, Effect, Layer, Schema } from "effect";
 import { readLimitedBody } from "../backend/limited-body";
 

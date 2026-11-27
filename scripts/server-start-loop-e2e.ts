@@ -47,7 +47,7 @@ import {
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { DatabaseSync } from "node:sqlite";
-import { createOpenBotLogger } from "@openbot/logging";
+import { createOpenBotLogger } from "@pokebots/logging";
 import { Option, Schema } from "effect";
 import { developmentUserDataName } from "../src/main/development-profile";
 import { START_HALT_FILE, START_LOOP_EXIT_CODE } from "../src/main/server-start-halt";

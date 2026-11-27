@@ -3,8 +3,8 @@ import {
   type BillingInterval,
   type BillingPlanId,
   siteLimitForPlan,
-} from "@openbot/contracts/billing";
-import type { HostedServerCatalog } from "@openbot/contracts/hosted-servers";
+} from "@pokebots/contracts/billing";
+import type { HostedServerCatalog } from "@pokebots/contracts/hosted-servers";
 import {
   LICENSE_BUNDLE_DISCOUNT_PERCENT,
   LICENSE_INCLUDED_USERS,
@@ -14,8 +14,8 @@ import {
   licenseOrderFor,
   licenseOrderMonthly,
   stepLicenseUsers,
-} from "@openbot/contracts/license";
-import type { AppFormat, AppTextKey } from "@openbot/i18n";
+} from "@pokebots/contracts/license";
+import type { AppFormat, AppTextKey } from "@pokebots/i18n";
 import {
   Badge,
   Button,
@@ -36,8 +36,8 @@ import {
   ShieldCheck,
   toast,
   UsersRound,
-} from "@openbot/ui";
-import { RollingPrice } from "@openbot/ui/rolling-price";
+} from "@pokebots/ui";
+import { RollingPrice } from "@pokebots/ui/rolling-price";
 import { createSignal, For, onSettled, Show } from "solid-js";
 import { useText } from "../../text";
 

@@ -1,14 +1,17 @@
-import { isKnownAgentProvider } from "@openbot/contracts/agent-providers";
-import type { AccountUsage, AgentStatus, ClientAgentModelOption, CustomProviderSummary } from "@openbot/contracts/ipc";
-import { AGENT_WELCOME_CAPABILITY, TEAM_AGENT_CREATE_MODEL_CAPABILITY } from "@openbot/contracts/team-protocol/current";
+import { isKnownAgentProvider } from "@pokebots/contracts/agent-providers";
+import type { AccountUsage, AgentStatus, ClientAgentModelOption, CustomProviderSummary } from "@pokebots/contracts/ipc";
+import {
+  AGENT_WELCOME_CAPABILITY,
+  TEAM_AGENT_CREATE_MODEL_CAPABILITY,
+} from "@pokebots/contracts/team-protocol/current";
 import {
   createFirstAgentDraft,
   FIRST_AGENT_SUGGESTIONS,
   type FirstAgentDraft,
   FirstAgentSetup,
-} from "@openbot/ui/features/agents/FirstAgentSetup";
-import { NewAgentDialog } from "@openbot/ui/features/agents/NewAgentDialog";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/ui/features/agents/FirstAgentSetup";
+import { NewAgentDialog } from "@pokebots/ui/features/agents/NewAgentDialog";
+import { useText } from "@pokebots/ui/text";
 import { createEffect, createStore, onSettled, Show, untrack } from "solid-js";
 import { type CreationPreference, resolveCreationModel } from "../agents/agent-creation-model";
 import { createAgentInitialMessage } from "../agents/agent-initial-message";

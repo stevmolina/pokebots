@@ -1,6 +1,6 @@
-import type { OpenBotDesktopApi } from "@openbot/contracts/ipc";
-import type { ProviderClaudeUserSetup } from "@openbot/ui/features/settings/ProviderSettingsPage";
-import { useText } from "@openbot/ui/text";
+import type { OpenBotDesktopApi } from "@pokebots/contracts/ipc";
+import type { ProviderClaudeUserSetup } from "@pokebots/ui/features/settings/ProviderSettingsPage";
+import { useText } from "@pokebots/ui/text";
 import { createHostSetting } from "./host-setting-state";
 
 /** The "Use my Claude Code setup" calls of one server's host. The desktop reaches them through main. */

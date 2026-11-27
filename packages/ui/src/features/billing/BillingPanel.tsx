@@ -5,8 +5,8 @@ import {
   type BillingServerPlan,
   type BillingSubscriptionStatus,
   serverStorageGb,
-} from "@openbot/contracts/billing";
-import type { AppTextKey } from "@openbot/i18n";
+} from "@pokebots/contracts/billing";
+import type { AppTextKey } from "@pokebots/i18n";
 import {
   Alert,
   AlertActions,
@@ -34,7 +34,7 @@ import {
   Spinner,
   Text,
   TriangleAlert,
-} from "@openbot/ui";
+} from "@pokebots/ui";
 import type { JSX } from "@solidjs/web";
 import { createSignal, For, Match, Show, Switch } from "solid-js";
 import { useText } from "../../text";

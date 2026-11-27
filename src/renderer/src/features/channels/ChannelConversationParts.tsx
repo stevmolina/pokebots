@@ -4,12 +4,12 @@
  * data, so each part reads the open channel from `useChannels()`.
  */
 
-import type { ChannelPage } from "@openbot/contracts/ipc";
-import { Button, ErrorReference } from "@openbot/ui";
-import { SettingsPanel, SettingsPanelContent, SettingsPanelHeader } from "@openbot/ui/components/SettingsPanel";
-import { ChannelAvatar } from "@openbot/ui/features/channels/ChannelAvatar";
-import { ChannelStoppedTasks } from "@openbot/ui/features/channels/ChannelStoppedTasks";
-import { useText } from "@openbot/ui/text";
+import type { ChannelPage } from "@pokebots/contracts/ipc";
+import { Button, ErrorReference } from "@pokebots/ui";
+import { SettingsPanel, SettingsPanelContent, SettingsPanelHeader } from "@pokebots/ui/components/SettingsPanel";
+import { ChannelAvatar } from "@pokebots/ui/features/channels/ChannelAvatar";
+import { ChannelStoppedTasks } from "@pokebots/ui/features/channels/ChannelStoppedTasks";
+import { useText } from "@pokebots/ui/text";
 import type { ComponentProps } from "@solidjs/web";
 import { createEffect, createMemo, createStore, For, Loading, lazy, Show } from "solid-js";
 import { createSidePanelWidth, readSidePanelWidth, saveSidePanelWidth } from "../../components/side-panel-width";

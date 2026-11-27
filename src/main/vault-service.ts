@@ -26,7 +26,7 @@ import {
   type VaultStatus,
   type VaultTwoStepCode,
   vaultItemAllows,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   normalizeTwoStepKey,
   parseTwoStepKey,
@@ -34,9 +34,9 @@ import {
   twoStepCode,
   twoStepKeySecret,
   twoStepRemainingMs,
-} from "@openbot/contracts/two-step-code";
-import { type SourceMessages, sourceText } from "@openbot/i18n/source";
-import { registerSecretValues } from "@openbot/logging";
+} from "@pokebots/contracts/two-step-code";
+import { type SourceMessages, sourceText } from "@pokebots/i18n/source";
+import { registerSecretValues } from "@pokebots/logging";
 import { Effect } from "effect";
 import { type PasswordVault, PasswordVaultError, websiteMatchesOrigin, websiteUrl } from "../backend/password-vault";
 import type {

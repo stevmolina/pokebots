@@ -4,8 +4,8 @@ import {
   agentProviderName,
   agentSteersTurns,
   foreignProvider,
-} from "@openbot/contracts/agent-providers";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+} from "@pokebots/contracts/agent-providers";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import {
   type AgentBackupModels,
   type AgentBrowserProfile,
@@ -41,8 +41,8 @@ import {
   type UpdateAgentInput,
   widensAgentPermission,
   workspaceAccessEnforced,
-} from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
+} from "@pokebots/contracts/ipc";
+import type { AppTextKey } from "@pokebots/i18n";
 import {
   ArrowLeftRight,
   Bell,
@@ -67,8 +67,8 @@ import {
   Switch,
   Text,
   X,
-} from "@openbot/ui";
-import { normalizeAvatarFile } from "@openbot/ui/avatar-image";
+} from "@pokebots/ui";
+import { normalizeAvatarFile } from "@pokebots/ui/avatar-image";
 import {
   AVATAR_EXPRESSIONS,
   AVATAR_STYLES,
@@ -83,10 +83,10 @@ import {
   isAvatarArtworkColorChoice,
   SUPPORTED_AVATAR_SILHOUETTES,
   type SupportedAvatarSilhouetteId,
-} from "@openbot/ui/bloub-avatar";
-import { ProviderModelPicker } from "@openbot/ui/components/ProviderModelPicker";
-import { findModelOption } from "@openbot/ui/components/provider-accounts";
-import { ResizableTextarea } from "@openbot/ui/components/ResizableTextarea";
+} from "@pokebots/ui/bloub-avatar";
+import { ProviderModelPicker } from "@pokebots/ui/components/ProviderModelPicker";
+import { findModelOption } from "@pokebots/ui/components/provider-accounts";
+import { ResizableTextarea } from "@pokebots/ui/components/ResizableTextarea";
 import {
   SettingsField,
   SettingsLinkGroup,
@@ -94,16 +94,16 @@ import {
   SettingsPanel,
   SettingsPanelContent,
   SettingsPanelHeader,
-} from "@openbot/ui/components/SettingsPanel";
-import type { AgentProfile } from "@openbot/ui/data";
-import { AgentAvatar } from "@openbot/ui/features/agents/AgentAvatar";
-import { InstructionsLimit, instructionsTooLong } from "@openbot/ui/features/agents/InstructionsLimit";
+} from "@pokebots/ui/components/SettingsPanel";
+import type { AgentProfile } from "@pokebots/ui/data";
+import { AgentAvatar } from "@pokebots/ui/features/agents/AgentAvatar";
+import { InstructionsLimit, instructionsTooLong } from "@pokebots/ui/features/agents/InstructionsLimit";
 import {
   type BrowserProfileChoice,
   BrowserProfileSelect,
   type BrowserProfileSelectProfile,
-} from "@openbot/ui/features/browser/BrowserProfileSelect";
-import { errorReference } from "@openbot/user-errors";
+} from "@pokebots/ui/features/browser/BrowserProfileSelect";
+import { errorReference } from "@pokebots/user-errors";
 import type { JSX } from "@solidjs/web";
 import {
   createEffect,

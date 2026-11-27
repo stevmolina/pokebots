@@ -1,4 +1,4 @@
-import { avatarHeadColor } from "@openbot/brand/bloub-avatar";
+import { avatarHeadColor } from "@pokebots/brand/bloub-avatar";
 import MaskedView from "@react-native-masked-view/masked-view";
 import { useQuery } from "@tanstack/react-query";
 import { Image } from "expo-image";

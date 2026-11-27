@@ -1,4 +1,4 @@
-import type { OpenBotDesktopApi } from "@openbot/contracts/ipc";
+import type { OpenBotDesktopApi } from "@pokebots/contracts/ipc";
 import type {
   EventRoutine,
   EventRoutineOwner,
@@ -6,7 +6,7 @@ import type {
   EventStatus,
   ListEventRoutineRunsInput,
   SaveEventRoutineInput,
-} from "@openbot/contracts/ipc-events";
+} from "@pokebots/contracts/ipc-events";
 import { clone } from "./mock-support";
 
 function sameOwner(left: EventRoutineOwner, right: EventRoutineOwner): boolean {

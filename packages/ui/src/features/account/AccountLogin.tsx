@@ -1,15 +1,15 @@
-import { AppLogo } from "@openbot/brand";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import type { AppVariant, CentralAuthIssue, CentralAuthState } from "@openbot/contracts/ipc";
-import { normalizeEmailAddress, normalizeOneTimeCode } from "@openbot/contracts/validation";
-import type { TranslatedLocale } from "@openbot/i18n";
-import { appLanguageOption } from "@openbot/i18n/languages";
-// Subpaths, not the `@openbot/ui` index: the web sign-in screen loads this file, and the index holds every control.
-import { Button } from "@openbot/ui/button";
-import { ErrorReference } from "@openbot/ui/error-reference";
-import { Input } from "@openbot/ui/form";
-import { ArrowLeft, Globe2, Lock, RefreshCw } from "@openbot/ui/icons";
-import { errorReference, type UserErrorDetails } from "@openbot/user-errors";
+import { AppLogo } from "@pokebots/brand";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
+import type { AppVariant, CentralAuthIssue, CentralAuthState } from "@pokebots/contracts/ipc";
+import { normalizeEmailAddress, normalizeOneTimeCode } from "@pokebots/contracts/validation";
+import type { TranslatedLocale } from "@pokebots/i18n";
+import { appLanguageOption } from "@pokebots/i18n/languages";
+// Subpaths, not the `@pokebots/ui` index: the web sign-in screen loads this file, and the index holds every control.
+import { Button } from "@pokebots/ui/button";
+import { ErrorReference } from "@pokebots/ui/error-reference";
+import { Input } from "@pokebots/ui/form";
+import { ArrowLeft, Globe2, Lock, RefreshCw } from "@pokebots/ui/icons";
+import { errorReference, type UserErrorDetails } from "@pokebots/user-errors";
 import type { JSX } from "@solidjs/web";
 import { createEffect, createMemo, createSignal, onCleanup, Show, untrack } from "solid-js";
 import { useText } from "../../text";

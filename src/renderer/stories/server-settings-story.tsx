@@ -1,4 +1,4 @@
-import type { HostReleaseStatus, HostUpdateStatus, ServerAppearance } from "@openbot/contracts/ipc";
+import type { HostReleaseStatus, HostUpdateStatus, ServerAppearance } from "@pokebots/contracts/ipc";
 import { createSignal, onSettled, snapshot } from "solid-js";
 import { fn } from "storybook/test";
 import { ServerSettingsModal, type ServerSettingsModalProps } from "../src/features/servers/ServerSettingsModal";

@@ -12,9 +12,9 @@
 
 import { readFile, stat } from "node:fs/promises";
 import { isAbsolute, relative, resolve } from "node:path";
-import { CHAT_VISUAL_PAGE_LIMIT, isHtmlPageFile } from "@openbot/contracts/chat-visual";
-import { LOCAL_SERVER_ID } from "@openbot/contracts/ipc";
-import { createOpenBotLogger, toLogValue } from "@openbot/logging";
+import { CHAT_VISUAL_PAGE_LIMIT, isHtmlPageFile } from "@pokebots/contracts/chat-visual";
+import { LOCAL_SERVER_ID } from "@pokebots/contracts/ipc";
+import { createOpenBotLogger, toLogValue } from "@pokebots/logging";
 import { app, session } from "electron";
 import type { AgentService } from "../backend/agent-service";
 import { runCauseEffect } from "../backend/effect-boundary";

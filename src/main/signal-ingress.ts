@@ -1,31 +1,31 @@
-import type { MessagingPlatform } from "@openbot/contracts/ipc";
-import { decodeSignalServerMessage } from "@openbot/contracts/signal-protocol/decode";
-import { type DiscordApiRequest, decodeDiscordApiError } from "@openbot/contracts/signal-protocol/discord-api";
-import { DISCORD_API_PATH } from "@openbot/contracts/signal-protocol/discord-route";
-import type { GitHubDeliveryStatus } from "@openbot/contracts/signal-protocol/github-route";
+import type { MessagingPlatform } from "@pokebots/contracts/ipc";
+import { decodeSignalServerMessage } from "@pokebots/contracts/signal-protocol/decode";
+import { type DiscordApiRequest, decodeDiscordApiError } from "@pokebots/contracts/signal-protocol/discord-api";
+import { DISCORD_API_PATH } from "@pokebots/contracts/signal-protocol/discord-route";
+import type { GitHubDeliveryStatus } from "@pokebots/contracts/signal-protocol/github-route";
 import {
   INGRESS_QUEUE_CAPABILITY,
   openQueuedDelivery,
   type QueuedSignalMessage,
-} from "@openbot/contracts/signal-protocol/ingress-queue";
+} from "@pokebots/contracts/signal-protocol/ingress-queue";
 import {
   SIGNAL_PROTOCOL_VERSION,
   type SignalClientMessage,
   type SignalServerMessage,
   SLACK_DELIVERY_RESPONSE_BYTES_LIMIT,
   type WebhookDeliveryStatus,
-} from "@openbot/contracts/signal-protocol/messages";
+} from "@pokebots/contracts/signal-protocol/messages";
 import {
   TELEGRAM_CAPABILITY,
   type TelegramCallMethod,
   type TelegramCallParams,
   type TelegramCallResult,
-} from "@openbot/contracts/signal-protocol/telegram-route";
+} from "@pokebots/contracts/signal-protocol/telegram-route";
 import {
   STANDARD_WEBHOOKS_FORMAT,
   type WebhookSignatureFormat,
-} from "@openbot/contracts/signal-protocol/webhook-route";
-import { createOpenBotLogger } from "@openbot/logging";
+} from "@pokebots/contracts/signal-protocol/webhook-route";
+import { createOpenBotLogger } from "@pokebots/logging";
 import { Context, Deferred, Effect, Exit, Layer, ManagedRuntime, Option, Result, Scope, Semaphore } from "effect";
 import WebSocket from "ws";
 import {

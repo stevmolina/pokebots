@@ -1,4 +1,4 @@
-import type { AgentTask } from "@openbot/contracts/ipc";
+import type { AgentTask } from "@pokebots/contracts/ipc";
 import { Typography } from "heroui-native";
 import List from "lucide-react-native/icons/list";
 import MessageCircle from "lucide-react-native/icons/message-circle";

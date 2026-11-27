@@ -1,7 +1,7 @@
 // The steps that each live provider test shares: wait for the provider of the profile, choose its
 // low-cost model, and start with no agents.
 import type { Browser } from "@e2e-dev/web";
-import type { OpenBotDesktopApi } from "@openbot/contracts/ipc";
+import type { OpenBotDesktopApi } from "@pokebots/contracts/ipc";
 import { expect } from "e2e";
 import { isLiveProvider, LIVE_MODELS, type LiveProvider } from "./targets";
 

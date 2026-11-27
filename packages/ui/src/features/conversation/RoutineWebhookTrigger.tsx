@@ -1,7 +1,7 @@
-import type { EventFilterDraft } from "@openbot/contracts/event-filter-value";
-import type { WebhookTestResult } from "@openbot/contracts/ipc-events";
-import type { AppTextKey } from "@openbot/i18n";
-import { Button, Check, ChevronDown, ChevronRight, Text, Webhook } from "@openbot/ui";
+import type { EventFilterDraft } from "@pokebots/contracts/event-filter-value";
+import type { WebhookTestResult } from "@pokebots/contracts/ipc-events";
+import type { AppTextKey } from "@pokebots/i18n";
+import { Button, Check, ChevronDown, ChevronRight, Text, Webhook } from "@pokebots/ui";
 import type { JSX } from "@solidjs/web";
 import { createEffect, createStore, Show } from "solid-js";
 import { useText } from "../../text";

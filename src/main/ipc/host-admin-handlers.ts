@@ -1,8 +1,8 @@
 import {
   HOST_MEMBER_UPDATE_CAPABILITY,
   memberUpdateRoute,
-} from "@openbot/contracts/team-protocol/host-member-update-v1";
-import { HOST_RELEASE_CAPABILITY, HOST_RELEASE_ROUTES } from "@openbot/contracts/team-protocol/host-release-v1";
+} from "@pokebots/contracts/team-protocol/host-member-update-v1";
+import { HOST_RELEASE_CAPABILITY, HOST_RELEASE_ROUTES } from "@pokebots/contracts/team-protocol/host-release-v1";
 import { Effect, Result } from "effect";
 import type { RemoteWorkflowError } from "../remote-service-effects";
 // The server name, logo, timezone, agent memory limit, memory review, prompt cache time, model list
@@ -61,79 +61,79 @@ import {
   UPDATE_RESTART_MODES,
   type UpdateHostIdentityInput,
   type UpdateRestartMode,
-} from "@openbot/contracts/ipc";
-import { isOneOf } from "@openbot/contracts/runtime-values";
-import { AGENT_ACCESS_CAPABILITY, AGENT_ACCESS_ROUTES } from "@openbot/contracts/team-protocol/agent-access-v1";
+} from "@pokebots/contracts/ipc";
+import { isOneOf } from "@pokebots/contracts/runtime-values";
+import { AGENT_ACCESS_CAPABILITY, AGENT_ACCESS_ROUTES } from "@pokebots/contracts/team-protocol/agent-access-v1";
 import {
   AGENT_MEMORY_LIMIT_CAPABILITY,
   AGENT_MEMORY_LIMIT_ROUTES,
-} from "@openbot/contracts/team-protocol/agent-memory-limit-v1";
+} from "@pokebots/contracts/team-protocol/agent-memory-limit-v1";
 import {
   BROWSING_MEMORY_CAPABILITY,
   BROWSING_MEMORY_ROUTES,
-} from "@openbot/contracts/team-protocol/browsing-memory-v1";
+} from "@pokebots/contracts/team-protocol/browsing-memory-v1";
 import {
   CLAUDE_AI_TOOLS_CAPABILITY,
   CLAUDE_AI_TOOLS_ROUTES,
   decodeClaudeAiToolsResponse,
-} from "@openbot/contracts/team-protocol/claude-ai-tools-v1";
+} from "@pokebots/contracts/team-protocol/claude-ai-tools-v1";
 import {
   CLAUDE_COMPACT_WINDOW_CAPABILITY,
   CLAUDE_COMPACT_WINDOW_ROUTES,
   decodeClaudeCompactWindowResponse,
-} from "@openbot/contracts/team-protocol/claude-compact-window-v1";
+} from "@pokebots/contracts/team-protocol/claude-compact-window-v1";
 import {
   CLAUDE_USER_SETUP_CAPABILITY,
   CLAUDE_USER_SETUP_ROUTES,
   decodeClaudeUserSetupResponse,
-} from "@openbot/contracts/team-protocol/claude-user-setup-v1";
-import type { TeamCurrentCapability } from "@openbot/contracts/team-protocol/current";
+} from "@pokebots/contracts/team-protocol/claude-user-setup-v1";
+import type { TeamCurrentCapability } from "@pokebots/contracts/team-protocol/current";
 import {
   HOME_AGENT_RULES_CAPABILITY,
   HOME_AGENT_RULES_ROUTES,
-} from "@openbot/contracts/team-protocol/home-agent-rules-v1";
-import { HOST_ADMIN_CAPABILITY, HOST_ADMIN_ROUTES } from "@openbot/contracts/team-protocol/host-admin-v1";
+} from "@pokebots/contracts/team-protocol/home-agent-rules-v1";
+import { HOST_ADMIN_CAPABILITY, HOST_ADMIN_ROUTES } from "@pokebots/contracts/team-protocol/host-admin-v1";
 import {
   HOST_APPEARANCE_CAPABILITY,
   HOST_APPEARANCE_ROUTES,
   type ServerAppearance,
-} from "@openbot/contracts/team-protocol/host-appearance-v1";
+} from "@pokebots/contracts/team-protocol/host-appearance-v1";
 import {
   HOST_KEY_ROTATION_CAPABILITY,
   HOST_KEY_ROTATION_ROUTES,
-} from "@openbot/contracts/team-protocol/host-key-rotation-v1";
+} from "@pokebots/contracts/team-protocol/host-key-rotation-v1";
 import {
   HOST_PERSONALITY_CAPABILITY,
   HOST_PERSONALITY_ROUTES,
-} from "@openbot/contracts/team-protocol/host-personality-v1";
-import { HOST_RESTART_CAPABILITY, HOST_RESTART_ROUTES } from "@openbot/contracts/team-protocol/host-restart-v1";
-import { HOST_TIMEZONE_CAPABILITY, HOST_TIMEZONE_ROUTES } from "@openbot/contracts/team-protocol/host-timezone-v1";
+} from "@pokebots/contracts/team-protocol/host-personality-v1";
+import { HOST_RESTART_CAPABILITY, HOST_RESTART_ROUTES } from "@pokebots/contracts/team-protocol/host-restart-v1";
+import { HOST_TIMEZONE_CAPABILITY, HOST_TIMEZONE_ROUTES } from "@pokebots/contracts/team-protocol/host-timezone-v1";
 import {
   HOST_TURN_LIMITS_CAPABILITY,
   HOST_TURN_LIMITS_ROUTES,
-} from "@openbot/contracts/team-protocol/host-turn-limits-v1";
-import { HOST_UPDATE_CAPABILITY, HOST_UPDATE_ROUTES } from "@openbot/contracts/team-protocol/host-update-v1";
+} from "@pokebots/contracts/team-protocol/host-turn-limits-v1";
+import { HOST_UPDATE_CAPABILITY, HOST_UPDATE_ROUTES } from "@pokebots/contracts/team-protocol/host-update-v1";
 import {
   MACHINE_RESOURCES_CAPABILITY,
   MACHINE_RESOURCES_ROUTES,
-} from "@openbot/contracts/team-protocol/machine-resources-v1";
-import { MEMORY_REVIEW_CAPABILITY, MEMORY_REVIEW_ROUTES } from "@openbot/contracts/team-protocol/memory-review-v1";
+} from "@pokebots/contracts/team-protocol/machine-resources-v1";
+import { MEMORY_REVIEW_CAPABILITY, MEMORY_REVIEW_ROUTES } from "@pokebots/contracts/team-protocol/memory-review-v1";
 import {
   MODEL_VISIBILITY_CAPABILITY,
   MODEL_VISIBILITY_ROUTES,
-} from "@openbot/contracts/team-protocol/model-visibility-v1";
+} from "@pokebots/contracts/team-protocol/model-visibility-v1";
 import {
   PROMPT_CACHE_TTL_CAPABILITY,
   PROMPT_CACHE_TTL_ROUTES,
-} from "@openbot/contracts/team-protocol/prompt-cache-ttl-v1";
+} from "@pokebots/contracts/team-protocol/prompt-cache-ttl-v1";
 import {
   decodeProviderEnvironmentResponse,
   PROVIDER_ENVIRONMENT_CAPABILITY,
   PROVIDER_ENVIRONMENT_ROUTES,
-} from "@openbot/contracts/team-protocol/provider-environment-v1";
-import { SERVER_AUDIT_CAPABILITY, SERVER_AUDIT_ROUTES } from "@openbot/contracts/team-protocol/server-audit-v1";
-import { SKILL_LEARNING_CAPABILITY, SKILL_LEARNING_ROUTES } from "@openbot/contracts/team-protocol/skill-learning-v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/team-protocol/provider-environment-v1";
+import { SERVER_AUDIT_CAPABILITY, SERVER_AUDIT_ROUTES } from "@pokebots/contracts/team-protocol/server-audit-v1";
+import { SKILL_LEARNING_CAPABILITY, SKILL_LEARNING_ROUTES } from "@pokebots/contracts/team-protocol/skill-learning-v1";
+import { sourceText } from "@pokebots/i18n/source";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import { type AgentAccessStore, agentAccessSnapshot } from "../agent-access-store";
 import type { AgentMemoryLimitSetting } from "../agent-memory-limit-preference-store";

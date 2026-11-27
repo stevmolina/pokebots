@@ -1,4 +1,4 @@
-import { POKEBOTS_INTEGRATION_ACCOUNTS_URL } from "@openbot/contracts/team-protocol/pokebots-integrations-v1";
+import { POKEBOTS_INTEGRATION_ACCOUNTS_URL } from "@pokebots/contracts/team-protocol/pokebots-integrations-v1";
 import { Button } from "heroui-native";
 import { Linking, View } from "react-native";
 import { useText } from "@/shared/lib/text";

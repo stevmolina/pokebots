@@ -14,7 +14,7 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import { type AgentSummary, CHANNEL_PARALLEL_LIMIT, type ChannelTask } from "@openbot/contracts/ipc";
+import { type AgentSummary, CHANNEL_PARALLEL_LIMIT, type ChannelTask } from "@pokebots/contracts/ipc";
 import { Effect } from "effect";
 import { ChannelImages } from "../src/backend/channel-images";
 import { ChannelService } from "../src/backend/channel-service";

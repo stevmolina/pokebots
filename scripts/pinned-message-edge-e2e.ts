@@ -10,7 +10,7 @@
 // 4. A thread that shows a part around an old message drops a message that another device deleted.
 // The report goes to `.openbot-build/pinned-message-edge-e2e/report.json`.
 import assert from "node:assert/strict";
-import { translateFor } from "@openbot/i18n";
+import { translateFor } from "@pokebots/i18n";
 import { connectChannelE2e, writeReport } from "./channel-e2e-support";
 import { readSeed, seedMessageId as seedId } from "./pinned-message-e2e-seed";
 

@@ -5,7 +5,7 @@ import type {
   AgentTasksSnapshot,
   ConversationSnapshot,
   StartAgentTaskInput,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import { noteAgentRequest } from "../../agent-requests";
 
 export type TaskEvent = Extract<

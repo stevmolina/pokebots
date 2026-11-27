@@ -3,12 +3,12 @@ import {
   type BillingStorageUpgradeTier,
   isOpenBillingStatus,
   serverStorageGb,
-} from "@openbot/contracts/billing";
-import type { ServerSummary } from "@openbot/contracts/ipc";
-import type { BillingCalls } from "@openbot/ui/features/billing/billing-store";
-import { StorageTierDialog } from "@openbot/ui/features/billing/StorageTierDialog";
-import type { SidebarStorageLevel } from "@openbot/ui/features/sidebar/SidebarStorageCard";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/contracts/billing";
+import type { ServerSummary } from "@pokebots/contracts/ipc";
+import type { BillingCalls } from "@pokebots/ui/features/billing/billing-store";
+import { StorageTierDialog } from "@pokebots/ui/features/billing/StorageTierDialog";
+import type { SidebarStorageLevel } from "@pokebots/ui/features/sidebar/SidebarStorageCard";
+import { useText } from "@pokebots/ui/text";
 import { createEffect, createStore, Show, untrack } from "solid-js";
 import { usePlatform } from "../../platform";
 import { readUpgradeOffered, writeUpgradeOffered } from "./storage-card";

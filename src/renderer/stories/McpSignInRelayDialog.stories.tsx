@@ -4,7 +4,7 @@
  * address that the browser shows when this computer cannot take the callback.
  */
 
-import { McpSignInRelayDialog } from "@openbot/ui/features/settings/McpSignInPage";
+import { McpSignInRelayDialog } from "@pokebots/ui/features/settings/McpSignInPage";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 

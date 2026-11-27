@@ -6,7 +6,7 @@ import {
   LibraryFolderRefusal,
   type LibraryFoldersSnapshot,
   type StoredFileRow,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import { type QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
 import { randomUUID } from "expo-crypto";
 import { useMemo } from "react";

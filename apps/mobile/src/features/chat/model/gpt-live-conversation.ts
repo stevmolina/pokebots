@@ -1,4 +1,4 @@
-import { isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
+import { isDynamicRecord, isString } from "@pokebots/contracts/runtime-values";
 
 /** A change of a realtime v3 turn: the user or the voice starts or ends speaking. */
 export interface GptLiveTurn {

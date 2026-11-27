@@ -1,5 +1,5 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import { Button, Dialog, Field, Input } from "@openbot/ui";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
+import { Button, Dialog, Field, Input } from "@pokebots/ui";
 import { For, Show } from "solid-js";
 import { avatarArtworkColor, avatarColorChoices, isAvatarArtworkColorChoice } from "../../bloub-avatar";
 import { useText } from "../../text";

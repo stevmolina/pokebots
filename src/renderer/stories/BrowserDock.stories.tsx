@@ -1,5 +1,5 @@
-import type { BrowserTakeoverRequest, QueueDelivery } from "@openbot/contracts/ipc";
-import { BrowserDock } from "@openbot/ui/features/browser/BrowserDock";
+import type { BrowserTakeoverRequest, QueueDelivery } from "@pokebots/contracts/ipc";
+import { BrowserDock } from "@pokebots/ui/features/browser/BrowserDock";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { requireFixture, STORY_AGENTS } from "./fixtures";

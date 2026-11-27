@@ -1,15 +1,15 @@
 import { RequestError } from "@agentclientprotocol/sdk";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import {
   type AgentStepActivity,
   agentProviderName,
   COMPUTER_USE_MCP_SERVER_NAME,
   CONVERSATION_TRACE_TEXT_LIMIT,
   DEFAULT_PROVIDER_ACCOUNT_ID,
-} from "@openbot/contracts/ipc";
-import { type DynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
-import { redactText } from "@openbot/logging";
+} from "@pokebots/contracts/ipc";
+import { type DynamicRecord, isString } from "@pokebots/contracts/runtime-values";
+import { sourceText } from "@pokebots/i18n/source";
+import { redactText } from "@pokebots/logging";
 import {
   type AgentProvider,
   MissingClaudeSessionError,

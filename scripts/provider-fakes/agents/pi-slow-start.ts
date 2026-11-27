@@ -4,7 +4,7 @@
 // in `FAKE_MODEL_FILE` when that is set. `pi update --models` and `pi --version` end at once.
 import { existsSync, readFileSync } from "node:fs";
 import { createInterface } from "node:readline";
-import { isDynamicRecord, type DynamicRecord as RpcRecord } from "@openbot/contracts/runtime-values";
+import { isDynamicRecord, type DynamicRecord as RpcRecord } from "@pokebots/contracts/runtime-values";
 
 if (process.argv.includes("--version")) {
   process.stdout.write("1.5.2\n");

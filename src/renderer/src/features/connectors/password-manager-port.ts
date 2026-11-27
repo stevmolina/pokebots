@@ -3,8 +3,8 @@ import type {
   PasswordManagerConnectInput,
   PasswordManagerId,
   PasswordManagerStatus,
-} from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
 
 type DesktopPasswordManagers = OpenBotDesktopApi["passwordManagers"];
 

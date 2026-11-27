@@ -9,14 +9,14 @@ import {
   type ProviderRuntimeStatus,
   type ProviderRuntimesDesktopApi,
   type ServerSummary,
-} from "@openbot/contracts/ipc";
-import { matchingSourceKeys } from "@openbot/i18n";
+} from "@pokebots/contracts/ipc";
+import { matchingSourceKeys } from "@pokebots/i18n";
 import {
   type ProviderUpdate,
   providerUpdateAvailable,
   providerUpdatesToAnnounce,
-} from "@openbot/ui/features/provider-updates/provider-update";
-import { currentText } from "@openbot/ui/text";
+} from "@pokebots/ui/features/provider-updates/provider-update";
+import { currentText } from "@pokebots/ui/text";
 import { createEffect, createSignal, flush, onSettled } from "solid-js";
 import { desktopAnalytics } from "../../analytics";
 import { FALLBACK_PROVIDER_RUNTIMES } from "../../app-defaults";

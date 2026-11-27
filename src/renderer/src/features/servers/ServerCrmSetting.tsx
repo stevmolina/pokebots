@@ -1,5 +1,5 @@
-import { Item, ItemActions, ItemContent, ItemDescription, ItemTitle, Switch } from "@openbot/ui";
-import { useText } from "@openbot/ui/text";
+import { Item, ItemActions, ItemContent, ItemDescription, ItemTitle, Switch } from "@pokebots/ui";
+import { useText } from "@pokebots/ui/text";
 import { Show } from "solid-js";
 import { createCrmEnabled } from "../crm/crm-enabled";
 import type { CrmHost } from "../crm/crm-port";

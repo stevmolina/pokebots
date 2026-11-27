@@ -4,10 +4,10 @@ import {
   type AgentSessionSettingsSnapshot,
   type AgentSessionSettingValue,
   isReasoningEffort,
-} from "@openbot/contracts/ipc";
-import { isString } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger } from "@openbot/logging";
+} from "@pokebots/contracts/ipc";
+import { isString } from "@pokebots/contracts/runtime-values";
+import { sourceText } from "@pokebots/i18n/source";
+import { createOpenBotLogger } from "@pokebots/logging";
 import { Effect, Exit, Fiber, type Scope, Semaphore } from "effect";
 import type { AcpConnection } from "./acp-connection";
 import { type AgentProvider, ProviderModelNotOfferedError } from "./agent-client";

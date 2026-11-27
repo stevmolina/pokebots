@@ -27,25 +27,25 @@ import {
   type McpServerConfig,
   type McpSignInState,
   type TestMcpServerInput,
-} from "@openbot/contracts/ipc";
-import { TEAM_API_ROUTES } from "@openbot/contracts/team-api-routes";
+} from "@pokebots/contracts/ipc";
+import { TEAM_API_ROUTES } from "@pokebots/contracts/team-api-routes";
 import {
   TEAM_APP_VERSION_HEADER,
   TEAM_CAPABILITIES_HEADER,
   TEAM_PROTOCOL_VERSION_HEADER,
-} from "@openbot/contracts/team-protocol";
-import { MCP_MEMBER_ACCESS_CAPABILITY, teamCapabilitiesForProtocol } from "@openbot/contracts/team-protocol/current";
-import { MCP_ACCESS_CAPABILITY, MCP_ACCESS_ROUTES } from "@openbot/contracts/team-protocol/mcp-access-v1";
-import { MCP_SIGN_IN_APP_ROUTES } from "@openbot/contracts/team-protocol/mcp-sign-in-app-v1";
-import { MCP_SIGN_IN_ROUTES } from "@openbot/contracts/team-protocol/mcp-sign-in-v1";
-import { MCP_ROUTES } from "@openbot/contracts/team-protocol/mcp-v1";
+} from "@pokebots/contracts/team-protocol";
+import { MCP_MEMBER_ACCESS_CAPABILITY, teamCapabilitiesForProtocol } from "@pokebots/contracts/team-protocol/current";
+import { MCP_ACCESS_CAPABILITY, MCP_ACCESS_ROUTES } from "@pokebots/contracts/team-protocol/mcp-access-v1";
+import { MCP_SIGN_IN_APP_ROUTES } from "@pokebots/contracts/team-protocol/mcp-sign-in-app-v1";
+import { MCP_SIGN_IN_ROUTES } from "@pokebots/contracts/team-protocol/mcp-sign-in-v1";
+import { MCP_ROUTES } from "@pokebots/contracts/team-protocol/mcp-v1";
 import {
   SIGN_IN_RELAY_DEEP_LINK_CAPABILITY,
   SIGN_IN_RELAY_DEEP_LINK_ROUTES,
-} from "@openbot/contracts/team-protocol/sign-in-relay-deep-link-v1";
-import { SIGN_IN_RELAY_ROUTES } from "@openbot/contracts/team-protocol/sign-in-relay-v1";
-import { TEAM_PROTOCOL_V9 } from "@openbot/contracts/team-protocol/v9";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/team-protocol/sign-in-relay-deep-link-v1";
+import { SIGN_IN_RELAY_ROUTES } from "@pokebots/contracts/team-protocol/sign-in-relay-v1";
+import { TEAM_PROTOCOL_V9 } from "@pokebots/contracts/team-protocol/v9";
+import { sourceText } from "@pokebots/i18n/source";
 import { plugin } from "bun";
 import { Effect } from "effect";
 import type { AgentBrowserHost } from "../src/backend/agent/turn-lifecycle";

@@ -1,5 +1,5 @@
-import type { ConnectorMessagingPlatform, MessagingConnection } from "@openbot/contracts/ipc";
-import type { AppMobileMessages, MobileTextKey } from "@openbot/i18n/mobile";
+import type { ConnectorMessagingPlatform, MessagingConnection } from "@pokebots/contracts/ipc";
+import type { AppMobileMessages, MobileTextKey } from "@pokebots/i18n/mobile";
 
 /**
  * The connectors of a joined server, in the order of the desktop Marketplace apps. A host

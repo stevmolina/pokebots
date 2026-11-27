@@ -1,4 +1,4 @@
-import type { HostPersonality, OpenBotDesktopApi, ResponseStyle, ServerSummary } from "@openbot/contracts/ipc";
+import type { HostPersonality, OpenBotDesktopApi, ResponseStyle, ServerSummary } from "@pokebots/contracts/ipc";
 import { createEffect, createSignal } from "solid-js";
 
 /** The personality calls of one server's host. The desktop reaches them through main. */

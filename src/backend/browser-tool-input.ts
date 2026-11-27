@@ -1,4 +1,4 @@
-import { type DynamicRecord, isDynamicRecord } from "@openbot/contracts/runtime-values";
+import { type DynamicRecord, isDynamicRecord } from "@pokebots/contracts/runtime-values";
 
 // Agents write some browser tool arguments in forms that the schemas do not take, and each refusal
 // costs a turn. These are the forms that agent transcripts show again and again. Each rewrite keeps

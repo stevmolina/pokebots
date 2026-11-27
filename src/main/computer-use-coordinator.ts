@@ -23,7 +23,7 @@
 // the daemon's socket. They keep honest agents out of each other's way.
 
 import { createHash } from "node:crypto";
-import { createOpenBotLogger, type Logger } from "@openbot/logging";
+import { createOpenBotLogger, type Logger } from "@pokebots/logging";
 import { Deferred, Effect, Exit, Option, Schema } from "effect";
 
 const logger = createOpenBotLogger("computer-use-coordinator");

@@ -1,4 +1,4 @@
-import { LIBRARY_FOLDER_LIMITS, type LibraryFolder } from "@openbot/contracts/ipc";
+import { LIBRARY_FOLDER_LIMITS, type LibraryFolder } from "@pokebots/contracts/ipc";
 import {
   Archive,
   Button,
@@ -21,9 +21,9 @@ import {
   StarOff,
   Trash2,
   UsersRound,
-} from "@openbot/ui";
-import type { AgentProfile } from "@openbot/ui/data";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/ui";
+import type { AgentProfile } from "@pokebots/ui/data";
+import { useText } from "@pokebots/ui/text";
 import type { JSX } from "@solidjs/web";
 import { createMemo, createSignal, For, Show, untrack } from "solid-js";
 import { AgentAvatar } from "../agents/AgentAvatar";

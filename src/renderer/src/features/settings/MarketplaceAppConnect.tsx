@@ -1,4 +1,4 @@
-import type { MarketplaceApp } from "@openbot/ui/features/marketplace/marketplace-model";
+import type { MarketplaceApp } from "@pokebots/ui/features/marketplace/marketplace-model";
 import { createEffect, createMemo, merge, untrack } from "solid-js";
 import { actionToast } from "../../action-toast";
 import { MarketplaceDialogs } from "./MarketplaceDialogs";

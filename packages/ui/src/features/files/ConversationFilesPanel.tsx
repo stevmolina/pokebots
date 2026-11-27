@@ -1,6 +1,6 @@
-import { Button, Folder, X } from "@openbot/ui";
-import type { AgentProfile } from "@openbot/ui/data";
-import { useText } from "@openbot/ui/text";
+import { Button, Folder, X } from "@pokebots/ui";
+import type { AgentProfile } from "@pokebots/ui/data";
+import { useText } from "@pokebots/ui/text";
 import { onSettled, Show } from "solid-js";
 import { createScrollFades } from "../../components/createScrollFades";
 import { FileList } from "./FileList";

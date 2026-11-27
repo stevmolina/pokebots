@@ -1,4 +1,4 @@
-import { marketplaceListingPath } from "@openbot/contracts/marketplace-links";
+import { marketplaceListingPath } from "@pokebots/contracts/marketplace-links";
 import { createFileRoute, notFound } from "@tanstack/solid-router";
 import { MarketplaceAgentPage } from "../../../components/marketplace/MarketplaceListingPage";
 import { MarketplaceMissingPage } from "../../../components/marketplace/MarketplaceMissingPage";

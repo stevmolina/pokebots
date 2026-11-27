@@ -9,8 +9,8 @@ import {
   type WhatsAppAccount,
   type WhatsAppGroup,
   type WhatsAppLinkState,
-} from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
 import { clone } from "./mock-support";
 
 /**

@@ -9,9 +9,9 @@ import {
   type BrainRequest,
   brainRequestSchema,
   decodeBrainResponse,
-} from "@openbot/contracts/brain";
-import type { McpServerConfig } from "@openbot/contracts/ipc";
-import { MCP_MEMBER_ACCESS_CAPABILITY } from "@openbot/contracts/team-protocol/current";
+} from "@pokebots/contracts/brain";
+import type { McpServerConfig } from "@pokebots/contracts/ipc";
+import { MCP_MEMBER_ACCESS_CAPABILITY } from "@pokebots/contracts/team-protocol/current";
 import { Effect } from "effect";
 import { BrainService } from "../src/backend/brain-service";
 import { HttpError } from "../src/main/team-api/http-error";

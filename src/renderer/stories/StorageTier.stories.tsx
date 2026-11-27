@@ -1,5 +1,5 @@
-import { serverStorageGb } from "@openbot/contracts/billing";
-import { StorageTierDialog, type StorageTierDialogProps } from "@openbot/ui/features/billing/StorageTierDialog";
+import { serverStorageGb } from "@pokebots/contracts/billing";
+import { StorageTierDialog, type StorageTierDialogProps } from "@pokebots/ui/features/billing/StorageTierDialog";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { previewStorageFields } from "../src/preview/mock-billing";

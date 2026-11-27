@@ -1,6 +1,6 @@
-import type { MarketplaceAgentSummary, MarketplaceSkillSummary } from "@openbot/contracts/ipc";
-import { MarketplaceHomeCache } from "@openbot/ui/features/marketplace/marketplace-listing";
-import { currentText } from "@openbot/ui/text";
+import type { MarketplaceAgentSummary, MarketplaceSkillSummary } from "@pokebots/contracts/ipc";
+import { MarketplaceHomeCache } from "@pokebots/ui/features/marketplace/marketplace-listing";
+import { currentText } from "@pokebots/ui/text";
 import type { MarketplaceCalls } from "./marketplace-calls";
 
 /*

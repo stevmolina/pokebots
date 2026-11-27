@@ -11,7 +11,7 @@ import { chmod, mkdir, mkdtemp, readFile, rm, stat, utimes, writeFile } from "no
 import { createServer, type IncomingMessage, type Server } from "node:http";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import { isDiscoverModelsResult } from "@openbot/contracts/ipc";
+import { isDiscoverModelsResult } from "@pokebots/contracts/ipc";
 import { Effect } from "effect";
 import { runCauseEffect } from "../src/backend/effect-boundary";
 import { type CustomProviderCipher, CustomProviderStore } from "../src/main/custom-provider-store";

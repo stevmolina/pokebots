@@ -14,7 +14,7 @@ import {
   HOST_KEY_HANDOVER_LIMIT,
   type HostKeyHandover,
   hostKeyHandoverStatement,
-} from "@openbot/contracts/host-key-handover";
+} from "@pokebots/contracts/host-key-handover";
 import { Effect } from "effect";
 import { encodeBase64Url } from "../src/server/crypto";
 import { RemoteControlPlane } from "../src/server/remote-control-plane";

@@ -5,10 +5,10 @@
  * agent reads the file in each session and can change it, so the page reads it again after each turn.
  */
 
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import type { AgentInstructionsFile } from "@openbot/contracts/ipc";
-import { Button, FileText, FolderOpen, IconButton, Textarea } from "@openbot/ui";
-import { SettingsPanelContent, SettingsPanelHeader } from "@openbot/ui/components/SettingsPanel";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
+import type { AgentInstructionsFile } from "@pokebots/contracts/ipc";
+import { Button, FileText, FolderOpen, IconButton, Textarea } from "@pokebots/ui";
+import { SettingsPanelContent, SettingsPanelHeader } from "@pokebots/ui/components/SettingsPanel";
 import type { JSX } from "@solidjs/web";
 import { createEffect, createSignal, onSettled, Show, untrack } from "solid-js";
 import { useText } from "../../text";

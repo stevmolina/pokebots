@@ -1,4 +1,4 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import {
   AGENT_ACCESS_MODES,
   AGENT_BACKUP_MODEL_LIMIT,
@@ -14,7 +14,7 @@ import {
   isProviderAccountId,
   type UpdateAgentInput,
   workspaceAccessEnforced,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import { z } from "zod";
 
 const AVATAR_HUE_NAMES = {

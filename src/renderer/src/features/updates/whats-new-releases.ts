@@ -1,5 +1,5 @@
-import type { TranslatedLocale } from "@openbot/i18n";
-import type { WhatsNewRelease } from "@openbot/ui/features/updates/whats-new";
+import type { TranslatedLocale } from "@pokebots/i18n";
+import type { WhatsNewRelease } from "@pokebots/ui/features/updates/whats-new";
 import { z } from "zod";
 import arUrl from "./whats-new/ar.json?url&no-inline";
 import deUrl from "./whats-new/de.json?url&no-inline";

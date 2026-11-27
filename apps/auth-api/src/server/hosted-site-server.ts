@@ -1,12 +1,12 @@
-import { siteLimitForPlan } from "@openbot/contracts/billing";
+import { siteLimitForPlan } from "@pokebots/contracts/billing";
 import {
   HOSTED_SITE_HOST_ID_HEADER,
   HOSTED_SITE_HOST_TOKEN_HEADER,
   HOSTED_SITE_SHARED_FREE_LIMIT,
   HOSTED_SITE_UNLINKED_LIMIT,
   type HostedSiteLimitReason,
-} from "@openbot/contracts/hosted-sites";
-import { LICENSE_SITES_PER_USER } from "@openbot/contracts/license";
+} from "@pokebots/contracts/hosted-sites";
+import { LICENSE_SITES_PER_USER } from "@pokebots/contracts/license";
 import { Effect } from "effect";
 import { accountLicense, getServerEntitlement, serverPlanEntitledSql } from "./billing-entitlement";
 import { sha256 } from "./crypto";

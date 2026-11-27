@@ -23,9 +23,9 @@ import type {
   TeamPresenceSnapshot,
   TeamSessionSummary,
   UpdateTeamMemberInput,
-} from "@openbot/contracts/ipc";
-import { DEFAULT_REMOTE_CONTROL_POLICY } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/ipc";
+import { DEFAULT_REMOTE_CONTROL_POLICY } from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
 import {
   STORY_DIRECT_SNAPSHOTS,
   STORY_DIRECT_THREADS,

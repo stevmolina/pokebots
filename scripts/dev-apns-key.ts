@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { basename, dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { set } from "@dotenvx/dotenvx";
-import { createOpenBotLogger } from "@openbot/logging";
+import { createOpenBotLogger } from "@pokebots/logging";
 import { setDevelopmentOverrides } from "./development-secrets";
 
 // Puts an Apple Push Notification service key into this checkout's ignored development state, so

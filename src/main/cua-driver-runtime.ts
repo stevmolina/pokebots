@@ -15,9 +15,9 @@ import {
   type ComputerUseState,
   type MacPermissionId,
   type McpServerConfig,
-} from "@openbot/contracts/ipc";
-import { type DynamicRecord, isDynamicRecord } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/ipc";
+import { type DynamicRecord, isDynamicRecord } from "@pokebots/contracts/runtime-values";
+import { sourceText } from "@pokebots/i18n/source";
 import { Deferred, Effect, Exit, Result, Semaphore } from "effect";
 import { agentDisplayEnvironment } from "./agent-display";
 import type { ComputerUseActor, ComputerUseCoordinator, ComputerUseRefused } from "./computer-use-coordinator";

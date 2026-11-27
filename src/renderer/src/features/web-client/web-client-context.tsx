@@ -1,4 +1,4 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import type {
   AgentApproval,
   AgentColorEntry,
@@ -30,41 +30,44 @@ import type {
   SidebarLayoutSnapshot,
   TeamPresenceSnapshot,
   TeamRealtimeEvent,
-} from "@openbot/contracts/ipc";
-import { canAdministerServer, openExchangesOutside, withModelSources } from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
+import { canAdministerServer, openExchangesOutside, withModelSources } from "@pokebots/contracts/ipc";
 import {
   AGENT_ACTIVE_QUEUES_CAPABILITY,
   AGENT_ACTIVE_QUEUES_LIMIT,
   type AgentActiveQueues,
-} from "@openbot/contracts/team-protocol/agent-active-queues-v1";
+} from "@pokebots/contracts/team-protocol/agent-active-queues-v1";
 import {
   AGENT_COLORS_CAPABILITY,
   AGENT_HIDDEN_CAPABILITY,
   CHAT_COLORS_CAPABILITY,
-} from "@openbot/contracts/team-protocol/current";
-import { FOCUS_USE_CAPABILITY } from "@openbot/contracts/team-protocol/focus-use-v1";
-import { HOST_APPEARANCE_CAPABILITY, type ServerAppearance } from "@openbot/contracts/team-protocol/host-appearance-v1";
-import { MESSAGE_DELETE_CAPABILITY } from "@openbot/contracts/team-protocol/message-delete-v1";
-import { SIDEBAR_PINS_CAPABILITY } from "@openbot/contracts/team-protocol/sidebar-pins-v1";
-import { cleanAgentMessageText } from "@openbot/team-client/agent-message-text";
-import { createFocusUsePing } from "@openbot/team-client/focus-use";
-import { WAKE_RECONNECT_DELAY_MS } from "@openbot/team-client/hosted-server-wake";
-import type { RemoteTeamHost } from "@openbot/team-client/remote-directory";
+} from "@pokebots/contracts/team-protocol/current";
+import { FOCUS_USE_CAPABILITY } from "@pokebots/contracts/team-protocol/focus-use-v1";
+import {
+  HOST_APPEARANCE_CAPABILITY,
+  type ServerAppearance,
+} from "@pokebots/contracts/team-protocol/host-appearance-v1";
+import { MESSAGE_DELETE_CAPABILITY } from "@pokebots/contracts/team-protocol/message-delete-v1";
+import { SIDEBAR_PINS_CAPABILITY } from "@pokebots/contracts/team-protocol/sidebar-pins-v1";
+import { cleanAgentMessageText } from "@pokebots/team-client/agent-message-text";
+import { createFocusUsePing } from "@pokebots/team-client/focus-use";
+import { WAKE_RECONNECT_DELAY_MS } from "@pokebots/team-client/hosted-server-wake";
+import type { RemoteTeamHost } from "@pokebots/team-client/remote-directory";
 import {
   createRemoteConnectionRecovery,
   isSafeConnectionError,
   type RemoteRecoveryStatus,
-} from "@openbot/team-client/remote-recovery";
+} from "@pokebots/team-client/remote-recovery";
 import {
   approvalIsCut,
   keepWholeApprovals,
   reconcilePendingRequests,
   withWholeApproval,
-} from "@openbot/team-client/runtime-attention";
-import { markRemoteSync } from "@openbot/team-client/sync-profile";
-import { duplicateSection as duplicateSectionWith } from "@openbot/ui/features/sidebar/duplicate-section";
-import { currentText } from "@openbot/ui/text";
-import { errorReference, type UserErrorDetails } from "@openbot/user-errors";
+} from "@pokebots/team-client/runtime-attention";
+import { markRemoteSync } from "@pokebots/team-client/sync-profile";
+import { duplicateSection as duplicateSectionWith } from "@pokebots/ui/features/sidebar/duplicate-section";
+import { currentText } from "@pokebots/ui/text";
+import { errorReference, type UserErrorDetails } from "@pokebots/user-errors";
 import { createEffect, createMemo, createSignal, createStore, onSettled } from "solid-js";
 import { toAgentProfile } from "../../app-message-projection";
 import { backgroundWorkKey } from "../conversation/background-work-key";

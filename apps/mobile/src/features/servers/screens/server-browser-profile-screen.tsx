@@ -1,10 +1,10 @@
-import { AVATAR_HUE_CHOICES, avatarHueSwatch } from "@openbot/brand/bloub-avatar";
+import { AVATAR_HUE_CHOICES, avatarHueSwatch } from "@pokebots/brand/bloub-avatar";
 import {
   type AvatarHue,
   BROWSER_PROFILE_NAME_MAX,
   type BrowserProfileSummary,
   nextBrowserProfileHue,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { usePreventRemove } from "expo-router/react-navigation";
 import { Button, Typography } from "heroui-native";

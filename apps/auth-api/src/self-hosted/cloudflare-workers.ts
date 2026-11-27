@@ -1,4 +1,4 @@
-import { createOpenBotLogger } from "@openbot/logging";
+import { createOpenBotLogger } from "@pokebots/logging";
 import type { WorkerBindings } from "../server/types";
 
 const logger = createOpenBotLogger("self-hosted-background");

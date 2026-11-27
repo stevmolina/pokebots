@@ -4,8 +4,8 @@
  * names, a step up, the home folder and the disks. Files and hidden folders are not in the list.
  */
 
-import { type AgentFolderBrowse, agentFolderName } from "@openbot/contracts/ipc";
-import { ArrowUp, Button, Dialog, Folder, HardDrive, IconButton, X } from "@openbot/ui";
+import { type AgentFolderBrowse, agentFolderName } from "@pokebots/contracts/ipc";
+import { ArrowUp, Button, Dialog, Folder, HardDrive, IconButton, X } from "@pokebots/ui";
 import { createEffect, createSignal, For, Show } from "solid-js";
 import { useText } from "../../text";
 

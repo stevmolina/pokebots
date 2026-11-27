@@ -4,7 +4,7 @@ import { dirname } from "node:path";
 import { text as readText } from "node:stream/consumers";
 import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
-import { redactText } from "@openbot/logging";
+import { redactText } from "@pokebots/logging";
 import { Schema } from "effect";
 import { loadSharedDevelopmentEnvironment } from "./development-environment";
 import { readScriptArguments } from "./script-arguments";

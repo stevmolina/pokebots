@@ -10,9 +10,9 @@ import {
   relayCallbackQuery,
   relayPageUrl,
   type SignInRelayStatus,
-} from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
-import { runTeamEffect } from "@openbot/team-client";
+} from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
+import { runTeamEffect } from "@pokebots/team-client";
 import {
   cancelSignInRelay,
   completeSignInRelay,
@@ -20,8 +20,8 @@ import {
   startLinkSignInRelay,
   startMcpSignInRelay,
   type TeamAdminRequestError,
-} from "@openbot/team-client/team-admin-requests";
-import type { TeamApiRequest } from "@openbot/team-client/team-api-requests";
+} from "@pokebots/team-client/team-admin-requests";
+import type { TeamApiRequest } from "@pokebots/team-client/team-api-requests";
 import { Effect } from "effect";
 
 /** How often a sign-in asks the host whether it ended. */

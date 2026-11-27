@@ -1,5 +1,5 @@
-import type { HostPersonality, ResponseStyle } from "@openbot/contracts/ipc";
-import type { MobileTextKey } from "@openbot/i18n/mobile";
+import type { HostPersonality, ResponseStyle } from "@pokebots/contracts/ipc";
+import type { MobileTextKey } from "@pokebots/i18n/mobile";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef } from "react";
 import { useQueryScope } from "@/features/auth/context/mobile-session-context";

@@ -1,20 +1,20 @@
 import {
   PUSH_NOTIFICATION_THREADS_CAPABILITY,
   PUSH_NOTIFICATION_THREADS_ROUTES,
-} from "@openbot/contracts/team-protocol/push-notification-threads-v1";
+} from "@pokebots/contracts/team-protocol/push-notification-threads-v1";
 import {
   ANDROID_PUSH_NOTIFICATIONS_CAPABILITY,
   ANDROID_PUSH_NOTIFICATIONS_ROUTES,
-} from "@openbot/contracts/team-protocol/push-notifications-android-v1";
+} from "@pokebots/contracts/team-protocol/push-notifications-android-v1";
 import {
   PUSH_NOTIFICATIONS_CAPABILITY,
   PUSH_NOTIFICATIONS_ROUTES,
-} from "@openbot/contracts/team-protocol/push-notifications-v1";
+} from "@pokebots/contracts/team-protocol/push-notifications-v1";
 import {
   WEB_PUSH_NOTIFICATIONS_CAPABILITY,
   WEB_PUSH_NOTIFICATIONS_ROUTES,
-} from "@openbot/contracts/team-protocol/push-notifications-web-v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/team-protocol/push-notifications-web-v1";
+import { sourceText } from "@pokebots/i18n/source";
 import {
   type PushTarget,
   readAndroidPushRegistration,

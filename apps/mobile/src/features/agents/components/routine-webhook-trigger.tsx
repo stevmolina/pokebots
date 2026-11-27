@@ -3,8 +3,8 @@ import {
   eventFilterDraft,
   eventFilterPointerValid,
   MASKED_WEBHOOK_SECRET,
-} from "@openbot/contracts/event-filter-value";
-import type { EventFilter } from "@openbot/contracts/ipc-events";
+} from "@pokebots/contracts/event-filter-value";
+import type { EventFilter } from "@pokebots/contracts/ipc-events";
 import * as Clipboard from "expo-clipboard";
 import { Button, Typography } from "heroui-native";
 import Bot from "lucide-react-native/icons/bot";

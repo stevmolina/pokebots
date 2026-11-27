@@ -1,16 +1,16 @@
-import { isKnownAgentProvider } from "@openbot/contracts/agent-providers";
+import { isKnownAgentProvider } from "@pokebots/contracts/agent-providers";
 import {
   type AgentModelId,
   type AgentProviderRef,
   type AgentReasoningEffort,
   DEFAULT_PROVIDER_ACCOUNT_ID,
   providerDisplayName,
-} from "@openbot/contracts/ipc";
-import { reasoningLabel } from "@openbot/ui/components/ProviderModelPicker";
-import { findModelOption, providerAccountName } from "@openbot/ui/components/provider-accounts";
-import { ConversationHeader as SharedConversationHeader } from "@openbot/ui/features/conversation/ConversationHeader";
-import { ThreadMenu } from "@openbot/ui/features/conversation/threads/ThreadMenu";
-import type { ThreadPhoneActions } from "@openbot/ui/features/conversation/threads/thread-types";
+} from "@pokebots/contracts/ipc";
+import { reasoningLabel } from "@pokebots/ui/components/ProviderModelPicker";
+import { findModelOption, providerAccountName } from "@pokebots/ui/components/provider-accounts";
+import { ConversationHeader as SharedConversationHeader } from "@pokebots/ui/features/conversation/ConversationHeader";
+import { ThreadMenu } from "@pokebots/ui/features/conversation/threads/ThreadMenu";
+import type { ThreadPhoneActions } from "@pokebots/ui/features/conversation/threads/thread-types";
 import { createSignal, Show } from "solid-js";
 import { useConversationViewScope } from "./conversation-scope";
 import { createPhoneWeb } from "./phone-web";
@@ -26,7 +26,7 @@ interface BadgeRuntime {
   providerAccountId?: string | undefined;
 }
 
-import { useText } from "@openbot/ui/text";
+import { useText } from "@pokebots/ui/text";
 
 /** @internal Stable HMR boundary for conversation header. */
 export function ConversationHeader() {

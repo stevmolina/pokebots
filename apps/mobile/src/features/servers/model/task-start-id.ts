@@ -1,4 +1,4 @@
-import { retryOperationIds } from "@openbot/team-client/retry-operation-id";
+import { retryOperationIds } from "@pokebots/team-client/retry-operation-id";
 import * as Crypto from "expo-crypto";
 
 const startIds = retryOperationIds(() => Crypto.randomUUID());

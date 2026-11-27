@@ -1,8 +1,8 @@
-import { Dialog, ErrorReference, IconButton, X } from "@openbot/ui";
-import { createScrollFades } from "@openbot/ui/components/createScrollFades";
-import { PageHeader, type PageHeaderParent } from "@openbot/ui/features/window/PageHeader";
-import { useText } from "@openbot/ui/text";
-import { holdFlag } from "@openbot/ui/utils";
+import { Dialog, ErrorReference, IconButton, X } from "@pokebots/ui";
+import { createScrollFades } from "@pokebots/ui/components/createScrollFades";
+import { PageHeader, type PageHeaderParent } from "@pokebots/ui/features/window/PageHeader";
+import { useText } from "@pokebots/ui/text";
+import { holdFlag } from "@pokebots/ui/utils";
 import { createEffect, Match, onCleanup, Show, Switch } from "solid-js";
 import { MarketplaceAgentPage } from "./MarketplaceAgentPage";
 import { AgentGroupPage } from "./MarketplaceAgents";

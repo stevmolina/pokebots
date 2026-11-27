@@ -8,7 +8,7 @@
  * change, such as the first load, places the seats at once.
  */
 
-import type { ChannelIcon, ChannelMember } from "@openbot/contracts/ipc";
+import type { ChannelIcon, ChannelMember } from "@pokebots/contracts/ipc";
 import {
   AppWindow,
   ContextMenu,
@@ -20,7 +20,7 @@ import {
   Plus,
   Search,
   Settings,
-} from "@openbot/ui";
+} from "@pokebots/ui";
 import {
   createEffect,
   createMemo,

@@ -17,7 +17,7 @@ import {
   type SignalKeyStoreWithTransaction,
   type SignalRepositoryWithLIDStore,
   type SocketConfig,
-} from "@openbot/whatsapp/baileys";
+} from "@pokebots/whatsapp/baileys";
 import { addressToString, jidToAddress, senderKeyName } from "./signal/address";
 import { bytesEqual } from "./signal/crypto";
 import { generateKeyPair, withKeyType } from "./signal/curve";

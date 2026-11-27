@@ -1,7 +1,7 @@
-import { nextSpeechSpeed } from "@openbot/contracts/ipc";
-import { Button } from "@openbot/ui";
-import { VoicePill } from "@openbot/ui/features/conversation/VoicePill";
-import { useText } from "@openbot/ui/text";
+import { nextSpeechSpeed } from "@pokebots/contracts/ipc";
+import { Button } from "@pokebots/ui";
+import { VoicePill } from "@pokebots/ui/features/conversation/VoicePill";
+import { useText } from "@pokebots/ui/text";
 import { createSignal, Show, untrack } from "solid-js";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";

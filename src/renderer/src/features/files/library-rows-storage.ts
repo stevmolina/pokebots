@@ -1,4 +1,4 @@
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
+import { isDynamicRecord } from "@pokebots/contracts/runtime-values";
 
 /** The rows of the side panel that hide their folders. */
 const COLLAPSED_KEY = "openbot:library-collapsed-rows";

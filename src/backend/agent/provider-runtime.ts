@@ -20,7 +20,7 @@ import type {
   ProviderCodeLoginStart,
   ProviderUsageResetOutcome,
   ProviderUsageResets,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   AGENT_PROVIDERS,
   accountUsageCoversModel,
@@ -34,11 +34,11 @@ import {
   isCustomProviderHarness,
   usageQuotaForModel,
   workspaceAccessEnforced,
-} from "@openbot/contracts/ipc";
-import { matchingSourceKeys, sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger, redactText } from "@openbot/logging";
-import { classifyFailure } from "@openbot/telemetry";
-import { classifyUserError } from "@openbot/user-errors";
+} from "@pokebots/contracts/ipc";
+import { matchingSourceKeys, sourceText } from "@pokebots/i18n/source";
+import { createOpenBotLogger, redactText } from "@pokebots/logging";
+import { classifyFailure } from "@pokebots/telemetry";
+import { classifyUserError } from "@pokebots/user-errors";
 import { Deferred, Effect, Exit, Fiber, Result, Schema, Scope, Semaphore } from "effect";
 import { isOpenCodeInternalFailure, OPENCODE_INTERNAL_FAILURE } from "./../acp-flavor-opencode";
 import { googleSignInByOpenBot, startAcpAuthentication } from "./../acp-sign-in";

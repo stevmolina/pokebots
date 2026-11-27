@@ -21,7 +21,7 @@ import {
   isAgentTemplateCardPng,
   type MarketplaceAgentDetail,
   type MarketplaceSkillDetail,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import type { MarketplaceCardJob } from "./marketplace-card-page";
 
 const execFileAsync = promisify(execFile);

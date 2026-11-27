@@ -1,5 +1,5 @@
-import { type AgentProviderId, agentSteersTurns, isKnownAgentProvider } from "@openbot/contracts/agent-providers";
-import { supportedAttachmentExtensions } from "@openbot/contracts/attachment-files";
+import { type AgentProviderId, agentSteersTurns, isKnownAgentProvider } from "@pokebots/contracts/agent-providers";
+import { supportedAttachmentExtensions } from "@pokebots/contracts/attachment-files";
 import {
   type AccountUsageLimit,
   type AgentWait,
@@ -13,8 +13,8 @@ import {
   DEFAULT_PROVIDER_ACCOUNT_ID,
   type QueueSnapshot,
   routineRunsTurn,
-} from "@openbot/contracts/ipc";
-import { ARTIFACT_REQUEST_CAPABILITY } from "@openbot/contracts/team-protocol/artifact-request-v1";
+} from "@pokebots/contracts/ipc";
+import { ARTIFACT_REQUEST_CAPABILITY } from "@pokebots/contracts/team-protocol/artifact-request-v1";
 import {
   CLAUDE_ARTIFACT_REQUEST_CAPABILITY,
   TEAM_ANY_FILE_ATTACHMENTS_CAPABILITY,
@@ -23,34 +23,34 @@ import {
   TEAM_MP4_ATTACHMENTS_CAPABILITY,
   TEAM_SVG_ATTACHMENTS_CAPABILITY,
   TEAM_ZIP_ATTACHMENTS_CAPABILITY,
-} from "@openbot/contracts/team-protocol/current";
-import { sourceText } from "@openbot/i18n/source";
-import { spentUsageWindow } from "@openbot/team-client/plan-limits";
-import { Button, CopyButton, Input, toast } from "@openbot/ui";
-import { AwaitingReplies } from "@openbot/ui/features/conversation/AwaitingReplies";
-import { BackgroundWorkers } from "@openbot/ui/features/conversation/BackgroundWorkers";
-import { ComposerAddMenu, ComposerArtifactChip } from "@openbot/ui/features/conversation/ComposerAddMenu";
-import { ComposerAttachmentRow } from "@openbot/ui/features/conversation/ComposerAttachmentRow";
-import { ComposerEditor } from "@openbot/ui/features/conversation/ComposerEditor";
-import { ComposerErrorBanner } from "@openbot/ui/features/conversation/ComposerErrorBanner";
+} from "@pokebots/contracts/team-protocol/current";
+import { sourceText } from "@pokebots/i18n/source";
+import { spentUsageWindow } from "@pokebots/team-client/plan-limits";
+import { Button, CopyButton, Input, toast } from "@pokebots/ui";
+import { AwaitingReplies } from "@pokebots/ui/features/conversation/AwaitingReplies";
+import { BackgroundWorkers } from "@pokebots/ui/features/conversation/BackgroundWorkers";
+import { ComposerAddMenu, ComposerArtifactChip } from "@pokebots/ui/features/conversation/ComposerAddMenu";
+import { ComposerAttachmentRow } from "@pokebots/ui/features/conversation/ComposerAttachmentRow";
+import { ComposerEditor } from "@pokebots/ui/features/conversation/ComposerEditor";
+import { ComposerErrorBanner } from "@pokebots/ui/features/conversation/ComposerErrorBanner";
 import {
   ComposerNotice,
   ComposerSignInNotice,
   ComposerUpdateNotice,
   ComposerUsageLimitNotice,
-} from "@openbot/ui/features/conversation/ComposerNotice";
-import { ComposerReplyPreview } from "@openbot/ui/features/conversation/ComposerReplyPreview";
-import { ComposerSendControl, type ComposerSendVoice } from "@openbot/ui/features/conversation/ComposerSendControl";
-import { ComposerStackCard } from "@openbot/ui/features/conversation/ComposerStackCard";
+} from "@pokebots/ui/features/conversation/ComposerNotice";
+import { ComposerReplyPreview } from "@pokebots/ui/features/conversation/ComposerReplyPreview";
+import { ComposerSendControl, type ComposerSendVoice } from "@pokebots/ui/features/conversation/ComposerSendControl";
+import { ComposerStackCard } from "@pokebots/ui/features/conversation/ComposerStackCard";
 import {
   ComposerCompactionNotice,
   ContextUsageMeter,
   contextUsageView,
-} from "@openbot/ui/features/conversation/ContextUsage";
-import { type OpenWaitItem, OpenWaits } from "@openbot/ui/features/conversation/OpenWaits";
-import { SpeakingBar } from "@openbot/ui/features/conversation/SpeakingBar";
-import { ComposerVoiceControls } from "@openbot/ui/features/conversation/VoiceRecordingMorph";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/ui/features/conversation/ContextUsage";
+import { type OpenWaitItem, OpenWaits } from "@pokebots/ui/features/conversation/OpenWaits";
+import { SpeakingBar } from "@pokebots/ui/features/conversation/SpeakingBar";
+import { ComposerVoiceControls } from "@pokebots/ui/features/conversation/VoiceRecordingMorph";
+import { useText } from "@pokebots/ui/text";
 import { createEffect, createMemo, createSignal, createStore, Loading, lazy, onSettled, Show } from "solid-js";
 import { reportErrorBanner, reportNotification } from "../../error-reports";
 import { deviceSendShortcut, sendShortcutAriaKey, sendShortcutHintKey } from "../../send-shortcut-preference";
@@ -1077,5 +1077,5 @@ function openWaitItems(waits: readonly AgentWait[], queue: QueueSnapshot | undef
 }
 
 const QueuePanel = lazy(() =>
-  import("@openbot/ui/features/conversation/QueuePanel").then((module) => ({ default: module.QueuePanel })),
+  import("@pokebots/ui/features/conversation/QueuePanel").then((module) => ({ default: module.QueuePanel })),
 );

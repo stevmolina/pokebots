@@ -1,7 +1,7 @@
-import { type BrainRequest, decodeBrainResponse } from "@openbot/contracts/brain";
-import type { McpServerConfig } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
-import { redactSecrets, registerSecretValue } from "@openbot/logging";
+import { type BrainRequest, decodeBrainResponse } from "@pokebots/contracts/brain";
+import type { McpServerConfig } from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
+import { redactSecrets, registerSecretValue } from "@pokebots/logging";
 import { Effect, Redacted, Schema } from "effect";
 import { z } from "zod";
 import type { IntegrationCredential } from "./integration-credential";

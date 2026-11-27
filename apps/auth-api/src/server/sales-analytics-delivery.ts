@@ -1,5 +1,5 @@
-import { HOSTED_SERVER_ENTRY_POINTS } from "@openbot/contracts/hosted-servers";
-import { isDynamicRecord, isOneOf } from "@openbot/contracts/runtime-values";
+import { HOSTED_SERVER_ENTRY_POINTS } from "@pokebots/contracts/hosted-servers";
+import { isDynamicRecord, isOneOf } from "@pokebots/contracts/runtime-values";
 import { Effect, Schema } from "effect";
 import {
   ACCOUNT_ANALYTICS_SCHEMA_VERSION,

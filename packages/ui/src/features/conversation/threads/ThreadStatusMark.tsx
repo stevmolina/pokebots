@@ -1,4 +1,4 @@
-import type { AppTextKey } from "@openbot/i18n";
+import type { AppTextKey } from "@pokebots/i18n";
 import {
   BookOpen,
   BriefcaseBusiness,
@@ -18,11 +18,11 @@ import {
   Sparkles,
   UsersRound,
   X,
-} from "@openbot/ui";
-import { TypingDots } from "@openbot/ui/components/TypingDots";
-import { SidebarWaitIcon } from "@openbot/ui/features/sidebar/SidebarAgentIndicator";
-import type { SidebarWaitReason } from "@openbot/ui/features/sidebar/sidebar-types";
-import { type TextValue, useText } from "@openbot/ui/text";
+} from "@pokebots/ui";
+import { TypingDots } from "@pokebots/ui/components/TypingDots";
+import { SidebarWaitIcon } from "@pokebots/ui/features/sidebar/SidebarAgentIndicator";
+import type { SidebarWaitReason } from "@pokebots/ui/features/sidebar/sidebar-types";
+import { type TextValue, useText } from "@pokebots/ui/text";
 import { Show } from "solid-js";
 import { pickThreadTopicIcon, type ThreadTopicIconKind } from "./thread-topic-icon";
 import type { ThreadStatus } from "./thread-types";

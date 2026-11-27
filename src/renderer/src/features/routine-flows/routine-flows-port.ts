@@ -6,7 +6,7 @@ import type {
   TeamRealtimeEvent,
   TestRoutineInput,
   UpdateRoutineInput,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import { desktopEventRoutinesApi, type EventRoutinesApi } from "../conversation/routine-webhooks-api";
 
 /**

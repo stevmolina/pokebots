@@ -1,4 +1,4 @@
-import { Button, Dialog, IconButton, X } from "@openbot/ui";
+import { Button, Dialog, IconButton, X } from "@pokebots/ui";
 import { createSignal, createStore, Show } from "solid-js";
 import { useText } from "../../text";
 import { AgentSearchList, AgentStack } from "../marketplace/MarketplaceAgentsDialog";

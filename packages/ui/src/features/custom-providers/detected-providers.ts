@@ -6,8 +6,8 @@ import {
   type CustomProviderHarness,
   type CustomProviderRestart,
   type SaveCustomProviderInput,
-} from "@openbot/contracts/ipc";
-import type { AppFormat } from "@openbot/i18n";
+} from "@pokebots/contracts/ipc";
+import type { AppFormat } from "@pokebots/i18n";
 import type { AcpAgentCheck, CustomAcpAgentDraft } from "./custom-acp-agent-form";
 import {
   type CustomProviderDraft,

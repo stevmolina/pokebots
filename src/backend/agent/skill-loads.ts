@@ -1,7 +1,7 @@
 import { stat } from "node:fs/promises";
 import { homedir } from "node:os";
 import { isAbsolute, join } from "node:path";
-import { agentProviderDescriptor, isAgentProvider } from "@openbot/contracts/agent-providers";
+import { agentProviderDescriptor, isAgentProvider } from "@pokebots/contracts/agent-providers";
 import { Effect, Option, Schema } from "effect";
 import { homeSkillRoot } from "../home-skills";
 import { getRecord, getString, isRecord } from "../protocol";

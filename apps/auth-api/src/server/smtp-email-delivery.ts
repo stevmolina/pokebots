@@ -1,6 +1,6 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import { isCanonicalInviteUrl } from "@openbot/contracts/invite-links";
-import { isValidHostname as isSharedValidHostname } from "@openbot/contracts/validation";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
+import { isCanonicalInviteUrl } from "@pokebots/contracts/invite-links";
+import { isValidHostname as isSharedValidHostname } from "@pokebots/contracts/validation";
 import { Effect, Fiber, Option, Result, Schema } from "effect";
 import {
   type ContactMessageEmailInput,

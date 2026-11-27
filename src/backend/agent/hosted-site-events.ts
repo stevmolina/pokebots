@@ -1,4 +1,4 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import {
   type HostedSiteConversationEventAction,
   type HostedSiteConversationEventDetails,
@@ -6,7 +6,7 @@ import {
   type HostedSiteSummary,
   hostedSiteConversationEventText,
   isHostedSiteConversationEventUrl,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 
 export type HostedSiteMutationTool = "publish_site" | "replace_site" | "delete_site";
 

@@ -1,8 +1,8 @@
 import { randomBytes, timingSafeEqual } from "node:crypto";
 import { connect, createServer, isIP, type Server, type Socket } from "node:net";
 import type { Duplex } from "node:stream";
-import type { BrowserProxyFailure } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+import type { BrowserProxyFailure } from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect } from "effect";
 import { type BrowserOperationError, browserFailure } from "../browser-effects";
 

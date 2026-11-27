@@ -1,5 +1,5 @@
-import type { AccountUsageProviderRow } from "@openbot/ui/features/account/account-usage-view";
-import type { SidebarPages } from "@openbot/ui/features/sidebar/sidebar-pages";
+import type { AccountUsageProviderRow } from "@pokebots/ui/features/account/account-usage-view";
+import type { SidebarPages } from "@pokebots/ui/features/sidebar/sidebar-pages";
 import { fn } from "storybook/test";
 
 /**

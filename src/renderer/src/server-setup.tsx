@@ -1,4 +1,4 @@
-import { formatLocale, resolveLocale } from "@openbot/i18n";
+import { formatLocale, resolveLocale } from "@pokebots/i18n";
 import { render } from "@solidjs/web";
 import { syncColorScheme } from "./color-scheme";
 import { ServerSetupScreen } from "./features/server-setup/ServerSetupScreen";

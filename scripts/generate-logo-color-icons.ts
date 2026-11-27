@@ -23,8 +23,8 @@ import {
   APP_LOGO_EYE_HEX,
   DEFAULT_APP_LOGO_COLOR,
   DEFAULT_APP_LOGO_EYE_HEX,
-} from "@openbot/contracts/app-logo-color";
-import { createOpenBotLogger } from "@openbot/logging";
+} from "@pokebots/contracts/app-logo-color";
+import { createOpenBotLogger } from "@pokebots/logging";
 
 type Rgb = readonly [number, number, number];
 

@@ -1,4 +1,4 @@
-import type { MobileTextKey } from "@openbot/i18n/mobile";
+import type { MobileTextKey } from "@pokebots/i18n/mobile";
 import * as Clipboard from "expo-clipboard";
 import { GlassView } from "expo-glass-effect";
 import { activateKeepAwakeAsync, deactivateKeepAwake } from "expo-keep-awake";

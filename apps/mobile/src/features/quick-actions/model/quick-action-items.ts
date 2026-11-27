@@ -1,4 +1,4 @@
-import type { MobileTranslate } from "@openbot/i18n/mobile";
+import type { MobileTranslate } from "@pokebots/i18n/mobile";
 import type { MobileAgent, MobileServer } from "@/features/workspace/model/workspace-types";
 import type { QuickActionKind } from "./quick-action-choice";
 

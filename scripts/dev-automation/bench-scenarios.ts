@@ -10,9 +10,9 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { createServer, type Server } from "node:http";
 import { join } from "node:path";
-import { CHANNEL_PARALLEL_LIMIT, type DynamicIslandPreference } from "@openbot/contracts/ipc";
-import { isDynamicRecord, isNumber } from "@openbot/contracts/runtime-values";
-import type { Logger } from "@openbot/logging";
+import { CHANNEL_PARALLEL_LIMIT, type DynamicIslandPreference } from "@pokebots/contracts/ipc";
+import { isDynamicRecord, isNumber } from "@pokebots/contracts/runtime-values";
+import type { Logger } from "@pokebots/logging";
 import type { Browser, Page } from "playwright-core";
 import { NO_SCALE, parseSeedScale, type SeedScale } from "../seed-dev-scale";
 import { writeFakeCodex } from "./bench-fake-codex";

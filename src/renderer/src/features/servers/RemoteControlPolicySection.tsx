@@ -2,8 +2,8 @@ import {
   REMOTE_CONTROL_ACCESS_LEVELS,
   type RemoteControlAccess,
   type RemoteControlPolicy,
-} from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
+} from "@pokebots/contracts/ipc";
+import type { AppTextKey } from "@pokebots/i18n";
 import {
   Alert,
   AlertContent,
@@ -21,8 +21,8 @@ import {
   SelectTrigger,
   SelectValue,
   SwitchField,
-} from "@openbot/ui";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/ui";
+import { useText } from "@pokebots/ui/text";
 import { createStore, onSettled, Show } from "solid-js";
 import { serversPort } from "./servers-port";
 

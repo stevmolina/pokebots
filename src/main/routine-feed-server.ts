@@ -1,9 +1,9 @@
 import { randomBytes, timingSafeEqual } from "node:crypto";
 import { rm } from "node:fs/promises";
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from "node:http";
-import type { RoutineFeed } from "@openbot/contracts/ipc";
-import { isString } from "@openbot/contracts/runtime-values";
-import { createOpenBotLogger, registerSecretValue } from "@openbot/logging";
+import type { RoutineFeed } from "@pokebots/contracts/ipc";
+import { isString } from "@pokebots/contracts/runtime-values";
+import { createOpenBotLogger, registerSecretValue } from "@pokebots/logging";
 import { Effect, Result, Schema, Semaphore } from "effect";
 import { z } from "zod";
 import { runCauseEffect } from "../backend/effect-boundary";

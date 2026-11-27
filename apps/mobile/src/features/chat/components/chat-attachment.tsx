@@ -1,6 +1,6 @@
-import { playableMediaKind } from "@openbot/contracts/attachment-files";
-import { CHAT_VISUAL_PAGE_LIMIT, chatVisualFrameHeight, isChatVisualMimeType } from "@openbot/contracts/chat-visual";
-import type { AttachmentSummary } from "@openbot/contracts/ipc";
+import { playableMediaKind } from "@pokebots/contracts/attachment-files";
+import { CHAT_VISUAL_PAGE_LIMIT, chatVisualFrameHeight, isChatVisualMimeType } from "@pokebots/contracts/chat-visual";
+import type { AttachmentSummary } from "@pokebots/contracts/ipc";
 import { requireOptionalNativeModule } from "expo";
 import { File } from "expo-file-system";
 import { Image } from "expo-image";

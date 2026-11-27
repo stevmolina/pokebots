@@ -1,5 +1,5 @@
-import type { WorkflowGitHubDeliveryOutcome } from "@openbot/contracts/ipc";
-import type { MobileTextKey } from "@openbot/i18n/mobile";
+import type { WorkflowGitHubDeliveryOutcome } from "@pokebots/contracts/ipc";
+import type { MobileTextKey } from "@pokebots/i18n/mobile";
 import { useLocalSearchParams } from "expo-router";
 import { Typography } from "heroui-native";
 import { SettingsRow, SettingsSection } from "@/features/settings/components/settings-content";

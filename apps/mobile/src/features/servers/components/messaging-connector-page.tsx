@@ -3,8 +3,8 @@ import {
   MESSAGING_LIMITS,
   type MessagingConnection,
   type MessagingOverview,
-} from "@openbot/contracts/ipc";
-import type { MessagingConnectorPage as HostPage } from "@openbot/team-client/team-admin-requests";
+} from "@pokebots/contracts/ipc";
+import type { MessagingConnectorPage as HostPage } from "@pokebots/team-client/team-admin-requests";
 import type { UseQueryResult } from "@tanstack/react-query";
 import { openAuthSessionAsync } from "expo-web-browser";
 import { Typography } from "heroui-native";

@@ -14,16 +14,16 @@ import {
   writeFile,
 } from "node:fs/promises";
 import { basename, dirname, extname, isAbsolute, join, relative } from "node:path";
-import { attachmentMimeTypeForName, isSupportedAttachmentName } from "@openbot/contracts/attachment-files";
-import { ATTACHMENT_LIMITS, INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { attachmentMimeTypeForName, isSupportedAttachmentName } from "@pokebots/contracts/attachment-files";
+import { ATTACHMENT_LIMITS, INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import type {
   AttachmentDataInput,
   AttachmentKind,
   AttachmentPreviewKind,
   AttachmentSummary,
   QueueDelivery,
-} from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect, Result } from "effect";
 import { isHeldTargetError } from "./atomic-json-file";
 import { type AttachmentOperationError, attachmentCall, attachmentFailure, attachmentSync } from "./attachment-effects";

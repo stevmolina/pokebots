@@ -1,5 +1,5 @@
-import type { ChannelSummary } from "@openbot/contracts/ipc";
-import { markdownPreviewText } from "@openbot/contracts/markdown-preview-text";
+import type { ChannelSummary } from "@pokebots/contracts/ipc";
+import { markdownPreviewText } from "@pokebots/contracts/markdown-preview-text";
 import * as Clipboard from "expo-clipboard";
 import * as Crypto from "expo-crypto";
 import { Link, router } from "expo-router";

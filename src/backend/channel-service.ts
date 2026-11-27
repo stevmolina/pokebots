@@ -1,8 +1,8 @@
 import { randomUUID } from "node:crypto";
 import { realpathSync } from "node:fs";
 import { basename, dirname, isAbsolute, join, normalize, sep } from "node:path";
-import { chatTagReferences, leadingAddress } from "@openbot/contracts/chat-tag-references";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { chatTagReferences, leadingAddress } from "@pokebots/contracts/chat-tag-references";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import {
   type AgentAccessLevel,
   type AgentEvent,
@@ -32,10 +32,10 @@ import {
   type QueueHold,
   ROUTINE_QUIET_ANSWER_ITEM_TYPE,
   type UpdateChannelMemoryInput,
-} from "@openbot/contracts/ipc";
-import { type DynamicRecord, isDynamicRecord, isString } from "@openbot/contracts/runtime-values";
-import { isFixedSourceText, matchingSourceKeys, sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger } from "@openbot/logging";
+} from "@pokebots/contracts/ipc";
+import { type DynamicRecord, isDynamicRecord, isString } from "@pokebots/contracts/runtime-values";
+import { isFixedSourceText, matchingSourceKeys, sourceText } from "@pokebots/i18n/source";
+import { createOpenBotLogger } from "@pokebots/logging";
 import { Deferred, Effect, Exit, Fiber, Result, Schema, Scope } from "effect";
 import { isTextAnswer } from "./agent/routine-quiet-runs";
 import { type ChannelOperationError, channelFailure, channelResult, channelSync } from "./channel-effects";

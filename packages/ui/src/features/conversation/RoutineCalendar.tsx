@@ -1,5 +1,5 @@
-import type { RoutineSchedule } from "@openbot/contracts/ipc";
-import type { AppTextKey } from "@openbot/i18n";
+import type { RoutineSchedule } from "@pokebots/contracts/ipc";
+import type { AppTextKey } from "@pokebots/i18n";
 import {
   addCalendarDays,
   addCalendarMonths,
@@ -11,7 +11,7 @@ import {
   calendarMonthStart,
   calendarWeekStart,
   clockChangeDay,
-} from "@openbot/team-client/routine-calendar-dates";
+} from "@pokebots/team-client/routine-calendar-dates";
 import {
   Alert,
   AlertActions,
@@ -27,8 +27,8 @@ import {
   Skeleton,
   SlidingTabs,
   X,
-} from "@openbot/ui";
-import { PageHeader, type PageHeaderFrame } from "@openbot/ui/features/window/PageHeader";
+} from "@pokebots/ui";
+import { PageHeader, type PageHeaderFrame } from "@pokebots/ui/features/window/PageHeader";
 import { createMemo, createSignal, createStore, For, Match, onSettled, Show, Switch, untrack } from "solid-js";
 import type { AgentProfile } from "../../data";
 import { useText } from "../../text";

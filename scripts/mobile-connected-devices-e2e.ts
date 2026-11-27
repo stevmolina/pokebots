@@ -14,8 +14,8 @@ import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { createInterface } from "node:readline";
 import { DatabaseSync } from "node:sqlite";
-import { type MobileConnectHostBinding, parseMobileConnectUrl } from "@openbot/contracts/mobile-connect";
-import { isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
+import { type MobileConnectHostBinding, parseMobileConnectUrl } from "@pokebots/contracts/mobile-connect";
+import { isDynamicRecord, isNumber, isString } from "@pokebots/contracts/runtime-values";
 import { runCauseEffect } from "../src/backend/effect-boundary";
 import { CentralAuthManager } from "../src/main/central-auth-manager";
 

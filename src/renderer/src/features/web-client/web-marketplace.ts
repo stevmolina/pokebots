@@ -1,8 +1,8 @@
-import { agentTemplateShareOrigin } from "@openbot/contracts/agent-template-links";
-import type { McpServerConfig, McpTestResult } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n";
-import { runTeamEffect } from "@openbot/team-client";
-import { createMarketplaceCatalog } from "@openbot/team-client/marketplace-catalog";
+import { agentTemplateShareOrigin } from "@pokebots/contracts/agent-template-links";
+import type { McpServerConfig, McpTestResult } from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n";
+import { runTeamEffect } from "@pokebots/team-client";
+import { createMarketplaceCatalog } from "@pokebots/team-client/marketplace-catalog";
 import {
   cancelMcpSignIn,
   getHostAgentAccess,
@@ -27,9 +27,9 @@ import {
   startMcpSignIn,
   testMcpServer,
   uninstallAgentSkill,
-} from "@openbot/team-client/team-admin-requests";
-import type { TeamApiRequest } from "@openbot/team-client/team-api-requests";
-import { currentText } from "@openbot/ui/text";
+} from "@pokebots/team-client/team-admin-requests";
+import type { TeamApiRequest } from "@pokebots/team-client/team-api-requests";
+import { currentText } from "@pokebots/ui/text";
 import { Effect } from "effect";
 import type { AgentTemplateInstallCalls } from "../agent-templates/agent-templates-port";
 import type { MarketplaceCalls } from "../settings/marketplace-calls";

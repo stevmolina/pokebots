@@ -6,8 +6,8 @@
  * cannot run from the canvas, so it is not shown.
  */
 
-import type { WorkflowMediaCatalogModel, WorkflowMediaKind } from "@openbot/contracts/ipc";
-import { type DynamicRecord, isDynamicRecord } from "@openbot/contracts/runtime-values";
+import type { WorkflowMediaCatalogModel, WorkflowMediaKind } from "@pokebots/contracts/ipc";
+import { type DynamicRecord, isDynamicRecord } from "@pokebots/contracts/runtime-values";
 import { canvasAspects, catalogDurations, numbers, strings, text } from "./higgsfield-catalog";
 
 /** How the host sends the pictures and the background of a step to one Sunra model. */

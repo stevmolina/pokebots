@@ -1,5 +1,5 @@
 import { spawn } from "node:child_process";
-import type { AgentProviderId } from "@openbot/contracts/agent-providers";
+import type { AgentProviderId } from "@pokebots/contracts/agent-providers";
 import {
   type AccountUsage,
   type AccountUsageLimit,
@@ -14,10 +14,10 @@ import {
   type ProviderUsageResetOutcome,
   type ProviderUsageResets,
   usageQuotaForModel,
-} from "@openbot/contracts/ipc";
-import { CLAUDE_API_KEY_ACCOUNT_ID } from "@openbot/contracts/team-protocol/claude-api-key-v1";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger } from "@openbot/logging";
+} from "@pokebots/contracts/ipc";
+import { CLAUDE_API_KEY_ACCOUNT_ID } from "@pokebots/contracts/team-protocol/claude-api-key-v1";
+import { sourceText } from "@pokebots/i18n/source";
+import { createOpenBotLogger } from "@pokebots/logging";
 import { Cause, Deferred, Effect, Exit, Fiber, Schema, type Scope } from "effect";
 import { googleSignInByOpenBot, startAcpAuthentication } from "./../acp-sign-in";
 import type { AgentClient } from "./../agent-client";

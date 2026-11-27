@@ -6,7 +6,7 @@ import {
   type ConversationSubagent,
   conversationSubagentsText,
   type QueueDelivery,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import type { MockOpenBotOptions } from "../src/preview/mock-openbot";
 
 /** Side threads of Chief for the desktop and web thread stories. */

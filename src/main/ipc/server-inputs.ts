@@ -1,4 +1,4 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import type {
   ConfigureHostInput,
   CreateTeamInviteInput,
@@ -18,15 +18,15 @@ import type {
   SetTeamTypingInput,
   UpdateHostIdentityInput,
   UpdateTeamMemberInput,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   isRemoteControlAccess,
   type RemoteControlPolicy,
   SERVER_MUTE_DURATIONS_MS,
   SERVER_NOTIFICATION_LEVELS,
-} from "@openbot/contracts/ipc";
-import { isBoolean, isNumber, isOneOf, isString } from "@openbot/contracts/runtime-values";
-import { type ServerAppearance, serverAppearanceOrNull } from "@openbot/contracts/team-protocol/host-appearance-v1";
+} from "@pokebots/contracts/ipc";
+import { isBoolean, isNumber, isOneOf, isString } from "@pokebots/contracts/runtime-values";
+import { type ServerAppearance, serverAppearanceOrNull } from "@pokebots/contracts/team-protocol/host-appearance-v1";
 import { parseAvatarImage } from "./avatar-inputs";
 import { isObject, requireString } from "./validation";
 

@@ -3,7 +3,7 @@ import {
   BROWSER_PROFILE_LIMIT,
   type BrowserProfileSummary,
   sameAgentBrowserProfile,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import { router, useLocalSearchParams } from "expo-router";
 import { Typography } from "heroui-native";
 import Check from "lucide-react-native/icons/check";

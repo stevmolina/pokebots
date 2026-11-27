@@ -1,4 +1,4 @@
-import type { AppThemePalette } from "@openbot/contracts/app-appearance";
+import type { AppThemePalette } from "@pokebots/contracts/app-appearance";
 
 /** `color-mix` of one palette color into transparency, as the base palettes use translucent ink. */
 function clear(color: string, percent: number): string {

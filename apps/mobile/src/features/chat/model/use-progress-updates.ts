@@ -1,4 +1,4 @@
-import { type AgentProviderRef, isAgentProviderRef } from "@openbot/contracts/agent-providers";
+import { type AgentProviderRef, isAgentProviderRef } from "@pokebots/contracts/agent-providers";
 import { useMemo } from "react";
 import { useServerResponseStyle } from "@/features/servers/model/use-server-personality";
 import type { MobileAgent } from "@/features/workspace/model/workspace-types";

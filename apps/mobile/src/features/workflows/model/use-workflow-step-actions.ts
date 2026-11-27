@@ -1,4 +1,4 @@
-import type { WorkflowStep } from "@openbot/contracts/ipc";
+import type { WorkflowStep } from "@pokebots/contracts/ipc";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Alert } from "react-native";

@@ -1,27 +1,27 @@
-import { isKnownAgentProvider, providerDisplayName } from "@openbot/contracts/agent-providers";
+import { isKnownAgentProvider, providerDisplayName } from "@pokebots/contracts/agent-providers";
 import {
   type FileQuoteTarget,
   fileQuoteId,
   fileQuoteTarget,
   limitedQuoteText,
-} from "@openbot/contracts/chat-tag-references";
-import { isNarrationItemId } from "@openbot/contracts/conversation-narration";
+} from "@pokebots/contracts/chat-tag-references";
+import { isNarrationItemId } from "@pokebots/contracts/conversation-narration";
 import {
   customProviderOfModel,
   isCustomProviderHarness,
   type McpSignInRelayPage,
   relayableSignInLink,
   type UpdateAgentInput,
-} from "@openbot/contracts/ipc";
-import { AGENT_FAST_MODE_CAPABILITY } from "@openbot/contracts/team-protocol/agent-fast-mode-v1";
-import { AGENT_SPEED_CAPABILITY } from "@openbot/contracts/team-protocol/agent-speed-v1";
-import { toast } from "@openbot/ui";
-import type { QuestionPromptComposerAnswer } from "@openbot/ui/components/QuestionPromptBubble";
-import type { AgentMessage } from "@openbot/ui/data";
-import type { QuoteRequest } from "@openbot/ui/features/conversation/ComposerEditor";
-import { currentText } from "@openbot/ui/text";
-import { prefersReducedMotion, usesTouchLayout } from "@openbot/ui/utils";
-import { errorReference } from "@openbot/user-errors";
+} from "@pokebots/contracts/ipc";
+import { AGENT_FAST_MODE_CAPABILITY } from "@pokebots/contracts/team-protocol/agent-fast-mode-v1";
+import { AGENT_SPEED_CAPABILITY } from "@pokebots/contracts/team-protocol/agent-speed-v1";
+import { toast } from "@pokebots/ui";
+import type { QuestionPromptComposerAnswer } from "@pokebots/ui/components/QuestionPromptBubble";
+import type { AgentMessage } from "@pokebots/ui/data";
+import type { QuoteRequest } from "@pokebots/ui/features/conversation/ComposerEditor";
+import { currentText } from "@pokebots/ui/text";
+import { prefersReducedMotion, usesTouchLayout } from "@pokebots/ui/utils";
+import { errorReference } from "@pokebots/user-errors";
 import {
   createContext,
   createEffect,

@@ -1,5 +1,5 @@
-import type { BackgroundProcess, ClientAgentSummary } from "@openbot/contracts/ipc";
-import { currentText } from "@openbot/ui/text";
+import type { BackgroundProcess, ClientAgentSummary } from "@pokebots/contracts/ipc";
+import { currentText } from "@pokebots/ui/text";
 import { createEffect, createStore, untrack } from "solid-js";
 import { actionToast } from "../../action-toast";
 import type { FilesPort } from "./files-port";

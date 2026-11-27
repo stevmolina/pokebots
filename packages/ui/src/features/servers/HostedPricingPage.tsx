@@ -1,7 +1,7 @@
-import { BILLING_PLANS, type BillingCurrency, type BillingPlanId } from "@openbot/contracts/billing";
-import { isEuConsumer } from "@openbot/contracts/billing-details";
-import type { HostedServerCatalogPlan } from "@openbot/contracts/hosted-servers";
-import { LICENSE_MAX_USERS, type LicenseTier, type PricingOrder } from "@openbot/contracts/license";
+import { BILLING_PLANS, type BillingCurrency, type BillingPlanId } from "@pokebots/contracts/billing";
+import { isEuConsumer } from "@pokebots/contracts/billing-details";
+import type { HostedServerCatalogPlan } from "@pokebots/contracts/hosted-servers";
+import { LICENSE_MAX_USERS, type LicenseTier, type PricingOrder } from "@pokebots/contracts/license";
 import {
   Alert,
   AlertActions,
@@ -17,8 +17,8 @@ import {
   Monitor,
   OctagonX,
   TriangleAlert,
-} from "@openbot/ui";
-import type { UserErrorDetails } from "@openbot/user-errors";
+} from "@pokebots/ui";
+import type { UserErrorDetails } from "@pokebots/user-errors";
 import { type Accessor, createEffect, createSignal, createUniqueId, Show, untrack } from "solid-js";
 import { useText } from "../../text";
 import { type BillingDetailsDraft, BillingDetailsFields, billingDetailsRequest } from "../billing/BillingDetailsFields";

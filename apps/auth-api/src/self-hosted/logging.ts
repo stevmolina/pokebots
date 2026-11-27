@@ -1,6 +1,6 @@
 import { Console } from "node:console";
 import { Writable } from "node:stream";
-import { createOpenBotLogger, isSecretName, registerSecretValue } from "@openbot/logging";
+import { createOpenBotLogger, isSecretName, registerSecretValue } from "@pokebots/logging";
 
 /** Frameworks also write to console. Send those lines through the same redacting logger. */
 export function installSelfHostedLogging(): void {

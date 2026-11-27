@@ -1,4 +1,4 @@
-import { agentNotificationLevelMap } from "@openbot/contracts/ipc";
+import { agentNotificationLevelMap } from "@pokebots/contracts/ipc";
 import * as Clipboard from "expo-clipboard";
 import { Link, router } from "expo-router";
 import { type ReactNode, useEffect, useRef, useState } from "react";

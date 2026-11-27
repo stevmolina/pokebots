@@ -24,12 +24,12 @@ import {
   tool,
 } from "@anthropic-ai/claude-agent-sdk";
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import { type AgentContextCategoryUsage, agentProviderName, defaultProviderModel } from "@openbot/contracts/ipc";
-import { type DynamicRecord, isDynamicRecord, isNumber, isOneOf, isString } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
-import { createOpenBotLogger, redactText } from "@openbot/logging";
-import { classifyFailure } from "@openbot/telemetry";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
+import { type AgentContextCategoryUsage, agentProviderName, defaultProviderModel } from "@pokebots/contracts/ipc";
+import { type DynamicRecord, isDynamicRecord, isNumber, isOneOf, isString } from "@pokebots/contracts/runtime-values";
+import { sourceText } from "@pokebots/i18n/source";
+import { createOpenBotLogger, redactText } from "@pokebots/logging";
+import { classifyFailure } from "@pokebots/telemetry";
 import { Deferred, Effect, Exit, Fiber, Option, Scope } from "effect";
 import { z } from "zod";
 import { advertisedZodShape } from "./agent/advertised-json-schema";

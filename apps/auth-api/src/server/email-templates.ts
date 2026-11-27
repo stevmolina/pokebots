@@ -1,5 +1,5 @@
-import type { BillingCurrency, BillingPlanId } from "@openbot/contracts/billing";
-import { LICENSE_DEVICES_PER_USER, type LicensePlan, type LicenseTier } from "@openbot/contracts/license";
+import type { BillingCurrency, BillingPlanId } from "@pokebots/contracts/billing";
+import { LICENSE_DEVICES_PER_USER, type LicensePlan, type LicenseTier } from "@pokebots/contracts/license";
 import { OPENBOT_DOWNLOAD_PAGE_LINKS, OPENBOT_LINKS } from "../lib/landing-links";
 
 // HTML and plain-text bodies for account email. Mail clients render HTML very differently, so the

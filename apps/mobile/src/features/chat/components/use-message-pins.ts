@@ -1,4 +1,4 @@
-import type { PinnedMessage, PinnedMessagesSnapshot } from "@openbot/contracts/ipc";
+import type { PinnedMessage, PinnedMessagesSnapshot } from "@pokebots/contracts/ipc";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useMemo } from "react";
 import { useMobileSession, useQueryScope } from "@/features/auth/context/mobile-session-context";

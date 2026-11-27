@@ -18,7 +18,7 @@ import type {
   CustomProviderSummary,
   SaveCustomProviderInput,
   UpdateCustomProviderInput,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   CUSTOM_PROVIDER_HARNESSES,
   DEFAULT_CUSTOM_PROVIDER_HARNESS,
@@ -27,8 +27,8 @@ import {
   isCustomProviderMaxOutput,
   isCustomProviderReasoningEfforts,
   sameCustomProviderOrigin,
-} from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect, Schema, Semaphore } from "effect";
 import { z } from "zod";
 import { writeFileAtomically } from "../backend/atomic-json-file";

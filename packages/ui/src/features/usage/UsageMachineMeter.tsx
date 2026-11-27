@@ -6,9 +6,9 @@ import {
   machineAlertLevel,
   machineMetricPercent,
   machineMetricTone,
-} from "@openbot/contracts/ipc";
-import { Button, buttonVariants, ChevronRight, Popover, Progress, RadialProgress } from "@openbot/ui";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/contracts/ipc";
+import { Button, buttonVariants, ChevronRight, Popover, Progress, RadialProgress } from "@pokebots/ui";
+import { useText } from "@pokebots/ui/text";
 import type { JSX } from "@solidjs/web";
 import { createSignal, For, Show } from "solid-js";
 import { MACHINE_METRIC_ICONS, MACHINE_METRIC_LABELS, useMachineMetricDetail } from "../files/machine-metric";

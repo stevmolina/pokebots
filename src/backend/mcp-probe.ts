@@ -22,10 +22,10 @@ import {
 } from "@modelcontextprotocol/sdk/server/auth/errors.js";
 import type { FetchLike, Transport } from "@modelcontextprotocol/sdk/shared/transport.js";
 import { type CallToolRequest, ErrorCode, McpError } from "@modelcontextprotocol/sdk/types.js";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import type { McpServerConfig } from "@openbot/contracts/ipc";
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
-import { sourceText } from "@openbot/i18n/source";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
+import type { McpServerConfig } from "@pokebots/contracts/ipc";
+import { isDynamicRecord } from "@pokebots/contracts/runtime-values";
+import { sourceText } from "@pokebots/i18n/source";
 import { Effect, Result, Schema } from "effect";
 import { z } from "zod";
 import { causeHelpers } from "./effect-boundary";

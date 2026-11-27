@@ -1,6 +1,6 @@
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import type { ChannelMemory } from "@openbot/contracts/ipc";
-import { sourceText } from "@openbot/i18n/source";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
+import type { ChannelMemory } from "@pokebots/contracts/ipc";
+import { sourceText } from "@pokebots/i18n/source";
 import { MemoryStore, type MemoryTables } from "./memory-store";
 import type { OpenBotDatabase } from "./openbot-database";
 

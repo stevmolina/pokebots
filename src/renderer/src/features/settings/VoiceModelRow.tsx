@@ -3,7 +3,7 @@ import {
   VOICE_KEY_PROVIDER_NAMES,
   type VoiceKeyProvider,
   type VoiceModelStatus,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import {
   Button,
   Download,
@@ -23,8 +23,8 @@ import {
   SelectValue,
   TOAST_DURATION,
   toast,
-} from "@openbot/ui";
-import { useText } from "@openbot/ui/text";
+} from "@pokebots/ui";
+import { useText } from "@pokebots/ui/text";
 import type { JSX } from "@solidjs/web";
 import { createEffect, createRoot, createStore, getOwner, onCleanup, runWithOwner, Show, untrack } from "solid-js";
 

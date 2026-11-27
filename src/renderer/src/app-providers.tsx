@@ -1,4 +1,4 @@
-import type { ChatWindowTarget } from "@openbot/contracts/ipc";
+import type { ChatWindowTarget } from "@pokebots/contracts/ipc";
 import type { JSX } from "@solidjs/web";
 import { type ParentProps, Show } from "solid-js";
 import { AnsweredPromptsProvider } from "./answered-prompts";

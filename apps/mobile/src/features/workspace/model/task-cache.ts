@@ -5,7 +5,7 @@ import type {
   ConversationMessage,
   ConversationSnapshot,
   TeamRealtimeEvent,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import type { QueryClient } from "@tanstack/react-query";
 import { type QueryScope, queryKeys } from "./query-keys";
 

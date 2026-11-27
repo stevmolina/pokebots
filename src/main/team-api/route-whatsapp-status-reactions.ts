@@ -1,8 +1,8 @@
 import {
   WHATSAPP_STATUS_REACTIONS_CAPABILITY,
   WHATSAPP_STATUS_REACTIONS_ROUTES,
-} from "@openbot/contracts/team-protocol/whatsapp-status-reactions-v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/team-protocol/whatsapp-status-reactions-v1";
+import { sourceText } from "@pokebots/i18n/source";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import { parseSetWhatsAppStatusReactionsInput } from "../ipc/messaging-inputs";
 import type { TeamApiConnectors } from "./dependencies";

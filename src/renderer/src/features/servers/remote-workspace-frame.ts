@@ -10,8 +10,8 @@ import {
   isHiddenAgent,
   isSidebarLayoutSnapshot,
   type SidebarLayoutSnapshot,
-} from "@openbot/contracts/ipc";
-import { isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
+} from "@pokebots/contracts/ipc";
+import { isDynamicRecord, isNumber, isString } from "@pokebots/contracts/runtime-values";
 import { type FrameStorage, frameKey, savedChannelRows, savedUnreadCounts } from "./remote-workspace-frame-keys";
 
 export { deleteRemoteWorkspaceFrame, deleteRemoteWorkspaceFrames } from "./remote-workspace-frame-keys";

@@ -4,7 +4,7 @@ import type {
   McpAccessSnapshot,
   McpSignInRelayPage,
   SetMcpAccessInput,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import { appPort } from "../../app-port";
 import { type AgentSkillCalls, agentSkillCalls, type SkillsPort, skillsPort } from "../../skills-port";
 

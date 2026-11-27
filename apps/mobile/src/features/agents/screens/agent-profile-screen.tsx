@@ -1,4 +1,4 @@
-import { avatarHeadColor } from "@openbot/brand/bloub-avatar";
+import { avatarHeadColor } from "@pokebots/brand/bloub-avatar";
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import { StackActions } from "expo-router/react-navigation";
 import { Typography } from "heroui-native";

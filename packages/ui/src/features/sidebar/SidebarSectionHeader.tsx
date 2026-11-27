@@ -12,7 +12,7 @@
  * then the count while it is closed and a small chevron. Its menu and its drag stay the same.
  */
 
-import { SIDEBAR_FOLDER_LEVELS } from "@openbot/contracts/ipc";
+import { SIDEBAR_FOLDER_LEVELS } from "@pokebots/contracts/ipc";
 import {
   ArrowDown,
   ArrowUp,
@@ -28,7 +28,7 @@ import {
   FolderPlus,
   Pencil,
   Trash2,
-} from "@openbot/ui";
+} from "@pokebots/ui";
 import { createMemo, For, Show } from "solid-js";
 import { useText } from "../../text";
 import { SidebarDockHeadContent } from "./SidebarDockHead";

@@ -1,4 +1,4 @@
-import { type HostKeyHandover, optionalHostKeyHandovers } from "@openbot/contracts/host-key-handover";
+import { type HostKeyHandover, optionalHostKeyHandovers } from "@pokebots/contracts/host-key-handover";
 import {
   createInviteUrl,
   type InviteLinkOptions,
@@ -8,20 +8,20 @@ import {
   OPENBOT_INVITE_ORIGIN,
   parseInviteUrl,
   selfHostedApiOrigin,
-} from "@openbot/contracts/invite-links";
-import type { MobileConnectHostBinding } from "@openbot/contracts/mobile-connect";
+} from "@pokebots/contracts/invite-links";
+import type { MobileConnectHostBinding } from "@pokebots/contracts/mobile-connect";
 import {
   decodeRemoteSession,
   decodeRemoteSessionTicket,
   decodeRemoteSessionWithTicket,
-} from "@openbot/contracts/remote-control-plane";
-import { isBoolean, isDynamicRecord, isNumber, isString } from "@openbot/contracts/runtime-values";
+} from "@pokebots/contracts/remote-control-plane";
+import { isBoolean, isDynamicRecord, isNumber, isString } from "@pokebots/contracts/runtime-values";
 import {
   optionalServerAppearanceField,
   type ServerAppearance,
-} from "@openbot/contracts/team-protocol/host-appearance-v1";
-import { sourceText } from "@openbot/i18n/source";
-import { referenceFrom, safeReference } from "@openbot/user-errors/reference";
+} from "@pokebots/contracts/team-protocol/host-appearance-v1";
+import { sourceText } from "@pokebots/i18n/source";
+import { referenceFrom, safeReference } from "@pokebots/user-errors/reference";
 import { Deferred, Effect, Schema, Semaphore } from "effect";
 import { runTeamEffect } from "./effect-boundary";
 import {

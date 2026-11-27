@@ -5,8 +5,8 @@ import {
   UI_CHOICE_VALUES_KEY,
   type UiChoiceBlock as UiChoiceSpec,
   type UiQuickRepliesBlock as UiQuickRepliesSpec,
-} from "@openbot/contracts/ui-blocks";
-import { Button, Input, Kbd } from "@openbot/ui";
+} from "@pokebots/contracts/ui-blocks";
+import { Button, Input, Kbd } from "@pokebots/ui";
 import { createSignal, createUniqueId, For, Show } from "solid-js";
 import { useText } from "../../../text";
 import { cx } from "../../../utils";

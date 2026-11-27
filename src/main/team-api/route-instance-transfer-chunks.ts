@@ -1,13 +1,13 @@
-import { parseExportInstanceInput } from "@openbot/contracts/ipc";
+import { parseExportInstanceInput } from "@pokebots/contracts/ipc";
 import {
   INSTANCE_TRANSFER_CHUNKS_CAPABILITY,
   INSTANCE_TRANSFER_CHUNKS_ROUTES,
-} from "@openbot/contracts/team-protocol/instance-transfer-chunks-v1";
+} from "@pokebots/contracts/team-protocol/instance-transfer-chunks-v1";
 import {
   INSTANCE_TRANSFER_FULL_COPY_CAPABILITY,
   INSTANCE_TRANSFER_FULL_COPY_ROUTES,
-} from "@openbot/contracts/team-protocol/instance-transfer-full-copy-v1";
-import { sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/team-protocol/instance-transfer-full-copy-v1";
+import { sourceText } from "@pokebots/i18n/source";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import type { TeamApiInstanceTransfer } from "./dependencies";
 import { HttpError } from "./http-error";

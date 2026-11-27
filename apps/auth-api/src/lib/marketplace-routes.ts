@@ -1,5 +1,5 @@
-import { SKILL_CATEGORIES, type SkillCategory } from "@openbot/contracts/ipc-skills";
-import { isDynamicRecord } from "@openbot/contracts/runtime-values";
+import { SKILL_CATEGORIES, type SkillCategory } from "@pokebots/contracts/ipc-skills";
+import { isDynamicRecord } from "@pokebots/contracts/runtime-values";
 
 /*
  * The public Marketplace on openbot.run. One address for each tab, category, search and listing:
@@ -12,7 +12,7 @@ import { isDynamicRecord } from "@openbot/contracts/runtime-values";
  *   /marketplace/agents/<id>        one agent
  *   /marketplace/skills/<slug>      one skill
  *
- * The listing addresses are the ones `@openbot/contracts/marketplace-links` builds, so the link the app
+ * The listing addresses are the ones `@pokebots/contracts/marketplace-links` builds, so the link the app
  * copies and the page that opens are the same address.
  */
 

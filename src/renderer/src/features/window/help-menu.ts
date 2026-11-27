@@ -1,6 +1,6 @@
-import type { ShortcutPlatform } from "@openbot/ui/features/shortcuts/shortcut-registry";
-import type { HelpMenuNews, HelpMenuProps } from "@openbot/ui/features/updates/HelpMenu";
-import { whatsNewEntry } from "@openbot/ui/features/updates/whats-new";
+import type { ShortcutPlatform } from "@pokebots/ui/features/shortcuts/shortcut-registry";
+import type { HelpMenuNews, HelpMenuProps } from "@pokebots/ui/features/updates/HelpMenu";
+import { whatsNewEntry } from "@pokebots/ui/features/updates/whats-new";
 import { createSignal } from "solid-js";
 import { desktopAnalytics } from "../../analytics";
 import { useI18n } from "../../i18n-context";

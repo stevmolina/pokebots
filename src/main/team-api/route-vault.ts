@@ -1,29 +1,29 @@
-import type { VaultItemSummary, VaultLoginSummary, VaultState } from "@openbot/contracts/ipc";
+import type { VaultItemSummary, VaultLoginSummary, VaultState } from "@pokebots/contracts/ipc";
 import {
   VAULT_CAPABILITY,
   VAULT_ROUTES,
   VAULT_WIRE_ITEM_LIMIT,
   VAULT_WIRE_NAME_LIMIT,
-} from "@openbot/contracts/team-protocol/vault-v1";
+} from "@pokebots/contracts/team-protocol/vault-v1";
 import {
   VAULT_V2_CAPABILITY,
   VAULT_V2_ROUTES,
   VAULT_V2_WIRE_ITEM_LIMIT,
   VAULT_V2_WIRE_NAME_LIMIT,
-} from "@openbot/contracts/team-protocol/vault-v2";
+} from "@pokebots/contracts/team-protocol/vault-v2";
 import {
   VAULT_V3_CAPABILITY,
   VAULT_V3_ROUTES,
   VAULT_V3_WIRE_ITEM_LIMIT,
   VAULT_V3_WIRE_NAME_LIMIT,
-} from "@openbot/contracts/team-protocol/vault-v3";
+} from "@pokebots/contracts/team-protocol/vault-v3";
 import {
   VAULT_V4_CAPABILITY,
   VAULT_V4_ROUTES,
   VAULT_V4_WIRE_ITEM_LIMIT,
   VAULT_V4_WIRE_NAME_LIMIT,
-} from "@openbot/contracts/team-protocol/vault-v4";
-import { isFixedSourceText, sourceText } from "@openbot/i18n/source";
+} from "@pokebots/contracts/team-protocol/vault-v4";
+import { isFixedSourceText, sourceText } from "@pokebots/i18n/source";
 import { runCauseEffect } from "../../backend/effect-boundary";
 import { decodeVaultSaveInput, decodeVaultSecretRequest } from "../vault-inputs";
 import type { TeamApiVault } from "./dependencies";

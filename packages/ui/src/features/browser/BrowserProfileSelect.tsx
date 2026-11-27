@@ -1,4 +1,4 @@
-import { type AvatarHue, BROWSER_PROFILE_NAME_MAX, type BrowserProfileSummary } from "@openbot/contracts/ipc";
+import { type AvatarHue, BROWSER_PROFILE_NAME_MAX, type BrowserProfileSummary } from "@pokebots/contracts/ipc";
 import {
   Button,
   Input,
@@ -10,7 +10,7 @@ import {
   SelectValue,
   Text,
   Waypoints,
-} from "@openbot/ui";
+} from "@pokebots/ui";
 import { createStore, Show } from "solid-js";
 import { useText } from "../../text";
 import { BrowserProfileDot } from "./BrowserProfileColor";

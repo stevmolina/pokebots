@@ -20,7 +20,7 @@ import {
   AGENT_PROVIDERS,
   type ConversationSubagent,
   MCP_ELICITATION_DECISION_QUESTION_ID,
-} from "@openbot/contracts/ipc";
+} from "@pokebots/contracts/ipc";
 import { Effect } from "effect";
 import type { AgentBrowserHost } from "../src/backend/agent/turn-lifecycle";
 

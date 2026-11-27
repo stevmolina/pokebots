@@ -1,4 +1,4 @@
-import { normalizeEmailAddress } from "@openbot/contracts/validation";
+import { normalizeEmailAddress } from "@pokebots/contracts/validation";
 import type { JSX } from "@solidjs/web";
 import { createSignal, createUniqueId, For, onSettled, Show } from "solid-js";
 import { landingAnalytics } from "../../lib/analytics";

@@ -1,4 +1,4 @@
-import { type DynamicRecord, isDynamicRecord } from "@openbot/contracts/runtime-values";
+import { type DynamicRecord, isDynamicRecord } from "@pokebots/contracts/runtime-values";
 import { databaseRow, databaseRows, requiredNumberColumn, requiredStringColumn } from "../database/database-rows";
 import { withTransaction } from "../database/sqlite-transaction";
 import type { OpenBotDatabase } from "../openbot-database";

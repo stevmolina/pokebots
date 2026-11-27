@@ -2,12 +2,12 @@ import {
   attachmentReferenceIds,
   expandAttachmentReferences,
   serializeAttachmentReference,
-} from "@openbot/contracts/attachment-references";
-import { expandChatTagReferences } from "@openbot/contracts/chat-tag-references";
-import { INPUT_LIMITS } from "@openbot/contracts/input-limits";
-import type { AttachmentSummary, FilePreview } from "@openbot/contracts/ipc";
-import { expandComposerMentions } from "@openbot/ui/features/conversation/ComposerEditor";
-import { currentText } from "@openbot/ui/text";
+} from "@pokebots/contracts/attachment-references";
+import { expandChatTagReferences } from "@pokebots/contracts/chat-tag-references";
+import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
+import type { AttachmentSummary, FilePreview } from "@pokebots/contracts/ipc";
+import { expandComposerMentions } from "@pokebots/ui/features/conversation/ComposerEditor";
+import { currentText } from "@pokebots/ui/text";
 import { Option, Schema } from "effect";
 import { writeClipboardText } from "../../clipboard";
 import { keptSpaces } from "../../selection-copy";

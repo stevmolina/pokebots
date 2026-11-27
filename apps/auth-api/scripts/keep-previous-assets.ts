@@ -9,7 +9,7 @@
 import { existsSync } from "node:fs";
 import { readdir, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
-import { createOpenBotLogger, toLogValue } from "@openbot/logging";
+import { createOpenBotLogger, toLogValue } from "@pokebots/logging";
 import { Option, Schema } from "effect";
 
 const logger = createOpenBotLogger("keep-previous-assets");

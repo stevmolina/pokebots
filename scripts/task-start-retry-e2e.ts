@@ -11,9 +11,9 @@
 // Writes .openbot-build/task-start-retry-e2e/report.json.
 import assert from "node:assert/strict";
 import { resolve } from "node:path";
-import type { AgentTask, AgentTasksSnapshot } from "@openbot/contracts/ipc";
-import { AGENT_TASKS_CAPABILITY } from "@openbot/contracts/team-protocol/agent-tasks-v1";
-import { createOpenBotLogger } from "@openbot/logging";
+import type { AgentTask, AgentTasksSnapshot } from "@pokebots/contracts/ipc";
+import { AGENT_TASKS_CAPABILITY } from "@pokebots/contracts/team-protocol/agent-tasks-v1";
+import { createOpenBotLogger } from "@pokebots/logging";
 import { argument, connectChannelE2e, SHORT_PROMPT, waitFor, writeReport } from "./channel-e2e-support";
 import { assertMutationAllowed, connectToDevApp } from "./dev-automation/cdp-client";
 import { readDevInstanceRecords } from "./dev-automation/instance-registry";

@@ -4,7 +4,7 @@
 // shown and no grant is made. Writes a JSON report.
 import { mkdir, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
-import type { McpServerConfig } from "@openbot/contracts/ipc";
+import type { McpServerConfig } from "@pokebots/contracts/ipc";
 import { Effect } from "effect";
 import { runCauseEffect } from "../src/backend/effect-boundary";
 import { McpOAuth, type McpOAuthRecord } from "../src/backend/mcp-oauth-provider";

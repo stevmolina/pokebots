@@ -1,6 +1,6 @@
-import type { AgentProfile } from "@openbot/ui/data";
-import type { AgentStepsTrace } from "@openbot/ui/features/conversation/AgentSteps";
-import { useText } from "@openbot/ui/text";
+import type { AgentProfile } from "@pokebots/ui/data";
+import type { AgentStepsTrace } from "@pokebots/ui/features/conversation/AgentSteps";
+import { useText } from "@pokebots/ui/text";
 import { currentDevicePlatform } from "../../send-shortcut-preference";
 import type { createTurnSteps } from "./turn-steps";
 

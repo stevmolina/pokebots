@@ -1,4 +1,4 @@
-import { type MessageTextSelection, SelectionActionsBar } from "@openbot/ui/features/conversation/SelectionActions";
+import { type MessageTextSelection, SelectionActionsBar } from "@pokebots/ui/features/conversation/SelectionActions";
 import { createSignal, onSettled, Show } from "solid-js";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
