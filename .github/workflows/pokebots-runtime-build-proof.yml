@@ -2,7 +2,7 @@ name: Pokebots runtime build proof
 
 on:
   push:
-    branches: [pokebots-runtime-build-proof]
+    branches: [pokebots-runtime-build-proof, pokebots-runtime-build-proof-windows]
 
 permissions:
   contents: read
@@ -15,23 +15,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - os: macos-15
-            platform: darwin
-            architecture: arm64
-            target: darwin-arm64
-          - os: macos-15-intel
-            platform: darwin
-            architecture: x64
-            target: darwin-x64
-          - os: ubuntu-24.04
-            platform: linux
-            architecture: x64
-            target: linux-x64
-          - os: windows-2025
-            platform: win32
-            architecture: x64
-            target: win32-x64
+        include: ${{ fromJSON(github.ref_name == 'pokebots-runtime-build-proof-windows' &&
+          '[{"os":"windows-2025","platform":"win32","architecture":"x64","target":"win32-x64"}]' ||
+          '[
+            {"os":"macos-15","platform":"darwin","architecture":"arm64","target":"darwin-arm64"},
+            {"os":"macos-15-intel","platform":"darwin","architecture":"x64","target":"darwin-x64"},
+            {"os":"ubuntu-24.04","platform":"linux","architecture":"x64","target":"linux-x64"},
+            {"os":"windows-2025","platform":"win32","architecture":"x64","target":"win32-x64"}
+          ]') }}
     env:
       POKEBOTS_RUNTIME_BUILD_PROOF: "1"
     steps:
@@ -175,7 +166,7 @@ jobs:
             git config --system --get "$key" || printf 'System %s is unset\n' "$key"
             git config --global --get "$key" || printf 'Global %s is unset\n' "$key"
           done
-          # Use the historical OpenSSL package for this build without changing the runner's packages.
+          # Install the pin in the job's MSYS2 tree so explicit paths and -lssl/-lcrypto agree.
           openssl_dir="$(mktemp -d)"
           package=mingw-w64-ucrt-x86_64-openssl-3.6.5-1-any.pkg.tar.zst
           curl --fail --silent --show-error --location --output "$openssl_dir/$package" \
@@ -186,12 +177,59 @@ jobs:
             echo "$package_sha256  $package" | sha256sum -c
             tar -xf "$package"
           )
-          export OPENSSL_ROOT_DIR="$(cygpath -m "$openssl_dir/ucrt64")"
-          export PATH="$openssl_dir/ucrt64/bin:$PATH"
-          "$openssl_dir/ucrt64/bin/openssl.exe" version
+          package_name=mingw-w64-ucrt-x86_64-openssl
+          expected_package="$package_name 3.6.5-1"
+          pacman -U --noconfirm "$openssl_dir/$package"
+          export OPENSSL_ROOT_DIR="$(cygpath -m /ucrt64)"
+          openssl_version="$(/ucrt64/bin/openssl.exe version)"
+          [[ "$openssl_version" == "OpenSSL 3.6.5 "* ]]
           export POKEBOTS_PROOF_WINDOWS_OPENSSL="$package sha256:$package_sha256"
-          bun run build:remote-desktop-runtime
+
+          check_openssl_install() {
+            local installed
+            installed="$(pacman -Q "$package_name")"
+            printf '%s\n' "$installed"
+            [[ "$installed" == "$expected_package" ]] || return 1
+            diff -qr "$openssl_dir/ucrt64/include/openssl" /ucrt64/include/openssl || return 1
+            local file
+            for file in lib/lib{ssl,crypto}{,.dll}.a bin/lib{ssl,crypto}-3-x64.dll bin/openssl.exe; do
+              cmp "$openssl_dir/ucrt64/$file" "/ucrt64/$file" || return 1
+              sha256sum "/ucrt64/$file" || return 1
+            done
+          }
+
+          check_openssl_install
+          bun run build:remote-desktop-runtime 2>&1 | tee "$openssl_dir/build.log"
           pacman -Q > runner-packages.txt
+
+          proof=build/remote-desktop-runtime/win32/x64/build-proof
+          {
+            printf '%s\n' "$POKEBOTS_PROOF_WINDOWS_OPENSSL" "$openssl_version"
+            check_openssl_install
+            cmake_lib="$OPENSSL_ROOT_DIR/lib/libcrypto"
+            grep -F -e "Found OpenSSL: $cmake_lib.a (found version \"3.6.5\"" \
+              -e "Found OpenSSL: $cmake_lib.dll.a (found version \"3.6.5\"" "$openssl_dir/build.log"
+            # GNU ld names the archive before each contributing member. Check every map.
+            for library in ssl crypto; do
+              grep -Eiq "lib$library\\.a\\(" "$proof/sunshine.map" || exit 1
+            done
+            linked_archives="$(grep -Ehoi '[^[:space:]()]*(libssl|libcrypto)(\.dll)?\.a\(' "$proof/"*.map |
+              sort -u)"
+            seen_ssl=false
+            seen_crypto=false
+            while IFS= read -r member; do
+              archive_path="${member%?}"
+              archive_path="${archive_path//\\//}"
+              resolved="$(realpath -e "$(cygpath -u "$archive_path")")"
+              case "$resolved" in
+                /ucrt64/lib/libssl.a) seen_ssl=true ;;
+                /ucrt64/lib/libcrypto.a) seen_crypto=true ;;
+                *) printf 'Unexpected OpenSSL archive %s\n' "$resolved" >&2; exit 1 ;;
+              esac
+              printf '%s -> %s\n' "$archive_path" "$resolved"
+            done <<< "$linked_archives"
+            "$seen_ssl" && "$seen_crypto" || exit 1
+          } | tee "$proof/windows-openssl.txt"
 
       - name: Verify runtime
         shell: bash
