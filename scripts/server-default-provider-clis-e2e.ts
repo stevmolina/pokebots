@@ -9,14 +9,13 @@ import assert from "node:assert/strict";
 import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import type { ManagedProviderId } from "@pokebots/contracts/agent-providers";
 import { Effect } from "effect";
 import { runCauseEffect } from "../src/backend/effect-boundary";
 import { ProviderRuntimeManager } from "../src/main/provider-runtime-manager";
 
+import { SERVER_DEFAULT_PROVIDER_CLIS } from "../src/main/server-default-provider-clis";
+
 const OUT = resolve(import.meta.dirname, "../.openbot-build/server-default-provider-clis-e2e");
-/** The same list as `SERVER_DEFAULT_PROVIDER_CLIS` in `src/main/application-services.ts`. */
-const SERVER_DEFAULT_PROVIDER_CLIS: readonly ManagedProviderId[] = ["claude", "codex", "cursor", "grok"];
 
 const target = process.argv[2] ?? "linux-x64";
 assert.ok(target === "linux-x64" || target === "linux-arm64", `unsupported target: ${target}`);
