@@ -4,6 +4,7 @@ import { basename, join, resolve } from "node:path";
 import { createOpenBotLogger } from "@pokebots/logging";
 import { bundledLibraryLicense, isPortableLoadPath, readMachOLoadPaths } from "./mac-runtime-dylibs";
 import { createRemoteDesktopInputDigest, loadNativeRuntimeLock } from "./native-runtime-lock";
+import { staticNoticeMarker, verifyStaticNotices } from "./remote-desktop-runtime-notices";
 import { runtimeTarget } from "./remote-desktop-runtime-release";
 
 const logger = createOpenBotLogger("verify-remote-desktop-runtime");
@@ -71,6 +72,14 @@ for (const name of [
     throw new Error(`Distribution checksum does not match the lock pin for ${name}.`);
   }
 }
+
+const noticeMarker = await readFile(join(distributionRoot, staticNoticeMarker), "utf8").catch(
+  (error: NodeJS.ErrnoException) => {
+    if (error.code !== "ENOENT") throw error;
+    return undefined;
+  },
+);
+verifyStaticNotices(noticeMarker, distributionChecksumEntries);
 
 if (platform === "darwin") {
   const libraries = await bundledLibraries(root, (name) => name.endsWith(".dylib"));

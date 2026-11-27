@@ -11,6 +11,12 @@ import {
   bundleMacDynamicLibraries,
 } from "./mac-runtime-dylibs";
 import { createRemoteDesktopSourceManifest, loadNativeRuntimeLock } from "./native-runtime-lock";
+import {
+  moonlightNoticeSource,
+  moonlightOpenSslNotice,
+  staticNoticeMarker,
+  sunshineNoticeSources,
+} from "./remote-desktop-runtime-notices";
 
 const platform =
   process.platform === "darwin" || process.platform === "win32" || process.platform === "linux"
@@ -84,9 +90,14 @@ try {
   await mkdir(outputRoot, { recursive: true });
   await packageCorrespondingSource(sunshineSource, moonlightSource, lock);
   if (proofRoot) await mkdir(proofRoot, { recursive: true });
-  const sunshineMap = proofRoot && join(proofRoot, "sunshine.map");
-  buildSunshine(sunshineSource, lock.remoteDesktop.sunshine.version, lock.remoteDesktop.sunshine.commit, sunshineMap);
-  buildMoonlight(moonlightSource);
+  const sunshineMap = proofRoot ? join(proofRoot, "sunshine.map") : join(workRoot, "sunshine.map");
+  buildSunshine(
+    sunshineSource,
+    lock.remoteDesktop.sunshine.version,
+    lock.remoteDesktop.sunshine.commit,
+    platform === "win32" && !proofRoot ? undefined : sunshineMap,
+  );
+  const cargoEnvironment = buildMoonlight(moonlightSource);
 
   const sunshineBinary = findSunshineBinary(sunshineSource);
   const executableSuffix = platform === "win32" ? ".exe" : "";
@@ -124,6 +135,14 @@ try {
 
   const licenses = resolve("build/remote-desktop-runtime/licenses");
   await mkdir(licenses, { recursive: true });
+  if (platform !== "win32") {
+    const staticSources = [
+      ...(await sunshineNoticeSources(sunshineMap, join(sunshineSource, "build-openbot"), platform)),
+      { file: moonlightOpenSslNotice, source: await moonlightNoticeSource(moonlightSource, cargoEnvironment) },
+    ];
+    await Promise.all(staticSources.map(({ source, file }) => cp(source, join(licenses, file))));
+    await writeFile(resolve("build/remote-desktop-runtime", staticNoticeMarker), "1\n");
+  }
   await Promise.all([
     cp(join(sunshineSource, "LICENSE"), join(licenses, "Sunshine-GPL-3.0.txt")),
     cp(join(moonlightSource, "LICENSE"), join(licenses, "moonlight-web-stream-GPL-3.0.txt")),
@@ -326,7 +345,7 @@ function buildSunshine(source: string, version: string, commit: string, proofMap
   }
 }
 
-function buildMoonlight(source: string): void {
+function buildMoonlight(source: string): NodeJS.ProcessEnv {
   execFileSync("npm", ["ci"], { cwd: source, stdio: "inherit" });
   execFileSync("npm", ["run", "build"], { cwd: source, stdio: "inherit" });
   const env = { ...moonlightCargoEnvironment() };
@@ -338,6 +357,7 @@ function buildMoonlight(source: string): void {
     env.POKEBOTS_RUNTIME_LINK_MAP_DIRECTORY = proofRoot;
   }
   execFileSync("cargo", ["build", "--locked", "--release"], { cwd: source, env, stdio: "inherit" });
+  return env;
 }
 
 function linkMapOption(path: string): string {
@@ -386,7 +406,8 @@ async function recordBuildProof(directory: string, sunshine: string, moonlight: 
     verifiedInputs: createRemoteDesktopSourceManifest(lock),
     windowsOpenSslPackage: process.env.POKEBOTS_PROOF_WINDOWS_OPENSSL,
     missingCoverage: [
-      "Map entries still need to be matched to exact source and notices for all linked dependencies.",
+      "Static notice checks cover Sunshine Opus, Sunshine Boost, and Moonlight vendored OpenSSL on macOS and Linux.",
+      "FFmpeg and codec archives, WebRTC, other Cargo and npm inputs, submodules, and toolchain members still need source and notice reconciliation.",
       "The source archives exclude downloaded build dependencies. The Cargo and npm locks identify their inputs where pinned.",
       "Fetched CMake inputs without Git metadata still need source verification.",
       "The maps cover linker inputs. They do not inventory libraries loaded at runtime or all generated assets.",
