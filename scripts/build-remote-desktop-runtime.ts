@@ -329,21 +329,15 @@ function buildSunshine(source: string, version: string, commit: string, proofMap
 function buildMoonlight(source: string): void {
   execFileSync("npm", ["ci"], { cwd: source, stdio: "inherit" });
   execFileSync("npm", ["run", "build"], { cwd: source, stdio: "inherit" });
-  const options = { cwd: source, env: moonlightCargoEnvironment(), stdio: "inherit" as const };
-  if (!proofRoot) {
-    execFileSync("cargo", ["build", "--locked", "--release"], options);
-    return;
+  const env = { ...moonlightCargoEnvironment() };
+  if (proofRoot) {
+    const wrapper = join(workRoot, platform === "win32" ? "runtime-link-map-rustc.exe" : "runtime-link-map-rustc");
+    execFileSync("rustc", [resolve("scripts/runtime-link-map-rustc.rs"), "-o", wrapper], { stdio: "inherit" });
+    // Cargo must resolve features for both binaries together, as it does for a release build.
+    env.RUSTC_WRAPPER = wrapper;
+    env.POKEBOTS_RUNTIME_LINK_MAP_DIRECTORY = proofRoot;
   }
-  const rustcVersion = execFileSync("rustc", ["-vV"], { encoding: "utf8" });
-  for (const binary of ["web-server", "streamer"]) {
-    const map = join(proofRoot, `${binary}.map`);
-    const linkerArgument = /^host: .+-msvc$/m.test(rustcVersion) ? `/MAP:${map}` : `-Wl,${linkMapOption(map)}`;
-    execFileSync(
-      "cargo",
-      ["rustc", "--locked", "--release", "--package", binary, "--bin", binary, "--", `-Clink-arg=${linkerArgument}`],
-      options,
-    );
-  }
+  execFileSync("cargo", ["build", "--locked", "--release"], { cwd: source, env, stdio: "inherit" });
 }
 
 function linkMapOption(path: string): string {
