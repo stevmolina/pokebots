@@ -1,6 +1,7 @@
 import { isDynamicRecord, isOneOf } from "./runtime-values";
 
-export const HOME_AGENT_RULE_FILES = ["agents.md", "proof.md"] as const;
+/** Prompt order: how to work first, then how to write, then where facts come from. */
+export const HOME_AGENT_RULE_FILES = ["approval.md", "writing.md", "brain.md", "agents.md", "proof.md"] as const;
 export type HomeAgentRuleFile = (typeof HOME_AGENT_RULE_FILES)[number];
 
 export interface HomeAgentRulesPreference {

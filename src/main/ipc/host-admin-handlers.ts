@@ -100,7 +100,13 @@ import type { TeamCurrentCapability } from "@pokebots/contracts/team-protocol/cu
 import {
   HOME_AGENT_RULES_CAPABILITY,
   HOME_AGENT_RULES_ROUTES,
+  isHomeAgentRulesV1File,
 } from "@pokebots/contracts/team-protocol/home-agent-rules-v1";
+import {
+  decodeHomeAgentRulesV2Response,
+  HOME_AGENT_RULES_V2_CAPABILITY,
+  HOME_AGENT_RULES_V2_ROUTES,
+} from "@pokebots/contracts/team-protocol/home-agent-rules-v2";
 import { HOST_ADMIN_CAPABILITY, HOST_ADMIN_ROUTES } from "@pokebots/contracts/team-protocol/host-admin-v1";
 import {
   HOST_APPEARANCE_CAPABILITY,
@@ -324,11 +330,27 @@ export function hostAdminIpcHandlers({
       remoteServers.request(serverId, route, decodePromptCacheTtlSetting, { method: "POST", body }),
     );
   }
-  function remoteHomeAgentRules(serverId: string, route: string, body: Partial<HomeAgentRulesPreference>) {
+  /** A host with `home-agent-rules-v2` gets every file; an older host gets the two v1 files. */
+  function remoteHomeAgentRules(
+    serverId: string,
+    route: "settings" | "update",
+    body: Partial<HomeAgentRulesPreference>,
+  ) {
+    if (remoteServers.supportsCapability(serverId, HOME_AGENT_RULES_V2_CAPABILITY))
+      return runCauseEffect(
+        remoteServers.request(serverId, HOME_AGENT_RULES_V2_ROUTES[route], decodeHomeAgentRulesV2Response, {
+          method: "POST",
+          body,
+        }),
+      );
     if (!remoteServers.supportsCapability(serverId, HOME_AGENT_RULES_CAPABILITY))
       throw new Error(sourceText("error.team.homeAgentRulesUnsupported"));
+    const v1Body = body.files ? { ...body, files: body.files.filter(isHomeAgentRulesV1File) } : body;
     return runCauseEffect(
-      remoteServers.request(serverId, route, decodeHomeAgentRulesFromHost, { method: "POST", body }),
+      remoteServers.request(serverId, HOME_AGENT_RULES_ROUTES[route], decodeHomeAgentRulesFromHost, {
+        method: "POST",
+        body: v1Body,
+      }),
     );
   }
 
@@ -644,11 +666,11 @@ export function hostAdminIpcHandlers({
       }),
       getHomeAgentRules: scopedQueryHandler({
         local: () => runCauseEffect(homeAgentRules.get()),
-        remote: (serverId) => remoteHomeAgentRules(serverId, HOME_AGENT_RULES_ROUTES.settings, {}),
+        remote: (serverId) => remoteHomeAgentRules(serverId, "settings", {}),
       }),
       setHomeAgentRules: scopedHandler(parseHomeAgentRulesPreference, {
         local: (preference) => runCauseEffect(homeAgentRules.set(preference)),
-        remote: (preference, serverId) => remoteHomeAgentRules(serverId, HOME_AGENT_RULES_ROUTES.update, preference),
+        remote: (preference, serverId) => remoteHomeAgentRules(serverId, "update", preference),
       }),
       getThreadAutoArchive: scopedQueryHandler({
         local: () => threadAutoArchive.get(),

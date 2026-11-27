@@ -208,6 +208,7 @@ import { FOCUS_USE_INTERVAL_MS } from "@pokebots/contracts/team-protocol/focus-u
 import { GITHUB_SKILLS_CAPABILITY } from "@pokebots/contracts/team-protocol/github-skills-v1";
 import { HERMES_IMPORT_CAPABILITY } from "@pokebots/contracts/team-protocol/hermes-import-v1";
 import { HOME_AGENT_RULES_CAPABILITY } from "@pokebots/contracts/team-protocol/home-agent-rules-v1";
+import { HOME_AGENT_RULES_V2_CAPABILITY } from "@pokebots/contracts/team-protocol/home-agent-rules-v2";
 import {
   HOST_APPEARANCE_CAPABILITY,
   HOST_APPEARANCE_EVENT,
@@ -3101,7 +3102,8 @@ export class TeamApiServer {
         if (capability === BROWSING_MEMORY_CAPABILITY) return this.#options.admin?.browsingMemory !== undefined;
         if (capability === PROMPT_CACHE_TTL_CAPABILITY) return this.#options.admin?.promptCacheTtl !== undefined;
         if (capability === CLAUDE_USER_SETUP_CAPABILITY) return this.#options.admin?.claudeUserSetup !== undefined;
-        if (capability === HOME_AGENT_RULES_CAPABILITY) return this.#options.admin?.homeAgentRules !== undefined;
+        if (capability === HOME_AGENT_RULES_CAPABILITY || capability === HOME_AGENT_RULES_V2_CAPABILITY)
+          return this.#options.admin?.homeAgentRules !== undefined;
         if (capability === BRAIN_CONTEXT_CAPABILITY) return this.#options.admin?.brainContext !== undefined;
         if (capability === ROOMS_LISTENING_CAPABILITY) return this.#options.admin?.roomsListening !== undefined;
         if (capability === THREAD_AUTO_ARCHIVE_CAPABILITY) return this.#options.admin?.threadAutoArchive !== undefined;

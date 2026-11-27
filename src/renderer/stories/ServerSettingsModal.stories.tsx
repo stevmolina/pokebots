@@ -97,7 +97,7 @@ function hostRulesStory(capabilities: string[]): Story {
     },
     render: (args) => {
       const [preference, setPreference] = createSignal<HomeAgentRulesPreference>({ enabled: false, files: [] });
-      const availableFiles: HomeAgentRuleFile[] = ["agents.md", "proof.md"];
+      const availableFiles: HomeAgentRuleFile[] = ["approval.md", "writing.md", "brain.md", "agents.md", "proof.md"];
       return (
         <ServerSettingsStory
           settings={{

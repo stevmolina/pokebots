@@ -81,6 +81,7 @@ import { FOCUS_USE_CODECS } from "./focus-use-v1";
 import { GITHUB_SKILLS_CODECS } from "./github-skills-v1";
 import { HERMES_IMPORT_CODECS } from "./hermes-import-v1";
 import { HOME_AGENT_RULES_CODECS } from "./home-agent-rules-v1";
+import { HOME_AGENT_RULES_V2_CODECS } from "./home-agent-rules-v2";
 import { HOST_ADMIN_CODECS } from "./host-admin-v1";
 import { HOST_APPEARANCE_CODECS } from "./host-appearance-v1";
 import { HOST_KEY_ROTATION_CODECS } from "./host-key-rotation-v1";
@@ -272,6 +273,7 @@ const CODECS: ReadonlyMap<string, OptionalRouteCodec> = new Map([
   ...BRAIN_CONTEXT_CODECS,
   ...ROOMS_LISTENING_CODECS,
   ...HOME_AGENT_RULES_CODECS,
+  ...HOME_AGENT_RULES_V2_CODECS,
   ...THREAD_AUTO_ARCHIVE_CODECS,
   ...CLAUDE_AI_TOOLS_CODECS,
   ...ARTIFACT_REQUEST_CODECS,

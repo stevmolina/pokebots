@@ -2,7 +2,7 @@
 // of the two supported files, and change the opt-in and selection. The host sends only
 // names and flags. Any change to the allowed files or access needs a new capability.
 import type { HomeAgentRulesSetting } from "../ipc-home-agent-rules";
-import { isDynamicRecord } from "../runtime-values";
+import { isDynamicRecord, isOneOf } from "../runtime-values";
 import { adminRoute, boolean, empty, fields, list, type OptionalRouteCodec, oneOf } from "./admin-wire";
 
 export const HOME_AGENT_RULES_CAPABILITY = "home-agent-rules-v1";
@@ -12,7 +12,11 @@ export const HOME_AGENT_RULES_ROUTES = {
   update: "/v1/admin/host/home-agent-rules/update",
 } as const;
 
-const ruleFileNames = list(oneOf("agents.md", "proof.md"), 2);
+/** The only names this frozen contract carries. `home-agent-rules-v2` carries more. */
+export const HOME_AGENT_RULES_V1_FILES = ["agents.md", "proof.md"] as const;
+export const isHomeAgentRulesV1File = (file: string): boolean => isOneOf(HOME_AGENT_RULES_V1_FILES, file);
+
+const ruleFileNames = list(oneOf(...HOME_AGENT_RULES_V1_FILES), 2);
 const updateBody = fields({ enabled: boolean, files: ruleFileNames });
 const snapshot = fields({ enabled: boolean, files: ruleFileNames, availableFiles: ruleFileNames });
 

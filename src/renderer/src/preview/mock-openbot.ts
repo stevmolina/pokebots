@@ -118,6 +118,7 @@ import {
   type ExternalLinkPreference,
   type FilePreview,
   folderInside,
+  HOME_AGENT_RULE_FILES,
   type HomeAgentRulesSetting,
   type HostedSiteSummary,
   type HostStatus,
@@ -555,7 +556,7 @@ export function createMockOpenBot(options: MockOpenBotOptions = {}): MockOpenBot
   // The disk level is below the preview disk use (82%), so Storage shows a passed level.
   let machineAlerts: MachineAlertSettings = { ...DEFAULT_MACHINE_ALERT_SETTINGS, diskPercent: 80 };
   let promptCacheTtl: PromptCacheTtlSetting = { ...DEFAULT_PROMPT_CACHE_TTL };
-  let homeAgentRules: HomeAgentRulesSetting = { enabled: false, files: [], availableFiles: ["agents.md", "proof.md"] };
+  let homeAgentRules: HomeAgentRulesSetting = { enabled: false, files: [], availableFiles: [...HOME_AGENT_RULE_FILES] };
   let threadAutoArchive: ThreadAutoArchiveSetting = { ...DEFAULT_THREAD_AUTO_ARCHIVE };
   let claudeUserSetup: ClaudeUserSetupSetting = { ...DEFAULT_CLAUDE_USER_SETUP };
   let brainContext: BrainContextSetting = { ...DEFAULT_BRAIN_CONTEXT };

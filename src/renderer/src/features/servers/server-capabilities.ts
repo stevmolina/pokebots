@@ -28,6 +28,7 @@ export function serverSupportsCapability(
     (capability === "pokebots-integrations-v1" ||
       capability === "rooms-v1" ||
       capability === "home-agent-rules-v1" ||
+      capability === "home-agent-rules-v2" ||
       capability === "brain-context-v1" ||
       capability === "rooms-listening-v1" ||
       capability === "thread-auto-archive-v1" ||
