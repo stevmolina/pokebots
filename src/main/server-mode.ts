@@ -24,6 +24,7 @@ import { parseHostedServerName } from "@pokebots/contracts/hosted-servers";
 import { INPUT_LIMITS } from "@pokebots/contracts/input-limits";
 import type { CentralAuthState } from "@pokebots/contracts/ipc";
 import { sourceText } from "@pokebots/i18n/source";
+import { createOpenBotLogger } from "@pokebots/logging";
 import { Deferred, Effect } from "effect";
 import QRCode from "qrcode";
 import { runCauseEffect } from "../backend/effect-boundary";
@@ -108,6 +109,21 @@ export interface ServerModeOptions {
   uid?: number;
 }
 
+const logger = createOpenBotLogger("server");
+
+/**
+ * The startup marks of `index.ts` and `application-services.ts`, as milliseconds since the process
+ * started. The update of a VPS server waits for the first publish, so this line shows where its start
+ * spends the time.
+ */
+function startupMarks(): string {
+  return performance
+    .getEntriesByType("mark")
+    .filter((mark) => mark.name.startsWith("openbot:"))
+    .map((mark) => `${mark.name.slice("openbot:".length)} ${Math.round(mark.startTime)}`)
+    .join(", ");
+}
+
 export interface ServerModeAnswer {
   status: number;
   lines: Record<string, string | number | null>;
@@ -122,6 +138,7 @@ export class ServerMode {
   /** Why the last publish failed. Nobody reads the journal, so `status` shows it. */
   #publishError: string | null = null;
   #publishing: Deferred.Deferred<void> | null = null;
+  #startLogged = false;
 
   constructor(options: ServerModeOptions) {
     this.#options = options;
@@ -191,6 +208,7 @@ export class ServerMode {
       this.#publishing = completed;
       return yield* Effect.gen({ self: this }, function* () {
         if (previous) yield* Deferred.await(previous);
+        if (automatic && !this.#startLogged) performance.mark("openbot:server.publish");
         this.#publishError = null;
         if (this.#options.centralAuth.getState().status !== "signed_in") return;
         const { host } = this.#options;
@@ -200,6 +218,12 @@ export class ServerMode {
         else if (serverName && host.getStatus().serverName !== serverName) yield* host.updateIdentity({ serverName });
         this.#pendingName = null;
         yield* host.start(automatic);
+        if (automatic && !this.#startLogged) {
+          this.#startLogged = true;
+          logger.info(
+            `The server published ${Math.round(performance.now())} ms after its process started (${host.getStatus().phase}). Marks: ${startupMarks()}.`,
+          );
+        }
       }).pipe(
         Effect.tapError(({ cause }) =>
           Effect.sync(() => {

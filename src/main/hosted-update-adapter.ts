@@ -244,6 +244,14 @@ export class HostedUpdateAdapter implements UpdateAdapter {
     }
   }
 
+  /**
+   * The build that an install request installs now: root installs the image that `staged.ready`
+   * names, without a new download. Null outside a container whose host stages images.
+   */
+  async readyVersion(): Promise<string | null> {
+    return this.#options.imageBuild ? this.#stagedVersion() : null;
+  }
+
   /** Root stops this process when it takes the request. */
   quitAndInstall(): void {
     writeFileSync(join(this.#paths.requests, "update-install"), "", { mode: 0o600 });
