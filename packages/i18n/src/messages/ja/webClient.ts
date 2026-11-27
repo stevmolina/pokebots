@@ -2,7 +2,7 @@ import type { PartialTranslation } from "../../message";
 import type { messages as source } from "../en/webClient";
 
 export const messages = {
-  "webClient.loading": "OpenBot を読み込んでいます…",
+  "webClient.loading": "Pokebots を読み込んでいます…",
   "webClient.loadingLine.wake": "エージェントを起こしています…",
   "webClient.loadingLine.coffee": "エージェントにコーヒーを淹れています…",
   "webClient.loadingLine.tokens": "トークンを指で数えています…",
@@ -19,9 +19,9 @@ export const messages = {
   "webClient.login.responseInvalid": "サインインの応答が無効です。",
   "webClient.pane.navigation": "ワークスペースのナビゲーション",
   "webClient.tab.settings": "設定",
-  "webClient.phoneApp.title": "OpenBot アプリを使う",
+  "webClient.phoneApp.title": "Pokebots アプリを使う",
   "webClient.phoneApp.description":
-    "スマートフォンでは、OpenBot はアプリで最も快適に使えます。同じメールアドレスでサインインしてください。",
+    "スマートフォンでは、Pokebots はアプリで最も快適に使えます。同じメールアドレスでサインインしてください。",
   "webClient.phoneApp.ios": "iPhone 版をダウンロード",
   "webClient.phoneApp.android": "Android 版をダウンロード",
   "webClient.phoneApp.continue": "ブラウザで続ける",
@@ -30,18 +30,18 @@ export const messages = {
   "webClient.notice.hostsFailed": "サーバーを読み込めませんでした",
   "webClient.notice.connectComputer": "サーバーを接続してください",
   "webClient.connect.description":
-    "コンピューターで OpenBot を実行すると、このブラウザーからエージェントとチャットできます。招待でサーバーに参加することもできます。",
+    "コンピューターで Pokebots を実行すると、このブラウザーからエージェントとチャットできます。招待でサーバーに参加することもできます。",
   "webClient.connect.descriptionHosted":
-    "ホスト型サーバーを作成すると、このブラウザーからエージェントとチャットできます。コンピューターで OpenBot を実行するか、招待でサーバーに参加することもできます。",
-  "webClient.connect.stepInstall": "コンピューターに OpenBot をインストールして開きます。",
+    "ホスト型サーバーを作成すると、このブラウザーからエージェントとチャットできます。コンピューターで Pokebots を実行するか、招待でサーバーに参加することもできます。",
+  "webClient.connect.stepInstall": "コンピューターに Pokebots をインストールして開きます。",
   "webClient.connect.stepSignIn": "メールアドレスでサインインします。",
   "webClient.connect.stepRemote": "リモートアクセスをオンにします。",
-  "webClient.notice.download": "OpenBot をダウンロード",
+  "webClient.notice.download": "Pokebots をダウンロード",
   "webClient.notice.createServer": "ホスト型サーバーを作成",
   "webClient.notice.join": "招待で参加",
   "webClient.notice.refreshHosts": "サーバーを更新",
   "webClient.otherTab.title": "{name} は別のタブで開かれています",
-  "webClient.otherTab.description": "OpenBot は一度に 1 つのタブでのみサーバーを使用できます。",
+  "webClient.otherTab.description": "Pokebots は一度に 1 つのタブでのみサーバーを使用できます。",
   "webClient.otherTab.useHere": "ここで使用",
   "webClient.agent.modelsFailed": "サーバーのモデルを読み込めませんでした。",
   "webClient.agent.refreshFailed":
@@ -50,7 +50,7 @@ export const messages = {
     "結果が確認できません。再試行する前に、このフォームを閉じてサーバーを確認してください。",
   "webClient.error.usageOffline": "使用量を表示するには、サーバーに接続してください。",
   "webClient.error.desktopOnly": "この操作はデスクトップアプリで使えます。",
-  "webClient.settings.preferences.description": "このブラウザーでの OpenBot の言語とサウンドを選びます。",
+  "webClient.settings.preferences.description": "このブラウザーでの Pokebots の言語とサウンドを選びます。",
   "webClient.error.checkConversation": "もう一度送信する前に会話を確認してください。",
   "webClient.error.hostReported": "サーバーがエラーを報告しました。会話とサーバーの状態を確認してください。",
   "webClient.error.requestFailed": "リクエストに失敗しました。",
@@ -80,14 +80,14 @@ export const messages = {
   "webClient.error.identityChanged": "サーバーの ID が変わりました。接続を拒否しました。",
   "webClient.error.connectionUnavailable": "サーバーへの接続を利用できません。",
   "webClient.error.incompatible":
-    "このサーバーは OpenBot web に対応していません。サーバーをアップデートして、このページを再読み込みしてください。",
+    "このサーバーは Pokebots web に対応していません。サーバーをアップデートして、このページを再読み込みしてください。",
   "webClient.error.sendUnconfirmed": "メッセージの配信が確認できません。もう一度送信する前に更新してください。",
   "webClient.error.fileType": "この種類のファイルを添付するには、サーバーをアップデートしてください。",
   "webClient.error.uploadCancelled": "添付ファイルのアップロードはキャンセルされました。",
   "webClient.error.duplication": "このサーバーはエージェントの複製に対応していません。",
   "webClient.error.connectServerFirst": "先にこのサーバーに接続してください。",
   "webClient.error.agentInstallNotAllowed":
-    "ここにエージェントを追加できるのはオーナーまたは管理者のみで、サーバーでは最新の OpenBot が動作している必要があります。",
+    "ここにエージェントを追加できるのはオーナーまたは管理者のみで、サーバーでは最新の Pokebots が動作している必要があります。",
   "webClient.error.linkDesktopOnly": "このリンクはデスクトップアプリでのみ開けます。",
   "webClient.error.saveEndpointOffline": "エンドポイントを保存するには、サーバーに接続してください。",
   "webClient.error.removeEndpointOffline": "エンドポイントを削除するには、サーバーに接続してください。",

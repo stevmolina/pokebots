@@ -39,26 +39,27 @@ export const messages = {
   "status.agent.sendIdea": "公開の GitHub issue になります。あなたの名前は表示されません。",
   "status.agent.feedbackRecentErrors": "チャットの最近のエラー:",
   "status.agent.feedbackSameAs": "issue #{issue} に追加します",
-  "status.agent.feedbackSent": "OpenBot チームに送信しました: {title}",
+  "status.agent.feedbackSent": "Pokebots チームに送信しました: {title}",
   "status.agent.feedbackWithdrawn": "GitHub から削除しました: {title}",
   "status.agent.feedbackWithdrawCommand": "レポート #{issue} を GitHub から削除",
   "status.agent.feedbackWithdrawReason":
     "このレポートは GitHub で誰も見られなくなります。元に戻せません。修正するには、エージェントが修正したレポートを送信できます。",
   "status.agent.feedbackWithdrawing": "レポートを GitHub から削除しています…",
   "status.agent.serverInstallCommand":
-    "別のコンピューターに OpenBot をサーバー {name} としてインストールし、あなたのアカウントにサインインさせる 1 回限りのコマンドを作成します。エージェントがそこで実行します。",
+    "別のコンピューターに Pokebots をサーバー {name} としてインストールし、あなたのアカウントにサインインさせる 1 回限りのコマンドを作成します。エージェントがそこで実行します。",
   "status.agent.serverInstallCard": "サーバー {name} のインストールコマンド",
   "status.agent.browserProfileNamed":
     "{agents} をブラウザープロファイル {profile} に移動します。そのログイン情報と Cookie を使えるようになります。開いているタブは閉じます。",
-  "status.agent.commitCoAuthorOff": "すべてのエージェントのコミットに OpenBot を共同作成者として追加するのをやめます。",
-  "status.agent.commitCoAuthorOn": "すべてのエージェントのコミットに OpenBot を共同作成者として再び追加します。",
+  "status.agent.commitCoAuthorOff":
+    "すべてのエージェントのコミットに Pokebots を共同作成者として追加するのをやめます。",
+  "status.agent.commitCoAuthorOn": "すべてのエージェントのコミットに Pokebots を共同作成者として再び追加します。",
   "status.agent.browserProfileNew":
     "新しいブラウザープロファイル {profile} を作成し、{agents} を移動します。ログイン情報はありません。開いているタブは閉じます。",
   "status.agent.browserProfileShared":
     "{agents} を共有のブラウザープロファイルに移動します。そのログイン情報と Cookie を使えるようになります。開いているタブは閉じます。",
   "status.agent.browserProfileOwn":
     "{agents} にそれぞれ専用のブラウザープロファイルを与えます。開いているタブは閉じます。",
-  "status.agent.feedbackSending": "フィードバックを OpenBot チームに送信しています…",
+  "status.agent.feedbackSending": "フィードバックを Pokebots チームに送信しています…",
   "status.agent.workflowDelete":
     "ワークフロー {title} を実行履歴とバージョンごと削除します。実行中のステップは停止します。",
   "status.agent.deleteAgents": "{agents} をチャットとファイルごと削除します。元に戻せません。",
