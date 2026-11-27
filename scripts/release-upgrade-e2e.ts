@@ -36,6 +36,13 @@
 // Local Pokebots fixture (run in a fresh macOS test login with network access limited to loopback):
 //   bun scripts/release-upgrade-e2e.ts macos --local-pokebots --fixture-user=<login> \
 //     --previous-artifact=/fixtures/old/Pokebots.app --new=/fixtures/new/Pokebots.app
+// Optionally add --next=/fixtures/next/Pokebots.app to test a second replacement on the same profile.
+// The next build must have the same database schema as the candidate checkout.
+// Add --real-keychain-offline-guest with --next only on a disposable macOS guest with its
+// network adapter disconnected and a fresh, unlocked test login keychain. The flag attests
+// that the guest and login are disposable. Approve Keychain prompts only in that guest.
+// This proves that one synthetic Vault login survives both replacements under the same signer
+// and bundle ID. It does not test a new bundle ID, a new signer, or provider authentication.
 // Use trusted signed builds from the commits under test. Run from the candidate checkout.
 // The test login isolates native macOS paths and the keychain. Keep real profiles and accounts
 // out of this login. This test checks bundle replacement and fixture data.
@@ -77,7 +84,7 @@ import {
   rm,
   writeFile,
 } from "node:fs/promises";
-import { tmpdir, userInfo } from "node:os";
+import { networkInterfaces, tmpdir, userInfo } from "node:os";
 import { basename, join, resolve } from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import { setTimeout as sleep } from "node:timers/promises";
@@ -137,6 +144,25 @@ const localPokebots = process.argv.includes("--local-pokebots");
 const fixtureUser = option("fixture-user");
 const previousArtifact = option("previous-artifact");
 const candidateArtifact = option("new");
+const nextArguments = process.argv
+  .slice(3)
+  .filter((argument) => argument === "--next" || argument.startsWith("--next="));
+const nextArtifact = option("next");
+if (nextArguments.length > 0) {
+  if (!localPokebots) throw new Error("--next requires --local-pokebots.");
+  if (nextArguments.length !== 1 || !nextArtifact?.endsWith(".app")) {
+    throw new Error("Use one --next=<signed .app folder>.");
+  }
+}
+class UpgradeCheckError extends Error {}
+
+const realKeychain = process.argv.includes("--real-keychain-offline-guest");
+if (realKeychain) {
+  if (!localPokebots || target !== "macos" || !nextArtifact) {
+    throw new Error("--real-keychain-offline-guest requires the local macOS fixture with --next.");
+  }
+  checkOfflineMacGuest();
+}
 if (localPokebots) {
   if (target !== "macos" || history || option("previous") !== undefined || option("previous-age-days") !== undefined) {
     throw new Error("Local Pokebots requires macos with no release selection or history options.");
@@ -161,6 +187,15 @@ const newVersion = z
   .object({ version: z.string() })
   .parse(JSON.parse(await readFile(resolve(import.meta.dirname, "../package.json"), "utf8"))).version;
 
+function checkOfflineMacGuest(): void {
+  const guest = spawnSync("/usr/sbin/sysctl", ["-n", "kern.hv_vmm_present"], { encoding: "utf8" });
+  check(guest.status === 0 && guest.stdout.trim() === "1", "Real Keychain requires a macOS guest.");
+  check(
+    Object.values(networkInterfaces()).every((addresses) => addresses?.every(({ internal }) => internal)),
+    "Disconnect all non-loopback network interfaces before using real Keychain.",
+  );
+}
+
 interface Report {
   passed: boolean;
   error?: string;
@@ -171,10 +206,20 @@ interface Report {
   newVersion: string;
   installedVersion?: string;
   localBuilds?: { previous: LocalMacBuild; candidate: LocalMacBuild };
+  candidatePassed?: boolean;
+  nextUpgrade?: {
+    build: LocalMacBuild;
+    passed: boolean;
+    installedVersion?: string;
+    afterUpgrade?: Counts;
+    quit?: QuitResult;
+    database?: DatabaseReport;
+  };
   oldQuit?: QuitResult;
   newQuit?: QuitResult;
   /** The calls of the previous release that the seed step used. */
   seedApi?: SeedApi;
+  realKeychainVault?: { baseline: boolean; candidate: boolean; successor: boolean };
   seeded?: Counts;
   afterUpgrade?: Counts;
   database?: DatabaseReport;
@@ -218,24 +263,28 @@ const runMarkerFile = z.object({ state: z.string() });
 const report: Report = { passed: false, target, arch: process.arch, history, newVersion };
 const root = await mkdtemp(join(tmpdir(), "openbot-upgrade-"));
 const homePath = join(root, "home");
+const launchHome = realKeychain ? userInfo().homedir : homePath;
 // Keep the profile's released path relative to the fixture home. Electron's native appData
 // resolution can ignore HOME, so launch also passes this exact path via --user-data-dir.
 const userDataPath = localPokebots
   ? join(homePath, "Library", "Application Support", "OpenBot")
   : join(root, "user-data");
-await mkdir(homePath);
-await mkdir(userDataPath, { recursive: true });
+if (!localPokebots) {
+  await mkdir(homePath);
+  await mkdir(userDataPath, { recursive: true });
+}
 // The app puts agent workspaces in `homedir()`/OpenBot/Agents. On Windows `homedir()` reads
 // USERPROFILE, which stays the real one (see `launchEnvironment`), and an earlier step of the job
 // can have made workspaces there. So the check counts only the folders that are new.
-const agentsFolder = join(target === "windows" ? (process.env.USERPROFILE ?? homePath) : homePath, "OpenBot", "Agents");
+const workspaceHome = target === "windows" ? (process.env.USERPROFILE ?? homePath) : launchHome;
+const agentsFolder = join(workspaceHome, "OpenBot", "Agents");
 const earlierWorkspaces = new Set(await listWorkspaces());
 // The process and the app that run now, so that a failure can stop them. `process` is set at the
 // spawn and `app` when the window is connected.
 const current: { process: LaunchedProcess | null; app: RunningApp | null } = { process: null, app: null };
 
 function check(condition: unknown, message: string): asserts condition {
-  if (!condition) throw new Error(message);
+  if (!condition) throw new UpgradeCheckError(message);
 }
 
 function compareVersions(left: string, right: string): number {
@@ -352,12 +401,15 @@ async function newArtifact(): Promise<string> {
 const macApplications = join(root, "Applications");
 const macBundle = join(macApplications, localPokebots ? "Pokebots.app" : "OpenBot.app");
 const localMacCandidate = join(root, "update-staging", "Pokebots.app");
+const localMacNext = join(root, "next-staging", "Pokebots.app");
 
 interface LocalMacBuild {
   version: string;
   executable: string;
   cdHash: string;
   signingRequirement: string;
+  bundleId: string;
+  signerSha256: string;
 }
 
 let localMacExecutable: string | undefined;
@@ -403,7 +455,7 @@ async function stageLocalMacBuild(source: string, bundle: string): Promise<Local
   check(input.endsWith(".app") && (await lstat(input)).isDirectory(), "Expected a signed .app directory.");
   await mkdir(resolve(bundle, ".."), { recursive: true });
   execFileSync("/usr/bin/ditto", [input, bundle]);
-  execFileSync("/usr/bin/codesign", [
+  const verification = spawnSync("/usr/bin/codesign", [
     "--verify",
     "--deep",
     "--strict",
@@ -411,10 +463,17 @@ async function stageLocalMacBuild(source: string, bundle: string): Promise<Local
     '=identifier "app.openbot.custom" and certificate leaf[subject.CN] = "OpenBot Custom Local Signing"',
     bundle,
   ]);
-  const display = spawnSync("/usr/bin/codesign", ["-d", "--verbose=4", "-r", "-", bundle], { encoding: "utf8" });
+  check(verification.status === 0, "The fixture bundle failed signature verification.");
+  const certificatePrefix = join(resolve(bundle, ".."), "signing-cert-");
+  const display = spawnSync(
+    "/usr/bin/codesign",
+    ["-d", "--verbose=4", "-r", "-", `--extract-certificates=${certificatePrefix}`, bundle],
+    { encoding: "utf8" },
+  );
   check(display.status === 0, "Cannot read the bundle signature.");
   const plist = z
     .object({
+      CFBundleIdentifier: z.literal("app.openbot.custom"),
       CFBundleShortVersionString: z.string().regex(/^\d+\.\d+\.\d+$/u),
       CFBundleExecutable: z.string().regex(/^[\w -]+$/u),
     })
@@ -432,17 +491,35 @@ async function stageLocalMacBuild(source: string, bundle: string): Promise<Local
     "The executable must stay inside the fixture bundle.",
   );
   await access(executable, constants.X_OK);
-  check(!existsSync(join(bundle, "Contents", "Resources", "app-update.yml")), "The fixture build has an update feed.");
+  const resources = await readdir(join(bundle, "Contents", "Resources"));
+  check(!resources.includes("app-update.yml"), "The fixture build has an update feed.");
   const cdHash = /^CDHash=([a-f0-9]+)$/mu.exec(display.stderr)?.[1];
   check(cdHash, "The signed bundle has no CDHash.");
-  const signingRequirement = /^designated => (.+)$/mu.exec(display.stderr)?.[1];
+  const signingRequirement = /^designated => (.+)$/mu.exec(display.stdout)?.[1];
   check(signingRequirement, "The signed bundle has no designated signing requirement.");
   return {
     version: plist.CFBundleShortVersionString,
     executable: plist.CFBundleExecutable,
     cdHash,
     signingRequirement,
+    bundleId: plist.CFBundleIdentifier,
+    signerSha256: await sha256(`${certificatePrefix}0`),
   };
+}
+
+function checkLocalSigner(baseline: LocalMacBuild, build: LocalMacBuild): void {
+  check(baseline.bundleId === build.bundleId, "The fixture build changed the bundle ID.");
+  check(
+    baseline.signerSha256 === build.signerSha256 && baseline.signingRequirement === build.signingRequirement,
+    "The fixture build changed the signing identity.",
+  );
+}
+
+async function replaceLocalBuild(staged: string, build: LocalMacBuild): Promise<void> {
+  await rm(macBundle, { recursive: true });
+  await rename(staged, macBundle);
+  localMacExecutable = build.executable;
+  verifyMacSignature();
 }
 
 async function installPrevious(artifact: string): Promise<void> {
@@ -512,8 +589,9 @@ function launchEnvironment(): NodeJS.ProcessEnv {
     // USERPROFILE: with an empty one, Windows cannot find the AppData known folder and the start
     // fails ("Failed to get 'appData' path"). So on Windows the workspaces go to the real profile
     // (see `agentsFolder`). The runner is discarded after the job.
-    HOME: homePath,
-    ...(target === "windows" ? {} : { USERPROFILE: homePath }),
+    // The offline guest uses its fresh login home so macOS can find its real Keychain.
+    HOME: launchHome,
+    ...(target === "windows" ? {} : { USERPROFILE: launchHome }),
     CODEX_HOME: join(userDataPath, "codex-home"),
     CLAUDE_CONFIG_DIR: join(userDataPath, "claude-home"),
     OPENBOT_CODEX_PATH: join(userDataPath, target === "windows" ? "missing-codex.exe" : "missing-codex"),
@@ -559,7 +637,8 @@ async function launch(): Promise<RunningApp> {
   // A stale port file from the earlier start would point at a closed port.
   await rm(join(userDataPath, "DevToolsActivePort"), { force: true });
   const args = [`--user-data-dir=${userDataPath}`, "--remote-debugging-port=0"];
-  if (target === "macos") args.push("--use-mock-keychain");
+  if (realKeychain) checkOfflineMacGuest();
+  else if (target === "macos") args.push("--use-mock-keychain");
   // On POSIX the app gets its own process group, so that the cleanup also stops the helpers that
   // outlive a killed app: the crash handler and the fake agent keep the stderr pipe open.
   const child = spawn(executablePath(), args, {
@@ -702,6 +781,7 @@ async function quit(app: RunningApp, byWindowClose = process.platform === "win32
 async function readRunMarkerState(): Promise<string | null> {
   try {
     const marker = runMarkerFile.parse(JSON.parse(await readFile(join(userDataPath, RUN_MARKER_FILE), "utf8")));
+    if (localPokebots && !["running", "quitting", "quit_timeout", "clean"].includes(marker.state)) return null;
     return marker.state;
   } catch {
     return null;
@@ -989,6 +1069,48 @@ async function listWorkspaces(): Promise<string[]> {
   return existsSync(agentsFolder) ? await readdir(agentsFolder) : [];
 }
 
+async function checkKeychainVaultEnvelope(): Promise<void> {
+  const envelope = z
+    .object({ version: z.literal(1), record: z.string() })
+    .parse(JSON.parse(await readFile(join(userDataPath, "openbot-vault-v1.json"), "utf8")));
+  // The released cipher sends macOS v10 ciphertext to Electron safeStorage. The key-file
+  // fallback has a different prefix. Read only the envelope and never report its contents.
+  check(
+    Buffer.from(envelope.record, "base64").subarray(0, 3).toString("ascii") === "v10",
+    "The fixture Vault did not use macOS safeStorage.",
+  );
+}
+
+async function seedKeychainVault(page: Page, password: string): Promise<string> {
+  const id = await page.evaluate(async (password) => {
+    const vault = window.openbot.vault;
+    const empty = await vault.list();
+    if (empty.status !== "ready" || empty.items.length !== 0) return null;
+    const state = await vault.save({
+      kind: "login",
+      id: null,
+      website: "https://upgrade-fixture.invalid",
+      username: "upgrade-fixture",
+      notes: "",
+      password,
+    });
+    const item = state.items[0];
+    return state.status === "ready" && state.items.length === 1 && item?.kind === "login" ? item.id : null;
+  }, password);
+  check(id, "Cannot seed a synthetic login in an empty Vault.");
+  return id;
+}
+
+async function checkKeychainVault(page: Page, id: string, password: string): Promise<void> {
+  await checkKeychainVaultEnvelope();
+  // Use the released user reveal path. Return only the equality result across DevTools.
+  const matches = await page.evaluate(
+    async ({ id, password }) => (await window.openbot.vault.reveal({ id, field: "password" })) === password,
+    { id, password },
+  );
+  check(matches, "The fixture Vault did not reveal the seeded synthetic password.");
+}
+
 async function readAppVersion(page: Page): Promise<string> {
   return (await page.evaluate(() => window.openbot.getAppInfo())).version;
 }
@@ -1009,6 +1131,12 @@ async function openDatabaseCopy(name: string): Promise<DatabaseSync> {
 
 function rows(db: DatabaseSync, sql: string) {
   return db.prepare(sql).all();
+}
+
+function databaseSchema(db: DatabaseSync): string {
+  return JSON.stringify(
+    rows(db, "SELECT type, name, tbl_name, sql FROM sqlite_schema WHERE name NOT LIKE 'sqlite_%' ORDER BY type, name"),
+  );
 }
 
 function appliedVersions(db: DatabaseSync): number[] {
@@ -1048,6 +1176,8 @@ async function checkDatabase(
   previousSchemaVersion: number,
   previousForeignKeyViolations: number,
   previousRowCounts: ReadonlyMap<string, number>,
+  snapshot = "database-after",
+  expectedSchema?: string,
 ): Promise<DatabaseReport> {
   const fresh = new DatabaseSync(":memory:");
   migrateOpenBotDatabase(fresh);
@@ -1055,8 +1185,11 @@ async function checkDatabase(
   const expectedTables = tableColumns(fresh);
   fresh.close();
 
-  const db = await openDatabaseCopy("database-after");
+  const db = await openDatabaseCopy(snapshot);
   try {
+    if (expectedSchema !== undefined) {
+      check(databaseSchema(db) === expectedSchema, "The next app changed the fixture database schema.");
+    }
     const versions = new Set(appliedVersions(db));
     const tables = tableColumns(db);
     let missingTables = 0;
@@ -1091,7 +1224,7 @@ async function checkDatabase(
       missingTables,
       missingColumns,
       extraTables: [...tables.keys()].filter((table) => !expectedTables.has(table)).length,
-      integrity,
+      integrity: localPokebots && integrity !== "ok" ? "failed" : integrity,
       foreignKeyViolations: foreignKeyViolations(db),
       previousForeignKeyViolations,
       tablesWithFewerRows,
@@ -1099,6 +1232,22 @@ async function checkDatabase(
   } finally {
     db.close();
   }
+}
+
+function checkUpgradedDatabase(database: DatabaseReport): void {
+  check(database.integrity === "ok", `PRAGMA integrity_check failed: ${database.integrity}.`);
+  check(
+    database.foreignKeyViolations === 0,
+    `The upgraded database has ${database.foreignKeyViolations} foreign-key violations (the previous release left ${database.previousForeignKeyViolations}).`,
+  );
+  check(
+    database.missingMigrations === 0 && database.schemaVersion === database.latestSchemaVersion,
+    `The upgraded database is at schema ${database.schemaVersion}, not ${database.latestSchemaVersion}, and misses ${database.missingMigrations} migrations.`,
+  );
+  check(
+    database.missingTables === 0 && database.missingColumns === 0,
+    `The upgraded database misses ${database.missingTables} tables and ${database.missingColumns} columns of a new database.`,
+  );
 }
 
 // --- Run -------------------------------------------------------------------------------------------
@@ -1126,13 +1275,21 @@ try {
     const previous = await stageLocalMacBuild(previousArtifact, macBundle);
     const candidate = await stageLocalMacBuild(candidateArtifact, localMacCandidate);
     report.localBuilds = { previous, candidate };
-    check(previous.signingRequirement === candidate.signingRequirement, "The candidate changed the signing identity.");
+    checkLocalSigner(previous, candidate);
     check(previous.cdHash !== candidate.cdHash, "Use two distinct signed builds.");
     check(
       compareVersions(previous.version, candidate.version) <= 0,
       "The candidate version is older than the baseline.",
     );
     check(candidate.version === newVersion, "Run the fixture from the candidate checkout.");
+    if (nextArtifact) {
+      const next = await stageLocalMacBuild(nextArtifact, localMacNext);
+      checkLocalSigner(candidate, next);
+      check(next.cdHash !== previous.cdHash && next.cdHash !== candidate.cdHash, "Use three distinct signed builds.");
+      check(compareVersions(candidate.version, next.version) <= 0, "The next version is older than the candidate.");
+      report.nextUpgrade = { build: next, passed: false };
+    }
+    await mkdir(userDataPath, { recursive: true });
     check((await readdir(userDataPath)).length === 0, "The fixture profile must start empty.");
     previousVersion = previous.version;
     tag = previous.cdHash;
@@ -1152,7 +1309,18 @@ try {
 
   const oldApp = await launch();
   const oldVersion = await readAppVersion(oldApp.page);
-  check(oldVersion === previousVersion, `The previous release reports version ${oldVersion}, not ${previousVersion}.`);
+  check(
+    oldVersion === previousVersion,
+    localPokebots
+      ? "The baseline app reports the wrong version."
+      : `The previous release reports version ${oldVersion}, not ${previousVersion}.`,
+  );
+  const vaultPassword = realKeychain ? randomUUID() : undefined;
+  const vaultId = vaultPassword ? await seedKeychainVault(oldApp.page, vaultPassword) : undefined;
+  if (vaultId && vaultPassword) {
+    await checkKeychainVault(oldApp.page, vaultId, vaultPassword);
+    report.realKeychainVault = { baseline: true, candidate: false, successor: false };
+  }
   const seeded = await seed(oldApp.page);
   report.seeded = await readSeed(oldApp.page, seeded);
   report.oldQuit = await quit(oldApp);
@@ -1165,16 +1333,19 @@ try {
 
   if (report.localBuilds) {
     check(report.oldQuit.clean && report.oldQuit.exitCode === 0, "The baseline must quit before bundle replacement.");
-    await rm(macBundle, { recursive: true });
-    await rename(newBuild, macBundle);
-    localMacExecutable = report.localBuilds.candidate.executable;
-    verifyMacSignature();
+    await replaceLocalBuild(newBuild, report.localBuilds.candidate);
   } else {
     await installNew(newBuild);
   }
   const newApp = await launch();
-  report.installedVersion = await readAppVersion(newApp.page);
+  const installedVersion = await readAppVersion(newApp.page);
+  if (localPokebots) check(installedVersion === newVersion, "The candidate app reports the wrong version.");
+  report.installedVersion = installedVersion;
   report.afterUpgrade = await readSeed(newApp.page, seeded);
+  if (report.realKeychainVault && vaultId && vaultPassword) {
+    await checkKeychainVault(newApp.page, vaultId, vaultPassword);
+    report.realKeychainVault.candidate = true;
+  }
   report.newQuit = await quit(newApp, process.platform !== "darwin");
   report.database = await checkDatabase(previousSchemaVersion, previousForeignKeyViolations, previousRowCounts);
 
@@ -1207,19 +1378,7 @@ try {
     check(report.seeded.agents === 2 && report.seeded.customAgents === 1, "The seed step did not make its agents.");
     check(report.seeded.workspaceFolders === 2, "The seed step did not make the agents' workspace folders.");
   }
-  check(database.integrity === "ok", `PRAGMA integrity_check failed: ${database.integrity}.`);
-  check(
-    database.foreignKeyViolations === 0,
-    `The upgraded database has ${database.foreignKeyViolations} foreign-key violations (the previous release left ${database.previousForeignKeyViolations}).`,
-  );
-  check(
-    database.missingMigrations === 0 && database.schemaVersion === database.latestSchemaVersion,
-    `The upgraded database is at schema ${database.schemaVersion}, not ${database.latestSchemaVersion}, and misses ${database.missingMigrations} migrations.`,
-  );
-  check(
-    database.missingTables === 0 && database.missingColumns === 0,
-    `The upgraded database misses ${database.missingTables} tables and ${database.missingColumns} columns of a new database.`,
-  );
+  checkUpgradedDatabase(database);
   // The new build can delete rows itself after the start, so only `--history`, where the release's
   // own start data is most of the seed, makes this a failure.
   const fewerRows = JSON.stringify(database.tablesWithFewerRows);
@@ -1228,14 +1387,58 @@ try {
     check(!history, message);
     logger.warn(message);
   }
+  const next = report.nextUpgrade;
+  if (next) {
+    report.candidatePassed = true;
+    const candidateDatabase = new DatabaseSync(join(root, "database-after", "openbot.db"), { readOnly: true });
+    let candidateRowCounts: Map<string, number>;
+    let candidateSchema: string;
+    try {
+      candidateRowCounts = rowCounts(candidateDatabase);
+      candidateSchema = databaseSchema(candidateDatabase);
+    } finally {
+      candidateDatabase.close();
+    }
+
+    await replaceLocalBuild(localMacNext, next.build);
+    const nextApp = await launch();
+    check((await readAppVersion(nextApp.page)) === next.build.version, "The next app reports the wrong version.");
+    next.installedVersion = next.build.version;
+    next.afterUpgrade = await readSeed(nextApp.page, seeded);
+    if (report.realKeychainVault && vaultId && vaultPassword) {
+      await checkKeychainVault(nextApp.page, vaultId, vaultPassword);
+      report.realKeychainVault.successor = true;
+    }
+    next.quit = await quit(nextApp);
+    check(
+      next.quit.clean && next.quit.exitCode === 0 && next.quit.runMarker === "clean",
+      "The next app did not finish shutdown.",
+    );
+    next.database = await checkDatabase(
+      database.schemaVersion,
+      database.foreignKeyViolations,
+      candidateRowCounts,
+      "database-after-next",
+      candidateSchema,
+    );
+    checkUpgradedDatabase(next.database);
+    check(JSON.stringify(next.afterUpgrade) === JSON.stringify(report.seeded), "The next app lost seeded data.");
+    check(Object.keys(next.database.tablesWithFewerRows).length === 0, "The next app database lost table rows.");
+    next.passed = true;
+  }
   report.passed = true;
-  logger.info(`Upgrade from ${tag} to ${newVersion} passed.`);
+  logger.info(`Upgrade from ${tag} to ${next?.build.version ?? newVersion} passed.`);
 } catch (error) {
-  report.error = error instanceof Error ? error.message : String(error);
+  report.error =
+    localPokebots && !(error instanceof UpgradeCheckError)
+      ? "Cannot complete the local fixture check."
+      : error instanceof Error
+        ? error.message
+        : String(error);
   logger.error(`Release upgrade check failed: ${report.error}`);
   const running = current.app ?? current.process;
-  if (running) logger.error(`OpenBot stderr (last lines):\n${running.stderr()}`);
-  await printLogs().catch(() => undefined);
+  if (!localPokebots && running) logger.error(`App stderr (last lines):\n${running.stderr()}`);
+  if (!localPokebots) await printLogs().catch(() => undefined);
   process.exitCode = 1;
 } finally {
   await current.app?.browser.close().catch(() => undefined);
