@@ -100,6 +100,7 @@ jobs:
           cache: false
           update: true
           install: >-
+            diffutils
             git
             mingw-w64-ucrt-x86_64-boost
             mingw-w64-ucrt-x86_64-cmake
