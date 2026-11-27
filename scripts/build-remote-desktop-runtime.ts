@@ -372,6 +372,21 @@ async function recordBuildProof(directory: string, sunshine: string, moonlight: 
   const revision = (source: string) =>
     execFileSync("git", ["rev-parse", "HEAD"], { cwd: source, encoding: "utf8" }).trim();
   const cmakeBuild = join(sunshine, "build-openbot");
+  const sunshineLinkMap = await readFile(join(directory, "sunshine.map"), "utf8");
+  const ffmpegArchives = new Set(
+    [...sunshineLinkMap.matchAll(/_deps[\\/]ffmpeg[\\/]lib[\\/](lib[\w-]+\.a)\([^()]+\)/g)]
+      .map((match) => match[1])
+      .filter((archive) => archive !== undefined),
+  );
+  if (ffmpegArchives.size === 0) throw new Error("Missing linked FFmpeg archives in the Sunshine map.");
+  const ffmpegDirectory = join(cmakeBuild, "_deps/ffmpeg");
+  const ffmpegArchiveHashes = Object.fromEntries(
+    await Promise.all(
+      [...ffmpegArchives]
+        .sort()
+        .map(async (archive) => [archive, sha256(await readFile(join(ffmpegDirectory, "lib", archive)))]),
+    ),
+  );
   const fetchedDependencies = join(cmakeBuild, "_deps");
   const fetchedEntries = existsSync(fetchedDependencies) ? await readdir(fetchedDependencies) : [];
   const cmakeDependencyRevisions = Object.fromEntries(
@@ -383,6 +398,7 @@ async function recordBuildProof(directory: string, sunshine: string, moonlight: 
   const configuredLibraries = cmakeCache.split(/\r?\n/).filter((line) => /^[A-Za-z0-9_]*_LIBRARY:FILEPATH=/.test(line));
   await Promise.all([
     cp(join(moonlight, "Cargo.lock"), join(directory, "Cargo.lock")),
+    cp(join(ffmpegDirectory, "include/config.h"), join(directory, "ffmpeg-configuration.h")),
     writeFile(join(directory, "cmake-libraries.txt"), `${configuredLibraries.join("\n")}\n`),
   ]);
   const report = {
@@ -403,6 +419,7 @@ async function recordBuildProof(directory: string, sunshine: string, moonlight: 
     },
     maps,
     cmakeDependencyRevisions,
+    ffmpegArchiveHashes,
     verifiedInputs: createRemoteDesktopSourceManifest(lock),
     windowsOpenSslPackage: process.env.POKEBOTS_PROOF_WINDOWS_OPENSSL,
     missingCoverage: [
