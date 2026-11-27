@@ -243,6 +243,10 @@ jobs:
             build/remote-desktop-runtime/${{ matrix.platform }}/${{ matrix.architecture }}/build-proof/
             runner-packages.txt
             build/remote-desktop-runtime/DISTRIBUTION-SHA256SUMS.txt
+            build/remote-desktop-runtime/licenses/static-notices-v1.txt
+            build/remote-desktop-runtime/licenses/Sunshine-Opus.txt
+            build/remote-desktop-runtime/licenses/Sunshine-Boost.txt
+            build/remote-desktop-runtime/licenses/Moonlight-OpenSSL.txt
           if-no-files-found: error
 
       - name: Report proof coverage
