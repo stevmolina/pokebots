@@ -16,10 +16,24 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          - os: macos-15
+            platform: darwin
+            architecture: arm64
+            target: darwin-arm64
+          - os: macos-15-intel
+            platform: darwin
+            architecture: x64
+            target: darwin-x64
+          - os: ubuntu-24.04
+            platform: linux
+            architecture: x64
+            target: linux-x64
           - os: windows-2025
             platform: win32
             architecture: x64
             target: win32-x64
+    env:
+      POKEBOTS_RUNTIME_BUILD_PROOF: "1"
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -133,13 +147,17 @@ jobs:
           CC: gcc-14
           CXX: g++-14
           CMAKE_GENERATOR: Ninja
-        run: bun run build:remote-desktop-runtime
+        run: |
+          bun run build:remote-desktop-runtime
+          dpkg-query -W > runner-packages.txt
 
       - name: Build runtime on macOS
         if: runner.os == 'macOS'
         env:
           CMAKE_GENERATOR: Ninja
-        run: bun run build:remote-desktop-runtime
+        run: |
+          bun run build:remote-desktop-runtime
+          brew list --versions > runner-packages.txt
 
       - name: Build runtime on Windows
         if: runner.os == 'Windows'
@@ -162,15 +180,18 @@ jobs:
           package=mingw-w64-ucrt-x86_64-openssl-3.6.5-1-any.pkg.tar.zst
           curl --fail --silent --show-error --location --output "$openssl_dir/$package" \
             "https://repo.msys2.org/mingw/ucrt64/$package"
+          package_sha256=773e021ebad83f14b5c103db467411e8ff064663e1c7e7f730e2be72f4117064
           (
             cd "$openssl_dir"
-            echo "773e021ebad83f14b5c103db467411e8ff064663e1c7e7f730e2be72f4117064  $package" | sha256sum -c
+            echo "$package_sha256  $package" | sha256sum -c
             tar -xf "$package"
           )
           export OPENSSL_ROOT_DIR="$(cygpath -m "$openssl_dir/ucrt64")"
           export PATH="$openssl_dir/ucrt64/bin:$PATH"
           "$openssl_dir/ucrt64/bin/openssl.exe" version
+          export POKEBOTS_PROOF_WINDOWS_OPENSSL="$package sha256:$package_sha256"
           bun run build:remote-desktop-runtime
+          pacman -Q > runner-packages.txt
 
       - name: Verify runtime
         shell: bash
@@ -212,6 +233,38 @@ jobs:
 
       - name: Create deterministic archive
         run: bun scripts/package-remote-desktop-runtime.ts ${{ matrix.platform }} ${{ matrix.architecture }}
+
+      - name: Retain build evidence
+        if: always() && hashFiles('build/remote-desktop-runtime/*/*/build-proof/report.json') != ''
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: runtime-link-evidence-${{ matrix.target }}
+          path: |
+            build/remote-desktop-runtime/${{ matrix.platform }}/${{ matrix.architecture }}/build-proof/
+            runner-packages.txt
+            build/remote-desktop-runtime/DISTRIBUTION-SHA256SUMS.txt
+          if-no-files-found: error
+
+      - name: Report proof coverage
+        if: always()
+        shell: bash
+        run: |
+          proof="build/remote-desktop-runtime/${{ matrix.platform }}/${{ matrix.architecture }}/build-proof"
+          if [[ -f "$proof/report.json" ]]; then
+            {
+              echo 'Link maps and dependency coverage'
+              echo '```json'
+              cat "$proof/report.json"
+              echo '```'
+            } >> "$GITHUB_STEP_SUMMARY"
+            if command -v sha256sum >/dev/null; then
+              sha256sum "$proof/"*.map
+            else
+              shasum -a 256 "$proof/"*.map
+            fi
+          else
+            echo "Build proof unavailable. See the producer step for the failure." >> "$GITHUB_STEP_SUMMARY"
+          fi
 
       - name: Report smoke result
         if: always()

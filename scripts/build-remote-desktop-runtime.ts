@@ -1,7 +1,7 @@
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { accessSync, copyFileSync, mkdirSync, realpathSync } from "node:fs";
-import { cp, mkdir, mkdtemp, readdir, readFile, rm, writeFile } from "node:fs/promises";
+import { accessSync, copyFileSync, existsSync, mkdirSync, realpathSync } from "node:fs";
+import { cp, mkdir, mkdtemp, readdir, readFile, rm, stat, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import {
@@ -59,6 +59,7 @@ const LINUX_BUNDLED_LIBRARIES: Readonly<Record<string, string>> = {
 
 const lock = await loadNativeRuntimeLock();
 const outputRoot = resolve("build/remote-desktop-runtime", platform, architecture);
+const proofRoot = process.env.POKEBOTS_RUNTIME_BUILD_PROOF === "1" ? join(outputRoot, "build-proof") : undefined;
 const workRoot = await mkdtemp(join(tmpdir(), "openbot-remote-desktop-build-"));
 
 try {
@@ -82,7 +83,9 @@ try {
   await rm(outputRoot, { recursive: true, force: true });
   await mkdir(outputRoot, { recursive: true });
   await packageCorrespondingSource(sunshineSource, moonlightSource, lock);
-  buildSunshine(sunshineSource, lock.remoteDesktop.sunshine.version, lock.remoteDesktop.sunshine.commit);
+  if (proofRoot) await mkdir(proofRoot, { recursive: true });
+  const sunshineMap = proofRoot && join(proofRoot, "sunshine.map");
+  buildSunshine(sunshineSource, lock.remoteDesktop.sunshine.version, lock.remoteDesktop.sunshine.commit, sunshineMap);
   buildMoonlight(moonlightSource);
 
   const sunshineBinary = findSunshineBinary(sunshineSource);
@@ -135,6 +138,7 @@ try {
       `${JSON.stringify(createRemoteDesktopSourceManifest(lock), null, 2)}\n`,
     ),
   ]);
+  if (proofRoot) await recordBuildProof(proofRoot, sunshineSource, moonlightSource);
   await writeChecksums(outputRoot);
   await writeChecksums(resolve("build/remote-desktop-runtime"), "DISTRIBUTION-SHA256SUMS.txt");
   console.log(`Built the pinned Sunshine and Moonlight Web runtime in ${outputRoot}`);
@@ -219,6 +223,8 @@ async function preparePinnedCheckout(
   execFileSync("git", ["clone", "--quiet", "--filter=blob:none", "--no-checkout", runtime.repository, source]);
   execFileSync("git", ["fetch", "--quiet", "--depth", "1", "origin", runtime.commit], { cwd: source });
   execFileSync("git", ["checkout", "--quiet", "--detach", "FETCH_HEAD"], { cwd: source });
+  const actualCommit = execFileSync("git", ["rev-parse", "HEAD"], { cwd: source, encoding: "utf8" }).trim();
+  if (actualCommit !== runtime.commit) throw new Error(`Unexpected runtime commit for ${runtime.repository}.`);
   if (requiredSubmodules.length === 0) return;
   const rootSubmodules = requiredSubmodules.filter(
     (path) => !requiredSubmodules.some((candidate) => candidate !== path && path.startsWith(`${candidate}/`)),
@@ -235,10 +241,10 @@ async function preparePinnedCheckout(
   for (const path of requiredSubmodules) {
     const expectedCommit = runtime.submodules[path];
     if (!expectedCommit) throw new Error(`The required submodule is not pinned: ${path}.`);
-    const actualCommit = execFileSync("git", ["-C", join(source, path), "rev-parse", "HEAD"], {
+    const submoduleCommit = execFileSync("git", ["-C", join(source, path), "rev-parse", "HEAD"], {
       encoding: "utf8",
     }).trim();
-    if (actualCommit !== expectedCommit) throw new Error(`Unexpected submodule commit for ${path}.`);
+    if (submoduleCommit !== expectedCommit) throw new Error(`Unexpected submodule commit for ${path}.`);
   }
 }
 
@@ -260,7 +266,7 @@ function requiredSunshineSubmodules(targetPlatform: "darwin" | "win32" | "linux"
   return [...common, "third-party/ViGEmClient", "third-party/glad", "third-party/nvapi"];
 }
 
-function buildSunshine(source: string, version: string, commit: string): void {
+function buildSunshine(source: string, version: string, commit: string, proofMap?: string): void {
   const build = join(source, "build-openbot");
   const generator = process.env.CMAKE_GENERATOR ?? (hasExecutable("ninja") ? "Ninja" : "Unix Makefiles");
   const buildEnvironment = {
@@ -284,6 +290,9 @@ function buildSunshine(source: string, version: string, commit: string): void {
       "-DBUILD_TESTS=ON",
       "-DOPENBOT_SECURITY_TESTS=ON",
       "-DBUILD_WERROR=OFF",
+      ...(proofMap
+        ? [`-DCMAKE_EXE_LINKER_FLAGS="-Wl,${linkMapOption(join(build, "sunshine-proof.map")).replaceAll("\\", "/")}"`]
+        : []),
       ...(platform === "linux" ? LINUX_SUNSHINE_OPTIONS : []),
     ],
     { env: buildEnvironment, stdio: "inherit" },
@@ -294,6 +303,7 @@ function buildSunshine(source: string, version: string, commit: string): void {
   execFileSync("cmake", ["--build", build, "--config", "Release", "--parallel", "--target", "sunshine"], {
     stdio: "inherit",
   });
+  if (proofMap) copyFileSync(join(build, "sunshine-proof.map"), proofMap);
   execFileSync("cmake", ["--build", build, "--config", "Release", "--parallel", "--target", "test_sunshine"], {
     stdio: "inherit",
   });
@@ -319,11 +329,79 @@ function buildSunshine(source: string, version: string, commit: string): void {
 function buildMoonlight(source: string): void {
   execFileSync("npm", ["ci"], { cwd: source, stdio: "inherit" });
   execFileSync("npm", ["run", "build"], { cwd: source, stdio: "inherit" });
-  execFileSync("cargo", ["build", "--locked", "--release"], {
-    cwd: source,
-    env: moonlightCargoEnvironment(),
-    stdio: "inherit",
-  });
+  const options = { cwd: source, env: moonlightCargoEnvironment(), stdio: "inherit" as const };
+  if (!proofRoot) {
+    execFileSync("cargo", ["build", "--locked", "--release"], options);
+    return;
+  }
+  const rustcVersion = execFileSync("rustc", ["-vV"], { encoding: "utf8" });
+  for (const binary of ["web-server", "streamer"]) {
+    const map = join(proofRoot, `${binary}.map`);
+    const linkerArgument = /^host: .+-msvc$/m.test(rustcVersion) ? `/MAP:${map}` : `-Wl,${linkMapOption(map)}`;
+    execFileSync(
+      "cargo",
+      ["rustc", "--locked", "--release", "--bin", binary, "--", `-Clink-arg=${linkerArgument}`],
+      options,
+    );
+  }
+}
+
+function linkMapOption(path: string): string {
+  return platform === "darwin" ? `-map,${path}` : `-Map,${path}`;
+}
+
+async function recordBuildProof(directory: string, sunshine: string, moonlight: string): Promise<void> {
+  const maps = ["sunshine.map", "web-server.map", "streamer.map"];
+  for (const file of maps) {
+    if ((await stat(join(directory, file))).size === 0) throw new Error(`Empty linker map: ${file}`);
+  }
+  const revision = (source: string) =>
+    execFileSync("git", ["rev-parse", "HEAD"], { cwd: source, encoding: "utf8" }).trim();
+  const cmakeBuild = join(sunshine, "build-openbot");
+  const fetchedDependencies = join(cmakeBuild, "_deps");
+  const fetchedEntries = existsSync(fetchedDependencies) ? await readdir(fetchedDependencies) : [];
+  const cmakeDependencyRevisions = Object.fromEntries(
+    fetchedEntries
+      .filter((entry) => entry.endsWith("-src") && existsSync(join(fetchedDependencies, entry, ".git")))
+      .map((entry) => [entry, revision(join(fetchedDependencies, entry))]),
+  );
+  const cmakeCache = await readFile(join(cmakeBuild, "CMakeCache.txt"), "utf8");
+  const configuredLibraries = cmakeCache.split(/\r?\n/).filter((line) => /^[A-Za-z0-9_]*_LIBRARY:FILEPATH=/.test(line));
+  await Promise.all([
+    cp(join(moonlight, "Cargo.lock"), join(directory, "Cargo.lock")),
+    writeFile(join(directory, "cmake-libraries.txt"), `${configuredLibraries.join("\n")}\n`),
+  ]);
+  const report = {
+    producer: revision(process.cwd()),
+    target: `${platform}-${architecture}`,
+    sunshine: revision(sunshine),
+    sunshineSubmodules: execFileSync("git", ["submodule", "status", "--recursive"], {
+      cwd: sunshine,
+      encoding: "utf8",
+    })
+      .trim()
+      .split(/\r?\n/),
+    moonlight: revision(moonlight),
+    toolchain: {
+      cmake: execFileSync("cmake", ["--version"], { encoding: "utf8" }).trim(),
+      rustc: execFileSync("rustc", ["-vV"], { encoding: "utf8" }).trim(),
+      npm: execFileSync("npm", ["--version"], { encoding: "utf8" }).trim(),
+    },
+    maps,
+    cmakeDependencyRevisions,
+    verifiedInputs: createRemoteDesktopSourceManifest(lock),
+    windowsOpenSslPackage: process.env.POKEBOTS_PROOF_WINDOWS_OPENSSL,
+    missingCoverage: [
+      "Map entries still need to be matched to exact source and notices for all linked dependencies.",
+      "The source archives exclude downloaded build dependencies. The Cargo and npm locks identify their inputs where pinned.",
+      "Fetched CMake inputs without Git metadata still need source verification.",
+      "The maps cover linker inputs. They do not inventory libraries loaded at runtime or all generated assets.",
+      ...(platform === "win32" ? ["Windows runtime launch and bundled dependency license coverage are pending."] : []),
+    ],
+  };
+  const json = `${JSON.stringify(report, null, 2)}\n`;
+  await writeFile(join(directory, "report.json"), json);
+  console.log(`Runtime link evidence written to ${directory}`);
 }
 
 /**
