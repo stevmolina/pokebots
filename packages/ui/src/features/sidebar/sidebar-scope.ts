@@ -12,6 +12,7 @@ import { createContext, createEffect, createMemo, createSignal, onCleanup, useCo
 import { createScrollFades } from "../../components/createScrollFades";
 import { createSidebarDragEngine } from "./createSidebarDragEngine";
 import { SIDEBAR_NO_LIST_FILTER } from "./sidebar-list-filter";
+import { parseSidebarSettled, sidebarSettledAgents, sidebarSettledMarker } from "./sidebar-settling";
 import {
   parseSidebarSnooze,
   SIDEBAR_DOCK_FOLDERS_VIEW_ID,
@@ -198,6 +199,19 @@ export function createSidebarScope(props: SidebarProps) {
     clearSnoozeMarkers(agentId);
     setSnoozeClock(Date.now());
   };
+  /** Manually settled agents, as agent id to settledAt timestamp (ms). */
+  const settledAgents = createMemo(() => sidebarSettledAgents(props.collapsedSectionIds));
+  /** Moves an agent to "Settled" immediately until new activity arrives. */
+  const settleAgent = (agentId: string) => {
+    const now = Date.now();
+    for (const id of props.collapsedSectionIds) {
+      const parsed = parseSidebarSettled(id);
+      if (parsed && parsed.agentId === agentId) props.onToggleSection(id);
+    }
+    props.onToggleSection(sidebarSettledMarker(agentId, now));
+    if (props.unreadAgentIds?.has(agentId)) props.onMarkAgentRead?.(agentId);
+    setSnoozeClock(now);
+  };
   const foldersSupported = () => props.foldersSupported === true && layoutMutable();
   const dragFolders = () =>
     foldersSupported() ? { canNest: sectionCanNest, isInside: sectionIsInside, parent: sectionParent } : null;
@@ -349,6 +363,8 @@ export function createSidebarScope(props: SidebarProps) {
     snoozedAgents,
     snoozeClock,
     unsnoozeAgent,
+    settledAgents,
+    settleAgent,
     directThreadByMember,
     dragOffset: dragState.dragOffset,
     dragOverPinnedKey: dragState.dragOverPinnedKey,

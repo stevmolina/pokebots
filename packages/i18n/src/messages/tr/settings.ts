@@ -125,6 +125,12 @@ export const messages = {
   "settings.sendShortcut.description": "Bu cihazda ve tarayıcıda mesaj gönderen tuşları seçin.",
   "settings.chatOrder.description":
     "Kenar çubuğunun sohbetleri bu cihazda nasıl sıralayacağını seçin. Elle ve Son etkinlik, Okunmamış grubunu kapatır.",
+  "settings.autoSettle.title": "Etkin olmayan botları otomatik tamamla",
+  "settings.autoSettle.description": "Yeni etkinlik olmadan bu süre geçtikten sonra biten botları Tamamlananlara taşır. Açık pull requesti olan botlar birleştirilene kadar kalır.",
+  "settings.autoSettle.1d": "1 gün",
+  "settings.autoSettle.3d": "3 gün",
+  "settings.autoSettle.7d": "7 gün",
+  "settings.autoSettle.manual": "Yalnızca manuel",
   "settings.sendShortcut.enter": "Göndermek için Enter",
   "settings.sendShortcut.modEnterMac": "Göndermek için ⌘Enter",
   "settings.sendShortcut.modEnterWin": "Göndermek için Ctrl+Enter",

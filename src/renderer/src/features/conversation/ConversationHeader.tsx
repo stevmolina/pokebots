@@ -147,6 +147,9 @@ export function ConversationHeader() {
       remoteControl={remoteControl()}
       sessionsInPane={sessionsInPane()}
       phoneMenu={phoneMenu()}
+      openPullRequest={props.openPullRequest}
+      onOpenPullRequest={props.onOpenPullRequest}
+      settle={props.settle}
       threads={
         <Show when={props.threads}>
           {(threads) => (

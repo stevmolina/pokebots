@@ -120,6 +120,12 @@ export const messages = {
   "settings.sendShortcut.description": "בחירת המקשים ששולחים הודעה במכשיר ובדפדפן הזה.",
   "settings.chatOrder.description":
     "בחרו איך סרגל הצד ממיין צ'אטים במכשיר הזה. ידני ופעילות אחרונה מכבים את הקבוצה לא נקראו.",
+  "settings.autoSettle.title": "השלמה אוטומטית לבוטים לא פעילים",
+  "settings.autoSettle.description": "מעביר בוטים שהסתיימו להושלמו לאחר זמן זה ללא פעילות חדשה. בוטים עם בקשות משיכה פתוחות נשארים עד למיזוג.",
+  "settings.autoSettle.1d": "יום אחד",
+  "settings.autoSettle.3d": "3 ימים",
+  "settings.autoSettle.7d": "7 ימים",
+  "settings.autoSettle.manual": "ידני בלבד",
   "settings.sendShortcut.enter": "Enter לשליחה",
   "settings.sendShortcut.modEnterMac": "⌘Enter לשליחה",
   "settings.sendShortcut.modEnterWin": "Ctrl+Enter לשליחה",

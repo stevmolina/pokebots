@@ -127,6 +127,12 @@ export const messages = {
   "settings.sendShortcut.description": "Elige las teclas para enviar mensajes en este dispositivo y navegador.",
   "settings.chatOrder.description":
     "Elige cómo ordena la barra lateral los chats en este dispositivo. Manual y Actividad reciente desactivan el grupo No leídos.",
+  "settings.autoSettle.title": "Resolver bots inactivos automáticamente",
+  "settings.autoSettle.description": "Mueve los bots terminados a Resueltos tras este tiempo sin actividad nueva. Los bots con pull requests abiertos permanecen en Terminados hasta que se fusionen.",
+  "settings.autoSettle.1d": "1 día",
+  "settings.autoSettle.3d": "3 días",
+  "settings.autoSettle.7d": "7 días",
+  "settings.autoSettle.manual": "Solo manual",
   "settings.sendShortcut.enter": "Enter para enviar",
   "settings.sendShortcut.modEnterMac": "⌘Enter para enviar",
   "settings.sendShortcut.modEnterWin": "Ctrl+Enter para enviar",

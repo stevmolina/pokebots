@@ -10,7 +10,7 @@
 
 import type { ChannelSummary } from "@pokebots/contracts/ipc";
 import type { AppFormat } from "@pokebots/i18n";
-import { buttonVariants, ContextMenu, MotionTooltip } from "@pokebots/ui";
+import { buttonVariants, ContextMenu, GitPullRequest, MotionTooltip } from "@pokebots/ui";
 import type { JSX } from "@solidjs/web";
 import { createSignal, Match, Show, Switch } from "solid-js";
 import type { AgentProfile } from "../../data";
@@ -27,6 +27,7 @@ import { useSidebarMachineMarks } from "./SidebarMachineFilter";
 import { SIDEBAR_WAIT_ACTION, SIDEBAR_WAIT_TITLE, sidebarAgentStateLabel } from "./sidebar-filtering";
 import { sidebarAgentWait } from "./sidebar-recent-chats";
 import { useSidebarScope } from "./sidebar-scope";
+import { type AgentSettleState, formatSettleTimeLeft } from "./sidebar-settling";
 import type { SidebarChannelWait, SidebarChatItem } from "./sidebar-types";
 
 /** How a chat shows: a row of the open list, or a face of the collapsed dock. */
@@ -237,6 +238,8 @@ export function SidebarChatRow(rowProps: {
   pinned?: boolean;
   /** Text in place of the time at the end of a row, such as how long a snooze lasts. */
   note?: string | undefined;
+  /** Open PR or remaining inactivity time for an agent row in the "Done" group. */
+  doneStatus?: AgentSettleState | undefined;
   /** A working card: a rounded card with a spinner and the time since the chat last changed. */
   card?: boolean | undefined;
 }) {
@@ -251,6 +254,7 @@ export function SidebarChatRow(rowProps: {
             view={useAgentView(profile, pinned)}
             look={rowProps.look}
             note={rowProps.note}
+            doneStatus={rowProps.doneStatus}
             card={rowProps.card}
           />
         )}
@@ -291,6 +295,7 @@ function SidebarChatView(viewProps: {
   view: ChatView;
   look: SidebarChatLook;
   note?: string | undefined;
+  doneStatus?: AgentSettleState | undefined;
   card?: boolean | undefined;
 }) {
   const { t, format } = useText();
@@ -355,7 +360,30 @@ function SidebarChatView(viewProps: {
             <span class="sidebar-chat-elapsed">{elapsedText(view.since, snoozeClock(), t, format)}</span>
           </span>
         </Show>
-        <Show when={viewProps.look === "row" && !viewProps.card && (viewProps.note ?? view.time)}>
+        <Show when={viewProps.look === "row" && !viewProps.card && viewProps.doneStatus?.openPullRequest}>
+          {(pr) => (
+            <span class="sidebar-chat-done-pr" aria-hidden="true">
+              <GitPullRequest class="sidebar-chat-done-pr-icon" />
+              <span>#{pr().number}</span>
+            </span>
+          )}
+        </Show>
+        <Show
+          when={
+            viewProps.look === "row" && !viewProps.card && !viewProps.doneStatus?.openPullRequest
+              ? (viewProps.doneStatus?.remainingMs ?? undefined)
+              : undefined
+          }
+        >
+          {(remainingMs) => (
+            <span class="sidebar-chat-done-time" aria-hidden="true">
+              {formatSettleTimeLeft(remainingMs(), t, format)}
+            </span>
+          )}
+        </Show>
+        <Show
+          when={viewProps.look === "row" && !viewProps.card && !viewProps.doneStatus && (viewProps.note ?? view.time)}
+        >
           <span class={["sidebar-chat-time", { "sidebar-chat-note": viewProps.note !== undefined }]} aria-hidden="true">
             {viewProps.note ?? view.time}
           </span>

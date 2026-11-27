@@ -104,6 +104,7 @@ export const messages = {
   "sidebar.agentMenu.markRead": "Segna come letto",
   "sidebar.agentMenu.makeMain": "Rendi agente principale",
   "sidebar.agentMenu.markUnread": "Segna come non letto",
+  "sidebar.agentMenu.settle": "Sistema",
   "sidebar.agentMenu.mute": "Silenzia agente",
   "sidebar.agentMenu.unmute": "Riattiva le notifiche",
   "sidebar.agentMenu.delete": "Elimina agente",

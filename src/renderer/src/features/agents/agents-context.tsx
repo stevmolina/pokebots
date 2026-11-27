@@ -10,6 +10,7 @@ import {
   type ServerNotificationLevel,
   type UpdateAgentInput,
 } from "@pokebots/contracts/ipc";
+import { AGENT_PULL_REQUESTS_CAPABILITY } from "@pokebots/contracts/team-protocol/agent-pull-requests-v1";
 import { AGENT_HIDDEN_WORK_CAPABILITY } from "@pokebots/contracts/team-protocol/current";
 import { PROVIDER_ACCOUNTS_CAPABILITY } from "@pokebots/contracts/team-protocol/provider-accounts-v1";
 import type { AgentProfile } from "@pokebots/ui/data";
@@ -37,6 +38,7 @@ import {
   withHostAgentAccount,
   withHostProfileAccount,
 } from "./host-provider-accounts";
+import { createAgentPullRequestsPoll } from "./use-agent-pull-requests";
 
 /**
  * The agents on the active server: the roster, which one is open, the provider
@@ -411,8 +413,21 @@ const Agents = createSimpleContext({
       }
     }
 
+    const agentPullRequests = createAgentPullRequestsPoll({
+      activityKey: () =>
+        `${activeServerId()}|${agentList()
+          .map((agent) => `${agent.id}:${agent.updatedAt ?? ""}`)
+          .join(",")}`,
+      enabled: () =>
+        activeServerSupportsCapability(AGENT_PULL_REQUESTS_CAPABILITY) &&
+        !agentListConnecting() &&
+        agentList().length > 0,
+      load: () => agentsPort().agent.listAgentPullRequests(activeServerId()),
+    });
+
     return {
       agentList,
+      agentPullRequests,
       setAgentList,
       agentListConnecting,
       agentListSettled,

@@ -104,6 +104,7 @@ export const messages = {
   "sidebar.agentMenu.markRead": "既読にする",
   "sidebar.agentMenu.makeMain": "メインエージェントにする",
   "sidebar.agentMenu.markUnread": "未読にする",
+  "sidebar.agentMenu.settle": "完了にする",
   "sidebar.agentMenu.mute": "エージェントをミュート",
   "sidebar.agentMenu.unmute": "ミュートを解除",
   "sidebar.agentMenu.delete": "エージェントを削除",

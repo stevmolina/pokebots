@@ -12,6 +12,10 @@ import {
   pendingRuntimeUpdateBody,
 } from "@pokebots/contracts/team-protocol/agent-pending-runtime-v1";
 import {
+  AGENT_PULL_REQUESTS_CAPABILITY,
+  AGENT_PULL_REQUESTS_ROUTES,
+} from "@pokebots/contracts/team-protocol/agent-pull-requests-v1";
+import {
   AGENT_SESSION_SETTINGS_CAPABILITY,
   AGENT_SESSION_SETTINGS_ROUTES,
 } from "@pokebots/contracts/team-protocol/agent-session-settings-v1";
@@ -47,6 +51,7 @@ import { retryOperationIds } from "@pokebots/team-client/retry-operation-id";
 // `serverId` in the request.
 
 import {
+  type AgentPullRequestsMap,
   type AgentTaskInput,
   analyticsQuery,
   artifactRequestText,
@@ -69,6 +74,7 @@ import {
   isAgentModelOption,
   LOCAL_SERVER_ID,
   parseAgentAnalyticsInput,
+  parseAgentPullRequestsResponse,
   parseAskSideQuestion,
   parseChannelCommand,
   parseChannelRead,
@@ -359,6 +365,8 @@ export interface AgentIpcDependencies {
   modelVisibility: Pick<ModelVisibility, "picker">;
   /** Closes the shown notifications of a chat that the user read while an app window has focus. */
   closeChatNotifications: (serverId: string, chat: NotificationChat) => void;
+  /** Linked GitHub pull request status per agent on this host. */
+  listAgentPullRequests: () => Effect.Effect<AgentPullRequestsMap>;
 }
 
 export function agentIpcHandlers({
@@ -373,6 +381,7 @@ export function agentIpcHandlers({
   openExternal,
   modelVisibility,
   closeChatNotifications,
+  listAgentPullRequests,
 }: AgentIpcDependencies): Pick<IpcGroupHandlers, "agent"> {
   const remoteTaskRequest = <T>(serverId: string, path: string, decoder: ResponseDecoder<T>, body: RemoteTaskBody) => {
     if (!remoteServers.supportsCapability(serverId, AGENT_TASKS_CAPABILITY)) taskRemoteUnsupported();
@@ -672,6 +681,18 @@ export function agentIpcHandlers({
               { concurrency: "unbounded" },
             ).pipe(Effect.map(([agents]) => remoteServers.withAgentColors(serverId, agents))),
           ),
+      }),
+      listAgentPullRequests: scopedQueryHandler({
+        local: () => runCauseEffect(listAgentPullRequests()),
+        remote: (serverId) => {
+          if (!remoteServers.supportsCapability(serverId, AGENT_PULL_REQUESTS_CAPABILITY)) return {};
+          return runCauseEffect(
+            remoteServers.request(serverId, AGENT_PULL_REQUESTS_ROUTES.list, parseAgentPullRequestsResponse, {
+              method: "POST",
+              body: {},
+            }),
+          );
+        },
       }),
       listInstalledSkills: scopedHandler(parseAgentId, {
         local: (agentId) => runCauseEffect(skills.listInstalledForChatTags(agentId, { problems: true })),

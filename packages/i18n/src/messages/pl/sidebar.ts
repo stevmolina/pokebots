@@ -124,6 +124,7 @@ export const messages = {
   "sidebar.agentMenu.markRead": "Oznacz jako przeczytane",
   "sidebar.agentMenu.makeMain": "Ustaw jako głównego agenta",
   "sidebar.agentMenu.markUnread": "Oznacz jako nieprzeczytane",
+  "sidebar.agentMenu.settle": "Załatw",
   "sidebar.agentMenu.mute": "Wycisz agenta",
   "sidebar.agentMenu.unmute": "Wyłącz wyciszenie",
   "sidebar.agentMenu.delete": "Usuń agenta",

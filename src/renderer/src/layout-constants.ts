@@ -13,6 +13,8 @@ export const SERVER_VIEW_STORAGE_KEY = "openbot:server-view";
 export const SIDEBAR_VIEW_STORAGE_KEY = "openbot:sidebar-view";
 /** How the sidebar orders its chats: a `SidebarChatOrder`. */
 export const SIDEBAR_CHAT_ORDER_STORAGE_KEY = "openbot:sidebar-chat-order";
+/** When inactive bots move from "Done" to "Settled": a `SidebarAutoSettleOption`. */
+export const SIDEBAR_AUTO_SETTLE_STORAGE_KEY = "openbot:sidebar-auto-settle";
 /** The pages that the user pinned to the sidebar pill or took off it: a JSON record of booleans. */
 export const RAIL_PINS_STORAGE_KEY = "openbot:rail-pins";
 export const LEFT_PANEL_DEFAULT = 300;

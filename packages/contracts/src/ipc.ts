@@ -21,6 +21,7 @@ export * from "./ipc-agent-instructions";
 export * from "./ipc-agent-memories";
 export * from "./ipc-agent-notification-levels";
 export * from "./ipc-agent-profile";
+export * from "./ipc-agent-pull-requests";
 export * from "./ipc-agent-runtime";
 export * from "./ipc-agent-session-settings";
 export * from "./ipc-agent-side-question";

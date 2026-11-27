@@ -104,6 +104,7 @@ export const messages = {
   "sidebar.agentMenu.markRead": "읽음으로 표시",
   "sidebar.agentMenu.makeMain": "메인 에이전트로 지정",
   "sidebar.agentMenu.markUnread": "읽지 않음으로 표시",
+  "sidebar.agentMenu.settle": "완료 처리",
   "sidebar.agentMenu.mute": "에이전트 음소거",
   "sidebar.agentMenu.unmute": "음소거 해제",
   "sidebar.agentMenu.delete": "에이전트 삭제",

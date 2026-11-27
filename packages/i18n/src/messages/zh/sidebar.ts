@@ -104,6 +104,7 @@ export const messages = {
   "sidebar.agentMenu.markRead": "标为已读",
   "sidebar.agentMenu.makeMain": "设为主智能体",
   "sidebar.agentMenu.markUnread": "标为未读",
+  "sidebar.agentMenu.settle": "设为已完成",
   "sidebar.agentMenu.mute": "静音助手",
   "sidebar.agentMenu.unmute": "取消静音",
   "sidebar.agentMenu.delete": "删除助手",

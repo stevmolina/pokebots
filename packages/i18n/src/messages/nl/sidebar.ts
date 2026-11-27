@@ -107,6 +107,7 @@ export const messages = {
   "sidebar.agentMenu.markRead": "Markeer als gelezen",
   "sidebar.agentMenu.makeMain": "Hoofdagent maken",
   "sidebar.agentMenu.markUnread": "Markeer als ongelezen",
+  "sidebar.agentMenu.settle": "Afhandelen",
   "sidebar.agentMenu.mute": "Agent dempen",
   "sidebar.agentMenu.unmute": "Agent niet meer dempen",
   "sidebar.agentMenu.delete": "Agent verwijderen",

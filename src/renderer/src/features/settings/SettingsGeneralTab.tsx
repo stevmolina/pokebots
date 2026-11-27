@@ -33,6 +33,7 @@ import { FontSelect } from "@pokebots/ui/features/settings/FontSelect";
 import { LanguageSelect } from "@pokebots/ui/features/settings/LanguageSelect";
 import { LogoColorPicker } from "@pokebots/ui/features/settings/LogoColorPicker";
 import { SendShortcutSelect } from "@pokebots/ui/features/settings/SendShortcutSelect";
+import { SidebarAutoSettleSelect } from "@pokebots/ui/features/settings/SidebarAutoSettleSelect";
 import { SidebarChatOrderSelect } from "@pokebots/ui/features/settings/SidebarChatOrderSelect";
 import { useText } from "@pokebots/ui/text";
 import { createUniqueId, Show } from "solid-js";
@@ -112,6 +113,19 @@ export function SettingsGeneralTab(props: SettingsGeneralTabProps) {
                 <SidebarChatOrderSelect
                   value={layout.sidebarChatOrder()}
                   onChange={layout.setSidebarChatOrder}
+                  mount={props.selectMount}
+                />
+              </ItemActions>
+            </Item>
+            <Item data-settings-row="settings.autoSettle.title" class="settings-modal-row">
+              <ItemContent>
+                <ItemTitle>{i18n.t("settings.autoSettle.title")}</ItemTitle>
+                <ItemDescription>{i18n.t("settings.autoSettle.description")}</ItemDescription>
+              </ItemContent>
+              <ItemActions>
+                <SidebarAutoSettleSelect
+                  value={layout.sidebarAutoSettle()}
+                  onChange={layout.setSidebarAutoSettle}
                   mount={props.selectMount}
                 />
               </ItemActions>

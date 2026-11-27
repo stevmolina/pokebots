@@ -151,3 +151,33 @@ export const LongSessionTitle: Story = {
     ),
   ],
 };
+
+/**
+ * Option B header with sample data: centered bot name pill paired with a clickable open PR pill
+ * (`PR #344 · Open`) and a top-right `[ ✓ Settle ]` pill button beside the side-panel toggle.
+ */
+export const DoneWithOpenPrAndSettle: Story = {
+  args: {
+    modelPicker: undefined,
+    sessionsInPane: true,
+    session: {
+      canStartNew: true,
+      onNew: fn(),
+    },
+    openPullRequest: {
+      owner: "example",
+      repo: "app",
+      number: 344,
+      url: "https://github.com/example/app/pull/344",
+    },
+    settle: { onSettle: fn() },
+    sidePanel: { open: false, onToggle: fn() },
+  },
+  decorators: [
+    (Story) => (
+      <div style={{ width: "860px", height: "72px", position: "relative" }}>
+        <Story />
+      </div>
+    ),
+  ],
+};

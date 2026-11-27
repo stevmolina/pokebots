@@ -124,6 +124,12 @@ export const messages = {
   "settings.sendShortcut.description": "このデバイスとこのブラウザーでメッセージを送信するキーを選びます。",
   "settings.chatOrder.description":
     "このデバイスのサイドバーでチャットを並べる方法を選びます。手動または最近のアクティビティにすると未読グループはオフになります。",
+  "settings.autoSettle.title": "非アクティブなボットを自動完了",
+  "settings.autoSettle.description": "新しいアクティビティがないままこの期間が過ぎると、終了したボットを完了に移動します。オープンなPRがあるボットはマージまで残ります。",
+  "settings.autoSettle.1d": "1日",
+  "settings.autoSettle.3d": "3日",
+  "settings.autoSettle.7d": "7日",
+  "settings.autoSettle.manual": "手動のみ",
   "settings.sendShortcut.enter": "Enter で送信",
   "settings.sendShortcut.modEnterMac": "⌘Enter で送信",
   "settings.sendShortcut.modEnterWin": "Ctrl+Enter で送信",

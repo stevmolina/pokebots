@@ -22,6 +22,7 @@ import type {
   AgentModelId,
   AgentModelOption,
   AgentPendingRuntime,
+  AgentPullRequestsMap,
   AgentReasoningEffort,
   AgentRuntimeSnapshot,
   AgentSessionSettings,
@@ -731,6 +732,8 @@ export class AgentService extends EventEmitter<AgentServiceEvents> {
   readonly #attention: AttentionRegistry;
   /** The pull requests that each side thread links, by thread id, with the activity time that they were read at. */
   readonly #pullRequestScans = new Map<string, { updatedAt: string; refs: PullRequestRef[] | null }>();
+  /** The pull requests that each agent's recent activity links, by agent id, cached by activity key. */
+  readonly #agentPullRequestScans = new Map<string, { activityKey: string; refs: PullRequestRef[] | null }>();
   readonly #images: ImageGenRuntime;
   readonly #threads: ThreadLifecycle;
   readonly #codexIdleSessions: CodexIdleSessions;
@@ -7194,6 +7197,69 @@ export class AgentService extends EventEmitter<AgentServiceEvents> {
     }
     return refs;
   }
+
+  /**
+   * Linked GitHub pull request status for each active agent, scanned from recent messages in the
+   * agent's main thread and open side threads.
+   */
+  readonly listAgentPullRequests = Effect.fn("AgentService.listAgentPullRequests")(function* (
+    this: AgentService,
+    check: (
+      ref: PullRequestRef,
+    ) => Effect.Effect<{ state: "open" | "merged" | "closed" | "unknown"; mergedAt: number | null }>,
+  ): Effect.fn.Return<AgentPullRequestsMap> {
+    const result: AgentPullRequestsMap = {};
+    for (const agent of this.#store.list()) {
+      if (this.#removal.deleting().has(agent.id)) continue;
+      const openTasks = this.#tasks.snapshot(agent.id).tasks.filter((task) => task.closedAt === null);
+      const latestTaskUpdate = openTasks.reduce(
+        (latest, task) => (task.updatedAt > latest ? task.updatedAt : latest),
+        "",
+      );
+      const activityKey = `${agent.updatedAt ?? ""}|${latestTaskUpdate}|${openTasks.length}`;
+      let refs: PullRequestRef[] | null;
+      const cached = this.#agentPullRequestScans.get(agent.id);
+      if (cached?.activityKey === activityKey) {
+        refs = cached.refs;
+      } else {
+        refs = threadPullRequests(this.#tasks.agentPullRequestTexts(agent.id, agent.threadId ?? ""));
+        this.#agentPullRequestScans.set(agent.id, { activityKey, refs });
+        if (this.#agentPullRequestScans.size > PULL_REQUEST_SCAN_CACHE_LIMIT) {
+          const oldest = this.#agentPullRequestScans.keys().next().value;
+          if (oldest !== undefined) this.#agentPullRequestScans.delete(oldest);
+        }
+      }
+      if (!refs || refs.length === 0) continue;
+      const open: AgentPullRequestsMap[string]["open"] = [];
+      let mergedCount = 0;
+      let latestMergedAt: number | null = null;
+      let allKnownMerged = true;
+      for (const ref of refs) {
+        const detail = yield* check(ref);
+        if (detail.state === "open") {
+          open.push({
+            owner: ref.owner,
+            repo: ref.repo,
+            number: ref.number,
+            url: `https://github.com/${ref.owner}/${ref.repo}/pull/${ref.number}`,
+          });
+          allKnownMerged = false;
+        } else if (detail.state === "merged") {
+          mergedCount += 1;
+          if (detail.mergedAt !== null) {
+            latestMergedAt = latestMergedAt === null ? detail.mergedAt : Math.max(latestMergedAt, detail.mergedAt);
+          }
+        } else {
+          allKnownMerged = false;
+        }
+      }
+      const allMerged = open.length === 0 && mergedCount > 0 && allKnownMerged;
+      if (open.length > 0 || allMerged) {
+        result[agent.id] = { open, allMerged, mergedAt: allMerged ? latestMergedAt : null };
+      }
+    }
+    return result;
+  }).bind(this);
 
   reopenTask(input: AgentTaskInput): void {
     this.#tasks.reopen(this.#tasks.require(input.agentId, input.taskId));

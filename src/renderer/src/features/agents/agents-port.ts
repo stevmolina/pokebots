@@ -22,6 +22,7 @@ export interface AgentsPort {
     | "getAgentFastMode"
     | "updateAgentFastMode"
     | "listAgents"
+    | "listAgentPullRequests"
     | "listConversationReads"
     | "listModels"
     | "onEvent"

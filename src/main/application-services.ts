@@ -870,6 +870,7 @@ export interface ApplicationServices {
   brainContext: BrainContextControl;
   roomsListening: RoomsListeningControl;
   threadAutoArchive: ThreadAutoArchiveControl;
+  listAgentPullRequests: () => Effect.Effect<import("@pokebots/contracts/ipc").AgentPullRequestsMap>;
   claudeAiTools: ClaudeAiToolsControl;
   claudeCompactWindow: ClaudeCompactWindowControl;
   providerEnvironment: ProviderEnvironmentControl;
@@ -2742,12 +2743,17 @@ export async function createApplicationServices({
    */
   const devThreadIdleMs = appVariant === "dev" ? developmentDurationMs(process.env.OPENBOT_DEV_THREAD_IDLE_MS) : null;
   const devThreadSweepMs = appVariant === "dev" ? developmentDurationMs(process.env.OPENBOT_DEV_THREAD_SWEEP_MS) : null;
+  const pullRequestStates = new GitHubPullRequestStates({
+    connectionToken: () => githubConnector.accessToken().pipe(Effect.orElseSucceed(() => null)),
+  });
+  const listAgentPullRequests = () => {
+    pullRequestStates.beginSweep();
+    return service.listAgentPullRequests(pullRequestStates.details);
+  };
   const threadAutoArchiveScheduler = new ThreadAutoArchiveScheduler({
     preference: () => threadAutoArchive.get(),
     sweep: (policy) => service.autoArchiveThreads(policy),
-    pullRequests: new GitHubPullRequestStates({
-      connectionToken: () => githubConnector.accessToken().pipe(Effect.orElseSucceed(() => null)),
-    }),
+    pullRequests: pullRequestStates,
     ...(devThreadIdleMs === null ? {} : { idleMs: devThreadIdleMs }),
     ...(devThreadSweepMs === null ? {} : { intervalMs: devThreadSweepMs }),
   });
@@ -4047,6 +4053,7 @@ export async function createApplicationServices({
       brainContext,
       roomsListening,
       threadAutoArchive,
+      listAgentPullRequests,
       claudeAiTools: claudeAiToolsSetting,
       claudeCompactWindow: claudeCompactWindowSetting,
       providerEnvironment: providerEnvironmentSetting,
@@ -5245,6 +5252,7 @@ export async function createApplicationServices({
     brainContext,
     roomsListening,
     threadAutoArchive,
+    listAgentPullRequests,
     claudeAiTools: claudeAiToolsSetting,
     claudeCompactWindow: claudeCompactWindowSetting,
     providerEnvironment: providerEnvironmentSetting,

@@ -8,6 +8,7 @@ import {
   AppWindow,
   Bell,
   BellOff,
+  Check,
   CheckCheck,
   ChevronRight,
   CircleDot,
@@ -28,6 +29,7 @@ import { DeleteIcon, EditIcon } from "./SidebarIcons";
 import { SidebarMoveToSubmenu } from "./SidebarMoveToSubmenu";
 import { type SidebarPinnedItem, sidebarPinnedItemKey } from "./sidebar-pins";
 import { useSidebarScope } from "./sidebar-scope";
+import { evaluateAgentSettle, latestAgentActivityAt, sidebarAutoSettleMs } from "./sidebar-settling";
 
 const HOUR_MS = 60 * 60_000;
 const DAY_MS = 24 * HOUR_MS;
@@ -53,9 +55,37 @@ export function SidebarAgentContextMenu(menuProps: {
   /** Set on a pinned agent that is not the tile at the top: the item moves it before the tile's agent. */
   mainAgentId?: string | undefined;
 }) {
-  const { chatPinnedItems, customSectionById, openDelete, props, snoozeAgent, snoozedAgents, unsnoozeAgent } =
-    useSidebarScope();
+  const {
+    chatPinnedItems,
+    customSectionById,
+    openDelete,
+    props,
+    settleAgent,
+    settledAgents,
+    snoozeAgent,
+    snoozeClock,
+    snoozedAgents,
+    unsnoozeAgent,
+  } = useSidebarScope();
   const snoozed = () => snoozedAgents().has(menuProps.agent.id);
+  const canSettle = () => {
+    if (props.pages === undefined || menuProps.userHidden || props.allMachines || snoozed()) return false;
+    const state = props.agentStates[menuProps.agent.id];
+    if (state?.kind === "working" || state?.kind === "waiting") return false;
+    const threadEntry = props.threadLanes?.threads.find((entry) => entry.agentId === menuProps.agent.id);
+    if (threadEntry?.state.kind === "working" || threadEntry?.state.kind === "waiting") return false;
+    return evaluateAgentSettle({
+      unread: state?.kind === "unread" || (props.threadLanes?.unreadAgentIds.has(menuProps.agent.id) ?? false),
+      lastActivityAt: latestAgentActivityAt(
+        menuProps.agent.updatedAt,
+        props.threadLanes?.latestThreadUpdatedAt?.[menuProps.agent.id],
+      ),
+      settledAt: settledAgents().get(menuProps.agent.id),
+      settleAfterMs: sidebarAutoSettleMs(props.autoSettle),
+      now: snoozeClock(),
+      pullRequests: props.agentPullRequests?.[menuProps.agent.id],
+    }).inDone;
+  };
   const { t } = useText();
   const ref = (): SidebarPinnedItem => ({ kind: "agent", id: menuProps.agent.id });
   const unread = () => props.unreadAgentIds?.has(menuProps.agent.id) ?? false;
@@ -136,6 +166,12 @@ export function SidebarAgentContextMenu(menuProps: {
           )}
         </Show>
         <SidebarMoveToSubmenu chatId={menuProps.agent.id} />
+        <Show when={canSettle()}>
+          <ContextMenu.Item onSelect={() => settleAgent(menuProps.agent.id)}>
+            <Check class="agent-context-icon size-4" aria-hidden="true" />
+            <span>{t("sidebar.agentMenu.settle")}</span>
+          </ContextMenu.Item>
+        </Show>
         {/* Snooze puts the agent in "Snoozed" of the chat list until the time; it wakes up by itself. */}
         <Show when={props.pages !== undefined && !menuProps.userHidden && !props.allMachines}>
           <ContextMenu.Sub>

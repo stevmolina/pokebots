@@ -68,8 +68,12 @@ export function createThreadAutoArchiveControl(path: string) {
   };
 }
 
-interface CachedState {
+export interface PullRequestDetails {
   state: PullRequestState;
+  mergedAt: number | null;
+}
+
+interface CachedState extends PullRequestDetails {
   checkedAt: number;
 }
 
@@ -112,20 +116,30 @@ export class GitHubPullRequestStates {
     this: GitHubPullRequestStates,
     ref: PullRequestRef,
   ) {
+    return (yield* this.details(ref)).state;
+  }).bind(this);
+
+  readonly details: (ref: PullRequestRef) => Effect.Effect<PullRequestDetails> = Effect.fn(
+    "GitHubPullRequestStates.details",
+  )(function* (this: GitHubPullRequestStates, ref: PullRequestRef) {
     const key = pullRequestKey(ref);
     const now = this.#now();
     const cached = this.#cache.get(key);
-    if (cached && fresh(cached, now)) return cached.state;
-    if (this.#budget <= 0) return cached?.state === "open" ? "open" : "unknown";
+    if (cached && fresh(cached, now)) return { state: cached.state, mergedAt: cached.mergedAt };
+    if (this.#budget <= 0) {
+      return cached?.state === "open"
+        ? { state: "open" as const, mergedAt: null }
+        : { state: "unknown" as const, mergedAt: null };
+    }
     this.#budget -= 1;
-    const state = yield* this.#read(ref);
+    const result = yield* this.#read(ref);
     this.#cache.delete(key);
-    this.#cache.set(key, { state, checkedAt: now });
+    this.#cache.set(key, { ...result, checkedAt: now });
     if (this.#cache.size > CACHE_LIMIT) {
       const oldest = this.#cache.keys().next().value;
       if (oldest !== undefined) this.#cache.delete(oldest);
     }
-    return state;
+    return result;
   }).bind(this);
 
   readonly #read = Effect.fn("GitHubPullRequestStates.read")(function* (
@@ -136,12 +150,12 @@ export class GitHubPullRequestStates {
     if (token) return yield* this.#rest(ref, token);
     const gh = yield* this.#gh(ref);
     if (gh !== null) return gh;
-    if (this.#anonymousBudget <= 0) return "unknown" as const;
+    if (this.#anonymousBudget <= 0) return { state: "unknown" as const, mergedAt: null };
     this.#anonymousBudget -= 1;
     return yield* this.#rest(ref, null);
   });
 
-  #rest(ref: PullRequestRef, token: string | null): Effect.Effect<PullRequestState> {
+  #rest(ref: PullRequestRef, token: string | null): Effect.Effect<PullRequestDetails> {
     const fetcher = this.#options.fetch ?? fetch;
     const url = `https://api.github.com/repos/${encodeURIComponent(ref.owner)}/${encodeURIComponent(ref.repo)}/pulls/${ref.number}`;
     return Effect.tryPromise({
@@ -158,24 +172,24 @@ export class GitHubPullRequestStates {
           // Rate limited: no more calls in this sweep.
           if (token) this.#budget = 0;
           else this.#anonymousBudget = 0;
-          return "unknown" as const;
+          return { state: "unknown" as const, mergedAt: null };
         }
-        if (!response.ok) return "unknown" as const;
-        return pullRequestState(await response.json());
+        if (!response.ok) return { state: "unknown" as const, mergedAt: null };
+        return pullRequestDetails(await response.json());
       },
       catch: (cause) => cause,
     }).pipe(
       Effect.catch((cause) =>
         Effect.sync(() => {
           logger.debug("Could not read a pull request from GitHub.", { error: errorName(cause) });
-          return "unknown" as const;
+          return { state: "unknown" as const, mergedAt: null };
         }),
       ),
     );
   }
 
   /** The state from the `gh` command, or null when `gh` is not installed or not signed in. */
-  #gh(ref: PullRequestRef): Effect.Effect<PullRequestState | null> {
+  #gh(ref: PullRequestRef): Effect.Effect<PullRequestDetails | null> {
     return Effect.gen({ self: this }, function* () {
       if (this.#ghFailedAt !== null && this.#now() - this.#ghFailedAt < GH_RETRY_MS) return null;
       if (this.#ghPath === undefined) this.#ghPath = yield* findGh();
@@ -184,7 +198,12 @@ export class GitHubPullRequestStates {
       const output = yield* Effect.callback<string | null>((resume) => {
         const child = execFile(
           ghPath,
-          ["api", `repos/${ref.owner}/${ref.repo}/pulls/${ref.number}`, "--jq", "{state: .state, merged: .merged}"],
+          [
+            "api",
+            `repos/${ref.owner}/${ref.repo}/pulls/${ref.number}`,
+            "--jq",
+            "{state: .state, merged: .merged, merged_at: .merged_at}",
+          ],
           { timeout: GITHUB_TIMEOUT_MS, windowsHide: true, maxBuffer: 64 * 1024 },
           (error, stdout) => resume(Effect.succeed(error ? null : String(stdout))),
         );
@@ -198,9 +217,9 @@ export class GitHubPullRequestStates {
       }
       this.#ghFailedAt = null;
       try {
-        return pullRequestState(JSON.parse(output));
+        return pullRequestDetails(JSON.parse(output));
       } catch {
-        return "unknown" as const;
+        return { state: "unknown" as const, mergedAt: null };
       }
     });
   }
@@ -215,12 +234,15 @@ function fresh(cached: CachedState, now: number): boolean {
   return now - cached.checkedAt < (cached.state === "open" ? OPEN_RECHECK_MS : UNKNOWN_RECHECK_MS);
 }
 
-function pullRequestState(value: unknown): PullRequestState {
-  if (!isDynamicRecord(value)) return "unknown";
-  if (value.merged === true || (typeof value.merged_at === "string" && value.merged_at.length > 0)) return "merged";
-  if (value.state === "closed") return "closed";
-  if (value.state === "open") return "open";
-  return "unknown";
+function pullRequestDetails(value: unknown): PullRequestDetails {
+  if (!isDynamicRecord(value)) return { state: "unknown", mergedAt: null };
+  const mergedAtRaw =
+    typeof value.merged_at === "string" && value.merged_at.length > 0 ? Date.parse(value.merged_at) : Number.NaN;
+  const mergedAt = Number.isFinite(mergedAtRaw) ? mergedAtRaw : null;
+  if (value.merged === true || mergedAt !== null) return { state: "merged", mergedAt };
+  if (value.state === "closed") return { state: "closed", mergedAt: null };
+  if (value.state === "open") return { state: "open", mergedAt: null };
+  return { state: "unknown", mergedAt: null };
 }
 
 function errorName(cause: unknown): string {
