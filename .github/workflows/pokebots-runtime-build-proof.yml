@@ -241,6 +241,16 @@ jobs:
             echo "Bundled library license checks passed."
           fi
 
+      - name: Check Windows runtime launch
+        id: windows-smoke
+        if: runner.os == 'Windows'
+        timeout-minutes: 2
+        shell: pwsh
+        run: |
+          node scripts/smoke-windows-remote-desktop-runtime.mjs 2>&1 |
+            Tee-Object -FilePath windows-launch.txt
+          exit $LASTEXITCODE
+
       - name: Run macOS smoke test
         id: macos-smoke
         if: runner.os == 'macOS'
@@ -281,6 +291,7 @@ jobs:
           path: |
             build/remote-desktop-runtime/${{ matrix.platform }}/${{ matrix.architecture }}/build-proof/
             runner-packages.txt
+            windows-launch.txt
             build/remote-desktop-runtime/DISTRIBUTION-SHA256SUMS.txt
           if-no-files-found: error
 
@@ -312,5 +323,5 @@ jobs:
           case "$RUNNER_OS" in
             macOS) echo "Runtime smoke result ${{ steps.macos-smoke.outcome }}" ;;
             Linux) echo "Runtime smoke result ${{ steps.linux-smoke.outcome }}" ;;
-            Windows) echo "Runtime smoke skipped. The native build workflow has no Windows smoke step." ;;
+            Windows) echo "Runtime launch result ${{ steps.windows-smoke.outcome }}" ;;
           esac
